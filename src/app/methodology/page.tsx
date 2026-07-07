@@ -22,27 +22,22 @@ export default function MethodologyPage() {
 
   return (
     <div className="page-shell">
-      <Link
-        href="/"
-        className="back-link"
-      >
+      <Link href="/" className="back-link">
         ← Tonight&apos;s slate
       </Link>
 
-      <header className="mb-8 mt-5">
-        <h1 className="page-title">
-          Methodology
-        </h1>
+      <section className="page-hero">
+        <h1 className="page-title">Methodology</h1>
         <p className="page-lead">
           How Ref Watch computes referee analytics, ranks research findings, and
           labels data confidence. Descriptive historical tendencies — not
           predictions or betting advice.
         </p>
-      </header>
+      </section>
 
-      <div className="space-y-8">
+      <div className="content-stack">
         <section className="panel-inset px-4 py-4 sm:px-5">
-          <h2 className="text-base font-bold text-zinc-900">Sample gates</h2>
+          <h2 className="section-title">Sample gates</h2>
           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
             <li>
               Ref profiles and rankings default to officials with{" "}
@@ -65,7 +60,7 @@ export default function MethodologyPage() {
         </section>
 
         <section className="panel-inset px-4 py-4 sm:px-5">
-          <h2 className="text-base font-bold text-zinc-900">Research ranking</h2>
+          <h2 className="section-title">Research ranking</h2>
           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
             <li>
               Findings scored as effect size × √sample size, weighted by sample
@@ -91,7 +86,7 @@ export default function MethodologyPage() {
         </section>
 
         <section className="panel-inset px-4 py-4 sm:px-5">
-          <h2 className="text-base font-bold text-zinc-900">
+          <h2 className="section-title">
             Synthetic lines &amp; provenance
           </h2>
           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
@@ -114,7 +109,7 @@ export default function MethodologyPage() {
         </section>
 
         <section className="panel-inset px-4 py-4 sm:px-5">
-          <h2 className="text-base font-bold text-zinc-900">Slate signals</h2>
+          <h2 className="section-title">Slate signals</h2>
           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
             <li>
               <TermHelp id="whistle-premium" /> — crew average combined score
@@ -132,7 +127,7 @@ export default function MethodologyPage() {
         </section>
 
         <section className="panel-inset px-4 py-4 sm:px-5">
-          <h2 className="text-base font-bold text-zinc-900">Data coverage</h2>
+          <h2 className="section-title">Data coverage</h2>
           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
             <li>
               NBA: {nbaStats.meta.seasons.join(", ")} (
@@ -151,7 +146,7 @@ export default function MethodologyPage() {
         </section>
 
         <section className="panel-inset px-4 py-4 sm:px-5">
-          <h2 className="text-base font-bold text-zinc-900">Disclaimer</h2>
+          <h2 className="section-title">Disclaimer</h2>
           <p className="mt-3 text-sm leading-relaxed text-zinc-600">
             Patterns from past games do not predict future results. Ref Watch is
             independent research — not affiliated with the NBA or NHL, and not

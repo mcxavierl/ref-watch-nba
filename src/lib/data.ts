@@ -19,6 +19,7 @@ import {
 } from "@/lib/stats-utils";
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { crewMetricsProvenance } from "@/lib/provenance";
+import { getCachedRefStats } from "@/lib/ref-stats-preload";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data");
@@ -50,7 +51,7 @@ function loadRefStatsRaw(): RefStatsFile | null {
     tryReadJson<RefStatsFile>("ref-stats.seed.json");
   if (fromFs) return fromFs;
 
-  return globalThis.__REFWATCH_NBA_REF_STATS__ ?? null;
+  return getCachedRefStats("nba");
 }
 
 export function getAssignments(): AssignmentsFile {

@@ -19,28 +19,25 @@ export default function RefsIndexPage() {
 
   return (
     <div className="page-shell">
-      <Link
-        href="/"
-        className="back-link"
-      >
+      <Link href="/" className="back-link">
         ← Tonight&apos;s slate
       </Link>
 
-      <header className="mb-8 mt-5">
-        <h1 className="page-title">
-          All referees
-        </h1>
+      <section className="page-hero">
+        <h1 className="page-title">All referees</h1>
         <p className="page-lead">
           {stats.meta.refCount ?? refs.length} officials with game history across{" "}
           {stats.meta.seasons.join(", ")} ({range}).
         </p>
-      </header>
+      </section>
 
-      <div className="data-card divide-y divide-border-subtle">
-        {refs.map((profile) => (
-          <RefListItem key={profile.slug} profile={profile} />
-        ))}
-      </div>
+      <section className="section-block">
+        <div className="data-card divide-y divide-border-subtle">
+          {refs.map((profile) => (
+            <RefListItem key={profile.slug} profile={profile} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

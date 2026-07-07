@@ -32,17 +32,12 @@ export default function NhlRankingsPage() {
 
   return (
     <div className="page-shell">
-      <Link
-        href="/nhl"
-        className="back-link"
-      >
+      <Link href="/nhl" className="back-link">
         ← Tonight&apos;s slate
       </Link>
 
-      <header className="mb-8 mt-5">
-        <h1 className="page-title">
-          NHL referee rankings
-        </h1>
+      <section className="page-hero">
+        <h1 className="page-title">NHL referee rankings</h1>
         <p className="page-lead">
           Historical goal, minor, and overtime tendencies across{" "}
           {stats.refs.length} officials ({range}). Not predictions — see{" "}
@@ -56,10 +51,10 @@ export default function NhlRankingsPage() {
             Seeded dataset — NHL analytics columns show — when unavailable.
           </p>
         )}
-      </header>
+      </section>
 
       {synthesis.insights.length > 0 && (
-        <section className="mb-8">
+        <section className="section-block">
           <h2 className="section-title">{synthesis.headline}</h2>
           <p className="section-lead">{synthesis.subhead}</p>
           <ul className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -86,16 +81,18 @@ export default function NhlRankingsPage() {
         </section>
       )}
 
-      <div className="data-card">
-        <RefRankingsTable
-          refs={stats.refs}
-          league="NHL"
-          minSampleSize={stats.meta.minSampleSize}
-          overBaseline={stats.meta.leagueOverBaseline}
-          basePath="/nhl"
-          signalCounts={signalCounts}
-        />
-      </div>
+      <section className="section-block">
+        <div className="data-card">
+          <RefRankingsTable
+            refs={stats.refs}
+            league="NHL"
+            minSampleSize={stats.meta.minSampleSize}
+            overBaseline={stats.meta.leagueOverBaseline}
+            basePath="/nhl"
+            signalCounts={signalCounts}
+          />
+        </div>
+      </section>
     </div>
   );
 }

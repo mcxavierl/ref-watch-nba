@@ -19,34 +19,31 @@ export default function NhlRefsIndexPage() {
 
   return (
     <div className="page-shell">
-      <Link
-        href="/nhl"
-        className="back-link"
-      >
+      <Link href="/nhl" className="back-link">
         ← Tonight&apos;s slate
       </Link>
 
-      <header className="mb-8 mt-5">
-        <h1 className="page-title">
-          All officials
-        </h1>
+      <section className="page-hero">
+        <h1 className="page-title">All officials</h1>
         <p className="page-lead">
           {stats.meta.refCount ?? refs.length} officials with game history across{" "}
           {stats.meta.seasons.join(", ")} ({range}).
         </p>
-      </header>
+      </section>
 
-      <div className="data-card divide-y divide-border-subtle">
-        {refs.map((profile) => (
-          <RefListItem
-            key={profile.slug}
-            profile={profile}
-            basePath="/nhl"
-            overBaseline={stats.meta.leagueOverBaseline}
-            deltaUnit="goals"
-          />
-        ))}
-      </div>
+      <section className="section-block">
+        <div className="data-card divide-y divide-border-subtle">
+          {refs.map((profile) => (
+            <RefListItem
+              key={profile.slug}
+              profile={profile}
+              basePath="/nhl"
+              overBaseline={stats.meta.leagueOverBaseline}
+              deltaUnit="goals"
+            />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

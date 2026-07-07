@@ -15,10 +15,8 @@ export default function NhlTeamsIndexPage() {
 
   return (
     <div className="page-shell">
-      <section className="mb-10">
-        <h1 className="page-title">
-          All NHL teams
-        </h1>
+      <section className="page-hero">
+        <h1 className="page-title">All NHL teams</h1>
         <p className="page-lead">
           Pick a team to see how they&apos;ve performed under different official
           crews — goals, PIM, and home/away splits.
@@ -28,11 +26,9 @@ export default function NhlTeamsIndexPage() {
       {(["East", "West"] as const).map((conference) => {
         const teams = conference === "East" ? East : West;
         return (
-          <section key={conference} className="mb-8">
-            <h2 className="mb-3 text-base font-semibold text-zinc-800">
-              {conference}ern Conference
-            </h2>
-            <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <section key={conference} className="section-block">
+            <h2 className="section-title">{conference}ern Conference</h2>
+            <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {teams.map((team) => {
                 const splits = getTeamSplits(team.abbr);
                 const games = splits.reduce((s, sp) => s + sp.games, 0);

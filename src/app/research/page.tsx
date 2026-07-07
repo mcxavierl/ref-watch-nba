@@ -30,17 +30,12 @@ export default function ResearchHubPage() {
     <div className="page-shell">
       <JsonLd data={researchHubDatasetJsonLd(findings.length, lastUpdated)} />
 
-      <Link
-        href="/"
-        className="back-link"
-      >
+      <Link href="/" className="back-link">
         ← Tonight&apos;s slate
       </Link>
 
-      <header className="mb-8 mt-5">
-        <h1 className="page-title">
-          Research hub
-        </h1>
+      <section className="page-hero">
+        <h1 className="page-title">Research hub</h1>
         <p className="page-lead">
           {findings.length} findings ranked by effect size and sample size across
           NBA ({formatRefStatsRange(nbaStats.meta)}) and NHL (
@@ -52,12 +47,12 @@ export default function ResearchHubPage() {
             How we rank findings →
           </Link>
         </p>
-      </header>
+      </section>
 
       {nbaFindings.length > 0 && (
-        <section className="mb-10">
-          <h2 className="text-base font-bold text-zinc-900">NBA findings</h2>
-          <p className="mt-1 text-sm text-zinc-600">
+        <section className="section-block">
+          <h2 className="section-title">NBA findings</h2>
+          <p className="section-lead">
             {nbaFindings.length} patterns from {nbaStats.refs.length} officials.
           </p>
           <div className="mt-4 space-y-3">
@@ -74,9 +69,9 @@ export default function ResearchHubPage() {
       )}
 
       {nhlFindings.length > 0 && (
-        <section className="mb-10">
-          <h2 className="text-base font-bold text-zinc-900">NHL findings</h2>
-          <p className="mt-1 text-sm text-zinc-600">
+        <section className="section-block">
+          <h2 className="section-title">NHL findings</h2>
+          <p className="section-lead">
             {nhlFindings.length} patterns from {nhlStats.refs.length} officials.
           </p>
           <div className="mt-4 space-y-3">
