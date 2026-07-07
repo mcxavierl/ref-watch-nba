@@ -58,6 +58,39 @@ export interface RefProfile {
   recentGames: RefGameRecord[];
   /** Keyed by team abbreviation (e.g. LAL, TOR). */
   teamStats?: Record<string, RefTeamStat>;
+  /** ATS, O/U buckets, home scoring splits when closing lines are available. */
+  bettingStats?: RefBettingStats;
+}
+
+export interface WlpRecord {
+  wins: number;
+  losses: number;
+  pushes: number;
+}
+
+export interface OuBucketStat {
+  label: string;
+  record: WlpRecord;
+}
+
+export interface SpreadBucketStat {
+  label: string;
+  homeFavorite: WlpRecord;
+  homeUnderdog: WlpRecord;
+}
+
+export interface RefBettingStats {
+  homeTeamRecord: WlpRecord;
+  homeTeamAts: WlpRecord;
+  avgHomeScore: number;
+  avgRoadScore: number;
+  avgHomeMargin: number;
+  overUnder: {
+    overall: WlpRecord;
+    buckets: OuBucketStat[];
+  };
+  spreadBuckets: SpreadBucketStat[];
+  linesAvailable: boolean;
 }
 
 export interface TeamCrewSplit {
@@ -108,13 +141,14 @@ export interface RefStatsFile {
 
 export type OuLean = "over" | "under" | "neutral";
 
-/** Sportsbook total for a game (optional — from The Odds API or manual). */
+/** Sportsbook line for a game (optional — from The Odds API). */
 export interface GameOddsLine {
   gameId?: string;
   awayTeam: string;
   homeTeam: string;
   total: number;
-  /** e.g. draftkings, fanduel, consensus */
+  /** Home spread; negative = home favorite. */
+  homeSpread?: number;
   source: string;
   lastUpdated: string;
 }

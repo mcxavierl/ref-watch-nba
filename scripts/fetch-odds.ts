@@ -1,8 +1,7 @@
 #!/usr/bin/env npx tsx
 /**
- * Optional sportsbook totals via The Odds API.
- * Set ODDS_API_KEY in the environment — without it we write an empty file
- * and the app falls back to the 225 league proxy.
+ * Optional sportsbook totals + spreads via The Odds API.
+ * Set ODDS_API_KEY — without it we write an empty file and use the 225 proxy.
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -34,17 +33,35 @@ interface OddsApiEvent {
   bookmakers: OddsApiBookmaker[];
 }
 
-function consensusTotal(event: OddsApiEvent): number | null {
-  const totals: number[] = [];
+function consensusFromMarket(
+  event: OddsApiEvent,
+  marketKey: string,
+  pick: (market: OddsApiMarket) => number | null,
+): number | null {
+  const values: number[] = [];
   for (const book of event.bookmakers) {
-    const market = book.markets.find((m) => m.key === "totals");
+    const market = book.markets.find((m) => m.key === marketKey);
     if (!market) continue;
-    const over = market.outcomes.find((o) => o.name === "Over" && o.point);
-    if (over?.point) totals.push(over.point);
+    const val = pick(market);
+    if (val !== null) values.push(val);
   }
-  if (totals.length === 0) return null;
-  const avg = totals.reduce((a, b) => a + b, 0) / totals.length;
+  if (values.length === 0) return null;
+  const avg = values.reduce((a, b) => a + b, 0) / values.length;
   return Math.round(avg * 2) / 2;
+}
+
+function consensusTotal(event: OddsApiEvent): number | null {
+  return consensusFromMarket(event, "totals", (market) => {
+    const over = market.outcomes.find((o) => o.name === "Over" && o.point);
+    return over?.point ?? null;
+  });
+}
+
+function consensusHomeSpread(event: OddsApiEvent): number | null {
+  return consensusFromMarket(event, "spreads", (market) => {
+    const home = market.outcomes.find((o) => o.name === event.home_team);
+    return home?.point ?? null;
+  });
 }
 
 async function fetchOdds(): Promise<OddsFile> {
@@ -63,7 +80,7 @@ async function fetchOdds(): Promise<OddsFile> {
   );
   url.searchParams.set("apiKey", apiKey);
   url.searchParams.set("regions", "us");
-  url.searchParams.set("markets", "totals");
+  url.searchParams.set("markets", "totals,spreads");
   url.searchParams.set("oddsFormat", "american");
 
   const res = await fetch(url.toString());
@@ -84,6 +101,7 @@ async function fetchOdds(): Promise<OddsFile> {
       awayTeam: event.away_team,
       homeTeam: event.home_team,
       total,
+      homeSpread: consensusHomeSpread(event) ?? undefined,
       source: "consensus",
       lastUpdated: event.commence_time,
     });
@@ -97,7 +115,7 @@ async function fetchOdds(): Promise<OddsFile> {
 }
 
 async function main() {
-  console.log("Fetching NBA totals...");
+  console.log("Fetching NBA totals and spreads...");
   const data = await fetchOdds();
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify(data, null, 2));

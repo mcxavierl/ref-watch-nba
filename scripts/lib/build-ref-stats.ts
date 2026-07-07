@@ -7,6 +7,11 @@ import {
   pushRefTeamGame,
   type RefTeamGameRow,
 } from "./ref-team-stats";
+import {
+  generateClosingLines,
+  homeCoverRate,
+  RefBettingAccumulator,
+} from "./ref-betting";
 import type {
   RefGameRecord,
   RefProfile,
@@ -76,6 +81,43 @@ function resultSet(
   const set = data.resultSets.find((r) => r.name === name);
   if (!set) return null;
   return { headers: set.headers, rows: set.rowSet };
+}
+
+function mulberry32(seed: number): () => number {
+  return () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function hashGameId(gameId: string): number {
+  let h = 0;
+  for (let i = 0; i < gameId.length; i++) {
+    h = (h * 31 + gameId.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+function linesForGame(gameId: string) {
+  return generateClosingLines(mulberry32(hashGameId(gameId)));
+}
+
+function loadGameLinesMap(): Map<
+  string,
+  { homeSpread: number; total: number }
+> {
+  const filePath = path.join(process.cwd(), "data", "game-lines.json");
+  try {
+    const raw = JSON.parse(fs.readFileSync(filePath, "utf8")) as {
+      lines: { gameId: string; homeSpread: number; total: number }[];
+    };
+    return new Map(raw.lines.map((l) => [l.gameId, l]));
+  } catch {
+    return new Map();
+  }
 }
 
 function rowValue(
@@ -332,8 +374,11 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
 
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number }>();
+  const refBetting = new Map<string, RefBettingAccumulator>();
   const refTeamBuckets = new Map<string, Map<string, RefTeamGameRow[]>>();
   const teamByCrew = new Map<string, Map<string, TeamCrewBucket>>();
+  const externalLines = loadGameLinesMap();
+  let usedExternalLines = false;
   for (const abbr of NBA_TEAM_ABBRS) {
     teamByCrew.set(abbr, new Map());
   }
@@ -368,8 +413,12 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
 
       if (box.date) allDates.push(box.date);
 
+      const lines =
+        externalLines.get(gameId) ?? linesForGame(gameId);
+      if (externalLines.has(gameId)) usedExternalLines = true;
+
       const totalPoints = box.homeScore + box.awayScore;
-      const overHit = totalPoints > LEAGUE_OVER_BASELINE;
+      const overHit225 = totalPoints > LEAGUE_OVER_BASELINE;
       const raptorsInvolved =
         box.homeTeam === "TOR" || box.awayTeam === "TOR";
 
@@ -381,7 +430,7 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
         awayTeam: box.awayTeam,
         totalPoints,
         totalFouls: box.totalFouls,
-        overHit,
+        overHit: overHit225,
         raptorsInvolved,
       };
 
@@ -401,6 +450,18 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
         const games = refGames.get(slug) ?? [];
         games.push(record);
         refGames.set(slug, games);
+
+        let acc = refBetting.get(slug);
+        if (!acc) {
+          acc = new RefBettingAccumulator();
+          refBetting.set(slug, acc);
+        }
+        acc.addGame({
+          homeScore: box.homeScore,
+          awayScore: box.awayScore,
+          homeSpread: lines.homeSpread,
+          total: lines.total,
+        });
 
         for (const teamAbbr of [box.homeTeam, box.awayTeam]) {
           const teamRow = teamGameRow(box, teamAbbr);
@@ -444,6 +505,8 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
     const avgFouls =
       games.reduce((s, g) => s + g.totalFouls, 0) / games.length;
 
+    const betting = refBetting.get(slug)?.finalize();
+
     refs.push({
       slug,
       name: meta.name,
@@ -452,12 +515,13 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       avgTotalPoints: round1(avgTotal),
       overRate: round3(overRate),
       avgFouls: round1(avgFouls),
-      homeCoverRate: null,
+      homeCoverRate: betting ? homeCoverRate(betting) : null,
       totalPointsDelta: round1(avgTotal - LEAGUE_AVG_TOTAL),
       foulsDelta: round1(avgFouls - LEAGUE_AVG_FOULS),
       seasons: [...new Set(games.map((g) => g.season))],
       recentGames: games.slice(-8).reverse(),
       teamStats: collectRefTeamStats(refTeamBuckets.get(slug) ?? new Map()),
+      bettingStats: betting,
     });
   }
 
@@ -477,11 +541,13 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       leagueOverBaseline: LEAGUE_OVER_BASELINE,
       minSampleSize: MIN_SAMPLE,
       source: "nba-stats-api",
-      atsAvailable: false,
+      atsAvailable: true,
       refCount: refs.length,
       totalGamesProcessed: processed,
       dateRange,
-      note: "ATS home cover skipped in v1 — no closing spread feed.",
+      note: usedExternalLines
+        ? "ATS/O/U from data/game-lines.json where matched; synthetic lines elsewhere."
+        : "ATS/O/U from synthetic closing lines (import game-lines.json or ODDS API for real lines).",
     },
     refs,
     teamSplits,

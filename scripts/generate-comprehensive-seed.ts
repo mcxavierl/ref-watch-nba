@@ -11,6 +11,12 @@ import {
   pushRefTeamGame,
   type RefTeamGameRow,
 } from "./lib/ref-team-stats";
+import {
+  generateClosingLines,
+  homeCoverRate,
+  RefBettingAccumulator,
+  scoresFromLines,
+} from "./lib/ref-betting";
 import type {
   RefGameRecord,
   RefProfile,
@@ -163,6 +169,7 @@ interface SimBox {
   homeFouls: number;
   awayFouls: number;
   totalFouls: number;
+  closingTotal: number;
 }
 
 interface TeamGameRow {
@@ -241,6 +248,7 @@ function generate(): RefStatsFile {
   const rng = mulberry32(42);
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number }>();
+  const refBetting = new Map<string, RefBettingAccumulator>();
   const refTeamBuckets = new Map<string, Map<string, RefTeamGameRow[]>>();
   const teamByCrew = new Map<string, Map<string, TeamCrewBucket>>();
   for (const abbr of NBA_TEAM_ABBRS) {
@@ -278,8 +286,8 @@ function generate(): RefStatsFile {
 
     for (const [homeTeam, awayTeam] of schedule) {
       const officials = pickCrew(rng);
-      const homeScore = 95 + Math.floor(rng() * 35);
-      const awayScore = 95 + Math.floor(rng() * 35);
+      const lines = generateClosingLines(rng);
+      const { homeScore, awayScore } = scoresFromLines(lines, rng);
       const homeFouls = 16 + Math.floor(rng() * 10);
       const awayFouls = 16 + Math.floor(rng() * 10);
       const date = gameDate(season, seasonGameIndex, gamesInSeason);
@@ -296,6 +304,7 @@ function generate(): RefStatsFile {
         homeFouls,
         awayFouls,
         totalFouls: homeFouls + awayFouls,
+        closingTotal: lines.total,
       };
       gameSeq++;
       seasonGameIndex++;
@@ -332,6 +341,18 @@ function generate(): RefStatsFile {
         games.push(record);
         refGames.set(slug, games);
 
+        let acc = refBetting.get(slug);
+        if (!acc) {
+          acc = new RefBettingAccumulator();
+          refBetting.set(slug, acc);
+        }
+        acc.addGame({
+          homeScore,
+          awayScore,
+          homeSpread: lines.homeSpread,
+          total: lines.total,
+        });
+
         for (const teamAbbr of [homeTeam, awayTeam]) {
           const teamRow = teamGameRow(box, teamAbbr);
           if (!teamRow) continue;
@@ -356,6 +377,8 @@ function generate(): RefStatsFile {
     const overRate = games.filter((g) => g.overHit).length / games.length;
     const avgFouls = games.reduce((s, g) => s + g.totalFouls, 0) / games.length;
 
+    const betting = refBetting.get(slug)?.finalize();
+
     refs.push({
       slug,
       name: meta.name,
@@ -364,12 +387,13 @@ function generate(): RefStatsFile {
       avgTotalPoints: round1(avgTotal),
       overRate: round3(overRate),
       avgFouls: round1(avgFouls),
-      homeCoverRate: null,
+      homeCoverRate: betting ? homeCoverRate(betting) : null,
       totalPointsDelta: round1(avgTotal - LEAGUE_AVG_TOTAL),
       foulsDelta: round1(avgFouls - LEAGUE_AVG_FOULS),
       seasons: [...new Set(games.map((g) => g.season))],
       recentGames: games.slice(-8).reverse(),
       teamStats: collectRefTeamStats(refTeamBuckets.get(slug) ?? new Map()),
+      bettingStats: betting,
     });
   }
   refs.sort((a, b) => b.games - a.games);
@@ -390,7 +414,7 @@ function generate(): RefStatsFile {
       leagueOverBaseline: LEAGUE_OVER_BASELINE,
       minSampleSize: MIN_SAMPLE,
       source: "seeded",
-      atsAvailable: false,
+      atsAvailable: true,
       refCount: refs.length,
       totalGamesProcessed: processed,
       dateRange: {
@@ -398,7 +422,7 @@ function generate(): RefStatsFile {
         latest: allDates[allDates.length - 1],
       },
       note:
-        "Simulated game data for all NBA staff officials across 2023-26 regular seasons. " +
+        "Simulated game data with synthetic closing lines for ATS/O/U splits. " +
         "Re-run npm run build-ref-data on a network that can reach stats.nba.com for live backfill.",
     },
     refs,

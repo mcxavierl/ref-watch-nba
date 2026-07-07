@@ -58,17 +58,26 @@ function FindingCard({ finding, index }: { finding: Finding; index: number }) {
   );
 }
 
-export function FindingsSection({ findings }: { findings: Finding[] }) {
+export function FindingsSection({
+  findings,
+  compact = false,
+}: {
+  findings: Finding[];
+  compact?: boolean;
+}) {
   if (findings.length === 0) return null;
 
   return (
-    <section className="mb-10">
-      <h2 className="text-base font-semibold text-zinc-800">Data findings</h2>
-      <p className="mt-2 text-sm text-zinc-600">
-        Six patterns that stand out when you compare referee and team history
-        to league averages — computed from the full dataset at build time.
-      </p>
-      <div className="mt-4 space-y-3">
+    <section className={compact ? "" : "mb-10"}>
+      {!compact && (
+        <>
+          <h2 className="text-base font-semibold text-zinc-800">Data findings</h2>
+          <p className="mt-2 text-sm text-zinc-600">
+            Patterns across the full dataset — not tied to tonight&apos;s slate.
+          </p>
+        </>
+      )}
+      <div className={`space-y-3 ${compact ? "" : "mt-4"}`}>
         {findings.map((finding, index) => (
           <FindingCard key={finding.id} finding={finding} index={index} />
         ))}

@@ -59,6 +59,38 @@ export interface RefProfile {
   recentGames: RefGameRecord[];
   /** Keyed by team abbreviation (e.g. LAL, TOR). */
   teamStats?: Record<string, RefTeamStat>;
+  bettingStats?: RefBettingStats;
+}
+
+export interface WlpRecord {
+  wins: number;
+  losses: number;
+  pushes: number;
+}
+
+export interface OuBucketStat {
+  label: string;
+  record: WlpRecord;
+}
+
+export interface SpreadBucketStat {
+  label: string;
+  homeFavorite: WlpRecord;
+  homeUnderdog: WlpRecord;
+}
+
+export interface RefBettingStats {
+  homeTeamRecord: WlpRecord;
+  homeTeamAts: WlpRecord;
+  avgHomeScore: number;
+  avgRoadScore: number;
+  avgHomeMargin: number;
+  overUnder: {
+    overall: WlpRecord;
+    buckets: OuBucketStat[];
+  };
+  spreadBuckets: SpreadBucketStat[];
+  linesAvailable: boolean;
 }
 
 export interface TeamCrewSplit {

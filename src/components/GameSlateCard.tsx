@@ -116,25 +116,11 @@ export function GameSlateCard({
         <MetricBlock
           icon={Target}
           iconClassName="text-zinc-500"
-          label="Whistle premium"
-          value={`${premium.scoringPremium >= 0 ? "+" : ""}${premium.scoringPremium} pts`}
-          hint={`${premium.avgTotalPoints} avg · gap ${premium.gapVsBenchmark >= 0 ? "+" : ""}${premium.gapVsBenchmark} vs ${premium.benchmarkSource === "sportsbook" ? "book" : "225"}`}
-          badgeTone={
-            premium.alert === "high_pace"
-              ? "positive"
-              : premium.alert === "low_pace"
-                ? "negative"
-                : "neutral"
-          }
-          badge={
-            premium.alert
-              ? premium.alert === "high_pace"
-                ? "High pace alert"
-                : "Low pace alert"
-              : premium.sampleQuality === "weak"
-                ? "Thin sample"
-                : "No alert"
-          }
+          label="Line gap"
+          value={`${premium.gapVsBenchmark >= 0 ? "+" : ""}${premium.gapVsBenchmark}`}
+          hint={`${premium.avgTotalPoints} avg vs ${premium.benchmarkSource === "sportsbook" ? "book" : "225"}`}
+          badge={`Premium ${premium.scoringPremium >= 0 ? "+" : ""}${premium.scoringPremium}`}
+          badgeTone="neutral"
         />
       </MetricGrid>
 

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { RefBettingProfile } from "@/components/RefBettingProfile";
 import { RefStatGrid } from "@/components/RefStatGrid";
-import { OuLeanBadge } from "@/components/OuLeanBadge";
 import {
   formatDate,
   formatPct,
@@ -10,7 +10,6 @@ import {
   getRefBySlug,
   getRefStats,
 } from "@/lib/data";
-import type { OuLean } from "@/lib/types";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
@@ -26,16 +25,14 @@ export async function generateMetadata({
   if (!profile) {
     return { title: "Ref not found — Ref Watch NBA" };
   }
+  const ats = profile.bettingStats?.homeTeamAts;
+  const atsLabel = ats
+    ? `${ats.wins}-${ats.losses}${ats.pushes ? `-${ats.pushes}` : ""} home ATS`
+    : "";
   return {
     title: `${profile.name} (#${profile.number}) — Ref Watch NBA`,
-    description: `${profile.name} referee profile: ${profile.games} games, ${(profile.overRate * 100).toFixed(1)}% over rate, ${profile.avgTotalPoints} avg total points.`,
+    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over 225${atsLabel ? `, ${atsLabel}` : ""}.`,
   };
-}
-
-function refLean(overRate: number, delta: number): OuLean {
-  if (overRate >= 0.56 || delta >= 3) return "over";
-  if (overRate <= 0.44 || delta <= -3) return "under";
-  return "neutral";
 }
 
 export default async function RefProfilePage({
@@ -48,7 +45,6 @@ export default async function RefProfilePage({
   if (!profile) notFound();
 
   const stats = getRefStats();
-  const lean = refLean(profile.overRate, profile.totalPointsDelta);
   const qualified = profile.games >= stats.meta.minSampleSize;
   const statsSeeded = stats.meta.source === "seeded";
 
@@ -62,17 +58,16 @@ export default async function RefProfilePage({
       </Link>
 
       <header className="mb-8 mt-5">
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
             {profile.name}
           </h1>
-          <span className="rounded-md border border-border bg-surface-raised px-2.5 py-1 font-mono text-sm text-zinc-600">
+          <span className="font-mono text-sm text-zinc-500">
             #{profile.number}
           </span>
-          <OuLeanBadge lean={lean} />
         </div>
         {!qualified && (
-          <p className="mt-3 inline-flex items-center rounded-md border border-amber-300 bg-amber-50 px-2.5 py-1 text-sm font-medium text-amber-800">
+          <p className="mt-3 text-sm text-amber-800">
             Below {stats.meta.minSampleSize}-game minimum — treat metrics as
             directional only.
           </p>
@@ -81,48 +76,38 @@ export default async function RefProfilePage({
           <span
             className={statsSeeded ? "page-meta-seeded" : "page-meta-live"}
           >
-            <span
-              className={`size-1.5 rounded-full ${statsSeeded ? "bg-amber-500" : "bg-emerald-500"}`}
-              aria-hidden
-            />
             {statsSeeded ? "Seeded stats" : "Live stats"}
           </span>
           <span>Updated {formatDate(stats.meta.lastUpdated)}</span>
           <span>{stats.meta.seasons.join(", ")}</span>
-          <span>{stats.meta.source}</span>
         </p>
       </header>
 
-      <RefStatGrid profile={profile} />
+      {profile.bettingStats ? (
+        <RefBettingProfile profile={profile} stats={profile.bettingStats} />
+      ) : (
+        <RefStatGrid profile={profile} />
+      )}
 
       <details className="methodology-details panel-inset mt-8 px-5 py-4">
         <summary>How to read this profile</summary>
         <p className="text-sm leading-relaxed text-zinc-600">
-          <span className="font-medium text-zinc-800">Games over 225 pts</span>{" "}
-          = {formatPct(profile.overRate)} of this ref&apos;s games had combined
-          scoring above {stats.meta.leagueOverBaseline}.{" "}
-          <span className="font-medium text-zinc-800">Fouls per game</span>{" "}
-          counts total personal fouls from both teams — a rough measure of
-          whistle activity. For team-specific foul splits and home/away crew
-          records, browse the{" "}
+          ATS and O/U tables use closing lines per game. When lines are
+          synthetic (seeded data), treat buckets as directional. Team-specific
+          foul splits live on{" "}
           <Link href="/teams" className="font-medium text-zinc-800 hover:underline">
             team pages
+          </Link>
+          . Tonight&apos;s assignment signals are on the{" "}
+          <Link href="/" className="font-medium text-zinc-800 hover:underline">
+            home page
           </Link>
           .
         </p>
         {stats.meta.note && (
-          <p className="mt-2 text-xs text-zinc-500">{stats.meta.note}</p>
+          <p className="mt-2 text-sm text-zinc-500">{stats.meta.note}</p>
         )}
       </details>
-
-      <p className="mt-6">
-        <Link
-          href="/teams"
-          className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hover:underline"
-        >
-          Browse all team crew histories →
-        </Link>
-      </p>
     </div>
   );
 }

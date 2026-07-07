@@ -185,14 +185,8 @@ export function GamePremiumStrip({
           {premium.benchmarkSource === "sportsbook" ? "book" : "225"}
         </span>
         {premium.alert && (
-          <span
-            className={`rounded-md px-2 py-0.5 text-xs font-semibold ${
-              premium.alert === "high_pace"
-                ? "bg-orange-100 text-orange-900"
-                : "bg-sky-100 text-sky-900"
-            }`}
-          >
-            {premium.alert === "high_pace" ? "High pace" : "Low pace"} alert
+          <span className="text-zinc-600">
+            · {premium.alert === "high_pace" ? "High pace" : "Low pace"} signal
           </span>
         )}
       </div>

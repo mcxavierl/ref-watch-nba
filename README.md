@@ -15,7 +15,7 @@ npm run dev              # http://localhost:3000
 | Script | Output | Source |
 |--------|--------|--------|
 | `npm run fetch-assignments` | `data/assignments.json` | [official.nba.com/referee-assignments](https://official.nba.com/referee-assignments/) (HTML parse) |
-| `npm run fetch-odds` | `data/odds.json` | The Odds API totals (optional `ODDS_API_KEY`) |
+| `npm run fetch-odds` | `data/odds.json` | The Odds API totals + spreads (optional `ODDS_API_KEY`) |
 | `npm run morning-slate` | assignments + odds + `data/alerts.json` | Morning refresh (~9:05 AM ET cron) |
 | `npm run build-ref-data` | `data/assignments.json` + `data/ref-stats.json` | Assignments (live) + NBA Stats API backfill |
 
@@ -62,19 +62,17 @@ npx tsx scripts/expand-team-splits.ts
 - `/raptors` → redirects to `/teams/TOR` (backwards compat)
 - `/lakers` → redirects to `/teams/LAL` (backwards compat)
 - `/refs` — All referees in the dataset
-- `/refs/[slug]` — Individual ref profile (e.g. `/refs/scott-foster-48`)
+- `/refs/[slug]` — Ref betting profile: ATS, O/U buckets, spread splits, plus team links
 
 ## Methodology (MVP)
 
+- **Ref betting profile** — home ATS, O/U by line bucket, spread by fav/dog (closing lines; synthetic in seed)
 - **Whistle premium** — crew scoring delta vs league avg; alerts when premium and gap vs line exceed thresholds (sample-gated)
-- **Home bias** — home vs away win rate under crew (not ATS)
+- **Home bias** — home vs away win rate under crew
 - **Grudge match** — automated ref–team storylines on tonight's card
-- **Avg combined score** — mean total points in games the ref crew worked
-- **Games over 225 pts** — share finishing above **225** fixed baseline (proxy when closing lines unavailable)
-- **Fouls per game** — combined personal fouls from both teams (whistle-pace proxy)
-- **Scoring trend** — higher if over rate ≥56% or total delta ≥+3; lower if ≤44% or ≤−3
-- **Foul edge** — avg fouls on team vs opponent per game; ≥+1.5 flags team foul lean
-- **ATS home cover** — skipped in v1 (no closing spread feed); noted in UI
+- **Games over 225 pts** — legacy fixed-baseline proxy on list views
+- **Fouls per game** — combined personal fouls from both teams
+- **Foul edge** — avg fouls on team vs opponent per game
 
 ## Verification
 
@@ -88,10 +86,9 @@ npm run build
 
 - **Assignments** are live from official.nba.com when the page lists NBA games (empty during offseason).
 - **Ref stats** may be **seeded** if `stats.nba.com` blocks your network (common on some cloud/VPN IPs). Re-run `build-ref-data` from a residential network for live backfill.
-- **No closing lines by default** — set `ODDS_API_KEY` for sportsbook totals; otherwise 225 proxy
-- **No live in-play gauge** — requires play-by-play (roadmap)
-- **No player props** — requires player × ref pipeline (roadmap)
-- **No ATS** in v1 — home cover rate requires historical spread data
+- **Seeded ATS/O/U** use synthetic closing lines; import `data/game-lines.json` or use live API backfill for real lines
+- **No live in-play gauge** — requires play-by-play (planned)
+- **No player props** — requires player × ref pipeline (planned)
 - Not affiliated with the NBA. For entertainment/information only — see footer disclaimer.
 
 ## Stack
