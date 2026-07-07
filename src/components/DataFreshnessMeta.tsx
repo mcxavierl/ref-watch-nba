@@ -8,9 +8,9 @@ function freshnessLabel(
   assignmentsSeeded: boolean,
 ): string {
   if (!statsSeeded && !assignmentsSeeded) return "Live data";
-  if (statsSeeded && assignmentsSeeded) return "Historical sample data";
+  if (statsSeeded && assignmentsSeeded) return "Historical data only";
   if (statsSeeded) return "Live assignments · historical stats";
-  return "Live stats · sample assignments";
+  return "Live stats · historical assignments";
 }
 
 export function DataFreshnessMeta({

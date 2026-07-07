@@ -13,11 +13,11 @@ export function nightlyFeedToRss(feed: NightlyFeed): string {
   const items =
     feed.signals.length === 0
       ? `<item>
-  <title>No sample-gated signals cleared</title>
+  <title>No signals cleared minimum thresholds</title>
   <link>${escapeXml(feed.pageUrl)}</link>
   <guid isPermaLink="true">${escapeXml(feed.pageUrl)}#empty</guid>
   <pubDate>${new Date(feed.generatedAt).toUTCString()}</pubDate>
-  <description>${escapeXml("No signals passed sample gates for this slate.")}</description>
+  <description>${escapeXml("No signals passed minimum game thresholds for this slate.")}</description>
 </item>`
       : feed.signals
           .map(

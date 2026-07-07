@@ -78,11 +78,11 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
               className={`size-1.5 rounded-full ${statsSeeded ? "bg-amber-500" : "bg-emerald-500"}`}
               aria-hidden
             />
-            {statsSeeded ? "Sample data" : "Live data"}
+            {statsSeeded ? "Historical data" : "Live data"}
           </span>
           <span>Updated {formatDate(stats.meta.lastUpdated)}</span>
           <span>
-            {team.name} sample: {teamRecord.wins}-{teamRecord.losses} (
+            {team.name} record: {teamRecord.wins}-{teamRecord.losses} (
             {formatPct(teamRecord.winRate)})
           </span>
         </p>

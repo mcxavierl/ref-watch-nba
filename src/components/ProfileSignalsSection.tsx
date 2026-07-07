@@ -41,7 +41,7 @@ export function ProfileSignalsSection({
                 : "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/80"
             }`}
           >
-            {seeded ? "Seeded data" : "Live data"}
+            {seeded ? "Historical data" : "Live data"}
           </span>
           <span className="text-xs text-zinc-500">
             {bundle.sampleGames} games · {bundle.seasonRange} · Updated{" "}
@@ -52,11 +52,11 @@ export function ProfileSignalsSection({
         {bundle.signals.length === 0 ? (
           <div className="px-4 py-8 text-center sm:px-5">
             <p className="text-sm font-medium text-zinc-800">
-              No standout patterns in this sample
+              No standout patterns in this history
             </p>
             <p className="mx-auto mt-2 max-w-md text-sm text-zinc-600">
               {refName}&apos;s metrics sit near league averages across scoring,
-              whistle rate, and over frequency. Check back as the sample grows.
+              whistle rate, and over frequency. Check back as more games are logged.
             </p>
           </div>
         ) : (
@@ -106,8 +106,9 @@ export function ProfileSignalsSection({
         {seeded && (
           <div className="border-t border-border-subtle bg-amber-50/60 px-4 py-3 sm:px-5">
             <p className="text-xs leading-relaxed text-amber-900">
-              Seeded dataset — closing lines and some splits are synthetic.
-              Patterns describe this sample, not live market edges.
+              Historical dataset — some ATS/O/U splits use estimated closing lines
+              where sportsbook data is unavailable. Patterns describe past games,
+              not live market edges.
             </p>
           </div>
         )}

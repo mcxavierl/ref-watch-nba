@@ -281,9 +281,9 @@ export function buildShareText(feed: NightlyFeed): string {
   lines.push("");
 
   if (feed.signals.length === 0) {
-    lines.push("No sample-gated signals cleared for tonight.");
+    lines.push("No signals cleared minimum game thresholds for tonight.");
   } else {
-    lines.push("Top signals (sample-gated):");
+    lines.push("Top signals (minimum thresholds met):");
     for (const signal of topShareSignals(feed)) {
       lines.push(
         `• ${signal.matchup}: ${signal.headline}${isEstimatedTag(signal.provenance) ? ` [${signal.provenanceLabel}]` : ""}`,
@@ -416,7 +416,7 @@ export function refProfileDatasetJsonLd(
     "@context": "https://schema.org",
     "@type": "Dataset",
     name: `${name} referee analytics`,
-    description: `Historical scoring, foul, and betting splits for ${name} (${games} games). Sample-gated metrics with plain methodology.`,
+    description: `Historical scoring, foul, and betting splits for ${name} (${games} games). Minimum game thresholds with plain methodology.`,
     url: absoluteUrl(`${base}/refs/${slug}`),
     dateModified: lastUpdated,
     variableMeasured: [

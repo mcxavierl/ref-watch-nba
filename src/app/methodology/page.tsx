@@ -12,7 +12,7 @@ import { seededDataNote } from "@/lib/user-language";
 export const metadata: Metadata = {
   title: "Methodology",
   description:
-    "How Ref Watch ranks findings, applies sample gates, handles synthetic lines, and labels provenance. Not betting advice.",
+    "How Ref Watch ranks findings, applies sample gates, handles estimated closing lines, and labels provenance. Not betting advice.",
   alternates: { canonical: absoluteUrl("/methodology") },
 };
 
@@ -87,7 +87,7 @@ export default function MethodologyPage() {
 
         <section className="panel-inset px-4 py-4 sm:px-5">
           <h2 className="section-title">
-            Synthetic lines &amp; provenance
+            Closing lines &amp; provenance
           </h2>
           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
             <li>
@@ -97,8 +97,8 @@ export default function MethodologyPage() {
               {nhlStats.meta.leagueOverBaseline} NHL) as an over-rate proxy.
             </li>
             <li>
-              Seeded datasets use synthetic closing lines for ATS/O/U research —
-              disclosed on every affected finding.
+              Some ATS/O/U splits use estimated closing lines where sportsbook
+              data is unavailable — disclosed on every affected finding.
             </li>
             <li>
               <TermHelp id="provenance-estimated" /> markers flag fallback

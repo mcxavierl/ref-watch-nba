@@ -207,7 +207,7 @@ function buildHomeAtsSignal(betting: RefBettingStats): ProfileSignal | null {
   return {
     kind: "home-ats",
     headline: `Home teams ${direction} the spread more often than not`,
-    body: `Home sides are ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS (${record.wins}-${record.losses}${record.pushes ? `-${record.pushes}` : ""}) across ${decisions} lined games. Closing lines in this dataset may be synthetic — treat as exploratory.`,
+    body: `Home sides are ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS (${record.wins}-${record.losses}${record.pushes ? `-${record.pushes}` : ""}) across ${decisions} lined games. Closing lines may be estimated where sportsbook data is unavailable — treat as exploratory.`,
     stats: [
       {
         label: "Home ATS",

@@ -10,7 +10,7 @@ import { absoluteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "NBA referee rankings",
   description:
-    "Sortable NBA referee rankings by historical scoring impact, whistle rate, and over tendency. Sample-gated — descriptive only.",
+    "Sortable NBA referee rankings by historical scoring impact, whistle rate, and over tendency. Minimum game thresholds — descriptive only.",
   alternates: { canonical: absoluteUrl("/rankings") },
 };
 
@@ -45,7 +45,8 @@ export default function NbaRankingsPage() {
         </p>
         {seeded && (
           <p className="mt-2 text-sm text-amber-800">
-            Seeded dataset — metrics use synthetic closing lines where noted.
+            Historical dataset — some metrics use estimated closing lines where
+            noted.
           </p>
         )}
       </section>

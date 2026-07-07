@@ -131,7 +131,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "ot-rate-badge": {
     label: "High OT rate",
-    text: "This referee pair’s OT rate is above league average on a tight puck line (±1.5). Useful context for OT/SO props when the book offers them — sample-gated.",
+    text: "This referee pair’s OT rate is above league average on a tight puck line (±1.5). Useful context for OT/SO props when the book offers them — requires minimum game count.",
   },
   "minors-per-game": {
     label: "Minors per game",

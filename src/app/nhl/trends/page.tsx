@@ -43,7 +43,7 @@ export default function NhlTrendsPage() {
         {(usingFallback || seeded) && (
           <p className="mt-2 text-sm text-amber-800">
             {seeded
-              ? "Seeded game logs — provenance tags apply."
+              ? "Historical game logs — provenance tags apply."
               : "Using fallback baselines — run compute-baselines when live logs are available."}
           </p>
         )}

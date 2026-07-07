@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: `%s — ${SITE_NAME}`,
   },
   description:
-    "Tonight's NBA and NHL referee crews with sample-gated scoring, whistle, and betting splits. Free nightly slate.",
+    "Tonight's NBA and NHL referee crews with historical scoring, whistle, and betting splits. Free nightly slate.",
   alternates: {
     types: {
       "application/rss+xml": [

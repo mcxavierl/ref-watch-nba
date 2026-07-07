@@ -132,7 +132,7 @@ function nbaWindows(): CloseGameWindow[] {
       id: "close-spread",
       label: "Pregame toss-ups (spread ≤5.5)",
       description:
-        "Games where the closing spread was within 5.5 points — often stay tight through the fourth quarter. Spread lines may be synthetic in seeded data.",
+        "Games where the closing spread was within 5.5 points — often stay tight through the fourth quarter. Spread lines may be estimated where sportsbook closing lines are unavailable.",
       isProxy: true,
     },
   ];
@@ -210,7 +210,7 @@ function honestyBannerFor(
 ): string | null {
   const parts: string[] = [];
   if (meta.source === "seeded" || logsSource?.includes("seed")) {
-    parts.push("Derived from seeded/simulated game logs");
+    parts.push("Derived from historical game logs");
   }
   if (window.isProxy) {
     parts.push("proxy window — not official L2M play-by-play");

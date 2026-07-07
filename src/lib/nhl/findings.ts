@@ -262,7 +262,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
     category: "ou-edge",
     headline: `${best.ref.name} leans ${lean} vs closing goal totals`,
     summary: `Totals go ${lean} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} (${formatWlpShort(record)}) across ${best.games} lined games.`,
-    explainer: `O/U ATS uses synthetic closing totals in this seeded dataset. Min ${MIN_OU_ATS_GAMES} decisive games required.`,
+    explainer: `O/U ATS uses estimated closing totals where sportsbook data is unavailable. Min ${MIN_OU_ATS_GAMES} decisive games required.`,
     stats: [
       {
         label: "O/U ATS",
@@ -280,7 +280,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `Leans ${lean}`,
       },
     ],
-    sampleNote: `${best.games} O/U decisions · synthetic lines · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: `${best.games} O/U decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
     links: [{ label: best.ref.name, href: `/nhl/refs/${best.ref.slug}` }],
     score: rankScore(best.edge, best.games, MIN_OU_ATS_GAMES),
     sampleGames: best.games,
@@ -335,7 +335,7 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: "Absolute deviation",
       },
     ],
-    sampleNote: `${best.games} ATS decisions · synthetic lines · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: `${best.games} ATS decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
     links: [{ label: best.ref.name, href: `/nhl/refs/${best.ref.slug}` }],
     score: rankScore(best.edge, best.games, MIN_ATS_GAMES),
     sampleGames: best.games,

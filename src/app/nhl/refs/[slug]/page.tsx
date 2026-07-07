@@ -48,7 +48,7 @@ export async function generateMetadata({
     : "";
   return {
     title: `${profile.name} (#${profile.number})`,
-    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over ${stats.meta.leagueOverBaseline}${atsLabel ? `, ${atsLabel}` : ""}. Sample-gated NHL official analytics.`,
+    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over ${stats.meta.leagueOverBaseline}${atsLabel ? `, ${atsLabel}` : ""}. Historical NHL official analytics with minimum game thresholds.`,
     alternates: {
       canonical: absoluteUrl(`/nhl/refs/${slug}`),
     },
@@ -133,7 +133,7 @@ export default async function NhlRefProfilePage({
           <span
             className={statsSeeded ? "page-meta-seeded" : "page-meta-live"}
           >
-            {statsSeeded ? "Seeded stats" : "Live stats"}
+            {statsSeeded ? "Historical stats" : "Live stats"}
           </span>
           <span>Updated {formatDate(stats.meta.lastUpdated)}</span>
           <span>{stats.meta.seasons.join(", ")}</span>
@@ -176,8 +176,9 @@ export default async function NhlRefProfilePage({
         <summary>How to read this profile</summary>
         <p className="text-sm leading-relaxed text-zinc-600">
           <TermHelp id="ats" /> and <TermHelp id="over-under" /> tables use{" "}
-          <TermHelp id="closing-line">closing lines</TermHelp> per game. Seeded
-          data uses synthetic lines. Team PIM splits live on{" "}
+          <TermHelp id="closing-line">closing lines</TermHelp> per game. Where
+          sportsbook closing lines are unavailable, ATS/O/U splits use estimated
+          lines. Team PIM splits live on{" "}
           <Link href="/nhl/teams" className="font-medium text-zinc-800 hover:underline">
             team pages
           </Link>

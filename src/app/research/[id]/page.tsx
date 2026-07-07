@@ -124,7 +124,7 @@ export default async function ResearchFindingPage({
             applicable.
           </li>
           <li>
-            Synthetic closing lines disclosed on seeded data — not betting advice.
+            Estimated closing lines disclosed where applicable — not betting advice.
           </li>
           <li>
             <Link href="/methodology" className="font-medium text-zinc-800 hover:underline">

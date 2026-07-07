@@ -71,7 +71,7 @@ export function SlateShareBar({
         <div>
           <h2 className="section-title">Share tonight&apos;s signal pack</h2>
           <p className="section-lead">
-            Sample-gated only — estimated values marked. Not betting advice.
+            Minimum game thresholds apply — estimated values marked. Not betting advice.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

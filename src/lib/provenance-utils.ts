@@ -5,7 +5,7 @@ export function provenanceLabel(tag: ProvenanceTag): string {
     case "computed-from-real":
       return "From real games";
     case "computed-with-partial-data":
-      return "Partial / simulated data";
+      return "Partial data";
     case "fallback-constant":
       return "Estimated constant";
   }

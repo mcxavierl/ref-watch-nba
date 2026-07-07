@@ -14,15 +14,15 @@ export function ogSlateContent(feed: NightlyFeed) {
     signals,
     emptyMessage:
       signals.length === 0
-        ? "No sample-gated signals cleared — check crew cards for context."
+        ? "No signals cleared minimum game thresholds — check crew cards for context."
         : null,
     footer: feed.disclaimer,
     dataNote:
       feed.statsSource === "seeded" || feed.isPreview
-        ? "Simulated / preview data — not live assignments."
+        ? "Historical preview — not live assignments."
         : estimatedCount > 0
           ? `${estimatedCount} signal${estimatedCount === 1 ? "" : "s"} use partial or proxy inputs.`
-          : "Sample-gated signals from ingested game logs.",
+          : "Historical referee trends from ingested game logs.",
   };
 }
 

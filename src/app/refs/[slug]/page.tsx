@@ -45,7 +45,7 @@ export async function generateMetadata({
     : "";
   return {
     title: `${profile.name} (#${profile.number})`,
-    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over 225${atsLabel ? `, ${atsLabel}` : ""}. Sample-gated referee analytics.`,
+    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over 225${atsLabel ? `, ${atsLabel}` : ""}. Historical referee analytics with minimum game thresholds.`,
     alternates: {
       canonical: absoluteUrl(`/refs/${slug}`),
     },
@@ -120,7 +120,7 @@ export default async function RefProfilePage({
           <span
             className={statsSeeded ? "page-meta-seeded" : "page-meta-live"}
           >
-            {statsSeeded ? "Seeded stats" : "Live stats"}
+            {statsSeeded ? "Historical stats" : "Live stats"}
           </span>
           <span>Updated {formatDate(stats.meta.lastUpdated)}</span>
           <span>{stats.meta.seasons.join(", ")}</span>
@@ -152,8 +152,9 @@ export default async function RefProfilePage({
         <summary>How to read this profile</summary>
         <p className="text-sm leading-relaxed text-zinc-600">
           <TermHelp id="ats" /> and <TermHelp id="over-under" /> tables use{" "}
-          <TermHelp id="closing-line">closing lines</TermHelp> per game. Seeded
-          data uses synthetic lines. Team foul splits live on{" "}
+          <TermHelp id="closing-line">closing lines</TermHelp> per game. Where
+          sportsbook closing lines are unavailable, ATS/O/U splits use estimated
+          lines. Team foul splits live on{" "}
           <Link href="/teams" className="font-medium text-zinc-800 hover:underline">
             team pages
           </Link>
