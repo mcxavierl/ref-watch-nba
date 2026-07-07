@@ -30,6 +30,7 @@ export default function NhlMatrixPage() {
     NHL_TEAMS.map((team) => ({
       abbr: team.abbr,
       label: teamFullName(team),
+      name: team.name,
     })),
     getTeamSplits,
   );
@@ -70,6 +71,7 @@ export default function NhlMatrixPage() {
             basePath={league.pathPrefix}
             leagueLabel={league.label}
             officialNounPlural={league.officialNounPlural}
+            sport="nhl"
           />
         </div>
       </section>

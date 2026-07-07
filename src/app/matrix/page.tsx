@@ -26,6 +26,8 @@ export default function NbaMatrixPage() {
     NBA_TEAMS.map((team) => ({
       abbr: team.abbr,
       label: teamFullName(team),
+      name: team.name,
+      nbaId: team.nbaId,
     })),
     getTeamSplits,
   );
@@ -66,6 +68,7 @@ export default function NbaMatrixPage() {
             basePath={league.pathPrefix}
             leagueLabel={league.label}
             officialNounPlural={league.officialNounPlural}
+            sport="nba"
           />
         </div>
       </section>

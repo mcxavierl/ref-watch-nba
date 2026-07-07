@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { RefAvatar } from "@/components/RefAvatar";
+import { TeamLogo } from "@/components/TeamLogo";
 import { winRateTone } from "@/lib/metricTone";
 import {
   matrixCellExtreme,
@@ -12,6 +14,7 @@ type RefTeamMatrixProps = {
   basePath: string;
   leagueLabel: string;
   officialNounPlural: string;
+  sport: "nba" | "nhl";
 };
 
 function cellToneClass(tone: "positive" | "negative" | "neutral"): string {
@@ -36,8 +39,11 @@ export function RefTeamMatrix({
   basePath,
   leagueLabel,
   officialNounPlural,
+  sport,
 }: RefTeamMatrixProps) {
   const { refs, teams, cells, minGames, qualifiedCellCount } = matrix;
+  const officialLabel =
+    officialNounPlural.charAt(0).toUpperCase() + officialNounPlural.slice(1);
 
   return (
     <div className="ref-matrix">
@@ -77,7 +83,7 @@ export function RefTeamMatrix({
           <thead>
             <tr>
               <th scope="col" className="ref-matrix-corner">
-                Ref
+                {officialLabel}
               </th>
               {teams.map((team) => (
                 <th key={team.abbr} scope="col" className="ref-matrix-team-head">
@@ -86,7 +92,17 @@ export function RefTeamMatrix({
                     className="ref-matrix-team-link"
                     title={team.label}
                   >
-                    {team.abbr}
+                    <TeamLogo
+                      team={{
+                        abbr: team.abbr,
+                        name: team.name,
+                        nbaId: team.nbaId,
+                      }}
+                      sport={sport}
+                      size="sm"
+                      className="ref-matrix-team-logo"
+                    />
+                    <span className="ref-matrix-team-abbr">{team.abbr}</span>
                   </Link>
                 </th>
               ))}
@@ -101,10 +117,14 @@ export function RefTeamMatrix({
                     className="ref-matrix-ref-link"
                     title={ref.name}
                   >
+                    <RefAvatar
+                      name={ref.name}
+                      slug={ref.slug}
+                      sport={sport}
+                      size="sm"
+                      className="ref-matrix-ref-avatar"
+                    />
                     <span className="ref-matrix-ref-name">{ref.name}</span>
-                    {ref.number ? (
-                      <span className="ref-matrix-ref-num">#{ref.number}</span>
-                    ) : null}
                   </Link>
                 </th>
                 {teams.map((team) => {

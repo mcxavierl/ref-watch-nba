@@ -2349,7 +2349,10 @@ p {
   }
 
   .ref-matrix-team-link {
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
     color: inherit;
     text-decoration: none;
     transition: color 0.15s ease;
@@ -2359,11 +2362,24 @@ p {
     color: var(--foreground);
   }
 
+  .ref-matrix-team-logo {
+    display: block;
+  }
+
+  .ref-matrix-team-abbr {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
   .ref-matrix-ref-head {
     left: 0;
     z-index: 2;
-    min-width: 9.5rem;
-    max-width: 11rem;
+    min-width: 10.5rem;
+    max-width: 12rem;
     padding: 0.35rem var(--space-4);
     border-right: 1px solid var(--border-subtle);
     text-align: left;
@@ -2374,8 +2390,9 @@ p {
 
   .ref-matrix-ref-link {
     display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--foreground);
     text-decoration: none;
     line-height: 1.25;
@@ -2385,17 +2402,14 @@ p {
     color: var(--raptors);
   }
 
+  .ref-matrix-ref-avatar {
+    flex-shrink: 0;
+  }
+
   .ref-matrix-ref-name {
     font-size: var(--text-sm);
     font-weight: 600;
     transition: color 0.15s ease;
-  }
-
-  .ref-matrix-ref-num {
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 0.65rem;
-    font-variant-numeric: tabular-nums;
-    color: var(--muted);
   }
 
   .ref-matrix-cell {

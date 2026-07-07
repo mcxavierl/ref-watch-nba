@@ -16,6 +16,8 @@ export interface RefTeamMatrixCell {
 export interface RefTeamMatrixTeam {
   abbr: string;
   label: string;
+  name: string;
+  nbaId?: number;
   baselineWinRate: number;
 }
 
@@ -47,7 +49,7 @@ export function approxTeamRecord(
 
 export function computeRefTeamMatrix(
   stats: RefStatsFile,
-  teamList: { abbr: string; label: string }[],
+  teamList: { abbr: string; label: string; name: string; nbaId?: number }[],
   getTeamSplits: (abbr: string) => TeamCrewSplit[],
   minGames = MATRIX_MIN_GAMES,
 ): RefTeamMatrix {
@@ -56,6 +58,8 @@ export function computeRefTeamMatrix(
     return {
       abbr: team.abbr,
       label: team.label,
+      name: team.name,
+      nbaId: team.nbaId,
       baselineWinRate: record.winRate,
     };
   });
