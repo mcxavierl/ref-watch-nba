@@ -14,12 +14,12 @@ export function FindingCard({
 }) {
   return (
     <article className="data-card">
-      <div className="border-b border-border bg-surface-raised/60 px-4 py-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+      <div className="border-b border-border bg-surface-raised/60 px-4 py-3.5 sm:px-5">
+        <p className="text-xs font-medium text-zinc-500">
           {league && <span>{league} · </span>}
           {FINDING_CATEGORY_LABELS[finding.category]} · Finding {index + 1}
         </p>
-        <h3 className="mt-1 text-base font-semibold leading-snug text-zinc-900">
+        <h3 className="mt-1.5 text-base font-semibold leading-snug text-zinc-900 sm:text-[1.125rem]">
           <Link
             href={`/research/${finding.id}`}
             className="hover:text-raptors hover:underline"
@@ -97,10 +97,8 @@ export function FindingsSection({
     <section id="dataset-findings" className={compact && !featured ? "" : "mb-10 scroll-mt-24"}>
       {(featured || !compact) && (
         <>
-          <h2 className="text-base font-bold text-zinc-900">
-            Dataset findings
-          </h2>
-          <p className="mt-2 text-sm text-zinc-600">
+          <h2 className="section-title">Dataset findings</h2>
+          <p className="section-lead">
             Top patterns ranked by effect size and sample size — not tied to
             tonight&apos;s slate.
           </p>

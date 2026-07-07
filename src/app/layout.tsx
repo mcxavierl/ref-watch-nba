@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
+import { Barlow, IBM_Plex_Mono } from "next/font/google";
 import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteFooterWrapper } from "@/components/SiteFooterWrapper";
@@ -7,9 +7,10 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { AFFILIATION_DISCLAIMER, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const sourceSans = Source_Sans_3({
-  variable: "--font-source-sans",
+const barlow = Barlow({
+  variable: "--font-barlow",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -54,7 +55,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${sourceSans.variable} ${plexMono.variable} flex min-h-screen flex-col bg-background text-base leading-relaxed text-zinc-900 antialiased`}
+        className={`${barlow.variable} ${plexMono.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
       >
         <SiteHeader />
         <main className="flex-1">{children}</main>

@@ -125,8 +125,8 @@ export default function NhlHomePage() {
           ...slateSportsEvents("NHL"),
         ]}
       />
-      <section className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
+      <section className="page-hero">
+        <h1 className="page-title">
           {isOffseason ? "NHL ref data" : "Tonight&apos;s NHL slate"}
         </h1>
         <p className="page-lead">
@@ -160,11 +160,11 @@ export default function NhlHomePage() {
 
           <TonightEdgeSummary items={edgeItems} />
 
-          <section className="mb-8">
-            <h2 className="mb-3 text-base font-bold text-zinc-900">
+          <section className="section-block">
+            <h2 className="section-title">
               {slateGames.length === 1 ? "Tonight's game" : "Tonight's games"}
             </h2>
-            <div className="space-y-3">
+            <div className="slate-stack mt-4">
               {sortedGames.map((game) => (
                 <GameSlateCard
                   key={game.id}

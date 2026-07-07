@@ -32,13 +32,13 @@ export default function ResearchHubPage() {
 
       <Link
         href="/"
-        className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900"
+        className="back-link"
       >
         ← Tonight&apos;s slate
       </Link>
 
       <header className="mb-8 mt-5">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
+        <h1 className="page-title">
           Research hub
         </h1>
         <p className="page-lead">

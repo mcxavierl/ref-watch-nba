@@ -16,7 +16,7 @@ export default function NhlTeamsIndexPage() {
   return (
     <div className="page-shell">
       <section className="mb-10">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
+        <h1 className="page-title">
           All NHL teams
         </h1>
         <p className="page-lead">

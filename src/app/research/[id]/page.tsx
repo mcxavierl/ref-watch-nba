@@ -60,7 +60,7 @@ export default async function ResearchFindingPage({
 
       <Link
         href="/research"
-        className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900"
+        className="back-link"
       >
         ← Research hub
       </Link>
@@ -69,7 +69,7 @@ export default async function ResearchFindingPage({
         <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
           {finding.league} · {FINDING_CATEGORY_LABELS[finding.category]}
         </p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
+        <h1 className="mt-2 page-title">
           {finding.headline}
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-zinc-600">

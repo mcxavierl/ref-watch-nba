@@ -111,7 +111,7 @@ export function GameSlateCard({
 
   return (
     <article id={`game-${gameId}`} className="data-card scroll-mt-24">
-      <div className="border-b border-border px-4 py-4 sm:px-5">
+      <div className="data-card-header">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             {paceLabel && (
@@ -128,7 +128,7 @@ export function GameSlateCard({
               </p>
             )}
             {teams.length > 0 ? (
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2.5">
                 {teams.map((team, i) => (
                   <span key={team.abbr} className="flex items-center gap-1.5">
                     {i > 0 && (
@@ -137,22 +137,18 @@ export function GameSlateCard({
                       </span>
                     )}
                     <TeamLogo team={team} size="sm" sport={sport} />
-                    <span className="text-base font-bold tracking-tight text-zinc-900">
-                      {team.abbr}
-                    </span>
+                    <span className="game-matchup-abbr">{team.abbr}</span>
                   </span>
                 ))}
               </div>
             ) : (
-              <h2 className="text-base font-bold tracking-tight text-zinc-900">
-                {matchup}
-              </h2>
+              <h2 className="game-matchup-abbr">{matchup}</h2>
             )}
           </div>
           <OuLeanBadge lean={metrics.ouLean} />
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {metrics.crew.map((official) => (
             <Link
               key={`${official.name}-${official.number}`}
@@ -166,40 +162,39 @@ export function GameSlateCard({
         </div>
       </div>
 
-      <div className="space-y-2 px-4 py-4 sm:px-5">
-        <p className="text-sm leading-relaxed text-zinc-900">
-          <span className="font-bold">{copy.pointsAboveAverage}:</span>{" "}
-          <span className="font-bold tabular-nums">
+      <div className="space-y-2.5 px-4 py-5 sm:px-5">
+        <p className="game-signal-line">
+          <span className="game-signal-label">{copy.pointsAboveAverage}:</span>{" "}
+          <span className="game-signal-value">
             {formatPremiumLabel(premium.scoringPremium)}
           </span>{" "}
           ·{" "}
-          <span className="font-bold tabular-nums">
+          <span className="game-signal-value">
             {premium.gapVsBenchmark >= 0 ? "+" : ""}
             {premium.gapVsBenchmark}
           </span>{" "}
           vs {bench}
         </p>
-        <p className="text-sm leading-relaxed text-zinc-800">
-          <span className="font-semibold">{copy.scoringLabel}:</span>{" "}
+        <p className="game-signal-line">
+          <span className="game-signal-label">{copy.scoringLabel}:</span>{" "}
           {metrics.avgTotalPoints} avg combined ·{" "}
-          <span className="font-semibold tabular-nums">{totalDelta}</span> vs
-          league · {formatPct(metrics.overRate)} {copy.overLeanLabel.toLowerCase()}
+          <span className="game-signal-value">{totalDelta}</span> vs league ·{" "}
+          {formatPct(metrics.overRate)} {copy.overLeanLabel.toLowerCase()}
         </p>
-        <p className="text-sm leading-relaxed text-zinc-800">
-          <span className="font-semibold">{copy.whistleLabel}:</span>{" "}
+        <p className="game-signal-line">
+          <span className="game-signal-label">{copy.whistleLabel}:</span>{" "}
           {metrics.avgFouls} {copy.whistleUnit} avg ·{" "}
-          <span className="font-semibold tabular-nums">{foulsDelta}</span> vs
-          league
+          <span className="game-signal-value">{foulsDelta}</span> vs league
         </p>
         {homeBias && homeBias.kind !== "neutral" && (
-          <p className="text-sm leading-relaxed text-zinc-800">
-            <span className="font-semibold">{copy.homeBiasLabel}:</span>{" "}
+          <p className="game-signal-line">
+            <span className="game-signal-label">{copy.homeBiasLabel}:</span>{" "}
             {homeBias.headline}
           </p>
         )}
         {grudgeHeadline && (
-          <p className="text-sm leading-relaxed text-zinc-700">
-            <span className="font-semibold">Ref history flag:</span>{" "}
+          <p className="game-signal-line text-zinc-700">
+            <span className="game-signal-label">Ref history flag:</span>{" "}
             {grudgeHeadline}
           </p>
         )}

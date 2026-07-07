@@ -20,13 +20,13 @@ export default function NbaRankingsPage() {
     <div className="page-shell">
       <Link
         href="/"
-        className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900"
+        className="back-link"
       >
         ← Tonight&apos;s slate
       </Link>
 
       <header className="mb-8 mt-5">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
+        <h1 className="page-title">
           NBA referee rankings
         </h1>
         <p className="page-lead">

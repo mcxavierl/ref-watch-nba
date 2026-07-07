@@ -82,9 +82,9 @@ export function RefRankingsTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] text-sm">
+        <table className="data-table min-w-[640px]">
             <thead>
-              <tr className="border-b border-border-subtle bg-surface-raised/60 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              <tr className="data-table-head">
                 <th className="px-4 py-3 sm:px-5">#</th>
                 <th className="px-4 py-3">Official</th>
                 <th className="px-4 py-3">Sample</th>

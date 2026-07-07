@@ -47,12 +47,12 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
 
   return (
     <div className="page-shell">
-      <section className="mb-10">
+      <section className="page-hero">
         <div className="flex items-center gap-3">
           <TeamLogo team={team} size="lg" sport={league} />
           <div>
-            <p className="text-sm font-semibold text-zinc-700">{teamName}</p>
-            <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
+            <p className="section-kicker">{teamName}</p>
+            <h1 className="page-title">
               How {teamLabel} play under each ref crew or ref
             </h1>
           </div>
@@ -160,10 +160,8 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         )}
       </details>
 
-      <section className="mt-10">
-        <h2 className="mb-3 text-sm font-semibold text-zinc-700">
-          League-wide ref profiles
-        </h2>
+      <section className="section-block">
+        <h2 className="section-title">League-wide ref profiles</h2>
         <div className="data-card divide-y divide-border-subtle">
           {stats.refs
             .filter((r) => r.games >= stats.meta.minSampleSize)

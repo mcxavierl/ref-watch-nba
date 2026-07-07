@@ -18,12 +18,12 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
   const leagueLabel = isNhl ? "NHL" : "NBA";
 
   return (
-    <footer className="mt-auto border-t border-border bg-surface-raised">
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        <div className="grid gap-6 sm:grid-cols-3">
+    <footer className="site-footer">
+      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+        <div className="grid gap-8 sm:grid-cols-3">
           <div>
-            <p className="text-sm font-semibold text-zinc-800">Data sources</p>
-            <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+            <p className="site-footer-heading">Data sources</p>
+            <p className="site-footer-body">
               Not affiliated with the {leagueLabel}. No sportsbook affiliate
               links — independent research only. Official assignments from{" "}
               {isNhl ? (
@@ -49,8 +49,8 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
             </p>
           </div>
           <div>
-            <p className="text-sm font-semibold text-zinc-800">Explore</p>
-            <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-zinc-600">
+            <p className="site-footer-heading">Explore</p>
+            <ul className="site-footer-body space-y-1.5">
               <li>
                 <Link href="/research" className="font-medium text-zinc-800 underline-offset-2 hover:underline">
                   Research hub
@@ -80,12 +80,12 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
             </ul>
           </div>
           <div>
-            <p className="text-sm font-semibold text-zinc-800">Disclaimer</p>
-            <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+            <p className="site-footer-heading">Disclaimer</p>
+            <p className="site-footer-body">
               Patterns from past games — not predictions. For research and
               entertainment only. Not betting advice.
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+            <p className="mt-3 site-footer-body">
               <a
                 href={seasonNotifyMailto(leagueLabel)}
                 className="font-medium text-zinc-800 underline-offset-2 hover:text-raptors hover:underline"
