@@ -98,17 +98,15 @@ export default async function RefProfilePage({
       <details className="methodology-details panel-inset mt-8 px-5 py-4">
         <summary>How to read this profile</summary>
         <p className="text-sm leading-relaxed text-zinc-600">
-          Over rate = {formatPct(profile.overRate)} of this ref&apos;s games
-          cleared {stats.meta.leagueOverBaseline} total points. Avg fouls counts
-          combined personal fouls from both teams per game — a coarse
-          whistle-pace proxy. For team-specific foul splits and home/away crew
-          records, see{" "}
-          <Link href="/raptors" className="font-medium text-raptors hover:underline">
-            Raptors splits
-          </Link>{" "}
-          or{" "}
-          <Link href="/lakers" className="font-medium text-lakers hover:underline">
-            Lakers splits
+          <span className="font-medium text-zinc-800">Games over 225 pts</span>{" "}
+          = {formatPct(profile.overRate)} of this ref&apos;s games had combined
+          scoring above {stats.meta.leagueOverBaseline}.{" "}
+          <span className="font-medium text-zinc-800">Fouls per game</span>{" "}
+          counts total personal fouls from both teams — a rough measure of
+          whistle activity. For team-specific foul splits and home/away crew
+          records, browse the{" "}
+          <Link href="/teams" className="font-medium text-zinc-800 hover:underline">
+            team pages
           </Link>
           .
         </p>
@@ -117,18 +115,12 @@ export default async function RefProfilePage({
         )}
       </details>
 
-      <p className="mt-6 flex flex-wrap gap-x-4 gap-y-1">
+      <p className="mt-6">
         <Link
-          href="/raptors"
-          className="text-sm font-medium text-raptors hover:underline"
+          href="/teams"
+          className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hover:underline"
         >
-          Raptors games with this ref →
-        </Link>
-        <Link
-          href="/lakers"
-          className="text-sm font-medium text-lakers hover:underline"
-        >
-          Lakers games with this ref →
+          Browse all team crew histories →
         </Link>
       </p>
     </div>

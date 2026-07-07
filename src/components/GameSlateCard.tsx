@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { CrewMetrics } from "@/lib/data";
-import { detectTrackedTeams, formatPct, refSlug } from "@/lib/data";
-import { OuLeanBadge } from "./OuLeanBadge";
+import { detectTeamsInGame, formatPct, refSlug } from "@/lib/data";
+import { getOuLeanAnnotationFromDelta } from "@/lib/leanAnnotations";
+import { teamFullName } from "@/lib/teams";
+import { TeamLogo } from "./TeamLogo";
 import { StatCell, StatStrip } from "./StatStrip";
 
 export function GameSlateCard({
@@ -9,21 +11,13 @@ export function GameSlateCard({
   awayTeam,
   homeTeam,
   metrics,
-  featured = false,
 }: {
   matchup: string;
   awayTeam: string;
   homeTeam: string;
   metrics: CrewMetrics;
-  featured?: boolean;
 }) {
-  const trackedTeams = detectTrackedTeams(awayTeam, homeTeam);
-  const cardRing =
-    trackedTeams.length === 1
-      ? trackedTeams[0].cardRing
-      : trackedTeams.length > 1
-        ? "ring-zinc-400/40"
-        : "";
+  const teams = detectTeamsInGame(awayTeam, homeTeam);
 
   const totalDelta =
     metrics.totalPointsDelta >= 0
@@ -33,38 +27,50 @@ export function GameSlateCard({
     metrics.foulsDelta >= 0
       ? `+${metrics.foulsDelta}`
       : String(metrics.foulsDelta);
+  const ouLean = getOuLeanAnnotationFromDelta(
+    metrics.overRate,
+    metrics.totalPointsDelta,
+  );
 
   return (
-    <article
-      className={`data-card ${featured || trackedTeams.length > 0 ? `ring-2 ${cardRing}` : ""}`}
-    >
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-surface-raised/60 px-4 py-3">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
+    <article className="data-card">
+      <div className="border-b border-border bg-surface-raised/60 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {teams.length > 0 ? (
+            <div className="flex items-center gap-2">
+              {teams.map((team, i) => (
+                <span key={team.abbr} className="flex items-center gap-1.5">
+                  {i > 0 && (
+                    <span className="text-xs text-zinc-400" aria-hidden>
+                      vs
+                    </span>
+                  )}
+                  <TeamLogo team={team} size="sm" />
+                  <span className="text-base font-semibold tracking-tight text-zinc-900">
+                    {team.abbr}
+                  </span>
+                </span>
+              ))}
+            </div>
+          ) : (
             <h2 className="text-base font-semibold tracking-tight text-zinc-900">
               {matchup}
             </h2>
-            {featured && (
-              <span className="rounded-md border border-border bg-white px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-600">
-                Tracked team
-              </span>
-            )}
-          </div>
-          {trackedTeams.length > 0 && (
-            <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
-              {trackedTeams.map((team) => (
-                <Link
-                  key={team.key}
-                  href={team.href}
-                  className={`text-[11px] font-medium ${team.linkClass} hover:underline`}
-                >
-                  {team.label} crew splits →
-                </Link>
-              ))}
-            </div>
           )}
         </div>
-        <OuLeanBadge lean={metrics.ouLean} />
+        {teams.length > 0 && (
+          <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
+            {teams.map((team) => (
+              <Link
+                key={team.abbr}
+                href={`/teams/${team.abbr}`}
+                className="text-[11px] font-medium text-zinc-600 hover:text-zinc-900 hover:underline"
+              >
+                {teamFullName(team)} crew history →
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2 border-b border-border-subtle px-4 py-3">
@@ -86,25 +92,31 @@ export function GameSlateCard({
 
       <StatStrip>
         <StatCell
-          label="Avg total"
+          label="Avg combined score"
           value={String(metrics.avgTotalPoints)}
-          detail={`${totalDelta} vs lg`}
+          detail={`${totalDelta} vs league avg`}
+          annotation={ouLean?.target === "avgTotal" ? ouLean.label : undefined}
         />
         <StatCell
-          label="Over rate"
+          label="Games over 225 pts"
           value={formatPct(metrics.overRate)}
-          detail="225 baseline"
+          detail="Combined score beat benchmark"
+          annotation={
+            ouLean?.target === "overRate" ? ouLean.label : undefined
+          }
         />
         <StatCell
-          label="Avg fouls"
+          label="Fouls per game"
           value={String(metrics.avgFouls)}
-          detail={`${foulsDelta} vs lg`}
+          detail={`${foulsDelta} vs league avg`}
         />
         <StatCell
-          label="Sample"
+          label="Sample size"
           value={`${metrics.sampleGames}g`}
           detail={
-            metrics.insufficientSample ? "< 2 qualified refs" : "per ref avg"
+            metrics.insufficientSample
+              ? "Fewer than 2 refs with enough games"
+              : "Average across crew"
           }
         />
       </StatStrip>

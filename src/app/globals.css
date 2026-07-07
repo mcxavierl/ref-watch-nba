@@ -94,6 +94,10 @@ body {
     @apply mt-1 font-mono text-[10px] tabular-nums text-zinc-500;
   }
 
+  .stat-annotation {
+    @apply mt-0.5 text-[10px] font-medium text-zinc-500;
+  }
+
   .section-kicker {
     @apply mb-2 text-[11px] font-semibold text-zinc-500;
   }

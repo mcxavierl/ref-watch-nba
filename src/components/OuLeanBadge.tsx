@@ -7,12 +7,12 @@ const styles: Record<
   over: {
     chip: "border-emerald-300 bg-emerald-50 text-emerald-800",
     dot: "bg-emerald-600",
-    label: "Over lean",
+    label: "Higher scoring",
   },
   under: {
     chip: "border-rose-300 bg-rose-50 text-rose-800",
     dot: "bg-rose-600",
-    label: "Under lean",
+    label: "Lower scoring",
   },
   neutral: {
     chip: "border-zinc-300 bg-zinc-100 text-zinc-700",
@@ -26,7 +26,7 @@ export function OuLeanBadge({ lean }: { lean: OuLean }) {
   return (
     <span
       className={`status-chip ${s.chip}`}
-      title={`O/U lean: ${s.label}`}
+      title={`Scoring trend: ${s.label}`}
     >
       <span className={`size-2 shrink-0 rounded-full ${s.dot}`} aria-hidden />
       {s.label}

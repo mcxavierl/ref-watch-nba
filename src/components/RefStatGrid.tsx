@@ -18,24 +18,24 @@ export function RefStatGrid({ profile }: { profile: RefProfile }) {
       <StatStrip>
         <StatCell label="Games" value={String(profile.games)} />
         <StatCell
-          label="Avg total"
+          label="Avg combined score"
           value={String(profile.avgTotalPoints)}
-          detail={`${totalDelta} vs league`}
+          detail={`${totalDelta} vs league avg`}
         />
         <StatCell
-          label="Over rate"
+          label="Games over 225 pts"
           value={formatPct(profile.overRate)}
-          detail="225 baseline"
+          detail="Combined score beat benchmark"
         />
       </StatStrip>
       <StatStrip>
         <StatCell
-          label="Avg fouls"
+          label="Fouls per game"
           value={String(profile.avgFouls)}
-          detail={`${foulsDelta} vs league`}
+          detail={`${foulsDelta} vs league avg`}
         />
         <StatCell label="Seasons" value={profile.seasons.join(", ")} />
-        <StatCell label="ATS home" value="N/A" detail="no spread feed" />
+        <StatCell label="Spread record" value="N/A" detail="No spread data yet" />
       </StatStrip>
     </div>
   );
@@ -64,7 +64,7 @@ export function RefListItem({ profile }: { profile: RefProfile }) {
           <span className="font-mono text-xs text-zinc-500">#{profile.number}</span>
         </p>
         <p className="mt-0.5 font-mono text-[11px] text-zinc-500">
-          {profile.games} games · O/U {formatPct(profile.overRate)}
+          {profile.games} games · {formatPct(profile.overRate)} over 225
         </p>
       </div>
       <span className={`font-mono text-sm font-semibold tabular-nums ${deltaColor}`}>

@@ -1,26 +1,24 @@
 import Link from "next/link";
-import { OuLeanBadge } from "@/components/OuLeanBadge";
+import { TeamLogo } from "@/components/TeamLogo";
 import { StatCell, StatSection, StatStrip } from "@/components/StatStrip";
-import { WhistleBiasBadge } from "@/components/WhistleBiasBadge";
 import {
-  computeOuLean,
   formatDate,
   formatPct,
   formatSigned,
   getRefStats,
+  getTeamSplits,
   sortSplitsByGames,
   whistleBias,
 } from "@/lib/data";
+import {
+  getOuLeanAnnotation,
+  getWhistleAnnotation,
+} from "@/lib/leanAnnotations";
+import { getTeam, teamFullName } from "@/lib/teams";
 import type { RefProfile, TeamCrewSplit } from "@/lib/types";
 
 export interface TeamPageConfig {
-  teamLabel: string;
   teamAbbr: string;
-  accentClass: string;
-  refLinkHoverClass: string;
-  whistleTone: "raptors" | "lakers";
-  splitsKey: "raptorsSplits" | "lakersSplits";
-  methodologyTitle: string;
 }
 
 function winPct(wins: number, games: number): string {
@@ -34,101 +32,106 @@ function TeamSplitCard({
   leagueAvgFouls,
   overBaseline,
   refs,
-  config,
+  teamAbbr,
 }: {
   split: TeamCrewSplit;
   leagueAvgTotal: number;
   leagueAvgFouls: number;
   overBaseline: number;
   refs: Pick<RefProfile, "slug" | "name">[];
-  config: TeamPageConfig;
+  teamAbbr: string;
 }) {
-  const lean = computeOuLean(
+  const ouLean = getOuLeanAnnotation(
     split.overRate,
     split.avgTotalPoints,
     leagueAvgTotal,
   );
   const bias = whistleBias(split.foulDifferential);
+  const whistleAnnotation = getWhistleAnnotation(bias, teamAbbr);
   const foulsDelta = Math.round((split.avgFouls - leagueAvgFouls) * 10) / 10;
 
   return (
     <article className="data-card">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-surface-raised/60 px-4 py-3">
-        <div>
-          <h2 className="text-sm font-semibold leading-snug text-zinc-900">
-            {split.crewNames.join(" · ")}
-          </h2>
-          <p className="mt-1 font-mono text-[11px] tabular-nums text-zinc-600">
-            {split.games} games · {split.wins}-{split.losses} (
-            {winPct(split.wins, split.games)})
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          <OuLeanBadge lean={lean} />
-          <WhistleBiasBadge
-            bias={bias}
-            diff={split.foulDifferential}
-            teamAbbr={config.teamAbbr}
-            teamTone={config.whistleTone}
-          />
-        </div>
+      <div className="border-b border-border bg-surface-raised/60 px-4 py-3">
+        <h2 className="text-sm font-semibold leading-snug text-zinc-900">
+          {split.crewNames.join(" · ")}
+        </h2>
+        <p className="mt-1 font-mono text-[11px] tabular-nums text-zinc-600">
+          {split.games} games · {split.wins}-{split.losses} (
+          {winPct(split.wins, split.games)} wins)
+        </p>
       </div>
 
-      <StatSection title="Pace & scoring">
+      <StatSection title="Scoring">
         <StatStrip>
           <StatCell
-            label="Avg total"
+            label="Avg combined score"
             value={String(split.avgTotalPoints)}
-            detail={`${formatSigned(split.totalDelta)} vs ${leagueAvgTotal}`}
+            detail={`${formatSigned(split.totalDelta)} vs league avg (${leagueAvgTotal})`}
+            annotation={
+              ouLean?.target === "avgTotal" ? ouLean.label : undefined
+            }
           />
           <StatCell
-            label="Over rate"
+            label={`Games over ${overBaseline} pts`}
             value={formatPct(split.overRate)}
-            detail={`>${overBaseline} baseline`}
+            detail="Combined score beat the league benchmark"
+            annotation={
+              ouLean?.target === "overRate" ? ouLean.label : undefined
+            }
           />
           <StatCell
-            label="Record"
+            label="Win-loss record"
             value={`${split.wins}-${split.losses}`}
-            detail={`${winPct(split.wins, split.games)} win`}
+            detail={`${winPct(split.wins, split.games)} win rate`}
           />
         </StatStrip>
       </StatSection>
 
-      <StatSection title="Whistle & fouls">
+      <StatSection title="Fouls & whistles">
         <StatStrip>
           <StatCell
-            label="Combined"
+            label="Total fouls per game"
             value={String(split.avgFouls)}
-            detail={`${formatSigned(foulsDelta)} vs ${leagueAvgFouls}`}
+            detail={`${formatSigned(foulsDelta)} vs league avg (${leagueAvgFouls})`}
           />
-          <StatCell label={config.teamAbbr} value={String(split.avgTeamFouls)} />
-          <StatCell label="Opponent" value={String(split.avgOpponentFouls)} />
           <StatCell
-            label="Diff"
+            label={`${teamAbbr} fouls`}
+            value={String(split.avgTeamFouls)}
+            detail="Called on this team"
+          />
+          <StatCell
+            label="Opponent fouls"
+            value={String(split.avgOpponentFouls)}
+            detail="Called on the other team"
+          />
+          <StatCell
+            label="Foul edge"
             value={formatSigned(split.foulDifferential)}
-            detail={`${config.teamAbbr} − opp`}
+            detail="Positive = more fouls on opponents"
+            annotation={whistleAnnotation}
           />
         </StatStrip>
       </StatSection>
 
-      <StatSection title="Home / away">
+      <StatSection title="Home & away">
         <StatStrip>
           <StatCell
-            label="Home"
+            label="Home record"
             value={`${split.homeWins}-${split.homeLosses}`}
-            detail={`${split.homeGames}g`}
+            detail={`${split.homeGames} home games`}
           />
           <StatCell
-            label="Away"
+            label="Away record"
             value={`${split.awayWins}-${split.awayLosses}`}
-            detail={`${split.awayGames}g`}
+            detail={`${split.awayGames} away games`}
           />
           <StatCell
-            label="Home win"
+            label="Home win rate"
             value={winPct(split.homeWins, split.homeGames)}
           />
           <StatCell
-            label="Away win"
+            label="Away win rate"
             value={winPct(split.awayWins, split.awayGames)}
           />
         </StatStrip>
@@ -142,7 +145,7 @@ function TeamSplitCard({
             <Link
               key={ref.slug}
               href={`/refs/${ref.slug}`}
-              className={`text-[11px] text-zinc-600 transition ${config.refLinkHoverClass}`}
+              className="text-[11px] text-zinc-600 transition hover:text-zinc-900"
             >
               {name} →
             </Link>
@@ -154,25 +157,31 @@ function TeamSplitCard({
 }
 
 export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
+  const team = getTeam(config.teamAbbr);
+  if (!team) return null;
+
   const stats = getRefStats();
-  const splits = sortSplitsByGames(stats[config.splitsKey] ?? []);
+  const splits = sortSplitsByGames(getTeamSplits(team.abbr));
   const totalGames = splits.reduce((s, sp) => s + sp.games, 0);
   const statsSeeded = stats.meta.source === "seeded";
+  const teamName = teamFullName(team);
 
   return (
     <div className="page-shell">
       <section className="mb-10">
-        <p className={`text-sm font-semibold ${config.accentClass}`}>
-          {config.teamLabel}
-        </p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem]">
-          Ref crew splits
-        </h1>
+        <div className="flex items-center gap-3">
+          <TeamLogo team={team} size="lg" />
+          <div>
+            <p className="text-sm font-semibold text-zinc-700">{teamName}</p>
+            <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem]">
+              How this team plays under each ref crew
+            </h1>
+          </div>
+        </div>
         <p className="page-lead">
-          Crew-specific {config.teamLabel} history — not league-wide ref
-          profiles. Each block covers every {config.teamAbbr} game this exact
-          three-ref crew worked across {stats.meta.seasons.join(" & ")}. Sorted
-          by sample size (most games first).
+          Every {team.abbr} game worked by the same three referees, grouped
+          together. See scoring trends, foul patterns, and home/away records for
+          each crew across {stats.meta.seasons.join(" & ")}.
         </p>
         <p className="page-meta">
           <span
@@ -182,25 +191,24 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
               className={`size-1.5 rounded-full ${statsSeeded ? "bg-amber-500" : "bg-emerald-500"}`}
               aria-hidden
             />
-            {statsSeeded ? "Seeded stats" : "Live stats"}
+            {statsSeeded ? "Sample data" : "Live data"}
           </span>
           <span>Updated {formatDate(stats.meta.lastUpdated)}</span>
-          <span>{stats.meta.source}</span>
-          <span>{totalGames} games in sample</span>
+          <span>{totalGames} team games in sample</span>
         </p>
       </section>
 
       {splits.length === 0 ? (
         <div className="panel-inset px-6 py-8 text-center">
           <p className="text-base font-medium text-zinc-800">
-            No {config.teamLabel} crew splits yet
+            No crew history for {teamName} yet
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm text-zinc-600">
             Run{" "}
             <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-zinc-700 ring-1 ring-border">
               npm run build-ref-data
             </code>{" "}
-            to backfill historical crew splits from the NBA Stats API.
+            to pull historical games from the NBA Stats API.
           </p>
         </div>
       ) : (
@@ -213,33 +221,34 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
               leagueAvgFouls={stats.meta.leagueAvgFouls}
               overBaseline={stats.meta.leagueOverBaseline}
               refs={stats.refs}
-              config={config}
+              teamAbbr={team.abbr}
             />
           ))}
         </div>
       )}
 
       <details className="methodology-details panel-inset mt-10 px-5 py-4">
-        <summary>{config.methodologyTitle}</summary>
+        <summary>What am I looking at?</summary>
         <ul className="space-y-2.5 text-sm leading-relaxed text-zinc-600">
           <li>
-            <span className="font-medium text-zinc-800">Pace & O/U</span> — avg
-            combined score, over rate vs {stats.meta.leagueOverBaseline}{" "}
-            baseline, and lean badge. Total delta vs league avg (
-            {stats.meta.leagueAvgTotal}).
+            <span className="font-medium text-zinc-800">Scoring</span> — how
+            many combined points these games tend to produce, and how often they
+            go above {stats.meta.leagueOverBaseline} (our stand-in when real
+            betting lines aren&apos;t available).
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Foul split</span> —
-            personal fouls on {config.teamLabel} vs opponent per game.
-            Differential ≥+1.5 favors {config.teamAbbr}, ≤−1.5 favors opponent.
+            <span className="font-medium text-zinc-800">Foul edge</span> — who
+            gets called more under this crew. A positive number means opponents
+            are whistled more often than {team.abbr}.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Home / away</span> — W-L
-            by location under this crew. Sub-5 game splits are directional only.
+            <span className="font-medium text-zinc-800">Home & away</span> — win
+            rate by location. Small samples (under 5 games) are rough guides
+            only.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Win rate</span> —
-            straight-up record with this crew (not ATS).
+            <span className="font-medium text-zinc-800">Win-loss record</span> —
+            straight-up results, not point spreads.
           </li>
         </ul>
         {stats.meta.note && (
@@ -249,7 +258,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
 
       <section className="mt-10">
         <h2 className="mb-3 text-sm font-semibold text-zinc-700">
-          Qualified refs ({stats.meta.minSampleSize}+ games)
+          Referees with enough games ({stats.meta.minSampleSize}+)
         </h2>
         <div className="data-card divide-y divide-border-subtle">
           {stats.refs
@@ -263,7 +272,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
               >
                 <span className="font-medium text-zinc-800">{ref.name}</span>
                 <span className="font-mono text-xs tabular-nums text-zinc-600">
-                  O/U {formatPct(ref.overRate)}
+                  {formatPct(ref.overRate)} over {stats.meta.leagueOverBaseline}
                 </span>
               </Link>
             ))}

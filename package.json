@@ -9,7 +9,8 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "fetch-assignments": "tsx scripts/fetch-assignments.ts",
-    "build-ref-data": "tsx scripts/build-ref-data.ts"
+    "build-ref-data": "tsx scripts/build-ref-data.ts",
+    "expand-team-splits": "tsx scripts/expand-team-splits.ts"
   },
   "dependencies": {
     "cheerio": "^1.2.0",

@@ -3,13 +3,17 @@ import * as path from "node:path";
 import { NBA_STATS_HEADERS } from "./nba-headers";
 import { crewKey, refSlug } from "./slug";
 import type {
-  LakersCrewSplit,
-  RaptorsCrewSplit,
   RefGameRecord,
   RefProfile,
   RefStatsFile,
   TeamCrewSplit,
 } from "./types";
+
+const NBA_TEAM_ABBRS = [
+  "ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW",
+  "HOU", "IND", "LAC", "LAL", "MEM", "MIA", "MIL", "MIN", "NOP", "NYK",
+  "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS",
+];
 
 const STATS_BASE = "https://stats.nba.com/stats";
 const FETCH_TIMEOUT_MS = 8_000;
@@ -313,8 +317,10 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
 
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number }>();
-  const raptorsByCrew = new Map<string, TeamCrewBucket>();
-  const lakersByCrew = new Map<string, TeamCrewBucket>();
+  const teamByCrew = new Map<string, Map<string, TeamCrewBucket>>();
+  for (const abbr of NBA_TEAM_ABBRS) {
+    teamByCrew.set(abbr, new Map());
+  }
 
   let processed = 0;
   const maxGamesPerSeason = 40;
@@ -357,14 +363,11 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       const key = crewKey(officials);
       const crewNames = officials.map((o) => o.name);
 
-      const raptorsRow = teamGameRow(box, "TOR");
-      if (raptorsRow) {
-        pushTeamGame(raptorsByCrew, key, crewNames, raptorsRow);
-      }
-
-      const lakersRow = teamGameRow(box, "LAL");
-      if (lakersRow) {
-        pushTeamGame(lakersByCrew, key, crewNames, lakersRow);
+      for (const teamAbbr of NBA_TEAM_ABBRS) {
+        const row = teamGameRow(box, teamAbbr);
+        if (!row) continue;
+        const buckets = teamByCrew.get(teamAbbr)!;
+        pushTeamGame(buckets, key, crewNames, row);
       }
 
       for (const official of officials) {
@@ -417,8 +420,10 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
 
   refs.sort((a, b) => b.games - a.games);
 
-  const raptorsSplits: RaptorsCrewSplit[] = collectTeamSplits(raptorsByCrew);
-  const lakersSplits: LakersCrewSplit[] = collectTeamSplits(lakersByCrew);
+  const teamSplits: Record<string, TeamCrewSplit[]> = {};
+  for (const abbr of NBA_TEAM_ABBRS) {
+    teamSplits[abbr] = collectTeamSplits(teamByCrew.get(abbr)!);
+  }
 
   return {
     meta: {
@@ -433,8 +438,7 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       note: "ATS home cover skipped in v1 — no closing spread feed.",
     },
     refs,
-    raptorsSplits,
-    lakersSplits,
+    teamSplits,
   };
 }
 

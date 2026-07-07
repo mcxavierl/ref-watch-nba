@@ -13,11 +13,11 @@ const teamTones = {
 const neutralStyles = {
   opponent: {
     chip: "border-sky-300 bg-sky-50 text-sky-800",
-    label: "Opp lean",
+    label: "More fouls on opponents",
   },
   neutral: {
     chip: "border-zinc-300 bg-zinc-100 text-zinc-700",
-    label: "Balanced",
+    label: "Roughly even fouls",
   },
 } as const;
 
@@ -32,13 +32,13 @@ export function WhistleBiasBadge({
   teamAbbr?: string;
   teamTone?: keyof typeof teamTones;
 }) {
-  const title = `Foul differential ${formatSigned(diff)} per game`;
+  const title = `Foul edge: ${formatSigned(diff)} per game`;
 
   if (bias === "team") {
     const tone = teamTones[teamTone];
     return (
       <span className={`status-chip ${tone.chip}`} title={title}>
-        {teamAbbr} whistle lean
+        More fouls on {teamAbbr}
       </span>
     );
   }

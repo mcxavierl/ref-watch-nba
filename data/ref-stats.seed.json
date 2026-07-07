@@ -1,7 +1,10 @@
 {
   "meta": {
     "lastUpdated": "2026-07-06T00:00:00.000Z",
-    "seasons": ["2023-24", "2024-25"],
+    "seasons": [
+      "2023-24",
+      "2024-25"
+    ],
     "leagueAvgTotal": 225,
     "leagueAvgFouls": 38.5,
     "leagueOverBaseline": 225,
@@ -22,7 +25,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 4.8,
       "foulsDelta": 3.1,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -36,7 +42,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 2.1,
       "foulsDelta": 1.7,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -50,7 +59,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": -0.7,
       "foulsDelta": -0.7,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -64,7 +76,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 1.4,
       "foulsDelta": 0.6,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -78,7 +93,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 3.9,
       "foulsDelta": 3.8,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -92,7 +110,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": -1.9,
       "foulsDelta": -1.6,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -106,7 +127,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 5.5,
       "foulsDelta": 2.3,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -120,7 +144,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": -2.4,
       "foulsDelta": -1.3,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -133,8 +160,11 @@
       "avgFouls": 39.5,
       "homeCoverRate": null,
       "totalPointsDelta": 1.8,
-      "foulsDelta": 1.0,
-      "seasons": ["2023-24", "2024-25"],
+      "foulsDelta": 1,
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -148,7 +178,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 0.2,
       "foulsDelta": -0.4,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -162,7 +195,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 2.6,
       "foulsDelta": 2.4,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -175,8 +211,11 @@
       "avgFouls": 37.5,
       "homeCoverRate": null,
       "totalPointsDelta": -0.2,
-      "foulsDelta": -1.0,
-      "seasons": ["2023-24", "2024-25"],
+      "foulsDelta": -1,
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -190,7 +229,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": -3.1,
       "foulsDelta": -2.1,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -204,7 +246,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 3.1,
       "foulsDelta": 1.3,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -212,13 +257,16 @@
       "name": "Michael Smith",
       "number": 38,
       "games": 94,
-      "avgTotalPoints": 226.0,
+      "avgTotalPoints": 226,
       "overRate": 0.521,
       "avgFouls": 38.7,
       "homeCoverRate": null,
-      "totalPointsDelta": 1.0,
+      "totalPointsDelta": 1,
       "foulsDelta": 0.2,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -232,7 +280,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 4.3,
       "foulsDelta": 2.6,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -242,11 +293,14 @@
       "games": 82,
       "avgTotalPoints": 223.7,
       "overRate": 0.476,
-      "avgFouls": 37.0,
+      "avgFouls": 37,
       "homeCoverRate": null,
       "totalPointsDelta": -1.3,
       "foulsDelta": -1.5,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -260,7 +314,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 0.9,
       "foulsDelta": -0.1,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -274,7 +331,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 2.4,
       "foulsDelta": 0.8,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -288,7 +348,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": -0.9,
       "foulsDelta": -0.9,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -301,8 +364,11 @@
       "avgFouls": 40.5,
       "homeCoverRate": null,
       "totalPointsDelta": 5.1,
-      "foulsDelta": 2.0,
-      "seasons": ["2023-24", "2024-25"],
+      "foulsDelta": 2,
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -316,7 +382,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": -2.7,
       "foulsDelta": -1.8,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -330,7 +399,10 @@
       "homeCoverRate": null,
       "totalPointsDelta": 1.5,
       "foulsDelta": 0.4,
-      "seasons": ["2023-24", "2024-25"],
+      "seasons": [
+        "2023-24",
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -344,7 +416,9 @@
       "homeCoverRate": null,
       "totalPointsDelta": 3.6,
       "foulsDelta": 1.6,
-      "seasons": ["2024-25"],
+      "seasons": [
+        "2024-25"
+      ],
       "recentGames": []
     },
     {
@@ -358,212 +432,2856 @@
       "homeCoverRate": null,
       "totalPointsDelta": 0.4,
       "foulsDelta": -0.3,
-      "seasons": ["2024-25"],
+      "seasons": [
+        "2024-25"
+      ],
       "recentGames": []
     }
   ],
-  "raptorsSplits": [
-    {
-      "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
-      "crewNames": ["Scott Foster", "Tony Brothers", "Marc Davis"],
-      "games": 6,
-      "avgTotalPoints": 231.2,
-      "overRate": 0.667,
-      "avgFouls": 42.8,
-      "wins": 3,
-      "losses": 3,
-      "totalDelta": 6.2,
-      "homeGames": 3,
-      "awayGames": 3,
-      "homeWins": 2,
-      "homeLosses": 1,
-      "awayWins": 1,
-      "awayLosses": 2,
-      "avgTeamFouls": 22.1,
-      "avgOpponentFouls": 20.7,
-      "foulDifferential": 1.4
-    },
-    {
-      "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
-      "crewNames": ["Bill Kennedy", "Josh Tiven", "John Goble"],
-      "games": 5,
-      "avgTotalPoints": 228.4,
-      "overRate": 0.6,
-      "avgFouls": 41.2,
-      "wins": 2,
-      "losses": 3,
-      "totalDelta": 3.4,
-      "homeGames": 2,
-      "awayGames": 3,
-      "homeWins": 1,
-      "homeLosses": 1,
-      "awayWins": 1,
-      "awayLosses": 2,
-      "avgTeamFouls": 20.8,
-      "avgOpponentFouls": 20.4,
-      "foulDifferential": 0.4
-    },
-    {
-      "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
-      "crewNames": ["David Guthrie", "Eric Lewis", "Courtney Kirkland"],
-      "games": 4,
-      "avgTotalPoints": 221.5,
-      "overRate": 0.25,
-      "avgFouls": 36.8,
-      "wins": 1,
-      "losses": 3,
-      "totalDelta": -3.5,
-      "homeGames": 2,
-      "awayGames": 2,
-      "homeWins": 0,
-      "homeLosses": 2,
-      "awayWins": 1,
-      "awayLosses": 1,
-      "avgTeamFouls": 19.2,
-      "avgOpponentFouls": 17.6,
-      "foulDifferential": 1.6
-    },
-    {
-      "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
-      "crewNames": ["James Capers", "Kane Fitzgerald", "Pat Fraher"],
-      "games": 4,
-      "avgTotalPoints": 224.8,
-      "overRate": 0.5,
-      "avgFouls": 38.5,
-      "wins": 2,
-      "losses": 2,
-      "totalDelta": -0.2,
-      "homeGames": 2,
-      "awayGames": 2,
-      "homeWins": 1,
-      "homeLosses": 1,
-      "awayWins": 1,
-      "awayLosses": 1,
-      "avgTeamFouls": 19.5,
-      "avgOpponentFouls": 19.0,
-      "foulDifferential": 0.5
-    },
-    {
-      "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
-      "crewNames": ["Kevin Cutler", "Michael Smith", "JB DeRosa"],
-      "games": 3,
-      "avgTotalPoints": 229.7,
-      "overRate": 0.667,
-      "avgFouls": 40.3,
-      "wins": 2,
-      "losses": 1,
-      "totalDelta": 4.7,
-      "homeGames": 1,
-      "awayGames": 2,
-      "homeWins": 1,
-      "homeLosses": 0,
-      "awayWins": 1,
-      "awayLosses": 1,
-      "avgTeamFouls": 21.0,
-      "avgOpponentFouls": 19.3,
-      "foulDifferential": 1.7
-    }
-  ],
-  "lakersSplits": [
-    {
-      "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
-      "crewNames": ["Scott Foster", "Tony Brothers", "Marc Davis"],
-      "games": 6,
-      "avgTotalPoints": 234.5,
-      "overRate": 0.667,
-      "avgFouls": 43.2,
-      "wins": 4,
-      "losses": 2,
-      "totalDelta": 9.5,
-      "homeGames": 4,
-      "awayGames": 2,
-      "homeWins": 3,
-      "homeLosses": 1,
-      "awayWins": 1,
-      "awayLosses": 1,
-      "avgTeamFouls": 18.8,
-      "avgOpponentFouls": 24.4,
-      "foulDifferential": -5.6
-    },
-    {
-      "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
-      "crewNames": ["Ben Taylor", "Nick Buchert", "Zach Zarba"],
-      "games": 5,
-      "avgTotalPoints": 227.8,
-      "overRate": 0.6,
-      "avgFouls": 39.6,
-      "wins": 3,
-      "losses": 2,
-      "totalDelta": 2.8,
-      "homeGames": 3,
-      "awayGames": 2,
-      "homeWins": 2,
-      "homeLosses": 1,
-      "awayWins": 1,
-      "awayLosses": 1,
-      "avgTeamFouls": 21.4,
-      "avgOpponentFouls": 18.2,
-      "foulDifferential": 3.2
-    },
-    {
-      "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
-      "crewNames": ["David Guthrie", "Eric Lewis", "Courtney Kirkland"],
-      "games": 5,
-      "avgTotalPoints": 219.4,
-      "overRate": 0.2,
-      "avgFouls": 37.1,
-      "wins": 2,
-      "losses": 3,
-      "totalDelta": -5.6,
-      "homeGames": 2,
-      "awayGames": 3,
-      "homeWins": 1,
-      "homeLosses": 1,
-      "awayWins": 1,
-      "awayLosses": 2,
-      "avgTeamFouls": 19.6,
-      "avgOpponentFouls": 17.5,
-      "foulDifferential": 2.1
-    },
-    {
-      "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
-      "crewNames": ["James Capers", "Kane Fitzgerald", "Pat Fraher"],
-      "games": 4,
-      "avgTotalPoints": 226.3,
-      "overRate": 0.5,
-      "avgFouls": 38.9,
-      "wins": 2,
-      "losses": 2,
-      "totalDelta": 1.3,
-      "homeGames": 2,
-      "awayGames": 2,
-      "homeWins": 1,
-      "homeLosses": 1,
-      "awayWins": 1,
-      "awayLosses": 1,
-      "avgTeamFouls": 20.1,
-      "avgOpponentFouls": 18.8,
-      "foulDifferential": 1.3
-    },
-    {
-      "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
-      "crewNames": ["Justin Van Duyne", "Tyler Ford", "Brent Barnaky"],
-      "games": 3,
-      "avgTotalPoints": 232.0,
-      "overRate": 0.667,
-      "avgFouls": 41.7,
-      "wins": 2,
-      "losses": 1,
-      "totalDelta": 7.0,
-      "homeGames": 2,
-      "awayGames": 1,
-      "homeWins": 2,
-      "homeLosses": 0,
-      "awayWins": 0,
-      "awayLosses": 1,
-      "avgTeamFouls": 19.3,
-      "avgOpponentFouls": 22.4,
-      "foulDifferential": -3.1
-    }
-  ]
+  "teamSplits": {
+    "ATL": [
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 6,
+        "avgTotalPoints": 230.8,
+        "overRate": 0.576,
+        "avgFouls": 41.5,
+        "wins": 0,
+        "losses": 6,
+        "totalDelta": 5.8,
+        "homeGames": 2,
+        "awayGames": 4,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 4,
+        "avgTeamFouls": 21,
+        "avgOpponentFouls": 20.5,
+        "foulDifferential": 0.5
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 6,
+        "avgTotalPoints": 227.8,
+        "overRate": 0.624,
+        "avgFouls": 39,
+        "wins": 4,
+        "losses": 2,
+        "totalDelta": 2.8,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 1,
+        "avgTeamFouls": 21,
+        "avgOpponentFouls": 18,
+        "foulDifferential": 3
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 4,
+        "avgTotalPoints": 219.1,
+        "overRate": 0.266,
+        "avgFouls": 35.9,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": -5.9,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 18.7,
+        "avgOpponentFouls": 17.2,
+        "foulDifferential": 1.5
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 231.4,
+        "overRate": 0.643,
+        "avgFouls": 41.4,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 6.4,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 19.1,
+        "avgOpponentFouls": 22.3,
+        "foulDifferential": -3.2
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 227.9,
+        "overRate": 0.667,
+        "avgFouls": 40.9,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 2.9,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.4,
+        "avgOpponentFouls": 19.5,
+        "foulDifferential": 1.9
+      }
+    ],
+    "BOS": [
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 4,
+        "avgTotalPoints": 228.4,
+        "overRate": 0.576,
+        "avgFouls": 41.8,
+        "wins": 4,
+        "losses": 0,
+        "totalDelta": 3.4,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.2,
+        "avgOpponentFouls": 20.6,
+        "foulDifferential": 0.6
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 4,
+        "avgTotalPoints": 220.9,
+        "overRate": 0.234,
+        "avgFouls": 36.8,
+        "wins": 3,
+        "losses": 1,
+        "totalDelta": -4.1,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.2,
+        "avgOpponentFouls": 17.6,
+        "foulDifferential": 1.6
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 4,
+        "avgTotalPoints": 230.8,
+        "overRate": 0.608,
+        "avgFouls": 40.2,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": 5.8,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 21.8,
+        "avgOpponentFouls": 18.4,
+        "foulDifferential": 3.4
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 3,
+        "avgTotalPoints": 226,
+        "overRate": 0.516,
+        "avgFouls": 38.2,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 1,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 19.3,
+        "avgOpponentFouls": 18.9,
+        "foulDifferential": 0.4
+      }
+    ],
+    "BKN": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 7,
+        "avgTotalPoints": 230,
+        "overRate": 0.667,
+        "avgFouls": 44,
+        "wins": 4,
+        "losses": 3,
+        "totalDelta": 5,
+        "homeGames": 4,
+        "awayGames": 3,
+        "homeWins": 2,
+        "homeLosses": 2,
+        "awayWins": 2,
+        "awayLosses": 1,
+        "avgTeamFouls": 22.8,
+        "avgOpponentFouls": 21.2,
+        "foulDifferential": 1.6
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 3,
+        "avgTotalPoints": 219.7,
+        "overRate": 0.234,
+        "avgFouls": 37.4,
+        "wins": 1,
+        "losses": 2,
+        "totalDelta": -5.3,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 19.6,
+        "avgOpponentFouls": 17.8,
+        "foulDifferential": 1.8
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 3,
+        "avgTotalPoints": 225.4,
+        "overRate": 0.524,
+        "avgFouls": 39.1,
+        "wins": 2,
+        "losses": 1,
+        "totalDelta": 0.4,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.9,
+        "avgOpponentFouls": 19.2,
+        "foulDifferential": 0.7
+      }
+    ],
+    "CHA": [
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 233.2,
+        "overRate": 0.667,
+        "avgFouls": 42.6,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 8.2,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 19.8,
+        "avgOpponentFouls": 22.8,
+        "foulDifferential": -3
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 3,
+        "avgTotalPoints": 219.1,
+        "overRate": 0.25,
+        "avgFouls": 37.4,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": -5.9,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 19.6,
+        "avgOpponentFouls": 17.8,
+        "foulDifferential": 1.8
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 230.3,
+        "overRate": 0.643,
+        "avgFouls": 40.9,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 5.3,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.4,
+        "avgOpponentFouls": 19.5,
+        "foulDifferential": 1.9
+      }
+    ],
+    "CHI": [
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 5,
+        "avgTotalPoints": 227.8,
+        "overRate": 0.584,
+        "avgFouls": 41.2,
+        "wins": 3,
+        "losses": 2,
+        "totalDelta": 2.8,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 20.8,
+        "avgOpponentFouls": 20.4,
+        "foulDifferential": 0.4
+      },
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 5,
+        "avgTotalPoints": 233.6,
+        "overRate": 0.683,
+        "avgFouls": 43.4,
+        "wins": 1,
+        "losses": 4,
+        "totalDelta": 8.6,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 3,
+        "avgTeamFouls": 22.5,
+        "avgOpponentFouls": 20.9,
+        "foulDifferential": 1.6
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 5,
+        "avgTotalPoints": 224.8,
+        "overRate": 0.492,
+        "avgFouls": 39.7,
+        "wins": 4,
+        "losses": 1,
+        "totalDelta": -0.2,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 20.2,
+        "avgOpponentFouls": 19.5,
+        "foulDifferential": 0.7
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 233.8,
+        "overRate": 0.691,
+        "avgFouls": 41.7,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 8.8,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 19.3,
+        "avgOpponentFouls": 22.4,
+        "foulDifferential": -3.1
+      }
+    ],
+    "CLE": [
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 5,
+        "avgTotalPoints": 225.4,
+        "overRate": 0.608,
+        "avgFouls": 40.3,
+        "wins": 1,
+        "losses": 4,
+        "totalDelta": 0.4,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 3,
+        "avgTeamFouls": 20.3,
+        "avgOpponentFouls": 20,
+        "foulDifferential": 0.3
+      },
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 5,
+        "avgTotalPoints": 233.6,
+        "overRate": 0.683,
+        "avgFouls": 42.5,
+        "wins": 4,
+        "losses": 1,
+        "totalDelta": 8.6,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.9,
+        "avgOpponentFouls": 20.6,
+        "foulDifferential": 1.3
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 4,
+        "avgTotalPoints": 227.8,
+        "overRate": 0.6,
+        "avgFouls": 39.3,
+        "wins": 4,
+        "losses": 0,
+        "totalDelta": 2.8,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.2,
+        "avgOpponentFouls": 18.1,
+        "foulDifferential": 3.1
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 4,
+        "avgTotalPoints": 221.5,
+        "overRate": 0.266,
+        "avgFouls": 36.8,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": -3.5,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 19.2,
+        "avgOpponentFouls": 17.6,
+        "foulDifferential": 1.6
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 228.5,
+        "overRate": 0.643,
+        "avgFouls": 40,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": 3.5,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.8,
+        "avgOpponentFouls": 19.2,
+        "foulDifferential": 1.6
+      }
+    ],
+    "DAL": [
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 4,
+        "avgTotalPoints": 232,
+        "overRate": 0.667,
+        "avgFouls": 42.9,
+        "wins": 3,
+        "losses": 1,
+        "totalDelta": 7,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 20,
+        "avgOpponentFouls": 22.9,
+        "foulDifferential": -2.9
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 230.3,
+        "overRate": 0.675,
+        "avgFouls": 40.3,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": 5.3,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 21,
+        "avgOpponentFouls": 19.3,
+        "foulDifferential": 1.7
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 3,
+        "avgTotalPoints": 225.4,
+        "overRate": 0.508,
+        "avgFouls": 37.3,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": 0.4,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 18.8,
+        "avgOpponentFouls": 18.5,
+        "foulDifferential": 0.3
+      }
+    ],
+    "DEN": [
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 5,
+        "avgTotalPoints": 222.1,
+        "overRate": 0.258,
+        "avgFouls": 37.1,
+        "wins": 3,
+        "losses": 2,
+        "totalDelta": -2.9,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.4,
+        "avgOpponentFouls": 17.7,
+        "foulDifferential": 1.7
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 4,
+        "avgTotalPoints": 229.7,
+        "overRate": 0.643,
+        "avgFouls": 39.7,
+        "wins": 4,
+        "losses": 0,
+        "totalDelta": 4.7,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 20.6,
+        "avgOpponentFouls": 19.1,
+        "foulDifferential": 1.5
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 3,
+        "avgTotalPoints": 223,
+        "overRate": 0.508,
+        "avgFouls": 37.3,
+        "wins": 1,
+        "losses": 2,
+        "totalDelta": -2,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 18.8,
+        "avgOpponentFouls": 18.5,
+        "foulDifferential": 0.3
+      }
+    ],
+    "DET": [
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 230.8,
+        "overRate": 0.643,
+        "avgFouls": 41.4,
+        "wins": 1,
+        "losses": 2,
+        "totalDelta": 5.8,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 19.1,
+        "avgOpponentFouls": 22.3,
+        "foulDifferential": -3.2
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 3,
+        "avgTotalPoints": 218.5,
+        "overRate": 0.234,
+        "avgFouls": 35.6,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": -6.5,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 18.5,
+        "avgOpponentFouls": 17.1,
+        "foulDifferential": 1.4
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 3,
+        "avgTotalPoints": 225.4,
+        "overRate": 0.5,
+        "avgFouls": 37.3,
+        "wins": 2,
+        "losses": 1,
+        "totalDelta": 0.4,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 18.8,
+        "avgOpponentFouls": 18.5,
+        "foulDifferential": 0.3
+      }
+    ],
+    "GSW": [
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 4,
+        "avgTotalPoints": 228.4,
+        "overRate": 0.592,
+        "avgFouls": 40.9,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": 3.4,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.6,
+        "avgOpponentFouls": 20.3,
+        "foulDifferential": 0.3
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 4,
+        "avgTotalPoints": 229.6,
+        "overRate": 0.683,
+        "avgFouls": 42,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": 4.6,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.5,
+        "avgOpponentFouls": 22.5,
+        "foulDifferential": -3
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 3,
+        "avgTotalPoints": 223.6,
+        "overRate": 0.484,
+        "avgFouls": 39.1,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": -1.4,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 19.9,
+        "avgOpponentFouls": 19.2,
+        "foulDifferential": 0.7
+      }
+    ],
+    "HOU": [
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 4,
+        "avgTotalPoints": 227.8,
+        "overRate": 0.616,
+        "avgFouls": 40,
+        "wins": 1,
+        "losses": 3,
+        "totalDelta": 2.8,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.1,
+        "avgOpponentFouls": 19.9,
+        "foulDifferential": 0.2
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 4,
+        "avgTotalPoints": 230.8,
+        "overRate": 0.667,
+        "avgFouls": 42.9,
+        "wins": 3,
+        "losses": 1,
+        "totalDelta": 5.8,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 20,
+        "avgOpponentFouls": 22.9,
+        "foulDifferential": -2.9
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 4,
+        "avgTotalPoints": 229.1,
+        "overRate": 0.643,
+        "avgFouls": 39.7,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": 4.1,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.6,
+        "avgOpponentFouls": 19.1,
+        "foulDifferential": 1.5
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 4,
+        "avgTotalPoints": 227.2,
+        "overRate": 0.6,
+        "avgFouls": 40.2,
+        "wins": 4,
+        "losses": 0,
+        "totalDelta": 2.2,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.8,
+        "avgOpponentFouls": 18.4,
+        "foulDifferential": 3.4
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 3,
+        "avgTotalPoints": 218.5,
+        "overRate": 0.274,
+        "avgFouls": 36.5,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": -6.5,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 19,
+        "avgOpponentFouls": 17.5,
+        "foulDifferential": 1.5
+      }
+    ],
+    "IND": [
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 5,
+        "avgTotalPoints": 231.4,
+        "overRate": 0.592,
+        "avgFouls": 41.2,
+        "wins": 4,
+        "losses": 1,
+        "totalDelta": 6.4,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 20.8,
+        "avgOpponentFouls": 20.4,
+        "foulDifferential": 0.4
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 3,
+        "avgTotalPoints": 224.2,
+        "overRate": 0.5,
+        "avgFouls": 37.3,
+        "wins": 1,
+        "losses": 2,
+        "totalDelta": -0.8,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 18.8,
+        "avgOpponentFouls": 18.5,
+        "foulDifferential": 0.3
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 233.2,
+        "overRate": 0.643,
+        "avgFouls": 41.4,
+        "wins": 1,
+        "losses": 2,
+        "totalDelta": 8.2,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 19.1,
+        "avgOpponentFouls": 22.3,
+        "foulDifferential": -3.2
+      }
+    ],
+    "LAC": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 6,
+        "avgTotalPoints": 229.4,
+        "overRate": 0.659,
+        "avgFouls": 43.7,
+        "wins": 2,
+        "losses": 4,
+        "totalDelta": 4.4,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 2,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 22.6,
+        "avgOpponentFouls": 21.1,
+        "foulDifferential": 1.5
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 6,
+        "avgTotalPoints": 228.4,
+        "overRate": 0.576,
+        "avgFouls": 39,
+        "wins": 4,
+        "losses": 2,
+        "totalDelta": 3.4,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 1,
+        "avgTeamFouls": 21,
+        "avgOpponentFouls": 18,
+        "foulDifferential": 3
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 4,
+        "avgTotalPoints": 231.4,
+        "overRate": 0.683,
+        "avgFouls": 41.1,
+        "wins": 4,
+        "losses": 0,
+        "totalDelta": 6.4,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 18.9,
+        "avgOpponentFouls": 22.2,
+        "foulDifferential": -3.3
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 229.7,
+        "overRate": 0.651,
+        "avgFouls": 40.3,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": 4.7,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 21,
+        "avgOpponentFouls": 19.3,
+        "foulDifferential": 1.7
+      }
+    ],
+    "LAL": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 6,
+        "avgTotalPoints": 234.5,
+        "overRate": 0.667,
+        "avgFouls": 43.2,
+        "wins": 4,
+        "losses": 2,
+        "totalDelta": 9.5,
+        "homeGames": 4,
+        "awayGames": 2,
+        "homeWins": 3,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 18.8,
+        "avgOpponentFouls": 24.4,
+        "foulDifferential": -5.6
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 5,
+        "avgTotalPoints": 227.8,
+        "overRate": 0.6,
+        "avgFouls": 39.6,
+        "wins": 3,
+        "losses": 2,
+        "totalDelta": 2.8,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 21.4,
+        "avgOpponentFouls": 18.2,
+        "foulDifferential": 3.2
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 5,
+        "avgTotalPoints": 219.4,
+        "overRate": 0.2,
+        "avgFouls": 37.1,
+        "wins": 2,
+        "losses": 3,
+        "totalDelta": -5.6,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 19.6,
+        "avgOpponentFouls": 17.5,
+        "foulDifferential": 2.1
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 4,
+        "avgTotalPoints": 226.3,
+        "overRate": 0.5,
+        "avgFouls": 38.9,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": 1.3,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 20.1,
+        "avgOpponentFouls": 18.8,
+        "foulDifferential": 1.3
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 232,
+        "overRate": 0.667,
+        "avgFouls": 41.7,
+        "wins": 2,
+        "losses": 1,
+        "totalDelta": 7,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 0,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.3,
+        "avgOpponentFouls": 22.4,
+        "foulDifferential": -3.1
+      }
+    ],
+    "MEM": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 6,
+        "avgTotalPoints": 232.4,
+        "overRate": 0.683,
+        "avgFouls": 42.8,
+        "wins": 2,
+        "losses": 4,
+        "totalDelta": 7.4,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 2,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 22.1,
+        "avgOpponentFouls": 20.7,
+        "foulDifferential": 1.4
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 5,
+        "avgTotalPoints": 226.6,
+        "overRate": 0.6,
+        "avgFouls": 40.5,
+        "wins": 4,
+        "losses": 1,
+        "totalDelta": 1.6,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.9,
+        "avgOpponentFouls": 18.6,
+        "foulDifferential": 3.3
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 229.6,
+        "overRate": 0.691,
+        "avgFouls": 40.8,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": 4.6,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 18.8,
+        "avgOpponentFouls": 22,
+        "foulDifferential": -3.2
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 3,
+        "avgTotalPoints": 219.7,
+        "overRate": 0.258,
+        "avgFouls": 35.6,
+        "wins": 2,
+        "losses": 1,
+        "totalDelta": -5.3,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 18.5,
+        "avgOpponentFouls": 17.1,
+        "foulDifferential": 1.4
+      }
+    ],
+    "MIA": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 7,
+        "avgTotalPoints": 234.2,
+        "overRate": 0.667,
+        "avgFouls": 42.2,
+        "wins": 4,
+        "losses": 3,
+        "totalDelta": 9.2,
+        "homeGames": 4,
+        "awayGames": 3,
+        "homeWins": 2,
+        "homeLosses": 2,
+        "awayWins": 2,
+        "awayLosses": 1,
+        "avgTeamFouls": 21.7,
+        "avgOpponentFouls": 20.5,
+        "foulDifferential": 1.2
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 5,
+        "avgTotalPoints": 224.8,
+        "overRate": 0.6,
+        "avgFouls": 38.7,
+        "wins": 2,
+        "losses": 3,
+        "totalDelta": -0.2,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.9,
+        "avgOpponentFouls": 17.8,
+        "foulDifferential": 3.1
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 5,
+        "avgTotalPoints": 223.9,
+        "overRate": 0.226,
+        "avgFouls": 38,
+        "wins": 2,
+        "losses": 3,
+        "totalDelta": -1.1,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 2,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.9,
+        "avgOpponentFouls": 18.1,
+        "foulDifferential": 1.8
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 4,
+        "avgTotalPoints": 231.5,
+        "overRate": 0.675,
+        "avgFouls": 40.6,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": 6.5,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 21.2,
+        "avgOpponentFouls": 19.4,
+        "foulDifferential": 1.8
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 4,
+        "avgTotalPoints": 227.8,
+        "overRate": 0.484,
+        "avgFouls": 37.6,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": 2.8,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19,
+        "avgOpponentFouls": 18.6,
+        "foulDifferential": 0.4
+      }
+    ],
+    "MIL": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 7,
+        "avgTotalPoints": 228.2,
+        "overRate": 0.683,
+        "avgFouls": 43.1,
+        "wins": 5,
+        "losses": 2,
+        "totalDelta": 3.2,
+        "homeGames": 4,
+        "awayGames": 3,
+        "homeWins": 3,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 1,
+        "avgTeamFouls": 22.3,
+        "avgOpponentFouls": 20.8,
+        "foulDifferential": 1.5
+      },
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 4,
+        "avgTotalPoints": 226.6,
+        "overRate": 0.608,
+        "avgFouls": 40.9,
+        "wins": 1,
+        "losses": 3,
+        "totalDelta": 1.6,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.6,
+        "avgOpponentFouls": 20.3,
+        "foulDifferential": 0.3
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 4,
+        "avgTotalPoints": 227.2,
+        "overRate": 0.608,
+        "avgFouls": 39.3,
+        "wins": 4,
+        "losses": 0,
+        "totalDelta": 2.2,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.2,
+        "avgOpponentFouls": 18.1,
+        "foulDifferential": 3.1
+      }
+    ],
+    "MIN": [
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 6,
+        "avgTotalPoints": 229.6,
+        "overRate": 0.584,
+        "avgFouls": 40.8,
+        "wins": 1,
+        "losses": 5,
+        "totalDelta": 4.6,
+        "homeGames": 2,
+        "awayGames": 4,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 4,
+        "avgTeamFouls": 22.1,
+        "avgOpponentFouls": 18.7,
+        "foulDifferential": 3.4
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 5,
+        "avgTotalPoints": 219.1,
+        "overRate": 0.234,
+        "avgFouls": 36.2,
+        "wins": 0,
+        "losses": 5,
+        "totalDelta": -5.9,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 3,
+        "avgTeamFouls": 18.8,
+        "avgOpponentFouls": 17.4,
+        "foulDifferential": 1.4
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 4,
+        "avgTotalPoints": 227.3,
+        "overRate": 0.643,
+        "avgFouls": 40.6,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": 2.3,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 21.2,
+        "avgOpponentFouls": 19.4,
+        "foulDifferential": 1.8
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 4,
+        "avgTotalPoints": 233.2,
+        "overRate": 0.675,
+        "avgFouls": 42,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": 8.2,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.5,
+        "avgOpponentFouls": 22.5,
+        "foulDifferential": -3
+      }
+    ],
+    "NOP": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 6,
+        "avgTotalPoints": 230,
+        "overRate": 0.659,
+        "avgFouls": 42.8,
+        "wins": 5,
+        "losses": 1,
+        "totalDelta": 5,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 3,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 1,
+        "avgTeamFouls": 22.1,
+        "avgOpponentFouls": 20.7,
+        "foulDifferential": 1.4
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 231.5,
+        "overRate": 0.675,
+        "avgFouls": 40,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 6.5,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 20.8,
+        "avgOpponentFouls": 19.2,
+        "foulDifferential": 1.6
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 3,
+        "avgTotalPoints": 223.3,
+        "overRate": 0.274,
+        "avgFouls": 36.5,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": -1.7,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 19,
+        "avgOpponentFouls": 17.5,
+        "foulDifferential": 1.5
+      }
+    ],
+    "NYK": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 6,
+        "avgTotalPoints": 233.6,
+        "overRate": 0.691,
+        "avgFouls": 43.7,
+        "wins": 4,
+        "losses": 2,
+        "totalDelta": 8.6,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 1,
+        "avgTeamFouls": 22.6,
+        "avgOpponentFouls": 21.1,
+        "foulDifferential": 1.5
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 6,
+        "avgTotalPoints": 228.4,
+        "overRate": 0.608,
+        "avgFouls": 40.8,
+        "wins": 5,
+        "losses": 1,
+        "totalDelta": 3.4,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 3,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 1,
+        "avgTeamFouls": 22.1,
+        "avgOpponentFouls": 18.7,
+        "foulDifferential": 3.4
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 231.5,
+        "overRate": 0.659,
+        "avgFouls": 41.2,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 6.5,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.5,
+        "avgOpponentFouls": 19.7,
+        "foulDifferential": 1.8
+      }
+    ],
+    "OKC": [
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 6,
+        "avgTotalPoints": 224.8,
+        "overRate": 0.608,
+        "avgFouls": 39.9,
+        "wins": 2,
+        "losses": 4,
+        "totalDelta": -0.2,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 2,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 21.6,
+        "avgOpponentFouls": 18.3,
+        "foulDifferential": 3.3
+      },
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 5,
+        "avgTotalPoints": 233.6,
+        "overRate": 0.683,
+        "avgFouls": 42.5,
+        "wins": 4,
+        "losses": 1,
+        "totalDelta": 8.6,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.9,
+        "avgOpponentFouls": 20.6,
+        "foulDifferential": 1.3
+      },
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 5,
+        "avgTotalPoints": 230.8,
+        "overRate": 0.592,
+        "avgFouls": 41.2,
+        "wins": 0,
+        "losses": 5,
+        "totalDelta": 5.8,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 3,
+        "avgTeamFouls": 20.8,
+        "avgOpponentFouls": 20.4,
+        "foulDifferential": 0.4
+      }
+    ],
+    "ORL": [
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 6,
+        "avgTotalPoints": 226,
+        "overRate": 0.584,
+        "avgFouls": 41.5,
+        "wins": 2,
+        "losses": 4,
+        "totalDelta": 1,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 2,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 21,
+        "avgOpponentFouls": 20.5,
+        "foulDifferential": 0.5
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 5,
+        "avgTotalPoints": 218.5,
+        "overRate": 0.242,
+        "avgFouls": 38,
+        "wins": 3,
+        "losses": 2,
+        "totalDelta": -6.5,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.9,
+        "avgOpponentFouls": 18.1,
+        "foulDifferential": 1.8
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 4,
+        "avgTotalPoints": 227.8,
+        "overRate": 0.6,
+        "avgFouls": 38.4,
+        "wins": 4,
+        "losses": 0,
+        "totalDelta": 2.8,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 20.7,
+        "avgOpponentFouls": 17.7,
+        "foulDifferential": 3
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 4,
+        "avgTotalPoints": 229.7,
+        "overRate": 0.651,
+        "avgFouls": 40.6,
+        "wins": 3,
+        "losses": 1,
+        "totalDelta": 4.7,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 21.2,
+        "avgOpponentFouls": 19.4,
+        "foulDifferential": 1.8
+      }
+    ],
+    "PHI": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 6,
+        "avgTotalPoints": 231.2,
+        "overRate": 0.659,
+        "avgFouls": 42.8,
+        "wins": 2,
+        "losses": 4,
+        "totalDelta": 6.2,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 2,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 22.1,
+        "avgOpponentFouls": 20.7,
+        "foulDifferential": 1.4
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 4,
+        "avgTotalPoints": 218.5,
+        "overRate": 0.266,
+        "avgFouls": 36.8,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": -6.5,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 19.2,
+        "avgOpponentFouls": 17.6,
+        "foulDifferential": 1.6
+      },
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 4,
+        "avgTotalPoints": 226,
+        "overRate": 0.576,
+        "avgFouls": 40.9,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": 1,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.6,
+        "avgOpponentFouls": 20.3,
+        "foulDifferential": 0.3
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 3,
+        "avgTotalPoints": 226.6,
+        "overRate": 0.508,
+        "avgFouls": 38.2,
+        "wins": 2,
+        "losses": 1,
+        "totalDelta": 1.6,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.3,
+        "avgOpponentFouls": 18.9,
+        "foulDifferential": 0.4
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 230.8,
+        "overRate": 0.675,
+        "avgFouls": 41.7,
+        "wins": 2,
+        "losses": 1,
+        "totalDelta": 5.8,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.3,
+        "avgOpponentFouls": 22.4,
+        "foulDifferential": -3.1
+      }
+    ],
+    "PHX": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 7,
+        "avgTotalPoints": 234.2,
+        "overRate": 0.683,
+        "avgFouls": 42.2,
+        "wins": 1,
+        "losses": 6,
+        "totalDelta": 9.2,
+        "homeGames": 3,
+        "awayGames": 4,
+        "homeWins": 1,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 4,
+        "avgTeamFouls": 21.7,
+        "avgOpponentFouls": 20.5,
+        "foulDifferential": 1.2
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 4,
+        "avgTotalPoints": 225.4,
+        "overRate": 0.6,
+        "avgFouls": 38.4,
+        "wins": 4,
+        "losses": 0,
+        "totalDelta": 0.4,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 20.7,
+        "avgOpponentFouls": 17.7,
+        "foulDifferential": 3
+      },
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 4,
+        "avgTotalPoints": 226,
+        "overRate": 0.584,
+        "avgFouls": 40,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": 1,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 20.1,
+        "avgOpponentFouls": 19.9,
+        "foulDifferential": 0.2
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 3,
+        "avgTotalPoints": 226,
+        "overRate": 0.516,
+        "avgFouls": 38.2,
+        "wins": 2,
+        "losses": 1,
+        "totalDelta": 1,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.3,
+        "avgOpponentFouls": 18.9,
+        "foulDifferential": 0.4
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 231.4,
+        "overRate": 0.683,
+        "avgFouls": 40.5,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 6.4,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 18.6,
+        "avgOpponentFouls": 21.9,
+        "foulDifferential": -3.3
+      }
+    ],
+    "POR": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 5,
+        "avgTotalPoints": 228.2,
+        "overRate": 0.643,
+        "avgFouls": 41.6,
+        "wins": 5,
+        "losses": 0,
+        "totalDelta": 3.2,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 3,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.4,
+        "avgOpponentFouls": 20.2,
+        "foulDifferential": 1.2
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 4,
+        "avgTotalPoints": 226,
+        "overRate": 0.616,
+        "avgFouls": 40.2,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": 1,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 21.8,
+        "avgOpponentFouls": 18.4,
+        "foulDifferential": 3.4
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 227.9,
+        "overRate": 0.667,
+        "avgFouls": 39.1,
+        "wins": 3,
+        "losses": 0,
+        "totalDelta": 2.9,
+        "homeGames": 2,
+        "awayGames": 1,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 0,
+        "avgTeamFouls": 20.3,
+        "avgOpponentFouls": 18.8,
+        "foulDifferential": 1.5
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 3,
+        "avgTotalPoints": 233.8,
+        "overRate": 0.691,
+        "avgFouls": 41.4,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": 8.8,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 19.1,
+        "avgOpponentFouls": 22.3,
+        "foulDifferential": -3.2
+      }
+    ],
+    "SAC": [
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 5,
+        "avgTotalPoints": 222.4,
+        "overRate": 0.5,
+        "avgFouls": 38.8,
+        "wins": 2,
+        "losses": 3,
+        "totalDelta": -2.6,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 19.7,
+        "avgOpponentFouls": 19.1,
+        "foulDifferential": 0.6
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 4,
+        "avgTotalPoints": 233.8,
+        "overRate": 0.667,
+        "avgFouls": 42.9,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": 8.8,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20,
+        "avgOpponentFouls": 22.9,
+        "foulDifferential": -2.9
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 228.5,
+        "overRate": 0.667,
+        "avgFouls": 39.4,
+        "wins": 1,
+        "losses": 2,
+        "totalDelta": 3.5,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.5,
+        "avgOpponentFouls": 18.9,
+        "foulDifferential": 1.6
+      }
+    ],
+    "SAS": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 5,
+        "avgTotalPoints": 231.8,
+        "overRate": 0.659,
+        "avgFouls": 41.6,
+        "wins": 5,
+        "losses": 0,
+        "totalDelta": 6.8,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 3,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.4,
+        "avgOpponentFouls": 20.2,
+        "foulDifferential": 1.2
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 5,
+        "avgTotalPoints": 227.8,
+        "overRate": 0.6,
+        "avgFouls": 38.7,
+        "wins": 1,
+        "losses": 4,
+        "totalDelta": 2.8,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 3,
+        "avgTeamFouls": 20.9,
+        "avgOpponentFouls": 17.8,
+        "foulDifferential": 3.1
+      },
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 5,
+        "avgTotalPoints": 227.8,
+        "overRate": 0.584,
+        "avgFouls": 41.2,
+        "wins": 3,
+        "losses": 2,
+        "totalDelta": 2.8,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 20.8,
+        "avgOpponentFouls": 20.4,
+        "foulDifferential": 0.4
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 4,
+        "avgTotalPoints": 230.9,
+        "overRate": 0.659,
+        "avgFouls": 40.6,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": 5.9,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 21.2,
+        "avgOpponentFouls": 19.4,
+        "foulDifferential": 1.8
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 3,
+        "avgTotalPoints": 220.3,
+        "overRate": 0.226,
+        "avgFouls": 37.4,
+        "wins": 0,
+        "losses": 3,
+        "totalDelta": -4.7,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 1,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 19.6,
+        "avgOpponentFouls": 17.8,
+        "foulDifferential": 1.8
+      }
+    ],
+    "TOR": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 6,
+        "avgTotalPoints": 231.2,
+        "overRate": 0.667,
+        "avgFouls": 42.8,
+        "wins": 3,
+        "losses": 3,
+        "totalDelta": 6.2,
+        "homeGames": 3,
+        "awayGames": 3,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 22.1,
+        "avgOpponentFouls": 20.7,
+        "foulDifferential": 1.4
+      },
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 5,
+        "avgTotalPoints": 228.4,
+        "overRate": 0.6,
+        "avgFouls": 41.2,
+        "wins": 2,
+        "losses": 3,
+        "totalDelta": 3.4,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.8,
+        "avgOpponentFouls": 20.4,
+        "foulDifferential": 0.4
+      },
+      {
+        "crewKey": "david-guthrie-46|eric-lewis-84|courtney-kirkland-61",
+        "crewNames": [
+          "David Guthrie",
+          "Eric Lewis",
+          "Courtney Kirkland"
+        ],
+        "games": 4,
+        "avgTotalPoints": 221.5,
+        "overRate": 0.25,
+        "avgFouls": 36.8,
+        "wins": 1,
+        "losses": 3,
+        "totalDelta": -3.5,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.2,
+        "avgOpponentFouls": 17.6,
+        "foulDifferential": 1.6
+      },
+      {
+        "crewKey": "james-capers-19|kane-fitzgerald-67|pat-fraher-26",
+        "crewNames": [
+          "James Capers",
+          "Kane Fitzgerald",
+          "Pat Fraher"
+        ],
+        "games": 4,
+        "avgTotalPoints": 224.8,
+        "overRate": 0.5,
+        "avgFouls": 38.5,
+        "wins": 2,
+        "losses": 2,
+        "totalDelta": -0.2,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 19.5,
+        "avgOpponentFouls": 19,
+        "foulDifferential": 0.5
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 229.7,
+        "overRate": 0.667,
+        "avgFouls": 40.3,
+        "wins": 2,
+        "losses": 1,
+        "totalDelta": 4.7,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 1,
+        "avgTeamFouls": 21,
+        "avgOpponentFouls": 19.3,
+        "foulDifferential": 1.7
+      }
+    ],
+    "UTA": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 5,
+        "avgTotalPoints": 230,
+        "overRate": 0.667,
+        "avgFouls": 42.5,
+        "wins": 3,
+        "losses": 2,
+        "totalDelta": 5,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 21.9,
+        "avgOpponentFouls": 20.6,
+        "foulDifferential": 1.3
+      },
+      {
+        "crewKey": "justin-van-duyne-64|tyler-ford-39|brent-barnaky-36",
+        "crewNames": [
+          "Justin Van Duyne",
+          "Tyler Ford",
+          "Brent Barnaky"
+        ],
+        "games": 4,
+        "avgTotalPoints": 233.2,
+        "overRate": 0.667,
+        "avgFouls": 42.9,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": 8.2,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20,
+        "avgOpponentFouls": 22.9,
+        "foulDifferential": -2.9
+      },
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 4,
+        "avgTotalPoints": 227.2,
+        "overRate": 0.576,
+        "avgFouls": 40,
+        "wins": 4,
+        "losses": 0,
+        "totalDelta": 2.2,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 0,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 20.1,
+        "avgOpponentFouls": 19.9,
+        "foulDifferential": 0.2
+      }
+    ],
+    "WAS": [
+      {
+        "crewKey": "scott-foster-48|tony-brothers-25|marc-davis-8",
+        "crewNames": [
+          "Scott Foster",
+          "Tony Brothers",
+          "Marc Davis"
+        ],
+        "games": 5,
+        "avgTotalPoints": 231.2,
+        "overRate": 0.643,
+        "avgFouls": 42.5,
+        "wins": 4,
+        "losses": 1,
+        "totalDelta": 6.2,
+        "homeGames": 3,
+        "awayGames": 2,
+        "homeWins": 2,
+        "homeLosses": 1,
+        "awayWins": 2,
+        "awayLosses": 0,
+        "avgTeamFouls": 21.9,
+        "avgOpponentFouls": 20.6,
+        "foulDifferential": 1.3
+      },
+      {
+        "crewKey": "ben-taylor-46|nick-buchert-3|zach-zarba-15",
+        "crewNames": [
+          "Ben Taylor",
+          "Nick Buchert",
+          "Zach Zarba"
+        ],
+        "games": 5,
+        "avgTotalPoints": 224.8,
+        "overRate": 0.6,
+        "avgFouls": 39.6,
+        "wins": 2,
+        "losses": 3,
+        "totalDelta": -0.2,
+        "homeGames": 2,
+        "awayGames": 3,
+        "homeWins": 1,
+        "homeLosses": 1,
+        "awayWins": 1,
+        "awayLosses": 2,
+        "avgTeamFouls": 21.4,
+        "avgOpponentFouls": 18.2,
+        "foulDifferential": 3.2
+      },
+      {
+        "crewKey": "bill-kennedy-55|josh-tiven-58|john-goble-10",
+        "crewNames": [
+          "Bill Kennedy",
+          "Josh Tiven",
+          "John Goble"
+        ],
+        "games": 4,
+        "avgTotalPoints": 225.4,
+        "overRate": 0.576,
+        "avgFouls": 40,
+        "wins": 0,
+        "losses": 4,
+        "totalDelta": 0.4,
+        "homeGames": 2,
+        "awayGames": 2,
+        "homeWins": 0,
+        "homeLosses": 2,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 20.1,
+        "avgOpponentFouls": 19.9,
+        "foulDifferential": 0.2
+      },
+      {
+        "crewKey": "kevin-cutler-34|michael-smith-38|jb-derosa-5",
+        "crewNames": [
+          "Kevin Cutler",
+          "Michael Smith",
+          "JB DeRosa"
+        ],
+        "games": 3,
+        "avgTotalPoints": 228.5,
+        "overRate": 0.651,
+        "avgFouls": 40.3,
+        "wins": 1,
+        "losses": 2,
+        "totalDelta": 3.5,
+        "homeGames": 1,
+        "awayGames": 2,
+        "homeWins": 1,
+        "homeLosses": 0,
+        "awayWins": 0,
+        "awayLosses": 2,
+        "avgTeamFouls": 21,
+        "avgOpponentFouls": 19.3,
+        "foulDifferential": 1.7
+      }
+    ]
+  }
 }

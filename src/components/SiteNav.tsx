@@ -5,8 +5,7 @@ import { usePathname } from "next/navigation";
 
 const links = [
   { href: "/", label: "Tonight" },
-  { href: "/raptors", label: "Raptors" },
-  { href: "/lakers", label: "Lakers" },
+  { href: "/teams", label: "Teams" },
 ];
 
 export function SiteNav() {

@@ -70,9 +70,6 @@ export interface TeamCrewSplit {
   foulDifferential: number;
 }
 
-export type RaptorsCrewSplit = TeamCrewSplit;
-export type LakersCrewSplit = TeamCrewSplit;
-
 export type WhistleBias = "team" | "opponent" | "neutral";
 
 export interface RefStatsFile {
@@ -88,8 +85,11 @@ export interface RefStatsFile {
     note?: string;
   };
   refs: RefProfile[];
-  raptorsSplits: RaptorsCrewSplit[];
-  lakersSplits: LakersCrewSplit[];
+  teamSplits: Record<string, TeamCrewSplit[]>;
+  /** @deprecated Migrated to teamSplits.TOR on read */
+  raptorsSplits?: TeamCrewSplit[];
+  /** @deprecated Migrated to teamSplits.LAL on read */
+  lakersSplits?: TeamCrewSplit[];
 }
 
 export type OuLean = "over" | "under" | "neutral";

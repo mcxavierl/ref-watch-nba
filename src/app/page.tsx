@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import {
   computeCrewMetrics,
-  gameInvolvesTrackedTeam,
   getAssignments,
   getRefStats,
   ouLeanSortWeight,
@@ -13,7 +13,7 @@ import type { AssignmentGame } from "@/lib/types";
 export const metadata: Metadata = {
   title: "Tonight's NBA slate — Ref Watch",
   description:
-    "Tonight's NBA referee crews with composite O/U lean, foul pace, and quick links to Raptors and Lakers crew splits.",
+    "See tonight's NBA referee crews with scoring and foul trends, plus links to all 30 team crew histories.",
 };
 
 function sortSlateGames(
@@ -21,10 +21,6 @@ function sortSlateGames(
   refStats: ReturnType<typeof getRefStats>,
 ) {
   return [...games].sort((a, b) => {
-    const aFeatured = gameInvolvesTrackedTeam(a);
-    const bFeatured = gameInvolvesTrackedTeam(b);
-    if (aFeatured !== bFeatured) return aFeatured ? -1 : 1;
-
     const aMetrics = computeCrewMetrics(a.crew, refStats);
     const bMetrics = computeCrewMetrics(b.crew, refStats);
     const leanDiff =
@@ -39,8 +35,6 @@ export default function HomePage() {
   const assignments = getAssignments();
   const refStats = getRefStats();
   const sortedGames = sortSlateGames(assignments.games, refStats);
-  const featuredGames = sortedGames.filter(gameInvolvesTrackedTeam);
-  const otherGames = sortedGames.filter((g) => !gameInvolvesTrackedTeam(g));
   const hotCrews = sortedGames
     .map((game) => ({
       game,
@@ -56,10 +50,9 @@ export default function HomePage() {
           Tonight&apos;s slate
         </h1>
         <p className="page-lead">
-          Crew-level composite metrics from each referee&apos;s historical
-          sample (min {refStats.meta.minSampleSize} games). Over rate uses a{" "}
-          {refStats.meta.leagueOverBaseline} fixed baseline when closing lines
-          are unavailable.
+          Ref Watch shows how tonight&apos;s referee crews have historically
+          affected scoring and fouls — then links you to team-specific history
+          for all 30 NBA teams.
         </p>
         <DataFreshnessMeta assignments={assignments} refStats={refStats} />
       </section>
@@ -77,13 +70,13 @@ export default function HomePage() {
             </code>{" "}
             before tip-off nights to refresh.
           </p>
-          <p className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm">
-            <a href="/raptors" className="font-medium text-raptors hover:underline">
-              Raptors crew splits →
-            </a>
-            <a href="/lakers" className="font-medium text-lakers hover:underline">
-              Lakers crew splits →
-            </a>
+          <p className="mt-5">
+            <Link
+              href="/teams"
+              className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hover:underline"
+            >
+              Browse all 30 team crew histories →
+            </Link>
           </p>
         </div>
       ) : (
@@ -91,11 +84,11 @@ export default function HomePage() {
           {hotCrews.length > 0 && (
             <section className="mb-8">
               <h2 className="text-sm font-semibold text-zinc-700">
-                Hot crews tonight
+                Notable scoring trends tonight
               </h2>
               <p className="mt-1 text-xs text-zinc-500">
-                Games with a non-neutral O/U lean from crew history, strongest
-                first.
+                Games where the crew history points toward unusually high- or
+                low-scoring games.
               </p>
               <ul className="mt-3 flex flex-wrap gap-2">
                 {hotCrews.map(({ game, metrics }) => (
@@ -107,7 +100,9 @@ export default function HomePage() {
                       {game.matchup}
                     </span>
                     <span className="ml-2 font-mono tabular-nums text-zinc-600">
-                      {metrics.ouLean === "over" ? "Over lean" : "Under lean"}
+                      {metrics.ouLean === "over"
+                        ? "Higher scoring"
+                        : "Lower scoring"}
                     </span>
                   </li>
                 ))}
@@ -115,69 +110,50 @@ export default function HomePage() {
             </section>
           )}
 
-          {featuredGames.length > 0 && (
-            <section className="mb-8">
-              <h2 className="mb-3 text-sm font-semibold text-zinc-700">
-                Raptors & Lakers tonight
-              </h2>
-              <div className="space-y-3">
-                {featuredGames.map((game) => (
-                  <GameSlateCard
-                    key={game.id}
-                    matchup={game.matchup}
-                    awayTeam={game.awayTeam}
-                    homeTeam={game.homeTeam}
-                    metrics={computeCrewMetrics(game.crew, refStats)}
-                    featured
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {otherGames.length > 0 && (
-            <section>
-              {featuredGames.length > 0 && (
-                <h2 className="mb-3 text-sm font-semibold text-zinc-700">
-                  Rest of slate
-                </h2>
-              )}
-              <div className="space-y-3">
-                {otherGames.map((game) => (
-                  <GameSlateCard
-                    key={game.id}
-                    matchup={game.matchup}
-                    awayTeam={game.awayTeam}
-                    homeTeam={game.homeTeam}
-                    metrics={computeCrewMetrics(game.crew, refStats)}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-zinc-700">
+              {assignments.games.length === 1
+                ? "Tonight's game"
+                : "All games tonight"}
+            </h2>
+            <div className="space-y-3">
+              {sortedGames.map((game) => (
+                <GameSlateCard
+                  key={game.id}
+                  matchup={game.matchup}
+                  awayTeam={game.awayTeam}
+                  homeTeam={game.homeTeam}
+                  metrics={computeCrewMetrics(game.crew, refStats)}
+                />
+              ))}
+            </div>
+          </section>
         </>
       )}
 
       <details className="methodology-details panel-inset mt-10 px-5 py-4">
-        <summary>Methodology</summary>
+        <summary>How we calculate these numbers</summary>
         <ul className="space-y-2.5 text-sm leading-relaxed text-zinc-600">
           <li>
-            <span className="font-medium text-zinc-800">Avg total points</span> — mean
-            combined score in games this ref crew worked.
+            <span className="font-medium text-zinc-800">Avg combined score</span>{" "}
+            — the typical total points scored by both teams in games this crew
+            worked.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Over rate</span> — share of games
-            finishing above {refStats.meta.leagueOverBaseline} (proxy when
-            closing totals unavailable).
+            <span className="font-medium text-zinc-800">Games over 225 pts</span>{" "}
+            — how often combined scoring beat {refStats.meta.leagueOverBaseline}{" "}
+            (we use this fixed number when real betting lines aren&apos;t
+            available).
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Avg fouls</span> — total personal
-            fouls from box scores (crew whistle proxy).
+            <span className="font-medium text-zinc-800">Fouls per game</span> —
+            total personal fouls from both teams — a rough measure of how often
+            the whistle blows.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">O/U lean</span> — from over rate +
-            total delta vs league ({">"}56% or +3 → over; {"<"}44% or -3 →
-            under).
+            <span className="font-medium text-zinc-800">Scoring trend</span> —
+            we flag crews that tend toward higher or lower scoring based on
+            history.
           </li>
         </ul>
       </details>

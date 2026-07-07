@@ -71,9 +71,6 @@ export interface TeamCrewSplit {
   foulDifferential: number;
 }
 
-export type RaptorsCrewSplit = TeamCrewSplit;
-export type LakersCrewSplit = TeamCrewSplit;
-
 export interface RefStatsFile {
   meta: {
     lastUpdated: string;
@@ -87,6 +84,9 @@ export interface RefStatsFile {
     note?: string;
   };
   refs: RefProfile[];
-  raptorsSplits: RaptorsCrewSplit[];
-  lakersSplits: LakersCrewSplit[];
+  teamSplits: Record<string, TeamCrewSplit[]>;
+  /** @deprecated Migrated to teamSplits on read */
+  raptorsSplits?: TeamCrewSplit[];
+  /** @deprecated Migrated to teamSplits on read */
+  lakersSplits?: TeamCrewSplit[];
 }

@@ -9,6 +9,7 @@ import type {
   RefStatsFile,
   TeamCrewSplit,
 } from "@/lib/types";
+import { detectTeamsInGame, NBA_TEAM_ABBRS } from "@/lib/teams";
 
 const dataDir = path.join(process.cwd(), "data");
 
@@ -44,16 +45,27 @@ const EMPTY_REF_STATS: RefStatsFile = {
     note: "No ref stats data file found. Run npm run build-ref-data.",
   },
   refs: [],
-  raptorsSplits: [],
-  lakersSplits: [],
+  teamSplits: {},
 };
+
+function migrateLegacySplits(data: RefStatsFile): Record<string, TeamCrewSplit[]> {
+  const teamSplits: Record<string, TeamCrewSplit[]> = {
+    ...(data.teamSplits ?? {}),
+  };
+  if (data.raptorsSplits?.length && !teamSplits.TOR) {
+    teamSplits.TOR = data.raptorsSplits;
+  }
+  if (data.lakersSplits?.length && !teamSplits.LAL) {
+    teamSplits.LAL = data.lakersSplits;
+  }
+  return teamSplits;
+}
 
 function normalizeRefStats(data: RefStatsFile): RefStatsFile {
   return {
     ...data,
     refs: data.refs ?? [],
-    raptorsSplits: data.raptorsSplits ?? [],
-    lakersSplits: data.lakersSplits ?? [],
+    teamSplits: migrateLegacySplits(data),
   };
 }
 
@@ -188,66 +200,27 @@ export function formatDate(iso: string): string {
   });
 }
 
-export type TrackedTeamKey = "raptors" | "lakers";
-
-export interface TrackedTeamInfo {
-  key: TrackedTeamKey;
-  abbr: string;
-  label: string;
-  href: string;
-  linkClass: string;
-  cardRing: string;
+export function getTeamSplits(abbr: string): TeamCrewSplit[] {
+  const stats = getRefStats();
+  return stats.teamSplits[abbr.toUpperCase()] ?? [];
 }
 
-const TRACKED_TEAMS: Record<
-  TrackedTeamKey,
-  Omit<TrackedTeamInfo, "key"> & { match: (team: string) => boolean }
-> = {
-  raptors: {
-    abbr: "TOR",
-    label: "Raptors",
-    href: "/raptors",
-    linkClass: "text-raptors",
-    cardRing: "ring-raptors/30",
-    match: (team) =>
-      team.toLowerCase().includes("toronto") || team === "TOR",
-  },
-  lakers: {
-    abbr: "LAL",
-    label: "Lakers",
-    href: "/lakers",
-    linkClass: "text-lakers",
-    cardRing: "ring-lakers/30",
-    match: (team) =>
-      team.toLowerCase().includes("laker") || team === "LAL",
-  },
-};
-
-export function detectTrackedTeams(
-  awayTeam: string,
-  homeTeam: string,
-): TrackedTeamInfo[] {
-  const teams: TrackedTeamInfo[] = [];
-  for (const [key, config] of Object.entries(TRACKED_TEAMS) as [
-    TrackedTeamKey,
-    (typeof TRACKED_TEAMS)[TrackedTeamKey],
-  ][]) {
-    if (config.match(awayTeam) || config.match(homeTeam)) {
-      teams.push({
-        key,
-        abbr: config.abbr,
-        label: config.label,
-        href: config.href,
-        linkClass: config.linkClass,
-        cardRing: config.cardRing,
-      });
-    }
+export function getAllTeamAbbrs(): string[] {
+  const stats = getRefStats();
+  const fromData = Object.keys(stats.teamSplits);
+  if (fromData.length > 0) {
+    return [...fromData].sort();
   }
-  return teams;
+  return [...NBA_TEAM_ABBRS];
 }
 
-export function gameInvolvesTrackedTeam(game: AssignmentGame): boolean {
-  return detectTrackedTeams(game.awayTeam, game.homeTeam).length > 0;
+export { detectTeamsInGame, getTeam, matchTeamString } from "@/lib/teams";
+export type { NbaTeam } from "@/lib/teams";
+
+export function gameHasTeamSplits(game: AssignmentGame): boolean {
+  return detectTeamsInGame(game.awayTeam, game.homeTeam).some(
+    (team) => getTeamSplits(team.abbr).length > 0,
+  );
 }
 
 export function ouLeanSortWeight(lean: OuLean): number {
