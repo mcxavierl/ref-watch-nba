@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { RankingsInsightCards } from "@/components/RankingsInsightCards";
 import { RefRankingsTable } from "@/components/RefRankingsTable";
 import {
   formatRefStatsRange,
@@ -53,33 +54,7 @@ export default function NhlRankingsPage() {
         )}
       </section>
 
-      {synthesis.insights.length > 0 && (
-        <section className="section-block">
-          <h2 className="section-title">{synthesis.headline}</h2>
-          <p className="section-lead">{synthesis.subhead}</p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-            {synthesis.insights.map((insight) => (
-              <li key={insight.id} className="data-card px-4 py-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                  {insight.title}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-700">
-                  {insight.body}
-                </p>
-                {insight.refSlug && (
-                  <Link
-                    href={`/nhl/refs/${insight.refSlug}#profile-signals`}
-                    className="mt-3 inline-block text-sm font-medium text-zinc-900 hover:text-raptors hover:underline"
-                  >
-                    {insight.refName} profile signals →
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 text-sm text-zinc-600">{synthesis.leagueSummary}</p>
-        </section>
-      )}
+      <RankingsInsightCards synthesis={synthesis} basePath="/nhl" />
 
       <section className="section-block">
         <div className="data-card">

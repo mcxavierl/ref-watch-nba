@@ -55,14 +55,15 @@ export function buildRankingsSynthesis(
   const insights: RankingsInsight[] = [];
 
   if (topScorer) {
+    const delta = topScorer.totalPointsDelta;
     insights.push({
       id: "top-scoring",
       title: "Biggest scoring bump",
-      body: `${topScorer.name} crews average ${Math.abs(topScorer.totalPointsDelta).toFixed(1)} more combined ${unit} than the league baseline.`,
+      body: `Crews average ${Math.abs(delta).toFixed(1)} more combined ${unit} than the league baseline.`,
       refSlug: topScorer.slug,
       refName: topScorer.name,
-      statLabel: "vs average",
-      statValue: `${topScorer.totalPointsDelta > 0 ? "+" : ""}${topScorer.totalPointsDelta.toFixed(1)} ${unit}`,
+      statLabel: "Scoring delta vs average",
+      statValue: `${delta > 0 ? "+" : ""}${delta.toFixed(1)} ${league.id === "nba" ? "PTS" : "G"}`,
     });
   }
 
@@ -70,7 +71,7 @@ export function buildRankingsSynthesis(
     insights.push({
       id: "top-over",
       title: "Most likely to go over",
-      body: `${topOver.name} hits the over on ${(topOver.overRate * 100).toFixed(1)}% of games (line benchmark: ${baseline} ${unit}).`,
+      body: `Line benchmark is ${baseline} combined ${unit} — this crew clears it more often than peers.`,
       refSlug: topOver.slug,
       refName: topOver.name,
       statLabel: "Over rate",
@@ -83,10 +84,10 @@ export function buildRankingsSynthesis(
     insights.push({
       id: "top-whistle",
       title: `Heaviest ${league.metrics.whistleShort.toLowerCase()} crew`,
-      body: `${topWhistle.name} runs ${Math.abs(wd).toFixed(1)} ${league.metrics.whistlePlain} above average per game.`,
+      body: `Runs ${Math.abs(wd).toFixed(1)} ${league.metrics.whistlePlain} above average per game.`,
       refSlug: topWhistle.slug,
       refName: topWhistle.name,
-      statLabel: "vs average",
+      statLabel: `${league.metrics.whistleShort} delta vs average`,
       statValue: `${wd > 0 ? "+" : ""}${wd.toFixed(1)}`,
     });
   }
