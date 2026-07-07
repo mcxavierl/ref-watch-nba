@@ -2398,6 +2398,37 @@ p {
     gap: var(--space-2);
   }
 
+  .ref-matrix-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .ref-matrix-sort {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .ref-matrix-sort-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .ref-matrix-sort-select {
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.375rem;
+    background: var(--surface);
+    padding: 0.45rem 0.65rem;
+    font-size: var(--text-sm);
+    color: var(--foreground);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent);
+  }
+
   .ref-matrix-swatch {
     display: inline-flex;
     align-items: center;
@@ -2475,6 +2506,56 @@ p {
     display: block;
   }
 
+  .ref-matrix-baseline-row .ref-matrix-baseline-corner,
+  .ref-matrix-baseline-row .ref-matrix-baseline-cell {
+    position: sticky;
+    z-index: 2;
+    background: color-mix(in srgb, var(--surface-raised) 72%, white);
+    border-bottom: 1px solid var(--border-subtle);
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .ref-matrix-baseline-corner {
+    left: 0;
+    top: 3.25rem;
+    z-index: 4;
+    min-width: 9.5rem;
+    padding: 0.35rem var(--space-4);
+    border-right: 1px solid var(--border-subtle);
+    text-align: left;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    vertical-align: middle;
+  }
+
+  .ref-matrix-baseline-cell {
+    top: 3.25rem;
+    min-width: 2.75rem;
+    padding: 0.25rem 0.2rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .ref-matrix-baseline-record {
+    display: block;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    color: var(--foreground);
+  }
+
+  .ref-matrix-baseline-meta {
+    display: block;
+    margin-top: 0.1rem;
+    font-size: 0.5625rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
   .ref-matrix-ref-head {
     left: 0;
     z-index: 2;
@@ -2506,10 +2587,25 @@ p {
     flex-shrink: 0;
   }
 
+  .ref-matrix-ref-name-wrap {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
   .ref-matrix-ref-name {
     font-size: var(--text-sm);
     font-weight: 600;
     transition: color 0.15s ease;
+  }
+
+  .ref-matrix-ref-aggregate {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    line-height: 1.1;
   }
 
   .ref-matrix-cell {
@@ -2544,6 +2640,26 @@ p {
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     line-height: 1.1;
+  }
+
+  .ref-matrix-delta {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .ref-matrix-delta--positive {
+    color: #047857;
+  }
+
+  .ref-matrix-delta--negative {
+    color: #be123c;
+  }
+
+  .ref-matrix-delta--neutral {
+    color: color-mix(in srgb, currentColor 55%, var(--muted));
   }
 
   .ref-matrix-games {

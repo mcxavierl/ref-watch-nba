@@ -18,6 +18,10 @@ export interface RefTeamMatrixTeam {
   label: string;
   name: string;
   nbaId?: number;
+  /** Team sample W-L across all crews in this dataset (coloring reference only). */
+  baselineWins: number;
+  baselineLosses: number;
+  baselineGames: number;
   baselineWinRate: number;
 }
 
@@ -54,12 +58,18 @@ export function computeRefTeamMatrix(
   minGames = MATRIX_MIN_GAMES,
 ): RefTeamMatrix {
   const teams: RefTeamMatrixTeam[] = teamList.map((team) => {
-    const record = getTeamSampleRecord(getTeamSplits(team.abbr));
+    const abbr = team.abbr.toUpperCase();
+    const splits =
+      stats.teamSplits[abbr] ?? getTeamSplits(team.abbr);
+    const record = getTeamSampleRecord(splits);
     return {
       abbr: team.abbr,
       label: team.label,
       name: team.name,
       nbaId: team.nbaId,
+      baselineWins: record.wins,
+      baselineLosses: record.losses,
+      baselineGames: record.games,
       baselineWinRate: record.winRate,
     };
   });
@@ -97,6 +107,77 @@ export function computeRefTeamMatrix(
 }
 
 /** Refs with the most qualified matrix cells (for mobile condensed view). */
+export type MatrixRefSortKey = "name" | "winRate";
+export type MatrixRefSortDirection = "asc" | "desc";
+export type MatrixRefSort = `${MatrixRefSortKey}-${MatrixRefSortDirection}`;
+
+export const MATRIX_REF_SORT_OPTIONS: {
+  value: MatrixRefSort;
+  label: string;
+}[] = [
+  { value: "name-asc", label: "Name (A → Z)" },
+  { value: "winRate-desc", label: "Win rate (high → low)" },
+  { value: "winRate-asc", label: "Win rate (low → high)" },
+];
+
+export interface RefMatrixAggregate {
+  /** Games-weighted win rate across qualified ref×team cells. */
+  weightedWinRate: number | null;
+  qualifiedGames: number;
+  qualifiedCells: number;
+}
+
+export function refMatrixAggregate(
+  matrix: RefTeamMatrix,
+  refSlug: string,
+): RefMatrixAggregate {
+  let totalGames = 0;
+  let totalWins = 0;
+  let qualifiedCells = 0;
+
+  for (const team of matrix.teams) {
+    const cell = matrix.cells[matrixCellKey(refSlug, team.abbr)];
+    if (!cell) continue;
+    qualifiedCells++;
+    totalGames += cell.games;
+    totalWins += cell.wins;
+  }
+
+  return {
+    weightedWinRate: totalGames > 0 ? totalWins / totalGames : null,
+    qualifiedGames: totalGames,
+    qualifiedCells,
+  };
+}
+
+export function sortMatrixRefs(
+  refs: RefTeamMatrixRef[],
+  matrix: RefTeamMatrix,
+  sort: MatrixRefSort,
+): RefTeamMatrixRef[] {
+  const [key, direction] = sort.split("-") as [
+    MatrixRefSortKey,
+    MatrixRefSortDirection,
+  ];
+  const mult = direction === "asc" ? 1 : -1;
+
+  return [...refs].sort((a, b) => {
+    if (key === "name") {
+      return mult * a.name.localeCompare(b.name);
+    }
+
+    const rateA = refMatrixAggregate(matrix, a.slug).weightedWinRate;
+    const rateB = refMatrixAggregate(matrix, b.slug).weightedWinRate;
+
+    if (rateA === null && rateB === null) return a.name.localeCompare(b.name);
+    if (rateA === null) return 1;
+    if (rateB === null) return -1;
+
+    const diff = mult * (rateA - rateB);
+    return diff !== 0 ? diff : a.name.localeCompare(b.name);
+  });
+}
+
 export function topMatrixRefs(
   matrix: RefTeamMatrix,
   limit = 12,
@@ -143,9 +224,31 @@ export interface MatrixExtremeHighlight {
   wins: number;
   losses: number;
   winRate: number;
+  baselineWins: number;
+  baselineLosses: number;
+  baselineGames: number;
   baselineWinRate: number;
   deltaPts: number;
   kind: MatrixCellExtreme;
+}
+
+export function formatMatrixTeamBaseline(team: RefTeamMatrixTeam): string {
+  return `${team.baselineWins}-${team.baselineLosses} (${team.baselineGames} gp, ${(team.baselineWinRate * 100).toFixed(1)}%)`;
+}
+
+export function matrixCellAriaLabel(
+  refName: string,
+  team: RefTeamMatrixTeam,
+  cell: RefTeamMatrixCell,
+  deltaPts: number,
+): string {
+  const splitRecord = `${cell.wins}-${cell.losses}`;
+  const baselineRecord = `${team.baselineWins}-${team.baselineLosses}`;
+  const deltaLabel =
+    deltaPts === 0
+      ? "at team baseline"
+      : `${Math.abs(deltaPts).toFixed(1)} pts ${deltaPts > 0 ? "above" : "below"} team baseline`;
+  return `${refName} with ${team.label}: ref×team ${splitRecord} in ${cell.games} games (${(cell.winRate * 100).toFixed(1)}%), ${deltaLabel}; team sample baseline ${baselineRecord} in ${team.baselineGames} games (${(team.baselineWinRate * 100).toFixed(1)}%)`;
 }
 
 export function computeMatrixExtremes(
@@ -169,6 +272,9 @@ export function computeMatrixExtremes(
         wins: cell.wins,
         losses: cell.losses,
         winRate: cell.winRate,
+        baselineWins: team.baselineWins,
+        baselineLosses: team.baselineLosses,
+        baselineGames: team.baselineGames,
         baselineWinRate: team.baselineWinRate,
         deltaPts: winRateDeltaPoints(cell.winRate, team.baselineWinRate),
         kind: extreme,
