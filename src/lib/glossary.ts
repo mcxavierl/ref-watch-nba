@@ -29,7 +29,9 @@ export type GlossaryId =
   | "pace-alert"
   | "hit-rate"
   | "provenance-estimated"
-  | "sample-gate";
+  | "sample-gate"
+  | "close-game-proxy"
+  | "profile-signals";
 
 export interface GlossaryEntry {
   /** Visible label when none passed as children. */
@@ -162,5 +164,13 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   "sample-gate": {
     label: "Sample gate",
     text: "Minimum games required before we show a confident stat. Below the threshold, the value may still appear but is marked as below gate.",
+  },
+  "close-game-proxy": {
+    label: "Close-game proxy",
+    text: "A competitive late-game window derived from final margins, pregame spreads, or overtime — not official NBA Last Two Minute (L2M) play-by-play reports. Useful for spotting whistle/scoring shifts in tight games, with honest partial-coverage labels.",
+  },
+  "profile-signals": {
+    label: "Profile signals",
+    text: "Research-style patterns on a ref profile — scoring delta, whistle rate vs baseline, over frequency, and home/road splits when available. Informational only; always shows sample size and data provenance.",
   },
 };

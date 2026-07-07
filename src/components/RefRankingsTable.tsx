@@ -17,12 +17,14 @@ export function RefRankingsTable({
   minSampleSize,
   overBaseline,
   basePath = "",
+  signalCounts = {},
 }: {
   refs: RefProfile[];
   league: "NBA" | "NHL";
   minSampleSize: number;
   overBaseline: number;
   basePath?: string;
+  signalCounts?: Record<string, number>;
 }) {
   const [sort, setSort] = useState<RefRankingSort>("scoring-desc");
   const [showLowSample, setShowLowSample] = useState(false);
@@ -91,6 +93,7 @@ export function RefRankingsTable({
               <th>{scoringLabel}</th>
               <th>{whistleLabel}</th>
               <th>Over rate</th>
+              <th>Signals</th>
               {league === "NHL" && <th>OT rate</th>}
             </tr>
           </thead>
@@ -143,6 +146,23 @@ export function RefRankingsTable({
                     </td>
                     <td className="px-4 py-3 font-mono tabular-nums text-zinc-800">
                       {formatPct(ref.overRate)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {(signalCounts[ref.slug] ?? 0) > 0 ? (
+                        <Link
+                          href={`${basePath}/refs/${ref.slug}#profile-signals`}
+                          className="text-sm font-medium text-zinc-800 hover:text-raptors hover:underline"
+                        >
+                          {signalCounts[ref.slug]} notable
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`${basePath}/refs/${ref.slug}#profile-signals`}
+                          className="text-sm text-zinc-500 hover:text-zinc-800 hover:underline"
+                        >
+                          View profile
+                        </Link>
+                      )}
                     </td>
                     {league === "NHL" && (
                       <td className="px-4 py-3 font-mono tabular-nums text-zinc-800">

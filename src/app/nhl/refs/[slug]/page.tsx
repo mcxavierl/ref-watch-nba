@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CloseGameSection } from "@/components/CloseGameSection";
+import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefBettingProfile } from "@/components/RefBettingProfile";
 import { FavoritesStar } from "@/components/FavoritesStar";
 import { JsonLd } from "@/components/JsonLd";
@@ -22,6 +24,8 @@ import {
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
 import { userFacingDataNote } from "@/lib/user-language";
+import { computeRefCloseGameMetrics } from "@/lib/close-game";
+import { computeProfileSignals } from "@/lib/profile-signals";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
@@ -79,6 +83,12 @@ export default async function NhlRefProfilePage({
   };
   const qualified = profile.games >= stats.meta.minSampleSize;
   const statsSeeded = stats.meta.source === "seeded";
+  const profileSignals = computeProfileSignals(profile, stats.meta, "nhl");
+  const closeGameMetrics = computeRefCloseGameMetrics(
+    profile.slug,
+    stats.meta,
+    "NHL",
+  );
 
   return (
     <div className="page-shell">
@@ -149,6 +159,18 @@ export default async function NhlRefProfilePage({
           leagueOvertimeRate={stats.meta.leagueOvertimeRate}
         />
       )}
+
+      <ProfileSignalsSection
+        bundle={profileSignals}
+        refName={profile.name}
+        lastUpdated={stats.meta.lastUpdated}
+      />
+
+      <CloseGameSection
+        metrics={closeGameMetrics}
+        subjectLabel={profile.name}
+        league="NHL"
+      />
 
       <details className="methodology-details panel-inset mt-8 px-5 py-4">
         <summary>How to read this profile</summary>

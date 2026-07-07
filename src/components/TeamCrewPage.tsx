@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
+import { CloseGameSection } from "@/components/CloseGameSection";
 import { TeamRefLeaderboards } from "@/components/TeamRefLeaderboards";
 import { TeamSplitView } from "@/components/TeamSplitView";
 import * as nbaData from "@/lib/data";
@@ -12,6 +13,7 @@ import {
 } from "@/lib/teamRefLeaderboards";
 import { getTeamSampleRecord } from "@/lib/teamRecord";
 import { userFacingDataNote } from "@/lib/user-language";
+import { computeTeamCloseGameMetrics } from "@/lib/close-game";
 
 export interface TeamPageConfig {
   teamAbbr: string;
@@ -44,6 +46,11 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
     ? nhlTeams.teamWithArticle(team as import("@/lib/nhl/teams").NhlTeam)
     : nbaTeams.teamWithArticle(team as import("@/lib/teams").NbaTeam);
   const crewSize = isNhl ? "four" : "three";
+  const closeGameMetrics = computeTeamCloseGameMetrics(
+    team.abbr,
+    stats.meta,
+    isNhl ? "NHL" : "NBA",
+  );
 
   return (
     <div className="page-shell">
@@ -119,6 +126,12 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         teamRecord={teamRecord}
         overBaseline={stats.meta.leagueOverBaseline}
         basePath={basePath}
+      />
+
+      <CloseGameSection
+        metrics={closeGameMetrics}
+        subjectLabel={teamName}
+        league={isNhl ? "NHL" : "NBA"}
       />
 
       <details className="methodology-details panel-inset mt-10 px-5 py-4">
