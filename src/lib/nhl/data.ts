@@ -1,7 +1,5 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import nhlRefStatsBundled from "../../../data/nhl/ref-stats.json";
-import nhlRefStatsSeedBundled from "../../../data/nhl/ref-stats.seed.json";
 import type {
   AssignmentGame,
   AssignmentsFile,
@@ -35,25 +33,6 @@ function readJson<T>(filename: string): T {
   const parsed = JSON.parse(raw) as T;
   jsonCache.set(filename, parsed);
   return parsed;
-}
-
-function tryReadJson<T>(filename: string): T | null {
-  try {
-    return readJson<T>(filename);
-  } catch {
-    return null;
-  }
-}
-
-function loadRefStatsRaw(): RefStatsFile {
-  const fromFs =
-    tryReadJson<RefStatsFile>("ref-stats.json") ??
-    tryReadJson<RefStatsFile>("ref-stats.seed.json");
-  if (fromFs) return fromFs;
-
-  const bundled = nhlRefStatsBundled as RefStatsFile;
-  if (bundled.refs?.length) return bundled;
-  return nhlRefStatsSeedBundled as RefStatsFile;
 }
 
 export function getAssignments(): AssignmentsFile {
@@ -138,13 +117,21 @@ function mergeTeamSpecialTeams(data: RefStatsFile): RefStatsFile {
 
 export function getRefStats(): RefStatsFile {
   try {
-    const raw = loadRefStatsRaw();
-    if (!raw.refs?.length) return EMPTY_REF_STATS;
     return applyBaselines(
-      mergeTeamSpecialTeams(normalizeRefStats(raw)),
+      mergeTeamSpecialTeams(
+        normalizeRefStats(readJson<RefStatsFile>("ref-stats.json")),
+      ),
     );
   } catch {
-    return EMPTY_REF_STATS;
+    try {
+      return applyBaselines(
+        mergeTeamSpecialTeams(
+          normalizeRefStats(readJson<RefStatsFile>("ref-stats.seed.json")),
+        ),
+      );
+    } catch {
+      return EMPTY_REF_STATS;
+    }
   }
 }
 

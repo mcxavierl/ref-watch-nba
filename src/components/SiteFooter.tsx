@@ -19,7 +19,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
 
   return (
     <footer className="site-footer">
-      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
             <p className="site-footer-heading">Data sources</p>

@@ -6,21 +6,21 @@ import { LeagueMarkNBA } from "@/components/icons/LeagueMarkNBA";
 import { LeagueMarkNHL } from "@/components/icons/LeagueMarkNHL";
 
 const NBA_LINKS = [
-  { href: "/", label: "Tonight" },
+  { href: "/", label: "Slate" },
+  { href: "/rankings", label: "Rankings" },
   { href: "/teams", label: "Teams" },
   { href: "/refs", label: "Refs" },
-  { href: "/rankings", label: "Rankings" },
   { href: "/trends", label: "Trends" },
-  { href: "/research", label: "Research" },
+  { href: "/research", label: "Findings" },
 ];
 
 const NHL_LINKS = [
-  { href: "/nhl", label: "Tonight" },
+  { href: "/nhl", label: "Slate" },
+  { href: "/nhl/rankings", label: "Rankings" },
   { href: "/nhl/teams", label: "Teams" },
   { href: "/nhl/refs", label: "Refs" },
-  { href: "/nhl/rankings", label: "Rankings" },
   { href: "/nhl/trends", label: "Trends" },
-  { href: "/research", label: "Research" },
+  { href: "/research", label: "Findings" },
 ];
 
 export function SiteNav() {

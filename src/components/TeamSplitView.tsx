@@ -3,12 +3,10 @@
 import Link from "next/link";
 import {
   ChevronDown,
-  MapPin,
   Target,
   TrendingDown,
   TrendingUp,
   Trophy,
-  Users,
   Volume2,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -46,7 +44,6 @@ function RefLinkChip({
       href={`${basePath}/refs/${slug}`}
       className="inline-flex items-center gap-1.5 rounded-full border border-border bg-zinc-50 px-3 py-1 text-sm text-zinc-700 transition hover:border-zinc-300 hover:bg-white hover:text-zinc-900"
     >
-      <Users className="size-3.5 text-zinc-400" aria-hidden />
       {name}
     </Link>
   );
@@ -120,10 +117,7 @@ function TeamSplitCard({
 
       <details className="group border-t border-border-subtle">
         <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium text-zinc-700 hover:bg-zinc-50 sm:px-5">
-          <span className="inline-flex items-center gap-2">
-            <MapPin className="size-4 text-zinc-400" aria-hidden />
-            Home & away split
-          </span>
+          <span>Home & away split</span>
           <ChevronDown className="size-4 text-zinc-400 transition group-open:rotate-180" />
         </summary>
         <div className="grid grid-cols-2 gap-3 border-t border-border-subtle bg-zinc-50/50 px-4 py-3 text-sm sm:px-5">
@@ -283,7 +277,6 @@ export function TeamSplitView({
               : "text-zinc-600 hover:text-zinc-900"
           }`}
         >
-          <Users className="size-4" aria-hidden />
           Crews ({crewSplits.length})
         </button>
         <button
@@ -297,7 +290,6 @@ export function TeamSplitView({
               : "text-zinc-600 hover:text-zinc-900"
           }`}
         >
-          <Users className="size-4" aria-hidden />
           Refs ({refSplits.length})
         </button>
       </div>

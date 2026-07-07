@@ -33,7 +33,11 @@ export function MetricBlock({
     <div className="flex flex-col gap-2 bg-white px-4 py-4 sm:px-5">
       <div className="flex items-center gap-2">
         {Icon && (
-          <Icon className={`size-4 shrink-0 ${iconClassName}`} aria-hidden />
+          <Icon
+            className={`size-3.5 shrink-0 ${iconClassName}`}
+            strokeWidth={2.25}
+            aria-hidden
+          />
         )}
         <span className="text-sm font-medium text-zinc-600">{label}</span>
         <ProvenanceMarker provenance={provenance} compact />

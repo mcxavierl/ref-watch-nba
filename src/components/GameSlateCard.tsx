@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronDown, Users } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import type { CrewMetrics } from "@/lib/data";
 import {
   detectTeamsInGame as detectNbaTeams,
@@ -149,13 +149,13 @@ export function GameSlateCard({
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
-          {metrics.crew.map((official) => (
+          {metrics.crew.map((official, index) => (
             <Link
               key={`${official.name}-${official.number}`}
               href={`${basePath}/refs/${refSlug(official.name, official.number)}`}
-              className="inline-flex items-center gap-1 rounded border border-border bg-zinc-50 px-2.5 py-1 text-sm text-zinc-700 transition hover:border-zinc-300 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-400"
+              className="crew-chip"
             >
-              <Users className="size-3 text-zinc-400" aria-hidden />
+              {index === 0 && <span className="crew-chip-label">Crew</span>}
               {official.name}
             </Link>
           ))}

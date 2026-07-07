@@ -34,24 +34,24 @@ export function RefRankingsTable({
 
   return (
     <div>
-      <div className="border-b border-border-subtle px-4 py-3 sm:px-5">
-        <div className="flex flex-wrap items-center gap-3">
-          <label htmlFor="ref-rankings-sort" className="text-sm font-medium text-zinc-700">
+      <div className="ranking-toolbar">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <label htmlFor="ref-rankings-sort" className="text-sm font-semibold text-zinc-900">
             Sort by
+            <select
+              id="ref-rankings-sort"
+              value={sort}
+              onChange={(e) => setSort(e.target.value as RefRankingSort)}
+              className="ranking-select ml-2"
+            >
+              {Object.entries(REF_RANKING_SORT_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
           </label>
-          <select
-            id="ref-rankings-sort"
-            value={sort}
-            onChange={(e) => setSort(e.target.value as RefRankingSort)}
-            className="rounded-md border border-border bg-white px-3 py-1.5 text-sm text-zinc-800"
-          >
-            {Object.entries(REF_RANKING_SORT_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-          <label className="flex items-center gap-2 text-sm text-zinc-600">
+          <label className="ranking-toggle">
             <input
               type="checkbox"
               checked={showLowSample}
@@ -61,7 +61,7 @@ export function RefRankingsTable({
             Show refs below {minSampleSize}-game gate
           </label>
         </div>
-        <p className="mt-2 text-sm text-zinc-600">
+        <p className="section-lead">
           Historical tendencies vs league baseline — descriptive only, not picks.
           Over rate uses {overBaseline} combined {league === "NBA" ? "points" : "goals"} benchmark.
         </p>
@@ -83,19 +83,17 @@ export function RefRankingsTable({
 
       <div className="overflow-x-auto">
         <table className="data-table min-w-[640px]">
-            <thead>
-              <tr className="data-table-head">
-                <th className="px-4 py-3 sm:px-5">#</th>
-                <th className="px-4 py-3">Official</th>
-                <th className="px-4 py-3">Sample</th>
-                <th className="px-4 py-3">{scoringLabel}</th>
-                <th className="px-4 py-3">{whistleLabel}</th>
-                <th className="px-4 py-3">Over rate</th>
-                {league === "NHL" && (
-                  <th className="px-4 py-3">OT rate</th>
-                )}
-              </tr>
-            </thead>
+          <thead>
+            <tr className="data-table-head">
+              <th>#</th>
+              <th>Official</th>
+              <th>Sample</th>
+              <th>{scoringLabel}</th>
+              <th>{whistleLabel}</th>
+              <th>Over rate</th>
+              {league === "NHL" && <th>OT rate</th>}
+            </tr>
+          </thead>
             <tbody className="divide-y divide-border-subtle">
               {sorted.reduce<ReactNode[]>((rows, ref) => {
                 const belowGate = ref.games < minSampleSize;

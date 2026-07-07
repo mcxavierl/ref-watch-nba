@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, Link2, Share2 } from "lucide-react";
+import { Check } from "lucide-react";
 import { useCallback, useState } from "react";
 import type { SyndicatedSignal } from "@/lib/syndication";
 
@@ -64,15 +64,13 @@ export function SlateShareBar({
 
   return (
     <section
-      className="panel-inset mb-6 px-4 py-4 sm:px-5"
+      className="panel-inset section-block-tight px-4 py-4 sm:px-5"
       aria-label="Share tonight's signals"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm font-bold text-zinc-900">
-            Share tonight&apos;s signals
-          </h2>
-          <p className="mt-1 text-sm text-zinc-600">
+          <h2 className="section-title">Share tonight&apos;s signal pack</h2>
+          <p className="section-lead">
             Sample-gated only — estimated values marked. Not betting advice.
           </p>
         </div>
@@ -87,9 +85,7 @@ export function SlateShareBar({
           >
             {copied === "summary" ? (
               <Check className="size-4 text-emerald-700" aria-hidden />
-            ) : (
-              <Copy className="size-4" aria-hidden />
-            )}
+            ) : null}
             {copied === "summary" ? "Copied" : "Copy summary"}
           </button>
           <button
@@ -101,9 +97,7 @@ export function SlateShareBar({
           >
             {copied === "link" ? (
               <Check className="size-4 text-emerald-700" aria-hidden />
-            ) : (
-              <Link2 className="size-4" aria-hidden />
-            )}
+            ) : null}
             {copied === "link" ? "Link copied" : "Copy link"}
           </button>
           <button
@@ -111,17 +105,16 @@ export function SlateShareBar({
             onClick={nativeShare}
             className="btn-secondary inline-flex items-center gap-1.5"
           >
-            <Share2 className="size-4" aria-hidden />
             Share
           </button>
         </div>
       </div>
 
-      <ul className="mt-4 space-y-2 text-sm text-zinc-700">
+      <ul className="mt-4 grid gap-2 text-sm text-zinc-700 sm:grid-cols-2">
         {topSignals.map((signal) => (
           <li
             key={signal.id}
-            className="border-l-2 border-zinc-300 pl-3 leading-snug"
+            className="share-signal-item"
           >
             <span className="font-semibold text-zinc-900">{signal.matchup}</span>
             {" — "}

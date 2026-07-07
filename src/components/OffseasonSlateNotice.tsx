@@ -10,39 +10,40 @@ export function OffseasonSlateNotice({
   browseHref: string;
 }) {
   return (
-    <div className="panel-inset px-6 py-10 text-center">
-      <p className="text-lg font-bold text-zinc-900">
+    <div className="empty-state-panel">
+      <p className="section-kicker text-raptors">No live slate</p>
+      <h2 className="section-title">
         {league} season ended — no slate tonight
-      </p>
-      <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-zinc-600">
-        Tonight&apos;s slate returns when official crew assignments resume.
-        Explore season highlights below, or browse ref and team histories.
+      </h2>
+      <p className="mx-auto section-lead">
+        Live crew assignments return when the {league} schedule resumes. Until then,
+        use the historical board: rankings first, team/ref histories next, methodology last.
       </p>
       <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
         <SeasonNotifyCta league={league} />
       </div>
-      <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+      <div className="link-cluster mt-6">
         <Link
           href="/research"
-          className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
+          className="action-link"
         >
           Research findings →
         </Link>
         <Link
           href={league === "NBA" ? "/rankings" : "/nhl/rankings"}
-          className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
+          className="action-link"
         >
           Referee rankings →
         </Link>
         <Link
           href={browseHref}
-          className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
+          className="action-link"
         >
           Browse team crew histories →
         </Link>
         <Link
           href={league === "NBA" ? "/refs" : "/nhl/refs"}
-          className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
+          className="action-link"
         >
           Browse all refs →
         </Link>

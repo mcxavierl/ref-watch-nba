@@ -12,7 +12,7 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-6">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
         <Link
           href={homeHref}
           className="group flex shrink-0 items-center gap-3.5 rounded-lg outline-offset-4 transition hover:opacity-95 focus-visible:outline-2 focus-visible:outline-white/80"
@@ -27,10 +27,13 @@ export function SiteHeader() {
           <div className="leading-tight">
             <p className="site-header-title">REF WATCH</p>
             <p className="site-header-subtitle">
-              Referee analytics for the NBA and NHL
+              Ref crew analytics before the game
             </p>
           </div>
         </Link>
+        <span className="site-header-proof">
+          Free signals · sample-gated · no picks
+        </span>
         <SiteNav />
       </div>
     </header>

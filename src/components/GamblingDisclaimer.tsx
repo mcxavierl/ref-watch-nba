@@ -10,7 +10,7 @@ export function GamblingDisclaimer() {
       className="border-t-2 border-amber-200/80 bg-amber-50/90"
       aria-label="Responsible gambling"
     >
-      <div className="mx-auto flex max-w-5xl gap-3 px-4 py-4 sm:px-6">
+      <div className="mx-auto flex max-w-6xl gap-3 px-4 py-4 sm:px-6">
         <AlertCircle
           className="mt-0.5 size-5 shrink-0 text-amber-800"
           aria-hidden
