@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
+import { TeamRefLeaderboards } from "@/components/TeamRefLeaderboards";
 import { StatCell, StatSection, StatStrip } from "@/components/StatStrip";
 import {
   formatDate,
@@ -15,6 +16,10 @@ import {
   getWhistleAnnotation,
 } from "@/lib/leanAnnotations";
 import { getTeam, teamFullName } from "@/lib/teams";
+import {
+  getTeamFoulEdgeLeaderboard,
+  getTeamScoringPaceLeaderboard,
+} from "@/lib/teamRefLeaderboards";
 import type { RefProfile, TeamCrewSplit } from "@/lib/types";
 
 export interface TeamPageConfig {
@@ -163,6 +168,11 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const stats = getRefStats();
   const splits = sortSplitsByGames(getTeamSplits(team.abbr));
   const totalGames = splits.reduce((s, sp) => s + sp.games, 0);
+  const foulEdgeLeaderboard = getTeamFoulEdgeLeaderboard(stats.refs, team.abbr);
+  const scoringPaceLeaderboard = getTeamScoringPaceLeaderboard(
+    stats.refs,
+    team.abbr,
+  );
   const statsSeeded = stats.meta.source === "seeded";
   const teamName = teamFullName(team);
 
@@ -227,6 +237,13 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         </div>
       )}
 
+      <TeamRefLeaderboards
+        foulEdge={foulEdgeLeaderboard}
+        scoringPace={scoringPaceLeaderboard}
+        teamAbbr={team.abbr}
+        overBaseline={stats.meta.leagueOverBaseline}
+      />
+
       <details className="methodology-details panel-inset mt-10 px-5 py-4">
         <summary>What am I looking at?</summary>
         <ul className="space-y-2.5 text-sm leading-relaxed text-zinc-600">
@@ -245,6 +262,12 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             <span className="font-medium text-zinc-800">Home & away</span> — win
             rate by location. Small samples (under 5 games) are rough guides
             only.
+          </li>
+          <li>
+            <span className="font-medium text-zinc-800">Ref leaderboards</span>{" "}
+            — individual officials ranked for {team.abbr} games only (not full
+            crews). Foul edge is average opponent fouls minus {team.abbr}{" "}
+            fouls. Scoring pace is average combined game total.
           </li>
           <li>
             <span className="font-medium text-zinc-800">Win-loss record</span> —

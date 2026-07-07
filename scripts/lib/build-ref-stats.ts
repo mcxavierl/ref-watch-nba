@@ -2,6 +2,11 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { NBA_STATS_HEADERS } from "./nba-headers";
 import { crewKey, refSlug } from "./slug";
+import {
+  collectRefTeamStats,
+  pushRefTeamGame,
+  type RefTeamGameRow,
+} from "./ref-team-stats";
 import type {
   RefGameRecord,
   RefProfile,
@@ -327,6 +332,7 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
 
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number }>();
+  const refTeamBuckets = new Map<string, Map<string, RefTeamGameRow[]>>();
   const teamByCrew = new Map<string, Map<string, TeamCrewBucket>>();
   for (const abbr of NBA_TEAM_ABBRS) {
     teamByCrew.set(abbr, new Map());
@@ -395,6 +401,17 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
         const games = refGames.get(slug) ?? [];
         games.push(record);
         refGames.set(slug, games);
+
+        for (const teamAbbr of [box.homeTeam, box.awayTeam]) {
+          const teamRow = teamGameRow(box, teamAbbr);
+          if (!teamRow) continue;
+          pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
+            foulDifferential: teamRow.teamFouls - teamRow.opponentFouls,
+            totalPoints: teamRow.totalPoints,
+            overHit: teamRow.overHit,
+            teamWin: teamRow.teamWin,
+          });
+        }
       }
 
       processed++;
@@ -440,6 +457,7 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       foulsDelta: round1(avgFouls - LEAGUE_AVG_FOULS),
       seasons: [...new Set(games.map((g) => g.season))],
       recentGames: games.slice(-8).reverse(),
+      teamStats: collectRefTeamStats(refTeamBuckets.get(slug) ?? new Map()),
     });
   }
 

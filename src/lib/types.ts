@@ -34,6 +34,15 @@ export interface RefGameRecord {
   raptorsInvolved: boolean;
 }
 
+/** Per-ref stats for games involving a specific team. */
+export interface RefTeamStat {
+  games: number;
+  avgFoulDifferential: number;
+  avgTotalPoints: number;
+  overRate: number;
+  winRate: number;
+}
+
 export interface RefProfile {
   slug: string;
   name: string;
@@ -47,6 +56,8 @@ export interface RefProfile {
   foulsDelta: number;
   seasons: string[];
   recentGames: RefGameRecord[];
+  /** Keyed by team abbreviation (e.g. LAL, TOR). */
+  teamStats?: Record<string, RefTeamStat>;
 }
 
 export interface TeamCrewSplit {
