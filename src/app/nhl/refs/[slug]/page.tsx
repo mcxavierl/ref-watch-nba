@@ -187,6 +187,7 @@ export default async function NhlRefProfilePage({
             refName={profile.name}
             lastUpdated={stats.meta.lastUpdated}
             variant="sidebar"
+            league="NHL"
           />
         </div>
       </div>

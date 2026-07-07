@@ -11,7 +11,7 @@ const NBA_LINKS = [
   { href: "/matrix", label: "Matrix" },
   { href: "/crews", label: "Crews" },
   { href: "/trends", label: "Trends" },
-  { href: "/research", label: "Findings" },
+  { href: "/research?league=nba", label: "Findings" },
 ];
 
 const NHL_LINKS = [
@@ -22,7 +22,7 @@ const NHL_LINKS = [
   { href: "/nhl/matrix", label: "Matrix" },
   { href: "/nhl/crews", label: "Crews" },
   { href: "/nhl/trends", label: "Trends" },
-  { href: "/research", label: "Findings" },
+  { href: "/research?league=nhl", label: "Findings" },
 ];
 
 type SiteNavProps = {
@@ -70,7 +70,7 @@ export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
           const active =
             link.href === homeHref
               ? pathname === homeHref
-              : link.href === "/research"
+              : link.href.startsWith("/research")
                 ? pathname.startsWith("/research")
                 : pathname === link.href || pathname.startsWith(`${link.href}/`);
 

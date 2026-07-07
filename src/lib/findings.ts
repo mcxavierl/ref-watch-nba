@@ -11,7 +11,19 @@ import {
   FINDING_CATEGORY_LABELS,
   rankScore,
 } from "@/lib/findings-shared";
+import {
+  buildCloseGameLeagueFinding,
+  buildCrewDominanceFinding,
+  buildMatrixExtremeFinding,
+  buildOverRateOutlierFinding,
+  buildTeamHomeRoadFinding,
+  buildWhistleOutlierFinding,
+  buildYoYTrendFinding,
+  type LeagueFindingContext,
+} from "@/lib/findings-builders";
 import type { RefProfile, RefStatsFile, TeamCrewSplit, WlpRecord } from "@/lib/types";
+import { getTeamSplits } from "@/lib/data";
+import { NBA_TEAMS } from "@/lib/teams";
 
 export type { Finding, FindingCategory, FindingLink, FindingStat } from "@/lib/findings-shared";
 export { FINDING_CATEGORY_LABELS };
@@ -756,6 +768,34 @@ function formatWlpShort(record: WlpRecord): string {
   return `${record.wins}-${record.losses}`;
 }
 
+const NBA_FINDING_CTX: LeagueFindingContext = {
+  league: "NBA",
+  paths: {
+    idPrefix: "",
+    refsBrowsePath: "/refs",
+    refPath: (slug) => `/refs/${slug}`,
+    teamPath: (abbr) => `/teams/${abbr}`,
+    matrixPath: "/matrix",
+    crewsPath: "/crews",
+    trendsPath: "/trends",
+  },
+  labels: {
+    scoreUnit: "pts",
+    whistleUnit: "fouls",
+    teamName: (abbr) => {
+      const team = getTeam(abbr);
+      return team ? teamFullName(team) : abbr;
+    },
+  },
+  getTeamSplits,
+  teams: NBA_TEAMS.map((team) => ({
+    abbr: team.abbr,
+    label: teamFullName(team),
+    name: team.name,
+    nbaId: team.nbaId,
+  })),
+};
+
 function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
   const refTeams = aggregateRefTeams(stats);
   const candidates: (ScoredFindingBase | null)[] = [
@@ -770,6 +810,14 @@ function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
     ouAtsEdgeFinding(stats),
     teamCrewAnomalyFinding(stats),
     scoringOutlierFinding(stats),
+    buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "high"),
+    buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "low"),
+    buildCrewDominanceFinding(stats, NBA_FINDING_CTX),
+    buildYoYTrendFinding(stats, NBA_FINDING_CTX),
+    buildTeamHomeRoadFinding(stats, NBA_FINDING_CTX),
+    buildCloseGameLeagueFinding(stats, NBA_FINDING_CTX),
+    buildWhistleOutlierFinding(stats, NBA_FINDING_CTX),
+    buildOverRateOutlierFinding(stats, NBA_FINDING_CTX, "low"),
   ];
   return candidates.filter((c): c is ScoredFindingBase => c !== null);
 }

@@ -162,6 +162,7 @@ export default async function RefProfilePage({
             refName={profile.name}
             lastUpdated={stats.meta.lastUpdated}
             variant="sidebar"
+            league="NBA"
           />
         </div>
       </div>

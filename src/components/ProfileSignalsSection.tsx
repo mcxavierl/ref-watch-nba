@@ -1,15 +1,18 @@
 import Link from "next/link";
 import type { ProfileSignalsBundle } from "@/lib/profile-signals";
+import { researchHubHref, type FindingLeague } from "@/lib/findings-shared";
 
 export function ProfileSignalsSection({
   bundle,
   refName,
   variant = "full",
+  league = "NBA",
 }: {
   bundle: ProfileSignalsBundle;
   refName: string;
   lastUpdated?: string;
   variant?: "full" | "sidebar";
+  league?: FindingLeague;
 }) {
   const seeded = bundle.dataSource === "seeded";
   const isEmpty = bundle.signals.length === 0;
@@ -86,10 +89,10 @@ export function ProfileSignalsSection({
 
         <div className="border-t border-border-subtle px-4 py-2.5 sm:px-5">
           <Link
-            href="/research"
+            href={researchHubHref(league)}
             className="text-xs font-medium text-zinc-700 hover:text-zinc-900 hover:underline"
           >
-            All dataset findings →
+            All {league} dataset findings →
           </Link>
         </div>
       </aside>
@@ -106,10 +109,10 @@ export function ProfileSignalsSection({
           </p>
         </div>
         <Link
-          href="/research"
+          href={researchHubHref(league)}
           className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hover:underline"
         >
-          All dataset findings →
+          All {league} dataset findings →
         </Link>
       </div>
 

@@ -215,6 +215,6 @@ export function leagueNavLinks(leagueId: LeagueId) {
     { href: `${base}/teams`, label: "Teams" },
     { href: `${base}/refs`, label: "Refs" },
     { href: `${base}/trends`, label: "Trends" },
-    { href: "/research", label: "Findings" },
+    { href: "/research?league=nba", label: "Findings" },
   ];
 }

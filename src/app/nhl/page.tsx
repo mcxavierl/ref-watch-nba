@@ -15,7 +15,7 @@ import {
   getRefStats,
   ouLeanSortWeight,
 } from "@/lib/nhl/data";
-import { buildTonightEdgeSummary } from "@/lib/edge-summary";
+import { buildTonightEdgeSummary, buildOffseasonEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/nhl/findings";
 import { resolveSlateGames } from "@/lib/grudge-match";
 import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/nhl/home-bias";
@@ -105,7 +105,7 @@ export default function NhlHomePage() {
         ppPremiums,
         otSignals,
       })
-    : [];
+    : buildOffseasonEdgeSummary(findings);
 
   return (
     <div className="page-shell">
@@ -136,7 +136,14 @@ export default function NhlHomePage() {
       </section>
 
       {isOffseason ? (
-        <OffseasonSlateNotice league="NHL" />
+        <>
+          <OffseasonSlateNotice league="NHL" />
+          <TonightEdgeSummary
+            items={edgeItems}
+            title="Season highlights"
+            emptyMessage="No standout NHL dataset patterns yet."
+          />
+        </>
       ) : (
         <>
           <SlateShareBar

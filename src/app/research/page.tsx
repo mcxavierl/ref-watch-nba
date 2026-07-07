@@ -4,6 +4,7 @@ import { ResearchHubFindings } from "@/components/ResearchHubFindings";
 import { JsonLd } from "@/components/JsonLd";
 import { formatRefStatsRange, getRefStats } from "@/lib/data";
 import { formatRefStatsRange as formatNhlRange, getRefStats as getNhlRefStats } from "@/lib/nhl/data";
+import { parseResearchLeagueFilter, filterFindingsByLeague } from "@/lib/findings-shared";
 import { computeAllResearchFindings } from "@/lib/research";
 import { researchHubDatasetJsonLd } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
@@ -15,7 +16,13 @@ export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl("/research") },
 };
 
-export default function ResearchHubPage() {
+export default async function ResearchHubPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ league?: string }>;
+}) {
+  const { league: leagueParam } = await searchParams;
+  const leagueFilter = parseResearchLeagueFilter(leagueParam);
   const findings = computeAllResearchFindings();
   const nbaStats = getRefStats();
   const nhlStats = getNhlRefStats();
@@ -23,8 +30,8 @@ export default function ResearchHubPage() {
     .sort()
     .at(-1)!;
 
-  const nbaFindings = findings.filter((f) => f.league === "NBA");
-  const nhlFindings = findings.filter((f) => f.league === "NHL");
+  const nbaFindings = filterFindingsByLeague(findings, "NBA");
+  const nhlFindings = filterFindingsByLeague(findings, "NHL");
 
   return (
     <div className="page-shell">
@@ -54,6 +61,7 @@ export default function ResearchHubPage() {
         nhlFindings={nhlFindings}
         nbaRefCount={nbaStats.refs.length}
         nhlRefCount={nhlStats.refs.length}
+        defaultLeagueFilter={leagueFilter}
       />
     </div>
   );

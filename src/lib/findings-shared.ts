@@ -134,3 +134,55 @@ export function findingMatchesFilter(
   if (filter === "all") return true;
   return FINDING_CATEGORY_TO_FILTER[category] === filter;
 }
+
+export type FindingLeague = "NBA" | "NHL";
+
+/** Infer league from finding id and profile links (NHL ids and /nhl/* hrefs). */
+export function inferFindingLeague(finding: Finding): FindingLeague {
+  if (finding.id.startsWith("nhl-")) return "NHL";
+  if (finding.links.some((link) => link.href.startsWith("/nhl"))) return "NHL";
+  return "NBA";
+}
+
+export function filterFindingsByLeague<T extends Finding>(
+  findings: T[],
+  league: FindingLeague,
+): T[] {
+  return findings.filter((finding) => inferFindingLeague(finding) === league);
+}
+
+export function researchHubHref(league: FindingLeague): string {
+  return league === "NHL" ? "/research?league=nhl" : "/research?league=nba";
+}
+
+export type ResearchLeagueFilter = "all" | "nba" | "nhl";
+
+export const RESEARCH_LEAGUE_FILTER_GROUPS: ResearchLeagueFilter[] = [
+  "all",
+  "nba",
+  "nhl",
+];
+
+export const RESEARCH_LEAGUE_FILTER_LABELS: Record<
+  ResearchLeagueFilter,
+  string
+> = {
+  all: "All leagues",
+  nba: "NBA",
+  nhl: "NHL",
+};
+
+export function parseResearchLeagueFilter(
+  value: string | undefined,
+): ResearchLeagueFilter {
+  if (value === "nba" || value === "nhl") return value;
+  return "all";
+}
+
+export function researchLeagueFilterMatches(
+  league: FindingLeague,
+  filter: ResearchLeagueFilter,
+): boolean {
+  if (filter === "all") return true;
+  return filter === "nba" ? league === "NBA" : league === "NHL";
+}

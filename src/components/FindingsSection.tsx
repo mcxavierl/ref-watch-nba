@@ -2,8 +2,12 @@ import Link from "next/link";
 import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { StatCell, StatStrip } from "@/components/StatStrip";
 import { FindingAccordionItem } from "@/components/FindingAccordion";
-import type { Finding } from "@/lib/findings-shared";
-import { FINDING_CATEGORY_LABELS } from "@/lib/findings-shared";
+import type { Finding, FindingLeague } from "@/lib/findings-shared";
+import {
+  filterFindingsByLeague,
+  FINDING_CATEGORY_LABELS,
+  researchHubHref,
+} from "@/lib/findings-shared";
 
 export function FindingCard({
   finding,
@@ -85,14 +89,18 @@ export function FindingsSection({
   initialVisibleCount?: number;
   dataSourceNote?: string;
   title?: string;
-  league?: "NBA" | "NHL";
+  league?: FindingLeague;
 }) {
-  if (findings.length === 0) return null;
+  const scopedFindings = league
+    ? filterFindingsByLeague(findings, league)
+    : findings;
+
+  if (scopedFindings.length === 0) return null;
 
   const visible = featured
-    ? findings.slice(0, initialVisibleCount)
-    : findings;
-  const hidden = featured ? findings.slice(initialVisibleCount) : [];
+    ? scopedFindings.slice(0, initialVisibleCount)
+    : scopedFindings;
+  const hidden = featured ? scopedFindings.slice(initialVisibleCount) : [];
 
   return (
     <section
@@ -111,10 +119,10 @@ export function FindingsSection({
           )}
           <p className="mt-3">
             <Link
-              href="/research"
+              href={league ? researchHubHref(league) : "/research"}
               className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
             >
-              View all findings →
+              View all {league ? `${league} ` : ""}findings →
             </Link>
           </p>
         </>

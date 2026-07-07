@@ -6,7 +6,11 @@ import {
   FINDING_FILTER_GROUPS,
   FINDING_FILTER_LABELS,
   findingMatchesFilter,
+  RESEARCH_LEAGUE_FILTER_GROUPS,
+  RESEARCH_LEAGUE_FILTER_LABELS,
+  researchLeagueFilterMatches,
   type FindingFilterGroup,
+  type ResearchLeagueFilter,
 } from "@/lib/findings-shared";
 import type { ResearchFinding } from "@/lib/research";
 
@@ -39,26 +43,61 @@ export function ResearchHubFindings({
   nhlFindings,
   nbaRefCount,
   nhlRefCount,
+  defaultLeagueFilter = "all",
 }: {
   nbaFindings: ResearchFinding[];
   nhlFindings: ResearchFinding[];
   nbaRefCount: number;
   nhlRefCount: number;
+  defaultLeagueFilter?: ResearchLeagueFilter;
 }) {
-  const [filter, setFilter] = useState<FindingFilterGroup>("all");
+  const [leagueFilter, setLeagueFilter] =
+    useState<ResearchLeagueFilter>(defaultLeagueFilter);
+  const [categoryFilter, setCategoryFilter] =
+    useState<FindingFilterGroup>("all");
 
   const filteredNba = useMemo(
-    () => nbaFindings.filter((f) => findingMatchesFilter(f.category, filter)),
-    [nbaFindings, filter],
+    () =>
+      nbaFindings.filter((finding) =>
+        findingMatchesFilter(finding.category, categoryFilter),
+      ),
+    [nbaFindings, categoryFilter],
   );
   const filteredNhl = useMemo(
-    () => nhlFindings.filter((f) => findingMatchesFilter(f.category, filter)),
-    [nhlFindings, filter],
+    () =>
+      nhlFindings.filter((finding) =>
+        findingMatchesFilter(finding.category, categoryFilter),
+      ),
+    [nhlFindings, categoryFilter],
   );
-  const totalVisible = filteredNba.length + filteredNhl.length;
+
+  const showNba =
+    researchLeagueFilterMatches("NBA", leagueFilter) && filteredNba.length > 0;
+  const showNhl =
+    researchLeagueFilterMatches("NHL", leagueFilter) && filteredNhl.length > 0;
+  const totalVisible = (showNba ? filteredNba.length : 0) +
+    (showNhl ? filteredNhl.length : 0);
 
   return (
     <>
+      <div
+        className="finding-filter-bar"
+        role="group"
+        aria-label="Filter findings by league"
+      >
+        {RESEARCH_LEAGUE_FILTER_GROUPS.map((group) => (
+          <button
+            key={group}
+            type="button"
+            className={`finding-filter-chip${leagueFilter === group ? " finding-filter-chip-active" : ""}`}
+            aria-pressed={leagueFilter === group}
+            onClick={() => setLeagueFilter(group)}
+          >
+            {RESEARCH_LEAGUE_FILTER_LABELS[group]}
+          </button>
+        ))}
+      </div>
+
       <div
         className="finding-filter-bar"
         role="group"
@@ -68,9 +107,9 @@ export function ResearchHubFindings({
           <button
             key={group}
             type="button"
-            className={`finding-filter-chip${filter === group ? " finding-filter-chip-active" : ""}`}
-            aria-pressed={filter === group}
-            onClick={() => setFilter(group)}
+            className={`finding-filter-chip${categoryFilter === group ? " finding-filter-chip-active" : ""}`}
+            aria-pressed={categoryFilter === group}
+            onClick={() => setCategoryFilter(group)}
           >
             {FINDING_FILTER_LABELS[group]}
           </button>
@@ -79,11 +118,11 @@ export function ResearchHubFindings({
 
       {totalVisible === 0 ? (
         <p className="mt-6 text-sm text-zinc-600">
-          No findings match this filter. Try another category.
+          No findings match this filter. Try another league or category.
         </p>
       ) : (
         <>
-          {filteredNba.length > 0 && (
+          {showNba && (
             <section className="section-block mt-6">
               <h2 className="section-title">NBA findings</h2>
               <p className="section-lead">
@@ -97,7 +136,7 @@ export function ResearchHubFindings({
             </section>
           )}
 
-          {filteredNhl.length > 0 && (
+          {showNhl && (
             <section className="section-block">
               <h2 className="section-title">NHL findings</h2>
               <p className="section-lead">

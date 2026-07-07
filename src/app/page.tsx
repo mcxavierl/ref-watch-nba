@@ -15,7 +15,7 @@ import {
   getRefStats,
   ouLeanSortWeight,
 } from "@/lib/data";
-import { buildTonightEdgeSummary } from "@/lib/edge-summary";
+import { buildTonightEdgeSummary, buildOffseasonEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/findings";
 import {
   computeGameStorylines,
@@ -102,7 +102,7 @@ export default function HomePage() {
         homeBiasSignals,
         storylines: slateStorylines,
       })
-    : [];
+    : buildOffseasonEdgeSummary(findings);
 
   return (
     <div className="page-shell">
@@ -133,7 +133,14 @@ export default function HomePage() {
       </section>
 
       {isOffseason ? (
-        <OffseasonSlateNotice league="NBA" />
+        <>
+          <OffseasonSlateNotice league="NBA" />
+          <TonightEdgeSummary
+            items={edgeItems}
+            title="Season highlights"
+            emptyMessage="No standout NBA dataset patterns yet."
+          />
+        </>
       ) : (
         <>
           <SlateShareBar

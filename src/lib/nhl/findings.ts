@@ -1,8 +1,21 @@
-import { formatPct, getRefStats } from "@/lib/nhl/data";
+import { formatPct, formatSigned, getRefStats, getTeamSplits } from "@/lib/nhl/data";
 import { formatPctFromWlp } from "@/lib/ref-betting";
-import { getTeam, teamFullName } from "@/lib/nhl/teams";
+import { getTeam, teamFullName, NHL_TEAMS } from "@/lib/nhl/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
 import { dedupeFindingsByCategory, rankScore } from "@/lib/findings-shared";
+import {
+  buildCloseGameLeagueFinding,
+  buildCrewDominanceFinding,
+  buildLeagueSkewFinding,
+  buildMatrixExtremeFinding,
+  buildNhlMinorsOutlierFinding,
+  buildNhlOtOutlierFinding,
+  buildOverRateOutlierFinding,
+  buildTeamHomeRoadFinding,
+  buildWhistleOutlierFinding,
+  buildYoYTrendFinding,
+  type LeagueFindingContext,
+} from "@/lib/findings-builders";
 import type { RefProfile, RefStatsFile, TeamCrewSplit, WlpRecord } from "@/lib/types";
 
 export type { Finding, FindingCategory } from "@/lib/findings-shared";
@@ -28,153 +41,6 @@ function wlpWinRate(record: WlpRecord): number | null {
 function formatWlpShort(record: WlpRecord): string {
   if (record.pushes > 0) return `${record.wins}-${record.losses}-${record.pushes}`;
   return `${record.wins}-${record.losses}`;
-}
-
-function leagueUnderFinding(stats: RefStatsFile): ScoredFindingBase {
-  const { refs, meta } = stats;
-  const underCount = refs.filter((r) => r.overRate < 0.5).length;
-  const overCount = refs.filter((r) => r.overRate > 0.5).length;
-  const totalGames =
-    meta.totalGamesProcessed ?? refs.reduce((sum, r) => sum + r.games, 0);
-  const weightedOver =
-    refs.reduce((sum, r) => sum + r.overRate * r.games, 0) /
-    refs.reduce((sum, r) => sum + r.games, 0);
-  const underPct = Math.round((underCount / refs.length) * 100);
-  const effectSize = 0.5 - weightedOver;
-
-  return {
-    id: "nhl-league-under-bias",
-    category: "league-trend",
-    headline: "NHL games lean under the goal benchmark",
-    summary: `${underCount} of ${refs.length} officials (${underPct}%) trend under ${meta.leagueOverBaseline} combined goals more often than over. Only ${overCount} refs run the other way.`,
-    explainer: `League-wide over rate is ${formatPct(weightedOver)} (games-weighted). In a neutral coin-flip world you'd expect ~50%; this sample tilts toward unders on totals.`,
-    stats: [
-      {
-        label: "Refs trending under",
-        value: `${underCount}/${refs.length}`,
-        detail: `${underPct}% of pool`,
-      },
-      {
-        label: "Games over benchmark",
-        value: formatPct(weightedOver),
-        detail: "Games-weighted · 50% = neutral",
-      },
-      {
-        label: "Games analyzed",
-        value: totalGames.toLocaleString(),
-        detail: meta.seasons.join(", "),
-      },
-    ],
-    sampleNote: `${refs.length} refs · ${totalGames.toLocaleString()} games · ${meta.source} data`,
-    links: [{ label: "Browse NHL refs", href: "/nhl/refs" }],
-    score: rankScore(effectSize, totalGames, MIN_REF_GAMES),
-    sampleGames: totalGames,
-  };
-}
-
-function otRateOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
-  const leagueOt = stats.meta.leagueOvertimeRate ?? 0.11;
-  let best:
-    | { ref: RefProfile; rate: number; otGames: number; edge: number }
-    | undefined;
-
-  for (const ref of stats.refs) {
-    const analytics = ref.nhlAnalytics;
-    if (!analytics || ref.games < MIN_ANALYTICS_GAMES) continue;
-    const edge = analytics.overtimeRate - leagueOt;
-    if (Math.abs(edge) < 0.04) continue;
-    if (!best || Math.abs(edge) > Math.abs(best.edge)) {
-      best = {
-        ref,
-        rate: analytics.overtimeRate,
-        otGames: analytics.overtimeGames,
-        edge,
-      };
-    }
-  }
-
-  if (!best) return null;
-
-  return {
-    id: "nhl-ot-outlier",
-    category: "ref-outlier",
-    headline: `${best.ref.name} pushes ${formatPct(best.rate)} of games to OT/SO`,
-    summary: `${best.ref.name} reaches overtime or shootout ${formatPct(best.rate)} of the time (${best.otGames} of ${best.ref.games} games), ${(Math.abs(best.edge) * 100).toFixed(1)} pts ${best.edge >= 0 ? "above" : "below"} the ${formatPct(leagueOt)} league rate.`,
-    stats: [
-      {
-        label: "OT/SO rate",
-        value: formatPct(best.rate),
-        detail: `${best.otGames} OT/SO games`,
-      },
-      {
-        label: "League OT rate",
-        value: formatPct(leagueOt),
-        detail: "Pool baseline",
-      },
-      {
-        label: "Sample",
-        value: String(best.ref.games),
-        detail: `Min ${MIN_ANALYTICS_GAMES} games`,
-      },
-    ],
-    sampleNote: `${best.ref.games} games · ${stats.meta.seasons.join(", ")}`,
-    links: [{ label: best.ref.name, href: `/nhl/refs/${best.ref.slug}` }],
-    score: rankScore(best.edge, best.ref.games, MIN_ANALYTICS_GAMES),
-    sampleGames: best.ref.games,
-  };
-}
-
-function penaltyBalanceFinding(stats: RefStatsFile): ScoredFindingBase | null {
-  let best:
-    | { ref: RefProfile; imbalance: number; balancedRate: number }
-    | undefined;
-
-  for (const ref of stats.refs) {
-    const analytics = ref.nhlAnalytics;
-    if (!analytics || ref.games < MIN_ANALYTICS_GAMES) continue;
-    if (analytics.balanceKind !== "asymmetric") continue;
-    if (
-      !best ||
-      analytics.avgMinorImbalance > best.imbalance
-    ) {
-      best = {
-        ref,
-        imbalance: analytics.avgMinorImbalance,
-        balancedRate: analytics.balancedGameRate,
-      };
-    }
-  }
-
-  if (!best) return null;
-
-  return {
-    id: "nhl-penalty-balance",
-    category: "whistle-extreme",
-    headline: `${best.ref.name} runs asymmetric penalty minutes`,
-    summary: `${best.ref.name} averages ${best.imbalance.toFixed(1)} minors of imbalance between teams per game. Only ${formatPct(best.balancedRate)} of games stay within ±1 minor.`,
-    explainer: `Penalty balance is descriptive game-management pattern, not a live makeup alert. Useful for spotting refs who consistently tilt PIM one way.`,
-    stats: [
-      {
-        label: "Avg imbalance",
-        value: best.imbalance.toFixed(1),
-        detail: "|Home minors − away minors|",
-      },
-      {
-        label: "Balanced games",
-        value: formatPct(best.balancedRate),
-        detail: "Within ±1 minor",
-      },
-      {
-        label: "Sample",
-        value: String(best.ref.games),
-        detail: `Min ${MIN_ANALYTICS_GAMES} games`,
-      },
-    ],
-    sampleNote: `${best.ref.games} games · ${stats.meta.seasons.join(", ")}`,
-    links: [{ label: best.ref.name, href: `/nhl/refs/${best.ref.slug}` }],
-    score: rankScore(best.imbalance / 3, best.ref.games, MIN_ANALYTICS_GAMES),
-    sampleGames: best.ref.games,
-  };
 }
 
 function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
@@ -405,15 +271,90 @@ function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
   };
 }
 
+const NHL_FINDING_CTX: LeagueFindingContext = {
+  league: "NHL",
+  paths: {
+    idPrefix: "nhl-",
+    refsBrowsePath: "/nhl/refs",
+    refPath: (slug) => `/nhl/refs/${slug}`,
+    teamPath: (abbr) => `/nhl/teams/${abbr}`,
+    matrixPath: "/nhl/matrix",
+    crewsPath: "/nhl/crews",
+    trendsPath: "/nhl/trends",
+  },
+  labels: {
+    scoreUnit: "goals",
+    whistleUnit: "PIM",
+    teamName: (abbr) => {
+      const team = getTeam(abbr);
+      return team ? teamFullName(team) : abbr;
+    },
+  },
+  getTeamSplits,
+  teams: NHL_TEAMS.map((team) => ({
+    abbr: team.abbr,
+    label: teamFullName(team),
+    name: team.name,
+  })),
+};
+
+function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const qualified = stats.refs.filter((r) => r.games >= MIN_REF_GAMES);
+  if (qualified.length === 0) return null;
+
+  const ref = [...qualified].sort(
+    (a, b) => Math.abs(b.totalPointsDelta) - Math.abs(a.totalPointsDelta),
+  )[0];
+  if (Math.abs(ref.totalPointsDelta) < 0.08) return null;
+  const effect = ref.totalPointsDelta / stats.meta.leagueAvgTotal;
+
+  return {
+    id: "nhl-scoring-outlier",
+    category: "ref-outlier",
+    headline: `${ref.name} runs ${formatSigned(ref.totalPointsDelta)} on combined scoring`,
+    summary: `${ref.name}'s ${ref.games} games average ${ref.avgTotalPoints} combined goals (${formatPct(ref.overRate)} over ${stats.meta.leagueOverBaseline}), one of the largest scoring deltas in the pool.`,
+    stats: [
+      {
+        label: "Scoring delta",
+        value: formatSigned(ref.totalPointsDelta),
+        detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
+      },
+      {
+        label: "Over benchmark",
+        value: formatPct(ref.overRate),
+        detail: `${ref.games} games`,
+      },
+      {
+        label: "Avg PIM",
+        value: String(ref.avgFouls),
+        detail: `${formatSigned(ref.foulsDelta)} vs league`,
+      },
+    ],
+    sampleNote: `${MIN_REF_GAMES}+ game sample · ${stats.meta.seasons.join(", ")}`,
+    links: [{ label: ref.name, href: `/nhl/refs/${ref.slug}` }],
+    score: rankScore(effect, ref.games, MIN_REF_GAMES),
+    sampleGames: ref.games,
+  };
+}
+
 function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
   return [
-    leagueUnderFinding(stats),
-    otRateOutlierFinding(stats),
-    penaltyBalanceFinding(stats),
+    buildLeagueSkewFinding(stats, NHL_FINDING_CTX, "over"),
+    buildNhlOtOutlierFinding(stats, NHL_FINDING_CTX),
+    buildNhlMinorsOutlierFinding(stats, NHL_FINDING_CTX),
     teamCrewAnomalyFinding(stats),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
     scoringExtremesFinding(stats),
+    buildMatrixExtremeFinding(stats, NHL_FINDING_CTX, "high"),
+    buildMatrixExtremeFinding(stats, NHL_FINDING_CTX, "low"),
+    buildCrewDominanceFinding(stats, NHL_FINDING_CTX),
+    buildYoYTrendFinding(stats, NHL_FINDING_CTX),
+    buildTeamHomeRoadFinding(stats, NHL_FINDING_CTX),
+    buildCloseGameLeagueFinding(stats, NHL_FINDING_CTX),
+    buildWhistleOutlierFinding(stats, NHL_FINDING_CTX),
+    buildOverRateOutlierFinding(stats, NHL_FINDING_CTX, "low"),
+    scoringOutlierFinding(stats),
   ].filter((c): c is ScoredFindingBase => c !== null);
 }
 

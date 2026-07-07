@@ -1,25 +1,44 @@
 import { computeAllFindings as computeNbaFindings } from "@/lib/findings";
 import { computeAllFindings as computeNhlFindings } from "@/lib/nhl/findings";
 import type { Finding } from "@/lib/findings-shared";
+import {
+  filterFindingsByLeague,
+  inferFindingLeague,
+  type FindingLeague,
+} from "@/lib/findings-shared";
 
 export interface ResearchFinding extends Finding {
-  league: "NBA" | "NHL";
+  league: FindingLeague;
+}
+
+function tagResearchFindings(
+  findings: Finding[],
+  league: FindingLeague,
+): ResearchFinding[] {
+  return filterFindingsByLeague(findings, league).map((finding) => ({
+    ...finding,
+    league,
+  }));
 }
 
 export function computeAllResearchFindings(): ResearchFinding[] {
-  const nba = computeNbaFindings().map(
-    (f): ResearchFinding => ({ ...f, league: "NBA" }),
-  );
-  const nhl = computeNhlFindings().map(
-    (f): ResearchFinding => ({ ...f, league: "NHL" }),
-  );
+  const nba = tagResearchFindings(computeNbaFindings(), "NBA");
+  const nhl = tagResearchFindings(computeNhlFindings(), "NHL");
   return [...nba, ...nhl];
+}
+
+export function computeResearchFindingsForLeague(
+  league: FindingLeague,
+): ResearchFinding[] {
+  return filterFindingsByLeague(computeAllResearchFindings(), league);
 }
 
 export function getResearchFindingById(
   id: string,
 ): ResearchFinding | undefined {
-  return computeAllResearchFindings().find((f) => f.id === id);
+  const finding = computeAllResearchFindings().find((f) => f.id === id);
+  if (!finding) return undefined;
+  return { ...finding, league: inferFindingLeague(finding) };
 }
 
 export function getAllResearchFindingIds(): string[] {

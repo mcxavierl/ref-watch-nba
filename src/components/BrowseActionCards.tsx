@@ -9,9 +9,9 @@ type BrowseLink = {
 
 const NBA_LINKS: BrowseLink[] = [
   {
-    href: "/research",
+    href: "/research?league=nba",
     label: "Research findings",
-    description: "Dataset patterns ranked by effect size",
+    description: "NBA dataset patterns ranked by effect size",
   },
   {
     href: "/rankings",
@@ -37,9 +37,9 @@ const NBA_LINKS: BrowseLink[] = [
 
 const NHL_LINKS: BrowseLink[] = [
   {
-    href: "/research",
+    href: "/research?league=nhl",
     label: "Research findings",
-    description: "Dataset patterns ranked by effect size",
+    description: "NHL dataset patterns ranked by effect size",
   },
   {
     href: "/nhl/rankings",
