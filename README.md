@@ -2,6 +2,17 @@
 
 See how NBA referee crews affect scoring and fouls — for all 30 teams, with tonight's slate at a glance.
 
+## Deploy (Cloudflare Workers)
+
+Production runs on Cloudflare Workers via [OpenNext](https://opennext.js.org/cloudflare):
+
+```bash
+npm run deploy   # build + deploy to refwatch.ca
+npm run preview  # local preview in Workers runtime
+```
+
+Custom domains: `refwatch.ca`, `www.refwatch.ca` (configured in `wrangler.jsonc`).
+
 ## Quick start
 
 ```bash
