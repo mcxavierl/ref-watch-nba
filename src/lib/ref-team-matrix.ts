@@ -1,3 +1,4 @@
+import { deltaTone } from "@/lib/metricTone";
 import { getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
 
@@ -106,75 +107,54 @@ export function computeRefTeamMatrix(
   return { refs, teams, cells, minGames, qualifiedCellCount };
 }
 
-/** Refs with the most qualified matrix cells (for mobile condensed view). */
-export type MatrixRefSortKey = "name" | "winRate";
-export type MatrixRefSortDirection = "asc" | "desc";
-export type MatrixRefSort = `${MatrixRefSortKey}-${MatrixRefSortDirection}`;
-
-export const MATRIX_REF_SORT_OPTIONS: {
-  value: MatrixRefSort;
-  label: string;
-}[] = [
-  { value: "name-asc", label: "Name (A → Z)" },
-  { value: "winRate-desc", label: "Win rate (high → low)" },
-  { value: "winRate-asc", label: "Win rate (low → high)" },
-];
-
-export interface RefMatrixAggregate {
-  /** Games-weighted win rate across qualified ref×team cells. */
-  weightedWinRate: number | null;
-  qualifiedGames: number;
-  qualifiedCells: number;
+export function sortMatrixRefsByName(
+  refs: RefTeamMatrixRef[],
+): RefTeamMatrixRef[] {
+  return [...refs].sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function refMatrixAggregate(
-  matrix: RefTeamMatrix,
-  refSlug: string,
-): RefMatrixAggregate {
-  let totalGames = 0;
-  let totalWins = 0;
-  let qualifiedCells = 0;
+export interface TeamTopRefEntry {
+  refSlug: string;
+  refName: string;
+  games: number;
+  wins: number;
+  losses: number;
+  winRate: number;
+  deltaPts: number;
+}
 
-  for (const team of matrix.teams) {
-    const cell = matrix.cells[matrixCellKey(refSlug, team.abbr)];
+/** Qualified refs whose win rate with the team beats the team baseline, best delta first. */
+export function topRefsBeatingBaselineForTeam(
+  matrix: RefTeamMatrix,
+  teamAbbr: string,
+): TeamTopRefEntry[] {
+  const team = matrix.teams.find(
+    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
+  );
+  if (!team) return [];
+
+  const entries: TeamTopRefEntry[] = [];
+
+  for (const ref of matrix.refs) {
+    const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
     if (!cell) continue;
-    qualifiedCells++;
-    totalGames += cell.games;
-    totalWins += cell.wins;
+    const deltaPts = winRateDeltaPoints(cell.winRate, team.baselineWinRate);
+    if (deltaPts <= 0) continue;
+    entries.push({
+      refSlug: ref.slug,
+      refName: ref.name,
+      games: cell.games,
+      wins: cell.wins,
+      losses: cell.losses,
+      winRate: cell.winRate,
+      deltaPts,
+    });
   }
 
-  return {
-    weightedWinRate: totalGames > 0 ? totalWins / totalGames : null,
-    qualifiedGames: totalGames,
-    qualifiedCells,
-  };
-}
-
-export function sortMatrixRefs(
-  refs: RefTeamMatrixRef[],
-  matrix: RefTeamMatrix,
-  sort: MatrixRefSort,
-): RefTeamMatrixRef[] {
-  const [key, direction] = sort.split("-") as [
-    MatrixRefSortKey,
-    MatrixRefSortDirection,
-  ];
-  const mult = direction === "asc" ? 1 : -1;
-
-  return [...refs].sort((a, b) => {
-    if (key === "name") {
-      return mult * a.name.localeCompare(b.name);
-    }
-
-    const rateA = refMatrixAggregate(matrix, a.slug).weightedWinRate;
-    const rateB = refMatrixAggregate(matrix, b.slug).weightedWinRate;
-
-    if (rateA === null && rateB === null) return a.name.localeCompare(b.name);
-    if (rateA === null) return 1;
-    if (rateB === null) return -1;
-
-    const diff = mult * (rateA - rateB);
-    return diff !== 0 ? diff : a.name.localeCompare(b.name);
+  return entries.sort((a, b) => {
+    const deltaDiff = b.deltaPts - a.deltaPts;
+    if (deltaDiff !== 0) return deltaDiff;
+    return b.games - a.games;
   });
 }
 
@@ -201,18 +181,47 @@ export function refHasTeamStat(
   return Boolean(stat && stat.games >= minGames);
 }
 
+export type MatrixCellTone = "positive" | "negative" | "neutral";
 export type MatrixCellExtreme = "high" | "low";
 
+/** Win-rate delta (percentage points) above/below team baseline for tint + border color. */
+export const MATRIX_TONE_DELTA_PTS = 2;
+/** Win-rate delta (percentage points) for thicker standout border. */
 export const MATRIX_EXTREME_DELTA_PTS = 12;
+
+export interface MatrixCellStyle {
+  tone: MatrixCellTone;
+  extreme: MatrixCellExtreme | null;
+  deltaPts: number;
+}
+
+export function matrixCellStyle(
+  cell: RefTeamMatrixCell,
+  teamBaseline: number,
+): MatrixCellStyle {
+  const deltaPts = winRateDeltaPoints(cell.winRate, teamBaseline);
+  return {
+    tone: deltaTone(deltaPts, MATRIX_TONE_DELTA_PTS),
+    extreme: matrixCellExtremeFromDelta(deltaPts),
+    deltaPts,
+  };
+}
+
+export function matrixCellExtremeFromDelta(
+  deltaPts: number,
+): MatrixCellExtreme | null {
+  if (deltaPts >= MATRIX_EXTREME_DELTA_PTS) return "high";
+  if (deltaPts <= -MATRIX_EXTREME_DELTA_PTS) return "low";
+  return null;
+}
 
 export function matrixCellExtreme(
   cell: RefTeamMatrixCell,
   teamBaseline: number,
 ): MatrixCellExtreme | null {
-  const delta = winRateDeltaPoints(cell.winRate, teamBaseline);
-  if (delta >= MATRIX_EXTREME_DELTA_PTS) return "high";
-  if (delta <= -MATRIX_EXTREME_DELTA_PTS) return "low";
-  return null;
+  return matrixCellExtremeFromDelta(
+    winRateDeltaPoints(cell.winRate, teamBaseline),
+  );
 }
 
 export interface MatrixExtremeHighlight {

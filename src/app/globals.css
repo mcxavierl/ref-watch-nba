@@ -2466,35 +2466,231 @@ p {
     gap: var(--space-2);
   }
 
-  .ref-matrix-toolbar {
+  .ref-matrix-toolbar,
+  .ref-matrix-meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    gap: var(--space-3);
+  }
+
+  .ref-matrix-team-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    background: transparent;
+    padding: 0.15rem;
+    color: inherit;
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      opacity 0.15s ease;
+  }
+
+  .ref-matrix-team-button:hover {
+    background: color-mix(in srgb, var(--surface-raised) 55%, transparent);
+    border-color: color-mix(in srgb, var(--border-subtle) 80%, transparent);
+  }
+
+  .ref-matrix-team-button--selected,
+  .ref-matrix-team-button[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--header-sapphire) 10%, var(--surface));
+    border-color: color-mix(in srgb, var(--header-sapphire) 35%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--header-sapphire) 18%, transparent);
+  }
+
+  .ref-matrix-team-head--selected,
+  .ref-matrix-baseline-cell--selected,
+  .ref-matrix-cell--team-selected {
+    background: color-mix(in srgb, var(--header-sapphire) 7%, var(--surface)) !important;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--header-sapphire) 22%, transparent);
+  }
+
+  .ref-matrix-team-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--surface-raised) 35%, var(--surface));
+    padding: var(--space-4);
+  }
+
+  .ref-matrix-team-panel-head {
+    display: flex;
+    align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-3);
   }
 
-  .ref-matrix-sort {
+  .ref-matrix-team-panel-brand {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
+    align-items: flex-start;
+    gap: var(--space-3);
+    min-width: 0;
   }
 
-  .ref-matrix-sort-label {
+  .ref-matrix-team-panel-logo {
+    flex-shrink: 0;
+  }
+
+  .ref-matrix-team-panel-copy {
+    min-width: 0;
+  }
+
+  .ref-matrix-team-panel-title {
     font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--foreground);
+    line-height: 1.35;
+  }
+
+  .ref-matrix-team-panel-team-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .ref-matrix-team-panel-team-link:hover {
+    color: var(--raptors);
+    text-decoration: underline;
+  }
+
+  .ref-matrix-team-panel-lead {
+    margin-top: 0.2rem;
+    font-size: var(--text-sm);
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  .ref-matrix-team-panel-close {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 9999px;
+    background: var(--surface);
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .ref-matrix-team-panel-close:hover {
+    color: var(--foreground);
+    border-color: color-mix(in srgb, var(--foreground) 18%, var(--border-subtle));
+    background: color-mix(in srgb, var(--surface-raised) 50%, var(--surface));
+  }
+
+  .ref-matrix-team-panel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ref-matrix-team-panel-item {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1.4fr) 4.5rem 3.5rem 5rem;
+    align-items: center;
+    gap: var(--space-2);
+    border-radius: 0.5rem;
+    padding: 0.45rem 0.55rem;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    font-size: var(--text-sm);
+  }
+
+  @media (max-width: 639px) {
+    .ref-matrix-team-panel-item {
+      grid-template-columns: 1.25rem minmax(0, 1fr);
+      grid-template-areas:
+        "rank ref"
+        ". record"
+        ". games"
+        ". delta";
+      gap: 0.15rem 0.5rem;
+      padding: 0.55rem 0.65rem;
+    }
+
+    .ref-matrix-team-panel-rank {
+      grid-area: rank;
+    }
+
+    .ref-matrix-team-panel-ref {
+      grid-area: ref;
+    }
+
+    .ref-matrix-team-panel-record {
+      grid-area: record;
+    }
+
+    .ref-matrix-team-panel-games {
+      grid-area: games;
+    }
+
+    .ref-matrix-team-panel-delta {
+      grid-area: delta;
+    }
+  }
+
+  .ref-matrix-team-panel-rank {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .ref-matrix-team-panel-ref {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+    color: var(--foreground);
     font-weight: 600;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .ref-matrix-team-panel-ref:hover {
+    color: var(--raptors);
+  }
+
+  .ref-matrix-team-panel-ref-avatar {
+    flex-shrink: 0;
+  }
+
+  .ref-matrix-team-panel-record,
+  .ref-matrix-team-panel-games,
+  .ref-matrix-team-panel-delta {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .ref-matrix-team-panel-games {
     color: var(--muted);
   }
 
-  .ref-matrix-sort-select {
-    border: 1px solid var(--border-subtle);
-    border-radius: 0.375rem;
-    background: var(--surface);
-    padding: 0.45rem 0.65rem;
+  .ref-matrix-team-panel-empty {
     font-size: var(--text-sm);
-    color: var(--foreground);
-    box-shadow: 0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent);
+    color: var(--muted);
+    line-height: 1.5;
   }
 
   .ref-matrix-swatch {
@@ -2505,6 +2701,32 @@ p {
     padding: 0.2rem 0.55rem;
     font-size: var(--text-xs);
     font-weight: 600;
+  }
+
+  .ref-matrix-swatch.ref-matrix-cell--positive,
+  .ref-matrix-swatch.ref-matrix-cell--negative,
+  .ref-matrix-swatch.ref-matrix-cell--neutral {
+    border-color: transparent;
+  }
+
+  .ref-matrix-swatch.ref-matrix-cell--positive {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #10b981 42%, transparent);
+  }
+
+  .ref-matrix-swatch.ref-matrix-cell--negative {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #f43f5e 40%, transparent);
+  }
+
+  .ref-matrix-swatch.ref-matrix-cell--neutral {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border-subtle) 85%, transparent);
+  }
+
+  .ref-matrix-swatch.ref-matrix-cell--extreme-high {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, #10b981 55%, transparent);
+  }
+
+  .ref-matrix-swatch.ref-matrix-cell--extreme-low {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, #f43f5e 50%, transparent);
   }
 
   .ref-matrix-wrap {
@@ -2570,10 +2792,6 @@ p {
     opacity: 0.85;
   }
 
-  .ref-matrix-team-logo {
-    display: block;
-  }
-
   .ref-matrix-baseline-row .ref-matrix-baseline-corner,
   .ref-matrix-baseline-row .ref-matrix-baseline-cell {
     position: sticky;
@@ -2635,6 +2853,10 @@ p {
     text-transform: none;
     letter-spacing: normal;
     vertical-align: middle;
+  }
+
+  .ref-matrix-team-logo {
+    display: block;
   }
 
   .ref-matrix-ref-link {
@@ -2699,7 +2921,27 @@ p {
   }
 
   .ref-matrix-cell-link:hover {
+    filter: brightness(0.97);
+  }
+
+  .ref-matrix-cell--positive .ref-matrix-cell-link:hover {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #10b981 62%, transparent);
+  }
+
+  .ref-matrix-cell--negative .ref-matrix-cell-link:hover {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #f43f5e 58%, transparent);
+  }
+
+  .ref-matrix-cell--neutral .ref-matrix-cell-link:hover {
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--header-sapphire) 35%, transparent);
+  }
+
+  .ref-matrix-cell--extreme-high .ref-matrix-cell-link:hover {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, #10b981 68%, transparent);
+  }
+
+  .ref-matrix-cell--extreme-low .ref-matrix-cell-link:hover {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, #f43f5e 62%, transparent);
   }
 
   .ref-matrix-record {
@@ -2756,6 +2998,18 @@ p {
     background: color-mix(in srgb, var(--surface-raised) 25%, var(--surface));
     color: color-mix(in srgb, var(--muted) 55%, transparent);
     font-size: var(--text-sm);
+  }
+
+  .ref-matrix-cell--positive .ref-matrix-cell-link {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #10b981 42%, transparent);
+  }
+
+  .ref-matrix-cell--negative .ref-matrix-cell-link {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #f43f5e 40%, transparent);
+  }
+
+  .ref-matrix-cell--neutral .ref-matrix-cell-link {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border-subtle) 85%, transparent);
   }
 
   .ref-matrix-cell--extreme-high .ref-matrix-cell-link {
