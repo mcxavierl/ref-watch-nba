@@ -1563,8 +1563,13 @@ p {
   }
 
   @media (max-width: 479px) {
+    .site-header-brand {
+      gap: 0.55rem;
+    }
+
     .site-header-name {
-      display: none;
+      font-size: var(--text-base);
+      letter-spacing: 0.02em;
     }
   }
 
