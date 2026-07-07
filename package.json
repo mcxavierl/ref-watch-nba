@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "tsx scripts/copy-data-to-public.ts && next build",
+    "build": "tsx scripts/copy-data-to-public.ts && node scripts/next-build-retry.mjs",
     "preview": "tsx scripts/copy-data-to-public.ts && opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "tsx scripts/copy-data-to-public.ts && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "upload": "tsx scripts/copy-data-to-public.ts && opennextjs-cloudflare build && opennextjs-cloudflare upload",
