@@ -108,27 +108,27 @@ export default async function NhlRefProfilePage({
         ← Home
       </Link>
 
-      <header className="mb-8 mt-5">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-3">
+      <header className="page-profile-header">
+        <div className="page-hero-head">
           <RefAvatar
             name={profile.name}
             slug={profile.slug}
             sport="nhl"
             size="lg"
           />
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
-            <h1 className="page-title">
-              {profile.name}
-            </h1>
-            <span className="font-mono text-sm text-zinc-500">
-              #{profile.number}
-            </span>
-            <FavoritesStar
-              id={profile.slug}
-              kind="ref"
-              league="nhl"
-              label={profile.name}
-            />
+          <div className="page-hero-head-copy">
+            <div className="page-hero-head-title-row">
+              <h1 className="page-title">{profile.name}</h1>
+              <span className="font-mono text-sm text-zinc-500">
+                #{profile.number}
+              </span>
+              <FavoritesStar
+                id={profile.slug}
+                kind="ref"
+                league="nhl"
+                label={profile.name}
+              />
+            </div>
           </div>
         </div>
         {!qualified && (

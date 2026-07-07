@@ -25,7 +25,7 @@ export function TeamInsightCards({
             <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
               {insight.title}
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-zinc-700">
+            <p className="mt-3 text-sm leading-relaxed text-zinc-700">
               {insight.body}
             </p>
             <p className="mt-2 text-xs text-zinc-500">

@@ -66,13 +66,13 @@ export default async function ResearchFindingPage({
         ← Research hub
       </Link>
 
-      <header className="mb-6 mt-5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-          {finding.league} · {FINDING_CATEGORY_LABELS[finding.category]}
-        </p>
-        <h1 className="mt-2 page-title">
-          {finding.headline}
-        </h1>
+      <header className="page-profile-header">
+        <div className="hero-headline-stack">
+          <p className="section-kicker">
+            {finding.league} · {FINDING_CATEGORY_LABELS[finding.category]}
+          </p>
+          <h1 className="page-title">{finding.headline}</h1>
+        </div>
         <p className="mt-3 text-sm leading-relaxed text-zinc-600">
           {finding.summary}
         </p>

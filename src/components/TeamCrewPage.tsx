@@ -67,9 +67,9 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   return (
     <div className="page-shell">
       <section className="page-hero">
-        <div className="flex items-center gap-4">
+        <div className="page-hero-head">
           <TeamLogo team={team} size="lg" sport={league} />
-          <div className="min-w-0 flex-1">
+          <div className="page-hero-head-copy">
             <p className="section-kicker">{teamName}</p>
             <h1 className="page-title">
               How {teamLabel} play under each ref or ref crew
