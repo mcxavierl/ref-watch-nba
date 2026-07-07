@@ -458,6 +458,11 @@ p {
       inset 0 1px 0 color-mix(in srgb, var(--header-gold-bright) 25%, transparent);
   }
 
+  .team-insight-card {
+    border-color: color-mix(in srgb, var(--header-sapphire) 22%, var(--border));
+    background: color-mix(in srgb, var(--header-sapphire) 4%, var(--surface));
+  }
+
   .pro-tease-callout-inner {
     padding: var(--space-6) var(--space-5);
     text-align: left;

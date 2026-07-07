@@ -1,0 +1,48 @@
+import Link from "next/link";
+import type { TeamInsight } from "@/lib/team-insights";
+
+export function TeamInsightCards({
+  insights,
+  basePath = "",
+}: {
+  insights: TeamInsight[];
+  basePath?: string;
+}) {
+  if (insights.length === 0) return null;
+
+  return (
+    <section className="section-block">
+      <h2 className="section-title">Notable patterns</h2>
+      <p className="section-lead">
+        Standout ref and crew splits from this sample — descriptive only, not
+        picks.
+      </p>
+      <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+        {insights.map((insight) => (
+          <li
+            key={insight.id}
+            className="team-insight-card data-card px-4 py-4"
+          >
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              {insight.title}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-700">
+              {insight.body}
+            </p>
+            <p className="mt-2 text-xs text-zinc-500">
+              {insight.sampleGames} games in sample
+            </p>
+            {insight.refSlug && insight.refName && (
+              <Link
+                href={`${basePath}/refs/${insight.refSlug}`}
+                className="mt-3 inline-block text-sm font-medium text-zinc-900 hover:text-raptors hover:underline"
+              >
+                {insight.refName} profile →
+              </Link>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}

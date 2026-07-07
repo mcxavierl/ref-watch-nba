@@ -15,6 +15,8 @@ import { TEAM_CREW_MIN_GAMES } from "@/lib/teamCrewSplits";
 import { getTeamSampleRecord } from "@/lib/teamRecord";
 import { userFacingDataNote } from "@/lib/user-language";
 import { computeTeamCloseGameMetrics } from "@/lib/close-game";
+import { computeTeamInsights } from "@/lib/team-insights";
+import { TeamInsightCards } from "@/components/TeamInsightCards";
 
 export interface TeamPageConfig {
   teamAbbr: string;
@@ -52,6 +54,18 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
     stats.meta,
     isNhl ? "NHL" : "NBA",
   );
+  const teamInsights = computeTeamInsights({
+    teamAbbr: team.abbr,
+    teamLabel,
+    teamRecord,
+    crewSplits: splits,
+    refSplits,
+    refs: stats.refs,
+    leagueAvgTotal: stats.meta.leagueAvgTotal,
+    leagueOverBaseline: stats.meta.leagueOverBaseline,
+    leagueAvgFouls: stats.meta.leagueAvgFouls,
+    league,
+  });
 
   return (
     <div className="page-shell">
@@ -88,6 +102,8 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           </span>
         </p>
       </section>
+
+      <TeamInsightCards insights={teamInsights} basePath={basePath} />
 
       {splits.length === 0 && refSplits.length === 0 ? (
         <div className="panel-inset px-6 py-8 text-center">
