@@ -6,6 +6,7 @@ import {
   refSlug,
 } from "@/lib/data";
 import { benchmarkTotal, getOdds } from "@/lib/odds";
+import { attachWhistlePremiumProvenance } from "@/lib/provenance";
 import { detectTeamsInGame, matchTeamString, teamFullName } from "@/lib/teams";
 import type {
   AssignmentGame,
@@ -172,7 +173,7 @@ export function computeCrewWhistlePremium(
   premium.alert = alert;
   premium.alertReason = reason;
 
-  return premium;
+  return attachWhistlePremiumProvenance(premium, stats);
 }
 
 export function computeSlatePremiums(

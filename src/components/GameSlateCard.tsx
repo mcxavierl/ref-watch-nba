@@ -19,6 +19,7 @@ import { teamFullName as nhlTeamFullName, type NhlTeam } from "@/lib/nhl/teams";
 import { TermHelp } from "@/components/TermHelp";
 import { GameGrudgeStorylines } from "./GrudgeMatchSection";
 import { NhlSlateSignalBadges } from "./NhlSlateSignalBadges";
+import { SampleGateBadge } from "./SampleGateBadge";
 import { MetricBlock, MetricGrid } from "./MetricBlock";
 import { TeamLogo } from "./TeamLogo";
 import { GamePremiumStrip } from "./WhistlePremiumSection";
@@ -147,6 +148,10 @@ export function GameSlateCard({
         ))}
       </div>
 
+      <div className="border-b border-border-subtle px-4 py-2 sm:px-5">
+        <SampleGateBadge gate={metrics.provenance.sampleGate} />
+      </div>
+
       <MetricGrid>
         <MetricBlock
           icon={metrics.totalPointsDelta >= 0 ? TrendingUp : TrendingDown}
@@ -161,6 +166,7 @@ export function GameSlateCard({
           }
           badge={`${totalDelta} vs league`}
           badgeTone={scoreTone}
+          provenance={metrics.provenance.scoring}
         />
         <MetricBlock
           icon={Volume2}
@@ -170,6 +176,7 @@ export function GameSlateCard({
           hint={`${foulsDelta} vs league avg`}
           badge={metrics.insufficientSample ? "Small sample" : `${metrics.sampleGames}g sample`}
           badgeTone={metrics.insufficientSample ? "warning" : "neutral"}
+          provenance={metrics.provenance.fouls}
         />
         <MetricBlock
           icon={Target}
@@ -185,6 +192,7 @@ export function GameSlateCard({
             </>
           }
           badgeTone="neutral"
+          provenance={premium.provenance?.gapVsBenchmark}
         />
       </MetricGrid>
 

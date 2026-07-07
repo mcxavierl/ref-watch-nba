@@ -1,17 +1,23 @@
-import type { RefBettingStats, RefProfile } from "@/lib/types";
+import type { MetricProvenance, RefBettingStats, RefProfile } from "@/lib/types";
 import { formatPct } from "@/lib/data";
 import { formatPctFromWlp, formatWlp } from "@/lib/ref-betting";
 import { TermHeading, TermHelp } from "@/components/TermHelp";
+import { ProvenanceMarker } from "@/components/ProvenanceMarker";
+import { SampleGateBadge } from "@/components/SampleGateBadge";
 import { StatCell, StatStrip } from "./StatStrip";
 
 function WlpCell({
   label,
   termId,
   record,
+  provenance,
+  belowGate,
 }: {
   label: string;
   termId?: "ats" | "home-team-wl" | "hit-rate";
   record: { wins: number; losses: number; pushes: number };
+  provenance?: MetricProvenance;
+  belowGate?: boolean;
 }) {
   return (
     <StatCell
@@ -24,8 +30,18 @@ function WlpCell({
       }
       value={formatWlp(record.wins, record.losses, record.pushes)}
       detail={formatPctFromWlp(record.wins, record.losses, record.pushes)}
+      provenance={provenance}
+      annotation={belowGate ? "Below bucket sample gate" : undefined}
     />
   );
+}
+
+function bucketGames(record: {
+  wins: number;
+  losses: number;
+  pushes: number;
+}): number {
+  return record.wins + record.losses + record.pushes;
 }
 
 export function RefBettingProfile({
@@ -36,9 +52,19 @@ export function RefBettingProfile({
   stats: RefBettingStats;
 }) {
   const ou = stats.overUnder;
+  const prov = stats.provenance;
+  const bucketGate = prov?.bucketGateThreshold ?? 5;
 
   return (
     <div className="space-y-4">
+      {prov && (
+        <div className="flex flex-wrap items-center gap-2">
+          <ProvenanceMarker provenance={prov.lines} />
+          {profile.provenance?.sampleGate && (
+            <SampleGateBadge gate={profile.provenance.sampleGate} />
+          )}
+        </div>
+      )}
       <section className="data-card">
         <div className="border-b border-border px-4 py-3 sm:px-5">
           <h2 className="text-sm font-semibold text-zinc-800">General</h2>
@@ -58,6 +84,7 @@ export function RefBettingProfile({
             label="Home team ATS"
             termId="ats"
             record={stats.homeTeamAts}
+            provenance={prov?.homeTeamAts}
           />
         </StatStrip>
         <StatStrip>
@@ -79,22 +106,28 @@ export function RefBettingProfile({
             label="Avg total score"
             value={String(profile.avgTotalPoints)}
             detail={`${profile.totalPointsDelta >= 0 ? "+" : ""}${profile.totalPointsDelta} vs league`}
+            provenance={profile.provenance?.avgTotalPoints}
           />
           <StatCell
             label="Fouls per game"
             value={String(profile.avgFouls)}
             detail={`${profile.foulsDelta >= 0 ? "+" : ""}${profile.foulsDelta} vs league`}
+            provenance={profile.provenance?.avgFouls}
           />
           <StatCell
             label={<TermHelp id="over-225">Over rate (225 proxy)</TermHelp>}
             value={formatPct(profile.overRate)}
+            provenance={profile.provenance?.overRate}
           />
         </StatStrip>
       </section>
 
       <section className="data-card">
         <div className="border-b border-border px-4 py-3 sm:px-5">
-          <TermHeading id="over-under" />
+          <div className="flex flex-wrap items-center gap-2">
+            <TermHeading id="over-under" />
+            {prov && <ProvenanceMarker provenance={prov.overUnder} compact />}
+          </div>
         </div>
         <StatStrip>
           <WlpCell label="Overall" record={ou.overall} />
@@ -113,13 +146,29 @@ export function RefBettingProfile({
               </tr>
             </thead>
             <tbody>
-              {ou.buckets.map((bucket) => (
+              {ou.buckets.map((bucket) => {
+                const games = bucketGames(bucket.record);
+                const belowGate = games < bucketGate;
+                return (
                 <tr
                   key={bucket.label}
-                  className="border-t border-border-subtle"
+                  className={`border-t border-border-subtle ${belowGate ? "bg-amber-50/40" : ""}`}
                 >
                   <td className="px-4 py-2.5 text-zinc-800 sm:px-5">
                     {bucket.label}
+                    {belowGate && (
+                      <span className="ml-2">
+                        <SampleGateBadge
+                          gate={{
+                            sampleSize: games,
+                            gateThreshold: bucketGate,
+                            cleared: false,
+                            label: `${games}/${bucketGate} games — below threshold`,
+                          }}
+                          className="align-middle"
+                        />
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-2.5 font-mono tabular-nums text-zinc-800">
                     {formatWlp(
@@ -136,7 +185,8 @@ export function RefBettingProfile({
                     )}
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -144,10 +194,11 @@ export function RefBettingProfile({
 
       <section className="data-card">
         <div className="border-b border-border px-4 py-3 sm:px-5">
-          <h2 className="text-sm font-semibold text-zinc-800">
+          <h2 className="flex flex-wrap items-center gap-2 text-sm font-semibold text-zinc-800">
             <TermHelp id="ats-split">
               Spread — home favorite / underdog
             </TermHelp>
+            {prov && <ProvenanceMarker provenance={prov.spreadBuckets} compact />}
           </h2>
         </div>
         <div className="overflow-x-auto">
@@ -164,10 +215,15 @@ export function RefBettingProfile({
               </tr>
             </thead>
             <tbody>
-              {stats.spreadBuckets.map((bucket) => (
+              {stats.spreadBuckets.map((bucket) => {
+                const favGames = bucketGames(bucket.homeFavorite);
+                const dogGames = bucketGames(bucket.homeUnderdog);
+                const belowGate =
+                  favGames < bucketGate || dogGames < bucketGate;
+                return (
                 <tr
                   key={bucket.label}
-                  className="border-t border-border-subtle"
+                  className={`border-t border-border-subtle ${belowGate ? "bg-amber-50/40" : ""}`}
                 >
                   <td className="px-4 py-2.5 text-zinc-800 sm:px-5">
                     {bucket.label}
@@ -187,7 +243,8 @@ export function RefBettingProfile({
                     )}
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

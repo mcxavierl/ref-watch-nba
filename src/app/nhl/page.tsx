@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
+import { DataConfidenceSummary } from "@/components/DataConfidenceSummary";
+import { JsonLd } from "@/components/JsonLd";
+import { SlateShareBar } from "@/components/SlateShareBar";
 import { TermHelp } from "@/components/TermHelp";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import {
@@ -20,13 +23,35 @@ import {
 } from "@/lib/nhl/whistle-premium";
 import { computeSlatePpPremiums } from "@/lib/nhl/pp-premium";
 import { computeSlateOtSignals } from "@/lib/nhl/ot-rate";
+import { collectSlateProvenance } from "@/lib/provenance";
 import type { AssignmentGame } from "@/lib/types";
+import {
+  buildNhlNightlyFeed,
+  buildShareText,
+  slateDatasetJsonLd,
+  slateMetadataDescription,
+  slateSportsEvents,
+  topShareSignals,
+} from "@/lib/syndication";
+import { absoluteUrl } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Tonight's NHL slate — Ref Watch",
-  description:
-    "Tonight's NHL referee crews with whistle premium, scoring trends, and PIM patterns.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const feed = buildNhlNightlyFeed();
+  const description = slateMetadataDescription(feed);
+  return {
+    title: "Tonight's NHL slate",
+    description,
+    alternates: {
+      canonical: absoluteUrl("/nhl"),
+    },
+    openGraph: {
+      title: "Tonight's NHL slate — Ref Watch",
+      description,
+      url: absoluteUrl("/nhl"),
+      type: "website",
+    },
+  };
+}
 
 function sortSlateGames(
   games: AssignmentGame[],
@@ -59,9 +84,33 @@ export default function NhlHomePage() {
 
   const ppByGame = new Map(ppPremiums.map((p) => [p.gameId, p]));
   const otByGame = new Map(otSignals.map((p) => [p.gameId, p]));
+  const metricsList = sortedGames.map((game) =>
+    computeCrewMetrics(game.crew, refStats),
+  );
+  const confidenceSummary = collectSlateProvenance(
+    metricsList,
+    premiums,
+    homeBiasSignals,
+    { ppPremiums, otSignals },
+  );
+  const nightlyFeed = buildNhlNightlyFeed();
 
   return (
     <div className="page-shell">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: "Tonight's NHL slate",
+            description: slateMetadataDescription(nightlyFeed),
+            url: absoluteUrl("/nhl"),
+            dateModified: assignments.lastUpdated,
+          },
+          slateDatasetJsonLd(nightlyFeed),
+          ...slateSportsEvents("NHL"),
+        ]}
+      />
       <section className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
           Tonight&apos;s NHL slate
@@ -71,6 +120,11 @@ export default function NhlHomePage() {
           PIM trends, and ref–team history.
         </p>
         <DataFreshnessMeta assignments={assignments} refStats={refStats} league="NHL" />
+        {slateGames.length > 0 && (
+          <div className="mt-4">
+            <DataConfidenceSummary summary={confidenceSummary} />
+          </div>
+        )}
       </section>
 
       {slateGames.length === 0 ? (
@@ -97,6 +151,14 @@ export default function NhlHomePage() {
         </div>
       ) : (
         <>
+          <SlateShareBar
+            shareText={buildShareText(nightlyFeed)}
+            topSignals={topShareSignals(nightlyFeed, 5)}
+            disclaimer={nightlyFeed.disclaimer}
+            pageUrl={nightlyFeed.pageUrl}
+            league="NHL"
+          />
+
           <details className="panel-inset mb-6 px-4 py-3 sm:px-5" open>
             <summary className="cursor-pointer text-sm font-semibold text-zinc-800">
               Tonight&apos;s signals

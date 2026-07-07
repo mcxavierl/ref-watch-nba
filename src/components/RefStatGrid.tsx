@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { RefProfile } from "@/lib/types";
 import { formatPct } from "@/lib/data";
+import { SampleGateBadge } from "./SampleGateBadge";
 import { StatCell, StatStrip } from "./StatStrip";
 
 export function RefStatGrid({
@@ -25,19 +26,28 @@ export function RefStatGrid({
       ? `+${profile.foulsDelta}`
       : String(profile.foulsDelta);
 
+  const prov = profile.provenance;
+
   return (
     <div className="data-card">
+      {prov?.sampleGate && (
+        <div className="border-b border-border px-4 py-2 sm:px-5">
+          <SampleGateBadge gate={prov.sampleGate} />
+        </div>
+      )}
       <StatStrip>
         <StatCell label="Games" value={String(profile.games)} />
         <StatCell
           label={scoreLabel}
           value={String(profile.avgTotalPoints)}
           detail={`${totalDelta} vs league avg`}
+          provenance={prov?.avgTotalPoints}
         />
         <StatCell
           label={overLabel}
           value={formatPct(profile.overRate)}
           detail={`Combined beat ${overBaseline} benchmark`}
+          provenance={prov?.overRate}
         />
       </StatStrip>
       <StatStrip>
@@ -45,6 +55,7 @@ export function RefStatGrid({
           label={foulLabel}
           value={String(profile.avgFouls)}
           detail={`${foulsDelta} vs league avg`}
+          provenance={prov?.avgFouls}
         />
         <StatCell label="Seasons" value={profile.seasons.join(", ")} />
         <StatCell label="Spread record" value="N/A" detail="No spread data yet" />

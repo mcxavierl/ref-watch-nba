@@ -2,6 +2,7 @@ import { getRefBySlug, refSlug } from "@/lib/nhl/data";
 import { matchTeamString } from "@/lib/nhl/teams";
 import { findOddsTotal } from "@/lib/nhl/odds";
 import { resolveLeagueBaseline } from "@/lib/baselines";
+import { ppPremiumProvenance } from "@/lib/provenance";
 import type {
   AssignmentGame,
   NhlPpPremiumSignal,
@@ -79,7 +80,7 @@ export function computePpPremiumSignal(
     ? ` Book total ${line.total}.`
     : " No sportsbook total on file.";
 
-  return {
+  const signal: NhlPpPremiumSignal = {
     gameId: game.id,
     matchup: game.matchup,
     index,
@@ -92,6 +93,8 @@ export function computePpPremiumSignal(
       `${home.abbr} + ${away.abbr} special-teams edge ${(stEdge * 100).toFixed(1)} pts (PP% minus PK%).` +
       lineNote,
   };
+  signal.provenance = ppPremiumProvenance(signal, stats);
+  return signal;
 }
 
 export function computeSlatePpPremiums(

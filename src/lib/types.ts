@@ -57,6 +57,13 @@ export interface NhlRefAnalytics {
   /** Share of games within ±1 minor between teams. */
   balancedGameRate: number;
   balanceKind: "balancer" | "asymmetric" | "neutral";
+  provenance?: {
+    avgMinorsPerGame: MetricProvenance;
+    overtimeRate: MetricProvenance;
+    penaltyBalance: MetricProvenance;
+    minorsBaseline: MetricProvenance;
+    sampleGate: SampleGateStatus;
+  };
 }
 
 export interface NhlTeamSpecialTeams {
@@ -74,6 +81,13 @@ export interface NhlPpPremiumSignal {
   sampleGames: number;
   headline: string;
   summary: string;
+  provenance?: {
+    index: MetricProvenance;
+    refMinorRate: MetricProvenance;
+    specialTeamsEdge: MetricProvenance;
+    sampleGate: SampleGateStatus;
+    minorsBaseline: MetricProvenance;
+  };
 }
 
 /** OT rate flag for tight matchups. */
@@ -86,6 +100,10 @@ export interface NhlOtRateSignal {
   sampleGames: number;
   headline: string;
   summary: string;
+  provenance?: {
+    refereeOtRate: MetricProvenance;
+    sampleGate: SampleGateStatus;
+  };
 }
 
 /** Per-ref stats for games involving a specific team. */
@@ -116,6 +134,13 @@ export interface RefProfile {
   bettingStats?: RefBettingStats;
   /** NHL referee-only analytics when available. */
   nhlAnalytics?: NhlRefAnalytics;
+  provenance?: {
+    avgTotalPoints: MetricProvenance;
+    overRate: MetricProvenance;
+    avgFouls: MetricProvenance;
+    sampleGate: SampleGateStatus;
+    leagueBaseline: MetricProvenance;
+  };
 }
 
 export interface WlpRecord {
@@ -147,6 +172,14 @@ export interface RefBettingStats {
   };
   spreadBuckets: SpreadBucketStat[];
   linesAvailable: boolean;
+  provenance?: {
+    aggregate: MetricProvenance;
+    homeTeamAts: MetricProvenance;
+    overUnder: MetricProvenance;
+    spreadBuckets: MetricProvenance;
+    lines: MetricProvenance;
+    bucketGateThreshold: number;
+  };
 }
 
 export interface TeamCrewSplit {
@@ -226,6 +259,31 @@ export type PaceAlertKind = "high_pace" | "low_pace";
 
 export type SampleQuality = "strong" | "moderate" | "weak";
 
+/** How a displayed metric was derived. */
+export type ProvenanceTag =
+  | "computed-from-real"
+  | "computed-with-partial-data"
+  | "fallback-constant";
+
+export interface MetricProvenance {
+  tag: ProvenanceTag;
+  sampleSize?: number;
+  gateThreshold?: number;
+  note?: string;
+}
+
+export interface SampleGateStatus {
+  sampleSize: number;
+  gateThreshold: number;
+  cleared: boolean;
+  label: string;
+}
+
+export interface ProvenanceBundle {
+  aggregate: MetricProvenance;
+  sampleGate: SampleGateStatus;
+}
+
 /** Crew scoring/foul premium vs league baseline for tonight's assignment. */
 export interface CrewWhistlePremium {
   gameId: string;
@@ -245,6 +303,13 @@ export interface CrewWhistlePremium {
   qualifiedRefCount: number;
   alert: PaceAlertKind | null;
   alertReason: string | null;
+  provenance?: {
+    scoringPremium: MetricProvenance;
+    gapVsBenchmark: MetricProvenance;
+    alert: MetricProvenance;
+    benchmark: MetricProvenance;
+    sampleGate: SampleGateStatus;
+  };
 }
 
 export type HomeBiasKind = "home_protector" | "road_warrior" | "neutral";
@@ -261,6 +326,7 @@ export interface CrewHomeBias {
   sampleGames: number;
   headline: string;
   summary: string;
+  provenance?: ProvenanceBundle;
 }
 
 export interface SlateAlertsFile {

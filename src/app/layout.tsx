@@ -4,6 +4,7 @@ import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteFooterWrapper } from "@/components/SiteFooterWrapper";
 import { SiteHeader } from "@/components/SiteHeader";
+import { AFFILIATION_DISCLAIMER, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const sourceSans = Source_Sans_3({
@@ -20,9 +21,29 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ref Watch NBA — Referee crew analytics",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} — Referee crew analytics`,
+    template: `%s — ${SITE_NAME}`,
+  },
   description:
-    "Tonight's NBA referee crews with O/U lean, foul trends, and Raptors-aware splits. Free nightly slate.",
+    "Tonight's NBA and NHL referee crews with sample-gated scoring, whistle, and betting splits. Free nightly slate.",
+  alternates: {
+    types: {
+      "application/rss+xml": [
+        { url: "/feed/nba.xml", title: "Ref Watch NBA signals" },
+        { url: "/feed/nhl.xml", title: "Ref Watch NHL signals" },
+      ],
+    },
+  },
+  openGraph: {
+    siteName: SITE_NAME,
+    type: "website",
+    locale: "en_CA",
+  },
+  other: {
+    disclaimer: AFFILIATION_DISCLAIMER,
+  },
 };
 
 export default function RootLayout({

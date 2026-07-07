@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RefBettingProfile } from "@/components/RefBettingProfile";
+import { JsonLd } from "@/components/JsonLd";
 import { TermHelp } from "@/components/TermHelp";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import {
@@ -11,6 +12,12 @@ import {
   getRefBySlug,
   getRefStats,
 } from "@/lib/data";
+import {
+  enrichBettingStats,
+  refProfileCoreProvenance,
+} from "@/lib/provenance";
+import { refProfileDatasetJsonLd } from "@/lib/syndication";
+import { absoluteUrl } from "@/lib/site";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
@@ -31,8 +38,11 @@ export async function generateMetadata({
     ? `${ats.wins}-${ats.losses}${ats.pushes ? `-${ats.pushes}` : ""} home ATS`
     : "";
   return {
-    title: `${profile.name} (#${profile.number}) — Ref Watch NBA`,
-    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over 225${atsLabel ? `, ${atsLabel}` : ""}.`,
+    title: `${profile.name} (#${profile.number})`,
+    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over 225${atsLabel ? `, ${atsLabel}` : ""}. Sample-gated referee analytics.`,
+    alternates: {
+      canonical: absoluteUrl(`/refs/${slug}`),
+    },
   };
 }
 
@@ -42,15 +52,30 @@ export default async function RefProfilePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const profile = getRefBySlug(slug);
-  if (!profile) notFound();
+  const rawProfile = getRefBySlug(slug);
+  if (!rawProfile) notFound();
 
   const stats = getRefStats();
+  const profile = {
+    ...rawProfile,
+    provenance: refProfileCoreProvenance(rawProfile, stats.meta),
+    bettingStats:
+      enrichBettingStats(rawProfile, stats.meta) ?? rawProfile.bettingStats,
+  };
   const qualified = profile.games >= stats.meta.minSampleSize;
   const statsSeeded = stats.meta.source === "seeded";
 
   return (
     <div className="page-shell">
+      <JsonLd
+        data={refProfileDatasetJsonLd(
+          profile.name,
+          profile.slug,
+          "NBA",
+          profile.games,
+          stats.meta.lastUpdated,
+        )}
+      />
       <Link
         href="/"
         className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900"

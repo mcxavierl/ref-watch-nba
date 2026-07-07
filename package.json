@@ -23,7 +23,8 @@
     "generate-nhl-seed": "tsx scripts/nhl/generate-seed.ts",
     "build-nhl-data": "tsx scripts/nhl/build-ref-data.ts",
     "compute-baselines": "tsx scripts/compute-baselines.ts",
-    "backtest": "tsx scripts/backtest.ts"
+    "backtest": "tsx scripts/backtest.ts",
+    "honesty-audit": "tsx scripts/honesty-audit.ts"
   },
   "dependencies": {
     "cheerio": "^1.2.0",

@@ -1,5 +1,7 @@
 import type { NhlOtRateSignal, NhlPpPremiumSignal } from "@/lib/types";
 import { TermHelp } from "@/components/TermHelp";
+import { ProvenanceMarker } from "@/components/ProvenanceMarker";
+import { SampleGateBadge } from "@/components/SampleGateBadge";
 
 export function NhlSlateSignalBadges({
   ppPremium,
@@ -17,8 +19,14 @@ export function NhlSlateSignalBadges({
           className="inline-flex max-w-full flex-col rounded-md bg-emerald-50 px-2.5 py-1.5 text-sm text-emerald-900 ring-1 ring-emerald-200"
           title={ppPremium.summary}
         >
-          <span className="font-medium">
+          <span className="flex flex-wrap items-center gap-1.5 font-medium">
             <TermHelp id="pp-premium">{ppPremium.headline}</TermHelp>
+            {ppPremium.provenance && (
+              <>
+                <ProvenanceMarker provenance={ppPremium.provenance.index} compact />
+                <SampleGateBadge gate={ppPremium.provenance.sampleGate} />
+              </>
+            )}
           </span>
           <span className="text-xs text-emerald-800/90">
             Index {ppPremium.index} · {ppPremium.refMinorRate} minors/g
@@ -30,8 +38,14 @@ export function NhlSlateSignalBadges({
           className="inline-flex max-w-full flex-col rounded-md bg-sky-50 px-2.5 py-1.5 text-sm text-sky-900 ring-1 ring-sky-200"
           title={otSignal.summary}
         >
-          <span className="font-medium">
+          <span className="flex flex-wrap items-center gap-1.5 font-medium">
             <TermHelp id="ot-rate-badge">{otSignal.headline}</TermHelp>
+            {otSignal.provenance && (
+              <>
+                <ProvenanceMarker provenance={otSignal.provenance.refereeOtRate} compact />
+                <SampleGateBadge gate={otSignal.provenance.sampleGate} />
+              </>
+            )}
           </span>
           <span className="text-xs text-sky-800/90">
             {(otSignal.refereeOtRate * 100).toFixed(1)}% OT · line{" "}

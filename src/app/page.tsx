@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
+import { DataConfidenceSummary } from "@/components/DataConfidenceSummary";
 import { FindingsSection } from "@/components/FindingsSection";
+import { JsonLd } from "@/components/JsonLd";
+import { SlateShareBar } from "@/components/SlateShareBar";
 import { TermHelp } from "@/components/TermHelp";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import {
@@ -18,6 +21,7 @@ import {
   resolveSlateGames,
 } from "@/lib/grudge-match";
 import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/home-bias";
+import { collectSlateProvenance } from "@/lib/provenance";
 import { getOdds } from "@/lib/odds";
 import {
   computeCrewWhistlePremium,
@@ -25,12 +29,33 @@ import {
   paceAlerts,
 } from "@/lib/whistle-premium";
 import type { AssignmentGame } from "@/lib/types";
+import {
+  buildNbaNightlyFeed,
+  buildShareText,
+  slateDatasetJsonLd,
+  slateMetadataDescription,
+  slateSportsEvents,
+  topShareSignals,
+} from "@/lib/syndication";
+import { absoluteUrl } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Tonight's NBA slate — Ref Watch",
-  description:
-    "Tonight's referee crews with whistle premium, grudge-match flags, and home bias.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const feed = buildNbaNightlyFeed();
+  const description = slateMetadataDescription(feed);
+  return {
+    title: "Tonight's NBA slate",
+    description,
+    alternates: {
+      canonical: absoluteUrl("/"),
+    },
+    openGraph: {
+      title: "Tonight's NBA slate — Ref Watch",
+      description,
+      url: absoluteUrl("/"),
+      type: "website",
+    },
+  };
+}
 
 function sortSlateGames(
   games: AssignmentGame[],
@@ -60,9 +85,32 @@ export default function HomePage() {
   const alertPremiums = paceAlerts(premiums);
   const homeBiasSignals = computeSlateHomeBias(sortedGames, refStats);
   const slateStorylines = computeSlateStorylines(sortedGames, refStats, 5);
+  const metricsList = sortedGames.map((game) =>
+    computeCrewMetrics(game.crew, refStats),
+  );
+  const confidenceSummary = collectSlateProvenance(
+    metricsList,
+    premiums,
+    homeBiasSignals,
+  );
+  const nightlyFeed = buildNbaNightlyFeed();
 
   return (
     <div className="page-shell">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: "Tonight's NBA slate",
+            description: slateMetadataDescription(nightlyFeed),
+            url: absoluteUrl("/"),
+            dateModified: assignments.lastUpdated,
+          },
+          slateDatasetJsonLd(nightlyFeed),
+          ...slateSportsEvents("NBA"),
+        ]}
+      />
       <section className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
           Tonight&apos;s slate
@@ -72,6 +120,11 @@ export default function HomePage() {
           fouls, ATS splits, and ref–team history.
         </p>
         <DataFreshnessMeta assignments={assignments} refStats={refStats} />
+        {slateGames.length > 0 && (
+          <div className="mt-4">
+            <DataConfidenceSummary summary={confidenceSummary} />
+          </div>
+        )}
       </section>
 
       {slateGames.length === 0 ? (
@@ -97,6 +150,14 @@ export default function HomePage() {
         </div>
       ) : (
         <>
+          <SlateShareBar
+            shareText={buildShareText(nightlyFeed)}
+            topSignals={topShareSignals(nightlyFeed, 5)}
+            disclaimer={nightlyFeed.disclaimer}
+            pageUrl={nightlyFeed.pageUrl}
+            league="NBA"
+          />
+
           <details className="panel-inset mb-6 px-4 py-3 sm:px-5" open>
             <summary className="cursor-pointer text-sm font-semibold text-zinc-800">
               Tonight&apos;s signals

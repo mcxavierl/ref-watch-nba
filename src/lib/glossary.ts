@@ -27,7 +27,9 @@ export type GlossaryId =
   | "nhl-ref-analytics"
   | "home-margin"
   | "pace-alert"
-  | "hit-rate";
+  | "hit-rate"
+  | "provenance-estimated"
+  | "sample-gate";
 
 export interface GlossaryEntry {
   /** Visible label when none passed as children. */
@@ -152,5 +154,13 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   "hit-rate": {
     label: "Hit rate",
     text: "Win percentage for that record (wins ÷ all decisions, including pushes where listed).",
+  },
+  "provenance-estimated": {
+    label: "Estimated",
+    text: "This number is not computed from real game logs yet — it uses a fallback constant (e.g. league baseline or odds benchmark) until enough live data is ingested.",
+  },
+  "sample-gate": {
+    label: "Sample gate",
+    text: "Minimum games required before we show a confident stat. Below the threshold, the value may still appear but is marked as below gate.",
   },
 };

@@ -17,6 +17,8 @@ import {
   whistleBias,
 } from "@/lib/stats-utils";
 import { resolveLeagueBaseline } from "@/lib/baselines";
+import { crewMetricsProvenance } from "@/lib/provenance";
+import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data");
 
@@ -162,6 +164,13 @@ export interface CrewMetrics {
   homeCoverRate: number | null;
   ouLean: "over" | "under" | "neutral";
   insufficientSample: boolean;
+  provenance: {
+    aggregate: MetricProvenance;
+    scoring: MetricProvenance;
+    fouls: MetricProvenance;
+    overRate: MetricProvenance;
+    sampleGate: SampleGateStatus;
+  };
 }
 
 export function computeCrewMetrics(
@@ -199,10 +208,12 @@ export function computeCrewMetrics(
   if (overRate >= 0.56 || totalDelta >= 3) ouLean = "over";
   else if (overRate <= 0.44 || totalDelta <= -3) ouLean = "under";
 
+  const avgSampleGames = Math.round(sampleGames / (qualified.length || 1));
+
   return {
     crew,
     qualifiedRefs: qualified,
-    sampleGames: Math.round(sampleGames / (qualified.length || 1)),
+    sampleGames: avgSampleGames,
     avgTotalPoints: round1(avgTotal),
     totalPointsDelta: round1(totalDelta),
     overRate: round3(overRate),
@@ -211,6 +222,12 @@ export function computeCrewMetrics(
     homeCoverRate: null,
     ouLean,
     insufficientSample: qualified.length < 2,
+    provenance: crewMetricsProvenance(
+      stats,
+      qualified.length,
+      avgSampleGames,
+      minSample,
+    ),
   };
 }
 

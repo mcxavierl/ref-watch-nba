@@ -1,4 +1,5 @@
 import { crewKey, formatPct, formatSigned, getTeamSplits } from "@/lib/data";
+import { homeBiasProvenance } from "@/lib/provenance";
 import { matchTeamString, teamFullName } from "@/lib/teams";
 import type {
   AssignmentGame,
@@ -143,6 +144,21 @@ export function computeCrewHomeBias(
     sampleGames: totalGames,
     headline,
     summary,
+    provenance: homeBiasProvenance(
+      {
+        gameId: game.id,
+        homeAbbr: home.abbr,
+        homeLabel,
+        kind,
+        homeWinRate,
+        awayWinRate,
+        homeFoulEdge,
+        sampleGames: totalGames,
+        headline,
+        summary,
+      },
+      stats,
+    ),
   };
 }
 

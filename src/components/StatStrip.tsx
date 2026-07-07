@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import type { MetricProvenance } from "@/lib/types";
+import { ProvenanceMarker, provenanceValueClass } from "@/components/ProvenanceMarker";
 
 export function StatStrip({ children }: { children: ReactNode }) {
   return <dl className="stat-row">{children}</dl>;
@@ -9,16 +11,29 @@ export function StatCell({
   value,
   detail,
   annotation,
+  provenance,
 }: {
   label: ReactNode;
   value: string;
   detail?: string;
   annotation?: string;
+  provenance?: MetricProvenance;
 }) {
   return (
     <div className="stat-cell">
-      <dt className="stat-label">{label}</dt>
-      <dd className="stat-value">{value}</dd>
+      <dt className="stat-label">
+        {label}
+        {provenance && (
+          <span className="ml-1">
+            <ProvenanceMarker provenance={provenance} compact />
+          </span>
+        )}
+      </dt>
+      <dd
+        className={`stat-value ${provenanceValueClass(provenance) ?? ""}`.trim()}
+      >
+        {value}
+      </dd>
       {detail && <dd className="stat-detail">{detail}</dd>}
       {annotation && <dd className="stat-annotation">{annotation}</dd>}
     </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RefBettingProfile } from "@/components/RefBettingProfile";
+import { JsonLd } from "@/components/JsonLd";
 import { NhlRefAnalyticsSection } from "@/components/NhlRefAnalyticsSection";
 import { TermHelp } from "@/components/TermHelp";
 import { RefStatGrid } from "@/components/RefStatGrid";
@@ -12,6 +13,13 @@ import {
   getRefBySlug,
   getRefStats,
 } from "@/lib/nhl/data";
+import {
+  enrichBettingStats,
+  nhlRefAnalyticsProvenance,
+  refProfileCoreProvenance,
+} from "@/lib/provenance";
+import { refProfileDatasetJsonLd } from "@/lib/syndication";
+import { absoluteUrl } from "@/lib/site";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
@@ -33,8 +41,11 @@ export async function generateMetadata({
     ? `${ats.wins}-${ats.losses}${ats.pushes ? `-${ats.pushes}` : ""} home ATS`
     : "";
   return {
-    title: `${profile.name} (#${profile.number}) — Ref Watch NHL`,
-    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over ${stats.meta.leagueOverBaseline}${atsLabel ? `, ${atsLabel}` : ""}.`,
+    title: `${profile.name} (#${profile.number})`,
+    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over ${stats.meta.leagueOverBaseline}${atsLabel ? `, ${atsLabel}` : ""}. Sample-gated NHL official analytics.`,
+    alternates: {
+      canonical: absoluteUrl(`/nhl/refs/${slug}`),
+    },
   };
 }
 
@@ -44,15 +55,40 @@ export default async function NhlRefProfilePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const profile = getRefBySlug(slug);
-  if (!profile) notFound();
+  const rawProfile = getRefBySlug(slug);
+  if (!rawProfile) notFound();
 
   const stats = getRefStats();
+  const profile = {
+    ...rawProfile,
+    provenance: refProfileCoreProvenance(rawProfile, stats.meta),
+    bettingStats:
+      enrichBettingStats(rawProfile, stats.meta) ?? rawProfile.bettingStats,
+    nhlAnalytics: rawProfile.nhlAnalytics
+      ? {
+          ...rawProfile.nhlAnalytics,
+          provenance: nhlRefAnalyticsProvenance(
+            rawProfile,
+            rawProfile.nhlAnalytics,
+            stats.meta,
+          ),
+        }
+      : undefined,
+  };
   const qualified = profile.games >= stats.meta.minSampleSize;
   const statsSeeded = stats.meta.source === "seeded";
 
   return (
     <div className="page-shell">
+      <JsonLd
+        data={refProfileDatasetJsonLd(
+          profile.name,
+          profile.slug,
+          "NHL",
+          profile.games,
+          stats.meta.lastUpdated,
+        )}
+      />
       <Link
         href="/nhl"
         className="text-sm font-medium text-zinc-600 transition hover:text-zinc-900"

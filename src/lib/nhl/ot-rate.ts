@@ -1,5 +1,6 @@
 import { getRefBySlug, refSlug } from "@/lib/nhl/data";
 import { findOddsTotal } from "@/lib/nhl/odds";
+import { otRateProvenance } from "@/lib/provenance";
 import type {
   AssignmentGame,
   NhlOtRateSignal,
@@ -52,7 +53,7 @@ export function computeOtRateSignal(
     return null;
   }
 
-  return {
+  const signal: NhlOtRateSignal = {
     gameId: game.id,
     matchup: game.matchup,
     refereeOtRate: round3(refereeOtRate),
@@ -64,6 +65,8 @@ export function computeOtRateSignal(
       `Referee pair OT rate ${(refereeOtRate * 100).toFixed(1)}% vs league ${(leagueOtRate * 100).toFixed(1)}%. ` +
       `Puck line ${homeSpread > 0 ? "+" : ""}${homeSpread} — consider OT/SO props when priced.`,
   };
+  signal.provenance = otRateProvenance(signal, stats);
+  return signal;
 }
 
 export function computeSlateOtSignals(

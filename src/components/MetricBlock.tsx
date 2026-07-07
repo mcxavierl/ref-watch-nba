@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
+import type { MetricProvenance } from "@/lib/types";
+import { ProvenanceMarker, provenanceValueClass } from "@/components/ProvenanceMarker";
 
 export function MetricBlock({
   icon: Icon,
@@ -9,6 +11,7 @@ export function MetricBlock({
   hint,
   badge,
   badgeTone = "neutral",
+  provenance,
 }: {
   icon: LucideIcon;
   iconClassName?: string;
@@ -17,6 +20,7 @@ export function MetricBlock({
   hint?: ReactNode;
   badge?: ReactNode;
   badgeTone?: "positive" | "negative" | "neutral" | "warning";
+  provenance?: MetricProvenance;
 }) {
   const badgeColors = {
     positive: "bg-emerald-100 text-emerald-800",
@@ -30,8 +34,11 @@ export function MetricBlock({
       <div className="flex items-center gap-2">
         <Icon className={`size-4 shrink-0 ${iconClassName}`} aria-hidden />
         <span className="text-sm font-medium text-zinc-600">{label}</span>
+        <ProvenanceMarker provenance={provenance} compact />
       </div>
-      <p className="font-mono text-xl font-semibold tabular-nums leading-tight text-zinc-900">
+      <p
+        className={`font-mono text-xl font-semibold tabular-nums leading-tight ${provenanceValueClass(provenance) ?? "text-zinc-900"}`}
+      >
         {value}
       </p>
       {hint && <p className="text-sm leading-snug text-zinc-600">{hint}</p>}

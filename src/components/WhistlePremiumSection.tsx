@@ -12,6 +12,8 @@ import { TermHelp } from "@/components/TermHelp";
 import { homeBiasTone } from "@/lib/home-bias";
 import type { CrewHomeBias, CrewWhistlePremium } from "@/lib/types";
 import { formatPremiumLabel } from "@/lib/whistle-premium";
+import { ProvenanceMarker } from "@/components/ProvenanceMarker";
+import { SampleGateBadge } from "@/components/SampleGateBadge";
 
 function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
   const isHigh = premium.alert === "high_pace";
@@ -39,6 +41,12 @@ function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
               {premium.sampleQuality} sample
             </span>
           )}
+          {premium.provenance && (
+            <>
+              <ProvenanceMarker provenance={premium.provenance.alert} compact />
+              <SampleGateBadge gate={premium.provenance.sampleGate} />
+            </>
+          )}
         </div>
         <h3 className="mt-2 text-base font-semibold text-zinc-900">
           {premium.matchup}
@@ -47,7 +55,12 @@ function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
           Crew adds{" "}
           <span className="font-mono font-semibold tabular-nums">
             {formatPremiumLabel(premium.scoringPremium)}
-          </span>{" "}
+          </span>
+          {premium.provenance && (
+            <span className="ml-1">
+              <ProvenanceMarker provenance={premium.provenance.scoringPremium} compact />
+            </span>
+          )}{" "}
           on scoring ({premium.avgTotalPoints} avg) and{" "}
           <span className="font-mono font-semibold tabular-nums">
             {formatSigned(premium.foulPremium)}
@@ -60,6 +73,11 @@ function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
           <span className="font-mono font-semibold tabular-nums">
             {formatSigned(premium.gapVsBenchmark)}
           </span>
+          {premium.provenance && (
+            <span className="ml-1">
+              <ProvenanceMarker provenance={premium.provenance.gapVsBenchmark} compact />
+            </span>
+          )}
           .
         </p>
         {premium.reunionPremium !== null && premium.reunionGames >= 2 && (
@@ -193,10 +211,16 @@ export function GamePremiumStrip({
           {formatPremiumLabel(premium.scoringPremium)} ·{" "}
           {formatSigned(premium.foulPremium)} {foulLabel}
         </span>
+        {premium.provenance && (
+          <ProvenanceMarker provenance={premium.provenance.scoringPremium} compact />
+        )}
         <span className="text-zinc-500">·</span>
         <span className="font-mono tabular-nums text-zinc-700">
           {formatSigned(premium.gapVsBenchmark)} vs {benchmarkLabel}
         </span>
+        {premium.provenance && (
+          <ProvenanceMarker provenance={premium.provenance.gapVsBenchmark} compact />
+        )}
         {premium.alert && (
           <span className="text-zinc-600">
             ·{" "}
@@ -209,6 +233,11 @@ export function GamePremiumStrip({
       {homeBias && homeBias.kind !== "neutral" && (
         <p className="mt-2 text-sm text-zinc-600">
           <TermHelp id="home-bias">{homeBias.headline}</TermHelp>
+          {homeBias.provenance && (
+            <span className="ml-1">
+              <ProvenanceMarker provenance={homeBias.provenance.aggregate} compact />
+            </span>
+          )}
         </p>
       )}
     </div>
