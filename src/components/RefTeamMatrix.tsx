@@ -10,9 +10,11 @@ import {
   matrixCellKey,
   matrixCellStyle,
   MATRIX_EXTREME_DELTA_PTS,
+  MATRIX_REF_SORT_OPTIONS,
   MATRIX_TONE_DELTA_PTS,
-  sortMatrixRefsByName,
+  sortMatrixRefs,
   topRefsBeatingBaselineForTeam,
+  type MatrixRefSort,
   type RefTeamMatrix,
 } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned, formatWinRateVsTeam } from "@/lib/stats-utils";
@@ -23,6 +25,11 @@ type RefTeamMatrixProps = {
   leagueLabel: string;
   officialNounPlural: string;
   sport: "nba" | "nhl";
+};
+
+type MatrixCrosshair = {
+  refSlug: string;
+  teamAbbr: string;
 };
 
 function cellToneClass(tone: "positive" | "negative" | "neutral"): string {
@@ -48,6 +55,15 @@ function deltaClass(tone: "positive" | "negative" | "neutral"): string {
   return "ref-matrix-delta--neutral";
 }
 
+function colCrosshairClass(
+  teamAbbr: string,
+  crosshair: MatrixCrosshair | null,
+): string {
+  return crosshair?.teamAbbr === teamAbbr
+    ? " ref-matrix-col-track--active"
+    : "";
+}
+
 export function RefTeamMatrix({
   matrix,
   basePath,
@@ -57,7 +73,12 @@ export function RefTeamMatrix({
 }: RefTeamMatrixProps) {
   const { refs, teams, cells, minGames, qualifiedCellCount } = matrix;
   const [selectedTeamAbbr, setSelectedTeamAbbr] = useState<string | null>(null);
-  const sortedRefs = useMemo(() => sortMatrixRefsByName(refs), [refs]);
+  const [refSort, setRefSort] = useState<MatrixRefSort>("name-asc");
+  const [crosshair, setCrosshair] = useState<MatrixCrosshair | null>(null);
+  const sortedRefs = useMemo(
+    () => sortMatrixRefs(refs, matrix, refSort),
+    [refs, matrix, refSort],
+  );
   const selectedTeam = useMemo(
     () =>
       selectedTeamAbbr
@@ -83,6 +104,14 @@ export function RefTeamMatrix({
     setSelectedTeamAbbr(null);
   }
 
+  function activateCrosshair(refSlug: string, teamAbbr: string) {
+    setCrosshair({ refSlug, teamAbbr });
+  }
+
+  function clearCrosshair() {
+    setCrosshair(null);
+  }
+
   return (
     <div className="ref-matrix">
       <div className="ref-matrix-legend" role="note">
@@ -90,14 +119,13 @@ export function RefTeamMatrix({
           Each cell shows that ref&apos;s approximate W-L with the team (not the
           team&apos;s overall record). The baseline row under each logo is the
           team&apos;s full sample W-L for coloring only. Cells need {minGames}+
-          games; empty cells are below the sample gate. Colors compare ref×team
-          win rate to the team baseline. Every qualified cell gets a tinted fill
-          and matching border (±{MATRIX_TONE_DELTA_PTS} pts vs baseline); splits
-          at ±{MATRIX_EXTREME_DELTA_PTS} pts or more get a thicker standout
-          border. Delta text and W-L are shown in every cell — not color alone.
-          Click a team logo to rank refs who beat that team&apos;s baseline; tap
-          a cell for that ref&apos;s profile (including tight-game proxy).
-          Historical splits only, not picks.
+          games; empty cells are below the sample gate. Text color and a light
+          tint compare ref×team win rate to the team baseline (±
+          {MATRIX_TONE_DELTA_PTS} pts); splits at ±{MATRIX_EXTREME_DELTA_PTS}{" "}
+          pts or more are standout outliers. Delta text and W-L are shown in
+          every cell — not color alone. Click a team logo to rank refs who beat
+          that team&apos;s baseline; tap a cell for that ref&apos;s profile
+          (including tight-game proxy). Historical splits only, not picks.
         </p>
         <div className="ref-matrix-legend-swatches" aria-hidden>
           <span className="ref-matrix-swatch ref-matrix-cell--positive">
@@ -116,10 +144,30 @@ export function RefTeamMatrix({
             Standout low (±{MATRIX_EXTREME_DELTA_PTS}+ pts)
           </span>
         </div>
-        <p className="ref-matrix-meta">
-          {refs.length} {officialNounPlural} × {teams.length} teams ·{" "}
-          {qualifiedCellCount} qualified cells
-        </p>
+        <div className="ref-matrix-toolbar">
+          <p className="ref-matrix-meta">
+            {refs.length} {officialNounPlural} × {teams.length} teams ·{" "}
+            {qualifiedCellCount} qualified cells
+          </p>
+          <div className="ref-matrix-sort">
+            <label htmlFor="ref-matrix-sort" className="ref-matrix-sort-label">
+              Sort rows
+            </label>
+            <select
+              id="ref-matrix-sort"
+              value={refSort}
+              onChange={(e) => setRefSort(e.target.value as MatrixRefSort)}
+              className="ref-matrix-sort-select"
+              aria-label={`Sort ${officialNounPlural} rows`}
+            >
+              {MATRIX_REF_SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
 
       <p className="ref-matrix-mobile-hint sm:hidden">
@@ -127,10 +175,10 @@ export function RefTeamMatrix({
         under each logo; cell numbers are ref×team splits only.
       </p>
 
-      <div className="ref-matrix-wrap">
+      <div className="ref-matrix-wrap" onMouseLeave={clearCrosshair}>
         <table className="ref-matrix-table">
           <thead>
-            <tr>
+            <tr className="ref-matrix-logo-row">
               <th scope="col" className="ref-matrix-corner">
                 {officialLabel}
               </th>
@@ -140,12 +188,13 @@ export function RefTeamMatrix({
                   <th
                     key={team.abbr}
                     scope="col"
-                    className={`ref-matrix-team-head${isSelected ? " ref-matrix-team-head--selected" : ""}`}
+                    className={`ref-matrix-team-head${isSelected ? " ref-matrix-team-head--selected" : ""}${colCrosshairClass(team.abbr, crosshair)}`}
                   >
                     <button
                       type="button"
                       className={`ref-matrix-team-button${isSelected ? " ref-matrix-team-button--selected" : ""}`}
                       onClick={() => toggleTeamFilter(team.abbr)}
+                      onMouseEnter={() => activateCrosshair("", team.abbr)}
                       title={`${team.label} · team sample baseline ${formatMatrixTeamBaseline(team)}${isSelected ? " · clear filter" : " · show top refs above baseline"}`}
                       aria-pressed={isSelected}
                       aria-label={`${team.label}, team sample baseline ${team.baselineWins}-${team.baselineLosses}${isSelected ? ", filter active, click to clear" : ", click to show refs above baseline"}`}
@@ -174,8 +223,9 @@ export function RefTeamMatrix({
                 return (
                   <td
                     key={team.abbr}
-                    className={`ref-matrix-baseline-cell${isSelected ? " ref-matrix-baseline-cell--selected" : ""}`}
+                    className={`ref-matrix-baseline-cell${isSelected ? " ref-matrix-baseline-cell--selected" : ""}${colCrosshairClass(team.abbr, crosshair)}`}
                     title={`${team.label} sample baseline: ${formatMatrixTeamBaseline(team)}`}
+                    onMouseEnter={() => activateCrosshair("", team.abbr)}
                   >
                     <span className="ref-matrix-baseline-record">
                       {team.baselineWins}-{team.baselineLosses}
@@ -189,78 +239,107 @@ export function RefTeamMatrix({
             </tr>
           </thead>
           <tbody>
-            {sortedRefs.map((ref) => (
-              <tr key={ref.slug}>
-                <th scope="row" className="ref-matrix-ref-head">
-                  <Link
-                    href={`${basePath}/refs/${ref.slug}`}
-                    className="ref-matrix-ref-link"
-                    title={ref.name}
+            {sortedRefs.map((ref) => {
+              const rowActive = crosshair?.refSlug === ref.slug;
+              return (
+                <tr
+                  key={ref.slug}
+                  className={rowActive ? "ref-matrix-row--crosshair" : undefined}
+                >
+                  <th
+                    scope="row"
+                    className={`ref-matrix-ref-head${rowActive ? " ref-matrix-row-track--active" : ""}`}
+                    onMouseEnter={() =>
+                      activateCrosshair(ref.slug, crosshair?.teamAbbr ?? "")
+                    }
                   >
-                    <RefAvatar
-                      name={ref.name}
-                      slug={ref.slug}
-                      sport={sport}
-                      size="sm"
-                      className="ref-matrix-ref-avatar"
-                    />
-                    <span className="ref-matrix-ref-name">{ref.name}</span>
-                  </Link>
-                </th>
-                {teams.map((team) => {
-                  const isSelected = selectedTeamAbbr === team.abbr;
-                  const cell = cells[matrixCellKey(ref.slug, team.abbr)];
-                  if (!cell) {
+                    <Link
+                      href={`${basePath}/refs/${ref.slug}`}
+                      className="ref-matrix-ref-link"
+                      title={ref.name}
+                    >
+                      <RefAvatar
+                        name={ref.name}
+                        slug={ref.slug}
+                        sport={sport}
+                        size="sm"
+                        className="ref-matrix-ref-avatar"
+                      />
+                      <span className="ref-matrix-ref-name">{ref.name}</span>
+                    </Link>
+                  </th>
+                  {teams.map((team) => {
+                    const isSelected = selectedTeamAbbr === team.abbr;
+                    const colActive = crosshair?.teamAbbr === team.abbr;
+                    const isCrosshairCell =
+                      crosshair?.refSlug === ref.slug &&
+                      crosshair?.teamAbbr === team.abbr;
+                    const trackClass = [
+                      colActive ? "ref-matrix-col-track--active" : "",
+                      rowActive ? "ref-matrix-row-track--active" : "",
+                      isCrosshairCell ? "ref-matrix-cell--crosshair" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ");
+                    const cell = cells[matrixCellKey(ref.slug, team.abbr)];
+                    if (!cell) {
+                      return (
+                        <td
+                          key={team.abbr}
+                          className={`ref-matrix-cell ref-matrix-cell--empty${isSelected ? " ref-matrix-cell--team-selected" : ""}${trackClass ? ` ${trackClass}` : ""}`.trim()}
+                          aria-label={`${ref.name} vs ${team.abbr}: insufficient sample`}
+                          onMouseEnter={() =>
+                            activateCrosshair(ref.slug, team.abbr)
+                          }
+                        >
+                          <span aria-hidden>-</span>
+                        </td>
+                      );
+                    }
+
+                    const { tone, extreme, deltaPts } = matrixCellStyle(
+                      cell,
+                      team.baselineWinRate,
+                    );
+                    const record = `${cell.wins}-${cell.losses}`;
+                    const ariaLabel = matrixCellAriaLabel(
+                      ref.name,
+                      team,
+                      cell,
+                      deltaPts,
+                    );
+
                     return (
                       <td
                         key={team.abbr}
-                        className={`ref-matrix-cell ref-matrix-cell--empty${isSelected ? " ref-matrix-cell--team-selected" : ""}`}
-                        aria-label={`${ref.name} vs ${team.abbr}: insufficient sample`}
+                        className={`ref-matrix-cell ${cellToneClass(tone)} ${extremeClass(extreme)}${isSelected ? " ref-matrix-cell--team-selected" : ""}${trackClass ? ` ${trackClass}` : ""}`.trim()}
+                        onMouseEnter={() =>
+                          activateCrosshair(ref.slug, team.abbr)
+                        }
                       >
-                        <span aria-hidden>-</span>
+                        <Link
+                          href={`${basePath}/refs/${ref.slug}#close-game`}
+                          className="ref-matrix-cell-link"
+                          title={ariaLabel}
+                          aria-label={ariaLabel}
+                        >
+                          <span className="ref-matrix-record">{record}</span>
+                          <span
+                            className={`ref-matrix-delta ${deltaClass(tone)}`}
+                          >
+                            {formatWinRateVsTeam(
+                              cell.winRate,
+                              team.baselineWinRate,
+                            )}
+                          </span>
+                          <span className="ref-matrix-games">{cell.games} gp</span>
+                        </Link>
                       </td>
                     );
-                  }
-
-                  const { tone, extreme, deltaPts } = matrixCellStyle(
-                    cell,
-                    team.baselineWinRate,
-                  );
-                  const record = `${cell.wins}-${cell.losses}`;
-                  const ariaLabel = matrixCellAriaLabel(
-                    ref.name,
-                    team,
-                    cell,
-                    deltaPts,
-                  );
-
-                  return (
-                    <td
-                      key={team.abbr}
-                      className={`ref-matrix-cell ${cellToneClass(tone)} ${extremeClass(extreme)}${isSelected ? " ref-matrix-cell--team-selected" : ""}`.trim()}
-                    >
-                      <Link
-                        href={`${basePath}/refs/${ref.slug}#close-game`}
-                        className="ref-matrix-cell-link"
-                        title={ariaLabel}
-                        aria-label={ariaLabel}
-                      >
-                        <span className="ref-matrix-record">{record}</span>
-                        <span
-                          className={`ref-matrix-delta ${deltaClass(tone)}`}
-                        >
-                          {formatWinRateVsTeam(
-                            cell.winRate,
-                            team.baselineWinRate,
-                          )}
-                        </span>
-                        <span className="ref-matrix-games">{cell.games} gp</span>
-                      </Link>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

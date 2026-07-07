@@ -113,6 +113,77 @@ export function sortMatrixRefsByName(
   return [...refs].sort((a, b) => a.name.localeCompare(b.name));
 }
 
+export type MatrixRefSort = "name-asc" | "standout-desc" | "total-delta-desc";
+
+export const MATRIX_REF_SORT_OPTIONS: {
+  value: MatrixRefSort;
+  label: string;
+}[] = [
+  { value: "name-asc", label: "Alphabetical" },
+  { value: "standout-desc", label: "Most Standout Splits" },
+  { value: "total-delta-desc", label: "Highest Total Delta" },
+];
+
+/** Count of qualified cells at or beyond ±MATRIX_EXTREME_DELTA_PTS vs team baseline. */
+export function refMatrixStandoutCount(
+  matrix: RefTeamMatrix,
+  refSlug: string,
+): number {
+  let count = 0;
+  for (const team of matrix.teams) {
+    const cell = matrix.cells[matrixCellKey(refSlug, team.abbr)];
+    if (!cell) continue;
+    if (
+      matrixCellExtremeFromDelta(
+        winRateDeltaPoints(cell.winRate, team.baselineWinRate),
+      )
+    ) {
+      count++;
+    }
+  }
+  return count;
+}
+
+/** Sum of absolute win-rate deltas vs team baselines across qualified cells. */
+export function refMatrixTotalDelta(
+  matrix: RefTeamMatrix,
+  refSlug: string,
+): number {
+  let total = 0;
+  for (const team of matrix.teams) {
+    const cell = matrix.cells[matrixCellKey(refSlug, team.abbr)];
+    if (!cell) continue;
+    total += Math.abs(
+      winRateDeltaPoints(cell.winRate, team.baselineWinRate),
+    );
+  }
+  return total;
+}
+
+export function sortMatrixRefs(
+  refs: RefTeamMatrixRef[],
+  matrix: RefTeamMatrix,
+  sort: MatrixRefSort,
+): RefTeamMatrixRef[] {
+  return [...refs].sort((a, b) => {
+    if (sort === "name-asc") {
+      return a.name.localeCompare(b.name);
+    }
+
+    if (sort === "standout-desc") {
+      const diff =
+        refMatrixStandoutCount(matrix, b.slug) -
+        refMatrixStandoutCount(matrix, a.slug);
+      return diff !== 0 ? diff : a.name.localeCompare(b.name);
+    }
+
+    const diff =
+      refMatrixTotalDelta(matrix, b.slug) -
+      refMatrixTotalDelta(matrix, a.slug);
+    return diff !== 0 ? diff : a.name.localeCompare(b.name);
+  });
+}
+
 export interface TeamTopRefEntry {
   refSlug: string;
   refName: string;
@@ -184,10 +255,12 @@ export function refHasTeamStat(
 export type MatrixCellTone = "positive" | "negative" | "neutral";
 export type MatrixCellExtreme = "high" | "low";
 
-/** Win-rate delta (percentage points) above/below team baseline for tint + border color. */
+/** Win-rate delta (percentage points) above/below team baseline for text tint. */
 export const MATRIX_TONE_DELTA_PTS = 2;
-/** Win-rate delta (percentage points) for thicker standout border. */
+/** Win-rate delta (percentage points) for standout split emphasis. */
 export const MATRIX_EXTREME_DELTA_PTS = 12;
+/** Background tint strength for above/below baseline cells (0–1, applied in CSS). */
+export const MATRIX_TONE_BG_OPACITY = 0.15;
 
 export interface MatrixCellStyle {
   tone: MatrixCellTone;
