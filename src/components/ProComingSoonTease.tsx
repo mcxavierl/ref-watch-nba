@@ -1,7 +1,5 @@
-import { proWaitlistMailto } from "@/lib/notify";
-
 export function ProComingSoonTease({
-  league,
+  league: _league,
   compact = false,
   callout = false,
 }: {
@@ -17,9 +15,6 @@ export function ProComingSoonTease({
           <p className="pro-tease-callout-copy">
             Automated slate alerts, line-move tracking, and deeper crew reunion stats.
           </p>
-          <a href={proWaitlistMailto(league)} className="btn-secondary pro-tease-callout-btn">
-            Join the waitlist — free
-          </a>
         </div>
       </div>
     );
@@ -30,14 +25,7 @@ export function ProComingSoonTease({
       <p className="text-sm leading-relaxed text-zinc-600">
         <span className="font-semibold text-zinc-800">Ref Watch Pro</span>{" "}
         (coming soon) — automated slate alerts, line-move tracking, and deeper
-        crew reunion stats.{" "}
-        <a
-          href={proWaitlistMailto(league)}
-          className="font-medium text-zinc-800 underline-offset-2 hover:text-raptors hover:underline"
-        >
-          Join the waitlist
-        </a>
-        .
+        crew reunion stats.
       </p>
     );
   }
@@ -49,8 +37,7 @@ export function ProComingSoonTease({
           <p className="text-sm font-bold text-zinc-900">Ref Watch Pro — coming soon</p>
           <p className="mt-1.5 text-sm leading-relaxed text-zinc-600">
             Slate alerts before tip-off, line-move context, and reunion-level
-            crew stats — built on the same sample gates you see today. No paid
-            tier yet; join the waitlist for early access.
+            crew stats — built on the same sample gates you see today.
           </p>
           <ul className="pro-tease-features mt-3 space-y-1.5 text-sm text-zinc-600">
             <li>Email when tonight&apos;s biggest edges post</li>
@@ -70,12 +57,6 @@ export function ProComingSoonTease({
           </div>
         </div>
       </div>
-      <a
-        href={proWaitlistMailto(league)}
-        className="btn-secondary mt-4 inline-flex"
-      >
-        Join Pro waitlist — free
-      </a>
     </div>
   );
 }
