@@ -45,3 +45,6 @@ next-env.d.ts
 
 # generated at runtime by npm run morning-slate
 /data/alerts.json
+
+# copied from data/ during npm run build for Cloudflare static asset serving
+/public/data/
