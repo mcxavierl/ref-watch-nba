@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TermHelp } from "@/components/TermHelp";
 import {
   Flame,
   Scale,
@@ -165,7 +166,7 @@ export function GameGrudgeStorylines({
     <div className="border-t border-border-subtle bg-zinc-50/60 px-4 py-4 sm:px-5">
       <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-800">
         <Swords className="size-4 text-raptors" aria-hidden />
-        Grudge match flags
+        <TermHelp id="grudge-match">Grudge match flags</TermHelp>
       </p>
       <ul className="space-y-3">
         {storylines.map((story) => (

@@ -8,6 +8,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { formatSigned } from "@/lib/data";
+import { TermHelp } from "@/components/TermHelp";
 import { homeBiasTone } from "@/lib/home-bias";
 import type { CrewHomeBias, CrewWhistlePremium } from "@/lib/types";
 import { formatPremiumLabel } from "@/lib/whistle-premium";
@@ -54,7 +55,7 @@ function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
           on fouls vs league. Gap vs{" "}
           {premium.benchmarkSource === "sportsbook"
             ? "sportsbook total"
-            : "225 proxy"}
+            : `${premium.benchmarkTotal} league proxy`}
           :{" "}
           <span className="font-mono font-semibold tabular-nums">
             {formatSigned(premium.gapVsBenchmark)}
@@ -109,11 +110,13 @@ export function WhistlePremiumSection({
   homeBiasSignals,
   isPreview = false,
   oddsSource,
+  leagueOverBaseline,
 }: {
   paceAlerts: CrewWhistlePremium[];
   homeBiasSignals: CrewHomeBias[];
   isPreview?: boolean;
   oddsSource: "sportsbook" | "league_proxy" | "mixed";
+  leagueOverBaseline?: number;
 }) {
   if (paceAlerts.length === 0 && homeBiasSignals.length === 0) return null;
 
@@ -135,8 +138,8 @@ export function WhistlePremiumSection({
         {oddsSource === "sportsbook"
           ? "sportsbook totals"
           : oddsSource === "mixed"
-            ? "sportsbook totals where available, else 225 proxy"
-            : "our 225-point proxy (set ODDS_API_KEY for real lines)"}
+            ? `sportsbook totals where available, else ${leagueOverBaseline ?? "league"} proxy`
+            : `our ${leagueOverBaseline ?? "league"}-point proxy (set ODDS_API_KEY for real lines)`}
         . Alerts require adequate sample size — suppressed when data is thin.
       </p>
 
@@ -167,31 +170,46 @@ export function WhistlePremiumSection({
 export function GamePremiumStrip({
   premium,
   homeBias,
+  sport = "nba",
 }: {
   premium: CrewWhistlePremium;
   homeBias: CrewHomeBias | null;
+  sport?: "nba" | "nhl";
 }) {
+  const benchmarkLabel =
+    premium.benchmarkSource === "sportsbook"
+      ? "book"
+      : String(premium.benchmarkTotal);
+  const foulLabel = sport === "nhl" ? "PIM" : "fouls";
+  const premiumTerm = sport === "nhl" ? "nhl-whistle-premium" : "whistle-premium";
+
   return (
     <div className="border-t border-border-subtle bg-white px-4 py-3 sm:px-5">
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <span className="font-medium text-zinc-700">Whistle premium</span>
+        <span className="font-medium text-zinc-700">
+          <TermHelp id={premiumTerm}>Whistle premium</TermHelp>
+        </span>
         <span className="font-mono tabular-nums text-zinc-900">
           {formatPremiumLabel(premium.scoringPremium)} ·{" "}
-          {formatSigned(premium.foulPremium)} fouls
+          {formatSigned(premium.foulPremium)} {foulLabel}
         </span>
         <span className="text-zinc-500">·</span>
         <span className="font-mono tabular-nums text-zinc-700">
-          {formatSigned(premium.gapVsBenchmark)} vs{" "}
-          {premium.benchmarkSource === "sportsbook" ? "book" : "225"}
+          {formatSigned(premium.gapVsBenchmark)} vs {benchmarkLabel}
         </span>
         {premium.alert && (
           <span className="text-zinc-600">
-            · {premium.alert === "high_pace" ? "High pace" : "Low pace"} signal
+            ·{" "}
+            <TermHelp id="pace-alert">
+              {premium.alert === "high_pace" ? "High pace" : "Low pace"} signal
+            </TermHelp>
           </span>
         )}
       </div>
       {homeBias && homeBias.kind !== "neutral" && (
-        <p className="mt-2 text-sm text-zinc-600">{homeBias.headline}</p>
+        <p className="mt-2 text-sm text-zinc-600">
+          <TermHelp id="home-bias">{homeBias.headline}</TermHelp>
+        </p>
       )}
     </div>
   );

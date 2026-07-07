@@ -12,10 +12,10 @@ export function MetricBlock({
 }: {
   icon: LucideIcon;
   iconClassName?: string;
-  label: string;
+  label: ReactNode;
   value: string;
-  hint?: string;
-  badge?: string;
+  hint?: ReactNode;
+  badge?: ReactNode;
   badgeTone?: "positive" | "negative" | "neutral" | "warning";
 }) {
   const badgeColors = {

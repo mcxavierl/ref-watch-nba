@@ -12,6 +12,17 @@ import {
   homeCoverRate,
   RefBettingAccumulator,
 } from "./ref-betting";
+import {
+  dedupeGameLogs,
+  loadGameLogs,
+  saveGameLogs,
+  toOfficials,
+  type GameLogEntry,
+} from "./game-logs";
+import {
+  buildBaselinesFile,
+  saveBaselines,
+} from "./baselines";
 import type {
   RefGameRecord,
   RefProfile,
@@ -27,9 +38,6 @@ const NBA_TEAM_ABBRS = [
 
 const STATS_BASE = "https://stats.nba.com/stats";
 const FETCH_TIMEOUT_MS = 12_000;
-const LEAGUE_AVG_TOTAL = 225;
-const LEAGUE_AVG_FOULS = 38.5;
-const LEAGUE_OVER_BASELINE = 225;
 const MIN_SAMPLE = 30;
 const REQUEST_DELAY_MS = 300;
 
@@ -241,6 +249,7 @@ function buildTeamSplit(
   crewKey: string,
   crewNames: string[],
   games: TeamGameRow[],
+  leagueAvgTotal: number,
 ): TeamCrewSplit {
   const n = games.length;
   const wins = games.filter((g) => g.teamWin).length;
@@ -264,7 +273,7 @@ function buildTeamSplit(
     avgFouls: round1(avgFouls),
     wins,
     losses: n - wins,
-    totalDelta: round1(avgTotal - LEAGUE_AVG_TOTAL),
+    totalDelta: round1(avgTotal - leagueAvgTotal),
     homeGames: homeGames.length,
     awayGames: awayGames.length,
     homeWins: homeGames.filter((g) => g.teamWin).length,
@@ -280,6 +289,7 @@ function buildTeamSplit(
 function teamGameRow(
   box: GameBoxData,
   teamAbbr: string,
+  overBaseline: number,
 ): TeamGameRow | null {
   const isHome = box.homeTeam === teamAbbr;
   const isAway = box.awayTeam === teamAbbr;
@@ -293,7 +303,7 @@ function teamGameRow(
   return {
     totalPoints,
     totalFouls: box.totalFouls,
-    overHit: totalPoints > LEAGUE_OVER_BASELINE,
+    overHit: totalPoints > overBaseline,
     teamFouls: isHome ? box.homeFouls : box.awayFouls,
     opponentFouls: isHome ? box.awayFouls : box.homeFouls,
     teamWin,
@@ -314,11 +324,12 @@ function pushTeamGame(
 
 function collectTeamSplits(
   buckets: Map<string, TeamCrewBucket>,
+  leagueAvgTotal: number,
 ): TeamCrewSplit[] {
   return [...buckets.entries()]
     .map(([key, data]) => {
       if (data.games.length === 0) return null;
-      return buildTeamSplit(key, data.crewNames, data.games);
+      return buildTeamSplit(key, data.crewNames, data.games, leagueAvgTotal);
     })
     .filter((s): s is TeamCrewSplit => s !== null)
     .sort((a, b) => b.games - a.games);
@@ -377,6 +388,7 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
   const refBetting = new Map<string, RefBettingAccumulator>();
   const refTeamBuckets = new Map<string, Map<string, RefTeamGameRow[]>>();
   const teamByCrew = new Map<string, Map<string, TeamCrewBucket>>();
+  const exportedGameLogs: GameLogEntry[] = [];
   const externalLines = loadGameLinesMap();
   let usedExternalLines = false;
   for (const abbr of NBA_TEAM_ABBRS) {
@@ -413,12 +425,12 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
 
       if (box.date) allDates.push(box.date);
 
-      const lines =
+      const linesRaw =
         externalLines.get(gameId) ?? linesForGame(gameId);
-      if (externalLines.has(gameId)) usedExternalLines = true;
+      const lineSource = externalLines.has(gameId) ? "external" : "synthetic";
 
       const totalPoints = box.homeScore + box.awayScore;
-      const overHit225 = totalPoints > LEAGUE_OVER_BASELINE;
+      const overHit = totalPoints > linesRaw.total;
       const raptorsInvolved =
         box.homeTeam === "TOR" || box.awayTeam === "TOR";
 
@@ -430,15 +442,34 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
         awayTeam: box.awayTeam,
         totalPoints,
         totalFouls: box.totalFouls,
-        overHit: overHit225,
+        overHit,
         raptorsInvolved,
+        closingTotal: linesRaw.total,
+        homeSpread: linesRaw.homeSpread,
       };
 
+      exportedGameLogs.push({
+        gameId,
+        date: box.date,
+        season: season.label,
+        league: "NBA",
+        homeTeam: box.homeTeam,
+        awayTeam: box.awayTeam,
+        homeScore: box.homeScore,
+        awayScore: box.awayScore,
+        totalPoints,
+        totalFouls: box.totalFouls,
+        closingTotal: linesRaw.total,
+        homeSpread: linesRaw.homeSpread,
+        lineSource,
+        officials: toOfficials(officials),
+      });
+      if (externalLines.has(gameId)) usedExternalLines = true;
       const key = crewKey(officials);
       const crewNames = officials.map((o) => o.name);
 
       for (const teamAbbr of NBA_TEAM_ABBRS) {
-        const row = teamGameRow(box, teamAbbr);
+        const row = teamGameRow(box, teamAbbr, linesRaw.total);
         if (!row) continue;
         const buckets = teamByCrew.get(teamAbbr)!;
         pushTeamGame(buckets, key, crewNames, row);
@@ -459,12 +490,12 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
         acc.addGame({
           homeScore: box.homeScore,
           awayScore: box.awayScore,
-          homeSpread: lines.homeSpread,
-          total: lines.total,
+          homeSpread: linesRaw.homeSpread,
+          total: linesRaw.total,
         });
 
         for (const teamAbbr of [box.homeTeam, box.awayTeam]) {
-          const teamRow = teamGameRow(box, teamAbbr);
+          const teamRow = teamGameRow(box, teamAbbr, linesRaw.total);
           if (!teamRow) continue;
           pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
             foulDifferential: teamRow.teamFouls - teamRow.opponentFouls,
@@ -494,6 +525,30 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       ? { earliest: allDates[0], latest: allDates[allDates.length - 1] }
       : undefined;
 
+  const dedupedLogs = dedupeGameLogs(exportedGameLogs);
+  saveGameLogs({
+    lastUpdated: new Date().toISOString(),
+    league: "NBA",
+    source: "nba-stats-api",
+    games: dedupedLogs,
+  });
+
+  const nhlGames = loadGameLogs("NHL")?.games ?? [];
+  saveBaselines(
+    buildBaselinesFile(
+      dedupedLogs,
+      nhlGames,
+      usedExternalLines
+        ? "NBA from stats API with external lines where matched."
+        : "NBA from stats API; synthetic closing lines where external lines missing.",
+    ),
+  );
+
+  const nbaBaselines = buildBaselinesFile(dedupedLogs, nhlGames).NBA;
+  const leagueAvgTotal = nbaBaselines.aggregate.leagueAvgTotal;
+  const leagueAvgFouls = nbaBaselines.aggregate.leagueAvgFouls;
+  const leagueOverBaseline = nbaBaselines.aggregate.leagueOverBaseline;
+
   const refs: RefProfile[] = [];
   for (const [slug, games] of refGames) {
     if (games.length === 0) continue;
@@ -516,8 +571,8 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       overRate: round3(overRate),
       avgFouls: round1(avgFouls),
       homeCoverRate: betting ? homeCoverRate(betting) : null,
-      totalPointsDelta: round1(avgTotal - LEAGUE_AVG_TOTAL),
-      foulsDelta: round1(avgFouls - LEAGUE_AVG_FOULS),
+      totalPointsDelta: round1(avgTotal - leagueAvgTotal),
+      foulsDelta: round1(avgFouls - leagueAvgFouls),
       seasons: [...new Set(games.map((g) => g.season))],
       recentGames: games.slice(-8).reverse(),
       teamStats: collectRefTeamStats(refTeamBuckets.get(slug) ?? new Map()),
@@ -529,16 +584,16 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
 
   const teamSplits: Record<string, TeamCrewSplit[]> = {};
   for (const abbr of NBA_TEAM_ABBRS) {
-    teamSplits[abbr] = collectTeamSplits(teamByCrew.get(abbr)!);
+    teamSplits[abbr] = collectTeamSplits(teamByCrew.get(abbr)!, leagueAvgTotal);
   }
 
   return {
     meta: {
       lastUpdated: new Date().toISOString(),
       seasons: SEASONS.map((s) => s.label),
-      leagueAvgTotal: LEAGUE_AVG_TOTAL,
-      leagueAvgFouls: LEAGUE_AVG_FOULS,
-      leagueOverBaseline: LEAGUE_OVER_BASELINE,
+      leagueAvgTotal,
+      leagueAvgFouls,
+      leagueOverBaseline,
       minSampleSize: MIN_SAMPLE,
       source: "nba-stats-api",
       atsAvailable: true,

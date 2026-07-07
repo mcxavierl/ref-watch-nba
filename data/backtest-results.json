@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-07-07T04:03:44.526Z",
+  "note": "Only games with lineSource=external are scored. Synthetic or missing lines are excluded — not fabricated.",
+  "nbaWhistlePremium": {
+    "signal": "NBA Whistle Premium (pace alert)",
+    "methodology": "Walk-forward: ref crew averages exclude target game and later games. High pace: scoring premium ≥ +4 and gap vs closing total ≥ +3. Low pace: scoring premium ≤ −4 and gap ≤ −3. Sample gate: ≥2 qualified refs (30+ games) and non-weak sample.",
+    "exclusions": {
+      "syntheticLines": 3690,
+      "missingOfficials": 0,
+      "insufficientHistory": 0
+    },
+    "realLineGames": 0,
+    "breakEvenRate": 0.5238095238095238,
+    "buckets": [
+      {
+        "label": "Signal cleared — high pace (bet Over)",
+        "sampleSize": 0,
+        "ouWins": 0,
+        "ouLosses": 0,
+        "ouPushes": 0,
+        "ouHitRate": null,
+        "atsWins": 0,
+        "atsLosses": 0,
+        "atsPushes": 0,
+        "atsHitRate": null,
+        "roiPct": null
+      },
+      {
+        "label": "Signal cleared — low pace (bet Under)",
+        "sampleSize": 0,
+        "ouWins": 0,
+        "ouLosses": 0,
+        "ouPushes": 0,
+        "ouHitRate": null,
+        "atsWins": 0,
+        "atsLosses": 0,
+        "atsPushes": 0,
+        "atsHitRate": null,
+        "roiPct": null
+      },
+      {
+        "label": "Threshold met, sample gate not cleared",
+        "sampleSize": 0,
+        "ouWins": 0,
+        "ouLosses": 0,
+        "ouPushes": 0,
+        "ouHitRate": null,
+        "atsWins": 0,
+        "atsLosses": 0,
+        "atsPushes": 0,
+        "atsHitRate": null,
+        "roiPct": null
+      },
+      {
+        "label": "No signal (control)",
+        "sampleSize": 0,
+        "ouWins": 0,
+        "ouLosses": 0,
+        "ouPushes": 0,
+        "ouHitRate": null,
+        "atsWins": 0,
+        "atsLosses": 0,
+        "atsPushes": 0,
+        "atsHitRate": null,
+        "roiPct": null
+      },
+      {
+        "label": "All real-line games (coin-flip control)",
+        "sampleSize": 0,
+        "ouWins": 0,
+        "ouLosses": 0,
+        "ouPushes": 0,
+        "ouHitRate": null,
+        "atsWins": 0,
+        "atsLosses": 0,
+        "atsPushes": 0,
+        "atsHitRate": null,
+        "roiPct": null
+      }
+    ],
+    "summary": "No external-line NBA games in game logs — backtest not scored."
+  },
+  "nhlPpPremium": {
+    "signal": "NHL PP Premium",
+    "methodology": "Walk-forward: ref minor averages exclude target game and later games. Signal when index = (refMinorRate − leagueAvgMinors) × specialTeamsEdge × 8 ≥ 0.35. Referees only (25+ prior games). Direction: Over closing total.",
+    "exclusions": {
+      "syntheticLines": 3936,
+      "missingOfficials": 0,
+      "insufficientHistory": 0
+    },
+    "realLineGames": 0,
+    "breakEvenRate": 0.5238095238095238,
+    "buckets": [
+      {
+        "label": "PP Premium cleared (bet Over)",
+        "sampleSize": 0,
+        "ouWins": 0,
+        "ouLosses": 0,
+        "ouPushes": 0,
+        "ouHitRate": null,
+        "atsWins": 0,
+        "atsLosses": 0,
+        "atsPushes": 0,
+        "atsHitRate": null,
+        "roiPct": null
+      },
+      {
+        "label": "Below threshold (control)",
+        "sampleSize": 0,
+        "ouWins": 0,
+        "ouLosses": 0,
+        "ouPushes": 0,
+        "ouHitRate": null,
+        "atsWins": 0,
+        "atsLosses": 0,
+        "atsPushes": 0,
+        "atsHitRate": null,
+        "roiPct": null
+      },
+      {
+        "label": "No qualifying refs (control)",
+        "sampleSize": 0,
+        "ouWins": 0,
+        "ouLosses": 0,
+        "ouPushes": 0,
+        "ouHitRate": null,
+        "atsWins": 0,
+        "atsLosses": 0,
+        "atsPushes": 0,
+        "atsHitRate": null,
+        "roiPct": null
+      },
+      {
+        "label": "All real-line games (coin-flip control)",
+        "sampleSize": 0,
+        "ouWins": 0,
+        "ouLosses": 0,
+        "ouPushes": 0,
+        "ouHitRate": null,
+        "atsWins": 0,
+        "atsLosses": 0,
+        "atsPushes": 0,
+        "atsHitRate": null,
+        "roiPct": null
+      }
+    ],
+    "summary": "No external-line NHL games in game logs — backtest not scored."
+  }
+}

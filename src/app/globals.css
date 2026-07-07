@@ -123,6 +123,37 @@ h3 {
   .methodology-details[open] summary {
     @apply mb-3 text-zinc-700;
   }
+
+  .term-help {
+    @apply inline;
+  }
+
+  .term-help-trigger {
+    @apply outline-offset-2 focus-visible:outline-2 focus-visible:outline-zinc-400;
+  }
+
+  .term-help-tooltip {
+    @apply pointer-events-none absolute left-0 top-full z-50 mt-2 hidden w-[min(18rem,calc(100vw-2rem))] rounded-md border border-border bg-white p-3 text-sm font-normal leading-relaxed text-zinc-700 shadow-md;
+  }
+
+  .term-help-mobile {
+    @apply mt-1 block text-sm font-normal leading-snug text-zinc-500 md:hidden;
+  }
+
+  @media (min-width: 768px) {
+    .term-help {
+      @apply relative inline-block;
+    }
+
+    .term-help-mobile {
+      @apply hidden;
+    }
+
+    .term-help:hover .term-help-tooltip,
+    .term-help:focus-within .term-help-tooltip {
+      @apply block;
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

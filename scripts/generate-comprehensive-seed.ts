@@ -17,6 +17,13 @@ import {
   RefBettingAccumulator,
   scoresFromLines,
 } from "./lib/ref-betting";
+import {
+  dedupeGameLogs,
+  saveGameLogs,
+  toOfficials,
+  type GameLogEntry,
+} from "./lib/game-logs";
+import { buildBaselinesFile, saveBaselines } from "./lib/baselines";
 import type {
   RefGameRecord,
   RefProfile,
@@ -170,6 +177,7 @@ interface SimBox {
   awayFouls: number;
   totalFouls: number;
   closingTotal: number;
+  homeSpread: number;
 }
 
 interface TeamGameRow {
@@ -236,7 +244,7 @@ function teamGameRow(box: SimBox, teamAbbr: string): TeamGameRow | null {
   return {
     totalPoints,
     totalFouls: box.totalFouls,
-    overHit: totalPoints > LEAGUE_OVER_BASELINE,
+    overHit: totalPoints > box.closingTotal,
     teamFouls: isHome ? box.homeFouls : box.awayFouls,
     opponentFouls: isHome ? box.awayFouls : box.homeFouls,
     teamWin,
@@ -244,13 +252,14 @@ function teamGameRow(box: SimBox, teamAbbr: string): TeamGameRow | null {
   };
 }
 
-function generate(): RefStatsFile {
+function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
   const rng = mulberry32(42);
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number }>();
   const refBetting = new Map<string, RefBettingAccumulator>();
   const refTeamBuckets = new Map<string, Map<string, RefTeamGameRow[]>>();
   const teamByCrew = new Map<string, Map<string, TeamCrewBucket>>();
+  const exportedGameLogs: GameLogEntry[] = [];
   for (const abbr of NBA_TEAM_ABBRS) {
     teamByCrew.set(abbr, new Map());
   }
@@ -305,11 +314,29 @@ function generate(): RefStatsFile {
         awayFouls,
         totalFouls: homeFouls + awayFouls,
         closingTotal: lines.total,
+        homeSpread: lines.homeSpread,
       };
       gameSeq++;
       seasonGameIndex++;
 
       const totalPoints = homeScore + awayScore;
+      exportedGameLogs.push({
+        gameId: box.gameId,
+        date,
+        season,
+        league: "NBA",
+        homeTeam,
+        awayTeam,
+        homeScore,
+        awayScore,
+        totalPoints,
+        totalFouls: box.totalFouls,
+        closingTotal: lines.total,
+        homeSpread: lines.homeSpread,
+        lineSource: "synthetic",
+        officials: toOfficials(officials),
+      });
+
       const record: RefGameRecord = {
         gameId: box.gameId,
         date,
@@ -318,8 +345,10 @@ function generate(): RefStatsFile {
         awayTeam,
         totalPoints,
         totalFouls: box.totalFouls,
-        overHit: totalPoints > LEAGUE_OVER_BASELINE,
+        overHit: totalPoints > lines.total,
         raptorsInvolved: homeTeam === "TOR" || awayTeam === "TOR",
+        closingTotal: lines.total,
+        homeSpread: lines.homeSpread,
       };
 
       const key = crewKey(officials);
@@ -370,6 +399,12 @@ function generate(): RefStatsFile {
   }
 
   allDates.sort();
+  const dedupedLogs = dedupeGameLogs(exportedGameLogs);
+  const nbaBaselines = buildBaselinesFile(dedupedLogs, [], "NBA seed snapshot").NBA;
+  const leagueAvgTotal = nbaBaselines.aggregate.leagueAvgTotal;
+  const leagueAvgFouls = nbaBaselines.aggregate.leagueAvgFouls;
+  const leagueOverBaseline = nbaBaselines.aggregate.leagueOverBaseline;
+
   const refs: RefProfile[] = [];
   for (const [slug, games] of refGames) {
     const meta = refMeta.get(slug)!;
@@ -388,8 +423,8 @@ function generate(): RefStatsFile {
       overRate: round3(overRate),
       avgFouls: round1(avgFouls),
       homeCoverRate: betting ? homeCoverRate(betting) : null,
-      totalPointsDelta: round1(avgTotal - LEAGUE_AVG_TOTAL),
-      foulsDelta: round1(avgFouls - LEAGUE_AVG_FOULS),
+      totalPointsDelta: round1(avgTotal - leagueAvgTotal),
+      foulsDelta: round1(avgFouls - leagueAvgFouls),
       seasons: [...new Set(games.map((g) => g.season))],
       recentGames: games.slice(-8).reverse(),
       teamStats: collectRefTeamStats(refTeamBuckets.get(slug) ?? new Map()),
@@ -406,32 +441,35 @@ function generate(): RefStatsFile {
   }
 
   return {
-    meta: {
-      lastUpdated: new Date().toISOString(),
-      seasons: SEASONS,
-      leagueAvgTotal: LEAGUE_AVG_TOTAL,
-      leagueAvgFouls: LEAGUE_AVG_FOULS,
-      leagueOverBaseline: LEAGUE_OVER_BASELINE,
-      minSampleSize: MIN_SAMPLE,
-      source: "seeded",
-      atsAvailable: true,
-      refCount: refs.length,
-      totalGamesProcessed: processed,
-      dateRange: {
-        earliest: allDates[0],
-        latest: allDates[allDates.length - 1],
+    stats: {
+      meta: {
+        lastUpdated: new Date().toISOString(),
+        seasons: SEASONS,
+        leagueAvgTotal,
+        leagueAvgFouls,
+        leagueOverBaseline,
+        minSampleSize: MIN_SAMPLE,
+        source: "seeded",
+        atsAvailable: true,
+        refCount: refs.length,
+        totalGamesProcessed: processed,
+        dateRange: {
+          earliest: allDates[0],
+          latest: allDates[allDates.length - 1],
+        },
+        note:
+          "Simulated game data with synthetic closing lines for ATS/O/U splits. " +
+          "Re-run npm run build-ref-data on a network that can reach stats.nba.com for live backfill.",
       },
-      note:
-        "Simulated game data with synthetic closing lines for ATS/O/U splits. " +
-        "Re-run npm run build-ref-data on a network that can reach stats.nba.com for live backfill.",
+      refs,
+      teamSplits,
     },
-    refs,
-    teamSplits,
+    gameLogs: dedupedLogs,
   };
 }
 
 function main() {
-  const data = generate();
+  const { stats: data, gameLogs } = generate();
   const dataDir = path.join(process.cwd(), "data");
   const seedPath = path.join(dataDir, "ref-stats.seed.json");
   const statsPath = path.join(dataDir, "ref-stats.json");
@@ -439,11 +477,31 @@ function main() {
   fs.writeFileSync(seedPath, `${JSON.stringify(data, null, 2)}\n`);
   fs.writeFileSync(statsPath, `${JSON.stringify(data, null, 2)}\n`);
 
+  saveGameLogs({
+    lastUpdated: new Date().toISOString(),
+    league: "NBA",
+    source: "comprehensive-seed",
+    games: gameLogs,
+  });
+
+  let nhlGames: GameLogEntry[] = [];
+  try {
+    nhlGames =
+      (JSON.parse(
+        fs.readFileSync(path.join(dataDir, "nhl", "game-logs.json"), "utf8"),
+      ) as { games: GameLogEntry[] }).games ?? [];
+  } catch {
+    /* NHL logs optional until generate-nhl-seed runs */
+  }
+  saveBaselines(
+    buildBaselinesFile(gameLogs, nhlGames, "Computed from NBA/NHL seed game logs"),
+  );
+
   console.log(
     `Generated ${data.refs.length} refs, ${data.meta.totalGamesProcessed} games, ` +
       `${data.meta.dateRange?.earliest} → ${data.meta.dateRange?.latest}`,
   );
-  console.log(`Wrote ${seedPath} and ${statsPath}`);
+  console.log(`Wrote ${seedPath}, ${statsPath}, and data/game-logs.json`);
 }
 
 main();

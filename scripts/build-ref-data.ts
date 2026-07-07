@@ -3,6 +3,8 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { buildRefStats } from "./lib/build-ref-stats";
 import { fetchAssignments } from "./lib/parse-assignments";
+import { buildBaselinesFile, saveBaselines } from "./lib/baselines";
+import { loadGameLogs } from "./lib/game-logs";
 
 async function main() {
   const dataDir = path.join(process.cwd(), "data");
@@ -31,6 +33,19 @@ async function main() {
   console.log(
     `Ref stats: ${refStats.refs.length} refs (${refStats.meta.source})`,
   );
+
+  const nbaLogs = loadGameLogs("NBA");
+  const nhlLogs = loadGameLogs("NHL");
+  const baselines = buildBaselinesFile(
+    nbaLogs?.games ?? [],
+    nhlLogs?.games ?? [],
+    "Computed from exported game logs",
+  );
+  saveBaselines(baselines);
+  console.log(
+    `Baselines: NBA ${baselines.NBA.aggregate.gameCount} games, NHL ${baselines.NHL.aggregate.gameCount} games`,
+  );
+
   console.log(`\nDone. Data written to ${dataDir}/`);
 }
 

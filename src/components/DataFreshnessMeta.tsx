@@ -1,4 +1,5 @@
 import { formatDate } from "@/lib/data";
+import { baselineUsingFallback } from "@/lib/baselines";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 
 function freshnessLabel(
@@ -14,13 +15,16 @@ function freshnessLabel(
 export function DataFreshnessMeta({
   assignments,
   refStats,
+  league = "NBA",
 }: {
   assignments: AssignmentsFile;
   refStats: RefStatsFile;
+  league?: "NBA" | "NHL";
 }) {
   const statsSeeded = refStats.meta.source === "seeded";
   const assignmentsSeeded = assignments.source === "seeded";
   const allLive = !statsSeeded && !assignmentsSeeded;
+  const baselineFallback = baselineUsingFallback(league);
 
   return (
     <p className="page-meta">
@@ -38,13 +42,22 @@ export function DataFreshnessMeta({
       <span className="text-zinc-500">
         {assignments.source} / {refStats.meta.source}
       </span>
+      {baselineFallback && (
+        <span className="text-amber-800">
+          League baselines use the labeled static fallback — run{" "}
+          <code className="rounded bg-white px-1.5 py-0.5 font-mono text-sm ring-1 ring-border">
+            npm run compute-baselines
+          </code>{" "}
+          after game logs exist.
+        </span>
+      )}
       {statsSeeded && (
         <span className="text-amber-800">
           Stats are representative — run{" "}
           <code className="rounded bg-white px-1.5 py-0.5 font-mono text-sm ring-1 ring-border">
-            npm run build-ref-data
+            npm run {league === "NHL" ? "build-nhl-data" : "build-ref-data"}
           </code>{" "}
-          for live NBA Stats backfill
+          for live backfill
         </span>
       )}
     </p>

@@ -10,7 +10,7 @@ export function StatCell({
   detail,
   annotation,
 }: {
-  label: string;
+  label: ReactNode;
   value: string;
   detail?: string;
   annotation?: string;

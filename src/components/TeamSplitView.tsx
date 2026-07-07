@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { MetricBlock, MetricGrid } from "@/components/MetricBlock";
+import { TermHelp } from "@/components/TermHelp";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
 import {
   formatPct,
@@ -105,7 +106,7 @@ function TeamSplitCard({
         <MetricBlock
           icon={Volume2}
           iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
-          label="Whistle"
+          label={<TermHelp id="foul-edge">Whistle</TermHelp>}
           value={`${formatSigned(split.foulDifferential)} edge`}
           hint={`${split.avgFouls} fouls/game (${formatSigned(foulsDelta)} vs league)`}
           badge={`${teamAbbr} ${split.avgTeamFouls} · opp ${split.avgOpponentFouls}`}
@@ -209,7 +210,7 @@ function TeamRefSplitCard({
         <MetricBlock
           icon={Volume2}
           iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
-          label="Foul edge"
+          label={<TermHelp id="foul-edge">Foul edge</TermHelp>}
           value={formatSigned(entry.avgFoulDifferential)}
           hint={`More fouls on ${teamLabel}'s opponents when positive`}
           badge={foulTone === "positive" ? `${teamAbbr} lean` : foulTone === "negative" ? "Opponent lean" : "Balanced"}

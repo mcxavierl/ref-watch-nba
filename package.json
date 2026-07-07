@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -13,7 +13,13 @@
     "morning-slate": "tsx scripts/morning-slate.ts",
     "build-ref-data": "tsx scripts/build-ref-data.ts",
     "generate-ref-seed": "tsx scripts/generate-comprehensive-seed.ts",
-    "expand-team-splits": "tsx scripts/expand-team-splits.ts"
+    "fetch-nhl-assignments": "tsx scripts/nhl/fetch-assignments.ts",
+    "fetch-nhl-odds": "tsx scripts/nhl/fetch-odds.ts",
+    "fetch-nhl-team-special-teams": "tsx scripts/nhl/fetch-team-special-teams.ts",
+    "generate-nhl-seed": "tsx scripts/nhl/generate-seed.ts",
+    "build-nhl-data": "tsx scripts/nhl/build-ref-data.ts",
+    "compute-baselines": "tsx scripts/compute-baselines.ts",
+    "backtest": "tsx scripts/backtest.ts"
   },
   "dependencies": {
     "cheerio": "^1.2.0",

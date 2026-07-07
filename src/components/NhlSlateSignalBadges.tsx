@@ -1,0 +1,45 @@
+import type { NhlOtRateSignal, NhlPpPremiumSignal } from "@/lib/types";
+import { TermHelp } from "@/components/TermHelp";
+
+export function NhlSlateSignalBadges({
+  ppPremium,
+  otSignal,
+}: {
+  ppPremium?: NhlPpPremiumSignal | null;
+  otSignal?: NhlOtRateSignal | null;
+}) {
+  if (!ppPremium && !otSignal) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2 border-t border-border-subtle px-4 py-3 sm:px-5">
+      {ppPremium && (
+        <span
+          className="inline-flex max-w-full flex-col rounded-md bg-emerald-50 px-2.5 py-1.5 text-sm text-emerald-900 ring-1 ring-emerald-200"
+          title={ppPremium.summary}
+        >
+          <span className="font-medium">
+            <TermHelp id="pp-premium">{ppPremium.headline}</TermHelp>
+          </span>
+          <span className="text-xs text-emerald-800/90">
+            Index {ppPremium.index} · {ppPremium.refMinorRate} minors/g
+          </span>
+        </span>
+      )}
+      {otSignal && (
+        <span
+          className="inline-flex max-w-full flex-col rounded-md bg-sky-50 px-2.5 py-1.5 text-sm text-sky-900 ring-1 ring-sky-200"
+          title={otSignal.summary}
+        >
+          <span className="font-medium">
+            <TermHelp id="ot-rate-badge">{otSignal.headline}</TermHelp>
+          </span>
+          <span className="text-xs text-sky-800/90">
+            {(otSignal.refereeOtRate * 100).toFixed(1)}% OT · line{" "}
+            {otSignal.homeSpread! > 0 ? "+" : ""}
+            {otSignal.homeSpread}
+          </span>
+        </span>
+      )}
+    </div>
+  );
+}

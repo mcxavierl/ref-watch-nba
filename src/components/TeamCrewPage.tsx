@@ -2,14 +2,10 @@ import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TeamRefLeaderboards } from "@/components/TeamRefLeaderboards";
 import { TeamSplitView } from "@/components/TeamSplitView";
-import {
-  formatDate,
-  formatPct,
-  getRefStats,
-  getTeamSplits,
-  sortSplitsByGames,
-} from "@/lib/data";
-import { getTeam, teamFullName, teamWithArticle } from "@/lib/teams";
+import * as nbaData from "@/lib/data";
+import * as nhlData from "@/lib/nhl/data";
+import * as nbaTeams from "@/lib/teams";
+import * as nhlTeams from "@/lib/nhl/teams";
 import {
   getTeamRefSplits,
   TEAM_REF_MIN_GAMES,
@@ -18,9 +14,20 @@ import { getTeamSampleRecord } from "@/lib/teamRecord";
 
 export interface TeamPageConfig {
   teamAbbr: string;
+  league?: "nba" | "nhl";
 }
 
 export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
+  const league = config.league ?? "nba";
+  const isNhl = league === "nhl";
+  const basePath = isNhl ? "/nhl" : "";
+  const getTeam = isNhl ? nhlTeams.getTeam : nbaTeams.getTeam;
+  const getRefStats = isNhl ? nhlData.getRefStats : nbaData.getRefStats;
+  const getTeamSplits = isNhl ? nhlData.getTeamSplits : nbaData.getTeamSplits;
+  const sortSplitsByGames = isNhl ? nhlData.sortSplitsByGames : nbaData.sortSplitsByGames;
+  const formatDate = isNhl ? nhlData.formatDate : nbaData.formatDate;
+  const formatPct = isNhl ? nhlData.formatPct : nbaData.formatPct;
+
   const team = getTeam(config.teamAbbr);
   if (!team) return null;
 
@@ -29,14 +36,21 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const refSplits = getTeamRefSplits(stats.refs, team.abbr);
   const teamRecord = getTeamSampleRecord(splits);
   const statsSeeded = stats.meta.source === "seeded";
-  const teamName = teamFullName(team);
-  const teamLabel = teamWithArticle(team);
+  const teamName = isNhl
+    ? nhlTeams.teamFullName(team as import("@/lib/nhl/teams").NhlTeam)
+    : nbaTeams.teamFullName(team as import("@/lib/teams").NbaTeam);
+  const teamLabel = isNhl
+    ? nhlTeams.teamWithArticle(team as import("@/lib/nhl/teams").NhlTeam)
+    : nbaTeams.teamWithArticle(team as import("@/lib/teams").NbaTeam);
+  const crewSize = isNhl ? "four" : "three";
+  const buildCmd = isNhl ? "npm run build-nhl-data" : "npm run build-ref-data";
+  const buildSource = isNhl ? "api-web.nhle.com" : "the NBA Stats API";
 
   return (
     <div className="page-shell">
       <section className="mb-10">
         <div className="flex items-center gap-3">
-          <TeamLogo team={team} size="lg" />
+          <TeamLogo team={team} size="lg" sport={league} />
           <div>
             <p className="text-sm font-semibold text-zinc-700">{teamName}</p>
             <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
@@ -45,8 +59,8 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           </div>
         </div>
         <p className="page-lead">
-          Every {team.name} game grouped by the three referees on the floor, or
-          by individual official. Over this sample {teamLabel} are{" "}
+          Every {team.name} game grouped by the same {crewSize} officials on the
+          ice, or by individual official. Over this sample {teamLabel} are{" "}
           {teamRecord.wins}-{teamRecord.losses} ({formatPct(teamRecord.winRate)}
           ) — each ref and crew win rate below is compared to that team average.
         </p>
@@ -76,9 +90,9 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           <p className="mx-auto mt-2 max-w-md text-sm text-zinc-600">
             Run{" "}
             <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-zinc-700 ring-1 ring-border">
-              npm run build-ref-data
+              {buildCmd}
             </code>{" "}
-            to pull historical games from the NBA Stats API.
+            to pull historical games from {buildSource}.
           </p>
         </div>
       ) : (
@@ -107,7 +121,8 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         <ul className="space-y-2.5 text-sm leading-relaxed text-zinc-600">
           <li>
             <span className="font-medium text-zinc-800">Ref crews</span> — stats
-            when the same three officials worked together on {teamLabel} games.
+            when the same {crewSize} officials worked together on {teamLabel}{" "}
+            games.
           </li>
           <li>
             <span className="font-medium text-zinc-800">Individual refs</span> —
@@ -121,9 +136,11 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             rates show how they compare to that team average.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Foul edge</span> — who
-            gets called more. A positive number means opponents are whistled more
-            often than {teamLabel}.
+            <span className="font-medium text-zinc-800">Foul edge</span> —{" "}
+            {isNhl
+              ? "PIM differential. A positive number means opponents are penalized more often than"
+              : "who gets called more. A positive number means opponents are whistled more often than"}{" "}
+            {teamLabel}.
           </li>
           <li>
             <span className="font-medium text-zinc-800">Ref rankings</span> —
@@ -147,7 +164,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             .map((ref) => (
               <Link
                 key={ref.slug}
-                href={`/refs/${ref.slug}`}
+                href={`${basePath}/refs/${ref.slug}`}
                 className="flex items-center justify-between px-4 py-2.5 text-sm transition hover:bg-zinc-50"
               >
                 <span className="font-medium text-zinc-800">{ref.name}</span>

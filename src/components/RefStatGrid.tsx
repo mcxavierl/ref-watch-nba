@@ -3,7 +3,19 @@ import type { RefProfile } from "@/lib/types";
 import { formatPct } from "@/lib/data";
 import { StatCell, StatStrip } from "./StatStrip";
 
-export function RefStatGrid({ profile }: { profile: RefProfile }) {
+export function RefStatGrid({
+  profile,
+  overBaseline = 225,
+  foulLabel = "Fouls per game",
+  scoreLabel = "Avg combined score",
+  overLabel = "Games over benchmark",
+}: {
+  profile: RefProfile;
+  overBaseline?: number;
+  foulLabel?: string;
+  scoreLabel?: string;
+  overLabel?: string;
+}) {
   const totalDelta =
     profile.totalPointsDelta >= 0
       ? `+${profile.totalPointsDelta}`
@@ -18,19 +30,19 @@ export function RefStatGrid({ profile }: { profile: RefProfile }) {
       <StatStrip>
         <StatCell label="Games" value={String(profile.games)} />
         <StatCell
-          label="Avg combined score"
+          label={scoreLabel}
           value={String(profile.avgTotalPoints)}
           detail={`${totalDelta} vs league avg`}
         />
         <StatCell
-          label="Games over 225 pts"
+          label={overLabel}
           value={formatPct(profile.overRate)}
-          detail="Combined score beat benchmark"
+          detail={`Combined beat ${overBaseline} benchmark`}
         />
       </StatStrip>
       <StatStrip>
         <StatCell
-          label="Fouls per game"
+          label={foulLabel}
           value={String(profile.avgFouls)}
           detail={`${foulsDelta} vs league avg`}
         />
@@ -41,21 +53,32 @@ export function RefStatGrid({ profile }: { profile: RefProfile }) {
   );
 }
 
-export function RefListItem({ profile }: { profile: RefProfile }) {
+export function RefListItem({
+  profile,
+  basePath = "",
+  overBaseline = 225,
+  deltaUnit = "pts",
+}: {
+  profile: RefProfile;
+  basePath?: string;
+  overBaseline?: number;
+  deltaUnit?: string;
+}) {
+  const deltaThreshold = overBaseline > 50 ? 2 : 0.3;
   const delta =
     profile.totalPointsDelta >= 0
       ? `+${profile.totalPointsDelta}`
       : String(profile.totalPointsDelta);
   const deltaColor =
-    profile.totalPointsDelta > 2
+    profile.totalPointsDelta > deltaThreshold
       ? "text-emerald-700"
-      : profile.totalPointsDelta < -2
+      : profile.totalPointsDelta < -deltaThreshold
         ? "text-rose-700"
         : "text-zinc-600";
 
   return (
     <Link
-      href={`/refs/${profile.slug}`}
+      href={`${basePath}/refs/${profile.slug}`}
       className="group flex items-center justify-between border-b border-border-subtle px-4 py-3 transition last:border-b-0 hover:bg-zinc-50"
     >
       <div>
@@ -64,11 +87,11 @@ export function RefListItem({ profile }: { profile: RefProfile }) {
           <span className="font-mono text-sm text-zinc-500">#{profile.number}</span>
         </p>
         <p className="mt-1 text-sm text-zinc-600">
-          {profile.games} games · {formatPct(profile.overRate)} over 225
+          {profile.games} games · {formatPct(profile.overRate)} over {overBaseline}
         </p>
       </div>
       <span className={`font-mono text-base font-semibold tabular-nums ${deltaColor}`}>
-        {delta} pts
+        {delta} {deltaUnit}
       </span>
     </Link>
   );

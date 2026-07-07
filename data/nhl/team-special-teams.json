@@ -1,0 +1,134 @@
+{
+  "lastUpdated": "2026-07-07T03:52:58.446Z",
+  "seasonId": 20252026,
+  "teams": {
+    "ANA": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "BOS": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "BUF": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "CAR": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "CBJ": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "CGY": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "CHI": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "COL": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "DAL": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "DET": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "EDM": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "FLA": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "LAK": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "MIN": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "MTL": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "NSH": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "NJD": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "NYI": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "NYR": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "OTT": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "PHI": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "PIT": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "SEA": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "SJS": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "STL": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "TBL": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "TOR": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "UTA": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "VAN": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "VGK": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "WPG": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    },
+    "WSH": {
+      "ppPct": 0.22,
+      "pkPct": 0.78
+    }
+  }
+}

@@ -1,4 +1,9 @@
-export type RefRole = "crew_chief" | "referee" | "umpire" | "alternate";
+export type RefRole =
+  | "crew_chief"
+  | "referee"
+  | "umpire"
+  | "alternate"
+  | "linesman";
 
 export interface RefOfficial {
   name: string;
@@ -11,14 +16,14 @@ export interface AssignmentGame {
   matchup: string;
   awayTeam: string;
   homeTeam: string;
-  league: "NBA" | "WNBA";
+  league: "NBA" | "WNBA" | "NHL";
   crew: RefOfficial[];
 }
 
 export interface AssignmentsFile {
   lastUpdated: string;
   date: string;
-  source: "official.nba.com" | "seeded";
+  source: "official.nba.com" | "api-web.nhle.com" | "seeded";
   games: AssignmentGame[];
 }
 
@@ -32,6 +37,55 @@ export interface RefGameRecord {
   totalFouls: number;
   overHit: boolean;
   raptorsInvolved: boolean;
+  /** NHL: 2-minute minors assessed per team. */
+  homeMinors?: number;
+  awayMinors?: number;
+  wentToOvertime?: boolean;
+  closingTotal?: number;
+  /** Home puck line; negative = home favorite. */
+  homeSpread?: number;
+}
+
+/** NHL-only referee analytics (minors, OT, penalty balance). */
+export interface NhlRefAnalytics {
+  avgMinorsPerGame: number;
+  minorsDelta: number;
+  overtimeRate: number;
+  overtimeGames: number;
+  /** Average |home minors − away minors| per game. */
+  avgMinorImbalance: number;
+  /** Share of games within ±1 minor between teams. */
+  balancedGameRate: number;
+  balanceKind: "balancer" | "asymmetric" | "neutral";
+}
+
+export interface NhlTeamSpecialTeams {
+  ppPct: number;
+  pkPct: number;
+}
+
+/** Pre-game PP Premium signal for tonight's slate. */
+export interface NhlPpPremiumSignal {
+  gameId: string;
+  matchup: string;
+  index: number;
+  refMinorRate: number;
+  specialTeamsEdge: number;
+  sampleGames: number;
+  headline: string;
+  summary: string;
+}
+
+/** OT rate flag for tight matchups. */
+export interface NhlOtRateSignal {
+  gameId: string;
+  matchup: string;
+  refereeOtRate: number;
+  leagueOtRate: number;
+  homeSpread: number | null;
+  sampleGames: number;
+  headline: string;
+  summary: string;
 }
 
 /** Per-ref stats for games involving a specific team. */
@@ -60,6 +114,8 @@ export interface RefProfile {
   teamStats?: Record<string, RefTeamStat>;
   /** ATS, O/U buckets, home scoring splits when closing lines are available. */
   bettingStats?: RefBettingStats;
+  /** NHL referee-only analytics when available. */
+  nhlAnalytics?: NhlRefAnalytics;
 }
 
 export interface WlpRecord {
@@ -124,12 +180,18 @@ export interface RefStatsFile {
     leagueAvgFouls: number;
     leagueOverBaseline: number;
     minSampleSize: number;
-    source: "nba-stats-api" | "seeded";
+    source: "nba-stats-api" | "nhl-api" | "seeded";
     atsAvailable: boolean;
     refCount?: number;
     totalGamesProcessed?: number;
     dateRange?: { earliest: string; latest: string };
     note?: string;
+    /** NHL: league avg total minors per game (both teams). */
+    leagueAvgMinors?: number;
+    /** NHL: share of games reaching OT/SO. */
+    leagueOvertimeRate?: number;
+    /** NHL: season PP/PK by team abbr. */
+    teamSpecialTeams?: Record<string, NhlTeamSpecialTeams>;
   };
   refs: RefProfile[];
   teamSplits: Record<string, TeamCrewSplit[]>;

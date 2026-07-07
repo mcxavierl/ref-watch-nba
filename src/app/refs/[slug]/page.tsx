@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RefBettingProfile } from "@/components/RefBettingProfile";
+import { TermHelp } from "@/components/TermHelp";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import {
   formatDate,
@@ -86,15 +87,18 @@ export default async function RefProfilePage({
       {profile.bettingStats ? (
         <RefBettingProfile profile={profile} stats={profile.bettingStats} />
       ) : (
-        <RefStatGrid profile={profile} />
+        <RefStatGrid
+          profile={profile}
+          overBaseline={stats.meta.leagueOverBaseline}
+        />
       )}
 
       <details className="methodology-details panel-inset mt-8 px-5 py-4">
         <summary>How to read this profile</summary>
         <p className="text-sm leading-relaxed text-zinc-600">
-          ATS and O/U tables use closing lines per game. When lines are
-          synthetic (seeded data), treat buckets as directional. Team-specific
-          foul splits live on{" "}
+          <TermHelp id="ats" /> and <TermHelp id="over-under" /> tables use{" "}
+          <TermHelp id="closing-line">closing lines</TermHelp> per game. Seeded
+          data uses synthetic lines. Team foul splits live on{" "}
           <Link href="/teams" className="font-medium text-zinc-800 hover:underline">
             team pages
           </Link>

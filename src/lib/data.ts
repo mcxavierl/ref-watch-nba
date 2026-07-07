@@ -3,7 +3,6 @@ import * as path from "node:path";
 import type {
   AssignmentGame,
   AssignmentsFile,
-  OuLean,
   RefOfficial,
   RefProfile,
   RefStatsFile,
@@ -17,6 +16,7 @@ import {
   ouLeanSortWeight,
   whistleBias,
 } from "@/lib/stats-utils";
+import { resolveLeagueBaseline } from "@/lib/baselines";
 
 const dataDir = path.join(process.cwd(), "data");
 
@@ -39,21 +39,24 @@ export function getAssignments(): AssignmentsFile {
   }
 }
 
-const EMPTY_REF_STATS: RefStatsFile = {
-  meta: {
-    lastUpdated: new Date().toISOString(),
-    seasons: [],
-    leagueAvgTotal: 225,
-    leagueAvgFouls: 38.5,
-    leagueOverBaseline: 225,
-    minSampleSize: 30,
-    source: "seeded",
-    atsAvailable: false,
-    note: "No ref stats data file found. Run npm run build-ref-data.",
-  },
-  refs: [],
-  teamSplits: {},
-};
+const EMPTY_REF_STATS: RefStatsFile = (() => {
+  const bl = resolveLeagueBaseline("NBA");
+  return {
+    meta: {
+      lastUpdated: new Date().toISOString(),
+      seasons: [],
+      leagueAvgTotal: bl.leagueAvgTotal,
+      leagueAvgFouls: bl.leagueAvgFouls,
+      leagueOverBaseline: bl.leagueOverBaseline,
+      minSampleSize: 30,
+      source: "seeded",
+      atsAvailable: false,
+      note: "No ref stats data file found. Run npm run build-ref-data.",
+    },
+    refs: [],
+    teamSplits: {},
+  };
+})();
 
 function migrateLegacySplits(data: RefStatsFile): Record<string, TeamCrewSplit[]> {
   const teamSplits: Record<string, TeamCrewSplit[]> = {
@@ -68,6 +71,20 @@ function migrateLegacySplits(data: RefStatsFile): Record<string, TeamCrewSplit[]
   return teamSplits;
 }
 
+function applyBaselines(stats: RefStatsFile): RefStatsFile {
+  const season = stats.meta.seasons.at(-1) ?? null;
+  const baseline = resolveLeagueBaseline("NBA", season);
+  return {
+    ...stats,
+    meta: {
+      ...stats.meta,
+      leagueAvgTotal: baseline.leagueAvgTotal,
+      leagueAvgFouls: baseline.leagueAvgFouls,
+      leagueOverBaseline: baseline.leagueOverBaseline,
+    },
+  };
+}
+
 function normalizeRefStats(data: RefStatsFile): RefStatsFile {
   return {
     ...data,
@@ -78,10 +95,10 @@ function normalizeRefStats(data: RefStatsFile): RefStatsFile {
 
 export function getRefStats(): RefStatsFile {
   try {
-    return normalizeRefStats(readJson<RefStatsFile>("ref-stats.json"));
+    return applyBaselines(normalizeRefStats(readJson<RefStatsFile>("ref-stats.json")));
   } catch {
     try {
-      return normalizeRefStats(readJson<RefStatsFile>("ref-stats.seed.json"));
+      return applyBaselines(normalizeRefStats(readJson<RefStatsFile>("ref-stats.seed.json")));
     } catch {
       return EMPTY_REF_STATS;
     }

@@ -1,15 +1,44 @@
 import Link from "next/link";
 import { Target, TrendingDown, TrendingUp, Users, Volume2 } from "lucide-react";
 import type { CrewMetrics } from "@/lib/data";
-import { detectTeamsInGame, formatPct, refSlug } from "@/lib/data";
+import { detectTeamsInGame as detectNbaTeams, formatPct, refSlug as nbaRefSlug } from "@/lib/data";
+import {
+  detectTeamsInGame as detectNhlTeams,
+  refSlug as nhlRefSlug,
+} from "@/lib/nhl/data";
 import type { GrudgeStoryline } from "@/lib/grudge-match";
-import type { CrewHomeBias, CrewWhistlePremium } from "@/lib/types";
+import type {
+  CrewHomeBias,
+  CrewWhistlePremium,
+  NhlOtRateSignal,
+  NhlPpPremiumSignal,
+} from "@/lib/types";
 import { scoringDeltaTone } from "@/lib/metricTone";
-import { teamFullName } from "@/lib/teams";
+import { teamFullName as nbaTeamFullName, type NbaTeam } from "@/lib/teams";
+import { teamFullName as nhlTeamFullName, type NhlTeam } from "@/lib/nhl/teams";
+import { TermHelp } from "@/components/TermHelp";
 import { GameGrudgeStorylines } from "./GrudgeMatchSection";
+import { NhlSlateSignalBadges } from "./NhlSlateSignalBadges";
 import { MetricBlock, MetricGrid } from "./MetricBlock";
 import { TeamLogo } from "./TeamLogo";
 import { GamePremiumStrip } from "./WhistlePremiumSection";
+
+const SPORT_LABELS = {
+  nba: {
+    overTerm: "over-225" as const,
+    overLabel: "over 225",
+    benchmark: "225",
+    foulUnit: "fouls",
+    whistleHint: "fouls",
+  },
+  nhl: {
+    overTerm: "over-6" as const,
+    overLabel: "over 6.0",
+    benchmark: "6.0",
+    foulUnit: "PIM",
+    whistleHint: "PIM",
+  },
+};
 
 export function GameSlateCard({
   matchup,
@@ -19,6 +48,11 @@ export function GameSlateCard({
   storylines = [],
   premium,
   homeBias = null,
+  sport = "nba",
+  basePath = "",
+  ppPremium = null,
+  otSignal = null,
+  overBenchmark,
 }: {
   matchup: string;
   awayTeam: string;
@@ -27,8 +61,27 @@ export function GameSlateCard({
   storylines?: GrudgeStoryline[];
   premium: CrewWhistlePremium;
   homeBias?: CrewHomeBias | null;
+  sport?: "nba" | "nhl";
+  basePath?: string;
+  ppPremium?: NhlPpPremiumSignal | null;
+  otSignal?: NhlOtRateSignal | null;
+  overBenchmark?: number;
 }) {
-  const teams = detectTeamsInGame(awayTeam, homeTeam);
+  const baseLabels = SPORT_LABELS[sport];
+  const benchmarkLabel =
+    overBenchmark !== undefined ? String(overBenchmark) : baseLabels.benchmark;
+  const labels = {
+    ...baseLabels,
+    overLabel: `over ${benchmarkLabel}`,
+    benchmark: benchmarkLabel,
+  };
+  const detectTeams = sport === "nhl" ? detectNhlTeams : detectNbaTeams;
+  const displayTeamName = (team: NbaTeam | NhlTeam) =>
+    sport === "nhl"
+      ? nhlTeamFullName(team as NhlTeam)
+      : nbaTeamFullName(team as NbaTeam);
+  const refSlug = sport === "nhl" ? nhlRefSlug : nbaRefSlug;
+  const teams = detectTeams(awayTeam, homeTeam);
   const totalDelta =
     metrics.totalPointsDelta >= 0
       ? `+${metrics.totalPointsDelta}`
@@ -53,7 +106,7 @@ export function GameSlateCard({
                       vs
                     </span>
                   )}
-                  <TeamLogo team={team} size="sm" />
+                  <TeamLogo team={team} size="sm" sport={sport} />
                   <span className="text-base font-semibold tracking-tight text-zinc-900">
                     {team.abbr}
                   </span>
@@ -71,10 +124,10 @@ export function GameSlateCard({
             {teams.map((team) => (
               <Link
                 key={team.abbr}
-                href={`/teams/${team.abbr}`}
+                href={`${basePath}/teams/${team.abbr}`}
                 className="text-sm font-medium text-raptors hover:underline"
               >
-                {teamFullName(team)} history →
+                {displayTeamName(team)} history →
               </Link>
             ))}
           </div>
@@ -85,7 +138,7 @@ export function GameSlateCard({
         {metrics.crew.map((official) => (
           <Link
             key={`${official.name}-${official.number}`}
-            href={`/refs/${refSlug(official.name, official.number)}`}
+            href={`${basePath}/refs/${refSlug(official.name, official.number)}`}
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-zinc-50 px-3 py-1 text-sm text-zinc-700 transition hover:border-zinc-300 hover:bg-white"
           >
             <Users className="size-3.5 text-zinc-400" aria-hidden />
@@ -100,7 +153,12 @@ export function GameSlateCard({
           iconClassName={scoreTone === "positive" ? "text-emerald-600" : scoreTone === "negative" ? "text-rose-600" : "text-zinc-500"}
           label="Scoring"
           value={`${metrics.avgTotalPoints} avg`}
-          hint={`${formatPct(metrics.overRate)} over 225`}
+          hint={
+            <>
+              {formatPct(metrics.overRate)}{" "}
+              <TermHelp id={labels.overTerm}>{labels.overLabel}</TermHelp>
+            </>
+          }
           badge={`${totalDelta} vs league`}
           badgeTone={scoreTone}
         />
@@ -108,7 +166,7 @@ export function GameSlateCard({
           icon={Volume2}
           iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
           label="Whistle"
-          value={`${metrics.avgFouls} fouls`}
+          value={`${metrics.avgFouls} ${labels.foulUnit}`}
           hint={`${foulsDelta} vs league avg`}
           badge={metrics.insufficientSample ? "Small sample" : `${metrics.sampleGames}g sample`}
           badgeTone={metrics.insufficientSample ? "warning" : "neutral"}
@@ -116,15 +174,25 @@ export function GameSlateCard({
         <MetricBlock
           icon={Target}
           iconClassName="text-zinc-500"
-          label="Line gap"
+          label={<TermHelp id="line-gap">Line gap</TermHelp>}
           value={`${premium.gapVsBenchmark >= 0 ? "+" : ""}${premium.gapVsBenchmark}`}
-          hint={`${premium.avgTotalPoints} avg vs ${premium.benchmarkSource === "sportsbook" ? "book" : "225"}`}
-          badge={`Premium ${premium.scoringPremium >= 0 ? "+" : ""}${premium.scoringPremium}`}
+          hint={`${premium.avgTotalPoints} avg vs ${premium.benchmarkSource === "sportsbook" ? "book" : labels.benchmark}`}
+          badge={
+            <>
+              <TermHelp id="whistle-premium">Premium</TermHelp>{" "}
+              {premium.scoringPremium >= 0 ? "+" : ""}
+              {premium.scoringPremium}
+            </>
+          }
           badgeTone="neutral"
         />
       </MetricGrid>
 
-      <GamePremiumStrip premium={premium} homeBias={homeBias} />
+      <GamePremiumStrip premium={premium} homeBias={homeBias} sport={sport} />
+
+      {sport === "nhl" && (
+        <NhlSlateSignalBadges ppPremium={ppPremium} otSignal={otSignal} />
+      )}
 
       <GameGrudgeStorylines storylines={storylines} />
     </article>

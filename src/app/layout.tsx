@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
 import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterWrapper } from "@/components/SiteFooterWrapper";
 import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 
@@ -37,7 +38,10 @@ export default function RootLayout({
         <SiteHeader />
         <GamblingDisclaimer />
         <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <SiteFooterWrapper
+          nbaFooter={<SiteFooter league="nba" />}
+          nhlFooter={<SiteFooter league="nhl" />}
+        />
       </body>
     </html>
   );

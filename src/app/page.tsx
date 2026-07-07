@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { FindingsSection } from "@/components/FindingsSection";
+import { TermHelp } from "@/components/TermHelp";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import {
   computeCrewMetrics,
@@ -105,6 +106,10 @@ export default function HomePage() {
                 </span>
               )}
             </summary>
+            <p className="mt-3 text-sm text-zinc-600 md:hidden">
+              <TermHelp id="whistle-premium" /> and{" "}
+              <TermHelp id="grudge-match" /> — tap terms for definitions.
+            </p>
             <div className="mt-4 space-y-4 text-sm">
               {alertPremiums.length === 0 && slateStorylines.length === 0 && (
                 <p className="text-zinc-600">
@@ -118,10 +123,16 @@ export default function HomePage() {
                 >
                   <p className="font-medium text-zinc-900">{p.matchup}</p>
                   <p className="mt-1 text-zinc-600">
-                    {p.alert === "high_pace" ? "High pace" : "Low pace"} crew —{" "}
-                    {formatSigned(p.scoringPremium)} scoring premium,{" "}
-                    {formatSigned(p.gapVsBenchmark)} vs{" "}
-                    {p.benchmarkSource === "sportsbook" ? "book" : "225"}.
+                    <TermHelp id="pace-alert">
+                      {p.alert === "high_pace" ? "High pace" : "Low pace"}
+                    </TermHelp>{" "}
+                    crew — {formatSigned(p.scoringPremium)}{" "}
+                    <TermHelp id="whistle-premium">scoring premium</TermHelp>,{" "}
+                    {formatSigned(p.gapVsBenchmark)}{" "}
+                    <TermHelp id="line-gap">line gap</TermHelp> vs{" "}
+                    {p.benchmarkSource === "sportsbook"
+                      ? "book"
+                      : String(refStats.meta.leagueOverBaseline)}.
                   </p>
                 </div>
               ))}
@@ -154,6 +165,7 @@ export default function HomePage() {
                   premium={computeCrewWhistlePremium(game, refStats, odds)}
                   homeBias={computeCrewHomeBias(game, refStats)}
                   storylines={computeGameStorylines(game, refStats, 1)}
+                  overBenchmark={refStats.meta.leagueOverBaseline}
                 />
               ))}
             </div>
@@ -174,18 +186,20 @@ export default function HomePage() {
         <summary>Methodology</summary>
         <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
           <li>
-            Whistle premium = crew avg combined score minus league baseline.
-            Pace alerts need solid sample size.
+            <TermHelp id="whistle-premium" /> — crew avg combined score minus
+            league baseline ({refStats.meta.leagueAvgTotal}).
           </li>
           <li>
-            Ref ATS/O/U on profile pages use closing lines (synthetic in seeded
-            data; import <code className="text-xs">data/game-lines.json</code>{" "}
-            or set <code className="text-xs">ODDS_API_KEY</code> for live
-            totals).
+            <TermHelp id="pace-alert" /> — sample-gated; compares crew history
+            to tonight&apos;s line.
           </li>
           <li>
-            Grudge flags = ref–team history for teams on tonight&apos;s card
-            only.
+            Ref <TermHelp id="ats" /> and <TermHelp id="over-under" /> on profile
+            pages use <TermHelp id="closing-line">closing lines</TermHelp>.
+          </li>
+          <li>
+            <TermHelp id="grudge-match" /> — ref–team anomalies for teams on
+            tonight&apos;s card.
           </li>
         </ul>
       </details>
