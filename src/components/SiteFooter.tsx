@@ -1,8 +1,11 @@
-import { formatDate, getAssignments, getRefStats } from "@/lib/data";
+import { formatDate, formatRefStatsRange, getAssignments, getRefStats } from "@/lib/data";
 
 export function SiteFooter() {
   const assignments = getAssignments();
   const refStats = getRefStats();
+  const refCount = refStats.meta.refCount ?? refStats.refs.length;
+  const range = formatRefStatsRange(refStats.meta);
+  const games = refStats.meta.totalGamesProcessed;
 
   return (
     <footer className="mt-auto border-t border-border bg-surface-raised">
@@ -13,6 +16,10 @@ export function SiteFooter() {
             Assignments {formatDate(assignments.lastUpdated)} (
             {assignments.source}) · Stats{" "}
             {formatDate(refStats.meta.lastUpdated)} ({refStats.meta.source})
+          </p>
+          <p className="mt-1.5 font-mono text-[11px] leading-relaxed text-zinc-600">
+            {refCount} refs
+            {games ? ` · ${games.toLocaleString()} games` : ""} · {range}
           </p>
           <p className="mt-2 text-xs leading-relaxed text-zinc-600">
             Re-run before tip-off:{" "}

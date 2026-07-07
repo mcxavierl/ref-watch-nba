@@ -16,16 +16,26 @@ const NBA_TEAM_ABBRS = [
 ];
 
 const STATS_BASE = "https://stats.nba.com/stats";
-const FETCH_TIMEOUT_MS = 8_000;
+const FETCH_TIMEOUT_MS = 12_000;
 const LEAGUE_AVG_TOTAL = 225;
 const LEAGUE_AVG_FOULS = 38.5;
 const LEAGUE_OVER_BASELINE = 225;
 const MIN_SAMPLE = 30;
+const REQUEST_DELAY_MS = 300;
 
+/** Three most recent completed/in-progress regular seasons from build date. */
 const SEASONS = [
   { label: "2023-24", param: "2023-24" },
   { label: "2024-25", param: "2024-25" },
+  { label: "2025-26", param: "2025-26" },
 ];
+
+function maxGamesPerSeason(): number | null {
+  const raw = process.env.REF_MAX_GAMES_PER_SEASON;
+  if (!raw) return null;
+  const n = Number.parseInt(raw, 10);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
 
 interface NbaResultSet {
   name: string;
@@ -323,25 +333,34 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
   }
 
   let processed = 0;
-  const maxGamesPerSeason = 40;
+  let skipped = 0;
+  const gameCap = maxGamesPerSeason();
+  const allDates: string[] = [];
 
   for (const season of SEASONS) {
     console.log(`Fetching game list for ${season.label}...`);
     const gameIds = await fetchSeasonGames(season.param);
     if (gameIds.length === 0) {
       console.warn(`No games returned for ${season.label}`);
-      return null;
+      continue;
     }
 
-    const sample = gameIds.slice(0, maxGamesPerSeason);
-    console.log(`Processing ${sample.length} games for ${season.label}...`);
+    const sample = gameCap ? gameIds.slice(0, gameCap) : gameIds;
+    console.log(
+      `Processing ${sample.length} of ${gameIds.length} games for ${season.label}...`,
+    );
 
     for (const gameId of sample) {
       const [box, officials] = await Promise.all([
         fetchGameBox(gameId, season.label),
         fetchGameOfficials(gameId),
       ]);
-      if (!box || officials.length === 0) continue;
+      if (!box || officials.length === 0) {
+        skipped++;
+        continue;
+      }
+
+      if (box.date) allDates.push(box.date);
 
       const totalPoints = box.homeScore + box.awayScore;
       const overHit = totalPoints > LEAGUE_OVER_BASELINE;
@@ -379,10 +398,10 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       }
 
       processed++;
-      if (processed % 25 === 0) {
-        console.log(`  ${processed} games processed...`);
+      if (processed % 50 === 0) {
+        console.log(`  ${processed} games processed (${skipped} skipped)...`);
       }
-      await new Promise((r) => setTimeout(r, 350));
+      await new Promise((r) => setTimeout(r, REQUEST_DELAY_MS));
     }
   }
 
@@ -391,9 +410,15 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
     return null;
   }
 
+  allDates.sort();
+  const dateRange =
+    allDates.length > 0
+      ? { earliest: allDates[0], latest: allDates[allDates.length - 1] }
+      : undefined;
+
   const refs: RefProfile[] = [];
   for (const [slug, games] of refGames) {
-    if (games.length < MIN_SAMPLE) continue;
+    if (games.length === 0) continue;
     const meta = refMeta.get(slug)!;
     const avgTotal =
       games.reduce((s, g) => s + g.totalPoints, 0) / games.length;
@@ -435,6 +460,9 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       minSampleSize: MIN_SAMPLE,
       source: "nba-stats-api",
       atsAvailable: false,
+      refCount: refs.length,
+      totalGamesProcessed: processed,
+      dateRange,
       note: "ATS home cover skipped in v1 — no closing spread feed.",
     },
     refs,

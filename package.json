@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "fetch-assignments": "tsx scripts/fetch-assignments.ts",
     "build-ref-data": "tsx scripts/build-ref-data.ts",
+    "generate-ref-seed": "tsx scripts/generate-comprehensive-seed.ts",
     "expand-team-splits": "tsx scripts/expand-team-splits.ts"
   },
   "dependencies": {

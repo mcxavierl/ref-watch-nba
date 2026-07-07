@@ -19,15 +19,21 @@ npm run dev              # http://localhost:3000
 
 ### Historical ref stats (`build-ref-data`)
 
-1. Pulls game IDs from `stats.nba.com` `leaguegamefinder` for **2023-24** and **2024-25** regular seasons.
+1. Pulls game IDs from `stats.nba.com` `leaguegamefinder` for **2023-24**, **2024-25**, and **2025-26** regular seasons.
 2. For each game: `boxscoresummaryv2` (officials) + `boxscoretraditionalv2` (points, fouls).
-3. Aggregates per-ref metrics with **30+ game minimum** and crew splits for **all 30 NBA teams**.
-4. If the Stats API is blocked or returns insufficient data, falls back to `data/ref-stats.seed.json`.
+3. Aggregates metrics for **every ref** who officiated a game and crew splits for **all 30 NBA teams**.
+4. If the Stats API is blocked or returns insufficient data, falls back to `data/ref-stats.seed.json` (comprehensive simulated dataset).
 
 Re-run before tip-off on game nights:
 
 ```bash
 npm run build-ref-data
+```
+
+Regenerate comprehensive seed data (75 refs, 3 seasons, all teams):
+
+```bash
+npm run generate-ref-seed
 ```
 
 Seed team splits for all 30 teams from existing TOR/LAL templates:
@@ -43,6 +49,7 @@ npx tsx scripts/expand-team-splits.ts
 - `/teams/[abbr]` — Team crew splits (e.g. `/teams/TOR`, `/teams/BOS`)
 - `/raptors` → redirects to `/teams/TOR` (backwards compat)
 - `/lakers` → redirects to `/teams/LAL` (backwards compat)
+- `/refs` — All referees in the dataset (searchable from header)
 - `/refs/[slug]` — Individual ref profile (e.g. `/refs/scott-foster-48`)
 
 ## Methodology (MVP)

@@ -82,6 +82,9 @@ export interface RefStatsFile {
     minSampleSize: number;
     source: "nba-stats-api" | "seeded";
     atsAvailable: boolean;
+    refCount?: number;
+    totalGamesProcessed?: number;
+    dateRange?: { earliest: string; latest: string };
     note?: string;
   };
   refs: RefProfile[];

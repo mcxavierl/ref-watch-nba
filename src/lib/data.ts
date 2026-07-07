@@ -90,6 +90,27 @@ export function getAllRefSlugs(): string[] {
   return getRefStats().refs.map((r) => r.slug);
 }
 
+export interface RefIndexEntry {
+  slug: string;
+  name: string;
+  number: number;
+}
+
+export function getRefIndex(): RefIndexEntry[] {
+  return getRefStats().refs.map((r) => ({
+    slug: r.slug,
+    name: r.name,
+    number: r.number,
+  }));
+}
+
+export function formatRefStatsRange(meta: RefStatsFile["meta"]): string {
+  if (meta.dateRange) {
+    return `${meta.dateRange.earliest} – ${meta.dateRange.latest}`;
+  }
+  return meta.seasons.join(", ");
+}
+
 export function refSlug(name: string, number: number): string {
   const base = name
     .toLowerCase()
