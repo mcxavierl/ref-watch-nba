@@ -1,4 +1,6 @@
 /** W-L-P record for ATS or O/U. */
+import { breakTieWithOvertime } from "./team-win";
+
 export interface WlpRecord {
   wins: number;
   losses: number;
@@ -183,18 +185,20 @@ export function generateClosingLines(rng: () => number): ClosingLines {
 export function scoresFromLines(
   lines: ClosingLines,
   rng: () => number,
+  strengthBias = 0,
 ): { homeScore: number; awayScore: number } {
   const totalNoise = (rng() - 0.48) * 18;
   const targetTotal = Math.max(
     185,
     Math.min(260, Math.round(lines.total + totalNoise)),
   );
-  const margin = -lines.homeSpread + (rng() - 0.5) * 12;
+  const margin = -lines.homeSpread + (rng() - 0.5) * 12 + strengthBias;
   let homeScore = Math.round((targetTotal + margin) / 2);
   let awayScore = targetTotal - homeScore;
   homeScore = Math.max(85, Math.min(145, homeScore));
   awayScore = Math.max(85, Math.min(145, awayScore));
-  return { homeScore, awayScore };
+  const resolved = breakTieWithOvertime(homeScore, awayScore, rng);
+  return { homeScore: resolved.homeScore, awayScore: resolved.awayScore };
 }
 
 export function homeCoverRate(stats: RefBettingStats): number | null {

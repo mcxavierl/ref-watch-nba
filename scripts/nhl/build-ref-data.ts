@@ -32,6 +32,7 @@ import {
   computeLeagueOvertimeRate,
   computeNhlRefAnalytics,
 } from "./lib/ref-analytics";
+import { teamWonGame } from "../lib/team-win";
 
 const NHL_TEAM_ABBRS = [
   "ANA", "BOS", "BUF", "CAR", "CBJ", "CGY", "CHI", "COL", "DAL", "DET",
@@ -374,9 +375,13 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
         const isHome = homeTeam === teamAbbr;
         const isAway = awayTeam === teamAbbr;
         if (!isHome && !isAway) return null;
-        const teamWin = isHome
-          ? box.homeScore > box.awayScore
-          : box.awayScore > box.homeScore;
+        const teamWin = teamWonGame(
+          box.homeScore,
+          box.awayScore,
+          homeTeam,
+          awayTeam,
+          teamAbbr,
+        );
         return {
           totalPoints,
           totalFouls: totalPim,

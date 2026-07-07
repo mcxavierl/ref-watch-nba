@@ -12,6 +12,7 @@ import {
   homeCoverRate,
   RefBettingAccumulator,
 } from "./ref-betting";
+import { teamWonGame } from "./team-win";
 import {
   dedupeGameLogs,
   loadGameLogs,
@@ -296,9 +297,13 @@ function teamGameRow(
   if (!isHome && !isAway) return null;
 
   const totalPoints = box.homeScore + box.awayScore;
-  const teamWin = isHome
-    ? box.homeScore > box.awayScore
-    : box.awayScore > box.homeScore;
+  const teamWin = teamWonGame(
+    box.homeScore,
+    box.awayScore,
+    box.homeTeam,
+    box.awayTeam,
+    teamAbbr,
+  );
 
   return {
     totalPoints,

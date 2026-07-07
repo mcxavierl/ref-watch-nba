@@ -25,6 +25,8 @@ import {
   type GameLogEntry,
 } from "./lib/game-logs";
 import { buildBaselinesFile, saveBaselines } from "./lib/baselines";
+import { nbaMatchupStrengthBias } from "./lib/nba-team-strength";
+import { teamWonGame } from "./lib/team-win";
 import type {
   RefGameRecord,
   RefProfile,
@@ -230,9 +232,13 @@ function teamGameRow(box: SimBox, teamAbbr: string): TeamGameRow | null {
   if (!isHome && !isAway) return null;
 
   const totalPoints = box.homeScore + box.awayScore;
-  const teamWin = isHome
-    ? box.homeScore > box.awayScore
-    : box.awayScore > box.homeScore;
+  const teamWin = teamWonGame(
+    box.homeScore,
+    box.awayScore,
+    box.homeTeam,
+    box.awayTeam,
+    teamAbbr,
+  );
 
   return {
     totalPoints,
@@ -290,7 +296,11 @@ function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
     for (const [homeTeam, awayTeam] of schedule) {
       const officials = pickCrewFromPool(rng, crewPool);
       const lines = generateClosingLines(rng);
-      const { homeScore, awayScore } = scoresFromLines(lines, rng);
+      const { homeScore, awayScore } = scoresFromLines(
+        lines,
+        rng,
+        nbaMatchupStrengthBias(homeTeam, awayTeam),
+      );
       const homeFouls = 16 + Math.floor(rng() * 10);
       const awayFouls = 16 + Math.floor(rng() * 10);
       const date = gameDate(season, seasonGameIndex, gamesInSeason);

@@ -41,6 +41,8 @@ import {
   type GameLogEntry,
 } from "../lib/game-logs";
 import { buildBaselinesFile, saveBaselines } from "../lib/baselines";
+import { nhlMatchupStrengthBias } from "../lib/nhl-team-strength";
+import { breakTieWithOvertime, teamWonGame } from "../lib/team-win";
 
 const NHL_TEAM_ABBRS = [
   "ANA", "BOS", "BUF", "CAR", "CBJ", "CGY", "CHI", "COL", "DAL", "DET",
@@ -233,11 +235,14 @@ function generateNhlLines(rng: () => number): { homeSpread: number; total: numbe
 
 function generateNhlScores(
   lines: { homeSpread: number; total: number },
+  homeTeam: string,
+  awayTeam: string,
   rng: () => number,
 ): { homeScore: number; awayScore: number } {
   const totalNoise = (rng() - 0.48) * 2;
   const targetTotal = Math.max(2, Math.min(12, Math.round(lines.total + totalNoise)));
-  const margin = -lines.homeSpread + (rng() - 0.5) * 2;
+  const strengthBias = nhlMatchupStrengthBias(homeTeam, awayTeam);
+  const margin = -lines.homeSpread + (rng() - 0.5) * 2 + strengthBias;
   let homeScore = Math.round((targetTotal + margin) / 2);
   let awayScore = targetTotal - homeScore;
   homeScore = Math.max(0, Math.min(8, homeScore));
@@ -338,9 +343,13 @@ function teamGameRow(box: SimBox, teamAbbr: string): TeamGameRow | null {
   if (!isHome && !isAway) return null;
 
   const totalPoints = box.homeScore + box.awayScore;
-  const teamWin = isHome
-    ? box.homeScore > box.awayScore
-    : box.awayScore > box.homeScore;
+  const teamWin = teamWonGame(
+    box.homeScore,
+    box.awayScore,
+    box.homeTeam,
+    box.awayTeam,
+    teamAbbr,
+  );
 
   return {
     totalPoints,
@@ -409,14 +418,18 @@ function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
     for (const [homeTeam, awayTeam] of schedule) {
       const officials = pickCrewFromPool(rng, crewPool);
       const lines = generateNhlLines(rng);
-      const { homeScore, awayScore } = generateNhlScores(lines, rng);
+      let { homeScore, awayScore } = generateNhlScores(lines, homeTeam, awayTeam, rng);
+      const otBreak = breakTieWithOvertime(homeScore, awayScore, rng);
+      homeScore = otBreak.homeScore;
+      awayScore = otBreak.awayScore;
       const homePim = 4 + Math.floor(rng() * 8);
       const awayPim = 4 + Math.floor(rng() * 8);
       const homeMinors = Math.max(1, Math.round(homePim / 2 + (rng() - 0.5)));
       const awayMinors = Math.max(1, Math.round(awayPim / 2 + (rng() - 0.5)));
       const scoreDiff = Math.abs(homeScore - awayScore);
       const wentToOvertime =
-        scoreDiff <= 1 && rng() < (scoreDiff === 0 ? 0.35 : 0.18);
+        otBreak.wentToOvertime ||
+        (scoreDiff <= 1 && rng() < (scoreDiff === 0 ? 0.35 : 0.18));
       const date = gameDate(season, seasonGameIndex, gamesInSeason);
       allDates.push(date);
 
