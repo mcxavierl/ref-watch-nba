@@ -58,11 +58,11 @@ export default function RootLayout({
       >
         <SiteHeader />
         <main className="flex-1">{children}</main>
-        <GamblingDisclaimer />
         <SiteFooterWrapper
           nbaFooter={<SiteFooter league="nba" />}
           nhlFooter={<SiteFooter league="nhl" />}
         />
+        <GamblingDisclaimer />
       </body>
     </html>
   );
