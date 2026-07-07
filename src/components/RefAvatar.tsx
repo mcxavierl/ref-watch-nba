@@ -64,6 +64,9 @@ export function RefAvatar({
   className?: string;
 }) {
   const [failed, setFailed] = useState(false);
+
+  if (sport === "nba") return null;
+
   const photoSrc =
     sport === "nhl" ? refPhotoUrl(slug, sport, size === "lg" ? "headshot" : "thumb") : null;
 
