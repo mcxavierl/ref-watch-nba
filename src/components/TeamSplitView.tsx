@@ -7,7 +7,7 @@ import {
   formatPct,
   formatSigned,
   whistleBias,
-} from "@/lib/data";
+} from "@/lib/stats-utils";
 import {
   getOuLeanAnnotation,
   getWhistleAnnotation,

@@ -10,6 +10,13 @@ import type {
   TeamCrewSplit,
 } from "@/lib/types";
 import { detectTeamsInGame, NBA_TEAM_ABBRS } from "@/lib/teams";
+import {
+  computeOuLean,
+  formatPct,
+  formatSigned,
+  ouLeanSortWeight,
+  whistleBias,
+} from "@/lib/stats-utils";
 
 const dataDir = path.join(process.cwd(), "data");
 
@@ -198,22 +205,6 @@ function round3(n: number): number {
   return Math.round(n * 1000) / 1000;
 }
 
-export function formatPct(rate: number): string {
-  return `${(rate * 100).toFixed(1)}%`;
-}
-
-export function formatSigned(n: number): string {
-  return `${n >= 0 ? "+" : ""}${n}`;
-}
-
-export function whistleBias(
-  foulDifferential: number,
-): "team" | "opponent" | "neutral" {
-  if (foulDifferential >= 1.5) return "team";
-  if (foulDifferential <= -1.5) return "opponent";
-  return "neutral";
-}
-
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleString("en-CA", {
     dateStyle: "medium",
@@ -244,23 +235,8 @@ export function gameHasTeamSplits(game: AssignmentGame): boolean {
   );
 }
 
-export function ouLeanSortWeight(lean: OuLean): number {
-  if (lean === "over") return 2;
-  if (lean === "under") return 1;
-  return 0;
-}
-
 export function sortSplitsByGames<T extends TeamCrewSplit>(splits: T[]): T[] {
   return [...splits].sort((a, b) => b.games - a.games);
 }
 
-export function computeOuLean(
-  overRate: number,
-  avgTotal: number,
-  leagueAvg: number,
-): OuLean {
-  const delta = avgTotal - leagueAvg;
-  if (overRate >= 0.56 || delta >= 3) return "over";
-  if (overRate <= 0.44 || delta <= -3) return "under";
-  return "neutral";
-}
+export { formatPct, formatSigned, whistleBias, ouLeanSortWeight, computeOuLean };

@@ -1,4 +1,4 @@
-import { computeOuLean } from "@/lib/data";
+import { computeOuLean } from "@/lib/stats-utils";
 import type { OuLean, WhistleBias } from "@/lib/types";
 
 export type OuLeanStatTarget = "overRate" | "avgTotal";
