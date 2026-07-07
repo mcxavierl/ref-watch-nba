@@ -3,6 +3,7 @@ import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
+import { MethodologyAccordion } from "@/components/MethodologyAccordion";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TermHelp } from "@/components/TermHelp";
@@ -138,14 +139,14 @@ export default function NhlHomePage() {
       </section>
 
       {isOffseason ? (
-        <>
-          <OffseasonSlateNotice league="NHL" browseHref="/nhl/teams" />
+        <div className="content-stack-offseason">
+          <OffseasonSlateNotice league="NHL" />
           <TonightEdgeSummary
             items={edgeItems}
             title="Season highlights"
             emptyMessage="Browse findings below for the biggest historical patterns in our dataset."
           />
-        </>
+        </div>
       ) : (
         <>
           <SlateShareBar
@@ -192,9 +193,8 @@ export default function NhlHomePage() {
         dataSourceNote={dataSourceNote}
       />
 
-      <details className="methodology-details panel-inset mt-8 px-4 py-3 sm:px-5">
-        <summary>Methodology</summary>
-        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
+      <MethodologyAccordion>
+        <ul className="space-y-2 text-sm leading-relaxed text-zinc-600">
           <li>
             Findings ranked by effect size × √sample size, with sample gates
             (30+ ref games, 8+ team splits, 30+ ATS decisions).
@@ -216,7 +216,7 @@ export default function NhlHomePage() {
             <ProComingSoonTease league="NHL" compact />
           </li>
         </ul>
-      </details>
+      </MethodologyAccordion>
 
       {!isOffseason && <ProComingSoonTease league="NHL" />}
     </div>

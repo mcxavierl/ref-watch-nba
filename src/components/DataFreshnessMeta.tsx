@@ -1,3 +1,4 @@
+import { OffseasonAlertBanner } from "@/components/OffseasonAlertBanner";
 import { formatDate } from "@/lib/data";
 import { isOffseasonSlate } from "@/lib/offseason";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
@@ -24,14 +25,7 @@ export function DataFreshnessMeta({
   const offseason = isOffseasonSlate(assignments);
 
   if (offseason) {
-    return (
-      <p className="page-meta">
-        <span className="text-zinc-600">
-          Offseason — historical data only. Live slate returns when the{" "}
-          {league} season resumes.
-        </span>
-      </p>
-    );
+    return <OffseasonAlertBanner league={league} />;
   }
 
   const statsSeeded = refStats.meta.source === "seeded";

@@ -9,14 +9,16 @@ export function ProComingSoonTease({
 }) {
   if (callout) {
     return (
-      <div className="pro-tease-callout">
+      <aside className="pro-tease-callout" aria-label="Ref Watch Pro preview">
         <div className="pro-tease-callout-inner">
-          <p className="pro-tease-callout-title">Ref Watch Pro — coming soon</p>
+          <p className="pro-tease-callout-kicker">Ref Watch Pro</p>
+          <p className="pro-tease-callout-title">Coming soon</p>
           <p className="pro-tease-callout-copy">
-            Automated slate alerts, line-move tracking, and deeper crew reunion stats.
+            Automated slate alerts, line-move tracking, and deeper crew reunion
+            stats.
           </p>
         </div>
-      </div>
+      </aside>
     );
   }
 
