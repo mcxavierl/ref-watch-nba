@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { TeamRefSortBar } from "@/components/TeamRefSortBar";
 import { StatCell, StatSection, StatStrip } from "@/components/StatStrip";
 import {
   formatPct,
@@ -12,7 +13,8 @@ import {
   getOuLeanAnnotation,
   getWhistleAnnotation,
 } from "@/lib/leanAnnotations";
-import type { TeamRefLeaderboardEntry } from "@/lib/teamRefLeaderboards";
+import type { TeamRefLeaderboardEntry, TeamRefSort } from "@/lib/teamRefLeaderboards";
+import { sortTeamRefEntries } from "@/lib/teamRefLeaderboards";
 import type { RefProfile, TeamCrewSplit } from "@/lib/types";
 
 type SplitView = "crew" | "ref";
@@ -253,6 +255,12 @@ export function TeamSplitView({
   overBaseline: number;
 }) {
   const [view, setView] = useState<SplitView>("crew");
+  const [refSort, setRefSort] = useState<TeamRefSort>("winRate-desc");
+
+  const sortedRefSplits = useMemo(
+    () => sortTeamRefEntries(refSplits, refSort),
+    [refSplits, refSort],
+  );
 
   return (
     <div>
@@ -315,18 +323,27 @@ export function TeamSplitView({
           No refs with enough games involving {teamLabel} yet.
         </p>
       ) : (
-        <div className="space-y-3">
-          {refSplits.map((entry) => (
-            <TeamRefSplitCard
-              key={entry.slug}
-              entry={entry}
-              leagueAvgTotal={leagueAvgTotal}
-              overBaseline={overBaseline}
-              teamAbbr={teamAbbr}
-              teamLabel={teamLabel}
+        <>
+          <div className="mb-3">
+            <TeamRefSortBar
+              value={refSort}
+              onChange={setRefSort}
+              id="team-ref-cards-sort"
             />
-          ))}
-        </div>
+          </div>
+          <div className="space-y-3">
+            {sortedRefSplits.map((entry) => (
+              <TeamRefSplitCard
+                key={entry.slug}
+                entry={entry}
+                leagueAvgTotal={leagueAvgTotal}
+                overBaseline={overBaseline}
+                teamAbbr={teamAbbr}
+                teamLabel={teamLabel}
+              />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

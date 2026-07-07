@@ -15,6 +15,12 @@ function FindingCard({ finding, index }: { finding: Finding; index: number }) {
         <p className="mt-2 text-sm leading-relaxed text-zinc-600">
           {finding.summary}
         </p>
+        {finding.explainer && (
+          <p className="mt-3 border-t border-border-subtle pt-3 text-sm leading-relaxed text-zinc-600">
+            <span className="font-medium text-zinc-800">Why it matters: </span>
+            {finding.explainer}
+          </p>
+        )}
       </div>
 
       {finding.stats.length > 0 && (
@@ -59,7 +65,7 @@ export function FindingsSection({ findings }: { findings: Finding[] }) {
     <section className="mb-10">
       <h2 className="text-sm font-semibold text-zinc-700">Data findings</h2>
       <p className="mt-1 text-xs text-zinc-500">
-        Three patterns that stand out when you compare referee and team history
+        Six patterns that stand out when you compare referee and team history
         to league averages — computed from the full dataset at build time.
       </p>
       <div className="mt-4 space-y-3">

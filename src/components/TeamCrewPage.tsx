@@ -11,9 +11,8 @@ import {
 } from "@/lib/data";
 import { getTeam, teamFullName, teamWithArticle } from "@/lib/teams";
 import {
-  getTeamFoulEdgeLeaderboard,
   getTeamRefSplits,
-  getTeamScoringPaceLeaderboard,
+  TEAM_REF_MIN_GAMES,
 } from "@/lib/teamRefLeaderboards";
 
 export interface TeamPageConfig {
@@ -28,11 +27,6 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const splits = sortSplitsByGames(getTeamSplits(team.abbr));
   const refSplits = getTeamRefSplits(stats.refs, team.abbr);
   const totalGames = splits.reduce((s, sp) => s + sp.games, 0);
-  const foulEdgeLeaderboard = getTeamFoulEdgeLeaderboard(stats.refs, team.abbr);
-  const scoringPaceLeaderboard = getTeamScoringPaceLeaderboard(
-    stats.refs,
-    team.abbr,
-  );
   const statsSeeded = stats.meta.source === "seeded";
   const teamName = teamFullName(team);
   const teamLabel = teamWithArticle(team);
@@ -97,9 +91,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
       )}
 
       <TeamRefLeaderboards
-        foulEdge={foulEdgeLeaderboard}
-        scoringPace={scoringPaceLeaderboard}
-        teamAbbr={team.abbr}
+        entries={refSplits}
         teamLabel={teamLabel}
         overBaseline={stats.meta.leagueOverBaseline}
       />
@@ -128,8 +120,9 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             often than {teamLabel}.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Ref leaderboards</span>{" "}
-            — top officials for {teamLabel} by foul edge and scoring pace.
+            <span className="font-medium text-zinc-800">Ref rankings</span> —
+            sortable list of officials for {teamLabel} by win rate, foul edge, or
+            scoring pace ({TEAM_REF_MIN_GAMES}+ games minimum).
           </li>
         </ul>
         {stats.meta.note && (

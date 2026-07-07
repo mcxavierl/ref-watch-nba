@@ -13,6 +13,46 @@ export interface TeamRefLeaderboardEntry {
   winRate: number;
 }
 
+export type TeamRefSortKey = "winRate" | "foulEdge" | "games" | "scoring";
+export type SortDirection = "asc" | "desc";
+
+export type TeamRefSort = `${TeamRefSortKey}-${SortDirection}`;
+
+export const TEAM_REF_SORT_OPTIONS: {
+  value: TeamRefSort;
+  label: string;
+}[] = [
+  { value: "foulEdge-desc", label: "Foul edge (best first)" },
+  { value: "foulEdge-asc", label: "Foul edge (worst first)" },
+  { value: "winRate-desc", label: "Win rate (high → low)" },
+  { value: "winRate-asc", label: "Win rate (low → high)" },
+  { value: "scoring-desc", label: "Scoring pace (high → low)" },
+  { value: "games-desc", label: "Most games" },
+];
+
+export function sortTeamRefEntries(
+  entries: TeamRefLeaderboardEntry[],
+  sort: TeamRefSort,
+): TeamRefLeaderboardEntry[] {
+  const [key, direction] = sort.split("-") as [TeamRefSortKey, SortDirection];
+  const mult = direction === "asc" ? 1 : -1;
+
+  return [...entries].sort((a, b) => {
+    switch (key) {
+      case "winRate":
+        return mult * (a.winRate - b.winRate);
+      case "foulEdge":
+        return mult * (a.avgFoulDifferential - b.avgFoulDifferential);
+      case "scoring":
+        return mult * (a.avgTotalPoints - b.avgTotalPoints);
+      case "games":
+        return mult * (a.games - b.games);
+      default:
+        return 0;
+    }
+  });
+}
+
 function toEntry(
   ref: Pick<RefProfile, "slug" | "name">,
   stat: RefTeamStat,
