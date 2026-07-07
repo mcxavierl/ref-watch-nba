@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe2 } from "lucide-react";
-import { LeagueMarkNHL } from "@/components/icons/LeagueMarkNHL";
 
 const NBA_LINKS = [
   { href: "/", label: "Slate" },
@@ -40,8 +38,7 @@ export function LeagueSwitch() {
         aria-current={!isNhl ? "page" : undefined}
         className={`league-switch-option${!isNhl ? " league-switch-option--active" : ""}`}
       >
-        <Globe2 className="size-3.5 shrink-0" strokeWidth={2} />
-        <span>NBA</span>
+        NBA
       </Link>
       <Link
         href="/nhl"
@@ -49,8 +46,7 @@ export function LeagueSwitch() {
         aria-current={isNhl ? "page" : undefined}
         className={`league-switch-option${isNhl ? " league-switch-option--active" : ""}`}
       >
-        <LeagueMarkNHL className="size-4 shrink-0" />
-        <span>NHL</span>
+        NHL
       </Link>
     </div>
   );
