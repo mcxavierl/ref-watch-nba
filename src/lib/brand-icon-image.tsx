@@ -1,11 +1,5 @@
 import { ImageResponse } from "next/og";
-
-/** Matches header mark: sapphire shell, gold whistle stroke. */
-const HEADER_GOLD = "#d8b85d";
-const WHISTLE_PATHS = [
-  "M10 6v4",
-  "M21 6a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5.675A7 7 0 1 1 9 6z",
-] as const;
+import { HEADER_GOLD, MARK_GRADIENT, WHISTLE_PATHS } from "@/lib/brand-colors";
 
 export function renderWhistleIcon(size: number) {
   const radius = Math.round(size * (size <= 32 ? 0.28 : 0.22));
@@ -21,8 +15,7 @@ export function renderWhistleIcon(size: number) {
           height: "100%",
           alignItems: "center",
           justifyContent: "center",
-          background:
-            "linear-gradient(145deg, #0b5fa2 0%, #063967 68%, #02284f 100%)",
+          background: MARK_GRADIENT,
           borderRadius: radius,
         }}
       >

@@ -6,5 +6,5 @@ export const size = ogImageSize;
 export const contentType = ogImageContentType;
 
 export default function OpenGraphImage() {
-  return renderSlateOgImage(nbaOgContent(), "#CE1141");
+  return renderSlateOgImage(nbaOgContent());
 }

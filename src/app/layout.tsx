@@ -41,6 +41,15 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     type: "website",
     locale: "en_CA",
+    title: `${SITE_NAME} | Referee crew analytics`,
+    description:
+      "Tonight's NBA and NHL referee crews with historical scoring, whistle, and betting splits. Free nightly slate.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} | Referee crew analytics`,
+    description:
+      "Tonight's NBA and NHL referee crews with historical scoring, whistle, and betting splits. Free nightly slate.",
   },
   other: {
     disclaimer: AFFILIATION_DISCLAIMER,
