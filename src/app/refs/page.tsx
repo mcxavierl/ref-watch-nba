@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { RefListItem } from "@/components/RefStatGrid";
-import {
-  formatRefStatsRange,
-  getRefStats,
-} from "@/lib/data";
+import { RefsDirectory } from "@/components/RefsDirectory";
+import { RefsMacroInsight } from "@/components/RefsMacroInsight";
+import { formatRefStatsRange, getRefStats } from "@/lib/data";
+import { LEAGUES } from "@/lib/leagues";
+import { buildRefsDirectoryContext } from "@/lib/refs-directory";
 
 export const metadata: Metadata = {
   title: "All NBA referees — Ref Watch",
@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 
 export default function RefsIndexPage() {
   const stats = getRefStats();
-  const refs = [...stats.refs].sort((a, b) => a.name.localeCompare(b.name));
   const range = formatRefStatsRange(stats.meta);
+  const ctx = buildRefsDirectoryContext(stats, LEAGUES.nba);
 
   return (
     <div className="page-shell">
@@ -26,17 +26,18 @@ export default function RefsIndexPage() {
       <section className="page-hero">
         <h1 className="page-title">All referees</h1>
         <p className="page-lead">
-          {stats.meta.refCount ?? refs.length} officials with game history across{" "}
-          {stats.meta.seasons.join(", ")} ({range}).
+          {ctx.meta.qualifiedCount} {LEAGUES.nba.officialNounPlural} with game
+          history across {ctx.meta.seasons.join(", ")} ({range}).
         </p>
+        <RefsMacroInsight meta={ctx.meta} league={LEAGUES.nba} />
       </section>
 
       <section className="section-block">
-        <div className="data-card divide-y divide-border-subtle">
-          {refs.map((profile) => (
-            <RefListItem key={profile.slug} profile={profile} />
-          ))}
-        </div>
+        <RefsDirectory
+          refs={ctx.refs}
+          meta={ctx.meta}
+          league={LEAGUES.nba}
+        />
       </section>
     </div>
   );
