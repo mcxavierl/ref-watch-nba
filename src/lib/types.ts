@@ -107,3 +107,70 @@ export interface RefStatsFile {
 }
 
 export type OuLean = "over" | "under" | "neutral";
+
+/** Sportsbook total for a game (optional — from The Odds API or manual). */
+export interface GameOddsLine {
+  gameId?: string;
+  awayTeam: string;
+  homeTeam: string;
+  total: number;
+  /** e.g. draftkings, fanduel, consensus */
+  source: string;
+  lastUpdated: string;
+}
+
+export interface OddsFile {
+  lastUpdated: string;
+  source: "the-odds-api" | "benchmark" | "seeded";
+  note?: string;
+  lines: GameOddsLine[];
+}
+
+export type PaceAlertKind = "high_pace" | "low_pace";
+
+export type SampleQuality = "strong" | "moderate" | "weak";
+
+/** Crew scoring/foul premium vs league baseline for tonight's assignment. */
+export interface CrewWhistlePremium {
+  gameId: string;
+  matchup: string;
+  scoringPremium: number;
+  foulPremium: number;
+  avgTotalPoints: number;
+  avgFouls: number;
+  /** Historical crew avg minus benchmark (odds total or 225 proxy). */
+  gapVsBenchmark: number;
+  benchmarkTotal: number;
+  benchmarkSource: "sportsbook" | "league_proxy";
+  teamAdjustedPremium: number | null;
+  reunionPremium: number | null;
+  reunionGames: number;
+  sampleQuality: SampleQuality;
+  qualifiedRefCount: number;
+  alert: PaceAlertKind | null;
+  alertReason: string | null;
+}
+
+export type HomeBiasKind = "home_protector" | "road_warrior" | "neutral";
+
+/** Home vs away tendencies for a crew (not ATS — win/foul splits only). */
+export interface CrewHomeBias {
+  gameId: string;
+  homeAbbr: string;
+  homeLabel: string;
+  kind: HomeBiasKind;
+  homeWinRate: number | null;
+  awayWinRate: number | null;
+  homeFoulEdge: number | null;
+  sampleGames: number;
+  headline: string;
+  summary: string;
+}
+
+export interface SlateAlertsFile {
+  generatedAt: string;
+  assignmentsDate: string;
+  isPreview: boolean;
+  paceAlerts: CrewWhistlePremium[];
+  homeBiasSignals: CrewHomeBias[];
+}

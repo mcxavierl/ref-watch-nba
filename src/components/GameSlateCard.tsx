@@ -2,21 +2,31 @@ import Link from "next/link";
 import { Target, TrendingDown, TrendingUp, Users, Volume2 } from "lucide-react";
 import type { CrewMetrics } from "@/lib/data";
 import { detectTeamsInGame, formatPct, refSlug } from "@/lib/data";
+import type { GrudgeStoryline } from "@/lib/grudge-match";
+import type { CrewHomeBias, CrewWhistlePremium } from "@/lib/types";
 import { scoringDeltaTone } from "@/lib/metricTone";
 import { teamFullName } from "@/lib/teams";
+import { GameGrudgeStorylines } from "./GrudgeMatchSection";
 import { MetricBlock, MetricGrid } from "./MetricBlock";
 import { TeamLogo } from "./TeamLogo";
+import { GamePremiumStrip } from "./WhistlePremiumSection";
 
 export function GameSlateCard({
   matchup,
   awayTeam,
   homeTeam,
   metrics,
+  storylines = [],
+  premium,
+  homeBias = null,
 }: {
   matchup: string;
   awayTeam: string;
   homeTeam: string;
   metrics: CrewMetrics;
+  storylines?: GrudgeStoryline[];
+  premium: CrewWhistlePremium;
+  homeBias?: CrewHomeBias | null;
 }) {
   const teams = detectTeamsInGame(awayTeam, homeTeam);
   const totalDelta =
@@ -106,25 +116,31 @@ export function GameSlateCard({
         <MetricBlock
           icon={Target}
           iconClassName="text-zinc-500"
-          label="Crew lean"
-          value={metrics.ouLean === "over" ? "Over trend" : metrics.ouLean === "under" ? "Under trend" : "Neutral"}
-          hint="Based on crew scoring history"
+          label="Whistle premium"
+          value={`${premium.scoringPremium >= 0 ? "+" : ""}${premium.scoringPremium} pts`}
+          hint={`${premium.avgTotalPoints} avg · gap ${premium.gapVsBenchmark >= 0 ? "+" : ""}${premium.gapVsBenchmark} vs ${premium.benchmarkSource === "sportsbook" ? "book" : "225"}`}
           badgeTone={
-            metrics.ouLean === "over"
+            premium.alert === "high_pace"
               ? "positive"
-              : metrics.ouLean === "under"
+              : premium.alert === "low_pace"
                 ? "negative"
                 : "neutral"
           }
           badge={
-            metrics.ouLean === "over"
-              ? "Higher totals"
-              : metrics.ouLean === "under"
-                ? "Lower totals"
-                : "No strong lean"
+            premium.alert
+              ? premium.alert === "high_pace"
+                ? "High pace alert"
+                : "Low pace alert"
+              : premium.sampleQuality === "weak"
+                ? "Thin sample"
+                : "No alert"
           }
         />
       </MetricGrid>
+
+      <GamePremiumStrip premium={premium} homeBias={homeBias} />
+
+      <GameGrudgeStorylines storylines={storylines} />
     </article>
   );
 }

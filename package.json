@@ -9,6 +9,8 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "fetch-assignments": "tsx scripts/fetch-assignments.ts",
+    "fetch-odds": "tsx scripts/fetch-odds.ts",
+    "morning-slate": "tsx scripts/morning-slate.ts",
     "build-ref-data": "tsx scripts/build-ref-data.ts",
     "generate-ref-seed": "tsx scripts/generate-comprehensive-seed.ts",
     "expand-team-splits": "tsx scripts/expand-team-splits.ts"

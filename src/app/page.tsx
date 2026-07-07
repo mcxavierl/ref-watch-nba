@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
+import { FeatureRoadmap } from "@/components/FeatureRoadmap";
 import { FindingsSection } from "@/components/FindingsSection";
 import { GameSlateCard } from "@/components/GameSlateCard";
+import { GrudgeMatchSection } from "@/components/GrudgeMatchSection";
+import { WhistlePremiumSection } from "@/components/WhistlePremiumSection";
 import {
   computeCrewMetrics,
   getAssignments,
@@ -10,12 +13,24 @@ import {
   ouLeanSortWeight,
 } from "@/lib/data";
 import { computeFindings } from "@/lib/findings";
+import {
+  computeGameStorylines,
+  computeSlateStorylines,
+  resolveSlateGames,
+} from "@/lib/grudge-match";
+import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/home-bias";
+import { getOdds } from "@/lib/odds";
+import {
+  computeCrewWhistlePremium,
+  computeSlatePremiums,
+  paceAlerts,
+} from "@/lib/whistle-premium";
 import type { AssignmentGame } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Tonight's NBA slate — Ref Watch",
   description:
-    "See tonight's NBA referee crews with scoring and foul trends, plus links to all 30 team crew histories.",
+    "Whistle premium alerts, grudge-match storylines, and crew home bias for tonight's NBA referee assignments.",
 };
 
 function sortSlateGames(
@@ -33,18 +48,30 @@ function sortSlateGames(
   });
 }
 
+function oddsSourceLabel(
+  premiums: ReturnType<typeof computeSlatePremiums>,
+): "sportsbook" | "league_proxy" | "mixed" {
+  const hasBook = premiums.some((p) => p.benchmarkSource === "sportsbook");
+  const hasProxy = premiums.some((p) => p.benchmarkSource === "league_proxy");
+  if (hasBook && hasProxy) return "mixed";
+  if (hasBook) return "sportsbook";
+  return "league_proxy";
+}
+
 export default function HomePage() {
   const assignments = getAssignments();
   const refStats = getRefStats();
+  const odds = getOdds();
   const findings = computeFindings();
-  const sortedGames = sortSlateGames(assignments.games, refStats);
-  const hotCrews = sortedGames
-    .map((game) => ({
-      game,
-      metrics: computeCrewMetrics(game.crew, refStats),
-    }))
-    .filter(({ metrics }) => metrics.ouLean !== "neutral")
-    .slice(0, 3);
+  const { games: slateGames, isPreview } = resolveSlateGames(
+    assignments,
+    refStats,
+  );
+  const sortedGames = sortSlateGames(slateGames, refStats);
+  const premiums = computeSlatePremiums(sortedGames, refStats, odds);
+  const alertPremiums = paceAlerts(premiums);
+  const homeBiasSignals = computeSlateHomeBias(sortedGames, refStats);
+  const slateStorylines = computeSlateStorylines(sortedGames, refStats);
 
   return (
     <div className="page-shell">
@@ -53,16 +80,30 @@ export default function HomePage() {
           Tonight&apos;s slate
         </h1>
         <p className="page-lead">
-          Ref Watch shows how tonight&apos;s referee crews have historically
-          affected scoring and fouls — then links you to team-specific history
-          for all 30 NBA teams.
+          Crew whistle premium vs league (and sportsbook totals when available),
+          grudge-match flags, and home/road bias — refreshed each morning with
+          official assignments.
         </p>
         <DataFreshnessMeta assignments={assignments} refStats={refStats} />
       </section>
 
+      {slateGames.length > 0 && (
+        <WhistlePremiumSection
+          paceAlerts={alertPremiums}
+          homeBiasSignals={homeBiasSignals}
+          isPreview={isPreview}
+          oddsSource={oddsSourceLabel(premiums)}
+        />
+      )}
+
+      <GrudgeMatchSection
+        storylines={slateStorylines}
+        isPreview={isPreview}
+      />
+
       <FindingsSection findings={findings} />
 
-      {assignments.games.length === 0 ? (
+      {slateGames.length === 0 ? (
         <div className="panel-inset px-6 py-10 text-center">
           <p className="text-base font-medium text-zinc-800">
             No NBA games scheduled tonight
@@ -71,9 +112,13 @@ export default function HomePage() {
             The official assignments page has no NBA rows for{" "}
             {assignments.date}. Run{" "}
             <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-zinc-700 ring-1 ring-border">
-              npm run build-ref-data
+              npm run morning-slate
             </code>{" "}
-            before tip-off nights to refresh.
+            before tip-off (or{" "}
+            <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-zinc-700 ring-1 ring-border">
+              npm run build-ref-data
+            </code>
+            ).
           </p>
           <p className="mt-5">
             <Link
@@ -85,80 +130,57 @@ export default function HomePage() {
           </p>
         </div>
       ) : (
-        <>
-          {hotCrews.length > 0 && (
-            <section className="mb-8">
-              <h2 className="text-base font-semibold text-zinc-800">
-                Notable scoring trends tonight
-              </h2>
-              <p className="mt-2 text-sm text-zinc-600">
-                Games where the crew history points toward unusually high- or
-                low-scoring games.
-              </p>
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {hotCrews.map(({ game, metrics }) => (
-                  <li
-                    key={game.id}
-                    className="rounded-md border border-border bg-surface-raised px-3 py-2.5 text-sm"
-                  >
-                    <span className="font-medium text-zinc-800">
-                      {game.matchup}
-                    </span>
-                    <span className="ml-2 font-mono tabular-nums text-zinc-600">
-                      {metrics.ouLean === "over"
-                        ? "Higher scoring"
-                        : "Lower scoring"}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          <section>
-            <h2 className="mb-3 text-sm font-semibold text-zinc-700">
-              {assignments.games.length === 1
+        <section>
+          <h2 className="mb-3 text-sm font-semibold text-zinc-700">
+            {isPreview
+              ? "Preview games (sample alerts)"
+              : slateGames.length === 1
                 ? "Tonight's game"
                 : "All games tonight"}
-            </h2>
-            <div className="space-y-3">
-              {sortedGames.map((game) => (
-                <GameSlateCard
-                  key={game.id}
-                  matchup={game.matchup}
-                  awayTeam={game.awayTeam}
-                  homeTeam={game.homeTeam}
-                  metrics={computeCrewMetrics(game.crew, refStats)}
-                />
-              ))}
-            </div>
-          </section>
-        </>
+          </h2>
+          <div className="space-y-3">
+            {sortedGames.map((game) => (
+              <GameSlateCard
+                key={game.id}
+                matchup={game.matchup}
+                awayTeam={game.awayTeam}
+                homeTeam={game.homeTeam}
+                metrics={computeCrewMetrics(game.crew, refStats)}
+                premium={computeCrewWhistlePremium(game, refStats, odds)}
+                homeBias={computeCrewHomeBias(game, refStats)}
+                storylines={computeGameStorylines(game, refStats)}
+              />
+            ))}
+          </div>
+        </section>
       )}
+
+      <FeatureRoadmap />
 
       <details className="methodology-details panel-inset mt-10 px-5 py-4">
         <summary>How we calculate these numbers</summary>
         <ul className="space-y-2.5 text-sm leading-relaxed text-zinc-600">
           <li>
-            <span className="font-medium text-zinc-800">Avg combined score</span>{" "}
-            — the typical total points scored by both teams in games this crew
-            worked.
+            <span className="font-medium text-zinc-800">Whistle premium</span>{" "}
+            — crew avg combined score minus league baseline ({refStats.meta.leagueAvgTotal}).
+            A +4.5 premium means this crew&apos;s games historically run 4.5 points
+            hotter than league average. Compared to sportsbook total when{" "}
+            <code className="text-xs">ODDS_API_KEY</code> is set.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Games over 225 pts</span>{" "}
-            — how often combined scoring beat {refStats.meta.leagueOverBaseline}{" "}
-            (we use this fixed number when real betting lines aren&apos;t
-            available).
+            <span className="font-medium text-zinc-800">Pace alerts</span> —
+            fire when premium ≥ +4 and gap vs benchmark ≥ +3 (or inverse for
+            low pace), only with adequate ref sample size.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Fouls per game</span> —
-            total personal fouls from both teams — a rough measure of how often
-            the whistle blows.
+            <span className="font-medium text-zinc-800">Home bias</span> —
+            home vs away win rate under this crew across the dataset. Not ATS —
+            spread ROI requires a closing-line feed we don&apos;t have yet.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Scoring trend</span> —
-            we flag crews that tend toward higher or lower scoring based on
-            history.
+            <span className="font-medium text-zinc-800">Grudge match flags</span>{" "}
+            — ref–team anomalies for teams playing tonight (win rate, fouls,
+            crew reunion).
           </li>
         </ul>
       </details>
