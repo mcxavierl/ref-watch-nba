@@ -7,7 +7,7 @@ import {
   formatRefStatsRange as formatNhlRange,
   getRefStats as getNhlRefStats,
 } from "@/lib/nhl/data";
-import { seasonNotifyMailto } from "@/lib/notify";
+import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 
 export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
   const isNhl = league === "nhl";
@@ -86,12 +86,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
               entertainment only. Not betting advice.
             </p>
             <p className="mt-3 site-footer-body">
-              <a
-                href={seasonNotifyMailto(leagueLabel)}
-                className="font-medium text-zinc-800 underline-offset-2 hover:text-raptors hover:underline"
-              >
-                Get notified when the {leagueLabel} season starts
-              </a>
+              <SeasonNotifyCta league={leagueLabel} variant="link" />
             </p>
           </div>
         </div>

@@ -369,6 +369,37 @@ p {
     margin-top: var(--space-5);
   }
 
+  .season-notify-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    max-width: 28rem;
+  }
+
+  .season-notify-input {
+    @apply min-w-0 flex-1 rounded-md border border-border bg-white px-3 py-2 text-zinc-900 outline-offset-2 placeholder:text-zinc-400 focus-visible:border-zinc-400 focus-visible:outline-2 focus-visible:outline-zinc-400 disabled:opacity-60;
+    font-size: var(--text-sm);
+    min-width: 12rem;
+  }
+
+  .season-notify-submit {
+    @apply inline-flex items-center gap-2;
+  }
+
+  .season-notify-success {
+    @apply inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-emerald-900;
+    font-size: var(--text-sm);
+    max-width: 28rem;
+  }
+
+  .season-notify-error {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--raptors);
+  }
+
   .browse-action-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
