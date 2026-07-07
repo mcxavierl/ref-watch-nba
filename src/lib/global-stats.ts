@@ -1,7 +1,7 @@
 import type { RefStatsFile } from "@/lib/types";
 
 declare global {
-  // Populated by middleware on Cloudflare Workers where node:fs cannot read data/.
+  // Optional runtime cache when node:fs is unavailable (e.g. future SSR routes).
   var __REFWATCH_NBA_REF_STATS__: RefStatsFile | undefined;
   var __REFWATCH_NHL_REF_STATS__: RefStatsFile | undefined;
 }
