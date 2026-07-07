@@ -15,3 +15,4 @@ function copyPair(srcDir: string, destDir: string, basename: string): void {
 const root = process.cwd();
 copyPair(path.join(root, "data"), path.join(root, "public/data/nba"), "ref-stats");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-stats");
+copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-photos");

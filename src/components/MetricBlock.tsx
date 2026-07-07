@@ -33,7 +33,7 @@ export function MetricBlock({
 
   return (
     <div className="flex flex-col gap-2 bg-white px-4 py-4 sm:px-5">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {Icon && (
           <Icon
             className={`size-3.5 shrink-0 ${iconClassName}`}
@@ -41,7 +41,7 @@ export function MetricBlock({
             aria-hidden
           />
         )}
-        <span className="text-sm font-medium text-zinc-600">{label}</span>
+        <span className="min-w-0 text-sm font-medium text-zinc-600">{label}</span>
         {!hidden && <ProvenanceMarker provenance={provenance} compact />}
       </div>
       <p
@@ -52,7 +52,7 @@ export function MetricBlock({
       {hint && !hidden && <p className="text-sm leading-snug text-zinc-600">{hint}</p>}
       {badge && (
         <span
-          className={`inline-flex w-fit rounded-md px-2 py-0.5 text-sm font-medium ${badgeColors[badgeTone]}`}
+          className={`metric-block-badge inline-flex w-fit max-w-full rounded-md px-2 py-0.5 text-sm font-medium ${badgeColors[badgeTone]}`}
         >
           {badge}
         </span>

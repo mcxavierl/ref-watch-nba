@@ -1,12 +1,15 @@
 import Link from "next/link";
+import { RefAvatar } from "@/components/RefAvatar";
 import type { TeamInsight } from "@/lib/team-insights";
 
 export function TeamInsightCards({
   insights,
   basePath = "",
+  sport = "nba",
 }: {
   insights: TeamInsight[];
   basePath?: string;
+  sport?: "nba" | "nhl";
 }) {
   if (insights.length === 0) return null;
 
@@ -35,8 +38,14 @@ export function TeamInsightCards({
             {insight.refSlug && insight.refName && (
               <Link
                 href={`${basePath}/refs/${insight.refSlug}`}
-                className="mt-3 inline-block text-sm font-medium text-zinc-900 hover:text-raptors hover:underline"
+                className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-zinc-900 hover:text-raptors hover:underline"
               >
+                <RefAvatar
+                  name={insight.refName}
+                  slug={insight.refSlug}
+                  sport={sport}
+                  size="sm"
+                />
                 {insight.refName} profile →
               </Link>
             )}

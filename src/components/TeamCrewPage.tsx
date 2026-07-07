@@ -1,16 +1,12 @@
 import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
 import { CloseGameSection } from "@/components/CloseGameSection";
-import { TeamRefLeaderboards } from "@/components/TeamRefLeaderboards";
 import { TeamSplitView } from "@/components/TeamSplitView";
 import * as nbaData from "@/lib/data";
 import * as nhlData from "@/lib/nhl/data";
 import * as nbaTeams from "@/lib/teams";
 import * as nhlTeams from "@/lib/nhl/teams";
-import {
-  getTeamRefSplits,
-  TEAM_REF_MIN_GAMES,
-} from "@/lib/teamRefLeaderboards";
+import { getTeamRefSplits } from "@/lib/teamRefLeaderboards";
 import { TEAM_CREW_MIN_GAMES } from "@/lib/teamCrewSplits";
 import { getTeamSampleRecord } from "@/lib/teamRecord";
 import { userFacingDataNote } from "@/lib/user-language";
@@ -70,9 +66,9 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   return (
     <div className="page-shell">
       <section className="page-hero">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-start gap-3 sm:items-center">
           <TeamLogo team={team} size="lg" sport={league} />
-          <div>
+          <div className="min-w-0 flex-1">
             <p className="section-kicker">{teamName}</p>
             <h1 className="page-title">
               How {teamLabel} play under each ref crew or ref
@@ -103,7 +99,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         </p>
       </section>
 
-      <TeamInsightCards insights={teamInsights} basePath={basePath} />
+      <TeamInsightCards insights={teamInsights} basePath={basePath} sport={league} />
 
       {splits.length === 0 && refSplits.length === 0 ? (
         <div className="panel-inset px-6 py-8 text-center">
@@ -137,14 +133,6 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         />
       )}
 
-      <TeamRefLeaderboards
-        entries={refSplits}
-        teamLabel={teamLabel}
-        teamRecord={teamRecord}
-        overBaseline={stats.meta.leagueOverBaseline}
-        basePath={basePath}
-      />
-
       <CloseGameSection
         metrics={closeGameMetrics}
         subjectLabel={teamName}
@@ -176,11 +164,6 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
               ? "PIM differential. A positive number means opponents are penalized more often than"
               : "who gets called more. A positive number means opponents are whistled more often than"}{" "}
             {teamLabel}.
-          </li>
-          <li>
-            <span className="font-medium text-zinc-800">Ref rankings</span> —
-            sortable list of officials for {teamLabel} by win rate, foul edge, or
-            scoring pace ({TEAM_REF_MIN_GAMES}+ games minimum).
           </li>
         </ul>
         {userFacingDataNote(stats.meta.note) && (

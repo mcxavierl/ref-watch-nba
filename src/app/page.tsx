@@ -125,12 +125,12 @@ export default function HomePage() {
       />
       <section className="page-hero">
         <h1 className="page-title">
-          {isOffseason ? "NBA ref data" : "Tonight&apos;s slate"}
+          {isOffseason ? "NBA ref data" : "Tonight's slate"}
         </h1>
         <p className="page-lead">
           {isOffseason
             ? "Historical crew patterns, ref profiles, and team histories while the slate is paused."
-            : "Who&apos;s officiating tonight and how their crews have historically moved scoring and fouls."}
+            : "Who's officiating tonight and how their crews have historically moved scoring and fouls."}
         </p>
         <DataFreshnessMeta assignments={assignments} refStats={refStats} />
       </section>

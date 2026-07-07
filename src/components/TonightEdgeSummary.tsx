@@ -24,15 +24,14 @@ export function TonightEdgeSummary({
     <section className="section-block-tight">
       <h2 className="section-title">{title}</h2>
       <ol className="edge-summary-list">
-        {items.map((item, index) => (
+        {items.map((item) => (
           <li key={item.id}>
             <Link href={item.href} className="edge-summary-link group">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <p className="text-sm font-bold text-zinc-900 group-hover:text-raptors">
-                  <span className="edge-summary-rank">{index + 1}.</span>{" "}
+              <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+                <p className="min-w-0 flex-1 text-sm font-bold text-zinc-900 group-hover:text-raptors">
                   {item.matchup}
                 </p>
-                <ConfidenceTierBadge tier={item.confidence} />
+                <ConfidenceTierBadge tier={item.confidence} className="shrink-0" />
               </div>
               <p className="mt-2 text-sm leading-snug text-zinc-700">
                 {item.edge}

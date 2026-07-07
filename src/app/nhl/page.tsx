@@ -128,12 +128,12 @@ export default function NhlHomePage() {
       />
       <section className="page-hero">
         <h1 className="page-title">
-          {isOffseason ? "NHL ref data" : "Tonight&apos;s NHL slate"}
+          {isOffseason ? "NHL ref data" : "Tonight's NHL slate"}
         </h1>
         <p className="page-lead">
           {isOffseason
             ? "Historical crew patterns, ref profiles, and team histories while the slate is paused."
-            : "Who&apos;s officiating tonight and how their crews have historically moved goals, PIM, and power plays."}
+            : "Who's officiating tonight and how their crews have historically moved goals, PIM, and power plays."}
         </p>
         <DataFreshnessMeta assignments={assignments} refStats={refStats} league="NHL" />
       </section>

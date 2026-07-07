@@ -31,7 +31,7 @@ export default function ResearchHubPage() {
       <JsonLd data={researchHubDatasetJsonLd(findings.length, lastUpdated)} />
 
       <Link href="/" className="back-link">
-        ← Tonight&apos;s slate
+        ← Home
       </Link>
 
       <section className="page-hero">

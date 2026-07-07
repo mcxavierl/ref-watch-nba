@@ -1,0 +1,334 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-07T18:50:15.223Z",
+    "source": "records.nhl.com",
+    "count": 81,
+    "skipped": 6
+  },
+  "photos": {
+    "kelly-sutherland-11": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2265.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2265.png"
+    },
+    "chris-lee-28": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2292.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2292.png"
+    },
+    "chris-rooney-5": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2294.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2294.png"
+    },
+    "brad-kovachik-71": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2298.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2298.png"
+    },
+    "eric-furlatt-27": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2308.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2308.png"
+    },
+    "david-brisebois-96": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2314.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2314.png"
+    },
+    "dan-o-rourke-9": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2315.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2315.png"
+    },
+    "jonny-murray-95": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2326.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2326.png"
+    },
+    "steve-barton-59": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2329.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2329.png"
+    },
+    "wes-mccauley-4": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2332.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2332.png"
+    },
+    "brian-pochmara-16": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2450.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2450.png"
+    },
+    "derek-nansen-70": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2451.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2451.png"
+    },
+    "gord-dwyer-19": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2457.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2457.png"
+    },
+    "steve-kozari-40": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2458.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2458.png"
+    },
+    "mark-shewchyk-92": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2460.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2460.png"
+    },
+    "michel-cormier-76": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2461.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2461.png"
+    },
+    "francois-st-laurent-8": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2462.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2462.png"
+    },
+    "frederick-l-ecuyer-17": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2490.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2490.png"
+    },
+    "scott-cherrey-50": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2505.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2505.png"
+    },
+    "kyle-rehman-10": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2506.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2506.png"
+    },
+    "ghislain-hebert-22": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2520.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2520.png"
+    },
+    "francis-charron-6": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4600.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4600.png"
+    },
+    "jean-hebert-15": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4604.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4604.png"
+    },
+    "matt-macpherson-83": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4620.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4620.png"
+    },
+    "graham-skilliter-24": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4621.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4621.png"
+    },
+    "trevor-hanson-14": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4646.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4646.png"
+    },
+    "trent-knorr-74": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4647.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4647.png"
+    },
+    "tj-luxmore-21": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4649.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4649.png"
+    },
+    "jon-mcisaac-2": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4650.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4650.png"
+    },
+    "kiel-murchison-79": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4651.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4651.png"
+    },
+    "garrett-rank-7": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4691.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4691.png"
+    },
+    "kendrick-nicholson-30": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4692.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4692.png"
+    },
+    "shandor-alphonso-52": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4694.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4694.png"
+    },
+    "ryan-gibbons-58": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4713.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4713.png"
+    },
+    "devin-berg-87": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4717.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/4717.png"
+    },
+    "bryan-pancich-94": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/6007.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/6007.png"
+    },
+    "tom-chmielewski-18": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/6494.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/6494.png"
+    },
+    "jake-brenk-26": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/6818.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/6818.png"
+    },
+    "brandon-gawryletz-64": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/6819.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/6819.png"
+    },
+    "chris-schlenker-3": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/6974.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/6974.png"
+    },
+    "pierre-lambert-25": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/6978.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/6978.png"
+    },
+    "ryan-daisy-81": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/6990.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/6990.png"
+    },
+    "furman-south-13": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/6992.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/6992.png"
+    },
+    "peter-macdougall-38": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/6993.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/6993.png"
+    },
+    "bevan-mills-53": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7032.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7032.png"
+    },
+    "andrew-smith-51": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7192.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7192.png"
+    },
+    "james-tobias-61": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7204.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7204.png"
+    },
+    "corey-syvret-23": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7205.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7205.png"
+    },
+    "travis-gawryletz-67": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7206.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7206.png"
+    },
+    "libor-suchanek-60": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7217.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7217.png"
+    },
+    "tyson-baker-88": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7403.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7403.png"
+    },
+    "michael-markovic-31": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7404.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7404.png"
+    },
+    "mitch-dunning-20": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7405.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7405.png"
+    },
+    "beau-halkidis-48": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7414.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7414.png"
+    },
+    "brandon-schrader-34": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7415.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7415.png"
+    },
+    "brandon-blandina-39": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7416.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7416.png"
+    },
+    "jesse-marquis-86": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/7419.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/7419.png"
+    },
+    "julien-fournier-56": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/10573.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/10573.png"
+    },
+    "travis-toomey-90": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/10644.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/10644.png"
+    },
+    "kyle-flemington-55": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/10646.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/10646.png"
+    },
+    "dan-kelly-98": {
+      "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/10653.png",
+      "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/10653.png"
+    },
+    "kilian-mcnamara-93": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/McNamara_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/McNamara_300x294.png"
+    },
+    "carter-sandlak-29": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Sandlak_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Sandlak_300x294.png"
+    },
+    "cody-beach-12": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Beach_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Beach_300x294.png"
+    },
+    "justin-kea-44": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Kea_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Kea_300x294.png"
+    },
+    "jordan-samuels-thomas-37": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Samuels-Thomas_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Samuels-Thomas_300x294.png"
+    },
+    "caleb-apperson-77": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Apperson_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Apperson_300x294.png"
+    },
+    "cj-murray-68": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Murray_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Murray_300x294.png"
+    },
+    "mitch-hunt-62": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Hunt_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Hunt_300x294.png"
+    },
+    "justin-johnson-57": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Johnson_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Johnson_300x294.png"
+    },
+    "ben-o-quinn-91": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Oquinin_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Oquinin_300x294.png"
+    },
+    "jonathan-deschamps-80": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Deschamps_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Deschamps_300x294.png"
+    },
+    "tommy-hughes-65": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Hughes_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Hughes_300x294.png"
+    },
+    "morgan-macphee-43": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/MacPhee_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/MacPhee_300x294.png"
+    },
+    "ryan-jackson-84": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Jackson_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Jackson_300x294.png"
+    },
+    "joe-mahon-89": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Mahon_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Mahon_300x294.png"
+    },
+    "stephen-hiff-46": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Hiff_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Hiff_300x294.png"
+    },
+    "michael-sullivan-47": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Sullivan_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Sullivan_300x294.png"
+    },
+    "brandon-grillo-75": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Grillo_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Grillo_300x294.png"
+    },
+    "riley-brace-49": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Brace_80x78_v3.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Brace_300x294_v3.png"
+    },
+    "graedy-hamilton-41": {
+      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Hamilton_80x78.png",
+      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Hamilton_300x294_v2.png"
+    }
+  }
+}

@@ -28,6 +28,7 @@ import {
 import { formatSigned } from "@/lib/stats-utils";
 import { formatPremiumLabel } from "@/lib/whistle-premium";
 import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
+import { RefAvatar } from "@/components/RefAvatar";
 import { GameGrudgeStorylines } from "./GrudgeMatchSection";
 import { NhlSlateSignalBadges } from "./NhlSlateSignalBadges";
 import { OuLeanBadge } from "./OuLeanBadge";
@@ -107,7 +108,7 @@ export function GameSlateCard({
   return (
     <article id={`game-${gameId}`} className="data-card scroll-mt-24">
       <div className="data-card-header">
-        <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">
             {paceLabel && (
               <p className="mb-2">
@@ -140,7 +141,9 @@ export function GameSlateCard({
               <h2 className="game-matchup-abbr">{matchup}</h2>
             )}
           </div>
-          <OuLeanBadge lean={metrics.ouLean} />
+          <div className="shrink-0 self-start">
+            <OuLeanBadge lean={metrics.ouLean} />
+          </div>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -151,6 +154,13 @@ export function GameSlateCard({
               className="crew-chip"
             >
               {index === 0 && <span className="crew-chip-label">Crew</span>}
+              <RefAvatar
+                name={official.name}
+                slug={refSlug(official.name, official.number)}
+                sport={sport}
+                size="sm"
+                className="h-6 w-6 text-[9px]"
+              />
               {official.name}
             </Link>
           ))}

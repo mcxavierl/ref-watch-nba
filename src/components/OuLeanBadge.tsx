@@ -7,11 +7,13 @@ export function OuLeanBadge({ lean }: { lean: OuLean }) {
 
   return (
     <span
-      className="inline-flex shrink-0 items-center gap-1.5 rounded border border-zinc-300 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-800"
+      className="ou-lean-badge"
       title={`Historical over lean: ${label}`}
     >
-      <span className="font-normal text-zinc-500">Historical over lean:</span>
-      <span className={isDirectional ? "font-bold tabular-nums" : "tabular-nums"}>
+      <span className="ou-lean-badge-label">Over lean</span>
+      <span
+        className={`ou-lean-badge-value ${isDirectional ? "ou-lean-badge-value--directional" : ""}`}
+      >
         {label}
       </span>
     </span>

@@ -212,7 +212,7 @@ export function GamePremiumStrip({
 
   return (
     <div className="border-t border-border-subtle bg-white px-4 py-3 sm:px-5">
-      <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-700">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm text-zinc-700">
         <span className="font-medium">
           <TermHelp id={premiumTerm}>{premiumLabel}</TermHelp>
         </span>

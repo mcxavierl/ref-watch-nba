@@ -17,6 +17,7 @@
     "morning-slate": "tsx scripts/morning-slate.ts",
     "build-ref-data": "tsx scripts/build-ref-data.ts",
     "generate-ref-seed": "tsx scripts/generate-comprehensive-seed.ts",
+    "fetch-nhl-ref-photos": "tsx scripts/nhl/fetch-ref-photos.ts",
     "fetch-nhl-assignments": "tsx scripts/nhl/fetch-assignments.ts",
     "fetch-nhl-odds": "tsx scripts/nhl/fetch-odds.ts",
     "fetch-nhl-team-special-teams": "tsx scripts/nhl/fetch-team-special-teams.ts",

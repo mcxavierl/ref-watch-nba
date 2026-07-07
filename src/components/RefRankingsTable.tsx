@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, type ReactNode } from "react";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { RefAvatar } from "@/components/RefAvatar";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
 import type { RefProfile } from "@/lib/types";
@@ -82,6 +83,7 @@ export function RefRankingsTable({
   const scoringLabel = league === "NBA" ? "Scoring Δ" : "Goals Δ";
   const whistleLabel = league === "NBA" ? "Fouls Δ" : "Minors Δ";
   const unit = league === "NBA" ? "points" : "goals";
+  const sport = league === "NHL" ? "nhl" : "nba";
 
   const handleSort = (field: SortField) => {
     setSort((current) => toggleSort(current, field));
@@ -163,16 +165,26 @@ export function RefRankingsTable({
                     {rank}
                   </td>
                   <td className="px-4 py-3">
-                    <Link
-                      href={profileHref}
-                      onClick={(e) => e.stopPropagation()}
-                      className="font-medium text-zinc-900 hover:text-raptors hover:underline"
-                    >
-                      {ref.name}
-                    </Link>
-                    <span className="ml-2 font-mono text-xs text-zinc-500">
-                      #{ref.number}
-                    </span>
+                    <div className="flex items-center gap-2.5">
+                      <RefAvatar
+                        name={ref.name}
+                        slug={ref.slug}
+                        sport={sport}
+                        size="sm"
+                      />
+                      <div className="min-w-0">
+                        <Link
+                          href={profileHref}
+                          onClick={(e) => e.stopPropagation()}
+                          className="font-medium text-zinc-900 hover:text-raptors hover:underline"
+                        >
+                          {ref.name}
+                        </Link>
+                        <span className="ml-2 whitespace-nowrap font-mono text-xs text-zinc-500">
+                          #{ref.number}
+                        </span>
+                      </div>
+                    </div>
                   </td>
                   <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-700">
                     {ref.games} gp
@@ -194,7 +206,7 @@ export function RefRankingsTable({
                       <Link
                         href={`${profileHref}#profile-signals`}
                         onClick={(e) => e.stopPropagation()}
-                        className="ranking-signal-badge"
+                        className="ranking-signal-badge shrink-0 whitespace-nowrap"
                       >
                         {signalCount} notable
                       </Link>

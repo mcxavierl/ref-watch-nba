@@ -31,7 +31,7 @@ export default function NbaRankingsPage() {
   return (
     <div className="page-shell">
       <Link href="/" className="back-link">
-        ← Tonight&apos;s slate
+        ← Home
       </Link>
 
       <section className="page-hero">

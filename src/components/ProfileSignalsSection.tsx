@@ -32,10 +32,10 @@ export function ProfileSignalsSection({
       </div>
 
       <div className="data-card">
-        <div className="flex flex-wrap items-center gap-2 border-b border-border-subtle px-4 py-3 sm:px-5">
-          <SampleGateBadge gate={bundle.sampleGate} />
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 border-b border-border-subtle px-4 py-3 sm:px-5">
+          <SampleGateBadge gate={bundle.sampleGate} className="shrink-0" />
           <span
-            className={`rounded-md px-2 py-0.5 text-xs font-medium ${
+            className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ${
               seeded
                 ? "bg-amber-50 text-amber-900 ring-1 ring-amber-200/80"
                 : "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/80"
@@ -43,7 +43,7 @@ export function ProfileSignalsSection({
           >
             {seeded ? "Historical data" : "Live data"}
           </span>
-          <span className="text-xs text-zinc-500">
+          <span className="min-w-0 text-xs text-zinc-500">
             {bundle.sampleGames} games · {bundle.seasonRange} · Updated{" "}
             {formatDate(lastUpdated)}
           </span>
@@ -63,12 +63,12 @@ export function ProfileSignalsSection({
           <ul className="divide-y divide-border-subtle">
             {bundle.signals.map((signal) => (
               <li key={signal.kind} className="px-4 py-5 sm:px-5">
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <h3 className="text-base font-semibold text-zinc-900">
+                <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
+                  <h3 className="min-w-0 flex-1 text-base font-semibold text-zinc-900">
                     {signal.headline}
                   </h3>
                   {signal.notable && (
-                    <span className="rounded-md bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-900 ring-1 ring-sky-200/80">
+                    <span className="profile-signal-badge shrink-0 rounded-md bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-900 ring-1 ring-sky-200/80">
                       Notable
                     </span>
                   )}

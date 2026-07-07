@@ -34,7 +34,7 @@ export default function NhlRankingsPage() {
   return (
     <div className="page-shell">
       <Link href="/nhl" className="back-link">
-        ← Tonight&apos;s slate
+        ← Home
       </Link>
 
       <section className="page-hero">

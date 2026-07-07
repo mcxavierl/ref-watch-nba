@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { MetricBlock, MetricGrid } from "@/components/MetricBlock";
+import { RefAvatar } from "@/components/RefAvatar";
 import { TermHelp } from "@/components/TermHelp";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
 import {
@@ -205,6 +206,7 @@ function TeamRefSplitCard({
   teamLabel,
   teamRecord,
   basePath = "",
+  sport = "nba",
 }: {
   entry: TeamRefLeaderboardEntry;
   leagueAvgTotal: number;
@@ -213,6 +215,7 @@ function TeamRefSplitCard({
   teamLabel: string;
   teamRecord: TeamSampleRecord;
   basePath?: string;
+  sport?: "nba" | "nhl";
 }) {
   const wins = Math.round(entry.winRate * entry.games);
   const totalDelta = entry.avgTotalPoints - leagueAvgTotal;
@@ -223,17 +226,27 @@ function TeamRefSplitCard({
   return (
     <article className="data-card overflow-hidden">
       <div className="border-b border-border bg-gradient-to-r from-zinc-50 to-white px-4 py-4 sm:px-5">
-        <h2 className="text-base font-semibold leading-snug text-zinc-900">
-          <Link
-            href={`${basePath}/refs/${entry.slug}`}
-            className="transition hover:text-raptors"
-          >
-            {entry.name}
-          </Link>
-        </h2>
-        <p className="mt-1 text-sm text-zinc-600">
-          {entry.games} games with {teamLabel} · ~{wins}-{entry.games - wins}
-        </p>
+        <div className="flex items-center gap-3">
+          <RefAvatar
+            name={entry.name}
+            slug={entry.slug}
+            sport={sport}
+            size="md"
+          />
+          <div>
+            <h2 className="text-base font-semibold leading-snug text-zinc-900">
+              <Link
+                href={`${basePath}/refs/${entry.slug}`}
+                className="transition hover:text-raptors"
+              >
+                {entry.name}
+              </Link>
+            </h2>
+            <p className="mt-1 text-sm text-zinc-600">
+              {entry.games} games with {teamLabel} · ~{wins}-{entry.games - wins}
+            </p>
+          </div>
+        </div>
       </div>
 
       <MetricGrid>
@@ -311,6 +324,7 @@ export function TeamSplitView({
     () => sortTeamRefEntries(refSplits, refSort),
     [refSplits, refSort],
   );
+  const sport = basePath === "/nhl" ? "nhl" : "nba";
 
   return (
     <div>
@@ -431,6 +445,7 @@ export function TeamSplitView({
                 teamLabel={teamLabel}
                 teamRecord={teamRecord}
                 basePath={basePath}
+                sport={sport}
               />
             ))}
           </div>
