@@ -72,13 +72,13 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           <div className="min-w-0 flex-1">
             <p className="section-kicker">{teamName}</p>
             <h1 className="page-title">
-              How {teamLabel} play under each ref crew or ref
+              How {teamLabel} play under each ref or ref crew
             </h1>
           </div>
         </div>
         <p className="page-lead">
-          Every {team.name} game grouped by the same {crewSize} officials on the{" "}
-          {playingSurface}, or by individual official. Over this sample {teamLabel}{" "}
+          Every {team.name} game grouped by individual official, or by the same{" "}
+          {crewSize} officials on the {playingSurface}. Over this sample {teamLabel}{" "}
           are{" "}
           {teamRecord.wins}-{teamRecord.losses} ({formatPct(teamRecord.winRate)}
           ); each ref and crew win rate below is compared to that team average.
@@ -145,14 +145,14 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         <summary>What am I looking at?</summary>
         <ul className="space-y-2.5 text-sm leading-relaxed text-zinc-600">
           <li>
-            <span className="font-medium text-zinc-800">Ref crews</span>: stats
-            when the same {crewSize} officials worked together on {teamLabel}{" "}
-            games ({TEAM_CREW_MIN_GAMES}+ games shown by default).
-          </li>
-          <li>
             <span className="font-medium text-zinc-800">Individual refs</span>:
             stats for one official across all {team.name} games they worked, even
             with different partners.
+          </li>
+          <li>
+            <span className="font-medium text-zinc-800">Ref crews</span>: stats
+            when the same {crewSize} officials worked together on {teamLabel}{" "}
+            games ({TEAM_CREW_MIN_GAMES}+ games shown by default).
           </li>
           <li>
             <span className="font-medium text-zinc-800">Team baseline</span>:{" "}

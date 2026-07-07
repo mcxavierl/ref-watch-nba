@@ -16,10 +16,6 @@ export function TeamInsightCards({
   return (
     <section className="section-block">
       <h2 className="section-title">Notable patterns</h2>
-      <p className="section-lead">
-        Standout ref and crew splits from this sample, descriptive only, not
-        picks.
-      </p>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {insights.map((insight) => (
           <li

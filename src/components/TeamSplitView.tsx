@@ -305,7 +305,7 @@ export function TeamSplitView({
   overBaseline: number;
   basePath?: string;
 }) {
-  const [view, setView] = useState<SplitView>("crew");
+  const [view, setView] = useState<SplitView>("ref");
   const [refSort, setRefSort] = useState<TeamRefSort>("winRate-desc");
   const [crewSort, setCrewSort] = useState<TeamCrewSort>("games-desc");
   const [showAllCrews, setShowAllCrews] = useState(false);
@@ -331,21 +331,8 @@ export function TeamSplitView({
       <div
         className="mb-4 flex gap-1 rounded-lg border border-border bg-surface-raised/40 p-1"
         role="tablist"
-        aria-label={`View ${teamLabel} by crew or ref`}
+        aria-label={`View ${teamLabel} by ref or crew`}
       >
-        <button
-          type="button"
-          role="tab"
-          aria-selected={view === "crew"}
-          onClick={() => setView("crew")}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition ${
-            view === "crew"
-              ? "bg-white text-zinc-900 shadow-sm ring-1 ring-border"
-              : "text-zinc-600 hover:text-zinc-900"
-          }`}
-        >
-          Crews ({crewSplits.length})
-        </button>
         <button
           type="button"
           role="tab"
@@ -359,9 +346,53 @@ export function TeamSplitView({
         >
           Refs ({refSplits.length})
         </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === "crew"}
+          onClick={() => setView("crew")}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition ${
+            view === "crew"
+              ? "bg-white text-zinc-900 shadow-sm ring-1 ring-border"
+              : "text-zinc-600 hover:text-zinc-900"
+          }`}
+        >
+          Crews ({crewSplits.length})
+        </button>
       </div>
 
-      {view === "crew" ? (
+      {view === "ref" ? (
+        refSplits.length === 0 ? (
+          <p className="text-sm text-zinc-600">
+            No refs with enough games involving {teamLabel} yet.
+          </p>
+        ) : (
+          <>
+            <div className="mb-4">
+              <TeamRefSortBar
+                value={refSort}
+                onChange={setRefSort}
+                id="team-ref-cards-sort"
+              />
+            </div>
+            <div className="space-y-4">
+              {sortedRefSplits.map((entry) => (
+                <TeamRefSplitCard
+                  key={entry.slug}
+                  entry={entry}
+                  leagueAvgTotal={leagueAvgTotal}
+                  overBaseline={overBaseline}
+                  teamAbbr={teamAbbr}
+                  teamLabel={teamLabel}
+                  teamRecord={teamRecord}
+                  basePath={basePath}
+                  sport={sport}
+                />
+              ))}
+            </div>
+          </>
+        )
+      ) : (
         crewSplits.length === 0 ? (
           <p className="text-sm text-zinc-600">
             No crew history for {teamLabel} yet.
@@ -421,35 +452,6 @@ export function TeamSplitView({
             )}
           </>
         )
-      ) : refSplits.length === 0 ? (
-        <p className="text-sm text-zinc-600">
-          No refs with enough games involving {teamLabel} yet.
-        </p>
-      ) : (
-        <>
-          <div className="mb-4">
-            <TeamRefSortBar
-              value={refSort}
-              onChange={setRefSort}
-              id="team-ref-cards-sort"
-            />
-          </div>
-          <div className="space-y-4">
-            {sortedRefSplits.map((entry) => (
-              <TeamRefSplitCard
-                key={entry.slug}
-                entry={entry}
-                leagueAvgTotal={leagueAvgTotal}
-                overBaseline={overBaseline}
-                teamAbbr={teamAbbr}
-                teamLabel={teamLabel}
-                teamRecord={teamRecord}
-                basePath={basePath}
-                sport={sport}
-              />
-            ))}
-          </div>
-        </>
       )}
     </div>
   );
