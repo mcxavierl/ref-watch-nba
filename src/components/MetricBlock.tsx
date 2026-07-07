@@ -32,7 +32,7 @@ export function MetricBlock({
   };
 
   return (
-    <div className="flex flex-col gap-2 bg-white px-4 py-4 sm:px-5">
+    <div className="flex flex-col gap-2 bg-surface px-4 py-4 sm:px-5">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {Icon && (
           <Icon

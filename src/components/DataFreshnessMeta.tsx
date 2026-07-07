@@ -1,4 +1,3 @@
-import { OffseasonAlertBanner } from "@/components/OffseasonAlertBanner";
 import { formatDate } from "@/lib/data";
 import { isOffseasonSlate } from "@/lib/offseason";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
@@ -25,7 +24,7 @@ export function DataFreshnessMeta({
   const offseason = isOffseasonSlate(assignments);
 
   if (offseason) {
-    return <OffseasonAlertBanner league={league} />;
+    return null;
   }
 
   const statsSeeded = refStats.meta.source === "seeded";

@@ -29,7 +29,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
               {isNhl ? (
                 <a
                   href="https://api-web.nhle.com"
-                  className="font-medium text-zinc-800 underline-offset-2 hover:underline"
+                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -38,7 +38,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
               ) : (
                 <a
                   href="https://official.nba.com/referee-assignments/"
-                  className="font-medium text-zinc-800 underline-offset-2 hover:underline"
+                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -54,7 +54,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
               <li>
                 <Link
                   href={isNhl ? "/nhl/research" : "/research"}
-                  className="font-medium text-zinc-800 underline-offset-2 hover:underline"
+                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
                 >
                   Research hub
                 </Link>
@@ -62,7 +62,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
               <li>
                 <Link
                   href={isNhl ? "/nhl/rankings" : "/rankings"}
-                  className="font-medium text-zinc-800 underline-offset-2 hover:underline"
+                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
                 >
                   Referee rankings
                 </Link>
@@ -70,13 +70,13 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
               <li>
                 <Link
                   href={isNhl ? "/nhl/trends" : "/trends"}
-                  className="font-medium text-zinc-800 underline-offset-2 hover:underline"
+                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
                 >
                   League trends
                 </Link>
               </li>
               <li>
-                <Link href="/methodology" className="font-medium text-zinc-800 underline-offset-2 hover:underline">
+                <Link href="/methodology" className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline">
                   Methodology
                 </Link>
               </li>

@@ -48,7 +48,7 @@ export function ProComingSoonTease({
           </ul>
         </div>
         <div className="pro-tease-preview shrink-0" aria-hidden>
-          <div className="pro-tease-blur rounded-md border border-border bg-white px-4 py-3">
+          <div className="pro-tease-blur rounded-md border border-border bg-surface px-4 py-3">
             <p className="text-xs font-semibold text-zinc-400">Pro preview</p>
             <p className="mt-2 font-mono text-sm tabular-nums text-zinc-300">
               +4.2 vs book · reunion n=12

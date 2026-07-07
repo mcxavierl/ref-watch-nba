@@ -62,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
         className={`${barlow.variable} ${plexMono.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
       >

@@ -158,9 +158,10 @@ export default function HomePage() {
               {slateGames.length === 1 ? "Tonight's game" : "Tonight's games"}
             </h2>
             <div className="slate-stack mt-4">
-              {sortedGames.map((game) => (
+              {sortedGames.map((game, index) => (
                 <GameSlateCard
                   key={game.id}
+                  slateIndex={index}
                   gameId={game.id}
                   matchup={game.matchup}
                   awayTeam={game.awayTeam}

@@ -63,8 +63,35 @@ const NHL_LINKS: BrowseLink[] = [
   },
 ];
 
-export function BrowseActionCards({ league }: { league: "NBA" | "NHL" }) {
+export function BrowseActionCards({
+  league,
+  compact = false,
+}: {
+  league: "NBA" | "NHL";
+  compact?: boolean;
+}) {
   const links = league === "NBA" ? NBA_LINKS : NHL_LINKS;
+
+  if (compact) {
+    return (
+      <nav
+        className="browse-action-compact"
+        aria-label="Browse historical data"
+      >
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="browse-action-compact-card"
+            title={link.description}
+          >
+            <span className="browse-action-compact-label">{link.label}</span>
+            <ArrowRight className="browse-action-compact-arrow" aria-hidden />
+          </Link>
+        ))}
+      </nav>
+    );
+  }
 
   return (
     <nav className="browse-action-grid" aria-label="Browse historical data">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { ChevronDown } from "lucide-react";
 import type { CrewMetrics } from "@/lib/data";
 import {
@@ -56,6 +57,7 @@ export function GameSlateCard({
   ppPremium = null,
   otSignal = null,
   overBenchmark,
+  slateIndex = 0,
 }: {
   gameId: string;
   matchup: string;
@@ -70,6 +72,7 @@ export function GameSlateCard({
   ppPremium?: NhlPpPremiumSignal | null;
   otSignal?: NhlOtRateSignal | null;
   overBenchmark?: number;
+  slateIndex?: number;
 }) {
   const copy = sportCopy(sport);
   const defaultBenchmark = SPORT_BENCHMARK[sport];
@@ -106,7 +109,7 @@ export function GameSlateCard({
         : null;
 
   return (
-    <article id={`game-${gameId}`} className="data-card scroll-mt-24">
+    <article id={`game-${gameId}`} className="data-card scroll-mt-24" style={{ "--slate-i": slateIndex } as CSSProperties}>
       <div className="data-card-header">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">
@@ -225,7 +228,7 @@ export function GameSlateCard({
       </div>
 
       <details className="group border-t border-border-subtle">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50 sm:px-5 [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-zinc-200 transition hover:bg-surface-raised sm:px-5 [&::-webkit-details-marker]:hidden">
           View breakdown
           <ChevronDown
             className="size-4 shrink-0 text-zinc-500 transition group-open:rotate-180"

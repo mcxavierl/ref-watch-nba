@@ -6,7 +6,6 @@ export function OffseasonSlateNotice({ league }: { league: "NBA" | "NHL" }) {
   return (
     <section className="offseason-notice" aria-labelledby="offseason-callout-heading">
       <div className="offseason-callout">
-        <span className="offseason-badge">No live slate</span>
         <h2 id="offseason-callout-heading" className="section-title">
           {league} season ended, no slate tonight
         </h2>
