@@ -45,6 +45,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
     ? nhlTeams.teamWithArticle(team as import("@/lib/nhl/teams").NhlTeam)
     : nbaTeams.teamWithArticle(team as import("@/lib/teams").NbaTeam);
   const crewSize = isNhl ? "four" : "three";
+  const playingSurface = isNhl ? "ice" : "court";
   const closeGameMetrics = computeTeamCloseGameMetrics(
     team.abbr,
     stats.meta,
@@ -66,7 +67,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   return (
     <div className="page-shell">
       <section className="page-hero">
-        <div className="flex flex-wrap items-start gap-3 sm:items-center">
+        <div className="flex items-center gap-4">
           <TeamLogo team={team} size="lg" sport={league} />
           <div className="min-w-0 flex-1">
             <p className="section-kicker">{teamName}</p>
@@ -76,8 +77,9 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           </div>
         </div>
         <p className="page-lead">
-          Every {team.name} game grouped by the same {crewSize} officials on the
-          ice, or by individual official. Over this sample {teamLabel} are{" "}
+          Every {team.name} game grouped by the same {crewSize} officials on the{" "}
+          {playingSurface}, or by individual official. Over this sample {teamLabel}{" "}
+          are{" "}
           {teamRecord.wins}-{teamRecord.losses} ({formatPct(teamRecord.winRate)}
           ) — each ref and crew win rate below is compared to that team average.
         </p>
