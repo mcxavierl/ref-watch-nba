@@ -40,7 +40,7 @@ export function RefTeamMatrix({
           {officialNounPlural.slice(0, -1)} worked their games. Cells need{" "}
           {minGames}+ games; empty cells are below the sample gate. Colors
           compare win rate to the team&apos;s overall baseline in this dataset.
-          Historical splits only — not picks.
+          Historical splits only, not picks.
         </p>
         <div className="ref-matrix-legend-swatches" aria-hidden>
           <span className="ref-matrix-swatch ref-matrix-cell--positive">
@@ -108,7 +108,7 @@ export function RefTeamMatrix({
                         className="ref-matrix-cell ref-matrix-cell--empty"
                         aria-label={`${ref.name} vs ${team.abbr}: insufficient sample`}
                       >
-                        <span aria-hidden>—</span>
+                        <span aria-hidden>-</span>
                       </td>
                     );
                   }

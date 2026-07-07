@@ -40,7 +40,7 @@ export default function NbaMatrixPage() {
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} referees worked their games
           ({range}). Cells require {matrix.minGames}+ games in this dataset. Not
-          predictions — see{" "}
+          predictions; see{" "}
           <Link
             href="/methodology"
             className="font-medium text-zinc-800 hover:underline"
