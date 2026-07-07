@@ -94,8 +94,8 @@ export function RefRankingsTable({
       <div className="ranking-toolbar">
         <div className="ranking-toolbar-row">
           <p className="ranking-toolbar-hint">
-            Click column headers to sort. Historical tendencies vs league baseline
-           , descriptive only, not picks.
+            Click column headers to sort. Historical tendencies vs league baseline,
+            descriptive only, not picks.
           </p>
           <label className="ranking-toggle">
             <input
@@ -118,7 +118,7 @@ export function RefRankingsTable({
             <tr className="data-table-head">
               <th className="data-table-rank">#</th>
               <th>Official</th>
-              <SortableHeader label="Sample" field="games" sort={sort} onSort={handleSort} />
+              <SortableHeader label="Games" field="games" sort={sort} onSort={handleSort} />
               <SortableHeader
                 label={scoringLabel}
                 field="scoring"
@@ -187,7 +187,7 @@ export function RefRankingsTable({
                     </div>
                   </td>
                   <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-700">
-                    {ref.games} gp
+                    {ref.games.toLocaleString()}
                     {belowGate && (
                       <span className="ml-1 text-xs text-amber-700">· thin</span>
                     )}

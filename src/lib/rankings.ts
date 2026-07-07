@@ -17,8 +17,8 @@ export const REF_RANKING_SORT_LABELS: Record<RefRankingSort, string> = {
   "whistle-asc": "Whistle impact (low → high)",
   "overRate-desc": "Over rate (high → low)",
   "overRate-asc": "Over rate (low → high)",
-  "games-desc": "Sample size (most games)",
-  "games-asc": "Sample size (fewest games)",
+  "games-desc": "Games (most)",
+  "games-asc": "Games (fewest)",
 };
 
 export function qualifiedRefs(
