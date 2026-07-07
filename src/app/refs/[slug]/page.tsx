@@ -63,10 +63,10 @@ export default async function RefProfilePage({
 
       <header className="mb-8 mt-5">
         <div className="flex flex-wrap items-center gap-2.5">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem]">
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
             {profile.name}
           </h1>
-          <span className="rounded-md border border-border bg-surface-raised px-2 py-0.5 font-mono text-xs text-zinc-600">
+          <span className="rounded-md border border-border bg-surface-raised px-2.5 py-1 font-mono text-sm text-zinc-600">
             #{profile.number}
           </span>
           <OuLeanBadge lean={lean} />

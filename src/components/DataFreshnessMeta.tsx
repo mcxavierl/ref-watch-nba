@@ -41,7 +41,7 @@ export function DataFreshnessMeta({
       {statsSeeded && (
         <span className="text-amber-800">
           Stats are representative — run{" "}
-          <code className="rounded bg-white px-1 py-0.5 font-mono text-[10px] ring-1 ring-border">
+          <code className="rounded bg-white px-1.5 py-0.5 font-mono text-sm ring-1 ring-border">
             npm run build-ref-data
           </code>{" "}
           for live NBA Stats backfill

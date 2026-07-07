@@ -6,10 +6,10 @@ function FindingCard({ finding, index }: { finding: Finding; index: number }) {
   return (
     <article className="data-card">
       <div className="border-b border-border bg-surface-raised/60 px-4 py-3">
-        <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
           Finding {index + 1}
         </p>
-        <h3 className="mt-1 text-sm font-semibold leading-snug text-zinc-900">
+        <h3 className="mt-1 text-base font-semibold leading-snug text-zinc-900">
           {finding.headline}
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-zinc-600">
@@ -37,7 +37,7 @@ function FindingCard({ finding, index }: { finding: Finding; index: number }) {
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-border-subtle px-4 py-3">
-        <p className="font-mono text-[10px] tabular-nums text-zinc-500">
+        <p className="text-sm tabular-nums text-zinc-500">
           {finding.sampleNote}
         </p>
         {finding.links.length > 0 && (
@@ -63,8 +63,8 @@ export function FindingsSection({ findings }: { findings: Finding[] }) {
 
   return (
     <section className="mb-10">
-      <h2 className="text-sm font-semibold text-zinc-700">Data findings</h2>
-      <p className="mt-1 text-xs text-zinc-500">
+      <h2 className="text-base font-semibold text-zinc-800">Data findings</h2>
+      <p className="mt-2 text-sm text-zinc-600">
         Six patterns that stand out when you compare referee and team history
         to league averages — computed from the full dataset at build time.
       </p>

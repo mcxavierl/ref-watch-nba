@@ -59,15 +59,15 @@ export function RefListItem({ profile }: { profile: RefProfile }) {
       className="group flex items-center justify-between border-b border-border-subtle px-4 py-3 transition last:border-b-0 hover:bg-zinc-50"
     >
       <div>
-        <p className="text-sm font-medium text-zinc-900 group-hover:text-zinc-950">
+        <p className="text-base font-medium text-zinc-900 group-hover:text-zinc-950">
           {profile.name}{" "}
-          <span className="font-mono text-xs text-zinc-500">#{profile.number}</span>
+          <span className="font-mono text-sm text-zinc-500">#{profile.number}</span>
         </p>
-        <p className="mt-0.5 font-mono text-[11px] text-zinc-500">
+        <p className="mt-1 text-sm text-zinc-600">
           {profile.games} games · {formatPct(profile.overRate)} over 225
         </p>
       </div>
-      <span className={`font-mono text-sm font-semibold tabular-nums ${deltaColor}`}>
+      <span className={`font-mono text-base font-semibold tabular-nums ${deltaColor}`}>
         {delta} pts
       </span>
     </Link>

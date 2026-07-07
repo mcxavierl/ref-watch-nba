@@ -16,7 +16,7 @@ export default function TeamsIndexPage() {
   return (
     <div className="page-shell">
       <section className="mb-10">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem]">
+        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
           All NBA teams
         </h1>
         <p className="page-lead">
@@ -29,7 +29,7 @@ export default function TeamsIndexPage() {
         const teams = conference === "East" ? East : West;
         return (
           <section key={conference} className="mb-8">
-            <h2 className="mb-3 text-sm font-semibold text-zinc-700">
+            <h2 className="mb-3 text-base font-semibold text-zinc-800">
               {conference}ern Conference
             </h2>
             <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -44,16 +44,16 @@ export default function TeamsIndexPage() {
                     >
                       <TeamLogo team={team} size="md" />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-zinc-900">
+                        <p className="truncate text-base font-medium text-zinc-900">
                           {teamFullName(team)}
                         </p>
-                        <p className="font-mono text-[11px] text-zinc-500">
+                        <p className="text-sm text-zinc-600">
                           {splits.length > 0
                             ? `${splits.length} crews · ${games} games`
                             : "No data yet"}
                         </p>
                       </div>
-                      <span className="font-mono text-xs text-zinc-400">
+                      <span className="font-mono text-sm text-zinc-500">
                         {team.abbr}
                       </span>
                     </Link>

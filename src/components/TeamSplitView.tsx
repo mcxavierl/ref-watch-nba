@@ -1,19 +1,29 @@
 "use client";
 
 import Link from "next/link";
+import {
+  ChevronDown,
+  MapPin,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  Trophy,
+  Users,
+  Volume2,
+} from "lucide-react";
 import { useMemo, useState } from "react";
+import { MetricBlock, MetricGrid } from "@/components/MetricBlock";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
-import { StatCell, StatSection, StatStrip } from "@/components/StatStrip";
 import {
   formatPct,
   formatSigned,
   formatWinRateVsTeam,
-  whistleBias,
 } from "@/lib/stats-utils";
 import {
-  getOuLeanAnnotation,
-  getWhistleAnnotation,
-} from "@/lib/leanAnnotations";
+  foulEdgeTone,
+  scoringDeltaTone,
+  winRateTone,
+} from "@/lib/metricTone";
 import type { TeamRefLeaderboardEntry, TeamRefSort } from "@/lib/teamRefLeaderboards";
 import { sortTeamRefEntries } from "@/lib/teamRefLeaderboards";
 import type { TeamSampleRecord } from "@/lib/teamRecord";
@@ -21,14 +31,26 @@ import type { RefProfile, TeamCrewSplit } from "@/lib/types";
 
 type SplitView = "crew" | "ref";
 
-function winPct(wins: number, games: number): string {
-  if (games === 0) return "—";
-  return formatPct(wins / games);
+function RefLinkChip({
+  name,
+  slug,
+}: {
+  name: string;
+  slug: string;
+}) {
+  return (
+    <Link
+      href={`/refs/${slug}`}
+      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-zinc-50 px-3 py-1 text-sm text-zinc-700 transition hover:border-zinc-300 hover:bg-white hover:text-zinc-900"
+    >
+      <Users className="size-3.5 text-zinc-400" aria-hidden />
+      {name}
+    </Link>
+  );
 }
 
 function TeamSplitCard({
   split,
-  leagueAvgTotal,
   leagueAvgFouls,
   overBaseline,
   refs,
@@ -37,7 +59,6 @@ function TeamSplitCard({
   teamRecord,
 }: {
   split: TeamCrewSplit;
-  leagueAvgTotal: number;
   leagueAvgFouls: number;
   overBaseline: number;
   refs: Pick<RefProfile, "slug" | "name">[];
@@ -46,116 +67,83 @@ function TeamSplitCard({
   teamRecord: TeamSampleRecord;
 }) {
   const crewWinRate = split.games > 0 ? split.wins / split.games : 0;
-  const ouLean = getOuLeanAnnotation(
-    split.overRate,
-    split.avgTotalPoints,
-    leagueAvgTotal,
-  );
-  const bias = whistleBias(split.foulDifferential);
-  const whistleAnnotation = getWhistleAnnotation(bias, teamAbbr);
   const foulsDelta = Math.round((split.avgFouls - leagueAvgFouls) * 10) / 10;
+  const winTone = winRateTone(crewWinRate, teamRecord.winRate);
+  const foulTone = foulEdgeTone(split.foulDifferential);
+  const scoreTone = scoringDeltaTone(split.totalDelta);
 
   return (
-    <article className="data-card">
-      <div className="border-b border-border bg-surface-raised/60 px-4 py-3">
-        <h2 className="text-sm font-semibold leading-snug text-zinc-900">
+    <article className="data-card overflow-hidden">
+      <div className="border-b border-border bg-gradient-to-r from-zinc-50 to-white px-4 py-4 sm:px-5">
+        <h2 className="text-base font-semibold leading-snug text-zinc-900">
           {split.crewNames.join(" · ")}
         </h2>
-        <p className="mt-1 font-mono text-[11px] tabular-nums text-zinc-600">
-          {split.games} games · {split.wins}-{split.losses} (
-          {winPct(split.wins, split.games)} wins)
+        <p className="mt-1 text-sm text-zinc-600">
+          {split.games} games · {split.wins}-{split.losses} with {teamLabel}
         </p>
       </div>
 
-      <StatSection title="Scoring">
-        <StatStrip>
-          <StatCell
-            label="Avg combined score"
-            value={String(split.avgTotalPoints)}
-            detail={`${formatSigned(split.totalDelta)} vs league avg (${leagueAvgTotal})`}
-            annotation={
-              ouLean?.target === "avgTotal" ? ouLean.label : undefined
-            }
-          />
-          <StatCell
-            label={`Games over ${overBaseline} pts`}
-            value={formatPct(split.overRate)}
-            detail="Combined score beat the league benchmark"
-            annotation={
-              ouLean?.target === "overRate" ? ouLean.label : undefined
-            }
-          />
-          <StatCell
-            label="Win-loss record"
-            value={`${split.wins}-${split.losses}`}
-            detail={`${formatPct(crewWinRate)} · team sample ${formatPct(teamRecord.winRate)}`}
-            annotation={formatWinRateVsTeam(crewWinRate, teamRecord.winRate)}
-          />
-        </StatStrip>
-      </StatSection>
+      <MetricGrid>
+        <MetricBlock
+          icon={split.totalDelta >= 0 ? TrendingUp : TrendingDown}
+          iconClassName={scoreTone === "positive" ? "text-emerald-600" : scoreTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+          label="Scoring"
+          value={`${split.avgTotalPoints} avg`}
+          hint={`${formatPct(split.overRate)} over ${overBaseline} pts`}
+          badge={`${formatSigned(split.totalDelta)} vs league`}
+          badgeTone={scoreTone}
+        />
+        <MetricBlock
+          icon={Trophy}
+          iconClassName={winTone === "positive" ? "text-emerald-600" : winTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+          label="Record"
+          value={`${split.wins}-${split.losses}`}
+          hint={`${formatPct(crewWinRate)} win rate`}
+          badge={formatWinRateVsTeam(crewWinRate, teamRecord.winRate)}
+          badgeTone={winTone}
+        />
+        <MetricBlock
+          icon={Volume2}
+          iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+          label="Whistle"
+          value={`${formatSigned(split.foulDifferential)} edge`}
+          hint={`${split.avgFouls} fouls/game (${formatSigned(foulsDelta)} vs league)`}
+          badge={`${teamAbbr} ${split.avgTeamFouls} · opp ${split.avgOpponentFouls}`}
+          badgeTone={foulTone}
+        />
+      </MetricGrid>
 
-      <StatSection title="Fouls & whistles">
-        <StatStrip>
-          <StatCell
-            label="Total fouls per game"
-            value={String(split.avgFouls)}
-            detail={`${formatSigned(foulsDelta)} vs league avg (${leagueAvgFouls})`}
-          />
-          <StatCell
-            label={`${teamAbbr} fouls`}
-            value={String(split.avgTeamFouls)}
-            detail={`Called on ${teamLabel}`}
-          />
-          <StatCell
-            label="Opponent fouls"
-            value={String(split.avgOpponentFouls)}
-            detail="Called on the other team"
-          />
-          <StatCell
-            label="Foul edge"
-            value={formatSigned(split.foulDifferential)}
-            detail="Positive = more fouls on opponents"
-            annotation={whistleAnnotation}
-          />
-        </StatStrip>
-      </StatSection>
+      <details className="group border-t border-border-subtle">
+        <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium text-zinc-700 hover:bg-zinc-50 sm:px-5">
+          <span className="inline-flex items-center gap-2">
+            <MapPin className="size-4 text-zinc-400" aria-hidden />
+            Home & away split
+          </span>
+          <ChevronDown className="size-4 text-zinc-400 transition group-open:rotate-180" />
+        </summary>
+        <div className="grid grid-cols-2 gap-3 border-t border-border-subtle bg-zinc-50/50 px-4 py-3 text-sm sm:px-5">
+          <p>
+            <span className="font-medium text-zinc-800">Home</span>{" "}
+            <span className="font-mono tabular-nums text-zinc-700">
+              {split.homeWins}-{split.homeLosses}
+            </span>{" "}
+            <span className="text-zinc-600">({split.homeGames} games)</span>
+          </p>
+          <p>
+            <span className="font-medium text-zinc-800">Away</span>{" "}
+            <span className="font-mono tabular-nums text-zinc-700">
+              {split.awayWins}-{split.awayLosses}
+            </span>{" "}
+            <span className="text-zinc-600">({split.awayGames} games)</span>
+          </p>
+        </div>
+      </details>
 
-      <StatSection title="Home & away">
-        <StatStrip>
-          <StatCell
-            label="Home record"
-            value={`${split.homeWins}-${split.homeLosses}`}
-            detail={`${split.homeGames} home games`}
-          />
-          <StatCell
-            label="Away record"
-            value={`${split.awayWins}-${split.awayLosses}`}
-            detail={`${split.awayGames} away games`}
-          />
-          <StatCell
-            label="Home win rate"
-            value={winPct(split.homeWins, split.homeGames)}
-          />
-          <StatCell
-            label="Away win rate"
-            value={winPct(split.awayWins, split.awayGames)}
-          />
-        </StatStrip>
-      </StatSection>
-
-      <div className="flex flex-wrap gap-x-3 gap-y-1 border-t border-border-subtle px-4 py-2.5">
+      <div className="flex flex-wrap gap-2 border-t border-border-subtle px-4 py-3 sm:px-5">
         {split.crewNames.map((name) => {
           const ref = refs.find((r) => r.name === name);
           if (!ref) return null;
-          return (
-            <Link
-              key={ref.slug}
-              href={`/refs/${ref.slug}`}
-              className="text-[11px] text-zinc-600 transition hover:text-zinc-900"
-            >
-              {name} →
-            </Link>
-          );
+          return <RefLinkChip key={ref.slug} name={name} slug={ref.slug} />;
         })}
       </div>
     </article>
@@ -177,69 +165,57 @@ function TeamRefSplitCard({
   teamLabel: string;
   teamRecord: TeamSampleRecord;
 }) {
-  const ouLean = getOuLeanAnnotation(
-    entry.overRate,
-    entry.avgTotalPoints,
-    leagueAvgTotal,
-  );
-  const bias = whistleBias(entry.avgFoulDifferential);
-  const whistleAnnotation = getWhistleAnnotation(bias, teamAbbr);
   const wins = Math.round(entry.winRate * entry.games);
+  const totalDelta = entry.avgTotalPoints - leagueAvgTotal;
+  const winTone = winRateTone(entry.winRate, teamRecord.winRate);
+  const foulTone = foulEdgeTone(entry.avgFoulDifferential);
+  const scoreTone = scoringDeltaTone(totalDelta);
 
   return (
-    <article className="data-card">
-      <div className="border-b border-border bg-surface-raised/60 px-4 py-3">
-        <h2 className="text-sm font-semibold leading-snug text-zinc-900">
+    <article className="data-card overflow-hidden">
+      <div className="border-b border-border bg-gradient-to-r from-zinc-50 to-white px-4 py-4 sm:px-5">
+        <h2 className="text-base font-semibold leading-snug text-zinc-900">
           <Link
             href={`/refs/${entry.slug}`}
-            className="transition hover:text-zinc-600"
+            className="transition hover:text-raptors"
           >
             {entry.name}
           </Link>
         </h2>
-        <p className="mt-1 font-mono text-[11px] tabular-nums text-zinc-600">
-          {entry.games} games with {teamLabel} · ~{wins}-
-          {entry.games - wins} ({formatPct(entry.winRate)} wins)
+        <p className="mt-1 text-sm text-zinc-600">
+          {entry.games} games with {teamLabel} · ~{wins}-{entry.games - wins}
         </p>
       </div>
 
-      <StatSection title="Scoring">
-        <StatStrip>
-          <StatCell
-            label="Avg combined score"
-            value={String(entry.avgTotalPoints)}
-            detail={`${formatSigned(entry.avgTotalPoints - leagueAvgTotal)} vs league avg (${leagueAvgTotal})`}
-            annotation={
-              ouLean?.target === "avgTotal" ? ouLean.label : undefined
-            }
-          />
-          <StatCell
-            label={`Games over ${overBaseline} pts`}
-            value={formatPct(entry.overRate)}
-            detail="Combined score beat the league benchmark"
-            annotation={
-              ouLean?.target === "overRate" ? ouLean.label : undefined
-            }
-          />
-          <StatCell
-            label="Win rate"
-            value={formatPct(entry.winRate)}
-            detail={`Team sample ${formatPct(teamRecord.winRate)} (${teamRecord.wins}-${teamRecord.losses})`}
-            annotation={formatWinRateVsTeam(entry.winRate, teamRecord.winRate)}
-          />
-        </StatStrip>
-      </StatSection>
-
-      <StatSection title="Fouls & whistles">
-        <StatStrip>
-          <StatCell
-            label="Foul edge"
-            value={formatSigned(entry.avgFoulDifferential)}
-            detail={`Positive = more fouls on ${teamLabel}'s opponents`}
-            annotation={whistleAnnotation}
-          />
-        </StatStrip>
-      </StatSection>
+      <MetricGrid>
+        <MetricBlock
+          icon={Trophy}
+          iconClassName={winTone === "positive" ? "text-emerald-600" : winTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+          label="Win rate"
+          value={formatPct(entry.winRate)}
+          hint={`Team baseline ${formatPct(teamRecord.winRate)}`}
+          badge={formatWinRateVsTeam(entry.winRate, teamRecord.winRate)}
+          badgeTone={winTone}
+        />
+        <MetricBlock
+          icon={Target}
+          iconClassName={scoreTone === "positive" ? "text-emerald-600" : scoreTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+          label="Totals"
+          value={`${entry.avgTotalPoints} avg`}
+          hint={`${formatPct(entry.overRate)} over ${overBaseline}`}
+          badge={`${formatSigned(totalDelta)} vs league`}
+          badgeTone={scoreTone}
+        />
+        <MetricBlock
+          icon={Volume2}
+          iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+          label="Foul edge"
+          value={formatSigned(entry.avgFoulDifferential)}
+          hint={`More fouls on ${teamLabel}'s opponents when positive`}
+          badge={foulTone === "positive" ? `${teamAbbr} lean` : foulTone === "negative" ? "Opponent lean" : "Balanced"}
+          badgeTone={foulTone}
+        />
+      </MetricGrid>
     </article>
   );
 }
@@ -285,26 +261,28 @@ export function TeamSplitView({
           role="tab"
           aria-selected={view === "crew"}
           onClick={() => setView("crew")}
-          className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition ${
             view === "crew"
               ? "bg-white text-zinc-900 shadow-sm ring-1 ring-border"
               : "text-zinc-600 hover:text-zinc-900"
           }`}
         >
-          Ref crews ({crewSplits.length})
+          <Users className="size-4" aria-hidden />
+          Crews ({crewSplits.length})
         </button>
         <button
           type="button"
           role="tab"
           aria-selected={view === "ref"}
           onClick={() => setView("ref")}
-          className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition ${
             view === "ref"
               ? "bg-white text-zinc-900 shadow-sm ring-1 ring-border"
               : "text-zinc-600 hover:text-zinc-900"
           }`}
         >
-          Individual refs ({refSplits.length})
+          <Users className="size-4" aria-hidden />
+          Refs ({refSplits.length})
         </button>
       </div>
 
@@ -314,12 +292,11 @@ export function TeamSplitView({
             No crew history for {teamLabel} yet.
           </p>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {crewSplits.map((split) => (
               <TeamSplitCard
                 key={split.crewKey}
                 split={split}
-                leagueAvgTotal={leagueAvgTotal}
                 leagueAvgFouls={leagueAvgFouls}
                 overBaseline={overBaseline}
                 refs={refs}
@@ -336,14 +313,14 @@ export function TeamSplitView({
         </p>
       ) : (
         <>
-          <div className="mb-3">
+          <div className="mb-4">
             <TeamRefSortBar
               value={refSort}
               onChange={setRefSort}
               id="team-ref-cards-sort"
             />
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {sortedRefSplits.map((entry) => (
               <TeamRefSplitCard
                 key={entry.slug}

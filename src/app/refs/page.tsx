@@ -27,7 +27,7 @@ export default function RefsIndexPage() {
       </Link>
 
       <header className="mb-8 mt-5">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem]">
+        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
           All referees
         </h1>
         <p className="page-lead">

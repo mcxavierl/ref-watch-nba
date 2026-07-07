@@ -49,7 +49,7 @@ export default function HomePage() {
   return (
     <div className="page-shell">
       <section className="mb-10">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem]">
+        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
           Tonight&apos;s slate
         </h1>
         <p className="page-lead">
@@ -88,10 +88,10 @@ export default function HomePage() {
         <>
           {hotCrews.length > 0 && (
             <section className="mb-8">
-              <h2 className="text-sm font-semibold text-zinc-700">
+              <h2 className="text-base font-semibold text-zinc-800">
                 Notable scoring trends tonight
               </h2>
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-2 text-sm text-zinc-600">
                 Games where the crew history points toward unusually high- or
                 low-scoring games.
               </p>
@@ -99,7 +99,7 @@ export default function HomePage() {
                 {hotCrews.map(({ game, metrics }) => (
                   <li
                     key={game.id}
-                    className="rounded-md border border-border bg-surface-raised px-3 py-2 text-xs"
+                    className="rounded-md border border-border bg-surface-raised px-3 py-2.5 text-sm"
                   >
                     <span className="font-medium text-zinc-800">
                       {game.matchup}

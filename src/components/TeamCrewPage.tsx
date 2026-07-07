@@ -39,7 +39,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           <TeamLogo team={team} size="lg" />
           <div>
             <p className="text-sm font-semibold text-zinc-700">{teamName}</p>
-            <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem]">
+            <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
               How {teamLabel} play under each ref crew or ref
             </h1>
           </div>

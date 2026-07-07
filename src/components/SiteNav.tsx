@@ -24,7 +24,7 @@ export function SiteNav() {
             key={link.href}
             href={link.href}
             aria-current={active ? "page" : undefined}
-            className={`rounded-md px-3 py-1.5 text-sm transition ${
+            className={`rounded-md px-3.5 py-2 text-sm transition ${
               active
                 ? "bg-zinc-900 font-medium text-white"
                 : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"

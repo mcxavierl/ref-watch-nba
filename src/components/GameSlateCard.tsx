@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { Target, TrendingDown, TrendingUp, Users, Volume2 } from "lucide-react";
 import type { CrewMetrics } from "@/lib/data";
 import { detectTeamsInGame, formatPct, refSlug } from "@/lib/data";
-import { getOuLeanAnnotationFromDelta } from "@/lib/leanAnnotations";
+import { scoringDeltaTone } from "@/lib/metricTone";
 import { teamFullName } from "@/lib/teams";
+import { MetricBlock, MetricGrid } from "./MetricBlock";
 import { TeamLogo } from "./TeamLogo";
-import { StatCell, StatStrip } from "./StatStrip";
 
 export function GameSlateCard({
   matchup,
@@ -18,7 +19,6 @@ export function GameSlateCard({
   metrics: CrewMetrics;
 }) {
   const teams = detectTeamsInGame(awayTeam, homeTeam);
-
   const totalDelta =
     metrics.totalPointsDelta >= 0
       ? `+${metrics.totalPointsDelta}`
@@ -27,21 +27,19 @@ export function GameSlateCard({
     metrics.foulsDelta >= 0
       ? `+${metrics.foulsDelta}`
       : String(metrics.foulsDelta);
-  const ouLean = getOuLeanAnnotationFromDelta(
-    metrics.overRate,
-    metrics.totalPointsDelta,
-  );
+  const scoreTone = scoringDeltaTone(metrics.totalPointsDelta);
+  const foulTone = scoringDeltaTone(metrics.foulsDelta);
 
   return (
-    <article className="data-card">
-      <div className="border-b border-border bg-surface-raised/60 px-4 py-3">
+    <article className="data-card overflow-hidden">
+      <div className="border-b border-border bg-gradient-to-r from-zinc-50 to-white px-4 py-4 sm:px-5">
         <div className="flex flex-wrap items-center gap-2">
           {teams.length > 0 ? (
             <div className="flex items-center gap-2">
               {teams.map((team, i) => (
                 <span key={team.abbr} className="flex items-center gap-1.5">
                   {i > 0 && (
-                    <span className="text-xs text-zinc-400" aria-hidden>
+                    <span className="text-sm text-zinc-400" aria-hidden>
                       vs
                     </span>
                   )}
@@ -59,67 +57,74 @@ export function GameSlateCard({
           )}
         </div>
         {teams.length > 0 && (
-          <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
+          <div className="mt-2 flex flex-wrap gap-2">
             {teams.map((team) => (
               <Link
                 key={team.abbr}
                 href={`/teams/${team.abbr}`}
-                className="text-[11px] font-medium text-zinc-600 hover:text-zinc-900 hover:underline"
+                className="text-sm font-medium text-raptors hover:underline"
               >
-                {teamFullName(team)} crew history →
+                {teamFullName(team)} history →
               </Link>
             ))}
           </div>
         )}
       </div>
 
-      <div className="flex flex-wrap gap-2 border-b border-border-subtle px-4 py-3">
+      <div className="flex flex-wrap gap-2 border-b border-border-subtle px-4 py-3 sm:px-5">
         {metrics.crew.map((official) => (
           <Link
             key={`${official.name}-${official.number}`}
             href={`/refs/${refSlug(official.name, official.number)}`}
-            className="rounded-md border border-border bg-white px-2.5 py-1.5 transition hover:border-zinc-300 hover:bg-zinc-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-zinc-50 px-3 py-1 text-sm text-zinc-700 transition hover:border-zinc-300 hover:bg-white"
           >
-            <span className="block text-xs font-medium text-zinc-800">
-              {official.name}
-            </span>
-            <span className="font-mono text-[10px] text-zinc-500">
-              #{official.number} · {official.role.replace("_", " ")}
-            </span>
+            <Users className="size-3.5 text-zinc-400" aria-hidden />
+            {official.name}
           </Link>
         ))}
       </div>
 
-      <StatStrip>
-        <StatCell
-          label="Avg combined score"
-          value={String(metrics.avgTotalPoints)}
-          detail={`${totalDelta} vs league avg`}
-          annotation={ouLean?.target === "avgTotal" ? ouLean.label : undefined}
+      <MetricGrid>
+        <MetricBlock
+          icon={metrics.totalPointsDelta >= 0 ? TrendingUp : TrendingDown}
+          iconClassName={scoreTone === "positive" ? "text-emerald-600" : scoreTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+          label="Scoring"
+          value={`${metrics.avgTotalPoints} avg`}
+          hint={`${formatPct(metrics.overRate)} over 225`}
+          badge={`${totalDelta} vs league`}
+          badgeTone={scoreTone}
         />
-        <StatCell
-          label="Games over 225 pts"
-          value={formatPct(metrics.overRate)}
-          detail="Combined score beat benchmark"
-          annotation={
-            ouLean?.target === "overRate" ? ouLean.label : undefined
+        <MetricBlock
+          icon={Volume2}
+          iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+          label="Whistle"
+          value={`${metrics.avgFouls} fouls`}
+          hint={`${foulsDelta} vs league avg`}
+          badge={metrics.insufficientSample ? "Small sample" : `${metrics.sampleGames}g sample`}
+          badgeTone={metrics.insufficientSample ? "warning" : "neutral"}
+        />
+        <MetricBlock
+          icon={Target}
+          iconClassName="text-zinc-500"
+          label="Crew lean"
+          value={metrics.ouLean === "over" ? "Over trend" : metrics.ouLean === "under" ? "Under trend" : "Neutral"}
+          hint="Based on crew scoring history"
+          badgeTone={
+            metrics.ouLean === "over"
+              ? "positive"
+              : metrics.ouLean === "under"
+                ? "negative"
+                : "neutral"
+          }
+          badge={
+            metrics.ouLean === "over"
+              ? "Higher totals"
+              : metrics.ouLean === "under"
+                ? "Lower totals"
+                : "No strong lean"
           }
         />
-        <StatCell
-          label="Fouls per game"
-          value={String(metrics.avgFouls)}
-          detail={`${foulsDelta} vs league avg`}
-        />
-        <StatCell
-          label="Sample size"
-          value={`${metrics.sampleGames}g`}
-          detail={
-            metrics.insufficientSample
-              ? "Fewer than 2 refs with enough games"
-              : "Average across crew"
-          }
-        />
-      </StatStrip>
+      </MetricGrid>
     </article>
   );
 }

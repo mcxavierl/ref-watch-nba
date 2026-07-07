@@ -17,8 +17,8 @@ export function TeamRefLeaderboards({
 }) {
   return (
     <section className="mt-10">
-      <h2 className="text-sm font-semibold text-zinc-700">Ref rankings</h2>
-      <p className="mt-1 text-sm text-zinc-600">
+      <h2 className="text-base font-semibold text-zinc-800">Ref rankings</h2>
+      <p className="mt-2 text-sm text-zinc-600">
         Every official with {TEAM_REF_MIN_GAMES}+ {teamLabel} games. Win rates
         are compared to the team&apos;s {teamRecord.wins}-{teamRecord.losses} (
         {formatPct(teamRecord.winRate)}) record over the same sample.
