@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { StatCell, StatStrip } from "@/components/StatStrip";
+import { FindingAccordionItem } from "@/components/FindingAccordion";
 import type { Finding } from "@/lib/findings-shared";
 import { FINDING_CATEGORY_LABELS } from "@/lib/findings-shared";
 
@@ -15,11 +17,16 @@ export function FindingCard({
   return (
     <article className="data-card">
       <div className="border-b border-border bg-surface-raised/60 px-4 py-3.5 sm:px-5">
-        <p className="text-xs font-medium text-zinc-500">
-          {league && <span>{league} · </span>}
-          {FINDING_CATEGORY_LABELS[finding.category]} · Finding {index + 1}
-        </p>
-        <h3 className="mt-1.5 text-base font-semibold leading-snug text-zinc-900 sm:text-[1.125rem]">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {league && <span className="finding-meta-pill">{league}</span>}
+          <span className="finding-meta-pill">
+            {FINDING_CATEGORY_LABELS[finding.category]}
+          </span>
+          <span className="finding-meta-pill finding-meta-pill-muted">
+            Finding {index + 1}
+          </span>
+        </div>
+        <h3 className="mt-2.5 text-base font-semibold leading-snug text-zinc-900 sm:text-[1.125rem]">
           <Link
             href={`/research/${finding.id}`}
             className="hover:text-raptors hover:underline"
@@ -56,17 +63,7 @@ export function FindingCard({
           {finding.sampleNote}
         </p>
         {finding.links.length > 0 && (
-          <div className="flex flex-wrap gap-x-3 gap-y-1">
-            {finding.links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-xs font-medium text-zinc-700 hover:text-zinc-900 hover:underline"
-              >
-                {link.label} →
-              </Link>
-            ))}
-          </div>
+          <FindingFooterLinks links={finding.links} />
         )}
       </div>
     </article>
@@ -79,12 +76,16 @@ export function FindingsSection({
   featured = false,
   initialVisibleCount = 4,
   dataSourceNote,
+  title = "Dataset findings",
+  league,
 }: {
   findings: Finding[];
   compact?: boolean;
   featured?: boolean;
   initialVisibleCount?: number;
   dataSourceNote?: string;
+  title?: string;
+  league?: "NBA" | "NHL";
 }) {
   if (findings.length === 0) return null;
 
@@ -94,10 +95,13 @@ export function FindingsSection({
   const hidden = featured ? findings.slice(initialVisibleCount) : [];
 
   return (
-    <section id="dataset-findings" className={compact && !featured ? "" : "mb-10 scroll-mt-24"}>
+    <section
+      id="dataset-findings"
+      className={compact && !featured ? "" : "mb-10 scroll-mt-24"}
+    >
       {(featured || !compact) && (
         <>
-          <h2 className="section-title">Dataset findings</h2>
+          <h2 className="section-title">{title}</h2>
           <p className="section-lead">
             Top patterns ranked by effect size and sample size — not tied to
             tonight&apos;s slate.
@@ -115,22 +119,35 @@ export function FindingsSection({
           </p>
         </>
       )}
-      <div className={`space-y-3 ${compact && !featured ? "" : "mt-4"}`}>
-        {visible.map((finding, index) => (
-          <FindingCard key={finding.id} finding={finding} index={index} />
-        ))}
+      <div
+        className={`finding-accordion-stack ${compact && !featured ? "" : "mt-4"}`}
+      >
+        {featured
+          ? visible.map((finding, index) => (
+              <FindingAccordionItem
+                key={finding.id}
+                finding={finding}
+                index={index}
+                defaultOpen={index === 0}
+                league={league}
+              />
+            ))
+          : visible.map((finding, index) => (
+              <FindingCard key={finding.id} finding={finding} index={index} />
+            ))}
       </div>
       {hidden.length > 0 && (
-        <details className="panel-inset mt-4 px-4 py-3 sm:px-5">
-          <summary className="cursor-pointer text-sm font-semibold text-zinc-800">
+        <details className="findings-expand-more">
+          <summary className="findings-expand-more-btn">
             {hidden.length} more finding{hidden.length === 1 ? "" : "s"}
           </summary>
-          <div className="mt-4 space-y-3">
+          <div className="finding-accordion-stack mt-3">
             {hidden.map((finding, index) => (
-              <FindingCard
+              <FindingAccordionItem
                 key={finding.id}
                 finding={finding}
                 index={visible.length + index}
+                league={league}
               />
             ))}
           </div>

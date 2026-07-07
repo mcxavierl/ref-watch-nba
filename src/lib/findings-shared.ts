@@ -63,6 +63,22 @@ export function dedupeFindingsByCategory(
   return picked;
 }
 
+import type { ConfidenceTier } from "@/lib/user-language";
+
+/** Map finding sample notes to user-facing confidence tiers. */
+export function findingConfidenceTier(finding: Finding): ConfidenceTier {
+  const numbers = finding.sampleNote.match(/\d[\d,]*/g);
+  const largest =
+    numbers
+      ?.map((n) => parseInt(n.replace(/,/g, ""), 10))
+      .filter((n) => !Number.isNaN(n))
+      .sort((a, b) => b - a)[0] ?? 0;
+
+  if (largest >= 100) return "Strong";
+  if (largest >= 30) return "Moderate";
+  return "Thin";
+}
+
 export const FINDING_CATEGORY_LABELS: Record<FindingCategory, string> = {
   "league-trend": "League trend",
   "ref-outlier": "Ref outlier",
@@ -73,3 +89,48 @@ export const FINDING_CATEGORY_LABELS: Record<FindingCategory, string> = {
   "ou-edge": "O/U edge",
   "ref-team-split": "Ref–team split",
 };
+
+export type FindingFilterGroup =
+  | "all"
+  | "ref-outliers"
+  | "team-trends"
+  | "ats-edges"
+  | "over-under";
+
+export const FINDING_FILTER_GROUPS: FindingFilterGroup[] = [
+  "all",
+  "ref-outliers",
+  "team-trends",
+  "ats-edges",
+  "over-under",
+];
+
+export const FINDING_FILTER_LABELS: Record<FindingFilterGroup, string> = {
+  all: "All",
+  "ref-outliers": "Ref Outliers",
+  "team-trends": "Team Trends",
+  "ats-edges": "ATS Edges",
+  "over-under": "Over/Under",
+};
+
+export const FINDING_CATEGORY_TO_FILTER: Record<
+  FindingCategory,
+  Exclude<FindingFilterGroup, "all">
+> = {
+  "league-trend": "team-trends",
+  "ref-outlier": "ref-outliers",
+  "team-crew": "team-trends",
+  "whistle-extreme": "ref-outliers",
+  "scoring-extreme": "ref-outliers",
+  "ats-edge": "ats-edges",
+  "ou-edge": "over-under",
+  "ref-team-split": "team-trends",
+};
+
+export function findingMatchesFilter(
+  category: FindingCategory,
+  filter: FindingFilterGroup,
+): boolean {
+  if (filter === "all") return true;
+  return FINDING_CATEGORY_TO_FILTER[category] === filter;
+}

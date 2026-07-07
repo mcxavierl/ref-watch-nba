@@ -15,10 +15,7 @@ import {
   getRefStats,
   ouLeanSortWeight,
 } from "@/lib/data";
-import {
-  buildOffseasonEdgeSummary,
-  buildTonightEdgeSummary,
-} from "@/lib/edge-summary";
+import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/findings";
 import {
   computeGameStorylines,
@@ -97,15 +94,15 @@ export default function HomePage() {
   const dataSourceNote =
     refStats.meta.source === "seeded" ? seededDataNote() : undefined;
 
-  const edgeItems = isOffseason
-    ? buildOffseasonEdgeSummary(findings, 5)
-    : buildTonightEdgeSummary({
+  const edgeItems = !isOffseason
+    ? buildTonightEdgeSummary({
         sport: "nba",
         alertPremiums,
         allPremiums: premiums,
         homeBiasSignals,
         storylines: slateStorylines,
-      });
+      })
+    : [];
 
   return (
     <div className="page-shell">
@@ -136,14 +133,7 @@ export default function HomePage() {
       </section>
 
       {isOffseason ? (
-        <div className="content-stack-offseason">
-          <OffseasonSlateNotice league="NBA" />
-          <TonightEdgeSummary
-            items={edgeItems}
-            title="Season highlights"
-            emptyMessage="Browse findings below for the biggest historical patterns in our dataset."
-          />
-        </div>
+        <OffseasonSlateNotice league="NBA" />
       ) : (
         <>
           <SlateShareBar
@@ -185,6 +175,8 @@ export default function HomePage() {
         featured
         initialVisibleCount={4}
         dataSourceNote={dataSourceNote}
+        title={isOffseason ? "Season highlights" : "Dataset findings"}
+        league="NBA"
       />
 
       <MethodologyAccordion>

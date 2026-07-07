@@ -15,10 +15,7 @@ import {
   getRefStats,
   ouLeanSortWeight,
 } from "@/lib/nhl/data";
-import {
-  buildOffseasonEdgeSummary,
-  buildTonightEdgeSummary,
-} from "@/lib/edge-summary";
+import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/nhl/findings";
 import { resolveSlateGames } from "@/lib/grudge-match";
 import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/nhl/home-bias";
@@ -99,16 +96,16 @@ export default function NhlHomePage() {
   const dataSourceNote =
     refStats.meta.source === "seeded" ? seededDataNote() : undefined;
 
-  const edgeItems = isOffseason
-    ? buildOffseasonEdgeSummary(findings, 5)
-    : buildTonightEdgeSummary({
+  const edgeItems = !isOffseason
+    ? buildTonightEdgeSummary({
         sport: "nhl",
         alertPremiums,
         allPremiums: premiums,
         homeBiasSignals,
         ppPremiums,
         otSignals,
-      });
+      })
+    : [];
 
   return (
     <div className="page-shell">
@@ -139,14 +136,7 @@ export default function NhlHomePage() {
       </section>
 
       {isOffseason ? (
-        <div className="content-stack-offseason">
-          <OffseasonSlateNotice league="NHL" />
-          <TonightEdgeSummary
-            items={edgeItems}
-            title="Season highlights"
-            emptyMessage="Browse findings below for the biggest historical patterns in our dataset."
-          />
-        </div>
+        <OffseasonSlateNotice league="NHL" />
       ) : (
         <>
           <SlateShareBar
@@ -191,6 +181,8 @@ export default function NhlHomePage() {
         featured
         initialVisibleCount={4}
         dataSourceNote={dataSourceNote}
+        title={isOffseason ? "Season highlights" : "Dataset findings"}
+        league="NHL"
       />
 
       <MethodologyAccordion>
