@@ -4,7 +4,7 @@ import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { formatRefStatsRange, getRefStats, getTeamSplits } from "@/lib/data";
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes } from "@/lib/ref-team-matrix";
-import { formatPct } from "@/lib/stats-utils";
+import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { absoluteUrl } from "@/lib/site";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";
 
@@ -100,10 +100,10 @@ export default function NbaMatrixPage() {
                   >
                     {item.teamLabel}
                   </Link>
-                  : {item.wins}-{item.losses} ({formatPct(item.winRate)}) in{" "}
-                  {item.games} games, {Math.abs(item.deltaPts).toFixed(1)} pts{" "}
-                  {item.kind === "high" ? "above" : "below"} team baseline (
-                  {formatPct(item.baselineWinRate)}).
+                  : ref×team {item.wins}-{item.losses} ({formatPct(item.winRate)}) in{" "}
+                  {item.games} games, {formatSigned(item.deltaPts)} vs team sample
+                  baseline {item.baselineWins}-{item.baselineLosses} (
+                  {formatPct(item.baselineWinRate)} across {item.baselineGames} gp).
                 </p>
               </li>
             ))}
