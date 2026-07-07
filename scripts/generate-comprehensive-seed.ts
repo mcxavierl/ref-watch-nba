@@ -5,6 +5,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { buildCrewPool, pickCrewFromPool } from "./lib/crew-pool";
 import { crewKey, refSlug } from "./lib/slug";
 import {
   collectRefTeamStats,
@@ -141,15 +142,7 @@ function mulberry32(seed: number): () => number {
   };
 }
 
-function pickCrew(rng: () => number): { name: string; number: number }[] {
-  const pool = [...REF_ROSTER];
-  const crew: { name: string; number: number }[] = [];
-  for (let i = 0; i < 3; i++) {
-    const idx = Math.floor(rng() * pool.length);
-    crew.push(pool.splice(idx, 1)[0]);
-  }
-  return crew;
-}
+const CREW_POOL_SIZE = 32;
 
 function seasonStartDate(season: string): Date {
   const startYear = Number.parseInt(season.slice(0, 4), 10);
@@ -254,6 +247,7 @@ function teamGameRow(box: SimBox, teamAbbr: string): TeamGameRow | null {
 
 function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
   const rng = mulberry32(42);
+  const crewPool = buildCrewPool(rng, REF_ROSTER, 3, CREW_POOL_SIZE);
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number }>();
   const refBetting = new Map<string, RefBettingAccumulator>();
@@ -294,7 +288,7 @@ function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
     const gamesInSeason = schedule.length;
 
     for (const [homeTeam, awayTeam] of schedule) {
-      const officials = pickCrew(rng);
+      const officials = pickCrewFromPool(rng, crewPool);
       const lines = generateClosingLines(rng);
       const { homeScore, awayScore } = scoresFromLines(lines, rng);
       const homeFouls = 16 + Math.floor(rng() * 10);

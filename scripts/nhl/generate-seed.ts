@@ -4,6 +4,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { buildNhlCrewPool, pickCrewFromPool } from "../lib/crew-pool";
 import { crewKey, refSlug } from "../lib/slug";
 import {
   collectRefTeamStats,
@@ -221,26 +222,7 @@ function mulberry32(seed: number): () => number {
   };
 }
 
-function pickCrew(
-  rng: () => number,
-): { name: string; number: number; role: "referee" | "linesman" }[] {
-  const refs = OFFICIAL_ROSTER.filter((o) => o.role === "referee");
-  const lines = OFFICIAL_ROSTER.filter((o) => o.role === "linesman");
-  const refPool = [...refs];
-  const linePool = [...lines];
-  const crew: { name: string; number: number; role: "referee" | "linesman" }[] =
-    [];
-
-  for (let i = 0; i < 2; i++) {
-    const idx = Math.floor(rng() * refPool.length);
-    crew.push(refPool.splice(idx, 1)[0]);
-  }
-  for (let i = 0; i < 2; i++) {
-    const idx = Math.floor(rng() * linePool.length);
-    crew.push(linePool.splice(idx, 1)[0]);
-  }
-  return crew;
-}
+const CREW_POOL_SIZE = 28;
 
 function generateNhlLines(rng: () => number): { homeSpread: number; total: number } {
   const total = 5 + Math.floor(rng() * 4) + 0.5;
@@ -373,6 +355,7 @@ function teamGameRow(box: SimBox, teamAbbr: string): TeamGameRow | null {
 
 function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
   const rng = mulberry32(77);
+  const crewPool = buildNhlCrewPool(rng, OFFICIAL_ROSTER, CREW_POOL_SIZE);
   const refGames = new Map<string, RefGameRecord[]>();
   const refMinorGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<
@@ -424,7 +407,7 @@ function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
     const gamesInSeason = schedule.length;
 
     for (const [homeTeam, awayTeam] of schedule) {
-      const officials = pickCrew(rng);
+      const officials = pickCrewFromPool(rng, crewPool);
       const lines = generateNhlLines(rng);
       const { homeScore, awayScore } = generateNhlScores(lines, rng);
       const homePim = 4 + Math.floor(rng() * 8);

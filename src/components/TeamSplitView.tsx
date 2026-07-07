@@ -14,6 +14,13 @@ import { MetricBlock, MetricGrid } from "@/components/MetricBlock";
 import { TermHelp } from "@/components/TermHelp";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
 import {
+  filterTeamCrewSplits,
+  sortTeamCrewSplits,
+  TEAM_CREW_MIN_GAMES,
+  TEAM_CREW_SORT_OPTIONS,
+  type TeamCrewSort,
+} from "@/lib/teamCrewSplits";
+import {
   formatPct,
   formatSigned,
   formatWinRateVsTeam,
@@ -29,6 +36,40 @@ import type { TeamSampleRecord } from "@/lib/teamRecord";
 import type { RefProfile, TeamCrewSplit } from "@/lib/types";
 
 type SplitView = "crew" | "ref";
+
+function TeamCrewSortBar({
+  value,
+  onChange,
+  id,
+}: {
+  value: TeamCrewSort;
+  onChange: (sort: TeamCrewSort) => void;
+  id?: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <label
+        htmlFor={id ?? "team-crew-sort"}
+        className="text-sm font-medium text-zinc-600"
+      >
+        Sort by
+      </label>
+      <select
+        id={id ?? "team-crew-sort"}
+        value={value}
+        onChange={(e) => onChange(e.target.value as TeamCrewSort)}
+        className="rounded-md border border-border bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm"
+      >
+        {TEAM_CREW_SORT_OPTIONS.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 
 function RefLinkChip({
   name,
@@ -253,6 +294,18 @@ export function TeamSplitView({
 }) {
   const [view, setView] = useState<SplitView>("crew");
   const [refSort, setRefSort] = useState<TeamRefSort>("winRate-desc");
+  const [crewSort, setCrewSort] = useState<TeamCrewSort>("games-desc");
+  const [showAllCrews, setShowAllCrews] = useState(false);
+
+  const { visible: visibleCrewSplits, hiddenCount: hiddenCrewCount } = useMemo(
+    () => filterTeamCrewSplits(crewSplits, TEAM_CREW_MIN_GAMES, showAllCrews),
+    [crewSplits, showAllCrews],
+  );
+
+  const sortedCrewSplits = useMemo(
+    () => sortTeamCrewSplits(visibleCrewSplits, crewSort),
+    [visibleCrewSplits, crewSort],
+  );
 
   const sortedRefSplits = useMemo(
     () => sortTeamRefEntries(refSplits, refSort),
@@ -300,21 +353,59 @@ export function TeamSplitView({
             No crew history for {teamLabel} yet.
           </p>
         ) : (
-          <div className="space-y-4">
-            {crewSplits.map((split) => (
-              <TeamSplitCard
-                key={split.crewKey}
-                split={split}
-                leagueAvgFouls={leagueAvgFouls}
-                overBaseline={overBaseline}
-                refs={refs}
-                teamAbbr={teamAbbr}
-                teamLabel={teamLabel}
-                teamRecord={teamRecord}
-                basePath={basePath}
+          <>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <TeamCrewSortBar
+                value={crewSort}
+                onChange={setCrewSort}
+                id="team-crew-cards-sort"
               />
-            ))}
-          </div>
+              {hiddenCrewCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowAllCrews((v) => !v)}
+                  className="text-sm font-medium text-zinc-600 underline-offset-2 hover:text-zinc-900 hover:underline"
+                >
+                  {showAllCrews
+                    ? `Hide crews under ${TEAM_CREW_MIN_GAMES} games`
+                    : `Show ${hiddenCrewCount} more crews under ${TEAM_CREW_MIN_GAMES} games`}
+                </button>
+              )}
+            </div>
+            {sortedCrewSplits.length === 0 ? (
+              <p className="text-sm text-zinc-600">
+                No crews with {TEAM_CREW_MIN_GAMES}+ games for {teamLabel} yet.
+                {hiddenCrewCount > 0 && (
+                  <>
+                    {" "}
+                    <button
+                      type="button"
+                      onClick={() => setShowAllCrews(true)}
+                      className="font-medium text-zinc-800 underline-offset-2 hover:underline"
+                    >
+                      Show all {crewSplits.length} crews
+                    </button>
+                  </>
+                )}
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {sortedCrewSplits.map((split) => (
+                  <TeamSplitCard
+                    key={split.crewKey}
+                    split={split}
+                    leagueAvgFouls={leagueAvgFouls}
+                    overBaseline={overBaseline}
+                    refs={refs}
+                    teamAbbr={teamAbbr}
+                    teamLabel={teamLabel}
+                    teamRecord={teamRecord}
+                    basePath={basePath}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )
       ) : refSplits.length === 0 ? (
         <p className="text-sm text-zinc-600">

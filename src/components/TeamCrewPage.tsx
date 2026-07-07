@@ -11,6 +11,7 @@ import {
   getTeamRefSplits,
   TEAM_REF_MIN_GAMES,
 } from "@/lib/teamRefLeaderboards";
+import { TEAM_CREW_MIN_GAMES } from "@/lib/teamCrewSplits";
 import { getTeamSampleRecord } from "@/lib/teamRecord";
 import { userFacingDataNote } from "@/lib/user-language";
 import { computeTeamCloseGameMetrics } from "@/lib/close-game";
@@ -140,7 +141,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           <li>
             <span className="font-medium text-zinc-800">Ref crews</span> — stats
             when the same {crewSize} officials worked together on {teamLabel}{" "}
-            games.
+            games ({TEAM_CREW_MIN_GAMES}+ games shown by default).
           </li>
           <li>
             <span className="font-medium text-zinc-800">Individual refs</span> —
