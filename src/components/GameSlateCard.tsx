@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { CrewMetrics } from "@/lib/data";
-import { formatPct, refSlug } from "@/lib/data";
+import { detectTrackedTeams, formatPct, refSlug } from "@/lib/data";
 import { OuLeanBadge } from "./OuLeanBadge";
 import { StatCell, StatStrip } from "./StatStrip";
 
@@ -9,17 +9,21 @@ export function GameSlateCard({
   awayTeam,
   homeTeam,
   metrics,
+  featured = false,
 }: {
   matchup: string;
   awayTeam: string;
   homeTeam: string;
   metrics: CrewMetrics;
+  featured?: boolean;
 }) {
-  const isRaptors =
-    awayTeam.toLowerCase().includes("toronto") ||
-    homeTeam.toLowerCase().includes("toronto") ||
-    awayTeam === "TOR" ||
-    homeTeam === "TOR";
+  const trackedTeams = detectTrackedTeams(awayTeam, homeTeam);
+  const cardRing =
+    trackedTeams.length === 1
+      ? trackedTeams[0].cardRing
+      : trackedTeams.length > 1
+        ? "ring-zinc-400/40"
+        : "";
 
   const totalDelta =
     metrics.totalPointsDelta >= 0
@@ -31,19 +35,33 @@ export function GameSlateCard({
       : String(metrics.foulsDelta);
 
   return (
-    <article className="data-card">
+    <article
+      className={`data-card ${featured || trackedTeams.length > 0 ? `ring-2 ${cardRing}` : ""}`}
+    >
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border bg-surface-raised/60 px-4 py-3">
         <div>
-          <h2 className="text-base font-semibold tracking-tight text-zinc-900">
-            {matchup}
-          </h2>
-          {isRaptors && (
-            <Link
-              href="/raptors"
-              className="mt-1 inline-block text-[11px] font-medium text-raptors hover:underline"
-            >
-              Raptors crew splits →
-            </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-base font-semibold tracking-tight text-zinc-900">
+              {matchup}
+            </h2>
+            {featured && (
+              <span className="rounded-md border border-border bg-white px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-600">
+                Tracked team
+              </span>
+            )}
+          </div>
+          {trackedTeams.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
+              {trackedTeams.map((team) => (
+                <Link
+                  key={team.key}
+                  href={team.href}
+                  className={`text-[11px] font-medium ${team.linkClass} hover:underline`}
+                >
+                  {team.label} crew splits →
+                </Link>
+              ))}
+            </div>
           )}
         </div>
         <OuLeanBadge lean={metrics.ouLean} />

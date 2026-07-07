@@ -1,10 +1,13 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type {
+  AssignmentGame,
   AssignmentsFile,
+  OuLean,
   RefOfficial,
   RefProfile,
   RefStatsFile,
+  TeamCrewSplit,
 } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data");
@@ -183,4 +186,87 @@ export function formatDate(iso: string): string {
     dateStyle: "medium",
     timeStyle: "short",
   });
+}
+
+export type TrackedTeamKey = "raptors" | "lakers";
+
+export interface TrackedTeamInfo {
+  key: TrackedTeamKey;
+  abbr: string;
+  label: string;
+  href: string;
+  linkClass: string;
+  cardRing: string;
+}
+
+const TRACKED_TEAMS: Record<
+  TrackedTeamKey,
+  Omit<TrackedTeamInfo, "key"> & { match: (team: string) => boolean }
+> = {
+  raptors: {
+    abbr: "TOR",
+    label: "Raptors",
+    href: "/raptors",
+    linkClass: "text-raptors",
+    cardRing: "ring-raptors/30",
+    match: (team) =>
+      team.toLowerCase().includes("toronto") || team === "TOR",
+  },
+  lakers: {
+    abbr: "LAL",
+    label: "Lakers",
+    href: "/lakers",
+    linkClass: "text-lakers",
+    cardRing: "ring-lakers/30",
+    match: (team) =>
+      team.toLowerCase().includes("laker") || team === "LAL",
+  },
+};
+
+export function detectTrackedTeams(
+  awayTeam: string,
+  homeTeam: string,
+): TrackedTeamInfo[] {
+  const teams: TrackedTeamInfo[] = [];
+  for (const [key, config] of Object.entries(TRACKED_TEAMS) as [
+    TrackedTeamKey,
+    (typeof TRACKED_TEAMS)[TrackedTeamKey],
+  ][]) {
+    if (config.match(awayTeam) || config.match(homeTeam)) {
+      teams.push({
+        key,
+        abbr: config.abbr,
+        label: config.label,
+        href: config.href,
+        linkClass: config.linkClass,
+        cardRing: config.cardRing,
+      });
+    }
+  }
+  return teams;
+}
+
+export function gameInvolvesTrackedTeam(game: AssignmentGame): boolean {
+  return detectTrackedTeams(game.awayTeam, game.homeTeam).length > 0;
+}
+
+export function ouLeanSortWeight(lean: OuLean): number {
+  if (lean === "over") return 2;
+  if (lean === "under") return 1;
+  return 0;
+}
+
+export function sortSplitsByGames<T extends TeamCrewSplit>(splits: T[]): T[] {
+  return [...splits].sort((a, b) => b.games - a.games);
+}
+
+export function computeOuLean(
+  overRate: number,
+  avgTotal: number,
+  leagueAvg: number,
+): OuLean {
+  const delta = avgTotal - leagueAvg;
+  if (overRate >= 0.56 || delta >= 3) return "over";
+  if (overRate <= 0.44 || delta <= -3) return "under";
+  return "neutral";
 }

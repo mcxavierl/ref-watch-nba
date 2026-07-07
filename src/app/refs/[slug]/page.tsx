@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import { OuLeanBadge } from "@/components/OuLeanBadge";
@@ -13,6 +14,22 @@ import type { OuLean } from "@/lib/types";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const profile = getRefBySlug(slug);
+  if (!profile) {
+    return { title: "Ref not found — Ref Watch NBA" };
+  }
+  return {
+    title: `${profile.name} (#${profile.number}) — Ref Watch NBA`,
+    description: `${profile.name} referee profile: ${profile.games} games, ${(profile.overRate * 100).toFixed(1)}% over rate, ${profile.avgTotalPoints} avg total points.`,
+  };
 }
 
 function refLean(overRate: number, delta: number): OuLean {
@@ -33,6 +50,7 @@ export default async function RefProfilePage({
   const stats = getRefStats();
   const lean = refLean(profile.overRate, profile.totalPointsDelta);
   const qualified = profile.games >= stats.meta.minSampleSize;
+  const statsSeeded = stats.meta.source === "seeded";
 
   return (
     <div className="page-shell">
@@ -60,10 +78,16 @@ export default async function RefProfilePage({
           </p>
         )}
         <p className="page-meta">
-          <span className="page-meta-live">
-            <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden />
-            Updated {formatDate(stats.meta.lastUpdated)}
+          <span
+            className={statsSeeded ? "page-meta-seeded" : "page-meta-live"}
+          >
+            <span
+              className={`size-1.5 rounded-full ${statsSeeded ? "bg-amber-500" : "bg-emerald-500"}`}
+              aria-hidden
+            />
+            {statsSeeded ? "Seeded stats" : "Live stats"}
           </span>
+          <span>Updated {formatDate(stats.meta.lastUpdated)}</span>
           <span>{stats.meta.seasons.join(", ")}</span>
           <span>{stats.meta.source}</span>
         </p>

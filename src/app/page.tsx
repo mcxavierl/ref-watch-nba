@@ -1,14 +1,53 @@
+import type { Metadata } from "next";
+import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import {
   computeCrewMetrics,
-  formatDate,
+  gameInvolvesTrackedTeam,
   getAssignments,
   getRefStats,
+  ouLeanSortWeight,
 } from "@/lib/data";
+import type { AssignmentGame } from "@/lib/types";
+
+export const metadata: Metadata = {
+  title: "Tonight's NBA slate — Ref Watch",
+  description:
+    "Tonight's NBA referee crews with composite O/U lean, foul pace, and quick links to Raptors and Lakers crew splits.",
+};
+
+function sortSlateGames(
+  games: AssignmentGame[],
+  refStats: ReturnType<typeof getRefStats>,
+) {
+  return [...games].sort((a, b) => {
+    const aFeatured = gameInvolvesTrackedTeam(a);
+    const bFeatured = gameInvolvesTrackedTeam(b);
+    if (aFeatured !== bFeatured) return aFeatured ? -1 : 1;
+
+    const aMetrics = computeCrewMetrics(a.crew, refStats);
+    const bMetrics = computeCrewMetrics(b.crew, refStats);
+    const leanDiff =
+      ouLeanSortWeight(bMetrics.ouLean) - ouLeanSortWeight(aMetrics.ouLean);
+    if (leanDiff !== 0) return leanDiff;
+
+    return a.matchup.localeCompare(b.matchup);
+  });
+}
 
 export default function HomePage() {
   const assignments = getAssignments();
   const refStats = getRefStats();
+  const sortedGames = sortSlateGames(assignments.games, refStats);
+  const featuredGames = sortedGames.filter(gameInvolvesTrackedTeam);
+  const otherGames = sortedGames.filter((g) => !gameInvolvesTrackedTeam(g));
+  const hotCrews = sortedGames
+    .map((game) => ({
+      game,
+      metrics: computeCrewMetrics(game.crew, refStats),
+    }))
+    .filter(({ metrics }) => metrics.ouLean !== "neutral")
+    .slice(0, 3);
 
   return (
     <div className="page-shell">
@@ -22,19 +61,7 @@ export default function HomePage() {
           {refStats.meta.leagueOverBaseline} fixed baseline when closing lines
           are unavailable.
         </p>
-        <p className="page-meta">
-          <span className="page-meta-live">
-            <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden />
-            Live data
-          </span>
-          <span>
-            Assignments {formatDate(assignments.lastUpdated)} · Stats{" "}
-            {formatDate(refStats.meta.lastUpdated)}
-          </span>
-          <span className="text-zinc-500">
-            {assignments.source} / {refStats.meta.source}
-          </span>
-        </p>
+        <DataFreshnessMeta assignments={assignments} refStats={refStats} />
       </section>
 
       {assignments.games.length === 0 ? (
@@ -50,24 +77,85 @@ export default function HomePage() {
             </code>{" "}
             before tip-off nights to refresh.
           </p>
-          <p className="mt-5 text-sm">
+          <p className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm">
             <a href="/raptors" className="font-medium text-raptors hover:underline">
-              Browse Raptors crew splits →
+              Raptors crew splits →
+            </a>
+            <a href="/lakers" className="font-medium text-lakers hover:underline">
+              Lakers crew splits →
             </a>
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {assignments.games.map((game) => (
-            <GameSlateCard
-              key={game.id}
-              matchup={game.matchup}
-              awayTeam={game.awayTeam}
-              homeTeam={game.homeTeam}
-              metrics={computeCrewMetrics(game.crew, refStats)}
-            />
-          ))}
-        </div>
+        <>
+          {hotCrews.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-sm font-semibold text-zinc-700">
+                Hot crews tonight
+              </h2>
+              <p className="mt-1 text-xs text-zinc-500">
+                Games with a non-neutral O/U lean from crew history, strongest
+                first.
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {hotCrews.map(({ game, metrics }) => (
+                  <li
+                    key={game.id}
+                    className="rounded-md border border-border bg-surface-raised px-3 py-2 text-xs"
+                  >
+                    <span className="font-medium text-zinc-800">
+                      {game.matchup}
+                    </span>
+                    <span className="ml-2 font-mono tabular-nums text-zinc-600">
+                      {metrics.ouLean === "over" ? "Over lean" : "Under lean"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {featuredGames.length > 0 && (
+            <section className="mb-8">
+              <h2 className="mb-3 text-sm font-semibold text-zinc-700">
+                Raptors & Lakers tonight
+              </h2>
+              <div className="space-y-3">
+                {featuredGames.map((game) => (
+                  <GameSlateCard
+                    key={game.id}
+                    matchup={game.matchup}
+                    awayTeam={game.awayTeam}
+                    homeTeam={game.homeTeam}
+                    metrics={computeCrewMetrics(game.crew, refStats)}
+                    featured
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {otherGames.length > 0 && (
+            <section>
+              {featuredGames.length > 0 && (
+                <h2 className="mb-3 text-sm font-semibold text-zinc-700">
+                  Rest of slate
+                </h2>
+              )}
+              <div className="space-y-3">
+                {otherGames.map((game) => (
+                  <GameSlateCard
+                    key={game.id}
+                    matchup={game.matchup}
+                    awayTeam={game.awayTeam}
+                    homeTeam={game.homeTeam}
+                    metrics={computeCrewMetrics(game.crew, refStats)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+        </>
       )}
 
       <details className="methodology-details panel-inset mt-10 px-5 py-4">

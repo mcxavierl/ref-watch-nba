@@ -54,6 +54,10 @@ body {
     @apply inline-flex items-center gap-1.5 font-medium text-emerald-700;
   }
 
+  .page-meta-seeded {
+    @apply inline-flex items-center gap-1.5 font-medium text-amber-800;
+  }
+
   .panel {
     @apply rounded-lg border border-border bg-surface shadow-sm;
   }
@@ -67,7 +71,7 @@ body {
   }
 
   .stat-row {
-    @apply flex flex-wrap divide-x divide-border;
+    @apply grid grid-cols-2 divide-x divide-y divide-border sm:flex sm:flex-wrap sm:divide-y-0;
   }
 
   .stat-row + .stat-row {
