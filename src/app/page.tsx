@@ -136,9 +136,7 @@ export default function HomePage() {
 
       {isOffseason ? (
         <>
-          <div className="mb-10">
-            <OffseasonSlateNotice league="NBA" browseHref="/teams" />
-          </div>
+          <OffseasonSlateNotice league="NBA" browseHref="/teams" />
           <TonightEdgeSummary
             items={edgeItems}
             title="Season highlights"

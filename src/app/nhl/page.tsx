@@ -139,9 +139,7 @@ export default function NhlHomePage() {
 
       {isOffseason ? (
         <>
-          <div className="mb-10">
-            <OffseasonSlateNotice league="NHL" browseHref="/nhl/teams" />
-          </div>
+          <OffseasonSlateNotice league="NHL" browseHref="/nhl/teams" />
           <TonightEdgeSummary
             items={edgeItems}
             title="Season highlights"

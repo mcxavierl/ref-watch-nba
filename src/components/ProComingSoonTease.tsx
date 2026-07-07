@@ -3,10 +3,28 @@ import { proWaitlistMailto } from "@/lib/notify";
 export function ProComingSoonTease({
   league,
   compact = false,
+  callout = false,
 }: {
   league?: "NBA" | "NHL";
   compact?: boolean;
+  callout?: boolean;
 }) {
+  if (callout) {
+    return (
+      <div className="pro-tease-callout">
+        <div className="pro-tease-callout-inner">
+          <p className="pro-tease-callout-title">Ref Watch Pro — coming soon</p>
+          <p className="pro-tease-callout-copy">
+            Automated slate alerts, line-move tracking, and deeper crew reunion stats.
+          </p>
+          <a href={proWaitlistMailto(league)} className="btn-secondary pro-tease-callout-btn">
+            Join the waitlist — free
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   if (compact) {
     return (
       <p className="text-sm leading-relaxed text-zinc-600">

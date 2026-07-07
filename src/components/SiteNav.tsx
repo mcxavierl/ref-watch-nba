@@ -63,8 +63,9 @@ export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
   const homeHref = isNhl ? "/nhl" : "/";
 
   return (
-    <div id={id} className="site-nav-shell" data-league={isNhl ? "nhl" : "nba"}>
-      <nav className="site-nav-rail" aria-label="Site sections">
+    <div className="site-subnav">
+      <div id={id} className="site-nav-shell" data-league={isNhl ? "nhl" : "nba"}>
+        <nav className="site-nav-rail" aria-label="Site sections">
         {links.map((link) => {
           const active =
             link.href === homeHref
@@ -85,7 +86,8 @@ export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
             </Link>
           );
         })}
-      </nav>
+        </nav>
+      </div>
     </div>
   );
 }
