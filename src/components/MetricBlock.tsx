@@ -13,7 +13,7 @@ export function MetricBlock({
   badgeTone = "neutral",
   provenance,
 }: {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   iconClassName?: string;
   label: ReactNode;
   value: string;
@@ -23,16 +23,18 @@ export function MetricBlock({
   provenance?: MetricProvenance;
 }) {
   const badgeColors = {
-    positive: "bg-emerald-100 text-emerald-800",
-    negative: "bg-rose-100 text-rose-800",
+    positive: "bg-zinc-100 text-zinc-700",
+    negative: "bg-zinc-100 text-zinc-700",
     neutral: "bg-zinc-100 text-zinc-700",
-    warning: "bg-amber-100 text-amber-900",
+    warning: "bg-amber-50 text-amber-900",
   };
 
   return (
     <div className="flex flex-col gap-2 bg-white px-4 py-4 sm:px-5">
       <div className="flex items-center gap-2">
-        <Icon className={`size-4 shrink-0 ${iconClassName}`} aria-hidden />
+        {Icon && (
+          <Icon className={`size-4 shrink-0 ${iconClassName}`} aria-hidden />
+        )}
         <span className="text-sm font-medium text-zinc-600">{label}</span>
         <ProvenanceMarker provenance={provenance} compact />
       </div>

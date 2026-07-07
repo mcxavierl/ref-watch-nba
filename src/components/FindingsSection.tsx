@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { StatCell, StatStrip } from "@/components/StatStrip";
-import type { Finding } from "@/lib/findings";
+import type { Finding } from "@/lib/findings-shared";
+import { FINDING_CATEGORY_LABELS } from "@/lib/findings-shared";
 
 function FindingCard({ finding, index }: { finding: Finding; index: number }) {
   return (
     <article className="data-card">
       <div className="border-b border-border bg-surface-raised/60 px-4 py-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-          Finding {index + 1}
+          {FINDING_CATEGORY_LABELS[finding.category]} · Finding {index + 1}
         </p>
         <h3 className="mt-1 text-base font-semibold leading-snug text-zinc-900">
           {finding.headline}
@@ -61,27 +62,60 @@ function FindingCard({ finding, index }: { finding: Finding; index: number }) {
 export function FindingsSection({
   findings,
   compact = false,
+  featured = false,
+  initialVisibleCount = 4,
+  dataSourceNote,
 }: {
   findings: Finding[];
   compact?: boolean;
+  featured?: boolean;
+  initialVisibleCount?: number;
+  dataSourceNote?: string;
 }) {
   if (findings.length === 0) return null;
 
+  const visible = featured
+    ? findings.slice(0, initialVisibleCount)
+    : findings;
+  const hidden = featured ? findings.slice(initialVisibleCount) : [];
+
   return (
-    <section className={compact ? "" : "mb-10"}>
-      {!compact && (
+    <section id="dataset-findings" className={compact && !featured ? "" : "mb-10 scroll-mt-24"}>
+      {(featured || !compact) && (
         <>
-          <h2 className="text-base font-semibold text-zinc-800">Data findings</h2>
+          <h2 className="text-base font-bold text-zinc-900">
+            Dataset findings
+          </h2>
           <p className="mt-2 text-sm text-zinc-600">
-            Patterns across the full dataset — not tied to tonight&apos;s slate.
+            Top patterns ranked by effect size and sample size — not tied to
+            tonight&apos;s slate.
           </p>
+          {dataSourceNote && (
+            <p className="mt-2 text-xs text-zinc-500">{dataSourceNote}</p>
+          )}
         </>
       )}
-      <div className={`space-y-3 ${compact ? "" : "mt-4"}`}>
-        {findings.map((finding, index) => (
+      <div className={`space-y-3 ${compact && !featured ? "" : "mt-4"}`}>
+        {visible.map((finding, index) => (
           <FindingCard key={finding.id} finding={finding} index={index} />
         ))}
       </div>
+      {hidden.length > 0 && (
+        <details className="panel-inset mt-4 px-4 py-3 sm:px-5">
+          <summary className="cursor-pointer text-sm font-semibold text-zinc-800">
+            {hidden.length} more finding{hidden.length === 1 ? "" : "s"}
+          </summary>
+          <div className="mt-4 space-y-3">
+            {hidden.map((finding, index) => (
+              <FindingCard
+                key={finding.id}
+                finding={finding}
+                index={visible.length + index}
+              />
+            ))}
+          </div>
+        </details>
+      )}
     </section>
   );
 }

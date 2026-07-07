@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LeagueMarkNBA } from "@/components/icons/LeagueMarkNBA";
+import { LeagueMarkNHL } from "@/components/icons/LeagueMarkNHL";
 
 const NBA_LINKS = [
   { href: "/", label: "Tonight" },
@@ -22,45 +24,54 @@ export function SiteNav() {
   const homeHref = isNhl ? "/nhl" : "/";
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex rounded-lg border border-border bg-zinc-50 p-0.5 text-xs font-medium">
+    <div className="site-nav-wrap">
+      <div
+        className="league-toggle shrink-0"
+        role="group"
+        aria-label="Select league"
+      >
         <Link
           href="/"
-          className={`rounded-md px-2.5 py-1 transition ${
+          aria-label="NBA"
+          aria-current={!isNhl ? "page" : undefined}
+          className={`league-toggle-segment ${
             !isNhl
-              ? "bg-white text-zinc-900 shadow-sm"
-              : "text-zinc-600 hover:text-zinc-900"
+              ? "league-toggle-segment-active"
+              : "league-toggle-segment-inactive"
           }`}
         >
+          <LeagueMarkNBA className="size-3.5 shrink-0" />
           NBA
         </Link>
         <Link
           href="/nhl"
-          className={`rounded-md px-2.5 py-1 transition ${
+          aria-label="NHL"
+          aria-current={isNhl ? "page" : undefined}
+          className={`league-toggle-segment ${
             isNhl
-              ? "bg-white text-zinc-900 shadow-sm"
-              : "text-zinc-600 hover:text-zinc-900"
+              ? "league-toggle-segment-active"
+              : "league-toggle-segment-inactive"
           }`}
         >
+          <LeagueMarkNHL className="size-3.5 shrink-0" />
           NHL
         </Link>
       </div>
-      <nav className="flex gap-0.5">
+      <nav className="site-nav" aria-label="Site sections">
         {links.map((link) => {
           const active =
             link.href === homeHref
               ? pathname === homeHref
               : pathname.startsWith(link.href);
+          const isSecondary = link.href !== homeHref;
           return (
             <Link
               key={link.href}
               href={link.href}
               aria-current={active ? "page" : undefined}
-              className={`rounded-md px-3.5 py-2 text-sm transition ${
-                active
-                  ? "bg-zinc-900 font-medium text-white"
-                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
-              }`}
+              className={`site-nav-link ${
+                active ? "site-nav-link-active" : "site-nav-link-inactive"
+              } ${isSecondary ? "site-nav-link-secondary" : ""}`}
             >
               {link.label}
             </Link>

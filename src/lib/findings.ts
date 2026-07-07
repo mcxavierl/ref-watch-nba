@@ -1,28 +1,19 @@
 import { formatPct, getRefStats } from "@/lib/data";
+import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName } from "@/lib/teams";
-import type { RefProfile, RefStatsFile } from "@/lib/types";
+import type {
+  Finding,
+  ScoredFindingBase,
+} from "@/lib/findings-shared";
+import {
+  dedupeFindingsByCategory,
+  FINDING_CATEGORY_LABELS,
+  rankScore,
+} from "@/lib/findings-shared";
+import type { RefProfile, RefStatsFile, TeamCrewSplit, WlpRecord } from "@/lib/types";
 
-export interface FindingLink {
-  label: string;
-  href: string;
-}
-
-export interface FindingStat {
-  label: string;
-  value: string;
-  detail?: string;
-}
-
-export interface Finding {
-  id: string;
-  headline: string;
-  summary: string;
-  /** Plain-language “why this matters” follow-up. */
-  explainer?: string;
-  stats: FindingStat[];
-  sampleNote: string;
-  links: FindingLink[];
-}
+export type { Finding, FindingCategory, FindingLink, FindingStat } from "@/lib/findings-shared";
+export { FINDING_CATEGORY_LABELS };
 
 interface RefTeamAggregate {
   team: string;
@@ -31,6 +22,27 @@ interface RefTeamAggregate {
   foulDiff: number;
   overRate: number;
   avgTotal: number;
+}
+
+const MIN_REF_GAMES = 50;
+const MIN_TEAM_GAMES = 8;
+const MIN_TEAM_CREW_GAMES = 12;
+const MIN_ATS_GAMES = 30;
+const MIN_OU_ATS_GAMES = 30;
+const MIN_WHISTLE_GAMES = 100;
+
+function wlpDecisive(record: WlpRecord): number {
+  return record.wins + record.losses;
+}
+
+function wlpWinRate(record: WlpRecord): number | null {
+  const n = wlpDecisive(record);
+  if (n === 0) return null;
+  return record.wins / n;
+}
+
+function rankScoreLocal(effectSize: number, sampleGames: number, minSample: number): number {
+  return rankScore(effectSize, sampleGames, minSample);
 }
 
 function aggregateRefTeams(
@@ -59,8 +71,7 @@ function aggregateRefTeams(
               split.foulDifferential * split.games) /
             nextGames;
           existing.overRate =
-            (existing.overRate * existing.games +
-              split.overRate * split.games) /
+            (existing.overRate * existing.games + split.overRate * split.games) /
             nextGames;
           existing.avgTotal =
             (existing.avgTotal * existing.games +
@@ -88,23 +99,24 @@ function aggregateRefTeams(
   return result;
 }
 
-function leagueUnderFinding(stats: RefStatsFile): Finding {
+function leagueUnderFinding(stats: RefStatsFile): ScoredFindingBase {
   const { refs, meta } = stats;
   const underCount = refs.filter((r) => r.overRate < 0.5).length;
   const overCount = refs.filter((r) => r.overRate > 0.5).length;
   const totalGames =
-    meta.totalGamesProcessed ??
-    refs.reduce((sum, r) => sum + r.games, 0);
+    meta.totalGamesProcessed ?? refs.reduce((sum, r) => sum + r.games, 0);
   const weightedOver =
     refs.reduce((sum, r) => sum + r.overRate * r.games, 0) /
     refs.reduce((sum, r) => sum + r.games, 0);
   const underPct = Math.round((underCount / refs.length) * 100);
+  const effectSize = 0.5 - weightedOver;
 
   return {
     id: "league-under-bias",
+    category: "league-trend",
     headline: "The league tilts under — almost every ref",
     summary: `In this dataset, ${underCount} of ${refs.length} officials (${underPct}%) call games that finish below our ${meta.leagueOverBaseline}-point benchmark more often than above. Only ${overCount} refs trend the other way.`,
-    explainer: `The league-wide over rate (${formatPct(weightedOver)}) is a games-weighted average: we count every game each ref worked, not one vote per ref. A ref with 150 games influences the number more than a ref with 20. We compare that share to 50% because, if there were no pattern, you'd expect about half of games to go over and half under — like a coin flip. At ${formatPct(weightedOver)}, unders land about five points more often than that neutral baseline. That matters because it's systemic: nearly the whole officiating staff leans the same direction in this sample, which points to era-wide pace and whistle trends rather than a few random outliers. If you're thinking about game totals, the default edge in this data is toward the under.`,
+    explainer: `The league-wide over rate (${formatPct(weightedOver)}) is games-weighted across all ref workloads. At ${formatPct(weightedOver)}, unders land more often than a neutral 50% baseline — a systemic era-wide pattern in this sample, not a handful of outliers.`,
     stats: [
       {
         label: "Refs trending under",
@@ -112,7 +124,7 @@ function leagueUnderFinding(stats: RefStatsFile): Finding {
         detail: `${underPct}% of the staff`,
       },
       {
-        label: "Games over 225 (weighted)",
+        label: "Games over benchmark (weighted)",
         value: formatPct(weightedOver),
         detail: "All ref-games combined · 50% = no lean",
       },
@@ -122,42 +134,35 @@ function leagueUnderFinding(stats: RefStatsFile): Finding {
         detail: meta.seasons.join(", "),
       },
     ],
-    sampleNote: `Based on ${refs.length} refs across ${totalGames.toLocaleString()} games`,
+    sampleNote: `Based on ${refs.length} refs across ${totalGames.toLocaleString()} games · ${meta.source} data`,
     links: [{ label: "Browse all refs", href: "/refs" }],
+    score: rankScoreLocal(effectSize, totalGames, MIN_REF_GAMES),
+    sampleGames: totalGames,
   };
 }
 
-function rareOverRefsFinding(stats: RefStatsFile): Finding {
+function rareOverRefsFinding(stats: RefStatsFile): ScoredFindingBase | null {
   const { refs, meta } = stats;
-  const minGames = 50;
   const overRefs = refs
-    .filter((r) => r.games >= minGames && r.overRate > 0.5)
+    .filter((r) => r.games >= MIN_REF_GAMES && r.overRate > 0.5)
     .sort((a, b) => b.overRate - a.overRate);
-  const qualified = refs.filter((r) => r.games >= minGames);
-
-  if (overRefs.length === 0) {
-    return {
-      id: "rare-over-refs",
-      headline: "Overs are rare in this pool",
-      summary: "No ref with a large sample trends over the benchmark.",
-      stats: [],
-      sampleNote: "Insufficient data",
-      links: [{ label: "Browse refs", href: "/refs" }],
-    };
-  }
+  const qualified = refs.filter((r) => r.games >= MIN_REF_GAMES);
+  if (overRefs.length === 0 || qualified.length === 0) return null;
 
   const names = overRefs.map((r) => r.name).join(", ");
+  const rarity = 1 - overRefs.length / qualified.length;
 
   return {
     id: "rare-over-refs",
+    category: "ref-outlier",
     headline: `Only ${overRefs.length} refs trend over — out of ${qualified.length}`,
-    summary: `Among officials with ${minGames}+ games, just ${overRefs.length} finish above the ${meta.leagueOverBaseline}-point benchmark more often than not. The rest of the qualified pool leans under.`,
-    explainer: `That's roughly ${Math.round((overRefs.length / qualified.length) * 100)}% of high-volume refs — the over side is a small club, not the default. The members: ${names}. If you're hunting overs, the data says you need a specific ref (or crew) match-up — not a league-wide assumption. Compare that to the ${qualified.length - overRefs.length} qualified refs who still trend under despite similar workloads.`,
+    summary: `Among officials with ${MIN_REF_GAMES}+ games, just ${overRefs.length} finish above the ${meta.leagueOverBaseline}-point benchmark more often than not.`,
+    explainer: `That's ${Math.round((overRefs.length / qualified.length) * 100)}% of high-volume refs. The over club: ${names}. Hunting overs means targeting specific refs, not league-wide assumptions.`,
     stats: [
       {
         label: "Over refs",
         value: `${overRefs.length}/${qualified.length}`,
-        detail: `${minGames}+ games each`,
+        detail: `${MIN_REF_GAMES}+ games each`,
       },
       {
         label: "Top over ref",
@@ -170,16 +175,17 @@ function rareOverRefsFinding(stats: RefStatsFile): Finding {
         detail: "Combined pts proxy",
       },
     ],
-    sampleNote: `${qualified.length} refs with ${minGames}+ games · ${meta.seasons.join(", ")}`,
+    sampleNote: `${qualified.length} refs with ${MIN_REF_GAMES}+ games · ${meta.seasons.join(", ")}`,
     links: overRefs.slice(0, 3).map((r) => ({
       label: r.name,
       href: `/refs/${r.slug}`,
     })),
+    score: rankScoreLocal(rarity, qualified.reduce((s, r) => s + r.games, 0), MIN_REF_GAMES),
+    sampleGames: qualified.reduce((s, r) => s + r.games, 0),
   };
 }
 
-function overRateTeamSplitFinding(stats: RefStatsFile): Finding {
-  const minTeamGames = 8;
+function overRateTeamSplitFinding(stats: RefStatsFile): ScoredFindingBase | null {
   const minSpread = 0.5;
 
   let best:
@@ -198,16 +204,12 @@ function overRateTeamSplitFinding(stats: RefStatsFile): Finding {
   for (const ref of stats.refs) {
     if (!ref.teamStats) continue;
     const teams = Object.entries(ref.teamStats).filter(
-      ([, st]) => st.games >= minTeamGames,
+      ([, st]) => st.games >= MIN_TEAM_GAMES,
     );
     if (teams.length < 3) continue;
 
-    const high = teams.reduce((a, b) =>
-      a[1].overRate > b[1].overRate ? a : b,
-    );
-    const low = teams.reduce((a, b) =>
-      a[1].overRate < b[1].overRate ? a : b,
-    );
+    const high = teams.reduce((a, b) => (a[1].overRate > b[1].overRate ? a : b));
+    const low = teams.reduce((a, b) => (a[1].overRate < b[1].overRate ? a : b));
     const spread = high[1].overRate - low[1].overRate;
 
     if (spread >= minSpread && (!best || spread > best.spread)) {
@@ -224,9 +226,7 @@ function overRateTeamSplitFinding(stats: RefStatsFile): Finding {
     }
   }
 
-  if (!best) {
-    return whistleParadoxFinding(stats);
-  }
+  if (!best) return null;
 
   const highName = getTeam(best.highTeam)
     ? teamFullName(getTeam(best.highTeam)!)
@@ -237,37 +237,39 @@ function overRateTeamSplitFinding(stats: RefStatsFile): Finding {
 
   return {
     id: "over-rate-team-split",
+    category: "ref-team-split",
     headline: `${best.ref.name}'s over rate swings by opponent`,
-    summary: `The same ref can run hot or cold on totals depending on who's playing. With ${best.ref.name}, ${formatPct(best.highOver)} of ${highName} games had combined scores above ${stats.meta.leagueOverBaseline} — ${lowName} games only ${formatPct(best.lowOver)}. This is historical scoring frequency, not sportsbook odds.`,
-    explainer: `We use ${stats.meta.leagueOverBaseline} combined points as a stand-in when real closing lines aren't available. "Over" means home score + away score beat that number; "under" means it didn't. The ${(best.spread * 100).toFixed(0)}-point gap compares those hit rates to a neutral 50/50 split — not Vegas pricing. With ${best.highGames} ${best.highTeam} games and ${best.lowGames} ${best.lowTeam} games in the sample, the same ref's games look like a track meet with one team and a grind with another.`,
+    summary: `With ${best.ref.name}, ${formatPct(best.highOver)} of ${highName} games beat ${stats.meta.leagueOverBaseline} combined points — ${lowName} games only ${formatPct(best.lowOver)}.`,
+    explainer: `The ${(best.spread * 100).toFixed(0)}-point over-rate gap is historical scoring frequency vs a neutral 50% baseline, not sportsbook pricing.`,
     stats: [
       {
         label: `${best.highTeam} over ${stats.meta.leagueOverBaseline}`,
         value: formatPct(best.highOver),
-        detail: `${best.highGames} games · not betting odds`,
+        detail: `${best.highGames} games`,
       },
       {
         label: `${best.lowTeam} over ${stats.meta.leagueOverBaseline}`,
         value: formatPct(best.lowOver),
-        detail: `${best.lowGames} games · combined pts`,
+        detail: `${best.lowGames} games`,
       },
       {
         label: "Over-rate gap",
         value: `${(best.spread * 100).toFixed(0)} pts`,
-        detail: `vs 50% neutral baseline`,
+        detail: "vs 50% neutral baseline",
       },
     ],
-    sampleNote: `Min ${minTeamGames} games per team · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: `Min ${MIN_TEAM_GAMES} games per team · ${stats.meta.seasons.join(", ")}`,
     links: [
       { label: best.ref.name, href: `/refs/${best.ref.slug}` },
       { label: highName, href: `/teams/${best.highTeam}` },
       { label: lowName, href: `/teams/${best.lowTeam}` },
     ],
+    score: rankScoreLocal(best.spread, best.highGames + best.lowGames, MIN_TEAM_GAMES * 2),
+    sampleGames: best.highGames + best.lowGames,
   };
 }
 
-function foulEdgeLosingFinding(stats: RefStatsFile): Finding {
-  const minGames = 10;
+function foulEdgeLosingFinding(stats: RefStatsFile): ScoredFindingBase | null {
   const minFoulEdge = 2.5;
   const maxWinRate = 0.35;
 
@@ -287,7 +289,7 @@ function foulEdgeLosingFinding(stats: RefStatsFile): Finding {
     if (!ref.teamStats) continue;
     for (const [team, st] of Object.entries(ref.teamStats)) {
       if (
-        st.games >= minGames &&
+        st.games >= MIN_TEAM_GAMES &&
         st.avgFoulDifferential >= minFoulEdge &&
         st.winRate <= maxWinRate &&
         (!best || st.avgFoulDifferential > best.foulDiff)
@@ -305,9 +307,7 @@ function foulEdgeLosingFinding(stats: RefStatsFile): Finding {
     }
   }
 
-  if (!best) {
-    return crossTeamWhistleFinding(stats, aggregateRefTeams(stats));
-  }
+  if (!best) return null;
 
   const teamName = getTeam(best.team)
     ? teamFullName(getTeam(best.team)!)
@@ -315,9 +315,10 @@ function foulEdgeLosingFinding(stats: RefStatsFile): Finding {
 
   return {
     id: "foul-edge-losing",
+    category: "ref-team-split",
     headline: `${best.ref.name} helps ${best.team} on fouls — but they still lose`,
-    summary: `With ${best.ref.name} on ${teamName} games, opponents are whistled ${best.foulDiff >= 0 ? "+" : ""}${best.foulDiff.toFixed(1)} more fouls per game than the ${best.team}. Yet ${teamName} win just ${formatPct(best.winRate)} of those games.`,
-    explainer: `A foul edge doesn't automatically convert to wins or overs. These games average ${best.avgTotal} combined points with a ${formatPct(best.overRate)} over rate — so the whistle tilt and the scoreboard outcome can pull in opposite directions. That's the kind of mismatch worth flagging before assuming "more opponent fouls" means a friendly night for the favorite.`,
+    summary: `With ${best.ref.name} on ${teamName} games, opponents are whistled ${best.foulDiff >= 0 ? "+" : ""}${best.foulDiff.toFixed(1)} more fouls per game. Yet ${teamName} win just ${formatPct(best.winRate)}.`,
+    explainer: `Foul edge doesn't always convert to wins or overs. These games average ${best.avgTotal} combined points (${formatPct(best.overRate)} over rate).`,
     stats: [
       {
         label: "Foul edge",
@@ -330,23 +331,22 @@ function foulEdgeLosingFinding(stats: RefStatsFile): Finding {
         detail: `${best.games} games`,
       },
       {
-        label: "Games over 225",
+        label: "Over benchmark",
         value: formatPct(best.overRate),
         detail: `Avg ${best.avgTotal} combined pts`,
       },
     ],
-    sampleNote: `${best.games} ${best.team} games · min ${minGames} game sample`,
+    sampleNote: `${best.games} ${best.team} games · min ${MIN_TEAM_GAMES} game sample`,
     links: [
       { label: best.ref.name, href: `/refs/${best.ref.slug}` },
       { label: teamName, href: `/teams/${best.team}` },
     ],
+    score: rankScoreLocal(best.foulDiff * (0.5 - best.winRate), best.games, MIN_TEAM_GAMES),
+    sampleGames: best.games,
   };
 }
 
-function scoringExtremesFinding(stats: RefStatsFile): Finding {
-  const minGames = 10;
-  const { meta } = stats;
-
+function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
   let hottest:
     | {
         ref: RefProfile;
@@ -369,7 +369,7 @@ function scoringExtremesFinding(stats: RefStatsFile): Finding {
   for (const ref of stats.refs) {
     if (!ref.teamStats) continue;
     for (const [team, st] of Object.entries(ref.teamStats)) {
-      if (st.games < minGames) continue;
+      if (st.games < MIN_TEAM_GAMES) continue;
       if (!hottest || st.avgTotalPoints > hottest.avgTotal) {
         hottest = {
           ref,
@@ -391,9 +391,7 @@ function scoringExtremesFinding(stats: RefStatsFile): Finding {
     }
   }
 
-  if (!hottest || !coldest) {
-    return whistleParadoxFinding(stats);
-  }
+  if (!hottest || !coldest) return null;
 
   const hotTeam = getTeam(hottest.team)
     ? teamFullName(getTeam(hottest.team)!)
@@ -405,9 +403,10 @@ function scoringExtremesFinding(stats: RefStatsFile): Finding {
 
   return {
     id: "scoring-extremes",
-    headline: `${gap.toFixed(1)}-point spread between the hottest and coldest ref–team pairs`,
-    summary: `The highest-scoring combo is ${hottest.ref.name} on ${hotTeam} games (${hottest.avgTotal} avg, ${formatPct(hottest.overRate)} over). The lowest is ${coldest.ref.name} on ${coldTeam} games (${coldest.avgTotal} avg, ${formatPct(coldest.overRate)} over).`,
-    explainer: `League average combined score is about ${meta.leagueAvgTotal}. The hot pair runs ${(hottest.avgTotal - meta.leagueAvgTotal).toFixed(1)} above that; the cold pair ${(coldest.avgTotal - meta.leagueAvgTotal).toFixed(1)} below — a ${gap.toFixed(1)}-point canyon between ref–team environments in the same dataset. Totals aren't a single league temperature; who's reffing and who's playing moves the needle dramatically.`,
+    category: "scoring-extreme",
+    headline: `${gap.toFixed(1)}-point spread between hottest and coldest ref–team pairs`,
+    summary: `Highest: ${hottest.ref.name} on ${hotTeam} (${hottest.avgTotal} avg). Lowest: ${coldest.ref.name} on ${coldTeam} (${coldest.avgTotal} avg).`,
+    explainer: `League average is ${stats.meta.leagueAvgTotal}. The hot pair runs ${(hottest.avgTotal - stats.meta.leagueAvgTotal).toFixed(1)} above; the cold pair ${(coldest.avgTotal - stats.meta.leagueAvgTotal).toFixed(1)} below.`,
     stats: [
       {
         label: "Hottest avg",
@@ -422,24 +421,25 @@ function scoringExtremesFinding(stats: RefStatsFile): Finding {
       {
         label: "Gap",
         value: gap.toFixed(1),
-        detail: `vs ${meta.leagueAvgTotal} league avg`,
+        detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
       },
     ],
-    sampleNote: `Min ${minGames} games per ref–team pair · ${meta.seasons.join(", ")}`,
+    sampleNote: `Min ${MIN_TEAM_GAMES} games per ref–team pair · ${stats.meta.seasons.join(", ")}`,
     links: [
       { label: hottest.ref.name, href: `/refs/${hottest.ref.slug}` },
       { label: hotTeam, href: `/teams/${hottest.team}` },
       { label: coldest.ref.name, href: `/refs/${coldest.ref.slug}` },
       { label: coldTeam, href: `/teams/${coldest.team}` },
     ],
+    score: rankScoreLocal(gap / stats.meta.leagueAvgTotal, hottest.games + coldest.games, MIN_TEAM_GAMES * 2),
+    sampleGames: hottest.games + coldest.games,
   };
 }
 
 function crossTeamWhistleFinding(
   stats: RefStatsFile,
   refTeams: Map<string, RefTeamAggregate[]>,
-): Finding {
-  const minTeamGames = 8;
+): ScoredFindingBase | null {
   const minTeams = 4;
 
   let best:
@@ -453,7 +453,7 @@ function crossTeamWhistleFinding(
 
   for (const ref of stats.refs) {
     const teams = (refTeams.get(ref.slug) ?? []).filter(
-      (t) => t.games >= minTeamGames,
+      (t) => t.games >= MIN_TEAM_GAMES,
     );
     if (teams.length < minTeams) continue;
 
@@ -466,24 +466,21 @@ function crossTeamWhistleFinding(
     }
   }
 
-  if (!best) {
-    return whistleParadoxFinding(stats);
-  }
+  if (!best) return null;
 
   const { ref, favored, penalized, spread } = best;
-  const favoredTeam = getTeam(favored.team);
-  const penalizedTeam = getTeam(penalized.team);
-  const favoredName = favoredTeam
-    ? teamFullName(favoredTeam)
+  const favoredName = getTeam(favored.team)
+    ? teamFullName(getTeam(favored.team)!)
     : favored.team;
-  const penalizedName = penalizedTeam
-    ? teamFullName(penalizedTeam)
+  const penalizedName = getTeam(penalized.team)
+    ? teamFullName(getTeam(penalized.team)!)
     : penalized.team;
 
   return {
     id: "cross-team-whistle",
+    category: "whistle-extreme",
     headline: `${ref.name} whistles differently by team`,
-    summary: `The same official does not call every locker room the same way. With ${ref.name}, ${favoredName} draw ${favored.foulDiff >= 0 ? "+" : ""}${favored.foulDiff.toFixed(1)} more fouls per game than their opponents, while ${penalizedName} see the opposite at ${penalized.foulDiff.toFixed(1)}. That ${spread.toFixed(1)}-foul swing is one of the widest team-specific splits in the data.`,
+    summary: `${favoredName} draw ${favored.foulDiff >= 0 ? "+" : ""}${favored.foulDiff.toFixed(1)} fouls per game with ${ref.name}; ${penalizedName} see ${penalized.foulDiff.toFixed(1)} — a ${spread.toFixed(1)}-foul swing.`,
     stats: [
       {
         label: `${favored.team} foul edge`,
@@ -501,33 +498,36 @@ function crossTeamWhistleFinding(
         detail: "Fouls per game differential gap",
       },
     ],
-    sampleNote: `${favored.games + penalized.games} games across two teams · min ${minTeamGames} per team`,
+    sampleNote: `${favored.games + penalized.games} games across two teams · min ${MIN_TEAM_GAMES} per team`,
     links: [
       { label: ref.name, href: `/refs/${ref.slug}` },
       { label: favoredName, href: `/teams/${favored.team}` },
       { label: penalizedName, href: `/teams/${penalized.team}` },
     ],
+    score: rankScoreLocal(spread / 5, favored.games + penalized.games, MIN_TEAM_GAMES * 2),
+    sampleGames: favored.games + penalized.games,
   };
 }
 
-function whistleParadoxFinding(stats: RefStatsFile): Finding {
-  const minGames = 100;
+function whistleParadoxFinding(stats: RefStatsFile): ScoredFindingBase | null {
   const ref = [...stats.refs]
-    .filter((r) => r.games >= minGames)
+    .filter((r) => r.games >= MIN_WHISTLE_GAMES)
     .sort((a, b) => b.foulsDelta - a.foulsDelta)[0];
+  if (!ref) return null;
 
   return {
     id: "whistle-paradox",
+    category: "whistle-extreme",
     headline: `${ref.name} whistles heavy, scores stay low`,
-    summary: `${ref.name} averages ${ref.avgFouls} fouls per game — ${ref.foulsDelta >= 0 ? "+" : ""}${ref.foulsDelta} above the league norm — yet only ${formatPct(ref.overRate)} of his ${ref.games} games beat ${stats.meta.leagueOverBaseline} points. More whistles do not automatically mean more free throws and points in this dataset.`,
+    summary: `${ref.name} averages ${ref.avgFouls} fouls (${ref.foulsDelta >= 0 ? "+" : ""}${ref.foulsDelta} vs league) yet only ${formatPct(ref.overRate)} of games beat ${stats.meta.leagueOverBaseline} points.`,
     stats: [
       {
         label: "Fouls per game",
         value: String(ref.avgFouls),
-        detail: `+${ref.foulsDelta} vs league avg`,
+        detail: `${ref.foulsDelta >= 0 ? "+" : ""}${ref.foulsDelta} vs league avg`,
       },
       {
-        label: "Games over 225",
+        label: "Over benchmark",
         value: formatPct(ref.overRate),
         detail: `${ref.games} games`,
       },
@@ -539,21 +539,244 @@ function whistleParadoxFinding(stats: RefStatsFile): Finding {
     ],
     sampleNote: `${ref.games} games · ${stats.meta.seasons.join(", ")}`,
     links: [{ label: `${ref.name} profile`, href: `/refs/${ref.slug}` }],
+    score: rankScoreLocal(ref.foulsDelta / 5 + (0.5 - ref.overRate), ref.games, MIN_WHISTLE_GAMES),
+    sampleGames: ref.games,
   };
 }
 
-export function computeFindings(): Finding[] {
-  const stats = getRefStats();
-  if (stats.refs.length === 0) return [];
+function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  if (!stats.meta.atsAvailable) return null;
 
+  let best:
+    | { ref: RefProfile; coverRate: number; games: number; edge: number }
+    | undefined;
+
+  for (const ref of stats.refs) {
+    const betting = ref.bettingStats;
+    if (!betting?.linesAvailable) continue;
+    const record = betting.homeTeamAts;
+    const games = wlpDecisive(record);
+    if (games < MIN_ATS_GAMES) continue;
+    const coverRate = wlpWinRate(record);
+    if (coverRate === null) continue;
+    const edge = Math.abs(coverRate - 0.5);
+    if (edge < 0.05 || (!best || edge > best.edge)) {
+      best = { ref, coverRate, games, edge };
+    }
+  }
+
+  if (!best) return null;
+
+  const direction = best.coverRate >= 0.5 ? "covers" : "fails to cover";
+  const record = best.ref.bettingStats!.homeTeamAts;
+
+  return {
+    id: "ats-outlier",
+    category: "ats-edge",
+    headline: `${best.ref.name}: home teams ${direction} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS`,
+    summary: `Among ${best.games} games with synthetic closing lines, home teams are ${formatWlpShort(record)} against the spread when ${best.ref.name} officiates — ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
+    explainer: `ATS splits require closing-line data. This sample uses simulated lines; treat as exploratory, not a live betting edge.`,
+    stats: [
+      {
+        label: "Home ATS",
+        value: formatWlpShort(record),
+        detail: formatPctFromWlp(record.wins, record.losses, record.pushes),
+      },
+      {
+        label: "Sample",
+        value: String(best.games),
+        detail: `Min ${MIN_ATS_GAMES} decisive games`,
+      },
+      {
+        label: "Edge vs 50%",
+        value: `${(best.edge * 100).toFixed(1)} pts`,
+        detail: "Absolute deviation",
+      },
+    ],
+    sampleNote: `${best.games} ATS decisions · synthetic closing lines · ${stats.meta.seasons.join(", ")}`,
+    links: [{ label: best.ref.name, href: `/refs/${best.ref.slug}` }],
+    score: rankScoreLocal(best.edge, best.games, MIN_ATS_GAMES),
+    sampleGames: best.games,
+  };
+}
+
+function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  if (!stats.meta.atsAvailable) return null;
+
+  let best:
+    | { ref: RefProfile; overRate: number; games: number; edge: number }
+    | undefined;
+
+  for (const ref of stats.refs) {
+    const betting = ref.bettingStats;
+    if (!betting?.linesAvailable) continue;
+    const record = betting.overUnder.overall;
+    const games = wlpDecisive(record);
+    if (games < MIN_OU_ATS_GAMES) continue;
+    const rate = wlpWinRate(record);
+    if (rate === null) continue;
+    const edge = Math.abs(rate - 0.5);
+    if (edge < 0.05 || (!best || edge > best.edge)) {
+      best = { ref, overRate: rate, games, edge };
+    }
+  }
+
+  if (!best) return null;
+
+  const record = best.ref.bettingStats!.overUnder.overall;
+  const lean = best.overRate >= 0.5 ? "overs" : "unders";
+
+  return {
+    id: "ou-ats-edge",
+    category: "ou-edge",
+    headline: `${best.ref.name} leans ${lean} vs closing totals`,
+    summary: `Totals go ${lean} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} (${formatWlpShort(record)}) across ${best.games} lined games — ${(best.edge * 100).toFixed(1)} pts from 50%.`,
+    explainer: `O/U ATS uses synthetic closing totals in this seeded dataset. Sample gates (${MIN_OU_ATS_GAMES}+ decisive games) apply before surfacing.`,
+    stats: [
+      {
+        label: "O/U ATS",
+        value: formatWlpShort(record),
+        detail: formatPctFromWlp(record.wins, record.losses, record.pushes),
+      },
+      {
+        label: "Sample",
+        value: String(best.games),
+        detail: `Min ${MIN_OU_ATS_GAMES} decisive games`,
+      },
+      {
+        label: "Edge vs 50%",
+        value: `${(best.edge * 100).toFixed(1)} pts`,
+        detail: `Leans ${lean}`,
+      },
+    ],
+    sampleNote: `${best.games} O/U decisions · synthetic closing lines · ${stats.meta.seasons.join(", ")}`,
+    links: [{ label: best.ref.name, href: `/refs/${best.ref.slug}` }],
+    score: rankScoreLocal(best.edge, best.games, MIN_OU_ATS_GAMES),
+    sampleGames: best.games,
+  };
+}
+
+function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const baseline = stats.meta.leagueOverBaseline;
+  let best:
+    | { team: string; split: TeamCrewSplit; delta: number }
+    | undefined;
+
+  for (const [team, splits] of Object.entries(stats.teamSplits)) {
+    for (const split of splits) {
+      if (split.games < MIN_TEAM_CREW_GAMES) continue;
+      const delta = Math.abs(split.overRate - 0.5);
+      if (delta < 0.12) continue;
+      if (!best || delta > best.delta) {
+        best = { team, split, delta };
+      }
+    }
+  }
+
+  if (!best) return null;
+
+  const teamName = getTeam(best.team)
+    ? teamFullName(getTeam(best.team)!)
+    : best.team;
+  const lean = best.split.overRate >= 0.5 ? "over" : "under";
+  const crewLabel = best.split.crewNames.slice(0, 2).join(", ");
+
+  return {
+    id: "team-crew-anomaly",
+    category: "team-crew",
+    headline: `${teamName} runs ${lean} ${(best.delta * 100).toFixed(0)} pts off neutral with this crew`,
+    summary: `When ${crewLabel}${best.split.crewNames.length > 2 ? "…" : ""} work ${teamName} games, ${formatPct(best.split.overRate)} finish ${lean} ${baseline} combined points (${best.split.games} games).`,
+    stats: [
+      {
+        label: "Over benchmark",
+        value: formatPct(best.split.overRate),
+        detail: `${best.split.games} games`,
+      },
+      {
+        label: "Avg total",
+        value: String(best.split.avgTotalPoints),
+        detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
+      },
+      {
+        label: "Foul differential",
+        value: `${best.split.foulDifferential >= 0 ? "+" : ""}${best.split.foulDifferential.toFixed(1)}`,
+        detail: `${best.team} vs opponents`,
+      },
+    ],
+    sampleNote: `Min ${MIN_TEAM_CREW_GAMES} games per crew · ${stats.meta.seasons.join(", ")}`,
+    links: [{ label: teamName, href: `/teams/${best.team}` }],
+    score: rankScoreLocal(best.delta, best.split.games, MIN_TEAM_CREW_GAMES),
+    sampleGames: best.split.games,
+  };
+}
+
+function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const qualified = stats.refs.filter((r) => r.games >= MIN_REF_GAMES);
+  if (qualified.length === 0) return null;
+
+  const ref = [...qualified].sort(
+    (a, b) => Math.abs(b.totalPointsDelta) - Math.abs(a.totalPointsDelta),
+  )[0];
+  const effect = ref.totalPointsDelta / stats.meta.leagueAvgTotal;
+
+  return {
+    id: "scoring-outlier",
+    category: "ref-outlier",
+    headline: `${ref.name} runs ${ref.totalPointsDelta >= 0 ? "+" : ""}${ref.totalPointsDelta} on combined scoring`,
+    summary: `${ref.name}'s ${ref.games} games average ${ref.avgTotalPoints} combined points (${formatPct(ref.overRate)} over ${stats.meta.leagueOverBaseline}) — one of the largest scoring deltas in the pool.`,
+    stats: [
+      {
+        label: "Scoring delta",
+        value: `${ref.totalPointsDelta >= 0 ? "+" : ""}${ref.totalPointsDelta}`,
+        detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
+      },
+      {
+        label: "Over benchmark",
+        value: formatPct(ref.overRate),
+        detail: `${ref.games} games`,
+      },
+      {
+        label: "Avg fouls",
+        value: String(ref.avgFouls),
+        detail: `${ref.foulsDelta >= 0 ? "+" : ""}${ref.foulsDelta} vs league`,
+      },
+    ],
+    sampleNote: `${MIN_REF_GAMES}+ game sample · ${stats.meta.seasons.join(", ")}`,
+    links: [{ label: ref.name, href: `/refs/${ref.slug}` }],
+    score: rankScoreLocal(effect, ref.games, MIN_REF_GAMES),
+    sampleGames: ref.games,
+  };
+}
+
+function formatWlpShort(record: WlpRecord): string {
+  if (record.pushes > 0) {
+    return `${record.wins}-${record.losses}-${record.pushes}`;
+  }
+  return `${record.wins}-${record.losses}`;
+}
+
+function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
   const refTeams = aggregateRefTeams(stats);
-
-  return [
+  const candidates: (ScoredFindingBase | null)[] = [
     leagueUnderFinding(stats),
     rareOverRefsFinding(stats),
     overRateTeamSplitFinding(stats),
     foulEdgeLosingFinding(stats),
     scoringExtremesFinding(stats),
     crossTeamWhistleFinding(stats, refTeams),
+    whistleParadoxFinding(stats),
+    atsOutlierFinding(stats),
+    ouAtsEdgeFinding(stats),
+    teamCrewAnomalyFinding(stats),
+    scoringOutlierFinding(stats),
   ];
+  return candidates.filter((c): c is ScoredFindingBase => c !== null);
+}
+
+export function computeFindings(limit = 6): Finding[] {
+  const stats = getRefStats();
+  if (stats.refs.length === 0) return [];
+
+  const ranked = collectCandidates(stats).sort((a, b) => b.score - a.score);
+  return dedupeFindingsByCategory(ranked, limit);
 }

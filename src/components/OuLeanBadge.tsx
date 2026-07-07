@@ -1,35 +1,19 @@
 import type { OuLean } from "@/lib/types";
-
-const styles: Record<
-  OuLean,
-  { chip: string; dot: string; label: string }
-> = {
-  over: {
-    chip: "border-emerald-300 bg-emerald-50 text-emerald-800",
-    dot: "bg-emerald-600",
-    label: "Higher scoring",
-  },
-  under: {
-    chip: "border-rose-300 bg-rose-50 text-rose-800",
-    dot: "bg-rose-600",
-    label: "Lower scoring",
-  },
-  neutral: {
-    chip: "border-zinc-300 bg-zinc-100 text-zinc-700",
-    dot: "bg-zinc-500",
-    label: "Neutral",
-  },
-};
+import { ouLeanDisplay } from "@/lib/user-language";
 
 export function OuLeanBadge({ lean }: { lean: OuLean }) {
-  const s = styles[lean];
+  const label = ouLeanDisplay(lean);
+  const isDirectional = lean !== "neutral";
+
   return (
     <span
-      className={`status-chip ${s.chip}`}
-      title={`Scoring trend: ${s.label}`}
+      className="inline-flex shrink-0 items-center gap-1.5 rounded border border-zinc-300 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-800"
+      title={`Historical over lean: ${label}`}
     >
-      <span className={`size-2 shrink-0 rounded-full ${s.dot}`} aria-hidden />
-      {s.label}
+      <span className="font-normal text-zinc-500">Historical over lean:</span>
+      <span className={isDirectional ? "font-bold tabular-nums" : "tabular-nums"}>
+        {label}
+      </span>
     </span>
   );
 }

@@ -1,5 +1,5 @@
 import { formatDate } from "@/lib/data";
-import { baselineUsingFallback } from "@/lib/baselines";
+import { isOffseasonSlate } from "@/lib/offseason";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 
 function freshnessLabel(
@@ -7,9 +7,9 @@ function freshnessLabel(
   assignmentsSeeded: boolean,
 ): string {
   if (!statsSeeded && !assignmentsSeeded) return "Live data";
-  if (statsSeeded && assignmentsSeeded) return "Seeded data";
-  if (statsSeeded) return "Live assignments · seeded stats";
-  return "Live stats · seeded assignments";
+  if (statsSeeded && assignmentsSeeded) return "Historical sample data";
+  if (statsSeeded) return "Live assignments · historical stats";
+  return "Live stats · sample assignments";
 }
 
 export function DataFreshnessMeta({
@@ -21,10 +21,22 @@ export function DataFreshnessMeta({
   refStats: RefStatsFile;
   league?: "NBA" | "NHL";
 }) {
+  const offseason = isOffseasonSlate(assignments);
+
+  if (offseason) {
+    return (
+      <p className="page-meta">
+        <span className="text-zinc-600">
+          Offseason — historical data only. Live slate returns when the{" "}
+          {league} season resumes.
+        </span>
+      </p>
+    );
+  }
+
   const statsSeeded = refStats.meta.source === "seeded";
   const assignmentsSeeded = assignments.source === "seeded";
   const allLive = !statsSeeded && !assignmentsSeeded;
-  const baselineFallback = baselineUsingFallback(league);
 
   return (
     <p className="page-meta">
@@ -39,27 +51,6 @@ export function DataFreshnessMeta({
         Assignments {formatDate(assignments.lastUpdated)} · Stats{" "}
         {formatDate(refStats.meta.lastUpdated)}
       </span>
-      <span className="text-zinc-500">
-        {assignments.source} / {refStats.meta.source}
-      </span>
-      {baselineFallback && (
-        <span className="text-amber-800">
-          League baselines use the labeled static fallback — run{" "}
-          <code className="rounded bg-white px-1.5 py-0.5 font-mono text-sm ring-1 ring-border">
-            npm run compute-baselines
-          </code>{" "}
-          after game logs exist.
-        </span>
-      )}
-      {statsSeeded && (
-        <span className="text-amber-800">
-          Stats are representative — run{" "}
-          <code className="rounded bg-white px-1.5 py-0.5 font-mono text-sm ring-1 ring-border">
-            npm run {league === "NHL" ? "build-nhl-data" : "build-ref-data"}
-          </code>{" "}
-          for live backfill
-        </span>
-      )}
     </p>
   );
 }

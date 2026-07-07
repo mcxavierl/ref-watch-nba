@@ -1,7 +1,7 @@
 #!/usr/bin/env npx tsx
 /**
  * Generates comprehensive seeded ref stats from simulated game data.
- * Covers all NBA staff officials across three regular seasons.
+ * Covers all NBA staff officials across five regular seasons.
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -37,7 +37,7 @@ const NBA_TEAM_ABBRS = [
   "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS",
 ];
 
-const SEASONS = ["2023-24", "2024-25", "2025-26"];
+const SEASONS = ["2021-22", "2022-23", "2023-24", "2024-25", "2025-26"];
 const LEAGUE_AVG_TOTAL = 225;
 const LEAGUE_AVG_FOULS = 38.5;
 const LEAGUE_OVER_BASELINE = 225;

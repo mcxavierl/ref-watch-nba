@@ -22,10 +22,17 @@ import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data");
 
+const jsonCache = new Map<string, unknown>();
+
 function readJson<T>(filename: string): T {
+  const cached = jsonCache.get(filename);
+  if (cached !== undefined) return cached as T;
+
   const filePath = path.join(dataDir, filename);
   const raw = fs.readFileSync(filePath, "utf8");
-  return JSON.parse(raw) as T;
+  const parsed = JSON.parse(raw) as T;
+  jsonCache.set(filename, parsed);
+  return parsed;
 }
 
 export function getAssignments(): AssignmentsFile {

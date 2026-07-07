@@ -200,12 +200,13 @@ export function GamePremiumStrip({
       : String(premium.benchmarkTotal);
   const foulLabel = sport === "nhl" ? "PIM" : "fouls";
   const premiumTerm = sport === "nhl" ? "nhl-whistle-premium" : "whistle-premium";
+  const premiumLabel = sport === "nhl" ? "Goals above average" : "Points above average";
 
   return (
     <div className="border-t border-border-subtle bg-white px-4 py-3 sm:px-5">
-      <div className="flex flex-wrap items-center gap-2 text-sm">
-        <span className="font-medium text-zinc-700">
-          <TermHelp id={premiumTerm}>Whistle premium</TermHelp>
+      <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-700">
+        <span className="font-medium">
+          <TermHelp id={premiumTerm}>{premiumLabel}</TermHelp>
         </span>
         <span className="font-mono tabular-nums text-zinc-900">
           {formatPremiumLabel(premium.scoringPremium)} ·{" "}
@@ -214,8 +215,8 @@ export function GamePremiumStrip({
         {premium.provenance && (
           <ProvenanceMarker provenance={premium.provenance.scoringPremium} compact />
         )}
-        <span className="text-zinc-500">·</span>
-        <span className="font-mono tabular-nums text-zinc-700">
+        <span className="text-zinc-400">·</span>
+        <span className="font-mono tabular-nums">
           {formatSigned(premium.gapVsBenchmark)} vs {benchmarkLabel}
         </span>
         {premium.provenance && (
@@ -225,7 +226,7 @@ export function GamePremiumStrip({
           <span className="text-zinc-600">
             ·{" "}
             <TermHelp id="pace-alert">
-              {premium.alert === "high_pace" ? "High pace" : "Low pace"} signal
+              {premium.alert === "high_pace" ? "High scoring" : "Low scoring"} signal
             </TermHelp>
           </span>
         )}

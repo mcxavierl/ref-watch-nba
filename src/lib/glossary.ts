@@ -72,12 +72,12 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
     text: "When the home team was the underdog (positive spread), how often did they cover ATS?",
   },
   "whistle-premium": {
-    label: "Whistle premium",
+    label: "Points above average",
     text: "How many points above or below league average this crew’s games tend to score — a pace signal, not a betting pick.",
   },
   "line-gap": {
-    label: "Line gap",
-    text: "This crew’s historical average total minus tonight’s benchmark (sportsbook total or our 225 proxy). Positive means they’ve tended to run hotter than the line.",
+    label: "Total vs benchmark",
+    text: "This crew’s historical average total minus tonight’s benchmark (sportsbook total or league average). Positive means they’ve tended to run hotter than the line.",
   },
   "foul-edge": {
     label: "Foul edge",
@@ -100,12 +100,12 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
     text: "The spread and total sportsbooks posted near tip-off. ATS and O/U tables here use that number, not our fixed 225 benchmark.",
   },
   "over-225": {
-    label: "Over 225",
-    text: "Legacy shortcut: share of games where combined scoring beat 225 points. Used when a real closing total isn’t available.",
+    label: "Historical over rate",
+    text: "Share of this crew’s games where combined scoring beat the benchmark (225 when no sportsbook total is available).",
   },
   "over-6": {
-    label: "Over 6.0",
-    text: "NHL shortcut: share of games where combined goals beat 6.0. Used when a real closing total isn’t available.",
+    label: "Historical over rate",
+    text: "Share of this crew’s games where combined goals beat the benchmark (6.0 when no sportsbook total is available).",
   },
   pim: {
     label: "PIM",
@@ -116,7 +116,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
     text: "Combined goals scored by both teams. NHL games typically land around 6–7 total goals.",
   },
   "nhl-whistle-premium": {
-    label: "Whistle premium",
+    label: "Goals above average",
     text: "How many goals above or below league average this crew’s games tend to score — a pace signal for totals, not a betting pick.",
   },
   "pp-premium": {

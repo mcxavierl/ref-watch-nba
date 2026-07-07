@@ -608,11 +608,9 @@ export function buildPreviewSlate(stats: RefStatsFile): AssignmentGame[] {
 
 export function resolveSlateGames(
   assignments: AssignmentsFile,
-  stats: RefStatsFile,
 ): { games: AssignmentGame[]; isPreview: boolean } {
   if (assignments.games.length > 0) {
     return { games: assignments.games, isPreview: false };
   }
-  const preview = buildPreviewSlate(stats);
-  return { games: preview, isPreview: preview.length > 0 };
+  return { games: [], isPreview: false };
 }

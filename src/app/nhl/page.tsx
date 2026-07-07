@@ -1,18 +1,23 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
-import { DataConfidenceSummary } from "@/components/DataConfidenceSummary";
+import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
+import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TermHelp } from "@/components/TermHelp";
 import { GameSlateCard } from "@/components/GameSlateCard";
+import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
 import {
   computeCrewMetrics,
-  formatSigned,
   getAssignments,
   getRefStats,
   ouLeanSortWeight,
 } from "@/lib/nhl/data";
+import {
+  buildOffseasonEdgeSummary,
+  buildTonightEdgeSummary,
+} from "@/lib/edge-summary";
+import { computeFindings } from "@/lib/nhl/findings";
 import { resolveSlateGames } from "@/lib/grudge-match";
 import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/nhl/home-bias";
 import { getOdds } from "@/lib/nhl/odds";
@@ -23,7 +28,6 @@ import {
 } from "@/lib/nhl/whistle-premium";
 import { computeSlatePpPremiums } from "@/lib/nhl/pp-premium";
 import { computeSlateOtSignals } from "@/lib/nhl/ot-rate";
-import { collectSlateProvenance } from "@/lib/provenance";
 import type { AssignmentGame } from "@/lib/types";
 import {
   buildNhlNightlyFeed,
@@ -34,18 +38,24 @@ import {
   topShareSignals,
 } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
+import { seededDataNote } from "@/lib/user-language";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const assignments = getAssignments();
   const feed = buildNhlNightlyFeed();
-  const description = slateMetadataDescription(feed);
+  const isOffseason = assignments.games.length === 0;
+  const description = isOffseason
+    ? "NHL ref and crew analytics during the offseason — dataset findings, ref profiles, and team histories."
+    : slateMetadataDescription(feed);
+  const title = isOffseason ? "NHL ref data — offseason" : "Tonight's NHL slate";
   return {
-    title: "Tonight's NHL slate",
+    title,
     description,
     alternates: {
       canonical: absoluteUrl("/nhl"),
     },
     openGraph: {
-      title: "Tonight's NHL slate — Ref Watch",
+      title: `${title} — Ref Watch`,
       description,
       url: absoluteUrl("/nhl"),
       type: "website",
@@ -71,10 +81,9 @@ export default function NhlHomePage() {
   const assignments = getAssignments();
   const refStats = getRefStats();
   const odds = getOdds();
-  const { games: slateGames, isPreview } = resolveSlateGames(
-    assignments,
-    refStats,
-  );
+  const findings = computeFindings();
+  const isOffseason = assignments.games.length === 0;
+  const { games: slateGames } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
   const alertPremiums = paceAlerts(premiums);
@@ -84,16 +93,20 @@ export default function NhlHomePage() {
 
   const ppByGame = new Map(ppPremiums.map((p) => [p.gameId, p]));
   const otByGame = new Map(otSignals.map((p) => [p.gameId, p]));
-  const metricsList = sortedGames.map((game) =>
-    computeCrewMetrics(game.crew, refStats),
-  );
-  const confidenceSummary = collectSlateProvenance(
-    metricsList,
-    premiums,
-    homeBiasSignals,
-    { ppPremiums, otSignals },
-  );
   const nightlyFeed = buildNhlNightlyFeed();
+  const dataSourceNote =
+    refStats.meta.source === "seeded" ? seededDataNote() : undefined;
+
+  const edgeItems = isOffseason
+    ? buildOffseasonEdgeSummary(findings, 5)
+    : buildTonightEdgeSummary({
+        sport: "nhl",
+        alertPremiums,
+        allPremiums: premiums,
+        homeBiasSignals,
+        ppPremiums,
+        otSignals,
+      });
 
   return (
     <div className="page-shell">
@@ -102,7 +115,7 @@ export default function NhlHomePage() {
           {
             "@context": "https://schema.org",
             "@type": "WebPage",
-            name: "Tonight's NHL slate",
+            name: isOffseason ? "NHL ref data — offseason" : "Tonight's NHL slate",
             description: slateMetadataDescription(nightlyFeed),
             url: absoluteUrl("/nhl"),
             dateModified: assignments.lastUpdated,
@@ -112,43 +125,28 @@ export default function NhlHomePage() {
         ]}
       />
       <section className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
-          Tonight&apos;s NHL slate
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
+          {isOffseason ? "NHL ref data" : "Tonight&apos;s NHL slate"}
         </h1>
         <p className="page-lead">
-          Official crew assignments cross-checked against historical goal totals,
-          PIM trends, and ref–team history.
+          {isOffseason
+            ? "Historical crew patterns, ref profiles, and team histories while the slate is paused."
+            : "Who&apos;s officiating tonight and how their crews have historically moved goals, PIM, and power plays."}
         </p>
         <DataFreshnessMeta assignments={assignments} refStats={refStats} league="NHL" />
-        {slateGames.length > 0 && (
-          <div className="mt-4">
-            <DataConfidenceSummary summary={confidenceSummary} />
-          </div>
-        )}
       </section>
 
-      {slateGames.length === 0 ? (
-        <div className="panel-inset px-6 py-10 text-center">
-          <p className="text-base font-medium text-zinc-800">
-            No NHL games scheduled tonight
-          </p>
-          <p className="mx-auto mt-2 max-w-md text-sm text-zinc-600">
-            Run{" "}
-            <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-zinc-700 ring-1 ring-border">
-              npm run fetch-nhl-assignments
-            </code>{" "}
-            before puck-drop. Off-season slates will be empty until the schedule
-            resumes.
-          </p>
-          <p className="mt-5">
-            <Link
-              href="/nhl/teams"
-              className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hover:underline"
-            >
-              Browse team crew histories →
-            </Link>
-          </p>
-        </div>
+      {isOffseason ? (
+        <>
+          <div className="mb-10">
+            <OffseasonSlateNotice league="NHL" browseHref="/nhl/teams" />
+          </div>
+          <TonightEdgeSummary
+            items={edgeItems}
+            title="Season highlights"
+            emptyMessage="Browse findings below for the biggest historical patterns in our dataset."
+          />
+        </>
       ) : (
         <>
           <SlateShareBar
@@ -159,81 +157,17 @@ export default function NhlHomePage() {
             league="NHL"
           />
 
-          <details className="panel-inset mb-6 px-4 py-3 sm:px-5" open>
-            <summary className="cursor-pointer text-sm font-semibold text-zinc-800">
-              Tonight&apos;s signals
-              {isPreview && (
-                <span className="ml-2 font-normal text-zinc-500">
-                  (offseason preview)
-                </span>
-              )}
-            </summary>
-            <p className="mt-3 text-sm text-zinc-600 md:hidden">
-              <TermHelp id="nhl-whistle-premium" /> — tap terms for definitions.
-            </p>
-            <div className="mt-4 space-y-4 text-sm">
-              {alertPremiums.length === 0 &&
-                homeBiasSignals.length === 0 &&
-                ppPremiums.length === 0 &&
-                otSignals.length === 0 && (
-                <p className="text-zinc-600">
-                  No high-signal pace alerts for this slate.
-                </p>
-              )}
-              {alertPremiums.map((p) => (
-                <div
-                  key={p.gameId}
-                  className="border-l-2 border-zinc-300 pl-3"
-                >
-                  <p className="font-medium text-zinc-900">{p.matchup}</p>
-                  <p className="mt-1 text-zinc-600">
-                    <TermHelp id="pace-alert">
-                      {p.alert === "high_pace" ? "High pace" : "Low pace"}
-                    </TermHelp>{" "}
-                    crew — {formatSigned(p.scoringPremium)}{" "}
-                    <TermHelp id="nhl-whistle-premium">scoring premium</TermHelp>,{" "}
-                    {formatSigned(p.gapVsBenchmark)}{" "}
-                    <TermHelp id="line-gap">line gap</TermHelp> vs{" "}
-                    {p.benchmarkSource === "sportsbook"
-                      ? "book"
-                      : String(refStats.meta.leagueOverBaseline)}.
-                  </p>
-                </div>
-              ))}
-              {homeBiasSignals.slice(0, 2).map((b) => (
-                <div key={b.gameId} className="border-l-2 border-zinc-200 pl-3">
-                  <p className="font-medium text-zinc-900">{b.headline}</p>
-                </div>
-              ))}
-              {ppPremiums.slice(0, 3).map((p) => (
-                <div key={p.gameId} className="border-l-2 border-emerald-300 pl-3">
-                  <p className="font-medium text-zinc-900">{p.matchup}</p>
-                  <p className="mt-1 text-zinc-600">
-                    <TermHelp id="pp-premium">{p.headline}</TermHelp> — index{" "}
-                    {p.index}. {p.summary}
-                  </p>
-                </div>
-              ))}
-              {otSignals.slice(0, 2).map((o) => (
-                <div key={o.gameId} className="border-l-2 border-sky-300 pl-3">
-                  <p className="font-medium text-zinc-900">{o.matchup}</p>
-                  <p className="mt-1 text-zinc-600">
-                    <TermHelp id="ot-rate-badge">{o.headline}</TermHelp> —{" "}
-                    {o.summary}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </details>
+          <TonightEdgeSummary items={edgeItems} />
 
           <section className="mb-8">
-            <h2 className="mb-3 text-sm font-semibold text-zinc-700">
-              {slateGames.length === 1 ? "Game" : "Games"}
+            <h2 className="mb-3 text-base font-bold text-zinc-900">
+              {slateGames.length === 1 ? "Tonight's game" : "Tonight's games"}
             </h2>
             <div className="space-y-3">
               {sortedGames.map((game) => (
                 <GameSlateCard
                   key={game.id}
+                  gameId={game.id}
                   matchup={game.matchup}
                   awayTeam={game.awayTeam}
                   homeTeam={game.homeTeam}
@@ -252,32 +186,32 @@ export default function NhlHomePage() {
         </>
       )}
 
-      <details className="methodology-details panel-inset px-4 py-3 sm:px-5">
+      <FindingsSection
+        findings={findings}
+        featured
+        initialVisibleCount={4}
+        dataSourceNote={dataSourceNote}
+      />
+
+      <details className="methodology-details panel-inset mt-8 px-4 py-3 sm:px-5">
         <summary>Methodology</summary>
         <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
+          <li>
+            Findings ranked by effect size × √sample size, with sample gates
+            (30+ ref games, 8+ team splits, 30+ ATS decisions).
+          </li>
           <li>
             <TermHelp id="nhl-whistle-premium" /> — crew avg combined goals minus
             league baseline ({refStats.meta.leagueAvgTotal}).
           </li>
           <li>
-            <TermHelp id="pace-alert" /> — sample-gated; compares crew history to
-            tonight&apos;s line.
+            <TermHelp id="pp-premium" /> and{" "}
+            <TermHelp id="ot-rate-badge" /> use sportsbook lines on live slates
+            where available.
           </li>
           <li>
-            <TermHelp id="pim" /> tracked as total penalty minutes per game (both
-            teams).
-          </li>
-          <li>
-            <TermHelp id="pp-premium" /> — high-minor referees matched against
-            both teams&apos; power-play vs penalty-kill efficiency.
-          </li>
-          <li>
-            <TermHelp id="ot-rate-badge" /> — elevated crew OT rate on tight
-            puck lines (requires sportsbook spread).
-          </li>
-          <li>
-            <TermHelp id="penalty-balance" /> on ref profiles — descriptive
-            game-management pattern, not a live makeup alert.
+            Seasons covered: {refStats.meta.seasons.join(", ")} (
+            {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "—"} games).
           </li>
         </ul>
       </details>

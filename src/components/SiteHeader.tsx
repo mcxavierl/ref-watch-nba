@@ -11,25 +11,23 @@ export function SiteHeader() {
   const homeHref = isNhl ? "/nhl" : "/";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-white/95 shadow-[0_1px_0_rgba(200,16,46,0.12)] backdrop-blur-md">
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
+    <header className="site-header">
+      <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-6">
         <Link
           href={homeHref}
-          className="group flex shrink-0 items-center gap-3 rounded-lg outline-offset-4 transition hover:opacity-95"
+          className="group flex shrink-0 items-center gap-3.5 rounded-lg outline-offset-4 transition hover:opacity-95 focus-visible:outline-2 focus-visible:outline-white/80"
         >
-          <span className="flex size-9 items-center justify-center rounded-lg bg-raptors text-white shadow-md shadow-raptors/20 transition duration-300 ease-out group-hover:scale-[1.03] group-hover:shadow-lg group-hover:shadow-raptors/25 motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+          <span className="site-header-brand-icon transition duration-300 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
             <Whistle
-              className="size-[18px] transition duration-300 ease-out group-hover:rotate-[-4deg] motion-reduce:transition-none motion-reduce:group-hover:rotate-0"
+              className="size-5 text-raptors transition duration-300 ease-out group-hover:rotate-[-4deg] motion-reduce:transition-none motion-reduce:group-hover:rotate-0"
               strokeWidth={2.25}
               aria-hidden
             />
           </span>
           <div className="leading-tight">
-            <p className="text-base font-semibold tracking-tight text-zinc-900">
-              Ref Watch
-            </p>
-            <p className="text-sm text-zinc-600">
-              {isNhl ? "NHL crews & trends" : "Tonight\u2019s crews, historical trends"}
+            <p className="site-header-title">REF WATCH</p>
+            <p className="site-header-subtitle">
+              Analyzed data on Refs in the NBA and NHL
             </p>
           </div>
         </Link>

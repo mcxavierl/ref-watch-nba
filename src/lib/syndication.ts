@@ -187,7 +187,7 @@ export function buildNbaNightlyFeed(): NightlyFeed {
   const assignments = getNbaAssignments();
   const stats = getNbaRefStats();
   const odds = getNbaOdds();
-  const { games, isPreview } = resolveSlateGames(assignments, stats);
+  const { games, isPreview } = resolveSlateGames(assignments);
   const dataTag = refStatsDataTag(stats.meta);
   const premiums = computeSlatePremiums(games, stats, odds);
   const alerts = paceAlerts(premiums);
@@ -225,7 +225,7 @@ export function buildNhlNightlyFeed(): NightlyFeed {
   const assignments = getNhlAssignments();
   const stats = getNhlRefStats();
   const odds = getNhlOdds();
-  const { games, isPreview } = resolveSlateGames(assignments, stats);
+  const { games, isPreview } = resolveSlateGames(assignments);
   const dataTag = refStatsDataTag(stats.meta);
   const premiums = computeNhlSlatePremiums(games, stats, odds);
   const alerts = nhlPaceAlerts(premiums);
@@ -300,8 +300,8 @@ export function buildShareText(feed: NightlyFeed): string {
 export function slateMetadataDescription(feed: NightlyFeed): string {
   const gameCount =
     feed.league === "NBA"
-      ? resolveSlateGames(getNbaAssignments(), getNbaRefStats()).games.length
-      : resolveSlateGames(getNhlAssignments(), getNhlRefStats()).games.length;
+      ? resolveSlateGames(getNbaAssignments()).games.length
+      : resolveSlateGames(getNhlAssignments()).games.length;
 
   if (gameCount === 0) {
     return `${feed.league} slate empty — check back after assignments drop. ${AFFILIATION_SHORT}`;
@@ -326,8 +326,7 @@ export function slateSportsEvents(
 ): Array<Record<string, unknown>> {
   const assignments =
     league === "NBA" ? getNbaAssignments() : getNhlAssignments();
-  const stats = league === "NBA" ? getNbaRefStats() : getNhlRefStats();
-  const { games } = resolveSlateGames(assignments, stats);
+  const { games } = resolveSlateGames(assignments);
 
   return games.map((game) => ({
     "@type": "SportsEvent",
@@ -365,7 +364,7 @@ export function slateDatasetJsonLd(feed: NightlyFeed): Record<string, unknown> {
       {
         "@type": "DataDownload",
         encodingFormat: "application/json",
-        contentUrl: absoluteUrl(`/feed/${feed.league.toLowerCase()}.json`),
+        contentUrl: absoluteUrl(`/feed/${feed.league.toLowerCase()}/json`),
       },
     ],
   };

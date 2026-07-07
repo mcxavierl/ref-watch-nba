@@ -13,7 +13,7 @@ export function computeSlateAlerts(
   stats: RefStatsFile,
 ): SlateAlertsFile {
   const odds = getOdds();
-  const { games, isPreview } = resolveSlateGames(assignments, stats);
+  const { games, isPreview } = resolveSlateGames(assignments);
   const premiums = computeSlatePremiums(games, stats, odds);
 
   return {

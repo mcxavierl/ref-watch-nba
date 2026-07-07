@@ -7,7 +7,7 @@ const SUPPORT_PHONE = "1-866-531-2600";
 export function GamblingDisclaimer() {
   return (
     <aside
-      className="border-b border-amber-200/80 bg-amber-50/90"
+      className="border-t border-amber-200/80 bg-amber-50/90"
       aria-label="Responsible gambling"
     >
       <div className="mx-auto flex max-w-5xl gap-3 px-4 py-3 sm:px-6">

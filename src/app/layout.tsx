@@ -31,8 +31,8 @@ export const metadata: Metadata = {
   alternates: {
     types: {
       "application/rss+xml": [
-        { url: "/feed/nba.xml", title: "Ref Watch NBA signals" },
-        { url: "/feed/nhl.xml", title: "Ref Watch NHL signals" },
+        { url: "/feed/nba/rss", title: "Ref Watch NBA signals" },
+        { url: "/feed/nhl/rss", title: "Ref Watch NHL signals" },
       ],
     },
   },
@@ -57,8 +57,8 @@ export default function RootLayout({
         className={`${sourceSans.variable} ${plexMono.variable} flex min-h-screen flex-col bg-background text-base leading-relaxed text-zinc-900 antialiased`}
       >
         <SiteHeader />
-        <GamblingDisclaimer />
         <main className="flex-1">{children}</main>
+        <GamblingDisclaimer />
         <SiteFooterWrapper
           nbaFooter={<SiteFooter league="nba" />}
           nhlFooter={<SiteFooter league="nhl" />}
