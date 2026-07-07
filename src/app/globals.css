@@ -882,9 +882,79 @@ p {
 
   /* ── Finding accordion ── */
   .finding-accordion-stack {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    column-gap: var(--space-3);
+    row-gap: var(--space-3);
+  }
+
+  .finding-accordion {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    overflow: hidden;
+  }
+
+  .finding-accordion-trigger {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .finding-accordion-trigger-inner {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    border-bottom: 1px solid transparent;
+    padding: var(--space-4) var(--space-4) var(--space-3);
+    transition: background-color 150ms ease-out;
+  }
+  .finding-accordion-header-row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+    column-gap: var(--space-3);
+  }
+
+  .finding-accordion-meta-pills {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+    min-width: 0;
+  }
+
+  .finding-accordion-confidence-slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .finding-accordion-confidence-slot .confidence-tier-badge {
+    width: 100%;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0.2rem 0.55rem;
+  }
+
+  .finding-accordion-title {
+    grid-column: 1 / -1;
+    margin-top: 0.625rem;
+    min-width: 0;
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: var(--leading-snug);
+    color: var(--ink-secondary);
+  }
+
+  @media (min-width: 640px) {
+    .finding-accordion-title {
+      font-size: 1.0625rem;
+    }
   }
 
   .finding-meta-pill {
@@ -936,23 +1006,8 @@ p {
     color: var(--muted);
   }
 
-  .finding-accordion {
-    overflow: hidden;
-  }
-
-  .finding-accordion-trigger {
-    cursor: pointer;
-    list-style: none;
-  }
-
   .finding-accordion-trigger::-webkit-details-marker {
     display: none;
-  }
-
-  .finding-accordion-trigger-inner {
-    border-bottom: 1px solid transparent;
-    padding: var(--space-4) var(--space-4) var(--space-3);
-    transition: background-color 150ms ease-out;
   }
 
   @media (min-width: 640px) {
@@ -971,6 +1026,7 @@ p {
   }
 
   .finding-accordion-teaser {
+    grid-column: 1 / -1;
     margin-top: var(--space-2);
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed);
@@ -1000,7 +1056,29 @@ p {
   }
 
   .finding-accordion-panel {
+    grid-column: 1 / -1;
     border-top: 0;
+  }
+
+  @supports not (grid-template-columns: subgrid) {
+    .finding-accordion-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .finding-accordion,
+    .finding-accordion-trigger,
+    .finding-accordion-trigger-inner,
+    .finding-accordion-header-row {
+      display: block;
+    }
+
+    .finding-accordion-header-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+      gap: var(--space-3);
+    }
   }
 
   .finding-accordion-panel .stat-row {

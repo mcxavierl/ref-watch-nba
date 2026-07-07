@@ -15,13 +15,15 @@ function FindingMetaBadges({
   category,
   index,
   league,
+  className = "",
 }: {
   category: Finding["category"];
   index: number;
   league?: "NBA" | "NHL";
+  className?: string;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
+    <div className={`finding-accordion-meta-pills ${className}`.trim()}>
       {league && <span className="finding-meta-pill">{league}</span>}
       <span className="finding-meta-pill">
         {FINDING_CATEGORY_LABELS[category]}
@@ -69,30 +71,30 @@ export function FindingAccordionItem({
     <details className="finding-accordion data-card" open={defaultOpen}>
       <summary className="finding-accordion-trigger">
         <div className="finding-accordion-trigger-inner">
-          <FindingMetaBadges
-            category={finding.category}
-            index={index}
-            league={league}
-          />
-          <div className="mt-2.5 flex items-start justify-between gap-3">
-            <h3 className="min-w-0 flex-1 text-base font-semibold leading-snug text-zinc-900 sm:text-[1.0625rem]">
-              {index + 1}.{" "}
-              <Link
-                href={`/research/${finding.id}`}
-                className="hover:text-raptors hover:underline"
-                onClick={(event) => event.stopPropagation()}
-              >
-                {finding.headline}
-              </Link>
-            </h3>
-            <div className="flex shrink-0 items-center gap-2">
+          <div className="finding-accordion-header-row">
+            <FindingMetaBadges
+              category={finding.category}
+              index={index}
+              league={league}
+            />
+            <div className="finding-accordion-confidence-slot">
               <ConfidenceTierBadge tier={tier} />
-              <ChevronDown
-                className="finding-accordion-chevron"
-                aria-hidden
-              />
             </div>
+            <ChevronDown
+              className="finding-accordion-chevron"
+              aria-hidden
+            />
           </div>
+          <h3 className="finding-accordion-title">
+            {index + 1}.{" "}
+            <Link
+              href={`/research/${finding.id}`}
+              className="hover:text-raptors hover:underline"
+              onClick={(event) => event.stopPropagation()}
+            >
+              {finding.headline}
+            </Link>
+          </h3>
           <FindingSummaryTeaser summary={finding.summary} />
         </div>
       </summary>
