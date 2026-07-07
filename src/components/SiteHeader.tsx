@@ -7,6 +7,9 @@ import { Bell, UserCircle } from "lucide-react";
 import { Whistle } from "@/components/icons/Whistle";
 import { LeagueSwitch, SiteNav } from "./SiteNav";
 
+// TODO: Re-enable profile + notification controls when account features ship.
+const SHOW_HEADER_USER_CONTROLS = false;
+
 export function SiteHeader() {
   const pathname = usePathname();
   const isNhl = pathname.startsWith("/nhl");
@@ -48,14 +51,16 @@ export function SiteHeader() {
                 <LeagueSwitch />
               </div>
 
-              <div className="site-header-actions" aria-label="Account and notifications">
-                <button type="button" className="site-header-icon-btn" aria-label="Open profile">
-                  <UserCircle className="size-5" strokeWidth={1.85} />
-                </button>
-                <button type="button" className="site-header-icon-btn" aria-label="Open notifications">
-                  <Bell className="size-4" strokeWidth={2} />
-                </button>
-              </div>
+              {SHOW_HEADER_USER_CONTROLS ? (
+                <div className="site-header-actions" aria-label="Account and notifications">
+                  <button type="button" className="site-header-icon-btn" aria-label="Open profile">
+                    <UserCircle className="size-5" strokeWidth={1.85} />
+                  </button>
+                  <button type="button" className="site-header-icon-btn" aria-label="Open notifications">
+                    <Bell className="size-4" strokeWidth={2} />
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
