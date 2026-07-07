@@ -6,8 +6,10 @@ export function formatPct(rate: number): string {
   return `${(rate * 100).toFixed(1)}%`;
 }
 
-export function formatSigned(n: number): string {
-  return `${n >= 0 ? "+" : ""}${n}`;
+/** Signed delta with fixed decimal precision (avoids float display artifacts). */
+export function formatSigned(n: number, decimals = 1): string {
+  const formatted = n.toFixed(decimals);
+  return n >= 0 ? `+${formatted}` : formatted;
 }
 
 /** e.g. "+4.2 pts vs team" */

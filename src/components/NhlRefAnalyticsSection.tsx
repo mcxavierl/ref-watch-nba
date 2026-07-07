@@ -2,6 +2,7 @@ import { TermHelp } from "@/components/TermHelp";
 import { ProvenanceMarker, provenanceValueClass } from "@/components/ProvenanceMarker";
 import { SampleGateBadge } from "@/components/SampleGateBadge";
 import { formatPct } from "@/lib/nhl/data";
+import { formatSigned } from "@/lib/stats-utils";
 import type { NhlRefAnalytics } from "@/lib/types";
 
 const balanceCopy = {
@@ -52,8 +53,7 @@ export function NhlRefAnalyticsSection({
             {analytics.avgMinorsPerGame}
           </dd>
           <dd className="stat-detail">
-            {analytics.minorsDelta >= 0 ? "+" : ""}
-            {analytics.minorsDelta} vs {leagueMinors} league
+            {formatSigned(analytics.minorsDelta)} vs {leagueMinors} league
           </dd>
         </div>
         <div className="stat-cell">

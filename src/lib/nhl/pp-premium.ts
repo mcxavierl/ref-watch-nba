@@ -3,6 +3,7 @@ import { matchTeamString } from "@/lib/nhl/teams";
 import { findOddsTotal } from "@/lib/nhl/odds";
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { ppPremiumProvenance } from "@/lib/provenance";
+import { formatSigned } from "@/lib/stats-utils";
 import type {
   AssignmentGame,
   NhlPpPremiumSignal,
@@ -89,7 +90,7 @@ export function computePpPremiumSignal(
     sampleGames,
     headline: "PP Premium — lean Over",
     summary:
-      `Ref crew averages ${refMinorRate.toFixed(1)} minors/game (${minorDelta >= 0 ? "+" : ""}${minorDelta.toFixed(1)} vs league). ` +
+      `Ref crew averages ${refMinorRate.toFixed(1)} minors/game (${formatSigned(minorDelta)} vs league). ` +
       `${home.abbr} + ${away.abbr} special-teams edge ${(stEdge * 100).toFixed(1)} pts (PP% minus PK%).` +
       lineNote,
   };

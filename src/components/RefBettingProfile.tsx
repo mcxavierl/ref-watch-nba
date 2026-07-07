@@ -1,5 +1,6 @@
 import type { MetricProvenance, RefBettingStats, RefProfile } from "@/lib/types";
 import { formatPct } from "@/lib/data";
+import { formatSigned } from "@/lib/stats-utils";
 import { formatPctFromWlp, formatWlp } from "@/lib/ref-betting";
 import { TermHeading, TermHelp } from "@/components/TermHelp";
 import { ProvenanceMarker } from "@/components/ProvenanceMarker";
@@ -105,13 +106,13 @@ export function RefBettingProfile({
           <StatCell
             label="Avg total score"
             value={String(profile.avgTotalPoints)}
-            detail={`${profile.totalPointsDelta >= 0 ? "+" : ""}${profile.totalPointsDelta} vs league`}
+            detail={`${formatSigned(profile.totalPointsDelta)} vs league`}
             provenance={profile.provenance?.avgTotalPoints}
           />
           <StatCell
             label="Fouls per game"
             value={String(profile.avgFouls)}
-            detail={`${profile.foulsDelta >= 0 ? "+" : ""}${profile.foulsDelta} vs league`}
+            detail={`${formatSigned(profile.foulsDelta)} vs league`}
             provenance={profile.provenance?.avgFouls}
           />
           <StatCell

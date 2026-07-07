@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { RefProfile } from "@/lib/types";
 import { formatPct } from "@/lib/data";
+import { formatSigned } from "@/lib/stats-utils";
 import { SampleGateBadge } from "./SampleGateBadge";
 import { StatCell, StatStrip } from "./StatStrip";
 
@@ -17,14 +18,8 @@ export function RefStatGrid({
   scoreLabel?: string;
   overLabel?: string;
 }) {
-  const totalDelta =
-    profile.totalPointsDelta >= 0
-      ? `+${profile.totalPointsDelta}`
-      : String(profile.totalPointsDelta);
-  const foulsDelta =
-    profile.foulsDelta >= 0
-      ? `+${profile.foulsDelta}`
-      : String(profile.foulsDelta);
+  const totalDelta = formatSigned(profile.totalPointsDelta);
+  const foulsDelta = formatSigned(profile.foulsDelta);
 
   const prov = profile.provenance;
 
@@ -76,10 +71,7 @@ export function RefListItem({
   deltaUnit?: string;
 }) {
   const deltaThreshold = overBaseline > 50 ? 2 : 0.3;
-  const delta =
-    profile.totalPointsDelta >= 0
-      ? `+${profile.totalPointsDelta}`
-      : String(profile.totalPointsDelta);
+  const delta = formatSigned(profile.totalPointsDelta);
   const deltaColor =
     profile.totalPointsDelta > deltaThreshold
       ? "text-emerald-700"

@@ -25,6 +25,7 @@ import {
   formatSampleCount,
   sportCopy,
 } from "@/lib/user-language";
+import { formatSigned } from "@/lib/stats-utils";
 import { formatPremiumLabel } from "@/lib/whistle-premium";
 import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
 import { GameGrudgeStorylines } from "./GrudgeMatchSection";
@@ -81,14 +82,8 @@ export function GameSlateCard({
   const refSlug = sport === "nhl" ? nhlRefSlug : nbaRefSlug;
   const teams = detectTeams(awayTeam, homeTeam);
 
-  const totalDelta =
-    metrics.totalPointsDelta >= 0
-      ? `+${metrics.totalPointsDelta}`
-      : String(metrics.totalPointsDelta);
-  const foulsDelta =
-    metrics.foulsDelta >= 0
-      ? `+${metrics.foulsDelta}`
-      : String(metrics.foulsDelta);
+  const totalDelta = formatSigned(metrics.totalPointsDelta);
+  const foulsDelta = formatSigned(metrics.foulsDelta);
 
   const tier = confidenceTier(
     premium.sampleQuality,
@@ -170,8 +165,7 @@ export function GameSlateCard({
           </span>{" "}
           ·{" "}
           <span className="game-signal-value">
-            {premium.gapVsBenchmark >= 0 ? "+" : ""}
-            {premium.gapVsBenchmark}
+            {formatSigned(premium.gapVsBenchmark)}
           </span>{" "}
           vs {bench}
         </p>
@@ -246,7 +240,7 @@ export function GameSlateCard({
             />
             <MetricBlock
               label={copy.lineComparisonLabel}
-              value={`${premium.gapVsBenchmark >= 0 ? "+" : ""}${premium.gapVsBenchmark}`}
+              value={formatSigned(premium.gapVsBenchmark)}
               hint={`${premium.avgTotalPoints} avg vs ${bench}`}
               badge={`${formatPremiumLabel(premium.scoringPremium)} above avg`}
               badgeTone="neutral"

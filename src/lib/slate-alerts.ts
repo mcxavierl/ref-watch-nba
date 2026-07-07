@@ -6,6 +6,7 @@ import {
   computeSlatePremiums,
   paceAlerts,
 } from "@/lib/whistle-premium";
+import { formatSigned } from "@/lib/stats-utils";
 import type { AssignmentsFile, SlateAlertsFile } from "@/lib/types";
 
 export function computeSlateAlerts(
@@ -38,7 +39,7 @@ export function alertsSummary(alerts: SlateAlertsFile): string[] {
     lines.push("Pace alerts:");
     for (const alert of alerts.paceAlerts) {
       lines.push(
-        `• ${alert.matchup}: ${alert.alert === "high_pace" ? "HIGH PACE" : "LOW PACE"} crew (premium ${alert.scoringPremium >= 0 ? "+" : ""}${alert.scoringPremium}, gap vs line ${alert.gapVsBenchmark >= 0 ? "+" : ""}${alert.gapVsBenchmark})`,
+        `• ${alert.matchup}: ${alert.alert === "high_pace" ? "HIGH PACE" : "LOW PACE"} crew (premium ${formatSigned(alert.scoringPremium)}, gap vs line ${formatSigned(alert.gapVsBenchmark)})`,
       );
     }
   }

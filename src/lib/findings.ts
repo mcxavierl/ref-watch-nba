@@ -1,4 +1,5 @@
 import { formatPct, getRefStats } from "@/lib/data";
+import { formatSigned } from "@/lib/stats-utils";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName } from "@/lib/teams";
 import type {
@@ -519,12 +520,12 @@ function whistleParadoxFinding(stats: RefStatsFile): ScoredFindingBase | null {
     id: "whistle-paradox",
     category: "whistle-extreme",
     headline: `${ref.name} whistles heavy, scores stay low`,
-    summary: `${ref.name} averages ${ref.avgFouls} fouls (${ref.foulsDelta >= 0 ? "+" : ""}${ref.foulsDelta} vs league) yet only ${formatPct(ref.overRate)} of games beat ${stats.meta.leagueOverBaseline} points.`,
+    summary: `${ref.name} averages ${ref.avgFouls} fouls (${formatSigned(ref.foulsDelta)} vs league) yet only ${formatPct(ref.overRate)} of games beat ${stats.meta.leagueOverBaseline} points.`,
     stats: [
       {
         label: "Fouls per game",
         value: String(ref.avgFouls),
-        detail: `${ref.foulsDelta >= 0 ? "+" : ""}${ref.foulsDelta} vs league avg`,
+        detail: `${formatSigned(ref.foulsDelta)} vs league avg`,
       },
       {
         label: "Over benchmark",
@@ -534,7 +535,7 @@ function whistleParadoxFinding(stats: RefStatsFile): ScoredFindingBase | null {
       {
         label: "Avg combined score",
         value: String(ref.avgTotalPoints),
-        detail: `${ref.totalPointsDelta >= 0 ? "+" : ""}${ref.totalPointsDelta} vs ${stats.meta.leagueAvgTotal}`,
+        detail: `${formatSigned(ref.totalPointsDelta)} vs ${stats.meta.leagueAvgTotal}`,
       },
     ],
     sampleNote: `${ref.games} games · ${stats.meta.seasons.join(", ")}`,
@@ -574,8 +575,8 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
     id: "ats-outlier",
     category: "ats-edge",
     headline: `${best.ref.name}: home teams ${direction} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS`,
-    summary: `Among ${best.games} games with synthetic closing lines, home teams are ${formatWlpShort(record)} against the spread when ${best.ref.name} officiates — ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
-    explainer: `ATS splits require closing-line data. This sample uses simulated lines; treat as exploratory, not a live betting edge.`,
+    summary: `Among ${best.games} lined games, home teams are ${formatWlpShort(record)} against the spread when ${best.ref.name} officiates — ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
+    explainer: `ATS splits require closing-line data. Where sportsbook lines are unavailable, estimated lines are used — treat as exploratory, not a live betting edge.`,
     stats: [
       {
         label: "Home ATS",
@@ -593,7 +594,7 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: "Absolute deviation",
       },
     ],
-    sampleNote: `${best.games} ATS decisions · synthetic closing lines · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: `${best.games} ATS decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
     links: [{ label: best.ref.name, href: `/refs/${best.ref.slug}` }],
     score: rankScoreLocal(best.edge, best.games, MIN_ATS_GAMES),
     sampleGames: best.games,
@@ -631,7 +632,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
     category: "ou-edge",
     headline: `${best.ref.name} leans ${lean} vs closing totals`,
     summary: `Totals go ${lean} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} (${formatWlpShort(record)}) across ${best.games} lined games — ${(best.edge * 100).toFixed(1)} pts from 50%.`,
-    explainer: `O/U ATS uses synthetic closing totals in this seeded dataset. Sample gates (${MIN_OU_ATS_GAMES}+ decisive games) apply before surfacing.`,
+    explainer: `O/U ATS uses estimated closing totals where sportsbook data is unavailable. Minimum ${MIN_OU_ATS_GAMES}+ decisive games required before surfacing.`,
     stats: [
       {
         label: "O/U ATS",
@@ -649,7 +650,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `Leans ${lean}`,
       },
     ],
-    sampleNote: `${best.games} O/U decisions · synthetic closing lines · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: `${best.games} O/U decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
     links: [{ label: best.ref.name, href: `/refs/${best.ref.slug}` }],
     score: rankScoreLocal(best.edge, best.games, MIN_OU_ATS_GAMES),
     sampleGames: best.games,
@@ -722,12 +723,12 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
   return {
     id: "scoring-outlier",
     category: "ref-outlier",
-    headline: `${ref.name} runs ${ref.totalPointsDelta >= 0 ? "+" : ""}${ref.totalPointsDelta} on combined scoring`,
+    headline: `${ref.name} runs ${formatSigned(ref.totalPointsDelta)} on combined scoring`,
     summary: `${ref.name}'s ${ref.games} games average ${ref.avgTotalPoints} combined points (${formatPct(ref.overRate)} over ${stats.meta.leagueOverBaseline}) — one of the largest scoring deltas in the pool.`,
     stats: [
       {
         label: "Scoring delta",
-        value: `${ref.totalPointsDelta >= 0 ? "+" : ""}${ref.totalPointsDelta}`,
+        value: formatSigned(ref.totalPointsDelta),
         detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
       },
       {
@@ -738,7 +739,7 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
       {
         label: "Avg fouls",
         value: String(ref.avgFouls),
-        detail: `${ref.foulsDelta >= 0 ? "+" : ""}${ref.foulsDelta} vs league`,
+        detail: `${formatSigned(ref.foulsDelta)} vs league`,
       },
     ],
     sampleNote: `${MIN_REF_GAMES}+ game sample · ${stats.meta.seasons.join(", ")}`,
