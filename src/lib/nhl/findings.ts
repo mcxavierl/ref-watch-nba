@@ -26,7 +26,6 @@ const MIN_TEAM_GAMES = 8;
 const MIN_TEAM_CREW_GAMES = 12;
 const MIN_ATS_GAMES = 30;
 const MIN_OU_ATS_GAMES = 30;
-const MIN_ANALYTICS_GAMES = 30;
 
 function wlpDecisive(record: WlpRecord): number {
   return record.wins + record.losses;

@@ -6,7 +6,6 @@ import { rankScore } from "@/lib/findings-shared";
 import {
   computeMatrixExtremes,
   computeRefTeamMatrix,
-  MATRIX_MIN_GAMES,
   type MatrixExtremeHighlight,
 } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
