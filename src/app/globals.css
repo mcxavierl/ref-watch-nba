@@ -98,7 +98,19 @@ p {
 @layer components {
   /* ── Page shell & rhythm ── */
   .page-shell {
-    @apply mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12;
+    @apply mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-12;
+  }
+
+  .page-intro {
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  @media (min-width: 640px) {
+    .page-intro {
+      margin-top: var(--space-5);
+      margin-bottom: var(--space-8);
+    }
   }
 
   .page-hero {
@@ -358,6 +370,20 @@ p {
       0 2px 8px rgba(0, 0, 0, 0.18);
   }
 
+  .site-header-inner {
+    @apply mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4;
+  }
+
+  .site-header-brand {
+    @apply flex shrink-0 items-center gap-3 rounded-lg outline-offset-4 transition hover:opacity-95 focus-visible:outline-2 focus-visible:outline-white/80;
+  }
+
+  @media (min-width: 640px) {
+    .site-header-inner {
+      @apply flex-row items-center justify-between;
+    }
+  }
+
   .site-header-brand-icon {
     @apply flex size-11 items-center justify-center rounded-lg border border-white/35 bg-white;
     box-shadow:
@@ -387,9 +413,22 @@ p {
     color: rgba(255, 255, 255, 0.92);
   }
 
+  .site-header-proof {
+    margin-top: var(--space-1);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    line-height: var(--leading-snug);
+    letter-spacing: 0.01em;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
   @media (min-width: 640px) {
     .site-header-subtitle {
       font-size: 0.9375rem;
+    }
+
+    .site-header-proof {
+      font-size: var(--text-sm);
     }
   }
 
@@ -439,7 +478,7 @@ p {
   }
 
   .site-nav-wrap {
-    @apply flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3;
+    @apply flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3;
   }
 
   /* ── Buttons ── */
@@ -468,6 +507,41 @@ p {
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed);
     color: var(--muted);
+  }
+
+  /* ── Rankings toolbar ── */
+  .ranking-toolbar {
+    border-bottom: 1px solid var(--border-subtle);
+    padding: var(--space-4);
+  }
+
+  @media (min-width: 640px) {
+    .ranking-toolbar {
+      padding: var(--space-4) var(--space-5);
+    }
+  }
+
+  .ranking-select {
+    @apply rounded-md border border-border bg-white px-2 py-1.5 text-sm font-normal text-zinc-800;
+    max-width: 100%;
+  }
+
+  .ranking-toggle {
+    @apply flex items-center gap-2 text-sm text-zinc-700;
+  }
+
+  @media (max-width: 639px) {
+    .ranking-toolbar .flex {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .ranking-select {
+      display: block;
+      margin-left: 0;
+      margin-top: var(--space-2);
+      width: 100%;
+    }
   }
 
   /* ── Pro tease ── */
@@ -542,13 +616,62 @@ p {
     color: var(--muted);
   }
 
+  .data-table-rankings {
+    min-width: 34rem;
+  }
+
+  .table-scroll-wrap {
+    position: relative;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-scroll-hint {
+    display: none;
+  }
+
+  .data-table-sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--surface);
+    box-shadow: 4px 0 8px -4px rgba(24, 24, 27, 0.12);
+  }
+
+  .data-table-head .data-table-sticky-col {
+    background: color-mix(in srgb, var(--surface-raised) 60%, var(--surface));
+  }
+
+  tr:hover .data-table-sticky-col {
+    background: #fafafa;
+  }
+
   @media (max-width: 639px) {
-    .site-nav-link-secondary {
-      @apply flex-1 text-center text-xs px-2.5 py-1.5;
+    .table-scroll-hint {
+      display: block;
+      padding: var(--space-2) var(--space-4) 0;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .data-table-rank-col {
+      display: none;
     }
 
     .site-nav {
-      @apply w-full flex-wrap;
+      @apply w-full flex-nowrap overflow-x-auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .site-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .site-nav-link {
+      @apply shrink-0 text-xs px-2.5 py-1.5;
     }
   }
 

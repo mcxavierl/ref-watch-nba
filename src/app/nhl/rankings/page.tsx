@@ -28,7 +28,7 @@ export default function NhlRankingsPage() {
         ← Tonight&apos;s slate
       </Link>
 
-      <header className="mb-8 mt-5">
+      <header className="page-intro">
         <h1 className="page-title">
           NHL referee rankings
         </h1>

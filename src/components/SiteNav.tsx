@@ -71,7 +71,6 @@ export function SiteNav() {
               : link.href === "/research"
                 ? pathname.startsWith("/research")
                 : pathname === link.href || pathname.startsWith(`${link.href}/`);
-          const isSecondary = link.href !== homeHref;
           return (
             <Link
               key={link.href}
@@ -79,7 +78,7 @@ export function SiteNav() {
               aria-current={active ? "page" : undefined}
               className={`site-nav-link ${
                 active ? "site-nav-link-active" : "site-nav-link-inactive"
-              } ${isSecondary ? "site-nav-link-secondary" : ""}`}
+              }`}
             >
               {link.label}
             </Link>

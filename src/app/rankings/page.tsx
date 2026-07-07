@@ -25,7 +25,7 @@ export default function NbaRankingsPage() {
         ← Tonight&apos;s slate
       </Link>
 
-      <header className="mb-8 mt-5">
+      <header className="page-intro">
         <h1 className="page-title">
           NBA referee rankings
         </h1>

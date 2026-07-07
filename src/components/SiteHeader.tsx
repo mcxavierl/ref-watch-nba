@@ -12,10 +12,10 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
+      <div className="site-header-inner">
         <Link
           href={homeHref}
-          className="group flex shrink-0 items-center gap-3.5 rounded-lg outline-offset-4 transition hover:opacity-95 focus-visible:outline-2 focus-visible:outline-white/80"
+          className="site-header-brand group"
         >
           <span className="site-header-brand-icon transition duration-300 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
             <Whistle
@@ -24,16 +24,16 @@ export function SiteHeader() {
               aria-hidden
             />
           </span>
-          <div className="leading-tight">
+          <div className="min-w-0 leading-tight">
             <p className="site-header-title">REF WATCH</p>
             <p className="site-header-subtitle">
               Ref crew analytics before the game
             </p>
+            <p className="site-header-proof">
+              Free signals · sample-gated · no picks
+            </p>
           </div>
         </Link>
-        <span className="site-header-proof">
-          Free signals · sample-gated · no picks
-        </span>
         <SiteNav />
       </div>
     </header>
