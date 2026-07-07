@@ -142,7 +142,7 @@ export function GrudgeMatchSection({
         )}
       </div>
       <p className="mt-2 text-sm text-zinc-600">
-        Automated ref–team storylines for tonight&apos;s slate — win-rate
+        Automated ref–team storylines for tonight&apos;s slate, win-rate
         outliers, foul spikes, crew reunions, and split whistles. Player-specific
         history (e.g. star vs ref) is not in this dataset yet.
       </p>

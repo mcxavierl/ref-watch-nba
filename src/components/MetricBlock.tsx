@@ -47,7 +47,7 @@ export function MetricBlock({
       <p
         className={`font-mono text-xl font-semibold tabular-nums leading-tight ${provenanceValueClass(provenance) ?? "text-zinc-900"}`}
       >
-        {hidden ? "—" : value}
+        {hidden ? "-" : value}
       </p>
       {hint && !hidden && <p className="text-sm leading-snug text-zinc-600">{hint}</p>}
       {badge && (

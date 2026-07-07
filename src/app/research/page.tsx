@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FindingCard } from "@/components/FindingsSection";
+import { ResearchHubFindings } from "@/components/ResearchHubFindings";
 import { JsonLd } from "@/components/JsonLd";
 import { formatRefStatsRange, getRefStats } from "@/lib/data";
 import { formatRefStatsRange as formatNhlRange, getRefStats as getNhlRefStats } from "@/lib/nhl/data";
@@ -9,7 +9,7 @@ import { researchHubDatasetJsonLd } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Research hub — dataset findings",
+  title: "Research hub, dataset findings",
   description:
     "Ranked historical patterns from NBA and NHL referee datasets. Effect size, sample gates, and plain-language context.",
   alternates: { canonical: absoluteUrl("/research") },
@@ -39,7 +39,7 @@ export default function ResearchHubPage() {
         <p className="page-lead">
           {findings.length} findings ranked by effect size and sample size across
           NBA ({formatRefStatsRange(nbaStats.meta)}) and NHL (
-          {formatNhlRange(nhlStats.meta)}). Descriptive historical tendencies —
+          {formatNhlRange(nhlStats.meta)}). Descriptive historical tendencies,
           not betting advice.
         </p>
         <p className="mt-2 text-sm text-zinc-600">
@@ -49,43 +49,12 @@ export default function ResearchHubPage() {
         </p>
       </section>
 
-      {nbaFindings.length > 0 && (
-        <section className="section-block">
-          <h2 className="section-title">NBA findings</h2>
-          <p className="section-lead">
-            {nbaFindings.length} patterns from {nbaStats.refs.length} officials.
-          </p>
-          <div className="mt-4 space-y-3">
-            {nbaFindings.map((finding, index) => (
-              <FindingCard
-                key={finding.id}
-                finding={finding}
-                index={index}
-                league="NBA"
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {nhlFindings.length > 0 && (
-        <section className="section-block">
-          <h2 className="section-title">NHL findings</h2>
-          <p className="section-lead">
-            {nhlFindings.length} patterns from {nhlStats.refs.length} officials.
-          </p>
-          <div className="mt-4 space-y-3">
-            {nhlFindings.map((finding, index) => (
-              <FindingCard
-                key={finding.id}
-                finding={finding}
-                index={index}
-                league="NHL"
-              />
-            ))}
-          </div>
-        </section>
-      )}
+      <ResearchHubFindings
+        nbaFindings={nbaFindings}
+        nhlFindings={nhlFindings}
+        nbaRefCount={nbaStats.refs.length}
+        nhlRefCount={nhlStats.refs.length}
+      />
     </div>
   );
 }

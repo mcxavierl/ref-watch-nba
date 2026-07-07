@@ -81,7 +81,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           {playingSurface}, or by individual official. Over this sample {teamLabel}{" "}
           are{" "}
           {teamRecord.wins}-{teamRecord.losses} ({formatPct(teamRecord.winRate)}
-          ) — each ref and crew win rate below is compared to that team average.
+          ); each ref and crew win rate below is compared to that team average.
         </p>
         <p className="page-meta">
           <span
@@ -145,23 +145,23 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         <summary>What am I looking at?</summary>
         <ul className="space-y-2.5 text-sm leading-relaxed text-zinc-600">
           <li>
-            <span className="font-medium text-zinc-800">Ref crews</span> — stats
+            <span className="font-medium text-zinc-800">Ref crews</span>: stats
             when the same {crewSize} officials worked together on {teamLabel}{" "}
             games ({TEAM_CREW_MIN_GAMES}+ games shown by default).
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Individual refs</span> —
+            <span className="font-medium text-zinc-800">Individual refs</span>:
             stats for one official across all {team.name} games they worked, even
             with different partners.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Team baseline</span> —{" "}
+            <span className="font-medium text-zinc-800">Team baseline</span>:{" "}
             {teamLabel} went {teamRecord.wins}-{teamRecord.losses} (
             {formatPct(teamRecord.winRate)}) across this sample. Ref and crew win
             rates show how they compare to that team average.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Foul edge</span> —{" "}
+            <span className="font-medium text-zinc-800">Foul edge</span>:{" "}
             {isNhl
               ? "PIM differential. A positive number means opponents are penalized more often than"
               : "who gets called more. A positive number means opponents are whistled more often than"}{" "}

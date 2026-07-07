@@ -10,7 +10,7 @@ import {
 import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "NHL league trends — 5 seasons",
+  title: "NHL league trends, 5 seasons",
   description:
     "Five-season NHL scoring, minor penalty, and overtime trends from Ref Watch baselines. Year-over-year context in plain language.",
   alternates: { canonical: absoluteUrl("/nhl/trends") },
@@ -34,7 +34,7 @@ export default function NhlTrendsPage() {
         <h1 className="page-title">NHL league trends</h1>
         <p className="page-lead">
           Five-season goal, minor, and overtime baselines from game logs.
-          Historical context only — see{" "}
+          Historical context only; see{" "}
           <Link href="/methodology" className="font-medium text-zinc-800 hover:underline">
             methodology
           </Link>
@@ -43,8 +43,8 @@ export default function NhlTrendsPage() {
         {(usingFallback || seeded) && (
           <p className="mt-2 text-sm text-amber-800">
             {seeded
-              ? "Historical game logs — provenance tags apply."
-              : "Using fallback baselines — run compute-baselines when live logs are available."}
+              ? "Historical game logs, provenance tags apply."
+              : "Using fallback baselines; run compute-baselines when live logs are available."}
           </p>
         )}
       </section>
@@ -87,12 +87,12 @@ export default function NhlTrendsPage() {
                   <td className="px-4 py-3 font-mono tabular-nums text-zinc-800">
                     {row.leagueAvgMinors !== undefined
                       ? row.leagueAvgMinors
-                      : "—"}
+                      : "-"}
                   </td>
                   <td className="px-4 py-3 font-mono tabular-nums text-zinc-800">
                     {row.leagueOvertimeRate !== undefined
                       ? formatPct(row.leagueOvertimeRate)
-                      : "—"}
+                      : "-"}
                   </td>
                 </tr>
               ))}

@@ -25,7 +25,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
             <p className="site-footer-heading">Data sources</p>
             <p className="site-footer-body">
               Not affiliated with the {leagueLabel}. No sportsbook affiliate
-              links — independent research only. Official assignments from{" "}
+              links, independent research only. Official assignments from{" "}
               {isNhl ? (
                 <a
                   href="https://api-web.nhle.com"
@@ -82,7 +82,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
           <div>
             <p className="site-footer-heading">Disclaimer</p>
             <p className="site-footer-body">
-              Patterns from past games — not predictions. For research and
+              Patterns from past games, not predictions. For research and
               entertainment only. Not betting advice.
             </p>
             <p className="mt-3 site-footer-body">

@@ -29,7 +29,7 @@ export function computeSlateAlerts(
 export function alertsSummary(alerts: SlateAlertsFile): string[] {
   const lines: string[] = [];
   lines.push(
-    `Ref Watch slate alerts — ${alerts.assignmentsDate}${alerts.isPreview ? " (preview)" : ""}`,
+    `Ref Watch slate alerts, ${alerts.assignmentsDate}${alerts.isPreview ? " (preview)" : ""}`,
   );
   lines.push("");
 
@@ -56,7 +56,7 @@ export function alertsSummary(alerts: SlateAlertsFile): string[] {
 
   lines.push("");
   lines.push(
-    "Informational only — historical patterns, not betting advice.",
+    "Informational only, historical patterns, not betting advice.",
   );
 
   return lines;

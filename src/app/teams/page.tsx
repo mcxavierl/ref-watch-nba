@@ -7,9 +7,9 @@ import { teamFullName, teamsByConference } from "@/lib/teams";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "All NBA teams — Ref Watch",
+  title: "All NBA teams | Ref Watch",
   description:
-    "Browse referee crew history for all 30 NBA teams — scoring trends, foul patterns, and home/away records.",
+    "Browse referee crew history for all 30 NBA teams: scoring trends, foul patterns, and home/away records.",
 };
 
 export default function TeamsIndexPage() {
@@ -21,7 +21,7 @@ export default function TeamsIndexPage() {
         <h1 className="page-title">All NBA teams</h1>
         <p className="page-lead">
           Pick a team to see how they&apos;ve performed under different referee
-          crews — scoring, fouls, and home/away splits.
+          crews: scoring, fouls, and home/away splits.
         </p>
       </section>
 

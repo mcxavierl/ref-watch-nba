@@ -35,8 +35,8 @@ export function sampleGateStatus(
     gateThreshold,
     cleared,
     label: cleared
-      ? `${sampleSize}/${gateThreshold} games — gate cleared`
-      : `${sampleSize}/${gateThreshold} games — below threshold`,
+      ? `${sampleSize}/${gateThreshold} games, gate cleared`
+      : `${sampleSize}/${gateThreshold} games, below threshold`,
   };
 }
 
@@ -79,7 +79,7 @@ export function baselineProvenance(
     note:
       resolved.source === "computed"
         ? `League baseline from ${resolved.season ?? "season"} game logs.`
-        : "Static league fallback — run npm run compute-baselines after game logs exist.",
+        : "Static league fallback; run npm run compute-baselines after game logs exist.",
   };
 }
 
@@ -114,7 +114,7 @@ export function crewMetricsProvenance(
       gateThreshold: minSample,
       note: gate.cleared
         ? "Crew average from qualified ref histories."
-        : "Crew pool below qualified-ref minimum — treat as directional only.",
+        : "Crew pool below qualified-ref minimum; treat as directional only.",
     }),
     scoring: metricFromTag(partialBecauseSample, {
       sampleSize: poolGames,
@@ -242,7 +242,7 @@ export function ppPremiumProvenance(
       gateThreshold: PP_PREMIUM_MIN_REF_GAMES,
     }),
     specialTeamsEdge: metricFromTag("computed-with-partial-data", {
-      note: "Season PP/PK snapshot — not walk-forward.",
+      note: "Season PP/PK snapshot, not walk-forward.",
     }),
     sampleGate: sampleGateStatus(signal.sampleGames, PP_PREMIUM_MIN_REF_GAMES),
     minorsBaseline: minorsBaseline,
@@ -295,7 +295,7 @@ export function refBettingStatsProvenance(
     lines: metricFromTag(linesTag, {
       note: stats.linesAvailable
         ? meta.note
-        : "No closing lines on file — ATS/O/U unavailable.",
+        : "No closing lines on file; ATS/O/U unavailable.",
     }),
     bucketGateThreshold: bucketGate,
   };

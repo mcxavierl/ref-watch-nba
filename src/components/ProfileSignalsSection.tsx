@@ -1,18 +1,100 @@
 import Link from "next/link";
-import { SampleGateBadge } from "@/components/SampleGateBadge";
 import type { ProfileSignalsBundle } from "@/lib/profile-signals";
-import { formatDate } from "@/lib/data";
 
 export function ProfileSignalsSection({
   bundle,
   refName,
-  lastUpdated,
+  variant = "full",
 }: {
   bundle: ProfileSignalsBundle;
   refName: string;
-  lastUpdated: string;
+  lastUpdated?: string;
+  variant?: "full" | "sidebar";
 }) {
   const seeded = bundle.dataSource === "seeded";
+  const isEmpty = bundle.signals.length === 0;
+
+  if (variant === "sidebar") {
+    return (
+      <aside id="profile-signals" className="ref-signals-sidebar scroll-mt-24">
+        <div className="border-b border-border-subtle px-4 py-3 sm:px-5">
+          <h2 className="text-sm font-semibold text-zinc-800">Profile signals</h2>
+          <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+            Data-led patterns, informational only.
+          </p>
+        </div>
+
+        {isEmpty ? (
+          <div className="ref-signals-empty">
+            <p className="text-sm font-medium text-zinc-800">No standout patterns</p>
+            <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+              {refName}&apos;s metrics sit near league averages. Check back as more
+              games are logged.
+            </p>
+          </div>
+        ) : (
+          <ul className="divide-y divide-border-subtle">
+            {bundle.signals.map((signal) => (
+              <li key={signal.kind} className="px-4 py-4 sm:px-5">
+                <div className="flex flex-wrap items-start gap-x-2 gap-y-1">
+                  <h3 className="min-w-0 flex-1 text-sm font-semibold text-zinc-900">
+                    {signal.headline}
+                  </h3>
+                  {signal.notable && (
+                    <span className="profile-signal-badge shrink-0 rounded-md bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-900 ring-1 ring-sky-200/80">
+                      Notable
+                    </span>
+                  )}
+                </div>
+                <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+                  {signal.body}
+                </p>
+                {signal.stats.length > 0 && (
+                  <dl className="mt-3 grid gap-2">
+                    {signal.stats.map((stat) => (
+                      <div
+                        key={stat.label}
+                        className="rounded-md bg-zinc-50 px-2.5 py-2"
+                      >
+                        <dt className="text-xs font-medium text-zinc-500">
+                          {stat.label}
+                        </dt>
+                        <dd className="mt-0.5 font-mono text-sm font-semibold tabular-nums text-zinc-900">
+                          {stat.value}
+                        </dd>
+                        {stat.detail && (
+                          <dd className="mt-0.5 text-xs text-zinc-500">
+                            {stat.detail}
+                          </dd>
+                        )}
+                      </div>
+                    ))}
+                  </dl>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {seeded && (
+          <div className="border-t border-border-subtle bg-amber-50/60 px-4 py-2.5 sm:px-5">
+            <p className="text-xs leading-relaxed text-amber-900">
+              Historical dataset, some splits use estimated closing lines.
+            </p>
+          </div>
+        )}
+
+        <div className="border-t border-border-subtle px-4 py-2.5 sm:px-5">
+          <Link
+            href="/research"
+            className="text-xs font-medium text-zinc-700 hover:text-zinc-900 hover:underline"
+          >
+            All dataset findings →
+          </Link>
+        </div>
+      </aside>
+    );
+  }
 
   return (
     <section id="profile-signals" className="section-block scroll-mt-24">
@@ -20,7 +102,7 @@ export function ProfileSignalsSection({
         <div>
           <h2 className="section-title">Profile signals</h2>
           <p className="section-lead">
-            Data-led patterns for {refName} — informational only, not picks.
+            Data-led patterns for {refName}, informational only, not picks.
           </p>
         </div>
         <Link
@@ -32,24 +114,7 @@ export function ProfileSignalsSection({
       </div>
 
       <div className="data-card">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 border-b border-border-subtle px-4 py-3 sm:px-5">
-          <SampleGateBadge gate={bundle.sampleGate} className="shrink-0" />
-          <span
-            className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ${
-              seeded
-                ? "bg-amber-50 text-amber-900 ring-1 ring-amber-200/80"
-                : "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/80"
-            }`}
-          >
-            {seeded ? "Historical data" : "Live data"}
-          </span>
-          <span className="min-w-0 text-xs text-zinc-500">
-            {bundle.sampleGames} games · {bundle.seasonRange} · Updated{" "}
-            {formatDate(lastUpdated)}
-          </span>
-        </div>
-
-        {bundle.signals.length === 0 ? (
+        {isEmpty ? (
           <div className="px-4 py-8 text-center sm:px-5">
             <p className="text-sm font-medium text-zinc-800">
               No standout patterns in this history
@@ -106,7 +171,7 @@ export function ProfileSignalsSection({
         {seeded && (
           <div className="border-t border-border-subtle bg-amber-50/60 px-4 py-3 sm:px-5">
             <p className="text-xs leading-relaxed text-amber-900">
-              Historical dataset — some ATS/O/U splits use estimated closing lines
+              Historical dataset, some ATS/O/U splits use estimated closing lines
               where sportsbook data is unavailable. Patterns describe past games,
               not live market edges.
             </p>

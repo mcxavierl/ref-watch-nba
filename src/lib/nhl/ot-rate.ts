@@ -60,10 +60,10 @@ export function computeOtRateSignal(
     leagueOtRate: round3(leagueOtRate),
     homeSpread,
     sampleGames,
-    headline: "High OT rate crew — tight line",
+    headline: "High OT rate crew: tight line",
     summary:
       `Referee pair OT rate ${(refereeOtRate * 100).toFixed(1)}% vs league ${(leagueOtRate * 100).toFixed(1)}%. ` +
-      `Puck line ${homeSpread > 0 ? "+" : ""}${homeSpread} — consider OT/SO props when priced.`,
+      `Puck line ${homeSpread > 0 ? "+" : ""}${homeSpread}; consider OT/SO props when priced.`,
   };
   signal.provenance = otRateProvenance(signal, stats);
   return signal;

@@ -103,7 +103,7 @@ export function FindingsSection({
         <>
           <h2 className="section-title">{title}</h2>
           <p className="section-lead">
-            Top patterns ranked by effect size and sample size — not tied to
+            Top patterns ranked by effect size and sample size, not tied to
             tonight&apos;s slate.
           </p>
           {dataSourceNote && (

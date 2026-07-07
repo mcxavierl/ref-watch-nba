@@ -276,7 +276,7 @@ export function topShareSignals(feed: NightlyFeed, limit = 5): SyndicatedSignal[
 export function buildShareText(feed: NightlyFeed): string {
   const lines: string[] = [];
   lines.push(
-    `Ref Watch ${feed.league} slate — ${feed.slateDate}${feed.isPreview ? " (preview)" : ""}`,
+    `Ref Watch ${feed.league} slate, ${feed.slateDate}${feed.isPreview ? " (preview)" : ""}`,
   );
   lines.push("");
 
@@ -304,19 +304,19 @@ export function slateMetadataDescription(feed: NightlyFeed): string {
       : resolveSlateGames(getNhlAssignments()).games.length;
 
   if (gameCount === 0) {
-    return `${feed.league} slate empty — check back after assignments drop. ${AFFILIATION_SHORT}`;
+    return `${feed.league} slate empty; check back after assignments drop. ${AFFILIATION_SHORT}`;
   }
 
   const top = topShareSignals(feed, 3);
   if (top.length === 0) {
-    return `${gameCount} ${feed.league} game${gameCount === 1 ? "" : "s"} tonight — crew metrics with sample gates; no high-signal alerts cleared. ${AFFILIATION_SHORT}`;
+    return `${gameCount} ${feed.league} game${gameCount === 1 ? "" : "s"} tonight; crew metrics with sample gates; no high-signal alerts cleared. ${AFFILIATION_SHORT}`;
   }
 
   const hooks = top
     .map((s) => `${s.matchup}: ${s.headline}`)
     .join(" · ");
   const previewNote = feed.isPreview ? " Preview slate." : "";
-  return `${gameCount} game${gameCount === 1 ? "" : "s"} — ${hooks}.${previewNote} ${AFFILIATION_SHORT}`;
+  return `${gameCount} game${gameCount === 1 ? "" : "s"}; ${hooks}.${previewNote} ${AFFILIATION_SHORT}`;
 }
 
 const AFFILIATION_SHORT = "Not affiliated with the league. Informational only.";

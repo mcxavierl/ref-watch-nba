@@ -11,7 +11,7 @@ export function provenanceLabel(tag: ProvenanceTag): string {
   }
 }
 
-/** Fallback constants and genuinely incomplete slices — not thin samples. */
+/** Fallback constants and genuinely incomplete slices, not thin samples. */
 export function isEstimatedTag(tag: ProvenanceTag): boolean {
   return tag === "fallback-constant" || tag === "computed-with-partial-data";
 }

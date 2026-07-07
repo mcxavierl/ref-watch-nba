@@ -115,9 +115,9 @@ function leagueUnderFinding(stats: RefStatsFile): ScoredFindingBase {
   return {
     id: "league-under-bias",
     category: "league-trend",
-    headline: "The league tilts under — almost every ref",
+    headline: "The league tilts under, almost every ref",
     summary: `In this dataset, ${underCount} of ${refs.length} officials (${underPct}%) call games that finish below our ${meta.leagueOverBaseline}-point benchmark more often than above. Only ${overCount} refs trend the other way.`,
-    explainer: `The league-wide over rate (${formatPct(weightedOver)}) is games-weighted across all ref workloads. At ${formatPct(weightedOver)}, unders land more often than a neutral 50% baseline — a systemic era-wide pattern in this sample, not a handful of outliers.`,
+    explainer: `The league-wide over rate (${formatPct(weightedOver)}) is games-weighted across all ref workloads. At ${formatPct(weightedOver)}, unders land more often than a neutral 50% baseline, a systemic era-wide pattern in this sample, not a handful of outliers.`,
     stats: [
       {
         label: "Refs trending under",
@@ -156,7 +156,7 @@ function rareOverRefsFinding(stats: RefStatsFile): ScoredFindingBase | null {
   return {
     id: "rare-over-refs",
     category: "ref-outlier",
-    headline: `Only ${overRefs.length} refs trend over — out of ${qualified.length}`,
+    headline: `Only ${overRefs.length} refs trend over, out of ${qualified.length}`,
     summary: `Among officials with ${MIN_REF_GAMES}+ games, just ${overRefs.length} finish above the ${meta.leagueOverBaseline}-point benchmark more often than not.`,
     explainer: `That's ${Math.round((overRefs.length / qualified.length) * 100)}% of high-volume refs. The over club: ${names}. Hunting overs means targeting specific refs, not league-wide assumptions.`,
     stats: [
@@ -240,7 +240,7 @@ function overRateTeamSplitFinding(stats: RefStatsFile): ScoredFindingBase | null
     id: "over-rate-team-split",
     category: "ref-team-split",
     headline: `${best.ref.name}'s over rate swings by opponent`,
-    summary: `With ${best.ref.name}, ${formatPct(best.highOver)} of ${highName} games beat ${stats.meta.leagueOverBaseline} combined points — ${lowName} games only ${formatPct(best.lowOver)}.`,
+    summary: `With ${best.ref.name}, ${formatPct(best.highOver)} of ${highName} games beat ${stats.meta.leagueOverBaseline} combined points, ${lowName} games only ${formatPct(best.lowOver)}.`,
     explainer: `The ${(best.spread * 100).toFixed(0)}-point over-rate gap is historical scoring frequency vs a neutral 50% baseline, not sportsbook pricing.`,
     stats: [
       {
@@ -317,7 +317,7 @@ function foulEdgeLosingFinding(stats: RefStatsFile): ScoredFindingBase | null {
   return {
     id: "foul-edge-losing",
     category: "ref-team-split",
-    headline: `${best.ref.name} helps ${best.team} on fouls — but they still lose`,
+    headline: `${best.ref.name} helps ${best.team} on fouls, but they still lose`,
     summary: `With ${best.ref.name} on ${teamName} games, opponents are whistled ${best.foulDiff >= 0 ? "+" : ""}${best.foulDiff.toFixed(1)} more fouls per game. Yet ${teamName} win just ${formatPct(best.winRate)}.`,
     explainer: `Foul edge doesn't always convert to wins or overs. These games average ${best.avgTotal} combined points (${formatPct(best.overRate)} over rate).`,
     stats: [
@@ -481,7 +481,7 @@ function crossTeamWhistleFinding(
     id: "cross-team-whistle",
     category: "whistle-extreme",
     headline: `${ref.name} whistles differently by team`,
-    summary: `${favoredName} draw ${favored.foulDiff >= 0 ? "+" : ""}${favored.foulDiff.toFixed(1)} fouls per game with ${ref.name}; ${penalizedName} see ${penalized.foulDiff.toFixed(1)} — a ${spread.toFixed(1)}-foul swing.`,
+    summary: `${favoredName} draw ${favored.foulDiff >= 0 ? "+" : ""}${favored.foulDiff.toFixed(1)} fouls per game with ${ref.name}; ${penalizedName} see ${penalized.foulDiff.toFixed(1)}, a ${spread.toFixed(1)}-foul swing.`,
     stats: [
       {
         label: `${favored.team} foul edge`,
@@ -575,8 +575,8 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
     id: "ats-outlier",
     category: "ats-edge",
     headline: `${best.ref.name}: home teams ${direction} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS`,
-    summary: `Among ${best.games} lined games, home teams are ${formatWlpShort(record)} against the spread when ${best.ref.name} officiates — ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
-    explainer: `ATS splits require closing-line data. Where sportsbook lines are unavailable, estimated lines are used — treat as exploratory, not a live betting edge.`,
+    summary: `Among ${best.games} lined games, home teams are ${formatWlpShort(record)} against the spread when ${best.ref.name} officiates, ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
+    explainer: `ATS splits require closing-line data. Where sportsbook lines are unavailable, estimated lines are used; treat as exploratory, not a live betting edge.`,
     stats: [
       {
         label: "Home ATS",
@@ -631,7 +631,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
     id: "ou-ats-edge",
     category: "ou-edge",
     headline: `${best.ref.name} leans ${lean} vs closing totals`,
-    summary: `Totals go ${lean} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} (${formatWlpShort(record)}) across ${best.games} lined games — ${(best.edge * 100).toFixed(1)} pts from 50%.`,
+    summary: `Totals go ${lean} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} (${formatWlpShort(record)}) across ${best.games} lined games, ${(best.edge * 100).toFixed(1)} pts from 50%.`,
     explainer: `O/U ATS uses estimated closing totals where sportsbook data is unavailable. Minimum ${MIN_OU_ATS_GAMES}+ decisive games required before surfacing.`,
     stats: [
       {
@@ -724,7 +724,7 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
     id: "scoring-outlier",
     category: "ref-outlier",
     headline: `${ref.name} runs ${formatSigned(ref.totalPointsDelta)} on combined scoring`,
-    summary: `${ref.name}'s ${ref.games} games average ${ref.avgTotalPoints} combined points (${formatPct(ref.overRate)} over ${stats.meta.leagueOverBaseline}) — one of the largest scoring deltas in the pool.`,
+    summary: `${ref.name}'s ${ref.games} games average ${ref.avgTotalPoints} combined points (${formatPct(ref.overRate)} over ${stats.meta.leagueOverBaseline}), one of the largest scoring deltas in the pool.`,
     stats: [
       {
         label: "Scoring delta",

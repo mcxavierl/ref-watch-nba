@@ -71,7 +71,7 @@ export function SlateShareBar({
         <div>
           <h2 className="section-title">Share tonight&apos;s signal pack</h2>
           <p className="section-lead">
-            Minimum game thresholds apply — estimated values marked. Not betting advice.
+            Minimum game thresholds apply; estimated values marked. Not betting advice.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -117,7 +117,7 @@ export function SlateShareBar({
             className="share-signal-item"
           >
             <span className="font-semibold text-zinc-900">{signal.matchup}</span>
-            {" — "}
+            {" · "}
             {signal.headline}
             {signal.provenance !== "computed-from-real" && (
               <span className="ml-1 text-xs font-medium text-amber-800">

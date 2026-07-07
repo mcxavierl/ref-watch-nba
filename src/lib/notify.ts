@@ -1,6 +1,6 @@
 import { SITE_NAME } from "@/lib/site";
 
-/** Server-side only — never import from client components. */
+/** Server-side only, never import from client components. */
 export const SEASON_NOTIFY_DESTINATION = "mcxl55@gmail.com";
 
 const PUBLIC_CONTACT_EMAIL = "hello@refwatch.ca";
@@ -13,7 +13,7 @@ export function isValidNotifyEmail(email: string): boolean {
 
 export function seasonNotifyMailto(league: "NBA" | "NHL"): string {
   const subject = encodeURIComponent(
-    `${league} season alerts — ${SITE_NAME}`,
+    `${league} season alerts | ${SITE_NAME}`,
   );
   const body = encodeURIComponent(
     `Notify me when ${league} crew assignments and nightly slate signals return on ${SITE_NAME}.\n\nEmail: \nLeague: ${league}\n`,

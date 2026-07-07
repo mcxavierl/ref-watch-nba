@@ -5,7 +5,7 @@ import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
 export function TonightEdgeSummary({
   items,
   title = "Tonight's biggest officiating factors",
-  emptyMessage = "No standout officiating edges on this slate — scan game cards below for crew history.",
+  emptyMessage = "No standout officiating edges on this slate; scan game cards below for crew history.",
 }: {
   items: EdgeSummaryItem[];
   title?: string;

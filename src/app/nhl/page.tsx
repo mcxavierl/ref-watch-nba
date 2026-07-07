@@ -44,9 +44,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const feed = buildNhlNightlyFeed();
   const isOffseason = assignments.games.length === 0;
   const description = isOffseason
-    ? "NHL ref and crew analytics during the offseason — dataset findings, ref profiles, and team histories."
+    ? "NHL ref and crew analytics during the offseason, dataset findings, ref profiles, and team histories."
     : slateMetadataDescription(feed);
-  const title = isOffseason ? "NHL ref data — offseason" : "Tonight's NHL slate";
+  const title = isOffseason ? "NHL ref data (offseason)" : "Tonight's NHL slate";
   return {
     title,
     description,
@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: absoluteUrl("/nhl"),
     },
     openGraph: {
-      title: `${title} — Ref Watch`,
+      title: `${title} | Ref Watch`,
       description,
       url: absoluteUrl("/nhl"),
       type: "website",
@@ -114,7 +114,7 @@ export default function NhlHomePage() {
           {
             "@context": "https://schema.org",
             "@type": "WebPage",
-            name: isOffseason ? "NHL ref data — offseason" : "Tonight's NHL slate",
+            name: isOffseason ? "NHL ref data (offseason)" : "Tonight's NHL slate",
             description: slateMetadataDescription(nightlyFeed),
             url: absoluteUrl("/nhl"),
             dateModified: assignments.lastUpdated,
@@ -192,7 +192,7 @@ export default function NhlHomePage() {
             (30+ ref games, 8+ team splits, 30+ ATS decisions).
           </li>
           <li>
-            <TermHelp id="nhl-whistle-premium" /> — crew avg combined goals minus
+            <TermHelp id="nhl-whistle-premium" />: crew avg combined goals minus
             league baseline ({refStats.meta.leagueAvgTotal}).
           </li>
           <li>
@@ -202,7 +202,7 @@ export default function NhlHomePage() {
           </li>
           <li>
             Seasons covered: {refStats.meta.seasons.join(", ")} (
-            {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "—"} games).
+            {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
           </li>
           <li>
             <ProComingSoonTease league="NHL" compact />

@@ -35,7 +35,7 @@ export function StatCell({
       <dd
         className={`stat-value ${provenanceValueClass(provenance) ?? ""}`.trim()}
       >
-        {hidden ? "—" : value}
+        {hidden ? "-" : value}
       </dd>
       {detail && !hidden && <dd className="stat-detail">{detail}</dd>}
       {annotation && <dd className="stat-annotation">{annotation}</dd>}

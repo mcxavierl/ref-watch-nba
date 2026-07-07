@@ -40,7 +40,7 @@ export async function preloadRefStatsFromAssets(
   }
 }
 
-/** Load only the leagues a route needs — avoids parsing both 8MB files on every request. */
+/** Load only the leagues a route needs, avoids parsing both 8MB files on every request. */
 export function leaguesForPath(pathname: string): League[] {
   if (pathname.startsWith("/nhl")) return ["nhl"];
   if (

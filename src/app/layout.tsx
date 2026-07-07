@@ -24,8 +24,8 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Referee crew analytics`,
-    template: `%s — ${SITE_NAME}`,
+    default: `${SITE_NAME} | Referee crew analytics`,
+    template: `%s | ${SITE_NAME}`,
   },
   description:
     "Tonight's NBA and NHL referee crews with historical scoring, whistle, and betting splits. Free nightly slate.",

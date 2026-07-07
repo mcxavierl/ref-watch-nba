@@ -166,7 +166,7 @@ export function WhistlePremiumSection({
           : oddsSource === "mixed"
             ? `sportsbook totals where available, else ${leagueOverBaseline ?? "league"} proxy`
             : `our ${leagueOverBaseline ?? "league"}-point proxy (set ODDS_API_KEY for real lines)`}
-        . Alerts require adequate sample size — suppressed when data is thin.
+        . Alerts require adequate sample size, suppressed when data is thin.
       </p>
 
       {paceAlerts.length > 0 && (
@@ -180,7 +180,7 @@ export function WhistlePremiumSection({
       {homeBiasSignals.length > 0 && (
         <div className="mt-6">
           <h3 className="text-sm font-semibold text-zinc-800">
-            Home / road bias (win-rate proxy — not ATS)
+            Home / road bias (win-rate proxy, not ATS)
           </h3>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {homeBiasSignals.map((bias) => (

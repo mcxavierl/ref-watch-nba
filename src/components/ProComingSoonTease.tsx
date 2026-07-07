@@ -26,7 +26,7 @@ export function ProComingSoonTease({
     return (
       <p className="text-sm leading-relaxed text-zinc-600">
         <span className="font-semibold text-zinc-800">Ref Watch Pro</span>{" "}
-        (coming soon) — automated slate alerts, line-move tracking, and deeper
+        (coming soon), automated slate alerts, line-move tracking, and deeper
         crew reunion stats.
       </p>
     );
@@ -36,10 +36,10 @@ export function ProComingSoonTease({
     <div className="pro-tease panel-inset mt-8 px-4 py-4 sm:px-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold text-zinc-900">Ref Watch Pro — coming soon</p>
+          <p className="text-sm font-bold text-zinc-900">Ref Watch Pro, coming soon</p>
           <p className="mt-1.5 text-sm leading-relaxed text-zinc-600">
             Slate alerts before tip-off, line-move context, and reunion-level
-            crew stats — built on the same sample gates you see today.
+            crew stats, built on the same sample gates you see today.
           </p>
           <ul className="pro-tease-features mt-3 space-y-1.5 text-sm text-zinc-600">
             <li>Email when tonight&apos;s biggest edges post</li>

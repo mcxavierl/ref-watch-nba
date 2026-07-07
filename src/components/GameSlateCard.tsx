@@ -171,7 +171,7 @@ export function GameSlateCard({
         {metrics.insufficientSample ? (
           <p className="text-sm text-zinc-600">
             Not enough qualified crew history ({metrics.crew.length} official
-            {metrics.crew.length === 1 ? "" : "s"} — need 2+ refs at sample
+            {metrics.crew.length === 1 ? "" : "s"}, need 2+ refs at sample
             gate). No crew averages shown.
           </p>
         ) : (

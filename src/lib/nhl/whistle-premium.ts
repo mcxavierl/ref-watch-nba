@@ -92,7 +92,7 @@ function buildAlert(
   ) {
     return {
       alert: null,
-      reason: "Sample too thin — alert suppressed until more crew history.",
+      reason: "Sample too thin, alert suppressed until more crew history.",
     };
   }
 
@@ -106,7 +106,7 @@ function buildAlert(
         : `${premium.benchmarkTotal} league proxy`;
     return {
       alert: "high_pace",
-      reason: `Crew scoring premium ${formatSigned(premium.scoringPremium)} vs league; historical avg ${premium.avgTotalPoints} goals sits ${formatSigned(premium.gapVsBenchmark)} above ${bench}. Historical association only — not a bet recommendation.`,
+      reason: `Crew scoring premium ${formatSigned(premium.scoringPremium)} vs league; historical avg ${premium.avgTotalPoints} goals sits ${formatSigned(premium.gapVsBenchmark)} above ${bench}. Historical association only, not a bet recommendation.`,
     };
   }
 
@@ -120,7 +120,7 @@ function buildAlert(
         : `${premium.benchmarkTotal} league proxy`;
     return {
       alert: "low_pace",
-      reason: `Crew scoring premium ${formatSigned(premium.scoringPremium)} vs league; historical avg ${premium.avgTotalPoints} goals sits ${formatSigned(premium.gapVsBenchmark)} below ${bench}. Historical association only — not a bet recommendation.`,
+      reason: `Crew scoring premium ${formatSigned(premium.scoringPremium)} vs league; historical avg ${premium.avgTotalPoints} goals sits ${formatSigned(premium.gapVsBenchmark)} below ${bench}. Historical association only, not a bet recommendation.`,
     };
   }
 

@@ -8,7 +8,7 @@ export function OffseasonSlateNotice({ league }: { league: "NBA" | "NHL" }) {
       <div className="offseason-callout">
         <span className="offseason-badge">No live slate</span>
         <h2 id="offseason-callout-heading" className="section-title">
-          {league} season ended — no slate tonight
+          {league} season ended, no slate tonight
         </h2>
         <p className="section-lead">
           Live crew assignments return when the {league} schedule resumes. Until

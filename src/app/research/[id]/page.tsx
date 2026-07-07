@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { JsonLd } from "@/components/JsonLd";
 import { StatCell, StatStrip } from "@/components/StatStrip";
 import { getRefStats } from "@/lib/data";
@@ -100,16 +101,8 @@ export default async function ResearchFindingPage({
       )}
 
       {finding.links.length > 0 && (
-        <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2">
-          {finding.links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-zinc-800 hover:text-raptors hover:underline"
-            >
-              {link.label} →
-            </Link>
-          ))}
+        <div className="mt-6">
+          <FindingFooterLinks links={finding.links} />
         </div>
       )}
 
@@ -124,7 +117,7 @@ export default async function ResearchFindingPage({
             applicable.
           </li>
           <li>
-            Estimated closing lines disclosed where applicable — not betting advice.
+            Estimated closing lines disclosed where applicable, not betting advice.
           </li>
           <li>
             <Link href="/methodology" className="font-medium text-zinc-800 hover:underline">

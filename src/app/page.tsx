@@ -46,9 +46,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const feed = buildNbaNightlyFeed();
   const isOffseason = assignments.games.length === 0;
   const description = isOffseason
-    ? "NBA ref and crew analytics during the offseason — dataset findings, ref profiles, and team histories."
+    ? "NBA ref and crew analytics during the offseason, dataset findings, ref profiles, and team histories."
     : slateMetadataDescription(feed);
-  const title = isOffseason ? "NBA ref data — offseason" : "Tonight's NBA slate";
+  const title = isOffseason ? "NBA ref data (offseason)" : "Tonight's NBA slate";
   return {
     title,
     description,
@@ -56,7 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: absoluteUrl("/"),
     },
     openGraph: {
-      title: `${title} — Ref Watch`,
+      title: `${title} | Ref Watch`,
       description,
       url: absoluteUrl("/"),
       type: "website",
@@ -111,7 +111,7 @@ export default function HomePage() {
           {
             "@context": "https://schema.org",
             "@type": "WebPage",
-            name: isOffseason ? "NBA ref data — offseason" : "Tonight's NBA slate",
+            name: isOffseason ? "NBA ref data (offseason)" : "Tonight's NBA slate",
             description: slateMetadataDescription(nightlyFeed),
             url: absoluteUrl("/"),
             dateModified: assignments.lastUpdated,
@@ -186,7 +186,7 @@ export default function HomePage() {
             (30+ ref games, 8+ team splits, 30+ ATS decisions).
           </li>
           <li>
-            <TermHelp id="whistle-premium" /> — crew avg combined score minus
+            <TermHelp id="whistle-premium" />: crew avg combined score minus
             league baseline ({refStats.meta.leagueAvgTotal}).
           </li>
           <li>
@@ -197,7 +197,7 @@ export default function HomePage() {
           </li>
           <li>
             Seasons covered: {refStats.meta.seasons.join(", ")} (
-            {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "—"} games).
+            {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
           </li>
           <li>
             <ProComingSoonTease league="NBA" compact />

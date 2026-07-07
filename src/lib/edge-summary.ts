@@ -65,7 +65,7 @@ function premiumEdge(
 function homeBiasEdge(bias: CrewHomeBias): EdgeSummaryItem {
   return {
     id: `home-bias-${bias.gameId}`,
-    matchup: bias.headline.split("—")[0]?.trim() ?? bias.headline,
+    matchup: bias.headline.split(",")[0]?.trim() ?? bias.headline,
     edge: bias.summary,
     sample: formatSampleCount(bias.sampleGames),
     confidence: confidenceTier(

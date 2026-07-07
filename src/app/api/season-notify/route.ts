@@ -20,7 +20,7 @@ async function sendViaResend(
     body: JSON.stringify({
       from: "Ref Watch <notify@refwatch.ca>",
       to: [SEASON_NOTIFY_DESTINATION],
-      subject: `Ref Watch season notify — ${league}`,
+      subject: `Ref Watch season notify, ${league}`,
       text: [
         `New season-start notification signup on ${SITE_NAME}.`,
         "",
@@ -59,7 +59,7 @@ async function sendViaFormSubmit(
       body: JSON.stringify({
         email,
         league,
-        _subject: `Ref Watch season notify — ${league}`,
+        _subject: `Ref Watch season notify, ${league}`,
         _template: "table",
         _captcha: "false",
       }),

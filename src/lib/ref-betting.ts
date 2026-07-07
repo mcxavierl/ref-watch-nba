@@ -10,6 +10,6 @@ export function formatPctFromWlp(
   pushes = 0,
 ): string {
   const n = wins + losses + pushes;
-  if (n === 0) return "—";
+  if (n === 0) return "-";
   return `${((wins / n) * 100).toFixed(1)}%`;
 }

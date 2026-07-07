@@ -30,7 +30,7 @@ export default function MethodologyPage() {
         <h1 className="page-title">Methodology</h1>
         <p className="page-lead">
           How Ref Watch computes referee analytics, ranks research findings, and
-          labels data confidence. Descriptive historical tendencies — not
+          labels data confidence. Descriptive historical tendencies, not
           predictions or betting advice.
         </p>
       </section>
@@ -42,7 +42,7 @@ export default function MethodologyPage() {
             <li>
               Ref profiles and rankings default to officials with{" "}
               {nbaStats.meta.minSampleSize}+ games. Below-gate refs are hidden
-              or dimmed — treat as directional only.
+              or dimmed; treat as directional only.
             </li>
             <li>
               Team–ref splits require 8+ games per pairing; crew anomalies need
@@ -67,12 +67,12 @@ export default function MethodologyPage() {
               depth.
             </li>
             <li>
-              Category deduplication keeps the hub diverse — at most one finding
+              Category deduplication keeps the hub diverse, at most one finding
               per category once three picks are chosen.
             </li>
             <li>
               Language is descriptive: &ldquo;historical tendency,&rdquo;
-              &ldquo;over rate,&rdquo; &ldquo;foul edge&rdquo; — never picks or
+              &ldquo;over rate,&rdquo; &ldquo;foul edge&rdquo;, never picks or
               locks.
             </li>
             <li>
@@ -98,7 +98,7 @@ export default function MethodologyPage() {
             </li>
             <li>
               Some ATS/O/U splits use estimated closing lines where sportsbook
-              data is unavailable — disclosed on every affected finding.
+              data is unavailable, disclosed on every affected finding.
             </li>
             <li>
               <TermHelp id="provenance-estimated" /> markers flag fallback
@@ -112,12 +112,12 @@ export default function MethodologyPage() {
           <h2 className="section-title">Slate signals</h2>
           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-600">
             <li>
-              <TermHelp id="whistle-premium" /> — crew average combined score
+              <TermHelp id="whistle-premium" />: crew average combined score
               minus league baseline ({nbaStats.meta.leagueAvgTotal} NBA /{" "}
               {nhlStats.meta.leagueAvgTotal} NHL goals).
             </li>
             <li>
-              Home/road bias uses win and foul splits — not ATS.
+              Home/road bias uses win and foul splits, not ATS.
             </li>
             <li>
               Tonight&apos;s edges require qualified refs (2+ at{" "}
@@ -139,7 +139,7 @@ export default function MethodologyPage() {
             </li>
             <li>
               League trends from{" "}
-              <code className="text-xs">data/baselines.json</code> — five
+              <code className="text-xs">data/baselines.json</code>, five
               seasons of game-log aggregates.
             </li>
           </ul>
@@ -149,7 +149,7 @@ export default function MethodologyPage() {
           <h2 className="section-title">Disclaimer</h2>
           <p className="mt-3 text-sm leading-relaxed text-zinc-600">
             Patterns from past games do not predict future results. Ref Watch is
-            independent research — not affiliated with the NBA or NHL, and not
+            independent research, not affiliated with the NBA or NHL, and not
             betting advice. For entertainment and analysis only.
           </p>
         </section>

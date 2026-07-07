@@ -99,7 +99,7 @@ function otRateOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
     id: "nhl-ot-outlier",
     category: "ref-outlier",
     headline: `${best.ref.name} pushes ${formatPct(best.rate)} of games to OT/SO`,
-    summary: `${best.ref.name} reaches overtime or shootout ${formatPct(best.rate)} of the time (${best.otGames} of ${best.ref.games} games) — ${(Math.abs(best.edge) * 100).toFixed(1)} pts ${best.edge >= 0 ? "above" : "below"} the ${formatPct(leagueOt)} league rate.`,
+    summary: `${best.ref.name} reaches overtime or shootout ${formatPct(best.rate)} of the time (${best.otGames} of ${best.ref.games} games), ${(Math.abs(best.edge) * 100).toFixed(1)} pts ${best.edge >= 0 ? "above" : "below"} the ${formatPct(leagueOt)} league rate.`,
     stats: [
       {
         label: "OT/SO rate",
@@ -152,7 +152,7 @@ function penaltyBalanceFinding(stats: RefStatsFile): ScoredFindingBase | null {
     category: "whistle-extreme",
     headline: `${best.ref.name} runs asymmetric penalty minutes`,
     summary: `${best.ref.name} averages ${best.imbalance.toFixed(1)} minors of imbalance between teams per game. Only ${formatPct(best.balancedRate)} of games stay within ±1 minor.`,
-    explainer: `Penalty balance is descriptive game-management pattern — not a live makeup alert. Useful for spotting refs who consistently tilt PIM one way.`,
+    explainer: `Penalty balance is descriptive game-management pattern, not a live makeup alert. Useful for spotting refs who consistently tilt PIM one way.`,
     stats: [
       {
         label: "Avg imbalance",
@@ -317,7 +317,7 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
     id: "nhl-ats-outlier",
     category: "ats-edge",
     headline: `Home teams ${direction} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS with ${best.ref.name}`,
-    summary: `${formatWlpShort(record)} across ${best.games} lined games — ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
+    summary: `${formatWlpShort(record)} across ${best.games} lined games, ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
     stats: [
       {
         label: "Home ATS",

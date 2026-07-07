@@ -7,7 +7,7 @@ export interface NbaTeam {
   division: string;
 }
 
-/** All 30 NBA teams — abbr is the canonical key for routes and data. */
+/** All 30 NBA teams, abbr is the canonical key for routes and data. */
 export const NBA_TEAMS: NbaTeam[] = [
   { abbr: "ATL", name: "Hawks", city: "Atlanta", nbaId: 1610612737, conference: "East", division: "Southeast" },
   { abbr: "BOS", name: "Celtics", city: "Boston", nbaId: 1610612738, conference: "East", division: "Atlantic" },

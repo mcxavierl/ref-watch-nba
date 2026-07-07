@@ -79,7 +79,7 @@ function buildScoringSignal(
   return {
     kind: "scoring-delta",
     headline: `Combined scoring runs ${direction} than league average`,
-    body: `${ref.name}'s games average ${ref.avgTotalPoints} combined ${unit} — ${formatSigned(delta)} vs the ${meta.leagueAvgTotal} league baseline across ${ref.games} games.`,
+    body: `${ref.name}'s games average ${ref.avgTotalPoints} combined ${unit}, ${formatSigned(delta)} vs the ${meta.leagueAvgTotal} league baseline across ${ref.games} games.`,
     stats: [
       {
         label: "Scoring delta",
@@ -111,7 +111,7 @@ function buildWhistleSignal(
   return {
     kind: "whistle-delta",
     headline: `${direction.charAt(0).toUpperCase()}${direction.slice(1)} ${whistle} than baseline`,
-    body: `This crew averages ${ref.avgFouls} ${whistle} per game (${formatSigned(delta)} vs league). Whistle rate alone does not predict scoring — compare with the scoring delta above.`,
+    body: `This crew averages ${ref.avgFouls} ${whistle} per game (${formatSigned(delta)} vs league). Whistle rate alone does not predict scoring; compare with the scoring delta above.`,
     stats: [
       {
         label: "Whistle delta",
@@ -141,7 +141,7 @@ function buildOverTiltSignal(
   return {
     kind: "over-tilt",
     headline: `Games finish ${lean} the ${meta.leagueOverBaseline}-${unit} benchmark more often than not`,
-    body: `${formatPct(ref.overRate)} of ${ref.name}'s ${ref.games} games beat the combined ${meta.leagueOverBaseline} benchmark — ${formatSigned(tilt * 100)} percentage points from a neutral 50% split.`,
+    body: `${formatPct(ref.overRate)} of ${ref.name}'s ${ref.games} games beat the combined ${meta.leagueOverBaseline} benchmark, ${formatSigned(tilt * 100)} percentage points from a neutral 50% split.`,
     stats: [
       {
         label: "Over rate",
@@ -171,7 +171,7 @@ function buildHomeRoadSignal(
 
   return {
     kind: "home-road-scoring",
-    headline: `Home/road scoring split — ${lean}`,
+    headline: `Home/road scoring split, ${lean}`,
     body: `When this official works, home teams average ${betting.avgHomeScore} ${unit} vs ${betting.avgRoadScore} for visitors (${formatSigned(gap)} gap). This describes historical scoring splits, not a betting recommendation.`,
     stats: [
       {
@@ -207,7 +207,7 @@ function buildHomeAtsSignal(betting: RefBettingStats): ProfileSignal | null {
   return {
     kind: "home-ats",
     headline: `Home teams ${direction} the spread more often than not`,
-    body: `Home sides are ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS (${record.wins}-${record.losses}${record.pushes ? `-${record.pushes}` : ""}) across ${decisions} lined games. Closing lines may be estimated where sportsbook data is unavailable — treat as exploratory.`,
+    body: `Home sides are ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS (${record.wins}-${record.losses}${record.pushes ? `-${record.pushes}` : ""}) across ${decisions} lined games. Closing lines may be estimated where sportsbook data is unavailable; treat as exploratory.`,
     stats: [
       {
         label: "Home ATS",

@@ -6,7 +6,7 @@ export interface NhlTeam {
   division: string;
 }
 
-/** All 32 NHL teams — abbr is the canonical key for routes and data. */
+/** All 32 NHL teams, abbr is the canonical key for routes and data. */
 export const NHL_TEAMS: NhlTeam[] = [
   { abbr: "ANA", name: "Ducks", city: "Anaheim", conference: "West", division: "Pacific" },
   { abbr: "BOS", name: "Bruins", city: "Boston", conference: "East", division: "Atlantic" },

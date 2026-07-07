@@ -7,9 +7,9 @@ import { teamFullName, teamsByConference } from "@/lib/nhl/teams";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "All NHL teams — Ref Watch",
+  title: "All NHL teams | Ref Watch",
   description:
-    "Browse official crew history for all 32 NHL teams — goal trends, PIM patterns, and home/away records.",
+    "Browse official crew history for all 32 NHL teams, goal trends, PIM patterns, and home/away records.",
 };
 
 export default function NhlTeamsIndexPage() {
@@ -21,7 +21,7 @@ export default function NhlTeamsIndexPage() {
         <h1 className="page-title">All NHL teams</h1>
         <p className="page-lead">
           Pick a team to see how they&apos;ve performed under different official
-          crews — goals, PIM, and home/away splits.
+          crews, goals, PIM, and home/away splits.
         </p>
       </section>
 

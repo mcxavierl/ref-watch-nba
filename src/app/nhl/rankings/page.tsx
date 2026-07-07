@@ -14,7 +14,7 @@ import { absoluteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "NHL referee rankings",
   description:
-    "Sortable NHL referee rankings by scoring impact, minor penalties, overtime rate, and over tendency. Minimum game thresholds — descriptive only.",
+    "Sortable NHL referee rankings by scoring impact, minor penalties, overtime rate, and over tendency. Minimum game thresholds, descriptive only.",
   alternates: { canonical: absoluteUrl("/nhl/rankings") },
 };
 
@@ -41,7 +41,7 @@ export default function NhlRankingsPage() {
         <h1 className="page-title">NHL referee rankings</h1>
         <p className="page-lead">
           Historical goal, minor, and overtime tendencies across{" "}
-          {stats.refs.length} officials ({range}). Not predictions — see{" "}
+          {stats.refs.length} officials ({range}). Not predictions, see{" "}
           <Link href="/methodology" className="font-medium text-zinc-800 hover:underline">
             methodology
           </Link>
@@ -49,7 +49,7 @@ export default function NhlRankingsPage() {
         </p>
         {seeded && (
           <p className="mt-2 text-sm text-amber-800">
-            Historical dataset — NHL analytics columns show — when unavailable.
+            Historical dataset, NHL analytics columns show when unavailable.
           </p>
         )}
       </section>

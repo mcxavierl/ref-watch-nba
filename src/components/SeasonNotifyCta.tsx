@@ -54,7 +54,7 @@ export function SeasonNotifyCta({
     return (
       <p className="season-notify-success" role="status">
         <Check className="size-4 shrink-0" aria-hidden />
-        You&apos;re on the list — we&apos;ll email you when {league} assignments
+        You&apos;re on the list; we&apos;ll email you when {league} assignments
         return.
       </p>
     );

@@ -43,15 +43,15 @@ export interface GlossaryEntry {
 export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   ats: {
     label: "ATS",
-    text: "Against the spread — whether the home team beat the sportsbook point spread (not just who won). A home line of −5.5 means the home team must win by 6+ to cover.",
+    text: "Against the spread: whether the home team beat the sportsbook point spread (not just who won). A home line of −5.5 means the home team must win by 6+ to cover.",
   },
   "ats-split": {
     label: "ATS split",
-    text: "The same ATS record broken into groups — by spread size and by whether the home team was the favorite or underdog.",
+    text: "The same ATS record broken into groups, by spread size and by whether the home team was the favorite or underdog.",
   },
   "home-team-wl": {
     label: "Home team W/L",
-    text: "Straight-up wins and losses for the home team in games this ref worked — who won, ignoring the spread.",
+    text: "Straight-up wins and losses for the home team in games this ref worked; who won, ignoring the spread.",
   },
   "over-under": {
     label: "Over / under",
@@ -75,7 +75,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "whistle-premium": {
     label: "Points above average",
-    text: "How many points above or below league average this crew’s games tend to score — a pace signal, not a betting pick.",
+    text: "How many points above or below league average this crew’s games tend to score, a pace signal, not a betting pick.",
   },
   "line-gap": {
     label: "Total vs benchmark",
@@ -87,11 +87,11 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "grudge-match": {
     label: "Grudge match",
-    text: "An auto-flag when a ref on tonight’s crew has an unusual history with one of the teams playing — win rate, fouls, or a prior result with this exact crew.",
+    text: "An auto-flag when a ref on tonight’s crew has an unusual history with one of the teams playing: win rate, fouls, or a prior result with this exact crew.",
   },
   "home-bias": {
     label: "Home / road bias",
-    text: "Whether this crew’s games skew toward home or away teams winning — a win-rate pattern, not ATS.",
+    text: "Whether this crew’s games skew toward home or away teams winning, a win-rate pattern, not ATS.",
   },
   "crew-reunion": {
     label: "Crew reunion",
@@ -111,7 +111,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   pim: {
     label: "PIM",
-    text: "Penalty minutes — total infraction time assessed to all skaters in a game. Higher PIM usually means more whistles and stoppages.",
+    text: "Penalty minutes: total infraction time assessed to all skaters in a game. Higher PIM usually means more whistles and stoppages.",
   },
   "goals-total": {
     label: "Goals total",
@@ -119,11 +119,11 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "nhl-whistle-premium": {
     label: "Goals above average",
-    text: "How many goals above or below league average this crew’s games tend to score — a pace signal for totals, not a betting pick.",
+    text: "How many goals above or below league average this crew’s games tend to score, a pace signal for totals, not a betting pick.",
   },
   "pp-premium": {
     label: "PP Premium",
-    text: "Pre-game index: referee minor-penalty rate × both teams’ power-play strength minus penalty-kill strength. High values flag special-teams volatility — often a totals Over angle, not a pick by itself.",
+    text: "Pre-game index: referee minor-penalty rate × both teams’ power-play strength minus penalty-kill strength. High values flag special-teams volatility; often a totals Over angle, not a pick by itself.",
   },
   "ot-rate": {
     label: "OT rate",
@@ -131,7 +131,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "ot-rate-badge": {
     label: "High OT rate",
-    text: "This referee pair’s OT rate is above league average on a tight puck line (±1.5). Useful context for OT/SO props when the book offers them — requires minimum game count.",
+    text: "This referee pair’s OT rate is above league average on a tight puck line (±1.5). Useful context for OT/SO props when the book offers them; requires minimum game count.",
   },
   "minors-per-game": {
     label: "Minors per game",
@@ -139,7 +139,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "penalty-balance": {
     label: "Penalty balance",
-    text: "How evenly minors are split between teams. A “balancer” ref often finishes within one minor of even; descriptive only — not a live makeup-call predictor.",
+    text: "How evenly minors are split between teams. A “balancer” ref often finishes within one minor of even; descriptive only, not a live makeup-call predictor.",
   },
   "nhl-ref-analytics": {
     label: "Whistle analytics",
@@ -147,7 +147,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "home-margin": {
     label: "Home avg margin",
-    text: "Average home score minus away score in this ref’s games — positive means home teams outscored visitors on average.",
+    text: "Average home score minus away score in this ref’s games; positive means home teams outscored visitors on average.",
   },
   "pace-alert": {
     label: "Pace alert",
@@ -159,7 +159,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "provenance-estimated": {
     label: "Estimated",
-    text: "This number is not computed from real game logs yet — it uses a fallback constant (e.g. league baseline or odds benchmark) until enough live data is ingested.",
+    text: "This number is not computed from real game logs yet; it uses a fallback constant (e.g. league baseline or odds benchmark) until enough live data is ingested.",
   },
   "sample-gate": {
     label: "Sample gate",
@@ -167,10 +167,10 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "close-game-proxy": {
     label: "Close-game proxy",
-    text: "A competitive late-game window derived from final margins, pregame spreads, or overtime — not official NBA Last Two Minute (L2M) play-by-play reports. Useful for spotting whistle/scoring shifts in tight games, with honest partial-coverage labels.",
+    text: "A competitive late-game window derived from final margins, pregame spreads, or overtime, not official NBA Last Two Minute (L2M) play-by-play reports. Useful for spotting whistle/scoring shifts in tight games, with honest partial-coverage labels.",
   },
   "profile-signals": {
     label: "Profile signals",
-    text: "Research-style patterns on a ref profile — scoring delta, whistle rate vs baseline, over frequency, and home/road splits when available. Informational only; always shows sample size and data provenance.",
+    text: "Research-style patterns on a ref profile: scoring delta, whistle rate vs baseline, over frequency, and home/road splits when available. Informational only; always shows sample size and data provenance.",
   },
 };

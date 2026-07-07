@@ -7,7 +7,7 @@ import { LEAGUES } from "@/lib/leagues";
 import { buildRefsDirectoryContext } from "@/lib/refs-directory";
 
 export const metadata: Metadata = {
-  title: "All NBA referees — Ref Watch",
+  title: "All NBA referees | Ref Watch",
   description:
     "Browse every NBA referee in the Ref Watch dataset with scoring and foul trends.",
 };

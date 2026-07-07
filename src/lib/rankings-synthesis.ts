@@ -59,7 +59,7 @@ export function buildRankingsSynthesis(
     insights.push({
       id: "top-scoring",
       title: "Biggest scoring bump",
-      body: `Crews average ${Math.abs(delta).toFixed(1)} more combined ${unit} than the league baseline.`,
+      body: `He averages ${Math.abs(delta).toFixed(1)} more combined ${unit} than the league baseline in his games.`,
       refSlug: topScorer.slug,
       refName: topScorer.name,
       statLabel: "Scoring delta vs average",
@@ -71,7 +71,7 @@ export function buildRankingsSynthesis(
     insights.push({
       id: "top-over",
       title: "Most likely to go over",
-      body: `Line benchmark is ${baseline} combined ${unit} — this crew clears it more often than peers.`,
+      body: `Line benchmark is ${baseline} combined ${unit}; he clears it more often than peers.`,
       refSlug: topOver.slug,
       refName: topOver.name,
       statLabel: "Over rate",
@@ -83,8 +83,8 @@ export function buildRankingsSynthesis(
     const wd = whistleDelta(topWhistle, league);
     insights.push({
       id: "top-whistle",
-      title: `Heaviest ${league.metrics.whistleShort.toLowerCase()} crew`,
-      body: `Runs ${Math.abs(wd).toFixed(1)} ${league.metrics.whistlePlain} above average per game.`,
+      title: `Heaviest ${league.metrics.whistleShort.toLowerCase()} ref`,
+      body: `He runs ${Math.abs(wd).toFixed(1)} ${league.metrics.whistlePlain} above average per game.`,
       refSlug: topWhistle.slug,
       refName: topWhistle.name,
       statLabel: `${league.metrics.whistleShort} delta vs average`,
@@ -94,7 +94,7 @@ export function buildRankingsSynthesis(
 
   const leagueSummary =
     qualified.length > 0
-      ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} tilt toward higher scoring. ${lowScoring.length} lean lower. Numbers describe past games — not picks for tonight.`
+      ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} tilt toward higher scoring. ${lowScoring.length} lean lower. Numbers describe past games, not picks for tonight.`
       : `Not enough games in the sample yet. Turn on “Show thin samples” below to browse everyone.`;
 
   return {

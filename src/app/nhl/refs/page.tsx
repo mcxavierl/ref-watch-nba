@@ -7,7 +7,7 @@ import { LEAGUES } from "@/lib/leagues";
 import { buildRefsDirectoryContext } from "@/lib/refs-directory";
 
 export const metadata: Metadata = {
-  title: "All NHL officials — Ref Watch",
+  title: "All NHL officials | Ref Watch",
   description:
     "Browse every NHL referee and linesman in the Ref Watch dataset with scoring and PIM trends.",
 };

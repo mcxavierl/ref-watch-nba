@@ -125,14 +125,14 @@ function nbaWindows(): CloseGameWindow[] {
       id: "close-margin",
       label: "Close games (≤5 pt margin)",
       description:
-        "Final margin within five points — a proxy for competitive late-game minutes. Not true last-two-minute (L2M) play-by-play data.",
+        "Final margin within five points, a proxy for competitive late-game minutes. Not true last-two-minute (L2M) play-by-play data.",
       isProxy: true,
     },
     {
       id: "close-spread",
       label: "Pregame toss-ups (spread ≤5.5)",
       description:
-        "Games where the closing spread was within 5.5 points — often stay tight through the fourth quarter. Spread lines may be estimated where sportsbook closing lines are unavailable.",
+        "Games where the closing spread was within 5.5 points; often stay tight through the fourth quarter. Spread lines may be estimated where sportsbook closing lines are unavailable.",
       isProxy: true,
     },
   ];
@@ -144,14 +144,14 @@ function nhlWindows(): CloseGameWindow[] {
       id: "overtime",
       label: "Overtime / shootout games",
       description:
-        "Games that required extra time — the clearest late-game pressure proxy in our logs. Includes OT and SO scoring.",
+        "Games that required extra time; the clearest late-game pressure proxy in our logs. Includes OT and SO scoring.",
       isProxy: true,
     },
     {
       id: "close-margin",
       label: "One-goal or OT games",
       description:
-        "Regulation one-goal games plus any overtime — competitive games where third-period whistles matter most.",
+        "Regulation one-goal games plus any overtime, competitive games where third-period whistles matter most.",
       isProxy: true,
     },
   ];
@@ -213,7 +213,7 @@ function honestyBannerFor(
     parts.push("Derived from historical game logs");
   }
   if (window.isProxy) {
-    parts.push("proxy window — not official L2M play-by-play");
+    parts.push("proxy window, not official L2M play-by-play");
   }
   if (gameCount < MIN_CLOSE_GAMES) {
     parts.push(`partial coverage (${gameCount} games in window)`);

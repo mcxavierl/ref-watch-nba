@@ -9,7 +9,7 @@ import {
 import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "NBA league trends — 5 seasons",
+  title: "NBA league trends, 5 seasons",
   description:
     "Five-season NBA scoring, foul, and game-count trends from Ref Watch baselines. Year-over-year context in plain language.",
   alternates: { canonical: absoluteUrl("/trends") },
@@ -33,7 +33,7 @@ export default function NbaTrendsPage() {
         <h1 className="page-title">NBA league trends</h1>
         <p className="page-lead">
           Five-season scoring and whistle baselines from game logs. Historical
-          context only — see{" "}
+          context only; see{" "}
           <Link href="/methodology" className="font-medium text-zinc-800 hover:underline">
             methodology
           </Link>
@@ -42,8 +42,8 @@ export default function NbaTrendsPage() {
         {(usingFallback || seeded) && (
           <p className="mt-2 text-sm text-amber-800">
             {seeded
-              ? "Historical game logs — provenance tags apply."
-              : "Using fallback baselines — run compute-baselines when live logs are available."}
+              ? "Historical game logs, provenance tags apply."
+              : "Using fallback baselines; run compute-baselines when live logs are available."}
           </p>
         )}
       </section>

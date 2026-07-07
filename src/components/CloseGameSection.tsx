@@ -1,49 +1,64 @@
-import { ProvenanceMarker } from "@/components/ProvenanceMarker";
-import { SampleGateBadge } from "@/components/SampleGateBadge";
 import { TermHelp } from "@/components/TermHelp";
 import type { CloseGameMetrics } from "@/lib/close-game";
+
+function deltaTone(delta: string): "positive" | "negative" | "neutral" {
+  const trimmed = delta.trim();
+  if (trimmed.startsWith("+") && !/^\+0(\.0+)?(\s|$)/.test(trimmed)) {
+    return "positive";
+  }
+  if (trimmed.startsWith("-")) {
+    return "negative";
+  }
+  return "neutral";
+}
+
+function deltaClassName(delta: string): string {
+  const tone = deltaTone(delta);
+  if (tone === "positive") return "ref-delta-positive";
+  if (tone === "negative") return "ref-delta-negative";
+  return "";
+}
 
 export function CloseGameSection({
   metrics,
   subjectLabel,
   league,
+  embedded = false,
 }: {
   metrics: CloseGameMetrics[];
   subjectLabel: string;
   league: "NBA" | "NHL";
+  embedded?: boolean;
 }) {
   if (metrics.length === 0) return null;
 
   const scoreUnit = league === "NBA" ? "points" : "goals";
   const sectionTitle =
     league === "NBA" ? "Close-game / L2M proxy" : "Late-game / OT proxy";
+  const sectionClass = embedded ? "" : "section-block scroll-mt-24";
 
   return (
-    <section id="close-game" className="section-block scroll-mt-24">
-      <div className="mb-4">
-        <h2 className="section-title">{sectionTitle}</h2>
-        <p className="section-lead">
+    <section id="close-game" className={sectionClass}>
+      <div className={embedded ? "mb-3" : "mb-4"}>
+        <h2 className={embedded ? "text-sm font-semibold text-zinc-800" : "section-title"}>
+          {sectionTitle}
+        </h2>
+        <p className={embedded ? "mt-1 text-xs text-zinc-500" : "section-lead"}>
           How {subjectLabel} compares in competitive late-game windows vs full
           games.{" "}
           <TermHelp id="close-game-proxy">
             Proxy windows
           </TermHelp>{" "}
-          — not official NBA L2M reports.
+         , not official NBA L2M reports.
         </p>
       </div>
 
       <div className="space-y-6">
         {metrics.map((m) => (
           <div key={m.window.id} className="data-card">
-            <div className="border-b border-border-subtle px-4 py-4 sm:px-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-base font-semibold text-zinc-900">
-                  {m.window.label}
-                </h3>
-                <SampleGateBadge gate={m.sampleGate} />
-                <ProvenanceMarker provenance={m.provenance} compact />
-              </div>
-              <p className="mt-2 text-sm text-zinc-600">{m.window.description}</p>
+            <div className="ref-table-section-header">
+              <h3 className="text-sm font-semibold text-zinc-900">{m.window.label}</h3>
+              <p className="mt-1 text-sm text-zinc-600">{m.window.description}</p>
               <p className="mt-1 text-xs text-zinc-500">{m.coverageNote}</p>
             </div>
 
@@ -64,7 +79,7 @@ export function CloseGameSection({
             ) : (
               <>
                 <div className="overflow-x-auto">
-                  <table className="data-table min-w-[480px]">
+                  <table className="ref-data-table data-table min-w-[480px]">
                     <thead>
                       <tr className="data-table-head">
                         <th>Metric</th>
@@ -73,19 +88,19 @@ export function CloseGameSection({
                         <th>Δ vs full</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-border-subtle">
+                    <tbody>
                       {m.compareRows.map((row) => (
                         <tr key={row.label}>
-                          <td className="px-4 py-3 text-sm text-zinc-700 sm:px-5">
-                            {row.label}
-                          </td>
-                          <td className="px-4 py-3 font-mono text-sm tabular-nums text-zinc-900 sm:px-5">
+                          <td className="text-sm text-zinc-700">{row.label}</td>
+                          <td className="font-mono text-sm tabular-nums text-zinc-900">
                             {row.windowValue}
                           </td>
-                          <td className="px-4 py-3 font-mono text-sm tabular-nums text-zinc-600 sm:px-5">
+                          <td className="font-mono text-sm tabular-nums text-zinc-600">
                             {row.fullGameValue}
                           </td>
-                          <td className="px-4 py-3 font-mono text-sm tabular-nums text-zinc-800 sm:px-5">
+                          <td
+                            className={`font-mono text-sm tabular-nums text-zinc-800 ${deltaClassName(row.delta)}`.trim()}
+                          >
                             {row.delta}
                           </td>
                         </tr>

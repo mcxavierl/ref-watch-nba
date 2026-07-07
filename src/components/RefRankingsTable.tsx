@@ -95,7 +95,7 @@ export function RefRankingsTable({
         <div className="ranking-toolbar-row">
           <p className="ranking-toolbar-hint">
             Click column headers to sort. Historical tendencies vs league baseline
-            — descriptive only, not picks.
+           , descriptive only, not picks.
           </p>
           <label className="ranking-toggle">
             <input
@@ -196,7 +196,7 @@ export function RefRankingsTable({
                     {formatSigned(ref.totalPointsDelta)}
                   </td>
                   <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
-                    {whistleDelta !== undefined ? formatSigned(whistleDelta) : "—"}
+                    {whistleDelta !== undefined ? formatSigned(whistleDelta) : "-"}
                   </td>
                   <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
                     {formatPct(ref.overRate)}
@@ -214,7 +214,7 @@ export function RefRankingsTable({
                   </td>
                   {league === "NHL" && (
                     <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
-                      {otRate !== undefined ? formatPct(otRate) : "—"}
+                      {otRate !== undefined ? formatPct(otRate) : "-"}
                     </td>
                   )}
                 </tr>,

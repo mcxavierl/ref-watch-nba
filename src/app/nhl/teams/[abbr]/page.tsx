@@ -17,12 +17,12 @@ export async function generateMetadata({
   const { abbr } = await params;
   const team = getTeam(abbr);
   if (!team) {
-    return { title: "Team not found — Ref Watch NHL" };
+    return { title: "Team not found | Ref Watch NHL" };
   }
   const name = teamFullName(team);
   return {
-    title: `${name} official crew splits — Ref Watch NHL`,
-    description: `How ${name} performs under different NHL official crews — goals, PIM, and home/away records.`,
+    title: `${name} official crew splits | Ref Watch NHL`,
+    description: `How ${name} performs under different NHL official crews, goals, PIM, and home/away records.`,
   };
 }
 

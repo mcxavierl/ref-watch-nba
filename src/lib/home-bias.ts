@@ -115,18 +115,18 @@ export function computeCrewHomeBias(
   let summary: string;
 
   if (kind === "home_protector") {
-    headline = `This crew leans home — ${home.abbr} host edge tonight`;
-    summary = `Across ${totalGames} games in our sample, this crew's hosts win ${homeWinRate !== null ? formatPct(homeWinRate) : "—"} vs ${awayWinRate !== null ? formatPct(awayWinRate) : "—"} on the road${
+    headline = `This crew leans home, ${home.abbr} host edge tonight`;
+    summary = `Across ${totalGames} games in our sample, this crew's hosts win ${homeWinRate !== null ? formatPct(homeWinRate) : "-"} vs ${awayWinRate !== null ? formatPct(awayWinRate) : "-"} on the road${
       homeFoulEdge !== null
         ? `, with a ${formatSigned(homeFoulEdge)} home foul edge`
         : ""
-    }. Not ATS — win-rate split only (no spread data yet).`;
+    }. Not ATS, win-rate split only (no spread data yet).`;
   } else if (kind === "road_warrior") {
-    headline = `Road-warrior crew — away teams fare better historically`;
-    summary = `This crew's away teams win ${awayWinRate !== null ? formatPct(awayWinRate) : "—"} vs ${homeWinRate !== null ? formatPct(homeWinRate) : "—"} at home in ${totalGames} sample games. ${homeLabel} hosting tonight may not get the usual whistle cushion. Not ATS data.`;
+    headline = `Road-warrior crew, away teams fare better historically`;
+    summary = `This crew's away teams win ${awayWinRate !== null ? formatPct(awayWinRate) : "-"} vs ${homeWinRate !== null ? formatPct(homeWinRate) : "-"} at home in ${totalGames} sample games. ${homeLabel} hosting tonight may not get the usual whistle cushion. Not ATS data.`;
   } else {
-    headline = `Balanced crew — no strong home/road whistle skew`;
-    summary = `Home and away win rates under this crew are within normal range (${homeWinRate !== null ? formatPct(homeWinRate) : "—"} home · ${awayWinRate !== null ? formatPct(awayWinRate) : "—"} away).`;
+    headline = `Balanced crew, no strong home/road whistle skew`;
+    summary = `Home and away win rates under this crew are within normal range (${homeWinRate !== null ? formatPct(homeWinRate) : "-"} home · ${awayWinRate !== null ? formatPct(awayWinRate) : "-"} away).`;
   }
 
   if (tonightSplit && tonightSplit.homeGames >= 2) {

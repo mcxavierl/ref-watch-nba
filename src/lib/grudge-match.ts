@@ -133,7 +133,7 @@ function winRateStoryline(
     gameId,
     kind,
     severity,
-    headline: `${ref.name} tonight — ${team.label} are ${wins}-${losses} in his games`,
+    headline: `${ref.name} tonight; ${team.label} are ${wins}-${losses} in his games`,
     summary: `In this dataset, ${team.article} win ${formatPct(stat.winRate)} of games with ${ref.name} officiating (${stat.games} games). That is ${formatWinRateVsTeam(stat.winRate, team.baseline.winRate).replace(" pts vs team", " percentage points")} than their ${formatPct(team.baseline.winRate)} baseline across all crews.`,
     stats: [
       {
@@ -180,7 +180,7 @@ function foulSpikeStoryline(
     kind,
     severity,
     headline: `${ref.name} whistles ${team.label} ${Math.abs(Math.round(pct))}% ${pct > 0 ? "more" : "less"} than usual`,
-    summary: `When ${ref.name} is on the court, ${team.article} commit ${refFouls.avg.toFixed(1)} fouls per game — ${Math.abs(Math.round(pct))}% ${pct > 0 ? "above" : "below"} their ${team.baselineFouls.toFixed(1)} average in this dataset. That is raw foul volume, not a betting line.`,
+    summary: `When ${ref.name} is on the court, ${team.article} commit ${refFouls.avg.toFixed(1)} fouls per game, ${Math.abs(Math.round(pct))}% ${pct > 0 ? "above" : "below"} their ${team.baselineFouls.toFixed(1)} average in this dataset. That is raw foul volume, not a betting line.`,
     stats: [
       {
         label: "Fouls with ref",
@@ -233,7 +233,7 @@ function foulEdgeParadoxStoryline(
     gameId,
     kind: "foul-edge-paradox",
     severity,
-    headline: `${ref.name} helps ${team.label} on fouls — they still lose`,
+    headline: `${ref.name} helps ${team.label} on fouls, they still lose`,
     summary: `${ref.name} gives ${team.article} a ${formatSigned(stat.avgFoulDifferential)} foul edge per game, but they are only ${wins}-${losses} (${formatPct(stat.winRate)}) in those matchups. The whistle tilt and the scoreboard pull in opposite directions.`,
     stats: [
       {
@@ -343,7 +343,7 @@ function crewReunionStoryline(
     kind: "crew-reunion",
     severity,
     headline: `This exact crew went ${split.wins}-${split.losses} with ${team.label} before`,
-    summary: `The same three officials worked ${split.games} prior ${team.label} games in this dataset — ${split.avgTotalPoints} avg combined score, ${formatSigned(split.foulDifferential)} foul edge, ${formatPct(split.overRate)} over ${225}.`,
+    summary: `The same three officials worked ${split.games} prior ${team.label} games in this dataset, ${split.avgTotalPoints} avg combined score, ${formatSigned(split.foulDifferential)} foul edge, ${formatPct(split.overRate)} over ${225}.`,
     stats: [
       {
         label: "Prior record",
@@ -389,7 +389,7 @@ function refSplitStoryline(
     kind: "ref-split",
     severity,
     headline: `${ref.name} whistles ${home.label} and ${away.label} very differently`,
-    summary: `Tonight's matchup puts two teams on the same card with very different histories under ${ref.name}: ${home.label} see a ${formatSigned(homeStat.avgFoulDifferential)} foul edge while ${away.label} see ${formatSigned(awayStat.avgFoulDifferential)} — a ${spread.toFixed(1)}-foul swing.`,
+    summary: `Tonight's matchup puts two teams on the same card with very different histories under ${ref.name}: ${home.label} see a ${formatSigned(homeStat.avgFoulDifferential)} foul edge while ${away.label} see ${formatSigned(awayStat.avgFoulDifferential)}, a ${spread.toFixed(1)}-foul swing.`,
     stats: [
       {
         label: `${home.abbr} foul edge`,

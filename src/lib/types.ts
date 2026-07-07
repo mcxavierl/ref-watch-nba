@@ -236,7 +236,7 @@ export interface RefStatsFile {
 
 export type OuLean = "over" | "under" | "neutral";
 
-/** Sportsbook line for a game (optional — from The Odds API). */
+/** Sportsbook line for a game (optional, from The Odds API). */
 export interface GameOddsLine {
   gameId?: string;
   awayTeam: string;
@@ -314,7 +314,7 @@ export interface CrewWhistlePremium {
 
 export type HomeBiasKind = "home_protector" | "road_warrior" | "neutral";
 
-/** Home vs away tendencies for a crew (not ATS — win/foul splits only). */
+/** Home vs away tendencies for a crew (not ATS, win/foul splits only). */
 export interface CrewHomeBias {
   gameId: string;
   homeAbbr: string;

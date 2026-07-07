@@ -7,10 +7,10 @@ import { RefBettingProfile } from "@/components/RefBettingProfile";
 import { FavoritesStar } from "@/components/FavoritesStar";
 import { RefAvatar } from "@/components/RefAvatar";
 import { JsonLd } from "@/components/JsonLd";
+import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { TermHelp } from "@/components/TermHelp";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import {
-  formatDate,
   formatPct,
   getAllRefSlugs,
   getRefBySlug,
@@ -38,7 +38,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const profile = getRefBySlug(slug);
   if (!profile) {
-    return { title: "Ref not found — Ref Watch NBA" };
+    return { title: "Ref not found | Ref Watch NBA" };
   }
   const ats = profile.bettingStats?.homeTeamAts;
   const atsLabel = ats
@@ -70,7 +70,6 @@ export default async function RefProfilePage({
       enrichBettingStats(rawProfile, stats.meta) ?? rawProfile.bettingStats,
   };
   const qualified = profile.games >= stats.meta.minSampleSize;
-  const statsSeeded = stats.meta.source === "seeded";
   const profileSignals = computeProfileSignals(profile, stats.meta, "nba");
   const closeGameMetrics = computeRefCloseGameMetrics(
     profile.slug,
@@ -121,46 +120,51 @@ export default async function RefProfilePage({
         </div>
         {!qualified && (
           <p className="mt-3 text-sm text-amber-800">
-            Below {stats.meta.minSampleSize}-game minimum — metrics hidden until
+            Below {stats.meta.minSampleSize}-game minimum, metrics hidden until
             sample gate clears.
           </p>
         )}
-        <p className="page-meta">
-          <span
-            className={statsSeeded ? "page-meta-seeded" : "page-meta-live"}
-          >
-            {statsSeeded ? "Historical stats" : "Live stats"}
-          </span>
-          <span>Updated {formatDate(stats.meta.lastUpdated)}</span>
-          <span>{stats.meta.seasons.join(", ")}</span>
-        </p>
+        <RefProfileMetadataBar
+          seasons={stats.meta.seasons}
+          games={profile.games}
+          lastUpdated={stats.meta.lastUpdated}
+          seeded={stats.meta.source === "seeded"}
+        />
       </header>
 
-      {profile.bettingStats ? (
-        <RefBettingProfile
-          profile={profile}
-          stats={profile.bettingStats}
-          showMetrics={qualified}
-        />
-      ) : (
-        <RefStatGrid
-          profile={profile}
-          overBaseline={stats.meta.leagueOverBaseline}
-          showMetrics={qualified}
-        />
-      )}
+      <div className="ref-dashboard-grid">
+        <div className="ref-dashboard-main">
+          {profile.bettingStats ? (
+            <RefBettingProfile
+              profile={profile}
+              stats={profile.bettingStats}
+              showMetrics={qualified}
+            />
+          ) : (
+            <RefStatGrid
+              profile={profile}
+              overBaseline={stats.meta.leagueOverBaseline}
+              showMetrics={qualified}
+            />
+          )}
 
-      <ProfileSignalsSection
-        bundle={profileSignals}
-        refName={profile.name}
-        lastUpdated={stats.meta.lastUpdated}
-      />
+          <CloseGameSection
+            metrics={closeGameMetrics}
+            subjectLabel={profile.name}
+            league="NBA"
+            embedded
+          />
+        </div>
 
-      <CloseGameSection
-        metrics={closeGameMetrics}
-        subjectLabel={profile.name}
-        league="NBA"
-      />
+        <div className="ref-dashboard-sidebar">
+          <ProfileSignalsSection
+            bundle={profileSignals}
+            refName={profile.name}
+            lastUpdated={stats.meta.lastUpdated}
+            variant="sidebar"
+          />
+        </div>
+      </div>
 
       <details className="methodology-details panel-inset mt-8 px-5 py-4">
         <summary>How to read this profile</summary>

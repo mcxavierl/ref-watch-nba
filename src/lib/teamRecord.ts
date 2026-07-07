@@ -7,7 +7,7 @@ export interface TeamSampleRecord {
   winRate: number;
 }
 
-/** Aggregate W-L across all crew splits — each team game counted once per crew bucket. */
+/** Aggregate W-L across all crew splits, each team game counted once per crew bucket. */
 export function getTeamSampleRecord(splits: TeamCrewSplit[]): TeamSampleRecord {
   const wins = splits.reduce((sum, split) => sum + split.wins, 0);
   const losses = splits.reduce((sum, split) => sum + split.losses, 0);
