@@ -20,6 +20,7 @@ import {
 } from "@/lib/provenance";
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
+import { userFacingDataNote } from "@/lib/user-language";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
@@ -157,8 +158,10 @@ export default async function NhlRefProfilePage({
           </Link>
           .
         </p>
-        {stats.meta.note && (
-          <p className="mt-2 text-sm text-zinc-500">{stats.meta.note}</p>
+        {userFacingDataNote(stats.meta.note) && (
+          <p className="mt-2 text-sm text-zinc-500">
+            {userFacingDataNote(stats.meta.note)}
+          </p>
         )}
       </details>
     </div>

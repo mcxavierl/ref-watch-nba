@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, Share2 } from "lucide-react";
+import { Check, Copy, Link2, Share2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import type { SyndicatedSignal } from "@/lib/syndication";
 
@@ -17,21 +17,36 @@ export function SlateShareBar({
   pageUrl: string;
   league: "NBA" | "NHL";
 }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"summary" | "link" | false>(false);
 
-  const copyToClipboard = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(shareText);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
-  }, [shareText]);
+  const flashCopied = useCallback((kind: "summary" | "link") => {
+    setCopied(kind);
+    window.setTimeout(() => setCopied(false), 2000);
+  }, []);
+
+  const copyToClipboard = useCallback(
+    async (text: string, kind: "summary" | "link") => {
+      try {
+        await navigator.clipboard.writeText(text);
+        flashCopied(kind);
+      } catch {
+        setCopied(false);
+      }
+    },
+    [flashCopied],
+  );
+
+  const copySummary = useCallback(async () => {
+    await copyToClipboard(shareText, "summary");
+  }, [copyToClipboard, shareText]);
+
+  const copyLink = useCallback(async () => {
+    await copyToClipboard(pageUrl, "link");
+  }, [copyToClipboard, pageUrl]);
 
   const nativeShare = useCallback(async () => {
     if (!navigator.share) {
-      await copyToClipboard();
+      await copySummary();
       return;
     }
     try {
@@ -43,15 +58,20 @@ export function SlateShareBar({
     } catch {
       /* user cancelled */
     }
-  }, [copyToClipboard, league, pageUrl, shareText]);
+  }, [copySummary, league, pageUrl, shareText]);
 
   if (topSignals.length === 0) return null;
 
   return (
-    <section className="panel-inset mb-6 px-4 py-4 sm:px-5" aria-label="Share tonight's signals">
+    <section
+      className="panel-inset mb-6 px-4 py-4 sm:px-5"
+      aria-label="Share tonight's signals"
+    >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm font-semibold text-zinc-800">Share tonight&apos;s signals</h2>
+          <h2 className="text-sm font-bold text-zinc-900">
+            Share tonight&apos;s signals
+          </h2>
           <p className="mt-1 text-sm text-zinc-600">
             Sample-gated only — estimated values marked. Not betting advice.
           </p>
@@ -59,20 +79,37 @@ export function SlateShareBar({
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={copyToClipboard}
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-3 py-2 text-sm font-medium text-zinc-800 transition hover:bg-zinc-50"
+            onClick={copySummary}
+            aria-live="polite"
+            className={`btn-secondary inline-flex items-center gap-1.5 ${
+              copied === "summary" ? "btn-success" : ""
+            }`}
           >
-            {copied ? (
-              <Check className="size-4 text-emerald-600" aria-hidden />
+            {copied === "summary" ? (
+              <Check className="size-4 text-emerald-700" aria-hidden />
             ) : (
               <Copy className="size-4" aria-hidden />
             )}
-            {copied ? "Copied" : "Copy summary"}
+            {copied === "summary" ? "Copied" : "Copy summary"}
+          </button>
+          <button
+            type="button"
+            onClick={copyLink}
+            className={`btn-secondary inline-flex items-center gap-1.5 ${
+              copied === "link" ? "btn-success" : ""
+            }`}
+          >
+            {copied === "link" ? (
+              <Check className="size-4 text-emerald-700" aria-hidden />
+            ) : (
+              <Link2 className="size-4" aria-hidden />
+            )}
+            {copied === "link" ? "Link copied" : "Copy link"}
           </button>
           <button
             type="button"
             onClick={nativeShare}
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-3 py-2 text-sm font-medium text-zinc-800 transition hover:bg-zinc-50"
+            className="btn-secondary inline-flex items-center gap-1.5"
           >
             <Share2 className="size-4" aria-hidden />
             Share
@@ -82,8 +119,11 @@ export function SlateShareBar({
 
       <ul className="mt-4 space-y-2 text-sm text-zinc-700">
         {topSignals.map((signal) => (
-          <li key={signal.id} className="border-l-2 border-zinc-300 pl-3">
-            <span className="font-medium text-zinc-900">{signal.matchup}</span>
+          <li
+            key={signal.id}
+            className="border-l-2 border-zinc-300 pl-3 leading-snug"
+          >
+            <span className="font-semibold text-zinc-900">{signal.matchup}</span>
             {" — "}
             {signal.headline}
             {signal.provenance !== "computed-from-real" && (

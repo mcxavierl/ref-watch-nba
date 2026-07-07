@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 
 export function OffseasonSlateNotice({
   league,
@@ -16,6 +18,9 @@ export function OffseasonSlateNotice({
         Tonight&apos;s slate returns when official crew assignments resume.
         Explore season highlights below, or browse ref and team histories.
       </p>
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+        <SeasonNotifyCta league={league} />
+      </div>
       <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
         <Link
           href={browseHref}
@@ -29,6 +34,9 @@ export function OffseasonSlateNotice({
         >
           Browse all refs →
         </Link>
+      </div>
+      <div className="mx-auto mt-8 max-w-xl text-left">
+        <ProComingSoonTease league={league} compact />
       </div>
     </div>
   );

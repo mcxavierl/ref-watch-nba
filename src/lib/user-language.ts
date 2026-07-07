@@ -64,6 +64,15 @@ export function seededDataNote(): string {
   return "Historical line data unavailable for some games — see Methodology for details.";
 }
 
+/** Strip developer-only npm hints from data meta notes before showing users. */
+export function userFacingDataNote(note: string | undefined): string | undefined {
+  if (!note) return undefined;
+  if (/npm run/i.test(note)) {
+    return "Historical stats are still loading for some teams — check back after the next data refresh.";
+  }
+  return note;
+}
+
 export function ouLeanDisplay(lean: "over" | "under" | "neutral"): string {
   if (lean === "over") return "OVER";
   if (lean === "under") return "UNDER";

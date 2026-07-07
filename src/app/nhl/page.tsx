@@ -3,6 +3,7 @@ import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
+import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TermHelp } from "@/components/TermHelp";
 import { GameSlateCard } from "@/components/GameSlateCard";
@@ -213,8 +214,13 @@ export default function NhlHomePage() {
             Seasons covered: {refStats.meta.seasons.join(", ")} (
             {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "—"} games).
           </li>
+          <li>
+            <ProComingSoonTease league="NHL" compact />
+          </li>
         </ul>
       </details>
+
+      {!isOffseason && <ProComingSoonTease league="NHL" />}
     </div>
   );
 }

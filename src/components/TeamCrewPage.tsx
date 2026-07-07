@@ -11,6 +11,7 @@ import {
   TEAM_REF_MIN_GAMES,
 } from "@/lib/teamRefLeaderboards";
 import { getTeamSampleRecord } from "@/lib/teamRecord";
+import { userFacingDataNote } from "@/lib/user-language";
 
 export interface TeamPageConfig {
   teamAbbr: string;
@@ -43,8 +44,6 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
     ? nhlTeams.teamWithArticle(team as import("@/lib/nhl/teams").NhlTeam)
     : nbaTeams.teamWithArticle(team as import("@/lib/teams").NbaTeam);
   const crewSize = isNhl ? "four" : "three";
-  const buildCmd = isNhl ? "npm run build-nhl-data" : "npm run build-ref-data";
-  const buildSource = isNhl ? "api-web.nhle.com" : "the NBA Stats API";
 
   return (
     <div className="page-shell">
@@ -87,13 +86,17 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           <p className="text-base font-medium text-zinc-800">
             No ref history for {teamName} yet
           </p>
-          <p className="mx-auto mt-2 max-w-md text-sm text-zinc-600">
-            Run{" "}
-            <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-zinc-700 ring-1 ring-border">
-              {buildCmd}
-            </code>{" "}
-            to pull historical games from {buildSource}.
+          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-zinc-600">
+            We don&apos;t have enough crew-level games for {teamLabel} in the
+            current dataset. Check back after the next data refresh, or browse
+            other teams with fuller samples.
           </p>
+          <Link
+            href={isNhl ? "/nhl/teams" : "/teams"}
+            className="mt-4 inline-block text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
+          >
+            Browse all teams →
+          </Link>
         </div>
       ) : (
         <TeamSplitView
@@ -150,8 +153,10 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             scoring pace ({TEAM_REF_MIN_GAMES}+ games minimum).
           </li>
         </ul>
-        {stats.meta.note && (
-          <p className="mt-3 text-xs text-zinc-600">{stats.meta.note}</p>
+        {userFacingDataNote(stats.meta.note) && (
+          <p className="mt-3 text-xs text-zinc-600">
+            {userFacingDataNote(stats.meta.note)}
+          </p>
         )}
       </details>
 

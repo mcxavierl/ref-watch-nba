@@ -96,7 +96,13 @@ function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
   );
 }
 
-function HomeBiasCard({ bias }: { bias: CrewHomeBias }) {
+function HomeBiasCard({
+  bias,
+  basePath = "",
+}: {
+  bias: CrewHomeBias;
+  basePath?: string;
+}) {
   const Icon = bias.kind === "home_protector" ? Home : MapPin;
 
   return (
@@ -114,7 +120,7 @@ function HomeBiasCard({ bias }: { bias: CrewHomeBias }) {
         {bias.summary}
       </p>
       <Link
-        href={`/teams/${bias.homeAbbr}`}
+        href={`${basePath}/teams/${bias.homeAbbr}`}
         className="mt-2 inline-block text-xs font-medium text-zinc-700 hover:underline"
       >
         {bias.homeLabel} crew history →
@@ -129,12 +135,14 @@ export function WhistlePremiumSection({
   isPreview = false,
   oddsSource,
   leagueOverBaseline,
+  basePath = "",
 }: {
   paceAlerts: CrewWhistlePremium[];
   homeBiasSignals: CrewHomeBias[];
   isPreview?: boolean;
   oddsSource: "sportsbook" | "league_proxy" | "mixed";
   leagueOverBaseline?: number;
+  basePath?: string;
 }) {
   if (paceAlerts.length === 0 && homeBiasSignals.length === 0) return null;
 
@@ -176,7 +184,7 @@ export function WhistlePremiumSection({
           </h3>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {homeBiasSignals.map((bias) => (
-              <HomeBiasCard key={bias.gameId} bias={bias} />
+              <HomeBiasCard key={bias.gameId} bias={bias} basePath={basePath} />
             ))}
           </div>
         </div>

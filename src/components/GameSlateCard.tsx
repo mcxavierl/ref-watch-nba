@@ -102,12 +102,31 @@ export function GameSlateCard({
   );
 
   const grudgeHeadline = storylines[0]?.headline;
+  const paceLabel =
+    premium.alert === "high_pace"
+      ? "High scoring crew"
+      : premium.alert === "low_pace"
+        ? "Low scoring crew"
+        : null;
 
   return (
     <article id={`game-${gameId}`} className="data-card scroll-mt-24">
       <div className="border-b border-border px-4 py-4 sm:px-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
+            {paceLabel && (
+              <p className="mb-2">
+                <span
+                  className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-bold ${
+                    premium.alert === "high_pace"
+                      ? "border-orange-200 bg-orange-50 text-orange-900"
+                      : "border-sky-200 bg-sky-50 text-sky-900"
+                  }`}
+                >
+                  {paceLabel}
+                </span>
+              </p>
+            )}
             {teams.length > 0 ? (
               <div className="flex flex-wrap items-center gap-2">
                 {teams.map((team, i) => (
@@ -138,7 +157,7 @@ export function GameSlateCard({
             <Link
               key={`${official.name}-${official.number}`}
               href={`${basePath}/refs/${refSlug(official.name, official.number)}`}
-              className="inline-flex items-center gap-1 rounded border border-border bg-zinc-50 px-2.5 py-1 text-sm text-zinc-700 transition hover:border-zinc-300 hover:bg-white"
+              className="inline-flex items-center gap-1 rounded border border-border bg-zinc-50 px-2.5 py-1 text-sm text-zinc-700 transition hover:border-zinc-300 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-400"
             >
               <Users className="size-3 text-zinc-400" aria-hidden />
               {official.name}
@@ -148,6 +167,18 @@ export function GameSlateCard({
       </div>
 
       <div className="space-y-2 px-4 py-4 sm:px-5">
+        <p className="text-sm leading-relaxed text-zinc-900">
+          <span className="font-bold">{copy.pointsAboveAverage}:</span>{" "}
+          <span className="font-bold tabular-nums">
+            {formatPremiumLabel(premium.scoringPremium)}
+          </span>{" "}
+          ·{" "}
+          <span className="font-bold tabular-nums">
+            {premium.gapVsBenchmark >= 0 ? "+" : ""}
+            {premium.gapVsBenchmark}
+          </span>{" "}
+          vs {bench}
+        </p>
         <p className="text-sm leading-relaxed text-zinc-800">
           <span className="font-semibold">{copy.scoringLabel}:</span>{" "}
           {metrics.avgTotalPoints} avg combined ·{" "}
@@ -159,18 +190,6 @@ export function GameSlateCard({
           {metrics.avgFouls} {copy.whistleUnit} avg ·{" "}
           <span className="font-semibold tabular-nums">{foulsDelta}</span> vs
           league
-        </p>
-        <p className="text-sm leading-relaxed text-zinc-800">
-          <span className="font-semibold">{copy.pointsAboveAverage}:</span>{" "}
-          <span className="font-semibold tabular-nums">
-            {formatPremiumLabel(premium.scoringPremium)}
-          </span>{" "}
-          ·{" "}
-          <span className="font-semibold tabular-nums">
-            {premium.gapVsBenchmark >= 0 ? "+" : ""}
-            {premium.gapVsBenchmark}
-          </span>{" "}
-          vs {bench}
         </p>
         {homeBias && homeBias.kind !== "neutral" && (
           <p className="text-sm leading-relaxed text-zinc-800">

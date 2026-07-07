@@ -32,7 +32,7 @@ export function TonightEdgeSummary({
           <li key={item.id}>
             <Link
               href={item.href}
-              className="group block rounded-lg border border-border bg-white px-4 py-3 transition hover:border-zinc-300 hover:shadow-sm"
+              className="edge-summary-link group"
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <p className="text-sm font-bold text-zinc-900 group-hover:text-raptors">
