@@ -9,11 +9,13 @@ export function TeamRefLeaderboards({
   teamLabel,
   teamRecord,
   overBaseline,
+  basePath = "",
 }: {
   entries: TeamRefLeaderboardEntry[];
   teamLabel: string;
   teamRecord: TeamSampleRecord;
   overBaseline: number;
+  basePath?: string;
 }) {
   return (
     <section className="mt-10">
@@ -30,6 +32,7 @@ export function TeamRefLeaderboards({
           teamRecord={teamRecord}
           overBaseline={overBaseline}
           defaultSort="foulEdge-desc"
+          basePath={basePath}
         />
       </div>
     </section>

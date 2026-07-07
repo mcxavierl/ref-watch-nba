@@ -20,6 +20,7 @@ export function TeamRefRankingsTable({
   overBaseline,
   defaultSort = "foulEdge-desc",
   limit,
+  basePath = "",
 }: {
   entries: TeamRefLeaderboardEntry[];
   teamLabel: string;
@@ -27,6 +28,7 @@ export function TeamRefRankingsTable({
   overBaseline: number;
   defaultSort?: TeamRefSort;
   limit?: number;
+  basePath?: string;
 }) {
   const [sort, setSort] = useState<TeamRefSort>(defaultSort);
 
@@ -68,7 +70,7 @@ export function TeamRefRankingsTable({
           return (
             <Link
               key={entry.slug}
-              href={`/refs/${entry.slug}`}
+              href={`${basePath}/refs/${entry.slug}`}
               className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3.5 text-sm transition hover:bg-zinc-50 sm:px-5"
             >
               <span className="w-6 shrink-0 font-mono text-sm tabular-nums text-zinc-400">

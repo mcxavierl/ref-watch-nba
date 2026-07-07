@@ -106,6 +106,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           leagueAvgTotal={stats.meta.leagueAvgTotal}
           leagueAvgFouls={stats.meta.leagueAvgFouls}
           overBaseline={stats.meta.leagueOverBaseline}
+          basePath={basePath}
         />
       )}
 
@@ -114,6 +115,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         teamLabel={teamLabel}
         teamRecord={teamRecord}
         overBaseline={stats.meta.leagueOverBaseline}
+        basePath={basePath}
       />
 
       <details className="methodology-details panel-inset mt-10 px-5 py-4">

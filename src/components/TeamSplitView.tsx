@@ -35,13 +35,15 @@ type SplitView = "crew" | "ref";
 function RefLinkChip({
   name,
   slug,
+  basePath = "",
 }: {
   name: string;
   slug: string;
+  basePath?: string;
 }) {
   return (
     <Link
-      href={`/refs/${slug}`}
+      href={`${basePath}/refs/${slug}`}
       className="inline-flex items-center gap-1.5 rounded-full border border-border bg-zinc-50 px-3 py-1 text-sm text-zinc-700 transition hover:border-zinc-300 hover:bg-white hover:text-zinc-900"
     >
       <Users className="size-3.5 text-zinc-400" aria-hidden />
@@ -58,6 +60,7 @@ function TeamSplitCard({
   teamAbbr,
   teamLabel,
   teamRecord,
+  basePath = "",
 }: {
   split: TeamCrewSplit;
   leagueAvgFouls: number;
@@ -66,6 +69,7 @@ function TeamSplitCard({
   teamAbbr: string;
   teamLabel: string;
   teamRecord: TeamSampleRecord;
+  basePath?: string;
 }) {
   const crewWinRate = split.games > 0 ? split.wins / split.games : 0;
   const foulsDelta = Math.round((split.avgFouls - leagueAvgFouls) * 10) / 10;
@@ -144,7 +148,14 @@ function TeamSplitCard({
         {split.crewNames.map((name) => {
           const ref = refs.find((r) => r.name === name);
           if (!ref) return null;
-          return <RefLinkChip key={ref.slug} name={name} slug={ref.slug} />;
+          return (
+            <RefLinkChip
+              key={ref.slug}
+              name={name}
+              slug={ref.slug}
+              basePath={basePath}
+            />
+          );
         })}
       </div>
     </article>
@@ -158,6 +169,7 @@ function TeamRefSplitCard({
   teamAbbr,
   teamLabel,
   teamRecord,
+  basePath = "",
 }: {
   entry: TeamRefLeaderboardEntry;
   leagueAvgTotal: number;
@@ -165,6 +177,7 @@ function TeamRefSplitCard({
   teamAbbr: string;
   teamLabel: string;
   teamRecord: TeamSampleRecord;
+  basePath?: string;
 }) {
   const wins = Math.round(entry.winRate * entry.games);
   const totalDelta = entry.avgTotalPoints - leagueAvgTotal;
@@ -177,7 +190,7 @@ function TeamRefSplitCard({
       <div className="border-b border-border bg-gradient-to-r from-zinc-50 to-white px-4 py-4 sm:px-5">
         <h2 className="text-base font-semibold leading-snug text-zinc-900">
           <Link
-            href={`/refs/${entry.slug}`}
+            href={`${basePath}/refs/${entry.slug}`}
             className="transition hover:text-raptors"
           >
             {entry.name}
@@ -231,6 +244,7 @@ export function TeamSplitView({
   leagueAvgTotal,
   leagueAvgFouls,
   overBaseline,
+  basePath = "",
 }: {
   crewSplits: TeamCrewSplit[];
   refSplits: TeamRefLeaderboardEntry[];
@@ -241,6 +255,7 @@ export function TeamSplitView({
   leagueAvgTotal: number;
   leagueAvgFouls: number;
   overBaseline: number;
+  basePath?: string;
 }) {
   const [view, setView] = useState<SplitView>("crew");
   const [refSort, setRefSort] = useState<TeamRefSort>("winRate-desc");
@@ -304,6 +319,7 @@ export function TeamSplitView({
                 teamAbbr={teamAbbr}
                 teamLabel={teamLabel}
                 teamRecord={teamRecord}
+                basePath={basePath}
               />
             ))}
           </div>
@@ -331,6 +347,7 @@ export function TeamSplitView({
                 teamAbbr={teamAbbr}
                 teamLabel={teamLabel}
                 teamRecord={teamRecord}
+                basePath={basePath}
               />
             ))}
           </div>
