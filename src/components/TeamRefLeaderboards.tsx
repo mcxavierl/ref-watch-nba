@@ -68,11 +68,13 @@ export function TeamRefLeaderboards({
   foulEdge,
   scoringPace,
   teamAbbr,
+  teamLabel,
   overBaseline,
 }: {
   foulEdge: TeamRefLeaderboardEntry[];
   scoringPace: TeamRefLeaderboardEntry[];
   teamAbbr: string;
+  teamLabel: string;
   overBaseline: number;
 }) {
   return (
@@ -82,9 +84,9 @@ export function TeamRefLeaderboards({
           Top refs by foul edge
         </h2>
         <p className="mt-1 text-sm text-zinc-600">
-          Officials who call the most fouls on {teamAbbr}&apos;s opponents in
-          games involving {teamAbbr}. Positive edge = more opponent fouls per
-          game. Only refs with {TEAM_REF_MIN_GAMES}+ games in this sample.
+          Officials who call the most fouls on {teamLabel}&apos;s opponents.
+          Positive edge = more opponent fouls per game. Only refs with{" "}
+          {TEAM_REF_MIN_GAMES}+ games in this sample.
         </p>
         <div className="data-card mt-3">
           <LeaderboardTable
@@ -101,7 +103,7 @@ export function TeamRefLeaderboards({
           Top refs by scoring pace
         </h2>
         <p className="mt-1 text-sm text-zinc-600">
-          Officials whose {teamAbbr} games produce the highest combined scores
+          Officials whose {teamLabel} games produce the highest combined scores
           (home + away). Over rate is how often the total beats{" "}
           {overBaseline}. Only refs with {TEAM_REF_MIN_GAMES}+ games in this
           sample.

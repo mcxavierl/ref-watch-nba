@@ -49,7 +49,7 @@ npx tsx scripts/expand-team-splits.ts
 - `/teams/[abbr]` — Team crew splits (e.g. `/teams/TOR`, `/teams/BOS`)
 - `/raptors` → redirects to `/teams/TOR` (backwards compat)
 - `/lakers` → redirects to `/teams/LAL` (backwards compat)
-- `/refs` — All referees in the dataset (searchable from header)
+- `/refs` — All referees in the dataset
 - `/refs/[slug]` — Individual ref profile (e.g. `/refs/scott-foster-48`)
 
 ## Methodology (MVP)

@@ -61,6 +61,11 @@ export function teamFullName(team: NbaTeam): string {
   return `${team.city} ${team.name}`;
 }
 
+/** e.g. "the Raptors", "the Lakers", "the 76ers" */
+export function teamWithArticle(team: NbaTeam): string {
+  return `the ${team.name}`;
+}
+
 export function teamLogoUrl(nbaId: number): string {
   return `https://cdn.nba.com/logos/nba/${nbaId}/global/L/logo.svg`;
 }

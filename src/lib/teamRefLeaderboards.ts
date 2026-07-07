@@ -68,3 +68,18 @@ export function getTeamScoringPaceLeaderboard(
     .sort((a, b) => b.avgTotalPoints - a.avgTotalPoints)
     .slice(0, limit);
 }
+
+/** All refs with enough games vs this team, sorted by sample size. */
+export function getTeamRefSplits(
+  refs: RefProfile[],
+  teamAbbr: string,
+): TeamRefLeaderboardEntry[] {
+  return refs
+    .map((ref) => {
+      const stat = qualifiedTeamStat(ref, teamAbbr);
+      if (!stat) return null;
+      return toEntry(ref, stat);
+    })
+    .filter((entry): entry is TeamRefLeaderboardEntry => entry !== null)
+    .sort((a, b) => b.games - a.games);
+}
