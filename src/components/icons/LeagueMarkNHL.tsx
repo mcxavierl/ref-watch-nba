@@ -1,6 +1,6 @@
 import type { SVGProps } from "react";
 
-/** Stylized puck and stick mark for league toggle (not an official NHL logo). */
+/** Simplified hockey stick and puck mark for league toggle (not an official NHL logo). */
 export function LeagueMarkNHL({
   className,
   ...props
@@ -14,39 +14,37 @@ export function LeagueMarkNHL({
       {...props}
     >
       <path
-        d="M5 19.5V9.5c0-2.2 1.5-3.5 3.2-3.5h2.3"
+        d="M7 4.5l7.2 10.2"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="2.15"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M5 19.5h3.8"
+        d="M14.2 14.7c1.4 1.85 3.05 2.3 5.05 1.4"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="2.15"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <ellipse
-        cx="15.5"
+      <circle
+        cx="8"
         cy="17.25"
-        rx="4.25"
-        ry="1.35"
+        r="2.25"
         fill="currentColor"
-        opacity="0.22"
-      />
-      <ellipse
-        cx="15.5"
-        cy="16.25"
-        rx="4.25"
-        ry="2.35"
-        stroke="currentColor"
-        strokeWidth="1.5"
       />
       <path
-        d="M13.5 16.25h4"
+        d="M5.8 17.25h4.4"
         stroke="currentColor"
-        strokeWidth="1.25"
+        strokeWidth="0.8"
+        opacity="0.38"
+      />
+      <path
+        d="M12.5 5.2l5.7 8"
+        stroke="currentColor"
+        strokeWidth="1.15"
         strokeLinecap="round"
+        opacity="0.5"
       />
     </svg>
   );

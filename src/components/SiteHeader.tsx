@@ -2,39 +2,61 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Bell, UserCircle } from "lucide-react";
 import { Whistle } from "@/components/icons/Whistle";
-import { SiteNav } from "./SiteNav";
+import { LeagueSwitch, SiteNav } from "./SiteNav";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const isNhl = pathname.startsWith("/nhl");
   const homeHref = isNhl ? "/nhl" : "/";
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const sync = () => setScrolled(window.scrollY > 12);
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    return () => window.removeEventListener("scroll", sync);
+  }, []);
 
   return (
-    <header className="site-header">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
-        <Link
-          href={homeHref}
-          className="group flex shrink-0 items-center gap-3.5 rounded-lg outline-offset-4 transition hover:opacity-95 focus-visible:outline-2 focus-visible:outline-white/80"
-        >
-          <span className="site-header-brand-icon transition duration-300 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
-            <Whistle
-              className="size-5 text-raptors transition duration-300 ease-out group-hover:rotate-[-4deg] motion-reduce:transition-none motion-reduce:group-hover:rotate-0"
-              strokeWidth={2.25}
-              aria-hidden
-            />
-          </span>
-          <div className="leading-tight">
-            <p className="site-header-title">REF WATCH</p>
-            <p className="site-header-subtitle">
-              Ref crew analytics before the game
-            </p>
+    <header
+      className={`site-header${scrolled ? " site-header--scrolled" : ""}`}
+      data-league={isNhl ? "nhl" : "nba"}
+    >
+      <div className="site-header-glow" aria-hidden />
+      <div className="site-header-accent" aria-hidden />
+
+      <div className="site-header-inner">
+        <div className="site-header-top">
+          <Link href={homeHref} className="site-header-brand group">
+            <span className="site-header-mark" aria-hidden>
+              <span className="site-header-mark-ring" />
+              <span className="site-header-mark-icon">
+                <Whistle className="size-[1.125rem]" strokeWidth={2.35} />
+              </span>
+            </span>
+            <span className="site-header-wordmark">
+              <span className="site-header-name">REF WATCH</span>
+            </span>
+          </Link>
+
+          <div className="site-header-league">
+            <LeagueSwitch />
           </div>
-        </Link>
-        <span className="site-header-proof">
-          Free signals · sample-gated · no picks
-        </span>
-        <SiteNav />
+
+          <div className="site-header-actions" aria-label="Account and notifications">
+            <button type="button" className="site-header-icon-btn" aria-label="Open profile">
+              <UserCircle className="size-6" strokeWidth={1.85} />
+            </button>
+            <button type="button" className="site-header-icon-btn" aria-label="Open notifications">
+              <Bell className="size-5" strokeWidth={2} />
+            </button>
+          </div>
+        </div>
+
+        <SiteNav id="site-primary-nav" />
       </div>
     </header>
   );
