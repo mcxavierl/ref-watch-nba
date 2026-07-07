@@ -2459,6 +2459,14 @@ p {
     color: color-mix(in srgb, var(--muted) 55%, transparent);
     font-size: var(--text-sm);
   }
+
+  .ref-matrix-cell--extreme-high .ref-matrix-cell-link {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, #10b981 55%, transparent);
+  }
+
+  .ref-matrix-cell--extreme-low .ref-matrix-cell-link {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, #f43f5e 50%, transparent);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

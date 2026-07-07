@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { winRateTone } from "@/lib/metricTone";
 import {
+  matrixCellExtreme,
   matrixCellKey,
   type RefTeamMatrix,
 } from "@/lib/ref-team-matrix";
@@ -24,6 +25,12 @@ function cellToneClass(tone: "positive" | "negative" | "neutral"): string {
   }
 }
 
+function extremeClass(extreme: "high" | "low" | null): string {
+  if (extreme === "high") return "ref-matrix-cell--extreme-high";
+  if (extreme === "low") return "ref-matrix-cell--extreme-low";
+  return "";
+}
+
 export function RefTeamMatrix({
   matrix,
   basePath,
@@ -39,8 +46,9 @@ export function RefTeamMatrix({
           Each cell shows a team&apos;s approximate W-L when that{" "}
           {officialNounPlural.slice(0, -1)} worked their games. Cells need{" "}
           {minGames}+ games; empty cells are below the sample gate. Colors
-          compare win rate to the team&apos;s overall baseline in this dataset.
-          Historical splits only, not picks.
+          compare win rate to the team&apos;s overall baseline; bold borders
+          flag standout splits. Tap a cell for that ref&apos;s profile (including
+          tight-game proxy). Historical splits only, not picks.
         </p>
         <div className="ref-matrix-legend-swatches" aria-hidden>
           <span className="ref-matrix-swatch ref-matrix-cell--positive">
@@ -114,16 +122,17 @@ export function RefTeamMatrix({
                   }
 
                   const tone = winRateTone(cell.winRate, team.baselineWinRate);
+                  const extreme = matrixCellExtreme(cell, team.baselineWinRate);
                   const record = `${cell.wins}-${cell.losses}`;
                   const title = `${ref.name} with ${team.label}: ${record} (${cell.games} gp, ${formatPct(cell.winRate)} win rate; team baseline ${formatPct(team.baselineWinRate)})`;
 
                   return (
                     <td
                       key={team.abbr}
-                      className={`ref-matrix-cell ${cellToneClass(tone)}`}
+                      className={`ref-matrix-cell ${cellToneClass(tone)} ${extremeClass(extreme)}`.trim()}
                     >
                       <Link
-                        href={`${basePath}/teams/${team.abbr}`}
+                        href={`${basePath}/refs/${ref.slug}#close-game`}
                         className="ref-matrix-cell-link"
                         title={title}
                         aria-label={title}

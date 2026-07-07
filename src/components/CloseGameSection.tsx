@@ -34,7 +34,7 @@ export function CloseGameSection({
 
   const scoreUnit = league === "NBA" ? "points" : "goals";
   const sectionTitle =
-    league === "NBA" ? "Close-game / L2M proxy" : "Late-game / OT proxy";
+    league === "NBA" ? "Tight-game proxy" : "Late-game proxy";
   const sectionClass = embedded ? "" : "section-block scroll-mt-24";
 
   return (
@@ -48,8 +48,8 @@ export function CloseGameSection({
           games.{" "}
           <TermHelp id="close-game-proxy">
             Proxy windows
-          </TermHelp>{" "}
-         , not official NBA L2M reports.
+          </TermHelp>
+          , not official NBA L2M reports.
         </p>
       </div>
 

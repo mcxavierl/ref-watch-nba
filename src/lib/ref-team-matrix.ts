@@ -1,4 +1,4 @@
-import { getTeamSampleRecord } from "@/lib/teamRecord";
+import { getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
 
 /** Minimum games before a ref×team cell is shown in the matrix. */
@@ -114,4 +114,65 @@ export function refHasTeamStat(
 ): boolean {
   const stat = ref.teamStats?.[teamAbbr.toUpperCase()];
   return Boolean(stat && stat.games >= minGames);
+}
+
+export type MatrixCellExtreme = "high" | "low";
+
+export const MATRIX_EXTREME_DELTA_PTS = 12;
+
+export function matrixCellExtreme(
+  cell: RefTeamMatrixCell,
+  teamBaseline: number,
+): MatrixCellExtreme | null {
+  const delta = winRateDeltaPoints(cell.winRate, teamBaseline);
+  if (delta >= MATRIX_EXTREME_DELTA_PTS) return "high";
+  if (delta <= -MATRIX_EXTREME_DELTA_PTS) return "low";
+  return null;
+}
+
+export interface MatrixExtremeHighlight {
+  refSlug: string;
+  refName: string;
+  teamAbbr: string;
+  teamLabel: string;
+  games: number;
+  wins: number;
+  losses: number;
+  winRate: number;
+  baselineWinRate: number;
+  deltaPts: number;
+  kind: MatrixCellExtreme;
+}
+
+export function computeMatrixExtremes(
+  matrix: RefTeamMatrix,
+  limit = 6,
+): MatrixExtremeHighlight[] {
+  const highlights: MatrixExtremeHighlight[] = [];
+
+  for (const ref of matrix.refs) {
+    for (const team of matrix.teams) {
+      const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
+      if (!cell) continue;
+      const extreme = matrixCellExtreme(cell, team.baselineWinRate);
+      if (!extreme) continue;
+      highlights.push({
+        refSlug: ref.slug,
+        refName: ref.name,
+        teamAbbr: team.abbr,
+        teamLabel: team.label,
+        games: cell.games,
+        wins: cell.wins,
+        losses: cell.losses,
+        winRate: cell.winRate,
+        baselineWinRate: team.baselineWinRate,
+        deltaPts: winRateDeltaPoints(cell.winRate, team.baselineWinRate),
+        kind: extreme,
+      });
+    }
+  }
+
+  return highlights
+    .sort((a, b) => Math.abs(b.deltaPts) - Math.abs(a.deltaPts))
+    .slice(0, limit);
 }

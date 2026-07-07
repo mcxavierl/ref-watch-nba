@@ -7,7 +7,8 @@ import {
   getTeamSplits,
 } from "@/lib/nhl/data";
 import { LEAGUES } from "@/lib/leagues";
-import { computeRefTeamMatrix } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix, computeMatrixExtremes } from "@/lib/ref-team-matrix";
+import { formatPct } from "@/lib/stats-utils";
 import { absoluteUrl } from "@/lib/site";
 import { NHL_TEAMS, teamFullName } from "@/lib/nhl/teams";
 
@@ -32,6 +33,7 @@ export default function NhlMatrixPage() {
     })),
     getTeamSplits,
   );
+  const extremes = computeMatrixExtremes(matrix);
 
   return (
     <div className="page-shell">
@@ -70,6 +72,70 @@ export default function NhlMatrixPage() {
             officialNounPlural={league.officialNounPlural}
           />
         </div>
+      </section>
+
+      {extremes.length > 0 && (
+        <section className="section-block">
+          <h2 className="section-title">Standout official×team splits</h2>
+          <p className="section-lead">
+            Cells where a team&apos;s win rate with that official diverges sharply
+            from their baseline in this sample. Descriptive only, not picks.
+          </p>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {extremes.map((item) => (
+              <li key={`${item.refSlug}-${item.teamAbbr}`} className="data-card px-4 py-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                  {item.kind === "high" ? "Above baseline" : "Below baseline"}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-700">
+                  <Link
+                    href={`${league.pathPrefix}/refs/${item.refSlug}#close-game`}
+                    className="font-medium text-zinc-900 hover:text-raptors hover:underline"
+                  >
+                    {item.refName}
+                  </Link>{" "}
+                  with{" "}
+                  <Link
+                    href={`${league.pathPrefix}/teams/${item.teamAbbr}`}
+                    className="font-medium text-zinc-900 hover:text-raptors hover:underline"
+                  >
+                    {item.teamLabel}
+                  </Link>
+                  : {item.wins}-{item.losses} ({formatPct(item.winRate)}) in{" "}
+                  {item.games} games, {Math.abs(item.deltaPts).toFixed(1)} pts{" "}
+                  {item.kind === "high" ? "above" : "below"} team baseline (
+                  {formatPct(item.baselineWinRate)}).
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section className="section-block">
+        <h2 className="section-title">Related views</h2>
+        <p className="section-lead">
+          Compare recurring crews or browse official profiles for late-game
+          proxies.
+        </p>
+        <ul className="mt-3 flex flex-wrap gap-3 text-sm font-medium">
+          <li>
+            <Link
+              href="/nhl/crews"
+              className="text-zinc-800 hover:text-raptors hover:underline"
+            >
+              Crew dynamics →
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/nhl/refs"
+              className="text-zinc-800 hover:text-raptors hover:underline"
+            >
+              Official profiles →
+            </Link>
+          </li>
+        </ul>
       </section>
     </div>
   );
