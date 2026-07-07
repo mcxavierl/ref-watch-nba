@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
+import { FindingsSection } from "@/components/FindingsSection";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import {
   computeCrewMetrics,
@@ -8,6 +9,7 @@ import {
   getRefStats,
   ouLeanSortWeight,
 } from "@/lib/data";
+import { computeFindings } from "@/lib/findings";
 import type { AssignmentGame } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -34,6 +36,7 @@ function sortSlateGames(
 export default function HomePage() {
   const assignments = getAssignments();
   const refStats = getRefStats();
+  const findings = computeFindings();
   const sortedGames = sortSlateGames(assignments.games, refStats);
   const hotCrews = sortedGames
     .map((game) => ({
@@ -56,6 +59,8 @@ export default function HomePage() {
         </p>
         <DataFreshnessMeta assignments={assignments} refStats={refStats} />
       </section>
+
+      <FindingsSection findings={findings} />
 
       {assignments.games.length === 0 ? (
         <div className="panel-inset px-6 py-10 text-center">
