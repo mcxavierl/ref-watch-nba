@@ -4,6 +4,8 @@ import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/data";
 import { teamFullName, teamsByConference } from "@/lib/teams";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "All NBA teams — Ref Watch",
   description:

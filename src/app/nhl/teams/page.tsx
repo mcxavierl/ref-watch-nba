@@ -4,6 +4,8 @@ import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/nhl/data";
 import { teamFullName, teamsByConference } from "@/lib/nhl/teams";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "All NHL teams — Ref Watch",
   description:

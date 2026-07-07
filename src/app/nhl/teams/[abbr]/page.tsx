@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
 import { getTeam, NHL_TEAMS, teamFullName } from "@/lib/nhl/teams";
 
+export const dynamic = "force-static";
+
 export function generateStaticParams() {
   return NHL_TEAMS.map((team) => ({ abbr: team.abbr }));
 }
