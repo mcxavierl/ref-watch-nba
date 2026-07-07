@@ -14,6 +14,7 @@ import {
   getTeamRefSplits,
   TEAM_REF_MIN_GAMES,
 } from "@/lib/teamRefLeaderboards";
+import { getTeamSampleRecord } from "@/lib/teamRecord";
 
 export interface TeamPageConfig {
   teamAbbr: string;
@@ -26,7 +27,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const stats = getRefStats();
   const splits = sortSplitsByGames(getTeamSplits(team.abbr));
   const refSplits = getTeamRefSplits(stats.refs, team.abbr);
-  const totalGames = splits.reduce((s, sp) => s + sp.games, 0);
+  const teamRecord = getTeamSampleRecord(splits);
   const statsSeeded = stats.meta.source === "seeded";
   const teamName = teamFullName(team);
   const teamLabel = teamWithArticle(team);
@@ -45,9 +46,9 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         </div>
         <p className="page-lead">
           Every {team.name} game grouped by the three referees on the floor, or
-          by individual official. Switch tabs to compare full crews vs single
-          refs — scoring trends, foul patterns, and records across{" "}
-          {stats.meta.seasons.join(" & ")}.
+          by individual official. Over this sample {teamLabel} are{" "}
+          {teamRecord.wins}-{teamRecord.losses} ({formatPct(teamRecord.winRate)}
+          ) — each ref and crew win rate below is compared to that team average.
         </p>
         <p className="page-meta">
           <span
@@ -60,7 +61,10 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             {statsSeeded ? "Sample data" : "Live data"}
           </span>
           <span>Updated {formatDate(stats.meta.lastUpdated)}</span>
-          <span>{totalGames} {team.name} games in sample</span>
+          <span>
+            {team.name} sample: {teamRecord.wins}-{teamRecord.losses} (
+            {formatPct(teamRecord.winRate)})
+          </span>
         </p>
       </section>
 
@@ -84,6 +88,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           refs={stats.refs}
           teamAbbr={team.abbr}
           teamLabel={teamLabel}
+          teamRecord={teamRecord}
           leagueAvgTotal={stats.meta.leagueAvgTotal}
           leagueAvgFouls={stats.meta.leagueAvgFouls}
           overBaseline={stats.meta.leagueOverBaseline}
@@ -93,6 +98,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
       <TeamRefLeaderboards
         entries={refSplits}
         teamLabel={teamLabel}
+        teamRecord={teamRecord}
         overBaseline={stats.meta.leagueOverBaseline}
       />
 
@@ -109,10 +115,10 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             with different partners.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Scoring</span> — how
-            many combined points these games tend to produce, and how often they
-            go above {stats.meta.leagueOverBaseline} (our stand-in when real
-            betting lines aren&apos;t available).
+            <span className="font-medium text-zinc-800">Team baseline</span> —{" "}
+            {teamLabel} went {teamRecord.wins}-{teamRecord.losses} (
+            {formatPct(teamRecord.winRate)}) across this sample. Ref and crew win
+            rates show how they compare to that team average.
           </li>
           <li>
             <span className="font-medium text-zinc-800">Foul edge</span> — who

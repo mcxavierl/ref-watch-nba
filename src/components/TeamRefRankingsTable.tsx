@@ -3,22 +3,25 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
-import { formatPct, formatSigned } from "@/lib/stats-utils";
+import { formatPct, formatSigned, formatWinRateVsTeam } from "@/lib/stats-utils";
 import type { TeamRefLeaderboardEntry, TeamRefSort } from "@/lib/teamRefLeaderboards";
 import {
   sortTeamRefEntries,
   TEAM_REF_MIN_GAMES,
 } from "@/lib/teamRefLeaderboards";
+import type { TeamSampleRecord } from "@/lib/teamRecord";
 
 export function TeamRefRankingsTable({
   entries,
   teamLabel,
+  teamRecord,
   overBaseline,
   defaultSort = "foulEdge-desc",
   limit,
 }: {
   entries: TeamRefLeaderboardEntry[];
   teamLabel: string;
+  teamRecord: TeamSampleRecord;
   overBaseline: number;
   defaultSort?: TeamRefSort;
   limit?: number;
@@ -43,6 +46,10 @@ export function TeamRefRankingsTable({
     <div>
       <div className="border-b border-border-subtle px-4 py-3">
         <TeamRefSortBar value={sort} onChange={setSort} id="team-ref-rankings-sort" />
+        <p className="mt-2 font-mono text-[11px] tabular-nums text-zinc-600">
+          Team baseline: {teamRecord.wins}-{teamRecord.losses} (
+          {formatPct(teamRecord.winRate)}) in this sample
+        </p>
       </div>
       <div className="divide-y divide-border-subtle">
         {visible.map((entry, index) => (
@@ -62,6 +69,9 @@ export function TeamRefRankingsTable({
             </span>
             <span className="font-mono text-xs tabular-nums text-zinc-900">
               {formatPct(entry.winRate)} wins
+            </span>
+            <span className="font-mono text-xs tabular-nums text-zinc-700">
+              {formatWinRateVsTeam(entry.winRate, teamRecord.winRate)}
             </span>
             <span className="font-mono text-xs tabular-nums text-zinc-900">
               {formatSigned(entry.avgFoulDifferential)} foul edge

@@ -7,6 +7,7 @@ import { StatCell, StatSection, StatStrip } from "@/components/StatStrip";
 import {
   formatPct,
   formatSigned,
+  formatWinRateVsTeam,
   whistleBias,
 } from "@/lib/stats-utils";
 import {
@@ -15,6 +16,7 @@ import {
 } from "@/lib/leanAnnotations";
 import type { TeamRefLeaderboardEntry, TeamRefSort } from "@/lib/teamRefLeaderboards";
 import { sortTeamRefEntries } from "@/lib/teamRefLeaderboards";
+import type { TeamSampleRecord } from "@/lib/teamRecord";
 import type { RefProfile, TeamCrewSplit } from "@/lib/types";
 
 type SplitView = "crew" | "ref";
@@ -32,6 +34,7 @@ function TeamSplitCard({
   refs,
   teamAbbr,
   teamLabel,
+  teamRecord,
 }: {
   split: TeamCrewSplit;
   leagueAvgTotal: number;
@@ -40,7 +43,9 @@ function TeamSplitCard({
   refs: Pick<RefProfile, "slug" | "name">[];
   teamAbbr: string;
   teamLabel: string;
+  teamRecord: TeamSampleRecord;
 }) {
+  const crewWinRate = split.games > 0 ? split.wins / split.games : 0;
   const ouLean = getOuLeanAnnotation(
     split.overRate,
     split.avgTotalPoints,
@@ -83,7 +88,8 @@ function TeamSplitCard({
           <StatCell
             label="Win-loss record"
             value={`${split.wins}-${split.losses}`}
-            detail={`${winPct(split.wins, split.games)} win rate`}
+            detail={`${formatPct(crewWinRate)} · team sample ${formatPct(teamRecord.winRate)}`}
+            annotation={formatWinRateVsTeam(crewWinRate, teamRecord.winRate)}
           />
         </StatStrip>
       </StatSection>
@@ -162,12 +168,14 @@ function TeamRefSplitCard({
   overBaseline,
   teamAbbr,
   teamLabel,
+  teamRecord,
 }: {
   entry: TeamRefLeaderboardEntry;
   leagueAvgTotal: number;
   overBaseline: number;
   teamAbbr: string;
   teamLabel: string;
+  teamRecord: TeamSampleRecord;
 }) {
   const ouLean = getOuLeanAnnotation(
     entry.overRate,
@@ -216,7 +224,8 @@ function TeamRefSplitCard({
           <StatCell
             label="Win rate"
             value={formatPct(entry.winRate)}
-            detail={`Across ${entry.games} games`}
+            detail={`Team sample ${formatPct(teamRecord.winRate)} (${teamRecord.wins}-${teamRecord.losses})`}
+            annotation={formatWinRateVsTeam(entry.winRate, teamRecord.winRate)}
           />
         </StatStrip>
       </StatSection>
@@ -241,6 +250,7 @@ export function TeamSplitView({
   refs,
   teamAbbr,
   teamLabel,
+  teamRecord,
   leagueAvgTotal,
   leagueAvgFouls,
   overBaseline,
@@ -250,6 +260,7 @@ export function TeamSplitView({
   refs: Pick<RefProfile, "slug" | "name">[];
   teamAbbr: string;
   teamLabel: string;
+  teamRecord: TeamSampleRecord;
   leagueAvgTotal: number;
   leagueAvgFouls: number;
   overBaseline: number;
@@ -314,6 +325,7 @@ export function TeamSplitView({
                 refs={refs}
                 teamAbbr={teamAbbr}
                 teamLabel={teamLabel}
+                teamRecord={teamRecord}
               />
             ))}
           </div>
@@ -340,6 +352,7 @@ export function TeamSplitView({
                 overBaseline={overBaseline}
                 teamAbbr={teamAbbr}
                 teamLabel={teamLabel}
+                teamRecord={teamRecord}
               />
             ))}
           </div>

@@ -10,6 +10,15 @@ export function formatSigned(n: number): string {
   return `${n >= 0 ? "+" : ""}${n}`;
 }
 
+/** e.g. "+4.2 pts vs team" */
+export function formatWinRateVsTeam(
+  rate: number,
+  teamBaseline: number,
+): string {
+  const delta = Math.round((rate - teamBaseline) * 1000) / 10;
+  return `${formatSigned(delta)} pts vs team`;
+}
+
 export function whistleBias(
   foulDifferential: number,
 ): "team" | "opponent" | "neutral" {
