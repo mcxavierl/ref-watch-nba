@@ -21,6 +21,13 @@ export const REF_RANKING_SORT_LABELS: Record<RefRankingSort, string> = {
   "games-asc": "Sample size (fewest games)",
 };
 
+export function qualifiedRefs(
+  refs: RefProfile[],
+  minSample: number,
+): RefProfile[] {
+  return refs.filter((r) => r.games >= minSample);
+}
+
 export function sortRefRankings(
   refs: RefProfile[],
   sort: RefRankingSort,

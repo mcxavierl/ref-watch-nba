@@ -11,8 +11,14 @@ export function provenanceLabel(tag: ProvenanceTag): string {
   }
 }
 
+/** Fallback constants and genuinely incomplete slices — not thin samples. */
 export function isEstimatedTag(tag: ProvenanceTag): boolean {
-  return tag !== "computed-from-real";
+  return tag === "fallback-constant" || tag === "computed-with-partial-data";
+}
+
+/** Never render fallback-constant values in the UI. */
+export function isFallbackMetric(provenance?: MetricProvenance): boolean {
+  return provenance?.tag === "fallback-constant";
 }
 
 export function provenanceValueClass(

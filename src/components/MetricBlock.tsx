@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import type { MetricProvenance } from "@/lib/types";
 import { ProvenanceMarker, provenanceValueClass } from "@/components/ProvenanceMarker";
+import { isFallbackMetric } from "@/lib/provenance-utils";
 
 export function MetricBlock({
   icon: Icon,
@@ -22,6 +23,7 @@ export function MetricBlock({
   badgeTone?: "positive" | "negative" | "neutral" | "warning";
   provenance?: MetricProvenance;
 }) {
+  const hidden = isFallbackMetric(provenance);
   const badgeColors = {
     positive: "bg-zinc-100 text-zinc-700",
     negative: "bg-zinc-100 text-zinc-700",
@@ -40,14 +42,14 @@ export function MetricBlock({
           />
         )}
         <span className="text-sm font-medium text-zinc-600">{label}</span>
-        <ProvenanceMarker provenance={provenance} compact />
+        {!hidden && <ProvenanceMarker provenance={provenance} compact />}
       </div>
       <p
         className={`font-mono text-xl font-semibold tabular-nums leading-tight ${provenanceValueClass(provenance) ?? "text-zinc-900"}`}
       >
-        {value}
+        {hidden ? "—" : value}
       </p>
-      {hint && <p className="text-sm leading-snug text-zinc-600">{hint}</p>}
+      {hint && !hidden && <p className="text-sm leading-snug text-zinc-600">{hint}</p>}
       {badge && (
         <span
           className={`inline-flex w-fit rounded-md px-2 py-0.5 text-sm font-medium ${badgeColors[badgeTone]}`}

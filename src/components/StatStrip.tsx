@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { MetricProvenance } from "@/lib/types";
 import { ProvenanceMarker, provenanceValueClass } from "@/components/ProvenanceMarker";
+import { isFallbackMetric } from "@/lib/provenance-utils";
 
 export function StatStrip({ children }: { children: ReactNode }) {
   return <dl className="stat-row">{children}</dl>;
@@ -19,11 +20,13 @@ export function StatCell({
   annotation?: string;
   provenance?: MetricProvenance;
 }) {
+  const hidden = isFallbackMetric(provenance);
+
   return (
     <div className="stat-cell">
       <dt className="stat-label">
         {label}
-        {provenance && (
+        {provenance && !hidden && (
           <span className="ml-1">
             <ProvenanceMarker provenance={provenance} compact />
           </span>
@@ -32,9 +35,9 @@ export function StatCell({
       <dd
         className={`stat-value ${provenanceValueClass(provenance) ?? ""}`.trim()}
       >
-        {value}
+        {hidden ? "—" : value}
       </dd>
-      {detail && <dd className="stat-detail">{detail}</dd>}
+      {detail && !hidden && <dd className="stat-detail">{detail}</dd>}
       {annotation && <dd className="stat-annotation">{annotation}</dd>}
     </div>
   );

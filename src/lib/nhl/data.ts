@@ -229,17 +229,25 @@ export function computeCrewMetrics(
     }
   }
 
-  const pool =
-    qualified.length > 0
-      ? qualified
-      : crew
-          .map((o) => {
-            const slug = refSlug(o.name, o.number);
-            return stats.refs.find((r) => r.slug === slug);
-          })
-          .filter((r): r is RefProfile => !!r);
+  if (qualified.length === 0) {
+    return {
+      crew,
+      qualifiedRefs: [],
+      sampleGames: 0,
+      avgTotalPoints: 0,
+      totalPointsDelta: 0,
+      overRate: 0,
+      avgFouls: 0,
+      foulsDelta: 0,
+      homeCoverRate: null,
+      ouLean: "neutral",
+      insufficientSample: true,
+      provenance: nhlCrewMetricsProvenance(stats, 0, 0),
+    };
+  }
 
-  const n = pool.length || 1;
+  const pool = qualified;
+  const n = pool.length;
   const avgTotal = pool.reduce((s, r) => s + r.avgTotalPoints, 0) / n;
   const overRate = pool.reduce((s, r) => s + r.overRate, 0) / n;
   const avgFouls = pool.reduce((s, r) => s + r.avgFouls, 0) / n;
@@ -251,7 +259,7 @@ export function computeCrewMetrics(
   if (overRate >= 0.56 || totalDelta >= 0.4) ouLean = "over";
   else if (overRate <= 0.44 || totalDelta <= -0.4) ouLean = "under";
 
-  const avgSampleGames = Math.round(sampleGames / (qualified.length || 1));
+  const avgSampleGames = Math.round(sampleGames / qualified.length);
 
   return {
     crew,

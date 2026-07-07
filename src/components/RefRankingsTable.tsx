@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, type ReactNode } from "react";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
-import { sortRefRankings, type RefRankingSort } from "@/lib/rankings";
+import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
 import type { RefProfile } from "@/lib/types";
 
 type SortField = "games" | "scoring" | "whistle" | "overRate";
@@ -70,7 +70,14 @@ export function RefRankingsTable({
   const [sort, setSort] = useState<RefRankingSort>("scoring-desc");
   const [showLowSample, setShowLowSample] = useState(false);
 
-  const sorted = useMemo(() => sortRefRankings(refs, sort), [refs, sort]);
+  const sorted = useMemo(
+    () =>
+      sortRefRankings(
+        showLowSample ? refs : qualifiedRefs(refs, minSampleSize),
+        sort,
+      ),
+    [refs, sort, showLowSample, minSampleSize],
+  );
 
   const scoringLabel = league === "NBA" ? "Scoring Δ" : "Goals Δ";
   const whistleLabel = league === "NBA" ? "Fouls Δ" : "Minors Δ";

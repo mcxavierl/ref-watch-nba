@@ -112,8 +112,8 @@ export default async function RefProfilePage({
         </div>
         {!qualified && (
           <p className="mt-3 text-sm text-amber-800">
-            Below {stats.meta.minSampleSize}-game minimum — treat metrics as
-            directional only.
+            Below {stats.meta.minSampleSize}-game minimum — metrics hidden until
+            sample gate clears.
           </p>
         )}
         <p className="page-meta">
@@ -128,11 +128,16 @@ export default async function RefProfilePage({
       </header>
 
       {profile.bettingStats ? (
-        <RefBettingProfile profile={profile} stats={profile.bettingStats} />
+        <RefBettingProfile
+          profile={profile}
+          stats={profile.bettingStats}
+          showMetrics={qualified}
+        />
       ) : (
         <RefStatGrid
           profile={profile}
           overBaseline={stats.meta.leagueOverBaseline}
+          showMetrics={qualified}
         />
       )}
 

@@ -158,28 +158,38 @@ export function GameSlateCard({
       </div>
 
       <div className="space-y-2.5 px-4 py-5 sm:px-5">
-        <p className="game-signal-line">
-          <span className="game-signal-label">{copy.pointsAboveAverage}:</span>{" "}
-          <span className="game-signal-value">
-            {formatPremiumLabel(premium.scoringPremium)}
-          </span>{" "}
-          ·{" "}
-          <span className="game-signal-value">
-            {formatSigned(premium.gapVsBenchmark)}
-          </span>{" "}
-          vs {bench}
-        </p>
-        <p className="game-signal-line">
-          <span className="game-signal-label">{copy.scoringLabel}:</span>{" "}
-          {metrics.avgTotalPoints} avg combined ·{" "}
-          <span className="game-signal-value">{totalDelta}</span> vs league ·{" "}
-          {formatPct(metrics.overRate)} {copy.overLeanLabel.toLowerCase()}
-        </p>
-        <p className="game-signal-line">
-          <span className="game-signal-label">{copy.whistleLabel}:</span>{" "}
-          {metrics.avgFouls} {copy.whistleUnit} avg ·{" "}
-          <span className="game-signal-value">{foulsDelta}</span> vs league
-        </p>
+        {metrics.insufficientSample ? (
+          <p className="text-sm text-zinc-600">
+            Not enough qualified crew history ({metrics.crew.length} official
+            {metrics.crew.length === 1 ? "" : "s"} — need 2+ refs at sample
+            gate). No crew averages shown.
+          </p>
+        ) : (
+          <>
+            <p className="game-signal-line">
+              <span className="game-signal-label">{copy.pointsAboveAverage}:</span>{" "}
+              <span className="game-signal-value">
+                {formatPremiumLabel(premium.scoringPremium)}
+              </span>{" "}
+              ·{" "}
+              <span className="game-signal-value">
+                {formatSigned(premium.gapVsBenchmark)}
+              </span>{" "}
+              vs {bench}
+            </p>
+            <p className="game-signal-line">
+              <span className="game-signal-label">{copy.scoringLabel}:</span>{" "}
+              {metrics.avgTotalPoints} avg combined ·{" "}
+              <span className="game-signal-value">{totalDelta}</span> vs league ·{" "}
+              {formatPct(metrics.overRate)} {copy.overLeanLabel.toLowerCase()}
+            </p>
+            <p className="game-signal-line">
+              <span className="game-signal-label">{copy.whistleLabel}:</span>{" "}
+              {metrics.avgFouls} {copy.whistleUnit} avg ·{" "}
+              <span className="game-signal-value">{foulsDelta}</span> vs league
+            </p>
+          </>
+        )}
         {homeBias && homeBias.kind !== "neutral" && (
           <p className="game-signal-line">
             <span className="game-signal-label">{copy.homeBiasLabel}:</span>{" "}
@@ -213,6 +223,12 @@ export function GameSlateCard({
           />
         </summary>
         <div className="border-t border-border-subtle bg-zinc-50/40">
+          {metrics.insufficientSample ? (
+            <p className="px-4 py-4 text-sm text-zinc-600 sm:px-5">
+              Crew metrics require at least two officials above the sample gate.
+            </p>
+          ) : (
+            <>
           <div className="px-4 py-2 sm:px-5">
             <SampleGateBadge gate={metrics.provenance.sampleGate} />
           </div>
@@ -270,6 +286,8 @@ export function GameSlateCard({
 
           {storylines.length > 0 && (
             <GameGrudgeStorylines storylines={storylines} />
+          )}
+            </>
           )}
         </div>
       </details>

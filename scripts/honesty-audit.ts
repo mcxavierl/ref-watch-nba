@@ -264,14 +264,14 @@ function auditLeague(league: "NBA" | "NHL"): LeagueAudit {
   auditSlateCrews(league, stats, tags, issues);
 
   if (stats.meta.source === "seeded") {
-    const realTags = tags.filter((t) => t === "computed-from-real").length;
-    if (realTags > 0) {
+    const note = stats.meta.note?.toLowerCase() ?? "";
+    if (note.includes("no ref stats") || note.includes("no data")) {
       issues.push({
         league,
         context: "meta",
         metric: "dataset",
-        tag: "computed-from-real",
-        issue: `Seeded dataset has ${realTags} metrics tagged as real`,
+        tag: "fallback-constant",
+        issue: "Seeded placeholder with no ref stats on file",
       });
     }
   }

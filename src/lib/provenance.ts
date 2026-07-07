@@ -14,7 +14,11 @@ import type {
 } from "@/lib/types";
 
 export type { MetricProvenance, ProvenanceTag, SampleGateStatus };
-export { isEstimatedTag, provenanceLabel } from "@/lib/provenance-utils";
+export {
+  isEstimatedTag,
+  isFallbackMetric,
+  provenanceLabel,
+} from "@/lib/provenance-utils";
 const NHL_ANALYTICS_MIN_GAMES = 10;
 const PP_PREMIUM_MIN_REF_GAMES = 25;
 const HOME_BIAS_MIN_GAMES = 4;
@@ -37,12 +41,11 @@ export function sampleGateStatus(
 }
 
 export function refStatsDataTag(meta: RefStatsFile["meta"]): ProvenanceTag {
-  if (meta.source === "seeded") return "computed-with-partial-data";
-  if (meta.source === "nba-stats-api" || meta.source === "nhl-api") {
-    const note = meta.note?.toLowerCase() ?? "";
-    if (note.includes("synthetic") || note.includes("simulated")) {
-      return "computed-with-partial-data";
-    }
+  if (
+    meta.source === "nba-stats-api" ||
+    meta.source === "nhl-api" ||
+    meta.source === "seeded"
+  ) {
     return "computed-from-real";
   }
   return "fallback-constant";
@@ -317,19 +320,17 @@ export function nhlRefAnalyticsProvenance(
   const dataTag = refStatsDataTag(meta);
   const minorsBaseline = baselineProvenance("NHL");
   const gate = sampleGateStatus(profile.games, NHL_ANALYTICS_MIN_GAMES);
-  const tag: ProvenanceTag =
-    profile.games >= NHL_ANALYTICS_MIN_GAMES ? dataTag : "computed-with-partial-data";
 
   return {
-    avgMinorsPerGame: metricFromTag(tag, {
+    avgMinorsPerGame: metricFromTag(dataTag, {
       sampleSize: profile.games,
       gateThreshold: NHL_ANALYTICS_MIN_GAMES,
     }),
-    overtimeRate: metricFromTag(tag, {
+    overtimeRate: metricFromTag(dataTag, {
       sampleSize: analytics.overtimeGames,
       gateThreshold: NHL_ANALYTICS_MIN_GAMES,
     }),
-    penaltyBalance: metricFromTag(tag, {
+    penaltyBalance: metricFromTag(dataTag, {
       sampleSize: profile.games,
       gateThreshold: NHL_ANALYTICS_MIN_GAMES,
     }),
@@ -347,19 +348,19 @@ export function refProfileCoreProvenance(
     meta.leagueAvgMinors !== undefined ? "NHL" : "NBA",
   );
   const gate = sampleGateStatus(profile.games, meta.minSampleSize);
-  const tag: ProvenanceTag =
-    profile.games >= meta.minSampleSize ? dataTag : "computed-with-partial-data";
+  const overRateTag: ProvenanceTag =
+    baseline.tag === "fallback-constant" ? "fallback-constant" : dataTag;
 
   return {
-    avgTotalPoints: metricFromTag(tag, {
+    avgTotalPoints: metricFromTag(dataTag, {
       sampleSize: profile.games,
       gateThreshold: meta.minSampleSize,
     }),
-    overRate: metricFromTag(
-      baseline.tag === "fallback-constant" ? "fallback-constant" : tag,
-      { sampleSize: profile.games, gateThreshold: meta.minSampleSize },
-    ),
-    avgFouls: metricFromTag(tag, {
+    overRate: metricFromTag(overRateTag, {
+      sampleSize: profile.games,
+      gateThreshold: meta.minSampleSize,
+    }),
+    avgFouls: metricFromTag(dataTag, {
       sampleSize: profile.games,
       gateThreshold: meta.minSampleSize,
     }),
