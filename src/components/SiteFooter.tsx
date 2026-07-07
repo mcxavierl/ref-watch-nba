@@ -52,7 +52,10 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
             <p className="site-footer-heading">Explore</p>
             <ul className="site-footer-body space-y-1.5">
               <li>
-                <Link href="/research" className="font-medium text-zinc-800 underline-offset-2 hover:underline">
+                <Link
+                  href={isNhl ? "/nhl/research" : "/research"}
+                  className="font-medium text-zinc-800 underline-offset-2 hover:underline"
+                >
                   Research hub
                 </Link>
               </li>

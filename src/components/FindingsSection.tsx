@@ -6,6 +6,7 @@ import type { Finding, FindingLeague } from "@/lib/findings-shared";
 import {
   filterFindingsByLeague,
   FINDING_CATEGORY_LABELS,
+  researchFindingHref,
   researchHubHref,
 } from "@/lib/findings-shared";
 
@@ -32,7 +33,7 @@ export function FindingCard({
         </div>
         <h3 className="mt-2.5 text-base font-semibold leading-snug text-zinc-900 sm:text-[1.125rem]">
           <Link
-            href={`/research/${finding.id}`}
+            href={researchFindingHref(finding, league)}
             className="hover:text-raptors hover:underline"
           >
             {finding.headline}

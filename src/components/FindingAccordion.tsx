@@ -9,6 +9,7 @@ import type { Finding, FindingLink } from "@/lib/findings-shared";
 import {
   FINDING_CATEGORY_LABELS,
   findingConfidenceTier,
+  researchFindingHref,
 } from "@/lib/findings-shared";
 
 function FindingMetaBadges({
@@ -88,7 +89,7 @@ export function FindingAccordionItem({
           <h3 className="finding-accordion-title">
             {index + 1}.{" "}
             <Link
-              href={`/research/${finding.id}`}
+              href={researchFindingHref(finding, league)}
               className="hover:text-raptors hover:underline"
               onClick={(event) => event.stopPropagation()}
             >

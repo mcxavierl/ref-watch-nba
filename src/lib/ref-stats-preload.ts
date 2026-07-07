@@ -48,7 +48,7 @@ export function leaguesForPath(pathname: string): League[] {
     pathname.startsWith("/methodology") ||
     pathname.startsWith("/sitemap")
   ) {
-    return ["nba", "nhl"];
+    return ["nba"];
   }
   if (pathname.startsWith("/feed/nhl")) return ["nhl"];
   if (pathname.startsWith("/feed")) return ["nba"];

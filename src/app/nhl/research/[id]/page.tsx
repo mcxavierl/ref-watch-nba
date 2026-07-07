@@ -11,7 +11,7 @@ import {
 import { absoluteUrl } from "@/lib/site";
 
 export function generateStaticParams() {
-  return getResearchFindingIdsForLeague("NBA").map((id) => ({ id }));
+  return getResearchFindingIdsForLeague("NHL").map((id) => ({ id }));
 }
 
 export async function generateMetadata({
@@ -24,23 +24,14 @@ export async function generateMetadata({
   if (!finding) {
     return { title: "Finding not found" };
   }
-  if (finding.league === "NHL") {
-    return {
-      title: finding.headline,
-      description: finding.summary,
-      alternates: {
-        canonical: absoluteUrl(`/nhl/research/${id}`),
-      },
-    };
-  }
   return {
     title: finding.headline,
     description: finding.summary,
-    alternates: { canonical: absoluteUrl(`/research/${id}`) },
+    alternates: { canonical: absoluteUrl(`/nhl/research/${id}`) },
   };
 }
 
-export default async function ResearchFindingPage({
+export default async function NhlResearchFindingPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -48,7 +39,7 @@ export default async function ResearchFindingPage({
   const { id } = await params;
   const finding = getResearchFindingById(id);
   if (!finding) notFound();
-  if (finding.league === "NHL") {
+  if (finding.league === "NBA") {
     redirect(researchFindingCanonicalPath(finding));
   }
 

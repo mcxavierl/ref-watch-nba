@@ -1,29 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { ResearchHubFindings } from "@/components/ResearchHubFindings";
 import { JsonLd } from "@/components/JsonLd";
-import { formatRefStatsRange, getRefStats } from "@/lib/data";
+import { formatRefStatsRange, getRefStats } from "@/lib/nhl/data";
 import { computeResearchFindingsForLeague } from "@/lib/research";
 import { researchHubDatasetJsonLd } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "NBA research hub, dataset findings",
+  title: "NHL research hub, dataset findings",
   description:
-    "Ranked historical patterns from the NBA referee dataset. Effect size, sample gates, and plain-language context.",
-  alternates: { canonical: absoluteUrl("/research") },
+    "Ranked historical patterns from the NHL official dataset. Effect size, sample gates, and plain-language context.",
+  alternates: { canonical: absoluteUrl("/nhl/research") },
 };
 
-export default async function ResearchHubPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ league?: string }>;
-}) {
-  const { league: leagueParam } = await searchParams;
-  if (leagueParam === "nhl") redirect("/nhl/research");
-
-  const findings = computeResearchFindingsForLeague("NBA");
+export default function NhlResearchHubPage() {
+  const findings = computeResearchFindingsForLeague("NHL");
   const stats = getRefStats();
   const range = formatRefStatsRange(stats.meta);
 
@@ -31,18 +23,18 @@ export default async function ResearchHubPage({
     <div className="page-shell">
       <JsonLd
         data={researchHubDatasetJsonLd(
-          "NBA",
+          "NHL",
           findings.length,
           stats.meta.lastUpdated,
         )}
       />
 
-      <Link href="/" className="back-link">
+      <Link href="/nhl" className="back-link">
         ← Home
       </Link>
 
       <section className="page-hero">
-        <h1 className="page-title">NBA research hub</h1>
+        <h1 className="page-title">NHL research hub</h1>
         <p className="page-lead">
           {findings.length} findings ranked by effect size and sample size across{" "}
           {range}. Descriptive historical tendencies, not betting advice.
@@ -56,7 +48,7 @@ export default async function ResearchHubPage({
 
       <ResearchHubFindings
         findings={findings}
-        league="NBA"
+        league="NHL"
         refCount={stats.refs.length}
       />
     </div>

@@ -3,6 +3,7 @@ import {
   getAssignments as getNbaAssignments,
   getRefStats as getNbaRefStats,
 } from "@/lib/data";
+import { researchFindingHref, researchHubHref } from "@/lib/findings-shared";
 import { computeSlateStorylines, resolveSlateGames, type GrudgeStoryline } from "@/lib/grudge-match";
 import { computeSlateHomeBias } from "@/lib/home-bias";
 import { computeSlateOtSignals } from "@/lib/nhl/ot-rate";
@@ -379,7 +380,12 @@ export function researchDatasetJsonLd(
     "@type": "Dataset",
     name: finding.headline,
     description: finding.summary,
-    url: absoluteUrl(`/research/${finding.id}`),
+    url: absoluteUrl(
+      researchFindingHref(
+        finding.id,
+        finding.league === "NHL" ? "NHL" : "NBA",
+      ),
+    ),
     dateModified: lastUpdated,
     keywords: [finding.league, "referee analytics", "historical tendency"],
     variableMeasured: finding.summary,
@@ -389,15 +395,16 @@ export function researchDatasetJsonLd(
 }
 
 export function researchHubDatasetJsonLd(
+  league: "NBA" | "NHL",
   count: number,
   lastUpdated: string,
 ): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "Dataset",
-    name: "Ref Watch research findings",
-    description: `${count} ranked historical patterns from NBA and NHL referee datasets.`,
-    url: absoluteUrl("/research"),
+    name: `${league} Ref Watch research findings`,
+    description: `${count} ranked historical patterns from the ${league} referee dataset.`,
+    url: absoluteUrl(researchHubHref(league)),
     dateModified: lastUpdated,
     isAccessibleForFree: true,
     creator: { "@type": "Organization", name: "Ref Watch" },

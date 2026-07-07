@@ -44,3 +44,9 @@ export function getResearchFindingById(
 export function getAllResearchFindingIds(): string[] {
   return computeAllResearchFindings().map((f) => f.id);
 }
+
+export function getResearchFindingIdsForLeague(
+  league: FindingLeague,
+): string[] {
+  return computeResearchFindingsForLeague(league).map((f) => f.id);
+}

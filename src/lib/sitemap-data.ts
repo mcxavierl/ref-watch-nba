@@ -4,7 +4,8 @@ import {
   getAssignments as getNhlAssignments,
   getRefStats as getNhlRefStats,
 } from "@/lib/nhl/data";
-import { getAllResearchFindingIds } from "@/lib/research";
+import { getAllResearchFindingIds, getResearchFindingById } from "@/lib/research";
+import { researchFindingHref } from "@/lib/findings-shared";
 import { absoluteUrl } from "@/lib/site";
 import { NBA_TEAMS } from "@/lib/teams";
 import { NHL_TEAMS } from "@/lib/nhl/teams";
@@ -70,7 +71,13 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
     },
     {
       url: absoluteUrl("/research"),
-      lastModified: maxIso(nbaStats.meta.lastUpdated, nhlStats.meta.lastUpdated),
+      lastModified: nbaStats.meta.lastUpdated,
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    {
+      url: absoluteUrl("/nhl/research"),
+      lastModified: nhlStats.meta.lastUpdated,
       changeFrequency: "weekly",
       priority: 0.85,
     },
@@ -190,14 +197,15 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
     });
   }
 
-  const researchLastMod = maxIso(
-    nbaStats.meta.lastUpdated,
-    nhlStats.meta.lastUpdated,
-  );
   for (const id of getAllResearchFindingIds()) {
+    const finding = getResearchFindingById(id);
+    if (!finding) continue;
     entries.push({
-      url: absoluteUrl(`/research/${id}`),
-      lastModified: researchLastMod,
+      url: absoluteUrl(researchFindingHref(finding)),
+      lastModified:
+        finding.league === "NHL"
+          ? nhlStats.meta.lastUpdated
+          : nbaStats.meta.lastUpdated,
       changeFrequency: "monthly",
       priority: 0.55,
     });

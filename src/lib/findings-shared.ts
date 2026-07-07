@@ -152,37 +152,18 @@ export function filterFindingsByLeague<T extends Finding>(
 }
 
 export function researchHubHref(league: FindingLeague): string {
-  return league === "NHL" ? "/research?league=nhl" : "/research?league=nba";
+  return league === "NHL" ? "/nhl/research" : "/research";
 }
 
-export type ResearchLeagueFilter = "all" | "nba" | "nhl";
-
-export const RESEARCH_LEAGUE_FILTER_GROUPS: ResearchLeagueFilter[] = [
-  "all",
-  "nba",
-  "nhl",
-];
-
-export const RESEARCH_LEAGUE_FILTER_LABELS: Record<
-  ResearchLeagueFilter,
-  string
-> = {
-  all: "All leagues",
-  nba: "NBA",
-  nhl: "NHL",
-};
-
-export function parseResearchLeagueFilter(
-  value: string | undefined,
-): ResearchLeagueFilter {
-  if (value === "nba" || value === "nhl") return value;
-  return "all";
-}
-
-export function researchLeagueFilterMatches(
-  league: FindingLeague,
-  filter: ResearchLeagueFilter,
-): boolean {
-  if (filter === "all") return true;
-  return filter === "nba" ? league === "NBA" : league === "NHL";
+export function researchFindingHref(
+  finding: Pick<Finding, "id"> | string,
+  league?: FindingLeague,
+): string {
+  const id = typeof finding === "string" ? finding : finding.id;
+  const resolvedLeague =
+    league ??
+    (id.startsWith("nhl-") ? "NHL" : ("NBA" satisfies FindingLeague));
+  return resolvedLeague === "NHL"
+    ? `/nhl/research/${id}`
+    : `/research/${id}`;
 }
