@@ -91,6 +91,7 @@ export function RefTeamMatrix({
                     href={`${basePath}/teams/${team.abbr}`}
                     className="ref-matrix-team-link"
                     title={team.label}
+                    aria-label={team.label}
                   >
                     <TeamLogo
                       team={{
@@ -99,10 +100,9 @@ export function RefTeamMatrix({
                         nbaId: team.nbaId,
                       }}
                       sport={sport}
-                      size="sm"
+                      size="md"
                       className="ref-matrix-team-logo"
                     />
-                    <span className="ref-matrix-team-abbr">{team.abbr}</span>
                   </Link>
                 </th>
               ))}

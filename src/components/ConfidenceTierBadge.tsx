@@ -1,7 +1,14 @@
+import { Activity, ShieldCheck, SignalLow, type LucideIcon } from "lucide-react";
 import {
   confidenceTierClass,
   type ConfidenceTier,
 } from "@/lib/user-language";
+
+const CONFIDENCE_TIER_ICONS: Record<ConfidenceTier, LucideIcon> = {
+  Strong: ShieldCheck,
+  Moderate: Activity,
+  Thin: SignalLow,
+};
 
 export function ConfidenceTierBadge({
   tier,
@@ -10,10 +17,14 @@ export function ConfidenceTierBadge({
   tier: ConfidenceTier;
   className?: string;
 }) {
+  const Icon = CONFIDENCE_TIER_ICONS[tier];
+
   return (
     <span
-      className={`inline-flex shrink-0 rounded px-1.5 py-0.5 text-xs font-medium ring-1 ${confidenceTierClass(tier)} ${className}`.trim()}
+      className={`inline-flex shrink-0 items-center gap-1 ${confidenceTierClass(tier)} ${className}`.trim()}
+      aria-label={`${tier} confidence`}
     >
+      <Icon className="size-3 shrink-0" strokeWidth={2.25} aria-hidden />
       {tier}
     </span>
   );

@@ -906,6 +906,36 @@ p {
     background: color-mix(in srgb, var(--surface-raised) 70%, white);
   }
 
+  .confidence-tier-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.375rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+  }
+
+  .confidence-tier-strong {
+    border: 1px solid color-mix(in srgb, var(--header-gold) 40%, var(--border));
+    background: color-mix(in srgb, var(--header-gold) 12%, var(--surface));
+    color: var(--ink-secondary);
+  }
+
+  .confidence-tier-moderate {
+    border: 1px solid color-mix(in srgb, var(--header-sapphire) 28%, var(--border));
+    background: color-mix(in srgb, var(--header-sapphire) 5%, var(--surface-raised));
+    color: color-mix(in srgb, var(--header-sapphire) 75%, var(--muted-strong));
+  }
+
+  .confidence-tier-thin {
+    border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+    background: color-mix(in srgb, var(--surface-raised) 70%, white);
+    color: var(--muted);
+  }
+
   .finding-accordion {
     overflow: hidden;
   }
@@ -2342,37 +2372,29 @@ p {
   .ref-matrix-team-head {
     top: 0;
     z-index: 3;
-    min-width: 3.25rem;
-    padding: var(--space-3) 0.35rem;
+    min-width: 2.75rem;
+    padding: var(--space-2) 0.35rem;
     text-align: center;
-    vertical-align: bottom;
+    vertical-align: middle;
+    text-transform: none;
+    letter-spacing: normal;
   }
 
   .ref-matrix-team-link {
     display: inline-flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.2rem;
+    justify-content: center;
     color: inherit;
     text-decoration: none;
-    transition: color 0.15s ease;
+    transition: opacity 0.15s ease;
   }
 
   .ref-matrix-team-link:hover {
-    color: var(--foreground);
+    opacity: 0.85;
   }
 
   .ref-matrix-team-logo {
     display: block;
-  }
-
-  .ref-matrix-team-abbr {
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 0.625rem;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.02em;
-    line-height: 1;
   }
 
   .ref-matrix-ref-head {

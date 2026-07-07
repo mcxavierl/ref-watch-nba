@@ -48,11 +48,11 @@ export function confidenceTier(
 export function confidenceTierClass(tier: ConfidenceTier): string {
   switch (tier) {
     case "Strong":
-      return "text-zinc-700 bg-zinc-100 ring-zinc-200";
+      return "confidence-tier-badge confidence-tier-strong";
     case "Moderate":
-      return "text-zinc-600 bg-zinc-50 ring-zinc-200";
+      return "confidence-tier-badge confidence-tier-moderate";
     case "Thin":
-      return "text-zinc-500 bg-zinc-50 ring-zinc-100";
+      return "confidence-tier-badge confidence-tier-thin";
   }
 }
 
