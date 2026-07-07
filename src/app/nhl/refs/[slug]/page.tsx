@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RefBettingProfile } from "@/components/RefBettingProfile";
+import { FavoritesStar } from "@/components/FavoritesStar";
 import { JsonLd } from "@/components/JsonLd";
 import { NhlRefAnalyticsSection } from "@/components/NhlRefAnalyticsSection";
 import { TermHelp } from "@/components/TermHelp";
@@ -98,13 +99,19 @@ export default async function NhlRefProfilePage({
       </Link>
 
       <header className="mb-8 mt-5">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
             {profile.name}
           </h1>
           <span className="font-mono text-sm text-zinc-500">
             #{profile.number}
           </span>
+          <FavoritesStar
+            id={profile.slug}
+            kind="ref"
+            league="nhl"
+            label={profile.name}
+          />
         </div>
         {!qualified && (
           <p className="mt-3 text-sm text-amber-800">

@@ -3,15 +3,29 @@ import { StatCell, StatStrip } from "@/components/StatStrip";
 import type { Finding } from "@/lib/findings-shared";
 import { FINDING_CATEGORY_LABELS } from "@/lib/findings-shared";
 
-function FindingCard({ finding, index }: { finding: Finding; index: number }) {
+export function FindingCard({
+  finding,
+  index,
+  league,
+}: {
+  finding: Finding;
+  index: number;
+  league?: "NBA" | "NHL";
+}) {
   return (
     <article className="data-card">
       <div className="border-b border-border bg-surface-raised/60 px-4 py-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+          {league && <span>{league} · </span>}
           {FINDING_CATEGORY_LABELS[finding.category]} · Finding {index + 1}
         </p>
         <h3 className="mt-1 text-base font-semibold leading-snug text-zinc-900">
-          {finding.headline}
+          <Link
+            href={`/research/${finding.id}`}
+            className="hover:text-raptors hover:underline"
+          >
+            {finding.headline}
+          </Link>
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-zinc-600">
           {finding.summary}
@@ -93,6 +107,14 @@ export function FindingsSection({
           {dataSourceNote && (
             <p className="mt-2 text-xs text-zinc-500">{dataSourceNote}</p>
           )}
+          <p className="mt-3">
+            <Link
+              href="/research"
+              className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
+            >
+              View all findings →
+            </Link>
+          </p>
         </>
       )}
       <div className={`space-y-3 ${compact && !featured ? "" : "mt-4"}`}>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   formatRefStatsRange as formatNbaRange,
   getRefStats as getNbaRefStats,
@@ -19,7 +20,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
   return (
     <footer className="mt-auto border-t border-border bg-surface-raised">
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-3">
           <div>
             <p className="text-sm font-semibold text-zinc-800">Data sources</p>
             <p className="mt-2 text-sm leading-relaxed text-zinc-600">
@@ -46,6 +47,37 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
               )}
               . Historical stats cover {range}.
             </p>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-zinc-800">Explore</p>
+            <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-zinc-600">
+              <li>
+                <Link href="/research" className="font-medium text-zinc-800 underline-offset-2 hover:underline">
+                  Research hub
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={isNhl ? "/nhl/rankings" : "/rankings"}
+                  className="font-medium text-zinc-800 underline-offset-2 hover:underline"
+                >
+                  Referee rankings
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={isNhl ? "/nhl/trends" : "/trends"}
+                  className="font-medium text-zinc-800 underline-offset-2 hover:underline"
+                >
+                  League trends
+                </Link>
+              </li>
+              <li>
+                <Link href="/methodology" className="font-medium text-zinc-800 underline-offset-2 hover:underline">
+                  Methodology
+                </Link>
+              </li>
+            </ul>
           </div>
           <div>
             <p className="text-sm font-semibold text-zinc-800">Disclaimer</p>

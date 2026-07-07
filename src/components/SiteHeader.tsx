@@ -27,7 +27,7 @@ export function SiteHeader() {
           <div className="leading-tight">
             <p className="site-header-title">REF WATCH</p>
             <p className="site-header-subtitle">
-              Analyzed data on Refs in the NBA and NHL
+              Referee analytics for the NBA and NHL
             </p>
           </div>
         </Link>

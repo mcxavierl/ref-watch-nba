@@ -242,11 +242,11 @@ h3 {
 
   @media (max-width: 639px) {
     .site-nav-link-secondary {
-      @apply flex-1 text-center;
+      @apply flex-1 text-center text-xs px-2.5 py-1.5;
     }
 
     .site-nav {
-      @apply w-full;
+      @apply w-full flex-wrap;
     }
   }
 

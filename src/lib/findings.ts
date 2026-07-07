@@ -780,3 +780,16 @@ export function computeFindings(limit = 6): Finding[] {
   const ranked = collectCandidates(stats).sort((a, b) => b.score - a.score);
   return dedupeFindingsByCategory(ranked, limit);
 }
+
+export function computeAllFindings(): Finding[] {
+  const stats = getRefStats();
+  if (stats.refs.length === 0) return [];
+
+  return collectCandidates(stats)
+    .sort((a, b) => b.score - a.score)
+    .map((item) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
+      const { score, sampleGames, ...finding } = item;
+      return finding;
+    });
+}

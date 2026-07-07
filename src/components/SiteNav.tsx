@@ -9,12 +9,18 @@ const NBA_LINKS = [
   { href: "/", label: "Tonight" },
   { href: "/teams", label: "Teams" },
   { href: "/refs", label: "Refs" },
+  { href: "/rankings", label: "Rankings" },
+  { href: "/trends", label: "Trends" },
+  { href: "/research", label: "Research" },
 ];
 
 const NHL_LINKS = [
   { href: "/nhl", label: "Tonight" },
   { href: "/nhl/teams", label: "Teams" },
   { href: "/nhl/refs", label: "Refs" },
+  { href: "/nhl/rankings", label: "Rankings" },
+  { href: "/nhl/trends", label: "Trends" },
+  { href: "/research", label: "Research" },
 ];
 
 export function SiteNav() {
@@ -62,7 +68,9 @@ export function SiteNav() {
           const active =
             link.href === homeHref
               ? pathname === homeHref
-              : pathname.startsWith(link.href);
+              : link.href === "/research"
+                ? pathname.startsWith("/research")
+                : pathname === link.href || pathname.startsWith(`${link.href}/`);
           const isSecondary = link.href !== homeHref;
           return (
             <Link

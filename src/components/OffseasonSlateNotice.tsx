@@ -23,6 +23,18 @@ export function OffseasonSlateNotice({
       </div>
       <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
         <Link
+          href="/research"
+          className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
+        >
+          Research findings →
+        </Link>
+        <Link
+          href={league === "NBA" ? "/rankings" : "/nhl/rankings"}
+          className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
+        >
+          Referee rankings →
+        </Link>
+        <Link
           href={browseHref}
           className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
         >

@@ -370,6 +370,40 @@ export function slateDatasetJsonLd(feed: NightlyFeed): Record<string, unknown> {
   };
 }
 
+export function researchDatasetJsonLd(
+  finding: { id: string; headline: string; summary: string; league: string },
+  lastUpdated: string,
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: finding.headline,
+    description: finding.summary,
+    url: absoluteUrl(`/research/${finding.id}`),
+    dateModified: lastUpdated,
+    keywords: [finding.league, "referee analytics", "historical tendency"],
+    variableMeasured: finding.summary,
+    isAccessibleForFree: true,
+    creator: { "@type": "Organization", name: "Ref Watch" },
+  };
+}
+
+export function researchHubDatasetJsonLd(
+  count: number,
+  lastUpdated: string,
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: "Ref Watch research findings",
+    description: `${count} ranked historical patterns from NBA and NHL referee datasets.`,
+    url: absoluteUrl("/research"),
+    dateModified: lastUpdated,
+    isAccessibleForFree: true,
+    creator: { "@type": "Organization", name: "Ref Watch" },
+  };
+}
+
 export function refProfileDatasetJsonLd(
   name: string,
   slug: string,

@@ -4,6 +4,7 @@ import {
   getAssignments as getNhlAssignments,
   getRefStats as getNhlRefStats,
 } from "@/lib/nhl/data";
+import { getAllResearchFindingIds } from "@/lib/research";
 import { absoluteUrl } from "@/lib/site";
 import { NBA_TEAMS } from "@/lib/teams";
 import { NHL_TEAMS } from "@/lib/nhl/teams";
@@ -42,6 +43,42 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
       lastModified: nhlSlateLastMod,
       changeFrequency: "daily",
       priority: 1,
+    },
+    {
+      url: absoluteUrl("/rankings"),
+      lastModified: nbaStats.meta.lastUpdated,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: absoluteUrl("/nhl/rankings"),
+      lastModified: nhlStats.meta.lastUpdated,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: absoluteUrl("/trends"),
+      lastModified: nbaStats.meta.lastUpdated,
+      changeFrequency: "weekly",
+      priority: 0.75,
+    },
+    {
+      url: absoluteUrl("/nhl/trends"),
+      lastModified: nhlStats.meta.lastUpdated,
+      changeFrequency: "weekly",
+      priority: 0.75,
+    },
+    {
+      url: absoluteUrl("/research"),
+      lastModified: maxIso(nbaStats.meta.lastUpdated, nhlStats.meta.lastUpdated),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    {
+      url: absoluteUrl("/methodology"),
+      lastModified: maxIso(nbaStats.meta.lastUpdated, nhlStats.meta.lastUpdated),
+      changeFrequency: "monthly",
+      priority: 0.6,
     },
     {
       url: absoluteUrl("/refs"),
@@ -126,6 +163,19 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
       lastModified: nhlStats.meta.lastUpdated,
       changeFrequency: "weekly",
       priority: 0.5,
+    });
+  }
+
+  const researchLastMod = maxIso(
+    nbaStats.meta.lastUpdated,
+    nhlStats.meta.lastUpdated,
+  );
+  for (const id of getAllResearchFindingIds()) {
+    entries.push({
+      url: absoluteUrl(`/research/${id}`),
+      lastModified: researchLastMod,
+      changeFrequency: "monthly",
+      priority: 0.55,
     });
   }
 
