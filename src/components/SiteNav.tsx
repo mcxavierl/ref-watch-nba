@@ -8,6 +8,7 @@ const NBA_LINKS = [
   { href: "/rankings", label: "Rankings" },
   { href: "/teams", label: "Teams" },
   { href: "/refs", label: "Refs" },
+  { href: "/matrix", label: "Matrix" },
   { href: "/trends", label: "Trends" },
   { href: "/research", label: "Findings" },
 ];
@@ -17,6 +18,7 @@ const NHL_LINKS = [
   { href: "/nhl/rankings", label: "Rankings" },
   { href: "/nhl/teams", label: "Teams" },
   { href: "/nhl/refs", label: "Refs" },
+  { href: "/nhl/matrix", label: "Matrix" },
   { href: "/nhl/trends", label: "Trends" },
   { href: "/research", label: "Findings" },
 ];

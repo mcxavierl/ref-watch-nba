@@ -87,6 +87,12 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: absoluteUrl("/matrix"),
+      lastModified: nbaStats.meta.lastUpdated,
+      changeFrequency: "weekly",
+      priority: 0.72,
+    },
+    {
       url: absoluteUrl("/teams"),
       lastModified: nbaStats.meta.lastUpdated,
       changeFrequency: "weekly",
@@ -97,6 +103,12 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
       lastModified: nhlStats.meta.lastUpdated,
       changeFrequency: "weekly",
       priority: 0.7,
+    },
+    {
+      url: absoluteUrl("/nhl/matrix"),
+      lastModified: nhlStats.meta.lastUpdated,
+      changeFrequency: "weekly",
+      priority: 0.72,
     },
     {
       url: absoluteUrl("/nhl/teams"),
