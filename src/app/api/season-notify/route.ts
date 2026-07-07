@@ -53,6 +53,8 @@ async function sendViaFormSubmit(
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Origin: "https://refwatch.ca",
+        Referer: "https://refwatch.ca/",
       },
       body: JSON.stringify({
         email,
@@ -75,13 +77,19 @@ async function sendViaFormSubmit(
 
   const data = (await res.json().catch(() => null)) as {
     success?: string;
+    message?: string;
   } | null;
 
   if (data?.success !== "true") {
     console.error("FormSubmit season notify unexpected response:", data);
+    const pendingActivation = data?.message?.includes("Activation");
     return Response.json(
-      { error: "Unable to send notification right now." },
-      { status: 502 },
+      {
+        error: pendingActivation
+          ? "Signup is temporarily unavailable while email delivery is being activated."
+          : "Unable to send notification right now.",
+      },
+      { status: pendingActivation ? 503 : 502 },
     );
   }
 
