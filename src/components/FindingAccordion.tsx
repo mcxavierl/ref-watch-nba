@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import Link from "next/link";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
