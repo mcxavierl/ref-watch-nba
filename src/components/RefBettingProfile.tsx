@@ -48,13 +48,29 @@ function bucketGames(record: {
 export function RefBettingProfile({
   profile,
   stats,
+  showMetrics = true,
 }: {
   profile: RefProfile;
   stats: RefBettingStats;
+  showMetrics?: boolean;
 }) {
   const ou = stats.overUnder;
   const prov = stats.provenance;
   const bucketGate = prov?.bucketGateThreshold ?? 5;
+
+  if (!showMetrics) {
+    return (
+      <div className="data-card px-4 py-6 sm:px-5">
+        {profile.provenance?.sampleGate && (
+          <SampleGateBadge gate={profile.provenance.sampleGate} />
+        )}
+        <p className="mt-3 text-sm text-zinc-600">
+          Not enough games for reliable metrics yet ({profile.games} logged).
+          Betting splits and tendency stats appear after the sample gate clears.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -172,18 +188,22 @@ export function RefBettingProfile({
                     )}
                   </td>
                   <td className="px-4 py-2.5 font-mono tabular-nums text-zinc-800">
-                    {formatWlp(
-                      bucket.record.wins,
-                      bucket.record.losses,
-                      bucket.record.pushes,
-                    )}
+                    {belowGate
+                      ? "—"
+                      : formatWlp(
+                          bucket.record.wins,
+                          bucket.record.losses,
+                          bucket.record.pushes,
+                        )}
                   </td>
                   <td className="px-4 py-2.5 font-mono tabular-nums text-zinc-600">
-                    {formatPctFromWlp(
-                      bucket.record.wins,
-                      bucket.record.losses,
-                      bucket.record.pushes,
-                    )}
+                    {belowGate
+                      ? "—"
+                      : formatPctFromWlp(
+                          bucket.record.wins,
+                          bucket.record.losses,
+                          bucket.record.pushes,
+                        )}
                   </td>
                 </tr>
                 );
@@ -230,18 +250,22 @@ export function RefBettingProfile({
                     {bucket.label}
                   </td>
                   <td className="px-4 py-2.5 font-mono tabular-nums text-zinc-800">
-                    {formatWlp(
-                      bucket.homeFavorite.wins,
-                      bucket.homeFavorite.losses,
-                      bucket.homeFavorite.pushes,
-                    )}
+                    {favGames < bucketGate
+                      ? "—"
+                      : formatWlp(
+                          bucket.homeFavorite.wins,
+                          bucket.homeFavorite.losses,
+                          bucket.homeFavorite.pushes,
+                        )}
                   </td>
                   <td className="px-4 py-2.5 font-mono tabular-nums text-zinc-800">
-                    {formatWlp(
-                      bucket.homeUnderdog.wins,
-                      bucket.homeUnderdog.losses,
-                      bucket.homeUnderdog.pushes,
-                    )}
+                    {dogGames < bucketGate
+                      ? "—"
+                      : formatWlp(
+                          bucket.homeUnderdog.wins,
+                          bucket.homeUnderdog.losses,
+                          bucket.homeUnderdog.pushes,
+                        )}
                   </td>
                 </tr>
                 );

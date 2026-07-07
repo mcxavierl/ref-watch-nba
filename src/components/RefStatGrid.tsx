@@ -11,12 +11,14 @@ export function RefStatGrid({
   foulLabel = "Fouls per game",
   scoreLabel = "Avg combined score",
   overLabel = "Games over benchmark",
+  showMetrics = true,
 }: {
   profile: RefProfile;
   overBaseline?: number;
   foulLabel?: string;
   scoreLabel?: string;
   overLabel?: string;
+  showMetrics?: boolean;
 }) {
   const totalDelta = formatSigned(profile.totalPointsDelta);
   const foulsDelta = formatSigned(profile.foulsDelta);
@@ -30,31 +32,42 @@ export function RefStatGrid({
           <SampleGateBadge gate={prov.sampleGate} />
         </div>
       )}
-      <StatStrip>
-        <StatCell label="Games" value={String(profile.games)} />
-        <StatCell
-          label={scoreLabel}
-          value={String(profile.avgTotalPoints)}
-          detail={`${totalDelta} vs league avg`}
-          provenance={prov?.avgTotalPoints}
-        />
-        <StatCell
-          label={overLabel}
-          value={formatPct(profile.overRate)}
-          detail={`Combined beat ${overBaseline} benchmark`}
-          provenance={prov?.overRate}
-        />
-      </StatStrip>
-      <StatStrip>
-        <StatCell
-          label={foulLabel}
-          value={String(profile.avgFouls)}
-          detail={`${foulsDelta} vs league avg`}
-          provenance={prov?.avgFouls}
-        />
-        <StatCell label="Seasons" value={profile.seasons.join(", ")} />
-        <StatCell label="Spread record" value="N/A" detail="No spread data yet" />
-      </StatStrip>
+      {!showMetrics ? (
+        <div className="px-4 py-6 sm:px-5">
+          <p className="text-sm text-zinc-600">
+            Not enough games for reliable metrics yet ({profile.games} logged).
+            Check back after this official clears the sample gate.
+          </p>
+        </div>
+      ) : (
+        <>
+          <StatStrip>
+            <StatCell label="Games" value={String(profile.games)} />
+            <StatCell
+              label={scoreLabel}
+              value={String(profile.avgTotalPoints)}
+              detail={`${totalDelta} vs league avg`}
+              provenance={prov?.avgTotalPoints}
+            />
+            <StatCell
+              label={overLabel}
+              value={formatPct(profile.overRate)}
+              detail={`Combined beat ${overBaseline} benchmark`}
+              provenance={prov?.overRate}
+            />
+          </StatStrip>
+          <StatStrip>
+            <StatCell
+              label={foulLabel}
+              value={String(profile.avgFouls)}
+              detail={`${foulsDelta} vs league avg`}
+              provenance={prov?.avgFouls}
+            />
+            <StatCell label="Seasons" value={profile.seasons.join(", ")} />
+            <StatCell label="Spread record" value="N/A" detail="No spread data yet" />
+          </StatStrip>
+        </>
+      )}
     </div>
   );
 }

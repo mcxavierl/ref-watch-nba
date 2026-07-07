@@ -15,10 +15,12 @@ export function NhlRefAnalyticsSection({
   analytics,
   leagueAvgMinors,
   leagueOvertimeRate,
+  showMetrics = true,
 }: {
   analytics: NhlRefAnalytics;
   leagueAvgMinors?: number;
   leagueOvertimeRate?: number;
+  showMetrics?: boolean;
 }) {
   const leagueMinors = leagueAvgMinors ?? 5.5;
   const leagueOt = leagueOvertimeRate ?? 0.23;
@@ -37,6 +39,12 @@ export function NhlRefAnalyticsSection({
           Referee-only sample — linesmen excluded from minor and balance metrics.
         </p>
       </div>
+      {!showMetrics ? (
+        <p className="px-4 py-6 text-sm text-zinc-600 sm:px-5">
+          Whistle analytics appear after this official clears the sample gate.
+        </p>
+      ) : (
+        <>
       <dl className="stat-row">
         <div className="stat-cell">
           <dt className="stat-label">
@@ -97,6 +105,8 @@ export function NhlRefAnalyticsSection({
       <p className="border-t border-border-subtle px-4 py-3 text-sm text-zinc-600 sm:px-5">
         {balanceCopy[analytics.balanceKind]}
       </p>
+        </>
+      )}
     </section>
   );
 }
