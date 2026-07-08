@@ -66,8 +66,8 @@ export function SlateFeatureShowcase() {
           Explore the full toolkit
         </h2>
         <p className="section-lead">
-          Every tool below runs on historical multi-season data right now. No
-          waiting for the schedule to return.
+          Official tendency index, ref×team matrix, and franchise histories, all
+          live on multi-season data. No waiting for the schedule.
         </p>
       </div>
 
