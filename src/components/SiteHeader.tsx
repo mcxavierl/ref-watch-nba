@@ -31,7 +31,7 @@ export function SiteHeader() {
 
         <div className="site-header-inner">
           <div className="site-header-top">
-            <Link href={homeHref} className="site-header-brand group">
+            <Link href={homeHref} className="site-header-brand group" aria-label="Ref Watch home">
               <span className="site-header-mark" aria-hidden>
                 <span className="site-header-mark-ring" />
                 <span className="site-header-mark-icon">
