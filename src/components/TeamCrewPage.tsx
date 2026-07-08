@@ -37,7 +37,6 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const splits = sortSplitsByGames(getTeamSplits(team.abbr));
   const refSplits = getTeamRefSplits(stats.refs, team.abbr);
   const teamRecord = getTeamSampleRecord(splits);
-  const statsSeeded = stats.meta.source === "seeded";
   const teamName = isNhl
     ? nhlTeams.teamFullName(team as import("@/lib/nhl/teams").NhlTeam)
     : nbaTeams.teamFullName(team as import("@/lib/teams").NbaTeam);
@@ -84,16 +83,9 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           ); each ref and crew win rate below is compared to that team average.
         </p>
         <p className="page-meta">
-          <span
-            className={statsSeeded ? "page-meta-seeded" : "page-meta-live"}
-          >
-            <span
-              className={`size-1.5 rounded-full ${statsSeeded ? "bg-amber-500" : "bg-emerald-500"}`}
-              aria-hidden
-            />
-            {statsSeeded ? "Historical data" : "Live data"}
+          <span className="page-meta-updated">
+            Updated {formatDate(stats.meta.lastUpdated)}
           </span>
-          <span>Updated {formatDate(stats.meta.lastUpdated)}</span>
           <span>
             {team.name} record: {teamRecord.wins}-{teamRecord.losses} (
             {formatPct(teamRecord.winRate)})

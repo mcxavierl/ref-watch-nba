@@ -40,7 +40,6 @@ import {
   topShareSignals,
 } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
-import { seededDataNote } from "@/lib/user-language";
 
 export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
@@ -92,8 +91,6 @@ export default function HomePage() {
   const homeBiasSignals = computeSlateHomeBias(sortedGames, refStats);
   const slateStorylines = computeSlateStorylines(sortedGames, refStats, 5);
   const nightlyFeed = buildNbaNightlyFeed();
-  const dataSourceNote =
-    refStats.meta.source === "seeded" ? seededDataNote() : undefined;
 
   const edgeItems = buildTonightEdgeSummary({
         sport: "nba",
@@ -138,7 +135,6 @@ export default function HomePage() {
         featured
         slateHero
         initialVisibleCount={4}
-        dataSourceNote={dataSourceNote}
         title={isOffseason ? "Season highlights" : "Dataset findings"}
         league="NBA"
       />

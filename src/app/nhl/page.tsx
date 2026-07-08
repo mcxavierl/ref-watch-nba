@@ -38,7 +38,6 @@ import {
   topShareSignals,
 } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
-import { seededDataNote } from "@/lib/user-language";
 
 export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
@@ -94,8 +93,6 @@ export default function NhlHomePage() {
   const ppByGame = new Map(ppPremiums.map((p) => [p.gameId, p]));
   const otByGame = new Map(otSignals.map((p) => [p.gameId, p]));
   const nightlyFeed = buildNhlNightlyFeed();
-  const dataSourceNote =
-    refStats.meta.source === "seeded" ? seededDataNote() : undefined;
 
   const edgeItems = buildTonightEdgeSummary({
         sport: "nhl",
@@ -141,7 +138,6 @@ export default function NhlHomePage() {
         featured
         slateHero
         initialVisibleCount={4}
-        dataSourceNote={dataSourceNote}
         title={isOffseason ? "Season highlights" : "Dataset findings"}
         league="NHL"
       />
