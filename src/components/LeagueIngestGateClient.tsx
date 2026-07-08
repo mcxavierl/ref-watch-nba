@@ -21,7 +21,7 @@ function LeagueIngestGateInner({
   const searchParams = useSearchParams();
   const preview =
     isShowUnverifiedEnv() ||
-    isPreviewQuery({ preview: searchParams.get("preview") });
+    isPreviewQuery({ preview: searchParams?.get("preview") });
 
   if (dataVerified || preview) {
     return <>{children}</>;

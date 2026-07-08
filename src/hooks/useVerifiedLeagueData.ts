@@ -23,7 +23,7 @@ export function useVerifiedLeagueData(
   const searchParams = useSearchParams();
   const preview =
     isShowUnverifiedEnv() ||
-    isPreviewQuery({ preview: searchParams.get("preview") });
+    isPreviewQuery({ preview: searchParams?.get("preview") });
 
   const verification = resolveLeagueVerification(leagueId, meta);
   const canRender = canRenderLeagueStats(leagueId, meta, preview);

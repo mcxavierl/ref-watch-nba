@@ -13,7 +13,7 @@ const SHOW_HEADER_USER_CONTROLS = false;
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const leagueId = leagueFromPathname(pathname);
+  const leagueId = leagueFromPathname(pathname ?? "/");
   const homeHref = LEAGUES[leagueId].pathPrefix || "/";
   const [scrolled, setScrolled] = useState(false);
 

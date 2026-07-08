@@ -18,7 +18,7 @@ export function SiteFooterWrapper({
   cfbFooter: ReactNode;
 }) {
   const pathname = usePathname();
-  const league = leagueFromPathname(pathname);
+  const league = leagueFromPathname(pathname ?? "/");
 
   if (league === "nhl") return nhlFooter;
   if (league === "epl") return eplFooter;

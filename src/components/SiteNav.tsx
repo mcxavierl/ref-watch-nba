@@ -141,7 +141,7 @@ function LeagueNavLink({
 
 export function LeagueNav() {
   const pathname = usePathname();
-  const league = activeLeague(pathname);
+  const league = activeLeague(pathname ?? "/");
 
   return (
     <nav className="league-nav" aria-label="Leagues" data-league={league}>
@@ -161,7 +161,8 @@ export const LeagueSwitch = LeagueNav;
 
 export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
   const pathname = usePathname();
-  const league = activeLeague(pathname);
+  const resolvedPath = pathname ?? "/";
+  const league = activeLeague(resolvedPath);
   const links = NAV_LINKS[league] ?? NAV_LINKS.nba;
   const homeHref = LEAGUES[league].pathPrefix || "/";
 
@@ -169,7 +170,7 @@ export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
     <div id={id} className="site-nav-shell" data-league={league}>
       <nav className="site-nav-rail" aria-label="Site sections">
         {links.map((link) => {
-          const active = link.match(pathname, homeHref);
+          const active = link.match(resolvedPath, homeHref);
 
           return (
             <Link

@@ -15,18 +15,19 @@ export function useSeasonScope(): {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const mode = parseSeasonScopeMode(searchParams.get("scope"));
+  const mode = parseSeasonScopeMode(searchParams?.get("scope") ?? null);
 
   const setMode = useCallback(
     (next: SeasonScopeMode) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams?.toString() ?? "");
       if (next === DEFAULT_SEASON_SCOPE_MODE) {
         params.delete("scope");
       } else {
         params.set("scope", next);
       }
       const query = params.toString();
-      router.replace(query ? `${pathname}?${query}` : pathname, {
+      const resolvedPath = pathname ?? "/";
+      router.replace(query ? `${resolvedPath}?${query}` : resolvedPath, {
         scroll: false,
       });
     },
