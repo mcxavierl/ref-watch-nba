@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
@@ -15,7 +16,7 @@ import {
   getRefStats,
   ouLeanSortWeight,
 } from "@/lib/nhl/data";
-import { buildTonightEdgeSummary, buildOffseasonEdgeSummary } from "@/lib/edge-summary";
+import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/nhl/findings";
 import { resolveSlateGames } from "@/lib/grudge-match";
 import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/nhl/home-bias";
@@ -96,19 +97,17 @@ export default function NhlHomePage() {
   const dataSourceNote =
     refStats.meta.source === "seeded" ? seededDataNote() : undefined;
 
-  const edgeItems = !isOffseason
-    ? buildTonightEdgeSummary({
+  const edgeItems = buildTonightEdgeSummary({
         sport: "nhl",
         alertPremiums,
         allPremiums: premiums,
         homeBiasSignals,
         ppPremiums,
         otSignals,
-      })
-    : buildOffseasonEdgeSummary(findings);
+      });
 
   return (
-    <div className="page-shell">
+    <div className="page-shell page-shell-slate">
       <JsonLd
         data={[
           {
@@ -123,7 +122,7 @@ export default function NhlHomePage() {
           ...slateSportsEvents("NHL"),
         ]}
       />
-      <section className="page-hero">
+      <section className="page-hero page-hero-slate">
         <h1 className="page-title">
           {isOffseason ? "NHL ref data" : "Tonight's NHL slate"}
         </h1>
@@ -135,16 +134,23 @@ export default function NhlHomePage() {
         <DataFreshnessMeta assignments={assignments} refStats={refStats} league="NHL" />
       </section>
 
-      {isOffseason ? (
-        <>
-          <OffseasonSlateNotice league="NHL" />
-          <TonightEdgeSummary
-            items={edgeItems}
-            title="Season highlights"
-            emptyMessage="No standout NHL dataset patterns yet."
-          />
-        </>
-      ) : (
+      {isOffseason && <OffseasonSlateNotice league="NHL" />}
+
+      <FindingsSection
+        findings={findings}
+        featured
+        slateHero
+        initialVisibleCount={4}
+        dataSourceNote={dataSourceNote}
+        title={isOffseason ? "Season highlights" : "Dataset findings"}
+        league="NHL"
+      />
+
+      <section className="slate-quick-links">
+        <BrowseActionCards league="NHL" compact />
+      </section>
+
+      {!isOffseason && (
         <>
           <SlateShareBar
             shareText={buildShareText(nightlyFeed)}
@@ -176,6 +182,7 @@ export default function NhlHomePage() {
                   otSignal={otByGame.get(game.id) ?? null}
                   sport="nhl"
                   basePath="/nhl"
+                  storylines={computeGameStorylines(game, refStats, 1)}
                   overBenchmark={refStats.meta.leagueOverBaseline}
                 />
               ))}
@@ -183,15 +190,6 @@ export default function NhlHomePage() {
           </section>
         </>
       )}
-
-      <FindingsSection
-        findings={findings}
-        featured
-        initialVisibleCount={4}
-        dataSourceNote={dataSourceNote}
-        title={isOffseason ? "Season highlights" : "Dataset findings"}
-        league="NHL"
-      />
 
       <MethodologyAccordion>
         <ul className="space-y-2 text-sm leading-relaxed text-zinc-600">
@@ -218,7 +216,7 @@ export default function NhlHomePage() {
         </ul>
       </MethodologyAccordion>
 
-      {!isOffseason && <ProComingSoonTease league="NHL" />}
+      <ProComingSoonTease league="NHL" />
     </div>
   );
 }

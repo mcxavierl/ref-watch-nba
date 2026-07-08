@@ -79,6 +79,7 @@ export function FindingsSection({
   findings,
   compact = false,
   featured = false,
+  slateHero = false,
   initialVisibleCount = 4,
   dataSourceNote,
   title = "Dataset findings",
@@ -87,6 +88,7 @@ export function FindingsSection({
   findings: Finding[];
   compact?: boolean;
   featured?: boolean;
+  slateHero?: boolean;
   initialVisibleCount?: number;
   dataSourceNote?: string;
   title?: string;
@@ -103,22 +105,34 @@ export function FindingsSection({
     : scopedFindings;
   const hidden = featured ? scopedFindings.slice(initialVisibleCount) : [];
 
+  const sectionClass = [
+    slateHero ? "slate-findings-hero scroll-mt-24" : "",
+    !slateHero && compact && !featured ? "" : !slateHero ? "mb-10 scroll-mt-24" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const showHeader = featured || !compact;
+
   return (
-    <section
-      id="dataset-findings"
-      className={compact && !featured ? "" : "mb-10 scroll-mt-24"}
-    >
-      {(featured || !compact) && (
+    <section id="dataset-findings" className={sectionClass || undefined}>
+      {showHeader && (
         <>
-          <h2 className="section-title">{title}</h2>
-          <p className="section-lead">
-            Top patterns ranked by effect size and sample size, not tied to
-            tonight&apos;s slate.
-          </p>
-          {dataSourceNote && (
-            <p className="mt-2 text-xs text-zinc-500">{dataSourceNote}</p>
+          <h2 className={slateHero ? "slate-findings-hero-title" : "section-title"}>
+            {title}
+          </h2>
+          {!slateHero && (
+            <p className="section-lead">
+              Top patterns ranked by effect size and sample size, not tied to
+              tonight&apos;s slate.
+            </p>
           )}
-          <p className="mt-3">
+          {dataSourceNote && (
+            <p className={slateHero ? "slate-findings-hero-note" : "mt-2 text-xs text-zinc-500"}>
+              {dataSourceNote}
+            </p>
+          )}
+          <p className={slateHero ? "slate-findings-hero-link" : "mt-3"}>
             <Link
               href={league ? researchHubHref(league) : "/research"}
               className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
@@ -129,7 +143,7 @@ export function FindingsSection({
         </>
       )}
       <div
-        className={`finding-accordion-stack ${compact && !featured ? "" : "mt-4"}`}
+        className={`finding-accordion-stack ${slateHero ? "slate-findings-hero-stack" : compact && !featured ? "" : "mt-4"}`}
       >
         {featured
           ? visible.map((finding, index) => (

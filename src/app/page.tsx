@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
@@ -15,7 +16,7 @@ import {
   getRefStats,
   ouLeanSortWeight,
 } from "@/lib/data";
-import { buildTonightEdgeSummary, buildOffseasonEdgeSummary } from "@/lib/edge-summary";
+import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/findings";
 import {
   computeGameStorylines,
@@ -94,18 +95,16 @@ export default function HomePage() {
   const dataSourceNote =
     refStats.meta.source === "seeded" ? seededDataNote() : undefined;
 
-  const edgeItems = !isOffseason
-    ? buildTonightEdgeSummary({
+  const edgeItems = buildTonightEdgeSummary({
         sport: "nba",
         alertPremiums,
         allPremiums: premiums,
         homeBiasSignals,
         storylines: slateStorylines,
-      })
-    : buildOffseasonEdgeSummary(findings);
+      });
 
   return (
-    <div className="page-shell">
+    <div className="page-shell page-shell-slate">
       <JsonLd
         data={[
           {
@@ -120,7 +119,7 @@ export default function HomePage() {
           ...slateSportsEvents("NBA"),
         ]}
       />
-      <section className="page-hero">
+      <section className="page-hero page-hero-slate">
         <h1 className="page-title">
           {isOffseason ? "NBA ref data" : "Tonight's slate"}
         </h1>
@@ -132,16 +131,23 @@ export default function HomePage() {
         <DataFreshnessMeta assignments={assignments} refStats={refStats} />
       </section>
 
-      {isOffseason ? (
-        <>
-          <OffseasonSlateNotice league="NBA" />
-          <TonightEdgeSummary
-            items={edgeItems}
-            title="Season highlights"
-            emptyMessage="No standout NBA dataset patterns yet."
-          />
-        </>
-      ) : (
+      {isOffseason && <OffseasonSlateNotice league="NBA" />}
+
+      <FindingsSection
+        findings={findings}
+        featured
+        slateHero
+        initialVisibleCount={4}
+        dataSourceNote={dataSourceNote}
+        title={isOffseason ? "Season highlights" : "Dataset findings"}
+        league="NBA"
+      />
+
+      <section className="slate-quick-links">
+        <BrowseActionCards league="NBA" compact />
+      </section>
+
+      {!isOffseason && (
         <>
           <SlateShareBar
             shareText={buildShareText(nightlyFeed)}
@@ -178,15 +184,6 @@ export default function HomePage() {
         </>
       )}
 
-      <FindingsSection
-        findings={findings}
-        featured
-        initialVisibleCount={4}
-        dataSourceNote={dataSourceNote}
-        title={isOffseason ? "Season highlights" : "Dataset findings"}
-        league="NBA"
-      />
-
       <MethodologyAccordion>
         <ul className="space-y-2 text-sm leading-relaxed text-zinc-600">
           <li>
@@ -213,7 +210,7 @@ export default function HomePage() {
         </ul>
       </MethodologyAccordion>
 
-      {!isOffseason && <ProComingSoonTease league="NBA" />}
+      <ProComingSoonTease league="NBA" />
     </div>
   );
 }

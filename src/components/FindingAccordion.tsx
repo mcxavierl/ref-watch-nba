@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, ChevronDown } from "lucide-react";
-import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
+import { ConfidenceStrengthIndicator } from "@/components/ConfidenceStrengthIndicator";
 import { FindingExplainer } from "@/components/FindingNameWall";
 import { StatCell, StatStrip } from "@/components/StatStrip";
 import type { Finding, FindingLink } from "@/lib/findings-shared";
@@ -51,8 +51,13 @@ export function FindingFooterLinks({ links }: { links: FindingLink[] }) {
   );
 }
 
-function FindingSummaryTeaser({ summary }: { summary: string }) {
-  return <p className="finding-accordion-teaser">{summary}</p>;
+function FindingWhyTeaser({ explainer }: { explainer: string }) {
+  return (
+    <p className="finding-accordion-teaser finding-accordion-why">
+      <span className="finding-accordion-why-label">Why it matters: </span>
+      <FindingExplainer text={explainer} />
+    </p>
+  );
 }
 
 export function FindingAccordionItem({
@@ -78,35 +83,31 @@ export function FindingAccordionItem({
               index={index}
               league={league}
             />
-            <div className="finding-accordion-confidence-slot">
-              <ConfidenceTierBadge tier={tier} />
+            <div className="finding-accordion-header-actions">
+              <ConfidenceStrengthIndicator tier={tier} />
+              <ChevronDown
+                className="finding-accordion-chevron"
+                aria-hidden
+              />
             </div>
-            <ChevronDown
-              className="finding-accordion-chevron"
-              aria-hidden
-            />
           </div>
           <h3 className="finding-accordion-title">
-            {index + 1}.{" "}
             <Link
               href={researchFindingHref(finding, league)}
-              className="hover:text-raptors hover:underline"
+              className="finding-accordion-headline-link hover:text-raptors hover:underline"
               onClick={(event) => event.stopPropagation()}
             >
               {finding.headline}
             </Link>
           </h3>
-          <FindingSummaryTeaser summary={finding.summary} />
+          {finding.explainer && (
+            <FindingWhyTeaser explainer={finding.explainer} />
+          )}
         </div>
       </summary>
 
       <div className="finding-accordion-panel">
-        {finding.explainer && (
-          <p className="finding-accordion-explainer">
-            <span className="font-medium text-zinc-800">Why it matters: </span>
-            <FindingExplainer text={finding.explainer} />
-          </p>
-        )}
+        <p className="finding-accordion-summary">{finding.summary}</p>
 
         {finding.stats.length > 0 && (
           <StatStrip>
