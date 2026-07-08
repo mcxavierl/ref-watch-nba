@@ -3961,12 +3961,35 @@ p {
   .ref-matrix-team-panel-columns {
     display: grid;
     gap: var(--space-4);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   @media (min-width: 768px) {
     .ref-matrix-team-panel-columns {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-3) var(--space-5);
+    }
+  }
+
+  .ref-matrix-team-panel-paired-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  .ref-matrix-team-panel-pair {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  @media (min-width: 768px) {
+    .ref-matrix-team-panel-pair {
       gap: var(--space-5);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -4003,6 +4026,12 @@ p {
     padding: 0.45rem 0.55rem;
     background: color-mix(in srgb, var(--surface) 88%, transparent);
     font-size: var(--text-sm);
+    min-height: 2.85rem;
+  }
+
+  .ref-matrix-team-panel-item--placeholder {
+    visibility: hidden;
+    pointer-events: none;
   }
 
   @media (max-width: 639px) {
@@ -4064,6 +4093,12 @@ p {
 
   .ref-matrix-team-panel-ref-avatar {
     flex-shrink: 0;
+  }
+
+  .ref-matrix-team-panel-ref-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .ref-matrix-team-panel-record,
