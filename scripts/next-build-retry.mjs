@@ -41,7 +41,9 @@ function cleanNextDir() {
 function hasCompleteStandaloneBuild() {
   return (
     existsSync(".next/BUILD_ID") &&
+    existsSync(".next/next-server.js.nft.json") &&
     existsSync(".next/server/pages-manifest.json") &&
+    existsSync(".next/server/middleware-manifest.json") &&
     existsSync(".next/required-server-files.json") &&
     existsSync(".next/standalone/.next/server/pages-manifest.json")
   );
@@ -160,8 +162,15 @@ for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       releaseLock();
       process.exit(1);
     }
-    console.warn(`next build attempt ${attempt} failed; cleaning .next and retrying...`);
-    cleanNextDir();
+    const hasPartialBuild =
+      existsSync(".next/server/pages-manifest.json") ||
+      existsSync(".next/BUILD_ID");
+    if (!hasPartialBuild) {
+      console.warn(`next build attempt ${attempt} failed; cleaning .next and retrying...`);
+      cleanNextDir();
+    } else {
+      console.warn(`next build attempt ${attempt} failed; keeping partial .next and retrying...`);
+    }
     execSync("sleep 2");
   }
 }
