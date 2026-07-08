@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { preloadLeagueDataForPath } from "@/lib/ref-stats-preload";
+import { preloadLeagueDataForPath } from "@/lib/edge-preload";
 
 export async function middleware(request: NextRequest) {
   await preloadLeagueDataForPath(request.nextUrl.origin, request.nextUrl.pathname);

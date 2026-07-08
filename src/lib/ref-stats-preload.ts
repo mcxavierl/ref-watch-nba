@@ -8,6 +8,7 @@ import type {
   NhlStatsGlobalKey,
 } from "@/lib/global-stats";
 import type { RefStatsFile } from "@/lib/types";
+import { preloadGameLogsFromAssets } from "@/lib/game-logs-preload";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 type CacheKey =
@@ -77,7 +78,6 @@ export async function preloadLeagueDataForPath(
   origin: string,
   pathname: string,
 ): Promise<void> {
-  const { preloadGameLogsFromAssets } = await import("@/lib/game-logs");
   const leagues = leaguesForPath(pathname);
   await Promise.all(
     leagues.flatMap((league) => [
