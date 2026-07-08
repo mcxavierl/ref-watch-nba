@@ -115,11 +115,20 @@ function tryRecoverNearCompleteBuild() {
     return true;
   }
 
-  try {
-    console.warn("next build retrying trace collection after 500.html recovery...");
-    execSync(cmd, { stdio: "inherit" });
-  } catch {
-    materializeStandaloneOutput();
+  if (!existsSync(".next/server/middleware-manifest.json")) {
+    try {
+      console.warn("next build retrying to emit middleware-manifest.json...");
+      execSync(cmd, { stdio: "inherit" });
+    } catch {
+      materializeStandaloneOutput();
+    }
+  } else {
+    try {
+      console.warn("next build retrying trace collection after 500.html recovery...");
+      execSync(cmd, { stdio: "inherit" });
+    } catch {
+      materializeStandaloneOutput();
+    }
   }
 
   if (hasCompleteStandaloneBuild()) {
