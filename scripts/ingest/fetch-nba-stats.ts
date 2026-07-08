@@ -73,7 +73,7 @@ export async function nbaStatsFetch(
   await rateLimit();
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 15_000);
+  const timer = setTimeout(() => controller.abort(), 30_000);
   try {
     const res = await fetch(url, {
       headers: NBA_STATS_HEADERS,
@@ -108,6 +108,15 @@ export async function fetchSeasonGameIds(season: IngestSeason): Promise<string[]
   return [...ids];
 }
 
+function parseNbaGameDate(raw: string): string {
+  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
+  const parsed = new Date(raw);
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toISOString().slice(0, 10);
+  }
+  return "";
+}
+
 export async function fetchGameSummary(
   gameId: string,
 ): Promise<{
@@ -123,7 +132,7 @@ export async function fetchGameSummary(
 
   const url = `${NBA_STATS_BASE}/boxscoresummaryv2?GameID=${gameId}`;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 15_000);
+  const timer = setTimeout(() => controller.abort(), 30_000);
   try {
     const res = await fetch(url, {
       headers: NBA_STATS_HEADERS,
@@ -148,8 +157,10 @@ export async function fetchGameSummary(
 
     let date = "";
     if (gameInfo?.rows[0]) {
-      const gd = rowValue(gameInfo.headers, gameInfo.rows[0], "GAME_DATE_EST");
-      if (typeof gd === "string") date = gd.slice(0, 10);
+      const gd =
+        rowValue(gameInfo.headers, gameInfo.rows[0], "GAME_DATE_EST") ??
+        rowValue(gameInfo.headers, gameInfo.rows[0], "GAME_DATE");
+      if (typeof gd === "string") date = parseNbaGameDate(gd);
     }
 
     let homeTeam = "";
@@ -186,16 +197,18 @@ export async function fetchGameSummary(
     if (officialsRs) {
       for (const row of officialsRs.rows) {
         const first = rowValue(officialsRs.headers, row, "FIRST_NAME");
-        const last = rowValue(officialsRs.headers, row, "FAMILY_NAME");
+        const last =
+          rowValue(officialsRs.headers, row, "FAMILY_NAME") ??
+          rowValue(officialsRs.headers, row, "LAST_NAME");
         const num = rowValue(officialsRs.headers, row, "JERSEY_NUM");
         if (typeof first !== "string" || typeof last !== "string") continue;
         const number =
           typeof num === "number"
             ? num
             : typeof num === "string"
-              ? Number.parseInt(num, 10) || 0
+              ? Number.parseInt(num.trim(), 10) || 0
               : 0;
-        officials.push({ name: `${first} ${last}`, number });
+        officials.push({ name: `${first} ${last}`.trim(), number });
       }
     }
 

@@ -39,9 +39,18 @@ import {
 } from "./validate";
 import { writeSeasonShards } from "./write";
 import { buildRefStatsFromLogs } from "./build-ref-stats-from-logs";
+import { NBA_SEASON_OPENERS } from "../../src/lib/nba-team-season-records";
 
 function gameMatchKey(date: string, home: string, away: string): string {
   return `${date}|${home}|${away}`;
+}
+
+function isRegularSeasonGame(date: string, season: string): boolean {
+  const opener = NBA_SEASON_OPENERS[season];
+  if (!opener) return true;
+  const endYear = Number.parseInt(season.split("-")[0]!, 10) + 1;
+  const seasonEnd = `${endYear}-04-20`;
+  return date >= opener && date <= seasonEnd;
 }
 
 async function fetchBbrBoxOfficials(url: string): Promise<string[]> {
@@ -121,7 +130,9 @@ async function main() {
     console.log(`  playoffs: ${playoffGames.length} games (excluded from regular-season shards)`);
   }
 
-  const regularBbr = bbrGames.filter((g) => !g.isPlayoff);
+  const regularBbr = bbrGames.filter(
+    (g) => !g.isPlayoff && isRegularSeasonGame(g.date, g.season),
+  );
   console.log(`\nBBR regular-season games: ${regularBbr.length}`);
 
   // 3. NBA Stats game IDs + summaries
