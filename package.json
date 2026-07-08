@@ -27,6 +27,7 @@
     "build-nhl-data": "tsx scripts/nhl/build-ref-data.ts",
     "generate-nfl-seed": "tsx scripts/nfl/generate-seed.ts",
     "build-nfl-data": "tsx scripts/nfl/build-ref-data.ts",
+    "rebuild-nfl-matrix": "tsx scripts/nfl/rebuild-matrix-from-logs.ts",
     "build-nfl-pfr-ref-team-data": "tsx scripts/nfl/build-pfr-ref-team-data.ts",
     "generate-cbb-seed": "tsx scripts/cbb/generate-seed.ts",
     "build-cbb-data": "tsx scripts/cbb/build-ref-data.ts",

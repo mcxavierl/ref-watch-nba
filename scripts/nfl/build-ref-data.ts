@@ -33,6 +33,7 @@ import {
 import { buildBaselinesFile, saveBaselines } from "../lib/baselines";
 import { loadGameLogs } from "../lib/game-logs";
 import { mergeNflRefStats } from "./lib/merge-ref-stats";
+import { applyGameLogTeamStats } from "./lib/rebuild-team-stats-from-logs";
 import {
   buildNflverseLineIndex,
   fetchNflverseGamesCsv,
@@ -178,7 +179,7 @@ function buildTeamSplit(
 async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
   const roster = loadOfficialRoster(seed);
   const lineIndex = await loadNflverseLines(DATA_DIR);
-  const dates = dateRange("2022-09-01", "2026-02-15");
+  const dates = dateRange("2021-09-01", "2026-02-15");
 
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number; role: RefRole }>();
@@ -494,7 +495,16 @@ async function main() {
 
   const built = await buildFromEspn(base);
   if (built) {
-    const output = replaceOnly ? built : mergeNflRefStats(base, built);
+    let output = replaceOnly ? built : mergeNflRefStats(base, built);
+    const logs = loadGameLogs("NFL");
+    if (logs && logs.games.length > 0) {
+      const rebuilt = applyGameLogTeamStats(output, logs);
+      output = rebuilt.stats;
+      console.log(
+        `Rebuilt ref×team W-L from ${rebuilt.gameCount} game logs → ` +
+          `${rebuilt.qualifiedPairs}/${rebuilt.teamStatsPairs} qualified matrix pairs`,
+      );
+    }
     fs.writeFileSync(statsPath, `${JSON.stringify(output, null, 2)}\n`);
     console.log(
       `${replaceOnly ? "Built" : "Merged"} ${built.meta.totalGamesProcessed} ESPN games → ` +

@@ -24,13 +24,10 @@ export function nflPreviewBannerMessage(
   atsAvailable?: boolean,
 ): string {
   if (isNflVerifiedData(statsSource) && atsAvailable) {
-    return "Scores, penalty counts, and ATS/O-U splits use ESPN game data with nflverse closing lines.";
-  }
-  if (isNflVerifiedData(statsSource) && assignmentsSource === "espn") {
-    return "Scores, penalty counts, and tonight's crews are from ESPN. ATS/O-U splits are unavailable without verified closing lines.";
+    return "Scores, penalty counts, ref×team W-L, and ATS/O-U splits use ESPN game data with nflverse closing lines.";
   }
   if (isNflVerifiedData(statsSource)) {
-    return "Historical scores and penalty stats are from ESPN game data. Tonight's crew assignments may still be pending official release.";
+    return "Scores, penalty counts, and ref×team W-L are from ESPN game logs. ATS/O-U splits use nflverse lines when available.";
   }
   return "Preview dataset — simulated schedules, crews, penalty splits, and lines. Do not treat ref×team or betting stats as verified against official records.";
 }

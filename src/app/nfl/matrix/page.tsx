@@ -36,7 +36,7 @@ export default function NflMatrixPage() {
     })),
     getTeamSplits,
     undefined,
-    { league: "nfl" },
+    { league: "nfl", filterEmptyRows: true },
   );
   const extremes = computeMatrixExtremes(matrix);
 
@@ -68,8 +68,8 @@ export default function NflMatrixPage() {
         )}
         {stats.meta.source === "hybrid" && (
           <p className="mt-2 text-sm text-emerald-800">
-            Matrix depth from simulated seasons; ESPN-verified penalty and scoring
-            splits merged where available.
+            Ref×team W-L rebuilt from ESPN game logs; penalty and scoring splits
+            merged where available.
           </p>
         )}
         {espn && stats.meta.source === "espn" && (

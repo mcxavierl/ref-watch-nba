@@ -66,6 +66,8 @@ export interface RefTeamMatrixOptions {
   league?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
   /** Earliest season label for NBA official baseline totals. */
   sinceSeason?: string;
+  /** Hide refs with no qualified cells (useful for sparse ESPN-only leagues). */
+  filterEmptyRows?: boolean;
 }
 
 export function computeRefTeamMatrix(
@@ -129,7 +131,21 @@ export function computeRefTeamMatrix(
     }
   }
 
-  return { refs, teams, cells, minGames, qualifiedCellCount };
+  const visibleRefs = matrixOptions.filterEmptyRows
+    ? refs.filter((ref) =>
+        teams.some(
+          (team) => cells[matrixCellKey(ref.slug, team.abbr)] !== undefined,
+        ),
+      )
+    : refs;
+
+  return {
+    refs: visibleRefs,
+    teams,
+    cells,
+    minGames,
+    qualifiedCellCount,
+  };
 }
 
 export function sortMatrixRefsByName(

@@ -3,7 +3,12 @@ import type { RefProfile, RefStatsFile, RefTeamStat } from "../../../src/lib/typ
 function mergeTeamStats(
   base: Record<string, RefTeamStat> | undefined,
   overlay: Record<string, RefTeamStat> | undefined,
+  preferOverlay = true,
 ): Record<string, RefTeamStat> {
+  if (preferOverlay && overlay && Object.keys(overlay).length > 0) {
+    return { ...overlay };
+  }
+
   const merged: Record<string, RefTeamStat> = { ...(base ?? {}) };
   for (const [team, overlayStat] of Object.entries(overlay ?? {})) {
     const baseStat = merged[team];
@@ -95,8 +100,8 @@ export function mergeNflRefStats(
       source: "hybrid",
       atsAvailable: base.meta.atsAvailable || overlay.meta.atsAvailable,
       note:
-        `Hybrid dataset: ${base.meta.totalGamesProcessed ?? 0} simulated games with full ref×team matrix; ` +
-        `${overlay.meta.totalGamesProcessed ?? 0} ESPN-verified games merged for penalty/scoring splits. ` +
+        `Hybrid dataset: ${overlay.meta.totalGamesProcessed ?? 0} ESPN-verified games; ` +
+        `ref×team W-L rebuilt from game logs. ` +
         `${qualifiedPairs}/${teamStatsPairs} ref×team pairs meet 3+ game matrix gate.`,
     },
     refs: mergedRefs,
