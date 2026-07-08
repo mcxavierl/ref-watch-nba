@@ -153,7 +153,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             rates show how they compare to that team average.
           </li>
           <li>
-            <span className="font-medium text-zinc-800">Foul edge</span>:{" "}
+            <span className="font-medium text-zinc-800">Whistle differential</span>:{" "}
             {isNhl
               ? "PIM differential. A positive number means opponents are penalized more often than"
               : "who gets called more. A positive number means opponents are whistled more often than"}{" "}

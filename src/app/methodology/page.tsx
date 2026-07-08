@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { TermHelp } from "@/components/TermHelp";
+import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import { formatRefStatsRange, getRefStats } from "@/lib/data";
 import {
   formatRefStatsRange as formatNhlRange,
@@ -12,7 +13,7 @@ import { seededDataNote } from "@/lib/user-language";
 export const metadata: Metadata = {
   title: "Methodology",
   description:
-    "How Ref Watch ranks findings, applies sample gates, handles estimated closing lines, and labels provenance. Not betting advice.",
+    "How Ref Watch computes officiating intelligence, ranks research findings, applies sample gates, and labels data confidence. Not betting advice.",
   alternates: { canonical: absoluteUrl("/methodology") },
 };
 
@@ -34,6 +35,8 @@ export default function MethodologyPage() {
           predictions or betting advice.
         </p>
       </section>
+
+      <TrustCharterSummary />
 
       <div className="content-stack">
         <section className="panel-inset px-4 py-4 sm:px-5">

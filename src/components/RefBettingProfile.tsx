@@ -70,7 +70,7 @@ export function RefBettingProfile({
       <section className="data-card px-4 py-6 sm:px-5">
         <p className="text-sm text-zinc-600">
           Not enough games for reliable metrics yet ({profile.games} logged).
-          Betting splits and tendency stats appear after the sample gate clears.
+          Betting splits and closing-line context appear after the sample gate clears.
         </p>
       </section>
     );

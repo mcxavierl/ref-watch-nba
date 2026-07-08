@@ -8,6 +8,7 @@ import { MethodologyAccordion } from "@/components/MethodologyAccordion";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TermHelp } from "@/components/TermHelp";
+import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
 import {
@@ -38,6 +39,12 @@ import {
   topShareSignals,
 } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
+import {
+  NO_SIGNAL_SLATE_COPY,
+  REFWATCH_HERO_SUPPORTING,
+  REFWATCH_MISSION,
+  TONIGHT_SIGNALS_TITLE,
+} from "@/lib/trust-charter";
 
 export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
@@ -121,12 +128,12 @@ export default function NhlHomePage() {
       />
       <section className="page-hero page-hero-slate">
         <h1 className="page-title">
-          {isOffseason ? "NHL ref data" : "Tonight's NHL slate"}
+          {isOffseason ? "NHL officiating intelligence" : REFWATCH_MISSION}
         </h1>
         <p className="page-lead">
           {isOffseason
             ? "Historical crew patterns, ref profiles, and team histories while the slate is paused."
-            : "Who's officiating tonight and how their crews have historically moved goals, PIM, and power plays."}
+            : REFWATCH_HERO_SUPPORTING}
         </p>
         <DataFreshnessMeta assignments={assignments} refStats={refStats} league="NHL" />
       </section>
@@ -138,8 +145,9 @@ export default function NhlHomePage() {
         featured
         slateHero
         initialVisibleCount={4}
-        title={isOffseason ? "Season highlights" : "Dataset findings"}
+        title={isOffseason ? "Season highlights" : "Officiating intelligence"}
         league="NHL"
+        sortExplainer="Ranked by effect size and sample depth. Standout ref×team splits and whistle outliers rise to the top; marginal league-wide noise is filtered out."
       />
 
       <section className="slate-quick-links">
@@ -156,7 +164,11 @@ export default function NhlHomePage() {
             league="NHL"
           />
 
-          <TonightEdgeSummary items={edgeItems} />
+          <TonightEdgeSummary
+            items={edgeItems}
+            title={TONIGHT_SIGNALS_TITLE}
+            emptyMessage={NO_SIGNAL_SLATE_COPY}
+          />
 
           <section className="section-block">
             <h2 className="section-title">
@@ -186,6 +198,8 @@ export default function NhlHomePage() {
           </section>
         </>
       )}
+
+      <TrustCharterSummary compact />
 
       <MethodologyAccordion>
         <ul className="space-y-2 text-sm leading-relaxed text-zinc-600">

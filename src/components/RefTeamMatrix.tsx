@@ -9,8 +9,10 @@ import {
   matrixCellAriaLabel,
   matrixCellKey,
   matrixCellStyle,
+  MATRIX_DEFAULT_REF_SORT,
   MATRIX_EXTREME_DELTA_PTS,
   MATRIX_REF_SORT_OPTIONS,
+  MATRIX_STANDOUT_SORT_EXPLAINER,
   MATRIX_TONE_DELTA_PTS,
   sortMatrixRefs,
   topRefsBeatingBaselineForTeam,
@@ -73,7 +75,7 @@ export function RefTeamMatrix({
 }: RefTeamMatrixProps) {
   const { refs, teams, cells, minGames, qualifiedCellCount } = matrix;
   const [selectedTeamAbbr, setSelectedTeamAbbr] = useState<string | null>(null);
-  const [refSort, setRefSort] = useState<MatrixRefSort>("name-asc");
+  const [refSort, setRefSort] = useState<MatrixRefSort>(MATRIX_DEFAULT_REF_SORT);
   const [crosshair, setCrosshair] = useState<MatrixCrosshair | null>(null);
   const sortedRefs = useMemo(
     () => sortMatrixRefs(refs, matrix, refSort),
@@ -159,6 +161,9 @@ export function RefTeamMatrix({
               onChange={(e) => setRefSort(e.target.value as MatrixRefSort)}
               className="ref-matrix-sort-select"
               aria-label={`Sort ${officialNounPlural} rows`}
+              aria-describedby={
+                refSort === "standout-desc" ? "ref-matrix-standout-explainer" : undefined
+              }
             >
               {MATRIX_REF_SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -166,6 +171,14 @@ export function RefTeamMatrix({
                 </option>
               ))}
             </select>
+            {refSort === "standout-desc" ? (
+              <p
+                id="ref-matrix-standout-explainer"
+                className="ref-matrix-sort-explainer"
+              >
+                {MATRIX_STANDOUT_SORT_EXPLAINER}
+              </p>
+            ) : null}
           </div>
         </div>
       </div>

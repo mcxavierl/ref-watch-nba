@@ -70,8 +70,8 @@ export function buildRankingsSynthesis(
   if (topOver) {
     insights.push({
       id: "top-over",
-      title: "Most likely to go over",
-      body: `Line benchmark is ${baseline} combined ${unit}; he clears it more often than peers.`,
+      title: "Highest historical over-rate vs baseline",
+      body: `Line benchmark is ${baseline} combined ${unit}; he clears it more often than peers in this sample.`,
       refSlug: topOver.slug,
       refName: topOver.name,
       statLabel: "Over rate",
@@ -94,12 +94,12 @@ export function buildRankingsSynthesis(
 
   const leagueSummary =
     qualified.length > 0
-      ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} tilt toward higher scoring. ${lowScoring.length} lean lower. Numbers describe past games, not picks for tonight.`
+      ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} associate with higher scoring. ${lowScoring.length} associate with lower totals. Numbers describe past games, not predictions for tonight.`
       : `Not enough games in the sample yet. Turn on “Show thin samples” below to browse everyone.`;
 
   return {
     headline: `Who moves the ${unit}?`,
-    subhead: `The ${qualified.length} ${league.officialNounPlural} with ${min}+ games, ranked by what actually changed in their games.`,
+    subhead: `The ${qualified.length} ${league.officialNounPlural} with ${min}+ games, ranked by historical associations in their games.`,
     insights,
     leagueSummary,
     qualifiedCount: qualified.length,

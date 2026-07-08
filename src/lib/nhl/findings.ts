@@ -2,7 +2,8 @@ import { formatPct, formatSigned, getRefStats, getTeamSplits } from "@/lib/nhl/d
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, NHL_TEAMS } from "@/lib/nhl/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
-import { dedupeFindingsByCategory, rankScore } from "@/lib/findings-shared";
+import { rankScore } from "@/lib/findings-shared";
+import { pickFeaturedFindings } from "@/lib/findings-significance";
 import {
   buildCloseGameLeagueFinding,
   buildCrewDominanceFinding,
@@ -112,7 +113,8 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
     const rate = wlpWinRate(record);
     if (rate === null) continue;
     const edge = Math.abs(rate - 0.5);
-    if (edge < 0.05 || (!best || edge > best.edge)) {
+    if (edge < 0.05) continue;
+    if (!best || edge > best.edge) {
       best = { ref, rate, games, edge };
     }
   }
@@ -338,7 +340,7 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
 
 function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
   return [
-    buildLeagueSkewFinding(stats, NHL_FINDING_CTX, "over"),
+    buildLeagueSkewFinding(stats, NHL_FINDING_CTX),
     buildNhlOtOutlierFinding(stats, NHL_FINDING_CTX),
     buildNhlMinorsOutlierFinding(stats, NHL_FINDING_CTX),
     teamCrewAnomalyFinding(stats),
@@ -362,7 +364,7 @@ export function computeFindings(limit = 6): Finding[] {
   if (stats.refs.length === 0) return [];
 
   const ranked = collectCandidates(stats).sort((a, b) => b.score - a.score);
-  return dedupeFindingsByCategory(ranked, limit);
+  return pickFeaturedFindings(ranked, limit);
 }
 
 export function computeAllFindings(): Finding[] {

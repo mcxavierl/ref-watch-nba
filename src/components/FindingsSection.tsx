@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { StatCell, StatStrip } from "@/components/StatStrip";
+import { MethodologyLink } from "@/components/MethodologyLink";
 import { FindingAccordionItem } from "@/components/FindingAccordion";
 import type { Finding, FindingLeague } from "@/lib/findings-shared";
 import {
@@ -82,6 +83,7 @@ export function FindingsSection({
   slateHero = false,
   initialVisibleCount = 4,
   dataSourceNote,
+  sortExplainer,
   title = "Dataset findings",
   league,
 }: {
@@ -91,6 +93,7 @@ export function FindingsSection({
   slateHero?: boolean;
   initialVisibleCount?: number;
   dataSourceNote?: string;
+  sortExplainer?: string;
   title?: string;
   league?: FindingLeague;
 }) {
@@ -127,18 +130,24 @@ export function FindingsSection({
               tonight&apos;s slate.
             </p>
           )}
+          {sortExplainer && (
+            <p className={slateHero ? "slate-findings-hero-note" : "mt-2 text-sm text-zinc-500"}>
+              {sortExplainer}
+            </p>
+          )}
           {dataSourceNote && (
             <p className={slateHero ? "slate-findings-hero-note" : "mt-2 text-xs text-zinc-500"}>
               {dataSourceNote}
             </p>
           )}
-          <p className={slateHero ? "slate-findings-hero-link" : "mt-3"}>
+          <p className={slateHero ? "slate-findings-hero-link" : "mt-3 flex flex-wrap items-center gap-x-4 gap-y-1"}>
             <Link
               href={league ? researchHubHref(league) : "/research"}
               className="text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
             >
               View all {league ? `${league} ` : ""}findings →
             </Link>
+            <MethodologyLink className="text-sm font-semibold" />
           </p>
         </>
       )}

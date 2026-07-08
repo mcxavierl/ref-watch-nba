@@ -25,7 +25,7 @@ export function proWaitlistMailto(league?: "NBA" | "NHL"): string {
   const subject = encodeURIComponent(`${SITE_NAME} Pro waitlist`);
   const leagueLine = league ? `\nLeague: ${league}` : "";
   const body = encodeURIComponent(
-    `Add me to the ${SITE_NAME} Pro waitlist for slate alerts, line-move tracking, and deeper crew reunion stats.${leagueLine}\n\nEmail: \n`,
+    `Add me to the ${SITE_NAME} Pro waitlist for slate alerts, deeper crew reunion stats, and expanded officiating intelligence feeds.${leagueLine}\n\nEmail: \n`,
   );
   return `mailto:${PUBLIC_CONTACT_EMAIL}?subject=${subject}&body=${body}`;
 }

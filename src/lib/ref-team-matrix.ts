@@ -113,15 +113,24 @@ export function sortMatrixRefsByName(
   return [...refs].sort((a, b) => a.name.localeCompare(b.name));
 }
 
+/** Win-rate delta (percentage points) above/below team baseline for text tint. */
+export const MATRIX_TONE_DELTA_PTS = 2;
+/** Win-rate delta (percentage points) for standout split emphasis. */
+export const MATRIX_EXTREME_DELTA_PTS = 12;
+
 export type MatrixRefSort = "name-asc" | "standout-desc" | "total-delta-desc";
+
+export const MATRIX_DEFAULT_REF_SORT: MatrixRefSort = "standout-desc";
+
+export const MATRIX_STANDOUT_SORT_EXPLAINER = `Most standout ranks refs by how many qualified team splits diverge from that team's sample baseline by ±${MATRIX_EXTREME_DELTA_PTS} percentage points or more (win rate with that ref vs the team's overall W-L in this dataset).`;
 
 export const MATRIX_REF_SORT_OPTIONS: {
   value: MatrixRefSort;
   label: string;
 }[] = [
+  { value: "standout-desc", label: "Most standout (default)" },
+  { value: "total-delta-desc", label: "Highest total delta" },
   { value: "name-asc", label: "Alphabetical" },
-  { value: "standout-desc", label: "Most Standout Splits" },
-  { value: "total-delta-desc", label: "Highest Total Delta" },
 ];
 
 /** Count of qualified cells at or beyond ±MATRIX_EXTREME_DELTA_PTS vs team baseline. */
@@ -255,10 +264,6 @@ export function refHasTeamStat(
 export type MatrixCellTone = "positive" | "negative" | "neutral";
 export type MatrixCellExtreme = "high" | "low";
 
-/** Win-rate delta (percentage points) above/below team baseline for text tint. */
-export const MATRIX_TONE_DELTA_PTS = 2;
-/** Win-rate delta (percentage points) for standout split emphasis. */
-export const MATRIX_EXTREME_DELTA_PTS = 12;
 /** Background tint strength for above/below baseline cells (0–1, applied in CSS). */
 export const MATRIX_TONE_BG_OPACITY = 0.15;
 

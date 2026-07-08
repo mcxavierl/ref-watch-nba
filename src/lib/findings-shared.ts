@@ -67,12 +67,17 @@ import type { ConfidenceTier } from "@/lib/user-language";
 
 /** Map finding sample notes to user-facing confidence tiers. */
 export function findingConfidenceTier(finding: Finding): ConfidenceTier {
-  const numbers = finding.sampleNote.match(/\d[\d,]*/g);
-  const largest =
-    numbers
+  const gameCounts = finding.stats
+    .map((stat) => stat.detail?.match(/(\d+)\s+games/i)?.[1])
+    .filter(Boolean)
+    .map((n) => parseInt(n!, 10));
+  const noteNumbers = finding.sampleNote.match(/\d[\d,]*/g);
+  const noteLargest =
+    noteNumbers
       ?.map((n) => parseInt(n.replace(/,/g, ""), 10))
       .filter((n) => !Number.isNaN(n))
       .sort((a, b) => b - a)[0] ?? 0;
+  const largest = Math.max(noteLargest, ...gameCounts, 0);
 
   if (largest >= 100) return "Strong";
   if (largest >= 30) return "Moderate";
@@ -85,8 +90,8 @@ export const FINDING_CATEGORY_LABELS: Record<FindingCategory, string> = {
   "team-crew": "Team crew",
   "whistle-extreme": "Whistle extreme",
   "scoring-extreme": "Scoring extreme",
-  "ats-edge": "ATS edge",
-  "ou-edge": "O/U edge",
+  "ats-edge": "ATS historical tendency",
+  "ou-edge": "O/U historical tendency",
   "ref-team-split": "Ref–team split",
 };
 
@@ -109,7 +114,7 @@ export const FINDING_FILTER_LABELS: Record<FindingFilterGroup, string> = {
   all: "All",
   "ref-outliers": "Ref Outliers",
   "team-trends": "Team Trends",
-  "ats-edges": "ATS Edges",
+  "ats-edges": "ATS tendencies",
   "over-under": "Over/Under",
 };
 

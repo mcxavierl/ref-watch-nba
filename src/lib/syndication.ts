@@ -423,7 +423,7 @@ export function refProfileDatasetJsonLd(
     "@context": "https://schema.org",
     "@type": "Dataset",
     name: `${name} referee analytics`,
-    description: `Historical scoring, foul, and betting splits for ${name} (${games} games). Minimum game thresholds with plain methodology.`,
+    description: `Historical scoring, foul, and officiating tendencies for ${name} (${games} games). Minimum game thresholds with plain methodology.`,
     url: absoluteUrl(`${base}/refs/${slug}`),
     dateModified: lastUpdated,
     variableMeasured: [

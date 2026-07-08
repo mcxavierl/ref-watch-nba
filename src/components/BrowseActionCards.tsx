@@ -15,7 +15,7 @@ const NBA_LINKS: BrowseLink[] = [
   },
   {
     href: "/rankings",
-    label: "Referee rankings",
+    label: "Official tendency index",
     description: "Crew scoring and foul tendencies",
   },
   {
@@ -43,7 +43,7 @@ const NHL_LINKS: BrowseLink[] = [
   },
   {
     href: "/nhl/rankings",
-    label: "Referee rankings",
+    label: "Official tendency index",
     description: "Crew goal and PIM tendencies",
   },
   {

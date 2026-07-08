@@ -4,6 +4,12 @@ import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { ScoredFindingBase } from "@/lib/findings-shared";
 import { rankScore } from "@/lib/findings-shared";
 import {
+  isLeagueBenchmarkSkewSignificant,
+  leagueBenchmarkLean,
+  LEAGUE_WEIGHTED_OVER_MIN_SKEW,
+  weightedLeagueOverRate,
+} from "@/lib/findings-significance";
+import {
   computeMatrixExtremes,
   computeRefTeamMatrix,
   type MatrixExtremeHighlight,
@@ -87,7 +93,7 @@ function matrixFindingFromHighlight(
       { label: "Full matrix", href: ctx.paths.matrixPath },
     ],
     score: rankScore(
-      Math.abs(highlight.deltaPts) / 100,
+      Math.abs(highlight.deltaPts) / 25,
       highlight.games,
       MIN_MATRIX_GAMES,
     ),
@@ -512,37 +518,41 @@ export function buildOverRateOutlierFinding(
 export function buildLeagueSkewFinding(
   stats: RefStatsFile,
   ctx: LeagueFindingContext,
-  lean: "over" | "under",
-): ScoredFindingBase {
+  lean?: "over" | "under",
+): ScoredFindingBase | null {
   const { refs, meta } = stats;
+  const weightedOver = weightedLeagueOverRate(refs);
+  if (!isLeagueBenchmarkSkewSignificant(weightedOver)) return null;
+
+  const resolvedLean = lean ?? leagueBenchmarkLean(weightedOver);
+  if (resolvedLean === "neutral") return null;
+
   const trending =
-    lean === "under"
+    resolvedLean === "under"
       ? refs.filter((r) => r.overRate < 0.5)
       : refs.filter((r) => r.overRate > 0.5);
   const other =
-    lean === "under"
+    resolvedLean === "under"
       ? refs.filter((r) => r.overRate > 0.5)
       : refs.filter((r) => r.overRate < 0.5);
   const totalGames =
     meta.totalGamesProcessed ?? refs.reduce((sum, r) => sum + r.games, 0);
-  const weightedOver =
-    refs.reduce((sum, r) => sum + r.overRate * r.games, 0) /
-    refs.reduce((sum, r) => sum + r.games, 0);
   const pct = Math.round((trending.length / refs.length) * 100);
-  const effectSize = lean === "under" ? 0.5 - weightedOver : weightedOver - 0.5;
+  const effectSize =
+    resolvedLean === "under" ? 0.5 - weightedOver : weightedOver - 0.5;
 
   return {
-    id: `${ctx.paths.idPrefix}league-${lean}-skew`,
+    id: `${ctx.paths.idPrefix}league-${resolvedLean}-skew`,
     category: "league-trend",
     headline:
-      lean === "under"
-        ? "Most officials tilt under the scoring benchmark"
-        : "Most officials tilt over the goal benchmark",
-    summary: `${trending.length} of ${refs.length} officials (${pct}%) trend ${lean} ${meta.leagueOverBaseline} combined ${ctx.labels.scoreUnit}. Only ${other.length} refs run the other way.`,
-    explainer: `Games-weighted over rate is ${formatPct(weightedOver)} across all ref workloads. This is era-wide scoring frequency in the dataset, not sportsbook pricing.`,
+      resolvedLean === "under"
+        ? `Games-weighted scoring sits ${(effectSize * 100).toFixed(0)} pts under neutral`
+        : `Games-weighted scoring sits ${(effectSize * 100).toFixed(0)} pts over neutral`,
+    summary: `${trending.length} of ${refs.length} officials (${pct}%) trend ${resolvedLean} the ${meta.leagueOverBaseline} combined ${ctx.labels.scoreUnit} benchmark; weighted over rate is ${formatPct(weightedOver)} across ${totalGames.toLocaleString()} games.`,
+    explainer: `This measures historical scoring frequency vs a fixed benchmark, not sportsbook pricing. We only surface league skew when the games-weighted over rate is at least ${(LEAGUE_WEIGHTED_OVER_MIN_SKEW * 100).toFixed(0)} pts from 50%.`,
     stats: [
       {
-        label: `Refs trending ${lean}`,
+        label: `Refs trending ${resolvedLean}`,
         value: `${trending.length}/${refs.length}`,
         detail: `${pct}% of pool`,
       },

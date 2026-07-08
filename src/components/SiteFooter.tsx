@@ -64,7 +64,7 @@ export function SiteFooter({ league }: { league: "nba" | "nhl" }) {
                   href={isNhl ? "/nhl/rankings" : "/rankings"}
                   className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
                 >
-                  Referee rankings
+                  Referee tendency index
                 </Link>
               </li>
               <li>

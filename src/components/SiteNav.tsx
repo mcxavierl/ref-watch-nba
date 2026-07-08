@@ -3,26 +3,32 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { METHODOLOGY_NAV_LABEL } from "@/lib/trust-charter";
+
+const METHODOLOGY_LINK = { href: "/methodology", label: METHODOLOGY_NAV_LABEL };
+
 const NBA_LINKS = [
   { href: "/", label: "Slate" },
-  { href: "/rankings", label: "Rankings" },
+  { href: "/rankings", label: "Tendencies" },
   { href: "/teams", label: "Teams" },
   { href: "/refs", label: "Refs" },
   { href: "/matrix", label: "Matrix" },
   { href: "/crews", label: "Crews" },
   { href: "/trends", label: "Trends" },
   { href: "/research", label: "Findings" },
+  METHODOLOGY_LINK,
 ];
 
 const NHL_LINKS = [
   { href: "/nhl", label: "Slate" },
-  { href: "/nhl/rankings", label: "Rankings" },
+  { href: "/nhl/rankings", label: "Tendencies" },
   { href: "/nhl/teams", label: "Teams" },
   { href: "/nhl/refs", label: "Refs" },
   { href: "/nhl/matrix", label: "Matrix" },
   { href: "/nhl/crews", label: "Crews" },
   { href: "/nhl/trends", label: "Trends" },
   { href: "/nhl/research", label: "Findings" },
+  METHODOLOGY_LINK,
 ];
 
 type SiteNavProps = {
@@ -70,10 +76,12 @@ export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
           const active =
             link.href === homeHref
               ? pathname === homeHref
-              : link.href.endsWith("/research")
-                ? pathname === link.href ||
-                  pathname.startsWith(`${link.href}/`)
-                : pathname === link.href || pathname.startsWith(`${link.href}/`);
+              : link.href === "/methodology"
+                ? pathname === "/methodology"
+                : link.href.endsWith("/research")
+                  ? pathname === link.href ||
+                    pathname.startsWith(`${link.href}/`)
+                  : pathname === link.href || pathname.startsWith(`${link.href}/`);
 
           return (
             <Link

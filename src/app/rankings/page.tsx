@@ -8,10 +8,12 @@ import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
 import { absoluteUrl } from "@/lib/site";
 
+import { RANKINGS_PAGE_LEAD, RANKINGS_PAGE_TITLE } from "@/lib/trust-charter";
+
 export const metadata: Metadata = {
-  title: "NBA referee rankings",
+  title: "NBA official tendency index",
   description:
-    "Sortable NBA referee rankings by historical scoring impact, whistle rate, and over tendency. Minimum game thresholds, descriptive only.",
+    "Sortable NBA official tendency index by historical scoring association, whistle rate, and over-rate vs league baseline. Minimum game thresholds, descriptive only.",
   alternates: { canonical: absoluteUrl("/rankings") },
 };
 
@@ -35,10 +37,9 @@ export default function NbaRankingsPage() {
       </Link>
 
       <section className="page-hero">
-        <h1 className="page-title">NBA referee rankings</h1>
+        <h1 className="page-title">NBA {RANKINGS_PAGE_TITLE.toLowerCase()}</h1>
         <p className="page-lead">
-          Historical scoring and whistle tendencies across {stats.refs.length}{" "}
-          officials ({range}). Not predictions, see{" "}
+          {RANKINGS_PAGE_LEAD} Sample: {stats.refs.length} officials ({range}). See{" "}
           <Link href="/methodology" className="font-medium text-zinc-800 hover:underline">
             methodology
           </Link>

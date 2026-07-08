@@ -24,11 +24,11 @@ const plexSans = IBM_Plex_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} | Referee crew analytics`,
+    default: `${SITE_NAME} | Referee intelligence & crew analytics`,
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Tonight's NBA and NHL referee crews with historical scoring, whistle, and betting splits. Free nightly slate.",
+    "Tonight's NBA and NHL referee crews with historical scoring, whistle, and officiating tendencies. Transparent methodology and confidence levels.",
   alternates: {
     types: {
       "application/rss+xml": [
@@ -41,15 +41,15 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     type: "website",
     locale: "en_CA",
-    title: `${SITE_NAME} | Referee crew analytics`,
+    title: `${SITE_NAME} | Referee intelligence & crew analytics`,
     description:
-      "Tonight's NBA and NHL referee crews with historical scoring, whistle, and betting splits. Free nightly slate.",
+      "Tonight's NBA and NHL referee crews with historical scoring, whistle, and officiating tendencies. Transparent methodology and confidence levels.",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} | Referee crew analytics`,
+    title: `${SITE_NAME} | Referee intelligence & crew analytics`,
     description:
-      "Tonight's NBA and NHL referee crews with historical scoring, whistle, and betting splits. Free nightly slate.",
+      "Tonight's NBA and NHL referee crews with historical scoring, whistle, and officiating tendencies. Transparent methodology and confidence levels.",
   },
   other: {
     disclaimer: AFFILIATION_DISCLAIMER,

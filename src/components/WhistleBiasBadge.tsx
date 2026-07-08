@@ -32,7 +32,7 @@ export function WhistleBiasBadge({
   teamAbbr?: string;
   teamTone?: keyof typeof teamTones;
 }) {
-  const title = `Foul edge: ${formatSigned(diff)} per game`;
+  const title = `Foul differential: ${formatSigned(diff)} per game`;
 
   if (bias === "team") {
     const tone = teamTones[teamTone];

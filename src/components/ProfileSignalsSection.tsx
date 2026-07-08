@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ProfileSignalsBundle } from "@/lib/profile-signals";
 import { researchHubHref, type FindingLeague } from "@/lib/findings-shared";
+import { NO_SIGNAL_COPY, SIGNAL_LIMITATION_COPY } from "@/lib/trust-charter";
 
 export function ProfileSignalsSection({
   bundle,
@@ -105,7 +106,7 @@ export function ProfileSignalsSection({
         <div>
           <h2 className="section-title">Profile signals</h2>
           <p className="section-lead">
-            Data-led patterns for {refName}, informational only, not picks.
+            Data-led patterns for {refName} — historical associations only.
           </p>
         </div>
         <Link
@@ -120,11 +121,11 @@ export function ProfileSignalsSection({
         {isEmpty ? (
           <div className="px-4 py-8 text-center sm:px-5">
             <p className="text-sm font-medium text-zinc-800">
-              No standout patterns in this history
+              {NO_SIGNAL_COPY}
             </p>
             <p className="mx-auto mt-2 max-w-md text-sm text-zinc-600">
               {refName}&apos;s metrics sit near league averages across scoring,
-              whistle rate, and over frequency. Check back as more games are logged.
+              whistle rate, and over frequency. {SIGNAL_LIMITATION_COPY}
             </p>
           </div>
         ) : (
@@ -176,7 +177,7 @@ export function ProfileSignalsSection({
             <p className="text-xs leading-relaxed text-amber-900">
               Historical dataset, some ATS/O/U splits use estimated closing lines
               where sportsbook data is unavailable. Patterns describe past games,
-              not live market edges.
+              not live market predictions.
             </p>
           </div>
         )}

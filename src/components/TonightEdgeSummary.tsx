@@ -1,11 +1,16 @@
 import Link from "next/link";
 import type { EdgeSummaryItem } from "@/lib/edge-summary";
 import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
+import { SignalLimitationsNote } from "@/components/SignalLimitationsNote";
+import {
+  NO_SIGNAL_SLATE_COPY,
+  TONIGHT_SIGNALS_TITLE,
+} from "@/lib/trust-charter";
 
 export function TonightEdgeSummary({
   items,
-  title = "Tonight's biggest officiating factors",
-  emptyMessage = "No standout officiating edges on this slate; scan game cards below for crew history.",
+  title = TONIGHT_SIGNALS_TITLE,
+  emptyMessage = NO_SIGNAL_SLATE_COPY,
 }: {
   items: EdgeSummaryItem[];
   title?: string;
@@ -16,6 +21,7 @@ export function TonightEdgeSummary({
       <section className="section-block-tight">
         <h2 className="section-title">{title}</h2>
         <p className="section-lead">{emptyMessage}</p>
+        <SignalLimitationsNote className="mt-2" />
       </section>
     );
   }
@@ -36,11 +42,14 @@ export function TonightEdgeSummary({
               <p className="mt-2 text-sm leading-snug text-zinc-700">
                 {item.edge}
               </p>
-              <p className="mt-2 text-xs text-zinc-500">{item.sample}</p>
+              <p className="mt-2 text-xs text-zinc-500">
+                Sample: {item.sample}
+              </p>
             </Link>
           </li>
         ))}
       </ol>
+      <SignalLimitationsNote className="mt-3" />
     </section>
   );
 }

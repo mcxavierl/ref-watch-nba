@@ -101,7 +101,7 @@ export function ResearchFindingDetail({
           href={rankingsHref}
           className="font-medium text-zinc-800 hover:text-raptors hover:underline"
         >
-          {finding.league} referee rankings →
+          {finding.league} official tendency index →
         </Link>
         <Link
           href={homeHref}

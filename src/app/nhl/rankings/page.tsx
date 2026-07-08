@@ -11,10 +11,12 @@ import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
 import { absoluteUrl } from "@/lib/site";
 
+import { RANKINGS_PAGE_LEAD, RANKINGS_PAGE_TITLE } from "@/lib/trust-charter";
+
 export const metadata: Metadata = {
-  title: "NHL referee rankings",
+  title: "NHL official tendency index",
   description:
-    "Sortable NHL referee rankings by scoring impact, minor penalties, overtime rate, and over tendency. Minimum game thresholds, descriptive only.",
+    "Sortable NHL official tendency index by scoring association, minor penalties, overtime rate, and over-rate vs baseline. Minimum game thresholds, descriptive only.",
   alternates: { canonical: absoluteUrl("/nhl/rankings") },
 };
 
@@ -38,10 +40,9 @@ export default function NhlRankingsPage() {
       </Link>
 
       <section className="page-hero">
-        <h1 className="page-title">NHL referee rankings</h1>
+        <h1 className="page-title">NHL {RANKINGS_PAGE_TITLE.toLowerCase()}</h1>
         <p className="page-lead">
-          Historical goal, minor, and overtime tendencies across{" "}
-          {stats.refs.length} officials ({range}). Not predictions, see{" "}
+          {RANKINGS_PAGE_LEAD} Sample: {stats.refs.length} officials ({range}). See{" "}
           <Link href="/methodology" className="font-medium text-zinc-800 hover:underline">
             methodology
           </Link>

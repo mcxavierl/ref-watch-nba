@@ -149,8 +149,8 @@ function TeamSplitCard({
         <MetricBlock
           icon={Volume2}
           iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
-          label={<TermHelp id="foul-edge">Whistle</TermHelp>}
-          value={`${formatSigned(split.foulDifferential)} edge`}
+          label={<TermHelp id="foul-edge">Whistle differential</TermHelp>}
+          value={`${formatSigned(split.foulDifferential)} vs avg`}
           hint={`${split.avgFouls} fouls/game (${formatSigned(foulsDelta)} vs league)`}
           badge={`${teamAbbr} ${split.avgTeamFouls} · opp ${split.avgOpponentFouls}`}
           badgeTone={foulTone}
@@ -271,10 +271,10 @@ function TeamRefSplitCard({
         <MetricBlock
           icon={Volume2}
           iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
-          label={<TermHelp id="foul-edge">Foul edge</TermHelp>}
+          label={<TermHelp id="foul-edge">Whistle differential</TermHelp>}
           value={formatSigned(entry.avgFoulDifferential)}
           hint={`More fouls on ${teamLabel}'s opponents when positive`}
-          badge={foulTone === "positive" ? `${teamAbbr} lean` : foulTone === "negative" ? "Opponent lean" : "Balanced"}
+          badge={foulTone === "positive" ? `${teamAbbr} tendency` : foulTone === "negative" ? "Opponent tendency" : "Balanced"}
           badgeTone={foulTone}
         />
       </MetricGrid>

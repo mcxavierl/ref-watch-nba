@@ -14,8 +14,8 @@ export function ProComingSoonTease({
           <p className="pro-tease-callout-kicker">Ref Watch Pro</p>
           <p className="pro-tease-callout-title">Coming soon</p>
           <p className="pro-tease-callout-copy">
-            Automated slate alerts, line-move tracking, and deeper crew reunion
-            stats.
+            Automated slate alerts, deeper crew reunion stats, and expanded
+            officiating intelligence feeds.
           </p>
         </div>
       </aside>
@@ -26,8 +26,8 @@ export function ProComingSoonTease({
     return (
       <p className="text-sm leading-relaxed text-zinc-600">
         <span className="font-semibold text-zinc-800">Ref Watch Pro</span>{" "}
-        (coming soon), automated slate alerts, line-move tracking, and deeper
-        crew reunion stats.
+        (coming soon), automated slate alerts, deeper crew reunion stats, and
+        expanded officiating intelligence feeds.
       </p>
     );
   }
@@ -38,12 +38,13 @@ export function ProComingSoonTease({
         <div className="min-w-0 flex-1">
           <p className="text-sm font-bold text-zinc-900">Ref Watch Pro, coming soon</p>
           <p className="mt-1.5 text-sm leading-relaxed text-zinc-600">
-            Slate alerts before tip-off, line-move context, and reunion-level
-            crew stats, built on the same sample gates you see today.
+            Slate alerts before puck drop or tip-off, reunion-level crew stats,
+            and richer signal digests — built on the same sample gates you see
+            today.
           </p>
           <ul className="pro-tease-features mt-3 space-y-1.5 text-sm text-zinc-600">
-            <li>Email when tonight&apos;s biggest edges post</li>
-            <li>Line-move vs crew benchmark context</li>
+            <li>Email when tonight&apos;s standout officiating signals post</li>
+            <li>Historical tendency vs crew benchmark context</li>
             <li>Exact crew reunion history across seasons</li>
           </ul>
         </div>
@@ -51,10 +52,10 @@ export function ProComingSoonTease({
           <div className="pro-tease-blur rounded-md border border-border bg-surface px-4 py-3">
             <p className="text-xs font-semibold text-zinc-400">Pro preview</p>
             <p className="mt-2 font-mono text-sm tabular-nums text-zinc-300">
-              +4.2 vs book · reunion n=12
+              +4.2% vs baseline · reunion n=12
             </p>
             <p className="mt-1 font-mono text-xs tabular-nums text-zinc-300">
-              Line moved 1.5 since open
+              Moderate confidence · 187 games
             </p>
           </div>
         </div>
