@@ -11,6 +11,7 @@ import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { getBaselinesFile } from "@/lib/baselines";
 import { LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
+import { resolveLeagueVerification } from "@/lib/league-verification";
 import { scopedBaselinesSeasons } from "@/lib/scoped-ref-stats";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
@@ -47,6 +48,10 @@ export function InsightsHubPage({
     scopedSeasons,
     scopeLabel,
   } = loadScopedLeagueStats(leagueId, scopeMode);
+  const verification = resolveLeagueVerification(leagueId, stats.meta);
+  const showDataSourceBanner =
+    leagueId !== "nba" &&
+    (verification.data_verified || (leagueId !== "nfl" && leagueId !== "nhl"));
   const range = formatRange(stats.meta);
   const homeHref = league.pathPrefix || "/";
   const dataLeague = insightsDataLeague(leagueId);
@@ -158,7 +163,9 @@ export function InsightsHubPage({
         </p>
       </section>
 
-      <LeagueDataSourceBanner league={leagueId} meta={stats.meta} />
+      {showDataSourceBanner ? (
+        <LeagueDataSourceBanner league={leagueId} meta={stats.meta} />
+      ) : null}
 
       <LeagueHubTabs
         ariaLabel="Insights views"

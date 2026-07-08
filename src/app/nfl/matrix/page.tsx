@@ -11,13 +11,11 @@ export const metadata = hubPageMetadata("nfl", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
-import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
 
 export default function NflMatrixPage() {
   const stats = getRefStats();
   const range = formatRefStatsRange(stats.meta);
-  const seeded = isNflSimulatedData(stats.meta.source);
   const espn = stats.meta.source === "espn" || stats.meta.source === "hybrid";
   const league = LEAGUES.nfl;
 
@@ -54,12 +52,6 @@ export default function NflMatrixPage() {
           </Link>
           .
         </p>
-        {seeded && (
-          <p className="mt-2 text-sm text-amber-800">
-            Simulated seed dataset; W-L derived from stored win rates and may
-            round slightly.
-          </p>
-        )}
         {stats.meta.source === "hybrid" && (
           <p className="mt-2 text-sm text-emerald-800">
             Ref×team W-L rebuilt from ESPN game logs; penalty and scoring splits

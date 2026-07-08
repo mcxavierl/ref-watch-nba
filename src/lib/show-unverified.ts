@@ -15,6 +15,7 @@ export function isPreviewQuery(searchParams?: {
 export function shouldShowUnverifiedData(
   searchParams?: { preview?: string | string[] | null },
 ): boolean {
+  if (isPreviewQuery(searchParams)) return true;
   if (process.env.NODE_ENV === "production") return false;
-  return isShowUnverifiedEnv() || isPreviewQuery(searchParams);
+  return isShowUnverifiedEnv();
 }

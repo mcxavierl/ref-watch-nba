@@ -21,6 +21,11 @@ export function LeagueDataSourceBanner({
 
   const message = leagueDataSourceBannerMessage(league, meta);
   const verification = resolveLeagueVerification(league as LeagueId, meta);
+
+  if (!verification.data_verified && (league === "nfl" || league === "nhl")) {
+    return null;
+  }
+
   const isUnverified = !verification.data_verified;
 
   if (!message && !isUnverified) return null;

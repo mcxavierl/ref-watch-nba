@@ -29,6 +29,10 @@ export function leagueDataSourceBannerMessage(
 
   const verification = resolveLeagueVerification(league as LeagueId, meta);
 
+  if (!verification.data_verified && (league === "nfl" || league === "nhl")) {
+    return null;
+  }
+
   if (!verification.data_verified) {
     const msg = unverifiedBannerMessage(league as LeagueId, meta);
     return msg || "Synthetic data — not from official sources";

@@ -37,7 +37,6 @@ import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
-import { NflPreviewBanner } from "@/components/NflPreviewBanner";
 import { NflAnalyticsLeaders } from "@/components/NflAnalyticsLeaders";
 import { buildNflAnalyticsLeaders } from "@/lib/nfl/analytics-leaders";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
@@ -115,12 +114,6 @@ export default function NflHomePage() {
         leagueId="nfl"
         assignments={assignments}
         refStats={refStats}
-      />
-
-      <NflPreviewBanner
-        statsSource={refStats.meta.source}
-        assignmentsSource={assignments.source}
-        atsAvailable={refStats.meta.atsAvailable}
       />
 
       {isOffseason && <OffseasonSlateNotice league="NFL" />}
