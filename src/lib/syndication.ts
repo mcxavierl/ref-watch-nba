@@ -3,7 +3,7 @@ import {
   getAssignments as getNbaAssignments,
   getRefStats as getNbaRefStats,
 } from "@/lib/data";
-import { researchFindingHref, researchHubHref } from "@/lib/findings-shared";
+import { researchFindingHref, researchHubHref, type FindingLeague } from "@/lib/findings-shared";
 import { computeSlateStorylines, resolveSlateGames, type GrudgeStoryline } from "@/lib/grudge-match";
 import { computeSlateHomeBias } from "@/lib/home-bias";
 import { computeSlateOtSignals } from "@/lib/nhl/ot-rate";
@@ -37,6 +37,7 @@ import {
   provenanceLabel,
   refStatsDataTag,
 } from "@/lib/provenance";
+import { leagueRefPath } from "@/lib/seo";
 import { absoluteUrl, SYNDICATION_DISCLAIMER } from "@/lib/site";
 import {
   computeSlatePremiums,
@@ -461,10 +462,7 @@ export function researchDatasetJsonLd(
     name: finding.headline,
     description: finding.summary,
     url: absoluteUrl(
-      researchFindingHref(
-        finding.id,
-        finding.league === "NHL" ? "NHL" : "NBA",
-      ),
+      researchFindingHref(finding.id, finding.league as FindingLeague),
     ),
     dateModified: lastUpdated,
     keywords: [finding.league, "referee analytics", "historical tendency"],
@@ -498,13 +496,12 @@ export function refProfileDatasetJsonLd(
   games: number,
   lastUpdated: string,
 ): Record<string, unknown> {
-  const base = league === "NBA" ? "" : league === "NFL" ? "/nfl" : "/nhl";
   return {
     "@context": "https://schema.org",
     "@type": "Dataset",
     name: `${name} referee analytics`,
     description: `Historical scoring, foul, and officiating tendencies for ${name} (${games} games). Minimum game thresholds with plain methodology.`,
-    url: absoluteUrl(`${base}/refs/${slug}`),
+    url: absoluteUrl(leagueRefPath(league, slug)),
     dateModified: lastUpdated,
     variableMeasured: [
       "Average combined score",
