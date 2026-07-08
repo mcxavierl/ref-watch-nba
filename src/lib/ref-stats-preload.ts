@@ -18,6 +18,18 @@ type CacheKey =
   | CfbStatsGlobalKey
   | EplStatsGlobalKey;
 
+const DATA_LEAGUE_FOR_ROUTE: Record<
+  League,
+  "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB"
+> = {
+  nba: "NBA",
+  nhl: "NHL",
+  nfl: "NFL",
+  epl: "EPL",
+  cbb: "CBB",
+  cfb: "CFB",
+};
+
 const CACHE_KEYS: Record<League, CacheKey> = {
   nba: "__REFWATCH_NBA_REF_STATS__",
   nhl: "__REFWATCH_NHL_REF_STATS__",
@@ -50,7 +62,7 @@ export async function preloadRefStatsFromAssets(
 ): Promise<void> {
   if (getCachedRefStats(league)) return;
 
-  for (const file of ["ref-stats.json"]) {
+  for (const file of ["ref-stats.json", "ref-stats.seed.json"]) {
     const res = await fetch(`${origin}${ASSET_BASE[league]}/${file}`);
     if (!res.ok) continue;
     const data = (await res.json()) as RefStatsFile;
@@ -59,6 +71,20 @@ export async function preloadRefStatsFromAssets(
       return;
     }
   }
+}
+
+export async function preloadLeagueDataForPath(
+  origin: string,
+  pathname: string,
+): Promise<void> {
+  const { preloadGameLogsFromAssets } = await import("@/lib/game-logs");
+  const leagues = leaguesForPath(pathname);
+  await Promise.all(
+    leagues.flatMap((league) => [
+      preloadRefStatsFromAssets(origin, league),
+      preloadGameLogsFromAssets(origin, DATA_LEAGUE_FOR_ROUTE[league]),
+    ]),
+  );
 }
 
 /** Load only the leagues a route needs, avoids parsing both 8MB files on every request. */

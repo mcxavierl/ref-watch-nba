@@ -20,8 +20,6 @@ import {
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { crewMetricsProvenance } from "@/lib/provenance";
 import { getCachedRefStats } from "@/lib/ref-stats-preload";
-import { resolveLeagueVerification } from "@/lib/league-verification";
-import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data");
@@ -123,23 +121,6 @@ function applyVerificationMeta(stats: RefStatsFile): RefStatsFile {
   };
 }
 
-function gateUnverifiedNbaStats(stats: RefStatsFile): RefStatsFile {
-  const withMeta = applyVerificationMeta(stats);
-  const v = resolveLeagueVerification("nba", withMeta.meta);
-  if (v.data_verified || shouldShowUnverifiedData()) return withMeta;
-  return {
-    ...withMeta,
-    refs: [],
-    teamSplits: {},
-    meta: {
-      ...withMeta.meta,
-      data_verified: false,
-      data_source: "synthetic",
-      seasons: [],
-    },
-  };
-}
-
 function migrateLegacySplits(data: RefStatsFile): Record<string, TeamCrewSplit[]> {
   const teamSplits: Record<string, TeamCrewSplit[]> = {
     ...(data.teamSplits ?? {}),
@@ -179,8 +160,8 @@ export function getRefStats(): RefStatsFile {
   try {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    return gateUnverifiedNbaStats(
-      applyBaselines(normalizeRefStats(raw)),
+    return applyBaselines(
+      applyVerificationMeta(normalizeRefStats(raw)),
     );
   } catch {
     return EMPTY_REF_STATS;

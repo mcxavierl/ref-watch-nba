@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { createHash } from "node:crypto";
+import "@/lib/global-stats";
 import type { RefOfficial } from "@/lib/types";
 
 export type GameLineSource = "external" | "synthetic";
@@ -44,10 +45,55 @@ export const NBA_INGEST_SEASONS = [
   "2025-26",
 ] as const;
 
-const cache = new Map<
-  "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
-  RuntimeGameLogFile | null
->();
+type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+
+const cache = new Map<DataLeague, RuntimeGameLogFile | null>();
+
+const GAME_LOG_GLOBAL_KEYS: Record<DataLeague, keyof typeof globalThis> = {
+  NBA: "__REFWATCH_NBA_GAME_LOGS__",
+  NHL: "__REFWATCH_NHL_GAME_LOGS__",
+  NFL: "__REFWATCH_NFL_GAME_LOGS__",
+  EPL: "__REFWATCH_EPL_GAME_LOGS__",
+  CBB: "__REFWATCH_CBB_GAME_LOGS__",
+  CFB: "__REFWATCH_CFB_GAME_LOGS__",
+};
+
+const GAME_LOG_ASSET_BASE: Record<DataLeague, string> = {
+  NBA: "/data/nba",
+  NHL: "/data/nhl",
+  NFL: "/data/nfl",
+  EPL: "/data/epl",
+  CBB: "/data/cbb",
+  CFB: "/data/cfb",
+};
+
+function getCachedGameLogs(league: DataLeague): RuntimeGameLogFile | null {
+  return (
+    (globalThis[GAME_LOG_GLOBAL_KEYS[league]] as RuntimeGameLogFile | undefined) ??
+    null
+  );
+}
+
+export function setCachedGameLogs(
+  league: DataLeague,
+  data: RuntimeGameLogFile,
+): void {
+  (globalThis as Record<string, unknown>)[GAME_LOG_GLOBAL_KEYS[league]] = data;
+}
+
+export async function preloadGameLogsFromAssets(
+  origin: string,
+  league: DataLeague,
+): Promise<void> {
+  if (getCachedGameLogs(league)) return;
+
+  const res = await fetch(`${origin}${GAME_LOG_ASSET_BASE[league]}/game-logs.json`);
+  if (!res.ok) return;
+  const data = (await res.json()) as RuntimeGameLogFile;
+  if (data.games?.length) {
+    setCachedGameLogs(league, data);
+  }
+}
 
 function nbaSeasonShardPath(season: string): string {
   return path.join(process.cwd(), "data", "nba", "game-logs", `${season}.ndjson`);
@@ -55,11 +101,7 @@ function nbaSeasonShardPath(season: string): string {
 
 function readNbaNdjsonSeason(season: string): RuntimeGameLogEntry[] {
   const filePath = nbaSeasonShardPath(season);
-  if (!fs.existsSync(filePath)) {
-    throw new Error(
-      `Missing NBA game log shard: ${filePath}. Run scripts/ingest/ingest-full.ts.`,
-    );
-  }
+  if (!fs.existsSync(filePath)) return [];
   const raw = fs.readFileSync(filePath, "utf8").trim();
   if (!raw) return [];
   const games: RuntimeGameLogEntry[] = [];
@@ -74,11 +116,21 @@ function readNbaNdjsonSeason(season: string): RuntimeGameLogEntry[] {
   return games;
 }
 
-function loadNbaGameLogs(): RuntimeGameLogFile {
+function nbaIngestShardsAvailable(): boolean {
+  return NBA_INGEST_SEASONS.some((season) =>
+    fs.existsSync(nbaSeasonShardPath(season)),
+  );
+}
+
+function loadNbaGameLogsFromShards(): RuntimeGameLogFile | null {
+  if (!nbaIngestShardsAvailable()) return null;
+
   const games: RuntimeGameLogEntry[] = [];
   for (const season of NBA_INGEST_SEASONS) {
     games.push(...readNbaNdjsonSeason(season));
   }
+  if (games.length === 0) return null;
+
   games.sort(
     (a, b) => a.date.localeCompare(b.date) || a.gameId.localeCompare(b.gameId),
   );
@@ -104,8 +156,17 @@ function loadNbaGameLogs(): RuntimeGameLogFile {
   };
 }
 
-function gameLogPath(league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB"): string {
+function loadNbaGameLogsFromLegacyJson(): RuntimeGameLogFile | null {
+  const legacyPath = path.join(process.cwd(), "data", "game-logs.json");
+  if (!fs.existsSync(legacyPath)) return null;
+  const parsed = JSON.parse(fs.readFileSync(legacyPath, "utf8")) as RuntimeGameLogFile;
+  if (!parsed.games?.length) return null;
+  return parsed;
+}
+
+function gameLogPath(league: DataLeague): string {
   const root = path.join(process.cwd(), "data");
+  if (league === "NBA") return path.join(root, "game-logs.json");
   if (league === "NHL") return path.join(root, "nhl", "game-logs.json");
   if (league === "NFL") return path.join(root, "nfl", "game-logs.json");
   if (league === "EPL") return path.join(root, "epl", "game-logs.json");
@@ -113,38 +174,40 @@ function gameLogPath(league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB"): str
   return path.join(root, "cfb", "game-logs.json");
 }
 
-export function loadRuntimeGameLogs(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
-): RuntimeGameLogFile | null {
+export function loadRuntimeGameLogs(league: DataLeague): RuntimeGameLogFile | null {
   if (cache.has(league)) return cache.get(league) ?? null;
+
+  const fromGlobal = getCachedGameLogs(league);
+  if (fromGlobal) {
+    cache.set(league, fromGlobal);
+    return fromGlobal;
+  }
 
   try {
     if (league === "NBA") {
-      const parsed = loadNbaGameLogs();
-      cache.set(league, parsed);
-      return parsed;
+      const fromShards = loadNbaGameLogsFromShards();
+      if (fromShards) {
+        cache.set(league, fromShards);
+        return fromShards;
+      }
+      const fromLegacy = loadNbaGameLogsFromLegacyJson();
+      cache.set(league, fromLegacy);
+      return fromLegacy;
     }
 
     const raw = fs.readFileSync(gameLogPath(league), "utf8");
     const parsed = JSON.parse(raw) as RuntimeGameLogFile;
     cache.set(league, parsed);
     return parsed;
-  } catch (err) {
-    if (league === "NBA") throw err;
+  } catch {
     cache.set(league, null);
     return null;
   }
 }
 
-export function gameLogsAvailable(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
-): boolean {
-  try {
-    const file = loadRuntimeGameLogs(league);
-    return Boolean(file?.games?.length);
-  } catch {
-    return false;
-  }
+export function gameLogsAvailable(league: DataLeague): boolean {
+  const file = loadRuntimeGameLogs(league);
+  return Boolean(file?.games?.length);
 }
 
 export function nbaManifestChecksum(): string | null {

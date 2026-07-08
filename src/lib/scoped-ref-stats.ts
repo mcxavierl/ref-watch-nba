@@ -166,12 +166,7 @@ function rebuildFromGameLogs(
   const seasonSet = new Set(scopedSeasons);
   const filtered = games.filter((g) => seasonSet.has(g.season));
   if (filtered.length === 0) {
-    return {
-      ...base,
-      meta: { ...base.meta, seasons: scopedSeasons, totalGamesProcessed: 0 },
-      refs: [],
-      teamSplits: {},
-    };
+    return filterByRefSeasons(base, scopedSeasons);
   }
 
   const leagueAvgTotal =

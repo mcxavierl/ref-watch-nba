@@ -14,13 +14,17 @@ function copyPair(srcDir: string, destDir: string, basename: string): void {
 
 const root = process.cwd();
 copyPair(path.join(root, "data"), path.join(root, "public/data/nba"), "ref-stats");
+copyPair(path.join(root, "data"), path.join(root, "public/data/nba"), "game-logs");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-stats");
+copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "game-logs");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-photos");
 copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "ref-stats");
+copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "game-logs");
 copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "ref-photos");
 copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "ref-stats");
 copyPair(path.join(root, "data/cfb"), path.join(root, "public/data/cfb"), "ref-stats");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "ref-stats");
+copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "game-logs");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "ref-photos");
 
 const nflAssignments = path.join(root, "data/nfl/assignments.json");
