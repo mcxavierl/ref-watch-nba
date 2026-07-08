@@ -1,6 +1,9 @@
 export const LEAGUE_IDS = ["nba", "nhl", "wnba", "mlb", "nfl", "epl", "cbb", "cfb"] as const;
 export type LeagueId = (typeof LEAGUE_IDS)[number];
 
+/** Leagues shown in the site header nav (excludes college until data ships). */
+export const HEADER_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl"] as const satisfies readonly LeagueId[];
+
 export type LeagueMetricCopy = {
   /** Combined score unit: points, goals, runs */
   scoreUnit: string;

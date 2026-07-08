@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { METHODOLOGY_NAV_LABEL } from "@/lib/trust-charter";
-import { LEAGUE_IDS, LEAGUES, type LeagueId } from "@/lib/leagues";
+import { HEADER_LEAGUE_IDS, LEAGUE_IDS, LEAGUES, type LeagueId } from "@/lib/leagues";
 import { LeagueNavMark, leagueNavLabel } from "@/components/LeagueSwitchMark";
 
 const METHODOLOGY_LINK = { href: "/methodology", label: METHODOLOGY_NAV_LABEL };
@@ -88,7 +88,7 @@ const NAV_LINKS: Record<LeagueId, { href: string; label: string }[]> = {
   ],
 };
 
-const HEADER_LEAGUES: LeagueId[] = ["nba", "nhl", "nfl", "epl"];
+const HEADER_LEAGUES: LeagueId[] = [...HEADER_LEAGUE_IDS];
 
 function activeLeague(pathname: string): LeagueId {
   for (const id of LEAGUE_IDS) {

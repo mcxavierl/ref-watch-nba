@@ -1,10 +1,10 @@
-import { LeagueMarkNFL } from "@/components/icons/LeagueMarkNFL";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 
-type LeagueNavId = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+type LeagueNavId = "nba" | "nhl" | "nfl" | "epl";
 
-const LEAGUE_LOGOS: Partial<
-  Record<LeagueNavId, { active: string; inactive: string; alt: string }>
+const LEAGUE_LOGOS: Record<
+  LeagueNavId,
+  { active: string; inactive: string; alt: string; className?: string }
 > = {
   nba: {
     active: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
@@ -15,6 +15,14 @@ const LEAGUE_LOGOS: Partial<
     inactive: "https://assets.nhle.com/logos/nhl/svg/NHL_light.svg",
     active: "https://assets.nhle.com/logos/nhl/svg/NHL_dark.svg",
     alt: "NHL",
+  },
+  nfl: {
+    active:
+      "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg",
+    inactive:
+      "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg",
+    alt: "NFL",
+    className: "league-nav-mark--nfl",
   },
   epl: {
     active:
@@ -31,14 +39,6 @@ type LeagueNavMarkProps = {
 };
 
 export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
-  if (league === "nfl") {
-    return (
-      <LeagueMarkNFL
-        className={`league-nav-mark league-nav-mark-svg${active ? " league-nav-mark--active" : ""}`}
-      />
-    );
-  }
-
   const logos = LEAGUE_LOGOS[league as LeagueNavId];
   if (!logos) {
     return (
@@ -55,7 +55,7 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
       src={src}
       alt=""
       aria-hidden
-      className="league-nav-mark"
+      className={`league-nav-mark${logos.className ? ` ${logos.className}` : ""}`}
       width={28}
       height={18}
       decoding="async"

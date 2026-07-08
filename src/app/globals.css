@@ -2220,6 +2220,14 @@ p {
       transform var(--duration-fast) ease-out;
   }
 
+  .league-nav-mark--nfl {
+    height: 1.05rem;
+    width: auto;
+    max-width: 0.78rem;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 1px rgba(0, 16, 38, 0.35));
+  }
+
   .league-nav-mark-svg {
     flex-shrink: 0;
     width: 1.55rem;
