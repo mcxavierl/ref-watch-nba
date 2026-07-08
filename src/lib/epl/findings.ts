@@ -17,7 +17,6 @@ import {
   buildYoYTrendFinding,
   type LeagueFindingContext,
 } from "@/lib/findings-builders";
-import { isNflFlagsOutlier } from "@/lib/findings-significance";
 import type { RefProfile, RefStatsFile, TeamCrewSplit, WlpRecord } from "@/lib/types";
 
 export type { Finding, FindingCategory } from "@/lib/findings-shared";

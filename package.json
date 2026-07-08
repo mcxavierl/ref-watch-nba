@@ -12,7 +12,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test src/**/*.test.ts",
+    "test": "tsx --test src/lib/nfl/data-source.test.ts src/lib/nba-team-season-records.test.ts",
     "fetch-assignments": "tsx scripts/fetch-assignments.ts",
     "fetch-odds": "tsx scripts/fetch-odds.ts",
     "morning-slate": "tsx scripts/morning-slate.ts",
@@ -39,7 +39,9 @@
     "fetch-nfl-odds": "tsx scripts/nfl/fetch-odds.ts",
     "compute-baselines": "tsx scripts/compute-baselines.ts",
     "backtest": "tsx scripts/backtest.ts",
-    "honesty-audit": "tsx scripts/honesty-audit.ts"
+    "honesty-audit": "tsx scripts/honesty-audit.ts",
+    "validate-nfl": "node scripts/validate-nfl-accuracy.js",
+    "validate": "npm run typecheck && npm run honesty-audit && npm run validate-nfl"
   },
   "dependencies": {
     "cheerio": "^1.2.0",

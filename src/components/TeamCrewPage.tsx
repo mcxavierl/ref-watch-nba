@@ -63,7 +63,6 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const dataLeague = mod.dataLeague;
   const isNhl = league === "nhl";
   const isNfl = league === "nfl" || league === "cfb";
-  const isEpl = league === "epl";
   const closeGameMetrics = computeTeamCloseGameMetrics(
     team.abbr,
     stats.meta,

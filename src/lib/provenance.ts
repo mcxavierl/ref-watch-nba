@@ -71,7 +71,7 @@ export function bettingLinesTag(
 }
 
 export function baselineProvenance(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB" | "EPL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
   season?: string | null,
 ): MetricProvenance {
   const resolved = resolveLeagueBaseline(league, season);
@@ -288,14 +288,29 @@ export function refBettingStatsProvenance(
 ): RefBettingStats["provenance"] {
   const linesTag = bettingLinesTag(meta, stats.linesAvailable);
   const bucketGate = Math.max(5, Math.floor(profile.games * 0.05));
+  const anyBucketBelowGate = stats.overUnder.buckets.some((bucket) => {
+    const games =
+      bucket.record.wins + bucket.record.losses + bucket.record.pushes;
+    return games > 0 && games < bucketGate;
+  });
+  const bucketTag: ProvenanceTag =
+    anyBucketBelowGate && linesTag === "computed-from-real"
+      ? "computed-with-partial-data"
+      : linesTag;
   return {
     aggregate: metricFromTag(linesTag, {
       sampleSize: profile.games,
       gateThreshold: meta.minSampleSize,
     }),
     homeTeamAts: metricFromTag(linesTag, { sampleSize: profile.games }),
-    overUnder: metricFromTag(linesTag, { sampleSize: profile.games }),
-    spreadBuckets: metricFromTag(linesTag, { sampleSize: profile.games }),
+    overUnder: metricFromTag(bucketTag, {
+      sampleSize: profile.games,
+      gateThreshold: bucketGate,
+      note: anyBucketBelowGate
+        ? "Some O/U buckets below per-bucket sample gate."
+        : undefined,
+    }),
+    spreadBuckets: metricFromTag(bucketTag, { sampleSize: profile.games }),
     lines: metricFromTag(linesTag, {
       note: stats.linesAvailable
         ? meta.note

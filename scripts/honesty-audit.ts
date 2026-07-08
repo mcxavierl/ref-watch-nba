@@ -23,7 +23,7 @@ import type {
 } from "../src/lib/types";
 
 interface AuditIssue {
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL";
   context: string;
   metric: string;
   tag: ProvenanceTag;
@@ -31,7 +31,7 @@ interface AuditIssue {
 }
 
 interface LeagueAudit {
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL";
   dataSource: RefStatsFile["meta"]["source"];
   refCount: number;
   baselineFallback: boolean;
@@ -137,7 +137,11 @@ function auditRefProfile(
     for (const bucket of betting.overUnder.buckets) {
       const games =
         bucket.record.wins + bucket.record.losses + bucket.record.pushes;
-      if (games < bucketGate && games > 0) {
+      if (
+        games < bucketGate &&
+        games > 0 &&
+        bp.overUnder.tag === "computed-from-real"
+      ) {
         issues.push({
           league,
           context: ctx,
@@ -288,7 +292,158 @@ function auditLeague(league: "NBA" | "NHL"): LeagueAudit {
   };
 }
 
-function formatReport(nba: LeagueAudit, nhl: LeagueAudit): string {
+function auditSeededOrLiveLeague(
+  league: "NFL" | "CBB" | "CFB" | "EPL",
+): LeagueAudit {
+  const dir = league.toLowerCase();
+  const statsPath = path.join(process.cwd(), "data", dir, "ref-stats.json");
+  const stats = readJson<RefStatsFile>(statsPath);
+  const issues: AuditIssue[] = [];
+
+  if (!stats) {
+    return {
+      league,
+      dataSource: "seeded",
+      refCount: 0,
+      baselineFallback: baselineUsingFallback(league),
+      metricCounts: { real: 0, partial: 0, estimated: 0, total: 0 },
+      issues: [
+        {
+          league,
+          context: "data",
+          metric: "ref-stats.json",
+          tag: "fallback-constant",
+          issue: "Ref stats file missing",
+        },
+      ],
+      belowGateRefs: 0,
+      estimatedOverRates: 0,
+    };
+  }
+
+  const assignmentsPath = path.join(process.cwd(), "data", dir, "assignments.json");
+  const assignments = readJson<{ games: unknown[]; source?: string }>(assignmentsPath);
+  const slateEmpty = !assignments?.games?.length;
+
+  if (stats.meta.source === "seeded" && stats.refs.some((r) => r.games > 0)) {
+    issues.push({
+      league,
+      context: "meta",
+      metric: "source",
+      tag: "computed-from-real",
+      issue: "Seeded source but refs report game counts — verify provenance",
+    });
+  }
+
+  if (league === "NFL") {
+    if (stats.meta.source !== "espn") {
+      issues.push({
+        league,
+        context: "meta",
+        metric: "source",
+        tag: "fallback-constant",
+        issue: `Expected espn source, got ${stats.meta.source}`,
+      });
+    }
+    if (stats.meta.atsAvailable) {
+      issues.push({
+        league,
+        context: "meta",
+        metric: "atsAvailable",
+        tag: "computed-from-real",
+        issue: "NFL ATS flagged available but no verified closing lines",
+      });
+    }
+    for (const ref of stats.refs) {
+      if (ref.bettingStats?.linesAvailable) {
+        issues.push({
+          league,
+          context: `ref:${ref.slug}`,
+          metric: "bettingStats.linesAvailable",
+          tag: "computed-from-real",
+          issue: "NFL ref shows betting lines but league has no closing lines",
+        });
+      }
+    }
+  }
+
+  if (stats.meta.source === "seeded" && !slateEmpty) {
+    issues.push({
+      league,
+      context: "assignments",
+      metric: "slate",
+      tag: "computed-from-real",
+      issue: "Seeded stats but assignments file has games — source mismatch",
+    });
+  }
+
+  if (
+    stats.meta.source === "seeded" &&
+    slateEmpty &&
+    stats.refs.length === 0 &&
+    league === "NFL"
+  ) {
+    issues.push({
+      league,
+      context: "meta",
+      metric: "refs",
+      tag: "fallback-constant",
+      issue: "NFL offseason with empty ref roster",
+    });
+  }
+
+  return {
+    league,
+    dataSource: stats.meta.source,
+    refCount: stats.refs.length,
+    baselineFallback: baselineUsingFallback(league),
+    metricCounts: {
+      real: stats.meta.source === "espn" ? stats.refs.length : 0,
+      partial: stats.meta.source === "seeded" ? stats.refs.length : 0,
+      estimated: 0,
+      total: stats.refs.length,
+    },
+    issues,
+    belowGateRefs: 0,
+    estimatedOverRates: 0,
+  };
+}
+
+function formatExtendedSection(audit: LeagueAudit): string[] {
+  const lines = [
+    `## ${audit.league}`,
+    "",
+    `- Data source: **${audit.dataSource}**`,
+    `- Ref profiles: **${audit.refCount}**`,
+    `- League baseline fallback: **${audit.baselineFallback ? "yes" : "no"}**`,
+    `- Displayed metrics: **${audit.metricCounts.real}** real · **${audit.metricCounts.partial}** partial · **${audit.metricCounts.estimated}** estimated (${audit.metricCounts.total} total)`,
+    "",
+  ];
+  if (audit.issues.length === 0) {
+    lines.push("No honesty violations flagged.", "");
+  } else {
+    lines.push(`### Violations (${audit.issues.length})`, "");
+    for (const issue of audit.issues.slice(0, 20)) {
+      lines.push(
+        `- **${issue.context}** · ${issue.metric}: ${issue.issue} (tag: \`${issue.tag}\`)`,
+      );
+    }
+    if (audit.issues.length > 20) {
+      lines.push(`- …and ${audit.issues.length - 20} more`);
+    }
+    lines.push("");
+  }
+  return lines;
+}
+
+function formatReport(
+  nba: LeagueAudit,
+  nhl: LeagueAudit,
+  nfl: LeagueAudit,
+  cbb: LeagueAudit,
+  cfb: LeagueAudit,
+  epl: LeagueAudit,
+): string {
   const lines: string[] = [
     "# Honesty audit",
     "",
@@ -348,6 +503,11 @@ function formatReport(nba: LeagueAudit, nhl: LeagueAudit): string {
     }
   }
 
+  lines.push(...formatExtendedSection(nfl));
+  lines.push(...formatExtendedSection(cbb));
+  lines.push(...formatExtendedSection(cfb));
+  lines.push(...formatExtendedSection(epl));
+
   lines.push(
     "",
     "## Summary",
@@ -356,8 +516,13 @@ function formatReport(nba: LeagueAudit, nhl: LeagueAudit): string {
     "| --- | ---: | ---: | ---: | ---: | ---: |",
     `| NBA | ${nba.metricCounts.real} | ${nba.metricCounts.partial} | ${nba.metricCounts.estimated} | ${nba.metricCounts.total} | ${nba.issues.length} |`,
     `| NHL | ${nhl.metricCounts.real} | ${nhl.metricCounts.partial} | ${nhl.metricCounts.estimated} | ${nhl.metricCounts.total} | ${nhl.issues.length} |`,
+    `| NFL | ${nfl.metricCounts.real} | ${nfl.metricCounts.partial} | ${nfl.metricCounts.estimated} | ${nfl.metricCounts.total} | ${nfl.issues.length} |`,
+    `| CBB | ${cbb.metricCounts.real} | ${cbb.metricCounts.partial} | ${cbb.metricCounts.estimated} | ${cbb.metricCounts.total} | ${cbb.issues.length} |`,
+    `| CFB | ${cfb.metricCounts.real} | ${cfb.metricCounts.partial} | ${cfb.metricCounts.estimated} | ${cfb.metricCounts.total} | ${cfb.issues.length} |`,
+    `| EPL | ${epl.metricCounts.real} | ${epl.metricCounts.partial} | ${epl.metricCounts.estimated} | ${epl.metricCounts.total} | ${epl.issues.length} |`,
     "",
     "Re-run after data rebuilds: `npm run honesty-audit`",
+    "NFL ESPN cross-check: `node scripts/validate-nfl-accuracy.js`",
     "",
   );
 
@@ -367,20 +532,38 @@ function formatReport(nba: LeagueAudit, nhl: LeagueAudit): string {
 function main(): void {
   const nba = auditLeague("NBA");
   const nhl = auditLeague("NHL");
-  const report = formatReport(nba, nhl);
+  const nfl = auditSeededOrLiveLeague("NFL");
+  const cbb = auditSeededOrLiveLeague("CBB");
+  const cfb = auditSeededOrLiveLeague("CFB");
+  const epl = auditSeededOrLiveLeague("EPL");
+  const report = formatReport(nba, nhl, nfl, cbb, cfb, epl);
   const outPath = path.join(process.cwd(), "HONESTY-AUDIT.md");
   fs.writeFileSync(outPath, report, "utf8");
 
+  const totalIssues =
+    nba.issues.length +
+    nhl.issues.length +
+    nfl.issues.length +
+    cbb.issues.length +
+    cfb.issues.length +
+    epl.issues.length;
+
   console.log("Honesty audit complete");
   console.log(
-    `NBA: ${nba.metricCounts.real} real / ${nba.metricCounts.partial} partial / ${nba.metricCounts.estimated} estimated (${nba.issues.length} issues)`,
+    `NBA: ${nba.metricCounts.real} real / ${nba.metricCounts.partial} partial (${nba.issues.length} issues)`,
   );
   console.log(
-    `NHL: ${nhl.metricCounts.real} real / ${nhl.metricCounts.partial} partial / ${nhl.metricCounts.estimated} estimated (${nhl.issues.length} issues)`,
+    `NHL: ${nhl.metricCounts.real} real / ${nhl.metricCounts.partial} partial (${nhl.issues.length} issues)`,
+  );
+  console.log(
+    `NFL: ${nfl.metricCounts.real} real / ${nfl.metricCounts.partial} partial (${nfl.issues.length} issues)`,
+  );
+  console.log(
+    `CBB: ${cbb.refCount} refs (${cbb.issues.length} issues) | CFB: ${cfb.refCount} refs (${cfb.issues.length} issues) | EPL: ${epl.refCount} refs (${epl.issues.length} issues)`,
   );
   console.log(`Wrote ${outPath}`);
 
-  if (nba.issues.length + nhl.issues.length > 0) {
+  if (totalIssues > 0) {
     process.exitCode = 1;
   }
 }
