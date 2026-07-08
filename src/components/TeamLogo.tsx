@@ -15,6 +15,7 @@ const sizeClasses = {
   sm: "h-5 w-5",
   md: "h-7 w-7",
   lg: "h-10 w-10",
+  xl: "h-12 w-12",
 } as const;
 
 export function TeamLogo({

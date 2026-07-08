@@ -219,7 +219,7 @@ export function RefTeamMatrix({
                           nbaId: team.nbaId,
                         }}
                         sport={sport}
-                        size="md"
+                        size="xl"
                         className="ref-matrix-team-logo"
                       />
                     </button>
