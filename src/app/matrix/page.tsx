@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
-import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { getTeamSplits } from "@/lib/data";
 import { LEAGUES } from "@/lib/leagues";
@@ -30,7 +29,6 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
     scopeLabel,
   } = loadScopedLeagueStats("nba", scopeMode);
   const range = formatRange(stats.meta);
-  const seeded = stats.meta.source === "seeded";
   const bbrTeamNote = refTeamDataNote(stats.meta);
   const league = LEAGUES.nba;
 
@@ -77,15 +75,8 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
         </div>
         {bbrTeamNote ? (
           <p className="mt-2 text-sm text-amber-800">{bbrTeamNote}</p>
-        ) : seeded ? (
-          <p className="mt-2 text-sm text-amber-800">
-            Historical dataset; W-L derived from stored win rates and may
-            round slightly.
-          </p>
         ) : null}
       </section>
-
-      <LeagueDataSourceBanner league="nba" meta={stats.meta} className="mb-4" />
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">

@@ -3,7 +3,6 @@ import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
-import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateFeatureShowcase } from "@/components/SlateFeatureShowcase";
 import { SlateQuickLookupSection } from "@/components/SlateQuickLookupSection";
@@ -132,8 +131,6 @@ export default async function HomePage({
         showScopeToggle={isOffseason}
         scopeLabel={scoped.scopeLabel}
       />
-
-      <LeagueDataSourceBanner league="nba" meta={refStats.meta} className="mt-4" />
 
       {isOffseason && <SlateQuickLookupSection />}
 

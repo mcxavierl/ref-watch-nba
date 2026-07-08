@@ -17,6 +17,8 @@ export function LeagueDataSourceBanner({
   meta: RefStatsFile["meta"];
   className?: string;
 }) {
+  if (league === "nba") return null;
+
   const message = leagueDataSourceBannerMessage(league, meta);
   const verification = resolveLeagueVerification(league as LeagueId, meta);
   const isUnverified = !verification.data_verified;

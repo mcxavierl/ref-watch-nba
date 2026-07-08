@@ -25,6 +25,8 @@ export function leagueDataSourceBannerMessage(
   league: DataSourceBannerLeague,
   meta: RefStatsFile["meta"],
 ): string | null {
+  if (league === "nba") return null;
+
   const verification = resolveLeagueVerification(league as LeagueId, meta);
 
   if (!verification.data_verified) {
@@ -33,9 +35,6 @@ export function leagueDataSourceBannerMessage(
   }
 
   const source = meta.data_source ?? meta.source;
-  if (league === "nba") {
-    return `Verified dataset. source: ${source}, verified`;
-  }
 
   if (league === "nhl" && source === "seeded") {
     return "Historical seeded dataset. Run build-nhl-data for live NHL API backfill. Penalty and scoring splits may use synthetic lines until refreshed.";
