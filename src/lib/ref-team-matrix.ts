@@ -1,3 +1,4 @@
+import type { LeagueMetricCopy } from "@/lib/leagues";
 import { deltaTone } from "@/lib/metricTone";
 import { getTeamDisplayRecord, getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
 import type { RefProfile, RefStatsFile, RefTeamStat, TeamCrewSplit } from "@/lib/types";
@@ -12,6 +13,8 @@ export interface RefTeamMatrixCell {
   wins: number;
   losses: number;
   winRate: number;
+  /** Avg team-minus-opponent whistle volume per game (fouls, flags, minors, etc.). */
+  avgFoulDifferential: number;
 }
 
 export interface RefTeamMatrixTeam {
@@ -126,6 +129,7 @@ export function computeRefTeamMatrix(
         wins,
         losses,
         winRate: stat.winRate,
+        avgFoulDifferential: stat.avgFoulDifferential,
       };
       qualifiedCellCount++;
     }
@@ -241,85 +245,100 @@ export interface TeamTopRefEntry {
   wins: number;
   losses: number;
   winRate: number;
+  /** Win-rate delta vs team baseline (secondary stat in team panel). */
   deltaPts: number;
+  /** Team-minus-opponent whistle volume per game; primary team-panel sort key. */
+  avgFoulDifferential: number;
 }
 
 export const TEAM_MATRIX_REF_PANEL_LIMIT = 10;
 
-/** Qualified refs whose win rate with the team beats the team baseline, best delta first. */
+export type MatrixTeamPanelSort = "record" | "penalty-diff";
+
+export const MATRIX_DEFAULT_TEAM_PANEL_SORT: MatrixTeamPanelSort = "record";
+
+/** Short column label for ref×team whistle differential in matrix panels. */
+export function matrixWhistleDiffShortLabel(metrics: LeagueMetricCopy): string {
+  return `${metrics.whistleShort} diff`;
+}
+
+function sortTeamPanelEntries(
+  entries: TeamTopRefEntry[],
+  sort: MatrixTeamPanelSort,
+  direction: "top" | "bottom",
+): TeamTopRefEntry[] {
+  return [...entries].sort((a, b) => {
+    if (sort === "penalty-diff") {
+      const foulDiff =
+        direction === "top"
+          ? b.avgFoulDifferential - a.avgFoulDifferential
+          : a.avgFoulDifferential - b.avgFoulDifferential;
+      if (foulDiff !== 0) return foulDiff;
+      return b.games - a.games;
+    }
+
+    const deltaDiff =
+      direction === "top" ? b.deltaPts - a.deltaPts : a.deltaPts - b.deltaPts;
+    if (deltaDiff !== 0) return deltaDiff;
+    return b.games - a.games;
+  });
+}
+
+function teamPanelEntriesForTeam(
+  matrix: RefTeamMatrix,
+  teamAbbr: string,
+): TeamTopRefEntry[] {
+  const team = matrix.teams.find(
+    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
+  );
+  if (!team) return [];
+
+  const entries: TeamTopRefEntry[] = [];
+
+  for (const ref of matrix.refs) {
+    const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
+    if (!cell) continue;
+    entries.push({
+      refSlug: ref.slug,
+      refName: ref.name,
+      games: cell.games,
+      wins: cell.wins,
+      losses: cell.losses,
+      winRate: cell.winRate,
+      deltaPts: winRateDeltaPoints(cell.winRate, team.baselineWinRate),
+      avgFoulDifferential: cell.avgFoulDifferential,
+    });
+  }
+
+  return entries;
+}
+
+/** Qualified refs beating team baseline (record) or with best whistle diff, best first. */
 export function topRefsBeatingBaselineForTeam(
   matrix: RefTeamMatrix,
   teamAbbr: string,
   limit = TEAM_MATRIX_REF_PANEL_LIMIT,
+  sort: MatrixTeamPanelSort = MATRIX_DEFAULT_TEAM_PANEL_SORT,
 ): TeamTopRefEntry[] {
-  const team = matrix.teams.find(
-    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
-  );
-  if (!team) return [];
-
-  const entries: TeamTopRefEntry[] = [];
-
-  for (const ref of matrix.refs) {
-    const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
-    if (!cell) continue;
-    const deltaPts = winRateDeltaPoints(cell.winRate, team.baselineWinRate);
-    if (deltaPts <= 0) continue;
-    entries.push({
-      refSlug: ref.slug,
-      refName: ref.name,
-      games: cell.games,
-      wins: cell.wins,
-      losses: cell.losses,
-      winRate: cell.winRate,
-      deltaPts,
-    });
-  }
-
-  return entries
-    .sort((a, b) => {
-      const deltaDiff = b.deltaPts - a.deltaPts;
-      if (deltaDiff !== 0) return deltaDiff;
-      return b.games - a.games;
-    })
-    .slice(0, limit);
+  return sortTeamPanelEntries(
+    teamPanelEntriesForTeam(matrix, teamAbbr),
+    sort,
+    "top",
+  ).slice(0, limit);
 }
 
-/** Qualified refs whose win rate with the team trails the team baseline, worst delta first. */
+/** Qualified refs below team baseline (record) or with worst whistle diff, worst first. */
 export function bottomRefsBelowBaselineForTeam(
   matrix: RefTeamMatrix,
   teamAbbr: string,
   limit = TEAM_MATRIX_REF_PANEL_LIMIT,
+  sort: MatrixTeamPanelSort = MATRIX_DEFAULT_TEAM_PANEL_SORT,
 ): TeamTopRefEntry[] {
-  const team = matrix.teams.find(
-    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
-  );
-  if (!team) return [];
-
-  const entries: TeamTopRefEntry[] = [];
-
-  for (const ref of matrix.refs) {
-    const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
-    if (!cell) continue;
-    const deltaPts = winRateDeltaPoints(cell.winRate, team.baselineWinRate);
-    if (deltaPts >= 0) continue;
-    entries.push({
-      refSlug: ref.slug,
-      refName: ref.name,
-      games: cell.games,
-      wins: cell.wins,
-      losses: cell.losses,
-      winRate: cell.winRate,
-      deltaPts,
-    });
-  }
-
-  return entries
-    .sort((a, b) => {
-      const deltaDiff = a.deltaPts - b.deltaPts;
-      if (deltaDiff !== 0) return deltaDiff;
-      return b.games - a.games;
-    })
-    .slice(0, limit);
+  return sortTeamPanelEntries(
+    teamPanelEntriesForTeam(matrix, teamAbbr),
+    sort,
+    "bottom",
+  ).slice(0, limit);
 }
 
 export function topMatrixRefs(

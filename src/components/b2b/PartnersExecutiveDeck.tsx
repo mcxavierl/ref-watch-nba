@@ -94,7 +94,7 @@ export function PartnersExecutiveDeck() {
           Product proof
         </h2>
         <p className="partners-section-copy">
-          Public slate card — crew chief context, historical tendency tags, and
+          Public slate card, crew chief context, historical tendency tags, and
           sample-gated confidence for media-safe distribution.
         </p>
         <div className="partners-product-showcase">
@@ -121,7 +121,7 @@ export function PartnersExecutiveDeck() {
 
       <details className="partners-appendix">
         <summary className="partners-appendix-trigger">
-          Technical appendix — widget specs &amp; additional demos
+          Technical appendix, widget specs &amp; additional demos
         </summary>
         <div className="partners-appendix-body">
           <p className="partners-section-copy">
@@ -158,7 +158,7 @@ export function PartnersExecutiveDeck() {
 
           <p className="partners-disclaimer">
             {AFFILIATION_DISCLAIMER} {GAMBLING_DISCLAIMER} Demo widgets use mock
-            odds and confidence scores — not connected to a live sportsbook feed.
+            odds and confidence scores, not connected to a live sportsbook feed.
           </p>
         </div>
       </details>

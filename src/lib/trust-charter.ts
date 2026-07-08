@@ -7,7 +7,7 @@ export const REFWATCH_POSITIONING =
   "RefWatch is a transparent intelligence platform for referee assignments, crew history, and officiating tendencies.";
 
 export const REFWATCH_HERO_SUPPORTING =
-  "RefWatch analyzes referee assignments, crew history, and officiating tendencies using historical data — with transparent methodology and confidence levels.";
+  "RefWatch analyzes referee assignments, crew history, and officiating tendencies using historical data, with transparent methodology and confidence levels.";
 
 export const TRUST_CHARTER_PRINCIPLES = [
   "We measure historical tendencies, not outcomes.",
@@ -31,7 +31,10 @@ export const METHODOLOGY_NAV_LABEL = "Methodology";
 export const RANKINGS_PAGE_TITLE = "Official tendency index";
 
 export const RANKINGS_PAGE_LEAD =
-  "Historical scoring and whistle tendencies across qualified officials. Descriptive associations with league baselines — not predictions.";
+  "Historical scoring and whistle tendencies across qualified officials. Descriptive associations with league baselines, not predictions.";
+
+export const NHL_LINESMAN_METHODOLOGY_NOTE =
+  "Tendency index covers referees; linesmen appear on crews but are excluded from penalty/scoring analytics.";
 
 export const FINDINGS_HUB_TITLE = "Intelligence reports";
 

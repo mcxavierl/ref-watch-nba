@@ -10,6 +10,7 @@ import {
   matrixCellKey,
   matrixCellStyle,
   MATRIX_DEFAULT_REF_SORT,
+  MATRIX_DEFAULT_TEAM_PANEL_SORT,
   MATRIX_EXTREME_DELTA_PTS,
   MATRIX_REF_SORT_OPTIONS,
   MATRIX_STANDOUT_SORT_EXPLAINER,
@@ -19,17 +20,23 @@ import {
   bottomRefsBelowBaselineForTeam,
   topRefsBeatingBaselineForTeam,
   type MatrixRefSort,
+  type MatrixTeamPanelSort,
   type RefTeamMatrix,
   type TeamTopRefEntry,
 } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned, formatWinRateVsTeam } from "@/lib/stats-utils";
+import { foulEdgeTone } from "@/lib/metricTone";
+import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
+import type { TeamStrengthOfSchedule } from "@/lib/nba-strength-of-schedule";
 
 type RefTeamMatrixProps = {
   matrix: RefTeamMatrix;
   basePath: string;
   leagueLabel: string;
   officialNounPlural: string;
+  whistleDiffLabel: string;
   sport: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+  teamSosByAbbr?: Record<string, TeamStrengthOfSchedule>;
 };
 
 function TeamRefRankList({
@@ -38,12 +45,16 @@ function TeamRefRankList({
   emptyMessage,
   basePath,
   sport,
+  whistleDiffLabel,
+  teamBaselineWinRate,
 }: {
   entries: TeamTopRefEntry[];
   variant: "positive" | "negative";
   emptyMessage: string;
   basePath: string;
   sport: RefTeamMatrixProps["sport"];
+  whistleDiffLabel: string;
+  teamBaselineWinRate: number;
 }) {
   if (entries.length === 0) {
     return <p className="ref-matrix-team-panel-empty">{emptyMessage}</p>;
@@ -56,7 +67,16 @@ function TeamRefRankList({
 
   return (
     <ol className="ref-matrix-team-panel-list">
-      {entries.map((entry, index) => (
+      {entries.map((entry, index) => {
+        const foulTone = foulEdgeTone(entry.avgFoulDifferential);
+        const foulClass =
+          foulTone === "positive"
+            ? "ref-matrix-delta--positive"
+            : foulTone === "negative"
+              ? "ref-matrix-delta--negative"
+              : "ref-matrix-delta--neutral";
+
+        return (
         <li key={entry.refSlug} className="ref-matrix-team-panel-item">
           <span className="ref-matrix-team-panel-rank" aria-hidden>
             {index + 1}
@@ -75,14 +95,26 @@ function TeamRefRankList({
             <span>{entry.refName}</span>
           </Link>
           <span className="ref-matrix-team-panel-record">
-            {entry.wins}-{entry.losses}
+            <span className="ref-matrix-team-panel-record-line">
+              {entry.wins}-{entry.losses}
+            </span>
+            <span
+              className={`ref-matrix-team-panel-win-delta ${deltaClass}`}
+              title={`Win rate vs team baseline: ${formatWinRateVsTeam(entry.winRate, teamBaselineWinRate)}`}
+            >
+              {formatWinRateVsTeam(entry.winRate, teamBaselineWinRate)}
+            </span>
           </span>
           <span className="ref-matrix-team-panel-games">{entry.games} gp</span>
-          <span className={`ref-matrix-team-panel-delta ${deltaClass}`}>
-            {formatSigned(entry.deltaPts)} pts
+          <span
+            className={`ref-matrix-team-panel-delta ${foulClass}`}
+            title={`${whistleDiffLabel}: ${formatSigned(entry.avgFoulDifferential)} per game`}
+          >
+            {formatSigned(entry.avgFoulDifferential)} {whistleDiffLabel.toLowerCase()}
           </span>
         </li>
-      ))}
+        );
+      })}
     </ol>
   );
 }
@@ -129,11 +161,16 @@ export function RefTeamMatrix({
   basePath,
   leagueLabel,
   officialNounPlural,
+  whistleDiffLabel,
   sport,
+  teamSosByAbbr,
 }: RefTeamMatrixProps) {
   const { refs, teams, cells, minGames, qualifiedCellCount } = matrix;
   const [selectedTeamAbbr, setSelectedTeamAbbr] = useState<string | null>(null);
   const [refSort, setRefSort] = useState<MatrixRefSort>(MATRIX_DEFAULT_REF_SORT);
+  const [teamPanelSort, setTeamPanelSort] = useState<MatrixTeamPanelSort>(
+    MATRIX_DEFAULT_TEAM_PANEL_SORT,
+  );
   const [crosshair, setCrosshair] = useState<MatrixCrosshair | null>(null);
   const sortedRefs = useMemo(
     () => sortMatrixRefs(refs, matrix, refSort),
@@ -149,16 +186,16 @@ export function RefTeamMatrix({
   const topRefsForTeam = useMemo(
     () =>
       selectedTeamAbbr
-        ? topRefsBeatingBaselineForTeam(matrix, selectedTeamAbbr)
+        ? topRefsBeatingBaselineForTeam(matrix, selectedTeamAbbr, TEAM_MATRIX_REF_PANEL_LIMIT, teamPanelSort)
         : [],
-    [matrix, selectedTeamAbbr],
+    [matrix, selectedTeamAbbr, teamPanelSort],
   );
   const bottomRefsForTeam = useMemo(
     () =>
       selectedTeamAbbr
-        ? bottomRefsBelowBaselineForTeam(matrix, selectedTeamAbbr)
+        ? bottomRefsBelowBaselineForTeam(matrix, selectedTeamAbbr, TEAM_MATRIX_REF_PANEL_LIMIT, teamPanelSort)
         : [],
-    [matrix, selectedTeamAbbr],
+    [matrix, selectedTeamAbbr, teamPanelSort],
   );
   const officialLabel =
     officialNounPlural.charAt(0).toUpperCase() + officialNounPlural.slice(1);
@@ -190,10 +227,10 @@ export function RefTeamMatrix({
           tint compare ref×team win rate to the team baseline (±
           {MATRIX_TONE_DELTA_PTS} pts); splits at ±{MATRIX_EXTREME_DELTA_PTS}{" "}
           pts or more are standout outliers. Delta text and W-L are shown in
-          every cell — not color alone. Click a team logo to rank the top and
-          bottom {TEAM_MATRIX_REF_PANEL_LIMIT} refs vs that team&apos;s baseline;
-          tap a cell for that ref&apos;s profile (including tight-game proxy).
-          Historical splits only, not picks.
+          every cell, not color alone. Click a team logo to rank the top and
+          bottom {TEAM_MATRIX_REF_PANEL_LIMIT} refs for that team; tap a cell for that
+          ref&apos;s profile (including tight-game proxy). Historical splits
+          only, not picks.
         </p>
         <div className="ref-matrix-legend-swatches" aria-hidden>
           <span className="ref-matrix-swatch ref-matrix-cell--positive">
@@ -274,9 +311,9 @@ export function RefTeamMatrix({
                       className={`ref-matrix-team-button${isSelected ? " ref-matrix-team-button--selected" : ""}`}
                       onClick={() => toggleTeamFilter(team.abbr)}
                       onMouseEnter={() => activateCrosshair("", team.abbr)}
-                      title={`${team.label} · team sample baseline ${formatMatrixTeamBaseline(team)}${isSelected ? " · clear filter" : " · show top and bottom refs vs baseline"}`}
+                      title={`${team.label} · team sample baseline ${formatMatrixTeamBaseline(team)}${isSelected ? " · clear filter" : " · show top and bottom refs for this team"}`}
                       aria-pressed={isSelected}
-                      aria-label={`${team.label}, team sample baseline ${team.baselineWins}-${team.baselineLosses}${isSelected ? ", filter active, click to clear" : ", click to show top and bottom refs vs baseline"}`}
+                      aria-label={`${team.label}, team sample baseline ${team.baselineWins}-${team.baselineLosses}${isSelected ? ", filter active, click to clear" : ", click to show top and bottom refs for this team"}`}
                     >
                       <TeamLogo
                         team={{
@@ -450,12 +487,35 @@ export function RefTeamMatrix({
                     {selectedTeam.label}
                   </Link>
                 </h3>
+                {sport === "nba" &&
+                teamSosByAbbr?.[selectedTeam.abbr.toUpperCase()] ? (
+                  <TeamRecordSosCard
+                    record={{
+                      wins: selectedTeam.baselineWins,
+                      losses: selectedTeam.baselineLosses,
+                      games: selectedTeam.baselineGames,
+                      winRate: selectedTeam.baselineWinRate,
+                    }}
+                    sos={teamSosByAbbr[selectedTeam.abbr.toUpperCase()]}
+                    teamName={selectedTeam.name}
+                    className="ref-matrix-team-panel-sos"
+                  />
+                ) : (
+                  <p className="ref-matrix-team-panel-lead">
+                    Team baseline {selectedTeam.baselineWins}-
+                    {selectedTeam.baselineLosses} (
+                    {formatPct(selectedTeam.baselineWinRate)} across{" "}
+                    {selectedTeam.baselineGames} gp).
+                  </p>
+                )}
                 <p className="ref-matrix-team-panel-lead">
-                  Team baseline {selectedTeam.baselineWins}-{selectedTeam.baselineLosses}{" "}
-                  ({formatPct(selectedTeam.baselineWinRate)} across{" "}
-                  {selectedTeam.baselineGames} gp). Top and bottom{" "}
-                  {TEAM_MATRIX_REF_PANEL_LIMIT} {officialNounPlural} ranked by
-                  win-rate delta vs baseline; {minGames}+ games required.
+                  Top and bottom {TEAM_MATRIX_REF_PANEL_LIMIT}{" "}
+                  {officialNounPlural} ranked by{" "}
+                  {teamPanelSort === "record"
+                    ? "win rate vs team baseline"
+                    : `${whistleDiffLabel.toLowerCase()} (positive favors the team)`}
+                  ; both W-L and {whistleDiffLabel.toLowerCase()} shown for
+                  context. {minGames}+ games required.
                 </p>
               </div>
             </div>
@@ -469,6 +529,29 @@ export function RefTeamMatrix({
             </button>
           </div>
 
+          <div
+            className="ref-matrix-team-panel-sort"
+            role="group"
+            aria-label="Sort top and bottom ref lists"
+          >
+            <button
+              type="button"
+              className={`ref-matrix-team-panel-sort-btn${teamPanelSort === "record" ? " ref-matrix-team-panel-sort-btn--active" : ""}`}
+              aria-pressed={teamPanelSort === "record"}
+              onClick={() => setTeamPanelSort("record")}
+            >
+              Record
+            </button>
+            <button
+              type="button"
+              className={`ref-matrix-team-panel-sort-btn${teamPanelSort === "penalty-diff" ? " ref-matrix-team-panel-sort-btn--active" : ""}`}
+              aria-pressed={teamPanelSort === "penalty-diff"}
+              onClick={() => setTeamPanelSort("penalty-diff")}
+            >
+              {whistleDiffLabel}
+            </button>
+          </div>
+
           <div className="ref-matrix-team-panel-columns">
             <section
               className="ref-matrix-team-panel-column"
@@ -478,14 +561,17 @@ export function RefTeamMatrix({
                 id="ref-matrix-team-panel-top-title"
                 className="ref-matrix-team-panel-column-title"
               >
-                Top {TEAM_MATRIX_REF_PANEL_LIMIT} above baseline
+                Top {TEAM_MATRIX_REF_PANEL_LIMIT}{" "}
+                {teamPanelSort === "record" ? "vs baseline" : whistleDiffLabel.toLowerCase()}
               </h4>
               <TeamRefRankList
                 entries={topRefsForTeam}
                 variant="positive"
-                emptyMessage={`No qualified ${officialNounPlural} beat ${selectedTeam.label}'s baseline in this sample.`}
+                emptyMessage={`No qualified ${officialNounPlural} for ${selectedTeam.label} in this sample.`}
                 basePath={basePath}
                 sport={sport}
+                whistleDiffLabel={whistleDiffLabel}
+                teamBaselineWinRate={selectedTeam.baselineWinRate}
               />
             </section>
             <section
@@ -496,14 +582,17 @@ export function RefTeamMatrix({
                 id="ref-matrix-team-panel-bottom-title"
                 className="ref-matrix-team-panel-column-title"
               >
-                Bottom {TEAM_MATRIX_REF_PANEL_LIMIT} below baseline
+                Bottom {TEAM_MATRIX_REF_PANEL_LIMIT}{" "}
+                {teamPanelSort === "record" ? "vs baseline" : whistleDiffLabel.toLowerCase()}
               </h4>
               <TeamRefRankList
                 entries={bottomRefsForTeam}
                 variant="negative"
-                emptyMessage={`No qualified ${officialNounPlural} trail ${selectedTeam.label}'s baseline in this sample.`}
+                emptyMessage={`No qualified ${officialNounPlural} for ${selectedTeam.label} in this sample.`}
                 basePath={basePath}
                 sport={sport}
+                whistleDiffLabel={whistleDiffLabel}
+                teamBaselineWinRate={selectedTeam.baselineWinRate}
               />
             </section>
           </div>

@@ -91,7 +91,7 @@ export const DEMO_AFFILIATE_MATCHES: AffiliateSlateMatch[] = [
     },
     signalActive: true,
     signalSummary:
-      "Ref signal aligns with alt penalty total — crew historically runs heavy in sub-6.0 goal environments.",
+      "Ref signal aligns with alt penalty total; crew historically runs heavy in sub-6.0 goal environments.",
   },
   {
     id: "nba-demo-1",
@@ -119,7 +119,7 @@ export const DEMO_AFFILIATE_MATCHES: AffiliateSlateMatch[] = [
     },
     signalActive: true,
     signalSummary:
-      "Pace signal supports alt over — reunion crew clears adjusted benchmark in 68% of sample.",
+      "Pace signal supports alt over; reunion crew clears adjusted benchmark in 68% of sample.",
   },
 ];
 

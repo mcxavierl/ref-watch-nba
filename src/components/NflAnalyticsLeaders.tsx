@@ -10,7 +10,7 @@ export function NflAnalyticsLeaders({ leaders }: { leaders: NflLeaderEntry[] }) 
       <div className="section-block-header">
         <h2 className="section-title">Official analytics leaders</h2>
         <p className="section-lead">
-          ESPN-verified penalty and scoring splits — descriptive tendencies, not
+          ESPN-verified penalty and scoring splits, descriptive tendencies, not
           picks.
         </p>
       </div>

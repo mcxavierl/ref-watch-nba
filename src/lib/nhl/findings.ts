@@ -1,9 +1,10 @@
 import { formatPct, formatSigned, getRefStats, getTeamSplits } from "@/lib/nhl/data";
+import { filterNhlReferees } from "@/lib/nhl/officials";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, NHL_TEAMS } from "@/lib/nhl/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
 import { rankScore } from "@/lib/findings-shared";
-import { pickFeaturedFindings } from "@/lib/findings-significance";
+import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-significance";
 import {
   buildCloseGameLeagueFinding,
   buildCrewDominanceFinding,
@@ -339,23 +340,24 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
 }
 
 function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
+  const refereeStats = { ...stats, refs: filterNhlReferees(stats.refs) };
   return [
-    buildLeagueSkewFinding(stats, NHL_FINDING_CTX),
-    buildNhlOtOutlierFinding(stats, NHL_FINDING_CTX),
-    buildNhlMinorsOutlierFinding(stats, NHL_FINDING_CTX),
-    teamCrewAnomalyFinding(stats),
-    ouAtsEdgeFinding(stats),
-    atsOutlierFinding(stats),
-    scoringExtremesFinding(stats),
-    buildMatrixExtremeFinding(stats, NHL_FINDING_CTX, "high"),
-    buildMatrixExtremeFinding(stats, NHL_FINDING_CTX, "low"),
-    buildCrewDominanceFinding(stats, NHL_FINDING_CTX),
-    buildYoYTrendFinding(stats, NHL_FINDING_CTX),
-    buildTeamHomeRoadFinding(stats, NHL_FINDING_CTX),
-    buildCloseGameLeagueFinding(stats, NHL_FINDING_CTX),
-    buildWhistleOutlierFinding(stats, NHL_FINDING_CTX),
-    buildOverRateOutlierFinding(stats, NHL_FINDING_CTX, "low"),
-    scoringOutlierFinding(stats),
+    buildLeagueSkewFinding(refereeStats, NHL_FINDING_CTX),
+    buildNhlOtOutlierFinding(refereeStats, NHL_FINDING_CTX),
+    buildNhlMinorsOutlierFinding(refereeStats, NHL_FINDING_CTX),
+    teamCrewAnomalyFinding(refereeStats),
+    ouAtsEdgeFinding(refereeStats),
+    atsOutlierFinding(refereeStats),
+    scoringExtremesFinding(refereeStats),
+    buildMatrixExtremeFinding(refereeStats, NHL_FINDING_CTX, "high"),
+    buildMatrixExtremeFinding(refereeStats, NHL_FINDING_CTX, "low"),
+    buildCrewDominanceFinding(refereeStats, NHL_FINDING_CTX),
+    buildYoYTrendFinding(refereeStats, NHL_FINDING_CTX),
+    buildTeamHomeRoadFinding(refereeStats, NHL_FINDING_CTX),
+    buildCloseGameLeagueFinding(refereeStats, NHL_FINDING_CTX),
+    buildWhistleOutlierFinding(refereeStats, NHL_FINDING_CTX),
+    buildOverRateOutlierFinding(refereeStats, NHL_FINDING_CTX, "low"),
+    scoringOutlierFinding(refereeStats),
   ].filter((c): c is ScoredFindingBase => c !== null);
 }
 
@@ -363,7 +365,7 @@ export function computeFindings(limit = 6): Finding[] {
   const stats = getRefStats();
   if (stats.refs.length === 0) return [];
 
-  const ranked = collectCandidates(stats).sort((a, b) => b.score - a.score);
+  const ranked = rankScoredFindings(collectCandidates(stats));
   return pickFeaturedFindings(ranked, limit);
 }
 
@@ -371,8 +373,7 @@ export function computeAllFindings(): Finding[] {
   const stats = getRefStats();
   if (stats.refs.length === 0) return [];
 
-  return collectCandidates(stats)
-    .sort((a, b) => b.score - a.score)
+  return rankScoredFindings(collectCandidates(stats))
     .map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
       const { score, sampleGames, ...finding } = item;

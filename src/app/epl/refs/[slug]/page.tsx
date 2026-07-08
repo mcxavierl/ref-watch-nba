@@ -27,6 +27,8 @@ import { absoluteUrl } from "@/lib/site";
 import { userFacingDataNote } from "@/lib/user-language";
 import { EplPreviewBanner } from "@/components/EplPreviewBanner";
 import { isEplSimulatedData } from "@/lib/epl/data-source";
+import { formatRefNameWithNumber } from "@/lib/ref-number";
+import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
 
@@ -50,7 +52,7 @@ export async function generateMetadata({
     ? `${ats.wins}-${ats.losses}${ats.pushes ? `-${ats.pushes}` : ""} home ATS`
     : "";
   return {
-    title: `${profile.name} (#${profile.number})`,
+    title: formatRefNameWithNumber(profile.name, profile.number),
     description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over ${stats.meta.leagueOverBaseline}${atsLabel ? `, ${atsLabel}` : ""}. Historical EPL referee analytics with minimum game thresholds.`,
     alternates: {
       canonical: absoluteUrl(`/epl/refs/${slug}`),
@@ -122,9 +124,10 @@ export default async function EplRefProfilePage({
           <div className="page-hero-head-copy">
             <div className="page-hero-head-title-row">
               <h1 className="page-title">{profile.name}</h1>
-              <span className="font-mono text-sm text-zinc-500">
-                #{profile.number}
-              </span>
+              <RefJerseyNumber
+                number={profile.number}
+                className="font-mono text-sm text-zinc-500"
+              />
               <FavoritesStar
                 id={profile.slug}
                 kind="ref"

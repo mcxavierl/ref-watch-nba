@@ -4,6 +4,7 @@ import { CloseGameSection } from "@/components/CloseGameSection";
 import { TeamSplitView } from "@/components/TeamSplitView";
 import * as nbaData from "@/lib/data";
 import * as nhlData from "@/lib/nhl/data";
+import { filterNhlReferees } from "@/lib/nhl/officials";
 import * as nflData from "@/lib/nfl/data";
 import * as nbaTeams from "@/lib/teams";
 import * as nhlTeams from "@/lib/nhl/teams";
@@ -21,6 +22,8 @@ import { userFacingDataNote } from "@/lib/user-language";
 import { computeTeamCloseGameMetrics } from "@/lib/close-game";
 import { computeTeamInsights } from "@/lib/team-insights";
 import { TeamInsightCards } from "@/components/TeamInsightCards";
+import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
+import { getCachedTeamStrengthOfSchedule } from "@/lib/nba-team-sos-cache";
 
 const LEAGUE_MODULES = {
   nba: { data: nbaData, teams: nbaTeams, basePath: "", dataLeague: "NBA" as const, crewSize: "three", surface: "court" },
@@ -46,9 +49,12 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const team = getTeam(config.teamAbbr);
   if (!team) return null;
 
+  const isNhl = league === "nhl";
+  const isNfl = league === "nfl" || league === "cfb";
   const stats = getRefStats();
+  const analyticsRefs = isNhl ? filterNhlReferees(stats.refs) : stats.refs;
   const splits = sortSplitsByGames(getTeamSplits(team.abbr));
-  const refSplits = getTeamRefSplits(stats.refs, team.abbr);
+  const refSplits = getTeamRefSplits(analyticsRefs, team.abbr);
   const teamRecord = getTeamDisplayRecord(
     league,
     team.abbr,
@@ -61,20 +67,20 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const crewSize = mod.crewSize;
   const playingSurface = mod.surface;
   const dataLeague = mod.dataLeague;
-  const isNhl = league === "nhl";
-  const isNfl = league === "nfl" || league === "cfb";
   const closeGameMetrics = computeTeamCloseGameMetrics(
     team.abbr,
     stats.meta,
     dataLeague,
   );
+  const teamSos =
+    league === "nba" ? getCachedTeamStrengthOfSchedule(team.abbr) : null;
   const teamInsights = computeTeamInsights({
     teamAbbr: team.abbr,
     teamLabel,
     teamRecord,
     crewSplits: splits,
     refSplits,
-    refs: stats.refs,
+    refs: analyticsRefs,
     leagueAvgTotal: stats.meta.leagueAvgTotal,
     leagueOverBaseline: stats.meta.leagueOverBaseline,
     leagueAvgFouls: stats.meta.leagueAvgFouls,
@@ -104,11 +110,22 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           <span className="page-meta-updated">
             Updated {formatDate(stats.meta.lastUpdated)}
           </span>
-          <span>
-            {team.name} record: {teamRecord.wins}-{teamRecord.losses} (
-            {formatPct(teamRecord.winRate)})
-          </span>
         </p>
+        {teamSos ? (
+          <TeamRecordSosCard
+            record={teamRecord}
+            sos={teamSos}
+            teamName={team.name}
+            className="mt-4"
+          />
+        ) : (
+          <p className="page-meta mt-4">
+            <span>
+              {team.name} record: {teamRecord.wins}-{teamRecord.losses} (
+              {formatPct(teamRecord.winRate)})
+            </span>
+          </p>
+        )}
       </section>
 
       <TeamInsightCards insights={teamInsights} basePath={basePath} sport={league} />
@@ -134,7 +151,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
         <TeamSplitView
           crewSplits={splits}
           refSplits={refSplits}
-          refs={stats.refs}
+          refs={analyticsRefs}
           teamAbbr={team.abbr}
           teamLabel={teamLabel}
           teamRecord={teamRecord}
@@ -190,7 +207,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
       <section className="section-block">
         <h2 className="section-title">League-wide ref profiles</h2>
         <div className="data-card divide-y divide-border-subtle">
-          {stats.refs
+          {analyticsRefs
             .filter((r) => r.games >= stats.meta.minSampleSize)
             .slice(0, 12)
             .map((ref) => (

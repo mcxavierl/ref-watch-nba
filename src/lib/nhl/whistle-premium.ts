@@ -6,6 +6,7 @@ import {
   refSlug,
 } from "@/lib/nhl/data";
 import { benchmarkTotal, getOdds } from "@/lib/nhl/odds";
+import { isNhlLinesmanOfficial } from "@/lib/nhl/officials";
 import { attachWhistlePremiumProvenance } from "@/lib/provenance";
 import { detectTeamsInGame, matchTeamString, teamFullName } from "@/lib/nhl/teams";
 import type {
@@ -46,6 +47,7 @@ function teamAdjustedPremium(
 
   const deltas: number[] = [];
   for (const official of game.crew) {
+    if (isNhlLinesmanOfficial(official)) continue;
     const slug = refSlug(official.name, official.number);
     const ref = stats.refs.find((r) => r.slug === slug);
     if (!ref?.teamStats) continue;

@@ -5,7 +5,7 @@ import { absoluteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Enterprise partnerships",
   description:
-    "Ref Watch partnership overview — referee crew intelligence, traction, and B2B integration opportunities for media and licensed partners.",
+    "Ref Watch partnership overview, referee crew intelligence, traction, and B2B integration opportunities for media and licensed partners.",
   robots: { index: false, follow: false },
   alternates: { canonical: absoluteUrl("/partners") },
 };

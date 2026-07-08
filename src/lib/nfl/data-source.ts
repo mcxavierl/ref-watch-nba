@@ -29,7 +29,7 @@ export function nflPreviewBannerMessage(
   if (isNflVerifiedData(statsSource)) {
     return "Scores, penalty counts, and ref×team W-L are from ESPN game logs. ATS/O-U splits use nflverse lines when available.";
   }
-  return "Preview dataset — simulated schedules, crews, penalty splits, and lines. Do not treat ref×team or betting stats as verified against official records.";
+  return "Preview dataset, simulated schedules, crews, penalty splits, and lines. Do not treat ref×team or betting stats as verified against official records.";
 }
 
 export function nflAssignmentsAreVerified(

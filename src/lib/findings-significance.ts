@@ -1,4 +1,11 @@
 import type { Finding, FindingCategory, ScoredFindingBase } from "@/lib/findings-shared";
+import {
+  CONFIDENCE_TIER_RANK,
+  findingConfidenceTier,
+} from "@/lib/findings-shared";
+import type { ConfidenceTier } from "@/lib/user-language";
+
+const CONFIDENCE_PICK_ORDER: ConfidenceTier[] = ["Strong", "Moderate", "Thin"];
 
 /** Min games-weighted over rate distance from 50% to promote a league skew finding. */
 export const LEAGUE_WEIGHTED_OVER_MIN_SKEW = 0.04;
@@ -89,25 +96,51 @@ export function isPromotableFinding(finding: ScoredFindingBase): boolean {
   return true;
 }
 
+/** Strong-confidence findings first, then score within each tier. */
+export function rankScoredFindings(
+  ranked: ScoredFindingBase[],
+): ScoredFindingBase[] {
+  return [...ranked].sort((a, b) => {
+    const tierA =
+      CONFIDENCE_TIER_RANK[findingConfidenceTier(a, a.sampleGames)];
+    const tierB =
+      CONFIDENCE_TIER_RANK[findingConfidenceTier(b, b.sampleGames)];
+    if (tierA !== tierB) return tierA - tierB;
+    return b.score - a.score;
+  });
+}
+
+function canPickCategory(
+  category: FindingCategory,
+  pickedCount: number,
+  categoryCounts: Map<FindingCategory, number>,
+): boolean {
+  const count = categoryCounts.get(category) ?? 0;
+  if (pickedCount < 3 && count >= 1) return false;
+  if (count >= 2) return false;
+  return true;
+}
+
 /** Prefer diverse categories in the hero without skipping much stronger findings. */
 export function pickFeaturedFindings(
   ranked: ScoredFindingBase[],
   limit: number,
 ): Finding[] {
-  const eligible = ranked.filter(isPromotableFinding);
+  const eligible = rankScoredFindings(ranked.filter(isPromotableFinding));
   const picked: Finding[] = [];
   const categoryCounts = new Map<FindingCategory, number>();
 
-  for (const item of eligible) {
-    const count = categoryCounts.get(item.category) ?? 0;
-    if (picked.length < 3 && count >= 1) continue;
-    if (count >= 2) continue;
+  for (const tier of CONFIDENCE_PICK_ORDER) {
+    for (const item of eligible) {
+      if (findingConfidenceTier(item, item.sampleGames) !== tier) continue;
+      if (!canPickCategory(item.category, picked.length, categoryCounts)) continue;
 
-    categoryCounts.set(item.category, count + 1);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
-    const { score, sampleGames, ...finding } = item;
-    picked.push(finding);
-    if (picked.length >= limit) break;
+      categoryCounts.set(item.category, (categoryCounts.get(item.category) ?? 0) + 1);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
+      const { score, sampleGames, ...finding } = item;
+      picked.push(finding);
+      if (picked.length >= limit) return picked;
+    }
   }
 
   return picked;

@@ -24,7 +24,7 @@ export function eplPreviewBannerMessage(
   if (isEplVerifiedData(statsSource)) {
     return "Historical goals, fouls, and card stats are from verified match data. Tonight's referee assignments may still be pending official release.";
   }
-  return "Premier League preview dataset — offseason seed data only. Do not treat ref×team or betting stats as verified against official records.";
+  return "Premier League preview dataset, offseason seed data only. Do not treat ref×team or betting stats as verified against official records.";
 }
 
 export function eplAssignmentsAreVerified(

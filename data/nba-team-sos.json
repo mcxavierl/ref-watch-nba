@@ -1,0 +1,914 @@
+{
+  "lastUpdated": "2026-07-08T20:19:25.877Z",
+  "source": "game-logs + basketball-reference-standings",
+  "sinceSeason": "2021-22",
+  "seasons": [
+    "2021-22",
+    "2022-23",
+    "2023-24",
+    "2024-25",
+    "2025-26"
+  ],
+  "teams": {
+    "ATL": {
+      "wins": 216,
+      "losses": 194,
+      "games": 410,
+      "winRate": 0.526829268292683,
+      "avgOpponentWinPct": 0.5015764425936946,
+      "expectedWins": 204.35365853658524,
+      "expectedLosses": 205.64634146341476,
+      "winsAboveExpected": 11.646341463414757,
+      "splits": {
+        "top10": {
+          "wins": 48,
+          "losses": 95,
+          "games": 143,
+          "winRate": 0.3356643356643357
+        },
+        "mid10": {
+          "wins": 58,
+          "losses": 67,
+          "games": 125,
+          "winRate": 0.464
+        },
+        "bottom10": {
+          "wins": 110,
+          "losses": 32,
+          "games": 142,
+          "winRate": 0.7746478873239436
+        }
+      }
+    },
+    "BKN": {
+      "wins": 209,
+      "losses": 201,
+      "games": 410,
+      "winRate": 0.5097560975609756,
+      "avgOpponentWinPct": 0.49747174301011327,
+      "expectedWins": 206.0365853658536,
+      "expectedLosses": 203.9634146341464,
+      "winsAboveExpected": 2.963414634146403,
+      "splits": {
+        "top10": {
+          "wins": 48,
+          "losses": 87,
+          "games": 135,
+          "winRate": 0.35555555555555557
+        },
+        "mid10": {
+          "wins": 68,
+          "losses": 65,
+          "games": 133,
+          "winRate": 0.5112781954887218
+        },
+        "bottom10": {
+          "wins": 93,
+          "losses": 49,
+          "games": 142,
+          "winRate": 0.6549295774647887
+        }
+      }
+    },
+    "BOS": {
+      "wins": 241,
+      "losses": 169,
+      "games": 410,
+      "winRate": 0.5878048780487805,
+      "avgOpponentWinPct": 0.4939024390243905,
+      "expectedWins": 207.4999999999999,
+      "expectedLosses": 202.5000000000001,
+      "winsAboveExpected": 33.500000000000114,
+      "splits": {
+        "top10": {
+          "wins": 60,
+          "losses": 70,
+          "games": 130,
+          "winRate": 0.46153846153846156
+        },
+        "mid10": {
+          "wins": 80,
+          "losses": 59,
+          "games": 139,
+          "winRate": 0.5755395683453237
+        },
+        "bottom10": {
+          "wins": 101,
+          "losses": 40,
+          "games": 141,
+          "winRate": 0.7163120567375887
+        }
+      }
+    },
+    "CHA": {
+      "wins": 195,
+      "losses": 215,
+      "games": 410,
+      "winRate": 0.47560975609756095,
+      "avgOpponentWinPct": 0.5047293277810833,
+      "expectedWins": 203.06097560975584,
+      "expectedLosses": 206.93902439024416,
+      "winsAboveExpected": -8.060975609755843,
+      "splits": {
+        "top10": {
+          "wins": 42,
+          "losses": 101,
+          "games": 143,
+          "winRate": 0.2937062937062937
+        },
+        "mid10": {
+          "wins": 58,
+          "losses": 74,
+          "games": 132,
+          "winRate": 0.4393939393939394
+        },
+        "bottom10": {
+          "wins": 95,
+          "losses": 40,
+          "games": 135,
+          "winRate": 0.7037037037037037
+        }
+      }
+    },
+    "CHI": {
+      "wins": 152,
+      "losses": 258,
+      "games": 410,
+      "winRate": 0.37073170731707317,
+      "avgOpponentWinPct": 0.5038370017846523,
+      "expectedWins": 203.42682926829258,
+      "expectedLosses": 206.57317073170742,
+      "winsAboveExpected": -51.42682926829258,
+      "splits": {
+        "top10": {
+          "wins": 32,
+          "losses": 106,
+          "games": 138,
+          "winRate": 0.2318840579710145
+        },
+        "mid10": {
+          "wins": 42,
+          "losses": 97,
+          "games": 139,
+          "winRate": 0.302158273381295
+        },
+        "bottom10": {
+          "wins": 78,
+          "losses": 55,
+          "games": 133,
+          "winRate": 0.5864661654135338
+        }
+      }
+    },
+    "CLE": {
+      "wins": 257,
+      "losses": 153,
+      "games": 410,
+      "winRate": 0.6268292682926829,
+      "avgOpponentWinPct": 0.49348602022605587,
+      "expectedWins": 207.67073170731706,
+      "expectedLosses": 202.32926829268294,
+      "winsAboveExpected": 49.32926829268294,
+      "splits": {
+        "top10": {
+          "wins": 55,
+          "losses": 73,
+          "games": 128,
+          "winRate": 0.4296875
+        },
+        "mid10": {
+          "wins": 92,
+          "losses": 44,
+          "games": 136,
+          "winRate": 0.6764705882352942
+        },
+        "bottom10": {
+          "wins": 110,
+          "losses": 36,
+          "games": 146,
+          "winRate": 0.7534246575342466
+        }
+      }
+    },
+    "DAL": {
+      "wins": 205,
+      "losses": 205,
+      "games": 410,
+      "winRate": 0.5,
+      "avgOpponentWinPct": 0.49669839381320674,
+      "expectedWins": 206.35365853658527,
+      "expectedLosses": 203.64634146341473,
+      "winsAboveExpected": -1.3536585365852716,
+      "splits": {
+        "top10": {
+          "wins": 43,
+          "losses": 84,
+          "games": 127,
+          "winRate": 0.33858267716535434
+        },
+        "mid10": {
+          "wins": 58,
+          "losses": 86,
+          "games": 144,
+          "winRate": 0.4027777777777778
+        },
+        "bottom10": {
+          "wins": 104,
+          "losses": 35,
+          "games": 139,
+          "winRate": 0.7482014388489209
+        }
+      }
+    },
+    "DEN": {
+      "wins": 262,
+      "losses": 148,
+      "games": 410,
+      "winRate": 0.6390243902439025,
+      "avgOpponentWinPct": 0.4960440214158242,
+      "expectedWins": 206.6219512195121,
+      "expectedLosses": 203.3780487804879,
+      "winsAboveExpected": 55.37804878048789,
+      "splits": {
+        "top10": {
+          "wins": 67,
+          "losses": 63,
+          "games": 130,
+          "winRate": 0.5153846153846153
+        },
+        "mid10": {
+          "wins": 98,
+          "losses": 44,
+          "games": 142,
+          "winRate": 0.6901408450704225
+        },
+        "bottom10": {
+          "wins": 97,
+          "losses": 41,
+          "games": 138,
+          "winRate": 0.7028985507246377
+        }
+      }
+    },
+    "DET": {
+      "wins": 158,
+      "losses": 252,
+      "games": 410,
+      "winRate": 0.3853658536585366,
+      "avgOpponentWinPct": 0.502141582391434,
+      "expectedWins": 204.12195121951203,
+      "expectedLosses": 205.87804878048797,
+      "winsAboveExpected": -46.12195121951203,
+      "splits": {
+        "top10": {
+          "wins": 47,
+          "losses": 91,
+          "games": 138,
+          "winRate": 0.34057971014492755
+        },
+        "mid10": {
+          "wins": 52,
+          "losses": 87,
+          "games": 139,
+          "winRate": 0.37410071942446044
+        },
+        "bottom10": {
+          "wins": 59,
+          "losses": 74,
+          "games": 133,
+          "winRate": 0.44360902255639095
+        }
+      }
+    },
+    "GSW": {
+      "wins": 228,
+      "losses": 182,
+      "games": 410,
+      "winRate": 0.5560975609756098,
+      "avgOpponentWinPct": 0.49176085663295693,
+      "expectedWins": 208.3780487804877,
+      "expectedLosses": 201.6219512195123,
+      "winsAboveExpected": 19.62195121951231,
+      "splits": {
+        "top10": {
+          "wins": 47,
+          "losses": 80,
+          "games": 127,
+          "winRate": 0.3700787401574803
+        },
+        "mid10": {
+          "wins": 70,
+          "losses": 70,
+          "games": 140,
+          "winRate": 0.5
+        },
+        "bottom10": {
+          "wins": 111,
+          "losses": 32,
+          "games": 143,
+          "winRate": 0.7762237762237763
+        }
+      }
+    },
+    "HOU": {
+      "wins": 187,
+      "losses": 223,
+      "games": 410,
+      "winRate": 0.4560975609756098,
+      "avgOpponentWinPct": 0.5012790005948846,
+      "expectedWins": 204.47560975609733,
+      "expectedLosses": 205.52439024390267,
+      "winsAboveExpected": -17.475609756097327,
+      "splits": {
+        "top10": {
+          "wins": 40,
+          "losses": 99,
+          "games": 139,
+          "winRate": 0.28776978417266186
+        },
+        "mid10": {
+          "wins": 60,
+          "losses": 74,
+          "games": 134,
+          "winRate": 0.44776119402985076
+        },
+        "bottom10": {
+          "wins": 87,
+          "losses": 50,
+          "games": 137,
+          "winRate": 0.635036496350365
+        }
+      }
+    },
+    "IND": {
+      "wins": 176,
+      "losses": 234,
+      "games": 410,
+      "winRate": 0.4292682926829268,
+      "avgOpponentWinPct": 0.5086555621653781,
+      "expectedWins": 201.45121951219502,
+      "expectedLosses": 208.54878048780498,
+      "winsAboveExpected": -25.451219512195024,
+      "splits": {
+        "top10": {
+          "wins": 51,
+          "losses": 94,
+          "games": 145,
+          "winRate": 0.35172413793103446
+        },
+        "mid10": {
+          "wins": 52,
+          "losses": 90,
+          "games": 142,
+          "winRate": 0.36619718309859156
+        },
+        "bottom10": {
+          "wins": 73,
+          "losses": 50,
+          "games": 123,
+          "winRate": 0.5934959349593496
+        }
+      }
+    },
+    "LAC": {
+      "wins": 229,
+      "losses": 181,
+      "games": 410,
+      "winRate": 0.5585365853658537,
+      "avgOpponentWinPct": 0.4973527662105893,
+      "expectedWins": 206.08536585365843,
+      "expectedLosses": 203.91463414634157,
+      "winsAboveExpected": 22.91463414634157,
+      "splits": {
+        "top10": {
+          "wins": 48,
+          "losses": 84,
+          "games": 132,
+          "winRate": 0.36363636363636365
+        },
+        "mid10": {
+          "wins": 77,
+          "losses": 64,
+          "games": 141,
+          "winRate": 0.5460992907801419
+        },
+        "bottom10": {
+          "wins": 104,
+          "losses": 33,
+          "games": 137,
+          "winRate": 0.7591240875912408
+        }
+      }
+    },
+    "LAL": {
+      "wins": 226,
+      "losses": 184,
+      "games": 410,
+      "winRate": 0.551219512195122,
+      "avgOpponentWinPct": 0.5059190957763234,
+      "expectedWins": 202.5731707317074,
+      "expectedLosses": 207.4268292682926,
+      "winsAboveExpected": 23.426829268292607,
+      "splits": {
+        "top10": {
+          "wins": 60,
+          "losses": 84,
+          "games": 144,
+          "winRate": 0.4166666666666667
+        },
+        "mid10": {
+          "wins": 73,
+          "losses": 63,
+          "games": 136,
+          "winRate": 0.5367647058823529
+        },
+        "bottom10": {
+          "wins": 93,
+          "losses": 37,
+          "games": 130,
+          "winRate": 0.7153846153846154
+        }
+      }
+    },
+    "MEM": {
+      "wins": 207,
+      "losses": 203,
+      "games": 410,
+      "winRate": 0.5048780487804878,
+      "avgOpponentWinPct": 0.4899167162403329,
+      "expectedWins": 209.13414634146355,
+      "expectedLosses": 200.86585365853645,
+      "winsAboveExpected": -2.1341463414635484,
+      "splits": {
+        "top10": {
+          "wins": 44,
+          "losses": 81,
+          "games": 125,
+          "winRate": 0.352
+        },
+        "mid10": {
+          "wins": 66,
+          "losses": 72,
+          "games": 138,
+          "winRate": 0.4782608695652174
+        },
+        "bottom10": {
+          "wins": 97,
+          "losses": 50,
+          "games": 147,
+          "winRate": 0.6598639455782312
+        }
+      }
+    },
+    "MIA": {
+      "wins": 223,
+      "losses": 187,
+      "games": 410,
+      "winRate": 0.5439024390243903,
+      "avgOpponentWinPct": 0.5028554431885787,
+      "expectedWins": 203.82926829268277,
+      "expectedLosses": 206.17073170731723,
+      "winsAboveExpected": 19.17073170731723,
+      "splits": {
+        "top10": {
+          "wins": 47,
+          "losses": 96,
+          "games": 143,
+          "winRate": 0.32867132867132864
+        },
+        "mid10": {
+          "wins": 72,
+          "losses": 63,
+          "games": 135,
+          "winRate": 0.5333333333333333
+        },
+        "bottom10": {
+          "wins": 104,
+          "losses": 28,
+          "games": 132,
+          "winRate": 0.7878787878787878
+        }
+      }
+    },
+    "MIL": {
+      "wins": 238,
+      "losses": 172,
+      "games": 410,
+      "winRate": 0.5804878048780487,
+      "avgOpponentWinPct": 0.49259369422962546,
+      "expectedWins": 208.0365853658536,
+      "expectedLosses": 201.9634146341464,
+      "winsAboveExpected": 29.963414634146403,
+      "splits": {
+        "top10": {
+          "wins": 52,
+          "losses": 73,
+          "games": 125,
+          "winRate": 0.416
+        },
+        "mid10": {
+          "wins": 79,
+          "losses": 67,
+          "games": 146,
+          "winRate": 0.541095890410959
+        },
+        "bottom10": {
+          "wins": 107,
+          "losses": 32,
+          "games": 139,
+          "winRate": 0.7697841726618705
+        }
+      }
+    },
+    "MIN": {
+      "wins": 242,
+      "losses": 168,
+      "games": 410,
+      "winRate": 0.5902439024390244,
+      "avgOpponentWinPct": 0.49830458060678207,
+      "expectedWins": 205.6951219512194,
+      "expectedLosses": 204.3048780487806,
+      "winsAboveExpected": 36.30487804878061,
+      "splits": {
+        "top10": {
+          "wins": 57,
+          "losses": 82,
+          "games": 139,
+          "winRate": 0.41007194244604317
+        },
+        "mid10": {
+          "wins": 77,
+          "losses": 53,
+          "games": 130,
+          "winRate": 0.5923076923076923
+        },
+        "bottom10": {
+          "wins": 108,
+          "losses": 33,
+          "games": 141,
+          "winRate": 0.7659574468085106
+        }
+      }
+    },
+    "NOP": {
+      "wins": 174,
+      "losses": 236,
+      "games": 410,
+      "winRate": 0.424390243902439,
+      "avgOpponentWinPct": 0.5010113027959553,
+      "expectedWins": 204.58536585365835,
+      "expectedLosses": 205.41463414634165,
+      "winsAboveExpected": -30.585365853658345,
+      "splits": {
+        "top10": {
+          "wins": 38,
+          "losses": 96,
+          "games": 134,
+          "winRate": 0.2835820895522388
+        },
+        "mid10": {
+          "wins": 51,
+          "losses": 85,
+          "games": 136,
+          "winRate": 0.375
+        },
+        "bottom10": {
+          "wins": 85,
+          "losses": 55,
+          "games": 140,
+          "winRate": 0.6071428571428571
+        }
+      }
+    },
+    "NYK": {
+      "wins": 238,
+      "losses": 172,
+      "games": 410,
+      "winRate": 0.5804878048780487,
+      "avgOpponentWinPct": 0.4971445568114217,
+      "expectedWins": 206.1707317073171,
+      "expectedLosses": 203.8292682926829,
+      "winsAboveExpected": 31.82926829268291,
+      "splits": {
+        "top10": {
+          "wins": 48,
+          "losses": 84,
+          "games": 132,
+          "winRate": 0.36363636363636365
+        },
+        "mid10": {
+          "wins": 84,
+          "losses": 50,
+          "games": 134,
+          "winRate": 0.6268656716417911
+        },
+        "bottom10": {
+          "wins": 106,
+          "losses": 38,
+          "games": 144,
+          "winRate": 0.7361111111111112
+        }
+      }
+    },
+    "OKC": {
+      "wins": 253,
+      "losses": 157,
+      "games": 410,
+      "winRate": 0.6170731707317073,
+      "avgOpponentWinPct": 0.49940511600238013,
+      "expectedWins": 205.24390243902414,
+      "expectedLosses": 204.75609756097586,
+      "winsAboveExpected": 47.75609756097586,
+      "splits": {
+        "top10": {
+          "wins": 70,
+          "losses": 63,
+          "games": 133,
+          "winRate": 0.5263157894736842
+        },
+        "mid10": {
+          "wins": 84,
+          "losses": 57,
+          "games": 141,
+          "winRate": 0.5957446808510638
+        },
+        "bottom10": {
+          "wins": 99,
+          "losses": 37,
+          "games": 136,
+          "winRate": 0.7279411764705882
+        }
+      }
+    },
+    "ORL": {
+      "wins": 189,
+      "losses": 221,
+      "games": 410,
+      "winRate": 0.4609756097560976,
+      "avgOpponentWinPct": 0.5039857227840571,
+      "expectedWins": 203.36585365853657,
+      "expectedLosses": 206.63414634146343,
+      "winsAboveExpected": -14.365853658536565,
+      "splits": {
+        "top10": {
+          "wins": 48,
+          "losses": 95,
+          "games": 143,
+          "winRate": 0.3356643356643357
+        },
+        "mid10": {
+          "wins": 59,
+          "losses": 76,
+          "games": 135,
+          "winRate": 0.43703703703703706
+        },
+        "bottom10": {
+          "wins": 82,
+          "losses": 50,
+          "games": 132,
+          "winRate": 0.6212121212121212
+        }
+      }
+    },
+    "PHI": {
+      "wins": 221,
+      "losses": 189,
+      "games": 410,
+      "winRate": 0.5390243902439025,
+      "avgOpponentWinPct": 0.5042831647828674,
+      "expectedWins": 203.24390243902437,
+      "expectedLosses": 206.75609756097563,
+      "winsAboveExpected": 17.756097560975633,
+      "splits": {
+        "top10": {
+          "wins": 57,
+          "losses": 87,
+          "games": 144,
+          "winRate": 0.3958333333333333
+        },
+        "mid10": {
+          "wins": 69,
+          "losses": 64,
+          "games": 133,
+          "winRate": 0.518796992481203
+        },
+        "bottom10": {
+          "wins": 95,
+          "losses": 38,
+          "games": 133,
+          "winRate": 0.7142857142857143
+        }
+      }
+    },
+    "PHX": {
+      "wins": 239,
+      "losses": 171,
+      "games": 410,
+      "winRate": 0.5829268292682926,
+      "avgOpponentWinPct": 0.5024092801903632,
+      "expectedWins": 204.0121951219511,
+      "expectedLosses": 205.9878048780489,
+      "winsAboveExpected": 34.987804878048905,
+      "splits": {
+        "top10": {
+          "wins": 65,
+          "losses": 78,
+          "games": 143,
+          "winRate": 0.45454545454545453
+        },
+        "mid10": {
+          "wins": 80,
+          "losses": 56,
+          "games": 136,
+          "winRate": 0.5882352941176471
+        },
+        "bottom10": {
+          "wins": 94,
+          "losses": 37,
+          "games": 131,
+          "winRate": 0.7175572519083969
+        }
+      }
+    },
+    "POR": {
+      "wins": 159,
+      "losses": 251,
+      "games": 410,
+      "winRate": 0.3878048780487805,
+      "avgOpponentWinPct": 0.4980368828078528,
+      "expectedWins": 205.80487804878035,
+      "expectedLosses": 204.19512195121965,
+      "winsAboveExpected": -46.80487804878035,
+      "splits": {
+        "top10": {
+          "wins": 31,
+          "losses": 111,
+          "games": 142,
+          "winRate": 0.21830985915492956
+        },
+        "mid10": {
+          "wins": 42,
+          "losses": 85,
+          "games": 127,
+          "winRate": 0.33070866141732286
+        },
+        "bottom10": {
+          "wins": 86,
+          "losses": 55,
+          "games": 141,
+          "winRate": 0.6099290780141844
+        }
+      }
+    },
+    "SAC": {
+      "wins": 186,
+      "losses": 224,
+      "games": 410,
+      "winRate": 0.45365853658536587,
+      "avgOpponentWinPct": 0.5047590719809638,
+      "expectedWins": 203.04878048780483,
+      "expectedLosses": 206.95121951219517,
+      "winsAboveExpected": -17.048780487804834,
+      "splits": {
+        "top10": {
+          "wins": 47,
+          "losses": 96,
+          "games": 143,
+          "winRate": 0.32867132867132864
+        },
+        "mid10": {
+          "wins": 55,
+          "losses": 81,
+          "games": 136,
+          "winRate": 0.40441176470588236
+        },
+        "bottom10": {
+          "wins": 84,
+          "losses": 47,
+          "games": 131,
+          "winRate": 0.6412213740458015
+        }
+      }
+    },
+    "SAS": {
+      "wins": 174,
+      "losses": 236,
+      "games": 410,
+      "winRate": 0.424390243902439,
+      "avgOpponentWinPct": 0.5026174895895303,
+      "expectedWins": 203.92682926829258,
+      "expectedLosses": 206.07317073170742,
+      "winsAboveExpected": -29.92682926829258,
+      "splits": {
+        "top10": {
+          "wins": 44,
+          "losses": 91,
+          "games": 135,
+          "winRate": 0.32592592592592595
+        },
+        "mid10": {
+          "wins": 44,
+          "losses": 101,
+          "games": 145,
+          "winRate": 0.30344827586206896
+        },
+        "bottom10": {
+          "wins": 86,
+          "losses": 44,
+          "games": 130,
+          "winRate": 0.6615384615384615
+        }
+      }
+    },
+    "TOR": {
+      "wins": 190,
+      "losses": 220,
+      "games": 410,
+      "winRate": 0.4634146341463415,
+      "avgOpponentWinPct": 0.4964306960142774,
+      "expectedWins": 206.46341463414626,
+      "expectedLosses": 203.53658536585374,
+      "winsAboveExpected": -16.46341463414626,
+      "splits": {
+        "top10": {
+          "wins": 37,
+          "losses": 98,
+          "games": 135,
+          "winRate": 0.2740740740740741
+        },
+        "mid10": {
+          "wins": 61,
+          "losses": 74,
+          "games": 135,
+          "winRate": 0.45185185185185184
+        },
+        "bottom10": {
+          "wins": 92,
+          "losses": 48,
+          "games": 140,
+          "winRate": 0.6571428571428571
+        }
+      }
+    },
+    "UTA": {
+      "wins": 156,
+      "losses": 254,
+      "games": 410,
+      "winRate": 0.3804878048780488,
+      "avgOpponentWinPct": 0.5057703747769183,
+      "expectedWins": 202.63414634146343,
+      "expectedLosses": 207.36585365853657,
+      "winsAboveExpected": -46.634146341463435,
+      "splits": {
+        "top10": {
+          "wins": 37,
+          "losses": 102,
+          "games": 139,
+          "winRate": 0.26618705035971224
+        },
+        "mid10": {
+          "wins": 41,
+          "losses": 96,
+          "games": 137,
+          "winRate": 0.29927007299270075
+        },
+        "bottom10": {
+          "wins": 78,
+          "losses": 56,
+          "games": 134,
+          "winRate": 0.582089552238806
+        }
+      }
+    },
+    "WAS": {
+      "wins": 120,
+      "losses": 290,
+      "games": 410,
+      "winRate": 0.2926829268292683,
+      "avgOpponentWinPct": 0.5056216537775134,
+      "expectedWins": 202.69512195121948,
+      "expectedLosses": 207.30487804878052,
+      "winsAboveExpected": -82.69512195121948,
+      "splits": {
+        "top10": {
+          "wins": 31,
+          "losses": 115,
+          "games": 146,
+          "winRate": 0.21232876712328766
+        },
+        "mid10": {
+          "wins": 36,
+          "losses": 98,
+          "games": 134,
+          "winRate": 0.26865671641791045
+        },
+        "bottom10": {
+          "wins": 53,
+          "losses": 77,
+          "games": 130,
+          "winRate": 0.4076923076923077
+        }
+      }
+    }
+  }
+}

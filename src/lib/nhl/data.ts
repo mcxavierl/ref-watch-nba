@@ -20,6 +20,7 @@ import {
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { nhlCrewMetricsProvenance } from "@/lib/provenance";
 import { getCachedRefStats } from "@/lib/ref-stats-preload";
+import { isNhlLinesmanOfficial } from "@/lib/nhl/officials";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data", "nhl");
@@ -221,6 +222,7 @@ export function computeCrewMetrics(
   let sampleGames = 0;
 
   for (const official of crew) {
+    if (isNhlLinesmanOfficial(official)) continue;
     const slug = refSlug(official.name, official.number);
     const profile = stats.refs.find((r) => r.slug === slug);
     if (profile && profile.games >= minSample) {

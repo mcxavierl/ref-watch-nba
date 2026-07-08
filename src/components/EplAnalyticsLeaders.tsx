@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { RefAvatar } from "@/components/RefAvatar";
 import type { EplLeaderEntry } from "@/lib/epl/analytics-leaders";
+import { formatRefGamesMeta } from "@/lib/ref-number";
 
 export function EplAnalyticsLeaders({ leaders }: { leaders: EplLeaderEntry[] }) {
   if (leaders.length === 0) return null;
@@ -10,7 +11,7 @@ export function EplAnalyticsLeaders({ leaders }: { leaders: EplLeaderEntry[] }) 
       <div className="section-block-header">
         <h2 className="section-title">Referee analytics leaders</h2>
         <p className="section-lead">
-          Goal, foul, and card splits from the historical dataset — descriptive
+          Goal, foul, and card splits from the historical dataset, descriptive
           tendencies, not picks.
         </p>
       </div>
@@ -31,7 +32,7 @@ export function EplAnalyticsLeaders({ leaders }: { leaders: EplLeaderEntry[] }) 
               <span className="nfl-leader-copy">
                 <span className="nfl-leader-name">{item.ref.name}</span>
                 <span className="nfl-leader-meta font-mono">
-                  #{item.ref.number} · {item.ref.games} matches
+                  {formatRefGamesMeta(item.ref.number, item.ref.games, "matches")}
                 </span>
               </span>
             </Link>

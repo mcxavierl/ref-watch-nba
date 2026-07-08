@@ -88,7 +88,7 @@ export function computePpPremiumSignal(
     refMinorRate: round2(refMinorRate),
     specialTeamsEdge: round2(stEdge),
     sampleGames,
-    headline: "PP Premium — historical over-rate association",
+    headline: "PP Premium, historical over-rate association",
     summary:
       `Ref crew averages ${refMinorRate.toFixed(1)} minors/game (${formatSigned(minorDelta)} vs league). ` +
       `${home.abbr} + ${away.abbr} special-teams differential ${(stEdge * 100).toFixed(1)} pts (PP% minus PK%).` +

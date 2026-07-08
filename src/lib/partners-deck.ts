@@ -61,7 +61,7 @@ export function getPartnersKpis(): PartnersKpi[] {
 
 export const PARTNERS_NARRATIVE = {
   problem:
-    "Media and analytics partners surface generic game previews. Referee crew context — a core pre-game intelligence layer in NBA and NHL — stays fragmented across league sites and static spreadsheets.",
+    "Media and analytics partners surface generic game previews. Referee crew context, a core pre-game intelligence layer in NBA and NHL, stays fragmented across league sites and static spreadsheets.",
   solution:
     "Ref Watch unifies nightly assignments with multi-season crew analytics, ranks standout splits, and packages them for syndicated feeds, broadcast overlays, and partner integrations.",
   comparison: {
@@ -101,7 +101,7 @@ export const PARTNERS_NARRATIVE = {
     },
     {
       title: "Licensed integrations",
-      outcome: "Private partner modules for transactional or betting-adjacent use cases — documented separately.",
+      outcome: "Private partner modules for transactional or betting-adjacent use cases, documented separately.",
     },
   ],
 } as const;

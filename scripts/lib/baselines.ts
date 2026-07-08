@@ -194,6 +194,7 @@ export function buildBaselinesFile(
   nhlGames: GameLogEntry[],
   note?: string,
   nflGames: GameLogEntry[] = [],
+  eplGames: GameLogEntry[] = [],
 ): BaselinesFile {
   return {
     generatedAt: new Date().toISOString(),
@@ -211,7 +212,7 @@ export function buildBaselinesFile(
     NFL: computeLeagueBaselines("NFL", nflGames),
     CBB: computeLeagueBaselines("CBB", []),
     CFB: computeLeagueBaselines("CFB", []),
-    EPL: computeLeagueBaselines("EPL", []),
+    EPL: computeLeagueBaselines("EPL", eplGames),
   };
 }
 

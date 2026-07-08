@@ -3,88 +3,101 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { METHODOLOGY_NAV_LABEL } from "@/lib/trust-charter";
 import { HEADER_LEAGUE_IDS, LEAGUE_IDS, LEAGUES, type LeagueId } from "@/lib/leagues";
 import { LeagueNavMark, leagueNavLabel } from "@/components/LeagueSwitchMark";
 
-const METHODOLOGY_LINK = { href: "/methodology", label: METHODOLOGY_NAV_LABEL };
+type NavLink = { href: string; label: string; match: (pathname: string, homeHref: string) => boolean };
 
-const NAV_LINKS: Record<LeagueId, { href: string; label: string }[]> = {
+function refsMatch(pathname: string, prefix: string): boolean {
+  const refs = prefix ? `${prefix}/refs` : "/refs";
+  const crews = prefix ? `${prefix}/crews` : "/crews";
+  return (
+    pathname === refs ||
+    pathname.startsWith(`${refs}/`) ||
+    pathname === crews ||
+    pathname.startsWith(`${crews}/`)
+  );
+}
+
+function insightsMatch(pathname: string, prefix: string): boolean {
+  const paths = ["insights", "rankings", "trends", "research"].map((segment) =>
+    prefix ? `${prefix}/${segment}` : `/${segment}`,
+  );
+  return paths.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+}
+
+const NAV_LINKS: Record<LeagueId, NavLink[]> = {
   nba: [
-    { href: "/", label: "Slate" },
-    { href: "/rankings", label: "Tendencies" },
-    { href: "/teams", label: "Teams" },
-    { href: "/refs", label: "Refs" },
-    { href: "/matrix", label: "Matrix" },
-    { href: "/crews", label: "Crews" },
-    { href: "/trends", label: "Trends" },
-    { href: "/research", label: "Findings" },
-    METHODOLOGY_LINK,
+    {
+      href: "/",
+      label: "Slate",
+      match: (pathname, home) => pathname === home,
+    },
+    {
+      href: "/teams",
+      label: "Teams",
+      match: (pathname) => pathname === "/teams" || pathname.startsWith("/teams/"),
+    },
+    {
+      href: "/matrix",
+      label: "Matrix",
+      match: (pathname) => pathname === "/matrix" || pathname.startsWith("/matrix/"),
+    },
+    {
+      href: "/refs",
+      label: "Refs",
+      match: (pathname) => refsMatch(pathname, ""),
+    },
+    {
+      href: "/insights",
+      label: "Insights",
+      match: (pathname) => insightsMatch(pathname, ""),
+    },
   ],
   nhl: [
-    { href: "/nhl", label: "Slate" },
-    { href: "/nhl/rankings", label: "Tendencies" },
-    { href: "/nhl/teams", label: "Teams" },
-    { href: "/nhl/refs", label: "Refs" },
-    { href: "/nhl/matrix", label: "Matrix" },
-    { href: "/nhl/crews", label: "Crews" },
-    { href: "/nhl/trends", label: "Trends" },
-    { href: "/nhl/research", label: "Findings" },
-    METHODOLOGY_LINK,
+    { href: "/nhl", label: "Slate", match: (p, home) => p === home },
+    { href: "/nhl/teams", label: "Teams", match: (p) => p === "/nhl/teams" || p.startsWith("/nhl/teams/") },
+    { href: "/nhl/matrix", label: "Matrix", match: (p) => p === "/nhl/matrix" || p.startsWith("/nhl/matrix/") },
+    { href: "/nhl/refs", label: "Refs", match: (p) => refsMatch(p, "/nhl") },
+    { href: "/nhl/insights", label: "Insights", match: (p) => insightsMatch(p, "/nhl") },
   ],
   nfl: [
-    { href: "/nfl", label: "Slate" },
-    { href: "/nfl/rankings", label: "Tendencies" },
-    { href: "/nfl/teams", label: "Teams" },
-    { href: "/nfl/refs", label: "Refs" },
-    { href: "/nfl/matrix", label: "Matrix" },
-    { href: "/nfl/crews", label: "Crews" },
-    { href: "/nfl/trends", label: "Trends" },
-    { href: "/nfl/research", label: "Findings" },
-    METHODOLOGY_LINK,
+    { href: "/nfl", label: "Slate", match: (p, home) => p === home },
+    { href: "/nfl/teams", label: "Teams", match: (p) => p === "/nfl/teams" || p.startsWith("/nfl/teams/") },
+    { href: "/nfl/matrix", label: "Matrix", match: (p) => p === "/nfl/matrix" || p.startsWith("/nfl/matrix/") },
+    { href: "/nfl/refs", label: "Refs", match: (p) => refsMatch(p, "/nfl") },
+    { href: "/nfl/insights", label: "Insights", match: (p) => insightsMatch(p, "/nfl") },
   ],
   wnba: [
-    { href: "/wnba", label: "Slate" },
-    { href: "/wnba/rankings", label: "Tendencies" },
-    METHODOLOGY_LINK,
+    { href: "/wnba", label: "Slate", match: (p, home) => p === home },
+    { href: "/wnba/rankings", label: "Insights", match: (p) => p === "/wnba/rankings" || p.startsWith("/wnba/rankings/") },
   ],
   mlb: [
-    { href: "/mlb", label: "Slate" },
-    { href: "/mlb/rankings", label: "Tendencies" },
-    METHODOLOGY_LINK,
+    { href: "/mlb", label: "Slate", match: (p, home) => p === home },
+    { href: "/mlb/rankings", label: "Insights", match: (p) => p === "/mlb/rankings" || p.startsWith("/mlb/rankings/") },
   ],
   cbb: [
-    { href: "/cbb", label: "Slate" },
-    { href: "/cbb/rankings", label: "Tendencies" },
-    { href: "/cbb/teams", label: "Teams" },
-    { href: "/cbb/refs", label: "Refs" },
-    { href: "/cbb/matrix", label: "Matrix" },
-    { href: "/cbb/crews", label: "Crews" },
-    { href: "/cbb/trends", label: "Trends" },
-    { href: "/cbb/research", label: "Findings" },
-    METHODOLOGY_LINK,
+    { href: "/cbb", label: "Slate", match: (p, home) => p === home },
+    { href: "/cbb/teams", label: "Teams", match: (p) => p === "/cbb/teams" || p.startsWith("/cbb/teams/") },
+    { href: "/cbb/matrix", label: "Matrix", match: (p) => p === "/cbb/matrix" || p.startsWith("/cbb/matrix/") },
+    { href: "/cbb/refs", label: "Refs", match: (p) => refsMatch(p, "/cbb") },
+    { href: "/cbb/insights", label: "Insights", match: (p) => insightsMatch(p, "/cbb") },
   ],
   cfb: [
-    { href: "/cfb", label: "Slate" },
-    { href: "/cfb/rankings", label: "Tendencies" },
-    { href: "/cfb/teams", label: "Teams" },
-    { href: "/cfb/refs", label: "Refs" },
-    { href: "/cfb/matrix", label: "Matrix" },
-    { href: "/cfb/crews", label: "Crews" },
-    { href: "/cfb/trends", label: "Trends" },
-    { href: "/cfb/research", label: "Findings" },
-    METHODOLOGY_LINK,
+    { href: "/cfb", label: "Slate", match: (p, home) => p === home },
+    { href: "/cfb/teams", label: "Teams", match: (p) => p === "/cfb/teams" || p.startsWith("/cfb/teams/") },
+    { href: "/cfb/matrix", label: "Matrix", match: (p) => p === "/cfb/matrix" || p.startsWith("/cfb/matrix/") },
+    { href: "/cfb/refs", label: "Refs", match: (p) => refsMatch(p, "/cfb") },
+    { href: "/cfb/insights", label: "Insights", match: (p) => insightsMatch(p, "/cfb") },
   ],
   epl: [
-    { href: "/epl", label: "Slate" },
-    { href: "/epl/rankings", label: "Tendencies" },
-    { href: "/epl/teams", label: "Teams" },
-    { href: "/epl/refs", label: "Refs" },
-    { href: "/epl/matrix", label: "Matrix" },
-    { href: "/epl/crews", label: "Crews" },
-    { href: "/epl/trends", label: "Trends" },
-    { href: "/epl/research", label: "Findings" },
-    METHODOLOGY_LINK,
+    { href: "/epl", label: "Slate", match: (p, home) => p === home },
+    { href: "/epl/teams", label: "Teams", match: (p) => p === "/epl/teams" || p.startsWith("/epl/teams/") },
+    { href: "/epl/matrix", label: "Matrix", match: (p) => p === "/epl/matrix" || p.startsWith("/epl/matrix/") },
+    { href: "/epl/refs", label: "Refs", match: (p) => refsMatch(p, "/epl") },
+    { href: "/epl/insights", label: "Insights", match: (p) => insightsMatch(p, "/epl") },
   ],
 };
 
@@ -153,36 +166,23 @@ export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
   const homeHref = LEAGUES[league].pathPrefix || "/";
 
   return (
-    <div className="site-subnav">
-      <div id={id} className="site-nav-shell" data-league={league}>
-        <nav className="site-nav-rail" aria-label="Site sections">
-          {links.map((link) => {
-            const active =
-              link.href === homeHref
-                ? pathname === homeHref
-                : link.href === "/methodology"
-                  ? pathname === "/methodology"
-                  : link.href.endsWith("/research")
-                    ? pathname === link.href ||
-                      pathname.startsWith(`${link.href}/`)
-                    : pathname === link.href || pathname.startsWith(`${link.href}/`);
+    <div id={id} className="site-nav-shell" data-league={league}>
+      <nav className="site-nav-rail" aria-label="Site sections">
+        {links.map((link) => {
+          const active = link.match(pathname, homeHref);
 
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={active ? "page" : undefined}
-                className={`site-nav-link${active ? " site-nav-link--active" : ""}`}
-              >
-                <span className="site-nav-link-label">{link.label}</span>
-                {active ? (
-                  <span className="site-nav-link-indicator" aria-hidden />
-                ) : null}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={active ? "page" : undefined}
+              className={`site-nav-link${active ? " site-nav-link--active" : ""}`}
+            >
+              <span className="site-nav-link-label">{link.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, CFB_TEAMS } from "@/lib/cfb/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
 import { rankScore } from "@/lib/findings-shared";
-import { pickFeaturedFindings } from "@/lib/findings-significance";
+import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-significance";
 import {
   buildCloseGameLeagueFinding,
   buildCrewDominanceFinding,
@@ -376,7 +376,7 @@ export function computeFindings(limit = 6): Finding[] {
   const stats = getRefStats();
   if (stats.refs.length === 0) return [];
 
-  const ranked = collectCandidates(stats).sort((a, b) => b.score - a.score);
+  const ranked = rankScoredFindings(collectCandidates(stats));
   return pickFeaturedFindings(ranked, limit);
 }
 
@@ -384,8 +384,7 @@ export function computeAllFindings(): Finding[] {
   const stats = getRefStats();
   if (stats.refs.length === 0) return [];
 
-  return collectCandidates(stats)
-    .sort((a, b) => b.score - a.score)
+  return rankScoredFindings(collectCandidates(stats))
     .map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
       const { score, sampleGames, ...finding } = item;

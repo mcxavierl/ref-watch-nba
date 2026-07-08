@@ -20,12 +20,12 @@ const OFFSEASON_COPY: Record<OffseasonLeague, { status: string; detail?: string 
       "Team pages cover all 20 PL clubs for 2025-26. Ref profiles and card/foul tendencies populate as matches log.",
   },
   CBB: {
-    status: "Season opens soon — crews and tendencies load from game data.",
+    status: "Season opens soon. Crews and tendencies load from game data.",
     detail:
       "Team directory covers ACC, Big Ten, SEC, Big 12, and Big East. Ref profiles populate as games log.",
   },
   CFB: {
-    status: "Kickoff pending — crews and penalty tendencies load from game data.",
+    status: "Kickoff pending. Crews and penalty tendencies load from game data.",
     detail:
       "Team pages track Power Four and Group of Five programs. Official profiles fill in as Saturdays log.",
   },

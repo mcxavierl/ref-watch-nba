@@ -30,44 +30,41 @@ export function SiteHeader() {
       data-league={leagueId}
     >
       <header className="site-header">
-        <div className="site-header-glow" aria-hidden />
-        <div className="site-header-accent" aria-hidden />
-
         <div className="site-header-inner">
-          <div className="site-header-top">
-            <Link href={homeHref} className="site-header-brand group" aria-label="Ref Watch home">
-              <span className="site-header-mark" aria-hidden>
-                <span className="site-header-mark-ring" />
-                <span className="site-header-mark-icon">
-                  <Whistle className="size-4" strokeWidth={2.35} />
-                </span>
+          <Link href={homeHref} className="site-header-brand group" aria-label="Ref Watch home">
+            <span className="site-header-mark" aria-hidden>
+              <span className="site-header-mark-ring" />
+              <span className="site-header-mark-icon">
+                <Whistle className="size-4" strokeWidth={2.35} />
               </span>
-              <span className="site-header-wordmark">
-                <span className="site-header-name">REF WATCH</span>
-              </span>
-            </Link>
+            </span>
+            <span className="site-header-wordmark">
+              <span className="site-header-name">REF WATCH</span>
+            </span>
+          </Link>
 
-            <div className="site-header-right">
-              <div className="site-header-league">
-                <LeagueNav />
-              </div>
+          <div className="site-header-nav">
+            <SiteNav id="site-primary-nav" />
+          </div>
 
-              {SHOW_HEADER_USER_CONTROLS ? (
-                <div className="site-header-actions" aria-label="Account and notifications">
-                  <button type="button" className="site-header-icon-btn" aria-label="Open profile">
-                    <UserCircle className="size-5" strokeWidth={1.85} />
-                  </button>
-                  <button type="button" className="site-header-icon-btn" aria-label="Open notifications">
-                    <Bell className="size-4" strokeWidth={2} />
-                  </button>
-                </div>
-              ) : null}
+          <div className="site-header-right">
+            <div className="site-header-league">
+              <LeagueNav />
             </div>
+
+            {SHOW_HEADER_USER_CONTROLS ? (
+              <div className="site-header-actions" aria-label="Account and notifications">
+                <button type="button" className="site-header-icon-btn" aria-label="Open profile">
+                  <UserCircle className="size-5" strokeWidth={1.85} />
+                </button>
+                <button type="button" className="site-header-icon-btn" aria-label="Open notifications">
+                  <Bell className="size-4" strokeWidth={2} />
+                </button>
+              </div>
+            ) : null}
           </div>
         </div>
       </header>
-
-      <SiteNav id="site-primary-nav" />
     </div>
   );
 }

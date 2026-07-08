@@ -16,6 +16,7 @@ const LEAGUE_LOGOS: Record<
     inactive: "https://assets.nhle.com/logos/nhl/svg/NHL_light.svg",
     active: "https://assets.nhle.com/logos/nhl/svg/NHL_dark.svg",
     alt: "NHL",
+    className: "league-nav-mark--nhl",
   },
   nfl: {
     active: "/logos/nfl-shield.svg",
@@ -24,11 +25,10 @@ const LEAGUE_LOGOS: Record<
     className: "league-nav-mark--nfl",
   },
   epl: {
-    active:
-      "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
-    inactive:
-      "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
+    active: "/logos/epl-lion.svg",
+    inactive: "/logos/epl-lion.svg",
     alt: "Premier League",
+    className: "league-nav-mark--epl",
   },
 };
 
@@ -54,7 +54,7 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
       src={src}
       alt=""
       aria-hidden
-      className={`league-nav-mark${logos.className ? ` ${logos.className}` : ""}`}
+      className={`league-nav-mark${logos.className ? ` ${logos.className}` : ""}${active ? " league-nav-mark--on-pill" : ""}`}
       data-league={league}
       width={league === "nfl" ? 13 : 28}
       height={league === "nfl" ? 18 : 18}

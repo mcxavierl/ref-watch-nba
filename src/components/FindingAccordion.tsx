@@ -5,6 +5,8 @@ import { ArrowRight, ChevronDown } from "lucide-react";
 import { ConfidenceStrengthIndicator } from "@/components/ConfidenceStrengthIndicator";
 import { FindingExplainer } from "@/components/FindingNameWall";
 import { StatCell, StatStrip } from "@/components/StatStrip";
+import { FindingHighlightBadges } from "@/components/FindingHighlightBadges";
+import { findingHighlightMetrics } from "@/lib/finding-highlights";
 import type { Finding, FindingLink } from "@/lib/findings-shared";
 import {
   FINDING_CATEGORY_LABELS,
@@ -72,6 +74,7 @@ export function FindingAccordionItem({
   league?: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
 }) {
   const tier = findingConfidenceTier(finding);
+  const highlights = findingHighlightMetrics(finding);
 
   return (
     <details className="finding-accordion data-card" open={defaultOpen}>
@@ -103,12 +106,12 @@ export function FindingAccordionItem({
           {finding.explainer && (
             <FindingWhyTeaser explainer={finding.explainer} />
           )}
+          <FindingHighlightBadges highlights={highlights} />
+          <p className="finding-accordion-metric-preview">{finding.summary}</p>
         </div>
       </summary>
 
       <div className="finding-accordion-panel">
-        <p className="finding-accordion-summary">{finding.summary}</p>
-
         {finding.stats.length > 0 && (
           <StatStrip>
             {finding.stats.map((stat) => (

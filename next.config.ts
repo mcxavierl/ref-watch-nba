@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   staticPageGenerationTimeout: 180,
   async redirects() {
     return [
@@ -33,6 +34,12 @@ const nextConfig: NextConfig = {
         source: "/feed/nhl.xml",
         destination: "/feed/nhl/rss",
         permanent: true,
+      },
+      {
+        source: "/research",
+        has: [{ type: "query", key: "league", value: "nhl" }],
+        destination: "/nhl/research",
+        permanent: false,
       },
     ];
   },

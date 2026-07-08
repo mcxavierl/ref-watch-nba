@@ -3,7 +3,7 @@ import Link from "next/link";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { formatRefStatsRange, getRefStats, getTeamSplits } from "@/lib/cbb/data";
 import { LEAGUES } from "@/lib/leagues";
-import { computeRefTeamMatrix, computeMatrixExtremes } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { absoluteUrl } from "@/lib/site";
 import { CBB_TEAMS, teamFullName } from "@/lib/cbb/teams";
@@ -73,7 +73,8 @@ export default function NbaMatrixPage() {
             basePath={league.pathPrefix}
             leagueLabel={league.label}
             officialNounPlural={league.officialNounPlural}
-            sport="nba"
+            whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
+            sport="cbb"
           />
         </div>
       </section>

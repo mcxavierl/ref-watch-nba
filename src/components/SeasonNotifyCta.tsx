@@ -65,7 +65,7 @@ export function SeasonNotifyCta({
       return (
         <button
           type="button"
-          className="font-medium text-zinc-800 underline-offset-2 hover:text-raptors hover:underline"
+          className="site-footer-link"
           onClick={() => setExpanded(true)}
         >
           Get notified when the {league} season starts

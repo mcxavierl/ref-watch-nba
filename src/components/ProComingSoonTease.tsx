@@ -39,7 +39,7 @@ export function ProComingSoonTease({
           <p className="text-sm font-bold text-zinc-900">Ref Watch Pro, coming soon</p>
           <p className="mt-1.5 text-sm leading-relaxed text-zinc-600">
             Slate alerts before puck drop or tip-off, reunion-level crew stats,
-            and richer signal digests — built on the same sample gates you see
+            and richer signal digests, built on the same sample gates you see
             today.
           </p>
           <ul className="pro-tease-features mt-3 space-y-1.5 text-sm text-zinc-600">

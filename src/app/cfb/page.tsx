@@ -4,11 +4,9 @@ import { FindingsSection } from "@/components/FindingsSection";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
-import { MethodologyAccordion } from "@/components/MethodologyAccordion";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
-import { TermHelp } from "@/components/TermHelp";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import {
   computeCrewMetrics,
@@ -23,7 +21,6 @@ import {
   computeSlatePremiums,
 } from "@/lib/cfb/whistle-premium";
 import { computeFindings } from "@/lib/cfb/findings";
-import { formatSeasonScope } from "@/lib/season-scope";
 import { resolveSlateGames, computeGameStorylines } from "@/lib/grudge-match";
 import type { AssignmentGame } from "@/lib/types";
 import {
@@ -138,7 +135,7 @@ export default function CfbHomePage() {
         initialVisibleCount={4}
         title={isOffseason ? "Season highlights" : "Officiating intelligence"}
         league="CFB"
-        sortExplainer="Ranked by effect size and sample depth. Standout official×team splits and flag outliers rise to the top; marginal league-wide noise is filtered out."
+        sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
       />
 
       <CfbAnalyticsLeaders leaders={analyticsLeaders} />
@@ -195,31 +192,7 @@ export default function CfbHomePage() {
         </>
       )}
 
-      <TrustCharterSummary compact />
-
-      <MethodologyAccordion>
-        <ul className="space-y-2 text-sm leading-relaxed text-zinc-600">
-          <li>
-            Findings ranked by effect size × √sample size, with sample gates
-            (30+ official games, 8+ team splits).
-          </li>
-          <li>
-            <TermHelp id="whistle-premium" />: crew avg combined points minus
-            league baseline ({refStats.meta.leagueAvgTotal}).
-          </li>
-          <li>
-            Flag and penalty-yard analytics use historical CFB game data with
-            estimated closing lines where available.
-          </li>
-          <li>
-            {formatSeasonScope(refStats.meta.seasons.length)} (
-            {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
-          </li>
-          <li>
-            <ProComingSoonTease league="CFB" compact />
-          </li>
-        </ul>
-      </MethodologyAccordion>
+      <TrustCharterSummary />
 
       <ProComingSoonTease league="CFB" />
     </div>

@@ -4,10 +4,8 @@ import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
-import { MethodologyAccordion } from "@/components/MethodologyAccordion";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
-import { TermHelp } from "@/components/TermHelp";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
@@ -18,7 +16,6 @@ import {
   ouLeanSortWeight,
 } from "@/lib/nhl/data";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
-import { formatSeasonScope } from "@/lib/season-scope";
 import { computeFindings } from "@/lib/nhl/findings";
 import { resolveSlateGames, computeGameStorylines } from "@/lib/grudge-match";
 import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/nhl/home-bias";
@@ -140,7 +137,7 @@ export default function NhlHomePage() {
         initialVisibleCount={4}
         title={isOffseason ? "Season highlights" : "Officiating intelligence"}
         league="NHL"
-        sortExplainer="Ranked by effect size and sample depth. Standout ref×team splits and whistle outliers rise to the top; marginal league-wide noise is filtered out."
+        sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
       />
 
       <section className="slate-quick-links">
@@ -192,32 +189,7 @@ export default function NhlHomePage() {
         </>
       )}
 
-      <TrustCharterSummary compact />
-
-      <MethodologyAccordion>
-        <ul className="space-y-2 text-sm leading-relaxed text-zinc-600">
-          <li>
-            Findings ranked by effect size × √sample size, with sample gates
-            (30+ ref games, 8+ team splits, 30+ ATS decisions).
-          </li>
-          <li>
-            <TermHelp id="nhl-whistle-premium" />: crew avg combined goals minus
-            league baseline ({refStats.meta.leagueAvgTotal}).
-          </li>
-          <li>
-            <TermHelp id="pp-premium" /> and{" "}
-            <TermHelp id="ot-rate-badge" /> use sportsbook lines on live slates
-            where available.
-          </li>
-          <li>
-            {formatSeasonScope(refStats.meta.seasons.length)} (
-            {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
-          </li>
-          <li>
-            <ProComingSoonTease league="NHL" compact />
-          </li>
-        </ul>
-      </MethodologyAccordion>
+      <TrustCharterSummary />
 
       <ProComingSoonTease league="NHL" />
     </div>

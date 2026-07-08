@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import type { RefProfile } from "@/lib/types";
 import { formatPct } from "@/lib/data";
 import { formatSigned } from "@/lib/stats-utils";
@@ -106,7 +107,10 @@ export function RefListItem({
       <div>
         <p className="text-base font-medium text-zinc-900 group-hover:text-zinc-950">
           {profile.name}{" "}
-          <span className="font-mono text-sm text-zinc-500">#{profile.number}</span>
+          <RefJerseyNumber
+            number={profile.number}
+            className="font-mono text-sm text-zinc-500"
+          />
         </p>
         <p className="mt-1 text-sm text-zinc-600">
           {profile.games} games · {formatPct(profile.overRate)} over {overBaseline}

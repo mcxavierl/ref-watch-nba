@@ -24,7 +24,7 @@ export function cfbPreviewBannerMessage(
   if (isCfbVerifiedData(statsSource)) {
     return "Historical scores and penalty stats are from ESPN game data. Tonight's crew assignments may still be pending official release.";
   }
-  return "NCAA football preview dataset — offseason seed data only. Do not treat ref×team or betting stats as verified against official records.";
+  return "NCAA football preview dataset, offseason seed data only. Do not treat ref×team or betting stats as verified against official records.";
 }
 
 export function cfbAssignmentsAreVerified(

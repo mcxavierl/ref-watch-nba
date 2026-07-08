@@ -19,7 +19,7 @@ import {
   formatRefStatsRange as formatCfbRange,
   getRefStats as getCfbRefStats,
 } from "@/lib/cfb/data";
-import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { LEAGUES } from "@/lib/leagues";
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 
 type FooterLeague = "nba" | "nhl" | "epl" | "cbb" | "cfb";
@@ -70,14 +70,32 @@ function footerData(league: FooterLeague) {
   }
 }
 
+const EXPLORE_LINKS = [
+  { key: "insights", label: "Insights" },
+  { key: "refs", label: "Refs & crews" },
+  { key: "teams", label: "Teams" },
+  { key: "matrix", label: "Matrix" },
+  { key: "methodology", label: "Methodology", href: "/methodology" },
+  {
+    key: "contact",
+    label: "Contact Me",
+    href: "mailto:mcxl55@gmail.com",
+    external: true,
+  },
+] as const;
+
 export function SiteFooter({ league }: { league: FooterLeague }) {
   const { stats, formatRange } = footerData(league);
   const range = formatRange(stats.meta);
   const source = DATA_SOURCES[league];
   const config = LEAGUES[league];
-  const researchHref = `${config.pathPrefix}/research` || "/research";
-  const rankingsHref = `${config.pathPrefix}/rankings` || "/rankings";
-  const trendsHref = `${config.pathPrefix}/trends` || "/trends";
+  const prefix = config.pathPrefix;
+  const hrefs: Record<string, string> = {
+    insights: prefix ? `${prefix}/insights` : "/insights",
+    refs: prefix ? `${prefix}/refs` : "/refs",
+    teams: prefix ? `${prefix}/teams` : "/teams",
+    matrix: prefix ? `${prefix}/matrix` : "/matrix",
+  };
 
   return (
     <footer className="site-footer">
@@ -90,7 +108,7 @@ export function SiteFooter({ league }: { league: FooterLeague }) {
               independent research only. Official assignments from{" "}
               <a
                 href={source.href}
-                className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
+                className="site-footer-inline-link"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -101,36 +119,30 @@ export function SiteFooter({ league }: { league: FooterLeague }) {
           </div>
           <div>
             <p className="site-footer-heading">Explore</p>
-            <ul className="site-footer-body space-y-1.5">
-              <li>
-                <Link
-                  href={researchHref}
-                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
-                >
-                  Research hub
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={rankingsHref}
-                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
-                >
-                  Referee tendency index
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={trendsHref}
-                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
-                >
-                  League trends
-                </Link>
-              </li>
-              <li>
-                <Link href="/methodology" className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline">
-                  Methodology
-                </Link>
-              </li>
+            <ul className="site-footer-explore space-y-1.5">
+              {EXPLORE_LINKS.map((item) => {
+                const href =
+                  "href" in item ? item.href : hrefs[item.key];
+                const className = "site-footer-link";
+
+                if ("external" in item && item.external) {
+                  return (
+                    <li key={item.key}>
+                      <a href={href} className={className}>
+                        {item.label}
+                      </a>
+                    </li>
+                  );
+                }
+
+                return (
+                  <li key={item.key}>
+                    <Link href={href} className={className}>
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div>

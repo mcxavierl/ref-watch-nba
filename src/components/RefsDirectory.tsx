@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { RefAvatar } from "@/components/RefAvatar";
+import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import {
   directoryDeltaTone,
   formatDirectoryDelta,
@@ -265,9 +266,10 @@ export function RefsDirectory({
                   />
                   <span className="refs-directory-name-wrap">
                     <span className="refs-directory-name">{ref.name}</span>
-                    <span className="refs-directory-number font-mono">
-                      #{ref.number}
-                    </span>
+                    <RefJerseyNumber
+                      number={ref.number}
+                      className="refs-directory-number font-mono"
+                    />
                   </span>
                 </span>
                 <span className="refs-directory-col-games font-mono tabular-nums">
@@ -280,7 +282,7 @@ export function RefsDirectory({
                   {(isNhl && nhlDisplay === null) ||
                   (isNfl && nflDelta === null) ? (
                     <span className="refs-directory-delta refs-directory-delta-neutral">
-                      —
+                      -
                     </span>
                   ) : (
                     <DeltaCell

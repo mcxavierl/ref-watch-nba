@@ -106,7 +106,7 @@ export function ProfileSignalsSection({
         <div>
           <h2 className="section-title">Profile signals</h2>
           <p className="section-lead">
-            Data-led patterns for {refName} — historical associations only.
+            Data-led patterns for {refName}, historical associations only.
           </p>
         </div>
         <Link

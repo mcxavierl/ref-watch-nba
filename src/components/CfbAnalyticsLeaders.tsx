@@ -10,7 +10,7 @@ export function CfbAnalyticsLeaders({ leaders }: { leaders: NflLeaderEntry[] }) 
       <div className="section-block-header">
         <h2 className="section-title">Official analytics leaders</h2>
         <p className="section-lead">
-          Penalty and scoring splits from the historical dataset — descriptive
+          Penalty and scoring splits from the historical dataset, descriptive
           tendencies, not picks.
         </p>
       </div>

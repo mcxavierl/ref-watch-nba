@@ -161,6 +161,8 @@ export interface RefProfile {
   slug: string;
   name: string;
   number: number;
+  /** NHL roster role when known (referee vs linesman). */
+  role?: RefRole;
   games: number;
   avgTotalPoints: number;
   overRate: number;

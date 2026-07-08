@@ -7,7 +7,7 @@ import {
   getTeamSplits,
 } from "@/lib/cfb/data";
 import { LEAGUES } from "@/lib/leagues";
-import { computeRefTeamMatrix, computeMatrixExtremes } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { absoluteUrl } from "@/lib/site";
 import { isCfbSimulatedData } from "@/lib/cfb/data-source";
@@ -80,6 +80,7 @@ export default function CfbMatrixPage() {
             basePath={league.pathPrefix}
             leagueLabel={league.label}
             officialNounPlural={league.officialNounPlural}
+            whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
             sport="cfb"
           />
         </div>

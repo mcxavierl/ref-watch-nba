@@ -6,10 +6,12 @@ import {
   getRefStats,
   getTeamSplits,
 } from "@/lib/nhl/data";
+import { nhlAnalyticsRefStats } from "@/lib/nhl/officials";
 import { LEAGUES } from "@/lib/leagues";
-import { computeRefTeamMatrix, computeMatrixExtremes } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { absoluteUrl } from "@/lib/site";
+import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 import { NHL_TEAMS, teamFullName } from "@/lib/nhl/teams";
 
 export const metadata: Metadata = {
@@ -21,12 +23,13 @@ export const metadata: Metadata = {
 
 export default function NhlMatrixPage() {
   const stats = getRefStats();
+  const analyticsStats = nhlAnalyticsRefStats(stats);
   const range = formatRefStatsRange(stats.meta);
   const seeded = stats.meta.source === "seeded";
   const league = LEAGUES.nhl;
 
   const matrix = computeRefTeamMatrix(
-    stats,
+    analyticsStats,
     NHL_TEAMS.map((team) => ({
       abbr: team.abbr,
       label: teamFullName(team),
@@ -47,9 +50,9 @@ export default function NhlMatrixPage() {
       <section className="page-hero">
         <h1 className="page-title">NHL official × team matrix</h1>
         <p className="page-lead">
-          Team W-L when each of {matrix.refs.length} officials worked their
+          Team W-L when each of {matrix.refs.length} referees worked their
           games ({range}). Cells require {matrix.minGames}+ games in this
-          dataset. Not predictions; see{" "}
+          dataset. {NHL_LINESMAN_METHODOLOGY_NOTE} Not predictions; see{" "}
           <Link
             href="/methodology"
             className="font-medium text-zinc-800 hover:underline"
@@ -73,6 +76,7 @@ export default function NhlMatrixPage() {
             basePath={league.pathPrefix}
             leagueLabel={league.label}
             officialNounPlural={league.officialNounPlural}
+            whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
             sport="nhl"
           />
         </div>

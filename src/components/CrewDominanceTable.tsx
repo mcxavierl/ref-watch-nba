@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { RefAvatar } from "@/components/RefAvatar";
+import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import {
   CREW_DOMINANCE_SORT_OPTIONS,
@@ -36,8 +37,8 @@ function DominanceMetric({ value, threshold }: { value: number | null; threshold
   );
 }
 
-export function CrewDominanceTable({ entries, basePath, league, overBaseline, leagueAvgFouls }: {
-  entries: CrewDominanceEntry[]; basePath: string; league: LeagueId; overBaseline: number; leagueAvgFouls: number;
+export function CrewDominanceTable({ entries, basePath, league, overBaseline, leagueAvgFouls, linesmanSlugs }: {
+  entries: CrewDominanceEntry[]; basePath: string; league: LeagueId; overBaseline: number; leagueAvgFouls: number; linesmanSlugs?: ReadonlySet<string>;
 }) {
   const [sort, setSort] = useState<CrewDominanceSort>("games-desc");
   const sport = league === "nhl" ? "nhl" : "nba";
@@ -81,6 +82,7 @@ export function CrewDominanceTable({ entries, basePath, league, overBaseline, le
                 {entry.memberSlugs.map((slug, i) => (
                   <Link key={slug} href={`${basePath}/refs/${slug}#close-game`} className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-zinc-50 px-1.5 py-0.5 text-[11px] leading-tight text-zinc-700 transition hover:border-zinc-300 hover:bg-white hover:text-zinc-900">
                     <RefAvatar name={entry.crewNames[i] ?? slug} slug={slug} sport={sport} size="sm" className="!h-5 !w-5" />{entry.crewNames[i] ?? slug}
+                    {linesmanSlugs?.has(slug) ? <OfficialRoleBadge role="linesman" /> : null}
                   </Link>))}
               </div></td>
               <td className="data-table-num align-middle"><div className="flex flex-col items-end gap-0.5"><span className="font-tabular text-sm">{entry.games}</span><span className="text-[10px] leading-tight text-zinc-500 whitespace-nowrap">{entry.teamCount} teams</span></div></td>

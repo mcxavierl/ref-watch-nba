@@ -3,11 +3,12 @@ import Link from "next/link";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { formatRefStatsRange, getRefStats, getTeamSplits } from "@/lib/data";
 import { LEAGUES } from "@/lib/leagues";
-import { computeRefTeamMatrix, computeMatrixExtremes } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { absoluteUrl } from "@/lib/site";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";
 import { refTeamDataNote } from "@/lib/user-language";
+import { getNbaTeamSosCache } from "@/lib/nba-team-sos-cache";
 
 export const metadata: Metadata = {
   title: "NBA ref × team matrix",
@@ -36,6 +37,7 @@ export default function NbaMatrixPage() {
     { league: "nba", sinceSeason: "2021-22" },
   );
   const extremes = computeMatrixExtremes(matrix);
+  const teamSosByAbbr = getNbaTeamSosCache().teams;
 
   return (
     <div className="page-shell">
@@ -74,7 +76,9 @@ export default function NbaMatrixPage() {
             basePath={league.pathPrefix}
             leagueLabel={league.label}
             officialNounPlural={league.officialNounPlural}
+            whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
             sport="nba"
+            teamSosByAbbr={teamSosByAbbr}
           />
         </div>
       </section>

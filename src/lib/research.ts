@@ -2,6 +2,8 @@ import { computeAllFindings as computeNbaFindings } from "@/lib/findings";
 import { computeAllFindings as computeNhlFindings } from "@/lib/nhl/findings";
 import { computeAllFindings as computeNflFindings } from "@/lib/nfl/findings";
 import { computeAllFindings as computeEplFindings } from "@/lib/epl/findings";
+import { computeAllFindings as computeCbbFindings } from "@/lib/cbb/findings";
+import { computeAllFindings as computeCfbFindings } from "@/lib/cfb/findings";
 import type { Finding } from "@/lib/findings-shared";
 import {
   filterFindingsByLeague,
@@ -28,13 +30,28 @@ export function computeAllResearchFindings(): ResearchFinding[] {
   const nhl = tagResearchFindings(computeNhlFindings(), "NHL");
   const nfl = tagResearchFindings(computeNflFindings(), "NFL");
   const epl = tagResearchFindings(computeEplFindings(), "EPL");
-  return [...nba, ...nhl, ...nfl, ...epl];
+  const cbb = tagResearchFindings(computeCbbFindings(), "CBB");
+  const cfb = tagResearchFindings(computeCfbFindings(), "CFB");
+  return [...nba, ...nhl, ...nfl, ...epl, ...cbb, ...cfb];
 }
+
+const LEAGUE_FINDING_COMPUTERS: Partial<
+  Record<FindingLeague, () => Finding[]>
+> = {
+  NBA: computeNbaFindings,
+  NHL: computeNhlFindings,
+  NFL: computeNflFindings,
+  EPL: computeEplFindings,
+  CBB: computeCbbFindings,
+  CFB: computeCfbFindings,
+};
 
 export function computeResearchFindingsForLeague(
   league: FindingLeague,
 ): ResearchFinding[] {
-  return filterFindingsByLeague(computeAllResearchFindings(), league);
+  const compute = LEAGUE_FINDING_COMPUTERS[league];
+  if (!compute) return [];
+  return tagResearchFindings(compute(), league);
 }
 
 export function getResearchFindingById(

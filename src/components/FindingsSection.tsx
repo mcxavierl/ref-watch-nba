@@ -9,6 +9,7 @@ import {
   FINDING_CATEGORY_LABELS,
   researchFindingHref,
   researchHubHref,
+  sortFindingsByStrength,
 } from "@/lib/findings-shared";
 
 export function FindingCard({
@@ -40,15 +41,13 @@ export function FindingCard({
             {finding.headline}
           </Link>
         </h3>
-        <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-          {finding.summary}
-        </p>
         {finding.explainer && (
-          <p className="mt-3 border-t border-border-subtle pt-3 text-sm leading-relaxed text-zinc-600">
+          <p className="mt-2 text-sm leading-relaxed text-zinc-600">
             <span className="font-medium text-zinc-800">Why it matters: </span>
             {finding.explainer}
           </p>
         )}
+        <p className="finding-accordion-metric-preview mt-2">{finding.summary}</p>
       </div>
 
       {finding.stats.length > 0 && (
@@ -97,9 +96,9 @@ export function FindingsSection({
   title?: string;
   league?: FindingLeague;
 }) {
-  const scopedFindings = league
-    ? filterFindingsByLeague(findings, league)
-    : findings;
+  const scopedFindings = sortFindingsByStrength(
+    league ? filterFindingsByLeague(findings, league) : findings,
+  );
 
   if (scopedFindings.length === 0) return null;
 
@@ -126,8 +125,8 @@ export function FindingsSection({
           </h2>
           {!slateHero && (
             <p className="section-lead">
-              Top patterns ranked by effect size and sample size, not tied to
-              tonight&apos;s slate.
+              Strong-confidence patterns first, then moderate and thin samples.
+              Ranked by effect size within each tier.
             </p>
           )}
           {sortExplainer && (

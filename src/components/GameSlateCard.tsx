@@ -49,6 +49,7 @@ import {
 import { formatSigned } from "@/lib/stats-utils";
 import { formatPremiumLabel } from "@/lib/whistle-premium";
 import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
+import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { RefAvatar } from "@/components/RefAvatar";
 import { GameGrudgeStorylines } from "./GrudgeMatchSection";
 import { NhlSlateSignalBadges } from "./NhlSlateSignalBadges";
@@ -215,6 +216,7 @@ export function GameSlateCard({
                 className="h-6 w-6 text-[9px]"
               />
               {official.name}
+              {sport === "nhl" && <OfficialRoleBadge role={official.role} />}
             </Link>
           ))}
         </div>

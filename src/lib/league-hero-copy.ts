@@ -18,13 +18,13 @@ export const LEAGUE_HERO_COPY: Record<
   LeagueHeroCopy
 > = {
   nba: {
-    kicker: "NBA whistle desk",
+    kicker: "NBA officiating intelligence",
     liveTitle: "Who's blowing the whistle tonight.",
-    offseasonTitle: "NBA officiating on file.",
+    offseasonTitle: "Decode officiating bias. Spot the historical edges.",
     liveLead:
-      "Crew assignments, foul tendencies, and ref×team history before tip-off — scored by sample depth, not hype.",
+      "Crew assignments, foul tendencies, and ref×team history before tip-off, scored by sample depth, not hype.",
     offseasonLead:
-      "Ref profiles, crew matrices, and whistle splits while the slate rests. Patterns stay on record until assignments return.",
+      "Deep analytics across every indexed official, ref×team matrices, and multi-season whistle splits. The full toolkit runs on historical data while the slate rests.",
     statLabels: {
       officials: "Refs indexed",
       games: "Games logged",
@@ -76,11 +76,11 @@ export const LEAGUE_HERO_COPY: Record<
   cbb: {
     kicker: "Men's college hoops",
     liveTitle: "Who's calling fouls on campus tonight.",
-    offseasonTitle: "College basketball crews — season opens soon.",
+    offseasonTitle: "College basketball crews, season opens soon.",
     liveLead:
-      "Crew assignments and whistle tendencies across D-I — conference context on every team page.",
+      "Crew assignments and whistle tendencies across D-I, with conference context on every team page.",
     offseasonLead:
-      "Season opens soon — crews and tendencies load from game data. Team directory spans ACC, Big Ten, SEC, Big 12, and Big East.",
+      "Season opens soon. Crews and tendencies load from game data. Team directory spans ACC, Big Ten, SEC, Big 12, and Big East.",
     statLabels: {
       officials: "Refs indexed",
       games: "Games logged",
@@ -90,11 +90,11 @@ export const LEAGUE_HERO_COPY: Record<
   cfb: {
     kicker: "College football",
     liveTitle: "Who's marking off Saturday.",
-    offseasonTitle: "College football officials — kickoff pending.",
+    offseasonTitle: "College football officials, kickoff pending.",
     liveLead:
-      "Crew assignments, flag rates, and official×team splits before kickoff — conference rivalries included.",
+      "Crew assignments, flag rates, and official×team splits before kickoff, with conference rivalries included.",
     offseasonLead:
-      "Season opens soon — crews and penalty tendencies load from game data. Team pages track Power Four and Group of Five programs.",
+      "Season opens soon. Crews and penalty tendencies load from game data. Team pages track Power Four and Group of Five programs.",
     statLabels: {
       officials: "Officials indexed",
       games: "Games logged",

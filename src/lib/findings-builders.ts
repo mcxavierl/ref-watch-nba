@@ -547,6 +547,17 @@ export function buildLeagueSkewFinding(
   const pct = Math.round((trending.length / refs.length) * 100);
   const effectSize =
     resolvedLean === "under" ? 0.5 - weightedOver : weightedOver - 0.5;
+  const benchmark = `${meta.leagueOverBaseline} combined ${ctx.labels.scoreUnit}`;
+  const gamesOver = formatPct(weightedOver);
+  const gamesUnder = formatPct(1 - weightedOver);
+  const refMajorityClause =
+    trending.length === refs.length
+      ? `Every official (${trending.length}/${refs.length})`
+      : `${trending.length} of ${refs.length} officials (${pct}%)`;
+  const summary =
+    resolvedLean === "under"
+      ? `${refMajorityClause} finish under the ${benchmark} line in a majority of their own games (personal over rate below 50%). Across all ${totalGames.toLocaleString()} games, ${gamesOver} cleared the benchmark and ${gamesUnder} went under.`
+      : `${refMajorityClause} beat the ${benchmark} line in a majority of their own games (personal over rate above 50%). Across all ${totalGames.toLocaleString()} games, ${gamesOver} finished over and ${gamesUnder} went under.`;
 
   return {
     id: `${ctx.paths.idPrefix}league-${resolvedLean}-skew`,
@@ -555,18 +566,18 @@ export function buildLeagueSkewFinding(
       resolvedLean === "under"
         ? `Games-weighted scoring sits ${(effectSize * 100).toFixed(0)} pts under neutral`
         : `Games-weighted scoring sits ${(effectSize * 100).toFixed(0)} pts over neutral`,
-    summary: `${trending.length} of ${refs.length} officials (${pct}%) trend ${resolvedLean} the ${meta.leagueOverBaseline} combined ${ctx.labels.scoreUnit} benchmark; weighted over rate is ${formatPct(weightedOver)} across ${totalGames.toLocaleString()} games.`,
-    explainer: `This measures historical scoring frequency vs a fixed benchmark, not sportsbook pricing. We only surface league skew when the games-weighted over rate is at least ${(LEAGUE_WEIGHTED_OVER_MIN_SKEW * 100).toFixed(0)} pts from 50%.`,
+    summary,
+    explainer: `Two different cuts of the same data: each ref's personal over rate asks whether they beat the ${benchmark} in most of their games; the league-wide share counts every game individually. A ref can lean over while many of their games still go under. This uses a fixed benchmark, not sportsbook pricing.`,
     stats: [
       {
-        label: `Refs trending ${resolvedLean}`,
+        label: `Refs mostly ${resolvedLean}`,
         value: `${trending.length}/${refs.length}`,
-        detail: `${pct}% of pool`,
+        detail: `Personal over rate ${resolvedLean === "under" ? "<" : ">"} 50%`,
       },
       {
-        label: "Weighted over rate",
-        value: formatPct(weightedOver),
-        detail: "50% = neutral baseline",
+        label: "Games over benchmark",
+        value: gamesOver,
+        detail: `${gamesUnder} under · 50% = neutral`,
       },
       {
         label: "Games analyzed",

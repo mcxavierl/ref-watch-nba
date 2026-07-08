@@ -6,6 +6,7 @@ import {
   FINDING_FILTER_GROUPS,
   FINDING_FILTER_LABELS,
   findingMatchesFilter,
+  sortFindingsByStrength,
   type FindingFilterGroup,
 } from "@/lib/findings-shared";
 import type { ResearchFinding } from "@/lib/research";
@@ -24,8 +25,10 @@ export function ResearchHubFindings({
 
   const filtered = useMemo(
     () =>
-      findings.filter((finding) =>
-        findingMatchesFilter(finding.category, categoryFilter),
+      sortFindingsByStrength(
+        findings.filter((finding) =>
+          findingMatchesFilter(finding.category, categoryFilter),
+        ),
       ),
     [findings, categoryFilter],
   );
@@ -60,6 +63,7 @@ export function ResearchHubFindings({
           <p className="section-lead">
             {filtered.length} pattern
             {filtered.length === 1 ? "" : "s"} from {refCount} officials.
+            Strong-confidence findings appear first; thin samples at the bottom.
           </p>
           <div className="finding-accordion-stack mt-4">
             {filtered.map((finding, index) => (

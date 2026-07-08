@@ -1,4 +1,5 @@
 import type { LeagueConfig } from "@/lib/leagues";
+import { filterNhlReferees } from "@/lib/nhl/officials";
 import { formatSigned } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
@@ -36,8 +37,10 @@ export function buildRankingsSynthesis(
   league: LeagueConfig,
 ): RankingsSynthesis {
   const min = stats.meta.minSampleSize;
-  const qualified = qualifiedRefs(stats.refs, min);
-  const thin = stats.refs.length - qualified.length;
+  const pool =
+    league.id === "nhl" ? filterNhlReferees(stats.refs) : stats.refs;
+  const qualified = qualifiedRefs(pool, min);
+  const thin = pool.length - qualified.length;
   const baseline = stats.meta.leagueOverBaseline;
   const unit = league.metrics.scoreUnitPlural;
 
@@ -85,7 +88,7 @@ export function buildRankingsSynthesis(
     insights.push({
       id: "top-whistle",
       title: "Most flags per game",
-      body: `${topWhistle.nflAnalytics.avgFlagsPerGame} flags/game — ${formatSigned(topWhistle.nflAnalytics.flagsDelta)} vs league average.`,
+      body: `${topWhistle.nflAnalytics.avgFlagsPerGame} flags/game, ${formatSigned(topWhistle.nflAnalytics.flagsDelta)} vs league average.`,
       refSlug: topWhistle.slug,
       refName: topWhistle.name,
       statLabel: "Flags delta",

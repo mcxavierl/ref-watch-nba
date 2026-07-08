@@ -1,4 +1,5 @@
 import type { LeagueConfig } from "@/lib/leagues";
+import { filterNhlReferees } from "@/lib/nhl/officials";
 import { deltaTone as metricDeltaTone } from "@/lib/metricTone";
 import {
   directoryScoringDisplay,
@@ -88,7 +89,9 @@ export function buildRefsDirectoryContext(
   stats: RefStatsFile,
   league: LeagueConfig,
 ): RefsDirectoryContext {
-  const qualified = qualifiedRefs(stats.refs, stats.meta.minSampleSize);
+  const pool =
+    league.id === "nhl" ? filterNhlReferees(stats.refs) : stats.refs;
+  const qualified = qualifiedRefs(pool, stats.meta.minSampleSize);
   const totalGameRecords = qualified.reduce((sum, ref) => sum + ref.games, 0);
 
   return {

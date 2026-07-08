@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, type ReactNode } from "react";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RefAvatar } from "@/components/RefAvatar";
+import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
 import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
@@ -200,9 +201,10 @@ export function RefRankingsTable({
                         >
                           {ref.name}
                         </Link>
-                        <span className="ml-2 whitespace-nowrap font-mono text-xs text-zinc-500">
-                          #{ref.number}
-                        </span>
+                        <RefJerseyNumber
+                          number={ref.number}
+                          className="ml-2 whitespace-nowrap font-mono text-xs text-zinc-500"
+                        />
                       </div>
                     </div>
                   </td>

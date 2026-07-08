@@ -10,7 +10,7 @@ import {
   FINDING_CATEGORY_LABELS,
   rankScore,
 } from "@/lib/findings-shared";
-import { pickFeaturedFindings } from "@/lib/findings-significance";
+import { pickFeaturedFindings, rankScoredFindings, weightedLeagueOverRate } from "@/lib/findings-significance";
 import {
   buildCloseGameLeagueFinding,
   buildCrewDominanceFinding,
@@ -126,13 +126,17 @@ function rareOverRefsFinding(stats: RefStatsFile): ScoredFindingBase | null {
   if (overRefs.length === 0 || qualified.length === 0) return null;
 
   const overPct = Math.round((overRefs.length / qualified.length) * 100);
+  const headline =
+    overPct === 100
+      ? `Every high-volume ref leans over the benchmark`
+      : `${overPct}% of high-volume refs lean over the benchmark`;
 
   return {
     id: "rare-over-refs",
     category: "ref-outlier",
-    headline: `${overPct}% of high-volume refs trend over the benchmark`,
-    summary: `Among officials with ${MIN_REF_GAMES}+ games, ${overRefs.length} of ${qualified.length} finish above the ${meta.leagueOverBaseline}-point benchmark more often than not.`,
-    explainer: `The over club includes ${overRefs.slice(0, 8).map((r) => r.name).join(", ")}${overRefs.length > 8 ? ` and ${overRefs.length - 8} more` : ""}. Target specific refs for overs — league-wide assumptions miss most of the spread.`,
+    headline,
+    summary: `Among officials with ${MIN_REF_GAMES}+ games, ${overRefs.length} of ${qualified.length} beat the ${meta.leagueOverBaseline}-point benchmark in a majority of their own games, not that every game went over.`,
+    explainer: `Personal over rate counts how often each ref's games clear the benchmark. League-wide, roughly ${formatPct(weightedLeagueOverRate(qualified))} of games in this pool finished over. The list includes ${overRefs.slice(0, 8).map((r) => r.name).join(", ")}${overRefs.length > 8 ? ` and ${overRefs.length - 8} more` : ""}.`,
     stats: [
       {
         label: "Over refs",
@@ -800,7 +804,7 @@ export function computeFindings(limit = 6): Finding[] {
   const stats = getRefStats();
   if (stats.refs.length === 0) return [];
 
-  const ranked = collectCandidates(stats).sort((a, b) => b.score - a.score);
+  const ranked = rankScoredFindings(collectCandidates(stats));
   return pickFeaturedFindings(ranked, limit);
 }
 
@@ -808,8 +812,7 @@ export function computeAllFindings(): Finding[] {
   const stats = getRefStats();
   if (stats.refs.length === 0) return [];
 
-  return collectCandidates(stats)
-    .sort((a, b) => b.score - a.score)
+  return rankScoredFindings(collectCandidates(stats))
     .map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
       const { score, sampleGames, ...finding } = item;

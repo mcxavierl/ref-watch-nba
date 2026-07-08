@@ -65,8 +65,13 @@ export function dedupeFindingsByCategory(
 
 import type { ConfidenceTier } from "@/lib/user-language";
 
-/** Map finding sample notes to user-facing confidence tiers. */
-export function findingConfidenceTier(finding: Finding): ConfidenceTier {
+export const CONFIDENCE_TIER_RANK: Record<ConfidenceTier, number> = {
+  Strong: 0,
+  Moderate: 1,
+  Thin: 2,
+};
+
+function largestSampleFromFinding(finding: Finding): number {
   const gameCounts = finding.stats
     .map((stat) => stat.detail?.match(/(\d+)\s+games/i)?.[1])
     .filter(Boolean)
@@ -77,11 +82,39 @@ export function findingConfidenceTier(finding: Finding): ConfidenceTier {
       ?.map((n) => parseInt(n.replace(/,/g, ""), 10))
       .filter((n) => !Number.isNaN(n))
       .sort((a, b) => b - a)[0] ?? 0;
-  const largest = Math.max(noteLargest, ...gameCounts, 0);
+  return Math.max(noteLargest, ...gameCounts, 0);
+}
+
+/** Map finding sample notes to user-facing confidence tiers. */
+export function findingConfidenceTier(
+  finding: Finding,
+  sampleGames?: number,
+): ConfidenceTier {
+  const largest =
+    sampleGames !== undefined && sampleGames > 0
+      ? sampleGames
+      : largestSampleFromFinding(finding);
 
   if (largest >= 100) return "Strong";
   if (largest >= 30) return "Moderate";
   return "Thin";
+}
+
+export function sortFindingsByStrength<T extends Finding>(
+  findings: T[],
+  sampleGamesById?: Map<string, number>,
+): T[] {
+  return [...findings].sort((a, b) => {
+    const tierA =
+      CONFIDENCE_TIER_RANK[
+        findingConfidenceTier(a, sampleGamesById?.get(a.id))
+      ];
+    const tierB =
+      CONFIDENCE_TIER_RANK[
+        findingConfidenceTier(b, sampleGamesById?.get(b.id))
+      ];
+    return tierA - tierB;
+  });
 }
 
 export const FINDING_CATEGORY_LABELS: Record<FindingCategory, string> = {

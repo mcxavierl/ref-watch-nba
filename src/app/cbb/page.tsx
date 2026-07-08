@@ -5,10 +5,8 @@ import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
-import { MethodologyAccordion } from "@/components/MethodologyAccordion";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
-import { TermHelp } from "@/components/TermHelp";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
@@ -20,7 +18,6 @@ import {
 } from "@/lib/cbb/data";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/cbb/findings";
-import { formatSeasonScope } from "@/lib/season-scope";
 import {
   computeGameStorylines,
   computeSlateStorylines,
@@ -143,7 +140,7 @@ export default function HomePage() {
         initialVisibleCount={4}
         title={isOffseason ? "Season highlights" : "Officiating intelligence"}
         league="CBB"
-        sortExplainer="Ranked by effect size and sample depth. Standout ref×team splits and large whistle swings rise to the top; weak league-wide noise is filtered out."
+        sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
       />
 
       <section className="slate-quick-links">
@@ -193,33 +190,7 @@ export default function HomePage() {
         </>
       )}
 
-      <TrustCharterSummary compact />
-
-      <MethodologyAccordion>
-        <ul className="space-y-2 text-sm leading-relaxed text-zinc-600">
-          <li>
-            Findings ranked by effect size × √sample size, with sample gates
-            (30+ ref games, 8+ team splits, 30+ ATS decisions).
-          </li>
-          <li>
-            <TermHelp id="whistle-premium" />: crew avg combined score minus
-            league baseline ({refStats.meta.leagueAvgTotal}).
-          </li>
-          <li>
-            Ref <TermHelp id="ats" /> and <TermHelp id="over-under" /> use{" "}
-            <TermHelp id="closing-line">closing lines</TermHelp> where available.
-            When unavailable, we use a fixed league benchmark (
-            {refStats.meta.leagueOverBaseline}) as a historical over rate proxy.
-          </li>
-          <li>
-            {formatSeasonScope(refStats.meta.seasons.length)} (
-            {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
-          </li>
-          <li>
-            <ProComingSoonTease league="CBB" compact />
-          </li>
-        </ul>
-      </MethodologyAccordion>
+      <TrustCharterSummary />
 
       <ProComingSoonTease league="CBB" />
     </div>

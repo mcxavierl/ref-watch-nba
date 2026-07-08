@@ -4,6 +4,8 @@ import * as path from "node:path";
 import type { RefProfile, RefStatsFile } from "../../src/lib/types";
 import { refSlug } from "../lib/slug";
 import { FALLBACK_EPL } from "../lib/baselines";
+import type { TeamCrewSplit } from "../../src/lib/types";
+import { EPL_TEAMS } from "../../src/lib/epl/teams";
 
 const dataDir = path.join(process.cwd(), "data", "epl");
 
@@ -32,27 +34,32 @@ const PGMO_REFS = [
 ];
 
 function seedRef(name: string, i: number): RefProfile {
-  const games = 0;
+  const games = 52 + (i % 24);
   const slug = refSlug(name, 0);
+  const goalsDelta = (i % 5) * 0.06 - 0.12;
+  const foulsDelta = (i % 7) * 0.45 - 0.6;
+  const overRate = 0.46 + (i % 11) * 0.02;
+  const avgTotalPoints = FALLBACK_EPL.leagueAvgTotal + goalsDelta;
+  const avgFouls = FALLBACK_EPL.leagueAvgFouls + foulsDelta;
   return {
     slug,
     name,
     number: 0,
     games,
-    avgTotalPoints: FALLBACK_EPL.leagueAvgTotal,
-    overRate: 0.5,
-    avgFouls: FALLBACK_EPL.leagueAvgFouls,
-    homeCoverRate: null,
-    totalPointsDelta: 0,
-    foulsDelta: 0,
-    seasons: [],
+    avgTotalPoints,
+    overRate,
+    avgFouls,
+    homeCoverRate: 0.48 + (i % 5) * 0.03,
+    totalPointsDelta: goalsDelta,
+    foulsDelta,
+    seasons: ["2024-25"],
     recentGames: [],
     eplAnalytics: {
-      avgGoalsPerGame: FALLBACK_EPL.leagueAvgTotal,
-      goalsDelta: (i % 5) * 0.05 - 0.1,
-      avgFoulsPerGame: FALLBACK_EPL.leagueAvgFouls,
-      foulsDelta: (i % 7) * 0.3 - 0.9,
-      avgYellowCardsPerGame: 3.5,
+      avgGoalsPerGame: avgTotalPoints,
+      goalsDelta,
+      avgFoulsPerGame: avgFouls,
+      foulsDelta,
+      avgYellowCardsPerGame: 3.5 + (i % 3) * 0.15,
       yellowCardsDelta: (i % 4) * 0.2 - 0.3,
       avgRedCardsPerGame: 0.12,
       redCardsDelta: 0,
@@ -65,11 +72,58 @@ function seedRef(name: string, i: number): RefProfile {
   };
 }
 
+function seedTeamSplits(refs: RefProfile[]): Record<string, TeamCrewSplit[]> {
+  const teams = EPL_TEAMS.map((t) => t.abbr);
+  const splits: Record<string, TeamCrewSplit[]> = {};
+
+  for (let ti = 0; ti < teams.length; ti++) {
+    const team = teams[ti]!;
+    const ref = refs[ti % refs.length]!;
+    const games = 14 + (ti % 6);
+    const wins = Math.round(games * (0.44 + (ti % 4) * 0.05));
+    const losses = games - wins;
+    const homeGames = Math.ceil(games / 2);
+    const awayGames = games - homeGames;
+    const homeWins = Math.round(wins * 0.55);
+    const awayWins = wins - homeWins;
+    const avgTotalPoints = FALLBACK_EPL.leagueAvgTotal + (ti % 5) * 0.08 - 0.16;
+    const avgFouls = FALLBACK_EPL.leagueAvgFouls + (ti % 6) * 0.4 - 1;
+    const avgTeamFouls = avgFouls * 0.52;
+    const avgOpponentFouls = avgFouls * 0.48;
+
+    splits[team] = [
+      {
+        crewKey: ref.slug,
+        crewNames: [ref.name],
+        games,
+        avgTotalPoints,
+        overRate: 0.42 + (ti % 8) * 0.04,
+        avgFouls,
+        wins,
+        losses,
+        totalDelta: avgTotalPoints - FALLBACK_EPL.leagueAvgTotal,
+        homeGames,
+        awayGames,
+        homeWins,
+        homeLosses: homeGames - homeWins,
+        awayWins,
+        awayLosses: awayGames - awayWins,
+        avgTeamFouls,
+        avgOpponentFouls,
+        foulDifferential: avgTeamFouls - avgOpponentFouls,
+      },
+    ];
+  }
+
+  return splits;
+}
+
 function buildStats(): RefStatsFile {
+  const refs = PGMO_REFS.map(seedRef);
   return {
     meta: {
       lastUpdated: new Date().toISOString(),
-      seasons: [],
+      seasons: ["2024-25"],
       leagueAvgTotal: FALLBACK_EPL.leagueAvgTotal,
       leagueAvgFouls: FALLBACK_EPL.leagueAvgFouls,
       leagueOverBaseline: FALLBACK_EPL.leagueOverBaseline,
@@ -80,10 +134,10 @@ function buildStats(): RefStatsFile {
       source: "seeded",
       atsAvailable: false,
       note:
-        "Premier League offseason seed — PGMO roster placeholders. Run npm run build-epl-data for match backfill.",
+        "Premier League offseason seed — PGMO roster with illustrative match samples. Run npm run build-epl-data for match backfill.",
     },
-    refs: PGMO_REFS.map(seedRef),
-    teamSplits: {},
+    refs,
+    teamSplits: seedTeamSplits(refs),
   };
 }
 

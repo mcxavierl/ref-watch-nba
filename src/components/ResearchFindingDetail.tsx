@@ -42,15 +42,13 @@ export function ResearchFindingDetail({
           </p>
           <h1 className="page-title">{finding.headline}</h1>
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-600">
-          {finding.summary}
-        </p>
         {finding.explainer && (
           <p className="mt-3 text-sm leading-relaxed text-zinc-600">
             <span className="font-medium text-zinc-800">Why it matters: </span>
             {finding.explainer}
           </p>
         )}
+        <p className="finding-accordion-metric-preview mt-2">{finding.summary}</p>
         <p className="mt-3 text-sm tabular-nums text-zinc-500">
           {finding.sampleNote}
         </p>

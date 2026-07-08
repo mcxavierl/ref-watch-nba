@@ -570,6 +570,7 @@ function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
       slug,
       name: meta.name,
       number: meta.number,
+      role: meta.role,
       games: games.length,
       avgTotalPoints: round1(avgTotal),
       overRate: round3(overRate),
