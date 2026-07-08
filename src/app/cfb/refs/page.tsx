@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
 import { RefsHubPage } from "@/components/RefsHubPage";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("cfb", "refs");
 
-export const metadata: Metadata = {
-  title: "CFB referees | Ref Watch",
-};
 
 export default function CfbRefsPage() {
   return <RefsHubPage leagueId="cfb" />;

@@ -1,13 +1,19 @@
-import type { Metadata } from "next";
 import { InsightsHubPage } from "@/components/InsightsHubPage";
-import { absoluteUrl } from "@/lib/site";
+import { hubPageMetadata } from "@/lib/seo";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 
-export const metadata: Metadata = {
-  title: "NHL insights | Ref Watch",
-  description: "NHL official tendencies, league trends, and research findings.",
-  alternates: { canonical: absoluteUrl("/nhl/insights") },
+export const metadata = hubPageMetadata("nhl", "insights");
+
+type PageProps = {
+  searchParams: Promise<{ scope?: string }>;
 };
 
-export default function NhlInsightsPage() {
-  return <InsightsHubPage leagueId="nhl" />;
+export default async function NhlInsightsPage({ searchParams }: PageProps) {
+  const { scope } = await searchParams;
+  return (
+    <InsightsHubPage
+      leagueId="nhl"
+      scopeMode={readSeasonScopeParam(scope)}
+    />
+  );
 }

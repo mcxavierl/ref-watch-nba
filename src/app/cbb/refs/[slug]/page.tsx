@@ -21,7 +21,7 @@ import {
   refProfileCoreProvenance,
 } from "@/lib/provenance";
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
-import { absoluteUrl } from "@/lib/site";
+import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote, refTeamDataNote } from "@/lib/user-language";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
@@ -38,19 +38,23 @@ export async function generateMetadata({
   const { slug } = await params;
   const profile = getRefBySlug(slug);
   if (!profile) {
-    return { title: "Ref not found | Ref Watch NBA" };
+    return entityNotFoundMetadata("ref", "cbb");
   }
+  const stats = getRefStats();
   const ats = profile.bettingStats?.homeTeamAts;
   const atsLabel = ats
     ? `${ats.wins}-${ats.losses}${ats.pushes ? `-${ats.pushes}` : ""} home ATS`
     : "";
-  return {
-    title: `${profile.name} (#${profile.number})`,
-    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over 225${atsLabel ? `, ${atsLabel}` : ""}. Historical referee analytics with minimum game thresholds.`,
-    alternates: {
-      canonical: absoluteUrl(`/cbb/refs/${slug}`),
-    },
-  };
+  return refProfileMetadata({
+    leagueId: "cbb",
+    slug,
+    name: profile.name,
+    number: profile.number,
+    games: profile.games,
+    overRateFormatted: formatPct(profile.overRate),
+    overBaseline: stats.meta.leagueOverBaseline,
+    atsLabel: atsLabel || undefined,
+  });
 }
 
 export default async function RefProfilePage({
@@ -81,13 +85,20 @@ export default async function RefProfilePage({
   return (
     <div className="page-shell">
       <JsonLd
-        data={refProfileDatasetJsonLd(
+        data={[
+          refProfileDatasetJsonLd(
           profile.name,
           profile.slug,
           "CBB",
           profile.games,
           stats.meta.lastUpdated,
-        )}
+        ),
+          refProfileBreadcrumbJsonLd(
+            "cbb",
+            profile.name,
+            profile.slug,
+          ),
+        ]}
       />
       <Link
         href="/cbb"

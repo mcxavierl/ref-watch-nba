@@ -39,6 +39,7 @@ import {
   slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
+import { slatePageMetadata } from "@/lib/seo";
 import { absoluteUrl } from "@/lib/site";
 import {
   NO_SIGNAL_SLATE_COPY,
@@ -53,19 +54,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ? "CBB ref and crew analytics during the offseason, dataset findings, ref profiles, and team histories."
     : slateMetadataDescription(feed);
   const title = isOffseason ? "CBB ref data (offseason)" : "Tonight's CBB slate";
-  return {
+  return slatePageMetadata({
     title,
     description,
-    alternates: {
-      canonical: absoluteUrl("/cbb"),
-    },
-    openGraph: {
-      title: `${title} | Ref Watch`,
-      description,
-      url: absoluteUrl("/cbb"),
-      type: "website",
-    },
-  };
+    path: "/cbb",
+    keywords: ["CBB referees","college basketball refs"],
+  });
 }
 
 function sortSlateGames(

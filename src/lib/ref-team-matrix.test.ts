@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { LEAGUES } from "@/lib/leagues";
+import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import {
   bottomRefsBelowBaselineForTeam,
   computeRefTeamMatrix,
@@ -26,7 +27,7 @@ function buildMatrix() {
     })),
     getTeamSplits,
     3,
-    { league: "nba", sinceSeason: "2021-22" },
+    { league: "nba", sinceSeason: DEFAULT_SINCE_SEASON },
   );
 }
 

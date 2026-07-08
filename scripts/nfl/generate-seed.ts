@@ -38,6 +38,7 @@ import {
 } from "./lib/ref-analytics";
 import { buildBaselinesFile, saveBaselines } from "../lib/baselines";
 import { loadGameLogs } from "../lib/game-logs";
+import { NFL_TEN_SEASONS } from "../../src/lib/league-seasons";
 
 const NFL_TEAM_ABBRS = [
   "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN",
@@ -46,7 +47,7 @@ const NFL_TEAM_ABBRS = [
   "TEN", "WAS",
 ];
 
-const SEASONS = ["2021-22", "2022-23", "2023-24", "2024-25", "2025-26"];
+const SEASONS = [...NFL_TEN_SEASONS];
 const LEAGUE_AVG_TOTAL = 45.8;
 const LEAGUE_AVG_FOULS = 13;
 const LEAGUE_OVER_BASELINE = 46;

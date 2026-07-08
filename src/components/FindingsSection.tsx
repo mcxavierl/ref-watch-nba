@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { StatCell, StatStrip } from "@/components/StatStrip";
 import { MethodologyLink } from "@/components/MethodologyLink";
@@ -85,6 +87,8 @@ export function FindingsSection({
   sortExplainer,
   title = "Dataset findings",
   league,
+  showScopeToggle = false,
+  scopeLabel,
 }: {
   findings: Finding[];
   compact?: boolean;
@@ -95,6 +99,8 @@ export function FindingsSection({
   sortExplainer?: string;
   title?: string;
   league?: FindingLeague;
+  showScopeToggle?: boolean;
+  scopeLabel?: string;
 }) {
   const scopedFindings = sortFindingsByStrength(
     league ? filterFindingsByLeague(findings, league) : findings,
@@ -120,9 +126,21 @@ export function FindingsSection({
     <section id="dataset-findings" className={sectionClass || undefined}>
       {showHeader && (
         <div className={slateHero ? "slate-findings-hero-intro" : undefined}>
-          <h2 className={slateHero ? "slate-findings-hero-title" : "section-title"}>
-            {title}
-          </h2>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <h2 className={slateHero ? "slate-findings-hero-title" : "section-title"}>
+              {title}
+            </h2>
+            {showScopeToggle && (
+              <Suspense fallback={null}>
+                <SeasonScopeToggle />
+              </Suspense>
+            )}
+          </div>
+          {scopeLabel && (
+            <p className={slateHero ? "slate-findings-hero-note" : "mt-1 text-sm text-zinc-500"}>
+              {scopeLabel}
+            </p>
+          )}
           {!slateHero && (
             <p className="section-lead">
               Strong-confidence patterns first, then moderate and thin samples.

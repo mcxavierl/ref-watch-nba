@@ -51,7 +51,7 @@ const FEATURES = [
     icon: TrendingUp,
     title: "League trends",
     description:
-      "Five-season scoring and foul baselines with year-over-year context.",
+      "Ten-season scoring and foul baselines with year-over-year context.",
   },
 ] as const;
 

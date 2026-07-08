@@ -1,14 +1,19 @@
-import type { Metadata } from "next";
 import { RefsHubPage } from "@/components/RefsHubPage";
-import { absoluteUrl } from "@/lib/site";
+import { hubPageMetadata } from "@/lib/seo";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 
-export const metadata: Metadata = {
-  title: "NBA referees & crews | Ref Watch",
-  description:
-    "Browse every NBA referee and recurring crew in the Ref Watch dataset.",
-  alternates: { canonical: absoluteUrl("/refs") },
+export const metadata = hubPageMetadata("nba", "refs");
+
+type PageProps = {
+  searchParams: Promise<{ scope?: string }>;
 };
 
-export default function RefsIndexPage() {
-  return <RefsHubPage leagueId="nba" />;
+export default async function RefsIndexPage({ searchParams }: PageProps) {
+  const { scope } = await searchParams;
+  return (
+    <RefsHubPage
+      leagueId="nba"
+      scopeMode={readSeasonScopeParam(scope)}
+    />
+  );
 }

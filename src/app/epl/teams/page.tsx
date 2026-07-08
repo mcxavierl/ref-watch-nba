@@ -1,16 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/epl/data";
 import { EPL_TEAMS, teamFullName } from "@/lib/epl/teams";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("epl", "teams");
+
 
 export const dynamic = "force-static";
-
-export const metadata: Metadata = {
-  title: "All EPL teams | Ref Watch",
-  description:
-    "Browse referee history for Premier League clubs: goal trends, foul and card patterns, and home/away records.",
-};
 
 export default function EplTeamsIndexPage() {
   const teams = [...EPL_TEAMS].sort((a, b) => a.name.localeCompare(b.name));

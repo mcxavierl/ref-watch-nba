@@ -1,4 +1,5 @@
 import { formatPct, formatSigned, getRefStats, getTeamSplits } from "@/lib/nfl/data";
+import { buildScopedRefStats } from "@/lib/scoped-ref-stats";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, NFL_TEAMS } from "@/lib/nfl/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
@@ -372,16 +373,25 @@ function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
   ].filter((c): c is ScoredFindingBase => c !== null);
 }
 
-export function computeFindings(limit = 6): Finding[] {
-  const stats = getRefStats();
+function resolveStats(scopedSeasons?: string[]) {
+  const full = getRefStats();
+  if (!scopedSeasons?.length) return full;
+  return buildScopedRefStats("nfl", full, scopedSeasons);
+}
+
+export function computeFindings(
+  limit = 6,
+  scopedSeasons?: string[],
+): Finding[] {
+  const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
   const ranked = rankScoredFindings(collectCandidates(stats));
   return pickFeaturedFindings(ranked, limit);
 }
 
-export function computeAllFindings(): Finding[] {
-  const stats = getRefStats();
+export function computeAllFindings(scopedSeasons?: string[]): Finding[] {
+  const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
   return rankScoredFindings(collectCandidates(stats))

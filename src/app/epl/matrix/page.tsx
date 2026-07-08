@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
@@ -6,19 +5,14 @@ import {
   getRefStats,
   getTeamSplits,
 } from "@/lib/epl/data";
+import { hubPageMetadata } from "@/lib/seo";
+
+export const metadata = hubPageMetadata("epl", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
-import { absoluteUrl } from "@/lib/site";
 import { isEplSimulatedData } from "@/lib/epl/data-source";
 import { EPL_TEAMS, teamFullName } from "@/lib/epl/teams";
-
-export const metadata: Metadata = {
-  title: "EPL referee × team matrix",
-  description:
-    "Cross-tab matrix of EPL team records when each official worked their games. Minimum sample gates, descriptive historical splits only.",
-  alternates: { canonical: absoluteUrl("/epl/matrix") },
-};
 
 export default function EplMatrixPage() {
   const stats = getRefStats();

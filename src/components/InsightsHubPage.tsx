@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
@@ -6,22 +7,28 @@ import { LeagueTrendsTable } from "@/components/LeagueTrendsTable";
 import { RankingsInsightCards } from "@/components/RankingsInsightCards";
 import { RefRankingsTable } from "@/components/RefRankingsTable";
 import { ResearchHubFindings } from "@/components/ResearchHubFindings";
+import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { getBaselinesFile } from "@/lib/baselines";
 import { LEAGUES } from "@/lib/leagues";
-import { loadLeagueStats } from "@/lib/load-league-stats";
+import { loadScopedLeagueStats } from "@/lib/load-league-stats";
+import { scopedBaselinesSeasons } from "@/lib/scoped-ref-stats";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
 import { computeResearchFindingsForLeague } from "@/lib/research";
 import { researchHubDatasetJsonLd } from "@/lib/syndication";
+import type { SeasonScopeMode } from "@/lib/season-scope";
+import { DEFAULT_SEASON_SCOPE_MODE } from "@/lib/season-scope";
 import { buildYoYNarrative, seasonRowsFromBaselines } from "@/lib/trends";
 import { RANKINGS_PAGE_LEAD } from "@/lib/trust-charter";
 import type { FindingLeague } from "@/lib/findings-shared";
+import type { SeasonBaseline } from "../../scripts/lib/baselines";
 
 type InsightsLeagueId = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 
 type InsightsHubPageProps = {
   leagueId: InsightsLeagueId;
   defaultTab?: "tendencies" | "trends" | "findings";
+  scopeMode?: SeasonScopeMode;
 };
 
 function insightsDataLeague(leagueId: InsightsLeagueId): FindingLeague {
@@ -31,15 +38,25 @@ function insightsDataLeague(leagueId: InsightsLeagueId): FindingLeague {
 export function InsightsHubPage({
   leagueId,
   defaultTab = "tendencies",
+  scopeMode = DEFAULT_SEASON_SCOPE_MODE,
 }: InsightsHubPageProps) {
   const league = LEAGUES[leagueId];
-  const { stats, formatRange } = loadLeagueStats(leagueId);
+  const {
+    stats,
+    formatRange,
+    scopedSeasons,
+    scopeLabel,
+  } = loadScopedLeagueStats(leagueId, scopeMode);
   const range = formatRange(stats.meta);
   const homeHref = league.pathPrefix || "/";
   const dataLeague = insightsDataLeague(leagueId);
-  const findings = computeResearchFindingsForLeague(dataLeague);
+  const findings = computeResearchFindingsForLeague(dataLeague, scopedSeasons);
   const baselines = getBaselinesFile();
-  const rows = seasonRowsFromBaselines(baselines[dataLeague].seasons);
+  const scopedBaselineSeasons = scopedBaselinesSeasons(
+    baselines[dataLeague].seasons,
+    scopedSeasons,
+  ) as Record<string, SeasonBaseline>;
+  const rows = seasonRowsFromBaselines(scopedBaselineSeasons);
   const narrative = buildYoYNarrative(rows, dataLeague);
   const synthesis = buildRankingsSynthesis(stats, league);
   const signalCounts = Object.fromEntries(
@@ -49,8 +66,21 @@ export function InsightsHubPage({
     ]),
   );
 
+  const scopeToolbar = (
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <p className="text-sm text-zinc-600">
+        Showing <span className="font-medium text-zinc-800">{scopeLabel}</span>{" "}
+        ({range})
+      </p>
+      <Suspense fallback={null}>
+        <SeasonScopeToggle />
+      </Suspense>
+    </div>
+  );
+
   const tendenciesPanel = (
     <>
+      {scopeToolbar}
       <p className="section-lead mb-4">
         {RANKINGS_PAGE_LEAD} Sample: {stats.refs.length} officials ({range}).
       </p>
@@ -71,8 +101,9 @@ export function InsightsHubPage({
 
   const trendsPanel = (
     <>
+      {scopeToolbar}
       <p className="section-lead mb-4">
-        Five-season scoring and whistle baselines from game logs ({range}).
+        {scopeLabel} scoring and whistle baselines from game logs ({range}).
         Historical context only.
       </p>
       {narrative && (
@@ -93,6 +124,7 @@ export function InsightsHubPage({
 
   const findingsPanel = (
     <>
+      {scopeToolbar}
       <JsonLd
         data={researchHubDatasetJsonLd(
           dataLeague,

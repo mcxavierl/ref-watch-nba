@@ -23,7 +23,7 @@ import {
   refProfileCoreProvenance,
 } from "@/lib/provenance";
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
-import { absoluteUrl } from "@/lib/site";
+import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote } from "@/lib/user-language";
 import { EplPreviewBanner } from "@/components/EplPreviewBanner";
 import { isEplSimulatedData } from "@/lib/epl/data-source";
@@ -44,20 +44,23 @@ export async function generateMetadata({
   const { slug } = await params;
   const profile = getRefBySlug(slug);
   if (!profile) {
-    return { title: "Official not found | Ref Watch CFB" };
+    return entityNotFoundMetadata("official", "epl");
   }
   const stats = getRefStats();
   const ats = profile.bettingStats?.homeTeamAts;
   const atsLabel = ats
     ? `${ats.wins}-${ats.losses}${ats.pushes ? `-${ats.pushes}` : ""} home ATS`
     : "";
-  return {
-    title: formatRefNameWithNumber(profile.name, profile.number),
-    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over ${stats.meta.leagueOverBaseline}${atsLabel ? `, ${atsLabel}` : ""}. Historical EPL referee analytics with minimum game thresholds.`,
-    alternates: {
-      canonical: absoluteUrl(`/epl/refs/${slug}`),
-    },
-  };
+  return refProfileMetadata({
+    leagueId: "epl",
+    slug,
+    name: profile.name,
+    number: profile.number,
+    games: profile.games,
+    overRateFormatted: formatPct(profile.overRate),
+    overBaseline: stats.meta.leagueOverBaseline,
+    atsLabel: atsLabel || undefined,
+  });
 }
 
 export default async function EplRefProfilePage({
@@ -97,13 +100,20 @@ export default async function EplRefProfilePage({
   return (
     <div className="page-shell">
       <JsonLd
-        data={refProfileDatasetJsonLd(
+        data={[
+          refProfileDatasetJsonLd(
           profile.name,
           profile.slug,
           "EPL",
           profile.games,
           stats.meta.lastUpdated,
-        )}
+        ),
+          refProfileBreadcrumbJsonLd(
+            "epl",
+            profile.name,
+            profile.slug,
+          ),
+        ]}
       />
       <Link
         href="/epl"

@@ -1,20 +1,14 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { formatRefStatsRange, getRefStats, getTeamSplits } from "@/lib/cbb/data";
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
-import { absoluteUrl } from "@/lib/site";
 import { CBB_TEAMS, teamFullName } from "@/lib/cbb/teams";
 import { refTeamDataNote } from "@/lib/user-language";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("cbb", "matrix");
 
-export const metadata: Metadata = {
-  title: "CBB ref × team matrix",
-  description:
-    "Cross-tab matrix of CBB team records when each referee officiated their games. Minimum sample gates, descriptive historical splits only.",
-  alternates: { canonical: absoluteUrl("/cbb/matrix") },
-};
 
 export default function NbaMatrixPage() {
   const stats = getRefStats();

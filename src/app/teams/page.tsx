@@ -1,16 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/data";
 import { teamFullName, teamsByConference } from "@/lib/teams";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("nba", "teams");
+
 
 export const dynamic = "force-static";
-
-export const metadata: Metadata = {
-  title: "All NBA teams | Ref Watch",
-  description:
-    "Browse referee crew history for all 30 NBA teams: scoring trends, foul patterns, and home/away records.",
-};
 
 export default function TeamsIndexPage() {
   const { East, West } = teamsByConference();

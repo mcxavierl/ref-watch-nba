@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
 import { RefsHubPage } from "@/components/RefsHubPage";
-import { absoluteUrl } from "@/lib/site";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("nfl", "crews");
 
-export const metadata: Metadata = {
-  title: "NFL crew dynamics | Ref Watch",
-  alternates: { canonical: absoluteUrl("/nfl/refs") },
-};
 
 export default function NflCrewsPage() {
   return <RefsHubPage leagueId="nfl" defaultTab="crews" />;

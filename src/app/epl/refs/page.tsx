@@ -1,11 +1,19 @@
-import type { Metadata } from "next";
 import { RefsHubPage } from "@/components/RefsHubPage";
+import { hubPageMetadata } from "@/lib/seo";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 
-export const metadata: Metadata = {
-  title: "EPL referees | Ref Watch",
-  description: "Browse Premier League referees in the Ref Watch dataset.",
+export const metadata = hubPageMetadata("epl", "refs");
+
+type PageProps = {
+  searchParams: Promise<{ scope?: string }>;
 };
 
-export default function EplRefsPage() {
-  return <RefsHubPage leagueId="epl" />;
+export default async function EplRefsPage({ searchParams }: PageProps) {
+  const { scope } = await searchParams;
+  return (
+    <RefsHubPage
+      leagueId="epl"
+      scopeMode={readSeasonScopeParam(scope)}
+    />
+  );
 }

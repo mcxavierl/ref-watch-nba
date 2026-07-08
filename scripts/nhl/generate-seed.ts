@@ -42,6 +42,7 @@ import {
 } from "../lib/game-logs";
 import { buildBaselinesFile, saveBaselines } from "../lib/baselines";
 import { nhlMatchupStrengthBias } from "../lib/nhl-team-strength";
+import { NHL_TEN_SEASONS } from "../../src/lib/league-seasons";
 import { breakTieWithOvertime, teamWonGame } from "../lib/team-win";
 
 const NHL_TEAM_ABBRS = [
@@ -51,7 +52,7 @@ const NHL_TEAM_ABBRS = [
   "WPG", "WSH",
 ];
 
-const SEASONS = ["2021-22", "2022-23", "2023-24", "2024-25", "2025-26"];
+const SEASONS = [...NHL_TEN_SEASONS];
 const LEAGUE_AVG_TOTAL = 6.2;
 const LEAGUE_AVG_FOULS = 11.0;
 const LEAGUE_OVER_BASELINE = 6.0;

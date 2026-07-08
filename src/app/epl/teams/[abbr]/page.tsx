@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
 import { getTeam, EPL_TEAMS, teamFullName } from "@/lib/epl/teams";
@@ -17,16 +18,13 @@ export async function generateMetadata({
   const { abbr } = await params;
   const team = getTeam(abbr);
   if (!team) {
-    return { title: "Team not found | Ref Watch CFB" };
+    return entityNotFoundMetadata("team", "epl");
   }
   const name = teamFullName(team);
-  return {
-    title: `${name} official crew splits | Ref Watch CFB`,
-    description: `How ${name} performs under different EPL referee crews, scoring, penalties, and home/away records.`,
-  };
+  return teamProfileMetadata({ leagueId: "epl", teamName: name, abbr: team.abbr });
 }
 
-export default async function NhlTeamPage({
+export default async function EplTeamPage({
   params,
 }: {
   params: Promise<{ abbr: string }>;

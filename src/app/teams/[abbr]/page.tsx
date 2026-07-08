@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 import { getTeam, NBA_TEAMS, teamFullName } from "@/lib/teams";
-
-export const dynamic = "force-static";
 
 export function generateStaticParams() {
   return NBA_TEAMS.map((team) => ({ abbr: team.abbr }));
@@ -17,23 +17,28 @@ export async function generateMetadata({
   const { abbr } = await params;
   const team = getTeam(abbr);
   if (!team) {
-    return { title: "Team not found | Ref Watch NBA" };
+    return entityNotFoundMetadata("team", "nba");
   }
   const name = teamFullName(team);
-  return {
-    title: `${name} ref crew splits | Ref Watch NBA`,
-    description: `How ${name} performs under different referee crews: scoring, fouls, and home/away records.`,
-  };
+  return teamProfileMetadata({ leagueId: "nba", teamName: name, abbr: team.abbr });
 }
 
 export default async function TeamPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ abbr: string }>;
+  searchParams: Promise<{ scope?: string }>;
 }) {
   const { abbr } = await params;
+  const { scope } = await searchParams;
   const team = getTeam(abbr);
   if (!team) notFound();
 
-  return <TeamCrewPage config={{ teamAbbr: team.abbr }} />;
+  return (
+    <TeamCrewPage
+      config={{ teamAbbr: team.abbr }}
+      scopeMode={readSeasonScopeParam(scope)}
+    />
+  );
 }

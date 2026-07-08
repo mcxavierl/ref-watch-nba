@@ -19,6 +19,8 @@ import {
 } from "@/lib/data";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/findings";
+import { loadScopedLeagueStats } from "@/lib/load-league-stats";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 import {
   computeGameStorylines,
   computeSlateStorylines,
@@ -41,6 +43,7 @@ import {
   topShareSignals,
 } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
+import { slatePageMetadata } from "@/lib/seo";
 import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
@@ -54,19 +57,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ? "NBA ref and crew analytics during the offseason, dataset findings, ref profiles, and team histories."
     : slateMetadataDescription(feed);
   const title = isOffseason ? "NBA ref data (offseason)" : "Tonight's NBA slate";
-  return {
+  return slatePageMetadata({
     title,
     description,
-    alternates: {
-      canonical: absoluteUrl("/"),
-    },
-    openGraph: {
-      title: `${title} | Ref Watch`,
-      description,
-      url: absoluteUrl("/"),
-      type: "website",
-    },
-  };
+    path: "/",
+    keywords: ["NBA refs", "NBA referee crew", "tonight's NBA slate", "referee analytics"],
+  });
 }
 
 function sortSlateGames(
@@ -83,11 +79,18 @@ function sortSlateGames(
   });
 }
 
-export default function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ scope?: string }>;
+}) {
+  const { scope } = await searchParams;
+  const scopeMode = readSeasonScopeParam(scope);
+  const scoped = loadScopedLeagueStats("nba", scopeMode);
   const assignments = getAssignments();
   const refStats = getRefStats();
   const odds = getOdds();
-  const findings = computeFindings();
+  const findings = computeFindings(6, scoped.scopedSeasons);
   const isOffseason = assignments.games.length === 0;
   const { games: slateGames } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
@@ -124,8 +127,10 @@ export default function HomePage() {
       <LeagueSlateHero
         leagueId="nba"
         assignments={assignments}
-        refStats={refStats}
+        refStats={scoped.stats}
         productHome={isOffseason}
+        showScopeToggle={isOffseason}
+        scopeLabel={scoped.scopeLabel}
       />
 
       <LeagueDataSourceBanner league="nba" meta={refStats.meta} className="mt-4" />
@@ -141,6 +146,8 @@ export default function HomePage() {
         initialVisibleCount={4}
         title={isOffseason ? "Season highlights" : "Officiating intelligence"}
         league="NBA"
+        showScopeToggle
+        scopeLabel={`${scoped.scopeLabel} · ${scoped.formatRange(scoped.stats.meta)}`}
         sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
       />
 

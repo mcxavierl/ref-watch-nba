@@ -1,26 +1,38 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { CrewDominanceTable } from "@/components/CrewDominanceTable";
 import { LeagueHubTabs } from "@/components/LeagueHubTabs";
 import { RefsDirectory } from "@/components/RefsDirectory";
 import { RefsMacroInsight } from "@/components/RefsMacroInsight";
+import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import {
   computeCrewDominance,
   crewDominanceSummary,
 } from "@/lib/crew-dominance";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
-import { loadLeagueStats } from "@/lib/load-league-stats";
+import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { linesmanSlugSet } from "@/lib/nhl/officials";
 import { buildRefsDirectoryContext } from "@/lib/refs-directory";
+import type { SeasonScopeMode } from "@/lib/season-scope";
+import { DEFAULT_SEASON_SCOPE_MODE } from "@/lib/season-scope";
 import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 
 type RefsHubPageProps = {
   leagueId: LeagueId;
   defaultTab?: "refs" | "crews";
+  scopeMode?: SeasonScopeMode;
 };
 
-export function RefsHubPage({ leagueId, defaultTab = "refs" }: RefsHubPageProps) {
+export function RefsHubPage({
+  leagueId,
+  defaultTab = "refs",
+  scopeMode = DEFAULT_SEASON_SCOPE_MODE,
+}: RefsHubPageProps) {
   const league = LEAGUES[leagueId];
-  const { stats, formatRange } = loadLeagueStats(leagueId);
+  const { stats, formatRange, scopeLabel } = loadScopedLeagueStats(
+    leagueId,
+    scopeMode,
+  );
   const range = formatRange(stats.meta);
   const ctx = buildRefsDirectoryContext(stats, league);
   const entries = computeCrewDominance(stats);
@@ -29,6 +41,17 @@ export function RefsHubPage({ leagueId, defaultTab = "refs" }: RefsHubPageProps)
     leagueId === "nhl" ? linesmanSlugSet(stats.refs) : undefined;
   const seeded = stats.meta.source === "seeded";
 
+  const scopeToolbar = (
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <p className="text-sm text-zinc-600">
+        {scopeLabel} ({range})
+      </p>
+      <Suspense fallback={null}>
+        <SeasonScopeToggle />
+      </Suspense>
+    </div>
+  );
+
   const refsLead =
     leagueId === "nhl"
       ? `${ctx.meta.qualifiedCount} referees with game history across ${ctx.meta.seasons.join(", ")} (${range}). ${NHL_LINESMAN_METHODOLOGY_NOTE}`
@@ -36,7 +59,8 @@ export function RefsHubPage({ leagueId, defaultTab = "refs" }: RefsHubPageProps)
 
   const refsPanel = (
     <>
-      <RefsMacroInsight meta={ctx.meta} league={league} />
+      {scopeToolbar}
+      <RefsMacroInsight meta={ctx.meta} league={league} scopeLabel={scopeLabel} />
       <section className="section-block">
         <RefsDirectory
           refs={ctx.refs}
@@ -50,6 +74,7 @@ export function RefsHubPage({ leagueId, defaultTab = "refs" }: RefsHubPageProps)
 
   const crewsPanel = (
     <section className="section-block">
+      {scopeToolbar}
       <p className="section-lead mb-4">
         {crewDominanceSummary(entries, leagueId)} ({range}). Pace and whistle
         deltas compare each crew to league baselines; dominance compares the

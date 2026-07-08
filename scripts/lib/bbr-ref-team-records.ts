@@ -2,6 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import * as cheerio from "cheerio";
 import { BROWSER_HEADERS } from "./nba-headers";
+import { NBA_TEN_SEASONS } from "../../src/lib/league-seasons";
 import {
   bbrYearToSeasonLabel,
   seasonLabelToBbrYear,
@@ -29,13 +30,7 @@ const BBR_TEAM_SLUG_ALIASES: Record<string, string[]> = {
   PHX: ["PHO"],
 };
 
-export const BBR_SEASONS = [
-  "2021-22",
-  "2022-23",
-  "2023-24",
-  "2024-25",
-  "2025-26",
-] as const;
+export const BBR_SEASONS = [...NBA_TEN_SEASONS] as const;
 
 export const BBR_TEAM_ABBRS = [
   "ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW",

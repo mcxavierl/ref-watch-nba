@@ -32,7 +32,7 @@ const NBA_LINKS: BrowseLink[] = [
   {
     href: "/insights#trends",
     label: "League trends",
-    description: "Five-season scoring and foul context",
+    description: "Ten-season scoring and foul context",
   },
 ];
 
@@ -60,7 +60,7 @@ const NHL_LINKS: BrowseLink[] = [
   {
     href: "/nhl/trends",
     label: "League trends",
-    description: "Five-season scoring and penalty context",
+    description: "Ten-season scoring and penalty context",
   },
 ];
 
@@ -88,7 +88,7 @@ const NFL_LINKS: BrowseLink[] = [
   {
     href: "/nfl/trends",
     label: "League trends",
-    description: "Five-season scoring and penalty context",
+    description: "Ten-season scoring and penalty context",
   },
 ];
 
@@ -116,7 +116,7 @@ const EPL_LINKS: BrowseLink[] = [
   {
     href: "/epl/trends",
     label: "League trends",
-    description: "Five-season goal and card context",
+    description: "Ten-season goal and card context",
   },
 ];
 

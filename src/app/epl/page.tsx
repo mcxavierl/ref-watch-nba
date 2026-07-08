@@ -32,6 +32,7 @@ import {
   slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
+import { slatePageMetadata } from "@/lib/seo";
 import { absoluteUrl } from "@/lib/site";
 import {
   NO_SIGNAL_SLATE_COPY,
@@ -51,17 +52,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ? "EPL referee analytics during the offseason, dataset findings, ref profiles, and club histories."
     : slateMetadataDescription(feed);
   const title = isOffseason ? "EPL ref data (offseason)" : "Tonight's EPL matchday";
-  return {
+  return slatePageMetadata({
     title,
     description,
-    alternates: { canonical: absoluteUrl("/epl") },
-    openGraph: {
-      title: `${title} | Ref Watch`,
-      description,
-      url: absoluteUrl("/epl"),
-      type: "website",
-    },
-  };
+    path: "/epl",
+    keywords: ["Premier League referees","EPL matchday","referee analytics"],
+  });
 }
 
 function sortSlateGames(

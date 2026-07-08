@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { TeamLogo } from "@/components/TeamLogo";
 import { CloseGameSection } from "@/components/CloseGameSection";
 import { TeamSplitView } from "@/components/TeamSplitView";
+import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import * as nbaData from "@/lib/data";
 import * as nhlData from "@/lib/nhl/data";
 import { filterNhlReferees } from "@/lib/nhl/officials";
@@ -24,6 +26,9 @@ import { computeTeamInsights } from "@/lib/team-insights";
 import { TeamInsightCards } from "@/components/TeamInsightCards";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import { getCachedTeamStrengthOfSchedule } from "@/lib/nba-team-sos-cache";
+import { loadScopedLeagueStats } from "@/lib/load-league-stats";
+import type { SeasonScopeMode } from "@/lib/season-scope";
+import { DEFAULT_SEASON_SCOPE_MODE } from "@/lib/season-scope";
 
 const LEAGUE_MODULES = {
   nba: { data: nbaData, teams: nbaTeams, basePath: "", dataLeague: "NBA" as const, crewSize: "three", surface: "court" },
@@ -39,28 +44,40 @@ export interface TeamPageConfig {
   league?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 }
 
-export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
+export function TeamCrewPage({
+  config,
+  scopeMode = DEFAULT_SEASON_SCOPE_MODE,
+}: {
+  config: TeamPageConfig;
+  scopeMode?: SeasonScopeMode;
+}) {
   const league = config.league ?? "nba";
   const mod = LEAGUE_MODULES[league];
   const basePath = mod.basePath;
   const { getTeam, teamFullName, teamWithArticle } = mod.teams;
-  const { getRefStats, getTeamSplits, sortSplitsByGames, formatDate, formatPct } = mod.data;
+  const { sortSplitsByGames, formatDate, formatPct } = mod.data;
 
   const team = getTeam(config.teamAbbr);
   if (!team) return null;
 
+  const {
+    stats,
+    sinceSeason,
+    scopeLabel,
+    formatRange,
+  } = loadScopedLeagueStats(league, scopeMode);
+
   const isNhl = league === "nhl";
   const isNfl = league === "nfl" || league === "cfb";
-  const stats = getRefStats();
   const analyticsRefs = isNhl ? filterNhlReferees(stats.refs) : stats.refs;
-  const splits = sortSplitsByGames(getTeamSplits(team.abbr));
+  const splits = sortSplitsByGames(stats.teamSplits[team.abbr] ?? []);
   const refSplits = getTeamRefSplits(analyticsRefs, team.abbr);
   const teamRecord = getTeamDisplayRecord(
     league,
     team.abbr,
     splits,
     stats.meta.seasons,
-    { sinceSeason: "2021-22" },
+    { sinceSeason },
   );
   const teamName = teamFullName(team as never);
   const teamLabel = teamWithArticle(team as never);
@@ -110,7 +127,14 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
           <span className="page-meta-updated">
             Updated {formatDate(stats.meta.lastUpdated)}
           </span>
+          <span className="mx-2 text-zinc-300">·</span>
+          <span>{scopeLabel} ({formatRange(stats.meta)})</span>
         </p>
+        <div className="mt-3 flex flex-wrap justify-end">
+          <Suspense fallback={null}>
+            <SeasonScopeToggle />
+          </Suspense>
+        </div>
         {teamSos ? (
           <TeamRecordSosCard
             record={teamRecord}

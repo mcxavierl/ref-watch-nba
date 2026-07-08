@@ -31,6 +31,7 @@ import {
   slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
+import { slatePageMetadata } from "@/lib/seo";
 import { absoluteUrl } from "@/lib/site";
 import {
   NO_SIGNAL_SLATE_COPY,
@@ -50,17 +51,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ? "CFB ref and crew analytics during the offseason, dataset findings, official profiles, and team histories."
     : slateMetadataDescription(feed);
   const title = isOffseason ? "CFB ref data (offseason)" : "Tonight's CFB slate";
-  return {
+  return slatePageMetadata({
     title,
     description,
-    alternates: { canonical: absoluteUrl("/cfb") },
-    openGraph: {
-      title: `${title} | Ref Watch`,
-      description,
-      url: absoluteUrl("/cfb"),
-      type: "website",
-    },
-  };
+    path: "/cfb",
+    keywords: ["CFB officials","college football refs"],
+  });
 }
 
 function sortSlateGames(

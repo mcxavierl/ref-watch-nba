@@ -23,7 +23,7 @@ import {
   refProfileCoreProvenance,
 } from "@/lib/provenance";
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
-import { absoluteUrl } from "@/lib/site";
+import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote } from "@/lib/user-language";
 import { NflPreviewBanner } from "@/components/NflPreviewBanner";
 import { isNflSimulatedData } from "@/lib/nfl/data-source";
@@ -42,20 +42,23 @@ export async function generateMetadata({
   const { slug } = await params;
   const profile = getRefBySlug(slug);
   if (!profile) {
-    return { title: "Official not found | Ref Watch NFL" };
+    return entityNotFoundMetadata("official", "nfl");
   }
   const stats = getRefStats();
   const ats = profile.bettingStats?.homeTeamAts;
   const atsLabel = ats
     ? `${ats.wins}-${ats.losses}${ats.pushes ? `-${ats.pushes}` : ""} home ATS`
     : "";
-  return {
-    title: `${profile.name} (#${profile.number})`,
-    description: `${profile.name}: ${profile.games} games, ${formatPct(profile.overRate)} over ${stats.meta.leagueOverBaseline}${atsLabel ? `, ${atsLabel}` : ""}. Historical NFL official analytics with minimum game thresholds.`,
-    alternates: {
-      canonical: absoluteUrl(`/nfl/refs/${slug}`),
-    },
-  };
+  return refProfileMetadata({
+    leagueId: "nfl",
+    slug,
+    name: profile.name,
+    number: profile.number,
+    games: profile.games,
+    overRateFormatted: formatPct(profile.overRate),
+    overBaseline: stats.meta.leagueOverBaseline,
+    atsLabel: atsLabel || undefined,
+  });
 }
 
 export default async function NflRefProfilePage({
@@ -95,13 +98,20 @@ export default async function NflRefProfilePage({
   return (
     <div className="page-shell">
       <JsonLd
-        data={refProfileDatasetJsonLd(
+        data={[
+          refProfileDatasetJsonLd(
           profile.name,
           profile.slug,
           "NFL",
           profile.games,
           stats.meta.lastUpdated,
-        )}
+        ),
+          refProfileBreadcrumbJsonLd(
+            "nfl",
+            profile.name,
+            profile.slug,
+          ),
+        ]}
       />
       <Link
         href="/nfl"

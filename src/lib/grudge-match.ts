@@ -6,6 +6,7 @@ import {
   getTeamSplits,
   refSlug,
 } from "@/lib/data";
+import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import { formatWinRateVsTeam } from "@/lib/stats-utils";
 import { getTeam, matchTeamString, teamFullName, teamWithArticle } from "@/lib/teams";
 import { TEAM_REF_MIN_GAMES } from "@/lib/teamRefLeaderboards";
@@ -72,7 +73,7 @@ function teamContext(abbr: string): TeamContext | null {
     article: teamWithArticle(team),
     splits,
     baseline: getTeamDisplayRecord("nba", abbr, splits, stats.meta.seasons, {
-      sinceSeason: "2021-22",
+      sinceSeason: DEFAULT_SINCE_SEASON,
     }),
     baselineFouls: weightedTeamFouls(splits),
   };

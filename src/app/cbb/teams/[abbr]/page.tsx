@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
 import { getTeam, CBB_TEAMS, teamFullName } from "@/lib/cbb/teams";
@@ -17,16 +18,13 @@ export async function generateMetadata({
   const { abbr } = await params;
   const team = getTeam(abbr);
   if (!team) {
-    return { title: "Team not found | Ref Watch NBA" };
+    return entityNotFoundMetadata("team", "cbb");
   }
   const name = teamFullName(team);
-  return {
-    title: `${name} ref crew splits | Ref Watch NBA`,
-    description: `How ${name} performs under different referee crews: scoring, fouls, and home/away records.`,
-  };
+  return teamProfileMetadata({ leagueId: "cbb", teamName: name, abbr: team.abbr });
 }
 
-export default async function TeamPage({
+export default async function CbbTeamPage({
   params,
 }: {
   params: Promise<{ abbr: string }>;

@@ -6,15 +6,16 @@ import {
   formatRefStatsRange as formatNhlRange,
   getRefStats as getNhlRefStats,
 } from "@/lib/nhl/data";
-import { absoluteUrl } from "@/lib/site";
+import { buildPageMetadata } from "@/lib/seo";
 import { NHL_LINESMAN_METHODOLOGY_NOTE, TRUST_CHARTER_PRINCIPLES } from "@/lib/trust-charter";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Methodology",
   description:
     "How Ref Watch computes officiating intelligence, ranks research findings, applies sample gates, and labels data confidence. Not betting advice.",
-  alternates: { canonical: absoluteUrl("/methodology") },
-};
+  path: "/methodology",
+  keywords: ["referee methodology", "sample gates", "data confidence", "officiating analytics"],
+});
 
 export default function MethodologyPage() {
   const nbaStats = getRefStats();
@@ -76,7 +77,7 @@ export default function MethodologyPage() {
               NBA: {nbaStats.meta.seasons.join(", ")} (
               {formatRefStatsRange(nbaStats.meta)}). NHL:{" "}
               {nhlStats.meta.seasons.join(", ")} ({formatNhlRange(nhlStats.meta)}
-              ). League trends from five seasons of game-log aggregates in{" "}
+              ). League trends from up to ten seasons of game-log aggregates in{" "}
               <code className="text-xs">data/baselines.json</code>.
             </li>
             <li>

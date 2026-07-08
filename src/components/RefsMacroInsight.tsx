@@ -4,16 +4,18 @@ import type { LeagueConfig } from "@/lib/leagues";
 export function RefsMacroInsight({
   meta,
   league,
+  scopeLabel = "Last 10 seasons",
 }: {
   meta: RefsDirectoryMeta;
   league: LeagueConfig;
+  scopeLabel?: string;
 }) {
   const seasonLabel =
     meta.seasonCount === 1 ? "1 season" : `${meta.seasonCount} consecutive seasons`;
 
   return (
     <aside className="refs-macro-insight" aria-label="Dataset sample size">
-      <p className="refs-macro-insight-kicker">5-year sample size</p>
+      <p className="refs-macro-insight-kicker">{scopeLabel} sample size</p>
       <p className="refs-macro-insight-body">
         Analyzing{" "}
         <strong className="refs-macro-insight-stat">

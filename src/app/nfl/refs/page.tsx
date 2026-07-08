@@ -1,11 +1,19 @@
-import type { Metadata } from "next";
 import { RefsHubPage } from "@/components/RefsHubPage";
+import { hubPageMetadata } from "@/lib/seo";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 
-export const metadata: Metadata = {
-  title: "NFL officials | Ref Watch",
-  description: "Browse NFL officials in the Ref Watch dataset.",
+export const metadata = hubPageMetadata("nfl", "refs");
+
+type PageProps = {
+  searchParams: Promise<{ scope?: string }>;
 };
 
-export default function NflRefsPage() {
-  return <RefsHubPage leagueId="nfl" />;
+export default async function NflRefsPage({ searchParams }: PageProps) {
+  const { scope } = await searchParams;
+  return (
+    <RefsHubPage
+      leagueId="nfl"
+      scopeMode={readSeasonScopeParam(scope)}
+    />
+  );
 }

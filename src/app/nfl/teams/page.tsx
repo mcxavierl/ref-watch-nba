@@ -1,16 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/nfl/data";
 import { teamFullName, teamsByConference } from "@/lib/nfl/teams";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("nfl", "teams");
+
 
 export const dynamic = "force-static";
-
-export const metadata: Metadata = {
-  title: "All NFL teams | Ref Watch",
-  description:
-    "Browse official crew history for all 32 NFL teams, scoring trends, penalty patterns, and home/away records.",
-};
 
 export default function NflTeamsIndexPage() {
   const { AFC, NFC } = teamsByConference();

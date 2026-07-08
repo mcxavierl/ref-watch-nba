@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
 import { getTeam, NHL_TEAMS, teamFullName } from "@/lib/nhl/teams";
@@ -17,13 +18,10 @@ export async function generateMetadata({
   const { abbr } = await params;
   const team = getTeam(abbr);
   if (!team) {
-    return { title: "Team not found | Ref Watch NHL" };
+    return entityNotFoundMetadata("team", "nhl");
   }
   const name = teamFullName(team);
-  return {
-    title: `${name} official crew splits | Ref Watch NHL`,
-    description: `How ${name} performs under different NHL official crews, goals, PIM, and home/away records.`,
-  };
+  return teamProfileMetadata({ leagueId: "nhl", teamName: name, abbr: team.abbr });
 }
 
 export default async function NhlTeamPage({

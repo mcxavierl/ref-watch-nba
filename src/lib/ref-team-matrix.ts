@@ -1,4 +1,5 @@
 import type { LeagueMetricCopy } from "@/lib/leagues";
+import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import { deltaTone } from "@/lib/metricTone";
 import { getTeamDisplayRecord, getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
 import type { RefProfile, RefStatsFile, RefTeamStat, TeamCrewSplit } from "@/lib/types";
@@ -81,7 +82,7 @@ export function computeRefTeamMatrix(
   matrixOptions: RefTeamMatrixOptions = {},
 ): RefTeamMatrix {
   const league = matrixOptions.league ?? "nba";
-  const sinceSeason = matrixOptions.sinceSeason ?? "2021-22";
+  const sinceSeason = matrixOptions.sinceSeason ?? DEFAULT_SINCE_SEASON;
 
   const teams: RefTeamMatrixTeam[] = teamList.map((team) => {
     const abbr = team.abbr.toUpperCase();

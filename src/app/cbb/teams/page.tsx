@@ -1,16 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/cbb/data";
 import { teamFullName, teamsByConference, type CbbTeam } from "@/lib/cbb/teams";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("cbb", "teams");
+
 
 export const dynamic = "force-static";
-
-export const metadata: Metadata = {
-  title: "All CBB teams | Ref Watch",
-  description:
-    "Browse referee crew history for NCAA men's basketball teams: scoring trends, foul patterns, and home/away records.",
-};
 
 export default function CbbTeamsIndexPage() {
   const byConference = teamsByConference();

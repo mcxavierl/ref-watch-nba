@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
 import { InsightsHubPage } from "@/components/InsightsHubPage";
-import { absoluteUrl } from "@/lib/site";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("nfl", "rankings");
 
-export const metadata: Metadata = {
-  title: "NFL official tendency index | Ref Watch",
-  alternates: { canonical: absoluteUrl("/nfl/insights") },
-};
 
 export default function NflRankingsPage() {
   return <InsightsHubPage leagueId="nfl" defaultTab="tendencies" />;

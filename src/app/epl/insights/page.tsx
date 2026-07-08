@@ -1,12 +1,19 @@
-import type { Metadata } from "next";
 import { InsightsHubPage } from "@/components/InsightsHubPage";
-import { absoluteUrl } from "@/lib/site";
+import { hubPageMetadata } from "@/lib/seo";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 
-export const metadata: Metadata = {
-  title: "EPL insights | Ref Watch",
-  alternates: { canonical: absoluteUrl("/epl/insights") },
+export const metadata = hubPageMetadata("epl", "insights");
+
+type PageProps = {
+  searchParams: Promise<{ scope?: string }>;
 };
 
-export default function EplInsightsPage() {
-  return <InsightsHubPage leagueId="epl" />;
+export default async function EplInsightsPage({ searchParams }: PageProps) {
+  const { scope } = await searchParams;
+  return (
+    <InsightsHubPage
+      leagueId="epl"
+      scopeMode={readSeasonScopeParam(scope)}
+    />
+  );
 }

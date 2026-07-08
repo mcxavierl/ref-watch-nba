@@ -7,6 +7,7 @@ import {
   seasonEndWinRate,
 } from "@/lib/nba-strength-of-schedule";
 import { getOfficialSeasonRecord } from "@/lib/nba-team-season-records";
+import { DEFAULT_SINCE_SEASON, NBA_TEN_SEASONS } from "@/lib/league-seasons";
 import { computeTeamRecordFromGameLogs } from "@/lib/team-record-query";
 import gameLogs from "../../data/game-logs.json" with { type: "json" };
 
@@ -61,18 +62,18 @@ describe("OKC 2023-24 SOS fixture (verifiable season)", () => {
   });
 });
 
-describe("OKC full sample (2021-22 through 2025-26)", () => {
-  it("cumulative record is 253-157, not 206-199", () => {
-    const seasons = ["2021-22", "2022-23", "2023-24", "2024-25", "2025-26"];
+describe("OKC full sample (2016-17 through 2025-26)", () => {
+  it("cumulative record is 463-357", () => {
+    const seasons = [...NBA_TEN_SEASONS];
     const sos = computeStrengthOfSchedule(games, "OKC", {
-      sinceSeason: "2021-22",
+      sinceSeason: DEFAULT_SINCE_SEASON,
       seasons,
     });
     assert.ok(sos);
-    assert.equal(sos!.wins, 253);
-    assert.equal(sos!.losses, 157);
-    assert.equal(sos!.games, 410);
+    assert.equal(sos!.wins, 463);
+    assert.equal(sos!.losses, 357);
+    assert.equal(sos!.games, 820);
     const pct = Math.round(sos!.winRate * 1000) / 10;
-    assert.equal(pct, 61.7);
+    assert.equal(pct, 56.5);
   });
 });

@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
+import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { LEAGUES } from "@/lib/leagues";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
 import { nbaSeasonScopeAuditNote } from "@/lib/nba-team-season-records";
@@ -13,6 +15,8 @@ type LeagueSlateHeroProps = {
   assignments: AssignmentsFile;
   refStats: RefStatsFile;
   productHome?: boolean;
+  showScopeToggle?: boolean;
+  scopeLabel?: string;
 };
 
 function formatStatCount(value: number | undefined): string {
@@ -31,6 +35,8 @@ export function LeagueSlateHero({
   assignments,
   refStats,
   productHome = false,
+  showScopeToggle = false,
+  scopeLabel,
 }: LeagueSlateHeroProps) {
   const config = LEAGUES[leagueId];
   const copy = leagueHeroCopy(leagueId);
@@ -98,6 +104,19 @@ export function LeagueSlateHero({
             </>
           )}
       </dl>
+
+      {showScopeToggle && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          {scopeLabel ? (
+            <p className="text-sm text-zinc-600">{scopeLabel}</p>
+          ) : (
+            <span />
+          )}
+          <Suspense fallback={null}>
+            <SeasonScopeToggle />
+          </Suspense>
+        </div>
+      )}
 
       <DataFreshnessMeta
         assignments={assignments}

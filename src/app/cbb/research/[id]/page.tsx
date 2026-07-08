@@ -8,7 +8,7 @@ import {
   getResearchFindingById,
   getResearchFindingIdsForLeague,
 } from "@/lib/research";
-import { absoluteUrl } from "@/lib/site";
+import { researchFindingMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return getResearchFindingIdsForLeague("CBB").map((id) => ({ id }));
@@ -22,25 +22,25 @@ export async function generateMetadata({
   const { id } = await params;
   const finding = getResearchFindingById(id);
   if (!finding) {
-    return { title: "Finding not found" };
+    return { title: "Finding not found", robots: { index: false, follow: false } };
   }
-  if (finding.league === "NHL") {
-    return {
-      title: finding.headline,
-      description: finding.summary,
-      alternates: {
-        canonical: absoluteUrl(`/nhl/cbb/research/${id}`),
-      },
-    };
+  if (finding.league !== "CBB") {
+    return researchFindingMetadata({
+      headline: finding.headline,
+      summary: finding.summary,
+      path: researchFindingCanonicalPath(finding),
+      leagueShort: finding.league,
+    });
   }
-  return {
-    title: finding.headline,
-    description: finding.summary,
-    alternates: { canonical: absoluteUrl(`/cbb/research/${id}`) },
-  };
+  return researchFindingMetadata({
+    headline: finding.headline,
+    summary: finding.summary,
+    path: `/cbb/research/${id}`,
+    leagueShort: "CBB",
+  });
 }
 
-export default async function ResearchFindingPage({
+export default async function CbbResearchFindingPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -48,7 +48,7 @@ export default async function ResearchFindingPage({
   const { id } = await params;
   const finding = getResearchFindingById(id);
   if (!finding) notFound();
-  if (finding.league === "NHL") {
+  if (finding.league !== "CBB") {
     redirect(researchFindingCanonicalPath(finding));
   }
 

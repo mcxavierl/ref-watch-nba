@@ -1,16 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/nhl/data";
 import { teamFullName, teamsByConference } from "@/lib/nhl/teams";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("nhl", "teams");
+
 
 export const dynamic = "force-static";
-
-export const metadata: Metadata = {
-  title: "All NHL teams | Ref Watch",
-  description:
-    "Browse official crew history for all 32 NHL teams, goal trends, PIM patterns, and home/away records.",
-};
 
 export default function NhlTeamsIndexPage() {
   const { East, West } = teamsByConference();

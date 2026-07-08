@@ -1,26 +1,35 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
-import { formatRefStatsRange, getRefStats, getTeamSplits } from "@/lib/data";
+import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
+import { getTeamSplits } from "@/lib/data";
 import { LEAGUES } from "@/lib/leagues";
+import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
-import { absoluteUrl } from "@/lib/site";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";
 import { refTeamDataNote } from "@/lib/user-language";
 import { getNbaTeamSosCache } from "@/lib/nba-team-sos-cache";
+import { hubPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "NBA ref × team matrix",
-  description:
-    "Cross-tab matrix of NBA team records when each referee officiated their games. Minimum sample gates, descriptive historical splits only.",
-  alternates: { canonical: absoluteUrl("/matrix") },
+export const metadata = hubPageMetadata("nba", "matrix");
+
+type PageProps = {
+  searchParams: Promise<{ scope?: string }>;
 };
 
-export default function NbaMatrixPage() {
-  const stats = getRefStats();
-  const range = formatRefStatsRange(stats.meta);
+export default async function NbaMatrixPage({ searchParams }: PageProps) {
+  const { scope } = await searchParams;
+  const scopeMode = readSeasonScopeParam(scope);
+  const {
+    stats,
+    formatRange,
+    sinceSeason,
+    scopeLabel,
+  } = loadScopedLeagueStats("nba", scopeMode);
+  const range = formatRange(stats.meta);
   const seeded = stats.meta.source === "seeded";
   const bbrTeamNote = refTeamDataNote(stats.meta);
   const league = LEAGUES.nba;
@@ -35,7 +44,7 @@ export default function NbaMatrixPage() {
     })),
     getTeamSplits,
     undefined,
-    { league: "nba", sinceSeason: "2021-22" },
+    { league: "nba", sinceSeason },
   );
   const extremes = computeMatrixExtremes(matrix);
   const teamSosByAbbr = getNbaTeamSosCache().teams;
@@ -60,6 +69,12 @@ export default function NbaMatrixPage() {
           </Link>
           .
         </p>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-zinc-600">{scopeLabel}</p>
+          <Suspense fallback={null}>
+            <SeasonScopeToggle />
+          </Suspense>
+        </div>
         {bbrTeamNote ? (
           <p className="mt-2 text-sm text-amber-800">{bbrTeamNote}</p>
         ) : seeded ? (

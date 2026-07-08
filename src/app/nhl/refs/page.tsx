@@ -1,12 +1,19 @@
-import type { Metadata } from "next";
 import { RefsHubPage } from "@/components/RefsHubPage";
+import { hubPageMetadata } from "@/lib/seo";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 
-export const metadata: Metadata = {
-  title: "NHL officials | Ref Watch",
-  description:
-    "Browse NHL referees in the Ref Watch tendency index. Linesmen appear on crews but are excluded from analytics.",
+export const metadata = hubPageMetadata("nhl", "refs");
+
+type PageProps = {
+  searchParams: Promise<{ scope?: string }>;
 };
 
-export default function NhlRefsIndexPage() {
-  return <RefsHubPage leagueId="nhl" />;
+export default async function NhlRefsPage({ searchParams }: PageProps) {
+  const { scope } = await searchParams;
+  return (
+    <RefsHubPage
+      leagueId="nhl"
+      scopeMode={readSeasonScopeParam(scope)}
+    />
+  );
 }

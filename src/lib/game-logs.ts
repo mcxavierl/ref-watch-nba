@@ -18,6 +18,10 @@ export interface RuntimeGameLogEntry {
   homeMinors?: number;
   awayMinors?: number;
   wentToOvertime?: boolean;
+  homeFlags?: number;
+  awayFlags?: number;
+  homePenaltyYards?: number;
+  awayPenaltyYards?: number;
   closingTotal: number;
   homeSpread: number;
   lineSource: GameLineSource;

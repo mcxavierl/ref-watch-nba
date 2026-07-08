@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
@@ -6,20 +5,15 @@ import {
   getRefStats,
   getTeamSplits,
 } from "@/lib/nhl/data";
+import { hubPageMetadata } from "@/lib/seo";
+
+export const metadata = hubPageMetadata("nhl", "matrix");
 import { nhlAnalyticsRefStats } from "@/lib/nhl/officials";
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
-import { absoluteUrl } from "@/lib/site";
 import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 import { NHL_TEAMS, teamFullName } from "@/lib/nhl/teams";
-
-export const metadata: Metadata = {
-  title: "NHL official × team matrix",
-  description:
-    "Cross-tab matrix of NHL team records when each official worked their games. Minimum sample gates, descriptive historical splits only.",
-  alternates: { canonical: absoluteUrl("/nhl/matrix") },
-};
 
 export default function NhlMatrixPage() {
   const stats = getRefStats();

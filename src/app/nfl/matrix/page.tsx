@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
@@ -6,19 +5,14 @@ import {
   getRefStats,
   getTeamSplits,
 } from "@/lib/nfl/data";
+import { hubPageMetadata } from "@/lib/seo";
+
+export const metadata = hubPageMetadata("nfl", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
-import { absoluteUrl } from "@/lib/site";
 import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
-
-export const metadata: Metadata = {
-  title: "NFL official × team matrix",
-  description:
-    "Cross-tab matrix of NFL team records when each official worked their games. Minimum sample gates, descriptive historical splits only.",
-  alternates: { canonical: absoluteUrl("/nfl/matrix") },
-};
 
 export default function NflMatrixPage() {
   const stats = getRefStats();

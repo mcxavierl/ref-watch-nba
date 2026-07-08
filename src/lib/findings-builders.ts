@@ -1,3 +1,4 @@
+import { DEFAULT_SINCE_SEASON, NBA_TEN_SEASONS } from "@/lib/league-seasons";
 import { getBaselinesFile } from "@/lib/baselines";
 import { computeCrewDominance, CREW_DOMINANCE_MIN_GAMES } from "@/lib/crew-dominance";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
@@ -113,7 +114,7 @@ export function buildMatrixExtremeFinding(
     MIN_MATRIX_GAMES,
     {
       league: ctx.league === "NBA" ? "nba" : "nhl",
-      sinceSeason: "2021-22",
+      sinceSeason: DEFAULT_SINCE_SEASON,
     },
   );
   const extremes = computeMatrixExtremes(matrix, 40).filter((h) => h.kind === kind);

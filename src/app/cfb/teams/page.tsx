@@ -1,16 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/cfb/data";
 import { teamFullName, teamsByConference, type CfbTeam } from "@/lib/cfb/teams";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("cfb", "teams");
+
 
 export const dynamic = "force-static";
-
-export const metadata: Metadata = {
-  title: "All CFB teams | Ref Watch",
-  description:
-    "Browse official crew history for NCAA football teams: scoring trends, penalty patterns, and home/away records.",
-};
 
 export default function CfbTeamsIndexPage() {
   const byConference = teamsByConference();

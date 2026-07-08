@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
 import { InsightsHubPage } from "@/components/InsightsHubPage";
+import { hubPageMetadata } from "@/lib/seo";
+export const metadata = hubPageMetadata("cbb", "trends");
 
-export const metadata: Metadata = {
-  title: "CBB trends | Ref Watch",
-};
 
 export default function CbbTrendsPage() {
   return <InsightsHubPage leagueId="cbb" defaultTab="trends" />;

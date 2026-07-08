@@ -7,11 +7,11 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { NBA_TEAM_ORDER } from "../src/lib/nba-team-season-records";
+import { NBA_TEAM_ORDER, DEFAULT_SINCE_SEASON } from "../src/lib/nba-team-season-records";
 import { computeStrengthOfSchedule } from "../src/lib/nba-strength-of-schedule";
 import { loadGameLogs } from "./lib/game-logs";
 
-const SINCE_SEASON = "2021-22";
+const SINCE_SEASON = DEFAULT_SINCE_SEASON;
 const OUT_PATH = path.join(process.cwd(), "data", "nba-team-sos.json");
 
 function main(): void {

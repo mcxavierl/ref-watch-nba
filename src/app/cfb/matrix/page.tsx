@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
@@ -6,19 +5,14 @@ import {
   getRefStats,
   getTeamSplits,
 } from "@/lib/cfb/data";
+import { hubPageMetadata } from "@/lib/seo";
+
+export const metadata = hubPageMetadata("cfb", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
-import { absoluteUrl } from "@/lib/site";
 import { isCfbSimulatedData } from "@/lib/cfb/data-source";
 import { CFB_TEAMS, teamFullName } from "@/lib/cfb/teams";
-
-export const metadata: Metadata = {
-  title: "CFB official × team matrix",
-  description:
-    "Cross-tab matrix of CFB team records when each official worked their games. Minimum sample gates, descriptive historical splits only.",
-  alternates: { canonical: absoluteUrl("/cfb/matrix") },
-};
 
 export default function CfbMatrixPage() {
   const stats = getRefStats();

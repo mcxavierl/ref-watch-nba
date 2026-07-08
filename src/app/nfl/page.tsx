@@ -31,6 +31,7 @@ import {
   slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
+import { slatePageMetadata } from "@/lib/seo";
 import { absoluteUrl } from "@/lib/site";
 import {
   NO_SIGNAL_SLATE_COPY,
@@ -50,17 +51,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ? "NFL ref and crew analytics during the offseason, dataset findings, official profiles, and team histories."
     : slateMetadataDescription(feed);
   const title = isOffseason ? "NFL ref data (offseason)" : "Tonight's NFL slate";
-  return {
+  return slatePageMetadata({
     title,
     description,
-    alternates: { canonical: absoluteUrl("/nfl") },
-    openGraph: {
-      title: `${title} | Ref Watch`,
-      description,
-      url: absoluteUrl("/nfl"),
-      type: "website",
-    },
-  };
+    path: "/nfl",
+    keywords: ["NFL officials","NFL referee crew","tonight's NFL slate"],
+  });
 }
 
 function sortSlateGames(

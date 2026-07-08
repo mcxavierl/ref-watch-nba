@@ -37,18 +37,14 @@ const NBA_TEAM_ABBRS = [
   "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS",
 ];
 
+import { NBA_TEN_SEASONS } from "../../src/lib/league-seasons";
+
 const STATS_BASE = "https://stats.nba.com/stats";
 const FETCH_TIMEOUT_MS = 12_000;
 const MIN_SAMPLE = 30;
 const REQUEST_DELAY_MS = 500;
 
-const SEASONS = [
-  { label: "2021-22", param: "2021-22" },
-  { label: "2022-23", param: "2022-23" },
-  { label: "2023-24", param: "2023-24" },
-  { label: "2024-25", param: "2024-25" },
-  { label: "2025-26", param: "2025-26" },
-];
+const SEASONS = NBA_TEN_SEASONS.map((label) => ({ label, param: label }));
 
 function maxGamesPerSeason(): number | null {
   const raw = process.env.REF_MAX_GAMES_PER_SEASON;
