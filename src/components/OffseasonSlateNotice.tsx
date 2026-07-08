@@ -5,15 +5,12 @@ export function OffseasonSlateNotice({ league }: { league: "NBA" | "NHL" }) {
     <div
       className="offseason-status-strip"
       role="status"
-      aria-label={`${league} offseason, no live slate`}
+      aria-label={`${league} offseason, no live slate tonight`}
     >
-      <div className="offseason-status-strip-main">
-        <span className="offseason-status-pill">No live slate · offseason</span>
-        <p className="offseason-status-copy">
-          Historical data only. Live crew assignments return when the {league}{" "}
-          schedule resumes.
-        </p>
-      </div>
+      <p className="offseason-status-copy">
+        Historical data only. Live crew assignments return when the {league}{" "}
+        schedule resumes.
+      </p>
       <div className="offseason-status-strip-cta">
         <SeasonNotifyCta league={league} />
       </div>
