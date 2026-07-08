@@ -4,6 +4,7 @@ import { FindingsSection } from "@/components/FindingsSection";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
+import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
@@ -120,6 +121,8 @@ export default function EplHomePage() {
         assignments={assignments}
         refStats={refStats}
       />
+
+      <LeagueDataSourceBanner league="epl" meta={refStats.meta} className="mt-4" />
 
       <EplPreviewBanner
         statsSource={refStats.meta.source}

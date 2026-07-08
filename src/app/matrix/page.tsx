@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
+import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { formatRefStatsRange, getRefStats, getTeamSplits } from "@/lib/data";
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
@@ -68,6 +69,8 @@ export default function NbaMatrixPage() {
           </p>
         ) : null}
       </section>
+
+      <LeagueDataSourceBanner league="nba" meta={stats.meta} className="mb-4" />
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">

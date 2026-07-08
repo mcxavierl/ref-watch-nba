@@ -38,7 +38,7 @@ const SEASON_WINS: Record<string, number[]> = {
     40, 61, 26, 39, 19, 64, 39, 50, 44, 48, 52, 50, 50, 50, 48, 37, 48, 49,
     21, 51, 68, 41, 24, 36, 36, 40, 34, 30, 17, 18,
   ],
-  // 2025-26 final regular season (Basketball-Reference league table, Jul 2026).
+  // 2025-26 final regular season (Basketball-Reference league table, audited Jul 2026).
   "2025-26": [
     46, 20, 56, 44, 31, 52, 26, 54, 60, 37, 52, 19, 42, 53, 25, 43, 32, 49,
     26, 53, 64, 45, 45, 45, 42, 22, 62, 46, 22, 17,
@@ -60,6 +60,32 @@ export const NBA_REGULAR_SEASON_RECORDS: NbaSeasonRecords = Object.fromEntries(
     buildSeasonRecords(wins),
   ]),
 );
+
+/** Seasons with audited final BBR regular-season standings in SEASON_WINS. */
+export const NBA_AUDITED_FINAL_SEASONS = new Set([
+  "2021-22",
+  "2022-23",
+  "2023-24",
+  "2024-25",
+  "2025-26",
+]);
+
+export function seasonRecordAuditNote(season: string): string | null {
+  if (season === "2025-26") {
+    return "2025-26 team records: final regular season per Basketball-Reference (audited Jul 2026).";
+  }
+  if (NBA_AUDITED_FINAL_SEASONS.has(season)) {
+    return null;
+  }
+  return null;
+}
+
+export function nbaSeasonScopeAuditNote(seasons: string[]): string | null {
+  if (seasons.includes("2025-26")) {
+    return seasonRecordAuditNote("2025-26");
+  }
+  return null;
+}
 
 export function getOfficialSeasonRecord(
   teamAbbr: string,

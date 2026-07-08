@@ -14,10 +14,7 @@ export function NflPreviewBanner({
   assignmentsSource?: AssignmentsFile["source"];
   atsAvailable?: boolean;
 }) {
-  if (
-    isNflVerifiedData(statsSource) &&
-    (atsAvailable || assignmentsSource === "espn")
-  ) {
+  if (isNflVerifiedData(statsSource) && atsAvailable && statsSource === "espn") {
     return null;
   }
 

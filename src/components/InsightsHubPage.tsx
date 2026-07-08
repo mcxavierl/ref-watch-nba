@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/JsonLd";
+import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { LeagueHubTabs } from "@/components/LeagueHubTabs";
 import { LeagueTrendsTable } from "@/components/LeagueTrendsTable";
 import { RankingsInsightCards } from "@/components/RankingsInsightCards";
 import { RefRankingsTable } from "@/components/RefRankingsTable";
 import { ResearchHubFindings } from "@/components/ResearchHubFindings";
-import { baselineUsingFallback, getBaselinesFile } from "@/lib/baselines";
+import { getBaselinesFile } from "@/lib/baselines";
 import { LEAGUES } from "@/lib/leagues";
 import { loadLeagueStats } from "@/lib/load-league-stats";
-import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
 import { computeResearchFindingsForLeague } from "@/lib/research";
@@ -41,11 +41,6 @@ export function InsightsHubPage({
   const baselines = getBaselinesFile();
   const rows = seasonRowsFromBaselines(baselines[dataLeague].seasons);
   const narrative = buildYoYNarrative(rows, dataLeague);
-  const usingFallback = baselineUsingFallback(dataLeague);
-  const seeded =
-    leagueId === "nfl"
-      ? isNflSimulatedData(stats.meta.source)
-      : stats.meta.source === "seeded";
   const synthesis = buildRankingsSynthesis(stats, league);
   const signalCounts = Object.fromEntries(
     stats.refs.map((ref) => [
@@ -59,12 +54,6 @@ export function InsightsHubPage({
       <p className="section-lead mb-4">
         {RANKINGS_PAGE_LEAD} Sample: {stats.refs.length} officials ({range}).
       </p>
-      {seeded && (
-        <p className="mb-4 text-sm text-amber-800">
-          Historical dataset, some metrics use estimated closing lines where
-          noted.
-        </p>
-      )}
       <RankingsInsightCards synthesis={synthesis} />
       <section className="section-block">
         <div className="data-card">
@@ -86,13 +75,6 @@ export function InsightsHubPage({
         Five-season scoring and whistle baselines from game logs ({range}).
         Historical context only.
       </p>
-      {(usingFallback || seeded) && (
-        <p className="mb-4 text-sm text-amber-800">
-          {seeded
-            ? "Historical game logs, provenance tags apply."
-            : "Using fallback baselines; run compute-baselines when live logs are available."}
-        </p>
-      )}
       {narrative && (
         <section className="section-block-tight mb-4">
           <div className="panel-inset px-4 py-4 sm:px-5">
@@ -143,6 +125,8 @@ export function InsightsHubPage({
           place.
         </p>
       </section>
+
+      <LeagueDataSourceBanner league={leagueId} meta={stats.meta} />
 
       <LeagueHubTabs
         ariaLabel="Insights views"

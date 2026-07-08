@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { LEAGUES } from "@/lib/leagues";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
+import { nbaSeasonScopeAuditNote } from "@/lib/nba-team-season-records";
 import { formatSeasonScope } from "@/lib/season-scope";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 
@@ -37,6 +38,8 @@ export function LeagueSlateHero({
   const officialCount = refStats.refs?.length ?? 0;
   const gamesProcessed = refStats.meta.totalGamesProcessed;
   const seasonSpan = formatSeasonScope(refStats.meta.seasons.length);
+  const seasonAuditNote =
+    leagueId === "nba" ? nbaSeasonScopeAuditNote(refStats.meta.seasons) : null;
   const useInteractiveStats = productHome && isOffseason;
 
   const statValues = {
@@ -109,6 +112,9 @@ export function LeagueSlateHero({
             : undefined
         }
       />
+      {seasonAuditNote && (
+        <p className="league-slate-season-audit">{seasonAuditNote}</p>
+      )}
     </section>
   );
 }
