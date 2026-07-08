@@ -801,6 +801,88 @@ p {
     transform: translateX(2px);
   }
 
+  .slate-quick-links {
+    margin-block: var(--space-10);
+  }
+
+  .browse-action-compact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .browse-action-compact {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .browse-action-compact {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .browse-action-compact-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-height: 5.25rem;
+    padding: var(--space-4) var(--space-5);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.32);
+    transition:
+      border-color 180ms ease-out,
+      background-color 180ms ease-out,
+      box-shadow 180ms ease-out;
+    outline-offset: 2px;
+  }
+
+  .browse-action-compact-card:hover {
+    border-color: color-mix(in srgb, var(--header-sapphire) 28%, var(--border));
+    background: color-mix(in srgb, var(--header-sapphire) 3%, var(--surface));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  }
+
+  .browse-action-compact-card:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--header-sapphire) 50%, var(--border));
+  }
+
+  .browse-action-compact-title {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    line-height: var(--leading-snug);
+    color: var(--ink-secondary);
+    padding-right: var(--space-6);
+  }
+
+  .browse-action-compact-desc {
+    font-size: var(--text-xs);
+    line-height: var(--leading-relaxed);
+    color: var(--muted);
+    padding-right: var(--space-6);
+  }
+
+  .browse-action-compact-arrow {
+    position: absolute;
+    top: 50%;
+    right: var(--space-4);
+    width: 0.875rem;
+    height: 0.875rem;
+    color: var(--muted);
+    transform: translateY(-50%);
+    transition: transform 180ms ease-out, color 180ms ease-out;
+  }
+
+  .browse-action-compact-card:hover .browse-action-compact-arrow {
+    color: var(--header-gold);
+    transform: translate(2px, -50%);
+  }
+
   .pro-tease-callout {
     width: 100%;
     border-radius: 0.75rem;

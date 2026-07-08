@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 
 type BrowseLink = {
@@ -71,35 +72,37 @@ export function BrowseActionCards({
   compact?: boolean;
 }) {
   const links = league === "NBA" ? NBA_LINKS : NHL_LINKS;
-
-  if (compact) {
-    return (
-      <nav
-        className="browse-action-compact"
-        aria-label="Browse historical data"
-      >
-        {links.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="browse-action-compact-card"
-            title={link.description}
-          >
-            <span className="browse-action-compact-label">{link.label}</span>
-            <ArrowRight className="browse-action-compact-arrow" aria-hidden />
-          </Link>
-        ))}
-      </nav>
-    );
-  }
+  const gridClass = compact ? "browse-action-compact" : "browse-action-grid";
 
   return (
-    <nav className="browse-action-grid" aria-label="Browse historical data">
-      {links.map((link) => (
-        <Link key={link.href} href={link.href} className="browse-action-card">
-          <span className="browse-action-card-title">{link.label}</span>
-          <span className="browse-action-card-desc">{link.description}</span>
-          <ArrowRight className="browse-action-card-arrow" aria-hidden />
+    <nav className={gridClass} aria-label="Browse historical data">
+      {links.map((link, index) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          className={compact ? "browse-action-compact-card" : "browse-action-card"}
+          style={{ "--browse-i": index } as CSSProperties}
+        >
+          <span
+            className={
+              compact ? "browse-action-compact-title" : "browse-action-card-title"
+            }
+          >
+            {link.label}
+          </span>
+          <span
+            className={
+              compact ? "browse-action-compact-desc" : "browse-action-card-desc"
+            }
+          >
+            {link.description}
+          </span>
+          <ArrowRight
+            className={
+              compact ? "browse-action-compact-arrow" : "browse-action-card-arrow"
+            }
+            aria-hidden
+          />
         </Link>
       ))}
     </nav>
