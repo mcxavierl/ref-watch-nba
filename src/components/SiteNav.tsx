@@ -88,8 +88,7 @@ const NAV_LINKS: Record<LeagueId, { href: string; label: string }[]> = {
   ],
 };
 
-const PRO_LEAGUES: LeagueId[] = ["nba", "nhl", "nfl", "epl"];
-const COLLEGE_LEAGUES: LeagueId[] = ["cbb", "cfb"];
+const HEADER_LEAGUES: LeagueId[] = ["nba", "nhl", "nfl", "epl"];
 
 function activeLeague(pathname: string): LeagueId {
   for (const id of LEAGUE_IDS) {
@@ -134,26 +133,10 @@ export function LeagueNav() {
   return (
     <nav className="league-nav" aria-label="Leagues" data-league={league}>
       <div className="league-nav-scroll">
-        <div className="league-nav-groups">
-          <div className="league-nav-group" role="group" aria-label="Professional leagues">
-            <span className="league-nav-group-label">Pro</span>
-            <div className="league-nav-links">
-              {PRO_LEAGUES.map((id) => (
-                <LeagueNavLink key={id} id={id} active={league === id} />
-              ))}
-            </div>
-          </div>
-
-          <span className="league-nav-divider" aria-hidden />
-
-          <div className="league-nav-group" role="group" aria-label="College leagues">
-            <span className="league-nav-group-label">College</span>
-            <div className="league-nav-links">
-              {COLLEGE_LEAGUES.map((id) => (
-                <LeagueNavLink key={id} id={id} active={league === id} />
-              ))}
-            </div>
-          </div>
+        <div className="league-nav-links">
+          {HEADER_LEAGUES.map((id) => (
+            <LeagueNavLink key={id} id={id} active={league === id} />
+          ))}
         </div>
       </div>
     </nav>

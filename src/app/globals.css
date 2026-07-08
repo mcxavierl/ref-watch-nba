@@ -706,7 +706,7 @@ p {
   .page-shell-slate {
     display: flex;
     flex-direction: column;
-    gap: var(--space-10);
+    gap: var(--space-8);
   }
 
   @media (min-width: 640px) {
@@ -2130,7 +2130,9 @@ p {
   .league-nav-links {
     display: inline-flex;
     align-items: center;
-    gap: 0.15rem;
+    gap: 0.2rem;
+    min-width: min-content;
+    padding-block: 0.1rem;
   }
 
   .league-nav-link {
@@ -2216,6 +2218,14 @@ p {
     transition:
       opacity var(--duration-fast) ease-out,
       transform var(--duration-fast) ease-out;
+  }
+
+  .league-nav-mark-svg {
+    flex-shrink: 0;
+    width: 1.55rem;
+    height: 0.88rem;
+    max-width: none;
+    filter: none;
   }
 
   .league-nav-link--active .league-nav-mark {
@@ -2343,6 +2353,37 @@ p {
   .league-slate-stat dd {
     font-size: var(--text-md);
     color: var(--ink-secondary);
+  }
+
+  @media (max-width: 639px) {
+    .page-shell-slate > .slate-quick-links {
+      display: none;
+    }
+
+    .page-shell-slate > .pro-tease {
+      display: none;
+    }
+
+    .slate-findings-hero-note {
+      display: none;
+    }
+
+    .slate-findings-hero-stack .finding-accordion:nth-child(n + 3) {
+      display: none;
+    }
+
+    .league-slate-stats {
+      gap: var(--space-3) var(--space-4);
+      padding: var(--space-3);
+    }
+
+    .league-slate-stat {
+      min-width: 4.75rem;
+    }
+
+    .page-hero-slate .page-lead {
+      font-size: var(--text-sm);
+    }
   }
 
   .nfl-leaders-grid {
