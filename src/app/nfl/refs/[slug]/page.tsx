@@ -148,7 +148,7 @@ export default async function NflRefProfilePage({
         />
       </header>
 
-      <NflPreviewBanner statsSource={stats.meta.source} />
+      <NflPreviewBanner statsSource={stats.meta.source} atsAvailable={stats.meta.atsAvailable} />
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">

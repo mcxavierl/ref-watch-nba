@@ -1,6 +1,7 @@
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
+import { formatSeasonScope } from "@/lib/season-scope";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 
 type SlateLeagueId = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
@@ -26,10 +27,7 @@ export function LeagueSlateHero({
   const isOffseason = assignments.games.length === 0;
   const officialCount = refStats.refs?.length ?? 0;
   const gamesProcessed = refStats.meta.totalGamesProcessed;
-  const seasonSpan =
-    refStats.meta.seasons.length > 0
-      ? refStats.meta.seasons.join("–")
-      : "—";
+  const seasonSpan = formatSeasonScope(refStats.meta.seasons.length);
 
   return (
     <section

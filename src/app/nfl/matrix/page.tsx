@@ -24,7 +24,7 @@ export default function NflMatrixPage() {
   const stats = getRefStats();
   const range = formatRefStatsRange(stats.meta);
   const seeded = isNflSimulatedData(stats.meta.source);
-  const espn = stats.meta.source === "espn";
+  const espn = stats.meta.source === "espn" || stats.meta.source === "hybrid";
   const league = LEAGUES.nfl;
 
   const matrix = computeRefTeamMatrix(
@@ -66,7 +66,13 @@ export default function NflMatrixPage() {
             round slightly.
           </p>
         )}
-        {espn && (
+        {stats.meta.source === "hybrid" && (
+          <p className="mt-2 text-sm text-emerald-800">
+            Matrix depth from simulated seasons; ESPN-verified penalty and scoring
+            splits merged where available.
+          </p>
+        )}
+        {espn && stats.meta.source === "espn" && (
           <p className="mt-2 text-sm text-emerald-800">
             Penalty and scoring stats sourced from ESPN game summaries.
           </p>

@@ -20,6 +20,7 @@ import {
 } from "@/lib/cbb/data";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/cbb/findings";
+import { formatSeasonScope } from "@/lib/season-scope";
 import {
   computeGameStorylines,
   computeSlateStorylines,
@@ -211,7 +212,7 @@ export default function HomePage() {
             {refStats.meta.leagueOverBaseline}) as a historical over rate proxy.
           </li>
           <li>
-            Seasons covered: {refStats.meta.seasons.join(", ")} (
+            {formatSeasonScope(refStats.meta.seasons.length)} (
             {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
           </li>
           <li>

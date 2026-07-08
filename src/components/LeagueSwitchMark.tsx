@@ -1,3 +1,4 @@
+import { LeagueMarkNFL } from "@/components/icons/LeagueMarkNFL";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 
 type LeagueNavId = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
@@ -15,13 +16,6 @@ const LEAGUE_LOGOS: Partial<
     active: "https://assets.nhle.com/logos/nhl/svg/NHL_dark.svg",
     alt: "NHL",
   },
-  nfl: {
-    active:
-      "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg",
-    inactive:
-      "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg",
-    alt: "NFL",
-  },
   epl: {
     active:
       "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
@@ -37,6 +31,14 @@ type LeagueNavMarkProps = {
 };
 
 export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
+  if (league === "nfl") {
+    return (
+      <LeagueMarkNFL
+        className={`league-nav-mark league-nav-mark-svg${active ? " league-nav-mark--active" : ""}`}
+      />
+    );
+  }
+
   const logos = LEAGUE_LOGOS[league as LeagueNavId];
   if (!logos) {
     return (

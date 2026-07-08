@@ -1,66 +1,76 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-08T04:51:45.482Z",
-    "source": "wikipedia+curated",
-    "count": 29,
-    "missed": 98,
-    "note": "Curated Wikimedia headshots + Wikipedia lookup; striped badge fallback when missing."
+    "lastUpdated": "2026-07-08T14:15:26.599Z",
+    "source": "wikipedia+commons+curated",
+    "count": 23,
+    "missed": 104,
+    "note": "Verified NFL official headshots; striped badge fallback when missing."
   },
   "photos": {
     "ronald-torbert-62": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Ron_Torbert_%28cropped%29.jpg/250px-Ron_Torbert_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Ron_Torbert_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Ron Torbert"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/03_Jan_2021_-_Eagles_WashingtonFootball0067_Ronald_Torbert_%2850808329481%29_%28cropped%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0067_Ronald_Torbert_%2850808329481%29_%28cropped%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/d/df/03_Jan_2021_-_Eagles_WashingtonFootball0067_Ronald_Torbert_%2850808329481%29_%28cropped%29.jpg",
+      "source": "curated:commons:Ronald Torbert"
     },
-    "keith-washington-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Keith_Washington_Head_Shot.jpg/250px-Keith_Washington_Head_Shot.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Keith_Washington_Head_Shot.jpg",
-      "source": "wikipedia:Keith Washington"
+    "roy-ellison-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
+      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
+    },
+    "greg-bradley-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
+      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
+    },
+    "james-coleman-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
+      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
     },
     "scott-novak-1": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Scott_Novak_%28American_football_official%29_%28cropped%29.jpg/250px-Scott_Novak_%28American_football_official%29_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Scott_Novak_%28American_football_official%29_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Scott Novak (American football official)"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Scott_Novak_2021_%2850833237927%29_%28cropped%29.jpg/250px-Scott_Novak_2021_%2850833237927%29_%28cropped%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/2/24/Scott_Novak_2021_%2850833237927%29_%28cropped%29.jpg",
+      "source": "curated:wikipedia:Scott Novak"
     },
     "alex-kemp-0": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Alex_Kemp.jpg/250px-Alex_Kemp.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Alex_Kemp.jpg",
-      "source": "wikipedia:Alex Kemp (American football official)"
-    },
-    "eugene-hall-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Eugene_City_Hall-11.jpg/250px-Eugene_City_Hall-11.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/Eugene_City_Hall-11.jpg",
-      "source": "wikipedia:Eugene City Hall"
+      "source": "curated:commons:Alex Kemp.jpg"
     },
     "craig-wrolstad-0": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Craig_Wrolstad.jpg/250px-Craig_Wrolstad.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Craig_Wrolstad.jpg",
-      "source": "wikipedia:Craig Wrolstad"
+      "source": "curated:wikipedia:Craig Wrolstad"
     },
     "adrian-hill-29": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Adrian_Hill_%28American_football_official%29_%28cropped%29.jpg/250px-Adrian_Hill_%28American_football_official%29_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Adrian_Hill_%28American_football_official%29_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Adrian Hill (American football official)"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Adrian_Hill_at_WFT_vs._Seahawks_2020_%2850743800713%29_%28cropped%29.jpg/250px-Adrian_Hill_at_WFT_vs._Seahawks_2020_%2850743800713%29_%28cropped%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/2/22/Adrian_Hill_at_WFT_vs._Seahawks_2020_%2850743800713%29_%28cropped%29.jpg",
+      "source": "curated:commons:Adrian Hill"
     },
     "brad-allen-122": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Brad_Allen_%28American_football_official%29_%28cropped%29.jpg/250px-Brad_Allen_%28American_football_official%29_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Brad_Allen_%28American_football_official%29_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Brad Allen (American football official)"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Brad_Allen_%2855091257444%29_%28cropped%29.jpg/250px-Brad_Allen_%2855091257444%29_%28cropped%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Brad_Allen_%2855091257444%29_%28cropped%29.jpg",
+      "source": "curated:commons:Brad Allen"
     },
-    "walter-flowers-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Walter_Flowers.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Walter_Flowers.jpg",
-      "source": "wikipedia:Walter Flowers"
+    "carl-paganelli-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Super_Bowl_XLVI_%286837551195%29.jpg/250px-Super_Bowl_XLVI_%286837551195%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Super_Bowl_XLVI_%286837551195%29.jpg",
+      "source": "curated:commons:Super Bowl XLVI Carl Paganelli"
     },
     "tra-blake-3": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Tra_Blake_%28cropped%29.jpg/250px-Tra_Blake_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Tra_Blake_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Tra Blake"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Tra_Blake_at_Commanders_vs._Jaguars_%28September_11%2C_2022%29.jpg/250px-Tra_Blake_at_Commanders_vs._Jaguars_%28September_11%2C_2022%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Tra_Blake_at_Commanders_vs._Jaguars_%28September_11%2C_2022%29.jpg",
+      "source": "curated:commons:Tra Blake"
     },
     "land-clark-130": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Land_Clark_%28cropped%29.jpg/250px-Land_Clark_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Land_Clark_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Land Clark"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/LandClark-12-31-2023.jpg/250px-LandClark-12-31-2023.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/8/88/LandClark-12-31-2023.jpg",
+      "source": "curated:commons:LandClark"
+    },
+    "greg-yette-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
+      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
     },
     "bill-vinovich-52": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Bill_Vinovich_%2851738962949%29_%28cropped%29.jpg/250px-Bill_Vinovich_%2851738962949%29_%28cropped%29.jpg",
@@ -68,89 +78,49 @@
       "source": "curated:wikipedia:Bill Vinovich"
     },
     "shawn-hochuli-83": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Shawn_Hochuli_%28cropped%29.jpg/250px-Shawn_Hochuli_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Shawn_Hochuli_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Shawn Hochuli"
-    },
-    "jimmy-russell-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Jimmy_Russell_%28before_1898%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Jimmy_Russell_%28before_1898%29.jpg",
-      "source": "wikipedia:Jimmy Russell"
-    },
-    "tom-stephan-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/TOM_STEPHAN-4SQ.jpg/250px-TOM_STEPHAN-4SQ.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b7/TOM_STEPHAN-4SQ.jpg",
-      "source": "wikipedia:Tom Stephan"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Shawn_Hochuli.jpg/250px-Shawn_Hochuli.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Shawn_Hochuli.jpg",
+      "source": "curated:commons:Shawn Hochuli.jpg"
     },
     "brad-rogers-126": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Brad_Rogers_%28American_football_official%29_%28cropped%29.jpg/250px-Brad_Rogers_%28American_football_official%29_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Brad_Rogers_%28American_football_official%29_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Brad Rogers (American football official)"
-    },
-    "greg-wilson-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/LarryWilson.png",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/LarryWilson.png",
-      "source": "wikipedia:Larry Wilson (American football)"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Brad_Rogers.jpg/250px-Brad_Rogers.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Brad_Rogers.jpg",
+      "source": "curated:wikipedia:Brad Rogers"
     },
     "clay-martin-19": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Clay_Martin_at_Falcons-bucs_2019_coin_flip_%28cropped%29.jpg/250px-Clay_Martin_at_Falcons-bucs_2019_coin_flip_%28cropped%29.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Clay_Martin_at_Falcons-bucs_2019_coin_flip_%28cropped%29.jpg",
-      "source": "wikipedia:Clay Martin"
+      "source": "curated:commons:Clay Martin"
     },
     "carl-cheffers-51": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Carl_Cheffers_%282019%29.jpg/250px-Carl_Cheffers_%282019%29.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Carl_Cheffers_%282019%29.jpg",
-      "source": "curated:wikipedia:Carl Cheffers"
+      "source": "curated:commons:Carl Cheffers (2019).jpg"
     },
     "john-hussey-35": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/John_Hussey_%28American_football_official%29_%28cropped%29.jpg/250px-John_Hussey_%28American_football_official%29_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2f/John_Hussey_%28American_football_official%29_%28cropped%29.jpg",
-      "source": "curated:wikipedia:John Hussey (American football official)"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/John_Hussey_%2850696365097%29_%28cropped%29.jpg/250px-John_Hussey_%2850696365097%29_%28cropped%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f7/John_Hussey_%2850696365097%29_%28cropped%29.jpg",
+      "source": "curated:wikipedia:John Hussey"
     },
     "clete-blakeman-34": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Clete_Blakeman_%28cropped%29.jpg/250px-Clete_Blakeman_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Clete_Blakeman_%28cropped%29.jpg",
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Clete_Blakeman_at_Super_Bowl_50_%28cropped%29.jpg/250px-Clete_Blakeman_at_Super_Bowl_50_%28cropped%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Clete_Blakeman_at_Super_Bowl_50_%28cropped%29.jpg",
       "source": "curated:wikipedia:Clete Blakeman"
     },
-    "scott-campbell-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Campbell_Scott_at_the_2024_Toronto_International_Film_Festival_%28cropped%29.jpg/250px-Campbell_Scott_at_the_2024_Toronto_International_Film_Festival_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Campbell_Scott_at_the_2024_Toronto_International_Film_Festival_%28cropped%29.jpg",
-      "source": "wikipedia:Campbell Scott"
-    },
     "shawn-smith-14": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Shawn_Smith_%28American_football_official%29_%28cropped%29.jpg/250px-Shawn_Smith_%28American_football_official%29_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Shawn_Smith_%28American_football_official%29_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Shawn Smith (American football official)"
-    },
-    "alex-moore-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Alex_Moore_%28American_football_official%29_%28cropped%29.jpg/250px-Alex_Moore_%28American_football_official%29_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Alex_Moore_%28American_football_official%29_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Alex Moore (American football official)"
-    },
-    "alan-eck-76": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Alan_Eck_%28cropped%29.jpg/250px-Alan_Eck_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Alan_Eck_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Alan Eck"
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Shawn_Smith%2C_Tampa_Bay_Bucs_and_NY_Giants_2018_coin_flip_%28cropped%29_2.jpg/250px-Shawn_Smith%2C_Tampa_Bay_Bucs_and_NY_Giants_2018_coin_flip_%28cropped%29_2.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Shawn_Smith%2C_Tampa_Bay_Bucs_and_NY_Giants_2018_coin_flip_%28cropped%29_2.jpg",
+      "source": "curated:wikipedia:Shawn Smith"
     },
     "greg-meyer-0": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Greg_Meyer_%28cropped%29.jpg/250px-Greg_Meyer_%28cropped%29.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Greg_Meyer_%28cropped%29.jpg",
-      "source": "curated:wikipedia:Greg Meyer (American football official)"
-    },
-    "derek-anderson-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Derek_Anderson_Panthers_2014.jpg/250px-Derek_Anderson_Panthers_2014.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/1/18/Derek_Anderson_Panthers_2014.jpg",
-      "source": "wikipedia:Derek Anderson (American football)"
+      "source": "curated:wikipedia:Greg Meyer"
     },
     "jerome-boger-23": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Jerome_Boger_%28cropped%29.jpg/250px-Jerome_Boger_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Jerome_Boger_%28cropped%29.jpg",
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Jerome_Boger_in_2006.jpg/250px-Jerome_Boger_in_2006.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/3/39/Jerome_Boger_in_2006.jpg",
       "source": "curated:wikipedia:Jerome Boger"
-    },
-    "jeff-bergman-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Jeff_Bergman_by_Gage_Skidmore.jpg/250px-Jeff_Bergman_by_Gage_Skidmore.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Jeff_Bergman_by_Gage_Skidmore.jpg",
-      "source": "wikipedia:Jeff Bergman"
     }
   }
 }

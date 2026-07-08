@@ -18,6 +18,7 @@ import {
   ouLeanSortWeight,
 } from "@/lib/nhl/data";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
+import { formatSeasonScope } from "@/lib/season-scope";
 import { computeFindings } from "@/lib/nhl/findings";
 import { resolveSlateGames, computeGameStorylines } from "@/lib/grudge-match";
 import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/nhl/home-bias";
@@ -209,7 +210,7 @@ export default function NhlHomePage() {
             where available.
           </li>
           <li>
-            Seasons covered: {refStats.meta.seasons.join(", ")} (
+            {formatSeasonScope(refStats.meta.seasons.length)} (
             {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
           </li>
           <li>

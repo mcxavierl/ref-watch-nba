@@ -23,6 +23,7 @@ import {
   computeSlatePremiums,
 } from "@/lib/cfb/whistle-premium";
 import { computeFindings } from "@/lib/cfb/findings";
+import { formatSeasonScope } from "@/lib/season-scope";
 import { resolveSlateGames, computeGameStorylines } from "@/lib/grudge-match";
 import type { AssignmentGame } from "@/lib/types";
 import {
@@ -211,7 +212,7 @@ export default function CfbHomePage() {
             estimated closing lines where available.
           </li>
           <li>
-            Seasons covered: {refStats.meta.seasons.join(", ")} (
+            {formatSeasonScope(refStats.meta.seasons.length)} (
             {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
           </li>
           <li>

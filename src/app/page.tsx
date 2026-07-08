@@ -11,6 +11,7 @@ import { TermHelp } from "@/components/TermHelp";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
+import { formatSeasonScope } from "@/lib/season-scope";
 import {
   computeCrewMetrics,
   getAssignments,
@@ -203,7 +204,7 @@ export default function HomePage() {
             {refStats.meta.leagueOverBaseline}) as a historical over rate proxy.
           </li>
           <li>
-            Seasons covered: {refStats.meta.seasons.join(", ")} (
+            {formatSeasonScope(refStats.meta.seasons.length)} (
             {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
           </li>
           <li>

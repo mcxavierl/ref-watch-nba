@@ -171,6 +171,167 @@ function commonsFileLooksOfficial(file: string, name: string): boolean {
   );
 }
 
+function nameInFile(file: string, name: string): boolean {
+  const f = file.toLowerCase();
+  return name
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .every((part) => f.includes(part));
+}
+
+function commonsFileIsVerifiedOfficial(
+  file: string,
+  name: string,
+  categories: string[],
+): boolean {
+  const cats = new Set(categories);
+  if (cats.has(`Category:${name} (American football official)`)) return true;
+  if (name === "Ronald Torbert" && cats.has("Category:Ronald Torbert (American football official)")) {
+    return true;
+  }
+
+  if (!cats.has(`Category:${name}`)) return false;
+  if (cats.has("Category:Photographs by All-Pro Reels")) return true;
+  if (cats.has("Category:National Football League officials")) return true;
+  if (/super.?bowl|coin.?toss|referee|official|nfl/i.test(file)) return true;
+
+  if (!nameInFile(file, name)) return false;
+  return /referee|official|coin|lambeau|commanders|super.?bowl|football|nfl/i.test(file);
+}
+
+async function commonsFileDetails(file: string): Promise<{
+  thumbUrl: string;
+  headshotUrl: string;
+  categories: string[];
+} | null> {
+  const url = new URL("https://commons.wikimedia.org/w/api.php");
+  url.searchParams.set("action", "query");
+  url.searchParams.set("titles", file);
+  url.searchParams.set("prop", "imageinfo|categories");
+  url.searchParams.set("iiprop", "url|thumburl");
+  url.searchParams.set("iiurlwidth", "250");
+  url.searchParams.set("cllimit", "max");
+  url.searchParams.set("format", "json");
+
+  const res = await fetch(url, { headers: WIKI_HEADERS });
+  if (!res.ok) return null;
+
+  const page = Object.values(
+    (
+      (await res.json()) as {
+        query?: {
+          pages?: Record<
+            string,
+            {
+              imageinfo?: { url?: string; thumburl?: string }[];
+              categories?: { title: string }[];
+            }
+          >;
+        };
+      }
+    ).query?.pages ?? {},
+  )[0];
+
+  const info = page?.imageinfo?.[0];
+  if (!info?.thumburl) return null;
+
+  return {
+    thumbUrl: info.thumburl,
+    headshotUrl: info.url ?? info.thumburl,
+    categories: (page?.categories ?? []).map((c) => c.title),
+  };
+}
+
+async function commonsCategoryFiles(category: string): Promise<string[]> {
+  const files: string[] = [];
+  let continueToken: string | undefined;
+
+  do {
+    const url = new URL("https://commons.wikimedia.org/w/api.php");
+    url.searchParams.set("action", "query");
+    url.searchParams.set("list", "categorymembers");
+    url.searchParams.set("cmtitle", category);
+    url.searchParams.set("cmlimit", "500");
+    url.searchParams.set("format", "json");
+    if (continueToken) url.searchParams.set("cmcontinue", continueToken);
+
+    const res = await fetch(url, { headers: WIKI_HEADERS });
+    if (!res.ok) break;
+
+    const body = (await res.json()) as {
+      query?: { categorymembers?: { title: string }[] };
+      continue?: { cmcontinue?: string };
+    };
+
+    for (const member of body.query?.categorymembers ?? []) {
+      if (/^File:/.test(member.title) && /\.(jpg|jpeg|png|webp)$/i.test(member.title)) {
+        files.push(member.title);
+      }
+    }
+    continueToken = body.continue?.cmcontinue;
+  } while (continueToken);
+
+  return files;
+}
+
+/** Match files in Category:National Football League officials by filename. */
+export async function commonsPhotoFromNflOfficialsFiles(
+  name: string,
+): Promise<WikiPhotoEntry | null> {
+  const files = await commonsCategoryFiles("Category:National Football League officials");
+  const matches = files
+    .filter((file) => nameInFile(file, name))
+    .sort((a, b) => (a.toLowerCase().includes("cropped") ? 0 : 1) - (b.toLowerCase().includes("cropped") ? 0 : 1));
+
+  for (const file of matches) {
+    const details = await commonsFileDetails(file);
+    if (!details) continue;
+    return {
+      thumbUrl: details.thumbUrl,
+      headshotUrl: details.headshotUrl,
+      source: `commons:${file}`,
+    };
+  }
+  return null;
+}
+
+/** Resolve via Commons categories named after the official (All-Pro Reels tags, etc.). */
+export async function commonsPhotoFromOfficialCategory(
+  name: string,
+): Promise<WikiPhotoEntry | null> {
+  const categories = [
+    `Category:${name} (American football official)`,
+    `Category:${name}`,
+  ];
+
+  for (const category of categories) {
+    const files = await commonsCategoryFiles(category);
+    files.sort((a, b) => {
+      const aNamed = nameInFile(a, name) ? 0 : 1;
+      const bNamed = nameInFile(b, name) ? 0 : 1;
+      if (aNamed !== bNamed) return aNamed - bNamed;
+      const aCrop = a.toLowerCase().includes("cropped") ? 0 : 1;
+      const bCrop = b.toLowerCase().includes("cropped") ? 0 : 1;
+      return aCrop - bCrop;
+    });
+
+    for (const file of files) {
+      const details = await commonsFileDetails(file);
+      if (!details) continue;
+      if (!commonsFileIsVerifiedOfficial(file, name, details.categories)) continue;
+      return {
+        thumbUrl: details.thumbUrl,
+        headshotUrl: details.headshotUrl,
+        source: `commons:${file}`,
+      };
+    }
+    await sleep(40);
+  }
+
+  return null;
+}
+
 export async function commonsPhotoForName(
   name: string,
 ): Promise<WikiPhotoEntry | null> {

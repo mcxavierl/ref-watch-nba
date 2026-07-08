@@ -23,6 +23,7 @@ import {
   computeSlatePremiums,
 } from "@/lib/nfl/whistle-premium";
 import { computeFindings } from "@/lib/nfl/findings";
+import { formatSeasonScope } from "@/lib/season-scope";
 import { resolveSlateGames, computeGameStorylines } from "@/lib/grudge-match";
 import type { AssignmentGame } from "@/lib/types";
 import {
@@ -126,6 +127,7 @@ export default function NflHomePage() {
       <NflPreviewBanner
         statsSource={refStats.meta.source}
         assignmentsSource={assignments.source}
+        atsAvailable={refStats.meta.atsAvailable}
       />
 
       {isOffseason && <OffseasonSlateNotice league="NFL" />}
@@ -211,7 +213,7 @@ export default function NflHomePage() {
             estimated closing lines where available.
           </li>
           <li>
-            Seasons covered: {refStats.meta.seasons.join(", ")} (
+            {formatSeasonScope(refStats.meta.seasons.length)} (
             {refStats.meta.totalGamesProcessed?.toLocaleString() ?? "-"} games).
           </li>
           <li>

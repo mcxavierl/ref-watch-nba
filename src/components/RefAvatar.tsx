@@ -49,7 +49,6 @@ function RefStripesBadge({
             width="8"
             height="8"
             patternUnits="userSpaceOnUse"
-            patternTransform="rotate(45 0 0)"
           >
             <rect width="4" height="8" fill="#171717" />
             <rect x="4" width="4" height="8" fill="#fafafa" />
@@ -109,7 +108,7 @@ export function RefAvatar({
       src={photoSrc}
       alt=""
       aria-hidden
-      className={`shrink-0 rounded-full object-cover ${ringClass} ${sizeClasses[size]} ${className}`}
+      className={`shrink-0 rounded-full object-cover object-top ${ringClass} ${sizeClasses[size]} ${className}`}
       onError={() => setFailed(true)}
     />
   );

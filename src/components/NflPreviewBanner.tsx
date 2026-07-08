@@ -8,16 +8,25 @@ import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 export function NflPreviewBanner({
   statsSource,
   assignmentsSource,
+  atsAvailable,
 }: {
   statsSource: RefStatsFile["meta"]["source"];
   assignmentsSource?: AssignmentsFile["source"];
+  atsAvailable?: boolean;
 }) {
-  if (isNflVerifiedData(statsSource) && assignmentsSource === "espn") {
+  if (
+    isNflVerifiedData(statsSource) &&
+    (atsAvailable || assignmentsSource === "espn")
+  ) {
     return null;
   }
 
   const verifiedStats = isNflVerifiedData(statsSource);
-  const message = nflPreviewBannerMessage(statsSource, assignmentsSource);
+  const message = nflPreviewBannerMessage(
+    statsSource,
+    assignmentsSource,
+    atsAvailable,
+  );
 
   return (
     <div

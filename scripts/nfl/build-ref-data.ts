@@ -32,6 +32,14 @@ import {
 } from "./lib/ref-analytics";
 import { buildBaselinesFile, saveBaselines } from "../lib/baselines";
 import { loadGameLogs } from "../lib/game-logs";
+import { mergeNflRefStats } from "./lib/merge-ref-stats";
+import {
+  buildNflverseLineIndex,
+  fetchNflverseGamesCsv,
+  lookupNflLine,
+  type NflverseLineIndex,
+} from "./lib/nflverse-lines";
+import { homeCoverRate, NflBettingAccumulator } from "./lib/nfl-betting";
 
 const NFL_TEAM_ABBRS = [
   "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN",
@@ -110,6 +118,26 @@ function loadOfficialRoster(seed: RefStatsFile): Map<string, number> {
   return roster;
 }
 
+async function loadNflverseLines(dataDir: string): Promise<NflverseLineIndex | null> {
+  const cachePath = path.join(dataDir, "nflverse-games.csv");
+  try {
+    if (fs.existsSync(cachePath)) {
+      return buildNflverseLineIndex(fs.readFileSync(cachePath, "utf8"), 2021);
+    }
+  } catch {
+    /* refetch below */
+  }
+  try {
+    console.log("Fetching nflverse closing lines...");
+    const csv = await fetchNflverseGamesCsv();
+    fs.writeFileSync(cachePath, csv);
+    return buildNflverseLineIndex(csv, 2021);
+  } catch (err) {
+    console.warn(`nflverse lines unavailable: ${err}`);
+    return null;
+  }
+}
+
 function buildTeamSplit(
   key: string,
   crewNames: string[],
@@ -149,16 +177,19 @@ function buildTeamSplit(
 
 async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
   const roster = loadOfficialRoster(seed);
-  const dates = dateRange("2024-08-01", "2025-02-15");
+  const lineIndex = await loadNflverseLines(DATA_DIR);
+  const dates = dateRange("2022-09-01", "2026-02-15");
 
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number; role: RefRole }>();
   const refMinorGames = new Map<string, RefGameRecord[]>();
   const refTeamBuckets = new Map<string, Map<string, RefTeamGameRow[]>>();
+  const refBetting = new Map<string, NflBettingAccumulator>();
   const teamByCrew = new Map<string, Map<string, { crewNames: string[]; games: TeamGameRow[] }>>();
   const exportedGameLogs: NflGameLogEntry[] = [];
   const allDates: string[] = [];
   let processed = 0;
+  let linedGames = 0;
 
   for (const abbr of NFL_TEAM_ABBRS) {
     teamByCrew.set(abbr, new Map());
@@ -202,7 +233,19 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
         summary.homePenaltyYards + summary.awayPenaltyYards;
       const season = inferNflSeason(summary.date);
       const crew = toRefOfficials(summary.officials, roster);
-      const overHit = totalPoints > LEAGUE_OVER_BASELINE;
+      const closingLine = lineIndex
+        ? lookupNflLine(lineIndex, {
+            gameId: summary.gameId,
+            date: summary.date,
+            awayTeam,
+            homeTeam,
+          })
+        : undefined;
+      const closingTotal = closingLine?.total ?? LEAGUE_OVER_BASELINE;
+      const homeSpread = closingLine?.homeSpread ?? 0;
+      const lineSource = closingLine ? ("external" as const) : ("synthetic" as const);
+      if (closingLine) linedGames++;
+      const overHit = totalPoints > closingTotal;
 
       const record: RefGameRecord = {
         gameId: summary.gameId,
@@ -219,8 +262,8 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
         totalPenaltyYards,
         overHit,
         raptorsInvolved: false,
-        closingTotal: LEAGUE_OVER_BASELINE,
-        homeSpread: 0,
+        closingTotal,
+        homeSpread,
       };
 
       allDates.push(summary.date);
@@ -239,9 +282,9 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
         awayFlags: summary.awayFlags,
         homePenaltyYards: summary.homePenaltyYards,
         awayPenaltyYards: summary.awayPenaltyYards,
-        closingTotal: LEAGUE_OVER_BASELINE,
-        homeSpread: 0,
-        lineSource: "synthetic",
+        closingTotal,
+        homeSpread,
+        lineSource,
         officials: crew,
       });
 
@@ -281,6 +324,17 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
         const games = refGames.get(slug) ?? [];
         games.push(record);
         refGames.set(slug, games);
+
+        if (closingLine) {
+          const acc = refBetting.get(slug) ?? new NflBettingAccumulator(true);
+          acc.addGame({
+            homeScore: summary.homeScore,
+            awayScore: summary.awayScore,
+            homeSpread: closingLine.homeSpread,
+            total: closingLine.total,
+          });
+          refBetting.set(slug, acc);
+        }
 
         if (official.role === "referee") {
           const refOnly = refMinorGames.get(slug) ?? [];
@@ -328,6 +382,7 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
     const overRate = games.filter((g) => g.overHit).length / games.length;
     const avgFouls = games.reduce((s, g) => s + g.totalFouls, 0) / games.length;
     const refOnly = refMinorGames.get(slug) ?? [];
+    const betting = refBetting.get(slug)?.finalize();
     const nflAnalytics =
       meta.role === "referee"
         ? computeNflRefAnalytics(refOnly, leagueAvgFlags, leagueAvgPenaltyYards)
@@ -341,12 +396,13 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
       avgTotalPoints: round1(avgTotal),
       overRate: round3(overRate),
       avgFouls: round1(avgFouls),
-      homeCoverRate: null,
+      homeCoverRate: betting ? homeCoverRate(betting) : null,
       totalPointsDelta: round1(avgTotal - leagueAvgTotal),
       foulsDelta: round1(avgFouls - leagueAvgFouls),
       seasons: [...new Set(games.map((g) => g.season))],
       recentGames: games.slice(-8).reverse(),
       teamStats: collectRefTeamStats(refTeamBuckets.get(slug) ?? new Map()),
+      bettingStats: betting,
       nflAnalytics,
     });
   }
@@ -388,6 +444,9 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
     ),
   );
 
+  const refsWithBetting = refs.filter((r) => r.bettingStats?.linesAvailable).length;
+  const atsAvailable = linedGames >= 50 && refsWithBetting >= 3;
+
   return {
     meta: {
       lastUpdated: new Date().toISOString(),
@@ -398,15 +457,16 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
       leagueAvgPenaltyYards,
       minSampleSize: MIN_SAMPLE,
       source: "espn",
-      atsAvailable: false,
+      atsAvailable,
       refCount: refs.length,
       totalGamesProcessed: processed,
       dateRange: {
         earliest: allDates[0],
         latest: allDates[allDates.length - 1],
       },
-      note:
-        "Scores, penalty counts, and crews from ESPN. Ref×team W-L from those games. No verified closing lines — ATS/O-U splits hidden.",
+      note: atsAvailable
+        ? `Scores, penalties, and crews from ESPN. ATS/O-U from nflverse closing lines (${linedGames}/${processed} games matched).`
+        : "Scores, penalty counts, and crews from ESPN. Ref×team W-L from those games. Run fetch-nfl-historical-lines for ATS/O-U.",
     },
     refs,
     teamSplits,
@@ -416,36 +476,56 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
 async function main() {
   const statsPath = path.join(DATA_DIR, "ref-stats.json");
   const seedPath = path.join(DATA_DIR, "ref-stats.seed.json");
+  const replaceOnly = process.argv.includes("--espn-only");
 
   console.log("=== Ref Watch NFL data build (ESPN) ===\n");
 
-  let seed: RefStatsFile;
+  let base: RefStatsFile;
   try {
-    seed = JSON.parse(fs.readFileSync(seedPath, "utf8")) as RefStatsFile;
+    base = JSON.parse(fs.readFileSync(seedPath, "utf8")) as RefStatsFile;
   } catch {
-    seed = JSON.parse(fs.readFileSync(statsPath, "utf8")) as RefStatsFile;
+    try {
+      base = JSON.parse(fs.readFileSync(statsPath, "utf8")) as RefStatsFile;
+    } catch {
+      console.error("No NFL seed found. Run npm run generate-nfl-seed -- --regenerate first.");
+      process.exit(1);
+    }
   }
 
-  const built = await buildFromEspn(seed);
+  const built = await buildFromEspn(base);
   if (built) {
-    fs.writeFileSync(statsPath, `${JSON.stringify(built, null, 2)}\n`);
+    const output = replaceOnly ? built : mergeNflRefStats(base, built);
+    fs.writeFileSync(statsPath, `${JSON.stringify(output, null, 2)}\n`);
     console.log(
-      `Built ${built.meta.totalGamesProcessed} games, ${built.refs.length} officials (source: espn)`,
+      `${replaceOnly ? "Built" : "Merged"} ${built.meta.totalGamesProcessed} ESPN games → ` +
+        `${output.refs.length} officials (${output.meta.source})`,
     );
+    const qualified = output.refs.reduce(
+      (sum, ref) =>
+        sum +
+        Object.values(ref.teamStats ?? {}).filter((stat) => stat.games >= 3).length,
+      0,
+    );
+    const pairs = output.refs.reduce(
+      (sum, ref) => sum + Object.keys(ref.teamStats ?? {}).length,
+      0,
+    );
+    console.log(`Matrix coverage: ${qualified}/${pairs} ref×team pairs with 3+ games`);
   } else {
     const honest: RefStatsFile = {
-      ...seed,
+      ...base,
       meta: {
-        ...seed.meta,
+        ...base.meta,
         source: "seeded",
         atsAvailable: false,
         lastUpdated: new Date().toISOString(),
         note:
-          "Simulated preview data — not verified against official NFL records. Run build when ESPN backfill succeeds.",
+          "Simulated preview data with full ref×team matrix — not verified against official NFL records. " +
+          "Run build-nfl-data when ESPN backfill succeeds to merge verified penalty splits.",
       },
     };
     fs.writeFileSync(statsPath, `${JSON.stringify(honest, null, 2)}\n`);
-    console.log("ESPN backfill insufficient — wrote honest seeded fallback.");
+    console.log("ESPN backfill insufficient — kept seed baseline.");
   }
 }
 

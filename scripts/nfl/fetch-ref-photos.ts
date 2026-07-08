@@ -7,7 +7,8 @@ import * as path from "node:path";
 import { refSlug } from "../lib/slug";
 import type { RefStatsFile } from "../../src/lib/types";
 import {
-  commonsPhotoForName,
+  commonsPhotoFromNflOfficialsFiles,
+  commonsPhotoFromOfficialCategory,
   isNflOfficialPage,
   loadNflOfficialTitleIndex,
   sleep,
@@ -151,6 +152,13 @@ const CURATED_BY_NAME: Record<string, PhotoEntry> = {
       "https://upload.wikimedia.org/wikipedia/commons/0/0e/Shawn_Smith%2C_Tampa_Bay_Bucs_and_NY_Giants_2018_coin_flip_%28cropped%29_2.jpg",
     source: "curated:wikipedia:Shawn Smith",
   },
+  "Carl Paganelli": {
+    thumbUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Super_Bowl_XLVI_%286837551195%29.jpg/250px-Super_Bowl_XLVI_%286837551195%29.jpg",
+    headshotUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/7/7a/Super_Bowl_XLVI_%286837551195%29.jpg",
+    source: "curated:commons:Super Bowl XLVI Carl Paganelli",
+  },
 };
 
 const KNOWN_TITLES: Record<string, string> = {
@@ -192,7 +200,7 @@ async function resolveFromWikipedia(
     seen.add(title);
 
     const official = await isNflOfficialPage(title);
-    if (!official && !titleMatchesOfficial(name, title)) continue;
+    if (!official) continue;
 
     const images = await wikiPageImages(title);
     if (images) {
@@ -221,8 +229,11 @@ async function fetchPhotoForOfficial(
   const wiki = await resolveFromWikipedia(name, nflTitleIndex);
   if (wiki) return { slug, entry: wiki };
 
-  const commons = await commonsPhotoForName(name);
+  const commons = await commonsPhotoFromOfficialCategory(name);
   if (commons) return { slug, entry: commons };
+
+  const nflOfficialsFile = await commonsPhotoFromNflOfficialsFiles(name);
+  if (nflOfficialsFile) return { slug, entry: nflOfficialsFile };
 
   return null;
 }

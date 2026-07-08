@@ -46,7 +46,7 @@ const NFL_TEAM_ABBRS = [
   "TEN", "WAS",
 ];
 
-const SEASONS = ["2021-22", "2022-23", "2023-24", "2024-25"];
+const SEASONS = ["2021-22", "2022-23", "2023-24", "2024-25", "2025-26"];
 const LEAGUE_AVG_TOTAL = 45.8;
 const LEAGUE_AVG_FOULS = 13;
 const LEAGUE_OVER_BASELINE = 46;
@@ -570,12 +570,16 @@ function main() {
 
   if (!regenerate && fs.existsSync(seedPath)) {
     const existing = JSON.parse(fs.readFileSync(seedPath, "utf8")) as RefStatsFile;
-    if (existing.refs?.length) {
+    const hasTeamStats = existing.refs?.some(
+      (ref) => ref.teamStats && Object.keys(ref.teamStats).length > 0,
+    );
+    if (existing.refs?.length && hasTeamStats) {
       stats = existing;
       const generated = generate();
       gameLogs = generated.gameLogs;
       console.log(`Preserved ${existing.refs.length} officials from existing seed`);
     } else {
+      console.log("Existing seed missing teamStats — regenerating full matrix");
       const generated = generate();
       stats = generated.stats;
       gameLogs = generated.gameLogs;

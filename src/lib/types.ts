@@ -258,9 +258,9 @@ export interface RefStatsFile {
     leagueAvgFouls: number;
     leagueOverBaseline: number;
     minSampleSize: number;
-    source: "nba-stats-api" | "nhl-api" | "espn" | "seeded" | "historical";
+    source: "nba-stats-api" | "nhl-api" | "espn" | "seeded" | "historical" | "hybrid";
     /** When ref×team W-L is merged from Basketball-Reference. */
-    refTeamWinLossSource?: "basketball-reference";
+    refTeamWinLossSource?: "basketball-reference" | "pro-football-reference";
     atsAvailable: boolean;
     refCount?: number;
     totalGamesProcessed?: number;
@@ -304,7 +304,7 @@ export interface GameOddsLine {
 
 export interface OddsFile {
   lastUpdated: string;
-  source: "the-odds-api" | "benchmark" | "seeded";
+  source: "the-odds-api" | "benchmark" | "seeded" | "nflverse" | "espn-pickcenter";
   note?: string;
   lines: GameOddsLine[];
 }
