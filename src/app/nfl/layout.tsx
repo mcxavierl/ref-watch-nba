@@ -1,3 +1,4 @@
+import { LeagueIngestGate } from "@/components/LeagueIngestGate";
 import { NflBettingHonestyBanner } from "@/components/NflBettingHonestyBanner";
 
 export default function NflLayout({
@@ -6,9 +7,9 @@ export default function NflLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <LeagueIngestGate leagueId="nfl">
       <NflBettingHonestyBanner />
       {children}
-    </>
+    </LeagueIngestGate>
   );
 }

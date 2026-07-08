@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "tsx scripts/copy-data-to-public.ts && node scripts/next-build-retry.mjs",
+    "build": "tsx scripts/check-production-env.ts && tsx scripts/check-no-synthetic-imports.ts && tsx scripts/copy-data-to-public.ts && node scripts/next-build-retry.mjs",
+    "check:synthetic": "tsx scripts/check-no-synthetic-imports.ts",
+    "check:production-env": "tsx scripts/check-production-env.ts --production",
     "preview": "tsx scripts/copy-data-to-public.ts && opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "tsx scripts/copy-data-to-public.ts && rm -rf .open-next/cloudflare && opennextjs-cloudflare build && printf 'export const production = {};\\nexport const development = {};\\nexport const test = {};\\n' > .open-next/cloudflare/next-env.mjs && opennextjs-cloudflare deploy",
     "upload": "tsx scripts/copy-data-to-public.ts && opennextjs-cloudflare build && opennextjs-cloudflare upload",
@@ -12,7 +14,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test src/lib/nfl/data-source.test.ts src/lib/nba-team-season-records.test.ts src/lib/bbr-ref-team-records.test.ts src/lib/scoring-metrics.test.ts src/lib/nba-strength-of-schedule.test.ts src/lib/ref-number.test.ts",
+    "test": "tsx scripts/check-no-synthetic-imports.ts && tsx --test src/lib/nfl/data-source.test.ts src/lib/nba-team-season-records.test.ts src/lib/bbr-ref-team-records.test.ts src/lib/scoring-metrics.test.ts src/lib/nba-strength-of-schedule.test.ts src/lib/ref-number.test.ts src/lib/stats-query/stats-query.test.ts",
     "fetch-assignments": "tsx scripts/fetch-assignments.ts",
     "fetch-odds": "tsx scripts/fetch-odds.ts",
     "morning-slate": "tsx scripts/morning-slate.ts",
@@ -47,7 +49,9 @@
     "backtest": "tsx scripts/backtest.ts",
     "honesty-audit": "tsx scripts/honesty-audit.ts",
     "validate-nfl": "node scripts/validate-nfl-accuracy.js",
-    "validate": "npm run typecheck && npm run honesty-audit && npm run validate-nfl"
+    "validate": "npm run typecheck && npm run honesty-audit && npm run validate-nfl",
+    "ingest:nba-full": "tsx scripts/ingest/ingest-full.ts",
+    "ingest:nba-build-stats": "tsx scripts/ingest/build-ref-stats-from-logs.ts"
   },
   "dependencies": {
     "cheerio": "^1.2.0",

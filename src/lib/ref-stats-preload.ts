@@ -50,7 +50,7 @@ export async function preloadRefStatsFromAssets(
 ): Promise<void> {
   if (getCachedRefStats(league)) return;
 
-  for (const file of ["ref-stats.json", "ref-stats.seed.json"]) {
+  for (const file of ["ref-stats.json"]) {
     const res = await fetch(`${origin}${ASSET_BASE[league]}/${file}`);
     if (!res.ok) continue;
     const data = (await res.json()) as RefStatsFile;

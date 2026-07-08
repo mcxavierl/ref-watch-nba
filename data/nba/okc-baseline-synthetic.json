@@ -1,0 +1,39 @@
+{
+  "refCount": 53,
+  "okcSplitRows": 32,
+  "okcTopCrew": [
+    {
+      "crew": "Ray Acosta, Karl Lane, Ben Taylor",
+      "games": 33,
+      "wins": 22,
+      "losses": 11
+    },
+    {
+      "crew": "Brent Barnaky, Curtis Blair, Rodney Mott",
+      "games": 33,
+      "wins": 19,
+      "losses": 14
+    },
+    {
+      "crew": "Gediminas Petraitis, Phenizee Ransom, Jenna Reneau",
+      "games": 32,
+      "wins": 20,
+      "losses": 12
+    }
+  ],
+  "meta": {
+    "source": "seeded",
+    "seasons": [
+      "2016-17",
+      "2017-18",
+      "2018-19",
+      "2019-20",
+      "2020-21",
+      "2021-22",
+      "2022-23",
+      "2023-24",
+      "2024-25",
+      "2025-26"
+    ]
+  }
+}

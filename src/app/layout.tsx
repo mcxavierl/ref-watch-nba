@@ -7,6 +7,7 @@ import { SiteFooterWrapper } from "@/components/SiteFooterWrapper";
 import { SiteHeader } from "@/components/SiteHeader";
 import { DEFAULT_SITE_DESCRIPTION, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { AFFILIATION_DISCLAIMER, SITE_NAME, SITE_URL } from "@/lib/site";
+import { assertProductionLeagueVerification } from "@/lib/production-verification-assert";
 import "./globals.css";
 
 const barlow = Barlow({
@@ -69,6 +70,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  assertProductionLeagueVerification();
+
   return (
     <html lang="en" className="dark">
       <body

@@ -25,6 +25,11 @@ import {
 import type { LeagueId } from "@/lib/leagues";
 import { buildScopedRefStats } from "@/lib/scoped-ref-stats";
 import {
+  filterVerifiedSeasons,
+  resolveLeagueVerification,
+} from "@/lib/league-verification";
+import { shouldShowUnverifiedData } from "@/lib/show-unverified";
+import {
   formatSeasonScopeFromMode,
   resolveScopedSeasonsForLeague,
   scopedSinceSeason,
@@ -64,12 +69,23 @@ export function loadScopedLeagueStats(
   scopeMode: SeasonScopeMode,
 ): ScopedLeagueStatsBundle {
   const { stats: full, formatRange } = loadLeagueStats(leagueId);
+  const verification = resolveLeagueVerification(leagueId, full.meta);
+  const preview = shouldShowUnverifiedData();
+  const availableSeasons = filterVerifiedSeasons(
+    leagueId,
+    full.meta,
+    full.meta.seasons,
+    preview,
+  );
   const scopedSeasons = resolveScopedSeasonsForLeague(
     leagueId,
     scopeMode,
-    full.meta.seasons,
+    availableSeasons,
   );
-  const stats = buildScopedRefStats(leagueId, full, scopedSeasons);
+  const stats =
+    verification.data_verified || preview
+      ? buildScopedRefStats(leagueId, full, scopedSeasons)
+      : { ...full, refs: [], teamSplits: {} };
   return {
     stats,
     formatRange,

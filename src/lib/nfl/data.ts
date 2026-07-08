@@ -20,6 +20,8 @@ import {
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { nflCrewMetricsProvenance } from "@/lib/provenance";
 import { getCachedRefStats } from "@/lib/ref-stats-preload";
+import { resolveLeagueVerification } from "@/lib/league-verification";
+import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data", "nfl");
@@ -46,9 +48,7 @@ function tryReadJson<T>(filename: string): T | null {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs =
-    tryReadJson<RefStatsFile>("ref-stats.json") ??
-    tryReadJson<RefStatsFile>("ref-stats.seed.json");
+  const fromFs = tryReadJson<RefStatsFile>("ref-stats.json");
   if (fromFs) return fromFs;
 
   return getCachedRefStats("nfl");
@@ -79,13 +79,31 @@ const EMPTY_REF_STATS: RefStatsFile = (() => {
       leagueAvgPenaltyYards: bl.leagueAvgPenaltyYards,
       minSampleSize: 30,
       source: "seeded",
+      data_verified: false,
+      data_source: "synthetic",
       atsAvailable: false,
-      note: "No NFL ref stats data file found. Run npm run generate-nfl-seed.",
+      note: "NFL verified ingest pending. No synthetic numbers in production.",
     },
     refs: [],
     teamSplits: {},
   };
 })();
+
+function gateUnverifiedNflStats(stats: RefStatsFile): RefStatsFile {
+  const v = resolveLeagueVerification("nfl", stats.meta);
+  if (v.data_verified || shouldShowUnverifiedData()) return stats;
+  return {
+    ...stats,
+    meta: {
+      ...stats.meta,
+      data_verified: false,
+      data_source: "synthetic",
+      seasons: [],
+    },
+    refs: [],
+    teamSplits: {},
+  };
+}
 
 function migrateLegacySplits(data: RefStatsFile): Record<string, TeamCrewSplit[]> {
   return { ...(data.teamSplits ?? {}) };
@@ -119,9 +137,7 @@ export function getRefStats(): RefStatsFile {
   try {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    return applyBaselines(
-      normalizeRefStats(raw),
-    );
+    return gateUnverifiedNflStats(applyBaselines(normalizeRefStats(raw)));
   } catch {
     return EMPTY_REF_STATS;
   }

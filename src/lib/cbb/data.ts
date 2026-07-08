@@ -46,9 +46,7 @@ function tryReadJson<T>(filename: string): T | null {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs =
-    tryReadJson<RefStatsFile>("ref-stats.json") ??
-    tryReadJson<RefStatsFile>("ref-stats.seed.json");
+  const fromFs = tryReadJson<RefStatsFile>("ref-stats.json");
   if (fromFs) return fromFs;
 
   return getCachedRefStats("cbb");
