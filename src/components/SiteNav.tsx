@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 import { METHODOLOGY_NAV_LABEL } from "@/lib/trust-charter";
@@ -114,19 +113,8 @@ function LeagueNavLink({
   active: boolean;
 }) {
   const config = LEAGUES[id];
-  const linkRef = useRef<HTMLAnchorElement>(null);
-
-  useEffect(() => {
-    if (!active || !linkRef.current) return;
-    linkRef.current.scrollIntoView({
-      inline: "nearest",
-      block: "nearest",
-    });
-  }, [active, id]);
-
   return (
     <Link
-      ref={linkRef}
       href={config.pathPrefix || "/"}
       aria-label={leagueNavLabel(id)}
       aria-current={active ? "page" : undefined}
