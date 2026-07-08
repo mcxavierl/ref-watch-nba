@@ -9,7 +9,7 @@ import {
   NFL_DIRECTORY_METRICS,
   NHL_DIRECTORY_METRICS,
   nflDirectoryMetricDelta,
-  nhlDirectoryMetricDelta,
+  nhlDirectoryMetricDisplay,
   REFS_DIRECTORY_INITIAL_COUNT,
   REFS_DIRECTORY_TABS,
   sortRefsDirectory,
@@ -28,14 +28,18 @@ function DeltaCell({
   overBaseline,
   showUnit = true,
   heatMap = false,
+  formatted,
+  usePct = false,
 }: {
   delta: number;
   unit: string;
   overBaseline: number;
   showUnit?: boolean;
   heatMap?: boolean;
+  formatted?: string;
+  usePct?: boolean;
 }) {
-  const tone = directoryDeltaTone(delta, overBaseline, heatMap);
+  const tone = directoryDeltaTone(delta, overBaseline, heatMap, usePct);
   const className = heatMap
     ? tone === "positive"
       ? "ref-delta-positive"
@@ -48,11 +52,13 @@ function DeltaCell({
         ? "refs-directory-delta-negative"
         : "refs-directory-delta-neutral";
 
-  const formatted = showUnit ? formatSigned(delta) : formatDirectoryDelta(delta);
+  const formattedValue =
+    formatted ??
+    (showUnit ? formatSigned(delta) : formatDirectoryDelta(delta));
 
   return (
     <span className={`refs-directory-delta ${className}`}>
-      {formatted}
+      {formattedValue}
       {showUnit ? ` ${unit}` : ""}
     </span>
   );
@@ -201,10 +207,11 @@ export function RefsDirectory({
         <p className="refs-directory-context">
           {activeTab.description} Over benchmark: {meta.leagueOverBaseline}{" "}
           combined {league.metrics.scoreUnitPlural}.
-          {isNhl && nhlMetric === "pim" && " PIM Δ vs league penalty-minute baseline."}
+          {isNhl && nhlMetric === "goals" && " Scoring vs avg shows % above/below league combined goals."}
+          {isNhl && nhlMetric === "pim" && " PIM vs avg shows % above/below league penalty-minute baseline."}
           {isNhl &&
             nhlMetric === "ppo" &&
-            " PPO Δ will compare power play chances vs league baseline."}
+            " PPO vs avg will compare power play chances vs league baseline."}
           {isNfl && nflMetric === "flags" && " Flags Δ vs league average per game."}
           {isNfl &&
             nflMetric === "penaltyYards" &&
@@ -224,14 +231,21 @@ export function RefsDirectory({
         {visible.map((ref, index) => {
           const href = `${basePath}/refs/${ref.slug}`;
           const isReveal = expanded && index >= REFS_DIRECTORY_INITIAL_COUNT;
-          const nhlDelta = isNhl
-            ? nhlDirectoryMetricDelta(ref, nhlMetric)
+          const nhlDisplay = isNhl
+            ? nhlDirectoryMetricDisplay(
+                ref,
+                nhlMetric,
+                meta.leagueAvgTotal,
+                meta.leagueAvgFouls,
+              )
             : null;
           const nflDelta = isNfl
             ? nflDirectoryMetricDelta(ref, nflMetric)
             : null;
           const displayDelta =
-            nhlDelta ?? nflDelta ?? ref.totalPointsDelta;
+            nhlDisplay?.value ?? nflDelta ?? ref.totalPointsDelta;
+          const displayFormatted = nhlDisplay?.formatted;
+          const usePct = isNhl && nhlDisplay?.usePct === true;
 
           return (
             <li
@@ -263,7 +277,8 @@ export function RefsDirectory({
                   {formatPct(ref.overRate)}
                 </span>
                 <span className="refs-directory-col-delta">
-                  {(isNhl || isNfl) && displayDelta === null ? (
+                  {(isNhl && nhlDisplay === null) ||
+                  (isNfl && nflDelta === null) ? (
                     <span className="refs-directory-delta refs-directory-delta-neutral">
                       —
                     </span>
@@ -274,6 +289,8 @@ export function RefsDirectory({
                       overBaseline={meta.leagueOverBaseline}
                       showUnit={!isNhl && !isNfl}
                       heatMap={isNhl || isNfl}
+                      formatted={displayFormatted}
+                      usePct={usePct}
                     />
                   )}
                 </span>

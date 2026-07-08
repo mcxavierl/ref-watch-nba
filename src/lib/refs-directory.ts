@@ -1,5 +1,11 @@
 import type { LeagueConfig } from "@/lib/leagues";
 import { deltaTone as metricDeltaTone } from "@/lib/metricTone";
+import {
+  directoryScoringDisplay,
+  directoryWhistleDisplay,
+  scoringVsLeaguePct,
+  whistleVsLeaguePct,
+} from "@/lib/scoring-metrics";
 import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
 import { formatSigned } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
@@ -21,7 +27,7 @@ export const NHL_DIRECTORY_METRICS: {
   id: NhlDirectoryMetric;
   label: string;
 }[] = [
-  { id: "goals", label: "Goal Δ" },
+  { id: "goals", label: "vs avg" },
   { id: "pim", label: "PIM Δ" },
   { id: "ppo", label: "PPO Δ" },
 ];
@@ -57,6 +63,8 @@ export interface RefsDirectoryMeta {
   seasonCount: number;
   minSampleSize: number;
   leagueOverBaseline: number;
+  leagueAvgTotal: number;
+  leagueAvgFouls: number;
   qualifiedCount: number;
   totalGameRecords: number;
   totalGameRecordsLabel: string;
@@ -90,6 +98,8 @@ export function buildRefsDirectoryContext(
       seasonCount: stats.meta.seasons.length,
       minSampleSize: stats.meta.minSampleSize,
       leagueOverBaseline: stats.meta.leagueOverBaseline,
+      leagueAvgTotal: stats.meta.leagueAvgTotal,
+      leagueAvgFouls: stats.meta.leagueAvgFouls,
       qualifiedCount: qualified.length,
       totalGameRecords,
       totalGameRecordsLabel: formatRoundedPlus(totalGameRecords),
@@ -148,12 +158,34 @@ export function nflDirectoryMetricDelta(
 export function nhlDirectoryMetricDelta(
   ref: RefProfile,
   metric: NhlDirectoryMetric,
+  leagueAvgTotal: number,
+  leagueAvgFouls: number,
 ): number | null {
   switch (metric) {
     case "goals":
-      return ref.totalPointsDelta;
+      return scoringVsLeaguePct(ref.avgTotalPoints, leagueAvgTotal);
     case "pim":
-      return ref.foulsDelta;
+      return whistleVsLeaguePct(ref.avgFouls, leagueAvgFouls);
+    case "ppo":
+      return null;
+  }
+}
+
+export function nhlDirectoryMetricDisplay(
+  ref: RefProfile,
+  metric: NhlDirectoryMetric,
+  leagueAvgTotal: number,
+  leagueAvgFouls: number,
+): { value: number; formatted: string; usePct: boolean } | null {
+  switch (metric) {
+    case "goals":
+      return directoryScoringDisplay(ref, leagueAvgTotal);
+    case "pim":
+      return directoryWhistleDisplay(
+        ref.foulsDelta,
+        ref.avgFouls,
+        leagueAvgFouls,
+      );
     case "ppo":
       return null;
   }
@@ -163,8 +195,12 @@ export function directoryDeltaTone(
   delta: number,
   overBaseline: number,
   heatMap = false,
+  usePct = false,
 ): "positive" | "negative" | "neutral" {
-  if (Math.abs(delta) < 0.05) return "neutral";
-  if (heatMap) return metricDeltaTone(delta, 0);
+  if (Math.abs(delta) < (usePct ? 0.05 : 0.05)) return "neutral";
+  if (heatMap) {
+    const threshold = usePct ? 0.8 : 0;
+    return metricDeltaTone(delta, threshold);
+  }
   return deltaTone(delta, overBaseline);
 }

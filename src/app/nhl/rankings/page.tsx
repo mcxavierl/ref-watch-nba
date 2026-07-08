@@ -64,6 +64,7 @@ export default function NhlRankingsPage() {
             league="NHL"
             minSampleSize={stats.meta.minSampleSize}
             overBaseline={stats.meta.leagueOverBaseline}
+            leagueAvgTotal={stats.meta.leagueAvgTotal}
             basePath="/nhl"
             signalCounts={signalCounts}
           />

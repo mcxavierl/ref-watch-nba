@@ -6,6 +6,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RefAvatar } from "@/components/RefAvatar";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
+import { directoryScoringDisplay, usePctScoringDelta } from "@/lib/scoring-metrics";
 import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
 import type { RefProfile } from "@/lib/types";
 
@@ -57,6 +58,7 @@ export function RefRankingsTable({
   league,
   minSampleSize,
   overBaseline,
+  leagueAvgTotal,
   basePath = "",
   signalCounts = {},
 }: {
@@ -64,6 +66,7 @@ export function RefRankingsTable({
   league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
   minSampleSize: number;
   overBaseline: number;
+  leagueAvgTotal?: number;
   basePath?: string;
   signalCounts?: Record<string, number>;
 }) {
@@ -81,7 +84,13 @@ export function RefRankingsTable({
   );
 
   const scoringLabel =
-    league === "NBA" ? "Scoring Δ" : league === "NFL" ? "Points Δ" : "Goals Δ";
+    league === "NBA"
+      ? "Scoring Δ"
+      : league === "NFL"
+        ? "Points Δ"
+        : leagueAvgTotal && usePctScoringDelta(leagueAvgTotal)
+          ? "vs avg"
+          : "Goals Δ";
   const whistleLabel =
     league === "NBA" ? "Fouls Δ" : league === "NFL" ? "Flags Δ" : "Minors Δ";
   const unit =
@@ -204,7 +213,9 @@ export function RefRankingsTable({
                     )}
                   </td>
                   <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
-                    {formatSigned(ref.totalPointsDelta)}
+                    {leagueAvgTotal && usePctScoringDelta(leagueAvgTotal)
+                      ? directoryScoringDisplay(ref, leagueAvgTotal).formatted
+                      : formatSigned(ref.totalPointsDelta)}
                   </td>
                   <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
                     {whistleDelta !== undefined ? formatSigned(whistleDelta) : "-"}
