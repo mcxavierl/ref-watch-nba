@@ -1,6 +1,6 @@
 import { deltaTone } from "@/lib/metricTone";
 import { getTeamDisplayRecord, getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
-import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
+import type { RefProfile, RefStatsFile, RefTeamStat, TeamCrewSplit } from "@/lib/types";
 
 /** Minimum games before a ref×team cell is shown in the matrix. */
 export const MATRIX_MIN_GAMES = 3;
@@ -52,8 +52,18 @@ export function approxTeamRecord(
   return { wins, losses: Math.max(0, games - wins) };
 }
 
+/** Prefer exact Basketball-Reference or game-log W-L when present. */
+export function teamRecordFromStat(
+  stat: RefTeamStat,
+): { wins: number; losses: number } {
+  if (stat.wins !== undefined && stat.losses !== undefined) {
+    return { wins: stat.wins, losses: stat.losses };
+  }
+  return approxTeamRecord(stat.games, stat.winRate);
+}
+
 export interface RefTeamMatrixOptions {
-  league?: "nba" | "nhl";
+  league?: "nba" | "nhl" | "nfl";
   /** Earliest season label for NBA official baseline totals. */
   sinceSeason?: string;
 }
@@ -106,7 +116,7 @@ export function computeRefTeamMatrix(
     if (!ref.teamStats) continue;
     for (const [teamAbbr, stat] of Object.entries(ref.teamStats)) {
       if (stat.games < minGames) continue;
-      const { wins, losses } = approxTeamRecord(stat.games, stat.winRate);
+      const { wins, losses } = teamRecordFromStat(stat);
       cells[matrixCellKey(ref.slug, teamAbbr)] = {
         refSlug: ref.slug,
         teamAbbr: teamAbbr.toUpperCase(),

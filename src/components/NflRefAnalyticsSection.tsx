@@ -10,7 +10,7 @@ export function NflRefAnalyticsSection({ analytics, leagueAvgFouls, leagueAvgPen
   const prov = analytics.provenance;
   return (
     <section className="data-card">
-      <div className="ref-table-section-header"><h2 className="text-sm font-semibold text-zinc-800"><TermHelp id="nhl-ref-analytics">Whistle analytics</TermHelp></h2></div>
+      <div className="ref-table-section-header"><h2 className="text-sm font-semibold text-zinc-800"><TermHelp id="nfl-ref-analytics">Whistle analytics</TermHelp></h2></div>
       {!showMetrics ? <p className="px-4 py-6 text-sm text-zinc-600">Sample gate not cleared.</p> : (
         <div className="px-4 py-4 sm:px-5"><RefDashboardStatGrid>
           <RefDashboardStatCell label="Flags per game" value={String(analytics.avgFlagsPerGame)} detail={`${formatSigned(analytics.flagsDelta)} vs ${lf}`} provenance={prov?.avgFlagsPerGame} />

@@ -25,6 +25,8 @@ export type GlossaryId =
   | "minors-per-game"
   | "penalty-balance"
   | "nhl-ref-analytics"
+  | "nfl-ref-analytics"
+  | "nfl-whistle-premium"
   | "home-margin"
   | "pace-alert"
   | "hit-rate"
@@ -144,6 +146,14 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   "nhl-ref-analytics": {
     label: "Whistle analytics",
     text: "Referee-only metrics from game logs: minors, OT rate, and penalty-balance tendency. Linesmen are excluded.",
+  },
+  "nfl-ref-analytics": {
+    label: "Whistle analytics",
+    text: "Referee-only NFL metrics from game logs: flags per game, penalty yards, and flag-balance tendency.",
+  },
+  "nfl-whistle-premium": {
+    label: "Whistle premium",
+    text: "Crew combined scoring pace vs league baseline, plus flag-rate context for tonight's matchup. Descriptive historical signal only.",
   },
   "home-margin": {
     label: "Home avg margin",

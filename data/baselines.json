@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-08T03:47:27.413Z",
-  "note": "Computed from NBA/NHL/NFL seed game logs",
+  "generatedAt": "2026-07-08T04:02:36.145Z",
+  "note": "NFL ESPN build: 313 games",
   "fallback": {
     "NBA": {
       "label": "NBA static fallback (empty or missing game logs)",
@@ -133,43 +133,36 @@
     "usingFallback": false
   },
   "NFL": {
-    "currentSeason": "2024-25",
+    "currentSeason": "2025-26",
     "seasons": {
-      "2021-22": {
-        "season": "2021-22",
-        "gameCount": 272,
-        "leagueAvgTotal": 45.7,
-        "leagueOverBaseline": 45.7,
-        "leagueAvgFouls": 17.3
-      },
-      "2022-23": {
-        "season": "2022-23",
-        "gameCount": 272,
-        "leagueAvgTotal": 47,
-        "leagueOverBaseline": 47,
-        "leagueAvgFouls": 16.8
-      },
       "2023-24": {
         "season": "2023-24",
-        "gameCount": 272,
-        "leagueAvgTotal": 46.4,
-        "leagueOverBaseline": 46.4,
-        "leagueAvgFouls": 17
+        "gameCount": 39,
+        "leagueAvgTotal": 36,
+        "leagueOverBaseline": 36,
+        "leagueAvgFouls": 12.7
       },
       "2024-25": {
         "season": "2024-25",
-        "gameCount": 272,
-        "leagueAvgTotal": 45.9,
-        "leagueOverBaseline": 45.9,
-        "leagueAvgFouls": 16.8
+        "gameCount": 245,
+        "leagueAvgTotal": 45.8,
+        "leagueOverBaseline": 45.8,
+        "leagueAvgFouls": 13
+      },
+      "2025-26": {
+        "season": "2025-26",
+        "gameCount": 29,
+        "leagueAvgTotal": 48.8,
+        "leagueOverBaseline": 48.8,
+        "leagueAvgFouls": 11.1
       }
     },
     "aggregate": {
       "season": "all",
-      "gameCount": 1088,
-      "leagueAvgTotal": 46.3,
-      "leagueOverBaseline": 46.3,
-      "leagueAvgFouls": 17
+      "gameCount": 313,
+      "leagueAvgTotal": 44.8,
+      "leagueOverBaseline": 44.8,
+      "leagueAvgFouls": 12.8
     },
     "usingFallback": false
   }
