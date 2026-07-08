@@ -1514,17 +1514,11 @@ p {
   }
 
   .site-chrome--scrolled .site-header {
+    /* Layer gold on the right; blue layer never interpolates into purple. */
     background:
       radial-gradient(ellipse 50% 135% at 50% -45%, rgba(255, 214, 102, 0.28), transparent 62%),
-      linear-gradient(
-        90deg,
-        #000000 0%,
-        #001a33 14%,
-        #0057b8 38%,
-        #0070d9 58%,
-        #d4af37 82%,
-        #ffd966 100%
-      );
+      linear-gradient(90deg, transparent 0%, transparent 68%, #ffcc00 68%, #ffdd44 100%),
+      linear-gradient(90deg, #000000 0%, #001833 18%, #0088ff 68%);
     backdrop-filter: blur(14px) saturate(1.12);
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.06),
@@ -1552,15 +1546,8 @@ p {
     color: var(--header-ink);
     background:
       radial-gradient(ellipse 56% 145% at 50% -45%, rgba(255, 214, 102, 0.38), transparent 62%),
-      linear-gradient(
-        90deg,
-        #000000 0%,
-        #001a33 14%,
-        #0057b8 38%,
-        #0070d9 58%,
-        #d4af37 82%,
-        #ffd966 100%
-      );
+      linear-gradient(90deg, transparent 0%, transparent 68%, #ffcc00 68%, #ffdd44 100%),
+      linear-gradient(90deg, #000000 0%, #001833 18%, #0088ff 68%);
     border-bottom: 1px solid rgba(255, 214, 102, 0.28);
     box-shadow: 0 8px 28px rgba(0, 22, 48, 0.22);
     transition:

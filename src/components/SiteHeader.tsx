@@ -25,10 +25,7 @@ export function SiteHeader() {
 
   return (
     <div className={`site-chrome${scrolled ? " site-chrome--scrolled" : ""}`}>
-      <header
-        className="site-header"
-        data-league={isNhl ? "nhl" : "nba"}
-      >
+      <header className="site-header">
         <div className="site-header-glow" aria-hidden />
         <div className="site-header-accent" aria-hidden />
 
