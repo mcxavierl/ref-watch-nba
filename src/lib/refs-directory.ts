@@ -1,6 +1,19 @@
 import type { LeagueConfig } from "@/lib/leagues";
+import { deltaTone as metricDeltaTone } from "@/lib/metricTone";
 import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
+import { formatSigned } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
+
+export type NhlDirectoryMetric = "goals" | "pim" | "ppo";
+
+export const NHL_DIRECTORY_METRICS: {
+  id: NhlDirectoryMetric;
+  label: string;
+}[] = [
+  { id: "goals", label: "Goal Δ" },
+  { id: "pim", label: "PIM Δ" },
+  { id: "ppo", label: "PPO Δ" },
+];
 
 export type RefsDirectoryTab = "over-high" | "over-low" | "experienced";
 
@@ -100,4 +113,33 @@ export function deltaTone(
   if (delta > threshold) return "positive";
   if (delta < -threshold) return "negative";
   return "neutral";
+}
+
+export function formatDirectoryDelta(n: number, decimals = 1): string {
+  if (Math.abs(n) < 0.05) return (0).toFixed(decimals);
+  return formatSigned(n, decimals);
+}
+
+export function nhlDirectoryMetricDelta(
+  ref: RefProfile,
+  metric: NhlDirectoryMetric,
+): number | null {
+  switch (metric) {
+    case "goals":
+      return ref.totalPointsDelta;
+    case "pim":
+      return ref.foulsDelta;
+    case "ppo":
+      return null;
+  }
+}
+
+export function directoryDeltaTone(
+  delta: number,
+  overBaseline: number,
+  heatMap = false,
+): "positive" | "negative" | "neutral" {
+  if (Math.abs(delta) < 0.05) return "neutral";
+  if (heatMap) return metricDeltaTone(delta, 0);
+  return deltaTone(delta, overBaseline);
 }
