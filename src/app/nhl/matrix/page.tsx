@@ -19,7 +19,6 @@ export default function NhlMatrixPage() {
   const stats = getRefStats();
   const analyticsStats = nhlAnalyticsRefStats(stats);
   const range = formatRefStatsRange(stats.meta);
-  const seeded = stats.meta.source === "seeded";
   const league = LEAGUES.nhl;
 
   const matrix = computeRefTeamMatrix(
@@ -55,12 +54,6 @@ export default function NhlMatrixPage() {
           </Link>
           .
         </p>
-        {seeded && (
-          <p className="mt-2 text-sm text-amber-800">
-            Historical dataset; W-L derived from stored win rates and may
-            round slightly.
-          </p>
-        )}
       </section>
 
       <section className="section-block">

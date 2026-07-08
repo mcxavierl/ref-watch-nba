@@ -60,9 +60,10 @@ export function resolveScopedSeasonsForLeague(
     mlb: "NBA",
   };
   const fallback = dataLeagueTenSeasons(dataLeagueMap[leagueId]);
-  const pool = availableSeasons?.length
-    ? [...availableSeasons].sort()
-    : [...fallback];
+  const pool =
+    availableSeasons !== undefined
+      ? [...availableSeasons].sort()
+      : [...fallback];
   return resolveScopedSeasons(pool, mode);
 }
 

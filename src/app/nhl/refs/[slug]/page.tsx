@@ -151,7 +151,6 @@ export default async function NhlRefProfilePage({
           seasons={stats.meta.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
-          seeded={stats.meta.source === "seeded"}
         />
       </header>
 

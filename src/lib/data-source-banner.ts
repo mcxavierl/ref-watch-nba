@@ -40,9 +40,7 @@ export function leagueDataSourceBannerMessage(
 
   const source = meta.data_source ?? meta.source;
 
-  if (league === "nhl" && source === "seeded") {
-    return "Historical seeded dataset. Run build-nhl-data for live NHL API backfill. Penalty and scoring splits may use synthetic lines until refreshed.";
-  }
+  if (league === "nhl") return null;
 
   if (league === "nfl") {
     if (isNflSimulatedData(meta.source)) {
