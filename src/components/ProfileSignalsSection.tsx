@@ -1,7 +1,20 @@
 import Link from "next/link";
 import type { ProfileSignalsBundle } from "@/lib/profile-signals";
+import { StandoutFlag, StandoutMetricValue } from "@/components/StandoutMetric";
 import { researchHubHref, type FindingLeague } from "@/lib/findings-shared";
+import { findingStatDelightTone, isDirectionalTone } from "@/lib/metric-delight";
 import { NO_SIGNAL_COPY, SIGNAL_LIMITATION_COPY } from "@/lib/trust-charter";
+
+function profileStatToneClass(label: string, value: string, detail?: string) {
+  const tone = findingStatDelightTone({ label, value, detail });
+  if (tone === "positive" || tone === "standout-high") {
+    return "profile-signal-stat profile-signal-stat--positive";
+  }
+  if (tone === "negative" || tone === "standout-low") {
+    return "profile-signal-stat profile-signal-stat--negative";
+  }
+  return "profile-signal-stat";
+}
 
 export function ProfileSignalsSection({
   bundle,
@@ -44,35 +57,43 @@ export function ProfileSignalsSection({
                   <h3 className="min-w-0 flex-1 text-sm font-semibold text-zinc-900">
                     {signal.headline}
                   </h3>
-                  {signal.notable && (
-                    <span className="profile-signal-badge shrink-0 rounded-md bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-900 ring-1 ring-sky-200/80">
-                      Notable
-                    </span>
-                  )}
+                  {signal.notable && <StandoutFlag>Notable</StandoutFlag>}
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-zinc-600">
                   {signal.body}
                 </p>
                 {signal.stats.length > 0 && (
                   <dl className="mt-3 grid gap-2">
-                    {signal.stats.map((stat) => (
-                      <div
-                        key={stat.label}
-                        className="rounded-md bg-zinc-50 px-2.5 py-2"
-                      >
-                        <dt className="text-xs font-medium text-zinc-500">
-                          {stat.label}
-                        </dt>
-                        <dd className="mt-0.5 font-mono text-sm font-semibold tabular-nums text-zinc-900">
-                          {stat.value}
-                        </dd>
-                        {stat.detail && (
-                          <dd className="mt-0.5 text-xs text-zinc-500">
-                            {stat.detail}
+                    {signal.stats.map((stat) => {
+                      const tone = findingStatDelightTone(stat);
+                      return (
+                        <div
+                          key={stat.label}
+                          className={profileStatToneClass(
+                            stat.label,
+                            stat.value,
+                            stat.detail,
+                          )}
+                        >
+                          <dt className="text-xs font-medium text-zinc-500">
+                            {stat.label}
+                          </dt>
+                          <dd className="mt-0.5">
+                            <StandoutMetricValue
+                              tone={tone}
+                              size={isDirectionalTone(tone) ? "lg" : "md"}
+                            >
+                              {stat.value}
+                            </StandoutMetricValue>
                           </dd>
-                        )}
-                      </div>
-                    ))}
+                          {stat.detail && (
+                            <dd className="mt-0.5 text-xs text-zinc-500">
+                              {stat.detail}
+                            </dd>
+                          )}
+                        </div>
+                      );
+                    })}
                   </dl>
                 )}
               </li>
@@ -136,35 +157,43 @@ export function ProfileSignalsSection({
                   <h3 className="min-w-0 flex-1 text-base font-semibold text-zinc-900">
                     {signal.headline}
                   </h3>
-                  {signal.notable && (
-                    <span className="profile-signal-badge shrink-0 rounded-md bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-900 ring-1 ring-sky-200/80">
-                      Notable
-                    </span>
-                  )}
+                  {signal.notable && <StandoutFlag>Notable</StandoutFlag>}
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-600">
                   {signal.body}
                 </p>
                 {signal.stats.length > 0 && (
                   <dl className="mt-4 grid gap-3 sm:grid-cols-3">
-                    {signal.stats.map((stat) => (
-                      <div
-                        key={stat.label}
-                        className="rounded-md border border-border-subtle bg-zinc-50 px-3 py-2"
-                      >
-                        <dt className="text-xs font-medium text-zinc-500">
-                          {stat.label}
-                        </dt>
-                        <dd className="mt-0.5 font-mono text-sm font-semibold tabular-nums text-zinc-900">
-                          {stat.value}
-                        </dd>
-                        {stat.detail && (
-                          <dd className="mt-0.5 text-xs text-zinc-500">
-                            {stat.detail}
+                    {signal.stats.map((stat) => {
+                      const tone = findingStatDelightTone(stat);
+                      return (
+                        <div
+                          key={stat.label}
+                          className={profileStatToneClass(
+                            stat.label,
+                            stat.value,
+                            stat.detail,
+                          )}
+                        >
+                          <dt className="text-xs font-medium text-zinc-500">
+                            {stat.label}
+                          </dt>
+                          <dd className="mt-0.5">
+                            <StandoutMetricValue
+                              tone={tone}
+                              size={isDirectionalTone(tone) ? "lg" : "md"}
+                            >
+                              {stat.value}
+                            </StandoutMetricValue>
                           </dd>
-                        )}
-                      </div>
-                    ))}
+                          {stat.detail && (
+                            <dd className="mt-0.5 text-xs text-zinc-500">
+                              {stat.detail}
+                            </dd>
+                          )}
+                        </div>
+                      );
+                    })}
                   </dl>
                 )}
               </li>

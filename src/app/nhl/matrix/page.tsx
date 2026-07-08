@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
   formatRefStatsRange,
@@ -11,7 +12,6 @@ export const metadata = hubPageMetadata("nhl", "matrix");
 import { nhlAnalyticsRefStats } from "@/lib/nhl/officials";
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
-import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 import { NHL_TEAMS, teamFullName } from "@/lib/nhl/teams";
 
@@ -69,43 +69,13 @@ export default function NhlMatrixPage() {
         </div>
       </section>
 
-      {extremes.length > 0 && (
-        <section className="section-block">
-          <h2 className="section-title">Standout official×team splits</h2>
-          <p className="section-lead">
-            Cells where a team&apos;s win rate with that official diverges sharply
-            from their baseline in this sample. Descriptive only, not picks.
-          </p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {extremes.map((item) => (
-              <li key={`${item.refSlug}-${item.teamAbbr}`} className="data-card px-4 py-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                  {item.kind === "high" ? "Above baseline" : "Below baseline"}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-700">
-                  <Link
-                    href={`${league.pathPrefix}/refs/${item.refSlug}#close-game`}
-                    className="font-medium text-zinc-900 hover:text-raptors hover:underline"
-                  >
-                    {item.refName}
-                  </Link>{" "}
-                  with{" "}
-                  <Link
-                    href={`${league.pathPrefix}/teams/${item.teamAbbr}`}
-                    className="font-medium text-zinc-900 hover:text-raptors hover:underline"
-                  >
-                    {item.teamLabel}
-                  </Link>
-                  : ref×team {item.wins}-{item.losses} ({formatPct(item.winRate)}) in{" "}
-                  {item.games} games, {formatSigned(item.deltaPts)} vs team sample
-                  baseline {item.baselineWins}-{item.baselineLosses} (
-                  {formatPct(item.baselineWinRate)} across {item.baselineGames} gp).
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <MatrixExtremeSection
+        extremes={extremes}
+        basePath={league.pathPrefix}
+        title="Standout official×team splits"
+        lead="Cells where a team's win rate with that official diverges sharply from their baseline in this sample. Descriptive only, not picks."
+        entityLabel="official"
+      />
 
       <section className="section-block">
         <h2 className="section-title">Related views</h2>

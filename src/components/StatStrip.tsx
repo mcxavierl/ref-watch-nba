@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { MetricProvenance } from "@/lib/types";
 import { ProvenanceMarker, provenanceValueClass } from "@/components/ProvenanceMarker";
 import { isFallbackMetric } from "@/lib/provenance-utils";
+import { metricDelightClass } from "@/lib/metric-delight";
 
 export function StatStrip({ children }: { children: ReactNode }) {
   return <dl className="stat-row">{children}</dl>;
@@ -13,14 +14,31 @@ export function StatCell({
   detail,
   annotation,
   provenance,
+  tone,
+  standout = false,
 }: {
   label: ReactNode;
   value: string;
   detail?: string;
   annotation?: string;
   provenance?: MetricProvenance;
+  tone?: "positive" | "negative" | "neutral" | "standout-high" | "standout-low";
+  standout?: boolean;
 }) {
   const hidden = isFallbackMetric(provenance);
+  const delightTone = tone ?? "neutral";
+  const valueClasses = [
+    "stat-value",
+    provenanceValueClass(provenance) ?? "",
+    standout || delightTone !== "neutral"
+      ? metricDelightClass(
+          delightTone === "neutral" && standout ? "positive" : delightTone,
+          standout ? "value-hero" : "value",
+        )
+      : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className="stat-cell">
@@ -32,11 +50,7 @@ export function StatCell({
           </span>
         )}
       </dt>
-      <dd
-        className={`stat-value ${provenanceValueClass(provenance) ?? ""}`.trim()}
-      >
-        {hidden ? "-" : value}
-      </dd>
+      <dd className={valueClasses}>{hidden ? "-" : value}</dd>
       {detail && !hidden && <dd className="stat-detail">{detail}</dd>}
       {annotation && <dd className="stat-annotation">{annotation}</dd>}
     </div>
