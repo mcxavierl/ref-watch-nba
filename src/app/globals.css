@@ -1647,24 +1647,39 @@ p {
   }
 
   .site-chrome--scrolled .site-header {
-    /* Gold fades in over blue; wide stops avoid a hard edge and purple RGB bleed. */
+    /* Gold wash fades in slowly over sapphire; wide stops avoid banding. */
     background:
-      radial-gradient(ellipse 50% 135% at 50% -45%, rgba(255, 214, 102, 0.28), transparent 62%),
+      radial-gradient(ellipse 62% 140% at 50% -48%, rgba(255, 214, 102, 0.22), transparent 68%),
       linear-gradient(
         90deg,
         transparent 0%,
-        transparent 48%,
-        rgba(255, 204, 0, 0.05) 54%,
-        rgba(255, 210, 32, 0.14) 62%,
-        rgba(255, 216, 52, 0.28) 70%,
-        rgba(255, 222, 72, 0.46) 78%,
-        rgba(255, 228, 92, 0.64) 86%,
-        rgba(255, 234, 112, 0.82) 92%,
-        rgba(255, 240, 130, 0.94) 96%,
-        #ffcc00 98%,
-        #ffdd44 100%
+        transparent 58%,
+        rgba(255, 204, 0, 0.02) 64%,
+        rgba(255, 208, 24, 0.06) 70%,
+        rgba(255, 212, 40, 0.11) 76%,
+        rgba(255, 216, 56, 0.17) 82%,
+        rgba(255, 220, 72, 0.24) 88%,
+        rgba(255, 224, 88, 0.3) 93%,
+        rgba(255, 228, 100, 0.22) 97%,
+        rgba(255, 220, 80, 0.1) 100%
       ),
-      linear-gradient(90deg, #000000 0%, #001833 14%, #0070d9 52%, #0088ff 78%, #0078ee 100%);
+      linear-gradient(
+        90deg,
+        #000000 0%,
+        #00050c 6%,
+        #000e1c 12%,
+        #001428 18%,
+        #001e38 26%,
+        #002850 34%,
+        #003868 42%,
+        #004880 50%,
+        #005898 58%,
+        #0068b0 66%,
+        #0074c4 74%,
+        #007fd4 82%,
+        #0088e0 90%,
+        #0078dd 100%
+      );
     backdrop-filter: blur(14px) saturate(1.12);
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.06),
@@ -1691,22 +1706,37 @@ p {
     position: relative;
     color: var(--header-ink);
     background:
-      radial-gradient(ellipse 56% 145% at 50% -45%, rgba(255, 214, 102, 0.38), transparent 62%),
+      radial-gradient(ellipse 68% 150% at 50% -48%, rgba(255, 214, 102, 0.3), transparent 70%),
       linear-gradient(
         90deg,
         transparent 0%,
-        transparent 48%,
-        rgba(255, 204, 0, 0.08) 54%,
-        rgba(255, 210, 32, 0.18) 62%,
-        rgba(255, 216, 52, 0.34) 70%,
-        rgba(255, 222, 72, 0.52) 78%,
-        rgba(255, 228, 92, 0.7) 86%,
-        rgba(255, 234, 112, 0.86) 92%,
-        rgba(255, 240, 130, 0.96) 96%,
-        #ffcc00 98%,
-        #ffdd44 100%
+        transparent 58%,
+        rgba(255, 204, 0, 0.04) 64%,
+        rgba(255, 208, 24, 0.09) 70%,
+        rgba(255, 212, 40, 0.15) 76%,
+        rgba(255, 216, 56, 0.22) 82%,
+        rgba(255, 220, 72, 0.3) 88%,
+        rgba(255, 224, 88, 0.36) 93%,
+        rgba(255, 228, 100, 0.28) 97%,
+        rgba(255, 220, 80, 0.12) 100%
       ),
-      linear-gradient(90deg, #000000 0%, #001833 14%, #0070d9 52%, #0088ff 78%, #0078ee 100%);
+      linear-gradient(
+        90deg,
+        #000000 0%,
+        #00050c 6%,
+        #000e1c 12%,
+        #001428 18%,
+        #001e38 26%,
+        #002850 34%,
+        #003868 42%,
+        #004880 50%,
+        #005898 58%,
+        #0068b0 66%,
+        #0074c4 74%,
+        #007fd4 82%,
+        #0088e0 90%,
+        #0078dd 100%
+      );
     border-bottom: 1px solid rgba(255, 214, 102, 0.28);
     box-shadow: 0 8px 28px rgba(0, 22, 48, 0.22);
     transition:
@@ -1748,12 +1778,14 @@ p {
     height: 1px;
     background: linear-gradient(
       90deg,
-      transparent 12%,
-      rgba(0, 112, 217, 0.28) 28%,
-      rgba(0, 168, 232, 0.22) 52%,
-      rgba(140, 200, 80, 0.18) 68%,
-      rgba(255, 214, 102, 0.48) 84%,
-      rgba(255, 236, 161, 0.38) 94%,
+      transparent 8%,
+      rgba(0, 112, 217, 0.18) 22%,
+      rgba(0, 140, 220, 0.16) 38%,
+      rgba(0, 168, 232, 0.14) 52%,
+      rgba(100, 185, 120, 0.12) 66%,
+      rgba(180, 210, 90, 0.14) 78%,
+      rgba(255, 214, 102, 0.28) 88%,
+      rgba(255, 228, 140, 0.2) 95%,
       transparent 100%
     );
     opacity: 0.95;
