@@ -57,6 +57,17 @@ describe("ref-team matrix team panels", () => {
     for (let i = 1; i < bottom.length; i++) {
       assert.ok(bottom[i - 1]!.deltaPts <= bottom[i]!.deltaPts);
     }
+    for (const entry of bottom) {
+      assert.ok(entry.deltaPts < 0);
+    }
+  });
+
+  it("only includes refs above baseline in the top panel for record sort", () => {
+    const matrix = buildMatrix();
+    const top = topRefsBeatingBaselineForTeam(matrix, "LAL");
+    for (const entry of top) {
+      assert.ok(entry.deltaPts > 0);
+    }
   });
 
   it("sorts top refs by whistle differential when penalty-diff mode is selected", () => {

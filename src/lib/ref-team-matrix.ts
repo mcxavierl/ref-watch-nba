@@ -263,6 +263,22 @@ export function matrixWhistleDiffShortLabel(metrics: LeagueMetricCopy): string {
   return `${metrics.whistleShort} diff`;
 }
 
+function filterTeamPanelEntries(
+  entries: TeamTopRefEntry[],
+  sort: MatrixTeamPanelSort,
+  direction: "top" | "bottom",
+): TeamTopRefEntry[] {
+  if (sort === "record") {
+    return direction === "top"
+      ? entries.filter((entry) => entry.deltaPts > 0)
+      : entries.filter((entry) => entry.deltaPts < 0);
+  }
+
+  return direction === "top"
+    ? entries.filter((entry) => entry.avgFoulDifferential > 0)
+    : entries.filter((entry) => entry.avgFoulDifferential < 0);
+}
+
 function sortTeamPanelEntries(
   entries: TeamTopRefEntry[],
   sort: MatrixTeamPanelSort,
@@ -321,11 +337,12 @@ export function topRefsBeatingBaselineForTeam(
   limit = TEAM_MATRIX_REF_PANEL_LIMIT,
   sort: MatrixTeamPanelSort = MATRIX_DEFAULT_TEAM_PANEL_SORT,
 ): TeamTopRefEntry[] {
-  return sortTeamPanelEntries(
+  const entries = filterTeamPanelEntries(
     teamPanelEntriesForTeam(matrix, teamAbbr),
     sort,
     "top",
-  ).slice(0, limit);
+  );
+  return sortTeamPanelEntries(entries, sort, "top").slice(0, limit);
 }
 
 /** Qualified refs below team baseline (record) or with worst whistle diff, worst first. */
@@ -335,11 +352,12 @@ export function bottomRefsBelowBaselineForTeam(
   limit = TEAM_MATRIX_REF_PANEL_LIMIT,
   sort: MatrixTeamPanelSort = MATRIX_DEFAULT_TEAM_PANEL_SORT,
 ): TeamTopRefEntry[] {
-  return sortTeamPanelEntries(
+  const entries = filterTeamPanelEntries(
     teamPanelEntriesForTeam(matrix, teamAbbr),
     sort,
     "bottom",
-  ).slice(0, limit);
+  );
+  return sortTeamPanelEntries(entries, sort, "bottom").slice(0, limit);
 }
 
 export function topMatrixRefs(
