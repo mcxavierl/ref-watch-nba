@@ -181,7 +181,7 @@ export function RefRankingsTable({
                   className={`ranking-table-row ${belowGate ? "ranking-table-row-thin" : ""}`}
                   onClick={() => router.push(profileHref)}
                 >
-                  <td className="data-table-rank px-4 py-3 font-mono tabular-nums text-zinc-400 sm:px-5">
+                  <td className="data-table-rank px-4 py-3 font-mono tabular-nums text-zinc-600 sm:px-5">
                     {rank}
                   </td>
                   <td className="px-4 py-3">

@@ -64,7 +64,7 @@ export function FavoritesStar({
       className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50"
     >
       <Star
-        className={`size-4 ${favorited ? "fill-amber-400 text-amber-500" : "text-zinc-400"}`}
+        className={`size-4 ${favorited ? "fill-amber-400 text-amber-500" : "text-zinc-600"}`}
         aria-hidden
       />
       {favorited ? "Saved" : "Save"}

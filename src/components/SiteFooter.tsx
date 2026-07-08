@@ -90,7 +90,7 @@ export function SiteFooter({ league }: { league: FooterLeague }) {
               independent research only. Official assignments from{" "}
               <a
                 href={source.href}
-                className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
+                className="site-footer-link"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -103,31 +103,22 @@ export function SiteFooter({ league }: { league: FooterLeague }) {
             <p className="site-footer-heading">Explore</p>
             <ul className="site-footer-body space-y-1.5">
               <li>
-                <Link
-                  href={researchHref}
-                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
-                >
+                <Link href={researchHref} className="site-footer-link">
                   Research hub
                 </Link>
               </li>
               <li>
-                <Link
-                  href={rankingsHref}
-                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
-                >
+                <Link href={rankingsHref} className="site-footer-link">
                   Referee tendency index
                 </Link>
               </li>
               <li>
-                <Link
-                  href={trendsHref}
-                  className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline"
-                >
+                <Link href={trendsHref} className="site-footer-link">
                   League trends
                 </Link>
               </li>
               <li>
-                <Link href="/methodology" className="font-medium text-zinc-300 underline-offset-2 hover:text-raptors hover:underline">
+                <Link href="/methodology" className="site-footer-link">
                   Methodology
                 </Link>
               </li>

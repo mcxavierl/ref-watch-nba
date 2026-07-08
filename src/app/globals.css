@@ -15,6 +15,8 @@
   --muted: #a8a8b3;
   --muted-strong: #c4c4cc;
   --ink-secondary: #e4e4e7;
+  --link: #d0d0d8;
+  --link-hover: var(--raptors);
 
   /* Brand & league accents */
   --raptors: #ef3b55;
@@ -128,32 +130,59 @@
   --font-mono: var(--font-data);
 
   --color-white: #18181f;
+  /*
+   * Zinc scale is inverted for dark UI: low numbers are dark (surfaces),
+   * high numbers are light (text). Use zinc-600+ for readable body text.
+   */
   --color-zinc-50: #16161c;
   --color-zinc-100: #1e1e26;
   --color-zinc-200: #2c2c36;
-  --color-zinc-300: #3f3f48;
-  --color-zinc-400: #71717a;
-  --color-zinc-500: #94949f;
-  --color-zinc-600: #b0b0ba;
+  --color-zinc-300: #52525c;
+  --color-zinc-400: #8a8a95;
+  --color-zinc-500: #a8a8b3;
+  --color-zinc-600: #b8b8c2;
   --color-zinc-700: #d0d0d8;
   --color-zinc-800: #e4e4e7;
   --color-zinc-900: #f4f4f5;
   --color-zinc-950: #fafafa;
   --color-emerald-50: #0f2219;
+  --color-emerald-100: #142a1f;
   --color-emerald-200: #166534;
+  --color-emerald-600: #34d399;
+  --color-emerald-700: #6ee7b7;
   --color-emerald-800: #6ee7b7;
   --color-emerald-900: #a7f3d0;
+  /* Amber scale inverted: low = dark surfaces, high = light warning text */
   --color-amber-50: #221a0f;
+  --color-amber-100: #2a2012;
   --color-amber-200: #92400e;
-  --color-amber-900: #fcd34d;
+  --color-amber-300: #b45309;
+  --color-amber-400: #d97706;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #fbbf24;
+  --color-amber-700: #fcd34d;
+  --color-amber-800: #fde68a;
+  --color-amber-900: #fef3c7;
+  --color-amber-950: #fffbeb;
   --color-orange-50: #221510;
+  --color-orange-100: #2a1a12;
   --color-orange-200: #9a3412;
-  --color-orange-900: #fdba74;
+  --color-orange-700: #fdba74;
+  --color-orange-800: #fed7aa;
+  --color-orange-900: #ffedd5;
   --color-sky-50: #0c1824;
+  --color-sky-100: #102030;
   --color-sky-200: #0369a1;
-  --color-sky-900: #7dd3fc;
+  --color-sky-700: #7dd3fc;
+  --color-sky-800: #bae6fd;
+  --color-sky-900: #e0f2fe;
   --color-rose-50: #221015;
+  --color-rose-100: #2a1418;
+  --color-rose-200: #9f1239;
+  --color-rose-600: #fb7185;
+  --color-rose-700: #fda4af;
   --color-rose-800: #fda4af;
+  --color-rose-900: #fecdd3;
 }
 
 body {
@@ -854,7 +883,7 @@ p {
   }
 
   .season-notify-input {
-    @apply min-w-0 flex-1 rounded-md border border-border bg-surface px-3 py-2 text-zinc-900 outline-offset-2 placeholder:text-zinc-400 focus-visible:border-zinc-400 focus-visible:outline-2 focus-visible:outline-zinc-400 disabled:opacity-60;
+    @apply min-w-0 flex-1 rounded-md border border-border bg-surface px-3 py-2 text-zinc-900 outline-offset-2 placeholder:text-zinc-500 focus-visible:border-zinc-500 focus-visible:outline-2 focus-visible:outline-zinc-500 disabled:opacity-60;
     font-size: var(--text-sm);
     min-width: 12rem;
   }
@@ -2570,6 +2599,41 @@ p {
     color: var(--muted);
   }
 
+  .site-footer-link {
+    font-weight: 500;
+    color: var(--link);
+    text-underline-offset: 2px;
+    transition: color var(--duration-fast) ease-out;
+  }
+
+  .site-footer-link:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+
+  .site-footer-link:focus-visible {
+    outline: 2px solid var(--header-gold-bright);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Responsible gambling — high-contrast on dark amber surface */
+  .gambling-disclaimer {
+    border-top: 2px solid color-mix(in srgb, var(--color-amber-200) 80%, transparent);
+    background: color-mix(in srgb, var(--color-amber-50) 92%, transparent);
+    color: var(--color-amber-900);
+  }
+
+  .gambling-disclaimer a {
+    color: var(--color-amber-950);
+    font-weight: 600;
+    text-underline-offset: 2px;
+  }
+
+  .gambling-disclaimer a:hover {
+    text-decoration: underline;
+  }
+
   /* ── Pro tease ── */
   .pro-tease-blur {
     filter: blur(3px);
@@ -2589,7 +2653,7 @@ p {
 
   .pro-tease-features li::before {
     content: "→";
-    @apply absolute left-0 text-zinc-400;
+    @apply absolute left-0 text-zinc-600;
   }
 
   /* ── Game card team row ── */
