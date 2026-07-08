@@ -18,7 +18,7 @@ import {
 } from "@/lib/nhl/data";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import { computeFindings } from "@/lib/nhl/findings";
-import { resolveSlateGames } from "@/lib/grudge-match";
+import { resolveSlateGames, computeGameStorylines } from "@/lib/grudge-match";
 import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/nhl/home-bias";
 import { getOdds } from "@/lib/nhl/odds";
 import {
