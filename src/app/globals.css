@@ -2232,6 +2232,12 @@ p {
     max-width: 1.55rem;
   }
 
+  .league-nav-mark[data-league="nhl"],
+  .league-nav-mark[data-league="epl"] {
+    height: 1.1rem;
+    max-width: 1.95rem;
+  }
+
   .league-nav-mark-svg {
     flex-shrink: 0;
     width: 1.55rem;
