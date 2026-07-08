@@ -8,7 +8,6 @@ import type {
   NhlStatsGlobalKey,
 } from "@/lib/global-stats";
 import type { RefStatsFile } from "@/lib/types";
-import { preloadGameLogsFromAssets } from "@/lib/game-logs-preload";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 type CacheKey =
@@ -18,18 +17,6 @@ type CacheKey =
   | CbbStatsGlobalKey
   | CfbStatsGlobalKey
   | EplStatsGlobalKey;
-
-const DATA_LEAGUE_FOR_ROUTE: Record<
-  League,
-  "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB"
-> = {
-  nba: "NBA",
-  nhl: "NHL",
-  nfl: "NFL",
-  epl: "EPL",
-  cbb: "CBB",
-  cfb: "CFB",
-};
 
 const CACHE_KEYS: Record<League, CacheKey> = {
   nba: "__REFWATCH_NBA_REF_STATS__",
@@ -78,13 +65,10 @@ export async function preloadLeagueDataForPath(
   origin: string,
   pathname: string,
 ): Promise<void> {
-  const leagues = leaguesForPath(pathname);
-  await Promise.all(
-    leagues.flatMap((league) => [
-      preloadRefStatsFromAssets(origin, league),
-      preloadGameLogsFromAssets(origin, DATA_LEAGUE_FOR_ROUTE[league]),
-    ]),
+  const { preloadLeagueDataForPath: preloadOnEdge } = await import(
+    "@/lib/edge-preload"
   );
+  await preloadOnEdge(origin, pathname);
 }
 
 /** Load only the leagues a route needs, avoids parsing both 8MB files on every request. */

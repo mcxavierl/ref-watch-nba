@@ -1,7 +1,6 @@
 import { buildNbaNightlyFeed } from "@/lib/syndication";
 
-export const dynamic = "force-static";
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const feed = buildNbaNightlyFeed();

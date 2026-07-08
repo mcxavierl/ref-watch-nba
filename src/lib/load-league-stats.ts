@@ -37,6 +37,9 @@ import {
 } from "@/lib/season-scope";
 import type { RefStatsFile } from "@/lib/types";
 
+/** Only NHL/NFL use ingest empty states; NBA seeded data must render in production. */
+const INGEST_GATED_LEAGUES = new Set<LeagueId>(["nhl", "nfl"]);
+
 type LeagueStatsBundle = {
   stats: RefStatsFile;
   formatRange: (meta: RefStatsFile["meta"]) => string;
@@ -82,10 +85,13 @@ export function loadScopedLeagueStats(
     scopeMode,
     availableSeasons,
   );
-  const stats =
-    verification.data_verified || preview
-      ? buildScopedRefStats(leagueId, full, scopedSeasons)
-      : { ...full, refs: [], teamSplits: {} };
+  const canRender =
+    !INGEST_GATED_LEAGUES.has(leagueId) ||
+    verification.data_verified ||
+    preview;
+  const stats = canRender
+    ? buildScopedRefStats(leagueId, full, scopedSeasons)
+    : { ...full, refs: [], teamSplits: {} };
   return {
     stats,
     formatRange,
