@@ -3,6 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   staticPageGenerationTimeout: 180,
+  experimental: {
+    webpackBuildWorker: false,
+    cpus: 1,
+  },
   async redirects() {
     return [
       {
