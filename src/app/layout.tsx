@@ -7,7 +7,9 @@ import { SiteFooterWrapper } from "@/components/SiteFooterWrapper";
 import { SiteHeader } from "@/components/SiteHeader";
 import { DEFAULT_SITE_DESCRIPTION, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { AFFILIATION_DISCLAIMER, SITE_NAME, SITE_URL } from "@/lib/site";
+import { headers } from "next/headers";
 import { assertProductionLeagueVerification } from "@/lib/production-verification-assert";
+import { hydrateLeagueDataForPath } from "@/lib/server-data-hydrate";
 import "./globals.css";
 
 const barlow = Barlow({
@@ -65,11 +67,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = (await headers()).get("x-pathname") ?? "/";
+  await hydrateLeagueDataForPath(pathname);
   assertProductionLeagueVerification();
 
   return (

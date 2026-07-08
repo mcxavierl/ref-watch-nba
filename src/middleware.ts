@@ -4,7 +4,11 @@ import { preloadLeagueDataForPath } from "@/lib/edge-preload";
 
 export async function middleware(request: NextRequest) {
   await preloadLeagueDataForPath(request.nextUrl.origin, request.nextUrl.pathname);
-  return NextResponse.next();
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", request.nextUrl.pathname);
+  return NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 }
 
 export const config = {
