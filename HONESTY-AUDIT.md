@@ -1,6 +1,6 @@
 # Honesty audit
 
-Generated: 2026-07-08T05:15:31.657Z
+Generated: 2026-07-08T06:04:42.616Z
 
 Counts reflect provenance tags that would be shown in the UI (ref profiles, betting splits, slate crew metrics).
 

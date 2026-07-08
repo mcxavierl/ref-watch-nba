@@ -2,6 +2,8 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { buildRefStats } from "./lib/build-ref-stats";
+import { applyBbrRefTeamStats } from "./lib/apply-bbr-ref-team-stats";
+import { loadBbrRefTeamRecords } from "./lib/bbr-ref-team-records";
 import { fetchAssignments } from "./lib/parse-assignments";
 import { buildBaselinesFile, saveBaselines } from "./lib/baselines";
 import { loadGameLogs } from "./lib/game-logs";
@@ -25,7 +27,26 @@ async function main() {
     console.warn("Assignments fetch failed:", err);
   }
 
-  const refStats = await buildRefStats();
+  let refStats = await buildRefStats();
+
+  const bbrFixture = loadBbrRefTeamRecords();
+  if (bbrFixture) {
+    const applied = applyBbrRefTeamStats(refStats, bbrFixture);
+    refStats = applied.stats;
+    console.log(
+      `BBR ref×team W-L merged: ${applied.matchedPairs} pairs (${bbrFixture.stats.refTeamPairs} in fixture)`,
+    );
+    if (applied.unmatchedReferees.length > 0) {
+      console.warn(
+        `BBR name match failures (${applied.unmatchedReferees.length}): ${applied.unmatchedReferees.join(", ")}`,
+      );
+    }
+  } else {
+    console.warn(
+      "No data/bbr-ref-team-records.json — run npm run build-bbr-ref-team-data for real ref×team W-L",
+    );
+  }
+
   fs.writeFileSync(
     path.join(dataDir, "ref-stats.json"),
     JSON.stringify(refStats, null, 2),
