@@ -61,7 +61,7 @@ export function RefRankingsTable({
   signalCounts = {},
 }: {
   refs: RefProfile[];
-  league: "NBA" | "NHL" | "NFL" | "NFL" | "NFL";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
   minSampleSize: number;
   overBaseline: number;
   basePath?: string;
@@ -80,10 +80,15 @@ export function RefRankingsTable({
     [refs, sort, showLowSample, minSampleSize],
   );
 
-  const scoringLabel = league === "NBA" ? "Scoring Δ" : "Goals Δ";
-  const whistleLabel = league === "NBA" ? "Fouls Δ" : "Minors Δ";
-  const unit = league === "NBA" ? "points" : "goals";
-  const sport = league === "NHL" ? "nhl" : "nba";
+  const scoringLabel =
+    league === "NBA" ? "Scoring Δ" : league === "NFL" ? "Points Δ" : "Goals Δ";
+  const whistleLabel =
+    league === "NBA" ? "Fouls Δ" : league === "NFL" ? "Flags Δ" : "Minors Δ";
+  const unit =
+    league === "NBA" ? "points" : league === "NFL" ? "points" : "goals";
+  const sport =
+    league === "NHL" ? "nhl" : league === "NFL" ? "nfl" : "nba";
+  const isNfl = league === "NFL";
 
   const handleSort = (field: SortField) => {
     setSort((current) => toggleSort(current, field));
@@ -139,6 +144,8 @@ export function RefRankingsTable({
               />
               <th>Signals</th>
               {league === "NHL" && <th className="data-table-num">OT rate</th>}
+              {isNfl && <th className="data-table-num">Yards Δ</th>}
+              {isNfl && <th>Balance</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
@@ -149,7 +156,11 @@ export function RefRankingsTable({
               const whistleDelta =
                 league === "NHL"
                   ? ref.nhlAnalytics?.minorsDelta
-                  : ref.foulsDelta;
+                  : league === "NFL"
+                    ? ref.nflAnalytics?.flagsDelta ?? ref.foulsDelta
+                    : ref.foulsDelta;
+              const yardsDelta = ref.nflAnalytics?.penaltyYardsDelta;
+              const balance = ref.nflAnalytics?.balanceKind;
               const otRate = ref.nhlAnalytics?.overtimeRate;
               const rank = rows.length + 1;
               const profileHref = `${basePath}/refs/${ref.slug}`;
@@ -215,6 +226,16 @@ export function RefRankingsTable({
                   {league === "NHL" && (
                     <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
                       {otRate !== undefined ? formatPct(otRate) : "-"}
+                    </td>
+                  )}
+                  {isNfl && (
+                    <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
+                      {yardsDelta !== undefined ? formatSigned(yardsDelta) : "-"}
+                    </td>
+                  )}
+                  {isNfl && (
+                    <td className="px-4 py-3 text-sm capitalize text-zinc-700">
+                      {balance ?? "-"}
                     </td>
                   )}
                 </tr>,

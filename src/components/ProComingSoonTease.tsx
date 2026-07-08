@@ -3,7 +3,7 @@ export function ProComingSoonTease({
   compact = false,
   callout = false,
 }: {
-  league?: "NBA" | "NHL" | "NFL";
+  league?: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
   compact?: boolean;
   callout?: boolean;
 }) {

@@ -6,11 +6,14 @@ import { RefAvatar } from "@/components/RefAvatar";
 import {
   directoryDeltaTone,
   formatDirectoryDelta,
+  NFL_DIRECTORY_METRICS,
   NHL_DIRECTORY_METRICS,
+  nflDirectoryMetricDelta,
   nhlDirectoryMetricDelta,
   REFS_DIRECTORY_INITIAL_COUNT,
   REFS_DIRECTORY_TABS,
   sortRefsDirectory,
+  type NflDirectoryMetric,
   type NhlDirectoryMetric,
   type RefsDirectoryMeta,
   type RefsDirectoryTab,
@@ -91,6 +94,37 @@ function NhlMetricToggle({
   );
 }
 
+function NflMetricToggle({
+  metric,
+  onChange,
+}: {
+  metric: NflDirectoryMetric;
+  onChange: (metric: NflDirectoryMetric) => void;
+}) {
+  return (
+    <div
+      className="refs-directory-metric-toggle"
+      role="group"
+      aria-label="NFL delta metric"
+    >
+      {NFL_DIRECTORY_METRICS.map((item) => {
+        const isActive = item.id === metric;
+        return (
+          <button
+            key={item.id}
+            type="button"
+            className={`refs-directory-metric-btn ${isActive ? "refs-directory-metric-btn-active" : ""}`}
+            aria-pressed={isActive}
+            onClick={() => onChange(item.id)}
+          >
+            {item.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function RefsDirectory({
   refs,
   meta,
@@ -105,6 +139,7 @@ export function RefsDirectory({
   const [tab, setTab] = useState<RefsDirectoryTab>("over-high");
   const [expanded, setExpanded] = useState(false);
   const [nhlMetric, setNhlMetric] = useState<NhlDirectoryMetric>("goals");
+  const [nflMetric, setNflMetric] = useState<NflDirectoryMetric>("flags");
 
   const sorted = useMemo(() => sortRefsDirectory(refs, tab), [refs, tab]);
   const activeTab = REFS_DIRECTORY_TABS.find((t) => t.id === tab)!;
@@ -114,12 +149,19 @@ export function RefsDirectory({
   const visible = sorted.slice(0, visibleCount);
   const hasMore = sorted.length > REFS_DIRECTORY_INITIAL_COUNT;
   const unit = league.metrics.scoreUnit;
-  const sport = league.id === "nhl" ? "nhl" : "nba";
+  const sport =
+    league.id === "nhl" ? "nhl" : league.id === "nfl" ? "nfl" : "nba";
   const isNhl = league.id === "nhl";
+  const isNfl = league.id === "nfl";
   const officialLabel =
     sorted.length === 1 ? league.officialNoun : league.officialNounPlural;
-  const activeMetric = NHL_DIRECTORY_METRICS.find((m) => m.id === nhlMetric)!;
-  const deltaHeader = isNhl ? activeMetric.label : "Scoring Δ";
+  const activeNhlMetric = NHL_DIRECTORY_METRICS.find((m) => m.id === nhlMetric)!;
+  const activeNflMetric = NFL_DIRECTORY_METRICS.find((m) => m.id === nflMetric)!;
+  const deltaHeader = isNhl
+    ? activeNhlMetric.label
+    : isNfl
+      ? activeNflMetric.label
+      : "Scoring Δ";
 
   return (
     <div className="data-card refs-directory">
@@ -152,6 +194,9 @@ export function RefsDirectory({
           {isNhl && (
             <NhlMetricToggle metric={nhlMetric} onChange={setNhlMetric} />
           )}
+          {isNfl && (
+            <NflMetricToggle metric={nflMetric} onChange={setNflMetric} />
+          )}
         </div>
         <p className="refs-directory-context">
           {activeTab.description} Over benchmark: {meta.leagueOverBaseline}{" "}
@@ -160,6 +205,10 @@ export function RefsDirectory({
           {isNhl &&
             nhlMetric === "ppo" &&
             " PPO Δ will compare power play chances vs league baseline."}
+          {isNfl && nflMetric === "flags" && " Flags Δ vs league average per game."}
+          {isNfl &&
+            nflMetric === "penaltyYards" &&
+            " Penalty yards Δ vs league average."}
         </p>
       </div>
 
@@ -177,7 +226,12 @@ export function RefsDirectory({
           const isReveal = expanded && index >= REFS_DIRECTORY_INITIAL_COUNT;
           const nhlDelta = isNhl
             ? nhlDirectoryMetricDelta(ref, nhlMetric)
-            : ref.totalPointsDelta;
+            : null;
+          const nflDelta = isNfl
+            ? nflDirectoryMetricDelta(ref, nflMetric)
+            : null;
+          const displayDelta =
+            nhlDelta ?? nflDelta ?? ref.totalPointsDelta;
 
           return (
             <li
@@ -209,17 +263,17 @@ export function RefsDirectory({
                   {formatPct(ref.overRate)}
                 </span>
                 <span className="refs-directory-col-delta">
-                  {isNhl && nhlDelta === null ? (
+                  {(isNhl || isNfl) && displayDelta === null ? (
                     <span className="refs-directory-delta refs-directory-delta-neutral">
                       —
                     </span>
                   ) : (
                     <DeltaCell
-                      delta={nhlDelta ?? ref.totalPointsDelta}
+                      delta={displayDelta}
                       unit={unit}
                       overBaseline={meta.leagueOverBaseline}
-                      showUnit={!isNhl}
-                      heatMap={isNhl}
+                      showUnit={!isNhl && !isNfl}
+                      heatMap={isNhl || isNfl}
                     />
                   )}
                 </span>

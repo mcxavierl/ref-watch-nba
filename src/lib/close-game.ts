@@ -163,15 +163,24 @@ function nhlWindows(): CloseGameWindow[] {
 
 function matchesWindow(
   game: RuntimeGameLogEntry,
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
   windowId: CloseGameWindowId,
 ): boolean {
-  if (league === "NBA") {
+  if (league === "NBA" || league === "CBB") {
     if (windowId === "close-margin") return isNbaCloseMargin(game);
     if (windowId === "close-spread") return isNbaCloseSpread(game);
     return false;
   }
-  if (league === "NFL") { if (windowId === "close-margin") return isNflCloseMargin(game); if (windowId === "close-spread") return isNflCloseSpread(game); return false; }
+  if (league === "NFL" || league === "CFB") {
+    if (windowId === "close-margin") return isNflCloseMargin(game);
+    if (windowId === "close-spread") return isNflCloseSpread(game);
+    return false;
+  }
+  if (league === "EPL") {
+    if (windowId === "close-margin") return isNbaCloseMargin(game);
+    if (windowId === "close-spread") return isNbaCloseSpread(game);
+    return false;
+  }
   if (windowId === "overtime") return isNhlOvertime(game);
   if (windowId === "close-margin") return isNhlCloseMargin(game);
   return false;
@@ -180,10 +189,16 @@ function matchesWindow(
 function buildCompareRows(
   windowStats: ReturnType<typeof finalizeAcc>,
   fullStats: ReturnType<typeof finalizeAcc>,
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
 ): CloseGameCompareRow[] {
-  const scoreUnit = league === "NHL" ? "goals" : "pts";
-  const whistleUnit = league === "NBA" ? "fouls" : league === "NFL" ? "flags" : "PIM";
+  const scoreUnit =
+    league === "NHL" || league === "EPL" ? "goals" : "pts";
+  const whistleUnit =
+    league === "NBA" || league === "CBB" || league === "EPL"
+      ? "fouls"
+      : league === "NFL" || league === "CFB"
+        ? "flags"
+        : "PIM";
 
   return [
     {
@@ -228,7 +243,7 @@ function honestyBannerFor(
 
 function aggregateCloseGame(
   games: RuntimeGameLogEntry[],
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
   meta: RefStatsFile["meta"],
   window: CloseGameWindow,
   logsSource: string | undefined,
@@ -284,12 +299,17 @@ function aggregateCloseGame(
 export function computeRefCloseGameMetrics(
   refSlugValue: string,
   meta: RefStatsFile["meta"],
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
 ): CloseGameMetrics[] {
   const logs = loadRuntimeGameLogs(league);
   if (!logs?.games.length) return [];
 
-  const windows = league === "NBA" ? nbaWindows() : league === "NFL" ? nflWindows() : nhlWindows();
+  const windows =
+    league === "NBA" || league === "CBB" || league === "EPL"
+      ? nbaWindows()
+      : league === "NFL" || league === "CFB"
+        ? nflWindows()
+        : nhlWindows();
   const results: CloseGameMetrics[] = [];
 
   for (const window of windows) {
@@ -311,12 +331,17 @@ export function computeRefCloseGameMetrics(
 export function computeTeamCloseGameMetrics(
   teamAbbr: string,
   meta: RefStatsFile["meta"],
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
 ): CloseGameMetrics[] {
   const logs = loadRuntimeGameLogs(league);
   if (!logs?.games.length) return [];
 
-  const windows = league === "NBA" ? nbaWindows() : league === "NFL" ? nflWindows() : nhlWindows();
+  const windows =
+    league === "NBA" || league === "CBB" || league === "EPL"
+      ? nbaWindows()
+      : league === "NFL" || league === "CFB"
+        ? nflWindows()
+        : nhlWindows();
   const results: CloseGameMetrics[] = [];
 
   for (const window of windows) {
@@ -335,6 +360,6 @@ export function computeTeamCloseGameMetrics(
   return results;
 }
 
-export function closeGameDataAvailable(league: "NBA" | "NHL" | "NFL"): boolean {
+export function closeGameDataAvailable(league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB"): boolean {
   return gameLogsAvailable(league);
 }

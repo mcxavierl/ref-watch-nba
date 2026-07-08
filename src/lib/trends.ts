@@ -37,13 +37,16 @@ export function seasonRowsFromBaselines(
 
 export function buildYoYNarrative(
   rows: TrendRow[],
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
 ): YoYNarrative | null {
   if (rows.length < 2) return null;
 
   const latest = rows[rows.length - 1];
   const prior = rows[rows.length - 2];
-  const scoringUnit = league === "NBA" ? "pts" : "goals";
+  const scoringUnit =
+    league === "NBA" || league === "NFL" || league === "CBB" || league === "CFB"
+      ? "pts"
+      : "goals";
   const scoringDelta = latest.leagueAvgTotal - prior.leagueAvgTotal;
   const foulDelta = latest.leagueAvgFouls - prior.leagueAvgFouls;
 

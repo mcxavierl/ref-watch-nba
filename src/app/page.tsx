@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { BrowseActionCards } from "@/components/BrowseActionCards";
-import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
+import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { MethodologyAccordion } from "@/components/MethodologyAccordion";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
@@ -42,8 +42,6 @@ import {
 } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
 import {
-  REFWATCH_HERO_SUPPORTING,
-  REFWATCH_MISSION,
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
@@ -123,17 +121,11 @@ export default function HomePage() {
           ...slateSportsEvents("NBA"),
         ]}
       />
-      <section className="page-hero page-hero-slate">
-        <h1 className="page-title">
-          {isOffseason ? "NBA officiating intelligence" : REFWATCH_MISSION}
-        </h1>
-        <p className="page-lead">
-          {isOffseason
-            ? "Historical crew patterns, ref profiles, and team histories while the slate is paused."
-            : REFWATCH_HERO_SUPPORTING}
-        </p>
-        <DataFreshnessMeta assignments={assignments} refStats={refStats} />
-      </section>
+      <LeagueSlateHero
+        leagueId="nba"
+        assignments={assignments}
+        refStats={refStats}
+      />
 
       {isOffseason && <OffseasonSlateNotice league="NBA" />}
 

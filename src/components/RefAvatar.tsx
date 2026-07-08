@@ -7,22 +7,33 @@ const sizeClasses = {
   sm: "h-8 w-8",
   md: "h-10 w-10",
   lg: "h-16 w-16",
+  xl: "h-24 w-24",
 } as const;
 
 function RefStripesBadge({
   name,
   size,
+  sport,
   className = "",
 }: {
   name: string;
   size: keyof typeof sizeClasses;
+  sport?: "nhl" | "nfl" | "epl";
   className?: string;
 }) {
   const patternId = `ref-stripes-${useId().replace(/:/g, "")}`;
+  const ringClass =
+    sport === "nfl"
+      ? "ring-[color:color-mix(in_srgb,var(--nfl-green)_45%,transparent)]"
+      : sport === "nhl"
+        ? "ring-[color:color-mix(in_srgb,var(--nhl-blue)_45%,transparent)]"
+        : sport === "epl"
+          ? "ring-[color:color-mix(in_srgb,#3d195b_45%,transparent)]"
+          : "ring-zinc-200/80";
 
   return (
     <span
-      className={`inline-flex shrink-0 overflow-hidden rounded-full ring-1 ring-zinc-200/80 ${sizeClasses[size]} ${className}`}
+      className={`inline-flex shrink-0 overflow-hidden rounded-full ring-2 ${ringClass} ${sizeClasses[size]} ${className}`}
       aria-label={`${name} avatar`}
       role="img"
     >
@@ -59,20 +70,38 @@ export function RefAvatar({
 }: {
   name: string;
   slug: string;
-  sport: "nba" | "nhl" | "nfl";
+  sport: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
   size?: keyof typeof sizeClasses;
   className?: string;
 }) {
   const [failed, setFailed] = useState(false);
 
-  if (sport === "nba") return null;
+  if (sport === "nba" || sport === "cbb" || sport === "cfb") return null;
 
   const photoSrc =
-    sport === "nhl" ? refPhotoUrl(slug, sport, size === "lg" ? "headshot" : "thumb") : null;
+    sport === "nhl" || sport === "nfl" || sport === "epl"
+      ? refPhotoUrl(slug, sport, size === "lg" || size === "xl" ? "headshot" : "thumb")
+      : null;
 
   if (failed || !photoSrc) {
-    return <RefStripesBadge name={name} size={size} className={className} />;
+    return (
+      <RefStripesBadge
+        name={name}
+        size={size}
+        sport={sport === "nfl" || sport === "nhl" || sport === "epl" ? sport : undefined}
+        className={className}
+      />
+    );
   }
+
+  const ringClass =
+    sport === "nfl"
+      ? "ring-2 ring-[color:color-mix(in_srgb,var(--nfl-green)_40%,transparent)]"
+      : sport === "nhl"
+        ? "ring-2 ring-[color:color-mix(in_srgb,var(--nhl-blue)_40%,transparent)]"
+        : sport === "epl"
+          ? "ring-2 ring-[color:color-mix(in_srgb,#3d195b_40%,transparent)]"
+          : "ring-1 ring-zinc-200/80";
 
   return (
     // eslint-disable-next-line @next/next/no-img-element -- onError fallback to striped ref badge
@@ -80,7 +109,7 @@ export function RefAvatar({
       src={photoSrc}
       alt=""
       aria-hidden
-      className={`shrink-0 rounded-full object-cover ring-1 ring-zinc-200/80 ${sizeClasses[size]} ${className}`}
+      className={`shrink-0 rounded-full object-cover ${ringClass} ${sizeClasses[size]} ${className}`}
       onError={() => setFailed(true)}
     />
   );

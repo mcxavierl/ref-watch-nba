@@ -27,14 +27,15 @@ export function CloseGameSection({
 }: {
   metrics: CloseGameMetrics[];
   subjectLabel: string;
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
   embedded?: boolean;
 }) {
   if (metrics.length === 0) return null;
 
-  const scoreUnit = league === "NBA" ? "points" : "goals";
+  const scoreUnit =
+    league === "NBA" || league === "CBB" ? "points" : league === "NHL" ? "goals" : "points";
   const sectionTitle =
-    league === "NBA" ? "Tight-game proxy" : "Late-game proxy";
+    league === "NBA" || league === "CBB" ? "Tight-game proxy" : "Late-game proxy";
   const sectionClass = embedded ? "" : "section-block scroll-mt-24";
 
   return (

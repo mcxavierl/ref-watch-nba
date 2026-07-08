@@ -1,4 +1,5 @@
 import type { LeagueConfig } from "@/lib/leagues";
+import { formatSigned } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 export type RankingsInsight = {
@@ -22,6 +23,7 @@ export type RankingsSynthesis = {
 
 function whistleDelta(ref: RefProfile, league: LeagueConfig): number {
   if (league.whistleFromMinors) return ref.nhlAnalytics?.minorsDelta ?? ref.foulsDelta;
+  if (league.id === "nfl") return ref.nflAnalytics?.flagsDelta ?? ref.foulsDelta;
   return ref.foulsDelta;
 }
 
@@ -79,7 +81,17 @@ export function buildRankingsSynthesis(
     });
   }
 
-  if (topWhistle) {
+  if (topWhistle && league.id === "nfl" && topWhistle.nflAnalytics) {
+    insights.push({
+      id: "top-whistle",
+      title: "Most flags per game",
+      body: `${topWhistle.nflAnalytics.avgFlagsPerGame} flags/game — ${formatSigned(topWhistle.nflAnalytics.flagsDelta)} vs league average.`,
+      refSlug: topWhistle.slug,
+      refName: topWhistle.name,
+      statLabel: "Flags delta",
+      statValue: formatSigned(topWhistle.nflAnalytics.flagsDelta),
+    });
+  } else if (topWhistle) {
     const wd = whistleDelta(topWhistle, league);
     insights.push({
       id: "top-whistle",

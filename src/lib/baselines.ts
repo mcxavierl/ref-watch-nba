@@ -5,6 +5,9 @@ import {
   FALLBACK_NBA,
   FALLBACK_NHL,
   FALLBACK_NFL,
+  FALLBACK_CBB,
+  FALLBACK_CFB,
+  FALLBACK_EPL,
 } from "../../scripts/lib/baselines";
 
 export type BaselineSource = "computed" | "fallback";
@@ -20,12 +23,17 @@ export interface ResolvedBaseline {
   season: string | null;
 }
 
+type BaselineLeague = "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB" | "EPL";
+
 const EMPTY: BaselinesFile = {
   generatedAt: "",
   fallback: {
     NBA: { ...FALLBACK_NBA },
     NHL: { ...FALLBACK_NHL },
     NFL: { ...FALLBACK_NFL },
+    CBB: { ...FALLBACK_CBB },
+    CFB: { ...FALLBACK_CFB },
+    EPL: { ...FALLBACK_EPL },
   },
   NBA: {
     currentSeason: null,
@@ -45,6 +53,24 @@ const EMPTY: BaselinesFile = {
     aggregate: { season: "all", gameCount: 0, ...FALLBACK_NFL },
     usingFallback: true,
   },
+  CBB: {
+    currentSeason: null,
+    seasons: {},
+    aggregate: { season: "all", gameCount: 0, ...FALLBACK_CBB },
+    usingFallback: true,
+  },
+  CFB: {
+    currentSeason: null,
+    seasons: {},
+    aggregate: { season: "all", gameCount: 0, ...FALLBACK_CFB },
+    usingFallback: true,
+  },
+  EPL: {
+    currentSeason: null,
+    seasons: {},
+    aggregate: { season: "all", gameCount: 0, ...FALLBACK_EPL },
+    usingFallback: true,
+  },
 };
 
 function readBaselines(): BaselinesFile {
@@ -53,14 +79,25 @@ function readBaselines(): BaselinesFile {
       path.join(process.cwd(), "data", "baselines.json"),
       "utf8",
     );
-    return JSON.parse(raw) as BaselinesFile;
+    const parsed = JSON.parse(raw) as BaselinesFile;
+    return {
+      ...EMPTY,
+      ...parsed,
+      fallback: { ...EMPTY.fallback, ...parsed.fallback },
+      NBA: parsed.NBA ?? EMPTY.NBA,
+      NHL: parsed.NHL ?? EMPTY.NHL,
+      NFL: parsed.NFL ?? EMPTY.NFL,
+      CBB: parsed.CBB ?? EMPTY.CBB,
+      CFB: parsed.CFB ?? EMPTY.CFB,
+      EPL: parsed.EPL ?? EMPTY.EPL,
+    };
   } catch {
     return EMPTY;
   }
 }
 
 function pickSeasonBaseline(
-  league: "NBA" | "NHL" | "NFL" | "NFL" | "NFL",
+  league: BaselineLeague,
   file: BaselinesFile,
   season?: string | null,
 ): { baseline: SeasonBaseline; source: BaselineSource } {
@@ -77,18 +114,18 @@ function pickSeasonBaseline(
         leagueAvgFouls: fb.leagueAvgFouls,
         leagueAvgMinors: fb.leagueAvgMinors,
         leagueOvertimeRate: fb.leagueOvertimeRate,
+        leagueAvgPenaltyYards: fb.leagueAvgPenaltyYards,
       },
     };
   }
 
   const key = season && block.seasons[season] ? season : block.currentSeason;
-  const chosen =
-    (key && block.seasons[key]) || block.aggregate;
+  const chosen = (key && block.seasons[key]) || block.aggregate;
   return { baseline: chosen, source: "computed" };
 }
 
 export function resolveLeagueBaseline(
-  league: "NBA" | "NHL" | "NFL" | "NFL" | "NFL",
+  league: BaselineLeague,
   season?: string | null,
 ): ResolvedBaseline {
   const file = readBaselines();
@@ -101,11 +138,12 @@ export function resolveLeagueBaseline(
     leagueOvertimeRate: baseline.leagueOvertimeRate,
     leagueAvgPenaltyYards: baseline.leagueAvgPenaltyYards,
     source,
-    season: baseline.season === "all" ? file[league].currentSeason : baseline.season,
+    season:
+      baseline.season === "all" ? file[league].currentSeason : baseline.season,
   };
 }
 
-export function baselineUsingFallback(league: "NBA" | "NHL" | "NFL" | "NFL" | "NFL"): boolean {
+export function baselineUsingFallback(league: BaselineLeague): boolean {
   const file = readBaselines();
   return file[league].usingFallback;
 }

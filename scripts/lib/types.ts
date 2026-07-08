@@ -42,6 +42,9 @@ export interface RefTeamStat {
   avgTotalPoints: number;
   overRate: number;
   winRate: number;
+  /** Exact W-L when sourced from Basketball-Reference or game logs. */
+  wins?: number;
+  losses?: number;
 }
 
 export interface RefProfile {
@@ -123,6 +126,8 @@ export interface RefStatsFile {
     leagueOverBaseline: number;
     minSampleSize: number;
     source: "nba-stats-api" | "seeded";
+    /** When ref×team W-L is merged from Basketball-Reference. */
+    refTeamWinLossSource?: "basketball-reference";
     atsAvailable: boolean;
     refCount?: number;
     totalGamesProcessed?: number;

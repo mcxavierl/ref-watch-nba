@@ -40,10 +40,11 @@ const NBA_TEAM_ABBRS = [
 const STATS_BASE = "https://stats.nba.com/stats";
 const FETCH_TIMEOUT_MS = 12_000;
 const MIN_SAMPLE = 30;
-const REQUEST_DELAY_MS = 300;
+const REQUEST_DELAY_MS = 500;
 
-/** Three most recent completed/in-progress regular seasons from build date. */
 const SEASONS = [
+  { label: "2021-22", param: "2021-22" },
+  { label: "2022-23", param: "2022-23" },
   { label: "2023-24", param: "2023-24" },
   { label: "2024-25", param: "2024-25" },
   { label: "2025-26", param: "2025-26" },
@@ -66,21 +67,29 @@ interface NbaResponse {
   resultSets: NbaResultSet[];
 }
 
-async function nbaFetch(url: string): Promise<NbaResponse | null> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const res = await fetch(url, {
-      headers: NBA_STATS_HEADERS,
-      signal: controller.signal,
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as NbaResponse;
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
+async function nbaFetch(url: string, attempts = 3): Promise<NbaResponse | null> {
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const res = await fetch(url, {
+        headers: NBA_STATS_HEADERS,
+        signal: controller.signal,
+      });
+      if (!res.ok) return null;
+      return (await res.json()) as NbaResponse;
+    } catch (err) {
+      if (attempt < attempts) {
+        console.warn(`NBA fetch retry ${attempt}/${attempts} for ${url}:`, err);
+        await new Promise((r) => setTimeout(r, 1000 * attempt));
+        continue;
+      }
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
   }
+  return null;
 }
 
 function resultSet(
@@ -372,21 +381,32 @@ function loadSeed(): RefStatsFile {
   return JSON.parse(fs.readFileSync(seedPath, "utf8")) as RefStatsFile;
 }
 
-async function buildFromApi(): Promise<RefStatsFile | null> {
-  // Quick probe — avoid long hangs when stats.nba.com blocks the network
-  console.log("Probing NBA Stats API...");
-  const probeIds = await fetchSeasonGames("2024-25");
+async function probeApi(): Promise<boolean> {
+  const probeIds = await fetchSeasonGames("2023-24");
   if (probeIds.length === 0) {
-    console.warn("Probe failed: no game IDs returned");
-    return null;
+    console.warn("Probe failed: no 2023-24 game IDs returned");
+    return false;
   }
-  const probeBox = await fetchGameBox(probeIds[0], "2024-25");
-  const probeOfficials = await fetchGameOfficials(probeIds[0]);
-  if (!probeBox || probeOfficials.length === 0) {
-    console.warn("Probe failed: box score or officials unavailable");
-    return null;
+  const candidates = probeIds.slice(-8).reverse();
+  for (const gameId of candidates) {
+    const [box, officials] = await Promise.all([
+      fetchGameBox(gameId, "2023-24"),
+      fetchGameOfficials(gameId),
+    ]);
+    if (box && officials.length > 0) {
+      console.log(`API probe OK (game ${gameId})`);
+      return true;
+    }
   }
-  console.log("API probe OK — starting backfill (this may take several minutes)...");
+  console.warn("Probe failed: no 2023-24 box score with officials found");
+  return false;
+}
+
+async function buildFromApi(): Promise<RefStatsFile | null> {
+  console.log("Probing NBA Stats API...");
+  const probeOk = await probeApi();
+  if (!probeOk) return null;
+  console.log("Starting backfill (this may take several minutes)...");
 
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number }>();

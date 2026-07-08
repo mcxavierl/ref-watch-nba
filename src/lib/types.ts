@@ -21,7 +21,7 @@ export interface AssignmentGame {
   matchup: string;
   awayTeam: string;
   homeTeam: string;
-  league: "NBA" | "WNBA" | "NHL" | "NFL";
+  league: "NBA" | "WNBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
   crew: RefOfficial[];
 }
 
@@ -78,6 +78,33 @@ export interface NhlRefAnalytics {
 
 
 export interface NflRefAnalytics { avgFlagsPerGame:number; flagsDelta:number; avgPenaltyYardsPerGame:number; penaltyYardsDelta:number; avgFlagImbalance:number; balancedGameRate:number; balanceKind:"balancer"|"asymmetric"|"neutral"; provenance?:{avgFlagsPerGame:MetricProvenance;penaltyYards:MetricProvenance;penaltyBalance:MetricProvenance;flagsBaseline:MetricProvenance;sampleGate:SampleGateStatus;};}
+export type CfbRefAnalytics = NflRefAnalytics;
+
+/** EPL referee analytics (goals, fouls, cards, penalties). */
+export interface EplRefAnalytics {
+  avgGoalsPerGame: number;
+  goalsDelta: number;
+  avgFoulsPerGame: number;
+  foulsDelta: number;
+  avgYellowCardsPerGame: number;
+  yellowCardsDelta: number;
+  avgRedCardsPerGame: number;
+  redCardsDelta: number;
+  avgPenaltiesPerGame: number;
+  penaltiesDelta: number;
+  avgCardImbalance: number;
+  balancedGameRate: number;
+  balanceKind: "balancer" | "asymmetric" | "neutral";
+  provenance?: {
+    avgFoulsPerGame: MetricProvenance;
+    avgYellowCardsPerGame: MetricProvenance;
+    avgRedCardsPerGame: MetricProvenance;
+    avgPenaltiesPerGame: MetricProvenance;
+    cardBalance: MetricProvenance;
+    foulsBaseline: MetricProvenance;
+    sampleGate: SampleGateStatus;
+  };
+}
 export interface NhlTeamSpecialTeams {
   ppPct: number;
   pkPct: number;
@@ -150,6 +177,8 @@ export interface RefProfile {
   /** NHL referee-only analytics when available. */
   nhlAnalytics?: NhlRefAnalytics;
   nflAnalytics?: NflRefAnalytics;
+  cfbAnalytics?: CfbRefAnalytics;
+  eplAnalytics?: EplRefAnalytics;
   provenance?: {
     avgTotalPoints: MetricProvenance;
     overRate: MetricProvenance;
@@ -241,6 +270,12 @@ export interface RefStatsFile {
     leagueAvgMinors?: number;
     /** NHL: share of games reaching OT/SO. */
     leagueAvgPenaltyYards?: number;
+    /** EPL: league avg yellow cards per match (both teams). */
+    leagueAvgYellowCards?: number;
+    /** EPL: league avg red cards per match (both teams). */
+    leagueAvgRedCards?: number;
+    /** EPL: league avg penalties awarded per match. */
+    leagueAvgPenalties?: number;
     leagueOvertimeRate?: number;
     /** NHL: season PP/PK by team abbr. */
     teamSpecialTeams?: Record<string, NhlTeamSpecialTeams>;

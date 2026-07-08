@@ -15,7 +15,7 @@ export function SlateShareBar({
   topSignals: SyndicatedSignal[];
   disclaimer: string;
   pageUrl: string;
-  league: "NBA" | "NHL" | "NFL";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
 }) {
   const [copied, setCopied] = useState<"summary" | "link" | false>(false);
 

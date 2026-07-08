@@ -2,10 +2,20 @@ import type { SampleQuality } from "@/lib/types";
 
 export type ConfidenceTier = "Strong" | "Moderate" | "Thin";
 
-export type Sport = "nba" | "nhl" | "nfl";
+export type Sport = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 
 const SPORT_COPY = {
   nba: {
+    scoringUnit: "pts",
+    whistleUnit: "fouls",
+    pointsAboveAverage: "Points above average",
+    scoringLabel: "Scoring",
+    whistleLabel: "Whistle",
+    overLeanLabel: "Historical over-rate tendency",
+    lineComparisonLabel: "Total vs benchmark",
+    homeBiasLabel: "Home/road pattern",
+  },
+  cbb: {
     scoringUnit: "pts",
     whistleUnit: "fouls",
     pointsAboveAverage: "Points above average",
@@ -26,6 +36,26 @@ const SPORT_COPY = {
     homeBiasLabel: "Home/road pattern",
   },
   nfl: {
+    scoringUnit: "pts",
+    whistleUnit: "flags",
+    pointsAboveAverage: "Points above average",
+    scoringLabel: "Scoring",
+    whistleLabel: "Flags",
+    overLeanLabel: "Historical over-rate tendency",
+    lineComparisonLabel: "Total vs benchmark",
+    homeBiasLabel: "Home/road pattern",
+  },
+  epl: {
+    scoringUnit: "goals",
+    whistleUnit: "fouls",
+    pointsAboveAverage: "Goals above average",
+    scoringLabel: "Goals",
+    whistleLabel: "Fouls",
+    overLeanLabel: "Historical over-rate tendency",
+    lineComparisonLabel: "Total vs benchmark",
+    homeBiasLabel: "Home/road pattern",
+  },
+  cfb: {
     scoringUnit: "pts",
     whistleUnit: "flags",
     pointsAboveAverage: "Points above average",

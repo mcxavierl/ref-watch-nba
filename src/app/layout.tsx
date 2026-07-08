@@ -71,6 +71,9 @@ export default function RootLayout({
         <SiteFooterWrapper
           nbaFooter={<SiteFooter league="nba" />}
           nhlFooter={<SiteFooter league="nhl" />}
+          eplFooter={<SiteFooter league="epl" />}
+          cbbFooter={<SiteFooter league="cbb" />}
+          cfbFooter={<SiteFooter league="cfb" />}
         />
         <GamblingDisclaimer />
       </body>

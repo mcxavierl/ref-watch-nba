@@ -13,6 +13,18 @@ import {
   getRefStats as getNhlRefStats,
 } from "@/lib/nhl/data";
 import { getAssignments as getNflAssignments, getRefStats as getNflRefStats } from "@/lib/nfl/data";
+import {
+  getAssignments as getCbbAssignments,
+  getRefStats as getCbbRefStats,
+} from "@/lib/cbb/data";
+import {
+  getAssignments as getCfbAssignments,
+  getRefStats as getCfbRefStats,
+} from "@/lib/cfb/data";
+import {
+  getAssignments as getEplAssignments,
+  getRefStats as getEplRefStats,
+} from "@/lib/epl/data";
 import { computeSlateHomeBias as computeNhlSlateHomeBias } from "@/lib/nhl/home-bias";
 import { getOdds as getNhlOdds } from "@/lib/nhl/odds";
 import {
@@ -63,7 +75,7 @@ export interface SyndicatedSignal {
 export interface NightlyFeed {
   generatedAt: string;
   slateDate: string;
-  league: "NBA" | "NHL" | "NFL";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
   isPreview: boolean;
   assignmentsSource: AssignmentsFile["source"];
   statsSource: RefStatsFile["meta"]["source"];
@@ -231,6 +243,64 @@ export function buildNflNightlyFeed(): NightlyFeed {
   return (nflFeedCache = { generatedAt: new Date().toISOString(), slateDate: assignments.date, league: "NFL", isPreview, assignmentsSource: assignments.source, statsSource: stats.meta.source, pageUrl: absoluteUrl("/nfl"), disclaimer: SYNDICATION_DISCLAIMER, signals: [] });
 }
 export function buildNflSlateFeed(): NightlyFeed { return buildNflNightlyFeed(); }
+
+let cbbFeedCache: NightlyFeed | null = null;
+export function buildCbbNightlyFeed(): NightlyFeed {
+  if (cbbFeedCache) return cbbFeedCache;
+  const assignments = getCbbAssignments();
+  const stats = getCbbRefStats();
+  const { isPreview } = resolveSlateGames(assignments);
+  return (cbbFeedCache = {
+    generatedAt: new Date().toISOString(),
+    slateDate: assignments.date,
+    league: "CBB",
+    isPreview,
+    assignmentsSource: assignments.source,
+    statsSource: stats.meta.source,
+    pageUrl: absoluteUrl("/cbb"),
+    disclaimer: SYNDICATION_DISCLAIMER,
+    signals: [],
+  });
+}
+
+let cfbFeedCache: NightlyFeed | null = null;
+export function buildCfbNightlyFeed(): NightlyFeed {
+  if (cfbFeedCache) return cfbFeedCache;
+  const assignments = getCfbAssignments();
+  const stats = getCfbRefStats();
+  const { isPreview } = resolveSlateGames(assignments);
+  return (cfbFeedCache = {
+    generatedAt: new Date().toISOString(),
+    slateDate: assignments.date,
+    league: "CFB",
+    isPreview,
+    assignmentsSource: assignments.source,
+    statsSource: stats.meta.source,
+    pageUrl: absoluteUrl("/cfb"),
+    disclaimer: SYNDICATION_DISCLAIMER,
+    signals: [],
+  });
+}
+
+let eplFeedCache: NightlyFeed | null = null;
+export function buildEplNightlyFeed(): NightlyFeed {
+  if (eplFeedCache) return eplFeedCache;
+  const assignments = getEplAssignments();
+  const stats = getEplRefStats();
+  const { isPreview } = resolveSlateGames(assignments);
+  return (eplFeedCache = {
+    generatedAt: new Date().toISOString(),
+    slateDate: assignments.date,
+    league: "EPL",
+    isPreview,
+    assignmentsSource: assignments.source,
+    statsSource: stats.meta.source,
+    pageUrl: absoluteUrl("/epl"),
+    disclaimer: SYNDICATION_DISCLAIMER,
+    signals: [],
+  });
+}
+
 export function buildNhlNightlyFeed(): NightlyFeed {
   if (nhlFeedCache) return nhlFeedCache;
   const assignments = getNhlAssignments();
@@ -333,7 +403,7 @@ export function slateMetadataDescription(feed: NightlyFeed): string {
 const AFFILIATION_SHORT = "Not affiliated with the league. Informational only.";
 
 export function slateSportsEvents(
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
 ): Array<Record<string, unknown>> {
   const assignments =
     league === "NBA" ? getNbaAssignments() : getNhlAssignments();
@@ -405,7 +475,7 @@ export function researchDatasetJsonLd(
 }
 
 export function researchHubDatasetJsonLd(
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
   count: number,
   lastUpdated: string,
 ): Record<string, unknown> {
@@ -424,7 +494,7 @@ export function researchHubDatasetJsonLd(
 export function refProfileDatasetJsonLd(
   name: string,
   slug: string,
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
   games: number,
   lastUpdated: string,
 ): Record<string, unknown> {

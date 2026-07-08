@@ -92,15 +92,49 @@ const NFL_LINKS: BrowseLink[] = [
   },
 ];
 
+const EPL_LINKS: BrowseLink[] = [
+  {
+    href: "/epl/research",
+    label: "Research findings",
+    description: "EPL dataset patterns ranked by effect size",
+  },
+  {
+    href: "/epl/rankings",
+    label: "Referee tendency index",
+    description: "Goal and foul tendencies by referee",
+  },
+  {
+    href: "/epl/teams",
+    label: "Club histories",
+    description: "Crew splits for every PL club",
+  },
+  {
+    href: "/epl/refs",
+    label: "Browse all refs",
+    description: "Profiles across seasons",
+  },
+  {
+    href: "/epl/trends",
+    label: "League trends",
+    description: "Five-season goal and card context",
+  },
+];
+
 export function BrowseActionCards({
   league,
   compact = false,
 }: {
-  league: "NBA" | "NHL" | "NFL";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
   compact?: boolean;
 }) {
   const links =
-    league === "NBA" ? NBA_LINKS : league === "NFL" ? NFL_LINKS : NHL_LINKS;
+    league === "NBA"
+      ? NBA_LINKS
+      : league === "NFL"
+        ? NFL_LINKS
+        : league === "EPL"
+          ? EPL_LINKS
+          : NHL_LINKS;
   const gridClass = compact ? "browse-action-compact" : "browse-action-grid";
 
   return (

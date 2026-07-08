@@ -26,7 +26,7 @@ export function TeamLogo({
   sport = "nba",
 }: {
   team: TeamLike;
-  sport?: "nba" | "nhl" | "nfl" | "nfl";
+  sport?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
   size?: keyof typeof sizeClasses;
   className?: string;
 }) {

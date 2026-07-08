@@ -4,6 +4,17 @@ import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/ranki
 import { formatSigned } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
+export type NflDirectoryMetric = "points" | "flags" | "penaltyYards";
+
+export const NFL_DIRECTORY_METRICS: {
+  id: NflDirectoryMetric;
+  label: string;
+}[] = [
+  { id: "points", label: "Points Δ" },
+  { id: "flags", label: "Flags Δ" },
+  { id: "penaltyYards", label: "Yards Δ" },
+];
+
 export type NhlDirectoryMetric = "goals" | "pim" | "ppo";
 
 export const NHL_DIRECTORY_METRICS: {
@@ -118,6 +129,20 @@ export function deltaTone(
 export function formatDirectoryDelta(n: number, decimals = 1): string {
   if (Math.abs(n) < 0.05) return (0).toFixed(decimals);
   return formatSigned(n, decimals);
+}
+
+export function nflDirectoryMetricDelta(
+  ref: RefProfile,
+  metric: NflDirectoryMetric,
+): number | null {
+  switch (metric) {
+    case "points":
+      return ref.totalPointsDelta;
+    case "flags":
+      return ref.nflAnalytics?.flagsDelta ?? ref.foulsDelta;
+    case "penaltyYards":
+      return ref.nflAnalytics?.penaltyYardsDelta ?? null;
+  }
 }
 
 export function nhlDirectoryMetricDelta(

@@ -200,13 +200,14 @@ export function GamePremiumStrip({
 }: {
   premium: CrewWhistlePremium;
   homeBias: CrewHomeBias | null;
-  sport?: "nba" | "nhl" | "nfl";
+  sport?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 }) {
   const benchmarkLabel =
     premium.benchmarkSource === "sportsbook"
       ? "book"
       : String(premium.benchmarkTotal);
-  const foulLabel = sport === "nhl" ? "PIM" : sport === "nfl" ? "flags" : "fouls";
+  const foulLabel =
+    sport === "nhl" ? "PIM" : sport === "nfl" || sport === "cfb" ? "flags" : "fouls";
   const premiumTerm =
     sport === "nhl" ? "nhl-whistle-premium" : sport === "nfl" ? "nhl-whistle-premium" : "whistle-premium";
   const premiumLabel =

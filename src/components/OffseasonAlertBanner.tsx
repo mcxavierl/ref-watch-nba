@@ -1,6 +1,6 @@
 import { Info } from "lucide-react";
 
-export function OffseasonAlertBanner({ league }: { league: "NBA" | "NHL" }) {
+export function OffseasonAlertBanner({ league }: { league: "NBA" | "NHL" | "NFL" }) {
   return (
     <div className="offseason-alert" role="status">
       <Info className="offseason-alert-icon" aria-hidden />

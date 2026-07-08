@@ -26,7 +26,7 @@ type RefTeamMatrixProps = {
   basePath: string;
   leagueLabel: string;
   officialNounPlural: string;
-  sport: "nba" | "nhl";
+  sport: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 };
 
 type MatrixCrosshair = {

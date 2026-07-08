@@ -1,4 +1,4 @@
-export const LEAGUE_IDS = ["nba", "nhl", "wnba", "mlb", "nfl", "ncaa"] as const;
+export const LEAGUE_IDS = ["nba", "nhl", "wnba", "mlb", "nfl", "epl", "cbb", "cfb"] as const;
 export type LeagueId = (typeof LEAGUE_IDS)[number];
 
 export type LeagueMetricCopy = {
@@ -26,7 +26,7 @@ export type LeagueConfig = {
   /** URL prefix; empty string = site root (NBA) */
   pathPrefix: string;
   /** RefRankingsTable / types league key */
-  dataLeague: "NBA" | "NHL" | "WNBA" | "MLB" | "NFL" | "NCAA";
+  dataLeague: "NBA" | "NHL" | "WNBA" | "MLB" | "NFL" | "EPL" | "CBB" | "CFB";
   officialNoun: string;
   officialNounPlural: string;
   seasonStatus: "offseason" | "in-season";
@@ -163,12 +163,37 @@ export const LEAGUES: Record<LeagueId, LeagueConfig> = {
       sortOverHigh: "Most overs first",
     },
   },
-  ncaa: {
-    id: "ncaa",
-    label: "NCAA",
-    shortLabel: "NCAA",
-    pathPrefix: "/ncaa",
-    dataLeague: "NCAA",
+  epl: {
+    id: "epl",
+    label: "Premier League",
+    shortLabel: "EPL",
+    pathPrefix: "/epl",
+    dataLeague: "EPL",
+    officialNoun: "referee",
+    officialNounPlural: "referees",
+    seasonStatus: "offseason",
+    showOtRate: false,
+    whistleFromMinors: false,
+    metrics: {
+      scoreUnit: "goal",
+      scoreUnitPlural: "goals",
+      whistlePlain: "fouls called",
+      whistleShort: "Fouls",
+      scoringColumn: "Goals vs average",
+      whistleColumn: "Fouls vs average",
+      overColumn: "Over rate",
+      gamesColumn: "Matches",
+      sortScoringHigh: "Highest-scoring crews first",
+      sortWhistleHigh: "Most fouls called first",
+      sortOverHigh: "Most overs first",
+    },
+  },
+  cbb: {
+    id: "cbb",
+    label: "NCAA Men's Basketball",
+    shortLabel: "CBB",
+    pathPrefix: "/cbb",
+    dataLeague: "CBB",
     officialNoun: "referee",
     officialNounPlural: "referees",
     seasonStatus: "offseason",
@@ -185,6 +210,31 @@ export const LEAGUES: Record<LeagueId, LeagueConfig> = {
       gamesColumn: "Games",
       sortScoringHigh: "Highest-scoring crews first",
       sortWhistleHigh: "Most fouls called first",
+      sortOverHigh: "Most overs first",
+    },
+  },
+  cfb: {
+    id: "cfb",
+    label: "NCAA Football",
+    shortLabel: "CFB",
+    pathPrefix: "/cfb",
+    dataLeague: "CFB",
+    officialNoun: "official",
+    officialNounPlural: "officials",
+    seasonStatus: "offseason",
+    showOtRate: false,
+    whistleFromMinors: false,
+    metrics: {
+      scoreUnit: "point",
+      scoreUnitPlural: "points",
+      whistlePlain: "flags thrown",
+      whistleShort: "Flags",
+      scoringColumn: "Score vs average",
+      whistleColumn: "Flags vs average",
+      overColumn: "Over rate",
+      gamesColumn: "Games",
+      sortScoringHigh: "Highest-scoring crews first",
+      sortWhistleHigh: "Most flags first",
       sortOverHigh: "Most overs first",
     },
   },

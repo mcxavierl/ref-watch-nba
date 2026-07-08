@@ -1,6 +1,9 @@
 import { computeAllFindings as computeNbaFindings } from "@/lib/findings";
 import { computeAllFindings as computeNhlFindings } from "@/lib/nhl/findings";
 import { computeAllFindings as computeNflFindings } from "@/lib/nfl/findings";
+import { computeAllFindings as computeCbbFindings } from "@/lib/cbb/findings";
+import { computeAllFindings as computeCfbFindings } from "@/lib/cfb/findings";
+import { computeAllFindings as computeEplFindings } from "@/lib/epl/findings";
 import type { Finding } from "@/lib/findings-shared";
 import {
   filterFindingsByLeague,
@@ -25,7 +28,11 @@ function tagResearchFindings(
 export function computeAllResearchFindings(): ResearchFinding[] {
   const nba = tagResearchFindings(computeNbaFindings(), "NBA");
   const nhl = tagResearchFindings(computeNhlFindings(), "NHL");
-  const nfl=tagResearchFindings(computeNflFindings(),"NFL"); return [...nba,...nhl,...nfl];
+  const nfl = tagResearchFindings(computeNflFindings(), "NFL");
+  const cbb = tagResearchFindings(computeCbbFindings(), "CBB");
+  const cfb = tagResearchFindings(computeCfbFindings(), "CFB");
+  const epl = tagResearchFindings(computeEplFindings(), "EPL");
+  return [...nba, ...nhl, ...nfl, ...cbb, ...cfb, ...epl];
 }
 
 export function computeResearchFindingsForLeague(

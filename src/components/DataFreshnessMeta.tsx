@@ -8,7 +8,7 @@ export function DataFreshnessMeta({
 }: {
   assignments: AssignmentsFile;
   refStats: RefStatsFile;
-  league?: "NBA" | "NHL" | "NFL";
+  league?: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
 }) {
   const offseason = isOffseasonSlate(assignments);
 

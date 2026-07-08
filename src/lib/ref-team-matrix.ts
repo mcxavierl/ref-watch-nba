@@ -63,7 +63,7 @@ export function teamRecordFromStat(
 }
 
 export interface RefTeamMatrixOptions {
-  league?: "nba" | "nhl" | "nfl";
+  league?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
   /** Earliest season label for NBA official baseline totals. */
   sinceSeason?: string;
 }

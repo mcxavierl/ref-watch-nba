@@ -5,16 +5,16 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Bell, UserCircle } from "lucide-react";
 import { Whistle } from "@/components/icons/Whistle";
-import { LeagueSwitch, SiteNav } from "./SiteNav";
+import { leagueFromPathname, LEAGUES } from "@/lib/leagues";
+import { LeagueNav, SiteNav } from "./SiteNav";
 
 // TODO: Re-enable profile + notification controls when account features ship.
 const SHOW_HEADER_USER_CONTROLS = false;
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const isNfl = pathname.startsWith("/nfl");
-  const isNhl = pathname.startsWith("/nhl");
-  const homeHref = isNfl ? "/nfl" : isNhl ? "/nhl" : "/";
+  const leagueId = leagueFromPathname(pathname);
+  const homeHref = LEAGUES[leagueId].pathPrefix || "/";
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -25,7 +25,10 @@ export function SiteHeader() {
   }, []);
 
   return (
-    <div className={`site-chrome${scrolled ? " site-chrome--scrolled" : ""}`}>
+    <div
+      className={`site-chrome${scrolled ? " site-chrome--scrolled" : ""}`}
+      data-league={leagueId}
+    >
       <header className="site-header">
         <div className="site-header-glow" aria-hidden />
         <div className="site-header-accent" aria-hidden />
@@ -46,7 +49,7 @@ export function SiteHeader() {
 
             <div className="site-header-right">
               <div className="site-header-league">
-                <LeagueSwitch />
+                <LeagueNav />
               </div>
 
               {SHOW_HEADER_USER_CONTROLS ? (

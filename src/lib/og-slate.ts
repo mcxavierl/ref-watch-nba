@@ -1,4 +1,4 @@
-import { buildNbaNightlyFeed, buildNflNightlyFeed, buildNhlNightlyFeed, topShareSignals } from "@/lib/syndication";
+import { buildNbaNightlyFeed, buildCbbNightlyFeed, buildCfbNightlyFeed, buildEplNightlyFeed, buildNflNightlyFeed, buildNhlNightlyFeed, topShareSignals } from "@/lib/syndication";
 import type { NightlyFeed } from "@/lib/syndication";
 import { isEstimatedTag } from "@/lib/provenance";
 
@@ -35,3 +35,15 @@ export function nhlOgContent() {
 }
 
 export function nflOgContent() { return ogSlateContent(buildNflNightlyFeed()); }
+
+export function cbbOgContent() {
+  return ogSlateContent(buildCbbNightlyFeed());
+}
+
+export function cfbOgContent() {
+  return ogSlateContent(buildCfbNightlyFeed());
+}
+
+export function eplOgContent() {
+  return ogSlateContent(buildEplNightlyFeed());
+}

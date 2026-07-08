@@ -28,12 +28,18 @@ export interface BaselinesFile {
   note?: string;
   fallback: {
     NBA: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
-    NFL: Omit<SeasonBaseline,"season"|"gameCount">&{label:string};
+    NFL: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
+    CBB: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
+    CFB: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
+    EPL: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
     NHL: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
   };
   NBA: LeagueBaselines;
   NHL: LeagueBaselines;
   NFL: LeagueBaselines;
+  CBB: LeagueBaselines;
+  CFB: LeagueBaselines;
+  EPL: LeagueBaselines;
 }
 
 export const FALLBACK_NBA = {
@@ -41,6 +47,28 @@ export const FALLBACK_NBA = {
   leagueAvgTotal: 225,
   leagueOverBaseline: 225,
   leagueAvgFouls: 38.5,
+} as const;
+
+export const FALLBACK_CBB = {
+  label: "CBB static fallback (empty or missing game logs)",
+  leagueAvgTotal: 145,
+  leagueOverBaseline: 145,
+  leagueAvgFouls: 36,
+} as const;
+
+export const FALLBACK_CFB = {
+  label: "CFB static fallback (empty or missing game logs)",
+  leagueAvgTotal: 52,
+  leagueOverBaseline: 52,
+  leagueAvgFouls: 10,
+  leagueAvgPenaltyYards: 60,
+} as const;
+
+export const FALLBACK_EPL = {
+  label: "EPL static fallback (empty or missing game logs)",
+  leagueAvgTotal: 2.8,
+  leagueOverBaseline: 2.5,
+  leagueAvgFouls: 22,
 } as const;
 
 export const FALLBACK_NFL={label:"NFL",leagueAvgTotal:45.8,leagueOverBaseline:46,leagueAvgFouls:13,leagueAvgPenaltyYards:95} as const;
@@ -108,11 +136,11 @@ function computeSeasonBaseline(
 }
 
 export function computeLeagueBaselines(
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL",
   games: GameLogEntry[],
 ): LeagueBaselines {
   if (games.length === 0) {
-    const fb = league === "NBA" ? FALLBACK_NBA : FALLBACK_NHL;
+    const fb = fallbackForLeague(league);
     const empty: SeasonBaseline = {
       season: "none",
       gameCount: 0,
@@ -151,7 +179,16 @@ export function computeLeagueBaselines(
   };
 }
 
-export function fallbackForLeague(l:"NBA"|"NHL"|"NFL"){return l=="NBA"?FALLBACK_NBA:l=="NFL"?FALLBACK_NFL:FALLBACK_NHL;}
+export function fallbackForLeague(
+  l: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL",
+) {
+  if (l === "NBA") return FALLBACK_NBA;
+  if (l === "NFL") return FALLBACK_NFL;
+  if (l === "CBB") return FALLBACK_CBB;
+  if (l === "CFB") return FALLBACK_CFB;
+  if (l === "EPL") return FALLBACK_EPL;
+  return FALLBACK_NHL;
+}
 export function buildBaselinesFile(
   nbaGames: GameLogEntry[],
   nhlGames: GameLogEntry[],
@@ -165,10 +202,16 @@ export function buildBaselinesFile(
       NBA: { ...FALLBACK_NBA },
       NHL: { ...FALLBACK_NHL },
       NFL: { ...FALLBACK_NFL },
+      CBB: { ...FALLBACK_CBB },
+      CFB: { ...FALLBACK_CFB },
+      EPL: { ...FALLBACK_EPL },
     },
     NBA: computeLeagueBaselines("NBA", nbaGames),
     NHL: computeLeagueBaselines("NHL", nhlGames),
     NFL: computeLeagueBaselines("NFL", nflGames),
+    CBB: computeLeagueBaselines("CBB", []),
+    CFB: computeLeagueBaselines("CFB", []),
+    EPL: computeLeagueBaselines("EPL", []),
   };
 }
 

@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-08T04:38:42.999Z",
+    "seasons": [],
+    "leagueAvgTotal": 145,
+    "leagueAvgFouls": 36,
+    "leagueOverBaseline": 145,
+    "minSampleSize": 30,
+    "source": "seeded",
+    "atsAvailable": false,
+    "note": "NCAA men's basketball offseason seed — empty slate. Run npm run build-cbb-data for ESPN backfill."
+  },
+  "refs": [],
+  "teamSplits": {}
+}

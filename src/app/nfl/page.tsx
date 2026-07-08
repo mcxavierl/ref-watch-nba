@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { BrowseActionCards } from "@/components/BrowseActionCards";
-import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { FindingsSection } from "@/components/FindingsSection";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { JsonLd } from "@/components/JsonLd";
+import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { MethodologyAccordion } from "@/components/MethodologyAccordion";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
@@ -36,11 +36,11 @@ import {
 import { absoluteUrl } from "@/lib/site";
 import {
   NO_SIGNAL_SLATE_COPY,
-  REFWATCH_HERO_SUPPORTING,
-  REFWATCH_MISSION,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
 import { NflPreviewBanner } from "@/components/NflPreviewBanner";
+import { NflAnalyticsLeaders } from "@/components/NflAnalyticsLeaders";
+import { buildNflAnalyticsLeaders } from "@/lib/nfl/analytics-leaders";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 
@@ -90,6 +90,7 @@ export default function NflHomePage() {
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
   const homeBiasSignals = computeSlateHomeBias(sortedGames, refStats);
   const nightlyFeed = buildNflNightlyFeed();
+  const analyticsLeaders = buildNflAnalyticsLeaders(refStats);
 
   const edgeItems = buildTonightEdgeSummary({
     sport: "nfl",
@@ -116,17 +117,11 @@ export default function NflHomePage() {
           ...slateSportsEvents("NFL"),
         ]}
       />
-      <section className="page-hero page-hero-slate">
-        <h1 className="page-title">
-          {isOffseason ? "NFL officiating intelligence" : REFWATCH_MISSION}
-        </h1>
-        <p className="page-lead">
-          {isOffseason
-            ? "Historical crew patterns, official profiles, and team histories while the slate is paused."
-            : REFWATCH_HERO_SUPPORTING}
-        </p>
-        <DataFreshnessMeta assignments={assignments} refStats={refStats} league="NFL" />
-      </section>
+      <LeagueSlateHero
+        leagueId="nfl"
+        assignments={assignments}
+        refStats={refStats}
+      />
 
       <NflPreviewBanner
         statsSource={refStats.meta.source}
@@ -144,6 +139,8 @@ export default function NflHomePage() {
         league="NFL"
         sortExplainer="Ranked by effect size and sample depth. Standout official×team splits and flag outliers rise to the top; marginal league-wide noise is filtered out."
       />
+
+      <NflAnalyticsLeaders leaders={analyticsLeaders} />
 
       <section className="slate-quick-links">
         <BrowseActionCards league="NFL" compact />

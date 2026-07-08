@@ -7,6 +7,7 @@ import { computeRefTeamMatrix, computeMatrixExtremes } from "@/lib/ref-team-matr
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { absoluteUrl } from "@/lib/site";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";
+import { refTeamDataNote } from "@/lib/user-language";
 
 export const metadata: Metadata = {
   title: "NBA ref × team matrix",
@@ -19,6 +20,7 @@ export default function NbaMatrixPage() {
   const stats = getRefStats();
   const range = formatRefStatsRange(stats.meta);
   const seeded = stats.meta.source === "seeded";
+  const bbrTeamNote = refTeamDataNote(stats.meta);
   const league = LEAGUES.nba;
 
   const matrix = computeRefTeamMatrix(
@@ -55,12 +57,14 @@ export default function NbaMatrixPage() {
           </Link>
           .
         </p>
-        {seeded && (
+        {bbrTeamNote ? (
+          <p className="mt-2 text-sm text-amber-800">{bbrTeamNote}</p>
+        ) : seeded ? (
           <p className="mt-2 text-sm text-amber-800">
             Historical dataset; W-L derived from stored win rates and may
             round slightly.
           </p>
-        )}
+        ) : null}
       </section>
 
       <section className="section-block">

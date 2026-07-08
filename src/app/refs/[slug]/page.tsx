@@ -22,7 +22,7 @@ import {
 } from "@/lib/provenance";
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
-import { userFacingDataNote } from "@/lib/user-language";
+import { userFacingDataNote, refTeamDataNote } from "@/lib/user-language";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
 
@@ -70,6 +70,7 @@ export default async function RefProfilePage({
       enrichBettingStats(rawProfile, stats.meta) ?? rawProfile.bettingStats,
   };
   const qualified = profile.games >= stats.meta.minSampleSize;
+  const bbrTeamNote = refTeamDataNote(stats.meta);
   const profileSignals = computeProfileSignals(profile, stats.meta, "nba");
   const closeGameMetrics = computeRefCloseGameMetrics(
     profile.slug,
@@ -130,6 +131,9 @@ export default async function RefProfilePage({
           lastUpdated={stats.meta.lastUpdated}
           seeded={stats.meta.source === "seeded"}
         />
+        {bbrTeamNote && (
+          <p className="mt-3 text-sm text-amber-800">{bbrTeamNote}</p>
+        )}
       </header>
 
       <div className="ref-dashboard-grid">

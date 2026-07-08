@@ -3,11 +3,11 @@
 import { Star } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-function storageKey(kind: "ref" | "team", league: "nba" | "nhl" | "nfl"): string {
+function storageKey(kind: "ref" | "team", league: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb"): string {
   return `refwatch-favorites-${league}-${kind}`;
 }
 
-function readFavorites(kind: "ref" | "team", league: "nba" | "nhl" | "nfl"): string[] {
+function readFavorites(kind: "ref" | "team", league: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb"): string[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(storageKey(kind, league));
@@ -19,7 +19,7 @@ function readFavorites(kind: "ref" | "team", league: "nba" | "nhl" | "nfl"): str
 
 function writeFavorites(
   kind: "ref" | "team",
-  league: "nba" | "nhl" | "nfl",
+  league: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb",
   ids: string[],
 ): void {
   localStorage.setItem(storageKey(kind, league), JSON.stringify(ids));
@@ -33,7 +33,7 @@ export function FavoritesStar({
 }: {
   id: string;
   kind: "ref" | "team";
-  league: "nba" | "nhl" | "nfl";
+  league: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
   label: string;
 }) {
   const [favorited, setFavorited] = useState(false);
@@ -72,7 +72,7 @@ export function FavoritesStar({
   );
 }
 
-export function useFavorites(kind: "ref" | "team", league: "nba" | "nhl" | "nfl"): string[] {
+export function useFavorites(kind: "ref" | "team", league: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb"): string[] {
   const [ids, setIds] = useState<string[]>([]);
 
   useEffect(() => {

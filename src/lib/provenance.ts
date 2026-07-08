@@ -1,5 +1,6 @@
 import { baselineUsingFallback, resolveLeagueBaseline } from "@/lib/baselines";
 import type {
+  EplRefAnalytics,
   NflRefAnalytics,
   CrewHomeBias,
   CrewWhistlePremium,
@@ -70,7 +71,7 @@ export function bettingLinesTag(
 }
 
 export function baselineProvenance(
-  league: "NBA" | "NHL" | "NFL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB" | "EPL",
   season?: string | null,
 ): MetricProvenance {
   const resolved = resolveLeagueBaseline(league, season);
@@ -434,4 +435,73 @@ export function leagueUsesFallbackBaseline(league: "NBA" | "NHL" | "NFL"): boole
 }
 
 export function nflCrewMetricsProvenance(stats:RefStatsFile,qualifiedCount:number,poolGames:number){return crewMetricsProvenance(stats,qualifiedCount,poolGames,stats.meta.minSampleSize);}
-export function nflRefAnalyticsProvenance(profile:RefProfile,analytics:NflRefAnalytics,meta:RefStatsFile["meta"]):NflRefAnalytics["provenance"]{const dataTag=refStatsDataTag(meta);const flagsBaseline=baselineProvenance("NFL");const gate=sampleGateStatus(profile.games,NFL_ANALYTICS_MIN_GAMES);return{avgFlagsPerGame:metricFromTag(dataTag,{sampleSize:profile.games,gateThreshold:NFL_ANALYTICS_MIN_GAMES}),penaltyYards:metricFromTag(dataTag,{sampleSize:profile.games,gateThreshold:NFL_ANALYTICS_MIN_GAMES}),penaltyBalance:metricFromTag(dataTag,{sampleSize:profile.games,gateThreshold:NFL_ANALYTICS_MIN_GAMES}),flagsBaseline,sampleGate:gate};}
+export function cbbCrewMetricsProvenance(stats:RefStatsFile,qualifiedCount:number,poolGames:number){return crewMetricsProvenance(stats,qualifiedCount,poolGames,stats.meta.minSampleSize);}
+export function cfbCrewMetricsProvenance(stats:RefStatsFile,qualifiedCount:number,poolGames:number){return crewMetricsProvenance(stats,qualifiedCount,poolGames,stats.meta.minSampleSize);}
+export function eplCrewMetricsProvenance(stats:RefStatsFile,qualifiedCount:number,poolGames:number){return crewMetricsProvenance(stats,qualifiedCount,poolGames,stats.meta.minSampleSize);}
+export function nflRefAnalyticsProvenance(
+  profile: RefProfile,
+  analytics: NflRefAnalytics,
+  meta: RefStatsFile["meta"],
+): NflRefAnalytics["provenance"] {
+  const dataTag = refStatsDataTag(meta);
+  const flagsBaseline = baselineProvenance("NFL");
+  const gate = sampleGateStatus(profile.games, NFL_ANALYTICS_MIN_GAMES);
+  return {
+    avgFlagsPerGame: metricFromTag(dataTag, {
+      sampleSize: profile.games,
+      gateThreshold: NFL_ANALYTICS_MIN_GAMES,
+    }),
+    penaltyYards: metricFromTag(dataTag, {
+      sampleSize: profile.games,
+      gateThreshold: NFL_ANALYTICS_MIN_GAMES,
+    }),
+    penaltyBalance: metricFromTag(dataTag, {
+      sampleSize: profile.games,
+      gateThreshold: NFL_ANALYTICS_MIN_GAMES,
+    }),
+    flagsBaseline,
+    sampleGate: gate,
+  };
+}
+
+export function cfbRefAnalyticsProvenance(
+  profile: RefProfile,
+  analytics: NflRefAnalytics,
+  meta: RefStatsFile["meta"],
+): NflRefAnalytics["provenance"] {
+  return nflRefAnalyticsProvenance(profile, analytics, meta);
+}
+
+export function eplRefAnalyticsProvenance(
+  profile: RefProfile,
+  analytics: EplRefAnalytics,
+  meta: RefStatsFile["meta"],
+): EplRefAnalytics["provenance"] {
+  const dataTag = refStatsDataTag(meta);
+  const foulsBaseline = baselineProvenance("EPL");
+  const gate = sampleGateStatus(profile.games, NFL_ANALYTICS_MIN_GAMES);
+  return {
+    avgFoulsPerGame: metricFromTag(dataTag, {
+      sampleSize: profile.games,
+      gateThreshold: NFL_ANALYTICS_MIN_GAMES,
+    }),
+    avgYellowCardsPerGame: metricFromTag(dataTag, {
+      sampleSize: profile.games,
+      gateThreshold: NFL_ANALYTICS_MIN_GAMES,
+    }),
+    avgRedCardsPerGame: metricFromTag(dataTag, {
+      sampleSize: profile.games,
+      gateThreshold: NFL_ANALYTICS_MIN_GAMES,
+    }),
+    avgPenaltiesPerGame: metricFromTag(dataTag, {
+      sampleSize: profile.games,
+      gateThreshold: NFL_ANALYTICS_MIN_GAMES,
+    }),
+    cardBalance: metricFromTag(dataTag, {
+      sampleSize: profile.games,
+      gateThreshold: NFL_ANALYTICS_MIN_GAMES,
+    }),
+    foulsBaseline,
+    sampleGate: gate,
+  };
+}

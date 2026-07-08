@@ -17,8 +17,12 @@ function round3(n: number): number {
 
 export function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
   const n = games.length;
+  const wins = games.filter((g) => g.teamWin).length;
+  const losses = n - wins;
   return {
     games: n,
+    wins,
+    losses,
     avgFoulDifferential: round1(
       games.reduce((s, g) => s + g.foulDifferential, 0) / n,
     ),
@@ -26,7 +30,7 @@ export function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
       games.reduce((s, g) => s + g.totalPoints, 0) / n,
     ),
     overRate: round3(games.filter((g) => g.overHit).length / n),
-    winRate: round3(games.filter((g) => g.teamWin).length / n),
+    winRate: round3(wins / n),
   };
 }
 

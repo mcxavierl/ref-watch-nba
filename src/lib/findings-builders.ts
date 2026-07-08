@@ -35,7 +35,7 @@ export interface LeagueFindingLabels {
 }
 
 export interface LeagueFindingContext {
-  league: "NBA" | "NHL" | "NFL";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
   paths: LeagueFindingPaths;
   labels: LeagueFindingLabels;
   getTeamSplits: (abbr: string) => TeamCrewSplit[];
@@ -336,10 +336,13 @@ function isCloseGame(
     homeSpread: number;
     wentToOvertime?: boolean;
   },
-  league: "NBA" | "NHL" | "NFL",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
 ): boolean {
-  if (league === "NBA") {
+  if (league === "NBA" || league === "CBB") {
     return Math.abs(game.homeScore - game.awayScore) <= 5;
+  }
+  if (league === "NFL" || league === "CFB") {
+    return Math.abs(game.homeScore - game.awayScore) <= 7;
   }
   if (game.wentToOvertime) return true;
   return Math.abs(game.homeScore - game.awayScore) <= 1;

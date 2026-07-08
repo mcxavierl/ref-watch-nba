@@ -4,7 +4,7 @@ import { Bell, Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 type SeasonNotifyCtaProps = {
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
   variant?: "button" | "link";
 };
 

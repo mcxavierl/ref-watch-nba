@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-08T04:38:43.749Z",
+    "seasons": [],
+    "leagueAvgTotal": 52,
+    "leagueAvgFouls": 10,
+    "leagueOverBaseline": 52,
+    "leagueAvgPenaltyYards": 60,
+    "minSampleSize": 30,
+    "source": "seeded",
+    "atsAvailable": false,
+    "note": "NCAA football offseason seed — empty slate. Run npm run build-cfb-data for ESPN backfill."
+  },
+  "refs": [],
+  "teamSplits": {}
+}

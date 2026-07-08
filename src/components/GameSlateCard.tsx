@@ -15,6 +15,18 @@ import {
   detectTeamsInGame as detectNflTeams,
   refSlug as nflRefSlug,
 } from "@/lib/nfl/data";
+import {
+  detectTeamsInGame as detectCbbTeams,
+  refSlug as cbbRefSlug,
+} from "@/lib/cbb/data";
+import {
+  detectTeamsInGame as detectEplTeams,
+  refSlug as eplRefSlug,
+} from "@/lib/epl/data";
+import {
+  detectTeamsInGame as detectCfbTeams,
+  refSlug as cfbRefSlug,
+} from "@/lib/cfb/data";
 import type { GrudgeStoryline } from "@/lib/grudge-match";
 import type {
   CrewHomeBias,
@@ -25,6 +37,9 @@ import type {
 import { teamFullName as nbaTeamFullName, type NbaTeam } from "@/lib/teams";
 import { teamFullName as nhlTeamFullName, type NhlTeam } from "@/lib/nhl/teams";
 import { teamFullName as nflTeamFullName, type NflTeam } from "@/lib/nfl/teams";
+import { teamFullName as cbbTeamFullName, type CbbTeam } from "@/lib/cbb/teams";
+import { teamFullName as cfbTeamFullName, type CfbTeam } from "@/lib/cfb/teams";
+import { teamFullName as eplTeamFullName, type EplTeam } from "@/lib/epl/teams";
 import {
   benchmarkLabel,
   confidenceTier,
@@ -45,8 +60,11 @@ import { TeamLogo } from "./TeamLogo";
 
 const SPORT_BENCHMARK = {
   nba: "225",
+  cbb: "145",
   nhl: "6.0",
   nfl: "46",
+  cfb: "52",
+  epl: "2.5",
 };
 
 export function GameSlateCard({
@@ -73,7 +91,7 @@ export function GameSlateCard({
   storylines?: GrudgeStoryline[];
   premium: CrewWhistlePremium;
   homeBias?: CrewHomeBias | null;
-  sport?: "nba" | "nhl" | "nfl";
+  sport?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
   basePath?: string;
   ppPremium?: NhlPpPremiumSignal | null;
   otSignal?: NhlOtRateSignal | null;
@@ -85,19 +103,37 @@ export function GameSlateCard({
   const benchmarkLabelValue =
     overBenchmark !== undefined ? String(overBenchmark) : defaultBenchmark;
   const detectTeams =
-    sport === "nfl"
-      ? detectNflTeams
-      : sport === "nhl"
-        ? detectNhlTeams
-        : detectNbaTeams;
-  const displayTeamName = (team: NbaTeam | NhlTeam | NflTeam) =>
-    sport === "nfl"
-      ? nflTeamFullName(team as NflTeam)
-      : sport === "nhl"
-        ? nhlTeamFullName(team as NhlTeam)
-        : nbaTeamFullName(team as NbaTeam);
+    sport === "epl"
+      ? detectEplTeams
+      : sport === "cfb"
+      ? detectCfbTeams
+      : sport === "cbb"
+        ? detectCbbTeams
+        : sport === "nfl"
+          ? detectNflTeams
+          : sport === "nhl"
+            ? detectNhlTeams
+            : detectNbaTeams;
+  const displayTeamName = (team: NbaTeam | NhlTeam | NflTeam | CbbTeam | CfbTeam | EplTeam) => {
+    if (sport === "epl") return eplTeamFullName(team as EplTeam);
+    if (sport === "cfb") return cfbTeamFullName(team as CfbTeam);
+    if (sport === "cbb") return cbbTeamFullName(team as CbbTeam);
+    if (sport === "nfl") return nflTeamFullName(team as NflTeam);
+    if (sport === "nhl") return nhlTeamFullName(team as NhlTeam);
+    return nbaTeamFullName(team as NbaTeam);
+  };
   const refSlug =
-    sport === "nfl" ? nflRefSlug : sport === "nhl" ? nhlRefSlug : nbaRefSlug;
+    sport === "epl"
+      ? eplRefSlug
+      : sport === "cfb"
+      ? cfbRefSlug
+      : sport === "cbb"
+        ? cbbRefSlug
+        : sport === "nfl"
+          ? nflRefSlug
+          : sport === "nhl"
+            ? nhlRefSlug
+            : nbaRefSlug;
   const teams = detectTeams(awayTeam, homeTeam);
 
   const totalDelta = formatSigned(metrics.totalPointsDelta);

@@ -1,8 +1,9 @@
-type LeagueSwitchId = "nba" | "nhl" | "nfl";
+import { LEAGUES, type LeagueId } from "@/lib/leagues";
 
-const LEAGUE_LOGOS: Record<
-  LeagueSwitchId,
-  { active: string; inactive: string; alt: string }
+type LeagueNavId = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+
+const LEAGUE_LOGOS: Partial<
+  Record<LeagueNavId, { active: string; inactive: string; alt: string }>
 > = {
   nba: {
     active: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
@@ -21,15 +22,30 @@ const LEAGUE_LOGOS: Record<
       "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg",
     alt: "NFL",
   },
+  epl: {
+    active:
+      "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
+    inactive:
+      "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
+    alt: "Premier League",
+  },
 };
 
-type LeagueSwitchMarkProps = {
-  league: keyof typeof LEAGUE_LOGOS;
+type LeagueNavMarkProps = {
+  league: LeagueId;
   active?: boolean;
 };
 
-export function LeagueSwitchMark({ league, active = false }: LeagueSwitchMarkProps) {
-  const logos = LEAGUE_LOGOS[league];
+export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
+  const logos = LEAGUE_LOGOS[league as LeagueNavId];
+  if (!logos) {
+    return (
+      <span className="league-nav-mark-fallback" aria-hidden>
+        {LEAGUES[league].shortLabel}
+      </span>
+    );
+  }
+
   const src = active ? logos.active : logos.inactive;
 
   return (
@@ -37,7 +53,7 @@ export function LeagueSwitchMark({ league, active = false }: LeagueSwitchMarkPro
       src={src}
       alt=""
       aria-hidden
-      className="league-switch-mark"
+      className="league-nav-mark"
       width={28}
       height={18}
       decoding="async"
@@ -46,8 +62,14 @@ export function LeagueSwitchMark({ league, active = false }: LeagueSwitchMarkPro
   );
 }
 
-export type { LeagueSwitchId };
+/** @deprecated Use LeagueNavMark */
+export const LeagueSwitchMark = LeagueNavMark;
 
-export function leagueSwitchLabel(league: LeagueSwitchId): string {
-  return LEAGUE_LOGOS[league].alt;
+export type { LeagueNavId };
+
+export function leagueNavLabel(league: LeagueId): string {
+  return LEAGUES[league].label;
 }
+
+/** @deprecated Use leagueNavLabel */
+export const leagueSwitchLabel = leagueNavLabel;

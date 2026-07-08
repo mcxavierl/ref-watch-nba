@@ -8,6 +8,12 @@ import * as nflData from "@/lib/nfl/data";
 import * as nbaTeams from "@/lib/teams";
 import * as nhlTeams from "@/lib/nhl/teams";
 import * as nflTeams from "@/lib/nfl/teams";
+import * as eplData from "@/lib/epl/data";
+import * as cbbData from "@/lib/cbb/data";
+import * as cfbData from "@/lib/cfb/data";
+import * as cbbTeams from "@/lib/cbb/teams";
+import * as cfbTeams from "@/lib/cfb/teams";
+import * as eplTeams from "@/lib/epl/teams";
 import { getTeamRefSplits } from "@/lib/teamRefLeaderboards";
 import { TEAM_CREW_MIN_GAMES } from "@/lib/teamCrewSplits";
 import { getTeamDisplayRecord } from "@/lib/teamRecord";
@@ -16,22 +22,26 @@ import { computeTeamCloseGameMetrics } from "@/lib/close-game";
 import { computeTeamInsights } from "@/lib/team-insights";
 import { TeamInsightCards } from "@/components/TeamInsightCards";
 
+const LEAGUE_MODULES = {
+  nba: { data: nbaData, teams: nbaTeams, basePath: "", dataLeague: "NBA" as const, crewSize: "three", surface: "court" },
+  nhl: { data: nhlData, teams: nhlTeams, basePath: "/nhl", dataLeague: "NHL" as const, crewSize: "four", surface: "ice" },
+  nfl: { data: nflData, teams: nflTeams, basePath: "/nfl", dataLeague: "NFL" as const, crewSize: "seven", surface: "field" },
+  epl: { data: eplData, teams: eplTeams, basePath: "/epl", dataLeague: "EPL" as const, crewSize: "one", surface: "pitch" },
+  cbb: { data: cbbData, teams: cbbTeams, basePath: "/cbb", dataLeague: "CBB" as const, crewSize: "three", surface: "court" },
+  cfb: { data: cfbData, teams: cfbTeams, basePath: "/cfb", dataLeague: "CFB" as const, crewSize: "seven", surface: "field" },
+};
+
 export interface TeamPageConfig {
   teamAbbr: string;
-  league?: "nba" | "nhl" | "nfl";
+  league?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 }
 
 export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const league = config.league ?? "nba";
-  const isNfl = league === "nfl";
-  const isNhl = league === "nhl";
-  const basePath = isNfl ? "/nfl" : isNhl ? "/nhl" : "";
-  const getTeam = isNfl ? nflTeams.getTeam : isNhl ? nhlTeams.getTeam : nbaTeams.getTeam;
-  const getRefStats = isNfl ? nflData.getRefStats : isNhl ? nhlData.getRefStats : nbaData.getRefStats;
-  const getTeamSplits = isNfl ? nflData.getTeamSplits : isNhl ? nhlData.getTeamSplits : nbaData.getTeamSplits;
-  const sortSplitsByGames = isNfl ? nflData.sortSplitsByGames : isNhl ? nhlData.sortSplitsByGames : nbaData.sortSplitsByGames;
-  const formatDate = isNfl ? nflData.formatDate : isNhl ? nhlData.formatDate : nbaData.formatDate;
-  const formatPct = isNfl ? nflData.formatPct : isNhl ? nhlData.formatPct : nbaData.formatPct;
+  const mod = LEAGUE_MODULES[league];
+  const basePath = mod.basePath;
+  const { getTeam, teamFullName, teamWithArticle } = mod.teams;
+  const { getRefStats, getTeamSplits, sortSplitsByGames, formatDate, formatPct } = mod.data;
 
   const team = getTeam(config.teamAbbr);
   if (!team) return null;
@@ -46,19 +56,14 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
     stats.meta.seasons,
     { sinceSeason: "2021-22" },
   );
-  const teamName = isNfl
-    ? nflTeams.teamFullName(team as import("@/lib/nfl/teams").NflTeam)
-    : isNhl
-      ? nhlTeams.teamFullName(team as import("@/lib/nhl/teams").NhlTeam)
-      : nbaTeams.teamFullName(team as import("@/lib/teams").NbaTeam);
-  const teamLabel = isNfl
-    ? nflTeams.teamWithArticle(team as import("@/lib/nfl/teams").NflTeam)
-    : isNhl
-      ? nhlTeams.teamWithArticle(team as import("@/lib/nhl/teams").NhlTeam)
-      : nbaTeams.teamWithArticle(team as import("@/lib/teams").NbaTeam);
-  const crewSize = isNhl ? "four" : isNfl ? "seven" : "three";
-  const playingSurface = isNhl ? "ice" : isNfl ? "field" : "court";
-  const dataLeague = isNfl ? "NFL" : isNhl ? "NHL" : "NBA";
+  const teamName = teamFullName(team as never);
+  const teamLabel = teamWithArticle(team as never);
+  const crewSize = mod.crewSize;
+  const playingSurface = mod.surface;
+  const dataLeague = mod.dataLeague;
+  const isNhl = league === "nhl";
+  const isNfl = league === "nfl" || league === "cfb";
+  const isEpl = league === "epl";
   const closeGameMetrics = computeTeamCloseGameMetrics(
     team.abbr,
     stats.meta,
@@ -120,7 +125,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             other teams with fuller samples.
           </p>
           <Link
-            href={isNfl ? "/nfl/teams" : isNhl ? "/nhl/teams" : "/teams"}
+            href={`${basePath || ""}/teams`}
             className="mt-4 inline-block text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
           >
             Browse all teams →
