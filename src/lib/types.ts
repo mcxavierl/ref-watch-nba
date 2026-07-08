@@ -261,6 +261,10 @@ export interface RefStatsFile {
     leagueOverBaseline: number;
     minSampleSize: number;
     source: "nba-stats-api" | "nhl-api" | "espn" | "seeded" | "historical" | "hybrid";
+    /** Hard gate: only true when stats come from verified real-source ingest. */
+    data_verified?: boolean;
+    /** Human-readable provenance label for UI and agent responses. */
+    data_source?: string;
     /** When ref×team W-L is merged from Basketball-Reference. */
     refTeamWinLossSource?: "basketball-reference" | "pro-football-reference";
     atsAvailable: boolean;

@@ -30,6 +30,13 @@ const PRODUCT_HOME_STAT_LINKS = [
   { key: "seasons" as const, href: "/insights#trends" },
 ] as const;
 
+const PRODUCT_HOME_ACTIONS = [
+  { href: "/insights#tendencies", label: "Tendency index" },
+  { href: "/matrix", label: "Crew matrix" },
+  { href: "/teams", label: "Team histories" },
+  { href: "#dataset-findings", label: "Season highlights" },
+] as const;
+
 export function LeagueSlateHero({
   leagueId,
   assignments,
@@ -104,6 +111,23 @@ export function LeagueSlateHero({
             </>
           )}
       </dl>
+
+      {useInteractiveStats && (
+        <nav
+          className="league-slate-hero-actions"
+          aria-label="Explore historical analytics"
+        >
+          {PRODUCT_HOME_ACTIONS.map((action) => (
+            <Link
+              key={action.href}
+              href={action.href}
+              className="league-slate-hero-action"
+            >
+              {action.label}
+            </Link>
+          ))}
+        </nav>
+      )}
 
       {showScopeToggle && (
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">

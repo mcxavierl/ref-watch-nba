@@ -7,6 +7,8 @@ import { query_stats } from "@/lib/stats-query/query-stats";
 import { formatWilsonPct } from "@/lib/stats-query/wilson-ci";
 import { appendStatsQueryLog } from "@/lib/stats-query/query-log";
 import { getTeam } from "@/lib/teams";
+import { getRefStats } from "@/lib/data";
+import { agentDataSourceSuffix } from "@/lib/league-verification";
 
 export const STATS_QUERY_AGENT_SYSTEM_PROMPT = `You are a query translator for NBA referee × team win-rate statistics on Ref Watch.
 
@@ -166,8 +168,11 @@ export async function runStatsQueryAgent(
     result,
   );
 
+  const meta = getRefStats().meta;
+  const suffix = agentDataSourceSuffix(meta);
+
   return {
-    answer,
+    answer: `${answer} (${suffix})`,
     parsed_query: args as StatsQuery,
     tool_result: result,
     refused_without_tool: false,

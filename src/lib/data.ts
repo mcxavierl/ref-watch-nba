@@ -46,9 +46,7 @@ function tryReadJson<T>(filename: string): T | null {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs =
-    tryReadJson<RefStatsFile>("ref-stats.json") ??
-    tryReadJson<RefStatsFile>("ref-stats.seed.json");
+  const fromFs = tryReadJson<RefStatsFile>("ref-stats.json");
   if (fromFs) return fromFs;
 
   return getCachedRefStats("nba");
@@ -78,13 +76,50 @@ const EMPTY_REF_STATS: RefStatsFile = (() => {
       leagueOverBaseline: bl.leagueOverBaseline,
       minSampleSize: 30,
       source: "seeded",
+      data_verified: false,
+      data_source: "synthetic",
       atsAvailable: false,
-      note: "No ref stats data file found. Run npm run build-ref-data.",
+      note: "No ref stats data file found. Run npm run ingest:nba-full.",
     },
     refs: [],
     teamSplits: {},
   };
 })();
+
+function applyVerificationMeta(stats: RefStatsFile): RefStatsFile {
+  const manifestPath = path.join(dataDir, "nba", "manifest.json");
+  let data_verified = stats.meta.data_verified ?? false;
+  let data_source = stats.meta.data_source;
+
+  try {
+    if (fs.existsSync(manifestPath)) {
+      const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
+        data_verified?: boolean;
+        data_source?: string;
+      };
+      if (manifest.data_verified) data_verified = true;
+      if (manifest.data_source) data_source = manifest.data_source;
+    }
+  } catch {
+    /* manifest optional */
+  }
+
+  if (stats.meta.data_verified) data_verified = true;
+  if (stats.meta.data_source) data_source = stats.meta.data_source;
+
+  return {
+    ...stats,
+    meta: {
+      ...stats.meta,
+      data_verified,
+      data_source:
+        data_source ??
+        (data_verified
+          ? "Basketball-Reference + NBA Stats API"
+          : "synthetic"),
+    },
+  };
+}
 
 function migrateLegacySplits(data: RefStatsFile): Record<string, TeamCrewSplit[]> {
   const teamSplits: Record<string, TeamCrewSplit[]> = {
@@ -125,7 +160,9 @@ export function getRefStats(): RefStatsFile {
   try {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    return applyBaselines(normalizeRefStats(raw));
+    return applyBaselines(
+      applyVerificationMeta(normalizeRefStats(raw)),
+    );
   } catch {
     return EMPTY_REF_STATS;
   }

@@ -7,6 +7,11 @@ import {
   isNflSimulatedData,
   isNflVerifiedData,
 } from "@/lib/nfl/data-source";
+import {
+  resolveLeagueVerification,
+  unverifiedBannerMessage,
+} from "@/lib/league-verification";
+import type { LeagueId } from "@/lib/leagues";
 
 export type DataSourceBannerLeague =
   | "nba"
@@ -20,21 +25,28 @@ export function leagueDataSourceBannerMessage(
   league: DataSourceBannerLeague,
   meta: RefStatsFile["meta"],
 ): string | null {
-  const source = meta.source;
+  if (league === "nba") return null;
 
-  if (league === "nba" && source === "seeded") {
-    return "Historical seeded dataset. Crew logs and whistle splits are generated from comprehensive seed data; some betting lines are synthetic. Not live NBA Stats API feeds.";
+  const verification = resolveLeagueVerification(league as LeagueId, meta);
+
+  if (!verification.data_verified && (league === "nfl" || league === "nhl")) {
+    return null;
   }
 
-  if (league === "nhl" && source === "seeded") {
-    return "Historical seeded dataset. Run build-nhl-data for live NHL API backfill. Penalty and scoring splits may use synthetic lines until refreshed.";
+  if (!verification.data_verified) {
+    const msg = unverifiedBannerMessage(league as LeagueId, meta);
+    return msg || "Synthetic data — not from official sources";
   }
+
+  const source = meta.data_source ?? meta.source;
+
+  if (league === "nhl") return null;
 
   if (league === "nfl") {
-    if (isNflSimulatedData(source)) {
+    if (isNflSimulatedData(meta.source)) {
       return "Preview dataset with simulated schedules, crews, and lines. Do not treat ref×team or betting stats as verified.";
     }
-    if (isNflHybridData(source) || isNflVerifiedData(source)) {
+    if (isNflHybridData(meta.source) || isNflVerifiedData(meta.source)) {
       if (meta.atsAvailable) {
         return "Scores and ref×team W-L from ESPN game logs. ATS/O-U splits use nflverse historical closing lines where matched, not verified sportsbook data for every game. Exploratory context only.";
       }
@@ -42,21 +54,21 @@ export function leagueDataSourceBannerMessage(
     }
   }
 
-  if (league === "epl" && isEplSimulatedData(source)) {
+  if (league === "epl" && isEplSimulatedData(meta.source)) {
     return "Historical seeded or partial ESPN sample. Treat foul and goal splits as exploratory until the full match log is verified.";
   }
 
-  if (league === "cbb" && isCbbSimulatedData(source)) {
+  if (league === "cbb" && isCbbSimulatedData(meta.source)) {
     return "Preview dataset only. No verified college basketball officiating sample is loaded.";
   }
 
-  if (league === "cfb" && isCfbSimulatedData(source)) {
+  if (league === "cfb" && isCfbSimulatedData(meta.source)) {
     return "Preview dataset only. No verified college football officiating sample is loaded.";
   }
 
-  if (source === "seeded" || source === "historical") {
+  if (meta.source === "seeded" || meta.source === "historical") {
     return "Historical seeded dataset. See Methodology for how lines and splits are derived.";
   }
 
-  return null;
+  return `source: ${source}, verified`;
 }

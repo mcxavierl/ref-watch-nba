@@ -3,7 +3,6 @@ import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
-import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateFeatureShowcase } from "@/components/SlateFeatureShowcase";
 import { SlateQuickLookupSection } from "@/components/SlateQuickLookupSection";
@@ -54,9 +53,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const feed = buildNbaNightlyFeed();
   const isOffseason = assignments.games.length === 0;
   const description = isOffseason
-    ? "NBA ref and crew analytics during the offseason, dataset findings, ref profiles, and team histories."
+    ? "Decode officiating bias. Historical ref×team edges, crew matrices, and multi-season whistle analytics across every indexed official."
     : slateMetadataDescription(feed);
-  const title = isOffseason ? "NBA ref data (offseason)" : "Tonight's NBA slate";
+  const title = isOffseason
+    ? "NBA officiating analytics"
+    : "Tonight's NBA slate";
   return slatePageMetadata({
     title,
     description,
@@ -115,7 +116,7 @@ export default async function HomePage({
           {
             "@context": "https://schema.org",
             "@type": "WebPage",
-            name: isOffseason ? "NBA ref data (offseason)" : "Tonight's NBA slate",
+            name: isOffseason ? "NBA officiating analytics" : "Tonight's NBA slate",
             description: slateMetadataDescription(nightlyFeed),
             url: absoluteUrl("/"),
             dateModified: assignments.lastUpdated,
@@ -133,11 +134,9 @@ export default async function HomePage({
         scopeLabel={scoped.scopeLabel}
       />
 
-      <LeagueDataSourceBanner league="nba" meta={refStats.meta} className="mt-4" />
+      {isOffseason && <SlateFeatureShowcase />}
 
       {isOffseason && <SlateQuickLookupSection />}
-
-      {isOffseason && <SlateFeatureShowcase />}
 
       <FindingsSection
         findings={findings}
@@ -145,6 +144,11 @@ export default async function HomePage({
         slateHero
         initialVisibleCount={4}
         title={isOffseason ? "Season highlights" : "Officiating intelligence"}
+        sectionLead={
+          isOffseason
+            ? "Ranked historical edges with bold over/under signals and sample depth, not narrative."
+            : undefined
+        }
         league="NBA"
         showScopeToggle
         scopeLabel={`${scoped.scopeLabel} · ${scoped.formatRange(scoped.stats.meta)}`}
@@ -200,7 +204,7 @@ export default async function HomePage({
 
       <TrustCharterSummary />
 
-      <ProComingSoonTease league="NBA" />
+      <ProComingSoonTease league="NBA" compact={isOffseason} />
     </div>
   );
 }

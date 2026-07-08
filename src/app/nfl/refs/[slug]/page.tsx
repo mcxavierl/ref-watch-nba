@@ -25,7 +25,6 @@ import {
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
 import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote } from "@/lib/user-language";
-import { NflPreviewBanner } from "@/components/NflPreviewBanner";
 import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
@@ -157,8 +156,6 @@ export default async function NflRefProfilePage({
           seeded={isNflSimulatedData(stats.meta.source)}
         />
       </header>
-
-      <NflPreviewBanner statsSource={stats.meta.source} atsAvailable={stats.meta.atsAvailable} />
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">

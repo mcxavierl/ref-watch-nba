@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
-import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { getTeamSplits } from "@/lib/data";
 import { LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { readSeasonScopeParam } from "@/lib/season-scope";
-import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";
 import { refTeamDataNote } from "@/lib/user-language";
 import { getNbaTeamSosCache } from "@/lib/nba-team-sos-cache";
@@ -30,7 +29,6 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
     scopeLabel,
   } = loadScopedLeagueStats("nba", scopeMode);
   const range = formatRange(stats.meta);
-  const seeded = stats.meta.source === "seeded";
   const bbrTeamNote = refTeamDataNote(stats.meta);
   const league = LEAGUES.nba;
 
@@ -77,15 +75,8 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
         </div>
         {bbrTeamNote ? (
           <p className="mt-2 text-sm text-amber-800">{bbrTeamNote}</p>
-        ) : seeded ? (
-          <p className="mt-2 text-sm text-amber-800">
-            Historical dataset; W-L derived from stored win rates and may
-            round slightly.
-          </p>
         ) : null}
       </section>
-
-      <LeagueDataSourceBanner league="nba" meta={stats.meta} className="mb-4" />
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">
@@ -101,43 +92,12 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
         </div>
       </section>
 
-      {extremes.length > 0 && (
-        <section className="section-block">
-          <h2 className="section-title">Standout ref×team splits</h2>
-          <p className="section-lead">
-            Cells where a team&apos;s win rate with that ref diverges sharply from
-            their baseline in this sample. Descriptive only, not picks.
-          </p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {extremes.map((item) => (
-              <li key={`${item.refSlug}-${item.teamAbbr}`} className="data-card px-4 py-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                  {item.kind === "high" ? "Above baseline" : "Below baseline"}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-700">
-                  <Link
-                    href={`${league.pathPrefix}/refs/${item.refSlug}#close-game`}
-                    className="font-medium text-zinc-900 hover:text-raptors hover:underline"
-                  >
-                    {item.refName}
-                  </Link>{" "}
-                  with{" "}
-                  <Link
-                    href={`${league.pathPrefix}/teams/${item.teamAbbr}`}
-                    className="font-medium text-zinc-900 hover:text-raptors hover:underline"
-                  >
-                    {item.teamLabel}
-                  </Link>
-                  : ref×team {item.wins}-{item.losses} ({formatPct(item.winRate)}) in{" "}
-                  {item.games} games, {formatSigned(item.deltaPts)} vs team sample
-                  baseline {item.baselineWins}-{item.baselineLosses} (
-                  {formatPct(item.baselineWinRate)} across {item.baselineGames} gp).
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <MatrixExtremeSection
+        extremes={extremes}
+        basePath={league.pathPrefix}
+        title="Standout ref×team splits"
+        lead="Cells where a team's win rate with that ref diverges sharply from their baseline in this sample. Descriptive only, not picks."
+      />
 
       <section className="section-block">
         <h2 className="section-title">Related views</h2>

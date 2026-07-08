@@ -3,6 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import type { MetricProvenance } from "@/lib/types";
 import { ProvenanceMarker, provenanceValueClass } from "@/components/ProvenanceMarker";
 import { isFallbackMetric } from "@/lib/provenance-utils";
+import { metricDelightClass } from "@/lib/metric-delight";
 
 export function MetricBlock({
   icon: Icon,
@@ -13,6 +14,7 @@ export function MetricBlock({
   badge,
   badgeTone = "neutral",
   provenance,
+  valueTone,
 }: {
   icon?: LucideIcon;
   iconClassName?: string;
@@ -22,14 +24,18 @@ export function MetricBlock({
   badge?: ReactNode;
   badgeTone?: "positive" | "negative" | "neutral" | "warning";
   provenance?: MetricProvenance;
+  valueTone?: "positive" | "negative" | "neutral";
 }) {
   const hidden = isFallbackMetric(provenance);
-  const badgeColors = {
-    positive: "bg-zinc-100 text-zinc-700",
-    negative: "bg-zinc-100 text-zinc-700",
-    neutral: "bg-zinc-100 text-zinc-700",
-    warning: "bg-amber-50 text-amber-900",
-  };
+  const valueClasses = [
+    "font-mono text-xl font-semibold tabular-nums leading-tight",
+    provenanceValueClass(provenance) ?? "text-zinc-900",
+    valueTone && valueTone !== "neutral"
+      ? metricDelightClass(valueTone, "value")
+      : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className="flex flex-col gap-2 bg-surface px-4 py-4 sm:px-5">
@@ -44,15 +50,15 @@ export function MetricBlock({
         <span className="min-w-0 text-sm font-medium text-zinc-600">{label}</span>
         {!hidden && <ProvenanceMarker provenance={provenance} compact />}
       </div>
-      <p
-        className={`font-mono text-xl font-semibold tabular-nums leading-tight ${provenanceValueClass(provenance) ?? "text-zinc-900"}`}
-      >
-        {hidden ? "-" : value}
-      </p>
+      <p className={valueClasses}>{hidden ? "-" : value}</p>
       {hint && !hidden && <p className="text-sm leading-snug text-zinc-600">{hint}</p>}
       {badge && (
         <span
-          className={`metric-block-badge inline-flex w-fit max-w-full rounded-md px-2 py-0.5 text-sm font-medium ${badgeColors[badgeTone]}`}
+          className={`metric-block-badge inline-flex w-fit max-w-full rounded-md px-2 py-0.5 text-sm font-medium ${
+            badgeTone === "warning"
+              ? "border border-amber-500/35 bg-amber-500/10 text-amber-200"
+              : metricDelightClass(badgeTone, "badge")
+          }`}
         >
           {badge}
         </span>

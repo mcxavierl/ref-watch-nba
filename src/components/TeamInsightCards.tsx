@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RefAvatar } from "@/components/RefAvatar";
+import { StandoutFlag } from "@/components/StandoutMetric";
 import type { TeamInsight } from "@/lib/team-insights";
 
 export function TeamInsightCards({
@@ -22,9 +23,12 @@ export function TeamInsightCards({
             key={insight.id}
             className="team-insight-card data-card px-4 py-4"
           >
-            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-              {insight.title}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                {insight.title}
+              </p>
+              <StandoutFlag>Pattern</StandoutFlag>
+            </div>
             <p className="mt-3 text-sm leading-relaxed text-zinc-700">
               {insight.body}
             </p>

@@ -3,7 +3,6 @@ import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
-import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
@@ -122,8 +121,6 @@ export default function NhlHomePage() {
         assignments={assignments}
         refStats={refStats}
       />
-
-      <LeagueDataSourceBanner league="nhl" meta={refStats.meta} className="mt-4" />
 
       {isOffseason && <OffseasonSlateNotice league="NHL" />}
 
