@@ -120,7 +120,7 @@ export function FindingsSection({
   return (
     <section id="dataset-findings" className={sectionClass || undefined}>
       {showHeader && (
-        <>
+        <div className={slateHero ? "slate-findings-hero-intro" : undefined}>
           <h2 className={slateHero ? "slate-findings-hero-title" : "section-title"}>
             {title}
           </h2>
@@ -149,7 +149,7 @@ export function FindingsSection({
             </Link>
             <MethodologyLink className="text-sm font-semibold" />
           </p>
-        </>
+        </div>
       )}
       <div
         className={`finding-accordion-stack ${slateHero ? "slate-findings-hero-stack" : compact && !featured ? "" : "mt-4"}`}
