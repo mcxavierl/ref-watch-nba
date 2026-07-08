@@ -2,14 +2,16 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { FindingFooterLinks } from "@/components/FindingAccordion";
-import { StatCell, StatStrip } from "@/components/StatStrip";
 import { MethodologyLink } from "@/components/MethodologyLink";
 import { FindingAccordionItem } from "@/components/FindingAccordion";
+import {
+  FindingContextRow,
+  FindingHeaderRow,
+  FindingMetricsGrid,
+} from "@/components/FindingCardLayout";
 import type { Finding, FindingLeague } from "@/lib/findings-shared";
 import {
   filterFindingsByLeague,
-  FINDING_CATEGORY_LABELS,
-  researchFindingHref,
   researchHubHref,
   sortFindingsByStrength,
 } from "@/lib/findings-shared";
@@ -24,48 +26,14 @@ export function FindingCard({
   league?: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
 }) {
   return (
-    <article className="data-card">
-      <div className="border-b border-border bg-surface-raised/60 px-4 py-3.5 sm:px-5">
-        <div className="flex flex-wrap items-center gap-1.5">
-          {league && <span className="finding-meta-pill">{league}</span>}
-          <span className="finding-meta-pill">
-            {FINDING_CATEGORY_LABELS[finding.category]}
-          </span>
-          <span className="finding-meta-pill finding-meta-pill-muted">
-            Finding {index + 1}
-          </span>
-        </div>
-        <h3 className="mt-2.5 text-base font-semibold leading-snug text-zinc-900 sm:text-[1.125rem]">
-          <Link
-            href={researchFindingHref(finding, league)}
-            className="hover:text-raptors hover:underline"
-          >
-            {finding.headline}
-          </Link>
-        </h3>
-        {finding.explainer && (
-          <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-            <span className="font-medium text-zinc-800">Why it matters: </span>
-            {finding.explainer}
-          </p>
-        )}
-        <p className="finding-accordion-metric-preview mt-2">{finding.summary}</p>
+    <article className="data-card finding-card-static">
+      <div className="finding-card-body">
+        <FindingHeaderRow finding={finding} index={index} league={league} />
+        <FindingMetricsGrid stats={finding.stats} />
+        <FindingContextRow explainer={finding.explainer} />
       </div>
 
-      {finding.stats.length > 0 && (
-        <StatStrip>
-          {finding.stats.map((stat) => (
-            <StatCell
-              key={stat.label}
-              label={stat.label}
-              value={stat.value}
-              detail={stat.detail}
-            />
-          ))}
-        </StatStrip>
-      )}
-
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-border-subtle px-4 py-3">
+      <div className="finding-accordion-footer">
         <p className="text-sm tabular-nums text-zinc-500">
           {finding.sampleNote}
         </p>
@@ -86,6 +54,7 @@ export function FindingsSection({
   dataSourceNote,
   sortExplainer,
   title = "Dataset findings",
+  sectionLead,
   league,
   showScopeToggle = false,
   scopeLabel,
@@ -98,6 +67,7 @@ export function FindingsSection({
   dataSourceNote?: string;
   sortExplainer?: string;
   title?: string;
+  sectionLead?: string;
   league?: FindingLeague;
   showScopeToggle?: boolean;
   scopeLabel?: string;
@@ -141,6 +111,9 @@ export function FindingsSection({
               {scopeLabel}
             </p>
           )}
+          {slateHero && sectionLead && (
+            <p className="slate-findings-hero-lead">{sectionLead}</p>
+          )}
           {!slateHero && (
             <p className="section-lead">
               Strong-confidence patterns first, then moderate and thin samples.
@@ -182,7 +155,12 @@ export function FindingsSection({
               />
             ))
           : visible.map((finding, index) => (
-              <FindingCard key={finding.id} finding={finding} index={index} />
+              <FindingCard
+                key={finding.id}
+                finding={finding}
+                index={index}
+                league={league}
+              />
             ))}
       </div>
       {hidden.length > 0 && (
