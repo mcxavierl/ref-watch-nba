@@ -5,7 +5,7 @@ export const SITE_URL =
   "https://refwatch.ca";
 
 export const AFFILIATION_DISCLAIMER =
-  "Not affiliated with the NBA, NHL, or NFL. Entertainment and information only.";
+  "Not affiliated with the NBA, NHL, NFL, Premier League, or NCAA. Entertainment and information only.";
 
 export const GAMBLING_DISCLAIMER =
   "Not betting advice. Past referee patterns do not predict future results. Free confidential help across Canada: ConnexOntario 1-866-531-2600 (connexontario.ca, 24/7).";

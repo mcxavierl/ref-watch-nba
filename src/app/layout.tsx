@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Barlow, IBM_Plex_Sans } from "next/font/google";
 import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
+import { JsonLd } from "@/components/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteFooterWrapper } from "@/components/SiteFooterWrapper";
 import { SiteHeader } from "@/components/SiteHeader";
+import { DEFAULT_SITE_DESCRIPTION, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { AFFILIATION_DISCLAIMER, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -27,8 +29,16 @@ export const metadata: Metadata = {
     default: `${SITE_NAME} | Referee intelligence & crew analytics`,
     template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "Tonight's NBA and NHL referee crews with historical scoring, whistle, and officiating tendencies. Transparent methodology and confidence levels.",
+  description: DEFAULT_SITE_DESCRIPTION,
+  keywords: [
+    "referee analytics",
+    "NBA refs",
+    "NHL officials",
+    "NFL officials",
+    "Premier League referees",
+    "officiating tendencies",
+    "referee crew",
+  ],
   alternates: {
     types: {
       "application/rss+xml": [
@@ -42,14 +52,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_CA",
     title: `${SITE_NAME} | Referee intelligence & crew analytics`,
-    description:
-      "Tonight's NBA and NHL referee crews with historical scoring, whistle, and officiating tendencies. Transparent methodology and confidence levels.",
+    description: DEFAULT_SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} | Referee intelligence & crew analytics`,
-    description:
-      "Tonight's NBA and NHL referee crews with historical scoring, whistle, and officiating tendencies. Transparent methodology and confidence levels.",
+    description: DEFAULT_SITE_DESCRIPTION,
   },
   other: {
     disclaimer: AFFILIATION_DISCLAIMER,
@@ -66,6 +74,7 @@ export default function RootLayout({
       <body
         className={`${barlow.variable} ${plexSans.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
       >
+        <JsonLd data={[websiteJsonLd(), organizationJsonLd()]} />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooterWrapper

@@ -213,17 +213,20 @@ export function researchFindingHref(
   const id = typeof finding === "string" ? finding : finding.id;
   const resolvedLeague =
     league ??
-    (id.startsWith("cfb-")
-      ? "CFB"
-      : id.startsWith("cbb-")
-        ? "CBB"
-        : id.startsWith("nfl-")
-          ? "NFL"
-          : id.startsWith("nhl-")
-            ? "NHL"
-            : ("NBA" satisfies FindingLeague));
+    (id.startsWith("epl-")
+      ? "EPL"
+      : id.startsWith("cfb-")
+        ? "CFB"
+        : id.startsWith("cbb-")
+          ? "CBB"
+          : id.startsWith("nfl-")
+            ? "NFL"
+            : id.startsWith("nhl-")
+              ? "NHL"
+              : ("NBA" satisfies FindingLeague));
   if (resolvedLeague === "NHL") return `/nhl/research/${id}`;
   if (resolvedLeague === "NFL") return `/nfl/research/${id}`;
+  if (resolvedLeague === "EPL") return `/epl/research/${id}`;
   if (resolvedLeague === "CBB") return `/cbb/research/${id}`;
   if (resolvedLeague === "CFB") return `/cfb/research/${id}`;
   return `/research/${id}`;
