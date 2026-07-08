@@ -1,3 +1,4 @@
+import { getOfficialTeamRegularSeasonRecord } from "@/lib/team-record-query";
 import type { TeamCrewSplit } from "@/lib/types";
 
 export interface TeamSampleRecord {
@@ -18,6 +19,30 @@ export function getTeamSampleRecord(splits: TeamCrewSplit[]): TeamSampleRecord {
     games,
     winRate: games > 0 ? wins / games : 0,
   };
+}
+
+export interface TeamDisplayRecordOptions {
+  /** Include postseason games (NBA gameId prefix 004). Default false. */
+  includePlayoffs?: boolean;
+  /** Earliest season label inclusive (e.g. "2021-22"). */
+  sinceSeason?: string;
+}
+
+/**
+ * Team W-L for page display. NBA uses official regular-season standings;
+ * NHL and playoff-inclusive NBA views use crew-split totals from the sample.
+ */
+export function getTeamDisplayRecord(
+  league: "nba" | "nhl",
+  teamAbbr: string,
+  splits: TeamCrewSplit[],
+  seasons: string[],
+  options: TeamDisplayRecordOptions = {},
+): TeamSampleRecord {
+  if (league === "nba" && !options.includePlayoffs) {
+    return getOfficialTeamRegularSeasonRecord(teamAbbr, seasons, options);
+  }
+  return getTeamSampleRecord(splits);
 }
 
 /** Point difference vs team baseline (percentage points). */

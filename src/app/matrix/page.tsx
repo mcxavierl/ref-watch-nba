@@ -30,6 +30,8 @@ export default function NbaMatrixPage() {
       nbaId: team.nbaId,
     })),
     getTeamSplits,
+    undefined,
+    { league: "nba", sinceSeason: "2021-22" },
   );
   const extremes = computeMatrixExtremes(matrix);
 

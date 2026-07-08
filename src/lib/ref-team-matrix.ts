@@ -1,5 +1,5 @@
 import { deltaTone } from "@/lib/metricTone";
-import { getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
+import { getTeamDisplayRecord, getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
 
 /** Minimum games before a ref×team cell is shown in the matrix. */
@@ -52,17 +52,32 @@ export function approxTeamRecord(
   return { wins, losses: Math.max(0, games - wins) };
 }
 
+export interface RefTeamMatrixOptions {
+  league?: "nba" | "nhl";
+  /** Earliest season label for NBA official baseline totals. */
+  sinceSeason?: string;
+}
+
 export function computeRefTeamMatrix(
   stats: RefStatsFile,
   teamList: { abbr: string; label: string; name: string; nbaId?: number }[],
   getTeamSplits: (abbr: string) => TeamCrewSplit[],
   minGames = MATRIX_MIN_GAMES,
+  matrixOptions: RefTeamMatrixOptions = {},
 ): RefTeamMatrix {
+  const league = matrixOptions.league ?? "nba";
+  const sinceSeason = matrixOptions.sinceSeason ?? "2021-22";
+
   const teams: RefTeamMatrixTeam[] = teamList.map((team) => {
     const abbr = team.abbr.toUpperCase();
     const splits =
       stats.teamSplits[abbr] ?? getTeamSplits(team.abbr);
-    const record = getTeamSampleRecord(splits);
+    const record =
+      league === "nba"
+        ? getTeamDisplayRecord(league, abbr, splits, stats.meta.seasons, {
+            sinceSeason,
+          })
+        : getTeamSampleRecord(splits);
     return {
       abbr: team.abbr,
       label: team.label,

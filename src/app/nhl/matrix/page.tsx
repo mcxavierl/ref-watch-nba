@@ -33,6 +33,8 @@ export default function NhlMatrixPage() {
       name: team.name,
     })),
     getTeamSplits,
+    undefined,
+    { league: "nhl" },
   );
   const extremes = computeMatrixExtremes(matrix);
 

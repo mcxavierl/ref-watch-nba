@@ -8,7 +8,7 @@ import * as nbaTeams from "@/lib/teams";
 import * as nhlTeams from "@/lib/nhl/teams";
 import { getTeamRefSplits } from "@/lib/teamRefLeaderboards";
 import { TEAM_CREW_MIN_GAMES } from "@/lib/teamCrewSplits";
-import { getTeamSampleRecord } from "@/lib/teamRecord";
+import { getTeamDisplayRecord } from "@/lib/teamRecord";
 import { userFacingDataNote } from "@/lib/user-language";
 import { computeTeamCloseGameMetrics } from "@/lib/close-game";
 import { computeTeamInsights } from "@/lib/team-insights";
@@ -36,7 +36,13 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const stats = getRefStats();
   const splits = sortSplitsByGames(getTeamSplits(team.abbr));
   const refSplits = getTeamRefSplits(stats.refs, team.abbr);
-  const teamRecord = getTeamSampleRecord(splits);
+  const teamRecord = getTeamDisplayRecord(
+    league,
+    team.abbr,
+    splits,
+    stats.meta.seasons,
+    { sinceSeason: "2021-22" },
+  );
   const teamName = isNhl
     ? nhlTeams.teamFullName(team as import("@/lib/nhl/teams").NhlTeam)
     : nbaTeams.teamFullName(team as import("@/lib/teams").NbaTeam);

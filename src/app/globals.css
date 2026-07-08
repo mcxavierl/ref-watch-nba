@@ -1515,11 +1515,24 @@ p {
   }
 
   .site-chrome--scrolled .site-header {
-    /* Layer gold on the right; blue layer never interpolates into purple. */
+    /* Gold fades in over blue; wide stops avoid a hard edge and purple RGB bleed. */
     background:
       radial-gradient(ellipse 50% 135% at 50% -45%, rgba(255, 214, 102, 0.28), transparent 62%),
-      linear-gradient(90deg, transparent 0%, transparent 68%, #ffcc00 68%, #ffdd44 100%),
-      linear-gradient(90deg, #000000 0%, #001833 18%, #0088ff 68%);
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        transparent 36%,
+        rgba(255, 204, 0, 0.06) 44%,
+        rgba(255, 210, 32, 0.16) 52%,
+        rgba(255, 216, 52, 0.32) 60%,
+        rgba(255, 222, 72, 0.5) 68%,
+        rgba(255, 228, 92, 0.7) 76%,
+        rgba(255, 234, 112, 0.86) 84%,
+        rgba(255, 240, 130, 0.95) 92%,
+        #ffcc00 96%,
+        #ffdd44 100%
+      ),
+      linear-gradient(90deg, #000000 0%, #001833 14%, #0070d9 48%, #0088ff 72%, #0078ee 100%);
     backdrop-filter: blur(14px) saturate(1.12);
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.06),
@@ -1547,8 +1560,21 @@ p {
     color: var(--header-ink);
     background:
       radial-gradient(ellipse 56% 145% at 50% -45%, rgba(255, 214, 102, 0.38), transparent 62%),
-      linear-gradient(90deg, transparent 0%, transparent 68%, #ffcc00 68%, #ffdd44 100%),
-      linear-gradient(90deg, #000000 0%, #001833 18%, #0088ff 68%);
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        transparent 36%,
+        rgba(255, 204, 0, 0.08) 44%,
+        rgba(255, 210, 32, 0.2) 52%,
+        rgba(255, 216, 52, 0.38) 60%,
+        rgba(255, 222, 72, 0.56) 68%,
+        rgba(255, 228, 92, 0.74) 76%,
+        rgba(255, 234, 112, 0.88) 84%,
+        rgba(255, 240, 130, 0.96) 92%,
+        #ffcc00 96%,
+        #ffdd44 100%
+      ),
+      linear-gradient(90deg, #000000 0%, #001833 14%, #0070d9 48%, #0088ff 72%, #0078ee 100%);
     border-bottom: 1px solid rgba(255, 214, 102, 0.28);
     box-shadow: 0 8px 28px rgba(0, 22, 48, 0.22);
     transition:
@@ -1591,10 +1617,12 @@ p {
     background: linear-gradient(
       90deg,
       transparent 8%,
-      rgba(0, 112, 217, 0.32) 24%,
-      rgba(255, 214, 102, 0.68) 50%,
-      rgba(0, 112, 217, 0.32) 76%,
-      transparent 92%
+      rgba(0, 112, 217, 0.32) 22%,
+      rgba(0, 168, 232, 0.26) 42%,
+      rgba(140, 200, 80, 0.22) 58%,
+      rgba(255, 214, 102, 0.62) 74%,
+      rgba(255, 236, 161, 0.52) 88%,
+      transparent 96%
     );
     opacity: 0.95;
   }

@@ -111,6 +111,10 @@ export function buildMatrixExtremeFinding(
     ctx.teams,
     ctx.getTeamSplits,
     MIN_MATRIX_GAMES,
+    {
+      league: ctx.league === "NBA" ? "nba" : "nhl",
+      sinceSeason: "2021-22",
+    },
   );
   const extremes = computeMatrixExtremes(matrix, 40).filter((h) => h.kind === kind);
   const best = extremes[0];

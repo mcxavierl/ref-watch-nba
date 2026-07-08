@@ -27,6 +27,11 @@ import {
 import { buildBaselinesFile, saveBaselines } from "./lib/baselines";
 import { nbaMatchupStrengthBias } from "./lib/nba-team-strength";
 import { teamWonGame } from "./lib/team-win";
+import { enforceSeasonWinTotals, rebalanceSeasonWinTotals } from "./lib/enforce-season-records";
+import {
+  NBA_REGULAR_SEASON_RECORDS,
+  NBA_SEASON_OPENERS,
+} from "../src/lib/nba-team-season-records";
 import type {
   RefGameRecord,
   RefProfile,
@@ -147,6 +152,8 @@ function mulberry32(seed: number): () => number {
 const CREW_POOL_SIZE = 32;
 
 function seasonStartDate(season: string): Date {
+  const opener = NBA_SEASON_OPENERS[season];
+  if (opener) return new Date(`${opener}T12:00:00.000Z`);
   const startYear = Number.parseInt(season.slice(0, 4), 10);
   return new Date(Date.UTC(startYear, 9, 15));
 }
@@ -251,6 +258,138 @@ function teamGameRow(box: SimBox, teamAbbr: string): TeamGameRow | null {
   };
 }
 
+function processSimBox(
+  box: SimBox,
+  rng: () => number,
+  crewPool: ReturnType<typeof buildCrewPool>,
+  refGames: Map<string, RefGameRecord[]>,
+  refMeta: Map<string, { name: string; number: number }>,
+  refBetting: Map<string, RefBettingAccumulator>,
+  refTeamBuckets: Map<string, Map<string, RefTeamGameRow[]>>,
+  teamByCrew: Map<string, Map<string, TeamCrewBucket>>,
+  exportedGameLogs: GameLogEntry[],
+  officialsOverride?: ReturnType<typeof pickCrewFromPool>,
+): void {
+  const officials = officialsOverride ?? pickCrewFromPool(rng, crewPool);
+  const lines = { total: box.closingTotal, homeSpread: box.homeSpread };
+  const { homeTeam, awayTeam, homeScore, awayScore, date, season } = box;
+  const totalPoints = homeScore + awayScore;
+
+  exportedGameLogs.push({
+    gameId: box.gameId,
+    date,
+    season,
+    league: "NBA",
+    homeTeam,
+    awayTeam,
+    homeScore,
+    awayScore,
+    totalPoints,
+    totalFouls: box.totalFouls,
+    closingTotal: box.closingTotal,
+    homeSpread: box.homeSpread,
+    lineSource: "synthetic",
+    officials: toOfficials(officials),
+  });
+
+  const record: RefGameRecord = {
+    gameId: box.gameId,
+    date,
+    season,
+    homeTeam,
+    awayTeam,
+    totalPoints,
+    totalFouls: box.totalFouls,
+    overHit: totalPoints > lines.total,
+    raptorsInvolved: homeTeam === "TOR" || awayTeam === "TOR",
+    closingTotal: lines.total,
+    homeSpread: lines.homeSpread,
+  };
+
+  const key = crewKey(officials);
+  const crewNames = officials.map((o) => o.name);
+
+  for (const teamAbbr of [homeTeam, awayTeam]) {
+    const row = teamGameRow(box, teamAbbr);
+    if (!row) continue;
+    const buckets = teamByCrew.get(teamAbbr)!;
+    const existing = buckets.get(key) ?? { crewNames, games: [] };
+    existing.games.push(row);
+    buckets.set(key, existing);
+  }
+
+  for (const official of officials) {
+    const slug = refSlug(official.name, official.number);
+    refMeta.set(slug, official);
+    const games = refGames.get(slug) ?? [];
+    games.push(record);
+    refGames.set(slug, games);
+
+    let acc = refBetting.get(slug);
+    if (!acc) {
+      acc = new RefBettingAccumulator();
+      refBetting.set(slug, acc);
+    }
+    acc.addGame({
+      homeScore,
+      awayScore,
+      homeSpread: lines.homeSpread,
+      total: lines.total,
+    });
+
+    for (const teamAbbr of [homeTeam, awayTeam]) {
+      const teamRow = teamGameRow(box, teamAbbr);
+      if (!teamRow) continue;
+      pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
+        foulDifferential: teamRow.teamFouls - teamRow.opponentFouls,
+        totalPoints: teamRow.totalPoints,
+        overHit: teamRow.overHit,
+        teamWin: teamRow.teamWin,
+      });
+    }
+  }
+}
+
+function teamGameCounts(schedule: [string, string][]): Map<string, number> {
+  const counts = new Map(NBA_TEAM_ABBRS.map((t) => [t, 0]));
+  for (const [home, away] of schedule) {
+    counts.set(home, (counts.get(home) ?? 0) + 1);
+    counts.set(away, (counts.get(away) ?? 0) + 1);
+  }
+  return counts;
+}
+
+function buildBalancedSchedule(rng: () => number): [string, string][] {
+  const schedule: [string, string][] = [];
+  for (let i = 0; i < NBA_TEAM_ABBRS.length; i++) {
+    for (let j = i + 1; j < NBA_TEAM_ABBRS.length; j++) {
+      schedule.push([NBA_TEAM_ABBRS[i]!, NBA_TEAM_ABBRS[j]!]);
+      schedule.push([NBA_TEAM_ABBRS[j]!, NBA_TEAM_ABBRS[i]!]);
+    }
+  }
+
+  const counts = teamGameCounts(schedule);
+  let safety = 5000;
+  while (
+    Math.min(...counts.values()) < GAMES_PER_TEAM_PER_SEASON &&
+    safety-- > 0
+  ) {
+    const need = NBA_TEAM_ABBRS.filter(
+      (t) => (counts.get(t) ?? 0) < GAMES_PER_TEAM_PER_SEASON,
+    ).sort((a, b) => (counts.get(a) ?? 0) - (counts.get(b) ?? 0));
+    if (need.length < 2) break;
+
+    const home = need[0]!;
+    const partners = need.filter((t) => t !== home);
+    const away = partners[Math.floor(rng() * partners.length)]!;
+    schedule.push(rng() > 0.5 ? [home, away] : [away, home]);
+    counts.set(home, (counts.get(home) ?? 0) + 1);
+    counts.set(away, (counts.get(away) ?? 0) + 1);
+  }
+
+  return schedule;
+}
+
 function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
   const rng = mulberry32(42);
   const crewPool = buildCrewPool(rng, REF_ROSTER, 3, CREW_POOL_SIZE);
@@ -270,28 +409,10 @@ function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
 
   for (const season of SEASONS) {
     let seasonGameIndex = 0;
-    const schedule: [string, string][] = [];
-    for (let i = 0; i < NBA_TEAM_ABBRS.length; i++) {
-      for (let j = i + 1; j < NBA_TEAM_ABBRS.length; j++) {
-        for (let k = 0; k < 2; k++) {
-          schedule.push(
-            k === 0
-              ? [NBA_TEAM_ABBRS[i], NBA_TEAM_ABBRS[j]]
-              : [NBA_TEAM_ABBRS[j], NBA_TEAM_ABBRS[i]],
-          );
-        }
-      }
-    }
-    while (schedule.length < GAMES_PER_TEAM_PER_SEASON * (NBA_TEAM_ABBRS.length / 2)) {
-      const a = NBA_TEAM_ABBRS[Math.floor(rng() * NBA_TEAM_ABBRS.length)];
-      let b = NBA_TEAM_ABBRS[Math.floor(rng() * NBA_TEAM_ABBRS.length)];
-      while (b === a) {
-        b = NBA_TEAM_ABBRS[Math.floor(rng() * NBA_TEAM_ABBRS.length)];
-      }
-      schedule.push(rng() > 0.5 ? [a, b] : [b, a]);
-    }
-
+    const schedule = buildBalancedSchedule(rng);
     const gamesInSeason = schedule.length;
+    const seasonBoxes: SimBox[] = [];
+    const seasonOfficials: ReturnType<typeof pickCrewFromPool>[] = [];
 
     for (const [homeTeam, awayTeam] of schedule) {
       const officials = pickCrewFromPool(rng, crewPool);
@@ -304,9 +425,8 @@ function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
       const homeFouls = 16 + Math.floor(rng() * 10);
       const awayFouls = 16 + Math.floor(rng() * 10);
       const date = gameDate(season, seasonGameIndex, gamesInSeason);
-      allDates.push(date);
 
-      const box: SimBox = {
+      seasonBoxes.push({
         gameId: `002${season.slice(2, 4)}${String(gameSeq).padStart(4, "0")}`,
         date,
         season,
@@ -319,85 +439,33 @@ function generate(): { stats: RefStatsFile; gameLogs: GameLogEntry[] } {
         totalFouls: homeFouls + awayFouls,
         closingTotal: lines.total,
         homeSpread: lines.homeSpread,
-      };
+      });
+      seasonOfficials.push(officials);
       gameSeq++;
       seasonGameIndex++;
+    }
 
-      const totalPoints = homeScore + awayScore;
-      exportedGameLogs.push({
-        gameId: box.gameId,
-        date,
-        season,
-        league: "NBA",
-        homeTeam,
-        awayTeam,
-        homeScore,
-        awayScore,
-        totalPoints,
-        totalFouls: box.totalFouls,
-        closingTotal: lines.total,
-        homeSpread: lines.homeSpread,
-        lineSource: "synthetic",
-        officials: toOfficials(officials),
-      });
+    const seasonRecords = NBA_REGULAR_SEASON_RECORDS[season];
+    if (seasonRecords) {
+      enforceSeasonWinTotals(seasonBoxes, seasonRecords, rng);
+      rebalanceSeasonWinTotals(seasonBoxes, seasonRecords);
+    }
 
-      const record: RefGameRecord = {
-        gameId: box.gameId,
-        date,
-        season,
-        homeTeam,
-        awayTeam,
-        totalPoints,
-        totalFouls: box.totalFouls,
-        overHit: totalPoints > lines.total,
-        raptorsInvolved: homeTeam === "TOR" || awayTeam === "TOR",
-        closingTotal: lines.total,
-        homeSpread: lines.homeSpread,
-      };
-
-      const key = crewKey(officials);
-      const crewNames = officials.map((o) => o.name);
-
-      for (const teamAbbr of [homeTeam, awayTeam]) {
-        const row = teamGameRow(box, teamAbbr);
-        if (!row) continue;
-        const buckets = teamByCrew.get(teamAbbr)!;
-        const existing = buckets.get(key) ?? { crewNames, games: [] };
-        existing.games.push(row);
-        buckets.set(key, existing);
-      }
-
-      for (const official of officials) {
-        const slug = refSlug(official.name, official.number);
-        refMeta.set(slug, official);
-        const games = refGames.get(slug) ?? [];
-        games.push(record);
-        refGames.set(slug, games);
-
-        let acc = refBetting.get(slug);
-        if (!acc) {
-          acc = new RefBettingAccumulator();
-          refBetting.set(slug, acc);
-        }
-        acc.addGame({
-          homeScore,
-          awayScore,
-          homeSpread: lines.homeSpread,
-          total: lines.total,
-        });
-
-        for (const teamAbbr of [homeTeam, awayTeam]) {
-          const teamRow = teamGameRow(box, teamAbbr);
-          if (!teamRow) continue;
-          pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
-            foulDifferential: teamRow.teamFouls - teamRow.opponentFouls,
-            totalPoints: teamRow.totalPoints,
-            overHit: teamRow.overHit,
-            teamWin: teamRow.teamWin,
-          });
-        }
-      }
-
+    for (let i = 0; i < seasonBoxes.length; i++) {
+      const box = seasonBoxes[i]!;
+      allDates.push(box.date);
+      processSimBox(
+        box,
+        rng,
+        crewPool,
+        refGames,
+        refMeta,
+        refBetting,
+        refTeamBuckets,
+        teamByCrew,
+        exportedGameLogs,
+        seasonOfficials[i],
+      );
       processed++;
     }
   }

@@ -12,6 +12,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/**/*.test.ts",
     "fetch-assignments": "tsx scripts/fetch-assignments.ts",
     "fetch-odds": "tsx scripts/fetch-odds.ts",
     "morning-slate": "tsx scripts/morning-slate.ts",

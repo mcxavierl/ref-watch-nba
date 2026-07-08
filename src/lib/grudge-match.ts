@@ -2,6 +2,7 @@ import {
   crewKey,
   formatPct,
   formatSigned,
+  getRefStats,
   getTeamSplits,
   refSlug,
 } from "@/lib/data";
@@ -9,7 +10,7 @@ import { formatWinRateVsTeam } from "@/lib/stats-utils";
 import { getTeam, matchTeamString, teamFullName, teamWithArticle } from "@/lib/teams";
 import { TEAM_REF_MIN_GAMES } from "@/lib/teamRefLeaderboards";
 import {
-  getTeamSampleRecord,
+  getTeamDisplayRecord,
   winRateDeltaPoints,
 } from "@/lib/teamRecord";
 import type {
@@ -50,7 +51,7 @@ interface TeamContext {
   label: string;
   article: string;
   splits: TeamCrewSplit[];
-  baseline: ReturnType<typeof getTeamSampleRecord>;
+  baseline: ReturnType<typeof getTeamDisplayRecord>;
   baselineFouls: number;
 }
 
@@ -64,12 +65,15 @@ function teamContext(abbr: string): TeamContext | null {
   const team = getTeam(abbr);
   if (!team) return null;
   const splits = getTeamSplits(abbr);
+  const stats = getRefStats();
   return {
     abbr,
     label: teamFullName(team),
     article: teamWithArticle(team),
     splits,
-    baseline: getTeamSampleRecord(splits),
+    baseline: getTeamDisplayRecord("nba", abbr, splits, stats.meta.seasons, {
+      sinceSeason: "2021-22",
+    }),
     baselineFouls: weightedTeamFouls(splits),
   };
 }
