@@ -136,7 +136,6 @@ export function LeagueNav() {
       <div className="league-nav-scroll">
         <div className="league-nav-groups">
           <div className="league-nav-group" role="group" aria-label="Professional leagues">
-            <span className="league-nav-group-label">Pro</span>
             <div className="league-nav-links">
               {PRO_LEAGUES.map((id) => (
                 <LeagueNavLink key={id} id={id} active={league === id} />
