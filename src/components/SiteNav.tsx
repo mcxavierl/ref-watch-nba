@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { METHODOLOGY_NAV_LABEL } from "@/lib/trust-charter";
+import { LeagueSwitchMark, leagueSwitchLabel } from "@/components/LeagueSwitchMark";
 
 const METHODOLOGY_LINK = { href: "/methodology", label: METHODOLOGY_NAV_LABEL };
 
@@ -64,27 +65,30 @@ export function LeagueSwitch() {
       <span className="league-switch-thumb" aria-hidden />
       <Link
         href="/"
-        aria-label="NBA"
+        aria-label={leagueSwitchLabel("nba")}
         aria-current={league === "nba" ? "page" : undefined}
         className={`league-switch-option${league === "nba" ? " league-switch-option--active" : ""}`}
       >
-        NBA
+        <LeagueSwitchMark league="nba" active={league === "nba"} />
+        <span className="sr-only">{leagueSwitchLabel("nba")}</span>
       </Link>
       <Link
         href="/nhl"
-        aria-label="NHL"
+        aria-label={leagueSwitchLabel("nhl")}
         aria-current={league === "nhl" ? "page" : undefined}
         className={`league-switch-option${league === "nhl" ? " league-switch-option--active" : ""}`}
       >
-        NHL
+        <LeagueSwitchMark league="nhl" active={league === "nhl"} />
+        <span className="sr-only">{leagueSwitchLabel("nhl")}</span>
       </Link>
       <Link
         href="/nfl"
-        aria-label="NFL"
+        aria-label={leagueSwitchLabel("nfl")}
         aria-current={league === "nfl" ? "page" : undefined}
         className={`league-switch-option${league === "nfl" ? " league-switch-option--active" : ""}`}
       >
-        NFL
+        <LeagueSwitchMark league="nfl" active={league === "nfl"} />
+        <span className="sr-only">{leagueSwitchLabel("nfl")}</span>
       </Link>
     </div>
   );
