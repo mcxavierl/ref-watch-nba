@@ -69,6 +69,12 @@
   --measure-prose: 65ch;
   --measure-narrow: 42ch;
 
+  --font-heading: var(--font-barlow), system-ui, sans-serif;
+  --font-body: var(--font-plex-sans), system-ui, sans-serif;
+  --font-data: var(--font-plex-sans), system-ui, sans-serif;
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+
   /* Spacing — 4pt base */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -102,8 +108,8 @@
   --color-raptors: var(--raptors);
   --color-lakers: var(--lakers);
   --color-lakers-gold: var(--lakers-gold);
-  --font-sans: var(--font-barlow);
-  --font-mono: var(--font-plex-mono);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-data);
 
   --color-white: #18181f;
   --color-zinc-50: #16161c;
@@ -137,7 +143,9 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   min-height: 100vh;
@@ -164,11 +172,7 @@ html {
   to { opacity: 1; transform: translateY(0); }
 }
 
-h1,
-h2,
-h3 {
-  text-wrap: balance;
-}
+h1,h2,h3,h4,h5,h6{text-wrap:balance;font-family:var(--font-heading);font-weight:600;}
 
 p {
   text-wrap: pretty;
@@ -257,6 +261,7 @@ p {
   }
 
   .page-title {
+    font-family: var(--font-heading);
     font-size: var(--text-2xl);
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -300,6 +305,7 @@ p {
   }
 
   .section-title {
+    font-family: var(--font-heading);
     font-size: var(--text-lg);
     font-weight: 700;
     letter-spacing: -0.015em;
@@ -411,7 +417,7 @@ p {
 
   .stat-value {
     margin-top: var(--space-2);
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: var(--text-xl);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
@@ -517,7 +523,7 @@ p {
 
   .ref-stat-value {
     margin-top: var(--space-2);
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: var(--text-2xl);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
@@ -596,7 +602,7 @@ p {
   }
 
   .data-signal {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-variant-numeric: tabular-nums;
     font-weight: 600;
   }
@@ -856,7 +862,7 @@ p {
   }
 
   .edge-summary-rank {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: var(--text-sm);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
@@ -925,7 +931,7 @@ p {
   }
 
   .ou-lean-badge-value {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-variant-numeric: tabular-nums;
   }
 
@@ -1585,6 +1591,7 @@ p {
   }
 
   .site-header-name {
+    font-family: var(--font-heading);
     font-size: var(--text-lg);
     font-weight: 700;
     letter-spacing: 0.035em;
@@ -1908,7 +1915,7 @@ p {
   }
 
   .game-signal-value {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-variant-numeric: tabular-nums;
     font-weight: 600;
   }
@@ -1916,8 +1923,14 @@ p {
   /* ── Table typography ── */
   .data-table {
     width: 100%;
+    font-family: var(--font-data);
     font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
   }
+
+  .data-table tbody tr:nth-child(even){background:color-mix(in srgb,var(--surface-raised) 55%,transparent);}
+  .data-table tbody tr:hover{background:color-mix(in srgb,var(--header-sapphire) 6%,var(--surface-raised));}
 
   .data-table-head th {
     padding: var(--space-3) var(--space-4);
@@ -1938,9 +1951,10 @@ p {
     color: var(--muted);
   }
 
-  .data-table-num {
-    text-align: right;
-  }
+  .data-table-num{text-align:right;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;}
+  .font-tabular{font-family:var(--font-data);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;}
+  .dom-delta-positive{color:#047857;}
+  .dom-delta-negative{color:#be123c;}
 
   .data-table-rank {
     width: 3rem;
@@ -1999,7 +2013,7 @@ p {
   }
 
   .rankings-insight-metric {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: var(--text-2xl);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
@@ -2102,7 +2116,7 @@ p {
   }
 
   .ranking-sort-arrow {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: 0.65rem;
     font-weight: 700;
     opacity: 0.45;
@@ -2208,7 +2222,7 @@ p {
   }
 
   .refs-macro-insight-stat {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--ink-secondary);
@@ -2423,7 +2437,7 @@ p {
     display: inline-flex;
     justify-content: flex-end;
     min-width: 2.75rem;
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: var(--text-sm);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
@@ -2767,7 +2781,7 @@ p {
   }
 
   .ref-matrix-team-panel-rank {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: var(--text-xs);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
@@ -2797,7 +2811,7 @@ p {
   .ref-matrix-team-panel-record,
   .ref-matrix-team-panel-games,
   .ref-matrix-team-panel-delta {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: var(--text-xs);
     font-variant-numeric: tabular-nums;
     text-align: right;
@@ -2950,7 +2964,7 @@ p {
 
   .ref-matrix-baseline-record {
     display: block;
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: 0.625rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
@@ -3019,7 +3033,7 @@ p {
   }
 
   .ref-matrix-ref-aggregate {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: 0.625rem;
     font-variant-numeric: tabular-nums;
     color: var(--muted);
@@ -3070,7 +3084,7 @@ p {
   }
 
   .ref-matrix-record {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: var(--text-xs);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
@@ -3078,7 +3092,7 @@ p {
   }
 
   .ref-matrix-delta {
-    font-family: var(--font-mono), ui-monospace, monospace;
+    font-family: var(--font-data);
     font-size: 0.625rem;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
