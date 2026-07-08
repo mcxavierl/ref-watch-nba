@@ -181,7 +181,7 @@ export function GameSlateCard({
                 {teams.map((team, i) => (
                   <span key={team.abbr} className="flex items-center gap-1.5">
                     {i > 0 && (
-                      <span className="text-sm font-medium text-zinc-400" aria-hidden>
+                      <span className="text-sm font-medium text-zinc-600" aria-hidden>
                         @
                       </span>
                     )}

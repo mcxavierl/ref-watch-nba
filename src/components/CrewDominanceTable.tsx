@@ -28,7 +28,7 @@ function dominanceDeltaClass(value: number, threshold: number): string {
 }
 
 function DominanceMetric({ value, threshold }: { value: number | null; threshold: number }) {
-  if (value === null) return <span className="text-xs text-zinc-400">n/a</span>;
+  if (value === null) return <span className="text-xs text-zinc-600">n/a</span>;
   return (
     <span className={`inline-flex min-w-[3.25rem] justify-end font-tabular text-xs text-zinc-700 ${dominanceDeltaClass(value, threshold)}`.trim()}>
       {formatSigned(value)}
