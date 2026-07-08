@@ -2209,6 +2209,12 @@ p {
       transform var(--duration-fast) ease-out;
   }
 
+  .league-nav-mark[data-league="nhl"],
+  .league-nav-mark[data-league="epl"] {
+    height: 1.1rem;
+    max-width: 1.95rem;
+  }
+
   .league-nav-link--active .league-nav-mark {
     opacity: 1;
     transform: scale(1.03);

@@ -54,6 +54,7 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
       alt=""
       aria-hidden
       className="league-nav-mark"
+      data-league={league}
       width={28}
       height={18}
       decoding="async"
