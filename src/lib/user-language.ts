@@ -2,7 +2,7 @@ import type { SampleQuality } from "@/lib/types";
 
 export type ConfidenceTier = "Strong" | "Moderate" | "Thin";
 
-export type Sport = "nba" | "nhl";
+export type Sport = "nba" | "nhl" | "nfl";
 
 const SPORT_COPY = {
   nba: {
@@ -21,6 +21,16 @@ const SPORT_COPY = {
     pointsAboveAverage: "Goals above average",
     scoringLabel: "Goals",
     whistleLabel: "Penalties",
+    overLeanLabel: "Historical over-rate tendency",
+    lineComparisonLabel: "Total vs benchmark",
+    homeBiasLabel: "Home/road pattern",
+  },
+  nfl: {
+    scoringUnit: "pts",
+    whistleUnit: "flags",
+    pointsAboveAverage: "Points above average",
+    scoringLabel: "Scoring",
+    whistleLabel: "Flags",
     overLeanLabel: "Historical over-rate tendency",
     lineComparisonLabel: "Total vs benchmark",
     homeBiasLabel: "Home/road pattern",
@@ -62,6 +72,26 @@ export function formatSampleCount(games: number): string {
 
 export function seededDataNote(): string {
   return "Historical line data unavailable for some games; see Methodology for details.";
+}
+
+/** Visible when ref×team W-L is from BBR but other splits are simulated/estimated. */
+export function usesBbrRefTeamRecords(
+  meta: { refTeamWinLossSource?: string },
+): boolean {
+  return meta.refTeamWinLossSource === "basketball-reference";
+}
+
+export function refTeamDataNote(
+  meta: {
+    source?: string;
+    refTeamWinLossSource?: string;
+  },
+): string | null {
+  if (!usesBbrRefTeamRecords(meta)) return null;
+  if (meta.source === "nba-stats-api") {
+    return "Ref×team win-loss is from Basketball-Reference; foul, scoring, and ATS splits use NBA Stats API data.";
+  }
+  return "Ref×team win-loss is from Basketball-Reference; foul, scoring, and ATS/O-U splits may use simulated or estimated data.";
 }
 
 /** Strip developer-only npm hints from data meta notes before showing users. */

@@ -37,7 +37,7 @@ export function seasonRowsFromBaselines(
 
 export function buildYoYNarrative(
   rows: TrendRow[],
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL",
 ): YoYNarrative | null {
   if (rows.length < 2) return null;
 

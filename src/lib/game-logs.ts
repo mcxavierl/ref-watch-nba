@@ -8,7 +8,7 @@ export interface RuntimeGameLogEntry {
   gameId: string;
   date: string;
   season: string;
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL";
   homeTeam: string;
   awayTeam: string;
   homeScore: number;
@@ -26,22 +26,22 @@ export interface RuntimeGameLogEntry {
 
 export interface RuntimeGameLogFile {
   lastUpdated: string;
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL";
   source: string;
   games: RuntimeGameLogEntry[];
 }
 
-const cache = new Map<"NBA" | "NHL", RuntimeGameLogFile | null>();
+const cache = new Map<"NBA" | "NHL" | "NFL", RuntimeGameLogFile | null>();
 
-function gameLogPath(league: "NBA" | "NHL"): string {
+function gameLogPath(league: "NBA" | "NHL" | "NFL"): string {
   const root = path.join(process.cwd(), "data");
-  return league === "NBA"
-    ? path.join(root, "game-logs.json")
-    : path.join(root, "nhl", "game-logs.json");
+  if (league === "NBA") return path.join(root, "game-logs.json");
+  if (league === "NHL") return path.join(root, "nhl", "game-logs.json");
+  return path.join(root, "nfl", "game-logs.json");
 }
 
 export function loadRuntimeGameLogs(
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL",
 ): RuntimeGameLogFile | null {
   if (cache.has(league)) return cache.get(league) ?? null;
 
@@ -56,7 +56,7 @@ export function loadRuntimeGameLogs(
   }
 }
 
-export function gameLogsAvailable(league: "NBA" | "NHL"): boolean {
+export function gameLogsAvailable(league: "NBA" | "NHL" | "NFL"): boolean {
   const file = loadRuntimeGameLogs(league);
   return (file?.games.length ?? 0) > 0;
 }

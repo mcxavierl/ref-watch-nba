@@ -11,6 +11,10 @@ import {
   detectTeamsInGame as detectNhlTeams,
   refSlug as nhlRefSlug,
 } from "@/lib/nhl/data";
+import {
+  detectTeamsInGame as detectNflTeams,
+  refSlug as nflRefSlug,
+} from "@/lib/nfl/data";
 import type { GrudgeStoryline } from "@/lib/grudge-match";
 import type {
   CrewHomeBias,
@@ -20,6 +24,7 @@ import type {
 } from "@/lib/types";
 import { teamFullName as nbaTeamFullName, type NbaTeam } from "@/lib/teams";
 import { teamFullName as nhlTeamFullName, type NhlTeam } from "@/lib/nhl/teams";
+import { teamFullName as nflTeamFullName, type NflTeam } from "@/lib/nfl/teams";
 import {
   benchmarkLabel,
   confidenceTier,
@@ -41,6 +46,7 @@ import { TeamLogo } from "./TeamLogo";
 const SPORT_BENCHMARK = {
   nba: "225",
   nhl: "6.0",
+  nfl: "46",
 };
 
 export function GameSlateCard({
@@ -67,7 +73,7 @@ export function GameSlateCard({
   storylines?: GrudgeStoryline[];
   premium: CrewWhistlePremium;
   homeBias?: CrewHomeBias | null;
-  sport?: "nba" | "nhl";
+  sport?: "nba" | "nhl" | "nfl";
   basePath?: string;
   ppPremium?: NhlPpPremiumSignal | null;
   otSignal?: NhlOtRateSignal | null;
@@ -78,12 +84,20 @@ export function GameSlateCard({
   const defaultBenchmark = SPORT_BENCHMARK[sport];
   const benchmarkLabelValue =
     overBenchmark !== undefined ? String(overBenchmark) : defaultBenchmark;
-  const detectTeams = sport === "nhl" ? detectNhlTeams : detectNbaTeams;
-  const displayTeamName = (team: NbaTeam | NhlTeam) =>
-    sport === "nhl"
-      ? nhlTeamFullName(team as NhlTeam)
-      : nbaTeamFullName(team as NbaTeam);
-  const refSlug = sport === "nhl" ? nhlRefSlug : nbaRefSlug;
+  const detectTeams =
+    sport === "nfl"
+      ? detectNflTeams
+      : sport === "nhl"
+        ? detectNhlTeams
+        : detectNbaTeams;
+  const displayTeamName = (team: NbaTeam | NhlTeam | NflTeam) =>
+    sport === "nfl"
+      ? nflTeamFullName(team as NflTeam)
+      : sport === "nhl"
+        ? nhlTeamFullName(team as NhlTeam)
+        : nbaTeamFullName(team as NbaTeam);
+  const refSlug =
+    sport === "nfl" ? nflRefSlug : sport === "nhl" ? nhlRefSlug : nbaRefSlug;
   const teams = detectTeams(awayTeam, homeTeam);
 
   const totalDelta = formatSigned(metrics.totalPointsDelta);

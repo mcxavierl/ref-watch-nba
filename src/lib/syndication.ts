@@ -12,6 +12,7 @@ import {
   getAssignments as getNhlAssignments,
   getRefStats as getNhlRefStats,
 } from "@/lib/nhl/data";
+import { getAssignments as getNflAssignments, getRefStats as getNflRefStats } from "@/lib/nfl/data";
 import { computeSlateHomeBias as computeNhlSlateHomeBias } from "@/lib/nhl/home-bias";
 import { getOdds as getNhlOdds } from "@/lib/nhl/odds";
 import {
@@ -62,7 +63,7 @@ export interface SyndicatedSignal {
 export interface NightlyFeed {
   generatedAt: string;
   slateDate: string;
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL";
   isPreview: boolean;
   assignmentsSource: AssignmentsFile["source"];
   statsSource: RefStatsFile["meta"]["source"];
@@ -72,6 +73,7 @@ export interface NightlyFeed {
 }
 
 let nbaFeedCache: NightlyFeed | undefined;
+let nflFeedCache: NightlyFeed | undefined;
 let nhlFeedCache: NightlyFeed | undefined;
 
 
@@ -221,6 +223,14 @@ export function buildNbaNightlyFeed(): NightlyFeed {
   });
 }
 
+export function buildNflNightlyFeed(): NightlyFeed {
+  if (nflFeedCache) return nflFeedCache;
+  const assignments = getNflAssignments();
+  const stats = getNflRefStats();
+  const { isPreview } = resolveSlateGames(assignments);
+  return (nflFeedCache = { generatedAt: new Date().toISOString(), slateDate: assignments.date, league: "NFL", isPreview, assignmentsSource: assignments.source, statsSource: stats.meta.source, pageUrl: absoluteUrl("/nfl"), disclaimer: SYNDICATION_DISCLAIMER, signals: [] });
+}
+export function buildNflSlateFeed(): NightlyFeed { return buildNflNightlyFeed(); }
 export function buildNhlNightlyFeed(): NightlyFeed {
   if (nhlFeedCache) return nhlFeedCache;
   const assignments = getNhlAssignments();
@@ -323,7 +333,7 @@ export function slateMetadataDescription(feed: NightlyFeed): string {
 const AFFILIATION_SHORT = "Not affiliated with the league. Informational only.";
 
 export function slateSportsEvents(
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL",
 ): Array<Record<string, unknown>> {
   const assignments =
     league === "NBA" ? getNbaAssignments() : getNhlAssignments();
@@ -395,7 +405,7 @@ export function researchDatasetJsonLd(
 }
 
 export function researchHubDatasetJsonLd(
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL",
   count: number,
   lastUpdated: string,
 ): Record<string, unknown> {
@@ -414,11 +424,11 @@ export function researchHubDatasetJsonLd(
 export function refProfileDatasetJsonLd(
   name: string,
   slug: string,
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL",
   games: number,
   lastUpdated: string,
 ): Record<string, unknown> {
-  const base = league === "NBA" ? "" : "/nhl";
+  const base = league === "NBA" ? "" : league === "NFL" ? "/nfl" : "/nhl";
   return {
     "@context": "https://schema.org",
     "@type": "Dataset",

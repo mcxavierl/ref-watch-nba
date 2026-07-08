@@ -4,6 +4,7 @@ import type { BaselinesFile, SeasonBaseline } from "../../scripts/lib/baselines"
 import {
   FALLBACK_NBA,
   FALLBACK_NHL,
+  FALLBACK_NFL,
 } from "../../scripts/lib/baselines";
 
 export type BaselineSource = "computed" | "fallback";
@@ -14,6 +15,7 @@ export interface ResolvedBaseline {
   leagueAvgFouls: number;
   leagueAvgMinors?: number;
   leagueOvertimeRate?: number;
+  leagueAvgPenaltyYards?: number;
   source: BaselineSource;
   season: string | null;
 }
@@ -23,25 +25,24 @@ const EMPTY: BaselinesFile = {
   fallback: {
     NBA: { ...FALLBACK_NBA },
     NHL: { ...FALLBACK_NHL },
+    NFL: { ...FALLBACK_NFL },
   },
   NBA: {
     currentSeason: null,
     seasons: {},
-    aggregate: {
-      season: "all",
-      gameCount: 0,
-      ...FALLBACK_NBA,
-    },
+    aggregate: { season: "all", gameCount: 0, ...FALLBACK_NBA },
     usingFallback: true,
   },
   NHL: {
     currentSeason: null,
     seasons: {},
-    aggregate: {
-      season: "all",
-      gameCount: 0,
-      ...FALLBACK_NHL,
-    },
+    aggregate: { season: "all", gameCount: 0, ...FALLBACK_NHL },
+    usingFallback: true,
+  },
+  NFL: {
+    currentSeason: null,
+    seasons: {},
+    aggregate: { season: "all", gameCount: 0, ...FALLBACK_NFL },
     usingFallback: true,
   },
 };
@@ -59,7 +60,7 @@ function readBaselines(): BaselinesFile {
 }
 
 function pickSeasonBaseline(
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL" | "NFL" | "NFL",
   file: BaselinesFile,
   season?: string | null,
 ): { baseline: SeasonBaseline; source: BaselineSource } {
@@ -87,7 +88,7 @@ function pickSeasonBaseline(
 }
 
 export function resolveLeagueBaseline(
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL" | "NFL" | "NFL",
   season?: string | null,
 ): ResolvedBaseline {
   const file = readBaselines();
@@ -98,12 +99,13 @@ export function resolveLeagueBaseline(
     leagueAvgFouls: baseline.leagueAvgFouls,
     leagueAvgMinors: baseline.leagueAvgMinors,
     leagueOvertimeRate: baseline.leagueOvertimeRate,
+    leagueAvgPenaltyYards: baseline.leagueAvgPenaltyYards,
     source,
     season: baseline.season === "all" ? file[league].currentSeason : baseline.season,
   };
 }
 
-export function baselineUsingFallback(league: "NBA" | "NHL"): boolean {
+export function baselineUsingFallback(league: "NBA" | "NHL" | "NFL" | "NFL" | "NFL"): boolean {
   const file = readBaselines();
   return file[league].usingFallback;
 }

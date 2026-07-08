@@ -4,8 +4,10 @@ import { CloseGameSection } from "@/components/CloseGameSection";
 import { TeamSplitView } from "@/components/TeamSplitView";
 import * as nbaData from "@/lib/data";
 import * as nhlData from "@/lib/nhl/data";
+import * as nflData from "@/lib/nfl/data";
 import * as nbaTeams from "@/lib/teams";
 import * as nhlTeams from "@/lib/nhl/teams";
+import * as nflTeams from "@/lib/nfl/teams";
 import { getTeamRefSplits } from "@/lib/teamRefLeaderboards";
 import { TEAM_CREW_MIN_GAMES } from "@/lib/teamCrewSplits";
 import { getTeamDisplayRecord } from "@/lib/teamRecord";
@@ -16,19 +18,20 @@ import { TeamInsightCards } from "@/components/TeamInsightCards";
 
 export interface TeamPageConfig {
   teamAbbr: string;
-  league?: "nba" | "nhl";
+  league?: "nba" | "nhl" | "nfl";
 }
 
 export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
   const league = config.league ?? "nba";
+  const isNfl = league === "nfl";
   const isNhl = league === "nhl";
-  const basePath = isNhl ? "/nhl" : "";
-  const getTeam = isNhl ? nhlTeams.getTeam : nbaTeams.getTeam;
-  const getRefStats = isNhl ? nhlData.getRefStats : nbaData.getRefStats;
-  const getTeamSplits = isNhl ? nhlData.getTeamSplits : nbaData.getTeamSplits;
-  const sortSplitsByGames = isNhl ? nhlData.sortSplitsByGames : nbaData.sortSplitsByGames;
-  const formatDate = isNhl ? nhlData.formatDate : nbaData.formatDate;
-  const formatPct = isNhl ? nhlData.formatPct : nbaData.formatPct;
+  const basePath = isNfl ? "/nfl" : isNhl ? "/nhl" : "";
+  const getTeam = isNfl ? nflTeams.getTeam : isNhl ? nhlTeams.getTeam : nbaTeams.getTeam;
+  const getRefStats = isNfl ? nflData.getRefStats : isNhl ? nhlData.getRefStats : nbaData.getRefStats;
+  const getTeamSplits = isNfl ? nflData.getTeamSplits : isNhl ? nhlData.getTeamSplits : nbaData.getTeamSplits;
+  const sortSplitsByGames = isNfl ? nflData.sortSplitsByGames : isNhl ? nhlData.sortSplitsByGames : nbaData.sortSplitsByGames;
+  const formatDate = isNfl ? nflData.formatDate : isNhl ? nhlData.formatDate : nbaData.formatDate;
+  const formatPct = isNfl ? nflData.formatPct : isNhl ? nhlData.formatPct : nbaData.formatPct;
 
   const team = getTeam(config.teamAbbr);
   if (!team) return null;
@@ -43,18 +46,23 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
     stats.meta.seasons,
     { sinceSeason: "2021-22" },
   );
-  const teamName = isNhl
-    ? nhlTeams.teamFullName(team as import("@/lib/nhl/teams").NhlTeam)
-    : nbaTeams.teamFullName(team as import("@/lib/teams").NbaTeam);
-  const teamLabel = isNhl
-    ? nhlTeams.teamWithArticle(team as import("@/lib/nhl/teams").NhlTeam)
-    : nbaTeams.teamWithArticle(team as import("@/lib/teams").NbaTeam);
-  const crewSize = isNhl ? "four" : "three";
-  const playingSurface = isNhl ? "ice" : "court";
+  const teamName = isNfl
+    ? nflTeams.teamFullName(team as import("@/lib/nfl/teams").NflTeam)
+    : isNhl
+      ? nhlTeams.teamFullName(team as import("@/lib/nhl/teams").NhlTeam)
+      : nbaTeams.teamFullName(team as import("@/lib/teams").NbaTeam);
+  const teamLabel = isNfl
+    ? nflTeams.teamWithArticle(team as import("@/lib/nfl/teams").NflTeam)
+    : isNhl
+      ? nhlTeams.teamWithArticle(team as import("@/lib/nhl/teams").NhlTeam)
+      : nbaTeams.teamWithArticle(team as import("@/lib/teams").NbaTeam);
+  const crewSize = isNhl ? "four" : isNfl ? "seven" : "three";
+  const playingSurface = isNhl ? "ice" : isNfl ? "field" : "court";
+  const dataLeague = isNfl ? "NFL" : isNhl ? "NHL" : "NBA";
   const closeGameMetrics = computeTeamCloseGameMetrics(
     team.abbr,
     stats.meta,
-    isNhl ? "NHL" : "NBA",
+    dataLeague,
   );
   const teamInsights = computeTeamInsights({
     teamAbbr: team.abbr,
@@ -112,7 +120,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             other teams with fuller samples.
           </p>
           <Link
-            href={isNhl ? "/nhl/teams" : "/teams"}
+            href={isNfl ? "/nfl/teams" : isNhl ? "/nhl/teams" : "/teams"}
             className="mt-4 inline-block text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
           >
             Browse all teams →
@@ -136,7 +144,7 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
       <CloseGameSection
         metrics={closeGameMetrics}
         subjectLabel={teamName}
-        league={isNhl ? "NHL" : "NBA"}
+        league={dataLeague}
       />
 
       <details className="methodology-details panel-inset mt-10 px-5 py-4">
@@ -162,7 +170,9 @@ export function TeamCrewPage({ config }: { config: TeamPageConfig }) {
             <span className="font-medium text-zinc-800">Whistle differential</span>:{" "}
             {isNhl
               ? "PIM differential. A positive number means opponents are penalized more often than"
-              : "who gets called more. A positive number means opponents are whistled more often than"}{" "}
+              : isNfl
+                ? "flag differential. A positive number means opponents are flagged more often than"
+                : "who gets called more. A positive number means opponents are whistled more often than"}{" "}
             {teamLabel}.
           </li>
         </ul>

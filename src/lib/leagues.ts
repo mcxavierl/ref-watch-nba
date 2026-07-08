@@ -146,7 +146,7 @@ export const LEAGUES: Record<LeagueId, LeagueConfig> = {
     dataLeague: "NFL",
     officialNoun: "official",
     officialNounPlural: "officials",
-    seasonStatus: "offseason",
+    seasonStatus: "in-season",
     showOtRate: false,
     whistleFromMinors: false,
     metrics: {

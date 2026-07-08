@@ -1,5 +1,6 @@
 import { computeAllFindings as computeNbaFindings } from "@/lib/findings";
 import { computeAllFindings as computeNhlFindings } from "@/lib/nhl/findings";
+import { computeAllFindings as computeNflFindings } from "@/lib/nfl/findings";
 import type { Finding } from "@/lib/findings-shared";
 import {
   filterFindingsByLeague,
@@ -24,7 +25,7 @@ function tagResearchFindings(
 export function computeAllResearchFindings(): ResearchFinding[] {
   const nba = tagResearchFindings(computeNbaFindings(), "NBA");
   const nhl = tagResearchFindings(computeNhlFindings(), "NHL");
-  return [...nba, ...nhl];
+  const nfl=tagResearchFindings(computeNflFindings(),"NFL"); return [...nba,...nhl,...nfl];
 }
 
 export function computeResearchFindingsForLeague(

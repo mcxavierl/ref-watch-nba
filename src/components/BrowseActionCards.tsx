@@ -64,14 +64,43 @@ const NHL_LINKS: BrowseLink[] = [
   },
 ];
 
+const NFL_LINKS: BrowseLink[] = [
+  {
+    href: "/nfl/research",
+    label: "Research findings",
+    description: "NFL dataset patterns ranked by effect size",
+  },
+  {
+    href: "/nfl/rankings",
+    label: "Official tendency index",
+    description: "Crew scoring and flag tendencies",
+  },
+  {
+    href: "/nfl/teams",
+    label: "Team histories",
+    description: "Crew splits for every franchise",
+  },
+  {
+    href: "/nfl/refs",
+    label: "Browse all officials",
+    description: "Profiles across seasons",
+  },
+  {
+    href: "/nfl/trends",
+    label: "League trends",
+    description: "Five-season scoring and penalty context",
+  },
+];
+
 export function BrowseActionCards({
   league,
   compact = false,
 }: {
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL";
   compact?: boolean;
 }) {
-  const links = league === "NBA" ? NBA_LINKS : NHL_LINKS;
+  const links =
+    league === "NBA" ? NBA_LINKS : league === "NFL" ? NFL_LINKS : NHL_LINKS;
   const gridClass = compact ? "browse-action-compact" : "browse-action-grid";
 
   return (

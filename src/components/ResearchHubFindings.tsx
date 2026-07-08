@@ -16,7 +16,7 @@ export function ResearchHubFindings({
   refCount,
 }: {
   findings: ResearchFinding[];
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL" | "NFL";
   refCount: number;
 }) {
   const [categoryFilter, setCategoryFilter] =

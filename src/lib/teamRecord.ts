@@ -33,7 +33,7 @@ export interface TeamDisplayRecordOptions {
  * NHL and playoff-inclusive NBA views use crew-split totals from the sample.
  */
 export function getTeamDisplayRecord(
-  league: "nba" | "nhl",
+  league: "nba" | "nhl" | "nfl",
   teamAbbr: string,
   splits: TeamCrewSplit[],
   seasons: string[],

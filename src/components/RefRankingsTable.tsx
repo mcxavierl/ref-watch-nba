@@ -61,7 +61,7 @@ export function RefRankingsTable({
   signalCounts = {},
 }: {
   refs: RefProfile[];
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL" | "NFL" | "NFL";
   minSampleSize: number;
   overBaseline: number;
   basePath?: string;

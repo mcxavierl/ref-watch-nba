@@ -1983,7 +1983,7 @@ p {
   .league-switch {
     position: relative;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     width: min(100%, 8.25rem);
     padding: 0.18rem;
     border-radius: 0.62rem;
@@ -1999,7 +1999,7 @@ p {
     top: 0.18rem;
     bottom: 0.18rem;
     left: 0.18rem;
-    width: calc(50% - 0.18rem);
+    width: calc(33.333% - 0.18rem);
     border-radius: 0.5rem;
     background: linear-gradient(180deg, var(--header-gold-bright) 0%, var(--header-gold) 58%, #b98d3e 100%);
     box-shadow:
@@ -2011,6 +2011,8 @@ p {
 
   .league-switch[data-league="nhl"] .league-switch-thumb {
     transform: translateX(100%);
+  }
+  .league-switch[data-league="nfl"] .league-switch-thumb { transform: translateX(200%);
   }
 
   .league-switch-option {

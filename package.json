@@ -17,6 +17,7 @@
     "fetch-odds": "tsx scripts/fetch-odds.ts",
     "morning-slate": "tsx scripts/morning-slate.ts",
     "build-ref-data": "tsx scripts/build-ref-data.ts",
+    "build-bbr-ref-team-data": "tsx scripts/build-bbr-ref-team-data.ts",
     "generate-ref-seed": "tsx scripts/generate-comprehensive-seed.ts",
     "fetch-nhl-ref-photos": "tsx scripts/nhl/fetch-ref-photos.ts",
     "fetch-nhl-assignments": "tsx scripts/nhl/fetch-assignments.ts",
@@ -24,6 +25,8 @@
     "fetch-nhl-team-special-teams": "tsx scripts/nhl/fetch-team-special-teams.ts",
     "generate-nhl-seed": "tsx scripts/nhl/generate-seed.ts",
     "build-nhl-data": "tsx scripts/nhl/build-ref-data.ts",
+    "generate-nfl-seed": "tsx scripts/nfl/generate-seed.ts",
+    "build-nfl-data": "tsx scripts/nfl/build-ref-data.ts",
     "compute-baselines": "tsx scripts/compute-baselines.ts",
     "backtest": "tsx scripts/backtest.ts",
     "honesty-audit": "tsx scripts/honesty-audit.ts"

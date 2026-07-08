@@ -35,7 +35,7 @@ export interface LeagueFindingLabels {
 }
 
 export interface LeagueFindingContext {
-  league: "NBA" | "NHL";
+  league: "NBA" | "NHL" | "NFL";
   paths: LeagueFindingPaths;
   labels: LeagueFindingLabels;
   getTeamSplits: (abbr: string) => TeamCrewSplit[];
@@ -336,7 +336,7 @@ function isCloseGame(
     homeSpread: number;
     wentToOvertime?: boolean;
   },
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL",
 ): boolean {
   if (league === "NBA") {
     return Math.abs(game.homeScore - game.awayScore) <= 5;

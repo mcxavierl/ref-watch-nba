@@ -1,18 +1,20 @@
 import "@/lib/global-stats";
-import type { NbaStatsGlobalKey, NhlStatsGlobalKey } from "@/lib/global-stats";
+import type { NbaStatsGlobalKey, NflStatsGlobalKey, NhlStatsGlobalKey } from "@/lib/global-stats";
 import type { RefStatsFile } from "@/lib/types";
 
-type League = "nba" | "nhl";
-type CacheKey = NbaStatsGlobalKey | NhlStatsGlobalKey;
+type League = "nba" | "nhl" | "nfl";
+type CacheKey = NbaStatsGlobalKey | NhlStatsGlobalKey | NflStatsGlobalKey;
 
 const CACHE_KEYS: Record<League, CacheKey> = {
   nba: "__REFWATCH_NBA_REF_STATS__",
   nhl: "__REFWATCH_NHL_REF_STATS__",
+  nfl: "__REFWATCH_NFL_REF_STATS__",
 };
 
 const ASSET_BASE: Record<League, string> = {
   nba: "/data/nba",
   nhl: "/data/nhl",
+  nfl: "/data/nfl",
 };
 
 export function getCachedRefStats(league: League): RefStatsFile | null {
@@ -42,6 +44,7 @@ export async function preloadRefStatsFromAssets(
 
 /** Load only the leagues a route needs, avoids parsing both 8MB files on every request. */
 export function leaguesForPath(pathname: string): League[] {
+  if (pathname.startsWith("/nfl")) return ["nfl"];
   if (pathname.startsWith("/nhl")) return ["nhl"];
   if (
     pathname.startsWith("/research") ||

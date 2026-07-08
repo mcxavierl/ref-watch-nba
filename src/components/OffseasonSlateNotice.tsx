@@ -1,6 +1,6 @@
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 
-export function OffseasonSlateNotice({ league }: { league: "NBA" | "NHL" }) {
+export function OffseasonSlateNotice({ league }: { league: "NBA" | "NHL" | "NFL" | "NFL" }) {
   return (
     <div
       className="offseason-status-strip"

@@ -1,0 +1,39 @@
+{
+  "lastUpdated": "2026-07-08T03:44:00.000Z",
+  "date": "2026-07-07",
+  "source": "seeded",
+  "games": [
+    {
+      "id": "2026-pre-hof",
+      "matchup": "LAC @ DET",
+      "awayTeam": "LAC",
+      "homeTeam": "DET",
+      "league": "NFL",
+      "crew": [
+        { "name": "Carl Cheffers", "number": 51, "role": "referee" },
+        { "name": "Jerome Boger", "number": 23, "role": "umpire" },
+        { "name": "Shawn Hochuli", "number": 83, "role": "down_judge" },
+        { "name": "Bill Vinovich", "number": 52, "role": "line_judge" },
+        { "name": "Brad Allen", "number": 122, "role": "field_judge" },
+        { "name": "Clete Blakeman", "number": 34, "role": "side_judge" },
+        { "name": "Ron Torbert", "number": 62, "role": "back_judge" }
+      ]
+    },
+    {
+      "id": "2026-pre-002",
+      "matchup": "NYG @ BUF",
+      "awayTeam": "NYG",
+      "homeTeam": "BUF",
+      "league": "NFL",
+      "crew": [
+        { "name": "Adrian Hill", "number": 29, "role": "referee" },
+        { "name": "Scott Novak", "number": 1, "role": "umpire" },
+        { "name": "John Hussey", "number": 35, "role": "down_judge" },
+        { "name": "Tra Blake", "number": 3, "role": "line_judge" },
+        { "name": "Alan Eck", "number": 76, "role": "field_judge" },
+        { "name": "Brad Rogers", "number": 126, "role": "side_judge" },
+        { "name": "Sean Smith", "number": 14, "role": "back_judge" }
+      ]
+    }
+  ]
+}

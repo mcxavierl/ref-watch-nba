@@ -16,3 +16,12 @@ const root = process.cwd();
 copyPair(path.join(root, "data"), path.join(root, "public/data/nba"), "ref-stats");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-stats");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-photos");
+copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "ref-stats");
+
+const nflAssignments = path.join(root, "data/nfl/assignments.json");
+if (fs.existsSync(nflAssignments)) {
+  const dest = path.join(root, "public/data/nfl/assignments.json");
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(nflAssignments, dest);
+  console.log(`Copied ${nflAssignments} → ${dest}`);
+}

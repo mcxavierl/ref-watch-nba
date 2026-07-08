@@ -1,5 +1,6 @@
 import { baselineUsingFallback, resolveLeagueBaseline } from "@/lib/baselines";
 import type {
+  NflRefAnalytics,
   CrewHomeBias,
   CrewWhistlePremium,
   MetricProvenance,
@@ -20,6 +21,7 @@ export {
   provenanceLabel,
 } from "@/lib/provenance-utils";
 const NHL_ANALYTICS_MIN_GAMES = 10;
+const NFL_ANALYTICS_MIN_GAMES = 10;
 const PP_PREMIUM_MIN_REF_GAMES = 25;
 const HOME_BIAS_MIN_GAMES = 4;
 
@@ -67,7 +69,7 @@ export function bettingLinesTag(
 }
 
 export function baselineProvenance(
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL" | "NFL",
   season?: string | null,
 ): MetricProvenance {
   const resolved = resolveLeagueBaseline(league, season);
@@ -187,7 +189,7 @@ export function attachWhistlePremiumProvenance(
   premium: CrewWhistlePremium,
   stats: RefStatsFile,
 ): CrewWhistlePremium {
-  const league: "NBA" | "NHL" =
+  const league: "NBA" | "NHL" | "NFL" =
     stats.meta.leagueAvgMinors !== undefined ? "NHL" : "NBA";
   return {
     ...premium,
@@ -345,7 +347,7 @@ export function refProfileCoreProvenance(
 ): RefProfile["provenance"] {
   const dataTag = refStatsDataTag(meta);
   const baseline = baselineProvenance(
-    meta.leagueAvgMinors !== undefined ? "NHL" : "NBA",
+    meta.leagueAvgPenaltyYards !== undefined ? "NFL" : meta.leagueAvgMinors !== undefined ? "NHL" : "NBA",
   );
   const gate = sampleGateStatus(profile.games, meta.minSampleSize);
   const overRateTag: ProvenanceTag =
@@ -426,6 +428,9 @@ export function collectSlateProvenance(
   return summarizeProvenance(tags);
 }
 
-export function leagueUsesFallbackBaseline(league: "NBA" | "NHL"): boolean {
+export function leagueUsesFallbackBaseline(league: "NBA" | "NHL" | "NFL"): boolean {
   return baselineUsingFallback(league);
 }
+
+export function nflCrewMetricsProvenance(stats:RefStatsFile,qualifiedCount:number,poolGames:number){return crewMetricsProvenance(stats,qualifiedCount,poolGames,stats.meta.minSampleSize);}
+export function nflRefAnalyticsProvenance(profile:RefProfile,analytics:NflRefAnalytics,meta:RefStatsFile["meta"]):NflRefAnalytics["provenance"]{const dataTag=refStatsDataTag(meta);const flagsBaseline=baselineProvenance("NFL");const gate=sampleGateStatus(profile.games,NFL_ANALYTICS_MIN_GAMES);return{avgFlagsPerGame:metricFromTag(dataTag,{sampleSize:profile.games,gateThreshold:NFL_ANALYTICS_MIN_GAMES}),penaltyYards:metricFromTag(dataTag,{sampleSize:profile.games,gateThreshold:NFL_ANALYTICS_MIN_GAMES}),penaltyBalance:metricFromTag(dataTag,{sampleSize:profile.games,gateThreshold:NFL_ANALYTICS_MIN_GAMES}),flagsBaseline,sampleGate:gate};}

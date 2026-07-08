@@ -1,4 +1,4 @@
-import { buildNbaNightlyFeed, buildNhlNightlyFeed, topShareSignals } from "@/lib/syndication";
+import { buildNbaNightlyFeed, buildNflNightlyFeed, buildNhlNightlyFeed, topShareSignals } from "@/lib/syndication";
 import type { NightlyFeed } from "@/lib/syndication";
 import { isEstimatedTag } from "@/lib/provenance";
 
@@ -33,3 +33,5 @@ export function nbaOgContent() {
 export function nhlOgContent() {
   return ogSlateContent(buildNhlNightlyFeed());
 }
+
+export function nflOgContent() { return ogSlateContent(buildNflNightlyFeed()); }

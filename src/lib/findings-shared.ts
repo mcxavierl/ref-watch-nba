@@ -140,7 +140,7 @@ export function findingMatchesFilter(
   return FINDING_CATEGORY_TO_FILTER[category] === filter;
 }
 
-export type FindingLeague = "NBA" | "NHL";
+export type FindingLeague = "NBA" | "NHL" | "NFL" | "NFL";
 
 /** Infer league from finding id and profile links (NHL ids and /nhl/* hrefs). */
 export function inferFindingLeague(finding: Finding): FindingLeague {

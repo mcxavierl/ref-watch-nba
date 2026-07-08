@@ -35,6 +35,16 @@ export function leagueBenchmarkLean(
   return "neutral";
 }
 
+export function isNflFlagsOutlier(
+  avgFlags: number,
+  leagueAvg: number,
+  games: number,
+  minGames = 30,
+): boolean {
+  if (games < minGames) return false;
+  return Math.abs(avgFlags - leagueAvg) >= 1.2 || avgFlags >= leagueAvg + 1.5;
+}
+
 export function isPromotableFinding(finding: ScoredFindingBase): boolean {
   if (
     finding.id.startsWith("matrix-") ||

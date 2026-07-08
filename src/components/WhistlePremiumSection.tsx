@@ -200,15 +200,17 @@ export function GamePremiumStrip({
 }: {
   premium: CrewWhistlePremium;
   homeBias: CrewHomeBias | null;
-  sport?: "nba" | "nhl";
+  sport?: "nba" | "nhl" | "nfl";
 }) {
   const benchmarkLabel =
     premium.benchmarkSource === "sportsbook"
       ? "book"
       : String(premium.benchmarkTotal);
-  const foulLabel = sport === "nhl" ? "PIM" : "fouls";
-  const premiumTerm = sport === "nhl" ? "nhl-whistle-premium" : "whistle-premium";
-  const premiumLabel = sport === "nhl" ? "Goals above average" : "Points above average";
+  const foulLabel = sport === "nhl" ? "PIM" : sport === "nfl" ? "flags" : "fouls";
+  const premiumTerm =
+    sport === "nhl" ? "nhl-whistle-premium" : sport === "nfl" ? "nhl-whistle-premium" : "whistle-premium";
+  const premiumLabel =
+    sport === "nhl" ? "Goals above average" : "Points above average";
 
   return (
     <div className="border-t border-border-subtle bg-white px-4 py-3 sm:px-5">

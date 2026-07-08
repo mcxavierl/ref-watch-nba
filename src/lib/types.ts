@@ -3,7 +3,12 @@ export type RefRole =
   | "referee"
   | "umpire"
   | "alternate"
-  | "linesman";
+  | "linesman"
+  | "side_judge"
+  | "field_judge"
+  | "back_judge"
+  | "line_judge"
+  | "down_judge";
 
 export interface RefOfficial {
   name: string;
@@ -16,14 +21,14 @@ export interface AssignmentGame {
   matchup: string;
   awayTeam: string;
   homeTeam: string;
-  league: "NBA" | "WNBA" | "NHL";
+  league: "NBA" | "WNBA" | "NHL" | "NFL";
   crew: RefOfficial[];
 }
 
 export interface AssignmentsFile {
   lastUpdated: string;
   date: string;
-  source: "official.nba.com" | "api-web.nhle.com" | "seeded";
+  source: "official.nba.com" | "api-web.nhle.com" | "seeded" | "historical";
   games: AssignmentGame[];
 }
 
@@ -40,6 +45,11 @@ export interface RefGameRecord {
   /** NHL: 2-minute minors assessed per team. */
   homeMinors?: number;
   awayMinors?: number;
+  homeFlags?: number;
+  awayFlags?: number;
+  homePenaltyYards?: number;
+  awayPenaltyYards?: number;
+  totalPenaltyYards?: number;
   wentToOvertime?: boolean;
   closingTotal?: number;
   /** Home puck line; negative = home favorite. */
@@ -66,6 +76,8 @@ export interface NhlRefAnalytics {
   };
 }
 
+
+export interface NflRefAnalytics { avgFlagsPerGame:number; flagsDelta:number; avgPenaltyYardsPerGame:number; penaltyYardsDelta:number; avgFlagImbalance:number; balancedGameRate:number; balanceKind:"balancer"|"asymmetric"|"neutral"; provenance?:{avgFlagsPerGame:MetricProvenance;penaltyYards:MetricProvenance;penaltyBalance:MetricProvenance;flagsBaseline:MetricProvenance;sampleGate:SampleGateStatus;};}
 export interface NhlTeamSpecialTeams {
   ppPct: number;
   pkPct: number;
@@ -113,6 +125,9 @@ export interface RefTeamStat {
   avgTotalPoints: number;
   overRate: number;
   winRate: number;
+  /** Exact W-L when sourced from Basketball-Reference or game logs. */
+  wins?: number;
+  losses?: number;
 }
 
 export interface RefProfile {
@@ -134,6 +149,7 @@ export interface RefProfile {
   bettingStats?: RefBettingStats;
   /** NHL referee-only analytics when available. */
   nhlAnalytics?: NhlRefAnalytics;
+  nflAnalytics?: NflRefAnalytics;
   provenance?: {
     avgTotalPoints: MetricProvenance;
     overRate: MetricProvenance;
@@ -213,7 +229,9 @@ export interface RefStatsFile {
     leagueAvgFouls: number;
     leagueOverBaseline: number;
     minSampleSize: number;
-    source: "nba-stats-api" | "nhl-api" | "seeded";
+    source: "nba-stats-api" | "nhl-api" | "seeded" | "historical";
+    /** When ref×team W-L is merged from Basketball-Reference. */
+    refTeamWinLossSource?: "basketball-reference";
     atsAvailable: boolean;
     refCount?: number;
     totalGamesProcessed?: number;
@@ -222,6 +240,7 @@ export interface RefStatsFile {
     /** NHL: league avg total minors per game (both teams). */
     leagueAvgMinors?: number;
     /** NHL: share of games reaching OT/SO. */
+    leagueAvgPenaltyYards?: number;
     leagueOvertimeRate?: number;
     /** NHL: season PP/PK by team abbr. */
     teamSpecialTeams?: Record<string, NhlTeamSpecialTeams>;

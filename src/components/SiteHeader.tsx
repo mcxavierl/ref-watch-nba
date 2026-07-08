@@ -12,8 +12,9 @@ const SHOW_HEADER_USER_CONTROLS = false;
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const isNfl = pathname.startsWith("/nfl");
   const isNhl = pathname.startsWith("/nhl");
-  const homeHref = isNhl ? "/nhl" : "/";
+  const homeHref = isNfl ? "/nfl" : isNhl ? "/nhl" : "/";
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {

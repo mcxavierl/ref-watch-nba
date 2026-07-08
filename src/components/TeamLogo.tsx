@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { teamLogoUrl as nbaTeamLogoUrl } from "@/lib/teams";
 import { teamLogoUrl as nhlTeamLogoUrl } from "@/lib/nhl/teams";
+import { teamLogoUrl as nflTeamLogoUrl } from "@/lib/nfl/teams";
 import type { NbaTeam } from "@/lib/teams";
 import type { NhlTeam } from "@/lib/nhl/teams";
 
@@ -25,14 +26,14 @@ export function TeamLogo({
   sport = "nba",
 }: {
   team: TeamLike;
-  sport?: "nba" | "nhl";
+  sport?: "nba" | "nhl" | "nfl" | "nfl";
   size?: keyof typeof sizeClasses;
   className?: string;
 }) {
   const [failed, setFailed] = useState(false);
   const logoSrc =
     team.logoUrl ??
-    (sport === "nhl"
+    (sport === "nfl" ? nflTeamLogoUrl(team.abbr) : sport === "nhl"
       ? nhlTeamLogoUrl(team.abbr)
       : team.nbaId
         ? nbaTeamLogoUrl(team.nbaId)

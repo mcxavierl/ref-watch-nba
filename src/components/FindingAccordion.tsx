@@ -20,7 +20,7 @@ function FindingMetaBadges({
 }: {
   category: Finding["category"];
   index: number;
-  league?: "NBA" | "NHL";
+  league?: "NBA" | "NHL" | "NFL" | "NFL";
   className?: string;
 }) {
   return (
@@ -69,7 +69,7 @@ export function FindingAccordionItem({
   finding: Finding;
   index: number;
   defaultOpen?: boolean;
-  league?: "NBA" | "NHL";
+  league?: "NBA" | "NHL" | "NFL" | "NFL";
 }) {
   const tier = findingConfidenceTier(finding);
 

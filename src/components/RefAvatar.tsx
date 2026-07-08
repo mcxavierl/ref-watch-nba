@@ -59,7 +59,7 @@ export function RefAvatar({
 }: {
   name: string;
   slug: string;
-  sport: "nba" | "nhl";
+  sport: "nba" | "nhl" | "nfl";
   size?: keyof typeof sizeClasses;
   className?: string;
 }) {

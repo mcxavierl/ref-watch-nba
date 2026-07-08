@@ -10,6 +10,7 @@ export interface SeasonBaseline {
   leagueAvgFouls: number;
   leagueAvgMinors?: number;
   leagueOvertimeRate?: number;
+  leagueAvgPenaltyYards?: number;
   /** Mean closing total on external-line games only, when present. */
   meanClosingTotal?: number;
 }
@@ -27,10 +28,12 @@ export interface BaselinesFile {
   note?: string;
   fallback: {
     NBA: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
+    NFL: Omit<SeasonBaseline,"season"|"gameCount">&{label:string};
     NHL: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
   };
   NBA: LeagueBaselines;
   NHL: LeagueBaselines;
+  NFL: LeagueBaselines;
 }
 
 export const FALLBACK_NBA = {
@@ -40,6 +43,7 @@ export const FALLBACK_NBA = {
   leagueAvgFouls: 38.5,
 } as const;
 
+export const FALLBACK_NFL={label:"NFL",leagueAvgTotal:45.8,leagueOverBaseline:46,leagueAvgFouls:13,leagueAvgPenaltyYards:95} as const;
 export const FALLBACK_NHL = {
   label: "NHL static fallback (empty or missing game logs)",
   leagueAvgTotal: 6.2,
@@ -104,7 +108,7 @@ function computeSeasonBaseline(
 }
 
 export function computeLeagueBaselines(
-  league: "NBA" | "NHL",
+  league: "NBA" | "NHL" | "NFL",
   games: GameLogEntry[],
 ): LeagueBaselines {
   if (games.length === 0) {
@@ -147,10 +151,12 @@ export function computeLeagueBaselines(
   };
 }
 
+export function fallbackForLeague(l:"NBA"|"NHL"|"NFL"){return l=="NBA"?FALLBACK_NBA:l=="NFL"?FALLBACK_NFL:FALLBACK_NHL;}
 export function buildBaselinesFile(
   nbaGames: GameLogEntry[],
   nhlGames: GameLogEntry[],
   note?: string,
+  nflGames: GameLogEntry[] = [],
 ): BaselinesFile {
   return {
     generatedAt: new Date().toISOString(),
@@ -158,9 +164,11 @@ export function buildBaselinesFile(
     fallback: {
       NBA: { ...FALLBACK_NBA },
       NHL: { ...FALLBACK_NHL },
+      NFL: { ...FALLBACK_NFL },
     },
     NBA: computeLeagueBaselines("NBA", nbaGames),
     NHL: computeLeagueBaselines("NHL", nhlGames),
+    NFL: computeLeagueBaselines("NFL", nflGames),
   };
 }
 
@@ -187,7 +195,7 @@ export function priorSeasonBaseline(
   const priorSameSeason = priorGames.filter((g) => g.season === game.season);
   const pool = priorSameSeason.length >= 20 ? priorSameSeason : priorGames;
   if (pool.length === 0) {
-    const fb = game.league === "NBA" ? FALLBACK_NBA : FALLBACK_NHL;
+    const fb = fallbackForLeague(game.league);
     return {
       season: game.season,
       gameCount: 0,

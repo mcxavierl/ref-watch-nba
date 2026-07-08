@@ -9,7 +9,7 @@ export function TeamInsightCards({
 }: {
   insights: TeamInsight[];
   basePath?: string;
-  sport?: "nba" | "nhl";
+  sport?: "nba" | "nhl" | "nfl";
 }) {
   if (insights.length === 0) return null;
 
