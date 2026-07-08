@@ -18,8 +18,8 @@ export type LeagueVerification = {
 };
 
 const INGEST_TICKET_URLS: Partial<Record<LeagueId, string>> = {
-  nhl: "https://github.com/mcxavierl/ref-watch-nba/issues",
-  nfl: "https://github.com/mcxavierl/ref-watch-nba/issues",
+  nhl: "https://github.com/mcxavierl/ref-watch-nba/issues/6",
+  nfl: "https://github.com/mcxavierl/ref-watch-nba/issues/7",
 };
 
 export function ingestTicketUrl(leagueId: LeagueId): string | null {

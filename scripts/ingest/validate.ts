@@ -78,13 +78,21 @@ export function validateOfficials(
           detail: `Game ${game.gameId} has empty official name`,
         });
       }
+      if (!official.number || official.number <= 0) {
+        badCount++;
+        results.push({
+          check: "officials-number",
+          passed: false,
+          detail: `Official ${official.name} missing jersey number (game ${game.gameId})`,
+        });
+      }
       const idx = refIndex.get(normalizeRefName(official.name));
       if (!idx) {
         unmatched++;
         results.push({
           check: "officials-index",
           passed: false,
-          detail: `Official ${official.name} not in BBR ref index (game ${game.gameId})`,
+          detail: `Official ${official.name} not in ref index (game ${game.gameId})`,
         });
       }
     }

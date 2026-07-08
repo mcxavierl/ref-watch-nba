@@ -278,13 +278,4 @@ export function buildRefStatsFromLogs(): RefStatsFile {
   };
 }
 
-function main() {
-  const stats = buildRefStatsFromLogs();
-  const outPath = path.join(process.cwd(), "data", "ref-stats.json");
-  fs.writeFileSync(outPath, `${JSON.stringify(stats, null, 2)}\n`);
-  console.log(
-    `Wrote ${stats.refs.length} refs, ${stats.meta.totalGamesProcessed} games → ${outPath}`,
-  );
-}
-
-main();
+export { buildRefStatsFromLogs as default };

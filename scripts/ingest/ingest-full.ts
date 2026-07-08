@@ -14,7 +14,9 @@ import {
 import {
   INGEST_SEASONS,
   BBR_REF_INDEX_URL,
+  BBR_SCHEDULE_MONTHS,
   bbrPlayoffsUrl,
+  bbrScheduleMonthUrl,
   bbrScheduleUrl,
   bbrStandingsUrl,
   INGEST_LOG_PATH,
@@ -24,6 +26,7 @@ import { parseBbrSchedule, parseBbrPlayoffs } from "./parse-schedule";
 import { parseBbrStandings } from "./parse-standings";
 import {
   buildRefIndexMap,
+  mergeOfficialIntoIndex,
   parseBbrBoxScoreOfficials,
   parseBbrRefIndex,
 } from "./parse-ref-index";
@@ -71,12 +74,34 @@ async function main() {
 
   for (const season of INGEST_SEASONS) {
     console.log(`Fetching BBR pages for ${season}...`);
+    let sched: ReturnType<typeof parseBbrSchedule> = [];
+
+    for (const month of BBR_SCHEDULE_MONTHS) {
+      const monthHtml = await fetchBbrHtml(
+        bbrScheduleMonthUrl(season, month),
+        `schedule_${season}_${month}`,
+      );
+      pagesFetched++;
+      const monthGames = parseBbrSchedule(monthHtml, season);
+      sched.push(...monthGames);
+    }
+
+    // Fallback: main schedule page (opening week)
     const schedHtml = await fetchBbrHtml(
       bbrScheduleUrl(season),
       `schedule_${season}`,
     );
     pagesFetched++;
-    const sched = parseBbrSchedule(schedHtml, season);
+    sched.push(...parseBbrSchedule(schedHtml, season));
+
+    const seen = new Set<string>();
+    sched = sched.filter((g) => {
+      const key = `${g.date}|${g.homeTeam}|${g.awayTeam}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
     bbrGames.push(...sched);
     console.log(`  schedule: ${sched.length} games`);
 
@@ -197,6 +222,10 @@ async function main() {
       }
 
       officialsByGameId.set(gameId, { officials, source });
+
+      for (const o of officials) {
+        mergeOfficialIntoIndex(refIndex, o.name, o.number);
+      }
 
       if (processed % 100 === 0) {
         console.log(`  ${season}: ${processed}/${gameIds.length} summaries fetched`);

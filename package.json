@@ -51,7 +51,7 @@
     "validate-nfl": "node scripts/validate-nfl-accuracy.js",
     "validate": "npm run typecheck && npm run honesty-audit && npm run validate-nfl",
     "ingest:nba-full": "tsx scripts/ingest/ingest-full.ts",
-    "ingest:nba-build-stats": "tsx scripts/ingest/build-ref-stats-from-logs.ts"
+    "ingest:nba-build-stats": "tsx scripts/ingest/build-ref-stats-cli.ts"
   },
   "dependencies": {
     "cheerio": "^1.2.0",

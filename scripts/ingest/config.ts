@@ -33,6 +33,23 @@ export function bbrScheduleUrl(season: string): string {
   return `${BBR_BASE}/leagues/NBA_${seasonToBbrYear(season)}_games.html`;
 }
 
+export const BBR_SCHEDULE_MONTHS = [
+  "october",
+  "november",
+  "december",
+  "january",
+  "february",
+  "march",
+  "april",
+] as const;
+
+export function bbrScheduleMonthUrl(
+  season: string,
+  month: (typeof BBR_SCHEDULE_MONTHS)[number],
+): string {
+  return `${BBR_BASE}/leagues/NBA_${seasonToBbrYear(season)}_games-${month}.html`;
+}
+
 export function bbrStandingsUrl(season: string): string {
   return `${BBR_BASE}/leagues/NBA_${seasonToBbrYear(season)}_standings.html`;
 }
