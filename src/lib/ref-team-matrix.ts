@@ -228,10 +228,13 @@ export interface TeamTopRefEntry {
   deltaPts: number;
 }
 
+export const TEAM_MATRIX_REF_PANEL_LIMIT = 10;
+
 /** Qualified refs whose win rate with the team beats the team baseline, best delta first. */
 export function topRefsBeatingBaselineForTeam(
   matrix: RefTeamMatrix,
   teamAbbr: string,
+  limit = TEAM_MATRIX_REF_PANEL_LIMIT,
 ): TeamTopRefEntry[] {
   const team = matrix.teams.find(
     (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
@@ -256,11 +259,51 @@ export function topRefsBeatingBaselineForTeam(
     });
   }
 
-  return entries.sort((a, b) => {
-    const deltaDiff = b.deltaPts - a.deltaPts;
-    if (deltaDiff !== 0) return deltaDiff;
-    return b.games - a.games;
-  });
+  return entries
+    .sort((a, b) => {
+      const deltaDiff = b.deltaPts - a.deltaPts;
+      if (deltaDiff !== 0) return deltaDiff;
+      return b.games - a.games;
+    })
+    .slice(0, limit);
+}
+
+/** Qualified refs whose win rate with the team trails the team baseline, worst delta first. */
+export function bottomRefsBelowBaselineForTeam(
+  matrix: RefTeamMatrix,
+  teamAbbr: string,
+  limit = TEAM_MATRIX_REF_PANEL_LIMIT,
+): TeamTopRefEntry[] {
+  const team = matrix.teams.find(
+    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
+  );
+  if (!team) return [];
+
+  const entries: TeamTopRefEntry[] = [];
+
+  for (const ref of matrix.refs) {
+    const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
+    if (!cell) continue;
+    const deltaPts = winRateDeltaPoints(cell.winRate, team.baselineWinRate);
+    if (deltaPts >= 0) continue;
+    entries.push({
+      refSlug: ref.slug,
+      refName: ref.name,
+      games: cell.games,
+      wins: cell.wins,
+      losses: cell.losses,
+      winRate: cell.winRate,
+      deltaPts,
+    });
+  }
+
+  return entries
+    .sort((a, b) => {
+      const deltaDiff = a.deltaPts - b.deltaPts;
+      if (deltaDiff !== 0) return deltaDiff;
+      return b.games - a.games;
+    })
+    .slice(0, limit);
 }
 
 export function topMatrixRefs(

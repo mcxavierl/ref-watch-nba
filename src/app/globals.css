@@ -1952,25 +1952,26 @@ p {
   }
 
   @media (max-width: 639px) {
-    .site-header-league::before,
     .site-header-league::after {
       content: "";
       pointer-events: none;
       position: absolute;
       top: 0;
       bottom: 0;
+      right: 0;
       z-index: 2;
       width: 1.25rem;
+      background: linear-gradient(270deg, rgba(0, 120, 221, 0.55) 0%, transparent 100%);
     }
 
-    .site-header-league::before {
-      left: 0;
-      background: linear-gradient(90deg, #001428 30%, transparent);
-    }
-
-    .site-header-league::after {
-      right: 0;
-      background: linear-gradient(270deg, #0078dd 30%, transparent);
+    .league-nav-scroll {
+      /* Fade only the trailing edge — never dim the first league mark (NBA). */
+      mask-image: linear-gradient(
+        90deg,
+        #000 0,
+        #000 calc(100% - 1.35rem),
+        transparent 100%
+      );
     }
   }
 
@@ -2213,8 +2214,7 @@ p {
     max-width: 1.65rem;
     object-fit: contain;
     object-position: center;
-    opacity: 0.9;
-    filter: drop-shadow(0 1px 1px rgba(0, 16, 38, 0.35));
+    opacity: 0.92;
     transition:
       opacity var(--duration-fast) ease-out,
       transform var(--duration-fast) ease-out;
@@ -2225,7 +2225,11 @@ p {
     width: auto;
     max-width: 0.78rem;
     object-fit: contain;
-    filter: drop-shadow(0 1px 1px rgba(0, 16, 38, 0.35));
+  }
+
+  .league-nav-mark--nba {
+    height: 1rem;
+    max-width: 1.55rem;
   }
 
   .league-nav-mark-svg {
@@ -2239,7 +2243,6 @@ p {
   .league-nav-link--active .league-nav-mark {
     opacity: 1;
     transform: scale(1.03);
-    filter: none;
   }
 
   .league-nav-mark-fallback {
@@ -3419,6 +3422,33 @@ p {
     color: var(--foreground);
     border-color: color-mix(in srgb, var(--foreground) 18%, var(--border-subtle));
     background: color-mix(in srgb, var(--surface-raised) 50%, var(--surface));
+  }
+
+  .ref-matrix-team-panel-columns {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 768px) {
+    .ref-matrix-team-panel-columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-5);
+    }
+  }
+
+  .ref-matrix-team-panel-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .ref-matrix-team-panel-column-title {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
   }
 
   .ref-matrix-team-panel-list {

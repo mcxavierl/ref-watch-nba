@@ -10,6 +10,7 @@ const LEAGUE_LOGOS: Record<
     active: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
     inactive: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
     alt: "NBA",
+    className: "league-nav-mark--nba",
   },
   nhl: {
     inactive: "https://assets.nhle.com/logos/nhl/svg/NHL_light.svg",
