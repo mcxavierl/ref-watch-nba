@@ -2221,9 +2221,9 @@ p {
   }
 
   .league-nav-mark--nfl {
-    height: 1.05rem;
+    height: 1.2rem;
     width: auto;
-    max-width: 0.78rem;
+    max-width: 0.9rem;
     object-fit: contain;
   }
 

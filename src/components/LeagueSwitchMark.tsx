@@ -18,10 +18,8 @@ const LEAGUE_LOGOS: Record<
     alt: "NHL",
   },
   nfl: {
-    active:
-      "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg",
-    inactive:
-      "https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg",
+    active: "/logos/nfl-shield.svg",
+    inactive: "/logos/nfl-shield.svg",
     alt: "NFL",
     className: "league-nav-mark--nfl",
   },
@@ -58,8 +56,8 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
       aria-hidden
       className={`league-nav-mark${logos.className ? ` ${logos.className}` : ""}`}
       data-league={league}
-      width={28}
-      height={18}
+      width={league === "nfl" ? 13 : 28}
+      height={league === "nfl" ? 18 : 18}
       decoding="async"
       referrerPolicy="no-referrer"
     />

@@ -25,7 +25,7 @@ export function formatPctVsLeague(pct: number, decimals = 1): string {
 }
 
 /** Use % for low-variance leagues; absolute delta for NBA-scale scoring. */
-export function usePctScoringDelta(leagueAvgTotal: number): boolean {
+export function prefersPctScoringDelta(leagueAvgTotal: number): boolean {
   return leagueAvgTotal < 25;
 }
 
@@ -33,7 +33,7 @@ export function directoryScoringDisplay(
   ref: { avgTotalPoints: number; totalPointsDelta: number },
   leagueAvgTotal: number,
 ): { value: number; formatted: string; usePct: boolean } {
-  const usePct = usePctScoringDelta(leagueAvgTotal);
+  const usePct = prefersPctScoringDelta(leagueAvgTotal);
   if (usePct) {
     const pct = scoringVsLeaguePct(ref.avgTotalPoints, leagueAvgTotal);
     return { value: pct, formatted: formatPctVsLeague(pct), usePct: true };
@@ -50,7 +50,7 @@ export function directoryWhistleDisplay(
   avgWhistle: number,
   leagueAvgWhistle: number,
 ): { value: number; formatted: string; usePct: boolean } {
-  const usePct = usePctScoringDelta(leagueAvgWhistle);
+  const usePct = prefersPctScoringDelta(leagueAvgWhistle);
   if (usePct) {
     const pct = whistleVsLeaguePct(avgWhistle, leagueAvgWhistle);
     return { value: pct, formatted: formatPctVsLeague(pct), usePct: true };

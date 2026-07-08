@@ -6,7 +6,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RefAvatar } from "@/components/RefAvatar";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
-import { directoryScoringDisplay, usePctScoringDelta } from "@/lib/scoring-metrics";
+import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
 import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
 import type { RefProfile } from "@/lib/types";
 
@@ -88,7 +88,7 @@ export function RefRankingsTable({
       ? "Scoring Δ"
       : league === "NFL"
         ? "Points Δ"
-        : leagueAvgTotal && usePctScoringDelta(leagueAvgTotal)
+        : leagueAvgTotal && prefersPctScoringDelta(leagueAvgTotal)
           ? "vs avg"
           : "Goals Δ";
   const whistleLabel =
@@ -213,7 +213,7 @@ export function RefRankingsTable({
                     )}
                   </td>
                   <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
-                    {leagueAvgTotal && usePctScoringDelta(leagueAvgTotal)
+                    {leagueAvgTotal && prefersPctScoringDelta(leagueAvgTotal)
                       ? directoryScoringDisplay(ref, leagueAvgTotal).formatted
                       : formatSigned(ref.totalPointsDelta)}
                   </td>
