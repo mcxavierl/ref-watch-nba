@@ -1952,24 +1952,15 @@ p {
   }
 
   @media (max-width: 639px) {
-    .site-header-league::before,
     .site-header-league::after {
       content: "";
       pointer-events: none;
       position: absolute;
       top: 0;
       bottom: 0;
+      right: 0;
       z-index: 2;
       width: 1.25rem;
-    }
-
-    .site-header-league::before {
-      left: 0;
-      background: linear-gradient(90deg, #001428 30%, transparent);
-    }
-
-    .site-header-league::after {
-      right: 0;
       background: linear-gradient(270deg, #0078dd 30%, transparent);
     }
   }
