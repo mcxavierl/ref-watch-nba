@@ -106,7 +106,7 @@ function buildAlert(
         : `${premium.benchmarkTotal} league proxy`;
     return {
       alert: "high_pace",
-      reason: `Crew scoring premium ${formatSigned(premium.scoringPremium)} vs league; historical avg ${premium.avgTotalPoints} goals sits ${formatSigned(premium.gapVsBenchmark)} above ${bench}. Historical association only, not a bet recommendation.`,
+      reason: `Crew scoring premium ${formatSigned(premium.scoringPremium)} vs league; historical avg ${premium.avgTotalPoints} points sits ${formatSigned(premium.gapVsBenchmark)} above ${bench}. Historical association only, not a bet recommendation.`,
     };
   }
 
@@ -120,7 +120,7 @@ function buildAlert(
         : `${premium.benchmarkTotal} league proxy`;
     return {
       alert: "low_pace",
-      reason: `Crew scoring premium ${formatSigned(premium.scoringPremium)} vs league; historical avg ${premium.avgTotalPoints} goals sits ${formatSigned(premium.gapVsBenchmark)} below ${bench}. Historical association only, not a bet recommendation.`,
+      reason: `Crew scoring premium ${formatSigned(premium.scoringPremium)} vs league; historical avg ${premium.avgTotalPoints} points sits ${formatSigned(premium.gapVsBenchmark)} below ${bench}. Historical association only, not a bet recommendation.`,
     };
   }
 
@@ -205,5 +205,5 @@ export function formatPremiumLabel(premium: number): string {
 export function premiumHeadline(premium: CrewWhistlePremium): string {
   const home = matchTeamString(premium.matchup.split("@").pop()?.trim() ?? "");
   const label = home ? teamFullName(home) : premium.matchup;
-  return `${label}: ${formatPremiumLabel(premium.scoringPremium)} scoring · ${formatSigned(premium.foulPremium)} PIM`;
+  return `${label}: ${formatPremiumLabel(premium.scoringPremium)} scoring · ${formatSigned(premium.foulPremium)} flags`;
 }

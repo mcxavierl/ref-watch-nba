@@ -128,7 +128,7 @@ function createNflBettingStats(): RefBettingStats {
     avgHomeMargin: 0,
     overUnder: { overall: emptyWlp(), buckets },
     spreadBuckets,
-    linesAvailable: true,
+    linesAvailable: false,
   };
 }
 
@@ -461,7 +461,14 @@ function generate(): { stats: RefStatsFile; gameLogs: NflGameLogEntry[] } {
         if (!row) continue;
         for (const official of officials) {
           const slug = refSlug(official.name, official.number);
-          pushRefTeamGame(refTeamBuckets.get(slug)!, teamAbbr, row);
+          pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
+            foulDifferential:
+              (teamAbbr === homeTeam ? homeFlags : awayFlags) -
+              (teamAbbr === homeTeam ? awayFlags : homeFlags),
+            totalPoints,
+            overHit: totalPoints > lines.total,
+            teamWin: row.won,
+          });
         }
         const bucket = teamByCrew.get(teamAbbr)!;
         if (!bucket.has(key)) {
@@ -530,8 +537,8 @@ function generate(): { stats: RefStatsFile; gameLogs: NflGameLogEntry[] } {
         leagueOverBaseline: LEAGUE_OVER_BASELINE,
         leagueAvgPenaltyYards,
         minSampleSize: MIN_SAMPLE,
-        source: "historical",
-        atsAvailable: true,
+        source: "seeded",
+        atsAvailable: false,
         refCount: refs.length,
         totalGamesProcessed: processed,
         dateRange: {
@@ -539,8 +546,8 @@ function generate(): { stats: RefStatsFile; gameLogs: NflGameLogEntry[] } {
           latest: allDates[allDates.length - 1],
         },
         note:
-          "Historical NFL game data with estimated closing lines. " +
-          "Re-run npm run build-nfl-data for live backfill when available.",
+          "Simulated preview data — not verified against official NFL records. " +
+          "Run npm run build-nfl-data for ESPN backfill.",
       },
       refs,
       teamSplits,

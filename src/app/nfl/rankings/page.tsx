@@ -9,6 +9,7 @@ import {
 import { LEAGUES } from "@/lib/leagues";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
+import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { absoluteUrl } from "@/lib/site";
 
 import { RANKINGS_PAGE_LEAD, RANKINGS_PAGE_TITLE } from "@/lib/trust-charter";
@@ -20,10 +21,10 @@ export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl("/nfl/rankings") },
 };
 
-export default function NhlRankingsPage() {
+export default function NflRankingsPage() {
   const stats = getRefStats();
   const range = formatRefStatsRange(stats.meta);
-  const seeded = stats.meta.source === "seeded";
+  const seeded = isNflSimulatedData(stats.meta.source);
   const league = LEAGUES.nfl;
   const synthesis = buildRankingsSynthesis(stats, league);
   const signalCounts = Object.fromEntries(

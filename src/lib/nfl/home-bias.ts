@@ -117,7 +117,7 @@ export function computeCrewHomeBias(
     headline = `This crew leans home, ${home.abbr} host edge tonight`;
     summary = `Across ${totalGames} games in our sample, this crew's hosts win ${homeWinRate !== null ? formatPct(homeWinRate) : "-"} vs ${awayWinRate !== null ? formatPct(awayWinRate) : "-"} on the road${
       homeFoulEdge !== null
-        ? `, with a ${formatSigned(homeFoulEdge)} home PIM edge`
+        ? `, with a ${formatSigned(homeFoulEdge)} home flag edge`
         : ""
     }. Not ATS, win-rate split only.`;
   } else if (kind === "road_warrior") {

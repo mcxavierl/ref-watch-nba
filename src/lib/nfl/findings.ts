@@ -70,10 +70,10 @@ function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
   const crewLabel = best.split.crewNames.slice(0, 2).join(", ");
 
   return {
-    id: "nhl-team-crew-anomaly",
+    id: "nfl-team-crew-anomaly",
     category: "team-crew",
     headline: `${teamName} ${lean}s with this crew ${(best.delta * 100).toFixed(0)} pts off neutral`,
-    summary: `${crewLabel}${best.split.crewNames.length > 2 ? "…" : ""} on ${teamName}: ${formatPct(best.split.overRate)} over ${baseline} goals (${best.split.games} games).`,
+    summary: `${crewLabel}${best.split.crewNames.length > 2 ? "…" : ""} on ${teamName}: ${formatPct(best.split.overRate)} over ${baseline} points (${best.split.games} games).`,
     stats: [
       {
         label: "Over benchmark",
@@ -81,18 +81,18 @@ function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `${best.split.games} games`,
       },
       {
-        label: "Avg goals",
+        label: "Avg points",
         value: String(best.split.avgTotalPoints),
         detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
       },
       {
-        label: "PIM total",
+        label: "Flags total",
         value: String(best.split.avgFouls),
         detail: "Both teams combined",
       },
     ],
     sampleNote: `Min ${MIN_TEAM_CREW_GAMES} games per crew · ${stats.meta.seasons.join(", ")}`,
-    links: [{ label: teamName, href: `/nhl/teams/${best.team}` }],
+    links: [{ label: teamName, href: `/nfl/teams/${best.team}` }],
     score: rankScore(best.delta, best.split.games, MIN_TEAM_CREW_GAMES),
     sampleGames: best.split.games,
   };
@@ -126,11 +126,11 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
   const lean = best.rate >= 0.5 ? "overs" : "unders";
 
   return {
-    id: "nhl-ou-ats-edge",
+    id: "nfl-ou-ats-edge",
     category: "ou-edge",
-    headline: `${best.ref.name} leans ${lean} vs closing goal totals`,
+    headline: `${best.ref.name} leans ${lean} vs closing point totals`,
     summary: `Totals go ${lean} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} (${formatWlpShort(record)}) across ${best.games} lined games.`,
-    explainer: `O/U ATS uses estimated closing totals where sportsbook data is unavailable. Min ${MIN_OU_ATS_GAMES} decisive games required.`,
+    explainer: `O/U ATS uses ESPN pickcenter or estimated closing totals where sportsbook data is unavailable. Min ${MIN_OU_ATS_GAMES} decisive games required.`,
     stats: [
       {
         label: "O/U ATS",
@@ -149,7 +149,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
       },
     ],
     sampleNote: `${best.games} O/U decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
-    links: [{ label: best.ref.name, href: `/nhl/refs/${best.ref.slug}` }],
+    links: [{ label: best.ref.name, href: `/nfl/refs/${best.ref.slug}` }],
     score: rankScore(best.edge, best.games, MIN_OU_ATS_GAMES),
     sampleGames: best.games,
   };
@@ -182,7 +182,7 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
   const direction = best.coverRate >= 0.5 ? "cover" : "fail to cover";
 
   return {
-    id: "nhl-ats-outlier",
+    id: "nfl-ats-outlier",
     category: "ats-edge",
     headline: `Home teams ${direction} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS with ${best.ref.name}`,
     summary: `${formatWlpShort(record)} across ${best.games} lined games, ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
@@ -204,7 +204,7 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
       },
     ],
     sampleNote: `${best.games} ATS decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
-    links: [{ label: best.ref.name, href: `/nhl/refs/${best.ref.slug}` }],
+    links: [{ label: best.ref.name, href: `/nfl/refs/${best.ref.slug}` }],
     score: rankScore(best.edge, best.games, MIN_ATS_GAMES),
     sampleGames: best.games,
   };
@@ -242,9 +242,9 @@ function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
     : coldest.team;
 
   return {
-    id: "nhl-scoring-extremes",
+    id: "nfl-scoring-extremes",
     category: "scoring-extreme",
-    headline: `${gap.toFixed(1)}-goal spread between hottest and coldest ref–team pairs`,
+    headline: `${gap.toFixed(1)}-point spread between hottest and coldest ref–team pairs`,
     summary: `Highest: ${hottest.ref.name} on ${hotName} (${hottest.avgTotal} avg). Lowest: ${coldest.ref.name} on ${coldName} (${coldest.avgTotal} avg).`,
     stats: [
       {
@@ -265,8 +265,8 @@ function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
     ],
     sampleNote: `Min ${MIN_TEAM_GAMES} games per pair · ${stats.meta.seasons.join(", ")}`,
     links: [
-      { label: hottest.ref.name, href: `/nhl/refs/${hottest.ref.slug}` },
-      { label: hotName, href: `/nhl/teams/${hottest.team}` },
+      { label: hottest.ref.name, href: `/nfl/refs/${hottest.ref.slug}` },
+      { label: hotName, href: `/nfl/teams/${hottest.team}` },
     ],
     score: rankScore(gap / stats.meta.leagueAvgTotal, hottest.games + coldest.games, MIN_TEAM_GAMES * 2),
     sampleGames: hottest.games + coldest.games,
@@ -276,17 +276,17 @@ function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
 const NFL_FINDING_CTX: LeagueFindingContext = {
   league: "NFL",
   paths: {
-    idPrefix: "nhl-",
-    refsBrowsePath: "/nhl/refs",
-    refPath: (slug) => `/nhl/refs/${slug}`,
-    teamPath: (abbr) => `/nhl/teams/${abbr}`,
-    matrixPath: "/nhl/matrix",
-    crewsPath: "/nhl/crews",
-    trendsPath: "/nhl/trends",
+    idPrefix: "nfl-",
+    refsBrowsePath: "/nfl/refs",
+    refPath: (slug) => `/nfl/refs/${slug}`,
+    teamPath: (abbr) => `/nfl/teams/${abbr}`,
+    matrixPath: "/nfl/matrix",
+    crewsPath: "/nfl/crews",
+    trendsPath: "/nfl/trends",
   },
   labels: {
-    scoreUnit: "goals",
-    whistleUnit: "PIM",
+    scoreUnit: "points",
+    whistleUnit: "flags",
     teamName: (abbr) => {
       const team = getTeam(abbr);
       return team ? teamFullName(team) : abbr;
@@ -311,10 +311,10 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
   const effect = ref.totalPointsDelta / stats.meta.leagueAvgTotal;
 
   return {
-    id: "nhl-scoring-outlier",
+    id: "nfl-scoring-outlier",
     category: "ref-outlier",
     headline: `${ref.name} runs ${formatSigned(ref.totalPointsDelta)} on combined scoring`,
-    summary: `${ref.name}'s ${ref.games} games average ${ref.avgTotalPoints} combined goals (${formatPct(ref.overRate)} over ${stats.meta.leagueOverBaseline}), one of the largest scoring deltas in the pool.`,
+    summary: `${ref.name}'s ${ref.games} games average ${ref.avgTotalPoints} combined points (${formatPct(ref.overRate)} over ${stats.meta.leagueOverBaseline}), one of the largest scoring deltas in the pool.`,
     stats: [
       {
         label: "Scoring delta",
@@ -327,13 +327,13 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `${ref.games} games`,
       },
       {
-        label: "Avg PIM",
+        label: "Avg flags",
         value: String(ref.avgFouls),
         detail: `${formatSigned(ref.foulsDelta)} vs league`,
       },
     ],
     sampleNote: `${MIN_REF_GAMES}+ game sample · ${stats.meta.seasons.join(", ")}`,
-    links: [{ label: ref.name, href: `/nhl/refs/${ref.slug}` }],
+    links: [{ label: ref.name, href: `/nfl/refs/${ref.slug}` }],
     score: rankScore(effect, ref.games, MIN_REF_GAMES),
     sampleGames: ref.games,
   };

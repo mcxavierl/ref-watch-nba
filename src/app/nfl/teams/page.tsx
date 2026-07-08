@@ -9,10 +9,10 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "All NFL teams | Ref Watch",
   description:
-    "Browse official crew history for all 32 NFL teams, goal trends, PIM patterns, and home/away records.",
+    "Browse official crew history for all 32 NFL teams, scoring trends, penalty patterns, and home/away records.",
 };
 
-export default function NhlTeamsIndexPage() {
+export default function NflTeamsIndexPage() {
   const { AFC, NFC } = teamsByConference();
 
   return (
@@ -21,7 +21,7 @@ export default function NhlTeamsIndexPage() {
         <h1 className="page-title">All NFL teams</h1>
         <p className="page-lead">
           Pick a team to see how they&apos;ve performed under different official
-          crews, goals, PIM, and home/away splits.
+          crews, scoring, penalties, and home/away splits.
         </p>
       </section>
 

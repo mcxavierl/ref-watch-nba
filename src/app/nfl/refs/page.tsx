@@ -9,7 +9,7 @@ import { buildRefsDirectoryContext } from "@/lib/refs-directory";
 export const metadata: Metadata = {
   title: "All NFL officials | Ref Watch",
   description:
-    "Browse every NFL referee and linesman in the Ref Watch dataset with scoring and PIM trends.",
+    "Browse every NFL official in the Ref Watch dataset with scoring and penalty trends.",
 };
 
 export default function NhlRefsIndexPage() {

@@ -40,6 +40,7 @@ import {
   REFWATCH_MISSION,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
+import { NflPreviewBanner } from "@/components/NflPreviewBanner";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 
@@ -127,6 +128,11 @@ export default function NflHomePage() {
         <DataFreshnessMeta assignments={assignments} refStats={refStats} league="NFL" />
       </section>
 
+      <NflPreviewBanner
+        statsSource={refStats.meta.source}
+        assignmentsSource={assignments.source}
+      />
+
       {isOffseason && <OffseasonSlateNotice league="NFL" />}
 
       <FindingsSection
@@ -164,8 +170,9 @@ export default function NflHomePage() {
               {slateGames.length === 1 ? "Tonight's game" : "Tonight's games"}
             </h2>
             <p className="mt-1 text-sm text-zinc-600">
-              Preseason exhibition slate — seeded crew assignments until live NFL
-              official data is available.
+              {assignments.source === "espn"
+                ? "Crew assignments from ESPN game summaries."
+                : "No verified crew assignments published for this date yet."}
             </p>
             <div className="slate-stack mt-4">
               {sortedGames.map((game, index) => (
@@ -199,7 +206,7 @@ export default function NflHomePage() {
             (30+ official games, 8+ team splits).
           </li>
           <li>
-            <TermHelp id="nhl-whistle-premium" />: crew avg combined points minus
+            <TermHelp id="nfl-whistle-premium" />: crew avg combined points minus
             league baseline ({refStats.meta.leagueAvgTotal}).
           </li>
           <li>

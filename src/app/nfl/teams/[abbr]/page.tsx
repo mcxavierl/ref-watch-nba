@@ -22,7 +22,7 @@ export async function generateMetadata({
   const name = teamFullName(team);
   return {
     title: `${name} official crew splits | Ref Watch NFL`,
-    description: `How ${name} performs under different NFL official crews, goals, PIM, and home/away records.`,
+    description: `How ${name} performs under different NFL official crews, scoring, penalties, and home/away records.`,
   };
 }
 

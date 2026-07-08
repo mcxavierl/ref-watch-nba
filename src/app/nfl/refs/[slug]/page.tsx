@@ -25,6 +25,8 @@ import {
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
 import { absoluteUrl } from "@/lib/site";
 import { userFacingDataNote } from "@/lib/user-language";
+import { NflPreviewBanner } from "@/components/NflPreviewBanner";
+import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
 
@@ -56,7 +58,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function NhlRefProfilePage({
+export default async function NflRefProfilePage({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -141,13 +143,15 @@ export default async function NhlRefProfilePage({
           seasons={stats.meta.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
-          seeded={stats.meta.source === "seeded"}
+          seeded={isNflSimulatedData(stats.meta.source)}
         />
       </header>
 
+      <NflPreviewBanner statsSource={stats.meta.source} />
+
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">
-          {profile.bettingStats ? (
+          {profile.bettingStats && stats.meta.atsAvailable ? (
             <RefBettingProfile
               profile={profile}
               stats={profile.bettingStats}
@@ -157,9 +161,9 @@ export default async function NhlRefProfilePage({
             <RefStatGrid
               profile={profile}
               overBaseline={stats.meta.leagueOverBaseline}
-              foulLabel="PIM per game"
-              scoreLabel="Avg combined goals"
-              overLabel="Games over 6.0 goals"
+              foulLabel="Flags per game"
+              scoreLabel="Avg combined points"
+              overLabel={`Games over ${stats.meta.leagueOverBaseline} pts`}
               showMetrics={qualified}
             />
           )}
@@ -198,7 +202,7 @@ export default async function NhlRefProfilePage({
           <TermHelp id="ats" /> and <TermHelp id="over-under" /> tables use{" "}
           <TermHelp id="closing-line">closing lines</TermHelp> per game. Where
           sportsbook closing lines are unavailable, ATS/O/U splits use estimated
-          lines. Team PIM splits live on{" "}
+          lines. Team penalty splits live on{" "}
           <Link href="/nfl/teams" className="font-medium text-zinc-800 hover:underline">
             team pages
           </Link>

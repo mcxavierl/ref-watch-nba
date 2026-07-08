@@ -7,6 +7,7 @@ import {
   buildYoYNarrative,
   seasonRowsFromBaselines,
 } from "@/lib/trends";
+import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -16,13 +17,13 @@ export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl("/nfl/trends") },
 };
 
-export default function NhlTrendsPage() {
+export default function NflTrendsPage() {
   const baselines = getBaselinesFile();
   const stats = getRefStats();
   const rows = seasonRowsFromBaselines(baselines.NFL.seasons);
   const narrative = buildYoYNarrative(rows, "NFL");
   const usingFallback = baselineUsingFallback("NFL");
-  const seeded = stats.meta.source === "seeded";
+  const seeded = isNflSimulatedData(stats.meta.source);
 
   return (
     <div className="page-shell">
@@ -33,7 +34,7 @@ export default function NhlTrendsPage() {
       <section className="page-hero">
         <h1 className="page-title">NFL league trends</h1>
         <p className="page-lead">
-          Five-season goal, minor, and overtime baselines from game logs.
+          Five-season scoring and penalty baselines from game logs.
           Historical context only; see{" "}
           <Link href="/methodology" className="font-medium text-zinc-800 hover:underline">
             methodology
@@ -67,8 +68,8 @@ export default function NhlTrendsPage() {
               <tr className="border-b border-border-subtle bg-surface-raised/60 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 <th className="px-4 py-3 sm:px-5">Season</th>
                 <th className="px-4 py-3">Games</th>
-                <th className="px-4 py-3">Avg goals</th>
-                <th className="px-4 py-3">Avg minors</th>
+                <th className="px-4 py-3">Avg points</th>
+                <th className="px-4 py-3">Avg flags</th>
                 <th className="px-4 py-3">OT rate</th>
               </tr>
             </thead>

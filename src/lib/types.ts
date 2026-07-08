@@ -28,7 +28,7 @@ export interface AssignmentGame {
 export interface AssignmentsFile {
   lastUpdated: string;
   date: string;
-  source: "official.nba.com" | "api-web.nhle.com" | "seeded" | "historical";
+  source: "official.nba.com" | "api-web.nhle.com" | "espn" | "seeded" | "historical";
   games: AssignmentGame[];
 }
 
@@ -229,7 +229,7 @@ export interface RefStatsFile {
     leagueAvgFouls: number;
     leagueOverBaseline: number;
     minSampleSize: number;
-    source: "nba-stats-api" | "nhl-api" | "seeded" | "historical";
+    source: "nba-stats-api" | "nhl-api" | "espn" | "seeded" | "historical";
     /** When ref×team W-L is merged from Basketball-Reference. */
     refTeamWinLossSource?: "basketball-reference";
     atsAvailable: boolean;
