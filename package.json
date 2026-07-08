@@ -29,7 +29,6 @@
     "build-nfl-data": "tsx scripts/nfl/build-ref-data.ts",
     "fetch-nfl-assignments": "tsx scripts/nfl/fetch-assignments.ts",
     "fetch-nfl-odds": "tsx scripts/nfl/fetch-odds.ts",
-    "fetch-nfl-assignments": "tsx scripts/nfl/fetch-assignments.ts",
     "compute-baselines": "tsx scripts/compute-baselines.ts",
     "backtest": "tsx scripts/backtest.ts",
     "honesty-audit": "tsx scripts/honesty-audit.ts"
