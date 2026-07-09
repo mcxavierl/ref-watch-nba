@@ -1,11 +1,9 @@
 import { HEADER_LEAGUE_IDS, type LeagueId } from "@/lib/leagues";
+import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "@/lib/live-header-leagues.generated";
 import { isShowUnverifiedEnv } from "@/lib/show-unverified";
 
-/** Production sport switcher until NHL nhl-api ingest is verified in ref-stats.json. */
-const PRODUCTION_LIVE_HEADER_LEAGUE_IDS = ["nba", "epl"] as const satisfies readonly LeagueId[];
-
 /** Leagues hidden from nav and section tabs until verified ingest ships. */
-export const INGEST_GATED_LEAGUE_IDS = ["nhl", "nfl"] as const satisfies readonly LeagueId[];
+export const INGEST_GATED_LEAGUE_IDS = ["nfl"] as const satisfies readonly LeagueId[];
 
 export type IngestGatedLeagueId = (typeof INGEST_GATED_LEAGUE_IDS)[number];
 
@@ -30,6 +28,14 @@ export function isIngestGatedNavHidden(leagueId: LeagueId): boolean {
   if (isShowUnverifiedEnv()) return false;
   if (process.env.NODE_ENV !== "production") return false;
   return true;
+}
+
+/** Hide NHL section nav when NHL is not in the production header (no verified ingest). */
+export function isNhlNavHidden(leagueId: LeagueId): boolean {
+  if (leagueId !== "nhl") return false;
+  if (isShowUnverifiedEnv()) return false;
+  if (process.env.NODE_ENV !== "production") return false;
+  return !getHeaderLeagueIds().includes("nhl");
 }
 
 /** NFL routes redirect to home in production (no verified ingest yet). */

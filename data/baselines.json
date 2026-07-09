@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-08T21:34:30.852Z",
-  "note": "Computed from NBA/NHL/NFL seed game logs",
+  "generatedAt": "2026-07-09T00:44:04.347Z",
+  "note": "NHL build snapshot",
   "fallback": {
     "NBA": {
       "label": "NBA static fallback (empty or missing game logs)",
@@ -129,190 +129,38 @@
   "NHL": {
     "currentSeason": "2025-26",
     "seasons": {
-      "2016-17": {
-        "season": "2016-17",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.2,
-        "leagueOverBaseline": 7.2,
-        "leagueAvgFouls": 15.1,
-        "leagueAvgMinors": 7.6,
-        "leagueOvertimeRate": 0.223
-      },
-      "2017-18": {
-        "season": "2017-18",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.2,
-        "leagueOverBaseline": 7.2,
-        "leagueAvgFouls": 15,
-        "leagueAvgMinors": 7.5,
-        "leagueOvertimeRate": 0.229
-      },
-      "2018-19": {
-        "season": "2018-19",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.2,
-        "leagueOverBaseline": 7.2,
-        "leagueAvgFouls": 15,
-        "leagueAvgMinors": 7.5,
-        "leagueOvertimeRate": 0.212
-      },
-      "2019-20": {
-        "season": "2019-20",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.3,
-        "leagueOverBaseline": 7.3,
-        "leagueAvgFouls": 15,
-        "leagueAvgMinors": 7.5,
-        "leagueOvertimeRate": 0.252
-      },
-      "2020-21": {
-        "season": "2020-21",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.3,
-        "leagueOverBaseline": 7.3,
-        "leagueAvgFouls": 15,
-        "leagueAvgMinors": 7.5,
-        "leagueOvertimeRate": 0.232
-      },
-      "2021-22": {
-        "season": "2021-22",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.2,
-        "leagueOverBaseline": 7.2,
-        "leagueAvgFouls": 15.1,
-        "leagueAvgMinors": 7.6,
-        "leagueOvertimeRate": 0.239
-      },
-      "2022-23": {
-        "season": "2022-23",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.3,
-        "leagueOverBaseline": 7.3,
-        "leagueAvgFouls": 15.2,
-        "leagueAvgMinors": 7.6,
-        "leagueOvertimeRate": 0.239
-      },
-      "2023-24": {
-        "season": "2023-24",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.2,
-        "leagueOverBaseline": 7.2,
-        "leagueAvgFouls": 14.9,
-        "leagueAvgMinors": 7.4,
-        "leagueOvertimeRate": 0.23
-      },
-      "2024-25": {
-        "season": "2024-25",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.2,
-        "leagueOverBaseline": 7.2,
-        "leagueAvgFouls": 15,
-        "leagueAvgMinors": 7.5,
-        "leagueOvertimeRate": 0.226
-      },
       "2025-26": {
         "season": "2025-26",
-        "gameCount": 1312,
-        "leagueAvgTotal": 7.2,
-        "leagueOverBaseline": 7.2,
-        "leagueAvgFouls": 15.1,
-        "leagueAvgMinors": 7.6,
-        "leagueOvertimeRate": 0.232
+        "gameCount": 286,
+        "leagueAvgTotal": 6.3,
+        "leagueOverBaseline": 6.3,
+        "leagueAvgFouls": 18.1,
+        "leagueAvgMinors": 6.6,
+        "leagueOvertimeRate": 0.217
       }
     },
     "aggregate": {
       "season": "all",
-      "gameCount": 13120,
-      "leagueAvgTotal": 7.2,
-      "leagueOverBaseline": 7.2,
-      "leagueAvgFouls": 15,
-      "leagueAvgMinors": 7.5,
-      "leagueOvertimeRate": 0.231
+      "gameCount": 286,
+      "leagueAvgTotal": 6.3,
+      "leagueOverBaseline": 6.3,
+      "leagueAvgFouls": 18.1,
+      "leagueAvgMinors": 6.6,
+      "leagueOvertimeRate": 0.217
     },
     "usingFallback": false
   },
   "NFL": {
-    "currentSeason": "2025-26",
-    "seasons": {
-      "2016-17": {
-        "season": "2016-17",
-        "gameCount": 272,
-        "leagueAvgTotal": 45.7,
-        "leagueOverBaseline": 45.7,
-        "leagueAvgFouls": 17.3
-      },
-      "2017-18": {
-        "season": "2017-18",
-        "gameCount": 272,
-        "leagueAvgTotal": 47,
-        "leagueOverBaseline": 47,
-        "leagueAvgFouls": 16.8
-      },
-      "2018-19": {
-        "season": "2018-19",
-        "gameCount": 272,
-        "leagueAvgTotal": 46.4,
-        "leagueOverBaseline": 46.4,
-        "leagueAvgFouls": 17
-      },
-      "2019-20": {
-        "season": "2019-20",
-        "gameCount": 272,
-        "leagueAvgTotal": 45.9,
-        "leagueOverBaseline": 45.9,
-        "leagueAvgFouls": 16.8
-      },
-      "2020-21": {
-        "season": "2020-21",
-        "gameCount": 272,
-        "leagueAvgTotal": 46.5,
-        "leagueOverBaseline": 46.5,
-        "leagueAvgFouls": 16.7
-      },
-      "2021-22": {
-        "season": "2021-22",
-        "gameCount": 272,
-        "leagueAvgTotal": 46,
-        "leagueOverBaseline": 46,
-        "leagueAvgFouls": 16.9
-      },
-      "2022-23": {
-        "season": "2022-23",
-        "gameCount": 272,
-        "leagueAvgTotal": 46.5,
-        "leagueOverBaseline": 46.5,
-        "leagueAvgFouls": 16.8
-      },
-      "2023-24": {
-        "season": "2023-24",
-        "gameCount": 272,
-        "leagueAvgTotal": 46.6,
-        "leagueOverBaseline": 46.6,
-        "leagueAvgFouls": 17.1
-      },
-      "2024-25": {
-        "season": "2024-25",
-        "gameCount": 272,
-        "leagueAvgTotal": 46.4,
-        "leagueOverBaseline": 46.4,
-        "leagueAvgFouls": 17
-      },
-      "2025-26": {
-        "season": "2025-26",
-        "gameCount": 272,
-        "leagueAvgTotal": 46.3,
-        "leagueOverBaseline": 46.3,
-        "leagueAvgFouls": 17
-      }
-    },
+    "currentSeason": null,
+    "seasons": {},
     "aggregate": {
-      "season": "all",
-      "gameCount": 2720,
-      "leagueAvgTotal": 46.3,
-      "leagueOverBaseline": 46.3,
-      "leagueAvgFouls": 16.9
+      "season": "none",
+      "gameCount": 0,
+      "leagueAvgTotal": 45.8,
+      "leagueOverBaseline": 46,
+      "leagueAvgFouls": 13
     },
-    "usingFallback": false
+    "usingFallback": true
   },
   "CBB": {
     "currentSeason": null,

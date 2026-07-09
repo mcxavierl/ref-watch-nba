@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { LeagueNavMark, leagueNavLabel } from "@/components/LeagueSwitchMark";
-import { getHeaderLeagueIds, isIngestGatedNavHidden } from "@/lib/header-leagues";
+import { getHeaderLeagueIds, isIngestGatedNavHidden, isNhlNavHidden } from "@/lib/header-leagues";
 import { LEAGUE_IDS, LEAGUES, type LeagueId } from "@/lib/leagues";
 
 type NavLink = { href: string; label: string; match: (pathname: string, homeHref: string) => boolean };
@@ -165,7 +165,7 @@ export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
   const resolvedPath = pathname ?? "/";
   const league = activeLeague(resolvedPath);
 
-  if (isIngestGatedNavHidden(league)) {
+  if (isIngestGatedNavHidden(league) || isNhlNavHidden(league)) {
     return null;
   }
 

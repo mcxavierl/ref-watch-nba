@@ -524,6 +524,8 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
       leagueOverBaseline,
       minSampleSize: MIN_SAMPLE,
       source: "nhl-api",
+      data_verified: true,
+      data_source: "NHL API (api-web.nhle.com)",
       atsAvailable: false,
       refCount: refs.length,
       totalGamesProcessed: processed,
