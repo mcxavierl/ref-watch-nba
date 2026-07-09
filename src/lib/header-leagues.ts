@@ -3,7 +3,7 @@ import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "@/lib/live-header-leagues.gen
 import { isShowUnverifiedEnv } from "@/lib/show-unverified";
 
 /** Leagues hidden from nav and section tabs until verified ingest ships. */
-export const INGEST_GATED_LEAGUE_IDS = ["nfl"] as const satisfies readonly LeagueId[];
+export const INGEST_GATED_LEAGUE_IDS = [] as const satisfies readonly LeagueId[];
 
 export type IngestGatedLeagueId = (typeof INGEST_GATED_LEAGUE_IDS)[number];
 
@@ -38,9 +38,7 @@ export function isNhlNavHidden(leagueId: LeagueId): boolean {
   return !getHeaderLeagueIds().includes("nhl");
 }
 
-/** NFL routes redirect to home in production (no verified ingest yet). */
-export function shouldRedirectHiddenLeague(pathname: string): boolean {
-  if (isShowUnverifiedEnv()) return false;
-  if (process.env.NODE_ENV !== "production") return false;
-  return pathname === "/nfl" || pathname.startsWith("/nfl/");
+/** Hidden league routes redirect to home in production when ingest is not verified. */
+export function shouldRedirectHiddenLeague(_pathname: string): boolean {
+  return false;
 }

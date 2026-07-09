@@ -1,6 +1,11 @@
 import * as path from "node:path";
 
 export const INGEST_SEASONS = [
+  "2016-17",
+  "2017-18",
+  "2018-19",
+  "2019-20",
+  "2020-21",
   "2021-22",
   "2022-23",
   "2023-24",
@@ -74,6 +79,11 @@ export const NBA_TEAM_ABBRS = [
 
 /** Full regular-season game counts (82-game schedule per team). */
 export const EXPECTED_REGULAR_SEASON_GAMES: Record<IngestSeason, number> = {
+  "2016-17": 1230,
+  "2017-18": 1230,
+  "2018-19": 1230,
+  "2019-20": 1059,
+  "2020-21": 1080,
   "2021-22": 1230,
   "2022-23": 1230,
   "2023-24": 1230,

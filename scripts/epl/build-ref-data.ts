@@ -36,12 +36,13 @@ import {
   loadBaselines,
   saveBaselines,
 } from "../lib/baselines";
+import { EPL_TEN_SEASONS, espnSeasonStartYear } from "../lib/ten-season-policy";
 import { loadGameLogs } from "../lib/game-logs";
 
 const DATA_DIR = path.join(process.cwd(), "data", "epl");
 const MIN_SAMPLE = 30;
 const LEAGUE_OVER_BASELINE = 2.5;
-const ESPN_SEASONS = [2022, 2023, 2024];
+const ESPN_SEASONS = EPL_TEN_SEASONS.map(espnSeasonStartYear);
 
 type EplGameLogEntry = {
   gameId: string;
@@ -386,6 +387,8 @@ async function buildFromEspn(seed: RefStatsFile): Promise<{
       leagueAvgPenalties: leagueAvgPenalties,
       minSampleSize: MIN_SAMPLE,
       source: "espn",
+      data_verified: true,
+      data_source: "ESPN",
       atsAvailable: false,
       refCount: refs.length,
       totalGamesProcessed: processed,

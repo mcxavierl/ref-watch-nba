@@ -92,13 +92,36 @@ function round3(n: number): number {
   return Math.round(n * 1000) / 1000;
 }
 
-function dateRange(start: string, end: string): string[] {
+function nflSeasonDates(): string[] {
   const dates: string[] = [];
-  const cur = new Date(`${start}T12:00:00Z`);
-  const last = new Date(`${end}T12:00:00Z`);
-  while (cur <= last) {
-    dates.push(cur.toISOString().slice(0, 10));
-    cur.setUTCDate(cur.getUTCDate() + 1);
+  for (let startYear = 2016; startYear <= 2025; startYear++) {
+    const endYear = startYear + 1;
+    for (let month = 9; month <= 12; month++) {
+      const days = new Date(startYear, month, 0).getDate();
+      for (let day = 1; day <= days; day++) {
+        dates.push(
+          `${startYear}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+        );
+      }
+    }
+    for (let month = 1; month <= 2; month++) {
+      const days = new Date(endYear, month, 0).getDate();
+      for (let day = 1; day <= days; day++) {
+        dates.push(
+          `${endYear}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+        );
+      }
+    }
+  }
+  // Current season through mid-February
+  for (let month = 9; month <= 12; month++) {
+    const days = new Date(2025, month, 0).getDate();
+    for (let day = 1; day <= days; day++) {
+      dates.push(`2025-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
+    }
+  }
+  for (let day = 1; day <= 15; day++) {
+    dates.push(`2026-02-${String(day).padStart(2, "0")}`);
   }
   return dates;
 }
@@ -123,7 +146,7 @@ async function loadNflverseLines(dataDir: string): Promise<NflverseLineIndex | n
   const cachePath = path.join(dataDir, "nflverse-games.csv");
   try {
     if (fs.existsSync(cachePath)) {
-      return buildNflverseLineIndex(fs.readFileSync(cachePath, "utf8"), 2021);
+      return buildNflverseLineIndex(fs.readFileSync(cachePath, "utf8"), 2016);
     }
   } catch {
     /* refetch below */
@@ -132,7 +155,7 @@ async function loadNflverseLines(dataDir: string): Promise<NflverseLineIndex | n
     console.log("Fetching nflverse closing lines...");
     const csv = await fetchNflverseGamesCsv();
     fs.writeFileSync(cachePath, csv);
-    return buildNflverseLineIndex(csv, 2021);
+    return buildNflverseLineIndex(csv, 2016);
   } catch (err) {
     console.warn(`nflverse lines unavailable: ${err}`);
     return null;
@@ -179,7 +202,8 @@ function buildTeamSplit(
 async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
   const roster = loadOfficialRoster(seed);
   const lineIndex = await loadNflverseLines(DATA_DIR);
-  const dates = dateRange("2021-09-01", "2026-02-15");
+  const dates = nflSeasonDates();
+  console.log(`Scanning ${dates.length} NFL season dates (2016-17 through 2025-26)...`);
 
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number; role: RefRole }>();
@@ -356,6 +380,11 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
       }
 
       processed++;
+      if (processed % 100 === 0) {
+        console.log(
+          `  …${processed} NFL games (${linedGames} with nflverse lines)`,
+        );
+      }
     }
     await sleep(100);
   }
@@ -458,6 +487,8 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
       leagueAvgPenaltyYards,
       minSampleSize: MIN_SAMPLE,
       source: "espn",
+      data_verified: true,
+      data_source: "ESPN + nflverse",
       atsAvailable,
       refCount: refs.length,
       totalGamesProcessed: processed,
@@ -477,7 +508,7 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
 async function main() {
   const statsPath = path.join(DATA_DIR, "ref-stats.json");
   const seedPath = path.join(DATA_DIR, "ref-stats.seed.json");
-  const replaceOnly = process.argv.includes("--espn-only");
+  const replaceOnly = !process.argv.includes("--merge-seed");
 
   console.log("=== Ref Watch NFL data build (ESPN) ===\n");
 

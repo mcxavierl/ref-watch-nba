@@ -37,8 +37,8 @@ import {
 } from "@/lib/season-scope";
 import type { RefStatsFile } from "@/lib/types";
 
-/** Only NHL/NFL use ingest empty states; NBA seeded data must render in production. */
-const INGEST_GATED_LEAGUES = new Set<LeagueId>(["nhl", "nfl"]);
+/** Leagues that hide stats until verified ingest ships (empty when unverified). */
+const INGEST_GATED_LEAGUES = new Set<LeagueId>([]);
 
 type LeagueStatsBundle = {
   stats: RefStatsFile;
