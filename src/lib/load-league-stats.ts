@@ -74,12 +74,9 @@ export function loadScopedLeagueStats(
   const { stats: full, formatRange } = loadLeagueStats(leagueId);
   const verification = resolveLeagueVerification(leagueId, full.meta);
   const preview = shouldShowUnverifiedData();
-  const availableSeasons = filterVerifiedSeasons(
-    leagueId,
-    full.meta,
-    full.meta.seasons,
-    preview,
-  );
+  const availableSeasons = INGEST_GATED_LEAGUES.has(leagueId)
+    ? filterVerifiedSeasons(leagueId, full.meta, full.meta.seasons, preview)
+    : full.meta.seasons;
   const scopedSeasons = resolveScopedSeasonsForLeague(
     leagueId,
     scopeMode,
