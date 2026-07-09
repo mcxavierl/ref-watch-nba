@@ -132,7 +132,7 @@ async function fetchTeamSeasonGames(
   season: string,
 ): Promise<{ gameId: number; date: string; game: ScheduleGame }[]> {
   const apiId = nhlSeasonApiId(season);
-  const res = await fetch(
+  const res = await fetchWithRetry(
     `https://api-web.nhle.com/v1/club-schedule-season/${teamAbbr}/${apiId}`,
   );
   if (!res.ok) return [];
@@ -179,8 +179,25 @@ async function collectTenSeasonGames(): Promise<
   return seen;
 }
 
+async function fetchWithRetry(
+  url: string,
+  retries = 4,
+): Promise<Response> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const res = await fetch(url);
+      return res;
+    } catch (err) {
+      lastErr = err;
+      await sleep(500 * (attempt + 1));
+    }
+  }
+  throw lastErr;
+}
+
 async function fetchOfficialsMap(): Promise<Map<string, number>> {
-  const res = await fetch(
+  const res = await fetchWithRetry(
     "https://records.nhl.com/site/api/officials?cayenneExp=active=true",
   );
   if (!res.ok) throw new Error(`Officials API ${res.status}`);
@@ -198,7 +215,7 @@ function lookupNumber(name: string, officials: Map<string, number>): number {
 }
 
 async function fetchScheduleDay(date: string): Promise<ScheduleGame[]> {
-  const res = await fetch(`https://api-web.nhle.com/v1/schedule/${date}`);
+  const res = await fetchWithRetry(`https://api-web.nhle.com/v1/schedule/${date}`);
   if (!res.ok) return [];
   const body = (await res.json()) as ScheduleResponse;
   const games: ScheduleGame[] = [];
@@ -216,7 +233,7 @@ async function fetchCrew(
   gameId: number,
   officials: Map<string, number>,
 ): Promise<{ name: string; number: number; role: RefRole }[]> {
-  const res = await fetch(
+  const res = await fetchWithRetry(
     `https://api-web.nhle.com/v1/gamecenter/${gameId}/right-rail`,
   );
   if (!res.ok) return [];
@@ -257,7 +274,7 @@ async function fetchBoxscore(gameId: number): Promise<{
   homePim: number;
   awayPim: number;
 } | null> {
-  const res = await fetch(
+  const res = await fetchWithRetry(
     `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`,
   );
   if (!res.ok) return null;
@@ -564,7 +581,7 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
 
   let processed = 0;
   let skipped = skipGameIds.size;
-  const CONCURRENCY = 6;
+  const CONCURRENCY = 4;
 
   const pending = queue.filter(([id]) => !skipGameIds.has(String(id)));
 
@@ -573,48 +590,53 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
     date: string,
     game: ScheduleGame,
   ): Promise<boolean> {
-    const homeTeam = game.homeTeam.abbrev.toUpperCase();
-    const awayTeam = game.awayTeam.abbrev.toUpperCase();
-    if (!NHL_TEAM_ABBRS.includes(homeTeam) || !NHL_TEAM_ABBRS.includes(awayTeam)) {
+    try {
+      const homeTeam = game.homeTeam.abbrev.toUpperCase();
+      const awayTeam = game.awayTeam.abbrev.toUpperCase();
+      if (!NHL_TEAM_ABBRS.includes(homeTeam) || !NHL_TEAM_ABBRS.includes(awayTeam)) {
+        return false;
+      }
+
+      const crew = await fetchCrew(game.id, officials);
+      if (crew.length === 0) return false;
+
+      const box = await fetchBoxscore(game.id);
+      if (!box) return false;
+
+      const penalties = await fetchGamePenalties(game.id);
+      const wentToOvertime =
+        penalties?.wentToOvertime ??
+        inferOvertimeFromSchedule(game.periodDescriptor?.periodType);
+      const homeMinors = penalties?.homeMinors ?? Math.round(box.homePim / 2);
+      const awayMinors = penalties?.awayMinors ?? Math.round(box.awayPim / 2);
+      const totalPim = penalties?.totalPim ?? box.homePim + box.awayPim;
+      const closing = syntheticClosingLine(box.homeScore, box.awayScore);
+      const season = seasonFromDate(date);
+
+      absorbGame(maps, {
+        gameId: String(game.id),
+        date,
+        season,
+        homeTeam,
+        awayTeam,
+        homeScore: box.homeScore,
+        awayScore: box.awayScore,
+        totalPim,
+        homePim: box.homePim,
+        awayPim: box.awayPim,
+        homeMinors,
+        awayMinors,
+        wentToOvertime,
+        closingTotal: closing.total,
+        homeSpread: closing.homeSpread,
+        crew,
+        lineSource: "synthetic",
+      });
+      return true;
+    } catch (err) {
+      console.warn(`Game ${gameId} skipped: ${err}`);
       return false;
     }
-
-    const crew = await fetchCrew(game.id, officials);
-    if (crew.length === 0) return false;
-
-    const box = await fetchBoxscore(game.id);
-    if (!box) return false;
-
-    const penalties = await fetchGamePenalties(game.id);
-    const wentToOvertime =
-      penalties?.wentToOvertime ??
-      inferOvertimeFromSchedule(game.periodDescriptor?.periodType);
-    const homeMinors = penalties?.homeMinors ?? Math.round(box.homePim / 2);
-    const awayMinors = penalties?.awayMinors ?? Math.round(box.awayPim / 2);
-    const totalPim = penalties?.totalPim ?? box.homePim + box.awayPim;
-    const closing = syntheticClosingLine(box.homeScore, box.awayScore);
-    const season = seasonFromDate(date);
-
-    absorbGame(maps, {
-      gameId: String(game.id),
-      date,
-      season,
-      homeTeam,
-      awayTeam,
-      homeScore: box.homeScore,
-      awayScore: box.awayScore,
-      totalPim,
-      homePim: box.homePim,
-      awayPim: box.awayPim,
-      homeMinors,
-      awayMinors,
-      wentToOvertime,
-      closingTotal: closing.total,
-      homeSpread: closing.homeSpread,
-      crew,
-      lineSource: "synthetic",
-    });
-    return true;
   }
 
   for (let i = 0; i < pending.length && processed < maxGames; i += CONCURRENCY) {
@@ -626,7 +648,7 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
     );
     processed += results.filter(Boolean).length;
 
-    if (processed > 0 && processed % 250 === 0) {
+    if (processed > 0 && processed % 100 === 0) {
       const partial = dedupeGameLogs([
         ...(existingLogs?.games ?? []),
         ...exportedGameLogs,
