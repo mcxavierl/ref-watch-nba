@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "tsx scripts/check-production-env.ts && tsx scripts/check-no-synthetic-imports.ts && tsx scripts/copy-data-to-public.ts && node scripts/next-build-retry.mjs",
+    "build:opennext": "rm -rf .open-next && opennextjs-cloudflare build --skipBuild && printf 'export const production = {};\\nexport const development = {};\\nexport const test = {};\\n' > .open-next/cloudflare/next-env.mjs",
     "check:synthetic": "tsx scripts/check-no-synthetic-imports.ts",
     "check:production-env": "tsx scripts/check-production-env.ts --production",
     "preview": "tsx scripts/copy-data-to-public.ts && opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "tsx scripts/copy-data-to-public.ts && rm -rf .open-next/cloudflare && opennextjs-cloudflare build && printf 'export const production = {};\\nexport const development = {};\\nexport const test = {};\\n' > .open-next/cloudflare/next-env.mjs && opennextjs-cloudflare deploy",
+    "deploy": "npm run build && npm run build:opennext && opennextjs-cloudflare deploy",
     "upload": "tsx scripts/copy-data-to-public.ts && opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "start": "next start",
