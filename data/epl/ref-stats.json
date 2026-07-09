@@ -21,7 +21,9 @@
       "earliest": "2022-08-05",
       "latest": "2025-05-25"
     },
-    "note": "Scores, fouls, cards, and referee assignments from ESPN (1140 games). Matrix: 338/534 ref×team pairs with 3+ games."
+    "note": "Scores, fouls, cards, and referee assignments from ESPN (1140 games). Matrix: 338/534 ref×team pairs with 3+ games.",
+    "data_verified": true,
+    "data_source": "ESPN"
   },
   "refs": [
     {

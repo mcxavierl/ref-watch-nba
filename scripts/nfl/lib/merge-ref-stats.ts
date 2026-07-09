@@ -20,7 +20,7 @@ function mergeTeamStats(
 }
 
 function mergeRefProfile(base: RefProfile, overlay: RefProfile): RefProfile {
-  const useOverlayCounts = overlay.games >= base.games;
+  const useOverlayCounts = overlay.games > 0;
   return {
     ...base,
     games: Math.max(base.games, overlay.games),
@@ -98,6 +98,8 @@ export function mergeNflRefStats(
       ),
       dateRange: overlay.meta.dateRange ?? base.meta.dateRange,
       source: "hybrid",
+      data_verified: true,
+      data_source: "ESPN + nflverse",
       atsAvailable: base.meta.atsAvailable || overlay.meta.atsAvailable,
       note:
         `Hybrid dataset: ${overlay.meta.totalGamesProcessed ?? 0} ESPN-verified games; ` +

@@ -75,10 +75,12 @@ export function applyGameLogTeamStats(
   const buckets = buildTeamStatsBucketsFromGameLogs(logs);
   const refsBySlug = new Map(stats.refs.map((ref) => [ref.slug, ref]));
   const officialMeta = new Map<string, { name: string; number: number }>();
+  const refGameCounts = new Map<string, number>();
 
   for (const game of logs.games) {
     for (const official of game.officials) {
       const slug = refSlug(official.name, official.number);
+      refGameCounts.set(slug, (refGameCounts.get(slug) ?? 0) + 1);
       if (!officialMeta.has(slug)) {
         officialMeta.set(slug, {
           name: official.name,
@@ -90,8 +92,9 @@ export function applyGameLogTeamStats(
 
   const updatedRefs: RefProfile[] = stats.refs.map((ref) => {
     const byTeam = buckets.get(ref.slug);
+    const verifiedGames = refGameCounts.get(ref.slug) ?? 0;
     if (!byTeam || byTeam.size === 0) {
-      return { ...ref, teamStats: {} };
+      return { ...ref, games: verifiedGames, teamStats: {} };
     }
 
     const rebuilt = collectRefTeamStats(byTeam);
@@ -99,7 +102,7 @@ export function applyGameLogTeamStats(
     for (const [team, stat] of Object.entries(rebuilt)) {
       teamStats[team] = mergePreservedTeamMetrics(stat, ref.teamStats?.[team]);
     }
-    return { ...ref, teamStats };
+    return { ...ref, games: verifiedGames, teamStats };
   });
 
   for (const [slug, byTeam] of buckets) {

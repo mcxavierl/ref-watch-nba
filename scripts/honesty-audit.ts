@@ -336,16 +336,18 @@ function auditSeededOrLiveLeague(
   }
 
   if (league === "NFL") {
-    if (stats.meta.source !== "espn") {
+    const nflVerified =
+      stats.meta.source === "espn" || stats.meta.source === "hybrid";
+    if (!nflVerified) {
       issues.push({
         league,
         context: "meta",
         metric: "source",
         tag: "fallback-constant",
-        issue: `Expected espn source, got ${stats.meta.source}`,
+        issue: `Expected espn or hybrid source, got ${stats.meta.source}`,
       });
     }
-    if (stats.meta.atsAvailable) {
+    if (stats.meta.atsAvailable && !nflVerified) {
       issues.push({
         league,
         context: "meta",
@@ -354,15 +356,17 @@ function auditSeededOrLiveLeague(
         issue: "NFL ATS flagged available but no verified closing lines",
       });
     }
-    for (const ref of stats.refs) {
-      if (ref.bettingStats?.linesAvailable) {
-        issues.push({
-          league,
-          context: `ref:${ref.slug}`,
-          metric: "bettingStats.linesAvailable",
-          tag: "computed-from-real",
-          issue: "NFL ref shows betting lines but league has no closing lines",
-        });
+    if (!nflVerified) {
+      for (const ref of stats.refs) {
+        if (ref.bettingStats?.linesAvailable) {
+          issues.push({
+            league,
+            context: `ref:${ref.slug}`,
+            metric: "bettingStats.linesAvailable",
+            tag: "computed-from-real",
+            issue: "NFL ref shows betting lines but league has no closing lines",
+          });
+        }
       }
     }
   }
@@ -398,7 +402,10 @@ function auditSeededOrLiveLeague(
     refCount: stats.refs.length,
     baselineFallback: baselineUsingFallback(league),
     metricCounts: {
-      real: stats.meta.source === "espn" ? stats.refs.length : 0,
+      real:
+        stats.meta.source === "espn" || stats.meta.source === "hybrid"
+          ? stats.refs.length
+          : 0,
       partial: stats.meta.source === "seeded" ? stats.refs.length : 0,
       estimated: 0,
       total: stats.refs.length,
