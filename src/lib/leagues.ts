@@ -1,7 +1,7 @@
 export const LEAGUE_IDS = ["nba", "nhl", "wnba", "mlb", "nfl", "epl", "cbb", "cfb"] as const;
 export type LeagueId = (typeof LEAGUE_IDS)[number];
 
-/** Leagues shown in the site header nav (excludes college until data ships). */
+/** Candidate leagues for the header sport switcher (filtered by verification in production). */
 export const HEADER_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl"] as const satisfies readonly LeagueId[];
 
 export type LeagueMetricCopy = {

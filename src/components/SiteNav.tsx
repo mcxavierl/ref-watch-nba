@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { HEADER_LEAGUE_IDS, LEAGUE_IDS, LEAGUES, type LeagueId } from "@/lib/leagues";
 import { LeagueNavMark, leagueNavLabel } from "@/components/LeagueSwitchMark";
+import { getHeaderLeagueIds, isIngestGatedNavHidden } from "@/lib/header-leagues";
+import { LEAGUE_IDS, LEAGUES, type LeagueId } from "@/lib/leagues";
 
 type NavLink = { href: string; label: string; match: (pathname: string, homeHref: string) => boolean };
 
@@ -101,7 +102,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
   ],
 };
 
-const HEADER_LEAGUES: LeagueId[] = [...HEADER_LEAGUE_IDS];
+const HEADER_LEAGUES: LeagueId[] = getHeaderLeagueIds();
 
 function activeLeague(pathname: string): LeagueId {
   for (const id of LEAGUE_IDS) {
@@ -163,6 +164,11 @@ export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
   const pathname = usePathname();
   const resolvedPath = pathname ?? "/";
   const league = activeLeague(resolvedPath);
+
+  if (isIngestGatedNavHidden(league)) {
+    return null;
+  }
+
   const links = NAV_LINKS[league] ?? NAV_LINKS.nba;
   const homeHref = LEAGUES[league].pathPrefix || "/";
 

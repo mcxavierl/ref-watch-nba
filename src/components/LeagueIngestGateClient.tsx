@@ -29,12 +29,13 @@ function LeagueIngestGateInner({
 
   return (
     <div className="page-shell">
-      <section className="page-hero">
+      <section className="page-hero max-w-2xl">
         <p className="section-kicker">Coming soon</p>
         <h1 className="page-title">{leagueLabel}</h1>
         <p className="page-lead">
-          Verified {leagueLabel} data is in progress. Ref profiles, crew splits,
-          and analytics will appear here once real-source ingest ships
+          Verified {leagueLabel} officiating data is in progress. Ref profiles,
+          crew splits, and analytics will publish here once real-source ingest
+          ships
           {ticketUrl ? (
             <>
               {" "}
@@ -42,6 +43,8 @@ function LeagueIngestGateInner({
               <a
                 href={ticketUrl}
                 className="font-medium text-zinc-800 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 GitHub issue #{ticketNumber}
               </a>
@@ -52,14 +55,19 @@ function LeagueIngestGateInner({
         </p>
       </section>
 
-      <nav className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
+      <nav className="mt-8">
         <Link href="/" className="site-footer-inline-link">
-          NBA home →
-        </Link>
-        <Link href="/epl" className="site-footer-inline-link">
-          EPL →
+          Return to Ref Watch home →
         </Link>
       </nav>
+
+      {process.env.NODE_ENV !== "production" || isShowUnverifiedEnv() ? (
+        <p className="mt-6 max-w-2xl text-xs text-zinc-500">
+          Dev preview: append{" "}
+          <code className="rounded bg-zinc-100 px-1.5 py-0.5">?preview=1</code>{" "}
+          to load synthetic {leagueLabel} data while ingest is in progress.
+        </p>
+      ) : null}
     </div>
   );
 }
