@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { preloadLeagueDataForPath } from "@/lib/edge-preload";
 import { shouldRedirectHiddenLeague } from "@/lib/header-leagues";
 
 export async function middleware(request: NextRequest) {
@@ -12,7 +11,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  await preloadLeagueDataForPath(request.nextUrl.origin, pathname);
+  // League JSON is hydrated in root layout (SSR). Preloading multi-MB assets here
+  // exceeded Worker memory/CPU and surfaced Cloudflare error 1100.
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
   return NextResponse.next({
