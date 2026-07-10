@@ -6,6 +6,15 @@ export function refSlug(name: string, number: number): string {
   return `${base}-${number}`;
 }
 
+// Re-exported for backward compatibility; canonical identity now lives in
+// ref-identity.ts alongside the curated alias map.
+export {
+  canonicalRefKey,
+  chooseRefIdentity,
+  displayNameForKey,
+  type RefVariant,
+} from "./ref-identity";
+
 export function parseRefFromCell(cell: string): { name: string; number: number } {
   const trimmed = cell.replace(/\s+/g, " ").trim();
   const match = trimmed.match(/^(.+?)\s*\(#(\d+)\)/);

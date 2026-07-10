@@ -6,6 +6,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { crewKey, refSlug } from "../lib/slug";
+import { dedupeRefsInPlace } from "../lib/merge-duplicate-refs";
 import {
   collectRefTeamStats,
   pushRefTeamGame,
@@ -755,6 +756,7 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
     });
   }
   refs.sort((a, b) => b.games - a.games);
+  dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
 
   const teamSplits: Record<string, TeamCrewSplit[]> = {};
   for (const abbr of NHL_TEAM_ABBRS) {

@@ -5,6 +5,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { crewKey, refSlug } from "../lib/slug";
+import { dedupeRefsInPlace } from "../lib/merge-duplicate-refs";
 import {
   collectRefTeamStats,
   pushRefTeamGame,
@@ -279,8 +280,16 @@ async function buildFromEspn(seed: RefStatsFile): Promise<{
         for (const teamAbbr of [summary.homeAbbr, summary.awayAbbr]) {
           const row = makeRow(teamAbbr);
           if (!row) continue;
+          const isHome = summary.homeAbbr === teamAbbr;
+          const teamYellow = isHome
+            ? summary.homeYellowCards
+            : summary.awayYellowCards;
+          const opponentYellow = isHome
+            ? summary.awayYellowCards
+            : summary.homeYellowCards;
           pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
             foulDifferential: row.teamFouls - row.opponentFouls,
+            technicalFoulDifferential: teamYellow - opponentYellow,
             totalPoints: row.totalPoints,
             overHit: row.overHit,
             teamWin: row.teamWin,
@@ -349,6 +358,7 @@ async function buildFromEspn(seed: RefStatsFile): Promise<{
   }
 
   refs.sort((a, b) => b.games - a.games);
+  dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
 
   const teamSplits: Record<string, TeamCrewSplit[]> = {};
   for (const abbr of EPL_TEAM_ABBRS) {

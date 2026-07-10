@@ -3,6 +3,12 @@ import * as path from "node:path";
 import { NBA_STATS_HEADERS } from "./nba-headers";
 import { crewKey, refSlug } from "./slug";
 import {
+  canonicalRefKey,
+  chooseRefIdentity,
+  displayNameForKey,
+  type RefVariant,
+} from "./ref-identity";
+import {
   collectRefTeamStats,
   pushRefTeamGame,
   type RefTeamGameRow,
@@ -405,7 +411,7 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
   console.log("Starting backfill (this may take several minutes)...");
 
   const refGames = new Map<string, RefGameRecord[]>();
-  const refMeta = new Map<string, { name: string; number: number }>();
+  const refIdentities = new Map<string, Map<number, RefVariant>>();
   const refBetting = new Map<string, RefBettingAccumulator>();
   const refTeamBuckets = new Map<string, Map<string, RefTeamGameRow[]>>();
   const teamByCrew = new Map<string, Map<string, TeamCrewBucket>>();
@@ -497,16 +503,29 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       }
 
       for (const official of officials) {
-        const slug = refSlug(official.name, official.number);
-        refMeta.set(slug, official);
-        const games = refGames.get(slug) ?? [];
-        games.push(record);
-        refGames.set(slug, games);
+        // Merge on canonical identity so a referee whose jersey number changed
+        // between seasons stays one profile instead of splitting into two.
+        const refKey = canonicalRefKey(official.name);
+        const variants = refIdentities.get(refKey) ?? new Map<number, RefVariant>();
+        const variant =
+          variants.get(official.number) ??
+          { name: official.name, number: official.number, games: 0, lastDate: "" };
+        variant.games += 1;
+        if (box.date >= variant.lastDate) {
+          variant.lastDate = box.date;
+          variant.name = official.name;
+        }
+        variants.set(official.number, variant);
+        refIdentities.set(refKey, variants);
 
-        let acc = refBetting.get(slug);
+        const games = refGames.get(refKey) ?? [];
+        games.push(record);
+        refGames.set(refKey, games);
+
+        let acc = refBetting.get(refKey);
         if (!acc) {
           acc = new RefBettingAccumulator();
-          refBetting.set(slug, acc);
+          refBetting.set(refKey, acc);
         }
         acc.addGame({
           homeScore: box.homeScore,
@@ -518,7 +537,7 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
         for (const teamAbbr of [box.homeTeam, box.awayTeam]) {
           const teamRow = teamGameRow(box, teamAbbr, linesRaw.total);
           if (!teamRow) continue;
-          pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
+          pushRefTeamGame(refTeamBuckets, refKey, teamAbbr, {
             foulDifferential: teamRow.teamFouls - teamRow.opponentFouls,
             totalPoints: teamRow.totalPoints,
             overHit: teamRow.overHit,
@@ -571,9 +590,11 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
   const leagueOverBaseline = nbaBaselines.aggregate.leagueOverBaseline;
 
   const refs: RefProfile[] = [];
-  for (const [slug, games] of refGames) {
+  for (const [refKey, games] of refGames) {
     if (games.length === 0) continue;
-    const meta = refMeta.get(slug)!;
+    const identity = chooseRefIdentity(refIdentities.get(refKey)!.values());
+    const name = displayNameForKey(refKey, identity.name);
+    const slug = refSlug(name, identity.number);
     const avgTotal =
       games.reduce((s, g) => s + g.totalPoints, 0) / games.length;
     const overRate =
@@ -581,12 +602,12 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
     const avgFouls =
       games.reduce((s, g) => s + g.totalFouls, 0) / games.length;
 
-    const betting = refBetting.get(slug)?.finalize();
+    const betting = refBetting.get(refKey)?.finalize();
 
     refs.push({
       slug,
-      name: meta.name,
-      number: meta.number,
+      name,
+      number: identity.number,
       games: games.length,
       avgTotalPoints: round1(avgTotal),
       overRate: round3(overRate),
@@ -594,9 +615,11 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
       homeCoverRate: betting ? homeCoverRate(betting) : null,
       totalPointsDelta: round1(avgTotal - leagueAvgTotal),
       foulsDelta: round1(avgFouls - leagueAvgFouls),
-      seasons: [...new Set(games.map((g) => g.season))],
-      recentGames: games.slice(-8).reverse(),
-      teamStats: collectRefTeamStats(refTeamBuckets.get(slug) ?? new Map()),
+      seasons: [...new Set(games.map((g) => g.season))].sort(),
+      recentGames: [...games]
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(0, 8),
+      teamStats: collectRefTeamStats(refTeamBuckets.get(refKey) ?? new Map()),
       bettingStats: betting,
     });
   }

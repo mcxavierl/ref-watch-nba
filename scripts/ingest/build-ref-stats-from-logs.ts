@@ -7,6 +7,12 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { crewKey, refSlug } from "../lib/slug";
 import {
+  canonicalRefKey,
+  chooseRefIdentity,
+  displayNameForKey,
+  type RefVariant,
+} from "../lib/ref-identity";
+import {
   collectRefTeamStats,
   pushRefTeamGame,
 } from "../lib/ref-team-stats";
@@ -40,6 +46,8 @@ type NdjsonGame = {
   homeScore: number;
   awayScore: number;
   totalPoints: number;
+  homeFouls?: number;
+  awayFouls?: number;
   totalFouls: number;
   officials: { name: string; number: number; role: string }[];
 };
@@ -49,7 +57,7 @@ function loadNdjsonGames(): NdjsonGame[] {
   for (const season of INGEST_SEASONS) {
     const shard = path.join(GAME_LOGS_DIR, `${season}.ndjson`);
     if (!fs.existsSync(shard)) {
-      throw new Error(`Missing shard ${shard}`);
+      continue;
     }
     for (const line of fs.readFileSync(shard, "utf8").split("\n")) {
       if (!line.trim()) continue;
@@ -108,7 +116,7 @@ function buildTeamSplit(
 export function buildRefStatsFromLogs(): RefStatsFile {
   const games = loadNdjsonGames();
   const refGames = new Map<string, RefGameRecord[]>();
-  const refMeta = new Map<string, { name: string; number: number }>();
+  const refIdentities = new Map<string, Map<number, RefVariant>>();
   const refTeamBuckets = new Map<string, Map<string, import("../lib/ref-team-stats").RefTeamGameRow[]>>();
   const teamByCrew = new Map<string, Map<string, { crewNames: string[]; games: Parameters<typeof buildTeamSplit>[2] }>>();
 
@@ -138,12 +146,55 @@ export function buildRefStatsFromLogs(): RefStatsFile {
         game.homeTeam === "TOR" || game.awayTeam === "TOR",
     };
 
+    for (const teamAbbr of [game.homeTeam, game.awayTeam]) {
+      const isHome = game.homeTeam === teamAbbr;
+      const teamWin = teamWonGame(
+        game.homeScore,
+        game.awayScore,
+        game.homeTeam,
+        game.awayTeam,
+        teamAbbr,
+      );
+      const teamFouls = isHome
+        ? (game.homeFouls ?? 0)
+        : (game.awayFouls ?? 0);
+      const opponentFouls = isHome
+        ? (game.awayFouls ?? 0)
+        : (game.homeFouls ?? 0);
+
+      const buckets = teamByCrew.get(teamAbbr)!;
+      const existing = buckets.get(key) ?? { crewNames, games: [] };
+      existing.games.push({
+        totalPoints: game.totalPoints,
+        totalFouls: game.totalFouls,
+        overHit: record.overHit,
+        teamWin,
+        isHome,
+        teamFouls,
+        opponentFouls,
+      });
+      buckets.set(key, existing);
+    }
+
     for (const official of officials) {
-      const slug = refSlug(official.name, official.number);
-      refMeta.set(slug, { name: official.name, number: official.number });
-      const list = refGames.get(slug) ?? [];
+      // Merge on canonical identity so a referee whose jersey number changed
+      // between seasons stays one profile instead of splitting into two.
+      const refKey = canonicalRefKey(official.name);
+      const variants = refIdentities.get(refKey) ?? new Map<number, RefVariant>();
+      const variant =
+        variants.get(official.number) ??
+        { name: official.name, number: official.number, games: 0, lastDate: "" };
+      variant.games += 1;
+      if (game.date >= variant.lastDate) {
+        variant.lastDate = game.date;
+        variant.name = official.name;
+      }
+      variants.set(official.number, variant);
+      refIdentities.set(refKey, variants);
+
+      const list = refGames.get(refKey) ?? [];
       list.push(record);
-      refGames.set(slug, list);
+      refGames.set(refKey, list);
 
       for (const teamAbbr of [game.homeTeam, game.awayTeam]) {
         const isHome = game.homeTeam === teamAbbr;
@@ -154,25 +205,20 @@ export function buildRefStatsFromLogs(): RefStatsFile {
           game.awayTeam,
           teamAbbr,
         );
-        pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
-          foulDifferential: 0,
-          totalPoints: game.totalPoints,
-          overHit: record.overHit,
-          teamWin,
-        });
+        const teamFouls = isHome
+          ? (game.homeFouls ?? 0)
+          : (game.awayFouls ?? 0);
+        const opponentFouls = isHome
+          ? (game.awayFouls ?? 0)
+          : (game.homeFouls ?? 0);
+        const foulDifferential = teamFouls - opponentFouls;
 
-        const buckets = teamByCrew.get(teamAbbr)!;
-        const existing = buckets.get(key) ?? { crewNames, games: [] };
-        existing.games.push({
+        pushRefTeamGame(refTeamBuckets, refKey, teamAbbr, {
+          foulDifferential,
           totalPoints: game.totalPoints,
-          totalFouls: game.totalFouls,
           overHit: record.overHit,
           teamWin,
-          isHome,
-          teamFouls: 0,
-          opponentFouls: 0,
         });
-        buckets.set(key, existing);
       }
     }
   }
@@ -210,16 +256,21 @@ export function buildRefStatsFromLogs(): RefStatsFile {
   const leagueOverBaseline = baselines.NBA.aggregate.leagueOverBaseline;
 
   const refs: RefProfile[] = [];
-  for (const [slug, gList] of refGames) {
-    const meta = refMeta.get(slug)!;
+  for (const [refKey, gList] of refGames) {
+    const identity = chooseRefIdentity(refIdentities.get(refKey)!.values());
+    const name = displayNameForKey(refKey, identity.name);
+    const slug = refSlug(name, identity.number);
     const avgTotal = gList.reduce((s, g) => s + g.totalPoints, 0) / gList.length;
     const overRate = gList.filter((g) => g.overHit).length / gList.length;
     const avgFouls = gList.reduce((s, g) => s + g.totalFouls, 0) / gList.length;
+    const recentGames = [...gList]
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 8);
 
     refs.push({
       slug,
-      name: meta.name,
-      number: meta.number,
+      name,
+      number: identity.number,
       games: gList.length,
       avgTotalPoints: round1(avgTotal),
       overRate: round3(overRate),
@@ -227,9 +278,9 @@ export function buildRefStatsFromLogs(): RefStatsFile {
       homeCoverRate: null,
       totalPointsDelta: round1(avgTotal - leagueAvgTotal),
       foulsDelta: round1(avgFouls - leagueAvgFouls),
-      seasons: [...new Set(gList.map((g) => g.season))],
-      recentGames: gList.slice(-8).reverse(),
-      teamStats: collectRefTeamStats(refTeamBuckets.get(slug) ?? new Map()),
+      seasons: [...new Set(gList.map((g) => g.season))].sort(),
+      recentGames,
+      teamStats: collectRefTeamStats(refTeamBuckets.get(refKey) ?? new Map()),
     });
   }
 

@@ -1,0 +1,143 @@
+/**
+ * Shared referee identity resolution.
+ *
+ * Officials appear across data sources under different jersey numbers and
+ * different spellings of the same name. Keying stats on `name + number`
+ * (see `refSlug`) therefore splits one person into several profiles — the
+ * reason a single referee could land in both a "top" and "bottom" list.
+ *
+ * `canonicalRefKey` produces a stable, number-independent identity by:
+ *   1. lowercasing and stripping punctuation,
+ *   2. collapsing runs of single-letter tokens so initials match regardless
+ *      of punctuation ("J.B. DeRosa" → "jb derosa" === "JB DeRosa"),
+ *   3. remapping known same-person aliases via `REF_NAME_ALIASES`.
+ *
+ * Aliases are an explicit, curated list on purpose: automatic name matching
+ * would wrongly merge genuinely distinct officials who share an initial and
+ * surname (e.g. NFL's Jerry Bergman and Jeff Bergman).
+ */
+
+/** A curated same-person mapping. `variants` collapse into `canonical`. */
+export interface RefAlias {
+  /** Proper display name used for the merged profile. */
+  canonical: string;
+  /** Alternate spellings seen in source data (any capitalization/punctuation). */
+  variants: string[];
+}
+
+/**
+ * Verified same-person name variants. Only add an entry when the data shows
+ * the same official (shared jersey number, complementary date ranges, or a
+ * single unambiguous full-name match for an abbreviated form).
+ */
+export const REF_NAME_ALIASES: RefAlias[] = [
+  // NBA — first-name / spelling differences between NBA Stats and BBR feeds.
+  { canonical: "Jacyn Goble", variants: ["John Goble"] },
+  // NBA — married-name change; BBR uses the hyphenated form, logs the short one.
+  { canonical: "Lauren Holtkamp", variants: ["Lauren Holtkamp-Sterling"] },
+  // EPL — ESPN emits abbreviated "I. Surname" forms alongside full names.
+  { canonical: "Anthony Taylor", variants: ["A Taylor"] },
+  { canonical: "Craig Pawson", variants: ["C Pawson"] },
+  { canonical: "Andre Marriner", variants: ["A Marriner"] },
+  { canonical: "Mike Dean", variants: ["M Dean"] },
+  { canonical: "Jonathan Moss", variants: ["J Moss"] },
+  { canonical: "Martin Atkinson", variants: ["M Atkinson"] },
+  { canonical: "Robert Madley", variants: ["R Madley"] },
+  { canonical: "Kevin Friend", variants: ["K Friend"] },
+  { canonical: "Lee Mason", variants: ["L Mason"] },
+  { canonical: "Graham Scott", variants: ["G Scott"] },
+  { canonical: "Neil Swarbrick", variants: ["N Swarbrick"] },
+  { canonical: "Mark Clattenburg", variants: ["M Clattenburg"] },
+  { canonical: "Roger East", variants: ["R East"] },
+  { canonical: "Michael Jones", variants: ["Mike Jones"] },
+];
+
+/** Lowercase, strip punctuation, and collapse initial runs (no alias step). */
+function baseKey(name: string): string {
+  const tokens = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const out: string[] = [];
+  let initials = "";
+  for (const token of tokens) {
+    if (token.length === 1) {
+      initials += token;
+    } else {
+      if (initials) {
+        out.push(initials);
+        initials = "";
+      }
+      out.push(token);
+    }
+  }
+  if (initials) out.push(initials);
+  return out.join(" ");
+}
+
+/** baseKey(variant) → baseKey(canonical) for every alias entry. */
+const ALIAS_KEY_REMAP: Map<string, string> = (() => {
+  const map = new Map<string, string>();
+  for (const alias of REF_NAME_ALIASES) {
+    const canonicalKey = baseKey(alias.canonical);
+    for (const variant of alias.variants) {
+      map.set(baseKey(variant), canonicalKey);
+    }
+  }
+  return map;
+})();
+
+/** canonical key → proper display name, for alias groups. */
+const ALIAS_DISPLAY: Map<string, string> = (() => {
+  const map = new Map<string, string>();
+  for (const alias of REF_NAME_ALIASES) {
+    map.set(baseKey(alias.canonical), alias.canonical);
+  }
+  return map;
+})();
+
+/** Number- and spelling-independent identity key for a referee. */
+export function canonicalRefKey(name: string): string {
+  const key = baseKey(name);
+  return ALIAS_KEY_REMAP.get(key) ?? key;
+}
+
+/**
+ * Resolve a name to its curated canonical spelling when it belongs to an alias
+ * group; otherwise return the name unchanged. Useful for matching across feeds
+ * (e.g. Basketball-Reference) that use a different spelling than the roster.
+ */
+export function resolveCanonicalName(name: string): string {
+  return ALIAS_DISPLAY.get(canonicalRefKey(name)) ?? name;
+}
+
+/**
+ * Preferred display name for a canonical key. Alias groups use their curated
+ * proper name; everything else falls back to the observed name provided.
+ */
+export function displayNameForKey(canonicalKey: string, fallbackName: string): string {
+  return ALIAS_DISPLAY.get(canonicalKey) ?? fallbackName;
+}
+
+/** One jersey-number/name variant seen for a canonical referee identity. */
+export interface RefVariant {
+  name: string;
+  number: number;
+  games: number;
+  lastDate: string;
+}
+
+/**
+ * Pick the display identity for a merged referee: the variant worked the most
+ * games under, breaking ties toward the most recent game.
+ */
+export function chooseRefIdentity<T extends { games: number; lastDate: string }>(
+  variants: Iterable<T>,
+): T {
+  return [...variants].sort(
+    (a, b) => b.games - a.games || b.lastDate.localeCompare(a.lastDate),
+  )[0];
+}

@@ -6,11 +6,21 @@ import {
   type BbrRefTeamRecordsFile,
 } from "../../src/lib/bbr-ref-team-records";
 import type { RefProfile, RefStatsFile, RefTeamStat } from "./types";
+import { resolveCanonicalName } from "./ref-identity";
 
 export interface RefNameMatchResult {
   slug: string;
   name: string;
   number: number;
+}
+
+/**
+ * Match key that first resolves curated name aliases (e.g. BBR's
+ * "Lauren Holtkamp-Sterling" → roster "Lauren Holtkamp") before normalizing,
+ * so name-change and spelling differences still line up across feeds.
+ */
+function bbrMatchKey(name: string): string {
+  return normalizeRefName(resolveCanonicalName(name));
 }
 
 export interface ApplyBbrResult {
@@ -29,7 +39,7 @@ export function buildRefNameIndex(
 ): Map<string, RefNameMatchResult> {
   const index = new Map<string, RefNameMatchResult>();
   for (const ref of refs) {
-    const key = normalizeRefName(ref.name);
+    const key = bbrMatchKey(ref.name);
     if (!index.has(key)) {
       index.set(key, { slug: ref.slug, name: ref.name, number: ref.number });
     }
@@ -41,7 +51,7 @@ export function matchBbrRefereeName(
   bbrName: string,
   index: Map<string, RefNameMatchResult>,
 ): RefNameMatchResult | null {
-  return index.get(normalizeRefName(bbrName)) ?? null;
+  return index.get(bbrMatchKey(bbrName)) ?? null;
 }
 
 function mergeTeamStat(
@@ -86,7 +96,7 @@ export function applyBbrRefTeamStats(
   const index = buildRefNameIndex(base.refs);
   const slugByNorm = new Map<string, string>();
   for (const ref of base.refs) {
-    slugByNorm.set(normalizeRefName(ref.name), ref.slug);
+    slugByNorm.set(bbrMatchKey(ref.name), ref.slug);
   }
 
   /** slug → team → aggregated BBR rows */
