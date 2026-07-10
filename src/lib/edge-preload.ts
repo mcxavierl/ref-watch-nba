@@ -1,7 +1,12 @@
-import type { RefStatsFile } from "@/lib/types";
+import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
-import { getCachedRefStats, setCachedRefStats } from "@/lib/ref-stats-preload";
+import {
+  getCachedRefStats,
+  getCachedTeamSplits,
+  setCachedRefStats,
+  setCachedTeamSplits,
+} from "@/lib/ref-stats-preload";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 
@@ -32,7 +37,7 @@ function leaguesForPath(pathname: string): League[] {
   return ["nba"];
 }
 
-async function fetchRefStatsAsset(assetPath: string): Promise<RefStatsFile | null> {
+async function fetchJsonAsset<T>(assetPath: string): Promise<T | null> {
   try {
     const { getCloudflareContext } = await import("@opennextjs/cloudflare");
     const { env } = await getCloudflareContext({ async: true });
@@ -42,7 +47,7 @@ async function fetchRefStatsAsset(assetPath: string): Promise<RefStatsFile | nul
     if (assets) {
       const res = await assets.fetch(`https://assets.local${assetPath}`);
       if (res.ok) {
-        return (await res.json()) as RefStatsFile;
+        return (await res.json()) as T;
       }
     }
 
@@ -52,7 +57,7 @@ async function fetchRefStatsAsset(assetPath: string): Promise<RefStatsFile | nul
     if (worker) {
       const res = await worker.fetch(`https://refwatch.internal${assetPath}`);
       if (res.ok) {
-        return (await res.json()) as RefStatsFile;
+        return (await res.json()) as T;
       }
     }
   } catch {
@@ -61,13 +66,47 @@ async function fetchRefStatsAsset(assetPath: string): Promise<RefStatsFile | nul
   return null;
 }
 
+async function fetchRefStatsAsset(assetPath: string): Promise<RefStatsFile | null> {
+  return fetchJsonAsset<RefStatsFile>(assetPath);
+}
+
 async function fetchRefStatsOrigin(
   origin: string,
   assetPath: string,
 ): Promise<RefStatsFile | null> {
+  return fetchOriginJson<RefStatsFile>(origin, assetPath);
+}
+
+async function fetchOriginJson<T>(
+  origin: string,
+  assetPath: string,
+): Promise<T | null> {
   const res = await fetch(`${origin}${assetPath}`);
   if (!res.ok) return null;
-  return (await res.json()) as RefStatsFile;
+  return (await res.json()) as T;
+}
+
+const ASSET_BASE: Record<League, string> = {
+  nba: "/data/nba",
+  nhl: "/data/nhl",
+  nfl: "/data/nfl",
+  epl: "/data/epl",
+  cbb: "/data/cbb",
+  cfb: "/data/cfb",
+};
+
+async function preloadTeamSplits(league: League, origin: string): Promise<void> {
+  const cached = getCachedTeamSplits(league);
+  if (cached && Object.keys(cached).length > 0) return;
+
+  const assetPath = `${ASSET_BASE[league]}/team-splits.json`;
+  const data =
+    (await fetchJsonAsset<Record<string, TeamCrewSplit[]>>(assetPath)) ??
+    (await fetchOriginJson<Record<string, TeamCrewSplit[]>>(origin, assetPath));
+
+  if (data && Object.keys(data).length > 0) {
+    setCachedTeamSplits(league, data);
+  }
 }
 
 async function preloadRefStats(origin: string, league: League): Promise<void> {
@@ -76,6 +115,7 @@ async function preloadRefStats(origin: string, league: League): Promise<void> {
     cached?.refs?.length &&
     resolveLeagueVerification(league as LeagueId, cached.meta).data_verified
   ) {
+    await preloadTeamSplits(league, origin);
     return;
   }
 
@@ -87,6 +127,7 @@ async function preloadRefStats(origin: string, league: League): Promise<void> {
   if (data?.refs?.length) {
     setCachedRefStats(league, data);
   }
+  await preloadTeamSplits(league, origin);
 }
 
 /**

@@ -2,6 +2,9 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import type { MatrixExtremeHighlight } from "@/lib/ref-team-matrix";
 import {
+  formatMatrixHighlightBaseline,
+} from "@/lib/ref-team-matrix";
+import {
   isDirectionalTone,
   isStandoutTone,
   metricDelightClass,
@@ -156,9 +159,8 @@ export function MatrixExtremeSplitCards({
                 {item.teamLabel}
               </Link>
               : {withLabel}×team {item.wins}-{item.losses} ({formatPct(item.winRate)})
-              in {item.games} games vs team sample baseline {item.baselineWins}-
-              {item.baselineLosses} ({formatPct(item.baselineWinRate)} across{" "}
-              {item.baselineGames} gp).
+              in {item.games} games vs team sample baseline{" "}
+              {formatMatrixHighlightBaseline(item)}.
             </p>
           </li>
         );

@@ -54,6 +54,18 @@ const MIN_HOME_ROAD_GAP = 0.15;
 const MIN_CLOSE_GAMES = 200;
 const MIN_CLOSE_OVER_DELTA = 0.03;
 
+const MATRIX_LEAGUE: Record<
+  LeagueFindingContext["league"],
+  "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb"
+> = {
+  NBA: "nba",
+  NHL: "nhl",
+  NFL: "nfl",
+  EPL: "epl",
+  CBB: "cbb",
+  CFB: "cfb",
+};
+
 function matrixFindingFromHighlight(
   stats: RefStatsFile,
   ctx: LeagueFindingContext,
@@ -78,8 +90,14 @@ function matrixFindingFromHighlight(
       },
       {
         label: "Team baseline",
-        value: `${highlight.baselineWins}-${highlight.baselineLosses}`,
-        detail: `${formatPct(highlight.baselineWinRate)} across ${highlight.baselineGames} gp`,
+        value:
+          highlight.baselineGames > 0
+            ? `${highlight.baselineWins}-${highlight.baselineLosses}`
+            : "Unavailable",
+        detail:
+          highlight.baselineGames > 0
+            ? `${formatPct(highlight.baselineWinRate)} across ${highlight.baselineGames} gp`
+            : "Team sample not loaded",
       },
       {
         label: "Delta vs baseline",
@@ -113,7 +131,7 @@ export function buildMatrixExtremeFinding(
     ctx.getTeamSplits,
     MIN_MATRIX_GAMES,
     {
-      league: ctx.league === "NBA" ? "nba" : "nhl",
+      league: MATRIX_LEAGUE[ctx.league],
       sinceSeason: DEFAULT_SINCE_SEASON,
     },
   );

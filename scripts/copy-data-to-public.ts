@@ -38,6 +38,7 @@ function copyLeagueRefStatsSplit(
   const { core, teamSplits } = splitRefStatsForDeploy(full);
 
   writeMinifiedJson(path.join(leagueDir, "ref-stats-core.json"), core);
+  writeMinifiedJson(path.join(leagueDir, "team-splits.json"), teamSplits);
   writeMinifiedJson(path.join(publicDir, "ref-stats.json"), core);
   writeMinifiedJson(path.join(publicDir, "team-splits.json"), teamSplits);
 }

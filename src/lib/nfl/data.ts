@@ -20,8 +20,9 @@ import {
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { nflCrewMetricsProvenance } from "@/lib/provenance";
 import {
-  getCachedRefStats,
   resolveRefStatsFromFsOrCache,
+  resolveTeamSplitsForLeague,
+  attachTeamSplits,
 } from "@/lib/ref-stats-preload";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
@@ -30,7 +31,6 @@ import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 const dataDir = path.join(process.cwd(), "data", "nfl");
 
 const jsonCache = new Map<string, unknown>();
-let teamSplitsCache: Record<string, TeamCrewSplit[]> | null = null;
 
 function readJson<T>(filename: string): T {
   const cached = jsonCache.get(filename);
@@ -51,12 +51,14 @@ function tryReadJson<T>(filename: string): T | null {
   }
 }
 
-function loadTeamSplitsRaw(): Record<string, TeamCrewSplit[]> {
-  if (teamSplitsCache) return teamSplitsCache;
-  const fromFile =
-    tryReadJson<Record<string, TeamCrewSplit[]>>("team-splits.json") ?? {};
-  teamSplitsCache = fromFile;
-  return fromFile;
+function loadTeamSplitsFromDisk(): Record<string, TeamCrewSplit[]> {
+  return tryReadJson<Record<string, TeamCrewSplit[]>>("team-splits.json") ?? {};
+}
+
+function resolveTeamSplits(
+  embedded: Record<string, TeamCrewSplit[]>,
+): Record<string, TeamCrewSplit[]> {
+  return resolveTeamSplitsForLeague("nfl", embedded, loadTeamSplitsFromDisk());
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
@@ -137,11 +139,14 @@ function applyBaselines(stats: RefStatsFile): RefStatsFile {
 }
 
 function normalizeRefStats(data: RefStatsFile): RefStatsFile {
-  return {
-    ...data,
-    refs: data.refs ?? [],
-    teamSplits: migrateLegacySplits(data),
-  };
+  return attachTeamSplits(
+    "nfl",
+    {
+      ...data,
+      refs: data.refs ?? [],
+    },
+    loadTeamSplitsFromDisk(),
+  );
 }
 
 
@@ -306,19 +311,13 @@ export function formatDate(iso: string): string {
 }
 
 export function getTeamSplits(abbr: string): TeamCrewSplit[] {
-  const stats = getRefStats();
-  const fromStats = stats.teamSplits[abbr.toUpperCase()];
-  if (fromStats?.length) return fromStats;
-  return loadTeamSplitsRaw()[abbr.toUpperCase()] ?? [];
+  return resolveTeamSplits({})[abbr.toUpperCase()] ?? [];
 }
 
 export function getAllTeamAbbrs(): string[] {
-  const stats = getRefStats();
-  const fromData = Object.keys(stats.teamSplits);
-  const fromSplits = Object.keys(loadTeamSplitsRaw());
-  const merged = [...new Set([...fromData, ...fromSplits])];
-  if (merged.length > 0) {
-    return merged.sort();
+  const fromSplits = Object.keys(getRefStats().teamSplits);
+  if (fromSplits.length > 0) {
+    return fromSplits.sort();
   }
   return [...NFL_TEAM_ABBRS];
 }

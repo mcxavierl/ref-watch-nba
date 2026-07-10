@@ -12,7 +12,7 @@ import {
   resolveLeagueVerification,
 } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
-import type { RefStatsFile } from "@/lib/types";
+import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 type CacheKey =
@@ -30,6 +30,19 @@ const CACHE_KEYS: Record<League, CacheKey> = {
   epl: "__REFWATCH_EPL_REF_STATS__",
   cbb: "__REFWATCH_CBB_REF_STATS__",
   cfb: "__REFWATCH_CFB_REF_STATS__",
+};
+
+type TeamSplitsCacheKey =
+  | "__REFWATCH_NBA_TEAM_SPLITS__"
+  | "__REFWATCH_NHL_TEAM_SPLITS__"
+  | "__REFWATCH_NFL_TEAM_SPLITS__"
+  | "__REFWATCH_EPL_TEAM_SPLITS__";
+
+const TEAM_SPLITS_CACHE_KEYS: Partial<Record<League, TeamSplitsCacheKey>> = {
+  nba: "__REFWATCH_NBA_TEAM_SPLITS__",
+  nhl: "__REFWATCH_NHL_TEAM_SPLITS__",
+  nfl: "__REFWATCH_NFL_TEAM_SPLITS__",
+  epl: "__REFWATCH_EPL_TEAM_SPLITS__",
 };
 
 const ASSET_BASE: Record<League, string> = {
@@ -80,18 +93,73 @@ export function setCachedRefStats(league: League, data: RefStatsFile): void {
   globalThis[CACHE_KEYS[league]] = data;
 }
 
+export function getCachedTeamSplits(
+  league: League,
+): Record<string, TeamCrewSplit[]> | null {
+  const key = TEAM_SPLITS_CACHE_KEYS[league];
+  if (!key) return null;
+  return globalThis[key] ?? null;
+}
+
+export function setCachedTeamSplits(
+  league: League,
+  splits: Record<string, TeamCrewSplit[]>,
+): void {
+  const key = TEAM_SPLITS_CACHE_KEYS[league];
+  if (!key) return;
+  globalThis[key] = splits;
+}
+
+/** Slim ref-stats core strips teamSplits; merge CDN/file splits for matrix baselines. */
+export function resolveTeamSplitsForLeague(
+  league: League,
+  embedded: Record<string, TeamCrewSplit[]>,
+  fromFile: Record<string, TeamCrewSplit[]>,
+): Record<string, TeamCrewSplit[]> {
+  const cached = getCachedTeamSplits(league);
+  if (cached && Object.keys(cached).length > 0) return cached;
+  if (Object.keys(fromFile).length > 0) return fromFile;
+  return embedded;
+}
+
+export function attachTeamSplits(
+  league: League,
+  stats: RefStatsFile,
+  fromFile: Record<string, TeamCrewSplit[]>,
+): RefStatsFile {
+  const teamSplits = resolveTeamSplitsForLeague(
+    league,
+    stats.teamSplits ?? {},
+    fromFile,
+  );
+  return { ...stats, teamSplits };
+}
+
 export async function preloadRefStatsFromAssets(
   origin: string,
   league: League,
 ): Promise<void> {
-  if (getCachedRefStats(league)) return;
+  if (!getCachedRefStats(league)) {
+    const assetPath = `${ASSET_BASE[league]}/ref-stats.json`;
+    const res = await fetch(`${origin}${assetPath}`);
+    if (res.ok) {
+      const data = (await res.json()) as RefStatsFile;
+      if (data.refs?.length) {
+        setCachedRefStats(league, data);
+      }
+    }
+  }
 
-  const assetPath = `${ASSET_BASE[league]}/ref-stats.json`;
-  const res = await fetch(`${origin}${assetPath}`);
-  if (!res.ok) return;
-  const data = (await res.json()) as RefStatsFile;
-  if (data.refs?.length) {
-    setCachedRefStats(league, data);
+  const cachedSplits = getCachedTeamSplits(league);
+  if (!cachedSplits || Object.keys(cachedSplits).length === 0) {
+    const splitsPath = `${ASSET_BASE[league]}/team-splits.json`;
+    const res = await fetch(`${origin}${splitsPath}`);
+    if (res.ok) {
+      const splits = (await res.json()) as Record<string, TeamCrewSplit[]>;
+      if (Object.keys(splits).length > 0) {
+        setCachedTeamSplits(league, splits);
+      }
+    }
   }
 }
 

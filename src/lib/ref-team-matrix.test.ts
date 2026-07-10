@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import { LEAGUES } from "@/lib/leagues";
 import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
@@ -102,5 +103,40 @@ describe("ref-team matrix team panels", () => {
       assert.equal(typeof entry.wins, "number");
       assert.equal(typeof entry.losses, "number");
     }
+  });
+
+  it("hydrates non-NBA baselines from getTeamSplits when core strips teamSplits", () => {
+    const eplCore = JSON.parse(
+      readFileSync("data/epl/ref-stats-core.json", "utf8"),
+    ) as RefStatsFile;
+    const eplTeamSplits = JSON.parse(
+      readFileSync("data/epl/team-splits.json", "utf8"),
+    ) as Record<string, import("@/lib/types").TeamCrewSplit[]>;
+
+    const refWithArs = eplCore.refs.find(
+      (r) => r.teamStats?.ARS && r.teamStats.ARS.games >= 3,
+    );
+    assert.ok(refWithArs, "fixture needs a ref with ARS games");
+
+    const slimStats: RefStatsFile = {
+      ...eplCore,
+      teamSplits: { ARS: [] },
+      refs: [refWithArs],
+    };
+    const getEplTeamSplits = (abbr: string) =>
+      eplTeamSplits[abbr.toUpperCase()] ?? [];
+
+    const matrix = computeRefTeamMatrix(
+      slimStats,
+      [{ abbr: "ARS", label: "Arsenal", name: "Arsenal" }],
+      getEplTeamSplits,
+      3,
+      { league: "epl" },
+    );
+
+    assert.ok(matrix.teams[0]!.baselineWinRate > 0);
+    assert.ok(matrix.teams[0]!.baselineGames > 0);
+    const bottom = bottomRefsBelowBaselineForTeam(matrix, "ARS");
+    assert.ok(bottom.length > 0);
   });
 });

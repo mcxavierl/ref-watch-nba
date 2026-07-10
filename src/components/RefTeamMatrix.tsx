@@ -398,10 +398,12 @@ export function RefTeamMatrix({
                     onMouseEnter={() => activateCrosshair("", team.abbr)}
                   >
                     <span className="ref-matrix-baseline-record">
-                      {team.baselineWins}-{team.baselineLosses}
+                      {team.baselineGames > 0
+                        ? `${team.baselineWins}-${team.baselineLosses}`
+                        : "—"}
                     </span>
                     <span className="ref-matrix-baseline-meta">
-                      {formatPct(team.baselineWinRate)}
+                      {team.baselineGames > 0 ? formatPct(team.baselineWinRate) : "—"}
                     </span>
                   </td>
                 );
@@ -554,12 +556,16 @@ export function RefTeamMatrix({
                     teamName={selectedTeam.name}
                     className="ref-matrix-team-panel-sos"
                   />
-                ) : (
+                ) : selectedTeam.baselineGames > 0 ? (
                   <p className="ref-matrix-team-panel-lead">
                     Team baseline {selectedTeam.baselineWins}-
                     {selectedTeam.baselineLosses} (
                     {formatPct(selectedTeam.baselineWinRate)} across{" "}
                     {selectedTeam.baselineGames} gp).
+                  </p>
+                ) : (
+                  <p className="ref-matrix-team-panel-lead">
+                    Team baseline unavailable for this sample.
                   </p>
                 )}
                 <p className="ref-matrix-team-panel-lead">

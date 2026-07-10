@@ -48,6 +48,20 @@ export function matrixCellKey(refSlug: string, teamAbbr: string): string {
   return `${refSlug}|${teamAbbr.toUpperCase()}`;
 }
 
+/** Prefer hydrated crew splits; slim ref-stats core often omits or empties teamSplits. */
+export function resolveMatrixTeamSplits(
+  stats: RefStatsFile,
+  teamAbbr: string,
+  getTeamSplits: (abbr: string) => TeamCrewSplit[],
+): TeamCrewSplit[] {
+  const key = teamAbbr.toUpperCase();
+  const embedded = stats.teamSplits[key];
+  if (embedded && embedded.length > 0) return embedded;
+  const resolved = getTeamSplits(teamAbbr);
+  if (resolved.length > 0) return resolved;
+  return embedded ?? [];
+}
+
 export function approxTeamRecord(
   games: number,
   winRate: number,
@@ -86,8 +100,7 @@ export function computeRefTeamMatrix(
 
   const teams: RefTeamMatrixTeam[] = teamList.map((team) => {
     const abbr = team.abbr.toUpperCase();
-    const splits =
-      stats.teamSplits[abbr] ?? getTeamSplits(team.abbr);
+    const splits = resolveMatrixTeamSplits(stats, team.abbr, getTeamSplits);
     const record =
       league === "nba"
         ? getTeamDisplayRecord(league, abbr, splits, stats.meta.seasons, {
@@ -442,7 +455,18 @@ export interface MatrixExtremeHighlight {
 }
 
 export function formatMatrixTeamBaseline(team: RefTeamMatrixTeam): string {
+  if (team.baselineGames <= 0) return "unavailable";
   return `${team.baselineWins}-${team.baselineLosses} (${team.baselineGames} gp, ${(team.baselineWinRate * 100).toFixed(1)}%)`;
+}
+
+export function formatMatrixHighlightBaseline(highlight: {
+  baselineWins: number;
+  baselineLosses: number;
+  baselineGames: number;
+  baselineWinRate: number;
+}): string {
+  if (highlight.baselineGames <= 0) return "unavailable";
+  return `${highlight.baselineWins}-${highlight.baselineLosses} (${(highlight.baselineWinRate * 100).toFixed(1)}% across ${highlight.baselineGames} gp)`;
 }
 
 export function matrixCellAriaLabel(
@@ -457,7 +481,11 @@ export function matrixCellAriaLabel(
     deltaPts === 0
       ? "at team baseline"
       : `${Math.abs(deltaPts).toFixed(1)} pts ${deltaPts > 0 ? "above" : "below"} team baseline`;
-  return `${refName} with ${team.label}: ref×team ${splitRecord} in ${cell.games} games (${(cell.winRate * 100).toFixed(1)}%), ${deltaLabel}; team sample baseline ${baselineRecord} in ${team.baselineGames} games (${(team.baselineWinRate * 100).toFixed(1)}%)`;
+  const baselineLabel =
+    team.baselineGames > 0
+      ? `team sample baseline ${baselineRecord} in ${team.baselineGames} games (${(team.baselineWinRate * 100).toFixed(1)}%)`
+      : "team sample baseline unavailable";
+  return `${refName} with ${team.label}: ref×team ${splitRecord} in ${cell.games} games (${(cell.winRate * 100).toFixed(1)}%), ${deltaLabel}; ${baselineLabel}`;
 }
 
 export function computeMatrixExtremes(
@@ -470,6 +498,7 @@ export function computeMatrixExtremes(
     for (const team of matrix.teams) {
       const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
       if (!cell) continue;
+      if (team.baselineGames <= 0) continue;
       const extreme = matrixCellExtreme(cell, team.baselineWinRate);
       if (!extreme) continue;
       highlights.push({
