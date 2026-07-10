@@ -3,21 +3,21 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   staticPageGenerationTimeout: 180,
+  outputFileTracingIncludes: {
+    "/**": [
+      "./data/ref-stats-core.json",
+      "./data/team-splits.json",
+      "./data/nhl/ref-stats-core.json",
+      "./data/nhl/team-splits.json",
+      "./data/nfl/ref-stats-core.json",
+      "./data/nfl/team-splits.json",
+      "./data/epl/ref-stats-core.json",
+      "./data/epl/team-splits.json",
+    ],
+  },
   experimental: {
     webpackBuildWorker: false,
     cpus: 1,
-    outputFileTracingIncludes: {
-      "/**": [
-        "./data/ref-stats-core.json",
-        "./data/team-splits.json",
-        "./data/nhl/ref-stats-core.json",
-        "./data/nhl/team-splits.json",
-        "./data/nfl/ref-stats-core.json",
-        "./data/nfl/team-splits.json",
-        "./data/epl/ref-stats-core.json",
-        "./data/epl/team-splits.json",
-      ],
-    },
   },
   async redirects() {
     return [
