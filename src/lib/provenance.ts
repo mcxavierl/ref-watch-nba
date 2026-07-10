@@ -367,11 +367,17 @@ export function refProfileCoreProvenance(
     meta.leagueAvgPenaltyYards !== undefined ? "NFL" : meta.leagueAvgMinors !== undefined ? "NHL" : "NBA",
   );
   const gate = sampleGateStatus(profile.games, meta.minSampleSize);
+  // A referee below the sample-size gate is a thin sample, not fully verified:
+  // downgrade real metrics to partial so the UI labels them "Partial data".
+  const gatedTag: ProvenanceTag =
+    !gate.cleared && dataTag === "computed-from-real"
+      ? "computed-with-partial-data"
+      : dataTag;
   const overRateTag: ProvenanceTag =
-    baseline.tag === "fallback-constant" ? "fallback-constant" : dataTag;
+    baseline.tag === "fallback-constant" ? "fallback-constant" : gatedTag;
 
   return {
-    avgTotalPoints: metricFromTag(dataTag, {
+    avgTotalPoints: metricFromTag(gatedTag, {
       sampleSize: profile.games,
       gateThreshold: meta.minSampleSize,
     }),
@@ -379,7 +385,7 @@ export function refProfileCoreProvenance(
       sampleSize: profile.games,
       gateThreshold: meta.minSampleSize,
     }),
-    avgFouls: metricFromTag(dataTag, {
+    avgFouls: metricFromTag(gatedTag, {
       sampleSize: profile.games,
       gateThreshold: meta.minSampleSize,
     }),
