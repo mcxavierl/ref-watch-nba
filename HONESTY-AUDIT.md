@@ -1,6 +1,6 @@
 # Honesty audit
 
-Generated: 2026-07-10T16:38:13.864Z
+Generated: 2026-07-10T16:51:44.452Z
 
 Counts reflect provenance tags that would be shown in the UI (ref profiles, betting splits, slate crew metrics).
 
@@ -54,10 +54,10 @@ No honesty violations flagged.
 
 ## EPL
 
-- Data source: **espn**
-- Ref profiles: **47**
+- Data source: **football-data**
+- Ref profiles: **48**
 - League baseline fallback: **yes**
-- Displayed metrics: **47** real · **0** partial · **0** estimated (47 total)
+- Displayed metrics: **0** real · **0** partial · **0** estimated (48 total)
 
 No honesty violations flagged.
 
@@ -71,7 +71,7 @@ No honesty violations flagged.
 | NFL | 208 | 0 | 0 | 208 | 0 |
 | CBB | 0 | 0 | 0 | 0 | 0 |
 | CFB | 0 | 0 | 0 | 0 | 0 |
-| EPL | 47 | 0 | 0 | 47 | 0 |
+| EPL | 0 | 0 | 0 | 48 | 0 |
 
 Re-run after data rebuilds: `npm run honesty-audit`
 NFL ESPN cross-check: `node scripts/validate-nfl-accuracy.js`

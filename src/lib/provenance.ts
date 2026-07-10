@@ -48,6 +48,7 @@ export function refStatsDataTag(meta: RefStatsFile["meta"]): ProvenanceTag {
     meta.source === "nba-stats-api" ||
     meta.source === "nhl-api" ||
     meta.source === "espn" ||
+    meta.source === "football-data" ||
     meta.source === "seeded"
   ) {
     return "computed-from-real";

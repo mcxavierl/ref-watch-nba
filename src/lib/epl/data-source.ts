@@ -2,7 +2,7 @@ import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 
 /** Verified match logs and ref stats from external feeds. */
 export function isEplVerifiedData(source: string | undefined): boolean {
-  return source === "espn";
+  return source === "espn" || source === "football-data";
 }
 
 /** Simulated or legacy preview data — not for accuracy claims. */

@@ -2,8 +2,28 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { NBA_TEN_SEASONS } from "./lib/ten-season-policy";
+import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
 
 const NBA_INGEST_SEASONS = [...NBA_TEN_SEASONS] as const;
+
+function writeMinifiedJson(dest: string, data: unknown): void {
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.writeFileSync(dest, `${JSON.stringify(data)}\n`);
+  console.log(`Wrote ${dest} (${(fs.statSync(dest).size / 1024).toFixed(0)} KB)`);
+}
+
+function copyRefStatsCore(root: string): void {
+  const fullPath = path.join(root, "data", "ref-stats.json");
+  if (!fs.existsSync(fullPath)) return;
+
+  const full = JSON.parse(fs.readFileSync(fullPath, "utf8")) as import("../src/lib/types").RefStatsFile;
+  const { core, teamSplits } = splitRefStatsForDeploy(full);
+
+  writeMinifiedJson(path.join(root, "data", "ref-stats-core.json"), core);
+  writeMinifiedJson(path.join(root, "data", "team-splits.json"), teamSplits);
+  writeMinifiedJson(path.join(root, "public", "data", "nba", "ref-stats.json"), core);
+  writeMinifiedJson(path.join(root, "public", "data", "nba", "team-splits.json"), teamSplits);
+}
 
 function copyPair(srcDir: string, destDir: string, basename: string): void {
   fs.mkdirSync(destDir, { recursive: true });
@@ -73,11 +93,12 @@ function copyNbaVerifiedIngest(root: string): boolean {
 }
 
 const root = process.cwd();
+copyRefStatsCore(root);
 const usedVerifiedNba = copyNbaVerifiedIngest(root);
 if (!usedVerifiedNba) {
   copyPair(path.join(root, "data"), path.join(root, "public/data/nba"), "game-logs");
 }
-copyPair(path.join(root, "data"), path.join(root, "public/data/nba"), "ref-stats");
+// ref-stats copied via copyRefStatsCore (slim core without teamSplits)
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-stats");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "game-logs");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-photos");
@@ -165,7 +186,9 @@ function writeLiveHeaderLeagues(): void {
     };
     const eplVerified =
       epl.meta?.data_verified === true &&
-      (epl.meta?.source === "espn" || epl.meta?.source === "hybrid");
+      (epl.meta?.source === "espn" ||
+        epl.meta?.source === "hybrid" ||
+        epl.meta?.source === "football-data");
     if (eplVerified) leagues.push("epl");
   }
 

@@ -152,6 +152,8 @@ export interface RefTeamStat {
   avgTotalPoints: number;
   overRate: number;
   winRate: number;
+  /** Team-minus-opponent technical fouls (NBA) or yellow cards (EPL) per game when available. */
+  avgTechnicalFoulDifferential?: number;
   /** Exact W-L when sourced from Basketball-Reference or game logs. */
   wins?: number;
   losses?: number;
@@ -260,7 +262,14 @@ export interface RefStatsFile {
     leagueAvgFouls: number;
     leagueOverBaseline: number;
     minSampleSize: number;
-    source: "nba-stats-api" | "nhl-api" | "espn" | "seeded" | "historical" | "hybrid";
+    source:
+      | "nba-stats-api"
+      | "nhl-api"
+      | "espn"
+      | "football-data"
+      | "seeded"
+      | "historical"
+      | "hybrid";
     /** Hard gate: only true when stats come from verified real-source ingest. */
     data_verified?: boolean;
     /** Human-readable provenance label for UI and agent responses. */
