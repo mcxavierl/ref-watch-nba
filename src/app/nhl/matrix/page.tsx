@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
@@ -38,12 +39,11 @@ export default async function NhlMatrixPage() {
   const extremes = computeMatrixExtremes(matrix);
 
   return (
-    <div className="page-shell">
-      <Link href="/nhl" className="back-link">
-        ← NHL slate
-      </Link>
-
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId="nhl">
+        <Link href="/nhl" className="league-hub-hero-back">
+          ← NHL slate
+        </Link>
         <h1 className="page-title">NHL official × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} referees worked their
@@ -51,13 +51,13 @@ export default async function NhlMatrixPage() {
           dataset. {NHL_LINESMAN_METHODOLOGY_NOTE} Not predictions; see{" "}
           <Link
             href="/methodology"
-            className="font-medium text-zinc-800 hover:underline"
+            className="font-medium text-zinc-200 hover:underline"
           >
             methodology
           </Link>
           .
         </p>
-      </section>
+      </LeagueHubHero>
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">

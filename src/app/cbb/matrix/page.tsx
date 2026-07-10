@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { formatRefStatsRange, getRefStats, getTeamSplits } from "@/lib/cbb/data";
@@ -31,12 +32,11 @@ export default function NbaMatrixPage() {
   const extremes = computeMatrixExtremes(matrix);
 
   return (
-    <div className="page-shell">
-      <Link href="/cbb" className="back-link">
-        ← Home
-      </Link>
-
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId="cbb">
+        <Link href="/cbb" className="league-hub-hero-back">
+          ← Home
+        </Link>
         <h1 className="page-title">CBB ref × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} referees worked their games
@@ -44,21 +44,21 @@ export default function NbaMatrixPage() {
           predictions; see{" "}
           <Link
             href="/methodology"
-            className="font-medium text-zinc-800 hover:underline"
+            className="font-medium text-zinc-200 hover:underline"
           >
             methodology
           </Link>
           .
         </p>
         {bbrTeamNote ? (
-          <p className="mt-2 text-sm text-amber-800">{bbrTeamNote}</p>
+          <p className="text-sm text-amber-300/90">{bbrTeamNote}</p>
         ) : seeded ? (
-          <p className="mt-2 text-sm text-amber-800">
+          <p className="text-sm text-amber-300/90">
             Historical dataset; W-L derived from stored win rates and may
             round slightly.
           </p>
         ) : null}
-      </section>
+      </LeagueHubHero>
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">

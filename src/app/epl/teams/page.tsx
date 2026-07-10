@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/epl/data";
 import { EPL_TEAMS, teamFullName } from "@/lib/epl/teams";
@@ -12,15 +13,15 @@ export default function EplTeamsIndexPage() {
   const teams = [...EPL_TEAMS].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="page-shell">
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId="epl">
         <h1 className="page-title">All Premier League teams</h1>
         <p className="page-lead">
           Pick a club to see how they&apos;ve performed under different referees:
           goals, fouls, cards, and home/away splits. 2025-26 roster includes Leeds,
           Burnley, and Sunderland.
         </p>
-      </section>
+      </LeagueHubHero>
 
       <section className="section-block">
         <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

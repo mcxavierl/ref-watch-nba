@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/cbb/data";
 import { teamFullName, teamsByConference, type CbbTeam } from "@/lib/cbb/teams";
@@ -13,14 +14,14 @@ export default function CbbTeamsIndexPage() {
   const conferences = Object.keys(byConference) as CbbTeam["conference"][];
 
   return (
-    <div className="page-shell">
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId="cbb">
         <h1 className="page-title">All CBB teams</h1>
         <p className="page-lead">
           Pick a team to see how they&apos;ve performed under different referee
           crews: scoring, fouls, and home/away splits.
         </p>
-      </section>
+      </LeagueHubHero>
 
       {conferences.map((conference) => {
         const teams = byConference[conference] ?? [];

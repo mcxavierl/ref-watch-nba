@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
@@ -35,12 +36,11 @@ export default function CfbMatrixPage() {
   const extremes = computeMatrixExtremes(matrix);
 
   return (
-    <div className="page-shell">
-      <Link href="/cfb" className="back-link">
-        ← CFB slate
-      </Link>
-
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId="cfb">
+        <Link href="/cfb" className="league-hub-hero-back">
+          ← CFB slate
+        </Link>
         <h1 className="page-title">CFB official × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} officials worked their
@@ -48,24 +48,24 @@ export default function CfbMatrixPage() {
           dataset. Not predictions; see{" "}
           <Link
             href="/methodology"
-            className="font-medium text-zinc-800 hover:underline"
+            className="font-medium text-zinc-200 hover:underline"
           >
             methodology
           </Link>
           .
         </p>
         {seeded && (
-          <p className="mt-2 text-sm text-amber-800">
+          <p className="text-sm text-amber-300/90">
             Simulated seed dataset; W-L derived from stored win rates and may
             round slightly.
           </p>
         )}
         {espn && (
-          <p className="mt-2 text-sm text-emerald-800">
+          <p className="text-sm text-emerald-300/90">
             Penalty and scoring stats sourced from ESPN game summaries.
           </p>
         )}
-      </section>
+      </LeagueHubHero>
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/data";
 import { teamFullName, teamsByConference } from "@/lib/teams";
@@ -12,14 +13,14 @@ export default function TeamsIndexPage() {
   const { East, West } = teamsByConference();
 
   return (
-    <div className="page-shell">
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId="nba">
         <h1 className="page-title">All NBA teams</h1>
         <p className="page-lead">
           Pick a team to see how they&apos;ve performed under different referee
           crews: scoring, fouls, and home/away splits.
         </p>
-      </section>
+      </LeagueHubHero>
 
       {(["East", "West"] as const).map((conference) => {
         const teams = conference === "East" ? East : West;

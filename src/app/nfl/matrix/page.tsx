@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
@@ -36,12 +37,11 @@ export default async function NflMatrixPage() {
   const extremes = computeMatrixExtremes(matrix);
 
   return (
-    <div className="page-shell">
-      <Link href="/nfl" className="back-link">
-        ← NFL slate
-      </Link>
-
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId="nfl">
+        <Link href="/nfl" className="league-hub-hero-back">
+          ← NFL slate
+        </Link>
         <h1 className="page-title">NFL official × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} officials worked their
@@ -49,24 +49,24 @@ export default async function NflMatrixPage() {
           dataset. Not predictions; see{" "}
           <Link
             href="/methodology"
-            className="font-medium text-zinc-800 hover:underline"
+            className="font-medium text-zinc-200 hover:underline"
           >
             methodology
           </Link>
           .
         </p>
         {stats.meta.source === "hybrid" && (
-          <p className="mt-2 text-sm text-emerald-800">
+          <p className="text-sm text-emerald-300/90">
             Ref×team W-L rebuilt from ESPN game logs; penalty and scoring splits
             merged where available.
           </p>
         )}
         {espn && stats.meta.source === "espn" && (
-          <p className="mt-2 text-sm text-emerald-800">
+          <p className="text-sm text-emerald-300/90">
             Penalty and scoring stats sourced from ESPN game summaries.
           </p>
         )}
-      </section>
+      </LeagueHubHero>
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">

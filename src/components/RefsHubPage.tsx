@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { CrewDominanceTable } from "@/components/CrewDominanceTable";
+import {
+  LeagueHubHero,
+  type HubHeroLeagueId,
+} from "@/components/LeagueHubHero";
 import { LeagueHubTabs } from "@/components/LeagueHubTabs";
 import { RefsDirectory } from "@/components/RefsDirectory";
 import { RefsMacroInsight } from "@/components/RefsMacroInsight";
@@ -9,7 +13,7 @@ import {
   computeCrewDominance,
   crewDominanceSummary,
 } from "@/lib/crew-dominance";
-import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { linesmanSlugSet } from "@/lib/nhl/officials";
 import { buildRefsDirectoryContext } from "@/lib/refs-directory";
@@ -18,7 +22,7 @@ import { DEFAULT_SEASON_SCOPE_MODE } from "@/lib/season-scope";
 import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 
 type RefsHubPageProps = {
-  leagueId: LeagueId;
+  leagueId: HubHeroLeagueId;
   defaultTab?: "refs" | "crews";
   scopeMode?: SeasonScopeMode;
 };
@@ -99,17 +103,18 @@ export function RefsHubPage({
   );
 
   return (
-    <div className="page-shell">
-      <Link href={homeHref} className="back-link">
-        ← {league.shortLabel} slate
-      </Link>
-
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId={leagueId}>
+        <Link href={homeHref} className="league-hub-hero-back">
+          ← {league.shortLabel} slate
+        </Link>
         <h1 className="page-title">
-          {leagueId === "nhl" ? "Officials" : `${league.officialNounPlural.charAt(0).toUpperCase()}${league.officialNounPlural.slice(1)}`}
+          {leagueId === "nhl"
+            ? "Officials"
+            : `${league.officialNounPlural.charAt(0).toUpperCase()}${league.officialNounPlural.slice(1)}`}
         </h1>
         <p className="page-lead">{refsLead}</p>
-      </section>
+      </LeagueHubHero>
 
       <LeagueHubTabs
         ariaLabel="Officials views"

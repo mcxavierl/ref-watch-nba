@@ -6,6 +6,10 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import {
+  LeagueHubHero,
+  type HubHeroLeagueId,
+} from "@/components/LeagueHubHero";
 
 export type LeagueHubTab = {
   id: string;
@@ -21,7 +25,7 @@ type LeagueHubTabsProps = {
   ariaLabel: string;
   variant?: "default" | "insights";
   /** Sets sport watermark + accent on the insights hero. */
-  leagueId?: string;
+  leagueId?: HubHeroLeagueId;
   /** Content above the tablist (title stack, back link, etc.). */
   before?: ReactNode;
   /** Content between tablist and panel (meta row). */
@@ -99,23 +103,19 @@ export function LeagueHubTabs({
   );
 
   if (variant === "insights") {
+    if (!leagueId) {
+      throw new Error("LeagueHubTabs insights variant requires leagueId");
+    }
     return (
       <div className="league-hub league-hub--insights">
-        <section
-          className="insights-hero"
-          data-league={leagueId}
-          aria-label={ariaLabel}
-        >
-          <div className="insights-hero-watermark" aria-hidden />
-          <div className="insights-hero-inner">
-            {before}
-            {tablist}
-            {after}
-            {active.note ? (
-              <p className="insights-hero-note">{active.note}</p>
-            ) : null}
-          </div>
-        </section>
+        <LeagueHubHero leagueId={leagueId} aria-label={ariaLabel}>
+          {before}
+          {tablist}
+          {after}
+          {active.note ? (
+            <p className="insights-hero-note">{active.note}</p>
+          ) : null}
+        </LeagueHubHero>
         <div
           role="tabpanel"
           id={`hub-panel-${active.id}`}

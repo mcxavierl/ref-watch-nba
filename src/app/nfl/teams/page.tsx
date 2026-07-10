@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { getTeamSplits } from "@/lib/nfl/data";
 import { teamFullName, teamsByConference } from "@/lib/nfl/teams";
@@ -12,14 +13,14 @@ export default function NflTeamsIndexPage() {
   const { AFC, NFC } = teamsByConference();
 
   return (
-    <div className="page-shell">
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId="nfl">
         <h1 className="page-title">All NFL teams</h1>
         <p className="page-lead">
           Pick a team to see how they&apos;ve performed under different official
           crews, scoring, penalties, and home/away splits.
         </p>
-      </section>
+      </LeagueHubHero>
 
       {(["AFC", "NFC"] as const).map((conference) => {
         const teams = conference === "AFC" ? AFC : NFC;

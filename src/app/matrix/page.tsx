@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
@@ -48,12 +49,11 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
   const teamSosByAbbr = getNbaTeamSosCache().teams;
 
   return (
-    <div className="page-shell">
-      <Link href="/" className="back-link">
-        ← Home
-      </Link>
-
-      <section className="page-hero">
+    <div className="page-shell page-shell-hub">
+      <LeagueHubHero leagueId="nba">
+        <Link href="/" className="league-hub-hero-back">
+          ← Home
+        </Link>
         <h1 className="page-title">NBA ref × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} referees worked their games
@@ -61,22 +61,22 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
           predictions; see{" "}
           <Link
             href="/methodology"
-            className="font-medium text-zinc-800 hover:underline"
+            className="font-medium text-zinc-200 hover:underline"
           >
             methodology
           </Link>
           .
         </p>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-zinc-600">{scopeLabel}</p>
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-zinc-400">{scopeLabel}</p>
           <Suspense fallback={null}>
             <SeasonScopeToggle />
           </Suspense>
         </div>
         {bbrTeamNote ? (
-          <p className="mt-2 text-sm text-amber-800">{bbrTeamNote}</p>
+          <p className="text-sm text-amber-300/90">{bbrTeamNote}</p>
         ) : null}
-      </section>
+      </LeagueHubHero>
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">

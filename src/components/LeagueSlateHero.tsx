@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
+import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { LEAGUES } from "@/lib/leagues";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
@@ -62,9 +63,9 @@ export function LeagueSlateHero({
   };
 
   return (
-    <section
-      className={`page-hero page-hero-slate league-slate-hero${useInteractiveStats ? " league-slate-hero-product" : ""}`}
-      data-league={leagueId}
+    <LeagueHubHero
+      leagueId={leagueId}
+      className={`page-hero-slate league-slate-hero${useInteractiveStats ? " league-slate-hero-product" : ""}`}
       aria-labelledby={`${leagueId}-slate-heading`}
     >
       <p className="league-slate-kicker">{copy.kicker}</p>
@@ -158,7 +159,7 @@ export function LeagueSlateHero({
       {seasonAuditNote && (
         <p className="league-slate-season-audit">{seasonAuditNote}</p>
       )}
-    </section>
+    </LeagueHubHero>
   );
 }
 
