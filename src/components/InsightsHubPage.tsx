@@ -58,10 +58,21 @@ export function InsightsHubPage({
   const dataLeague = insightsDataLeague(leagueId);
   const findings = computeResearchFindingsForLeague(dataLeague, scopedSeasons);
   const baselines = getBaselinesFile();
-  const scopedBaselineSeasons = scopedBaselinesSeasons(
-    baselines[dataLeague].seasons,
+  const leagueBaselines = baselines[dataLeague];
+  let scopedBaselineSeasons = scopedBaselinesSeasons(
+    leagueBaselines.seasons,
     scopedSeasons,
   ) as Record<string, SeasonBaseline>;
+  // If scope keys don't overlap (label drift), still show full computed seasons.
+  if (
+    Object.keys(scopedBaselineSeasons).length === 0 &&
+    Object.keys(leagueBaselines.seasons).length > 0
+  ) {
+    scopedBaselineSeasons = leagueBaselines.seasons as Record<
+      string,
+      SeasonBaseline
+    >;
+  }
   const rows = seasonRowsFromBaselines(scopedBaselineSeasons);
   const narrative = buildYoYNarrative(rows, dataLeague);
   const synthesis = buildRankingsSynthesis(stats, league);

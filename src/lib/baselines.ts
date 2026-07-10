@@ -88,19 +88,29 @@ function mergeBaselinesFile(parsed: BaselinesFile): BaselinesFile {
   };
 }
 
+function seasonCount(file: BaselinesFile): number {
+  return (["NBA", "NHL", "NFL", "EPL"] as const).reduce(
+    (n, league) => n + Object.keys(file[league].seasons).length,
+    0,
+  );
+}
+
 /**
- * Prefer the bundled JSON import (Workers-safe). Fall back to disk for local
- * scripts that rewrite data/baselines.json without a rebuild.
+ * Prefer the richer of disk vs bundled JSON. Workers may have a stale traced
+ * baselines.json on disk while the webpack import has the commit's copy —
+ * never let the stale file blank NFL/EPL trends.
  */
 function readBaselines(): BaselinesFile {
+  const bundled = mergeBaselinesFile(baselinesJson as BaselinesFile);
   try {
     const raw = fs.readFileSync(
       path.join(process.cwd(), "data", "baselines.json"),
       "utf8",
     );
-    return mergeBaselinesFile(JSON.parse(raw) as BaselinesFile);
+    const fromFs = mergeBaselinesFile(JSON.parse(raw) as BaselinesFile);
+    return seasonCount(fromFs) >= seasonCount(bundled) ? fromFs : bundled;
   } catch {
-    return mergeBaselinesFile(baselinesJson as BaselinesFile);
+    return bundled;
   }
 }
 
