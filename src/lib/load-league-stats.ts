@@ -30,12 +30,23 @@ import {
 } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 import {
-  formatSeasonScopeFromMode,
+  formatSeasonScope,
   resolveScopedSeasonsForLeague,
   scopedSinceSeason,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
 import type { RefStatsFile } from "@/lib/types";
+
+/** Seasons that appear in ref profiles (honest pool when meta lists aspirational seasons). */
+function seasonsWithGameData(stats: RefStatsFile): string[] {
+  const covered = new Set<string>();
+  for (const ref of stats.refs) {
+    for (const season of ref.seasons) covered.add(season);
+  }
+  const pool = [...stats.meta.seasons].sort();
+  const filtered = pool.filter((season) => covered.has(season));
+  return filtered.length > 0 ? filtered : pool;
+}
 
 /** Leagues that hide stats until verified ingest ships (empty when unverified). */
 const INGEST_GATED_LEAGUES = new Set<LeagueId>([]);
@@ -63,6 +74,7 @@ export function loadLeagueStats(leagueId: LeagueId): LeagueStatsBundle {
 export type ScopedLeagueStatsBundle = LeagueStatsBundle & {
   scopeMode: SeasonScopeMode;
   scopedSeasons: string[];
+  availableSeasons: string[];
   sinceSeason: string;
   scopeLabel: string;
 };
@@ -75,8 +87,8 @@ export function loadScopedLeagueStats(
   const verification = resolveLeagueVerification(leagueId, full.meta);
   const preview = shouldShowUnverifiedData();
   const availableSeasons = INGEST_GATED_LEAGUES.has(leagueId)
-    ? filterVerifiedSeasons(leagueId, full.meta, full.meta.seasons, preview)
-    : full.meta.seasons;
+    ? filterVerifiedSeasons(leagueId, full.meta, seasonsWithGameData(full), preview)
+    : seasonsWithGameData(full);
   const scopedSeasons = resolveScopedSeasonsForLeague(
     leagueId,
     scopeMode,
@@ -94,8 +106,9 @@ export function loadScopedLeagueStats(
     formatRange,
     scopeMode,
     scopedSeasons,
+    availableSeasons,
     sinceSeason: scopedSinceSeason(scopedSeasons),
-    scopeLabel: formatSeasonScopeFromMode(scopeMode),
+    scopeLabel: formatSeasonScope(scopedSeasons.length),
   };
 }
 
