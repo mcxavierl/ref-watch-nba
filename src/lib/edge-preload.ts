@@ -2,6 +2,7 @@ import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
 import {
+  attachTeamSplits,
   getCachedRefStats,
   getCachedTeamSplits,
   setCachedRefStats,
@@ -95,39 +96,54 @@ const ASSET_BASE: Record<League, string> = {
   cfb: "/data/cfb",
 };
 
-async function preloadTeamSplits(league: League, origin: string): Promise<void> {
-  const cached = getCachedTeamSplits(league);
-  if (cached && Object.keys(cached).length > 0) return;
-
-  const assetPath = `${ASSET_BASE[league]}/team-splits.json`;
-  const data =
-    (await fetchJsonAsset<Record<string, TeamCrewSplit[]>>(assetPath)) ??
-    (await fetchOriginJson<Record<string, TeamCrewSplit[]>>(origin, assetPath));
-
-  if (data && Object.keys(data).length > 0) {
-    setCachedTeamSplits(league, data);
-  }
-}
-
 async function preloadRefStats(origin: string, league: League): Promise<void> {
   const cached = getCachedRefStats(league);
-  if (
-    cached?.refs?.length &&
-    resolveLeagueVerification(league as LeagueId, cached.meta).data_verified
-  ) {
-    await preloadTeamSplits(league, origin);
-    return;
-  }
+  const needsStats =
+    !cached?.refs?.length ||
+    (cached
+      ? !resolveLeagueVerification(league as LeagueId, cached.meta).data_verified
+      : true);
+  const needsSplits =
+    !getCachedTeamSplits(league) ||
+    Object.keys(getCachedTeamSplits(league)!).length === 0;
 
-  const assetPath = REF_STATS_ASSET[league];
-  const data =
-    (await fetchRefStatsAsset(assetPath)) ??
-    (await fetchRefStatsOrigin(origin, assetPath));
+  const statsPromise = needsStats
+    ? (async () => {
+        const assetPath = REF_STATS_ASSET[league];
+        return (
+          (await fetchRefStatsAsset(assetPath)) ??
+          (await fetchRefStatsOrigin(origin, assetPath))
+        );
+      })()
+    : Promise.resolve(cached);
 
-  if (data?.refs?.length) {
-    setCachedRefStats(league, data);
+  const splitsPromise = needsSplits
+    ? (async () => {
+        const assetPath = `${ASSET_BASE[league]}/team-splits.json`;
+        return (
+          (await fetchJsonAsset<Record<string, TeamCrewSplit[]>>(assetPath)) ??
+          (await fetchOriginJson<Record<string, TeamCrewSplit[]>>(
+            origin,
+            assetPath,
+          ))
+        );
+      })()
+    : Promise.resolve(getCachedTeamSplits(league));
+
+  const [stats, splits] = await Promise.all([statsPromise, splitsPromise]);
+
+  if (stats?.refs?.length) {
+    const merged =
+      splits && Object.keys(splits).length > 0
+        ? attachTeamSplits(league, stats, splits)
+        : stats;
+    setCachedRefStats(league, merged);
+    if (splits && Object.keys(splits).length > 0) {
+      setCachedTeamSplits(league, splits);
+    }
+  } else if (splits && Object.keys(splits).length > 0) {
+    setCachedTeamSplits(league, splits);
   }
-  await preloadTeamSplits(league, origin);
 }
 
 /**

@@ -177,11 +177,14 @@ function checkWorkerPreloadContract(): void {
     path.join(ROOT, "src/lib/edge-preload.ts"),
     "utf8",
   );
-  if (!edgePreload.includes("preloadTeamSplits")) {
-    fail("edge-preload.ts must call preloadTeamSplits for Worker hydration");
-  }
   if (!edgePreload.includes("team-splits.json")) {
     fail("edge-preload.ts must fetch team-splits.json assets");
+  }
+  if (
+    !edgePreload.includes("mergeCachedLeagueRefStats") &&
+    !edgePreload.includes("attachTeamSplits")
+  ) {
+    fail("edge-preload.ts must merge team splits into ref-stats cache after preload");
   }
 
   for (const league of ["nhl", "nfl", "epl"] as const) {

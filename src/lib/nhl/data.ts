@@ -174,9 +174,10 @@ export function getRefStats(): RefStatsFile {
   try {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    return gateUnverifiedNhlStats(
+    const stats = gateUnverifiedNhlStats(
       applyBaselines(mergeTeamSpecialTeams(normalizeRefStats(raw))),
     );
+    return attachTeamSplits("nhl", stats, loadTeamSplitsFromDisk());
   } catch {
     return EMPTY_REF_STATS;
   }

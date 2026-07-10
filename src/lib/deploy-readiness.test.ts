@@ -13,7 +13,13 @@ import {
   topRefsBeatingBaselineForTeam,
   TEAM_MATRIX_REF_PANEL_LIMIT,
 } from "@/lib/ref-team-matrix";
-import { attachTeamSplits } from "@/lib/ref-stats-preload";
+import {
+  attachTeamSplits,
+  getCachedRefStats,
+  mergeCachedLeagueRefStats,
+  setCachedRefStats,
+  setCachedTeamSplits,
+} from "@/lib/ref-stats-preload";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 
 describe("deploy readiness regressions", () => {
@@ -90,5 +96,29 @@ describe("deploy readiness regressions", () => {
         `${league} ${abbr} top/bottom overlap`,
       );
     }
+  });
+
+  it("mergeCachedLeagueRefStats patches slim core in ref-stats cache", () => {
+    globalThis.__REFWATCH_NHL_REF_STATS__ = undefined;
+    globalThis.__REFWATCH_NHL_TEAM_SPLITS__ = undefined;
+
+    const core = JSON.parse(
+      readFileSync("data/nhl/ref-stats-core.json", "utf8"),
+    ) as RefStatsFile;
+    const splits = JSON.parse(
+      readFileSync("data/nhl/team-splits.json", "utf8"),
+    ) as Record<string, TeamCrewSplit[]>;
+    core.teamSplits = {};
+
+    setCachedRefStats("nhl", core);
+    assert.equal(Object.keys(getCachedRefStats("nhl")!.teamSplits).length, 0);
+
+    setCachedTeamSplits("nhl", splits);
+    assert.ok(Object.keys(getCachedRefStats("nhl")!.teamSplits).length > 0);
+
+    core.teamSplits = {};
+    setCachedRefStats("nhl", core);
+    mergeCachedLeagueRefStats("nhl");
+    assert.ok(Object.keys(getCachedRefStats("nhl")!.teamSplits).length > 0);
   });
 });

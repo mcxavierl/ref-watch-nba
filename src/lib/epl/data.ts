@@ -154,7 +154,8 @@ export function getRefStats(): RefStatsFile {
   try {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    return gateUnverifiedEplStats(applyBaselines(normalizeRefStats(raw)));
+    const stats = gateUnverifiedEplStats(applyBaselines(normalizeRefStats(raw)));
+    return attachTeamSplits("epl", stats, loadTeamSplitsFromDisk());
   } catch {
     return EMPTY_REF_STATS;
   }

@@ -74,8 +74,8 @@ export function resolveRefStatsFromFsOrCache(
       resolveLeagueVerification(leagueId, fromFs.meta).data_verified,
   );
 
-  if (cachedVerified) return cached;
-  if (fsVerified) return fromFs;
+  if (cachedVerified && cached) return attachTeamSplits(league, cached, {});
+  if (fsVerified && fromFs) return attachTeamSplits(league, fromFs, {});
 
   // Never serve stale seeded bundle data for verified live leagues on Workers.
   if (isVerifiedLiveLeague(leagueId)) {
@@ -84,13 +84,12 @@ export function resolveRefStatsFromFsOrCache(
 
   const fsRefs = fromFs?.refs?.length ?? 0;
   const cachedRefs = cached?.refs?.length ?? 0;
-  if (cached && cachedRefs >= fsRefs) return cached;
-  if (fsRefs > 0) return fromFs;
-  return cached ?? fromFs;
-}
-
-export function setCachedRefStats(league: League, data: RefStatsFile): void {
-  globalThis[CACHE_KEYS[league]] = data;
+  if (cached && cachedRefs >= fsRefs) {
+    return attachTeamSplits(league, cached, {});
+  }
+  if (fsRefs > 0 && fromFs) return attachTeamSplits(league, fromFs, {});
+  const fallback = cached ?? fromFs;
+  return fallback ? attachTeamSplits(league, fallback, {}) : null;
 }
 
 export function getCachedTeamSplits(
@@ -101,6 +100,25 @@ export function getCachedTeamSplits(
   return globalThis[key] ?? null;
 }
 
+function writeCachedRefStats(league: League, data: RefStatsFile): void {
+  globalThis[CACHE_KEYS[league]] = data;
+}
+
+/** Merge sidecar team splits into the slim ref-stats object already in cache. */
+export function mergeCachedLeagueRefStats(league: League): void {
+  const stats = getCachedRefStats(league);
+  const splits = getCachedTeamSplits(league);
+  if (!stats?.refs?.length || !splits || Object.keys(splits).length === 0) {
+    return;
+  }
+  writeCachedRefStats(league, { ...stats, teamSplits: splits });
+}
+
+export function setCachedRefStats(league: League, data: RefStatsFile): void {
+  writeCachedRefStats(league, data);
+  mergeCachedLeagueRefStats(league);
+}
+
 export function setCachedTeamSplits(
   league: League,
   splits: Record<string, TeamCrewSplit[]>,
@@ -108,6 +126,7 @@ export function setCachedTeamSplits(
   const key = TEAM_SPLITS_CACHE_KEYS[league];
   if (!key) return;
   globalThis[key] = splits;
+  mergeCachedLeagueRefStats(league);
 }
 
 /** Slim ref-stats core strips teamSplits; merge CDN/file splits for matrix baselines. */
