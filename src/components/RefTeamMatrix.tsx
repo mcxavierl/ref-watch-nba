@@ -76,6 +76,9 @@ function TeamRefRankListItem({
       : foulTone === "negative"
         ? "ref-matrix-delta--negative"
         : "ref-matrix-delta--neutral";
+  const winDeltaLabel = formatWinRateVsTeam(entry.winRate, teamBaselineWinRate);
+  const winDeltaShort = winDeltaLabel.replace(/\s+vs team$/i, "");
+  const whistleUnit = whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
 
   return (
     <li className="ref-matrix-team-panel-item">
@@ -102,9 +105,9 @@ function TeamRefRankListItem({
         </span>
         <span
           className={`ref-matrix-team-panel-win-delta ${deltaClass}`}
-          title={`Win rate vs team baseline: ${formatWinRateVsTeam(entry.winRate, teamBaselineWinRate)}`}
+          title={`Win rate vs team baseline: ${winDeltaLabel}`}
         >
-          {formatWinRateVsTeam(entry.winRate, teamBaselineWinRate)}
+          {winDeltaShort}
         </span>
       </span>
       <span className="ref-matrix-team-panel-games">{entry.games} gp</span>
@@ -112,7 +115,7 @@ function TeamRefRankListItem({
         className={`ref-matrix-team-panel-delta ${foulClass}`}
         title={`${whistleDiffLabel}: ${formatSigned(entry.avgFoulDifferential)} per game`}
       >
-        {formatSigned(entry.avgFoulDifferential)} {whistleDiffLabel.toLowerCase()}
+        {formatSigned(entry.avgFoulDifferential)} {whistleUnit}
       </span>
     </li>
   );
@@ -253,6 +256,8 @@ export function RefTeamMatrix({
   );
   const officialLabel =
     officialNounPlural.charAt(0).toUpperCase() + officialNounPlural.slice(1);
+  const splitNoun =
+    sport === "nhl" || sport === "nfl" || sport === "cfb" ? "Official" : "Ref";
 
   function toggleTeamFilter(teamAbbr: string) {
     setSelectedTeamAbbr((current) => (current === teamAbbr ? null : teamAbbr));
@@ -271,7 +276,7 @@ export function RefTeamMatrix({
   }
 
   return (
-    <div className="ref-matrix">
+    <div className="ref-matrix" data-league={sport}>
       <div className="ref-matrix-legend" role="note">
         <p className="ref-matrix-legend-copy">
           Each cell shows that ref&apos;s approximate W-L with the team (not the
@@ -535,7 +540,7 @@ export function RefTeamMatrix({
               />
               <div className="ref-matrix-team-panel-copy">
                 <h3 id="ref-matrix-team-panel-title" className="ref-matrix-team-panel-title">
-                  Ref×team splits for{" "}
+                  {splitNoun}×team splits for{" "}
                   <Link
                     href={`${basePath}/teams/${selectedTeam.abbr}`}
                     className="ref-matrix-team-panel-team-link"
@@ -557,12 +562,15 @@ export function RefTeamMatrix({
                     className="ref-matrix-team-panel-sos"
                   />
                 ) : selectedTeam.baselineGames > 0 ? (
-                  <p className="ref-matrix-team-panel-lead">
-                    Team baseline {selectedTeam.baselineWins}-
-                    {selectedTeam.baselineLosses} (
-                    {formatPct(selectedTeam.baselineWinRate)} across{" "}
-                    {selectedTeam.baselineGames} gp).
-                  </p>
+                  <div className="ref-matrix-team-panel-baseline">
+                    <span className="ref-matrix-team-panel-baseline-record">
+                      {selectedTeam.baselineWins}-{selectedTeam.baselineLosses}
+                    </span>
+                    <span className="ref-matrix-team-panel-baseline-meta">
+                      {formatPct(selectedTeam.baselineWinRate)} team baseline ·{" "}
+                      {selectedTeam.baselineGames} gp sample
+                    </span>
+                  </div>
                 ) : (
                   <p className="ref-matrix-team-panel-lead">
                     Team baseline unavailable for this sample.
