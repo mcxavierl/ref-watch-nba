@@ -6,7 +6,9 @@ import {
   getRefStats,
   getTeamSplits,
 } from "@/lib/epl/data";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { hubPageMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("epl", "matrix");
 import { LEAGUES } from "@/lib/leagues";
@@ -14,7 +16,8 @@ import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabe
 import { isEplSimulatedData } from "@/lib/epl/data-source";
 import { EPL_TEAMS, teamFullName } from "@/lib/epl/teams";
 
-export default function EplMatrixPage() {
+export default async function EplMatrixPage() {
+  await preloadLeagueRefStats(SITE_URL, "epl");
   const stats = getRefStats();
   const range = formatRefStatsRange(stats.meta);
   const seeded = isEplSimulatedData(stats.meta.source);

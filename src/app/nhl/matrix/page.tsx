@@ -6,7 +6,9 @@ import {
   getRefStats,
   getTeamSplits,
 } from "@/lib/nhl/data";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { hubPageMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("nhl", "matrix");
 import { nhlAnalyticsRefStats } from "@/lib/nhl/officials";
@@ -15,7 +17,8 @@ import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabe
 import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 import { NHL_TEAMS, teamFullName } from "@/lib/nhl/teams";
 
-export default function NhlMatrixPage() {
+export default async function NhlMatrixPage() {
+  await preloadLeagueRefStats(SITE_URL, "nhl");
   const stats = getRefStats();
   const analyticsStats = nhlAnalyticsRefStats(stats);
   const range = formatRefStatsRange(stats.meta);

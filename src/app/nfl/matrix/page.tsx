@@ -6,14 +6,17 @@ import {
   getRefStats,
   getTeamSplits,
 } from "@/lib/nfl/data";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { hubPageMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("nfl", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
 
-export default function NflMatrixPage() {
+export default async function NflMatrixPage() {
+  await preloadLeagueRefStats(SITE_URL, "nfl");
   const stats = getRefStats();
   const range = formatRefStatsRange(stats.meta);
   const espn = stats.meta.source === "espn" || stats.meta.source === "hybrid";
