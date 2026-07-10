@@ -20,7 +20,7 @@ export const LEAGUE_HERO_COPY: Record<
   nba: {
     kicker: "NBA officiating intelligence",
     liveTitle: "Who's blowing the whistle tonight.",
-    offseasonTitle: "Decode officiating bias. Spot the historical edges.",
+    offseasonTitle: "NBA officiating on file.",
     liveLead:
       "Crew assignments, foul tendencies, and ref×team history before tip-off, scored by sample depth, not hype.",
     offseasonLead:
