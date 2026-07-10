@@ -8,6 +8,7 @@ import { getRefStats as getNflRefStats, getTeamSplits as getNflTeamSplits } from
 import {
   bottomRefsBelowBaselineForTeam,
   computeRefTeamMatrix,
+  MATRIX_MIN_GAMES,
   resolveMatrixTeamSplits,
   topRefsBeatingBaselineForTeam,
   TEAM_MATRIX_REF_PANEL_LIMIT,
@@ -44,7 +45,9 @@ describe("deploy readiness regressions", () => {
 
   it("hydrates EPL matrix baselines from sidecar team-splits when core embeds empty arrays", () => {
     const { core, teamSplits: sidecar } = loadSplitRefStatsFixture("epl");
-    const ref = core.refs.find((r) => r.teamStats?.ARS && r.teamStats.ARS.games >= 3);
+    const ref = core.refs.find(
+      (r) => r.teamStats?.ARS && r.teamStats.ARS.games >= MATRIX_MIN_GAMES,
+    );
     assert.ok(ref, "fixture needs ARS ref×team cell");
 
     const slim = attachTeamSplits(
@@ -59,7 +62,7 @@ describe("deploy readiness regressions", () => {
       slim,
       [{ abbr: "ARS", label: "Arsenal", name: "Arsenal" }],
       getEplTeamSplits,
-      3,
+      MATRIX_MIN_GAMES,
       { league: "epl" },
     );
     assert.ok(matrix.teams[0]!.baselineGames > 0);
@@ -76,7 +79,7 @@ describe("deploy readiness regressions", () => {
         stats,
         [{ abbr, label, name: label }],
         getTeamSplits,
-        3,
+        MATRIX_MIN_GAMES,
         { league },
       );
       const team = matrix.teams[0]!;

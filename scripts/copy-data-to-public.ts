@@ -120,6 +120,7 @@ if (!usedVerifiedNba) {
 copyLeagueRefStatsSplit(root, "nhl");
 copyLeagueRefStatsSplit(root, "nfl");
 copyLeagueRefStatsSplit(root, "epl");
+copyPair(path.join(root, "data"), path.join(root, "public/data"), "baselines");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "game-logs");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-photos");
 copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "game-logs");

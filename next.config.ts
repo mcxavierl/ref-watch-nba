@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   staticPageGenerationTimeout: 180,
   outputFileTracingIncludes: {
     "/**": [
+      "./data/baselines.json",
       "./data/ref-stats-core.json",
       "./data/team-splits.json",
       "./data/nhl/ref-stats-core.json",

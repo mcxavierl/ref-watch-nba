@@ -9,6 +9,7 @@ import {
   FALLBACK_CFB,
   FALLBACK_EPL,
 } from "../../scripts/lib/baselines";
+import baselinesJson from "../../data/baselines.json";
 
 export type BaselineSource = "computed" | "fallback";
 
@@ -23,7 +24,7 @@ export interface ResolvedBaseline {
   season: string | null;
 }
 
-type BaselineLeague = "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB" | "EPL";
+type BaselineLeague = "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
 
 const EMPTY: BaselinesFile = {
   generatedAt: "",
@@ -73,26 +74,33 @@ const EMPTY: BaselinesFile = {
   },
 };
 
+function mergeBaselinesFile(parsed: BaselinesFile): BaselinesFile {
+  return {
+    ...EMPTY,
+    ...parsed,
+    fallback: { ...EMPTY.fallback, ...parsed.fallback },
+    NBA: parsed.NBA ?? EMPTY.NBA,
+    NHL: parsed.NHL ?? EMPTY.NHL,
+    NFL: parsed.NFL ?? EMPTY.NFL,
+    CBB: parsed.CBB ?? EMPTY.CBB,
+    CFB: parsed.CFB ?? EMPTY.CFB,
+    EPL: parsed.EPL ?? EMPTY.EPL,
+  };
+}
+
+/**
+ * Prefer the bundled JSON import (Workers-safe). Fall back to disk for local
+ * scripts that rewrite data/baselines.json without a rebuild.
+ */
 function readBaselines(): BaselinesFile {
   try {
     const raw = fs.readFileSync(
       path.join(process.cwd(), "data", "baselines.json"),
       "utf8",
     );
-    const parsed = JSON.parse(raw) as BaselinesFile;
-    return {
-      ...EMPTY,
-      ...parsed,
-      fallback: { ...EMPTY.fallback, ...parsed.fallback },
-      NBA: parsed.NBA ?? EMPTY.NBA,
-      NHL: parsed.NHL ?? EMPTY.NHL,
-      NFL: parsed.NFL ?? EMPTY.NFL,
-      CBB: parsed.CBB ?? EMPTY.CBB,
-      CFB: parsed.CFB ?? EMPTY.CFB,
-      EPL: parsed.EPL ?? EMPTY.EPL,
-    };
+    return mergeBaselinesFile(JSON.parse(raw) as BaselinesFile);
   } catch {
-    return EMPTY;
+    return mergeBaselinesFile(baselinesJson as BaselinesFile);
   }
 }
 

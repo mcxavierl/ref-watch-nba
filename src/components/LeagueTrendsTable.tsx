@@ -12,6 +12,13 @@ function whistleHeader(leagueId: LeagueId): string {
   return `Avg ${LEAGUES[leagueId].metrics.whistleShort.toLowerCase()}`;
 }
 
+function formatWhistle(row: TrendRow, leagueId: LeagueId): string {
+  const whistle = trendWhistleValue(row, leagueId);
+  if (whistle !== undefined) return String(whistle);
+  // Always show a whistle column value when the season row exists.
+  return String(row.leagueAvgFouls);
+}
+
 export function LeagueTrendsTable({
   leagueId,
   rows,
@@ -20,8 +27,21 @@ export function LeagueTrendsTable({
   rows: TrendRow[];
 }) {
   const config = LEAGUES[leagueId];
-  const showOtRate = config.showOtRate;
+  const showOtRate =
+    config.showOtRate && rows.some((row) => row.leagueOvertimeRate !== undefined);
   const minWidth = showOtRate ? "min-w-[560px]" : "min-w-[480px]";
+
+  if (rows.length === 0) {
+    return (
+      <div className="data-card px-4 py-5 sm:px-5">
+        <p className="text-sm text-zinc-600">
+          No season trend rows available for this scope. Re-run{" "}
+          <code className="text-xs">npm run compute-baselines</code> after game
+          logs are present.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="data-card overflow-x-auto">
@@ -36,32 +56,29 @@ export function LeagueTrendsTable({
           </tr>
         </thead>
         <tbody className="divide-y divide-border-subtle">
-          {rows.map((row) => {
-            const whistle = trendWhistleValue(row, leagueId);
-            return (
-              <tr key={row.season} className="hover:bg-zinc-50">
-                <td className="px-4 py-3 font-medium text-zinc-900 sm:px-5">
-                  {row.season}
-                </td>
-                <td className="px-4 py-3 font-mono tabular-nums text-zinc-700">
-                  {row.gameCount.toLocaleString()}
-                </td>
+          {rows.map((row) => (
+            <tr key={row.season} className="hover:bg-zinc-50">
+              <td className="px-4 py-3 font-medium text-zinc-900 sm:px-5">
+                {row.season}
+              </td>
+              <td className="px-4 py-3 font-mono tabular-nums text-zinc-700">
+                {row.gameCount.toLocaleString()}
+              </td>
+              <td className="px-4 py-3 font-mono tabular-nums text-zinc-800">
+                {row.leagueAvgTotal}
+              </td>
+              <td className="px-4 py-3 font-mono tabular-nums text-zinc-800">
+                {formatWhistle(row, leagueId)}
+              </td>
+              {showOtRate && (
                 <td className="px-4 py-3 font-mono tabular-nums text-zinc-800">
-                  {row.leagueAvgTotal}
+                  {row.leagueOvertimeRate !== undefined
+                    ? formatPct(row.leagueOvertimeRate)
+                    : formatPct(0)}
                 </td>
-                <td className="px-4 py-3 font-mono tabular-nums text-zinc-800">
-                  {whistle !== undefined ? whistle : "-"}
-                </td>
-                {showOtRate && (
-                  <td className="px-4 py-3 font-mono tabular-nums text-zinc-800">
-                    {row.leagueOvertimeRate !== undefined
-                      ? formatPct(row.leagueOvertimeRate)
-                      : "-"}
-                  </td>
-                )}
-              </tr>
-            );
-          })}
+              )}
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

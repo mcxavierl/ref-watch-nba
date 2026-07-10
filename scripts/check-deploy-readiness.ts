@@ -14,9 +14,12 @@ import {
   bottomRefsBelowBaselineForTeam,
   computeRefTeamMatrix,
   computeMatrixExtremes,
+  MATRIX_MIN_GAMES,
   topRefsBeatingBaselineForTeam,
   TEAM_MATRIX_REF_PANEL_LIMIT,
 } from "../src/lib/ref-team-matrix";
+import { getBaselinesFile } from "../src/lib/baselines";
+import { seasonRowsFromBaselines } from "../src/lib/trends";
 import { getTeamSampleRecord } from "../src/lib/teamRecord";
 import type { RefStatsFile, TeamCrewSplit } from "../src/lib/types";
 import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
@@ -256,7 +259,12 @@ function checkRuntimeMatrixPanels(): void {
     }
 
     const sample = SAMPLE_TEAMS[league];
-    const matrix = computeRefTeamMatrix(stats, teams, getTeamSplits, 3, {
+    const matrix = computeRefTeamMatrix(
+      stats,
+      teams,
+      getTeamSplits,
+      MATRIX_MIN_GAMES,
+      {
       league,
     });
     const team = matrix.teams.find((t) => t.abbr.toUpperCase() === sample);
@@ -294,6 +302,12 @@ function checkRuntimeMatrixPanels(): void {
       );
     }
 
+    if (matrix.minGames !== MATRIX_MIN_GAMES) {
+      fail(
+        `${league}: matrix minGames is ${matrix.minGames}, expected ${MATRIX_MIN_GAMES}`,
+      );
+    }
+
     const extremes = computeMatrixExtremes(matrix, 50);
     const zeroBaseline = extremes.filter((h) => h.baselineGames <= 0);
     if (zeroBaseline.length > 0) {
@@ -304,6 +318,54 @@ function checkRuntimeMatrixPanels(): void {
   }
 }
 
+function checkTrendsBaselines(): void {
+  if (!fileExists("data/baselines.json")) {
+    fail("missing data/baselines.json");
+    return;
+  }
+  if (!fileExists("public/data/baselines.json")) {
+    fail("missing public/data/baselines.json (copy-data-to-public must publish it)");
+  }
+
+  const baselines = getBaselinesFile();
+  const liveDataLeagues = {
+    nba: "NBA",
+    nhl: "NHL",
+    nfl: "NFL",
+    epl: "EPL",
+  } as const;
+
+  for (const [league, dataLeague] of Object.entries(liveDataLeagues)) {
+    const block = baselines[dataLeague];
+    if (block.usingFallback || block.aggregate.gameCount === 0) {
+      fail(
+        `${league}: baselines still on fallback / empty — run npm run compute-baselines`,
+      );
+      continue;
+    }
+    const rows = seasonRowsFromBaselines(block.seasons);
+    if (rows.length < 2) {
+      fail(
+        `${league}: trends need >= 2 season rows (have ${rows.length})`,
+      );
+    }
+    for (const row of rows) {
+      if (!row.season || row.gameCount <= 0) {
+        fail(`${league}: trend row missing season/gamesCount`);
+      }
+      if (!(row.leagueAvgTotal > 0) || !(row.leagueAvgFouls > 0)) {
+        fail(
+          `${league}: trend row ${row.season} has empty scoring/whistle fields`,
+        );
+      }
+    }
+  }
+
+  if (MATRIX_MIN_GAMES !== 8) {
+    fail(`MATRIX_MIN_GAMES must be 8 (found ${MATRIX_MIN_GAMES})`);
+  }
+}
+
 console.log("Deploy readiness check…");
 checkLiveHeader();
 checkWorkerPreloadContract();
@@ -311,6 +373,7 @@ for (const league of VERIFIED_LIVE_LEAGUE_IDS) {
   checkDeployArtifacts(league);
 }
 checkRuntimeMatrixPanels();
+checkTrendsBaselines();
 
 if (failures.length > 0) {
   console.error("\nDeploy readiness check FAILED:\n");
@@ -324,5 +387,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Deploy readiness check passed (${VERIFIED_LIVE_LEAGUE_IDS.length} live leagues, artifacts + matrix panels OK).`,
+  `Deploy readiness check passed (${VERIFIED_LIVE_LEAGUE_IDS.length} live leagues, artifacts + matrix panels + trends OK).`,
 );

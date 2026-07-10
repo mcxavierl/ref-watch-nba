@@ -74,8 +74,12 @@ export function resolveRefStatsFromFsOrCache(
       resolveLeagueVerification(leagueId, fromFs.meta).data_verified,
   );
 
-  if (cachedVerified && cached) return attachTeamSplits(league, cached, {});
-  if (fsVerified && fromFs) return attachTeamSplits(league, fromFs, {});
+  if (cachedVerified && cached) {
+    return attachTeamSplits(league, cached, getCachedTeamSplits(league) ?? {});
+  }
+  if (fsVerified && fromFs) {
+    return attachTeamSplits(league, fromFs, getCachedTeamSplits(league) ?? {});
+  }
 
   // Never serve stale seeded bundle data for verified live leagues on Workers.
   if (isVerifiedLiveLeague(leagueId)) {
@@ -84,12 +88,13 @@ export function resolveRefStatsFromFsOrCache(
 
   const fsRefs = fromFs?.refs?.length ?? 0;
   const cachedRefs = cached?.refs?.length ?? 0;
+  const splits = getCachedTeamSplits(league) ?? {};
   if (cached && cachedRefs >= fsRefs) {
-    return attachTeamSplits(league, cached, {});
+    return attachTeamSplits(league, cached, splits);
   }
-  if (fsRefs > 0 && fromFs) return attachTeamSplits(league, fromFs, {});
+  if (fsRefs > 0 && fromFs) return attachTeamSplits(league, fromFs, splits);
   const fallback = cached ?? fromFs;
-  return fallback ? attachTeamSplits(league, fallback, {}) : null;
+  return fallback ? attachTeamSplits(league, fallback, splits) : null;
 }
 
 export function getCachedTeamSplits(

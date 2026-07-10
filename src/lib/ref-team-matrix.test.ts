@@ -5,6 +5,7 @@ import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import {
   bottomRefsBelowBaselineForTeam,
   computeRefTeamMatrix,
+  MATRIX_MIN_GAMES,
   matrixWhistleDiffShortLabel,
   TEAM_MATRIX_REF_PANEL_LIMIT,
   topRefsBeatingBaselineForTeam,
@@ -27,7 +28,7 @@ function buildMatrix() {
       nbaId: team.nbaId,
     })),
     getTeamSplits,
-    3,
+    MATRIX_MIN_GAMES,
     { league: "nba", sinceSeason: DEFAULT_SINCE_SEASON },
   );
 }
@@ -110,7 +111,7 @@ describe("ref-team matrix team panels", () => {
       loadSplitRefStatsFixture("epl");
 
     const refWithArs = eplCore.refs.find(
-      (r) => r.teamStats?.ARS && r.teamStats.ARS.games >= 3,
+      (r) => r.teamStats?.ARS && r.teamStats.ARS.games >= MATRIX_MIN_GAMES,
     );
     assert.ok(refWithArs, "fixture needs a ref with ARS games");
 
@@ -126,7 +127,7 @@ describe("ref-team matrix team panels", () => {
       slimStats,
       [{ abbr: "ARS", label: "Arsenal", name: "Arsenal" }],
       getEplTeamSplits,
-      3,
+      MATRIX_MIN_GAMES,
       { league: "epl" },
     );
 

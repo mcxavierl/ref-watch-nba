@@ -2,7 +2,7 @@ import type { TeamCrewSplit } from "@/lib/types";
 import type { SortDirection } from "@/lib/teamRefLeaderboards";
 
 /** Minimum games before a crew appears in team crew tables by default. */
-export const TEAM_CREW_MIN_GAMES = 5;
+export const TEAM_CREW_MIN_GAMES = 8;
 
 export type TeamCrewSortKey = "games" | "winRate" | "scoring";
 export type TeamCrewSort = `${TeamCrewSortKey}-${SortDirection}`;

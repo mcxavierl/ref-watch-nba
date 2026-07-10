@@ -1,7 +1,7 @@
 import type { RefProfile, RefTeamStat } from "@/lib/types";
 
 /** Minimum games a ref must have with a team before appearing on team leaderboards. */
-export const TEAM_REF_MIN_GAMES = 5;
+export const TEAM_REF_MIN_GAMES = 8;
 
 export interface TeamRefLeaderboardEntry {
   slug: string;

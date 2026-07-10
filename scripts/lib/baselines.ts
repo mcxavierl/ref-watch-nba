@@ -105,6 +105,11 @@ function computeSeasonBaseline(
   const withMinors = games.filter(
     (g) => g.homeMinors !== undefined && g.awayMinors !== undefined,
   );
+  const withPenaltyYards = games.filter(
+    (g) =>
+      g.homePenaltyYards !== undefined && g.awayPenaltyYards !== undefined,
+  );
+  const otTracked = games.some((g) => g.wentToOvertime !== undefined);
   const otGames = games.filter((g) => g.wentToOvertime === true);
 
   const leagueAvgTotal = n > 0 ? round1(totalPoints / n) : FALLBACK_NBA.leagueAvgTotal;
@@ -128,8 +133,16 @@ function computeSeasonBaseline(
             ) / withMinors.length,
           )
         : undefined,
-    leagueOvertimeRate:
-      otGames.length > 0 ? round3(otGames.length / n) : undefined,
+    leagueOvertimeRate: otTracked ? round3(otGames.length / n) : undefined,
+    leagueAvgPenaltyYards:
+      withPenaltyYards.length > 0
+        ? round1(
+            withPenaltyYards.reduce(
+              (s, g) => s + g.homePenaltyYards! + g.awayPenaltyYards!,
+              0,
+            ) / withPenaltyYards.length,
+          )
+        : undefined,
     meanClosingTotal:
       meanClosing !== undefined ? round1(meanClosing) : undefined,
   };

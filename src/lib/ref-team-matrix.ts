@@ -5,7 +5,8 @@ import { getTeamDisplayRecord, getTeamSampleRecord, winRateDeltaPoints } from "@
 import type { RefProfile, RefStatsFile, RefTeamStat, TeamCrewSplit } from "@/lib/types";
 
 /** Minimum games before a ref×team cell is shown in the matrix. */
-export const MATRIX_MIN_GAMES = 3;
+/** Minimum ref×team games for a matrix cell (all live leagues). */
+export const MATRIX_MIN_GAMES = 8;
 
 export interface RefTeamMatrixCell {
   refSlug: string;
