@@ -31,6 +31,7 @@ import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 const dataDir = path.join(process.cwd(), "data", "nhl");
 
 const jsonCache = new Map<string, unknown>();
+let teamSplitsCache: Record<string, TeamCrewSplit[]> | null = null;
 
 function readJson<T>(filename: string): T {
   const cached = jsonCache.get(filename);
@@ -51,11 +52,19 @@ function tryReadJson<T>(filename: string): T | null {
   }
 }
 
+function loadTeamSplitsRaw(): Record<string, TeamCrewSplit[]> {
+  if (teamSplitsCache) return teamSplitsCache;
+  const fromFile =
+    tryReadJson<Record<string, TeamCrewSplit[]>>("team-splits.json") ?? {};
+  teamSplitsCache = fromFile;
+  return fromFile;
+}
+
 function loadRefStatsRaw(): RefStatsFile | null {
-  return resolveRefStatsFromFsOrCache(
-    "nhl",
-    tryReadJson<RefStatsFile>("ref-stats.json"),
-  );
+  const fromFs =
+    tryReadJson<RefStatsFile>("ref-stats-core.json") ??
+    tryReadJson<RefStatsFile>("ref-stats.json");
+  return resolveRefStatsFromFsOrCache("nhl", fromFs);
 }
 
 export function getAssignments(): AssignmentsFile {
@@ -321,14 +330,18 @@ export function formatDate(iso: string): string {
 
 export function getTeamSplits(abbr: string): TeamCrewSplit[] {
   const stats = getRefStats();
-  return stats.teamSplits[abbr.toUpperCase()] ?? [];
+  const fromStats = stats.teamSplits[abbr.toUpperCase()];
+  if (fromStats?.length) return fromStats;
+  return loadTeamSplitsRaw()[abbr.toUpperCase()] ?? [];
 }
 
 export function getAllTeamAbbrs(): string[] {
   const stats = getRefStats();
   const fromData = Object.keys(stats.teamSplits);
-  if (fromData.length > 0) {
-    return [...fromData].sort();
+  const fromSplits = Object.keys(loadTeamSplitsRaw());
+  const merged = [...new Set([...fromData, ...fromSplits])];
+  if (merged.length > 0) {
+    return merged.sort();
   }
   return [...NHL_TEAM_ABBRS];
 }

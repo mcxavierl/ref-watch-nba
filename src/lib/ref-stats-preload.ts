@@ -7,7 +7,10 @@ import type {
   NflStatsGlobalKey,
   NhlStatsGlobalKey,
 } from "@/lib/global-stats";
-import { resolveLeagueVerification } from "@/lib/league-verification";
+import {
+  isVerifiedLiveLeague,
+  resolveLeagueVerification,
+} from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefStatsFile } from "@/lib/types";
 
@@ -49,17 +52,21 @@ export function resolveRefStatsFromFsOrCache(
 ): RefStatsFile | null {
   const cached = getCachedRefStats(league);
   const leagueId = league as LeagueId;
+  const cachedVerified = Boolean(
+    cached?.refs?.length &&
+      resolveLeagueVerification(leagueId, cached.meta).data_verified,
+  );
+  const fsVerified = Boolean(
+    fromFs?.refs?.length &&
+      resolveLeagueVerification(leagueId, fromFs.meta).data_verified,
+  );
 
-  if (cached?.refs?.length) {
-    if (resolveLeagueVerification(leagueId, cached.meta).data_verified) {
-      return cached;
-    }
-  }
+  if (cachedVerified) return cached;
+  if (fsVerified) return fromFs;
 
-  if (fromFs?.refs?.length) {
-    if (resolveLeagueVerification(leagueId, fromFs.meta).data_verified) {
-      return fromFs;
-    }
+  // Never serve stale seeded bundle data for verified live leagues on Workers.
+  if (isVerifiedLiveLeague(leagueId)) {
+    return null;
   }
 
   const fsRefs = fromFs?.refs?.length ?? 0;

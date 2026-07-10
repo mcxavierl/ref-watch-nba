@@ -25,6 +25,23 @@ function copyRefStatsCore(root: string): void {
   writeMinifiedJson(path.join(root, "public", "data", "nba", "team-splits.json"), teamSplits);
 }
 
+function copyLeagueRefStatsSplit(
+  root: string,
+  league: "nhl" | "nfl" | "epl",
+): void {
+  const leagueDir = path.join(root, "data", league);
+  const publicDir = path.join(root, "public", "data", league);
+  const fullPath = path.join(leagueDir, "ref-stats.json");
+  if (!fs.existsSync(fullPath)) return;
+
+  const full = JSON.parse(fs.readFileSync(fullPath, "utf8")) as import("../src/lib/types").RefStatsFile;
+  const { core, teamSplits } = splitRefStatsForDeploy(full);
+
+  writeMinifiedJson(path.join(leagueDir, "ref-stats-core.json"), core);
+  writeMinifiedJson(path.join(publicDir, "ref-stats.json"), core);
+  writeMinifiedJson(path.join(publicDir, "team-splits.json"), teamSplits);
+}
+
 function copyPair(srcDir: string, destDir: string, basename: string): void {
   fs.mkdirSync(destDir, { recursive: true });
   for (const file of [`${basename}.json`, `${basename}.seed.json`]) {
@@ -98,16 +115,16 @@ const usedVerifiedNba = copyNbaVerifiedIngest(root);
 if (!usedVerifiedNba) {
   copyPair(path.join(root, "data"), path.join(root, "public/data/nba"), "game-logs");
 }
-// ref-stats copied via copyRefStatsCore (slim core without teamSplits)
-copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-stats");
+// ref-stats: slim core for Worker SSR hydration; teamSplits served separately
+copyLeagueRefStatsSplit(root, "nhl");
+copyLeagueRefStatsSplit(root, "nfl");
+copyLeagueRefStatsSplit(root, "epl");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "game-logs");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-photos");
-copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "ref-stats");
 copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "game-logs");
 copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "ref-photos");
 copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "ref-stats");
 copyPair(path.join(root, "data/cfb"), path.join(root, "public/data/cfb"), "ref-stats");
-copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "ref-stats");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "game-logs");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "ref-photos");
 
