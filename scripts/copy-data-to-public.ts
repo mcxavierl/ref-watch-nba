@@ -148,15 +148,23 @@ function writeLiveHeaderLeagues(): void {
 
   const nbaManifest = path.join(root, "data/nba/manifest.json");
   const nbaStatsPath = path.join(root, "data/ref-stats.json");
-  const nbaVerified =
+  const nbaMeta = fs.existsSync(nbaStatsPath)
+    ? (
+        JSON.parse(fs.readFileSync(nbaStatsPath, "utf8")) as {
+          meta?: { source?: string; data_verified?: boolean };
+        }
+      ).meta
+    : undefined;
+  const nbaManifestVerified =
     fs.existsSync(nbaManifest) &&
     (JSON.parse(fs.readFileSync(nbaManifest, "utf8")) as { data_verified?: boolean })
       .data_verified === true;
-  const nbaSeeded =
-    fs.existsSync(nbaStatsPath) &&
-    (JSON.parse(fs.readFileSync(nbaStatsPath, "utf8")) as { meta?: { source?: string } })
-      .meta?.source === "seeded";
-  if (nbaVerified || nbaSeeded) leagues.push("nba");
+  const nbaStatsVerified =
+    nbaMeta?.data_verified === true ||
+    nbaMeta?.source === "nba-stats-api" ||
+    nbaMeta?.source === "hybrid";
+  const nbaSeeded = nbaMeta?.source === "seeded";
+  if (nbaManifestVerified || nbaStatsVerified || nbaSeeded) leagues.push("nba");
 
   const nhlStatsPath = path.join(root, "data/nhl/ref-stats.json");
   if (fs.existsSync(nhlStatsPath)) {
