@@ -78,6 +78,14 @@ export function seasonScopeLabel(mode: SeasonScopeMode): string {
   }
 }
 
+/** Honest toggle label from actual available seasons (e.g. last10 with 5 seasons → "Last 5 seasons"). */
+export function seasonScopeLabelForSeasons(
+  mode: SeasonScopeMode,
+  availableSeasons: string[],
+): string {
+  return formatSeasonScope(resolveScopedSeasons(availableSeasons, mode).length);
+}
+
 export function formatSeasonScopeFromMode(mode: SeasonScopeMode): string {
   switch (mode) {
     case "current":
