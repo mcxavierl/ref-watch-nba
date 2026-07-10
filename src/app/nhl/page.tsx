@@ -16,6 +16,7 @@ import {
   ouLeanSortWeight,
 } from "@/lib/nhl/data";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { computeFindings } from "@/lib/nhl/findings";
 import { resolveSlateGames, computeGameStorylines } from "@/lib/grudge-match";
 import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/nhl/home-bias";
@@ -37,7 +38,7 @@ import {
   topShareSignals,
 } from "@/lib/syndication";
 import { slatePageMetadata } from "@/lib/seo";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, SITE_URL } from "@/lib/site";
 import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
@@ -73,7 +74,8 @@ function sortSlateGames(
   });
 }
 
-export default function NhlHomePage() {
+export default async function NhlHomePage() {
+  await preloadLeagueRefStats(SITE_URL, "nhl");
   const assignments = getAssignments();
   const refStats = getRefStats();
   const odds = getOdds();

@@ -41,6 +41,8 @@ import { NflAnalyticsLeaders } from "@/components/NflAnalyticsLeaders";
 import { buildNflAnalyticsLeaders } from "@/lib/nfl/analytics-leaders";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
+import { SITE_URL } from "@/lib/site";
 
 export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
@@ -72,7 +74,8 @@ function sortSlateGames(
   });
 }
 
-export default function NflHomePage() {
+export default async function NflHomePage() {
+  await preloadLeagueRefStats(SITE_URL, "nfl");
   const assignments = getAssignments();
   const refStats = getRefStats();
   const odds = getOdds();
