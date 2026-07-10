@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "@/lib/live-header-leagues.generated";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
@@ -20,7 +19,18 @@ import {
   setCachedRefStats,
   setCachedTeamSplits,
 } from "@/lib/ref-stats-preload";
-import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
+import { loadSplitRefStatsFixture } from "@/lib/test-fixtures/split-ref-stats-fixture";
+
+function clearLeagueCaches(): void {
+  globalThis.__REFWATCH_NBA_REF_STATS__ = undefined;
+  globalThis.__REFWATCH_NBA_TEAM_SPLITS__ = undefined;
+  globalThis.__REFWATCH_NHL_REF_STATS__ = undefined;
+  globalThis.__REFWATCH_NHL_TEAM_SPLITS__ = undefined;
+  globalThis.__REFWATCH_NFL_REF_STATS__ = undefined;
+  globalThis.__REFWATCH_NFL_TEAM_SPLITS__ = undefined;
+  globalThis.__REFWATCH_EPL_REF_STATS__ = undefined;
+  globalThis.__REFWATCH_EPL_TEAM_SPLITS__ = undefined;
+}
 
 describe("deploy readiness regressions", () => {
   it("live header lists every verified production league", () => {
@@ -33,12 +43,7 @@ describe("deploy readiness regressions", () => {
   });
 
   it("hydrates EPL matrix baselines from sidecar team-splits when core embeds empty arrays", () => {
-    const core = JSON.parse(
-      readFileSync("data/epl/ref-stats-core.json", "utf8"),
-    ) as RefStatsFile;
-    const sidecar = JSON.parse(
-      readFileSync("data/epl/team-splits.json", "utf8"),
-    ) as Record<string, TeamCrewSplit[]>;
+    const { core, teamSplits: sidecar } = loadSplitRefStatsFixture("epl");
     const ref = core.refs.find((r) => r.teamStats?.ARS && r.teamStats.ARS.games >= 3);
     assert.ok(ref, "fixture needs ARS ref×team cell");
 
@@ -61,6 +66,7 @@ describe("deploy readiness regressions", () => {
   });
 
   it("NHL/WPG and NFL/KC matrix panels have top and bottom refs with real baselines", () => {
+    clearLeagueCaches();
     for (const [league, stats, getTeamSplits, abbr, label] of [
       ["nhl", getNhlRefStats(), getNhlTeamSplits, "WPG", "WPG"],
       ["nfl", getNflRefStats(), getNflTeamSplits, "KC", "KC"],
@@ -99,15 +105,9 @@ describe("deploy readiness regressions", () => {
   });
 
   it("mergeCachedLeagueRefStats patches slim core in ref-stats cache", () => {
-    globalThis.__REFWATCH_NHL_REF_STATS__ = undefined;
-    globalThis.__REFWATCH_NHL_TEAM_SPLITS__ = undefined;
+    clearLeagueCaches();
 
-    const core = JSON.parse(
-      readFileSync("data/nhl/ref-stats-core.json", "utf8"),
-    ) as RefStatsFile;
-    const splits = JSON.parse(
-      readFileSync("data/nhl/team-splits.json", "utf8"),
-    ) as Record<string, TeamCrewSplit[]>;
+    const { core, teamSplits: splits } = loadSplitRefStatsFixture("nhl");
     core.teamSplits = {};
 
     setCachedRefStats("nhl", core);

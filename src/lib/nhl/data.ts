@@ -335,7 +335,8 @@ export function formatDate(iso: string): string {
 }
 
 export function getTeamSplits(abbr: string): TeamCrewSplit[] {
-  return resolveTeamSplits({})[abbr.toUpperCase()] ?? [];
+  const stats = getRefStats();
+  return resolveTeamSplits(stats.teamSplits ?? {})[abbr.toUpperCase()] ?? [];
 }
 
 export function getAllTeamAbbrs(): string[] {

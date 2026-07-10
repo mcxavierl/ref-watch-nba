@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import { LEAGUES } from "@/lib/leagues";
 import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
@@ -11,6 +10,7 @@ import {
   topRefsBeatingBaselineForTeam,
 } from "@/lib/ref-team-matrix";
 import { getTeamSplits } from "@/lib/data";
+import { loadSplitRefStatsFixture } from "@/lib/test-fixtures/split-ref-stats-fixture";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";
 import type { RefStatsFile } from "@/lib/types";
 import statsJson from "../../data/ref-stats.json" with { type: "json" };
@@ -106,12 +106,8 @@ describe("ref-team matrix team panels", () => {
   });
 
   it("hydrates non-NBA baselines from getTeamSplits when core strips teamSplits", () => {
-    const eplCore = JSON.parse(
-      readFileSync("data/epl/ref-stats-core.json", "utf8"),
-    ) as RefStatsFile;
-    const eplTeamSplits = JSON.parse(
-      readFileSync("data/epl/team-splits.json", "utf8"),
-    ) as Record<string, import("@/lib/types").TeamCrewSplit[]>;
+    const { core: eplCore, teamSplits: eplTeamSplits } =
+      loadSplitRefStatsFixture("epl");
 
     const refWithArs = eplCore.refs.find(
       (r) => r.teamStats?.ARS && r.teamStats.ARS.games >= 3,

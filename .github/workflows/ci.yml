@@ -27,11 +27,11 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Generate deploy data artifacts
+        run: npm run check:deploy
+
       - name: Unit tests
         run: npm run test
-
-      - name: Deploy readiness (artifacts + matrix baselines)
-        run: npm run check:deploy
 
       - name: Honesty audit
         run: npm run honesty-audit
