@@ -17,6 +17,13 @@ export type LeagueVerification = {
   verifiedSeasons: string[];
 };
 
+/** Production leagues with verified real-source ingest — never show synthetic UI. */
+export const VERIFIED_LIVE_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl"] as const satisfies readonly LeagueId[];
+
+export function isVerifiedLiveLeague(leagueId: LeagueId): boolean {
+  return (VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
+}
+
 const INGEST_TICKET_URLS: Partial<Record<LeagueId, string>> = {
   nhl: "https://github.com/mcxavierl/ref-watch-nba/issues/6",
   nfl: "https://github.com/mcxavierl/ref-watch-nba/issues/7",
@@ -46,7 +53,8 @@ function inferNhlVerification(meta: RefStatsFile["meta"]): LeagueVerification {
   const verified = meta.data_verified === true && meta.source === "nhl-api";
   return {
     data_verified: verified,
-    data_source: meta.data_source ?? (verified ? "NHL API" : "synthetic"),
+    data_source:
+      meta.data_source ?? (verified ? "NHL API (api-web.nhle.com)" : "synthetic"),
     canRenderStats: verified,
     verifiedSeasons: verified ? [...meta.seasons] : [],
   };
@@ -69,11 +77,14 @@ function inferNflVerification(meta: RefStatsFile["meta"]): LeagueVerification {
 
 function inferEplVerification(meta: RefStatsFile["meta"]): LeagueVerification {
   const verified =
-    meta.data_verified === true ||
-    (isEplVerifiedData(meta.source) && !isEplSimulatedData(meta.source));
+    meta.data_verified === true &&
+    isEplVerifiedData(meta.source) &&
+    !isEplSimulatedData(meta.source);
+  const defaultSource =
+    meta.source === "football-data" ? "football-data.co.uk" : "ESPN";
   return {
     data_verified: verified,
-    data_source: meta.data_source ?? (verified ? "ESPN" : "synthetic"),
+    data_source: meta.data_source ?? (verified ? defaultSource : "synthetic"),
     canRenderStats: verified,
     verifiedSeasons: verified ? [...meta.seasons] : [],
   };

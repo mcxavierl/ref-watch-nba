@@ -1,23 +1,15 @@
 import type { RefStatsFile } from "@/lib/types";
+import { getCachedRefStats, setCachedRefStats } from "@/lib/ref-stats-preload";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
 
-const REF_STATS_KEYS: Record<League, keyof typeof globalThis> = {
-  nba: "__REFWATCH_NBA_REF_STATS__",
-  nhl: "__REFWATCH_NHL_REF_STATS__",
-  nfl: "__REFWATCH_NFL_REF_STATS__",
-  epl: "__REFWATCH_EPL_REF_STATS__",
-  cbb: "__REFWATCH_CBB_REF_STATS__",
-  cfb: "__REFWATCH_CFB_REF_STATS__",
-};
-
 const REF_STATS_ASSET: Record<League, string> = {
-  nba: "/data/nba",
-  nhl: "/data/nhl",
-  nfl: "/data/nfl",
-  epl: "/data/epl",
-  cbb: "/data/cbb",
-  cfb: "/data/cfb",
+  nba: "/data/nba/ref-stats.json",
+  nhl: "/data/nhl/ref-stats.json",
+  nfl: "/data/nfl/ref-stats.json",
+  epl: "/data/epl/ref-stats.json",
+  cbb: "/data/cbb/ref-stats.json",
+  cfb: "/data/cfb/ref-stats.json",
 };
 
 function leaguesForPath(pathname: string): League[] {
@@ -38,18 +30,64 @@ function leaguesForPath(pathname: string): League[] {
   return ["nba"];
 }
 
-async function preloadRefStats(origin: string, league: League): Promise<void> {
-  if (globalThis[REF_STATS_KEYS[league]]) return;
+async function fetchRefStatsAsset(assetPath: string): Promise<RefStatsFile | null> {
+  try {
+    const { getCloudflareContext } = await import("@opennextjs/cloudflare");
+    const assets = getCloudflareContext().env.ASSETS;
+    if (assets) {
+      const res = await assets.fetch(new URL(assetPath, "https://assets.local"));
+      if (res.ok) {
+        return (await res.json()) as RefStatsFile;
+      }
+    }
+  } catch {
+    // Not on Cloudflare Workers.
+  }
+  return null;
+}
 
-  const res = await fetch(`${origin}${REF_STATS_ASSET[league]}/ref-stats.json`);
-  if (!res.ok) return;
-  const data = (await res.json()) as RefStatsFile;
-  if (data.refs?.length) {
-    (globalThis as Record<string, unknown>)[REF_STATS_KEYS[league]] = data;
+async function fetchRefStatsOrigin(
+  origin: string,
+  assetPath: string,
+): Promise<RefStatsFile | null> {
+  const res = await fetch(`${origin}${assetPath}`);
+  if (!res.ok) return null;
+  return (await res.json()) as RefStatsFile;
+}
+
+async function preloadRefStats(origin: string, league: League): Promise<void> {
+  if (getCachedRefStats(league)) return;
+
+  const assetPath = REF_STATS_ASSET[league];
+  const data =
+    (await fetchRefStatsAsset(assetPath)) ??
+    (await fetchRefStatsOrigin(origin, assetPath));
+
+  if (data?.refs?.length) {
+    setCachedRefStats(league, data);
   }
 }
 
-/** Optional edge preload: ref-stats only (skip multi-MB game logs). Prefer SSR hydrate. */
+/**
+ * Hydrate a single league's ref-stats into the global cache and await it.
+ *
+ * Server components that gate on verification (e.g. per-league layouts) must
+ * call this and `await` it before reading `getRefStats()`. The root layout's
+ * path-based preload runs concurrently with child segments in the App Router,
+ * so relying on it alone leaves the cache empty on cold isolates.
+ */
+export async function preloadLeagueRefStats(
+  origin: string,
+  league: League,
+): Promise<void> {
+  try {
+    await preloadRefStats(origin, league);
+  } catch {
+    // Never fail the request from preload.
+  }
+}
+
+/** SSR hydration: slim ref-stats via ASSETS (Workers-safe, ~500KB parse). */
 export async function preloadLeagueDataForPath(
   origin: string,
   pathname: string,

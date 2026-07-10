@@ -19,7 +19,12 @@ import {
 } from "@/lib/stats-utils";
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { eplCrewMetricsProvenance } from "@/lib/provenance";
-import { getCachedRefStats } from "@/lib/ref-stats-preload";
+import {
+  getCachedRefStats,
+  resolveRefStatsFromFsOrCache,
+} from "@/lib/ref-stats-preload";
+import { resolveLeagueVerification } from "@/lib/league-verification";
+import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data", "epl");
@@ -46,10 +51,10 @@ function tryReadJson<T>(filename: string): T | null {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs = tryReadJson<RefStatsFile>("ref-stats.json");
-  if (fromFs) return fromFs;
-
-  return getCachedRefStats("epl");
+  return resolveRefStatsFromFsOrCache(
+    "epl",
+    tryReadJson<RefStatsFile>("ref-stats.json"),
+  );
 }
 
 export function getAssignments(): AssignmentsFile {
@@ -77,13 +82,31 @@ const EMPTY_REF_STATS: RefStatsFile = (() => {
       leagueAvgPenaltyYards: bl.leagueAvgPenaltyYards,
       minSampleSize: 30,
       source: "seeded",
+      data_verified: false,
+      data_source: "synthetic",
       atsAvailable: false,
-      note: "No EPL ref stats data file found. Run npm run build-epl-data.",
+      note: "EPL verified ingest pending. No synthetic numbers in production.",
     },
     refs: [],
     teamSplits: {},
   };
 })();
+
+function gateUnverifiedEplStats(stats: RefStatsFile): RefStatsFile {
+  const v = resolveLeagueVerification("epl", stats.meta);
+  if (v.data_verified || shouldShowUnverifiedData()) return stats;
+  return {
+    ...stats,
+    meta: {
+      ...stats.meta,
+      data_verified: false,
+      data_source: "synthetic",
+      seasons: [],
+    },
+    refs: [],
+    teamSplits: {},
+  };
+}
 
 function migrateLegacySplits(data: RefStatsFile): Record<string, TeamCrewSplit[]> {
   return { ...(data.teamSplits ?? {}) };
@@ -117,9 +140,7 @@ export function getRefStats(): RefStatsFile {
   try {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    return applyBaselines(
-      normalizeRefStats(raw),
-    );
+    return gateUnverifiedEplStats(applyBaselines(normalizeRefStats(raw)));
   } catch {
     return EMPTY_REF_STATS;
   }

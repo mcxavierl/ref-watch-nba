@@ -1,4 +1,4 @@
-export default function NhlLayout({
+export default function NflLayout({
   children,
 }: {
   children: React.ReactNode;

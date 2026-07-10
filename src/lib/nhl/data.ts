@@ -19,7 +19,10 @@ import {
 } from "@/lib/stats-utils";
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { nhlCrewMetricsProvenance } from "@/lib/provenance";
-import { getCachedRefStats } from "@/lib/ref-stats-preload";
+import {
+  getCachedRefStats,
+  resolveRefStatsFromFsOrCache,
+} from "@/lib/ref-stats-preload";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 import { isNhlLinesmanOfficial } from "@/lib/nhl/officials";
@@ -49,10 +52,10 @@ function tryReadJson<T>(filename: string): T | null {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs = tryReadJson<RefStatsFile>("ref-stats.json");
-  if (fromFs) return fromFs;
-
-  return getCachedRefStats("nhl");
+  return resolveRefStatsFromFsOrCache(
+    "nhl",
+    tryReadJson<RefStatsFile>("ref-stats.json"),
+  );
 }
 
 export function getAssignments(): AssignmentsFile {

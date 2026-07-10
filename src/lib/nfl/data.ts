@@ -19,7 +19,10 @@ import {
 } from "@/lib/stats-utils";
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { nflCrewMetricsProvenance } from "@/lib/provenance";
-import { getCachedRefStats } from "@/lib/ref-stats-preload";
+import {
+  getCachedRefStats,
+  resolveRefStatsFromFsOrCache,
+} from "@/lib/ref-stats-preload";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
@@ -48,10 +51,10 @@ function tryReadJson<T>(filename: string): T | null {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs = tryReadJson<RefStatsFile>("ref-stats.json");
-  if (fromFs) return fromFs;
-
-  return getCachedRefStats("nfl");
+  return resolveRefStatsFromFsOrCache(
+    "nfl",
+    tryReadJson<RefStatsFile>("ref-stats.json"),
+  );
 }
 
 export function getAssignments(): AssignmentsFile {

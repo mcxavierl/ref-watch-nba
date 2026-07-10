@@ -7,6 +7,8 @@ import type {
   NflStatsGlobalKey,
   NhlStatsGlobalKey,
 } from "@/lib/global-stats";
+import { resolveLeagueVerification } from "@/lib/league-verification";
+import type { LeagueId } from "@/lib/leagues";
 import type { RefStatsFile } from "@/lib/types";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
@@ -40,6 +42,33 @@ export function getCachedRefStats(league: League): RefStatsFile | null {
   return globalThis[CACHE_KEYS[league]] ?? null;
 }
 
+/** Prefer verified CDN-hydrated cache over stale Worker bundle files on disk. */
+export function resolveRefStatsFromFsOrCache(
+  league: League,
+  fromFs: RefStatsFile | null,
+): RefStatsFile | null {
+  const cached = getCachedRefStats(league);
+  const leagueId = league as LeagueId;
+
+  if (cached?.refs?.length) {
+    if (resolveLeagueVerification(leagueId, cached.meta).data_verified) {
+      return cached;
+    }
+  }
+
+  if (fromFs?.refs?.length) {
+    if (resolveLeagueVerification(leagueId, fromFs.meta).data_verified) {
+      return fromFs;
+    }
+  }
+
+  const fsRefs = fromFs?.refs?.length ?? 0;
+  const cachedRefs = cached?.refs?.length ?? 0;
+  if (cached && cachedRefs >= fsRefs) return cached;
+  if (fsRefs > 0) return fromFs;
+  return cached ?? fromFs;
+}
+
 export function setCachedRefStats(league: League, data: RefStatsFile): void {
   globalThis[CACHE_KEYS[league]] = data;
 }
@@ -50,14 +79,12 @@ export async function preloadRefStatsFromAssets(
 ): Promise<void> {
   if (getCachedRefStats(league)) return;
 
-  for (const file of ["ref-stats.json"]) {
-    const res = await fetch(`${origin}${ASSET_BASE[league]}/${file}`);
-    if (!res.ok) continue;
-    const data = (await res.json()) as RefStatsFile;
-    if (data.refs?.length) {
-      setCachedRefStats(league, data);
-      return;
-    }
+  const assetPath = `${ASSET_BASE[league]}/ref-stats.json`;
+  const res = await fetch(`${origin}${assetPath}`);
+  if (!res.ok) return;
+  const data = (await res.json()) as RefStatsFile;
+  if (data.refs?.length) {
+    setCachedRefStats(league, data);
   }
 }
 

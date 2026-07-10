@@ -4,7 +4,6 @@ import { FindingsSection } from "@/components/FindingsSection";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
-import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
@@ -38,7 +37,6 @@ import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
-import { EplPreviewBanner } from "@/components/EplPreviewBanner";
 import { EplAnalyticsLeaders } from "@/components/EplAnalyticsLeaders";
 import { buildEplAnalyticsLeaders } from "@/lib/epl/analytics-leaders";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
@@ -86,6 +84,7 @@ export default function EplHomePage() {
   const homeBiasSignals = computeSlateHomeBias(sortedGames, refStats);
   const nightlyFeed = buildEplNightlyFeed();
   const analyticsLeaders = buildEplAnalyticsLeaders(refStats);
+  const hasRefData = refStats.refs.length > 0;
 
   const edgeItems = buildTonightEdgeSummary({
     sport: "epl",
@@ -118,26 +117,23 @@ export default function EplHomePage() {
         refStats={refStats}
       />
 
-      <LeagueDataSourceBanner league="epl" meta={refStats.meta} className="mt-4" />
-
-      <EplPreviewBanner
-        statsSource={refStats.meta.source}
-        assignmentsSource={assignments.source}
-      />
-
       {isOffseason && <OffseasonSlateNotice league="EPL" />}
 
-      <FindingsSection
-        findings={findings}
-        featured
-        slateHero
-        initialVisibleCount={4}
-        title={isOffseason ? "Season highlights" : "Officiating intelligence"}
-        league="EPL"
-        sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
-      />
+      {hasRefData ? (
+        <>
+          <FindingsSection
+            findings={findings}
+            featured
+            slateHero
+            initialVisibleCount={4}
+            title={isOffseason ? "Season highlights" : "Officiating intelligence"}
+            league="EPL"
+            sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
+          />
 
-      <EplAnalyticsLeaders leaders={analyticsLeaders} />
+          <EplAnalyticsLeaders leaders={analyticsLeaders} />
+        </>
+      ) : null}
 
       <section className="slate-quick-links">
         <BrowseActionCards league="EPL" compact />

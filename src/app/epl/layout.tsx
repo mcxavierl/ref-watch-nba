@@ -1,4 +1,4 @@
-export default function NhlLayout({
+export default function EplLayout({
   children,
 }: {
   children: React.ReactNode;
