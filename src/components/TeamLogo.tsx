@@ -44,24 +44,28 @@ export function TeamLogo({
             ? nbaTeamLogoUrl(team.nbaId)
             : null);
 
+  const plateClass = `team-logo-plate ${sizeClasses[size]} ${className}`.trim();
+
   if (failed || !logoSrc) {
     return (
       <span
-        className={`inline-flex shrink-0 items-center justify-center rounded-md bg-zinc-100 font-mono text-[10px] font-semibold text-zinc-600 ${sizeClasses[size]} ${className}`}
+        className={plateClass}
         aria-label={`${team.abbr} logo`}
       >
-        {team.abbr}
+        <span className="team-logo-plate__fallback">{team.abbr}</span>
       </span>
     );
   }
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- onError fallback to abbr badge
-    <img
-      src={logoSrc}
-      alt={`${team.abbr} logo`}
-      className={`shrink-0 object-contain ${sizeClasses[size]} ${className}`}
-      onError={() => setFailed(true)}
-    />
+    <span className={plateClass}>
+      {/* eslint-disable-next-line @next/next/no-img-element -- onError fallback to abbr badge */}
+      <img
+        src={logoSrc}
+        alt={`${team.abbr} logo`}
+        className="team-logo-plate__img"
+        onError={() => setFailed(true)}
+      />
+    </span>
   );
 }

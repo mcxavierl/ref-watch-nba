@@ -24,7 +24,7 @@ export const LEAGUE_HERO_COPY: Record<
     liveLead:
       "Crew assignments, foul tendencies, and ref×team history before tip-off, scored by sample depth, not hype.",
     offseasonLead:
-      "Deep analytics across every indexed official, ref×team matrices, and multi-season whistle splits. The full toolkit runs on historical data while the slate rests.",
+      "Deep analytics across every indexed official, ref×team matrices, and multi-season whistle splits.",
     statLabels: {
       officials: "Refs indexed",
       games: "Games logged",

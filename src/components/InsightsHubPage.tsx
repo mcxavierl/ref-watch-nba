@@ -72,10 +72,10 @@ export function InsightsHubPage({
     ]),
   );
 
-  const scopeToolbar = (
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <p className="text-sm text-zinc-600">
-        Showing <span className="font-medium text-zinc-800">{scopeLabel}</span>{" "}
+  const scopeMeta = (
+    <div className="insights-hero-meta">
+      <p className="insights-hero-meta-copy">
+        Showing <span className="insights-hero-meta-strong">{scopeLabel}</span>{" "}
         ({range})
       </p>
       <Suspense fallback={null}>
@@ -86,10 +86,6 @@ export function InsightsHubPage({
 
   const tendenciesPanel = (
     <>
-      {scopeToolbar}
-      <p className="section-lead mb-4">
-        {RANKINGS_PAGE_LEAD} Sample: {stats.refs.length} officials ({range}).
-      </p>
       <RankingsInsightCards synthesis={synthesis} />
       <section className="section-block">
         <div className="data-card">
@@ -107,11 +103,6 @@ export function InsightsHubPage({
 
   const trendsPanel = (
     <>
-      {scopeToolbar}
-      <p className="section-lead mb-4">
-        {scopeLabel} scoring and whistle baselines from game logs ({range}).
-        Historical context only.
-      </p>
       {narrative && (
         <section className="section-block-tight mb-4">
           <div className="panel-inset px-4 py-4 sm:px-5">
@@ -130,7 +121,6 @@ export function InsightsHubPage({
 
   const findingsPanel = (
     <>
-      {scopeToolbar}
       <JsonLd
         data={researchHubDatasetJsonLd(
           dataLeague,
@@ -138,10 +128,6 @@ export function InsightsHubPage({
           stats.meta.lastUpdated,
         )}
       />
-      <p className="section-lead mb-4">
-        {findings.length} findings ranked by effect size and sample size across{" "}
-        {range}. Descriptive historical tendencies, not betting advice.
-      </p>
       <ResearchHubFindings
         findings={findings}
         league={dataLeague}
@@ -151,19 +137,7 @@ export function InsightsHubPage({
   );
 
   return (
-    <div className="page-shell">
-      <Link href={homeHref} className="back-link">
-        ← {league.shortLabel} slate
-      </Link>
-
-      <section className="page-hero">
-        <h1 className="page-title">{league.shortLabel} insights</h1>
-        <p className="page-lead">
-          Tendency index, league-wide trends, and ranked dataset findings in one
-          place.
-        </p>
-      </section>
-
+    <div className="page-shell page-shell-insights">
       {showDataSourceBanner ? (
         <LeagueDataSourceBanner league={leagueId} meta={stats.meta} />
       ) : null}
@@ -171,10 +145,58 @@ export function InsightsHubPage({
       <LeagueHubTabs
         ariaLabel="Insights views"
         defaultTabId={defaultTab}
+        variant="insights"
+        leagueId={leagueId}
+        before={
+          <>
+            <Link href={homeHref} className="insights-hero-back">
+              ← {league.shortLabel} slate
+            </Link>
+            <h1 className="insights-hero-title">
+              {league.shortLabel} insights
+            </h1>
+            <p className="insights-hero-lead">
+              Tendency index, league-wide trends, and ranked dataset findings in
+              one place.
+            </p>
+          </>
+        }
+        afterTablist={scopeMeta}
         tabs={[
-          { id: "tendencies", label: "Tendencies", panel: tendenciesPanel },
-          { id: "trends", label: "Trends", panel: trendsPanel },
-          { id: "findings", label: "Findings", panel: findingsPanel },
+          {
+            id: "tendencies",
+            label: "Tendencies",
+            note: (
+              <>
+                {RANKINGS_PAGE_LEAD} Sample: {stats.refs.length} officials (
+                {range}).
+              </>
+            ),
+            panel: tendenciesPanel,
+          },
+          {
+            id: "trends",
+            label: "Trends",
+            note: (
+              <>
+                {scopeLabel} scoring and whistle baselines from game logs (
+                {range}). Historical context only.
+              </>
+            ),
+            panel: trendsPanel,
+          },
+          {
+            id: "findings",
+            label: "Findings",
+            note: (
+              <>
+                {findings.length} findings ranked by effect size and sample size
+                across {range}. Descriptive historical tendencies, not betting
+                advice.
+              </>
+            ),
+            panel: findingsPanel,
+          },
         ]}
       />
     </div>
