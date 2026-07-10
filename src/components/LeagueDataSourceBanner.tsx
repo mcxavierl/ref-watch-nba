@@ -4,7 +4,10 @@ import {
   leagueDataSourceBannerMessage,
   type DataSourceBannerLeague,
 } from "@/lib/data-source-banner";
-import { resolveLeagueVerification } from "@/lib/league-verification";
+import {
+  isVerifiedLiveLeague,
+  resolveLeagueVerification,
+} from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefStatsFile } from "@/lib/types";
 
@@ -17,18 +20,16 @@ export function LeagueDataSourceBanner({
   meta: RefStatsFile["meta"];
   className?: string;
 }) {
-  if (league === "nba") return null;
-
-  const message = leagueDataSourceBannerMessage(league, meta);
   const verification = resolveLeagueVerification(league as LeagueId, meta);
 
-  if (!verification.data_verified && (league === "nfl" || league === "nhl")) {
+  if (isVerifiedLiveLeague(league as LeagueId) && verification.data_verified) {
     return null;
   }
 
-  const isUnverified = !verification.data_verified;
+  const message = leagueDataSourceBannerMessage(league, meta);
+  if (!message) return null;
 
-  if (!message && !isUnverified) return null;
+  const isUnverified = !verification.data_verified;
 
   return (
     <div
@@ -38,9 +39,6 @@ export function LeagueDataSourceBanner({
     >
       <AlertTriangle className="data-source-banner-icon" aria-hidden />
       <p className="data-source-banner-text">
-        {isUnverified && (
-          <strong>Synthetic data — not from official sources. </strong>
-        )}
         {message}{" "}
         <Link href="/methodology" className="data-source-banner-link">
           Methodology

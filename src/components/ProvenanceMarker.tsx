@@ -14,7 +14,7 @@ export function ProvenanceMarker({
   if (!provenance || !isEstimatedTag(provenance.tag)) return null;
 
   const label =
-    provenance.tag === "fallback-constant" ? "Estimated" : "Partial data";
+    provenance.tag === "fallback-constant" ? "League average" : "Partial data";
 
   return (
     <span

@@ -47,11 +47,12 @@ export function InsightsHubPage({
     formatRange,
     scopedSeasons,
     scopeLabel,
+    availableSeasons,
   } = loadScopedLeagueStats(leagueId, scopeMode);
   const verification = resolveLeagueVerification(leagueId, stats.meta);
   const showDataSourceBanner =
-    leagueId !== "nba" &&
-    (verification.data_verified || (leagueId !== "nfl" && leagueId !== "nhl"));
+    !verification.data_verified &&
+    (leagueId === "cbb" || leagueId === "cfb");
   const range = formatRange(stats.meta);
   const homeHref = league.pathPrefix || "/";
   const dataLeague = insightsDataLeague(leagueId);
@@ -78,7 +79,7 @@ export function InsightsHubPage({
         ({range})
       </p>
       <Suspense fallback={null}>
-        <SeasonScopeToggle />
+        <SeasonScopeToggle availableSeasons={availableSeasons} />
       </Suspense>
     </div>
   );

@@ -8,6 +8,7 @@ import {
   isNflVerifiedData,
 } from "@/lib/nfl/data-source";
 import {
+  isVerifiedLiveLeague,
   resolveLeagueVerification,
   unverifiedBannerMessage,
 } from "@/lib/league-verification";
@@ -25,13 +26,13 @@ export function leagueDataSourceBannerMessage(
   league: DataSourceBannerLeague,
   meta: RefStatsFile["meta"],
 ): string | null {
-  if (league === "nba") return null;
-
   const verification = resolveLeagueVerification(league as LeagueId, meta);
 
-  if (!verification.data_verified && (league === "nfl" || league === "nhl")) {
+  if (isVerifiedLiveLeague(league as LeagueId) && verification.data_verified) {
     return null;
   }
+
+  if (league === "nba") return null;
 
   if (!verification.data_verified) {
     const msg = unverifiedBannerMessage(league as LeagueId, meta);
@@ -40,7 +41,17 @@ export function leagueDataSourceBannerMessage(
 
   const source = meta.data_source ?? meta.source;
 
-  if (league === "nhl") return null;
+  if (league === "cbb" && isCbbSimulatedData(meta.source)) {
+    return "Preview dataset only. No verified college basketball officiating sample is loaded.";
+  }
+
+  if (league === "cfb" && isCfbSimulatedData(meta.source)) {
+    return "Preview dataset only. No verified college football officiating sample is loaded.";
+  }
+
+  if (league === "epl" && isEplSimulatedData(meta.source)) {
+    return "Historical seeded or partial ESPN sample. Treat foul and goal splits as exploratory until the full match log is verified.";
+  }
 
   if (league === "nfl") {
     if (isNflSimulatedData(meta.source)) {
@@ -52,18 +63,6 @@ export function leagueDataSourceBannerMessage(
       }
       return "Scores and ref×team W-L from ESPN game logs. ATS/O-U splits are unavailable or incomplete for this sample.";
     }
-  }
-
-  if (league === "epl" && isEplSimulatedData(meta.source)) {
-    return "Historical seeded or partial ESPN sample. Treat foul and goal splits as exploratory until the full match log is verified.";
-  }
-
-  if (league === "cbb" && isCbbSimulatedData(meta.source)) {
-    return "Preview dataset only. No verified college basketball officiating sample is loaded.";
-  }
-
-  if (league === "cfb" && isCfbSimulatedData(meta.source)) {
-    return "Preview dataset only. No verified college football officiating sample is loaded.";
   }
 
   if (meta.source === "seeded" || meta.source === "historical") {

@@ -57,6 +57,12 @@ export default function MethodologyPage() {
               ATS and O/U splits need 30+ decisive games with closing lines.
             </li>
             <li>
+              <TermHelp id="foul-edge" />: team whistle volume (fouls, flags,
+              minors) in games a ref worked — crew-level correlation, not fouls
+              charged to that ref alone. W-L splits use the same per-ref game
+              sample.
+            </li>
+            <li>
               <TermHelp id="whistle-premium" />: crew average combined score minus
               league baseline ({nbaStats.meta.leagueAvgTotal} NBA /{" "}
               {nhlStats.meta.leagueAvgTotal} NHL goals). Home/road bias uses win
@@ -82,17 +88,17 @@ export default function MethodologyPage() {
             </li>
             <li>
               When <TermHelp id="closing-line">closing lines</TermHelp> are
-              unavailable, we use fixed league benchmarks (
+              unavailable, we use league averages from game logs (
               {nbaStats.meta.leagueOverBaseline} NBA /{" "}
               {nhlStats.meta.leagueOverBaseline} NHL) as over-rate proxies.
             </li>
             <li>
-              Some ATS/O/U splits use estimated closing lines where sportsbook
+              Some ATS/O/U splits use league-average benchmarks where sportsbook
               data is missing. <TermHelp id="provenance-estimated" /> markers
-              flag fallback constants or partial data.
+              flag partial samples only.
             </li>
             <li>
-              Historical line data is unavailable for some games; estimated
+              Historical line data is unavailable for some games; league-average
               benchmarks and provenance markers apply where noted.
             </li>
           </ul>

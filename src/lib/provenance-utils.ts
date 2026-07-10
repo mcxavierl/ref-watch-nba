@@ -7,7 +7,7 @@ export function provenanceLabel(tag: ProvenanceTag): string {
     case "computed-with-partial-data":
       return "Partial data";
     case "fallback-constant":
-      return "Estimated constant";
+      return "League average from game logs";
   }
 }
 

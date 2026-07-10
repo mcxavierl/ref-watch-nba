@@ -12,7 +12,7 @@ export function EplPreviewBanner({
   statsSource: RefStatsFile["meta"]["source"];
   assignmentsSource?: AssignmentsFile["source"];
 }) {
-  if (isEplVerifiedData(statsSource) && assignmentsSource === "espn") {
+  if (isEplVerifiedData(statsSource)) {
     return null;
   }
 
