@@ -25,6 +25,7 @@ export type MetricDelightSurface =
   | "bar-fill"
   | "delta"
   | "flag"
+  | "kicker"
   | "card"
   | "cell-extreme";
 

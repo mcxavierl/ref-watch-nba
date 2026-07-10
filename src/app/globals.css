@@ -655,6 +655,25 @@ p {
     line-height: 1.2;
   }
 
+  /* Text-only Above/Below baseline labels — no pill chrome */
+  .metric-delight-kicker {
+    align-self: flex-start;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    color: var(--muted-strong);
+  }
+
+  .metric-delight-kicker--positive {
+    color: var(--metric-positive-ink);
+  }
+
+  .metric-delight-kicker--negative {
+    color: var(--metric-negative-ink);
+  }
+
   .metric-delight-delta {
     display: inline-flex;
     align-items: center;

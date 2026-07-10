@@ -139,7 +139,7 @@ export function MatrixExtremeSplitCards({
             className={metricDelightClass(tone, "card")}
           >
             <div className="metric-delight-card-head">
-              <StandoutFlag>{kicker}</StandoutFlag>
+              <span className={metricDelightClass(tone, "kicker")}>{kicker}</span>
               <StandoutMetricValue tone={tone} size="hero">
                 {formatSigned(item.deltaPts)}
               </StandoutMetricValue>
