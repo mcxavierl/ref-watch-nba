@@ -1,4 +1,6 @@
 import type { RefStatsFile } from "@/lib/types";
+import { resolveLeagueVerification } from "@/lib/league-verification";
+import type { LeagueId } from "@/lib/leagues";
 import { getCachedRefStats, setCachedRefStats } from "@/lib/ref-stats-preload";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
@@ -33,9 +35,22 @@ function leaguesForPath(pathname: string): League[] {
 async function fetchRefStatsAsset(assetPath: string): Promise<RefStatsFile | null> {
   try {
     const { getCloudflareContext } = await import("@opennextjs/cloudflare");
-    const assets = getCloudflareContext().env.ASSETS;
+    const { env } = await getCloudflareContext({ async: true });
+    const assets = env.ASSETS as
+      | { fetch: (input: RequestInfo) => Promise<Response> }
+      | undefined;
     if (assets) {
-      const res = await assets.fetch(new URL(assetPath, "https://assets.local"));
+      const res = await assets.fetch(`https://assets.local${assetPath}`);
+      if (res.ok) {
+        return (await res.json()) as RefStatsFile;
+      }
+    }
+
+    const worker = env.WORKER_SELF_REFERENCE as
+      | { fetch: (input: RequestInfo) => Promise<Response> }
+      | undefined;
+    if (worker) {
+      const res = await worker.fetch(`https://refwatch.internal${assetPath}`);
       if (res.ok) {
         return (await res.json()) as RefStatsFile;
       }
@@ -56,7 +71,13 @@ async function fetchRefStatsOrigin(
 }
 
 async function preloadRefStats(origin: string, league: League): Promise<void> {
-  if (getCachedRefStats(league)) return;
+  const cached = getCachedRefStats(league);
+  if (
+    cached?.refs?.length &&
+    resolveLeagueVerification(league as LeagueId, cached.meta).data_verified
+  ) {
+    return;
+  }
 
   const assetPath = REF_STATS_ASSET[league];
   const data =
