@@ -231,3 +231,23 @@ export function researchFindingHref(
   if (resolvedLeague === "CFB") return `/cfb/research/${id}`;
   return `/research/${id}`;
 }
+
+/** Research hub with optional category-group + confidence query filters. */
+export function researchHubFilterHref(
+  league: FindingLeague,
+  opts?: {
+    filter?: FindingFilterGroup;
+    confidence?: ConfidenceTier;
+  },
+): string {
+  const base = researchHubHref(league);
+  const params = new URLSearchParams();
+  if (opts?.filter && opts.filter !== "all") {
+    params.set("filter", opts.filter);
+  }
+  if (opts?.confidence) {
+    params.set("confidence", opts.confidence);
+  }
+  const qs = params.toString();
+  return qs ? `${base}?${qs}` : base;
+}

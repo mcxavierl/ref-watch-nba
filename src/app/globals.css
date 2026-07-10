@@ -1762,6 +1762,28 @@ p {
     color: var(--muted-strong);
   }
 
+  a.finding-meta-pill-link {
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 120ms ease-out, color 120ms ease-out,
+      background-color 120ms ease-out;
+  }
+
+  a.finding-meta-pill-link:hover {
+    border-color: color-mix(in srgb, var(--header-gold) 45%, var(--border));
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--header-gold) 10%, var(--surface));
+  }
+
+  a.confidence-tier-badge-link {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  a.confidence-tier-badge-link:hover {
+    filter: brightness(1.08);
+  }
+
   .finding-meta-pill-muted {
     color: var(--muted);
     background: color-mix(in srgb, var(--surface-raised) 70%, var(--surface));

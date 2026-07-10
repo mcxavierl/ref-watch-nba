@@ -1,14 +1,20 @@
+"use client";
+
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import type { MouseEvent, ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import { ConfidenceStrengthIndicator } from "@/components/ConfidenceStrengthIndicator";
 import { FindingExplainer } from "@/components/FindingNameWall";
 import { delightValueSize } from "@/components/StandoutMetric";
-import type { Finding, FindingStat } from "@/lib/findings-shared";
+import type { Finding, FindingLeague, FindingStat } from "@/lib/findings-shared";
 import {
   FINDING_CATEGORY_LABELS,
+  FINDING_CATEGORY_TO_FILTER,
   findingConfidenceTier,
   researchFindingHref,
+  researchHubFilterHref,
+  researchHubHref,
 } from "@/lib/findings-shared";
 import {
   findingStatDelightTone,
@@ -16,26 +22,76 @@ import {
   isStandoutTone,
 } from "@/lib/metric-delight";
 
+function AccordionSafeLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  const router = useRouter();
+
+  return (
+    <Link
+      href={href}
+      className={className}
+      onClick={(event: MouseEvent) => {
+        // Links inside <summary> must preventDefault or the accordion steals the click.
+        event.preventDefault();
+        event.stopPropagation();
+        router.push(href);
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
+
 export function FindingMetaBadges({
+  finding,
   category,
   index,
   league,
   className = "",
 }: {
+  finding: Finding;
   category: Finding["category"];
   index: number;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league?: FindingLeague;
   className?: string;
 }) {
+  const resolvedLeague = league;
+  const categoryFilter = FINDING_CATEGORY_TO_FILTER[category];
+  const detailHref = researchFindingHref(finding, resolvedLeague);
+
   return (
     <div className={`finding-meta-pills ${className}`.trim()}>
-      {league && <span className="finding-meta-pill">{league}</span>}
-      <span className="finding-meta-pill">
+      {resolvedLeague && (
+        <AccordionSafeLink
+          href={researchHubHref(resolvedLeague)}
+          className="finding-meta-pill finding-meta-pill-link"
+        >
+          {resolvedLeague}
+        </AccordionSafeLink>
+      )}
+      <AccordionSafeLink
+        href={
+          resolvedLeague
+            ? researchHubFilterHref(resolvedLeague, { filter: categoryFilter })
+            : detailHref
+        }
+        className="finding-meta-pill finding-meta-pill-link"
+      >
         {FINDING_CATEGORY_LABELS[category]}
-      </span>
-      <span className="finding-meta-pill finding-meta-pill-muted">
+      </AccordionSafeLink>
+      <AccordionSafeLink
+        href={detailHref}
+        className="finding-meta-pill finding-meta-pill-muted finding-meta-pill-link"
+      >
         Finding {index + 1}
-      </span>
+      </AccordionSafeLink>
     </div>
   );
 }
@@ -48,7 +104,7 @@ export function FindingHeaderRow({
 }: {
   finding: Finding;
   index: number;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league?: FindingLeague;
   trailing?: ReactNode;
 }) {
   const tier = findingConfidenceTier(finding);
@@ -56,17 +112,28 @@ export function FindingHeaderRow({
   return (
     <div className="finding-card-header">
       <h3 className="finding-card-title">
-        <Link
+        <AccordionSafeLink
           href={researchFindingHref(finding, league)}
           className="finding-card-title-link hover:text-raptors hover:underline"
-          onClick={(event) => event.stopPropagation()}
         >
           {finding.headline}
-        </Link>
+        </AccordionSafeLink>
       </h3>
       <div className="finding-card-header-actions">
-        <FindingMetaBadges category={finding.category} index={index} league={league} />
-        <ConfidenceStrengthIndicator tier={tier} />
+        <FindingMetaBadges
+          finding={finding}
+          category={finding.category}
+          index={index}
+          league={league}
+        />
+        <ConfidenceStrengthIndicator
+          tier={tier}
+          href={
+            league
+              ? researchHubFilterHref(league, { confidence: tier })
+              : undefined
+          }
+        />
         {trailing}
       </div>
     </div>

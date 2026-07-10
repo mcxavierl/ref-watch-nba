@@ -139,11 +139,13 @@ export function InsightsHubPage({
           stats.meta.lastUpdated,
         )}
       />
-      <ResearchHubFindings
-        findings={findings}
-        league={dataLeague}
-        refCount={stats.refs.length}
-      />
+      <Suspense fallback={<p className="mt-6 text-sm text-zinc-600">Loading findings…</p>}>
+        <ResearchHubFindings
+          findings={findings}
+          league={dataLeague}
+          refCount={stats.refs.length}
+        />
+      </Suspense>
     </>
   );
 
