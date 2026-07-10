@@ -1,9 +1,10 @@
 import { cache } from "react";
-import { preloadGameLogsFromAssets, type DataLeague } from "@/lib/game-logs-preload";
+import { preloadLeagueDataForPath } from "@/lib/edge-preload";
 import {
-  leaguesForPath,
-  preloadRefStatsFromAssets,
-} from "@/lib/ref-stats-preload";
+  preloadGameLogsFromAssets,
+  type DataLeague,
+} from "@/lib/game-logs-preload";
+import { leaguesForPath } from "@/lib/ref-stats-preload";
 import { SITE_URL } from "@/lib/site";
 
 const DATA_LEAGUE_FOR_ROUTE: Record<
@@ -20,11 +21,11 @@ const DATA_LEAGUE_FOR_ROUTE: Record<
 
 /** SSR isolate: fetch /public data assets when Workers cannot read data/ from disk. */
 export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
+  await preloadLeagueDataForPath(SITE_URL, pathname);
   const leagues = leaguesForPath(pathname);
   await Promise.all(
-    leagues.flatMap((league) => [
-      preloadRefStatsFromAssets(SITE_URL, league),
+    leagues.map((league) =>
       preloadGameLogsFromAssets(SITE_URL, DATA_LEAGUE_FOR_ROUTE[league]),
-    ]),
+    ),
   );
 });

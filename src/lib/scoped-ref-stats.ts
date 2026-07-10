@@ -186,6 +186,26 @@ function rebuildFromGameLogs(
     const key = crewKey(game.officials);
     const crewNames = game.officials.map((o) => o.name);
 
+    for (const [teamAbbr, teamWin, isHome] of [
+      [game.homeTeam, homeWin, true],
+      [game.awayTeam, !homeWin, false],
+    ] as const) {
+      const fouls = teamFoulSplit(game, isHome);
+      const teamMap = teamByCrew.get(teamAbbr) ?? new Map();
+      const bucket = teamMap.get(key) ?? { crewNames, games: [] };
+      bucket.games.push({
+        isHome,
+        teamWin,
+        totalPoints: game.totalPoints,
+        totalFouls: game.totalFouls,
+        teamFouls: fouls.teamFouls,
+        opponentFouls: fouls.opponentFouls,
+        overHit,
+      });
+      teamMap.set(key, bucket);
+      teamByCrew.set(teamAbbr, teamMap);
+    }
+
     for (const official of game.officials) {
       const slug = refSlug(official.name, official.number);
       if (!refMeta.has(slug)) {
@@ -213,20 +233,6 @@ function rebuildFromGameLogs(
         teamRows.push(row);
         byTeam.set(teamAbbr, teamRows);
         refTeamBuckets.set(slug, byTeam);
-
-        const teamMap = teamByCrew.get(teamAbbr) ?? new Map();
-        const bucket = teamMap.get(key) ?? { crewNames, games: [] };
-        bucket.games.push({
-          isHome,
-          teamWin,
-          totalPoints: game.totalPoints,
-          totalFouls: game.totalFouls,
-          teamFouls: fouls.teamFouls,
-          opponentFouls: fouls.opponentFouls,
-          overHit,
-        });
-        teamMap.set(key, bucket);
-        teamByCrew.set(teamAbbr, teamMap);
       }
     }
   }
@@ -325,6 +331,12 @@ function filterByRefSeasons(
   };
 }
 
+function baseHasTeamStats(base: RefStatsFile): boolean {
+  return base.refs.some(
+    (ref) => ref.teamStats && Object.keys(ref.teamStats).length > 0,
+  );
+}
+
 export function buildScopedRefStats(
   leagueId: LeagueId,
   base: RefStatsFile,
@@ -343,7 +355,9 @@ export function buildScopedRefStats(
 
   const dataLeague = LEAGUE_ID_TO_DATA[leagueId];
   const logs = loadRuntimeGameLogs(dataLeague);
-  if (logs?.games?.length) {
+  // Only rebuild from game logs when ref-stats lack team splits (e.g. dev).
+  // Stale seed game-logs on CDN must not wipe verified ref-stats on Workers.
+  if (logs?.games?.length && !baseHasTeamStats(base)) {
     return rebuildFromGameLogs(base, logs.games, scopedSeasons);
   }
 
