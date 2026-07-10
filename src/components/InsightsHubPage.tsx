@@ -47,8 +47,8 @@ export function InsightsHubPage({
     formatRange,
     scopedSeasons,
     scopeLabel,
-    availableSeasons,
   } = loadScopedLeagueStats(leagueId, scopeMode);
+  const availableSeasons = stats.meta.seasons;
   const verification = resolveLeagueVerification(leagueId, stats.meta);
   const showDataSourceBanner =
     !verification.data_verified &&
