@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
+import { LEAGUE_HERO_STATS } from "@/lib/league-hero-stats.generated";
 import { LEAGUES } from "@/lib/leagues";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
 import { nbaSeasonScopeAuditNote } from "@/lib/nba-team-season-records";
@@ -51,9 +52,14 @@ export function LeagueSlateHero({
   const copy = leagueHeroCopy(leagueId);
   const isOffseason = isOffseasonSlate(assignments);
   const isPending = isPendingCrewSlate(assignments);
-  const officialCount = refStats.refs?.length ?? 0;
-  const gamesProcessed = refStats.meta.totalGamesProcessed;
-  const seasonSpan = formatSeasonScope(refStats.meta.seasons.length);
+  const snapshot = LEAGUE_HERO_STATS[leagueId];
+  const officialCount = refStats.refs?.length || snapshot?.officials || 0;
+  const gamesProcessed =
+    refStats.meta.totalGamesProcessed || snapshot?.games || 0;
+  const seasonSpan =
+    refStats.meta.seasons.length > 0
+      ? formatSeasonScope(refStats.meta.seasons.length)
+      : snapshot?.seasonSpan ?? "-";
   const seasonAuditNote =
     leagueId === "nba" ? nbaSeasonScopeAuditNote(refStats.meta.seasons) : null;
   const useInteractiveStats = productHome && isOffseason;

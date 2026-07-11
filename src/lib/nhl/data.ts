@@ -204,17 +204,11 @@ export function getRefStats(): RefStatsFile {
     const stats = gateUnverifiedNhlStats(
       applyBaselines(mergeTeamSpecialTeams(normalizeRefStats(raw))),
     );
-    if (Object.keys(stats.teamSplits ?? {}).length > 0) {
-      resolvedRefStats = stats;
-      return stats;
-    }
     const splits = cachedTeamSplitsForLeague("nhl");
     const fromFile =
       Object.keys(splits).length > 0 ? splits : diskTeamSplitsFallback(loadTeamSplitsFromDisk);
-    if (stats.refs.length > 0) {
-      resolvedRefStats = attachTeamSplits("nhl", stats, fromFile);
-    }
-    return resolvedRefStats ?? stats;
+    resolvedRefStats = attachTeamSplits("nhl", stats, fromFile);
+    return resolvedRefStats;
   } catch {
     return EMPTY_REF_STATS;
   }

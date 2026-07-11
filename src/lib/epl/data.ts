@@ -26,6 +26,7 @@ import {
   loadRefStatsRawCachedFirst,
   resolveTeamSplitsForLeague,
 } from "@/lib/ref-stats-preload";
+import { getBundledLeagueRefStatsCore } from "@/lib/ref-stats-bundled";
 import { allowNodeDataFs, diskTeamSplitsFallback } from "@/lib/production-data-guard";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
@@ -70,10 +71,11 @@ function resolveTeamSplits(
 
 function loadRefStatsRaw(): RefStatsFile | null {
   return loadRefStatsRawCachedFirst("epl", () => {
-    if (!allowNodeDataFs()) return null;
+    if (!allowNodeDataFs()) return getBundledLeagueRefStatsCore("epl");
     return (
       tryReadJson<RefStatsFile>("ref-stats-core.json") ??
-      tryReadJson<RefStatsFile>("ref-stats.json")
+      tryReadJson<RefStatsFile>("ref-stats.json") ??
+      getBundledLeagueRefStatsCore("epl")
     );
   });
 }
@@ -180,17 +182,11 @@ export function getRefStats(): RefStatsFile {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     const stats = gateUnverifiedEplStats(applyBaselines(normalizeRefStats(raw)));
-    if (Object.keys(stats.teamSplits ?? {}).length > 0) {
-      resolvedRefStats = stats;
-      return stats;
-    }
     const splits = cachedTeamSplitsForLeague("epl");
     const fromFile =
       Object.keys(splits).length > 0 ? splits : diskTeamSplitsFallback(loadTeamSplitsFromDisk);
-    if (stats.refs.length > 0) {
-      resolvedRefStats = attachTeamSplits("epl", stats, fromFile);
-    }
-    return resolvedRefStats ?? stats;
+    resolvedRefStats = attachTeamSplits("epl", stats, fromFile);
+    return resolvedRefStats;
   } catch {
     return EMPTY_REF_STATS;
   }

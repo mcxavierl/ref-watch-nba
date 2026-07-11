@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "tsx scripts/check-production-env.ts && tsx scripts/check-no-synthetic-imports.ts && tsx scripts/copy-data-to-public.ts && tsx scripts/build-overview-insights.ts && tsx scripts/build-overview-snapshot.ts && tsx scripts/check-deploy-readiness.ts && node scripts/next-build-retry.mjs",
-    "build:opennext": "rm -rf .open-next && opennextjs-cloudflare build --skipBuild && printf 'export const production = {};\\nexport const development = {};\\nexport const test = {};\\n' > .open-next/cloudflare/next-env.mjs",
+    "build:opennext": "node scripts/ensure-standalone.mjs && node -e \"const fs=require('fs');const p='.open-next';if(fs.existsSync(p)){fs.renameSync(p,p+'.bak-'+Date.now());}\" && opennextjs-cloudflare build --skipBuild && printf 'export const production = {};\\nexport const development = {};\\nexport const test = {};\\n' > .open-next/cloudflare/next-env.mjs",
     "check:synthetic": "tsx scripts/check-no-synthetic-imports.ts",
     "check:deploy": "tsx scripts/copy-data-to-public.ts && tsx scripts/check-deploy-readiness.ts",
     "check:volume": "tsx scripts/check-volume-regression.ts",
@@ -17,7 +17,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "tsx scripts/check-no-synthetic-imports.ts && tsx --test src/lib/nfl/data-source.test.ts scripts/nfl/lib/espn-season.test.ts src/lib/nba-team-season-records.test.ts src/lib/bbr-ref-team-records.test.ts src/lib/scoring-metrics.test.ts src/lib/nba-strength-of-schedule.test.ts src/lib/ref-number.test.ts src/lib/stats-query/stats-query.test.ts src/lib/ref-team-matrix.test.ts src/lib/ref-stats-preload.test.ts src/lib/deploy-readiness.test.ts scripts/lib/volume-regression.test.ts",
+    "test": "tsx scripts/check-no-synthetic-imports.ts && tsx --test src/lib/nfl/data-source.test.ts scripts/nfl/lib/espn-season.test.ts src/lib/nba-team-season-records.test.ts src/lib/bbr-ref-team-records.test.ts src/lib/scoring-metrics.test.ts src/lib/nba-strength-of-schedule.test.ts src/lib/ref-number.test.ts src/lib/stats-query/stats-query.test.ts src/lib/ref-team-matrix.test.ts src/lib/ref-stats-preload.test.ts src/lib/ref-stats-bundled.test.ts src/lib/deploy-readiness.test.ts scripts/lib/volume-regression.test.ts",
     "fetch-assignments": "tsx scripts/fetch-assignments.ts",
     "fetch-odds": "tsx scripts/fetch-odds.ts",
     "morning-slate": "tsx scripts/morning-slate.ts",

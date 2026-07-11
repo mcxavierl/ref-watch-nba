@@ -180,17 +180,11 @@ export function getRefStats(): RefStatsFile {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     const stats = gateUnverifiedNflStats(applyBaselines(normalizeRefStats(raw)));
-    if (Object.keys(stats.teamSplits ?? {}).length > 0) {
-      resolvedRefStats = stats;
-      return stats;
-    }
     const splits = cachedTeamSplitsForLeague("nfl");
     const fromFile =
       Object.keys(splits).length > 0 ? splits : diskTeamSplitsFallback(loadTeamSplitsFromDisk);
-    if (stats.refs.length > 0) {
-      resolvedRefStats = attachTeamSplits("nfl", stats, fromFile);
-    }
-    return resolvedRefStats ?? stats;
+    resolvedRefStats = attachTeamSplits("nfl", stats, fromFile);
+    return resolvedRefStats;
   } catch {
     return EMPTY_REF_STATS;
   }
