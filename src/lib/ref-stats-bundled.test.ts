@@ -10,7 +10,7 @@ test("bundled ref-stats core has hero counts for compact leagues", () => {
   assert.ok(nba?.refs?.length);
   assert.ok(nba.meta.totalGamesProcessed);
 
-  for (const league of ["epl", "laliga"] as const) {
+  for (const league of ["nfl", "nhl", "epl", "laliga"] as const) {
     const stats = getBundledLeagueRefStatsCore(league);
     assert.ok(stats?.refs?.length, `${league} refs`);
     assert.ok(stats.meta.totalGamesProcessed, `${league} games`);

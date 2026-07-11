@@ -26,6 +26,7 @@ import {
   loadRefStatsRawCachedFirst,
   resolveTeamSplitsForLeague,
 } from "@/lib/ref-stats-preload";
+import { getBundledLeagueRefStatsCore } from "@/lib/ref-stats-bundled";
 import { allowNodeDataFs, diskTeamSplitsFallback } from "@/lib/production-data-guard";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
@@ -70,10 +71,11 @@ function resolveTeamSplits(
 
 function loadRefStatsRaw(): RefStatsFile | null {
   return loadRefStatsRawCachedFirst("nfl", () => {
-    if (!allowNodeDataFs()) return null;
+    if (!allowNodeDataFs()) return getBundledLeagueRefStatsCore("nfl");
     return (
       tryReadJson<RefStatsFile>("ref-stats-core.json") ??
-      tryReadJson<RefStatsFile>("ref-stats.json")
+      tryReadJson<RefStatsFile>("ref-stats.json") ??
+      getBundledLeagueRefStatsCore("nfl")
     );
   });
 }

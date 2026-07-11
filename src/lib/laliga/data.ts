@@ -94,7 +94,7 @@ export function getAssignments(): AssignmentsFile {
 }
 
 const EMPTY_REF_STATS: RefStatsFile = (() => {
-  const bl = resolveLeagueBaseline("EPL");
+  const bl = resolveLeagueBaseline("LALIGA");
   return {
     meta: {
       lastUpdated: new Date().toISOString(),
@@ -137,7 +137,7 @@ function migrateLegacySplits(data: RefStatsFile): Record<string, TeamCrewSplit[]
 
 function applyBaselines(stats: RefStatsFile): RefStatsFile {
   const season = stats.meta.seasons.at(-1) ?? null;
-  const baseline = resolveLeagueBaseline("EPL", season);
+  const baseline = resolveLeagueBaseline("LALIGA", season);
   return {
     ...stats,
     meta: {

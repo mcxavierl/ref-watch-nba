@@ -1,28 +1,23 @@
 import type { RefStatsFile } from "@/lib/types";
+import nbaCore from "../../data/ref-stats-core.json";
+import nflCore from "../../data/nfl/ref-stats-core.json";
+import nhlCore from "../../data/nhl/ref-stats-core.json";
+import eplCore from "../../data/epl/ref-stats-core.json";
+import laligaCore from "../../data/laliga/ref-stats-core.json";
 
 type BundledLeague = "nba" | "nfl" | "nhl" | "epl" | "laliga";
 
-const BUNDLED_CORE: Partial<Record<BundledLeague, RefStatsFile>> = {};
-
-const BUNDLED_PATHS: Record<BundledLeague, string> = {
-  nba: "../../data/ref-stats-core.json",
-  nfl: "../../data/nfl/ref-stats-core.json",
-  nhl: "../../data/nhl/ref-stats-core.json",
-  epl: "../../data/epl/ref-stats-core.json",
-  laliga: "../../data/laliga/ref-stats-core.json",
+const BUNDLED_CORE: Record<BundledLeague, RefStatsFile> = {
+  nba: nbaCore as RefStatsFile,
+  nfl: nflCore as RefStatsFile,
+  nhl: nhlCore as RefStatsFile,
+  epl: eplCore as RefStatsFile,
+  laliga: laligaCore as RefStatsFile,
 };
 
 function loadBundledCore(league: BundledLeague): RefStatsFile | null {
-  if (BUNDLED_CORE[league]) return BUNDLED_CORE[league]!;
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const data = require(BUNDLED_PATHS[league]) as RefStatsFile;
-    if (!data?.refs?.length) return null;
-    BUNDLED_CORE[league] = data;
-    return data;
-  } catch {
-    return null;
-  }
+  const data = BUNDLED_CORE[league];
+  return data?.refs?.length ? data : null;
 }
 
 /** Bundled at build time from data/ref-stats-core.json (~500KB). */
