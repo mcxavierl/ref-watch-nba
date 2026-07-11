@@ -225,7 +225,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
             refs={lookupRefs}
             sampleRefSlugs={sampleRefs.map((r) => r.slug)}
             heading="Search officials"
-            lead="Find any ref across NBA, NHL, NFL, and EPL — results show league badges."
+            lead="Find any ref across NBA, NHL, NFL, EPL, and La Liga — results show league badges."
             placeholder="Search refs across live leagues…"
             includeTeams={false}
             includeShortcuts={false}
@@ -239,10 +239,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
           </div>
           <div className="overview-stat">
             <span className="overview-stat-label">Live leagues</span>
-            <span className="overview-stat-value">
-              {formatCount(data.liveLeagueCount)}
-              <span className="overview-stat-sub"> / {formatCount(liveCatalogCount())} active</span>
-            </span>
+            <span className="overview-stat-value">{formatCount(liveCatalogCount())}</span>
           </div>
           <div className="overview-stat">
             <span className="overview-stat-label">Matches</span>
