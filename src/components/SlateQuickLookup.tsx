@@ -9,6 +9,7 @@ export type SlateQuickLookupRef = {
   slug: string;
   name: string;
   games: number;
+  href?: string;
 };
 
 type LookupResult =
@@ -16,7 +17,7 @@ type LookupResult =
   | { kind: "team"; abbr: string; label: string; detail: string; href: string }
   | { kind: "shortcut"; label: string; detail: string; href: string };
 
-const SHORTCUTS: LookupResult[] = [
+const DEFAULT_SHORTCUTS: LookupResult[] = [
   {
     kind: "shortcut",
     label: "Ref×team matrix",
@@ -34,11 +35,19 @@ const SHORTCUTS: LookupResult[] = [
 type SlateQuickLookupProps = {
   refs: SlateQuickLookupRef[];
   sampleRefSlugs?: string[];
+  placeholder?: string;
+  heading?: string;
+  lead?: string;
+  includeTeams?: boolean;
+  includeShortcuts?: boolean;
+  showSampleChips?: boolean;
 };
 
 function buildResults(
   query: string,
   refs: SlateQuickLookupRef[],
+  includeTeams: boolean,
+  includeShortcuts: boolean,
 ): LookupResult[] {
   const trimmed = query.trim().toLowerCase();
   if (!trimmed) return [];
@@ -56,33 +65,37 @@ function buildResults(
         slug: ref.slug,
         label: ref.name,
         detail: `${ref.games.toLocaleString()} games logged`,
-        href: `/refs/${ref.slug}`,
+        href: ref.href ?? `/refs/${ref.slug}`,
       }),
     );
 
-  const teamMatches = NBA_TEAMS.filter(
-    (team) =>
-      team.abbr.toLowerCase().includes(trimmed) ||
-      team.name.toLowerCase().includes(trimmed) ||
-      team.city.toLowerCase().includes(trimmed) ||
-      `${team.city} ${team.name}`.toLowerCase().includes(trimmed),
-  )
-    .slice(0, 6)
-    .map(
-      (team): LookupResult => ({
-        kind: "team",
-        abbr: team.abbr,
-        label: `${team.city} ${team.name}`,
-        detail: `${team.abbr} · ${team.conference}`,
-        href: `/teams/${team.abbr}`,
-      }),
-    );
+  const teamMatches = includeTeams
+    ? NBA_TEAMS.filter(
+        (team) =>
+          team.abbr.toLowerCase().includes(trimmed) ||
+          team.name.toLowerCase().includes(trimmed) ||
+          team.city.toLowerCase().includes(trimmed) ||
+          `${team.city} ${team.name}`.toLowerCase().includes(trimmed),
+      )
+        .slice(0, 6)
+        .map(
+          (team): LookupResult => ({
+            kind: "team",
+            abbr: team.abbr,
+            label: `${team.city} ${team.name}`,
+            detail: `${team.abbr} · ${team.conference}`,
+            href: `/teams/${team.abbr}`,
+          }),
+        )
+    : [];
 
-  const shortcutMatches = SHORTCUTS.filter(
-    (item) =>
-      item.label.toLowerCase().includes(trimmed) ||
-      item.detail.toLowerCase().includes(trimmed),
-  );
+  const shortcutMatches = includeShortcuts
+    ? DEFAULT_SHORTCUTS.filter(
+        (item) =>
+          item.label.toLowerCase().includes(trimmed) ||
+          item.detail.toLowerCase().includes(trimmed),
+      )
+    : [];
 
   return [...shortcutMatches, ...refMatches, ...teamMatches].slice(0, 8);
 }
@@ -90,13 +103,22 @@ function buildResults(
 export function SlateQuickLookup({
   refs,
   sampleRefSlugs = [],
+  placeholder = "Search refs, teams, or tools...",
+  heading = "Offseason deep dive",
+  lead = "Jump to any ref, team, or tool. Historical data is live across the full dataset.",
+  includeTeams = true,
+  includeShortcuts = true,
+  showSampleChips = true,
 }: SlateQuickLookupProps) {
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const results = useMemo(() => buildResults(query, refs), [query, refs]);
+  const results = useMemo(
+    () => buildResults(query, refs, includeTeams, includeShortcuts),
+    [query, refs, includeTeams, includeShortcuts],
+  );
 
   const sampleRefs = useMemo(() => {
     const bySlug = new Map(refs.map((ref) => [ref.slug, ref]));
@@ -154,12 +176,9 @@ export function SlateQuickLookup({
     <section className="slate-quick-lookup section-block" aria-labelledby="slate-quick-lookup-heading">
       <div className="slate-quick-lookup-header">
         <h2 className="section-title" id="slate-quick-lookup-heading">
-          Offseason deep dive
+          {heading}
         </h2>
-        <p className="section-lead">
-          Jump to any ref, team, or tool. Historical data is live across the full
-          dataset.
-        </p>
+        <p className="section-lead">{lead}</p>
       </div>
 
       <div className="slate-quick-lookup-search-wrap">
@@ -173,7 +192,7 @@ export function SlateQuickLookup({
             id="slate-quick-lookup-input"
             type="search"
             className="slate-quick-lookup-input"
-            placeholder="Search refs, teams, or tools..."
+            placeholder={placeholder}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             onKeyDown={handleKeyDown}
@@ -214,26 +233,32 @@ export function SlateQuickLookup({
         )}
       </div>
 
-      <div className="slate-quick-lookup-shortcuts">
-        <Link href="/matrix" className="slate-quick-lookup-chip">
-          <Grid3x3 aria-hidden />
-          Matrix
-        </Link>
-        <Link href="/insights" className="slate-quick-lookup-chip">
-          <Lightbulb aria-hidden />
-          Insights
-        </Link>
-        {sampleRefs.map((ref) => (
-          <Link
-            key={ref.slug}
-            href={`/refs/${ref.slug}`}
-            className="slate-quick-lookup-chip slate-quick-lookup-chip-ref"
-          >
-            {ref.name}
-            <ArrowRight className="slate-quick-lookup-chip-arrow" aria-hidden />
-          </Link>
-        ))}
-      </div>
+      {showSampleChips ? (
+        <div className="slate-quick-lookup-shortcuts">
+          {includeShortcuts ? (
+            <>
+              <Link href="/matrix" className="slate-quick-lookup-chip">
+                <Grid3x3 aria-hidden />
+                Matrix
+              </Link>
+              <Link href="/insights" className="slate-quick-lookup-chip">
+                <Lightbulb aria-hidden />
+                Insights
+              </Link>
+            </>
+          ) : null}
+          {sampleRefs.map((ref) => (
+            <Link
+              key={ref.slug}
+              href={ref.href ?? `/refs/${ref.slug}`}
+              className="slate-quick-lookup-chip slate-quick-lookup-chip-ref"
+            >
+              {ref.name}
+              <ArrowRight className="slate-quick-lookup-chip-arrow" aria-hidden />
+            </Link>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }

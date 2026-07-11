@@ -12,10 +12,24 @@ import { LeagueNav, SiteNav } from "./SiteNav";
 // TODO: Re-enable profile + notification controls when account features ship.
 const SHOW_HEADER_USER_CONTROLS = false;
 
+function OverviewNavLink({ pathname }: { pathname: string }) {
+  const active = pathname === "/overview";
+  return (
+    <Link
+      href="/overview"
+      aria-current={active ? "page" : undefined}
+      className={`site-global-link${active ? " site-global-link--active" : ""}`}
+    >
+      Overview
+    </Link>
+  );
+}
+
 export function SiteHeader() {
   const pathname = usePathname();
-  const leagueId = leagueFromPathname(pathname ?? "/");
-  const homeHref = LEAGUES[leagueId].pathPrefix || "/";
+  const resolvedPath = pathname ?? "/";
+  const leagueId = leagueFromPathname(resolvedPath);
+  const homeHref = resolvedPath === "/overview" ? "/overview" : LEAGUES[leagueId].pathPrefix || "/";
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -45,10 +59,11 @@ export function SiteHeader() {
           </Link>
 
           <div className="site-header-nav">
-            <SiteNav id="site-primary-nav" />
+            {resolvedPath === "/overview" ? null : <SiteNav id="site-primary-nav" />}
           </div>
 
           <div className="site-header-right">
+            <OverviewNavLink pathname={resolvedPath} />
             <div className="site-header-league">
               <LeagueNav />
             </div>
