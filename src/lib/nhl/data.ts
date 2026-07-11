@@ -20,9 +20,11 @@ import {
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { nhlCrewMetricsProvenance } from "@/lib/provenance";
 import {
-  resolveRefStatsFromFsOrCache,
-  resolveTeamSplitsForLeague,
   attachTeamSplits,
+  cachedTeamSplitsForLeague,
+  getPreferHydratedRefStats,
+  loadRefStatsRawCachedFirst,
+  resolveTeamSplitsForLeague,
 } from "@/lib/ref-stats-preload";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
@@ -59,14 +61,18 @@ function loadTeamSplitsFromDisk(): Record<string, TeamCrewSplit[]> {
 function resolveTeamSplits(
   embedded: Record<string, TeamCrewSplit[]>,
 ): Record<string, TeamCrewSplit[]> {
+  const cached = cachedTeamSplitsForLeague("nhl");
+  if (Object.keys(cached).length > 0) {
+    return resolveTeamSplitsForLeague("nhl", embedded, cached);
+  }
   return resolveTeamSplitsForLeague("nhl", embedded, loadTeamSplitsFromDisk());
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs =
+  return loadRefStatsRawCachedFirst("nhl", () =>
     tryReadJson<RefStatsFile>("ref-stats-core.json") ??
-    tryReadJson<RefStatsFile>("ref-stats.json");
-  return resolveRefStatsFromFsOrCache("nhl", fromFs);
+    tryReadJson<RefStatsFile>("ref-stats.json"),
+  );
 }
 
 export function getAssignments(): AssignmentsFile {
@@ -143,13 +149,20 @@ function applyBaselines(stats: RefStatsFile): RefStatsFile {
 }
 
 function normalizeRefStats(data: RefStatsFile): RefStatsFile {
+  const embedded = data.teamSplits ?? {};
+  if (Object.keys(embedded).length > 0) {
+    return { ...data, refs: data.refs ?? [] };
+  }
+  const cached = cachedTeamSplitsForLeague("nhl");
+  const fromFile =
+    Object.keys(cached).length > 0 ? cached : loadTeamSplitsFromDisk();
   return attachTeamSplits(
     "nhl",
     {
       ...data,
       refs: data.refs ?? [],
     },
-    loadTeamSplitsFromDisk(),
+    fromFile,
   );
 }
 
@@ -170,14 +183,32 @@ function mergeTeamSpecialTeams(data: RefStatsFile): RefStatsFile {
   return data;
 }
 
+let resolvedRefStats: RefStatsFile | null = null;
+
 export function getRefStats(): RefStatsFile {
+  if (resolvedRefStats) return resolvedRefStats;
   try {
+    const hydrated = getPreferHydratedRefStats("nhl");
+    if (hydrated?.refs?.length) {
+      resolvedRefStats = gateUnverifiedNhlStats(
+        applyBaselines(mergeTeamSpecialTeams(normalizeRefStats(hydrated))),
+      );
+      return resolvedRefStats;
+    }
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     const stats = gateUnverifiedNhlStats(
       applyBaselines(mergeTeamSpecialTeams(normalizeRefStats(raw))),
     );
-    return attachTeamSplits("nhl", stats, loadTeamSplitsFromDisk());
+    if (Object.keys(stats.teamSplits ?? {}).length > 0) {
+      resolvedRefStats = stats;
+      return stats;
+    }
+    const splits = cachedTeamSplitsForLeague("nhl");
+    const fromFile =
+      Object.keys(splits).length > 0 ? splits : loadTeamSplitsFromDisk();
+    resolvedRefStats = attachTeamSplits("nhl", stats, fromFile);
+    return resolvedRefStats;
   } catch {
     return EMPTY_REF_STATS;
   }

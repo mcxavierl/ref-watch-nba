@@ -20,7 +20,9 @@ import {
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { crewMetricsProvenance } from "@/lib/provenance";
 import {
-  resolveRefStatsFromFsOrCache,
+  cachedTeamSplitsForLeague,
+  getPreferHydratedRefStats,
+  loadRefStatsRawCachedFirst,
 } from "@/lib/ref-stats-preload";
 import { getBundledNbaRefStatsCore } from "@/lib/ref-stats-bundled";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
@@ -58,12 +60,12 @@ function loadTeamSplitsRaw(): Record<string, TeamCrewSplit[]> {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs =
-    tryReadJson<RefStatsFile>("ref-stats-core.json") ??
-    tryReadJson<RefStatsFile>("ref-stats.json");
-  const fromBundle = getBundledNbaRefStatsCore();
-  const fsOrBundle = fromFs ?? fromBundle;
-  return resolveRefStatsFromFsOrCache("nba", fsOrBundle);
+  return loadRefStatsRawCachedFirst("nba", () => {
+    const fromFs =
+      tryReadJson<RefStatsFile>("ref-stats-core.json") ??
+      tryReadJson<RefStatsFile>("ref-stats.json");
+    return fromFs ?? getBundledNbaRefStatsCore();
+  });
 }
 
 export function getAssignments(): AssignmentsFile {
@@ -170,13 +172,24 @@ function normalizeRefStats(data: RefStatsFile): RefStatsFile {
   };
 }
 
+let resolvedRefStats: RefStatsFile | null = null;
+
 export function getRefStats(): RefStatsFile {
+  if (resolvedRefStats) return resolvedRefStats;
   try {
+    const hydrated = getPreferHydratedRefStats("nba");
+    if (hydrated?.refs?.length) {
+      resolvedRefStats = applyBaselines(
+        applyVerificationMeta(normalizeRefStats(hydrated)),
+      );
+      return resolvedRefStats;
+    }
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    return applyBaselines(
+    resolvedRefStats = applyBaselines(
       applyVerificationMeta(normalizeRefStats(raw)),
     );
+    return resolvedRefStats;
   } catch {
     return EMPTY_REF_STATS;
   }

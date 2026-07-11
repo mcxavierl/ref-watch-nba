@@ -20,9 +20,11 @@ import {
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { laligaCrewMetricsProvenance } from "@/lib/provenance";
 import {
-  resolveRefStatsFromFsOrCache,
-  resolveTeamSplitsForLeague,
   attachTeamSplits,
+  cachedTeamSplitsForLeague,
+  getPreferHydratedRefStats,
+  loadRefStatsRawCachedFirst,
+  resolveTeamSplitsForLeague,
 } from "@/lib/ref-stats-preload";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
@@ -58,14 +60,18 @@ function loadTeamSplitsFromDisk(): Record<string, TeamCrewSplit[]> {
 function resolveTeamSplits(
   embedded: Record<string, TeamCrewSplit[]>,
 ): Record<string, TeamCrewSplit[]> {
+  const cached = cachedTeamSplitsForLeague("laliga");
+  if (Object.keys(cached).length > 0) {
+    return resolveTeamSplitsForLeague("laliga", embedded, cached);
+  }
   return resolveTeamSplitsForLeague("laliga", embedded, loadTeamSplitsFromDisk());
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs =
+  return loadRefStatsRawCachedFirst("laliga", () =>
     tryReadJson<RefStatsFile>("ref-stats-core.json") ??
-    tryReadJson<RefStatsFile>("ref-stats.json");
-  return resolveRefStatsFromFsOrCache("laliga", fromFs);
+    tryReadJson<RefStatsFile>("ref-stats.json"),
+  );
 }
 
 export function getAssignments(): AssignmentsFile {
@@ -139,23 +145,46 @@ function applyBaselines(stats: RefStatsFile): RefStatsFile {
 }
 
 function normalizeRefStats(data: RefStatsFile): RefStatsFile {
+  const embedded = data.teamSplits ?? {};
+  if (Object.keys(embedded).length > 0) {
+    return { ...data, refs: data.refs ?? [] };
+  }
+  const cached = cachedTeamSplitsForLeague("laliga");
+  const fromFile =
+    Object.keys(cached).length > 0 ? cached : loadTeamSplitsFromDisk();
   return attachTeamSplits(
     "laliga",
     {
       ...data,
       refs: data.refs ?? [],
     },
-    loadTeamSplitsFromDisk(),
+    fromFile,
   );
 }
 
 
+let resolvedRefStats: RefStatsFile | null = null;
+
 export function getRefStats(): RefStatsFile {
+  if (resolvedRefStats) return resolvedRefStats;
   try {
+    const hydrated = getPreferHydratedRefStats("laliga");
+    if (hydrated?.refs?.length) {
+      resolvedRefStats = gateUnverifiedLaligaStats(applyBaselines(normalizeRefStats(hydrated)));
+      return resolvedRefStats;
+    }
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     const stats = gateUnverifiedLaligaStats(applyBaselines(normalizeRefStats(raw)));
-    return attachTeamSplits("laliga", stats, loadTeamSplitsFromDisk());
+    if (Object.keys(stats.teamSplits ?? {}).length > 0) {
+      resolvedRefStats = stats;
+      return stats;
+    }
+    const splits = cachedTeamSplitsForLeague("laliga");
+    const fromFile =
+      Object.keys(splits).length > 0 ? splits : loadTeamSplitsFromDisk();
+    resolvedRefStats = attachTeamSplits("laliga", stats, fromFile);
+    return resolvedRefStats;
   } catch {
     return EMPTY_REF_STATS;
   }

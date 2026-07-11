@@ -66,6 +66,36 @@ export function getCachedRefStats(league: League): RefStatsFile | null {
   return globalThis[CACHE_KEYS[league]] ?? null;
 }
 
+/** SSR-hydrated stats from ASSETS — skip Node fs re-parses on Workers. */
+export function getPreferHydratedRefStats(league: League): RefStatsFile | null {
+  const cached = getCachedRefStats(league);
+  if (!cached?.refs?.length) return null;
+  const leagueId = league as LeagueId;
+  if (
+    isVerifiedLiveLeague(leagueId) &&
+    !resolveLeagueVerification(leagueId, cached.meta).data_verified
+  ) {
+    return null;
+  }
+  return cached;
+}
+
+export function cachedTeamSplitsForLeague(
+  league: League,
+): Record<string, TeamCrewSplit[]> {
+  return getCachedTeamSplits(league) ?? {};
+}
+
+/** Prefer hydrated cache; only touch disk when the isolate has no CDN data yet. */
+export function loadRefStatsRawCachedFirst(
+  league: League,
+  loadFromFs: () => RefStatsFile | null,
+): RefStatsFile | null {
+  const hydrated = getPreferHydratedRefStats(league);
+  if (hydrated) return hydrated;
+  return resolveRefStatsFromFsOrCache(league, loadFromFs());
+}
+
 /** Prefer verified CDN-hydrated cache over stale Worker bundle files on disk. */
 export function resolveRefStatsFromFsOrCache(
   league: League,
@@ -218,6 +248,8 @@ export function pathNeedsGameLogs(pathname: string): boolean {
   }
   if (pathname === "/matrix") return true;
   if (/\/matrix\/?$/.test(pathname)) return false;
+  // League slates use precomputed ref-stats (teamStats on profiles); skip 10MB game-log parse.
+  if (/^\/(nhl|nfl|epl|laliga|cbb|cfb)\/?$/.test(pathname)) return false;
   return true;
 }
 

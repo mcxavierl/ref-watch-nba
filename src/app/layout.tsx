@@ -9,7 +9,6 @@ import { A11Y_BLOCKING_SCRIPT } from "@/lib/a11y/a11yBootstrap";
 import { DEFAULT_SITE_DESCRIPTION, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { AFFILIATION_DISCLAIMER, SITE_NAME, SITE_URL } from "@/lib/site";
 import { headers } from "next/headers";
-import { assertProductionLeagueVerification } from "@/lib/production-verification-assert";
 import { hydrateLeagueDataForPath } from "@/lib/server-data-hydrate";
 import "./globals.css";
 
@@ -83,9 +82,6 @@ export default async function RootLayout({
 }>) {
   const pathname = (await headers()).get("x-pathname") ?? "/";
   await hydrateLeagueDataForPath(pathname);
-  if (!pathname.startsWith("/overview")) {
-    assertProductionLeagueVerification(pathname);
-  }
 
   return (
     <html lang="en" className="dark" data-color="dark" data-contrast="default" data-text="default">
