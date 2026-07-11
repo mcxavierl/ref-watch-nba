@@ -12,6 +12,14 @@ export function formatSigned(n: number, decimals = 1): string {
   return n >= 0 ? `+${formatted}` : formatted;
 }
 
+/**
+ * Whistle edge from the team's perspective: opponent volume minus team volume.
+ * JSON stores team−opponent historically; positive here means the team is whistled less.
+ */
+export function teamWhistleEdge(storedTeamMinusOpponent: number): number {
+  return Math.round(-storedTeamMinusOpponent * 10) / 10;
+}
+
 /** e.g. "+4.2 pts vs team" */
 export function formatWinRateVsTeam(
   rate: number,

@@ -692,7 +692,7 @@ export function RefTeamMatrix({
                   {selectedTeam.label}&apos;s sample baseline. Ranked by{" "}
                   {teamPanelSort === "record"
                     ? "win rate vs baseline"
-                    : `${whistleDiffLabel.toLowerCase()} (positive favors the team)`}
+                    : `${whistleDiffLabel.toLowerCase()} (positive = fewer on your team)`}
                   . {minGames}+ games required for top/bottom lists; thinner
                   samples appear below.
                 </p>
@@ -738,7 +738,7 @@ export function RefTeamMatrix({
               subtitle={
                 teamPanelSort === "record"
                   ? `Win rate above ${selectedTeam.label} baseline`
-                  : `Best ${whistleDiffLabel.toLowerCase()} for ${selectedTeam.label}`
+                  : `Most whistle edge for ${selectedTeam.label} (opponent − team)`
               }
               variant="positive"
               entries={topRefsForTeam}
@@ -754,7 +754,7 @@ export function RefTeamMatrix({
               subtitle={
                 teamPanelSort === "record"
                   ? `Win rate below ${selectedTeam.label} baseline`
-                  : `Worst ${whistleDiffLabel.toLowerCase()} for ${selectedTeam.label}`
+                  : `Least whistle edge for ${selectedTeam.label} (opponent − team)`
               }
               variant="negative"
               entries={bottomRefsForTeam}

@@ -2,6 +2,7 @@ import type { LeagueMetricCopy } from "@/lib/leagues";
 import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import { deltaTone } from "@/lib/metricTone";
 import { getTeamDisplayRecord, getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
+import { teamWhistleEdge } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile, RefTeamStat, TeamCrewSplit } from "@/lib/types";
 
 /** Minimum games before a ref×team cell is shown in the matrix. */
@@ -147,7 +148,7 @@ export function computeRefTeamMatrix(
         wins,
         losses,
         winRate: stat.winRate,
-        avgFoulDifferential: stat.avgFoulDifferential,
+        avgFoulDifferential: teamWhistleEdge(stat.avgFoulDifferential),
         thinSample,
       };
       if (!thinSample) qualifiedCellCount++;
