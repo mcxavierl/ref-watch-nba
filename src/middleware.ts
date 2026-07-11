@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // League JSON is hydrated in root layout (SSR). Preloading multi-MB assets here
-  // exceeded Worker memory/CPU and surfaced Cloudflare error 1100.
+  // exceeded Worker memory/CPU and surfaced Cloudflare errors 1100/1102.
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
   return NextResponse.next({

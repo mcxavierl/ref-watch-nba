@@ -11,7 +11,7 @@ type PageProps = {
 };
 
 export default async function NhlRefsPage({ searchParams }: PageProps) {
-  await preloadLeagueRefStats(SITE_URL, "nhl");
+  await preloadLeagueRefStats(SITE_URL, "nhl", { includeTeamSplits: false });
   const { scope } = await searchParams;
   return (
     <RefsHubPage

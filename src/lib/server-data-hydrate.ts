@@ -4,10 +4,10 @@ import {
   preloadGameLogsFromAssets,
   type DataLeague,
 } from "@/lib/game-logs-preload";
+import { normalizeAppPathname } from "@/lib/json-asset-guards";
 import {
   leaguesForPath,
   pathNeedsGameLogs,
-  pathNeedsTeamSplits,
 } from "@/lib/ref-stats-preload";
 import { SITE_URL } from "@/lib/site";
 
@@ -26,16 +26,25 @@ const DATA_LEAGUE_FOR_ROUTE: Record<
 
 /** SSR isolate: fetch /public data assets when Workers cannot read data/ from disk. */
 export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
-  if (pathname.startsWith("/overview")) return;
+  const path = normalizeAppPathname(pathname);
+  if (path.startsWith("/overview")) return;
 
-  await preloadLeagueDataForPath(SITE_URL, pathname);
+  try {
+    await preloadLeagueDataForPath(SITE_URL, path);
+  } catch {
+    // Never fail SSR from hydration.
+  }
 
-  if (!pathNeedsGameLogs(pathname)) return;
+  if (!pathNeedsGameLogs(path)) return;
 
-  const leagues = leaguesForPath(pathname);
-  await Promise.all(
-    leagues.map((league) =>
-      preloadGameLogsFromAssets(SITE_URL, DATA_LEAGUE_FOR_ROUTE[league]),
-    ),
-  );
+  const leagues = leaguesForPath(path);
+  try {
+    await Promise.all(
+      leagues.map((league) =>
+        preloadGameLogsFromAssets(SITE_URL, DATA_LEAGUE_FOR_ROUTE[league]),
+      ),
+    );
+  } catch {
+    // Never fail SSR from game-log hydration.
+  }
 });

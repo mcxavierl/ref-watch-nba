@@ -11,7 +11,7 @@ type PageProps = {
 };
 
 export default async function EplRefsPage({ searchParams }: PageProps) {
-  await preloadLeagueRefStats(SITE_URL, "laliga");
+  await preloadLeagueRefStats(SITE_URL, "laliga", { includeTeamSplits: false });
   const { scope } = await searchParams;
   return (
     <RefsHubPage

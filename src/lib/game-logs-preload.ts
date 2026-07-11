@@ -1,5 +1,6 @@
 import "@/lib/global-stats";
 import type { RefOfficial } from "@/lib/types";
+import { isGameLogsPayload } from "@/lib/json-asset-guards";
 
 export type GameLineSource = "external" | "synthetic";
 
@@ -76,11 +77,16 @@ export async function preloadGameLogsFromAssets(
   league: DataLeague,
 ): Promise<void> {
   if (getCachedGameLogs(league)) return;
+  if (!origin?.trim()) return;
 
-  const res = await fetch(`${origin}${GAME_LOG_ASSET_BASE[league]}/game-logs.json`);
-  if (!res.ok) return;
-  const data = (await res.json()) as RuntimeGameLogFile;
-  if (data.games?.length) {
-    setCachedGameLogs(league, data);
+  try {
+    const res = await fetch(`${origin}${GAME_LOG_ASSET_BASE[league]}/game-logs.json`);
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    if (isGameLogsPayload(data) && data.games.length > 0) {
+      setCachedGameLogs(league, data as RuntimeGameLogFile);
+    }
+  } catch {
+    // Never fail SSR from game-log preload.
   }
 }

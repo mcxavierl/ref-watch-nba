@@ -13,6 +13,7 @@ import {
   resolveLeagueVerification,
 } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
+import { normalizeAppPathname } from "@/lib/json-asset-guards";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
@@ -200,28 +201,40 @@ export function attachTeamSplits(
 export async function preloadRefStatsFromAssets(
   origin: string,
   league: League,
+  options: { includeTeamSplits?: boolean } = {},
 ): Promise<void> {
-  if (!getCachedRefStats(league)) {
-    const assetPath = `${ASSET_BASE[league]}/ref-stats.json`;
-    const res = await fetch(`${origin}${assetPath}`);
-    if (res.ok) {
-      const data = (await res.json()) as RefStatsFile;
-      if (data.refs?.length) {
-        setCachedRefStats(league, data);
-      }
-    }
-  }
+  const includeTeamSplits = options.includeTeamSplits ?? true;
+  if (!origin?.trim()) return;
 
-  const cachedSplits = getCachedTeamSplits(league);
-  if (!cachedSplits || Object.keys(cachedSplits).length === 0) {
-    const splitsPath = `${ASSET_BASE[league]}/team-splits.json`;
-    const res = await fetch(`${origin}${splitsPath}`);
-    if (res.ok) {
-      const splits = (await res.json()) as Record<string, TeamCrewSplit[]>;
-      if (Object.keys(splits).length > 0) {
-        setCachedTeamSplits(league, splits);
+  try {
+    if (!getCachedRefStats(league)) {
+      const assetPath = `${ASSET_BASE[league]}/ref-stats.json`;
+      const res = await fetch(`${origin}${assetPath}`);
+      if (res.ok) {
+        const { isRefStatsPayload } = await import("@/lib/json-asset-guards");
+        const data: unknown = await res.json();
+        if (isRefStatsPayload(data) && data.refs.length > 0) {
+          setCachedRefStats(league, data);
+        }
       }
     }
+
+    if (!includeTeamSplits) return;
+
+    const cachedSplits = getCachedTeamSplits(league);
+    if (!cachedSplits || Object.keys(cachedSplits).length === 0) {
+      const splitsPath = `${ASSET_BASE[league]}/team-splits.json`;
+      const res = await fetch(`${origin}${splitsPath}`);
+      if (res.ok) {
+        const { isTeamSplitsPayload } = await import("@/lib/json-asset-guards");
+        const splits: unknown = await res.json();
+        if (isTeamSplitsPayload(splits) && Object.keys(splits).length > 0) {
+          setCachedTeamSplits(league, splits);
+        }
+      }
+    }
+  } catch {
+    // Never fail SSR from asset preload.
   }
 }
 
@@ -240,39 +253,45 @@ export function pathNeedsGameLogs(pathname: string): boolean {
   return false;
 }
 
-/** Matrix, findings, and team crew pages need sidecar team-splits; slate hubs do not. */
+const HUB_ROUTE =
+  /(^|\/)(insights|research|rankings|trends|crews)(\/|$)/;
+
+/** Matrix and team pages need sidecar team-splits; slate and hub routes do not. */
 export function pathNeedsTeamSplits(pathname: string): boolean {
-  if (pathname.startsWith("/overview")) return false;
-  if (pathname.startsWith("/methodology")) return false;
-  if (pathname.startsWith("/research")) return false;
-  if (pathname.startsWith("/sitemap")) return false;
-  if (pathname.startsWith("/feed")) return false;
-  if (/\/refs(\/|$)/.test(pathname)) return false;
+  const path = normalizeAppPathname(pathname);
+  if (path.startsWith("/overview")) return false;
+  if (path.startsWith("/methodology")) return false;
+  if (path.startsWith("/research")) return false;
+  if (path.startsWith("/sitemap")) return false;
+  if (path.startsWith("/feed")) return false;
+  if (/\/refs(\/|$)/.test(path)) return false;
+  if (HUB_ROUTE.test(path)) return false;
   // League slates only need slim ref-stats (~0.5–1.5MB); team-splits are 2–9MB each.
-  if (pathname === "/") return false;
-  if (/^\/(nhl|nfl|epl|laliga|cbb|cfb)\/?$/.test(pathname)) return false;
+  if (path === "/") return false;
+  if (/^\/(nhl|nfl|epl|laliga|cbb|cfb)\/?$/.test(path)) return false;
   return true;
 }
 
 /** Load only the leagues a route needs, avoids parsing both 8MB files on every request. */
 export function leaguesForPath(pathname: string): League[] {
-  if (pathname.startsWith("/overview")) {
+  const path = normalizeAppPathname(pathname);
+  if (path.startsWith("/overview")) {
     return [];
   }
-  if (pathname.startsWith("/epl")) return ["epl"];
-  if (pathname.startsWith("/laliga")) return ["laliga"];
-  if (pathname.startsWith("/cfb")) return ["cfb"];
-  if (pathname.startsWith("/cbb")) return ["cbb"];
-  if (pathname.startsWith("/nfl")) return ["nfl"];
-  if (pathname.startsWith("/nhl")) return ["nhl"];
+  if (path.startsWith("/epl")) return ["epl"];
+  if (path.startsWith("/laliga")) return ["laliga"];
+  if (path.startsWith("/cfb")) return ["cfb"];
+  if (path.startsWith("/cbb")) return ["cbb"];
+  if (path.startsWith("/nfl")) return ["nfl"];
+  if (path.startsWith("/nhl")) return ["nhl"];
   if (
-    pathname.startsWith("/research") ||
-    pathname.startsWith("/methodology") ||
-    pathname.startsWith("/sitemap")
+    path.startsWith("/research") ||
+    path.startsWith("/methodology") ||
+    path.startsWith("/sitemap")
   ) {
     return ["nba"];
   }
-  if (pathname.startsWith("/feed/nhl")) return ["nhl"];
-  if (pathname.startsWith("/feed")) return ["nba"];
+  if (path.startsWith("/feed/nhl")) return ["nhl"];
+  if (path.startsWith("/feed")) return ["nba"];
   return ["nba"];
 }

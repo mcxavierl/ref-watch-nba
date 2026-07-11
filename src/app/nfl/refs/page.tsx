@@ -11,7 +11,7 @@ type PageProps = {
 };
 
 export default async function NflRefsPage({ searchParams }: PageProps) {
-  await preloadLeagueRefStats(SITE_URL, "nfl");
+  await preloadLeagueRefStats(SITE_URL, "nfl", { includeTeamSplits: false });
   const { scope } = await searchParams;
   return (
     <RefsHubPage

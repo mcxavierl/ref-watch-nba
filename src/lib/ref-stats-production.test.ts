@@ -15,19 +15,16 @@ function clearLeagueCaches(): void {
 }
 
 describe("production getRefStats fallbacks", () => {
-  const originalNodeEnv = process.env.NODE_ENV;
+  const env = process.env as Record<string, string | undefined>;
+  const originalNodeEnv = env.NODE_ENV;
 
   afterEach(() => {
-    if (originalNodeEnv === undefined) {
-      delete process.env.NODE_ENV;
-    } else {
-      (process.env as { NODE_ENV?: string }).NODE_ENV = originalNodeEnv;
-    }
+    env.NODE_ENV = originalNodeEnv;
     clearLeagueCaches();
   });
 
   it("returns verified refs from bundled core when CDN cache is cold", () => {
-    (process.env as { NODE_ENV?: string }).NODE_ENV = "production";
+    env.NODE_ENV = "production";
     clearLeagueCaches();
 
     const leagues = [

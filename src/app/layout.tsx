@@ -10,6 +10,8 @@ import { DEFAULT_SITE_DESCRIPTION, organizationJsonLd, websiteJsonLd } from "@/l
 import { AFFILIATION_DISCLAIMER, SITE_NAME, SITE_URL } from "@/lib/site";
 import { headers } from "next/headers";
 import { hydrateLeagueDataForPath } from "@/lib/server-data-hydrate";
+import { assertProductionLeagueVerification } from "@/lib/production-verification-assert";
+import { normalizeAppPathname } from "@/lib/json-asset-guards";
 import "./globals.css";
 
 const barlow = Barlow({
@@ -80,8 +82,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = (await headers()).get("x-pathname") ?? "/";
+  const pathname = normalizeAppPathname((await headers()).get("x-pathname"));
   await hydrateLeagueDataForPath(pathname);
+  assertProductionLeagueVerification(pathname);
 
   return (
     <html lang="en" className="dark" data-color="dark" data-contrast="default" data-text="default">
