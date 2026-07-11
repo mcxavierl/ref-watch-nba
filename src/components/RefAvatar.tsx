@@ -75,10 +75,10 @@ export function RefAvatar({
 }) {
   const [failed, setFailed] = useState(false);
 
-  if (sport === "nba" || sport === "cbb" || sport === "cfb") return null;
+  if (sport === "cbb" || sport === "cfb") return null;
 
   const photoSrc =
-    sport === "nhl" || sport === "nfl" || sport === "epl"
+    sport === "nba" || sport === "nhl" || sport === "nfl" || sport === "epl"
       ? refPhotoUrl(slug, sport, size === "lg" || size === "xl" ? "headshot" : "thumb")
       : null;
 

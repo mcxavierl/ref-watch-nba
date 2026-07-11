@@ -25,11 +25,24 @@ function pageBaseName(title: string): string {
 
 /** Reject Wikipedia titles that clearly aren't the named official. */
 export function titleMatchesOfficial(name: string, title: string): boolean {
+  return titleMatchesSportOfficial(name, title, "nfl");
+}
+
+export type OfficialSport = "nfl" | "nhl" | "epl" | "nba";
+
+/** Sport-aware Wikipedia title match for officials. */
+export function titleMatchesSportOfficial(
+  name: string,
+  title: string,
+  sport: OfficialSport,
+): boolean {
   const t = title.toLowerCase();
   const n = name.toLowerCase().trim();
   if (t.includes("disambiguation")) return false;
   if (pageBaseName(title) === n) return true;
-  if (t.startsWith(`${n} (`)) {
+  if (!t.startsWith(`${n} (`)) return false;
+
+  if (sport === "nfl") {
     return (
       t.includes("american football") ||
       t.includes("football official") ||
@@ -38,7 +51,83 @@ export function titleMatchesOfficial(name: string, title: string): boolean {
       t.includes("referee")
     );
   }
-  return false;
+  if (sport === "nhl") {
+    return (
+      t.includes("ice hockey") ||
+      t.includes("hockey") ||
+      t.includes("nhl") ||
+      t.includes("referee") ||
+      t.includes("official")
+    );
+  }
+  if (sport === "epl") {
+    return (
+      t.includes("referee") ||
+      t.includes("football") ||
+      t.includes("soccer") ||
+      t.includes("premier league") ||
+      t.includes("fifa") ||
+      t.includes("uefa")
+    );
+  }
+  // nba
+  return (
+    t.includes("basketball") ||
+    t.includes("nba") ||
+    t.includes("referee") ||
+    t.includes("official")
+  );
+}
+
+export async function isSportOfficialPage(
+  title: string,
+  sport: OfficialSport,
+): Promise<boolean> {
+  if (sport === "nfl") return isNflOfficialPage(title);
+
+  const url = new URL("https://en.wikipedia.org/w/api.php");
+  url.searchParams.set("action", "query");
+  url.searchParams.set("titles", title);
+  url.searchParams.set("prop", "categories|extracts");
+  url.searchParams.set("exintro", "1");
+  url.searchParams.set("explaintext", "1");
+  url.searchParams.set("cllimit", "max");
+  url.searchParams.set("format", "json");
+
+  const res = await fetch(url, { headers: WIKI_HEADERS });
+  if (!res.ok) return false;
+
+  const body = (await res.json()) as {
+    query?: {
+      pages?: Record<
+        string,
+        {
+          missing?: string;
+          categories?: { title: string }[];
+          extract?: string;
+        }
+      >;
+    };
+  };
+  const page = Object.values(body.query?.pages ?? {})[0];
+  if (!page || page.missing) return false;
+
+  const blob = [
+    ...(page.categories ?? []).map((c) => c.title),
+    page.extract ?? "",
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (sport === "nhl") {
+    return /nhl|ice hockey|hockey referee|hockey official/.test(blob);
+  }
+  if (sport === "epl") {
+    return /premier league|football referee|fifa|uefa|english football|soccer referee/.test(
+      blob,
+    );
+  }
+  return /nba|basketball referee|basketball official/.test(blob);
 }
 
 export async function isNflOfficialPage(title: string): Promise<boolean> {
@@ -133,6 +222,13 @@ export async function wikiSearchTitle(query: string): Promise<string | null> {
 }
 
 export async function loadNflOfficialTitleIndex(): Promise<Map<string, string>> {
+  return loadCategoryTitleIndex("Category:NFL officials");
+}
+
+/** Build name → Wikipedia title index from a category (and optional continue pages). */
+export async function loadCategoryTitleIndex(
+  categoryTitle: string,
+): Promise<Map<string, string>> {
   const index = new Map<string, string>();
   let continueToken: string | undefined;
 
@@ -140,7 +236,7 @@ export async function loadNflOfficialTitleIndex(): Promise<Map<string, string>> 
     const url = new URL("https://en.wikipedia.org/w/api.php");
     url.searchParams.set("action", "query");
     url.searchParams.set("list", "categorymembers");
-    url.searchParams.set("cmtitle", "Category:NFL officials");
+    url.searchParams.set("cmtitle", categoryTitle);
     url.searchParams.set("cmlimit", "500");
     url.searchParams.set("format", "json");
     if (continueToken) url.searchParams.set("cmcontinue", continueToken);
@@ -154,6 +250,9 @@ export async function loadNflOfficialTitleIndex(): Promise<Map<string, string>> 
     };
 
     for (const member of body.query?.categorymembers ?? []) {
+      if (member.title.startsWith("List of") || member.title.startsWith("Category:")) {
+        continue;
+      }
       index.set(pageBaseName(member.title), member.title);
     }
     continueToken = body.continue?.cmcontinue;

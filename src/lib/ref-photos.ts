@@ -1,3 +1,4 @@
+import { nbaRefPhotoUrl } from "@/lib/nba/ref-photos";
 import { nhlRefPhotoUrl } from "@/lib/nhl/ref-photos";
 import { nflRefPhotoUrl } from "@/lib/nfl/ref-photos";
 import { eplRefPhotoUrl } from "@/lib/epl/ref-photos";
@@ -7,6 +8,7 @@ export function refPhotoUrl(
   sport: "nba" | "nhl" | "nfl" | "epl",
   size: "thumb" | "headshot" = "thumb",
 ): string | null {
+  if (sport === "nba") return nbaRefPhotoUrl(slug, size);
   if (sport === "nhl") return nhlRefPhotoUrl(slug, size);
   if (sport === "nfl") return nflRefPhotoUrl(slug, size);
   if (sport === "epl") return eplRefPhotoUrl(slug, size);
