@@ -18,7 +18,6 @@ import {
   sortMatrixRefs,
   TEAM_MATRIX_REF_PANEL_LIMIT,
   bottomRefsBelowBaselineForTeam,
-  thinSampleRefsForTeam,
   topRefsBeatingBaselineForTeam,
   type MatrixRefSort,
   type MatrixTeamPanelSort,
@@ -293,11 +292,6 @@ export function RefTeamMatrix({
         ? bottomRefsBelowBaselineForTeam(matrix, selectedTeamAbbr, TEAM_MATRIX_REF_PANEL_LIMIT, teamPanelSort)
         : [],
     [matrix, selectedTeamAbbr, teamPanelSort],
-  );
-  const thinRefsForTeam = useMemo(
-    () =>
-      selectedTeamAbbr ? thinSampleRefsForTeam(matrix, selectedTeamAbbr) : [],
-    [matrix, selectedTeamAbbr],
   );
   const officialLabel =
     officialNounPlural.charAt(0).toUpperCase() + officialNounPlural.slice(1);
@@ -765,63 +759,6 @@ export function RefTeamMatrix({
               teamBaselineWinRate={selectedTeam.baselineWinRate}
             />
           </div>
-
-          {thinRefsForTeam.length > 0 && (
-            <div className="ref-matrix-team-panel-thin">
-              <h4 className="ref-matrix-team-panel-column-title">
-                Limited sample — not ranked ({thinRefsForTeam.length})
-              </h4>
-              <p className="ref-matrix-team-panel-lead">
-                These {officialNounPlural} worked {selectedTeam.label} but sit
-                below the {minGames}-game gate. They stay visible in the matrix
-                (game count in cell) but are excluded from favorable/unfavorable
-                lists — e.g. a 5-game stint that looks missing from top/bottom.
-              </p>
-              <div
-                className="ref-matrix-team-panel-list-head ref-matrix-team-panel-list-head--thin"
-                aria-hidden
-              >
-                <span>Official</span>
-                <span>W-L</span>
-                <span>Gp</span>
-                <span>vs baseline</span>
-              </div>
-              <ul className="ref-matrix-team-panel-thin-list">
-                {thinRefsForTeam.map((entry) => (
-                  <li key={entry.refSlug}>
-                    <Link
-                      href={`${basePath}/refs/${entry.refSlug}`}
-                      className="ref-matrix-team-panel-thin-link"
-                    >
-                      <span className="ref-matrix-team-panel-thin-name">
-                        {entry.refName}
-                      </span>
-                      <span className="ref-matrix-team-panel-thin-meta">
-                        {entry.wins}-{entry.losses}
-                      </span>
-                      <span className="ref-matrix-team-panel-thin-meta">
-                        {entry.games} gp
-                      </span>
-                      <span
-                        className={`ref-matrix-team-panel-thin-meta ${
-                          entry.deltaPts > 0
-                            ? "ref-matrix-delta--positive"
-                            : entry.deltaPts < 0
-                              ? "ref-matrix-delta--negative"
-                              : "ref-matrix-delta--neutral"
-                        }`}
-                      >
-                        {formatWinRateVsTeam(
-                          entry.winRate,
-                          selectedTeam.baselineWinRate,
-                        )}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </section>
       )}
     </div>

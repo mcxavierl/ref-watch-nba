@@ -397,37 +397,6 @@ function teamPanelEntriesForTeam(
   return entries;
 }
 
-/** Refs with 1..(minGames-1) games vs a team — visible but not ranked in top/bottom. */
-export function thinSampleRefsForTeam(
-  matrix: RefTeamMatrix,
-  teamAbbr: string,
-  limit = 12,
-): TeamTopRefEntry[] {
-  const team = matrix.teams.find(
-    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
-  );
-  if (!team) return [];
-
-  const entries: TeamTopRefEntry[] = [];
-  for (const ref of matrix.refs) {
-    const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
-    if (!cell?.thinSample) continue;
-    entries.push({
-      refSlug: ref.slug,
-      refName: ref.name,
-      games: cell.games,
-      wins: cell.wins,
-      losses: cell.losses,
-      winRate: cell.winRate,
-      deltaPts: winRateDeltaPoints(cell.winRate, team.baselineWinRate),
-      avgFoulDifferential: cell.avgFoulDifferential,
-    });
-  }
-  return entries
-    .sort((a, b) => b.games - a.games || a.refName.localeCompare(b.refName))
-    .slice(0, limit);
-}
-
 /** Qualified refs beating team baseline (record) or with best whistle diff, best first. */
 export function topRefsBeatingBaselineForTeam(
   matrix: RefTeamMatrix,
