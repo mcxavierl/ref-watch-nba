@@ -18,6 +18,7 @@ import {
   sortMatrixRefs,
   TEAM_MATRIX_REF_PANEL_LIMIT,
   bottomRefsBelowBaselineForTeam,
+  thinSampleRefsForTeam,
   topRefsBeatingBaselineForTeam,
   type MatrixRefSort,
   type MatrixTeamPanelSort,
@@ -254,6 +255,11 @@ export function RefTeamMatrix({
         : [],
     [matrix, selectedTeamAbbr, teamPanelSort],
   );
+  const thinRefsForTeam = useMemo(
+    () =>
+      selectedTeamAbbr ? thinSampleRefsForTeam(matrix, selectedTeamAbbr) : [],
+    [matrix, selectedTeamAbbr],
+  );
   const officialLabel =
     officialNounPlural.charAt(0).toUpperCase() + officialNounPlural.slice(1);
   const splitNoun =
@@ -282,7 +288,8 @@ export function RefTeamMatrix({
           Each cell shows that ref&apos;s approximate W-L with the team (not the
           team&apos;s overall record). The baseline row under each logo is the
           team&apos;s full sample W-L for coloring only. Cells need {minGames}+
-          games; empty cells are below the sample gate. Text color and a light
+          games for ranking colors; thinner samples show a muted record. Empty
+          cells mean zero games together. Text color and a light
           tint compare ref×team win rate to the team baseline (±
           {MATRIX_TONE_DELTA_PTS} pts); splits at ±{MATRIX_EXTREME_DELTA_PTS}{" "}
           pts or more are standout outliers. Delta text and W-L are shown in
@@ -464,7 +471,7 @@ export function RefTeamMatrix({
                         <td
                           key={team.abbr}
                           className={`ref-matrix-cell ref-matrix-cell--empty${isSelected ? " ref-matrix-cell--team-selected" : ""}${trackClass ? ` ${trackClass}` : ""}`.trim()}
-                          aria-label={`${ref.name} vs ${team.abbr}: insufficient sample`}
+                          aria-label={`${ref.name} vs ${team.abbr}: no games`}
                           onMouseEnter={() =>
                             activateCrosshair(ref.slug, team.abbr)
                           }
@@ -479,17 +486,19 @@ export function RefTeamMatrix({
                       team.baselineWinRate,
                     );
                     const record = `${cell.wins}-${cell.losses}`;
-                    const ariaLabel = matrixCellAriaLabel(
-                      ref.name,
-                      team,
-                      cell,
-                      deltaPts,
-                    );
+                    const ariaLabel = cell.thinSample
+                      ? `${ref.name} with ${team.label}: ${record} in ${cell.games} games (below ${minGames}-game sample gate)`
+                      : matrixCellAriaLabel(
+                          ref.name,
+                          team,
+                          cell,
+                          deltaPts,
+                        );
 
                     return (
                       <td
                         key={team.abbr}
-                        className={`ref-matrix-cell ${cellToneClass(tone)} ${extremeClass(extreme)}${isSelected ? " ref-matrix-cell--team-selected" : ""}${trackClass ? ` ${trackClass}` : ""}`.trim()}
+                        className={`ref-matrix-cell ${cell.thinSample ? "ref-matrix-cell--thin" : `${cellToneClass(tone)} ${extremeClass(extreme)}`}${isSelected ? " ref-matrix-cell--team-selected" : ""}${trackClass ? ` ${trackClass}` : ""}`.trim()}
                         onMouseEnter={() =>
                           activateCrosshair(ref.slug, team.abbr)
                         }
@@ -501,14 +510,20 @@ export function RefTeamMatrix({
                           aria-label={ariaLabel}
                         >
                           <span className="ref-matrix-record">{record}</span>
-                          <span
-                            className={`ref-matrix-delta ${deltaClass(tone)}`}
-                          >
-                            {formatWinRateVsTeam(
-                              cell.winRate,
-                              team.baselineWinRate,
-                            )}
-                          </span>
+                          {cell.thinSample ? (
+                            <span className="ref-matrix-delta ref-matrix-delta--thin">
+                              thin
+                            </span>
+                          ) : (
+                            <span
+                              className={`ref-matrix-delta ${deltaClass(tone)}`}
+                            >
+                              {formatWinRateVsTeam(
+                                cell.winRate,
+                                team.baselineWinRate,
+                              )}
+                            </span>
+                          )}
                           <span className="ref-matrix-games">{cell.games} gp</span>
                         </Link>
                       </td>
@@ -645,6 +660,36 @@ export function RefTeamMatrix({
               teamBaselineWinRate={selectedTeam.baselineWinRate}
             />
           </div>
+
+          {thinRefsForTeam.length > 0 && (
+            <div className="ref-matrix-team-panel-thin">
+              <h4 className="ref-matrix-team-panel-column-title">
+                Below {minGames}-game sample ({thinRefsForTeam.length})
+              </h4>
+              <p className="ref-matrix-team-panel-lead">
+                These {officialNounPlural} worked {selectedTeam.label} games but
+                do not meet the ranking gate — including cases like a 5-game
+                sample that looks missing from top/bottom.
+              </p>
+              <ul className="ref-matrix-team-panel-thin-list">
+                {thinRefsForTeam.map((entry) => (
+                  <li key={entry.refSlug}>
+                    <Link
+                      href={`${basePath}/refs/${entry.refSlug}`}
+                      className="ref-matrix-team-panel-thin-link"
+                    >
+                      <span className="ref-matrix-team-panel-thin-name">
+                        {entry.refName}
+                      </span>
+                      <span className="ref-matrix-team-panel-thin-meta">
+                        {entry.wins}-{entry.losses} · {entry.games} gp
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
       )}
     </div>

@@ -1,4 +1,8 @@
 import type { RefOfficial, RefRole } from "../../../src/lib/types";
+import {
+  canonicalizeOfficialName,
+  normalizeOfficialNameKey,
+} from "./official-names";
 
 const ESPN_ABBR: Record<string, string> = {
   WSH: "WAS",
@@ -9,12 +13,7 @@ export function normalizeEspnAbbr(abbr: string): string {
 }
 
 export function normalizeName(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z\s]/g, "")
-    .trim();
+  return normalizeOfficialNameKey(name);
 }
 
 const ROLE_MAP: Record<string, RefRole> = {
@@ -228,31 +227,21 @@ export function lookupOfficialNumber(
   name: string,
   roster: Map<string, number>,
 ): number {
-  const key = normalizeName(name);
-  const direct = roster.get(key);
-  if (direct !== undefined) return direct;
-
-  const parts = key.split(/\s+/);
-  if (parts.length >= 2) {
-    const last = parts[parts.length - 1];
-    for (const [k, num] of roster) {
-      if (k.endsWith(` ${last}`) || k.split(" ").pop() === last) {
-        return num;
-      }
-    }
-  }
-  return 0;
+  return canonicalizeOfficialName(name, roster).number;
 }
 
 export function toRefOfficials(
   officials: EspnOfficial[],
   roster: Map<string, number>,
 ): RefOfficial[] {
-  return officials.map((o) => ({
-    name: o.fullName,
-    number: lookupOfficialNumber(o.fullName, roster),
-    role: mapEspnRole(o.positionName),
-  }));
+  return officials.map((o) => {
+    const canonical = canonicalizeOfficialName(o.fullName, roster);
+    return {
+      name: canonical.name,
+      number: canonical.number,
+      role: mapEspnRole(o.positionName),
+    };
+  });
 }
 
 export function sleep(ms: number): Promise<void> {
@@ -277,10 +266,12 @@ export function torontoDate(): string {
   }).format(new Date());
 }
 
+/** NFL season label from calendar date (Sep–Feb season). Jan/Feb belong to prior start year. */
 export function inferNflSeason(date: string): string {
   const year = Number.parseInt(date.slice(0, 4), 10);
   const month = Number.parseInt(date.slice(5, 7), 10);
-  const startYear = month >= 3 && month <= 8 ? year - 1 : year;
+  // Sep–Dec → season starting that year; Jan–Aug → season starting prior year.
+  const startYear = month >= 9 ? year : year - 1;
   const endYear = (startYear + 1) % 100;
   return `${startYear}-${String(endYear).padStart(2, "0")}`;
 }

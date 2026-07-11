@@ -28,6 +28,7 @@ import { getRefStats as getNbaRefStats, getTeamSplits as getNbaTeamSplits } from
 import { getRefStats as getNflRefStats, getTeamSplits as getNflTeamSplits } from "../src/lib/nfl/data";
 import { getRefStats as getNhlRefStats, getTeamSplits as getNhlTeamSplits } from "../src/lib/nhl/data";
 import { nhlAnalyticsRefStats } from "../src/lib/nhl/officials";
+import { findReverseNameGhosts } from "./nfl/lib/official-names";
 import { EPL_TEAMS, teamFullName as eplTeamFullName } from "../src/lib/epl/teams";
 import { NFL_TEAMS, teamFullName as nflTeamFullName } from "../src/lib/nfl/teams";
 import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "../src/lib/nhl/teams";
@@ -58,6 +59,25 @@ const MIN_SAMPLE_BASELINE_GAMES: Record<LiveLeague, number> = {
   epl: 20,
 };
 
+/**
+ * Hard floor on totalGamesProcessed vs claimed season window.
+ * Catches interrupted ingests (e.g. NHL shipping ~1405 games as "10 seasons").
+ * Values are conservative vs full regular-season schedules.
+ */
+const MIN_TOTAL_GAMES_FOR_CLAIMED_SEASONS: Record<
+  LiveLeague,
+  { minTotal: number; minPerSeason: number }
+> = {
+  // ~1230 RS games × 10
+  nba: { minTotal: 10_000, minPerSeason: 900 },
+  // ~1312 RS games × 10 (COVID seasons shorter; still >> 1405 total)
+  nhl: { minTotal: 10_000, minPerSeason: 700 },
+  // ~256–285 RS+playoff games × 10
+  nfl: { minTotal: 2_200, minPerSeason: 150 },
+  // 380 PL matches × 10
+  epl: { minTotal: 3_500, minPerSeason: 300 },
+};
+
 const failures: string[] = [];
 
 function fail(msg: string): void {
@@ -78,6 +98,58 @@ function fileExists(rel: string): boolean {
 
 function nonEmptySplitTeams(splits: Record<string, TeamCrewSplit[]>): number {
   return Object.values(splits).filter((rows) => rows.length > 0).length;
+}
+
+function checkSeasonGameCoverage(
+  league: LiveLeague,
+  source: RefStatsFile | null,
+): void {
+  if (!source?.meta) return;
+  const floors = MIN_TOTAL_GAMES_FOR_CLAIMED_SEASONS[league];
+  const seasons = source.meta.seasons ?? [];
+  const total =
+    source.meta.totalGamesProcessed ??
+    source.refs.reduce((sum, r) => sum + (r.games ?? 0), 0);
+  const seasonCount = seasons.length;
+
+  if (seasonCount >= 8 && total < floors.minTotal) {
+    fail(
+      `${league}: only ${total} games across ${seasonCount} claimed seasons ` +
+        `(need >= ${floors.minTotal}) — incomplete ingest; re-run build-${league}-data`,
+    );
+  }
+
+  if (seasonCount > 0) {
+    const perSeason = total / seasonCount;
+    if (perSeason < floors.minPerSeason) {
+      fail(
+        `${league}: ~${Math.round(perSeason)} games/season across ${seasonCount} seasons ` +
+          `(need >= ${floors.minPerSeason}/season) — season window is overstated vs game logs`,
+      );
+    }
+  }
+
+  // Game-log file must agree with ref-stats totals (catches truncated logs).
+  const logRel =
+    league === "nba" ? "data/game-logs.json" : `data/${league}/game-logs.json`;
+  const logs = readJson<{ games?: { season?: string; gameId?: string }[] }>(
+    path.join(ROOT, logRel),
+  );
+  const logGames = logs?.games ?? [];
+  if (logGames.length > 0) {
+    const uniqueIds = new Set(logGames.map((g) => String(g.gameId ?? "")));
+    if (uniqueIds.size < floors.minTotal && seasonCount >= 8) {
+      fail(
+        `${league}: game-logs.json has only ${uniqueIds.size} unique games ` +
+          `(need >= ${floors.minTotal} for ${seasonCount}-season window)`,
+      );
+    }
+    if (uniqueIds.size !== logGames.length) {
+      fail(
+        `${league}: game-logs.json has ${logGames.length - uniqueIds.size} duplicate gameIds — dedupe before deploy`,
+      );
+    }
+  }
 }
 
 function checkDeployArtifacts(league: LiveLeague): void {
@@ -131,6 +203,8 @@ function checkDeployArtifacts(league: LiveLeague): void {
       fail(`${league}: public core meta.data_source is synthetic`);
     }
   }
+
+  checkSeasonGameCoverage(league, source);
 
   if (publicSplits) {
     const teamCount = nonEmptySplitTeams(publicSplits);
@@ -363,6 +437,25 @@ function checkTrendsBaselines(): void {
 
   if (MATRIX_MIN_GAMES !== 8) {
     fail(`MATRIX_MIN_GAMES must be 8 (found ${MATRIX_MIN_GAMES})`);
+  }
+
+  // NFL: catch ESPN "Last First" ghosts like Clark Land vs Land Clark.
+  {
+    const nfl = getNflRefStats();
+    const ghosts = findReverseNameGhosts(nfl.refs);
+    if (ghosts.length > 0) {
+      fail(
+        `NFL reverse-name ghosts: ${ghosts
+          .map((g) => `${g.ghostName}→${g.canonName}`)
+          .join(", ")}`,
+      );
+    }
+    const land = nfl.refs.find((r) => r.slug === "land-clark-130");
+    if (!land || land.games < 100) {
+      fail(
+        `NFL Land Clark missing or under-merged (games=${land?.games ?? 0})`,
+      );
+    }
   }
 }
 

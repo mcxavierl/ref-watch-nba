@@ -17,6 +17,8 @@ export interface RefTeamMatrixCell {
   winRate: number;
   /** Avg team-minus-opponent whistle volume per game (fouls, flags, minors, etc.). */
   avgFoulDifferential: number;
+  /** True when 0 < games < minGames — shown muted, excluded from top/bottom panels. */
+  thinSample?: boolean;
 }
 
 export interface RefTeamMatrixTeam {
@@ -135,8 +137,9 @@ export function computeRefTeamMatrix(
   for (const ref of stats.refs) {
     if (!ref.teamStats) continue;
     for (const [teamAbbr, stat] of Object.entries(ref.teamStats)) {
-      if (stat.games < minGames) continue;
+      if (stat.games < 1) continue;
       const { wins, losses } = teamRecordFromStat(stat);
+      const thinSample = stat.games < minGames;
       cells[matrixCellKey(ref.slug, teamAbbr)] = {
         refSlug: ref.slug,
         teamAbbr: teamAbbr.toUpperCase(),
@@ -145,8 +148,9 @@ export function computeRefTeamMatrix(
         losses,
         winRate: stat.winRate,
         avgFoulDifferential: stat.avgFoulDifferential,
+        thinSample,
       };
-      qualifiedCellCount++;
+      if (!thinSample) qualifiedCellCount++;
     }
   }
 
@@ -328,7 +332,7 @@ function teamPanelEntriesForTeam(
 
   for (const ref of matrix.refs) {
     const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
-    if (!cell) continue;
+    if (!cell || cell.thinSample) continue;
     entries.push({
       refSlug: ref.slug,
       refName: ref.name,
@@ -342,6 +346,37 @@ function teamPanelEntriesForTeam(
   }
 
   return entries;
+}
+
+/** Refs with 1..(minGames-1) games vs a team — visible but not ranked in top/bottom. */
+export function thinSampleRefsForTeam(
+  matrix: RefTeamMatrix,
+  teamAbbr: string,
+  limit = 12,
+): TeamTopRefEntry[] {
+  const team = matrix.teams.find(
+    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
+  );
+  if (!team) return [];
+
+  const entries: TeamTopRefEntry[] = [];
+  for (const ref of matrix.refs) {
+    const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
+    if (!cell?.thinSample) continue;
+    entries.push({
+      refSlug: ref.slug,
+      refName: ref.name,
+      games: cell.games,
+      wins: cell.wins,
+      losses: cell.losses,
+      winRate: cell.winRate,
+      deltaPts: winRateDeltaPoints(cell.winRate, team.baselineWinRate),
+      avgFoulDifferential: cell.avgFoulDifferential,
+    });
+  }
+  return entries
+    .sort((a, b) => b.games - a.games || a.refName.localeCompare(b.refName))
+    .slice(0, limit);
 }
 
 /** Qualified refs beating team baseline (record) or with best whistle diff, best first. */
@@ -413,6 +448,9 @@ export function matrixCellStyle(
   cell: RefTeamMatrixCell,
   teamBaseline: number,
 ): MatrixCellStyle {
+  if (cell.thinSample) {
+    return { tone: "neutral", extreme: null, deltaPts: 0 };
+  }
   const deltaPts = winRateDeltaPoints(cell.winRate, teamBaseline);
   return {
     tone: deltaTone(deltaPts, MATRIX_TONE_DELTA_PTS),
@@ -498,7 +536,7 @@ export function computeMatrixExtremes(
   for (const ref of matrix.refs) {
     for (const team of matrix.teams) {
       const cell = matrix.cells[matrixCellKey(ref.slug, team.abbr)];
-      if (!cell) continue;
+      if (!cell || cell.thinSample) continue;
       if (team.baselineGames <= 0) continue;
       const extreme = matrixCellExtreme(cell, team.baselineWinRate);
       if (!extreme) continue;

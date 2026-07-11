@@ -45,6 +45,7 @@
     "fetch-epl-ref-photos": "tsx scripts/epl/fetch-ref-photos.ts",
     "fetch-nfl-assignments": "tsx scripts/nfl/fetch-assignments.ts",
     "fetch-nfl-ref-photos": "tsx scripts/nfl/fetch-ref-photos.ts",
+    "repair-nfl-official-names": "tsx scripts/nfl/repair-official-names.ts",
     "fetch-nfl-odds": "tsx scripts/nfl/fetch-odds.ts",
     "fetch-nfl-historical-lines": "tsx scripts/nfl/fetch-historical-lines.ts",
     "apply-nfl-betting-lines": "tsx scripts/nfl/apply-betting-lines.ts",
