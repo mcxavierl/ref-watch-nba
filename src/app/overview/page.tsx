@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
 import { OverviewDashboard } from "@/components/OverviewDashboard";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { buildCrossLeagueOverview } from "@/lib/cross-league-overview";
 import { catalogCompetitionCount } from "@/lib/league-catalog";
 import { buildPageMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
+
+export const dynamic = "force-dynamic";
+
+const OVERVIEW_LEAGUES = ["nba", "nhl", "nfl", "epl"] as const;
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Multi-league overview",
@@ -17,7 +23,10 @@ export const metadata: Metadata = buildPageMetadata({
   ],
 });
 
-export default function OverviewPage() {
+export default async function OverviewPage() {
+  await Promise.all(
+    OVERVIEW_LEAGUES.map((league) => preloadLeagueRefStats(SITE_URL, league)),
+  );
   const data = buildCrossLeagueOverview(catalogCompetitionCount());
 
   return (
