@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { TeamLogo } from "@/components/TeamLogo";
 import {
@@ -29,6 +29,11 @@ import { formatPct, formatSigned, formatWinRateVsTeam } from "@/lib/stats-utils"
 import { foulEdgeTone } from "@/lib/metricTone";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import type { TeamStrengthOfSchedule } from "@/lib/nba-strength-of-schedule";
+import { teamLogoUrl as nbaTeamLogoUrl } from "@/lib/teams";
+import { teamLogoUrl as nhlTeamLogoUrl } from "@/lib/nhl/teams";
+import { teamLogoUrl as nflTeamLogoUrl } from "@/lib/nfl/teams";
+import { teamLogoUrl as eplTeamLogoUrl } from "@/lib/epl/teams";
+import { teamLogoUrl as laligaTeamLogoUrl } from "@/lib/laliga/teams";
 
 type RefTeamMatrixProps = {
   matrix: RefTeamMatrix;
@@ -39,6 +44,18 @@ type RefTeamMatrixProps = {
   sport: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   teamSosByAbbr?: Record<string, TeamStrengthOfSchedule>;
 };
+
+function teamLogoSrcForSport(
+  sport: RefTeamMatrixProps["sport"],
+  team: { abbr: string; nbaId?: number },
+): string | null {
+  if (sport === "nhl") return nhlTeamLogoUrl(team.abbr);
+  if (sport === "nfl") return nflTeamLogoUrl(team.abbr);
+  if (sport === "epl") return eplTeamLogoUrl(team.abbr);
+  if (sport === "laliga") return laligaTeamLogoUrl(team.abbr);
+  if (sport === "nba" && team.nbaId) return nbaTeamLogoUrl(team.nbaId);
+  return null;
+}
 
 function TeamRefRankListItem({
   entry,
@@ -255,6 +272,14 @@ export function RefTeamMatrix({
         : null,
     [selectedTeamAbbr, teams],
   );
+  const selectedTeamLogoSrc = useMemo(
+    () => (selectedTeam ? teamLogoSrcForSport(sport, selectedTeam) : null),
+    [selectedTeam, sport],
+  );
+  const selectedTeamPanelStyle = useMemo((): CSSProperties | undefined => {
+    if (!selectedTeamLogoSrc) return undefined;
+    return { "--team-watermark-url": `url("${selectedTeamLogoSrc}")` } as CSSProperties;
+  }, [selectedTeamLogoSrc]);
   const topRefsForTeam = useMemo(
     () =>
       selectedTeamAbbr
@@ -604,7 +629,14 @@ export function RefTeamMatrix({
         <section
           className="ref-matrix-team-panel"
           aria-labelledby="ref-matrix-team-panel-title"
+          style={selectedTeamPanelStyle}
         >
+          {selectedTeamLogoSrc ? (
+            <div className="ref-matrix-team-panel-watermark" aria-hidden>
+              {/* eslint-disable-next-line @next/next/no-img-element -- decorative watermark */}
+              <img src={selectedTeamLogoSrc} alt="" />
+            </div>
+          ) : null}
           <div className="ref-matrix-team-panel-head">
             <div className="ref-matrix-team-panel-brand">
               <TeamLogo

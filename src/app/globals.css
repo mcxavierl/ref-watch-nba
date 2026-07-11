@@ -5233,6 +5233,8 @@ p {
   }
 
   .ref-matrix-team-panel {
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
@@ -5240,6 +5242,32 @@ p {
     border-radius: 0.75rem;
     background: color-mix(in srgb, var(--surface-raised) 55%, var(--surface));
     padding: var(--space-4);
+  }
+
+  .ref-matrix-team-panel-watermark {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .ref-matrix-team-panel-watermark img {
+    width: min(20rem, 62%);
+    max-height: 72%;
+    object-fit: contain;
+    opacity: 0.28;
+    filter: brightness(1.45) contrast(1.15) saturate(1.1);
+  }
+
+  .ref-matrix-team-panel-head,
+  .ref-matrix-team-panel-sort,
+  .ref-matrix-team-panel-columns,
+  .ref-matrix-team-panel-thin {
+    position: relative;
+    z-index: 1;
   }
 
   .ref-matrix-team-panel-head {
@@ -5261,10 +5289,20 @@ p {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.3rem;
+    padding: 0.35rem;
     border-radius: 0.5rem;
-    background: #000;
-    border: 1px solid color-mix(in srgb, var(--border-subtle) 55%, #000);
+    background: #ececf0;
+    border: 1px solid color-mix(in srgb, var(--border-subtle) 55%, #fff);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.32);
+  }
+
+  .ref-matrix-team-panel-logo.team-logo-plate {
+    background: #ececf0;
+    border-color: color-mix(in srgb, var(--border-subtle) 55%, #fff);
+  }
+
+  .ref-matrix-team-panel-logo .team-logo-plate__img {
+    padding: 0.15rem;
   }
 
   .ref-matrix-team-panel-copy {
@@ -5548,6 +5586,8 @@ p {
   }
 
   .ref-matrix-team-panel-item {
+    position: relative;
+    overflow: hidden;
     display: grid;
     grid-template-columns: 1.5rem minmax(0, 1.35fr) 4.75rem 3.25rem minmax(5.5rem, 7rem);
     align-items: center;
@@ -5558,6 +5598,28 @@ p {
     border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
     font-size: var(--text-sm);
     min-height: 2.95rem;
+  }
+
+  .ref-matrix-team-panel-item::after {
+    content: "";
+    position: absolute;
+    right: 0.35rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3.25rem;
+    height: 3.25rem;
+    background-image: var(--team-watermark-url);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.2;
+    filter: brightness(1.4) contrast(1.12) saturate(1.05);
+    pointer-events: none;
+  }
+
+  .ref-matrix-team-panel-item > * {
+    position: relative;
+    z-index: 1;
   }
 
   @media (max-width: 639px) {
@@ -5857,6 +5919,17 @@ p {
 
   .ref-matrix-team-logo {
     display: block;
+  }
+
+  .ref-matrix-logo-row .team-logo-plate {
+    background: #ececf0;
+    border-color: color-mix(in srgb, var(--border-subtle) 60%, #fff);
+    padding: 0.3rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+  }
+
+  .ref-matrix-logo-row .team-logo-plate__img {
+    padding: 0.12rem;
   }
 
   .ref-matrix-ref-link {
