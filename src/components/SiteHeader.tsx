@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Bell, UserCircle } from "lucide-react";
+import { A11ySettingsPanel } from "@/components/A11ySettingsPanel";
 import { Whistle } from "@/components/icons/Whistle";
 import { leagueFromPathname, LEAGUES } from "@/lib/leagues";
 import { LeagueNav, SiteNav } from "./SiteNav";
@@ -62,6 +63,8 @@ export function SiteHeader() {
                 </button>
               </div>
             ) : null}
+
+            <A11ySettingsPanel />
           </div>
         </div>
       </header>
