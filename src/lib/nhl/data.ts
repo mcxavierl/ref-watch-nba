@@ -190,7 +190,6 @@ function mergeTeamSpecialTeams(data: RefStatsFile): RefStatsFile {
 let resolvedRefStats: RefStatsFile | null = null;
 
 export function getRefStats(): RefStatsFile {
-  if (resolvedRefStats) return resolvedRefStats;
   try {
     const hydrated = getPreferHydratedRefStats("nhl");
     if (hydrated?.refs?.length) {
@@ -199,6 +198,7 @@ export function getRefStats(): RefStatsFile {
       );
       return resolvedRefStats;
     }
+    if (resolvedRefStats?.refs?.length) return resolvedRefStats;
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     const stats = gateUnverifiedNhlStats(
@@ -211,8 +211,10 @@ export function getRefStats(): RefStatsFile {
     const splits = cachedTeamSplitsForLeague("nhl");
     const fromFile =
       Object.keys(splits).length > 0 ? splits : diskTeamSplitsFallback(loadTeamSplitsFromDisk);
-    resolvedRefStats = attachTeamSplits("nhl", stats, fromFile);
-    return resolvedRefStats;
+    if (stats.refs.length > 0) {
+      resolvedRefStats = attachTeamSplits("nhl", stats, fromFile);
+    }
+    return resolvedRefStats ?? stats;
   } catch {
     return EMPTY_REF_STATS;
   }

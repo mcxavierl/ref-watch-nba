@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState, type CSSProperties } from "react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { TeamLogo } from "@/components/TeamLogo";
+import { useColorMode } from "@/lib/a11y/useColorMode";
 import {
   formatMatrixTeamBaseline,
   matrixCellAriaLabel,
@@ -47,8 +48,9 @@ type RefTeamMatrixProps = {
 function teamLogoSrcForSport(
   sport: RefTeamMatrixProps["sport"],
   team: { abbr: string; nbaId?: number },
+  uiSurface: "dark" | "light",
 ): string | null {
-  if (sport === "nhl") return nhlTeamLogoUrl(team.abbr);
+  if (sport === "nhl") return nhlTeamLogoUrl(team.abbr, uiSurface);
   if (sport === "nfl") return nflTeamLogoUrl(team.abbr);
   if (sport === "epl") return eplTeamLogoUrl(team.abbr);
   if (sport === "laliga") return laligaTeamLogoUrl(team.abbr);
@@ -245,6 +247,8 @@ export function RefTeamMatrix({
   teamSosByAbbr,
 }: RefTeamMatrixProps) {
   const { refs, teams, cells, minGames, qualifiedCellCount } = matrix;
+  const colorMode = useColorMode();
+  const logoUiSurface = colorMode === "light" ? "light" : "dark";
   const [selectedTeamAbbr, setSelectedTeamAbbr] = useState<string | null>(null);
   const [refSort, setRefSort] = useState<MatrixRefSort>(MATRIX_DEFAULT_REF_SORT);
   const [teamPanelSort, setTeamPanelSort] = useState<MatrixTeamPanelSort>(
@@ -272,8 +276,11 @@ export function RefTeamMatrix({
     [selectedTeamAbbr, teams],
   );
   const selectedTeamLogoSrc = useMemo(
-    () => (selectedTeam ? teamLogoSrcForSport(sport, selectedTeam) : null),
-    [selectedTeam, sport],
+    () =>
+      selectedTeam
+        ? teamLogoSrcForSport(sport, selectedTeam, logoUiSurface)
+        : null,
+    [selectedTeam, sport, logoUiSurface],
   );
   const selectedTeamPanelStyle = useMemo((): CSSProperties | undefined => {
     if (!selectedTeamLogoSrc) return undefined;

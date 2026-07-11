@@ -170,13 +170,13 @@ function normalizeRefStats(data: RefStatsFile): RefStatsFile {
 let resolvedRefStats: RefStatsFile | null = null;
 
 export function getRefStats(): RefStatsFile {
-  if (resolvedRefStats) return resolvedRefStats;
   try {
     const hydrated = getPreferHydratedRefStats("laliga");
     if (hydrated?.refs?.length) {
       resolvedRefStats = gateUnverifiedLaligaStats(applyBaselines(normalizeRefStats(hydrated)));
       return resolvedRefStats;
     }
+    if (resolvedRefStats?.refs?.length) return resolvedRefStats;
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     const stats = gateUnverifiedLaligaStats(applyBaselines(normalizeRefStats(raw)));
@@ -187,8 +187,10 @@ export function getRefStats(): RefStatsFile {
     const splits = cachedTeamSplitsForLeague("laliga");
     const fromFile =
       Object.keys(splits).length > 0 ? splits : diskTeamSplitsFallback(loadTeamSplitsFromDisk);
-    resolvedRefStats = attachTeamSplits("laliga", stats, fromFile);
-    return resolvedRefStats;
+    if (stats.refs.length > 0) {
+      resolvedRefStats = attachTeamSplits("laliga", stats, fromFile);
+    }
+    return resolvedRefStats ?? stats;
   } catch {
     return EMPTY_REF_STATS;
   }

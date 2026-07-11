@@ -1,11 +1,13 @@
-import { preloadLeagueRefStats } from "@/lib/edge-preload";
+import { preloadLeagueRefStatsForPath } from "@/lib/edge-preload";
 import { SITE_URL } from "@/lib/site";
+import { headers } from "next/headers";
 
 export default async function NhlLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await preloadLeagueRefStats(SITE_URL, "nhl");
+  const pathname = (await headers()).get("x-pathname") ?? "/nhl";
+  await preloadLeagueRefStatsForPath(SITE_URL, "nhl", pathname);
   return children;
 }

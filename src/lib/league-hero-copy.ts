@@ -22,11 +22,11 @@ export const LEAGUE_HERO_COPY: Record<
   nba: {
     kicker: "NBA officiating desk",
     liveTitle: "Who's blowing the whistle tonight.",
-    offseasonTitle: "NBA refs, indexed and scored.",
+    offseasonTitle: "NBA refereeing stats, analyzed.",
     liveLead:
       "Crew assignments, foul tendencies, and ref×team history before tip-off, scored by sample depth.",
     offseasonLead:
-      "Profiles, ref×team matrices, and multi-season whistle splits for every indexed official.",
+      "Official profiles, foul rates, and ref×team histories across every indexed ref.",
     statLabels: {
       officials: "Refs indexed",
       games: "Games logged",
@@ -36,11 +36,11 @@ export const LEAGUE_HERO_COPY: Record<
   nhl: {
     kicker: "NHL penalty desk",
     liveTitle: "Who's putting them in the box tonight.",
-    offseasonTitle: "NHL officials, indexed and scored.",
+    offseasonTitle: "NHL refereeing stats, analyzed.",
     liveLead:
       "Crew assignments, minor-penalty rates, PP environment, and OT history before puck drop.",
     offseasonLead:
-      "Official profiles, penalty tendencies, and team splits while the schedule pauses.",
+      "Official profiles, penalty rates, and team splits across every indexed official.",
     statLabels: {
       officials: "Officials indexed",
       games: "Games logged",
@@ -51,13 +51,13 @@ export const LEAGUE_HERO_COPY: Record<
     kicker: "NFL flag desk",
     liveTitle: "Who's throwing flags this week.",
     pendingTitle: "Next NFL week is on the board.",
-    offseasonTitle: "NFL crews, indexed and scored.",
+    offseasonTitle: "NFL officiating stats, analyzed.",
     liveLead:
       "Crew assignments, penalty-yard tendencies, and official×team splits before kickoff.",
     pendingLead:
       "Matchups are scheduled; crew assignments publish closer to kickoff. Historical splits stay live below.",
     offseasonLead:
-      "Official profiles, flag rates, and team histories while the week resets.",
+      "Crew profiles, flag rates, and official×team histories across every indexed crew.",
     statLabels: {
       officials: "Officials indexed",
       games: "Games logged",
@@ -68,13 +68,13 @@ export const LEAGUE_HERO_COPY: Record<
     kicker: "Premier League whistle desk",
     liveTitle: "Who's officiating the matchday.",
     pendingTitle: "Next matchday is on the board.",
-    offseasonTitle: "Premier League refs, indexed and scored.",
+    offseasonTitle: "Premier League refereeing stats, analyzed.",
     liveLead:
       "Referee assignments, foul and card tendencies, and ref×club history before kickoff.",
     pendingLead:
       "Fixtures are scheduled; referee appointments publish closer to kickoff. Historical splits stay live below.",
     offseasonLead:
-      "Referee profiles, foul rates, and club splits while the schedule pauses.",
+      "Referee profiles, foul rates, and club splits across every indexed ref.",
     statLabels: {
       officials: "Refs indexed",
       games: "Matches logged",
@@ -85,7 +85,7 @@ export const LEAGUE_HERO_COPY: Record<
     kicker: "La Liga whistle desk",
     liveTitle: "Who's officiating the matchday.",
     pendingTitle: "Next matchday is on the board.",
-    offseasonTitle: "La Liga refs, indexed and scored.",
+    offseasonTitle: "La Liga refereeing stats, analyzed.",
     liveLead:
       "Referee assignments, foul and card tendencies, and ref×club history before kickoff.",
     pendingLead:

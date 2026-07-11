@@ -71,8 +71,9 @@ export function teamWithArticle(team: NhlTeam): string {
   return `the ${team.name}`;
 }
 
-export function teamLogoUrl(abbr: string): string {
-  return `https://assets.nhle.com/logos/nhl/svg/${abbr.toUpperCase()}_light.svg`;
+export function teamLogoUrl(abbr: string, uiSurface: "dark" | "light" = "dark"): string {
+  const variant = uiSurface === "dark" ? "light" : "dark";
+  return `https://assets.nhle.com/logos/nhl/svg/${abbr.toUpperCase()}_${variant}.svg`;
 }
 
 /** Match assignment strings like "Toronto", "TOR", "New Jersey Devils", etc. */

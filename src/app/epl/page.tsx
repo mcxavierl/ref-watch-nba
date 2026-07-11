@@ -43,8 +43,6 @@ import { EplAnalyticsLeaders } from "@/components/EplAnalyticsLeaders";
 import { buildEplAnalyticsLeaders } from "@/lib/epl/analytics-leaders";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
-import { preloadLeagueRefStats } from "@/lib/edge-preload";
-import { SITE_URL } from "@/lib/site";
 
 export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
@@ -78,7 +76,6 @@ function sortSlateGames(
 }
 
 export default async function EplHomePage() {
-  await preloadLeagueRefStats(SITE_URL, "epl");
   const assignments = getAssignments();
   const refStats = getRefStats();
   const odds = getOdds();

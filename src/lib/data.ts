@@ -69,7 +69,7 @@ function loadTeamSplitsRaw(): Record<string, TeamCrewSplit[]> {
 
 function loadRefStatsRaw(): RefStatsFile | null {
   return loadRefStatsRawCachedFirst("nba", () => {
-    if (!allowNodeDataFs()) return null;
+    if (!allowNodeDataFs()) return getBundledNbaRefStatsCore();
     const fromFs =
       tryReadJson<RefStatsFile>("ref-stats-core.json") ??
       tryReadJson<RefStatsFile>("ref-stats.json");
@@ -184,7 +184,6 @@ function normalizeRefStats(data: RefStatsFile): RefStatsFile {
 let resolvedRefStats: RefStatsFile | null = null;
 
 export function getRefStats(): RefStatsFile {
-  if (resolvedRefStats) return resolvedRefStats;
   try {
     const hydrated = getPreferHydratedRefStats("nba");
     if (hydrated?.refs?.length) {
@@ -193,6 +192,7 @@ export function getRefStats(): RefStatsFile {
       );
       return resolvedRefStats;
     }
+    if (resolvedRefStats?.refs?.length) return resolvedRefStats;
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     resolvedRefStats = applyBaselines(

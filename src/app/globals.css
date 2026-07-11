@@ -14,6 +14,8 @@
   /* Neutral tile behind team marks — lifts dark logos off dark surfaces */
   --logo-plate: #454550;
   --logo-plate-border: #5c5c68;
+  --logo-plate-matrix: #ececf0;
+  --logo-plate-matrix-border: color-mix(in srgb, var(--border-subtle) 55%, #fff);
 
   /* Ink ramp — tuned for ≥4.5:1 on dark surfaces */
   --muted: #a8a8b3;
@@ -236,6 +238,8 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --border-subtle: #e4e4ea;
   --logo-plate: #e8e8ee;
   --logo-plate-border: #c8c8d0;
+  --logo-plate-matrix: #ffffff;
+  --logo-plate-matrix-border: var(--logo-plate-border);
   --muted: #5c5c68;
   --muted-strong: #3f3f48;
   --ink-secondary: #27272f;
@@ -291,6 +295,8 @@ html[data-contrast="high"][data-color="light"] {
   --border-subtle: #222222;
   --logo-plate: #eeeeee;
   --logo-plate-border: #000000;
+  --logo-plate-matrix: #ffffff;
+  --logo-plate-matrix-border: #000000;
   --muted: #1a1a1a;
   --muted-strong: #000000;
   --ink-secondary: #000000;
@@ -3242,10 +3248,17 @@ p {
 
   .league-nav-mark--laliga,
   .league-nav-mark[data-league="laliga"] {
-    height: 1.05rem;
-    max-width: 1.2rem;
+    height: 1.1rem;
+    width: auto;
+    max-width: 1.45rem;
+    object-fit: contain;
     filter: none;
-    opacity: 0.95;
+    opacity: 1;
+  }
+
+  html[data-color="light"] .league-nav-mark--laliga,
+  html[data-color="light"] .league-nav-mark[data-league="laliga"] {
+    opacity: 1;
   }
 
   .league-nav-link--active .league-nav-mark {

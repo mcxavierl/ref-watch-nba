@@ -240,7 +240,7 @@ export function pathNeedsGameLogs(pathname: string): boolean {
   return false;
 }
 
-/** Matrix, findings, and team crew pages need sidecar team-splits; ref hubs do not. */
+/** Matrix, findings, and team crew pages need sidecar team-splits; slate hubs do not. */
 export function pathNeedsTeamSplits(pathname: string): boolean {
   if (pathname.startsWith("/overview")) return false;
   if (pathname.startsWith("/methodology")) return false;
@@ -248,6 +248,9 @@ export function pathNeedsTeamSplits(pathname: string): boolean {
   if (pathname.startsWith("/sitemap")) return false;
   if (pathname.startsWith("/feed")) return false;
   if (/\/refs(\/|$)/.test(pathname)) return false;
+  // League slates only need slim ref-stats (~0.5–1.5MB); team-splits are 2–9MB each.
+  if (pathname === "/") return false;
+  if (/^\/(nhl|nfl|epl|laliga|cbb|cfb)\/?$/.test(pathname)) return false;
   return true;
 }
 

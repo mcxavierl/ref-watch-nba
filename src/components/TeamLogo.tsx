@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useColorMode } from "@/lib/a11y/useColorMode";
 import { teamLogoUrl as nbaTeamLogoUrl } from "@/lib/teams";
 import { teamLogoUrl as nhlTeamLogoUrl } from "@/lib/nhl/teams";
 import { teamLogoUrl as nflTeamLogoUrl } from "@/lib/nfl/teams";
@@ -33,6 +34,8 @@ export function TeamLogo({
   className?: string;
 }) {
   const [failed, setFailed] = useState(false);
+  const colorMode = useColorMode();
+  const nhlUiSurface = colorMode === "light" ? "light" : "dark";
   const logoSrc =
     team.logoUrl ??
     (sport === "laliga"
@@ -42,7 +45,7 @@ export function TeamLogo({
       : sport === "nfl"
         ? nflTeamLogoUrl(team.abbr)
         : sport === "nhl"
-          ? nhlTeamLogoUrl(team.abbr)
+          ? nhlTeamLogoUrl(team.abbr, nhlUiSurface)
           : team.nbaId
             ? nbaTeamLogoUrl(team.nbaId)
             : null);

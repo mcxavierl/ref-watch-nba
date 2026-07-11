@@ -1,42 +1,53 @@
+"use client";
+
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { useColorMode } from "@/lib/a11y/useColorMode";
 
 type LeagueNavId = "nba" | "nhl" | "nfl" | "epl" | "laliga";
 
-const LEAGUE_LOGOS: Record<
-  LeagueNavId,
-  { active: string; inactive: string; alt: string; className?: string }
-> = {
+type LeagueLogoSet = {
+  onDark: string;
+  onLight: string;
+  alt: string;
+  className?: string;
+};
+
+const LEAGUE_LOGOS: Record<LeagueNavId, LeagueLogoSet> = {
   nba: {
-    active: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
-    inactive: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
+    onDark: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
+    onLight: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
     alt: "NBA",
     className: "league-nav-mark--nba",
   },
   nhl: {
-    inactive: "https://assets.nhle.com/logos/nhl/svg/NHL_light.svg",
-    active: "https://assets.nhle.com/logos/nhl/svg/NHL_dark.svg",
+    onDark: "https://assets.nhle.com/logos/nhl/svg/NHL_light.svg",
+    onLight: "https://assets.nhle.com/logos/nhl/svg/NHL_dark.svg",
     alt: "NHL",
     className: "league-nav-mark--nhl",
   },
   nfl: {
-    active: "/logos/nfl-shield.svg",
-    inactive: "/logos/nfl-shield.svg",
+    onDark: "/logos/nfl-shield.svg",
+    onLight: "/logos/nfl-shield.svg",
     alt: "NFL",
     className: "league-nav-mark--nfl",
   },
   epl: {
-    active: "/logos/epl-lion.svg",
-    inactive: "/logos/epl-lion.svg",
+    onDark: "/logos/epl-lion.svg",
+    onLight: "/logos/epl-lion-dark.svg",
     alt: "Premier League",
     className: "league-nav-mark--epl",
   },
   laliga: {
-    active: "/logos/laliga.svg",
-    inactive: "/logos/laliga.svg",
+    onDark: "/logos/laliga-white.png",
+    onLight: "/logos/laliga-red.png",
     alt: "La Liga",
     className: "league-nav-mark--laliga",
   },
 };
+
+function leagueMarkSrc(logos: LeagueLogoSet, colorMode: "light" | "dark"): string {
+  return colorMode === "light" ? logos.onLight : logos.onDark;
+}
 
 type LeagueNavMarkProps = {
   league: LeagueId;
@@ -44,6 +55,7 @@ type LeagueNavMarkProps = {
 };
 
 export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
+  const colorMode = useColorMode();
   const logos = LEAGUE_LOGOS[league as LeagueNavId];
   if (!logos) {
     return (
@@ -53,7 +65,7 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
     );
   }
 
-  const src = active ? logos.active : logos.inactive;
+  const src = leagueMarkSrc(logos, colorMode);
 
   return (
     <img

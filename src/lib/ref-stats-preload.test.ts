@@ -16,7 +16,9 @@ test("pathNeedsTeamSplits skips ref hubs and static pages", () => {
   assert.equal(pathNeedsTeamSplits("/methodology"), false);
   assert.equal(pathNeedsTeamSplits("/nfl/refs"), false);
   assert.equal(pathNeedsTeamSplits("/nfl/refs/scott-blank"), false);
-  assert.equal(pathNeedsTeamSplits("/nfl"), true);
+  assert.equal(pathNeedsTeamSplits("/"), false);
+  assert.equal(pathNeedsTeamSplits("/nfl"), false);
+  assert.equal(pathNeedsTeamSplits("/nhl"), false);
   assert.equal(pathNeedsTeamSplits("/nfl/matrix"), true);
   assert.equal(pathNeedsTeamSplits("/nfl/teams/KC"), true);
 });

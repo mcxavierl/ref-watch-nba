@@ -184,6 +184,17 @@ export async function preloadLeagueRefStats(
   }
 }
 
+/** Path-scoped preload: skip multi-MB team-splits on slate hubs and ref indexes. */
+export async function preloadLeagueRefStatsForPath(
+  origin: string,
+  league: League,
+  pathname: string,
+): Promise<void> {
+  return preloadLeagueRefStats(origin, league, {
+    includeTeamSplits: pathNeedsTeamSplits(pathname),
+  });
+}
+
 /** Overview hub: hydrate ref-stats only (no matrix / game-log payloads). */
 export async function preloadOverviewLeagueRefStats(
   origin: string,
