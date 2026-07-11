@@ -3207,6 +3207,14 @@ p {
     opacity: 0.92;
   }
 
+  .league-nav-mark--laliga,
+  .league-nav-mark[data-league="laliga"] {
+    height: 1.05rem;
+    max-width: 1.2rem;
+    filter: none;
+    opacity: 0.95;
+  }
+
   .league-nav-link--active .league-nav-mark {
     opacity: 1;
     transform: scale(1.02);

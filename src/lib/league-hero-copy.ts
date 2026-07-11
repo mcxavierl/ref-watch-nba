@@ -16,7 +16,7 @@ export type LeagueHeroCopy = {
 };
 
 export const LEAGUE_HERO_COPY: Record<
-  "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb",
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb",
   LeagueHeroCopy
 > = {
   nba: {
@@ -81,6 +81,23 @@ export const LEAGUE_HERO_COPY: Record<
       seasons: "Seasons",
     },
   },
+  laliga: {
+    kicker: "La Liga whistle desk",
+    liveTitle: "Who's officiating the matchday.",
+    pendingTitle: "Next matchday is on the board.",
+    offseasonTitle: "La Liga refs, indexed and scored.",
+    liveLead:
+      "Referee assignments, foul and card tendencies, and ref×club history before kickoff.",
+    pendingLead:
+      "Fixtures are scheduled; referee appointments publish closer to kickoff. Historical splits stay live below.",
+    offseasonLead:
+      "Referee profiles, foul rates, and club splits across Spain's top flight.",
+    statLabels: {
+      officials: "Refs indexed",
+      games: "Matches logged",
+      seasons: "Seasons",
+    },
+  },
   cbb: {
     kicker: "Men's college hoops",
     liveTitle: "Who's calling fouls on campus tonight.",
@@ -112,8 +129,5 @@ export const LEAGUE_HERO_COPY: Record<
 };
 
 export function leagueHeroCopy(leagueId: LeagueId): LeagueHeroCopy {
-  if (leagueId in LEAGUE_HERO_COPY) {
-    return LEAGUE_HERO_COPY[leagueId as keyof typeof LEAGUE_HERO_COPY];
-  }
-  return LEAGUE_HERO_COPY.nba;
+  return LEAGUE_HERO_COPY[leagueId as keyof typeof LEAGUE_HERO_COPY] ?? LEAGUE_HERO_COPY.nba;
 }
