@@ -95,12 +95,18 @@ function round3(n: number): number {
 
 function nflSeasonDates(): string[] {
   const dates: string[] = [];
+  const seen = new Set<string>();
+  const push = (d: string) => {
+    if (seen.has(d)) return;
+    seen.add(d);
+    dates.push(d);
+  };
   for (let startYear = 2016; startYear <= 2025; startYear++) {
     const endYear = startYear + 1;
     for (let month = 9; month <= 12; month++) {
       const days = new Date(startYear, month, 0).getDate();
       for (let day = 1; day <= days; day++) {
-        dates.push(
+        push(
           `${startYear}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
         );
       }
@@ -108,21 +114,11 @@ function nflSeasonDates(): string[] {
     for (let month = 1; month <= 2; month++) {
       const days = new Date(endYear, month, 0).getDate();
       for (let day = 1; day <= days; day++) {
-        dates.push(
+        push(
           `${endYear}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
         );
       }
     }
-  }
-  // Current season through mid-February
-  for (let month = 9; month <= 12; month++) {
-    const days = new Date(2025, month, 0).getDate();
-    for (let day = 1; day <= days; day++) {
-      dates.push(`2025-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
-    }
-  }
-  for (let day = 1; day <= 15; day++) {
-    dates.push(`2026-02-${String(day).padStart(2, "0")}`);
   }
   return dates;
 }
@@ -206,6 +202,14 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
   const dates = nflSeasonDates();
   console.log(`Scanning ${dates.length} NFL season dates (2016-17 through 2025-26)...`);
 
+  const existingLogs = loadGameLogs("NFL");
+  const existingById = new Map(
+    (existingLogs?.games ?? []).map((g) => [String(g.gameId), g as unknown as NflGameLogEntry]),
+  );
+  if (existingById.size > 0) {
+    console.log(`Resuming: ${existingById.size} games already in game-logs.json`);
+  }
+
   const refGames = new Map<string, RefGameRecord[]>();
   const refMeta = new Map<string, { name: string; number: number; role: RefRole }>();
   const refMinorGames = new Map<string, RefGameRecord[]>();
@@ -216,6 +220,7 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
   const allDates: string[] = [];
   let processed = 0;
   let linedGames = 0;
+  let skippedCached = 0;
 
   for (const abbr of NFL_TEAM_ABBRS) {
     teamByCrew.set(abbr, new Map());
@@ -237,7 +242,12 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
     for (const event of events) {
       if (event.status !== "STATUS_FINAL") continue;
 
-      await sleep(120);
+      if (existingById.has(String(event.id))) {
+        skippedCached++;
+        continue;
+      }
+
+      await sleep(80);
       let summary;
       try {
         summary = await fetchEspnSummary(event.id);
@@ -293,7 +303,7 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
       };
 
       allDates.push(summary.date);
-      exportedGameLogs.push({
+      const logEntry: NflGameLogEntry = {
         gameId: summary.gameId,
         date: summary.date,
         season,
@@ -312,7 +322,32 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
         homeSpread,
         lineSource,
         officials: crew,
-      });
+      };
+      exportedGameLogs.push(logEntry);
+      existingById.set(String(summary.gameId), logEntry);
+
+      if (processed > 0 && processed % 50 === 0) {
+        const merged = [...existingById.values()].sort(
+          (a, b) =>
+            a.date.localeCompare(b.date) || a.gameId.localeCompare(b.gameId),
+        );
+        fs.writeFileSync(
+          path.join(DATA_DIR, "game-logs.json"),
+          `${JSON.stringify(
+            {
+              lastUpdated: new Date().toISOString(),
+              league: "NFL",
+              source: "espn",
+              games: merged,
+            },
+            null,
+            2,
+          )}\n`,
+        );
+        console.log(
+          `  …${processed} new / ${merged.length} total (cached skips ${skippedCached})`,
+        );
+      }
 
       const key = crewKey(crew);
       const crewNames = crew.map((o) => o.name);
@@ -383,18 +418,124 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
       processed++;
       if (processed % 100 === 0) {
         console.log(
-          `  …${processed} NFL games (${linedGames} with nflverse lines)`,
+          `  …${processed} new NFL games (${linedGames} with nflverse lines, ${skippedCached} cached)`,
         );
       }
     }
     await sleep(100);
   }
 
-  if (processed < 50) {
-    console.warn(`Only ${processed} ESPN games — keeping seed fallback.`);
+  // Merge cached + newly fetched logs, then rebuild aggregates from the full set.
+  const mergedLogs = [...existingById.values()]
+    .map((g) => ({ ...g, season: inferNflSeason(g.date) }))
+    .sort(
+      (a, b) =>
+        a.date.localeCompare(b.date) || a.gameId.localeCompare(b.gameId),
+    );
+
+  console.log(
+    `Fetch pass done: +${processed} new, ${skippedCached} cached skips, ${mergedLogs.length} unique total`,
+  );
+
+  if (mergedLogs.length < 500) {
+    console.warn(`Only ${mergedLogs.length} ESPN games — keeping seed fallback.`);
     return null;
   }
 
+  refGames.clear();
+  refMeta.clear();
+  refMinorGames.clear();
+  refTeamBuckets.clear();
+  refBetting.clear();
+  for (const abbr of NFL_TEAM_ABBRS) {
+    teamByCrew.set(abbr, new Map());
+  }
+  allDates.length = 0;
+  linedGames = 0;
+
+  for (const game of mergedLogs) {
+    allDates.push(game.date);
+    if (game.lineSource === "external") linedGames++;
+    const overHit = game.totalPoints > game.closingTotal;
+    const record: RefGameRecord = {
+      gameId: game.gameId,
+      date: game.date,
+      season: game.season,
+      homeTeam: game.homeTeam,
+      awayTeam: game.awayTeam,
+      totalPoints: game.totalPoints,
+      totalFouls: game.totalFouls,
+      homeFlags: game.homeFlags,
+      awayFlags: game.awayFlags,
+      homePenaltyYards: game.homePenaltyYards,
+      awayPenaltyYards: game.awayPenaltyYards,
+      totalPenaltyYards: game.homePenaltyYards + game.awayPenaltyYards,
+      overHit,
+      raptorsInvolved: false,
+      closingTotal: game.closingTotal,
+      homeSpread: game.homeSpread,
+    };
+    const key = crewKey(game.officials);
+    const crewNames = game.officials.map((o) => o.name);
+    const makeRow = (teamAbbr: string): TeamGameRow | null => {
+      const isHome = game.homeTeam === teamAbbr;
+      const isAway = game.awayTeam === teamAbbr;
+      if (!isHome && !isAway) return null;
+      return {
+        totalPoints: game.totalPoints,
+        totalFouls: game.totalFouls,
+        overHit,
+        teamFouls: isHome ? game.homeFlags : game.awayFlags,
+        opponentFouls: isHome ? game.awayFlags : game.homeFlags,
+        teamWin: isHome
+          ? game.homeScore > game.awayScore
+          : game.awayScore > game.homeScore,
+        isHome,
+      };
+    };
+    for (const teamAbbr of [game.homeTeam, game.awayTeam]) {
+      const row = makeRow(teamAbbr);
+      if (!row) continue;
+      const buckets = teamByCrew.get(teamAbbr)!;
+      const existing = buckets.get(key) ?? { crewNames, games: [] };
+      existing.games.push(row);
+      buckets.set(key, existing);
+    }
+    for (const official of game.officials) {
+      const slug = refSlug(official.name, official.number);
+      refMeta.set(slug, official);
+      const games = refGames.get(slug) ?? [];
+      games.push(record);
+      refGames.set(slug, games);
+      if (game.lineSource === "external") {
+        const acc = refBetting.get(slug) ?? new NflBettingAccumulator(true);
+        acc.addGame({
+          homeScore: game.homeScore,
+          awayScore: game.awayScore,
+          homeSpread: game.homeSpread,
+          total: game.closingTotal,
+        });
+        refBetting.set(slug, acc);
+      }
+      if (official.role === "referee") {
+        const refOnly = refMinorGames.get(slug) ?? [];
+        refOnly.push(record);
+        refMinorGames.set(slug, refOnly);
+      }
+      for (const teamAbbr of [game.homeTeam, game.awayTeam]) {
+        const row = makeRow(teamAbbr);
+        if (!row) continue;
+        pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
+          foulDifferential: row.teamFouls - row.opponentFouls,
+          totalPoints: row.totalPoints,
+          overHit: row.overHit,
+          teamWin: row.teamWin,
+        });
+      }
+    }
+  }
+
+  const processedTotal = mergedLogs.length;
   allDates.sort();
   const allGameRecords = [...refGames.values()].flat();
   const leagueAvgTotal =
@@ -456,9 +597,7 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
         lastUpdated: new Date().toISOString(),
         league: "NFL",
         source: "espn",
-        games: exportedGameLogs.sort(
-          (a, b) => a.date.localeCompare(b.date) || a.gameId.localeCompare(b.gameId),
-        ),
+        games: mergedLogs,
       },
       null,
       2,
@@ -471,8 +610,8 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
     buildBaselinesFile(
       nbaLogs,
       nhlLogs,
-      `NFL ESPN build: ${processed} games`,
-      exportedGameLogs,
+      `NFL ESPN build: ${processedTotal} games`,
+      mergedLogs,
     ),
   );
 
@@ -493,13 +632,13 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
       data_source: "ESPN + nflverse",
       atsAvailable,
       refCount: refs.length,
-      totalGamesProcessed: processed,
+      totalGamesProcessed: processedTotal,
       dateRange: {
         earliest: allDates[0],
         latest: allDates[allDates.length - 1],
       },
       note: atsAvailable
-        ? `Scores, penalties, and crews from ESPN. ATS/O-U from nflverse closing lines (${linedGames}/${processed} games matched).`
+        ? `Scores, penalties, and crews from ESPN. ATS/O-U from nflverse closing lines (${linedGames}/${processedTotal} games matched).`
         : "Scores, penalty counts, and crews from ESPN. Ref×team W-L from those games. Run fetch-nfl-historical-lines for ATS/O-U.",
     },
     refs,
