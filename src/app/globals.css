@@ -134,6 +134,16 @@
   --b2b-surface-raised: #1c1c22;
   --b2b-border: #2e2e38;
   --b2b-muted: #9a9aa8;
+
+  /* League hub hero (sport watermark band) */
+  --league-hub-hero-bg: #12151c;
+  --league-hub-hero-bg-start: #161a24;
+  --league-hub-hero-bg-end: #0d1016;
+  --league-hub-hero-accent-glow: 10%;
+  --league-hub-hero-watermark-color: #9ca3af;
+  --league-hub-hero-watermark-opacity: 0.22;
+  --league-hub-hero-stat-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --league-hub-hero-stat-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.45);
 }
 
 @theme inline {
@@ -246,6 +256,15 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --b2b-border: #d4d4dc;
   --b2b-muted: #5c5c68;
 
+  --league-hub-hero-bg: #eef1f6;
+  --league-hub-hero-bg-start: #f7f8fb;
+  --league-hub-hero-bg-end: #e4e8ef;
+  --league-hub-hero-accent-glow: 14%;
+  --league-hub-hero-watermark-color: #94a3b8;
+  --league-hub-hero-watermark-opacity: 0.16;
+  --league-hub-hero-stat-shadow: 0 1px 3px rgba(15, 23, 36, 0.08);
+  --league-hub-hero-stat-shadow-hover: 0 4px 14px rgba(15, 23, 36, 0.12);
+
   --color-white: #ffffff;
   --color-zinc-50: #fafafa;
   --color-zinc-100: #f4f4f5;
@@ -297,6 +316,15 @@ html[data-contrast="high"][data-color="light"] {
   --b2b-surface-raised: #ffffff;
   --b2b-border: #000000;
   --b2b-muted: #111111;
+
+  --league-hub-hero-bg: #ffffff;
+  --league-hub-hero-bg-start: #ffffff;
+  --league-hub-hero-bg-end: #f0f0f0;
+  --league-hub-hero-accent-glow: 18%;
+  --league-hub-hero-watermark-color: #333333;
+  --league-hub-hero-watermark-opacity: 0.14;
+  --league-hub-hero-stat-shadow: 0 0 0 1px #000000;
+  --league-hub-hero-stat-shadow-hover: 0 0 0 2px #000000;
 
   --color-white: #ffffff;
   --color-zinc-50: #ffffff;
@@ -3363,13 +3391,13 @@ p {
       background-color 180ms ease-out,
       box-shadow 180ms ease-out,
       transform 180ms ease-out;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    box-shadow: var(--league-hub-hero-stat-shadow);
   }
 
   .league-slate-stat-link:hover {
     border-color: color-mix(in srgb, var(--league-accent) 45%, var(--border));
     background: color-mix(in srgb, var(--league-accent) 10%, var(--surface-raised));
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    box-shadow: var(--league-hub-hero-stat-shadow-hover);
     transform: translateY(-1px);
   }
 
@@ -4519,7 +4547,6 @@ p {
   }
 
   .league-hub-hero {
-    --league-hub-hero-bg: #12151c;
     position: relative;
     isolation: isolate;
     overflow: hidden;
@@ -4532,10 +4559,15 @@ p {
     background:
       radial-gradient(
         ellipse 80% 70% at 70% 40%,
-        color-mix(in srgb, var(--league-accent) 10%, transparent),
+        color-mix(in srgb, var(--league-accent) var(--league-hub-hero-accent-glow), transparent),
         transparent 62%
       ),
-      linear-gradient(165deg, #161a24 0%, var(--league-hub-hero-bg) 48%, #0d1016 100%);
+      linear-gradient(
+        165deg,
+        var(--league-hub-hero-bg-start) 0%,
+        var(--league-hub-hero-bg) 48%,
+        var(--league-hub-hero-bg-end) 100%
+      );
     border-bottom: 1px solid color-mix(in srgb, var(--league-accent) 18%, var(--border));
   }
 
@@ -4639,8 +4671,8 @@ p {
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    color: #9ca3af;
-    opacity: 0.22;
+    color: var(--league-hub-hero-watermark-color);
+    opacity: var(--league-hub-hero-watermark-opacity);
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -4656,15 +4688,15 @@ p {
   }
 
   .league-hub-hero[data-league="nhl"] .league-hub-hero-watermark {
-    opacity: 0.26;
+    opacity: calc(var(--league-hub-hero-watermark-opacity) * 1.18);
   }
 
   .league-hub-hero[data-league="nfl"] .league-hub-hero-watermark-svg--nfl {
-    color: color-mix(in srgb, var(--nfl-green) 55%, #9ca3af);
+    color: color-mix(in srgb, var(--nfl-green) 55%, var(--league-hub-hero-watermark-color));
   }
 
   .league-hub-hero-watermark-svg--nhl {
-    color: color-mix(in srgb, var(--nhl-blue) 35%, #9ca3af);
+    color: color-mix(in srgb, var(--nhl-blue) 35%, var(--league-hub-hero-watermark-color));
   }
 
   .league-hub-hero .page-title,
