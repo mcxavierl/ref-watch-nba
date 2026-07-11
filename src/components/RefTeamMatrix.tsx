@@ -49,7 +49,7 @@ function TeamRefRankListItem({
   whistleDiffLabel,
   teamBaselineWinRate,
 }: {
-  entry: TeamTopRefEntry | undefined;
+  entry: TeamTopRefEntry;
   rank: number;
   variant: "positive" | "negative";
   basePath: string;
@@ -57,15 +57,6 @@ function TeamRefRankListItem({
   whistleDiffLabel: string;
   teamBaselineWinRate: number;
 }) {
-  if (!entry) {
-    return (
-      <li
-        className="ref-matrix-team-panel-item ref-matrix-team-panel-item--placeholder"
-        aria-hidden
-      />
-    );
-  }
-
   const deltaClass =
     variant === "positive"
       ? "ref-matrix-delta--positive"
@@ -122,57 +113,50 @@ function TeamRefRankListItem({
   );
 }
 
-function TeamRefRankPairedRows({
-  topEntries,
-  bottomEntries,
-  topEmptyMessage,
+function TeamRefRankColumn({
+  titleId,
+  title,
+  entries,
+  variant,
+  emptyMessage,
   basePath,
   sport,
   whistleDiffLabel,
   teamBaselineWinRate,
 }: {
-  topEntries: TeamTopRefEntry[];
-  bottomEntries: TeamTopRefEntry[];
-  topEmptyMessage: string;
+  titleId: string;
+  title: string;
+  entries: TeamTopRefEntry[];
+  variant: "positive" | "negative";
+  emptyMessage: string;
   basePath: string;
   sport: RefTeamMatrixProps["sport"];
   whistleDiffLabel: string;
   teamBaselineWinRate: number;
 }) {
-  if (topEntries.length === 0 && bottomEntries.length === 0) {
-    return (
-      <p className="ref-matrix-team-panel-empty">
-        {topEmptyMessage}
-      </p>
-    );
-  }
-
-  const rowCount = TEAM_MATRIX_REF_PANEL_LIMIT;
-
   return (
-    <div className="ref-matrix-team-panel-paired-rows">
-      {Array.from({ length: rowCount }, (_, index) => (
-        <div key={index} className="ref-matrix-team-panel-pair">
-          <TeamRefRankListItem
-            entry={topEntries[index]}
-            rank={index + 1}
-            variant="positive"
-            basePath={basePath}
-            sport={sport}
-            whistleDiffLabel={whistleDiffLabel}
-            teamBaselineWinRate={teamBaselineWinRate}
-          />
-          <TeamRefRankListItem
-            entry={bottomEntries[index]}
-            rank={index + 1}
-            variant="negative"
-            basePath={basePath}
-            sport={sport}
-            whistleDiffLabel={whistleDiffLabel}
-            teamBaselineWinRate={teamBaselineWinRate}
-          />
-        </div>
-      ))}
+    <div className="ref-matrix-team-panel-column">
+      <h4 id={titleId} className="ref-matrix-team-panel-column-title">
+        {title}
+      </h4>
+      {entries.length === 0 ? (
+        <p className="ref-matrix-team-panel-empty">{emptyMessage}</p>
+      ) : (
+        <ul className="ref-matrix-team-panel-list" aria-labelledby={titleId}>
+          {entries.slice(0, TEAM_MATRIX_REF_PANEL_LIMIT).map((entry, index) => (
+            <TeamRefRankListItem
+              key={entry.refSlug}
+              entry={entry}
+              rank={index + 1}
+              variant={variant}
+              basePath={basePath}
+              sport={sport}
+              whistleDiffLabel={whistleDiffLabel}
+              teamBaselineWinRate={teamBaselineWinRate}
+            />
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -636,24 +620,31 @@ export function RefTeamMatrix({
           </div>
 
           <div className="ref-matrix-team-panel-columns">
-            <h4
-              id="ref-matrix-team-panel-top-title"
-              className="ref-matrix-team-panel-column-title"
-            >
-              Top {TEAM_MATRIX_REF_PANEL_LIMIT}{" "}
-              {teamPanelSort === "record" ? "vs baseline" : whistleDiffLabel.toLowerCase()}
-            </h4>
-            <h4
-              id="ref-matrix-team-panel-bottom-title"
-              className="ref-matrix-team-panel-column-title"
-            >
-              Bottom {TEAM_MATRIX_REF_PANEL_LIMIT}{" "}
-              {teamPanelSort === "record" ? "vs baseline" : whistleDiffLabel.toLowerCase()}
-            </h4>
-            <TeamRefRankPairedRows
-              topEntries={topRefsForTeam}
-              bottomEntries={bottomRefsForTeam}
-              topEmptyMessage={`No qualified ${officialNounPlural} above baseline for ${selectedTeam.label} in this sample.`}
+            <TeamRefRankColumn
+              titleId="ref-matrix-team-panel-top-title"
+              title={`Top ${TEAM_MATRIX_REF_PANEL_LIMIT} ${
+                teamPanelSort === "record"
+                  ? "vs baseline"
+                  : whistleDiffLabel.toLowerCase()
+              }`}
+              entries={topRefsForTeam}
+              variant="positive"
+              emptyMessage={`No qualified ${officialNounPlural} above baseline for ${selectedTeam.label} in this sample.`}
+              basePath={basePath}
+              sport={sport}
+              whistleDiffLabel={whistleDiffLabel}
+              teamBaselineWinRate={selectedTeam.baselineWinRate}
+            />
+            <TeamRefRankColumn
+              titleId="ref-matrix-team-panel-bottom-title"
+              title={`Bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} ${
+                teamPanelSort === "record"
+                  ? "vs baseline"
+                  : whistleDiffLabel.toLowerCase()
+              }`}
+              entries={bottomRefsForTeam}
+              variant="negative"
+              emptyMessage={`No qualified ${officialNounPlural} below baseline for ${selectedTeam.label} in this sample.`}
               basePath={basePath}
               sport={sport}
               whistleDiffLabel={whistleDiffLabel}
