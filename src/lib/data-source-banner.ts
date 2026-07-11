@@ -36,7 +36,7 @@ export function leagueDataSourceBannerMessage(
 
   if (!verification.data_verified) {
     const msg = unverifiedBannerMessage(league as LeagueId, meta);
-    return msg || "Synthetic data — not from official sources";
+    return msg || "Synthetic data: not from official sources";
   }
 
   const source = meta.data_source ?? meta.source;

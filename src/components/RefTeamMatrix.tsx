@@ -396,10 +396,10 @@ export function RefTeamMatrix({
                     <span className="ref-matrix-baseline-record">
                       {team.baselineGames > 0
                         ? `${team.baselineWins}-${team.baselineLosses}`
-                        : "—"}
+                        : "n/a"}
                     </span>
                     <span className="ref-matrix-baseline-meta">
-                      {team.baselineGames > 0 ? formatPct(team.baselineWinRate) : "—"}
+                      {team.baselineGames > 0 ? formatPct(team.baselineWinRate) : "n/a"}
                     </span>
                   </td>
                 );
@@ -659,7 +659,7 @@ export function RefTeamMatrix({
               </h4>
               <p className="ref-matrix-team-panel-lead">
                 These {officialNounPlural} worked {selectedTeam.label} games but
-                do not meet the ranking gate — including cases like a 5-game
+                do not meet the ranking gate, including cases like a 5-game
                 sample that looks missing from top/bottom.
               </p>
               <ul className="ref-matrix-team-panel-thin-list">

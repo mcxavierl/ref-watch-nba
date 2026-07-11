@@ -18,13 +18,13 @@ export const LEAGUE_HERO_COPY: Record<
   LeagueHeroCopy
 > = {
   nba: {
-    kicker: "NBA officiating intelligence",
+    kicker: "NBA officiating desk",
     liveTitle: "Who's blowing the whistle tonight.",
-    offseasonTitle: "NBA officiating on file.",
+    offseasonTitle: "NBA refs, indexed and scored.",
     liveLead:
-      "Crew assignments, foul tendencies, and ref×team history before tip-off, scored by sample depth, not hype.",
+      "Crew assignments, foul tendencies, and ref×team history before tip-off, scored by sample depth.",
     offseasonLead:
-      "Deep analytics across every indexed official, ref×team matrices, and multi-season whistle splits.",
+      "Profiles, ref×team matrices, and multi-season whistle splits for every indexed official.",
     statLabels: {
       officials: "Refs indexed",
       games: "Games logged",
@@ -34,7 +34,7 @@ export const LEAGUE_HERO_COPY: Record<
   nhl: {
     kicker: "NHL penalty desk",
     liveTitle: "Who's putting them in the box tonight.",
-    offseasonTitle: "NHL officiating on file.",
+    offseasonTitle: "NHL officials, indexed and scored.",
     liveLead:
       "Crew assignments, minor-penalty rates, PP environment, and OT history before puck drop.",
     offseasonLead:
@@ -48,7 +48,7 @@ export const LEAGUE_HERO_COPY: Record<
   nfl: {
     kicker: "NFL flag desk",
     liveTitle: "Who's throwing flags this week.",
-    offseasonTitle: "NFL officiating on file.",
+    offseasonTitle: "NFL crews, indexed and scored.",
     liveLead:
       "Crew assignments, penalty-yard tendencies, and official×team splits before kickoff.",
     offseasonLead:
@@ -62,7 +62,7 @@ export const LEAGUE_HERO_COPY: Record<
   epl: {
     kicker: "Premier League whistle desk",
     liveTitle: "Who's officiating the matchday.",
-    offseasonTitle: "Premier League officiating on file.",
+    offseasonTitle: "Premier League refs, indexed and scored.",
     liveLead:
       "Referee assignments, foul and card tendencies, and ref×club history before kickoff.",
     offseasonLead:

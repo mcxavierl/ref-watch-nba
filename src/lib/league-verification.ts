@@ -171,7 +171,7 @@ export function unverifiedBannerMessage(
       ? `Data ingest in progress. Verified ${leagueId.toUpperCase()} data ships in ${ticket}.`
       : `Data ingest in progress. Verified ${leagueId.toUpperCase()} data ships soon.`;
   }
-  return "Synthetic data — not from official sources";
+  return "Synthetic data: not from official sources";
 }
 
 export function filterVerifiedSeasons(

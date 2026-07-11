@@ -4,7 +4,7 @@ export const REFWATCH_MISSION =
   "Understand the officials shaping the game.";
 
 export const REFWATCH_POSITIONING =
-  "RefWatch is a transparent intelligence platform for referee assignments, crew history, and officiating tendencies.";
+  "RefWatch tracks referee assignments, crew history, and officiating tendencies with transparent methodology.";
 
 export const REFWATCH_HERO_SUPPORTING =
   "RefWatch analyzes referee assignments, crew history, and officiating tendencies using historical data, with transparent methodology and confidence levels.";
@@ -36,6 +36,6 @@ export const RANKINGS_PAGE_LEAD =
 export const NHL_LINESMAN_METHODOLOGY_NOTE =
   "Tendency index covers referees; linesmen appear on crews but are excluded from penalty/scoring analytics.";
 
-export const FINDINGS_HUB_TITLE = "Intelligence reports";
+export const FINDINGS_HUB_TITLE = "Dataset findings";
 
 export const TONIGHT_SIGNALS_TITLE = "Tonight's officiating signals";

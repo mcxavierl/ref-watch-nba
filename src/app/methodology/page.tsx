@@ -58,8 +58,8 @@ export default function MethodologyPage() {
             </li>
             <li>
               <TermHelp id="foul-edge" />: team whistle volume (fouls, flags,
-              minors) in games a ref worked — crew-level correlation, not fouls
-              charged to that ref alone. W-L splits use the same per-ref game
+              minors) in games a ref worked (crew-level correlation, not fouls
+              charged to that ref alone). W-L splits use the same per-ref game
               sample.
             </li>
             <li>

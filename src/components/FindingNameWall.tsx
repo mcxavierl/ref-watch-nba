@@ -12,23 +12,28 @@ export function FindingNameWall({ names }: { names: string[] }) {
 
   return (
     <span className="finding-name-wall">
-      {visibleNames.map((name) => (
-        <span key={name} className="finding-name-pill">
-          {name}
+      {visibleNames.map((name, index) => (
+        <span key={name}>
+          {index > 0 ? <span aria-hidden="true">, </span> : null}
+          <span className="finding-name-text">{name}</span>
         </span>
       ))}
       {!expanded && hiddenCount > 0 && (
-        <button
-          type="button"
-          className="finding-name-pill finding-name-pill-more"
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            setExpanded(true);
-          }}
-        >
-          +{hiddenCount} more
-        </button>
+        <>
+          <span aria-hidden="true">, </span>
+          <button
+            type="button"
+            className="finding-name-more"
+            aria-label={`Show ${hiddenCount} more names`}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setExpanded(true);
+            }}
+          >
+            +{hiddenCount} more
+          </button>
+        </>
       )}
     </span>
   );

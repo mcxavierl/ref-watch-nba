@@ -3,7 +3,9 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
+  type KeyboardEvent,
   type ReactNode,
 } from "react";
 import {
@@ -42,6 +44,7 @@ export function LeagueHubTabs({
   afterTablist,
 }: LeagueHubTabsProps) {
   const [activeId, setActiveId] = useState(defaultTabId);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const syncFromHash = useCallback(() => {
     const hash = window.location.hash.replace(/^#/, "");
@@ -62,6 +65,40 @@ export function LeagueHubTabs({
     window.history.replaceState(null, "", next);
   };
 
+  const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const count = tabs.length;
+    if (count === 0) return;
+
+    let nextIndex = index;
+    switch (event.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        event.preventDefault();
+        nextIndex = (index + 1) % count;
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        event.preventDefault();
+        nextIndex = (index - 1 + count) % count;
+        break;
+      case "Home":
+        event.preventDefault();
+        nextIndex = 0;
+        break;
+      case "End":
+        event.preventDefault();
+        nextIndex = count - 1;
+        break;
+      default:
+        return;
+    }
+
+    const nextTab = tabs[nextIndex];
+    if (!nextTab) return;
+    selectTab(nextTab.id);
+    tabRefs.current[nextIndex]?.focus();
+  };
+
   const active = tabs.find((t) => t.id === activeId) ?? tabs[0];
   const after =
     typeof afterTablist === "function"
@@ -78,7 +115,7 @@ export function LeagueHubTabs({
       role="tablist"
       aria-label={ariaLabel}
     >
-      {tabs.map((tab) => {
+      {tabs.map((tab, index) => {
         const isActive = tab.id === active.id;
         return (
           <button
@@ -86,14 +123,19 @@ export function LeagueHubTabs({
             type="button"
             role="tab"
             id={`hub-tab-${tab.id}`}
+            ref={(el) => {
+              tabRefs.current[index] = el;
+            }}
             aria-selected={isActive}
             aria-controls={`hub-panel-${tab.id}`}
+            tabIndex={isActive ? 0 : -1}
             className={
               variant === "insights"
                 ? `insights-hero-tab${isActive ? " insights-hero-tab-active" : ""}`
                 : `refs-directory-tab ${isActive ? "refs-directory-tab-active" : ""}`
             }
             onClick={() => selectTab(tab.id)}
+            onKeyDown={(event) => onTabKeyDown(event, index)}
           >
             {tab.label}
           </button>

@@ -29,7 +29,7 @@ const plexSans = IBM_Plex_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} | Referee intelligence & crew analytics`,
+    default: `${SITE_NAME} | Referee analytics & crew history`,
     template: `%s | ${SITE_NAME}`,
   },
   description: DEFAULT_SITE_DESCRIPTION,
@@ -54,12 +54,12 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     type: "website",
     locale: "en_CA",
-    title: `${SITE_NAME} | Referee intelligence & crew analytics`,
+    title: `${SITE_NAME} | Referee analytics & crew history`,
     description: DEFAULT_SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} | Referee intelligence & crew analytics`,
+    title: `${SITE_NAME} | Referee analytics & crew history`,
     description: DEFAULT_SITE_DESCRIPTION,
   },
   other: {
@@ -81,9 +81,14 @@ export default async function RootLayout({
       <body
         className={`${barlow.variable} ${plexSans.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
       >
+        <a href="#main-content" className="skip-to-main">
+          Skip to content
+        </a>
         <JsonLd data={[websiteJsonLd(), organizationJsonLd()]} />
         <SiteHeader />
-        <main className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1" tabIndex={-1}>
+          {children}
+        </main>
         <SiteFooterWrapper
           nbaFooter={<SiteFooter league="nba" />}
           nhlFooter={<SiteFooter league="nhl" />}

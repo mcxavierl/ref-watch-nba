@@ -1,4 +1,12 @@
-import type { ReactNode } from "react";
+"use client";
+
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { GLOSSARY, type GlossaryId } from "@/lib/glossary";
 
 export function TermHelp({
@@ -12,20 +20,45 @@ export function TermHelp({
 }) {
   const entry = GLOSSARY[id];
   const label = children ?? entry.label;
+  const tipId = useId();
+  const rootRef = useRef<HTMLSpanElement>(null);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [open]);
 
   return (
-    <span className={`term-help ${className}`.trim()}>
-      <span
-        className="term-help-trigger border-b border-dotted border-zinc-400 cursor-help"
-        tabIndex={0}
-        aria-describedby={`term-def-${id}`}
+    <span ref={rootRef} className={`term-help ${className}`.trim()}>
+      <button
+        type="button"
+        className="term-help-trigger border-b border-dotted border-zinc-400"
+        aria-expanded={open}
+        aria-controls={tipId}
+        onClick={() => setOpen((value) => !value)}
       >
         {label}
-      </span>
+      </button>
       <span
-        id={`term-def-${id}`}
+        id={tipId}
         role="tooltip"
-        className="term-help-tooltip"
+        className={`term-help-tooltip${open ? " term-help-tooltip-open" : ""}`}
       >
         {entry.text}
       </span>

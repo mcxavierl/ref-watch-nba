@@ -53,7 +53,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const feed = buildNbaNightlyFeed();
   const isOffseason = assignments.games.length === 0;
   const description = isOffseason
-    ? "Decode officiating bias. Historical ref×team edges, crew matrices, and multi-season whistle analytics across every indexed official."
+    ? "Historical ref×team edges, crew matrices, and multi-season whistle analytics across every indexed NBA official."
     : slateMetadataDescription(feed);
   const title = isOffseason
     ? "NBA officiating analytics"
@@ -143,10 +143,10 @@ export default async function HomePage({
         featured
         slateHero
         initialVisibleCount={4}
-        title={isOffseason ? "Season highlights" : "Officiating intelligence"}
+        title={isOffseason ? "Season highlights" : "Tonight's edges"}
         sectionLead={
           isOffseason
-            ? "Ranked historical edges with bold over/under signals and sample depth, not narrative."
+            ? "Ranked historical edges with over/under signals, ordered by effect size and sample depth."
             : undefined
         }
         league="NBA"

@@ -3,7 +3,7 @@ import { leagueHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const DEFAULT_SITE_DESCRIPTION =
-  "Referee and official intelligence for the NBA, NHL, NFL, and Premier League — nightly crews, historical scoring and whistle tendencies, ref profiles, and transparent methodology.";
+  "Referee and official analytics for the NBA, NHL, NFL, and Premier League: nightly crews, historical scoring and whistle tendencies, ref profiles, and transparent methodology.";
 
 export type HubPage =
   | "refs"
@@ -202,7 +202,7 @@ export function refProfileMetadata({
     number != null && String(number).trim() !== "" ? ` (#${number})` : "";
   const title = `${name}${numberSuffix}`;
   const atsPart = atsLabel ? `, ${atsLabel}` : "";
-  const description = `${name}: ${games} ${league.metrics.gamesColumn.toLowerCase()}, ${overRateFormatted} over ${overBaseline}${atsPart}. Historical ${league.label} ${league.officialNoun} analytics — scoring, ${league.metrics.whistlePlain}, ATS/O-U splits, and close-game tendencies.`;
+  const description = `${name}: ${games} ${league.metrics.gamesColumn.toLowerCase()}, ${overRateFormatted} over ${overBaseline}${atsPart}. Historical ${league.label} ${league.officialNoun} analytics: scoring, ${league.metrics.whistlePlain}, ATS/O-U splits, and close-game tendencies.`;
 
   return buildPageMetadata({
     title,
@@ -231,7 +231,7 @@ export function teamProfileMetadata({
   const path = leagueHref(leagueId, `/teams/${abbr}`);
   return buildPageMetadata({
     title: `${teamName} ${league.officialNoun} crew splits`,
-    description: `How ${teamName} performs under different ${league.label} ${league.officialNoun} crews — scoring, ${league.metrics.whistlePlain}, and home/away records in the Ref Watch dataset.`,
+    description: `How ${teamName} performs under different ${league.label} ${league.officialNoun} crews: scoring, ${league.metrics.whistlePlain}, and home/away records in the Ref Watch dataset.`,
     path,
     keywords: [teamName, league.shortLabel, "team crew splits", abbr],
   });

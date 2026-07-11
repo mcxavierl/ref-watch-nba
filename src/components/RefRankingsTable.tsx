@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState, type ReactNode } from "react";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RefAvatar } from "@/components/RefAvatar";
@@ -71,7 +70,6 @@ export function RefRankingsTable({
   basePath?: string;
   signalCounts?: Record<string, number>;
 }) {
-  const router = useRouter();
   const [sort, setSort] = useState<RefRankingSort>("scoring-desc");
   const [showLowSample, setShowLowSample] = useState(false);
 
@@ -180,7 +178,6 @@ export function RefRankingsTable({
                 <tr
                   key={ref.slug}
                   className={`ranking-table-row ${belowGate ? "ranking-table-row-thin" : ""}`}
-                  onClick={() => router.push(profileHref)}
                 >
                   <td className="data-table-rank px-4 py-3 font-mono tabular-nums text-zinc-400 sm:px-5">
                     {rank}
@@ -196,8 +193,7 @@ export function RefRankingsTable({
                       <div className="min-w-0">
                         <Link
                           href={profileHref}
-                          onClick={(e) => e.stopPropagation()}
-                          className="font-medium text-zinc-900 hover:text-raptors hover:underline"
+                          className="ranking-table-row-link font-medium text-zinc-900 hover:text-raptors hover:underline"
                         >
                           {ref.name}
                         </Link>
@@ -229,7 +225,6 @@ export function RefRankingsTable({
                     {signalCount > 0 ? (
                       <Link
                         href={`${profileHref}#profile-signals`}
-                        onClick={(e) => e.stopPropagation()}
                         className="ranking-signal-badge shrink-0 whitespace-nowrap"
                       >
                         {signalCount} notable

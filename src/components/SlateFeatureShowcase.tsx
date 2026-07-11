@@ -1,14 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import {
-  ArrowRight,
-  BarChart3,
-  Grid3x3,
-  Lightbulb,
-  TrendingUp,
-  Users,
-  UsersRound,
-} from "lucide-react";
+import { ArrowRight, BarChart3, Grid3x3, Users, UsersRound } from "lucide-react";
 
 const FEATURES = [
   {
@@ -16,14 +8,14 @@ const FEATURES = [
     icon: BarChart3,
     title: "Official tendency index",
     description:
-      "Rank every ref by foul pace, over rate, and scoring delta. Fully live on multi-season logs.",
+      "Rank refs by foul pace, over rate, and scoring delta on multi-season logs.",
   },
   {
     href: "/matrix",
     icon: Grid3x3,
     title: "Ref×team matrix",
     description:
-      "Scan every ref and franchise pairing for whistle and scoring splits across seasons.",
+      "Whistle and scoring splits for every ref and franchise pairing.",
   },
   {
     href: "/teams",
@@ -39,20 +31,6 @@ const FEATURES = [
     description:
       "Profiles, game logs, and betting splits for every indexed official.",
   },
-  {
-    href: "/insights#findings",
-    icon: Lightbulb,
-    title: "Dataset findings",
-    description:
-      "Ranked historical patterns by effect size and sample depth, not narrative.",
-  },
-  {
-    href: "/insights#trends",
-    icon: TrendingUp,
-    title: "League trends",
-    description:
-      "Ten-season scoring and foul baselines with year-over-year context.",
-  },
 ] as const;
 
 export function SlateFeatureShowcase() {
@@ -63,15 +41,15 @@ export function SlateFeatureShowcase() {
     >
       <div className="slate-feature-showcase-header">
         <h2 className="section-title" id="slate-feature-showcase-heading">
-          Explore the full toolkit
+          Browse the dataset
         </h2>
         <p className="section-lead">
-          Official tendency index, ref×team matrix, and franchise histories, all
-          live on multi-season data. No waiting for the schedule.
+          Tendency index, ref×team matrix, franchise histories, and official
+          profiles on multi-season data.
         </p>
       </div>
 
-      <nav className="slate-feature-showcase-grid" aria-label="Explore historical tools">
+      <nav className="slate-feature-showcase-grid" aria-label="Historical tools">
         {FEATURES.map((feature, index) => {
           const Icon = feature.icon;
           return (
