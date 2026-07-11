@@ -9,6 +9,8 @@ import type { RefProfile, RefStatsFile, RefTeamStat, TeamCrewSplit } from "@/lib
 /** Minimum ref×team games for a matrix cell (all live leagues). */
 export const MATRIX_MIN_GAMES = 8;
 
+const MATRIX_COMPUTE_CACHE = new Map<string, RefTeamMatrix>();
+
 export interface RefTeamMatrixCell {
   refSlug: string;
   teamAbbr: string;
@@ -101,6 +103,18 @@ export function computeRefTeamMatrix(
 ): RefTeamMatrix {
   const league = matrixOptions.league ?? "nba";
   const sinceSeason = matrixOptions.sinceSeason ?? DEFAULT_SINCE_SEASON;
+  const cacheKey = [
+    league,
+    sinceSeason,
+    minGames,
+    matrixOptions.filterEmptyRows ? 1 : 0,
+    stats.refs.length,
+    teamList.length,
+    stats.meta.lastUpdated,
+    stats.refs.reduce((sum, ref) => sum + ref.games, 0),
+  ].join("|");
+  const cached = MATRIX_COMPUTE_CACHE.get(cacheKey);
+  if (cached) return cached;
 
   const teams: RefTeamMatrixTeam[] = teamList.map((team) => {
     const abbr = team.abbr.toUpperCase();
@@ -163,13 +177,15 @@ export function computeRefTeamMatrix(
       )
     : refs;
 
-  return {
+  const result: RefTeamMatrix = {
     refs: visibleRefs,
     teams,
     cells,
     minGames,
     qualifiedCellCount,
   };
+  MATRIX_COMPUTE_CACHE.set(cacheKey, result);
+  return result;
 }
 
 export function sortMatrixRefsByName(
