@@ -7,8 +7,8 @@ export function LeagueUnderDevelopment({ leagueLabel }: { leagueLabel: string })
         <p className="section-kicker">Under development</p>
         <h1 className="page-title">{leagueLabel} is under development</h1>
         <p className="page-lead">
-          Ref profiles, crew splits, and analytics will publish here once
-          verified data ingest ships.
+          Ref profiles, crew splits, and analytics will go live here once we have verified game
+          data.
         </p>
       </section>
 

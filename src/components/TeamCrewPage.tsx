@@ -11,11 +11,13 @@ import * as nflData from "@/lib/nfl/data";
 import * as nbaTeams from "@/lib/teams";
 import * as nhlTeams from "@/lib/nhl/teams";
 import * as nflTeams from "@/lib/nfl/teams";
+import * as laligaData from "@/lib/laliga/data";
 import * as eplData from "@/lib/epl/data";
 import * as cbbData from "@/lib/cbb/data";
 import * as cfbData from "@/lib/cfb/data";
 import * as cbbTeams from "@/lib/cbb/teams";
 import * as cfbTeams from "@/lib/cfb/teams";
+import * as laligaTeams from "@/lib/laliga/teams";
 import * as eplTeams from "@/lib/epl/teams";
 import { getTeamRefSplits } from "@/lib/teamRefLeaderboards";
 import { TEAM_CREW_MIN_GAMES } from "@/lib/teamCrewSplits";
@@ -35,13 +37,14 @@ const LEAGUE_MODULES = {
   nhl: { data: nhlData, teams: nhlTeams, basePath: "/nhl", dataLeague: "NHL" as const, crewSize: "four", surface: "ice" },
   nfl: { data: nflData, teams: nflTeams, basePath: "/nfl", dataLeague: "NFL" as const, crewSize: "seven", surface: "field" },
   epl: { data: eplData, teams: eplTeams, basePath: "/epl", dataLeague: "EPL" as const, crewSize: "one", surface: "pitch" },
+  laliga: { data: laligaData, teams: laligaTeams, basePath: "/laliga", dataLeague: "LALIGA" as const, crewSize: "one", surface: "pitch" },
   cbb: { data: cbbData, teams: cbbTeams, basePath: "/cbb", dataLeague: "CBB" as const, crewSize: "three", surface: "court" },
   cfb: { data: cfbData, teams: cfbTeams, basePath: "/cfb", dataLeague: "CFB" as const, crewSize: "seven", surface: "field" },
 };
 
 export interface TeamPageConfig {
   teamAbbr: string;
-  league?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+  league?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 }
 
 export function TeamCrewPage({

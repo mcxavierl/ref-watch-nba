@@ -72,32 +72,4 @@ function titleCaseFromKey(key: string, fallback: string): string {
 }
 
 /** Detect First Last ↔ Last First ghosts among numbered vs number-0 refs. */
-export function findReverseNameGhosts(
-  refs: { name: string; number: number; games: number; slug: string }[],
-): { ghostSlug: string; ghostName: string; canonSlug: string; canonName: string }[] {
-  const numbered = refs.filter((r) => r.number > 0);
-  const ghosts: {
-    ghostSlug: string;
-    ghostName: string;
-    canonSlug: string;
-    canonName: string;
-  }[] = [];
-
-  for (const ghost of refs.filter((r) => r.number === 0 && r.games > 0)) {
-    const parts = normalizeOfficialNameKey(ghost.name).split(/\s+/).filter(Boolean);
-    if (parts.length !== 2) continue;
-    const flipped = `${parts[1]} ${parts[0]}`;
-    const canon = numbered.find(
-      (r) => normalizeOfficialNameKey(r.name) === flipped,
-    );
-    if (canon) {
-      ghosts.push({
-        ghostSlug: ghost.slug,
-        ghostName: ghost.name,
-        canonSlug: canon.slug,
-        canonName: canon.name,
-      });
-    }
-  }
-  return ghosts;
-}
+export { findReverseNameGhosts } from "../../lib/ref-identity";

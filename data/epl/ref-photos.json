@@ -1,9 +1,10 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-11T00:06:15.422Z",
-    "source": "wikipedia categories + curated",
-    "count": 21,
-    "missed": 27
+    "lastUpdated": "2026-07-11T05:59:04.422Z",
+    "source": "wikipedia categories + commons + curated",
+    "count": 28,
+    "missed": 18,
+    "newlyResolved": 2
   },
   "photos": {
     "anthony-taylor-0": {
@@ -110,6 +111,41 @@
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Rebecca_Welch_20190320_%28cropped%29.jpg/250px-Rebecca_Welch_20190320_%28cropped%29.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Rebecca_Welch_20190320_%28cropped%29.jpg",
       "source": "wikipedia:Rebecca Welch"
+    },
+    "chris-kavanagh-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Manchester_United_v_Brentford%2C_2_May_2022_%2823%29_%28cropped%29_Chris_Kavanaugh_%28referee%29.jpg/250px-Manchester_United_v_Brentford%2C_2_May_2022_%2823%29_%28cropped%29_Chris_Kavanaugh_%28referee%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/6/60/Manchester_United_v_Brentford%2C_2_May_2022_%2823%29_%28cropped%29_Chris_Kavanaugh_%28referee%29.jpg",
+      "source": "curated:wikipedia:Chris Kavanagh (referee)"
+    },
+    "andy-madley-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Andrew_Madley_09052026_%282%29.jpg/250px-Andrew_Madley_09052026_%282%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Andrew_Madley_09052026_%282%29.jpg",
+      "source": "wikipedia:Andrew Madley"
+    },
+    "david-coote-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/West_Ham_United_v_Arsenal_F.C.%2C_16_April_2023_%28n%29_%28cropped%29.jpg/250px-West_Ham_United_v_Arsenal_F.C.%2C_16_April_2023_%28n%29_%28cropped%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3e/West_Ham_United_v_Arsenal_F.C.%2C_16_April_2023_%28n%29_%28cropped%29.jpg",
+      "source": "wikipedia:David Coote (referee)"
+    },
+    "michael-jones-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Mike-Jones-referee-cropped.jpg/250px-Mike-Jones-referee-cropped.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Mike-Jones-referee-cropped.jpg",
+      "source": "wikipedia:Mike Jones (referee)"
+    },
+    "jonathan-moss-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Jonathan_Moss_ref.jpg/250px-Jonathan_Moss_ref.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Jonathan_Moss_ref.jpg",
+      "source": "commons:File:Jonathan Moss ref.jpg"
+    },
+    "lee-mason-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Lee_mason.jpg/250px-Lee_mason.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Lee_mason.jpg",
+      "source": "commons:File:Lee mason.jpg"
+    },
+    "david-webb-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/20130519_David_Webb_cropped.jpg/250px-20130519_David_Webb_cropped.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/7/79/20130519_David_Webb_cropped.jpg",
+      "source": "commons:File:20130519 David Webb cropped.jpg"
     }
   }
 }

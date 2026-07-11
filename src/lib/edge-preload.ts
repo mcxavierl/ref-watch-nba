@@ -9,22 +9,29 @@ import {
   setCachedTeamSplits,
 } from "@/lib/ref-stats-preload";
 
-type League = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+type League = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+
+type PreloadOptions = {
+  /** Overview only needs ref-stats totals/search; skip ~20MB of team-splits. */
+  includeTeamSplits?: boolean;
+};
 
 const REF_STATS_ASSET: Record<League, string> = {
   nba: "/data/nba/ref-stats.json",
   nhl: "/data/nhl/ref-stats.json",
   nfl: "/data/nfl/ref-stats.json",
   epl: "/data/epl/ref-stats.json",
+  laliga: "/data/laliga/ref-stats.json",
   cbb: "/data/cbb/ref-stats.json",
   cfb: "/data/cfb/ref-stats.json",
 };
 
 function leaguesForPath(pathname: string): League[] {
   if (pathname.startsWith("/overview")) {
-    return ["nba", "nhl", "nfl", "epl"];
+    return [];
   }
   if (pathname.startsWith("/epl")) return ["epl"];
+  if (pathname.startsWith("/laliga")) return ["laliga"];
   if (pathname.startsWith("/cfb")) return ["cfb"];
   if (pathname.startsWith("/cbb")) return ["cbb"];
   if (pathname.startsWith("/nfl")) return ["nfl"];
@@ -95,11 +102,17 @@ const ASSET_BASE: Record<League, string> = {
   nhl: "/data/nhl",
   nfl: "/data/nfl",
   epl: "/data/epl",
+  laliga: "/data/laliga",
   cbb: "/data/cbb",
   cfb: "/data/cfb",
 };
 
-async function preloadRefStats(origin: string, league: League): Promise<void> {
+async function preloadRefStats(
+  origin: string,
+  league: League,
+  options: PreloadOptions = {},
+): Promise<void> {
+  const includeTeamSplits = options.includeTeamSplits ?? true;
   const cached = getCachedRefStats(league);
   const needsStats =
     !cached?.refs?.length ||
@@ -107,8 +120,9 @@ async function preloadRefStats(origin: string, league: League): Promise<void> {
       ? !resolveLeagueVerification(league as LeagueId, cached.meta).data_verified
       : true);
   const needsSplits =
-    !getCachedTeamSplits(league) ||
-    Object.keys(getCachedTeamSplits(league)!).length === 0;
+    includeTeamSplits &&
+    (!getCachedTeamSplits(league) ||
+      Object.keys(getCachedTeamSplits(league)!).length === 0);
 
   const statsPromise = needsStats
     ? (async () => {
@@ -160,12 +174,21 @@ async function preloadRefStats(origin: string, league: League): Promise<void> {
 export async function preloadLeagueRefStats(
   origin: string,
   league: League,
+  options: PreloadOptions = {},
 ): Promise<void> {
   try {
-    await preloadRefStats(origin, league);
+    await preloadRefStats(origin, league, options);
   } catch {
     // Never fail the request from preload.
   }
+}
+
+/** Overview hub: hydrate ref-stats only (no matrix / game-log payloads). */
+export async function preloadOverviewLeagueRefStats(
+  origin: string,
+  league: League,
+): Promise<void> {
+  return preloadLeagueRefStats(origin, league, { includeTeamSplits: false });
 }
 
 /** SSR hydration: slim ref-stats via ASSETS (Workers-safe, ~500KB parse). */
@@ -174,8 +197,14 @@ export async function preloadLeagueDataForPath(
   pathname: string,
 ): Promise<void> {
   const leagues = leaguesForPath(pathname);
+  if (leagues.length === 0) return;
+
   try {
-    await Promise.all(leagues.map((league) => preloadRefStats(origin, league)));
+    await Promise.all(
+      leagues.map((league) =>
+        preloadRefStats(origin, league, { includeTeamSplits: true }),
+      ),
+    );
   } catch {
     // Never fail the request from preload.
   }

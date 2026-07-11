@@ -27,7 +27,7 @@ export function CloseGameSection({
 }: {
   metrics: CloseGameMetrics[];
   subjectLabel: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   embedded?: boolean;
 }) {
   if (metrics.length === 0) return null;

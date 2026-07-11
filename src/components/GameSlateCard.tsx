@@ -20,6 +20,10 @@ import {
   refSlug as cbbRefSlug,
 } from "@/lib/cbb/data";
 import {
+  detectTeamsInGame as detectLaligaTeams,
+  refSlug as laligaRefSlug,
+} from "@/lib/laliga/data";
+import {
   detectTeamsInGame as detectEplTeams,
   refSlug as eplRefSlug,
 } from "@/lib/epl/data";
@@ -39,6 +43,7 @@ import { teamFullName as nhlTeamFullName, type NhlTeam } from "@/lib/nhl/teams";
 import { teamFullName as nflTeamFullName, type NflTeam } from "@/lib/nfl/teams";
 import { teamFullName as cbbTeamFullName, type CbbTeam } from "@/lib/cbb/teams";
 import { teamFullName as cfbTeamFullName, type CfbTeam } from "@/lib/cfb/teams";
+import { teamFullName as laligaTeamFullName, type LaligaTeam } from "@/lib/laliga/teams";
 import { teamFullName as eplTeamFullName, type EplTeam } from "@/lib/epl/teams";
 import {
   benchmarkLabel,
@@ -66,6 +71,7 @@ const SPORT_BENCHMARK = {
   nfl: "46",
   cfb: "52",
   epl: "2.5",
+  laliga: "2.5",
 };
 
 export function GameSlateCard({
@@ -92,7 +98,7 @@ export function GameSlateCard({
   storylines?: GrudgeStoryline[];
   premium: CrewWhistlePremium;
   homeBias?: CrewHomeBias | null;
-  sport?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   basePath?: string;
   ppPremium?: NhlPpPremiumSignal | null;
   otSignal?: NhlOtRateSignal | null;
@@ -104,7 +110,9 @@ export function GameSlateCard({
   const benchmarkLabelValue =
     overBenchmark !== undefined ? String(overBenchmark) : defaultBenchmark;
   const detectTeams =
-    sport === "epl"
+    sport === "laliga"
+      ? detectLaligaTeams
+      : sport === "epl"
       ? detectEplTeams
       : sport === "cfb"
       ? detectCfbTeams
@@ -115,7 +123,8 @@ export function GameSlateCard({
           : sport === "nhl"
             ? detectNhlTeams
             : detectNbaTeams;
-  const displayTeamName = (team: NbaTeam | NhlTeam | NflTeam | CbbTeam | CfbTeam | EplTeam) => {
+  const displayTeamName = (team: NbaTeam | NhlTeam | NflTeam | CbbTeam | CfbTeam | EplTeam | LaligaTeam) => {
+    if (sport === "laliga") return laligaTeamFullName(team as LaligaTeam);
     if (sport === "epl") return eplTeamFullName(team as EplTeam);
     if (sport === "cfb") return cfbTeamFullName(team as CfbTeam);
     if (sport === "cbb") return cbbTeamFullName(team as CbbTeam);
@@ -124,7 +133,9 @@ export function GameSlateCard({
     return nbaTeamFullName(team as NbaTeam);
   };
   const refSlug =
-    sport === "epl"
+    sport === "laliga"
+      ? laligaRefSlug
+      : sport === "epl"
       ? eplRefSlug
       : sport === "cfb"
       ? cfbRefSlug
@@ -169,8 +180,8 @@ export function GameSlateCard({
                 <span
                   className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-bold ${
                     premium.alert === "high_pace"
-                      ? "border-orange-200 bg-orange-50 text-orange-900"
-                      : "border-sky-200 bg-sky-50 text-sky-900"
+                      ? "border-orange-500/35 bg-orange-500/15 text-orange-200"
+                      : "border-sky-500/35 bg-sky-500/15 text-sky-200"
                   }`}
                 >
                   {paceLabel}
@@ -231,27 +242,36 @@ export function GameSlateCard({
           </p>
         ) : (
           <>
-            <p className="game-signal-line">
-              <span className="game-signal-label">{copy.pointsAboveAverage}:</span>{" "}
-              <span className="game-signal-value">
-                {formatPremiumLabel(premium.scoringPremium)}
-              </span>{" "}
-              ·{" "}
-              <span className="game-signal-value">
-                {formatSigned(premium.gapVsBenchmark)}
-              </span>{" "}
-              vs {bench}
-            </p>
-            <p className="game-signal-line">
-              <span className="game-signal-label">{copy.scoringLabel}:</span>{" "}
-              {metrics.avgTotalPoints} avg combined ·{" "}
-              <span className="game-signal-value">{totalDelta}</span> vs league ·{" "}
-              {formatPct(metrics.overRate)} {copy.overLeanLabel.toLowerCase()}
-            </p>
-            <p className="game-signal-line">
-              <span className="game-signal-label">{copy.whistleLabel}:</span>{" "}
-              {metrics.avgFouls} {copy.whistleUnit} avg ·{" "}
-              <span className="game-signal-value">{foulsDelta}</span> vs league
+            <div className="game-slate-composite" aria-label="Crew composite tendencies">
+              <div className="game-slate-composite-stat">
+                <span className="game-slate-composite-label">{copy.scoringLabel}</span>
+                <span className="game-slate-composite-value">{totalDelta}</span>
+                <span className="game-slate-composite-meta">
+                  {metrics.avgTotalPoints} avg · {formatPct(metrics.overRate)} over
+                </span>
+              </div>
+              <div className="game-slate-composite-stat">
+                <span className="game-slate-composite-label">{copy.whistleLabel}</span>
+                <span className="game-slate-composite-value">{foulsDelta}</span>
+                <span className="game-slate-composite-meta">
+                  {metrics.avgFouls} {copy.whistleUnit} avg
+                </span>
+              </div>
+              <div className="game-slate-composite-stat">
+                <span className="game-slate-composite-label">vs {bench}</span>
+                <span className="game-slate-composite-value">
+                  {formatSigned(premium.gapVsBenchmark)}
+                </span>
+                <span className="game-slate-composite-meta">
+                  {formatPremiumLabel(premium.scoringPremium)} {copy.pointsAboveAverage.toLowerCase()}
+                </span>
+              </div>
+            </div>
+            <p className="game-signal-line game-signal-line--detail">
+              <span className="game-signal-label">Crew read:</span>{" "}
+              {formatPremiumLabel(premium.scoringPremium)} {copy.pointsAboveAverage.toLowerCase()}{" "}
+              ({formatSigned(premium.gapVsBenchmark)} vs {bench}) ·{" "}
+              {metrics.avgFouls} {copy.whistleUnit} whistle avg ({foulsDelta} vs league)
             </p>
           </>
         )}

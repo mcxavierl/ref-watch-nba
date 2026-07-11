@@ -27,7 +27,7 @@ function copyRefStatsCore(root: string): void {
 
 function copyLeagueRefStatsSplit(
   root: string,
-  league: "nhl" | "nfl" | "epl",
+  league: "nhl" | "nfl" | "epl" | "laliga" | "cbb",
 ): void {
   const leagueDir = path.join(root, "data", league);
   const publicDir = path.join(root, "public", "data", league);
@@ -120,16 +120,19 @@ if (!usedVerifiedNba) {
 copyLeagueRefStatsSplit(root, "nhl");
 copyLeagueRefStatsSplit(root, "nfl");
 copyLeagueRefStatsSplit(root, "epl");
+copyLeagueRefStatsSplit(root, "laliga");
+copyLeagueRefStatsSplit(root, "cbb");
 copyPair(path.join(root, "data"), path.join(root, "public/data"), "baselines");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "game-logs");
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-photos");
 copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "game-logs");
 copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "ref-photos");
 copyPair(path.join(root, "data/nba"), path.join(root, "public/data/nba"), "ref-photos");
-copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "ref-stats");
+copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "game-logs");
 copyPair(path.join(root, "data/cfb"), path.join(root, "public/data/cfb"), "ref-stats");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "game-logs");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "ref-photos");
+copyPair(path.join(root, "data/laliga"), path.join(root, "public/data/laliga"), "game-logs");
 
 const nflAssignments = path.join(root, "data/nfl/assignments.json");
 if (fs.existsSync(nflAssignments)) {
@@ -218,6 +221,17 @@ function writeLiveHeaderLeagues(): void {
         epl.meta?.source === "hybrid" ||
         epl.meta?.source === "football-data");
     if (eplVerified) leagues.push("epl");
+  }
+
+  const laligaStatsPath = path.join(root, "data/laliga/ref-stats.json");
+  if (fs.existsSync(laligaStatsPath)) {
+    const laliga = JSON.parse(fs.readFileSync(laligaStatsPath, "utf8")) as {
+      meta?: { source?: string; data_verified?: boolean };
+    };
+    const laligaVerified =
+      laliga.meta?.data_verified === true &&
+      (laliga.meta?.source === "espn" || laliga.meta?.source === "hybrid");
+    if (laligaVerified) leagues.push("laliga");
   }
 
   if (leagues.length === 0) leagues.push("nba");

@@ -310,7 +310,7 @@ export function refProfileBreadcrumbJsonLd(
 }
 
 export function leagueRefPath(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   slug: string,
 ): string {
   const leagueIdMap: Record<typeof league, LeagueId> = {
@@ -318,6 +318,7 @@ export function leagueRefPath(
     NHL: "nhl",
     NFL: "nfl",
     EPL: "epl",
+    LALIGA: "laliga",
     CBB: "cbb",
     CFB: "cfb",
   };

@@ -3,7 +3,13 @@ import { RefAvatar } from "@/components/RefAvatar";
 import type { EplLeaderEntry } from "@/lib/epl/analytics-leaders";
 import { formatRefGamesMeta } from "@/lib/ref-number";
 
-export function EplAnalyticsLeaders({ leaders }: { leaders: EplLeaderEntry[] }) {
+export function EplAnalyticsLeaders({
+  leaders,
+  hrefPrefix = "/epl",
+}: {
+  leaders: EplLeaderEntry[];
+  hrefPrefix?: string;
+}) {
   if (leaders.length === 0) return null;
 
   return (
@@ -20,13 +26,13 @@ export function EplAnalyticsLeaders({ leaders }: { leaders: EplLeaderEntry[] }) 
           <li key={item.category} className="nfl-leader-card data-card">
             <p className="nfl-leader-category">{item.title}</p>
             <Link
-              href={`/epl/refs/${item.ref.slug}`}
+              href={`${hrefPrefix}/refs/${item.ref.slug}`}
               className="nfl-leader-profile"
             >
               <RefAvatar
                 name={item.ref.name}
                 slug={item.ref.slug}
-                sport="epl"
+                sport={hrefPrefix === "/laliga" ? "laliga" : "epl"}
                 size="lg"
               />
               <span className="nfl-leader-copy">

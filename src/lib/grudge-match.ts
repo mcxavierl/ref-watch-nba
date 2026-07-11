@@ -614,8 +614,9 @@ export function buildPreviewSlate(stats: RefStatsFile): AssignmentGame[] {
 export function resolveSlateGames(
   assignments: AssignmentsFile,
 ): { games: AssignmentGame[]; isPreview: boolean } {
-  if (assignments.games.length > 0) {
-    return { games: assignments.games, isPreview: false };
+  const withCrew = assignments.games.filter((game) => game.crew.length > 0);
+  if (withCrew.length > 0) {
+    return { games: withCrew, isPreview: false };
   }
   return { games: [], isPreview: false };
 }

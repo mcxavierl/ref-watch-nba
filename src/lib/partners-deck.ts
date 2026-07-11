@@ -72,7 +72,7 @@ export const PARTNERS_NARRATIVE = {
       "Missed officiating-environment signals",
     ],
     refWatch: [
-      "Automated slate ingestion",
+      "Automated nightly slate updates",
       "Crew reunion & outlier signals",
       "Partner-ready widget payloads",
       "Signal-aligned editorial modules",

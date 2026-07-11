@@ -161,6 +161,7 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
       getRefSlugs: getNflRefSlugs,
       teams: NFL_TEAMS,
       hubPages: SHARED_HUB_PAGES,
+      includeFeeds: true,
     },
     {
       id: "epl",
@@ -169,6 +170,7 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
       getRefSlugs: getEplRefSlugs,
       teams: EPL_TEAMS,
       hubPages: SHARED_HUB_PAGES,
+      includeFeeds: true,
     },
     {
       id: "cbb",

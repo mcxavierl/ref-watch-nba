@@ -22,6 +22,14 @@ export const CFB_TEN_SEASONS = [...NBA_TEN_SEASONS] as const;
 /** EPL uses the same label format; ESPN backfill may cover fewer seasons. */
 export const EPL_TEN_SEASONS = [...NBA_TEN_SEASONS] as const;
 
+export const LALIGA_ESPN_SEASONS = [
+  "2021-22",
+  "2022-23",
+  "2023-24",
+  "2024-25",
+  "2025-26",
+] as const;
+
 export const DEFAULT_SINCE_SEASON = "2016-17";
 
 export const CURRENT_SEASON_LABEL = "2025-26";
@@ -31,6 +39,7 @@ const LEAGUE_TEN_SEASONS: Partial<Record<LeagueId, readonly string[]>> = {
   nhl: NHL_TEN_SEASONS,
   nfl: NFL_TEN_SEASONS,
   epl: EPL_TEN_SEASONS,
+  laliga: LALIGA_ESPN_SEASONS,
   cbb: CBB_TEN_SEASONS,
   cfb: CFB_TEN_SEASONS,
   wnba: NBA_TEN_SEASONS,
@@ -55,13 +64,14 @@ export function buildSeasonLabels(
 }
 
 export function dataLeagueTenSeasons(
-  dataLeague: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
+  dataLeague: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
 ): readonly string[] {
   const map: Record<string, readonly string[]> = {
     NBA: NBA_TEN_SEASONS,
     NHL: NHL_TEN_SEASONS,
     NFL: NFL_TEN_SEASONS,
     EPL: EPL_TEN_SEASONS,
+    LALIGA: LALIGA_ESPN_SEASONS,
     CBB: CBB_TEN_SEASONS,
     CFB: CFB_TEN_SEASONS,
   };

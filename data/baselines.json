@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-11T01:01:44.783Z",
-  "note": "Computed from NBA/NHL/NFL/EPL game logs",
+  "generatedAt": "2026-07-11T17:54:23.758Z",
+  "note": "Computed from NBA/NHL/NFL/EPL/La Liga game logs",
   "fallback": {
     "NBA": {
       "label": "NBA static fallback (empty or missing game logs)",
@@ -41,6 +41,12 @@
       "leagueAvgTotal": 2.8,
       "leagueOverBaseline": 2.5,
       "leagueAvgFouls": 22
+    },
+    "LALIGA": {
+      "label": "La Liga static fallback (empty or missing game logs)",
+      "leagueAvgTotal": 2.6,
+      "leagueOverBaseline": 2.5,
+      "leagueAvgFouls": 25
     }
   },
   "NBA": {
@@ -236,103 +242,103 @@
     "seasons": {
       "2016-17": {
         "season": "2016-17",
-        "gameCount": 249,
-        "leagueAvgTotal": 44.4,
-        "leagueOverBaseline": 45.3,
-        "leagueAvgFouls": 13,
-        "leagueAvgPenaltyYards": 113.2,
-        "meanClosingTotal": 45.3
+        "gameCount": 279,
+        "leagueAvgTotal": 45.2,
+        "leagueOverBaseline": 45.6,
+        "leagueAvgFouls": 13.3,
+        "leagueAvgPenaltyYards": 114.6,
+        "meanClosingTotal": 45.6
       },
       "2017-18": {
         "season": "2017-18",
-        "gameCount": 151,
-        "leagueAvgTotal": 43,
+        "gameCount": 265,
+        "leagueAvgTotal": 43.5,
         "leagueOverBaseline": 44.1,
-        "leagueAvgFouls": 13,
-        "leagueAvgPenaltyYards": 112.4,
+        "leagueAvgFouls": 13.2,
+        "leagueAvgPenaltyYards": 114.9,
         "meanClosingTotal": 44.1
       },
       "2018-19": {
         "season": "2018-19",
-        "gameCount": 187,
-        "leagueAvgTotal": 45.8,
-        "leagueOverBaseline": 46.3,
+        "gameCount": 267,
+        "leagueAvgTotal": 46.6,
+        "leagueOverBaseline": 46.5,
         "leagueAvgFouls": 13.4,
-        "leagueAvgPenaltyYards": 111.9,
-        "meanClosingTotal": 46.3
+        "leagueAvgPenaltyYards": 113.8,
+        "meanClosingTotal": 46.5
       },
       "2019-20": {
         "season": "2019-20",
-        "gameCount": 155,
-        "leagueAvgTotal": 47.1,
-        "leagueOverBaseline": 44.9,
-        "leagueAvgFouls": 13.6,
-        "leagueAvgPenaltyYards": 115.6,
-        "meanClosingTotal": 44.9
+        "gameCount": 261,
+        "leagueAvgTotal": 45.5,
+        "leagueOverBaseline": 45.1,
+        "leagueAvgFouls": 13.5,
+        "leagueAvgPenaltyYards": 114.1,
+        "meanClosingTotal": 45.1
       },
       "2020-21": {
         "season": "2020-21",
-        "gameCount": 220,
-        "leagueAvgTotal": 48.8,
+        "gameCount": 265,
+        "leagueAvgTotal": 49.3,
         "leagueOverBaseline": 48.1,
-        "leagueAvgFouls": 11.1,
-        "leagueAvgPenaltyYards": 95.5,
+        "leagueAvgFouls": 11.2,
+        "leagueAvgPenaltyYards": 96.5,
         "meanClosingTotal": 48.1
       },
       "2021-22": {
         "season": "2021-22",
-        "gameCount": 252,
-        "leagueAvgTotal": 46.2,
+        "gameCount": 285,
+        "leagueAvgTotal": 46.1,
         "leagueOverBaseline": 46.5,
-        "leagueAvgFouls": 11.6,
-        "leagueAvgPenaltyYards": 100.5,
+        "leagueAvgFouls": 11.7,
+        "leagueAvgPenaltyYards": 100.8,
         "meanClosingTotal": 46.5
       },
       "2022-23": {
         "season": "2022-23",
-        "gameCount": 274,
-        "leagueAvgTotal": 43.8,
+        "gameCount": 284,
+        "leagueAvgTotal": 44,
         "leagueOverBaseline": 44.1,
         "leagueAvgFouls": 11.1,
-        "leagueAvgPenaltyYards": 91.2,
+        "leagueAvgPenaltyYards": 91.1,
         "meanClosingTotal": 44.1
       },
       "2023-24": {
         "season": "2023-24",
-        "gameCount": 249,
-        "leagueAvgTotal": 44.2,
-        "leagueOverBaseline": 43,
+        "gameCount": 281,
+        "leagueAvgTotal": 43.7,
+        "leagueOverBaseline": 42.9,
         "leagueAvgFouls": 11.4,
-        "leagueAvgPenaltyYards": 94.5,
-        "meanClosingTotal": 43
+        "leagueAvgPenaltyYards": 93.6,
+        "meanClosingTotal": 42.9
       },
       "2024-25": {
         "season": "2024-25",
-        "gameCount": 274,
-        "leagueAvgTotal": 46.1,
-        "leagueOverBaseline": 44.4,
+        "gameCount": 285,
+        "leagueAvgTotal": 46,
+        "leagueOverBaseline": 44.3,
         "leagueAvgFouls": 12.8,
         "leagueAvgPenaltyYards": 103.7,
-        "meanClosingTotal": 44.4
+        "meanClosingTotal": 44.3
       },
       "2025-26": {
         "season": "2025-26",
-        "gameCount": 272,
-        "leagueAvgTotal": 45.9,
+        "gameCount": 285,
+        "leagueAvgTotal": 46,
         "leagueOverBaseline": 44.9,
-        "leagueAvgFouls": 12.4,
-        "leagueAvgPenaltyYards": 100,
+        "leagueAvgFouls": 12.5,
+        "leagueAvgPenaltyYards": 100.6,
         "meanClosingTotal": 44.9
       }
     },
     "aggregate": {
       "season": "all",
-      "gameCount": 2283,
-      "leagueAvgTotal": 45.5,
-      "leagueOverBaseline": 45.1,
-      "leagueAvgFouls": 12.2,
-      "leagueAvgPenaltyYards": 102.7,
-      "meanClosingTotal": 45.1
+      "gameCount": 2757,
+      "leagueAvgTotal": 45.6,
+      "leagueOverBaseline": 45.2,
+      "leagueAvgFouls": 12.4,
+      "leagueAvgPenaltyYards": 104.2,
+      "meanClosingTotal": 45.2
     },
     "usingFallback": false
   },
@@ -451,6 +457,56 @@
       "leagueOverBaseline": 2.5,
       "leagueAvgFouls": 21.5,
       "meanClosingTotal": 2.5
+    },
+    "usingFallback": false
+  },
+  "LALIGA": {
+    "currentSeason": "2025-26",
+    "seasons": {
+      "2021-22": {
+        "season": "2021-22",
+        "gameCount": 93,
+        "leagueAvgTotal": 2.4,
+        "leagueOverBaseline": 2.4,
+        "leagueAvgFouls": 24.6
+      },
+      "2022-23": {
+        "season": "2022-23",
+        "gameCount": 375,
+        "leagueAvgTotal": 2.5,
+        "leagueOverBaseline": 2.5,
+        "leagueAvgFouls": 24.3
+      },
+      "2023-24": {
+        "season": "2023-24",
+        "gameCount": 380,
+        "leagueAvgTotal": 2.6,
+        "leagueOverBaseline": 2.6,
+        "leagueAvgFouls": 25.8
+      },
+      "2024-25": {
+        "season": "2024-25",
+        "gameCount": 380,
+        "leagueAvgTotal": 2.6,
+        "leagueOverBaseline": 2.6,
+        "leagueAvgFouls": 24.6
+      },
+      "2025-26": {
+        "season": "2025-26",
+        "gameCount": 318,
+        "leagueAvgTotal": 2.7,
+        "leagueOverBaseline": 2.6,
+        "leagueAvgFouls": 25.2,
+        "meanClosingTotal": 2.6
+      }
+    },
+    "aggregate": {
+      "season": "all",
+      "gameCount": 1546,
+      "leagueAvgTotal": 2.6,
+      "leagueOverBaseline": 2.6,
+      "leagueAvgFouls": 24.9,
+      "meanClosingTotal": 2.6
     },
     "usingFallback": false
   }

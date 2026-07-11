@@ -173,15 +173,17 @@ export function findingMatchesFilter(
   return FINDING_CATEGORY_TO_FILTER[category] === filter;
 }
 
-export type FindingLeague = "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+export type FindingLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
 /** Infer league from finding id and profile links. */
 export function inferFindingLeague(finding: Finding): FindingLeague {
+  if (finding.id.startsWith("laliga-")) return "LALIGA";
   if (finding.id.startsWith("epl-")) return "EPL";
   if (finding.id.startsWith("cfb-")) return "CFB";
   if (finding.id.startsWith("cbb-")) return "CBB";
   if (finding.id.startsWith("nfl-")) return "NFL";
   if (finding.id.startsWith("nhl-")) return "NHL";
+  if (finding.links.some((link) => link.href.startsWith("/laliga"))) return "LALIGA";
   if (finding.links.some((link) => link.href.startsWith("/epl"))) return "EPL";
   if (finding.links.some((link) => link.href.startsWith("/cfb"))) return "CFB";
   if (finding.links.some((link) => link.href.startsWith("/cbb"))) return "CBB";
@@ -202,6 +204,7 @@ export function researchHubHref(league: FindingLeague): string {
   if (league === "NFL") return "/nfl/research";
   if (league === "CBB") return "/cbb/research";
   if (league === "CFB") return "/cfb/research";
+  if (league === "LALIGA") return "/laliga/research";
   if (league === "EPL") return "/epl/research";
   return "/research";
 }
@@ -213,7 +216,9 @@ export function researchFindingHref(
   const id = typeof finding === "string" ? finding : finding.id;
   const resolvedLeague =
     league ??
-    (id.startsWith("epl-")
+    (id.startsWith("laliga-")
+      ? "LALIGA"
+      : id.startsWith("epl-")
       ? "EPL"
       : id.startsWith("cfb-")
         ? "CFB"
@@ -226,6 +231,7 @@ export function researchFindingHref(
               : ("NBA" satisfies FindingLeague));
   if (resolvedLeague === "NHL") return `/nhl/research/${id}`;
   if (resolvedLeague === "NFL") return `/nfl/research/${id}`;
+  if (resolvedLeague === "LALIGA") return `/laliga/research/${id}`;
   if (resolvedLeague === "EPL") return `/epl/research/${id}`;
   if (resolvedLeague === "CBB") return `/cbb/research/${id}`;
   if (resolvedLeague === "CFB") return `/cfb/research/${id}`;

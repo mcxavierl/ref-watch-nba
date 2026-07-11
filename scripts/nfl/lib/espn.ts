@@ -6,6 +6,10 @@ import {
 
 const ESPN_ABBR: Record<string, string> = {
   WSH: "WAS",
+  SD: "LAC",
+  OAK: "LV",
+  STL: "LAR",
+  LA: "LAR",
 };
 
 export function normalizeEspnAbbr(abbr: string): string {

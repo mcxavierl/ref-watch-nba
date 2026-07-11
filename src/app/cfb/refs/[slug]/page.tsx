@@ -127,6 +127,7 @@ export default async function CfbRefProfilePage({
             slug={profile.slug}
             sport="cfb"
             size="xl"
+            decorative={false}
             className="ring-2 ring-zinc-200 shadow-md"
           />
           <div className="page-hero-head-copy">

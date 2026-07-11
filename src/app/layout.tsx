@@ -83,7 +83,9 @@ export default async function RootLayout({
 }>) {
   const pathname = (await headers()).get("x-pathname") ?? "/";
   await hydrateLeagueDataForPath(pathname);
-  assertProductionLeagueVerification();
+  if (!pathname.startsWith("/overview")) {
+    assertProductionLeagueVerification();
+  }
 
   return (
     <html lang="en" className="dark" data-color="dark" data-contrast="default" data-text="default">

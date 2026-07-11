@@ -7,7 +7,7 @@ export interface RuntimeGameLogEntry {
   gameId: string;
   date: string;
   season: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   homeTeam: string;
   awayTeam: string;
   homeScore: number;
@@ -29,18 +29,19 @@ export interface RuntimeGameLogEntry {
 
 export interface RuntimeGameLogFile {
   lastUpdated: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   source: string;
   games: RuntimeGameLogEntry[];
 }
 
-export type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+export type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
 const GAME_LOG_GLOBAL_KEYS: Record<DataLeague, keyof typeof globalThis> = {
   NBA: "__REFWATCH_NBA_GAME_LOGS__",
   NHL: "__REFWATCH_NHL_GAME_LOGS__",
   NFL: "__REFWATCH_NFL_GAME_LOGS__",
   EPL: "__REFWATCH_EPL_GAME_LOGS__",
+  LALIGA: "__REFWATCH_LALIGA_GAME_LOGS__",
   CBB: "__REFWATCH_CBB_GAME_LOGS__",
   CFB: "__REFWATCH_CFB_GAME_LOGS__",
 };
@@ -50,6 +51,7 @@ const GAME_LOG_ASSET_BASE: Record<DataLeague, string> = {
   NHL: "/data/nhl",
   NFL: "/data/nfl",
   EPL: "/data/epl",
+  LALIGA: "/data/laliga",
   CBB: "/data/cbb",
   CFB: "/data/cfb",
 };

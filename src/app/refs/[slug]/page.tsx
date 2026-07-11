@@ -114,6 +114,7 @@ export default async function RefProfilePage({
             slug={profile.slug}
             sport="nba"
             size="lg"
+            decorative={false}
           />
           <div className="page-hero-head-copy">
             <div className="page-hero-head-title-row">

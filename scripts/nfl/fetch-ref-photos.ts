@@ -7,10 +7,13 @@ import * as path from "node:path";
 import { refSlug } from "../lib/slug";
 import type { RefStatsFile } from "../../src/lib/types";
 import {
+  commonsPhotoForName,
   commonsPhotoFromNflOfficialsFiles,
   commonsPhotoFromOfficialCategory,
   isNflOfficialPage,
+  loadCategoryTitleIndex,
   loadNflOfficialTitleIndex,
+  lookupCategoryTitle,
   sleep,
   titleMatchesOfficial,
   wikiPageImages,
@@ -174,18 +177,22 @@ const KNOWN_TITLES: Record<string, string> = {
 async function resolveFromWikipedia(
   name: string,
   nflTitleIndex: Map<string, string>,
+  extraIndex: Map<string, string>,
 ): Promise<PhotoEntry | null> {
   const candidates: string[] = [];
 
   if (KNOWN_TITLES[name]) candidates.push(KNOWN_TITLES[name]);
 
-  const indexed = nflTitleIndex.get(name.toLowerCase());
+  const indexed =
+    lookupCategoryTitle(name, nflTitleIndex, "nfl") ??
+    lookupCategoryTitle(name, extraIndex, "nfl");
   if (indexed) candidates.push(indexed);
 
   for (const query of [
     `${name} (American football official)`,
     `${name} American football official`,
     `${name} NFL referee`,
+    `${name} NFL official`,
   ]) {
     const hits = await wikiSearchTitles(query);
     for (const title of hits) {
@@ -219,6 +226,7 @@ async function fetchPhotoForOfficial(
   name: string,
   number: number,
   nflTitleIndex: Map<string, string>,
+  extraIndex: Map<string, string>,
 ): Promise<{ slug: string; entry: PhotoEntry } | null> {
   const slug = refSlug(name, number);
 
@@ -226,7 +234,7 @@ async function fetchPhotoForOfficial(
     return { slug, entry: { ...CURATED_BY_NAME[name] } };
   }
 
-  const wiki = await resolveFromWikipedia(name, nflTitleIndex);
+  const wiki = await resolveFromWikipedia(name, nflTitleIndex, extraIndex);
   if (wiki) return { slug, entry: wiki };
 
   const commons = await commonsPhotoFromOfficialCategory(name);
@@ -235,27 +243,57 @@ async function fetchPhotoForOfficial(
   const nflOfficialsFile = await commonsPhotoFromNflOfficialsFiles(name);
   if (nflOfficialsFile) return { slug, entry: nflOfficialsFile };
 
+  const commonsSearch = await commonsPhotoForName(name);
+  if (commonsSearch) return { slug, entry: commonsSearch };
+
   return null;
 }
 
 async function main(): Promise<void> {
   const stats = JSON.parse(fs.readFileSync(STATS_PATH, "utf8")) as RefStatsFile;
-  const photos: Record<string, PhotoEntry> = {};
+  const existing = fs.existsSync(OUT_PATH)
+    ? (JSON.parse(fs.readFileSync(OUT_PATH, "utf8")) as {
+        photos?: Record<string, PhotoEntry>;
+      })
+    : { photos: {} };
+
+  const photos: Record<string, PhotoEntry> = { ...(existing.photos ?? {}) };
   const missed: string[] = [];
   let found = 0;
+  let newlyFound = 0;
 
-  console.log("Loading Category:NFL officials index…");
+  console.log("Loading NFL / American football official categories…");
   const nflTitleIndex = await loadNflOfficialTitleIndex();
-  console.log(`  ${nflTitleIndex.size} Wikipedia pages indexed`);
+  const american = await loadCategoryTitleIndex(
+    "Category:American football officials",
+  );
+  const college = await loadCategoryTitleIndex(
+    "Category:College football officials",
+  );
+  const extraIndex = new Map([...american, ...college]);
+  console.log(
+    `  ${nflTitleIndex.size} NFL + ${extraIndex.size} other official pages indexed`,
+  );
 
   const refs = [...stats.refs].sort((a, b) => b.games - a.games);
 
   for (const ref of refs) {
+    const slug = refSlug(ref.name, ref.number);
+    if (photos[slug]) {
+      found++;
+      continue;
+    }
     try {
-      const result = await fetchPhotoForOfficial(ref.name, ref.number, nflTitleIndex);
+      const result = await fetchPhotoForOfficial(
+        ref.name,
+        ref.number,
+        nflTitleIndex,
+        extraIndex,
+      );
       if (result) {
         photos[result.slug] = result.entry;
         found++;
+        newlyFound++;
         console.log(`  ✓ ${ref.name} (${result.entry.source ?? "unknown"})`);
       } else {
         missed.push(ref.name);
@@ -266,7 +304,7 @@ async function main(): Promise<void> {
       missed.push(ref.name);
       console.warn(`  ! ${ref.name}: ${message}`);
     }
-    await sleep(150);
+    await sleep(120);
   }
 
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
@@ -279,6 +317,7 @@ async function main(): Promise<void> {
           source: "wikipedia+commons+curated",
           count: found,
           missed: missed.length,
+          newlyResolved: newlyFound,
           note: "Verified NFL official headshots; striped badge fallback when missing.",
         },
         photos,
@@ -288,7 +327,9 @@ async function main(): Promise<void> {
     )}\n`,
   );
 
-  console.log(`\nWrote ${found} photos (${missed.length} missed) → ${OUT_PATH}`);
+  console.log(
+    `\nWrote ${found} photos (${newlyFound} new, ${missed.length} missed) → ${OUT_PATH}`,
+  );
 }
 
 main().catch((err) => {

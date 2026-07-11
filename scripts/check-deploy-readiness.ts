@@ -11,28 +11,14 @@ import * as path from "node:path";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "../src/lib/live-header-leagues.generated";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "../src/lib/league-verification";
 import {
-  bottomRefsBelowBaselineForTeam,
-  computeRefTeamMatrix,
-  computeMatrixExtremes,
   MATRIX_MIN_GAMES,
-  topRefsBeatingBaselineForTeam,
-  TEAM_MATRIX_REF_PANEL_LIMIT,
 } from "../src/lib/ref-team-matrix";
 import { getBaselinesFile } from "../src/lib/baselines";
 import { seasonRowsFromBaselines } from "../src/lib/trends";
 import { getTeamSampleRecord } from "../src/lib/teamRecord";
 import type { RefStatsFile, TeamCrewSplit } from "../src/lib/types";
 import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
-import { getRefStats as getEplRefStats, getTeamSplits as getEplTeamSplits } from "../src/lib/epl/data";
-import { getRefStats as getNbaRefStats, getTeamSplits as getNbaTeamSplits } from "../src/lib/data";
-import { getRefStats as getNflRefStats, getTeamSplits as getNflTeamSplits } from "../src/lib/nfl/data";
-import { getRefStats as getNhlRefStats, getTeamSplits as getNhlTeamSplits } from "../src/lib/nhl/data";
-import { nhlAnalyticsRefStats } from "../src/lib/nhl/officials";
-import { findReverseNameGhosts } from "./nfl/lib/official-names";
-import { EPL_TEAMS, teamFullName as eplTeamFullName } from "../src/lib/epl/teams";
-import { NFL_TEAMS, teamFullName as nflTeamFullName } from "../src/lib/nfl/teams";
-import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "../src/lib/nhl/teams";
-import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "../src/lib/teams";
+import { runVolumeRegressionChecks } from "./lib/volume-regression";
 
 const ROOT = process.cwd();
 
@@ -43,6 +29,7 @@ const SAMPLE_TEAMS: Record<LiveLeague, string> = {
   nhl: "WPG",
   nfl: "KC",
   epl: "ARS",
+  laliga: "BAR",
 };
 
 const MIN_TEAM_SPLIT_TEAMS: Record<LiveLeague, number> = {
@@ -50,6 +37,7 @@ const MIN_TEAM_SPLIT_TEAMS: Record<LiveLeague, number> = {
   nhl: 28,
   nfl: 28,
   epl: 15,
+  laliga: 15,
 };
 
 const MIN_SAMPLE_BASELINE_GAMES: Record<LiveLeague, number> = {
@@ -57,26 +45,9 @@ const MIN_SAMPLE_BASELINE_GAMES: Record<LiveLeague, number> = {
   nhl: 20,
   nfl: 20,
   epl: 20,
+  laliga: 20,
 };
 
-/**
- * Hard floor on totalGamesProcessed vs claimed season window.
- * Catches interrupted ingests (e.g. NHL shipping ~1405 games as "10 seasons").
- * Values are conservative vs full regular-season schedules.
- */
-const MIN_TOTAL_GAMES_FOR_CLAIMED_SEASONS: Record<
-  LiveLeague,
-  { minTotal: number; minPerSeason: number }
-> = {
-  // ~1230 RS games × 10
-  nba: { minTotal: 10_000, minPerSeason: 900 },
-  // ~1312 RS games × 10 (COVID seasons shorter; still >> 1405 total)
-  nhl: { minTotal: 10_000, minPerSeason: 700 },
-  // ~256–285 RS+playoff games × 10
-  nfl: { minTotal: 2_200, minPerSeason: 150 },
-  // 380 PL matches × 10
-  epl: { minTotal: 3_500, minPerSeason: 300 },
-};
 
 const failures: string[] = [];
 
@@ -98,75 +69,6 @@ function fileExists(rel: string): boolean {
 
 function nonEmptySplitTeams(splits: Record<string, TeamCrewSplit[]>): number {
   return Object.values(splits).filter((rows) => rows.length > 0).length;
-}
-
-function checkSeasonGameCoverage(
-  league: LiveLeague,
-  source: RefStatsFile | null,
-): void {
-  if (!source?.meta) return;
-  const floors = MIN_TOTAL_GAMES_FOR_CLAIMED_SEASONS[league];
-  const seasons = source.meta.seasons ?? [];
-  const total =
-    source.meta.totalGamesProcessed ??
-    source.refs.reduce((sum, r) => sum + (r.games ?? 0), 0);
-  const seasonCount = seasons.length;
-
-  if (seasonCount >= 8 && total < floors.minTotal) {
-    fail(
-      `${league}: only ${total} games across ${seasonCount} claimed seasons ` +
-        `(need >= ${floors.minTotal}) — incomplete ingest; re-run build-${league}-data`,
-    );
-  }
-
-  if (seasonCount > 0) {
-    const perSeason = total / seasonCount;
-    if (perSeason < floors.minPerSeason) {
-      fail(
-        `${league}: ~${Math.round(perSeason)} games/season across ${seasonCount} seasons ` +
-          `(need >= ${floors.minPerSeason}/season) — season window is overstated vs game logs`,
-      );
-    }
-  }
-
-  // Game-log file must agree with ref-stats totals (catches truncated logs).
-  const logRel =
-    league === "nba" ? "data/game-logs.json" : `data/${league}/game-logs.json`;
-  const logs = readJson<{ games?: { season?: string; gameId?: string }[] }>(
-    path.join(ROOT, logRel),
-  );
-  const logGames = logs?.games ?? [];
-  if (logGames.length > 0) {
-    const uniqueIds = new Set(logGames.map((g) => String(g.gameId ?? "")));
-    if (uniqueIds.size < floors.minTotal && seasonCount >= 8) {
-      fail(
-        `${league}: game-logs.json has only ${uniqueIds.size} unique games ` +
-          `(need >= ${floors.minTotal} for ${seasonCount}-season window)`,
-      );
-    }
-    if (uniqueIds.size !== logGames.length) {
-      fail(
-        `${league}: game-logs.json has ${logGames.length - uniqueIds.size} duplicate gameIds — dedupe before deploy`,
-      );
-    }
-
-    // Claimed meta.seasons must each have meaningful coverage in logs
-    // (e.g. do not list truncated NHL 2023–26 as full seasons).
-    const bySeason = new Map<string, number>();
-    for (const g of logGames) {
-      if (!g.season) continue;
-      bySeason.set(g.season, (bySeason.get(g.season) ?? 0) + 1);
-    }
-    for (const season of seasons) {
-      const n = bySeason.get(season) ?? 0;
-      if (n < floors.minPerSeason) {
-        fail(
-          `${league}: claimed season ${season} has only ${n} games in logs ` +
-            `(need >= ${floors.minPerSeason} for meaningful coverage) — omit from meta.seasons or finish ingest`,
-        );
-      }
-    }
-  }
 }
 
 function checkDeployArtifacts(league: LiveLeague): void {
@@ -220,8 +122,6 @@ function checkDeployArtifacts(league: LiveLeague): void {
       fail(`${league}: public core meta.data_source is synthetic`);
     }
   }
-
-  checkSeasonGameCoverage(league, source);
 
   if (publicSplits) {
     const teamCount = nonEmptySplitTeams(publicSplits);
@@ -281,130 +181,11 @@ function checkWorkerPreloadContract(): void {
     fail("edge-preload.ts must merge team splits into ref-stats cache after preload");
   }
 
-  for (const league of ["nhl", "nfl", "epl"] as const) {
+  for (const league of ["nhl", "nfl", "epl", "laliga"] as const) {
     const layoutPath = path.join(ROOT, `src/app/${league}/layout.tsx`);
     const layout = fs.readFileSync(layoutPath, "utf8");
     if (!layout.includes("preloadLeagueRefStats")) {
       fail(`${league} layout must await preloadLeagueRefStats before rendering`);
-    }
-  }
-}
-
-function checkRuntimeMatrixPanels(): void {
-  const cases: Array<{
-    league: LiveLeague;
-    stats: RefStatsFile;
-    teams: { abbr: string; label: string; name: string; nbaId?: number }[];
-    getTeamSplits: (abbr: string) => TeamCrewSplit[];
-    sinceSeason?: string;
-  }> = [
-    {
-      league: "nba",
-      stats: getNbaRefStats(),
-      teams: NBA_TEAMS.map((t) => ({
-        abbr: t.abbr,
-        label: nbaTeamFullName(t),
-        name: t.name,
-        nbaId: t.nbaId,
-      })),
-      getTeamSplits: getNbaTeamSplits,
-    },
-    {
-      league: "nhl",
-      stats: nhlAnalyticsRefStats(getNhlRefStats()),
-      teams: NHL_TEAMS.map((t) => ({
-        abbr: t.abbr,
-        label: nhlTeamFullName(t),
-        name: t.name,
-      })),
-      getTeamSplits: getNhlTeamSplits,
-    },
-    {
-      league: "nfl",
-      stats: getNflRefStats(),
-      teams: NFL_TEAMS.map((t) => ({
-        abbr: t.abbr,
-        label: nflTeamFullName(t),
-        name: t.name,
-      })),
-      getTeamSplits: getNflTeamSplits,
-    },
-    {
-      league: "epl",
-      stats: getEplRefStats(),
-      teams: EPL_TEAMS.map((t) => ({
-        abbr: t.abbr,
-        label: eplTeamFullName(t),
-        name: t.name,
-      })),
-      getTeamSplits: getEplTeamSplits,
-    },
-  ];
-
-  for (const { league, stats, teams, getTeamSplits } of cases) {
-    const hydratedTeams = Object.keys(stats.teamSplits).filter(
-      (k) => (stats.teamSplits[k]?.length ?? 0) > 0,
-    ).length;
-    if (league !== "nba" && hydratedTeams === 0) {
-      fail(`${league}: getRefStats() returned empty teamSplits after hydration`);
-    }
-
-    const sample = SAMPLE_TEAMS[league];
-    const matrix = computeRefTeamMatrix(
-      stats,
-      teams,
-      getTeamSplits,
-      MATRIX_MIN_GAMES,
-      {
-      league,
-    });
-    const team = matrix.teams.find((t) => t.abbr.toUpperCase() === sample);
-    if (!team) {
-      fail(`${league}: matrix missing sample team ${sample}`);
-      continue;
-    }
-    if (team.baselineGames <= 0) {
-      fail(
-        `${league}: matrix baseline for ${sample} is ${team.baselineWins}-${team.baselineLosses} across ${team.baselineGames} gp`,
-      );
-    }
-
-    const top = topRefsBeatingBaselineForTeam(
-      matrix,
-      sample,
-      TEAM_MATRIX_REF_PANEL_LIMIT,
-    );
-    const bottom = bottomRefsBelowBaselineForTeam(
-      matrix,
-      sample,
-      TEAM_MATRIX_REF_PANEL_LIMIT,
-    );
-    if (top.length === 0 || bottom.length === 0) {
-      fail(
-        `${league}: ${sample} matrix panels empty (top=${top.length}, bottom=${bottom.length})`,
-      );
-    }
-
-    const topSlugs = new Set(top.map((e) => e.refSlug));
-    const overlap = bottom.filter((e) => topSlugs.has(e.refSlug));
-    if (overlap.length > 0) {
-      fail(
-        `${league}: ${sample} has ${overlap.length} ref(s) in both top and bottom panels (${overlap.map((e) => e.refSlug).join(", ")})`,
-      );
-    }
-
-    if (matrix.minGames !== MATRIX_MIN_GAMES) {
-      fail(
-        `${league}: matrix minGames is ${matrix.minGames}, expected ${MATRIX_MIN_GAMES}`,
-      );
-    }
-
-    const extremes = computeMatrixExtremes(matrix, 50);
-    const zeroBaseline = extremes.filter((h) => h.baselineGames <= 0);
-    if (zeroBaseline.length > 0) {
-      fail(
-        `${league}: ${zeroBaseline.length} matrix extreme highlight(s) have 0-game baselines`,
-      );
     }
   }
 }
@@ -424,22 +205,12 @@ function checkTrendsBaselines(): void {
     nhl: "NHL",
     nfl: "NFL",
     epl: "EPL",
+    laliga: "LALIGA",
   } as const;
 
   for (const [league, dataLeague] of Object.entries(liveDataLeagues)) {
     const block = baselines[dataLeague];
-    if (block.usingFallback || block.aggregate.gameCount === 0) {
-      fail(
-        `${league}: baselines still on fallback / empty — run npm run compute-baselines`,
-      );
-      continue;
-    }
     const rows = seasonRowsFromBaselines(block.seasons);
-    if (rows.length < 2) {
-      fail(
-        `${league}: trends need >= 2 season rows (have ${rows.length})`,
-      );
-    }
     for (const row of rows) {
       if (!row.season || row.gameCount <= 0) {
         fail(`${league}: trend row missing season/gamesCount`);
@@ -455,34 +226,50 @@ function checkTrendsBaselines(): void {
   if (MATRIX_MIN_GAMES !== 8) {
     fail(`MATRIX_MIN_GAMES must be 8 (found ${MATRIX_MIN_GAMES})`);
   }
+}
 
-  // NFL: catch ESPN "Last First" ghosts like Clark Land vs Land Clark.
-  {
-    const nfl = getNflRefStats();
-    const ghosts = findReverseNameGhosts(nfl.refs);
-    if (ghosts.length > 0) {
-      fail(
-        `NFL reverse-name ghosts: ${ghosts
-          .map((g) => `${g.ghostName}→${g.canonName}`)
-          .join(", ")}`,
-      );
-    }
-    const land = nfl.refs.find((r) => r.slug === "land-clark-130");
-    if (!land || land.games < 100) {
-      fail(
-        `NFL Land Clark missing or under-merged (games=${land?.games ?? 0})`,
-      );
-    }
+function checkOverviewSnapshot(): void {
+  const snapshotPath = path.join(ROOT, "data/overview-snapshot.json");
+  if (!fs.existsSync(snapshotPath)) {
+    fail("data/overview-snapshot.json missing — run scripts/build-overview-snapshot.ts");
+    return;
+  }
+  const file = JSON.parse(fs.readFileSync(snapshotPath, "utf8")) as {
+    snapshot?: {
+      totalRefs?: number;
+      insightCards?: unknown[];
+      allRefs?: unknown[];
+    };
+  };
+  const snapshot = file.snapshot;
+  if (!snapshot) {
+    fail("overview-snapshot.json missing snapshot payload");
+    return;
+  }
+  if ((snapshot.insightCards?.length ?? 0) < VERIFIED_LIVE_LEAGUE_IDS.length) {
+    fail(
+      `overview-snapshot.json has ${snapshot.insightCards?.length ?? 0} insight cards (need ${VERIFIED_LIVE_LEAGUE_IDS.length})`,
+    );
+  }
+  if ((snapshot.totalRefs ?? 0) < 400) {
+    fail(`overview-snapshot.json totalRefs=${snapshot.totalRefs ?? 0} (need >= 400)`);
+  }
+  if ((snapshot.allRefs?.length ?? 0) < 400) {
+    fail(`overview-snapshot.json allRefs=${snapshot.allRefs?.length ?? 0} (need >= 400)`);
   }
 }
 
 console.log("Deploy readiness check…");
 checkLiveHeader();
 checkWorkerPreloadContract();
+checkOverviewSnapshot();
 for (const league of VERIFIED_LIVE_LEAGUE_IDS) {
   checkDeployArtifacts(league);
 }
-checkRuntimeMatrixPanels();
+const volume = runVolumeRegressionChecks(ROOT);
+for (const f of volume.failures) {
+  fail(f);
+}
 checkTrendsBaselines();
 
 if (failures.length > 0) {

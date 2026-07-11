@@ -1,14 +1,17 @@
 #!/usr/bin/env npx tsx
 /**
- * Fetches Premier League referee headshots from Wikipedia + curated URLs.
+ * Fetches Premier League referee headshots from Wikipedia + Wikimedia Commons.
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { refSlug } from "../lib/slug";
 import type { RefStatsFile } from "../../src/lib/types";
 import {
+  commonsPhotoForEplOfficial,
   isSportOfficialPage,
   loadCategoryTitleIndex,
+  lookupCategoryTitle,
+  resolveOfficialDisplayName,
   sleep,
   titleMatchesSportOfficial,
   wikiPageImages,
@@ -18,64 +21,57 @@ import {
 const OUT_PATH = path.join(process.cwd(), "data", "epl", "ref-photos.json");
 const STATS_PATH = path.join(process.cwd(), "data", "epl", "ref-stats.json");
 
-const CURATED_BY_NAME: Record<string, string> = {
+/** Prefer disambiguated Wikipedia titles with infobox / match photos. */
+const PREFERRED_TITLES: Record<string, string> = {
   "Michael Oliver": "Michael Oliver (referee)",
   "Anthony Taylor": "Anthony Taylor (referee)",
-  "Martin Atkinson": "Martin Atkinson",
-  "Howard Webb": "Howard Webb",
-  "Mark Clattenburg": "Mark Clattenburg",
   "Mike Dean": "Mike Dean (referee)",
   "Jonathan Moss": "Jonathan Moss (referee)",
-  "Kevin Friend": "Kevin Friend",
-  "Lee Mason": "Lee Mason",
   "Graham Scott": "Graham Scott (referee)",
-};
-
-const KNOWN_TITLES: Record<string, string> = {
-  "Andy Madley": "Andy Madley",
-  "Jarred Gillett": "Jarred Gillett",
-  "Sam Barrott": "Sam Barrott",
-  "Tom Bramall": "Tom Bramall",
-  "Tony Harrington": "Tony Harrington",
-  "Darren Bond": "Darren Bond",
-  "Robert Jones": "Robert Jones (referee)",
+  "Chris Kavanagh": "Chris Kavanagh (referee)",
   "Paul Tierney": "Paul Tierney (referee)",
-  "Chris Kavanagh": "Chris Kavanagh",
-  "Stuart Attwell": "Stuart Attwell",
-  "David Coote": "David Coote",
+  "Robert Jones": "Robert Jones (referee)",
   "John Brooks": "John Brooks (referee)",
-  "Peter Bankes": "Peter Bankes",
-  "Simon Hooper": "Simon Hooper",
-  "Michael Salisbury": "Michael Salisbury",
   "Tim Robinson": "Tim Robinson (referee)",
-  "Craig Pawson": "Craig Pawson",
-  "Darren England": "Darren England",
   "Thomas Bramall": "Tom Bramall",
+  "Jarred Gillett": "Jarred Gillett (referee)",
+  "Lee Mason": "Lee Mason (referee)",
+  "Sam Barrott": "Sam Barrott (referee)",
+  "Tony Harrington": "Tony Harrington (referee)",
+  "Roger East": "Roger East (referee)",
+  "David Webb": "David Webb (referee)",
+  "Oliver Langford": "Oliver Langford (referee)",
+  "Darren Bond": "Darren Bond (referee)",
 };
 
 async function resolveWikiTitle(
   name: string,
   categoryIndex: Map<string, string>,
 ): Promise<string | null> {
-  if (CURATED_BY_NAME[name]) return CURATED_BY_NAME[name];
-  if (KNOWN_TITLES[name]) return KNOWN_TITLES[name];
-  const indexed = categoryIndex.get(name.toLowerCase());
+  const indexed = lookupCategoryTitle(name, categoryIndex, "epl");
   if (indexed) return indexed;
 
+  if (PREFERRED_TITLES[name]) return PREFERRED_TITLES[name];
+
+  const resolved = resolveOfficialDisplayName(name, "epl");
+  if (resolved !== name) {
+    const aliasIndexed = lookupCategoryTitle(resolved, categoryIndex, "epl");
+    if (aliasIndexed) return aliasIndexed;
+    if (PREFERRED_TITLES[resolved]) return PREFERRED_TITLES[resolved];
+  }
+
   for (const query of [
+    `${resolved} (referee)`,
     `${name} (referee)`,
-    `${name} football referee`,
-    `${name} Premier League referee`,
-    `${name} referee`,
+    `${resolved} football referee`,
+    `${resolved} Premier League referee`,
+    `${resolved} referee`,
   ]) {
     const hits = await wikiSearchTitles(query);
     for (const title of hits) {
-      if (!titleMatchesSportOfficial(name, title, "epl")) continue;
-      if (categoryIndex.has(title.replace(/\s*\([^)]*\)\s*$/, "").trim().toLowerCase())) {
-        return title;
-      }
+      if (!titleMatchesSportOfficial(resolved, title, "epl")) continue;
       if (await isSportOfficialPage(title, "epl")) return title;
-      if (title.toLowerCase() === `${name.toLowerCase()} (referee)`) return title;
+      if (title.toLowerCase() === `${resolved.toLowerCase()} (referee)`) return title;
     }
     await sleep(100);
   }
@@ -92,18 +88,25 @@ async function fetchPhotoForOfficial(
 } | null> {
   const slug = refSlug(name, number);
   const title = await resolveWikiTitle(name, categoryIndex);
-  if (!title) return null;
-  const images = await wikiPageImages(title);
-  if (!images) return null;
-  return {
-    slug,
-    entry: {
-      ...images,
-      source: CURATED_BY_NAME[name]
-        ? `curated:wikipedia:${title}`
-        : `wikipedia:${title}`,
-    },
-  };
+  if (title) {
+    const images = await wikiPageImages(title);
+    if (images) {
+      return {
+        slug,
+        entry: {
+          ...images,
+          source: PREFERRED_TITLES[name]
+            ? `curated:wikipedia:${title}`
+            : `wikipedia:${title}`,
+        },
+      };
+    }
+  }
+
+  const commons = await commonsPhotoForEplOfficial(name);
+  if (commons) return { slug, entry: commons };
+
+  return null;
 }
 
 async function main(): Promise<void> {
@@ -112,20 +115,39 @@ async function main(): Promise<void> {
     process.exit(1);
   }
   const stats = JSON.parse(fs.readFileSync(STATS_PATH, "utf8")) as RefStatsFile;
+  const existing = fs.existsSync(OUT_PATH)
+    ? (JSON.parse(fs.readFileSync(OUT_PATH, "utf8")) as {
+        photos?: Record<string, { thumbUrl: string; headshotUrl?: string; source?: string }>;
+      })
+    : { photos: {} };
+
   console.log("Loading Premier League referee categories…");
   const pl = await loadCategoryTitleIndex("Category:Premier League referees");
   const eng = await loadCategoryTitleIndex("Category:English football referees");
-  const categoryIndex = new Map([...eng, ...pl]);
+  const fifa = await loadCategoryTitleIndex("Category:FIFA international referees");
+  const categoryIndex = new Map([...fifa, ...eng, ...pl]);
   console.log(`  ${categoryIndex.size} Wikipedia pages indexed`);
 
   const photos: Record<
     string,
     { thumbUrl: string; headshotUrl?: string; source?: string }
-  > = {};
+  > = { ...(existing.photos ?? {}) };
   let found = 0;
+  let newlyFound = 0;
   let missed = 0;
 
   for (const ref of stats.refs) {
+    const slug = refSlug(ref.name, ref.number);
+    if (photos[slug]) {
+      found++;
+      continue;
+    }
+    // Skip abbreviated crew placeholders (e.g. "A Moss", "K Kavanagh") — no reliable image match.
+    if (/^[A-Z]\s+[A-Z]/i.test(ref.name) || ref.name.split(/\s+/).some((p) => p.length === 1)) {
+      missed++;
+      console.log(`  – ${ref.name} (abbreviated name)`);
+      continue;
+    }
     try {
       const result = await fetchPhotoForOfficial(
         ref.name,
@@ -135,7 +157,8 @@ async function main(): Promise<void> {
       if (result) {
         photos[result.slug] = result.entry;
         found++;
-        console.log(`  ✓ ${ref.name}`);
+        newlyFound++;
+        console.log(`  ✓ ${ref.name} (${result.entry.source})`);
       } else {
         missed++;
         console.log(`  – ${ref.name}`);
@@ -144,7 +167,7 @@ async function main(): Promise<void> {
       missed++;
       console.warn(`  ! ${ref.name}: ${err}`);
     }
-    await sleep(150);
+    await sleep(120);
   }
 
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
@@ -154,9 +177,10 @@ async function main(): Promise<void> {
       {
         meta: {
           lastUpdated: new Date().toISOString(),
-          source: "wikipedia categories + curated",
+          source: "wikipedia categories + commons + curated",
           count: found,
           missed,
+          newlyResolved: newlyFound,
         },
         photos,
       },
@@ -164,7 +188,9 @@ async function main(): Promise<void> {
       2,
     ),
   );
-  console.log(`Wrote ${found} EPL ref photos (${missed} missed) → ${OUT_PATH}`);
+  console.log(
+    `Wrote ${found} EPL ref photos (${newlyFound} new, ${missed} missed) → ${OUT_PATH}`,
+  );
 }
 
 main().catch((err) => {

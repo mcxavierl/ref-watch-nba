@@ -1,7 +1,12 @@
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
-import type { RefProfile } from "@/lib/types";
+import { loadOverviewInsightCards } from "@/lib/overview-insights-data";
+import type { LeagueInsightCard } from "@/lib/league-overview-insights";
+import {
+  buildOverviewUpcomingSlate,
+  type OverviewUpcomingSlate,
+} from "@/lib/overview-upcoming-slate";
 
 export type LeagueOverviewCard = {
   leagueId: LeagueId;
@@ -19,19 +24,6 @@ export type LeagueOverviewCard = {
   scoreBar: number;
 };
 
-export type SpotlightRef = {
-  leagueId: LeagueId;
-  leagueLabel: string;
-  slug: string;
-  name: string;
-  games: number;
-  whistlePerGame: number;
-  whistleLabel: string;
-  whistleDelta: number;
-  href: string;
-  recentWhistle: number[];
-};
-
 export type CrossLeagueOverview = {
   totalRefs: number;
   totalGames: number;
@@ -40,44 +32,38 @@ export type CrossLeagueOverview = {
   whistleEventsLogged: number;
   whistleLabel: string;
   leagueCards: LeagueOverviewCard[];
-  spotlight: SpotlightRef | null;
-  allRefs: { slug: string; name: string; games: number; leagueId: LeagueId; href: string }[];
+  insightCards: LeagueInsightCard[];
+  upcomingSlate: OverviewUpcomingSlate;
+  allRefs: {
+    slug: string;
+    name: string;
+    games: number;
+    leagueId: LeagueId;
+    leagueLabel: string;
+    href: string;
+  }[];
 };
 
-const MIN_SPOTLIGHT_GAMES = 25;
-
-function gameCountForLeague(leagueId: LeagueId, stats: ReturnType<typeof loadLeagueStats>["stats"]): number {
+function gameCountForLeague(
+  leagueId: LeagueId,
+  stats: ReturnType<typeof loadLeagueStats>["stats"],
+): number {
   const metaCount = stats.meta.totalGamesProcessed;
   if (typeof metaCount === "number" && metaCount > 0) return metaCount;
   return stats.refs.reduce((sum, ref) => sum + ref.games, 0);
 }
 
-function whistlePerGameForRef(ref: RefProfile, leagueId: LeagueId): number {
-  if (leagueId === "nhl") return ref.nhlAnalytics?.avgMinorsPerGame ?? ref.avgFouls;
-  if (leagueId === "nfl") return ref.nflAnalytics?.avgFlagsPerGame ?? ref.avgFouls;
-  if (leagueId === "epl") {
-    const y = ref.eplAnalytics?.avgYellowCardsPerGame ?? 0;
-    const r = ref.eplAnalytics?.avgRedCardsPerGame ?? 0;
-    return y + r;
-  }
-  return ref.avgFouls;
-}
-
-function whistleDeltaForRef(ref: RefProfile, leagueId: LeagueId): number {
-  if (leagueId === "nhl") return ref.nhlAnalytics?.minorsDelta ?? ref.foulsDelta;
-  if (leagueId === "nfl") return ref.nflAnalytics?.flagsDelta ?? ref.foulsDelta;
-  if (leagueId === "epl") return ref.eplAnalytics?.yellowCardsDelta ?? ref.foulsDelta;
-  return ref.foulsDelta;
-}
-
 function whistleLabelForLeague(leagueId: LeagueId): string {
   if (leagueId === "nhl") return "Minors per game";
   if (leagueId === "nfl") return "Flags per game";
-  if (leagueId === "epl") return "Cards per game";
+  if (leagueId === "epl" || leagueId === "laliga") return "Cards per game";
   return "Fouls per game";
 }
 
-function scorePerGameForLeague(leagueId: LeagueId, stats: ReturnType<typeof loadLeagueStats>["stats"]): number {
+function scorePerGameForLeague(
+  leagueId: LeagueId,
+  stats: ReturnType<typeof loadLeagueStats>["stats"],
+): number {
   if (leagueId === "nhl") return stats.meta.leagueAvgTotal;
   if (leagueId === "epl") return stats.meta.leagueAvgTotal;
   return stats.meta.leagueAvgTotal;
@@ -93,26 +79,12 @@ function refHref(leagueId: LeagueId, slug: string): string {
   return `${prefix}/refs/${slug}`;
 }
 
-function recentWhistleSeries(ref: RefProfile, leagueId: LeagueId, limit = 12): number[] {
-  const games = ref.recentGames.slice(0, limit);
-  if (leagueId === "nhl") {
-    return games.map((g) => (g.homeMinors ?? 0) + (g.awayMinors ?? 0));
-  }
-  if (leagueId === "nfl") {
-    return games.map((g) => (g.homeFlags ?? 0) + (g.awayFlags ?? 0));
-  }
-  return games.map((g) => g.totalFouls);
-}
-
 export function buildCrossLeagueOverview(catalogCompetitionCount: number): CrossLeagueOverview {
   const leagueCards: LeagueOverviewCard[] = [];
   let totalRefs = 0;
   let totalGames = 0;
   let whistleEventsLogged = 0;
   const allRefs: CrossLeagueOverview["allRefs"] = [];
-
-  let bestSpotlight: SpotlightRef | null = null;
-  let bestDelta = -Infinity;
 
   for (const leagueId of VERIFIED_LIVE_LEAGUE_IDS) {
     const { stats } = loadLeagueStats(leagueId);
@@ -122,11 +94,9 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
     const whistlePerGame =
       leagueId === "nhl"
         ? stats.meta.leagueAvgMinors ?? stats.meta.leagueAvgFouls
-        : leagueId === "epl"
+        : leagueId === "epl" || leagueId === "laliga"
           ? (stats.meta.leagueAvgYellowCards ?? 0) + (stats.meta.leagueAvgRedCards ?? 0)
-          : leagueId === "nfl"
-            ? stats.meta.leagueAvgFouls
-            : stats.meta.leagueAvgFouls;
+          : stats.meta.leagueAvgFouls;
 
     totalRefs += refCount;
     totalGames += gameCount;
@@ -138,26 +108,9 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
         name: ref.name,
         games: ref.games,
         leagueId,
+        leagueLabel: config.shortLabel,
         href: refHref(leagueId, ref.slug),
       });
-
-      if (ref.games < MIN_SPOTLIGHT_GAMES) continue;
-      const delta = whistleDeltaForRef(ref, leagueId);
-      if (delta > bestDelta) {
-        bestDelta = delta;
-        bestSpotlight = {
-          leagueId,
-          leagueLabel: config.label,
-          slug: ref.slug,
-          name: ref.name,
-          games: ref.games,
-          whistlePerGame: whistlePerGameForRef(ref, leagueId),
-          whistleLabel: whistleLabelForLeague(leagueId),
-          whistleDelta: delta,
-          href: refHref(leagueId, ref.slug),
-          recentWhistle: recentWhistleSeries(ref, leagueId),
-        };
-      }
     }
 
     leagueCards.push({
@@ -194,7 +147,8 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
     whistleEventsLogged,
     whistleLabel: "Whistle events logged",
     leagueCards,
-    spotlight: bestSpotlight,
+    insightCards: loadOverviewInsightCards(),
+    upcomingSlate: buildOverviewUpcomingSlate(),
     allRefs: allRefs.sort((a, b) => b.games - a.games),
   };
 }

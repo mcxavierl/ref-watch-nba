@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="La Liga">
+  <rect width="64" height="64" rx="10" fill="#c8102e"/>
+  <rect x="10" y="18" width="44" height="6" rx="2" fill="#ffd100"/>
+  <rect x="10" y="29" width="44" height="6" rx="2" fill="#ffd100"/>
+  <rect x="10" y="40" width="44" height="6" rx="2" fill="#ffd100"/>
+  <text x="32" y="58" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" font-weight="700" fill="#fff">LALIGA</text>
+</svg>

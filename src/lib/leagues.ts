@@ -1,8 +1,8 @@
-export const LEAGUE_IDS = ["nba", "nhl", "wnba", "mlb", "nfl", "epl", "cbb", "cfb"] as const;
+export const LEAGUE_IDS = ["nba", "nhl", "wnba", "mlb", "nfl", "epl", "laliga", "cbb", "cfb"] as const;
 export type LeagueId = (typeof LEAGUE_IDS)[number];
 
 /** Candidate leagues for the header sport switcher (filtered by verification in production). */
-export const HEADER_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl"] as const satisfies readonly LeagueId[];
+export const HEADER_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl", "laliga"] as const satisfies readonly LeagueId[];
 
 export type LeagueMetricCopy = {
   /** Combined score unit: points, goals, runs */
@@ -29,7 +29,7 @@ export type LeagueConfig = {
   /** URL prefix; empty string = site root (NBA) */
   pathPrefix: string;
   /** RefRankingsTable / types league key */
-  dataLeague: "NBA" | "NHL" | "WNBA" | "MLB" | "NFL" | "EPL" | "CBB" | "CFB";
+  dataLeague: "NBA" | "NHL" | "WNBA" | "MLB" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   officialNoun: string;
   officialNounPlural: string;
   seasonStatus: "offseason" | "in-season";
@@ -172,6 +172,31 @@ export const LEAGUES: Record<LeagueId, LeagueConfig> = {
     shortLabel: "EPL",
     pathPrefix: "/epl",
     dataLeague: "EPL",
+    officialNoun: "referee",
+    officialNounPlural: "referees",
+    seasonStatus: "offseason",
+    showOtRate: false,
+    whistleFromMinors: false,
+    metrics: {
+      scoreUnit: "goal",
+      scoreUnitPlural: "goals",
+      whistlePlain: "fouls called",
+      whistleShort: "Fouls",
+      scoringColumn: "Goals vs average",
+      whistleColumn: "Fouls vs average",
+      overColumn: "Over rate",
+      gamesColumn: "Matches",
+      sortScoringHigh: "Highest-scoring crews first",
+      sortWhistleHigh: "Most fouls called first",
+      sortOverHigh: "Most overs first",
+    },
+  },
+  laliga: {
+    id: "laliga",
+    label: "La Liga",
+    shortLabel: "La Liga",
+    pathPrefix: "/laliga",
+    dataLeague: "LALIGA",
     officialNoun: "referee",
     officialNounPlural: "referees",
     seasonStatus: "offseason",

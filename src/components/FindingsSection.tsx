@@ -23,7 +23,7 @@ export function FindingCard({
 }: {
   finding: Finding;
   index: number;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 }) {
   return (
     <article className="data-card finding-card-static">

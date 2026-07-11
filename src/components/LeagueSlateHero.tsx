@@ -6,10 +6,11 @@ import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { LEAGUES } from "@/lib/leagues";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
 import { nbaSeasonScopeAuditNote } from "@/lib/nba-team-season-records";
+import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
 import { formatSeasonScope } from "@/lib/season-scope";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 
-type SlateLeagueId = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+type SlateLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 
 type LeagueSlateHeroProps = {
   leagueId: SlateLeagueId;
@@ -48,7 +49,8 @@ export function LeagueSlateHero({
 }: LeagueSlateHeroProps) {
   const config = LEAGUES[leagueId];
   const copy = leagueHeroCopy(leagueId);
-  const isOffseason = assignments.games.length === 0;
+  const isOffseason = isOffseasonSlate(assignments);
+  const isPending = isPendingCrewSlate(assignments);
   const officialCount = refStats.refs?.length ?? 0;
   const gamesProcessed = refStats.meta.totalGamesProcessed;
   const seasonSpan = formatSeasonScope(refStats.meta.seasons.length);
@@ -70,10 +72,10 @@ export function LeagueSlateHero({
     >
       <p className="league-slate-kicker">{copy.kicker}</p>
       <h1 className="page-title" id={`${leagueId}-slate-heading`}>
-        {isOffseason ? copy.offseasonTitle : copy.liveTitle}
+        {isOffseason ? copy.offseasonTitle : isPending ? copy.pendingTitle ?? copy.liveTitle : copy.liveTitle}
       </h1>
       <p className="page-lead">
-        {isOffseason ? copy.offseasonLead : copy.liveLead}
+        {isOffseason ? copy.offseasonLead : isPending ? copy.pendingLead ?? copy.liveLead : copy.liveLead}
       </p>
 
       <dl

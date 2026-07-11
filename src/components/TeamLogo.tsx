@@ -4,6 +4,7 @@ import { useState } from "react";
 import { teamLogoUrl as nbaTeamLogoUrl } from "@/lib/teams";
 import { teamLogoUrl as nhlTeamLogoUrl } from "@/lib/nhl/teams";
 import { teamLogoUrl as nflTeamLogoUrl } from "@/lib/nfl/teams";
+import { teamLogoUrl as laligaTeamLogoUrl } from "@/lib/laliga/teams";
 import { teamLogoUrl as eplTeamLogoUrl } from "@/lib/epl/teams";
 import type { NbaTeam } from "@/lib/teams";
 import type { NhlTeam } from "@/lib/nhl/teams";
@@ -27,14 +28,16 @@ export function TeamLogo({
   sport = "nba",
 }: {
   team: TeamLike;
-  sport?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   size?: keyof typeof sizeClasses;
   className?: string;
 }) {
   const [failed, setFailed] = useState(false);
   const logoSrc =
     team.logoUrl ??
-    (sport === "epl"
+    (sport === "laliga"
+      ? laligaTeamLogoUrl(team.abbr)
+      : sport === "epl"
       ? eplTeamLogoUrl(team.abbr)
       : sport === "nfl"
         ? nflTeamLogoUrl(team.abbr)

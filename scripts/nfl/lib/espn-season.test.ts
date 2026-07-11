@@ -1,6 +1,15 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { inferNflSeason } from "./espn";
+import { normalizeEspnAbbr } from "./espn";
+
+describe("normalizeEspnAbbr", () => {
+  it("maps historical relocation abbreviations", () => {
+    assert.equal(normalizeEspnAbbr("SD"), "LAC");
+    assert.equal(normalizeEspnAbbr("OAK"), "LV");
+    assert.equal(normalizeEspnAbbr("WSH"), "WAS");
+  });
+});
 
 describe("inferNflSeason", () => {
   it("assigns Jan/Feb games to the prior start year", () => {

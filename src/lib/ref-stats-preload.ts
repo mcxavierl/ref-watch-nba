@@ -3,6 +3,7 @@ import type {
   CbbStatsGlobalKey,
   CfbStatsGlobalKey,
   EplStatsGlobalKey,
+  LaligaStatsGlobalKey,
   NbaStatsGlobalKey,
   NflStatsGlobalKey,
   NhlStatsGlobalKey,
@@ -14,20 +15,22 @@ import {
 import type { LeagueId } from "@/lib/leagues";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 
-type League = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+type League = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 type CacheKey =
   | NbaStatsGlobalKey
   | NhlStatsGlobalKey
   | NflStatsGlobalKey
   | CbbStatsGlobalKey
   | CfbStatsGlobalKey
-  | EplStatsGlobalKey;
+  | EplStatsGlobalKey
+  | LaligaStatsGlobalKey;
 
 const CACHE_KEYS: Record<League, CacheKey> = {
   nba: "__REFWATCH_NBA_REF_STATS__",
   nhl: "__REFWATCH_NHL_REF_STATS__",
   nfl: "__REFWATCH_NFL_REF_STATS__",
   epl: "__REFWATCH_EPL_REF_STATS__",
+  laliga: "__REFWATCH_LALIGA_REF_STATS__",
   cbb: "__REFWATCH_CBB_REF_STATS__",
   cfb: "__REFWATCH_CFB_REF_STATS__",
 };
@@ -36,13 +39,17 @@ type TeamSplitsCacheKey =
   | "__REFWATCH_NBA_TEAM_SPLITS__"
   | "__REFWATCH_NHL_TEAM_SPLITS__"
   | "__REFWATCH_NFL_TEAM_SPLITS__"
-  | "__REFWATCH_EPL_TEAM_SPLITS__";
+  | "__REFWATCH_EPL_TEAM_SPLITS__"
+  | "__REFWATCH_LALIGA_TEAM_SPLITS__"
+  | "__REFWATCH_CBB_TEAM_SPLITS__";
 
 const TEAM_SPLITS_CACHE_KEYS: Partial<Record<League, TeamSplitsCacheKey>> = {
   nba: "__REFWATCH_NBA_TEAM_SPLITS__",
   nhl: "__REFWATCH_NHL_TEAM_SPLITS__",
   nfl: "__REFWATCH_NFL_TEAM_SPLITS__",
   epl: "__REFWATCH_EPL_TEAM_SPLITS__",
+  laliga: "__REFWATCH_LALIGA_TEAM_SPLITS__",
+  cbb: "__REFWATCH_CBB_TEAM_SPLITS__",
 };
 
 const ASSET_BASE: Record<League, string> = {
@@ -50,6 +57,7 @@ const ASSET_BASE: Record<League, string> = {
   nhl: "/data/nhl",
   nfl: "/data/nfl",
   epl: "/data/epl",
+  laliga: "/data/laliga",
   cbb: "/data/cbb",
   cfb: "/data/cfb",
 };
@@ -200,9 +208,10 @@ export async function preloadLeagueDataForPath(
 /** Load only the leagues a route needs, avoids parsing both 8MB files on every request. */
 export function leaguesForPath(pathname: string): League[] {
   if (pathname.startsWith("/overview")) {
-    return ["nba", "nhl", "nfl", "epl"];
+    return [];
   }
   if (pathname.startsWith("/epl")) return ["epl"];
+  if (pathname.startsWith("/laliga")) return ["laliga"];
   if (pathname.startsWith("/cfb")) return ["cfb"];
   if (pathname.startsWith("/cbb")) return ["cbb"];
   if (pathname.startsWith("/nfl")) return ["nfl"];

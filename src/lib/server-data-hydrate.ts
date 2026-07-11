@@ -15,13 +15,17 @@ const DATA_LEAGUE_FOR_ROUTE: Record<
   nhl: "NHL",
   nfl: "NFL",
   epl: "EPL",
+  laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
 };
 
 /** SSR isolate: fetch /public data assets when Workers cannot read data/ from disk. */
 export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
+  if (pathname.startsWith("/overview")) return;
+
   await preloadLeagueDataForPath(SITE_URL, pathname);
+
   const leagues = leaguesForPath(pathname);
   await Promise.all(
     leagues.map((league) =>

@@ -19,7 +19,11 @@ import {
 } from "@/lib/stats-utils";
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { cbbCrewMetricsProvenance } from "@/lib/provenance";
-import { getCachedRefStats } from "@/lib/ref-stats-preload";
+import {
+  resolveRefStatsFromFsOrCache,
+  resolveTeamSplitsForLeague,
+  attachTeamSplits,
+} from "@/lib/ref-stats-preload";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data", "cbb");
@@ -46,10 +50,10 @@ function tryReadJson<T>(filename: string): T | null {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs = tryReadJson<RefStatsFile>("ref-stats.json");
-  if (fromFs) return fromFs;
-
-  return getCachedRefStats("cbb");
+  const fromFs =
+    tryReadJson<RefStatsFile>("ref-stats-core.json") ??
+    tryReadJson<RefStatsFile>("ref-stats.json");
+  return resolveRefStatsFromFsOrCache("cbb", fromFs);
 }
 
 export function getAssignments(): AssignmentsFile {
@@ -102,11 +106,29 @@ function applyBaselines(stats: RefStatsFile): RefStatsFile {
   };
 }
 
+function loadTeamSplitsFromDisk(): Record<string, TeamCrewSplit[]> {
+  return tryReadJson<Record<string, TeamCrewSplit[]>>("team-splits.json") ?? {};
+}
+
+function resolveTeamSplits(
+  embedded: Record<string, TeamCrewSplit[]>,
+): Record<string, TeamCrewSplit[]> {
+  return resolveTeamSplitsForLeague("cbb", embedded, loadTeamSplitsFromDisk());
+}
+
 function normalizeRefStats(data: RefStatsFile): RefStatsFile {
+  const withSplits = attachTeamSplits(
+    "cbb",
+    {
+      ...data,
+      refs: data.refs ?? [],
+      teamSplits: migrateLegacySplits(data),
+    },
+    loadTeamSplitsFromDisk(),
+  );
   return {
-    ...data,
-    refs: data.refs ?? [],
-    teamSplits: migrateLegacySplits(data),
+    ...withSplits,
+    teamSplits: resolveTeamSplits(withSplits.teamSplits ?? {}),
   };
 }
 

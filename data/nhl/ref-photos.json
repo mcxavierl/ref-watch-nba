@@ -1,12 +1,13 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-10T23:48:32.869Z",
+    "lastUpdated": "2026-07-11T17:54:22.707Z",
     "source": "records.nhl.com + wikipedia fallback",
-    "count": 115,
+    "count": 113,
     "fromNhl": 114,
     "fromWiki": 1,
     "missed": 5,
-    "apiOfficialsWithThumb": 203
+    "apiOfficialsWithThumb": 203,
+    "note": " Purged bad/duplicate Commons matches."
   },
   "photos": {
     "kendrick-nicholson-30": {
@@ -591,12 +592,6 @@
       "source": "records.nhl.com",
       "matchedName": "Tim Nowak"
     },
-    "ryan-jackson-84": {
-      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Jackson_80x78.png",
-      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Jackson_300x294.png",
-      "source": "records.nhl.com",
-      "matchedName": "Ryan Jackson"
-    },
     "brad-watson-0": {
       "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/2072.png",
       "headshotUrl": "https://secure.nhl.com/photos/officials/cutouts/2072.png",
@@ -686,12 +681,6 @@
       "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Brace_300x294_v3.png",
       "source": "records.nhl.com",
       "matchedName": "Riley Brace"
-    },
-    "dave-jackson-0": {
-      "thumbUrl": "https://records.nhl.com/site/asset/public/ext/officials/Jackson_80x78.png",
-      "headshotUrl": "https://records.nhl.com/site/asset/public/ext/officials/Jackson_300x294.png",
-      "source": "records.nhl.com",
-      "matchedName": "Ryan Jackson"
     },
     "dave-lewis-0": {
       "thumbUrl": "https://secure.nhl.com/photos/officials/thumbs/4648.png",

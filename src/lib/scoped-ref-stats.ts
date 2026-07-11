@@ -8,13 +8,14 @@ import type {
   TeamCrewSplit,
 } from "@/lib/types";
 
-type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
 const LEAGUE_ID_TO_DATA: Record<LeagueId, DataLeague> = {
   nba: "NBA",
   nhl: "NHL",
   nfl: "NFL",
   epl: "EPL",
+  laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
   wnba: "NBA",

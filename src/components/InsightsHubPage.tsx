@@ -24,7 +24,7 @@ import { RANKINGS_PAGE_LEAD } from "@/lib/trust-charter";
 import type { FindingLeague } from "@/lib/findings-shared";
 import type { SeasonBaseline } from "../../scripts/lib/baselines";
 
-type InsightsLeagueId = "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+type InsightsLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 
 type InsightsHubPageProps = {
   leagueId: InsightsLeagueId;
@@ -58,7 +58,9 @@ export function InsightsHubPage({
   const dataLeague = insightsDataLeague(leagueId);
   const findings = computeResearchFindingsForLeague(dataLeague, scopedSeasons);
   const baselines = getBaselinesFile();
-  const leagueBaselines = baselines[dataLeague];
+  const baselineKey =
+    dataLeague === "LALIGA" ? "EPL" : dataLeague;
+  const leagueBaselines = baselines[baselineKey];
   let scopedBaselineSeasons = scopedBaselinesSeasons(
     leagueBaselines.seasons,
     scopedSeasons,

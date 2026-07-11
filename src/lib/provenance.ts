@@ -459,7 +459,21 @@ export function leagueUsesFallbackBaseline(league: "NBA" | "NHL" | "NFL"): boole
 export function nflCrewMetricsProvenance(stats:RefStatsFile,qualifiedCount:number,poolGames:number){return crewMetricsProvenance(stats,qualifiedCount,poolGames,stats.meta.minSampleSize);}
 export function cbbCrewMetricsProvenance(stats:RefStatsFile,qualifiedCount:number,poolGames:number){return crewMetricsProvenance(stats,qualifiedCount,poolGames,stats.meta.minSampleSize);}
 export function cfbCrewMetricsProvenance(stats:RefStatsFile,qualifiedCount:number,poolGames:number){return crewMetricsProvenance(stats,qualifiedCount,poolGames,stats.meta.minSampleSize);}
-export function eplCrewMetricsProvenance(stats:RefStatsFile,qualifiedCount:number,poolGames:number){return crewMetricsProvenance(stats,qualifiedCount,poolGames,stats.meta.minSampleSize);}
+export function eplCrewMetricsProvenance(
+  stats: RefStatsFile,
+  qualifiedCount: number,
+  poolGames: number,
+) {
+  return crewMetricsProvenance(stats, qualifiedCount, poolGames, stats.meta.minSampleSize);
+}
+
+export function laligaCrewMetricsProvenance(
+  stats: RefStatsFile,
+  qualifiedCount: number,
+  poolGames: number,
+) {
+  return crewMetricsProvenance(stats, qualifiedCount, poolGames, stats.meta.minSampleSize);
+}
 export function nflRefAnalyticsProvenance(
   profile: RefProfile,
   analytics: NflRefAnalytics,

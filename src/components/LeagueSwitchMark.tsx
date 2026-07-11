@@ -1,6 +1,6 @@
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 
-type LeagueNavId = "nba" | "nhl" | "nfl" | "epl";
+type LeagueNavId = "nba" | "nhl" | "nfl" | "epl" | "laliga";
 
 const LEAGUE_LOGOS: Record<
   LeagueNavId,
@@ -29,6 +29,12 @@ const LEAGUE_LOGOS: Record<
     inactive: "/logos/epl-lion.svg",
     alt: "Premier League",
     className: "league-nav-mark--epl",
+  },
+  laliga: {
+    active: "/logos/laliga.svg",
+    inactive: "/logos/laliga.svg",
+    alt: "La Liga",
+    className: "league-nav-mark--laliga",
   },
 };
 

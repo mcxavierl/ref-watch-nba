@@ -63,7 +63,8 @@ export function teamLogoUrl(_abbr: string): string {
 export function matchTeamString(team: string): CbbTeam | undefined {
   const n = team.trim().toLowerCase();
   if (!n) return undefined;
-  const direct = teamByAbbr.get(n.toUpperCase());
+  const normalized = n === "conn" ? "uconn" : n;
+  const direct = teamByAbbr.get(normalized.toUpperCase());
   if (direct) return direct;
   for (const t of CBB_TEAMS) {
     const full = teamFullName(t).toLowerCase();

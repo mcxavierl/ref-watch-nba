@@ -22,7 +22,7 @@ export function ogSlateContent(feed: NightlyFeed) {
         ? "Historical preview, not live assignments."
         : estimatedCount > 0
           ? `${estimatedCount} signal${estimatedCount === 1 ? "" : "s"} use partial or proxy inputs.`
-          : "Historical referee trends from ingested game logs.",
+          : "Historical referee trends from real game logs.",
   };
 }
 

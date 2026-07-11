@@ -3,8 +3,10 @@ import type { LeagueId } from "@/lib/leagues";
 export type LeagueHeroCopy = {
   kicker: string;
   liveTitle: string;
+  pendingTitle?: string;
   offseasonTitle: string;
   liveLead: string;
+  pendingLead?: string;
   offseasonLead: string;
   statLabels: {
     officials: string;
@@ -48,9 +50,12 @@ export const LEAGUE_HERO_COPY: Record<
   nfl: {
     kicker: "NFL flag desk",
     liveTitle: "Who's throwing flags this week.",
+    pendingTitle: "Next NFL week is on the board.",
     offseasonTitle: "NFL crews, indexed and scored.",
     liveLead:
       "Crew assignments, penalty-yard tendencies, and official×team splits before kickoff.",
+    pendingLead:
+      "Matchups are scheduled; crew assignments publish closer to kickoff. Historical splits stay live below.",
     offseasonLead:
       "Official profiles, flag rates, and team histories while the week resets.",
     statLabels: {
@@ -62,9 +67,12 @@ export const LEAGUE_HERO_COPY: Record<
   epl: {
     kicker: "Premier League whistle desk",
     liveTitle: "Who's officiating the matchday.",
+    pendingTitle: "Next matchday is on the board.",
     offseasonTitle: "Premier League refs, indexed and scored.",
     liveLead:
       "Referee assignments, foul and card tendencies, and ref×club history before kickoff.",
+    pendingLead:
+      "Fixtures are scheduled; referee appointments publish closer to kickoff. Historical splits stay live below.",
     offseasonLead:
       "Referee profiles, foul rates, and club splits while the schedule pauses.",
     statLabels: {

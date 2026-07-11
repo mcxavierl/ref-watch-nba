@@ -84,7 +84,7 @@ export function teamRecordFromStat(
 }
 
 export interface RefTeamMatrixOptions {
-  league?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+  league?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   /** Earliest season label for NBA official baseline totals. */
   sinceSeason?: string;
   /** Hide refs with no qualified cells (useful for sparse ESPN-only leagues). */
@@ -186,7 +186,7 @@ export type MatrixRefSort = "name-asc" | "standout-desc" | "total-delta-desc";
 
 export const MATRIX_DEFAULT_REF_SORT: MatrixRefSort = "standout-desc";
 
-export const MATRIX_STANDOUT_SORT_EXPLAINER = `Most standout ranks refs by how many qualified team splits diverge from that team's sample baseline by ±${MATRIX_EXTREME_DELTA_PTS} percentage points or more (win rate with that ref vs the team's overall W-L in this dataset).`;
+export const MATRIX_STANDOUT_SORT_EXPLAINER = `Most standout ranks refs by qualified splits (≥${MATRIX_MIN_GAMES} games per cell) that diverge from that team's sample baseline by ±${MATRIX_EXTREME_DELTA_PTS} percentage points or more. Thicker samples break ties; thin-only rows sink to the bottom.`;
 
 export const MATRIX_REF_SORT_OPTIONS: {
   value: MatrixRefSort;
@@ -197,6 +197,30 @@ export const MATRIX_REF_SORT_OPTIONS: {
   { value: "name-asc", label: "Alphabetical" },
 ];
 
+function matrixTeamBaseline(
+  matrix: RefTeamMatrix,
+  teamAbbr: string,
+): number {
+  const team = matrix.teams.find(
+    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
+  );
+  return team?.baselineWinRate ?? 0;
+}
+
+/** Total games in qualified (non-thin) ref×team cells for a ref row. */
+export function refMatrixQualifiedGames(
+  matrix: RefTeamMatrix,
+  refSlug: string,
+): number {
+  let total = 0;
+  for (const team of matrix.teams) {
+    const cell = matrix.cells[matrixCellKey(refSlug, team.abbr)];
+    if (!cell || cell.thinSample) continue;
+    total += cell.games;
+  }
+  return total;
+}
+
 /** Count of qualified cells at or beyond ±MATRIX_EXTREME_DELTA_PTS vs team baseline. */
 export function refMatrixStandoutCount(
   matrix: RefTeamMatrix,
@@ -205,10 +229,10 @@ export function refMatrixStandoutCount(
   let count = 0;
   for (const team of matrix.teams) {
     const cell = matrix.cells[matrixCellKey(refSlug, team.abbr)];
-    if (!cell) continue;
+    if (!cell || cell.thinSample) continue;
     if (
       matrixCellExtremeFromDelta(
-        winRateDeltaPoints(cell.winRate, team.baselineWinRate),
+        winRateDeltaPoints(cell.winRate, matrixTeamBaseline(matrix, team.abbr)),
       )
     ) {
       count++;
@@ -225,9 +249,9 @@ export function refMatrixTotalDelta(
   let total = 0;
   for (const team of matrix.teams) {
     const cell = matrix.cells[matrixCellKey(refSlug, team.abbr)];
-    if (!cell) continue;
+    if (!cell || cell.thinSample) continue;
     total += Math.abs(
-      winRateDeltaPoints(cell.winRate, team.baselineWinRate),
+      winRateDeltaPoints(cell.winRate, matrixTeamBaseline(matrix, team.abbr)),
     );
   }
   return total;
@@ -244,16 +268,40 @@ export function sortMatrixRefs(
     }
 
     if (sort === "standout-desc") {
-      const diff =
+      const qualGamesA = refMatrixQualifiedGames(matrix, a.slug);
+      const qualGamesB = refMatrixQualifiedGames(matrix, b.slug);
+      const hasQualifiedA = qualGamesA > 0 ? 1 : 0;
+      const hasQualifiedB = qualGamesB > 0 ? 1 : 0;
+      if (hasQualifiedB !== hasQualifiedA) {
+        return hasQualifiedB - hasQualifiedA;
+      }
+
+      const standoutDiff =
         refMatrixStandoutCount(matrix, b.slug) -
         refMatrixStandoutCount(matrix, a.slug);
-      return diff !== 0 ? diff : a.name.localeCompare(b.name);
+      if (standoutDiff !== 0) return standoutDiff;
+
+      const gamesDiff = qualGamesB - qualGamesA;
+      if (gamesDiff !== 0) return gamesDiff;
+
+      return a.name.localeCompare(b.name);
+    }
+
+    const qualGamesA = refMatrixQualifiedGames(matrix, a.slug);
+    const qualGamesB = refMatrixQualifiedGames(matrix, b.slug);
+    const hasQualifiedA = qualGamesA > 0 ? 1 : 0;
+    const hasQualifiedB = qualGamesB > 0 ? 1 : 0;
+    if (hasQualifiedB !== hasQualifiedA) {
+      return hasQualifiedB - hasQualifiedA;
     }
 
     const diff =
       refMatrixTotalDelta(matrix, b.slug) -
       refMatrixTotalDelta(matrix, a.slug);
-    return diff !== 0 ? diff : a.name.localeCompare(b.name);
+    if (diff !== 0) return diff;
+
+    const gamesDiff = qualGamesB - qualGamesA;
+    return gamesDiff !== 0 ? gamesDiff : a.name.localeCompare(b.name);
   });
 }
 

@@ -160,3 +160,69 @@ export function toGameOddsLines(lines: NflClosingLine[]): GameOddsLine[] {
     lastUpdated: new Date().toISOString(),
   }));
 }
+
+export interface NflverseScheduleGame {
+  espnId?: string;
+  date: string;
+  awayTeam: string;
+  homeTeam: string;
+  season: number;
+  /** Head referee from nflverse games.csv (fallback when ESPN has no crew). */
+  referee?: string;
+}
+
+/** Complete REG/POST schedule rows from nflverse (for gap-fill backfill). */
+export function listNflverseScheduleGames(
+  csv: string,
+  options: { minSeason?: number; maxSeason?: number } = {},
+): NflverseScheduleGame[] {
+  const minSeason = options.minSeason ?? 2016;
+  const maxSeason = options.maxSeason ?? 2026;
+  const rows = csv.trim().split("\n");
+  const header = parseCsvRow(rows[0] ?? "");
+  const idx = (name: string) => header.indexOf(name);
+
+  const seasonI = idx("season");
+  const typeI = idx("game_type");
+  const dateI = idx("gameday");
+  const awayI = idx("away_team");
+  const homeI = idx("home_team");
+  const espnI = idx("espn");
+  const refereeI = idx("referee");
+
+  const games: NflverseScheduleGame[] = [];
+  for (let r = 1; r < rows.length; r++) {
+    const fields = parseCsvRow(rows[r] ?? "");
+    const season = Number(fields[seasonI]);
+    const gameType = fields[typeI];
+    if (!Number.isFinite(season) || season < minSeason || season > maxSeason) {
+      continue;
+    }
+    if (gameType !== "REG" && gameType !== "POST") continue;
+
+    const awayTeam = normalizeNflverseTeam(fields[awayI] ?? "");
+    const homeTeam = normalizeNflverseTeam(fields[homeI] ?? "");
+    const date = fields[dateI] ?? "";
+    if (!awayTeam || !homeTeam || !date) continue;
+
+    const espnRaw = fields[espnI]?.trim();
+    const espnId =
+      espnRaw && espnRaw !== "NA" && espnRaw !== "" ? espnRaw : undefined;
+    const refereeRaw = fields[refereeI]?.trim();
+    const referee =
+      refereeRaw && refereeRaw !== "NA" && refereeRaw !== ""
+        ? refereeRaw
+        : undefined;
+
+    games.push({ espnId, date, awayTeam, homeTeam, season, referee });
+  }
+  return games;
+}
+
+export function nflverseMatchupKey(
+  date: string,
+  awayTeam: string,
+  homeTeam: string,
+): string {
+  return matchupKey(date, awayTeam, homeTeam);
+}

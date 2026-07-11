@@ -13,6 +13,12 @@ import {
   getRefStats as getNhlRefStats,
 } from "@/lib/nhl/data";
 import { getAssignments as getNflAssignments, getRefStats as getNflRefStats } from "@/lib/nfl/data";
+import { computeSlateHomeBias as computeNflSlateHomeBias } from "@/lib/nfl/home-bias";
+import { getOdds as getNflOdds } from "@/lib/nfl/odds";
+import {
+  computeSlatePremiums as computeNflSlatePremiums,
+  paceAlerts as nflPaceAlerts,
+} from "@/lib/nfl/whistle-premium";
 import {
   getAssignments as getCbbAssignments,
   getRefStats as getCbbRefStats,
@@ -25,6 +31,16 @@ import {
   getAssignments as getEplAssignments,
   getRefStats as getEplRefStats,
 } from "@/lib/epl/data";
+import { computeSlateHomeBias as computeEplSlateHomeBias } from "@/lib/epl/home-bias";
+import { getOdds as getEplOdds } from "@/lib/epl/odds";
+import {
+  computeSlatePremiums as computeEplSlatePremiums,
+  paceAlerts as eplPaceAlerts,
+} from "@/lib/epl/whistle-premium";
+import {
+  getAssignments as getLaligaAssignments,
+  getRefStats as getLaligaRefStats,
+} from "@/lib/laliga/data";
 import { computeSlateHomeBias as computeNhlSlateHomeBias } from "@/lib/nhl/home-bias";
 import { getOdds as getNhlOdds } from "@/lib/nhl/odds";
 import {
@@ -76,7 +92,7 @@ export interface SyndicatedSignal {
 export interface NightlyFeed {
   generatedAt: string;
   slateDate: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   isPreview: boolean;
   assignmentsSource: AssignmentsFile["source"];
   statsSource: RefStatsFile["meta"]["source"];
@@ -240,8 +256,38 @@ export function buildNflNightlyFeed(): NightlyFeed {
   if (nflFeedCache) return nflFeedCache;
   const assignments = getNflAssignments();
   const stats = getNflRefStats();
-  const { isPreview } = resolveSlateGames(assignments);
-  return (nflFeedCache = { generatedAt: new Date().toISOString(), slateDate: assignments.date, league: "NFL", isPreview, assignmentsSource: assignments.source, statsSource: stats.meta.source, pageUrl: absoluteUrl("/nfl"), disclaimer: SYNDICATION_DISCLAIMER, signals: [] });
+  const odds = getNflOdds();
+  const { games, isPreview } = resolveSlateGames(assignments);
+  const dataTag = refStatsDataTag(stats.meta);
+  const premiums = computeNflSlatePremiums(games, stats, odds);
+  const alerts = nflPaceAlerts(premiums);
+  const homeBias = computeNflSlateHomeBias(games, stats);
+  const storylines = computeSlateStorylines(games, stats, 5);
+
+  const signals: SyndicatedSignal[] = [];
+  for (const alert of alerts) {
+    const signal = signalFromPaceAlert(alert, dataTag);
+    if (signal) signals.push(signal);
+  }
+  for (const bias of homeBias) {
+    const signal = signalFromHomeBias(bias, dataTag);
+    if (signal) signals.push(signal);
+  }
+  for (const story of storylines.slice(0, 3)) {
+    signals.push(signalFromGrudge(story, dataTag));
+  }
+
+  return (nflFeedCache = {
+    generatedAt: new Date().toISOString(),
+    slateDate: assignments.date,
+    league: "NFL",
+    isPreview,
+    assignmentsSource: assignments.source,
+    statsSource: stats.meta.source,
+    pageUrl: absoluteUrl("/nfl"),
+    disclaimer: SYNDICATION_DISCLAIMER,
+    signals,
+  });
 }
 export function buildNflSlateFeed(): NightlyFeed { return buildNflNightlyFeed(); }
 
@@ -288,7 +334,27 @@ export function buildEplNightlyFeed(): NightlyFeed {
   if (eplFeedCache) return eplFeedCache;
   const assignments = getEplAssignments();
   const stats = getEplRefStats();
-  const { isPreview } = resolveSlateGames(assignments);
+  const odds = getEplOdds();
+  const { games, isPreview } = resolveSlateGames(assignments);
+  const dataTag = refStatsDataTag(stats.meta);
+  const premiums = computeEplSlatePremiums(games, stats, odds);
+  const alerts = eplPaceAlerts(premiums);
+  const homeBias = computeEplSlateHomeBias(games, stats);
+  const storylines = computeSlateStorylines(games, stats, 5);
+
+  const signals: SyndicatedSignal[] = [];
+  for (const alert of alerts) {
+    const signal = signalFromPaceAlert(alert, dataTag);
+    if (signal) signals.push(signal);
+  }
+  for (const bias of homeBias) {
+    const signal = signalFromHomeBias(bias, dataTag);
+    if (signal) signals.push(signal);
+  }
+  for (const story of storylines.slice(0, 3)) {
+    signals.push(signalFromGrudge(story, dataTag));
+  }
+
   return (eplFeedCache = {
     generatedAt: new Date().toISOString(),
     slateDate: assignments.date,
@@ -297,6 +363,25 @@ export function buildEplNightlyFeed(): NightlyFeed {
     assignmentsSource: assignments.source,
     statsSource: stats.meta.source,
     pageUrl: absoluteUrl("/epl"),
+    disclaimer: SYNDICATION_DISCLAIMER,
+    signals,
+  });
+}
+
+let laligaFeedCache: NightlyFeed | null = null;
+export function buildLaligaNightlyFeed(): NightlyFeed {
+  if (laligaFeedCache) return laligaFeedCache;
+  const assignments = getLaligaAssignments();
+  const stats = getLaligaRefStats();
+  const { isPreview } = resolveSlateGames(assignments);
+  return (laligaFeedCache = {
+    generatedAt: new Date().toISOString(),
+    slateDate: assignments.date,
+    league: "LALIGA",
+    isPreview,
+    assignmentsSource: assignments.source,
+    statsSource: stats.meta.source,
+    pageUrl: absoluteUrl("/laliga"),
     disclaimer: SYNDICATION_DISCLAIMER,
     signals: [],
   });
@@ -379,14 +464,37 @@ export function buildShareText(feed: NightlyFeed): string {
   return lines.join("\n");
 }
 
-export function slateMetadataDescription(feed: NightlyFeed): string {
-  const gameCount =
-    feed.league === "NBA"
-      ? resolveSlateGames(getNbaAssignments()).games.length
-      : resolveSlateGames(getNhlAssignments()).games.length;
+function assignmentsForLeague(
+  league: NightlyFeed["league"],
+): AssignmentsFile {
+  switch (league) {
+    case "NBA":
+      return getNbaAssignments();
+    case "NHL":
+      return getNhlAssignments();
+    case "NFL":
+      return getNflAssignments();
+    case "EPL":
+      return getEplAssignments();
+    default:
+      return getNbaAssignments();
+  }
+}
 
-  if (gameCount === 0) {
+export function slateMetadataDescription(feed: NightlyFeed): string {
+  const assignments = assignmentsForLeague(feed.league);
+  const gameCount = resolveSlateGames(assignments).games.length;
+  const scheduledCount =
+    (assignments.scheduledGames?.length ?? 0) +
+    assignments.games.filter((game) => game.crew.length === 0).length;
+
+  if (gameCount === 0 && scheduledCount === 0) {
     return `${feed.league} slate empty; check back after assignments drop. ${AFFILIATION_SHORT}`;
+  }
+
+  if (gameCount === 0 && scheduledCount > 0) {
+    const pendingNote = assignments.note ? ` ${assignments.note}` : "";
+    return `${scheduledCount} upcoming ${feed.league} matchup${scheduledCount === 1 ? "" : "s"}; crews not published yet.${pendingNote} ${AFFILIATION_SHORT}`;
   }
 
   const top = topShareSignals(feed, 3);
@@ -403,17 +511,29 @@ export function slateMetadataDescription(feed: NightlyFeed): string {
 
 const AFFILIATION_SHORT = "Not affiliated with the league. Informational only.";
 
+const SPORT_BY_LEAGUE: Record<
+  "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  string
+> = {
+  NBA: "Basketball",
+  NHL: "Ice Hockey",
+  NFL: "American Football",
+  EPL: "Soccer",
+  LALIGA: "Soccer",
+  CBB: "Basketball",
+  CFB: "American Football",
+};
+
 export function slateSportsEvents(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
 ): Array<Record<string, unknown>> {
-  const assignments =
-    league === "NBA" ? getNbaAssignments() : getNhlAssignments();
+  const assignments = assignmentsForLeague(league);
   const { games } = resolveSlateGames(assignments);
 
   return games.map((game) => ({
     "@type": "SportsEvent",
     name: game.matchup,
-    sport: league === "NBA" ? "Basketball" : "Ice Hockey",
+    sport: SPORT_BY_LEAGUE[league],
     startDate: assignments.date,
     location: {
       "@type": "Place",
@@ -473,7 +593,7 @@ export function researchDatasetJsonLd(
 }
 
 export function researchHubDatasetJsonLd(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   count: number,
   lastUpdated: string,
 ): Record<string, unknown> {
@@ -492,7 +612,7 @@ export function researchHubDatasetJsonLd(
 export function refProfileDatasetJsonLd(
   name: string,
   slug: string,
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   games: number,
   lastUpdated: string,
 ): Record<string, unknown> {

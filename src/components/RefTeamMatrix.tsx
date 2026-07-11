@@ -36,7 +36,7 @@ type RefTeamMatrixProps = {
   leagueLabel: string;
   officialNounPlural: string;
   whistleDiffLabel: string;
-  sport: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+  sport: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   teamSosByAbbr?: Record<string, TeamStrengthOfSchedule>;
 };
 
@@ -116,8 +116,9 @@ function TeamRefRankListItem({
 function TeamRefRankColumn({
   titleId,
   title,
-  entries,
+  subtitle,
   variant,
+  entries,
   emptyMessage,
   basePath,
   sport,
@@ -126,36 +127,56 @@ function TeamRefRankColumn({
 }: {
   titleId: string;
   title: string;
-  entries: TeamTopRefEntry[];
+  subtitle: string;
   variant: "positive" | "negative";
+  entries: TeamTopRefEntry[];
   emptyMessage: string;
   basePath: string;
   sport: RefTeamMatrixProps["sport"];
   whistleDiffLabel: string;
   teamBaselineWinRate: number;
 }) {
+  const whistleUnit = whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
+
   return (
-    <div className="ref-matrix-team-panel-column">
-      <h4 id={titleId} className="ref-matrix-team-panel-column-title">
-        {title}
-      </h4>
+    <div
+      className={`ref-matrix-team-panel-column ref-matrix-team-panel-column--${variant}`}
+    >
+      <div className="ref-matrix-team-panel-column-head">
+        <h4 id={titleId} className="ref-matrix-team-panel-column-title">
+          {title}
+        </h4>
+        <p className="ref-matrix-team-panel-column-subtitle">{subtitle}</p>
+      </div>
       {entries.length === 0 ? (
         <p className="ref-matrix-team-panel-empty">{emptyMessage}</p>
       ) : (
-        <ul className="ref-matrix-team-panel-list" aria-labelledby={titleId}>
-          {entries.slice(0, TEAM_MATRIX_REF_PANEL_LIMIT).map((entry, index) => (
-            <TeamRefRankListItem
-              key={entry.refSlug}
-              entry={entry}
-              rank={index + 1}
-              variant={variant}
-              basePath={basePath}
-              sport={sport}
-              whistleDiffLabel={whistleDiffLabel}
-              teamBaselineWinRate={teamBaselineWinRate}
-            />
-          ))}
-        </ul>
+        <>
+          <div
+            className="ref-matrix-team-panel-list-head"
+            aria-hidden
+          >
+            <span>#</span>
+            <span>Official</span>
+            <span>W-L</span>
+            <span>Gp</span>
+            <span>{whistleUnit}</span>
+          </div>
+          <ul className="ref-matrix-team-panel-list" aria-labelledby={titleId}>
+            {entries.slice(0, TEAM_MATRIX_REF_PANEL_LIMIT).map((entry, index) => (
+              <TeamRefRankListItem
+                key={entry.refSlug}
+                entry={entry}
+                rank={index + 1}
+                variant={variant}
+                basePath={basePath}
+                sport={sport}
+                whistleDiffLabel={whistleDiffLabel}
+                teamBaselineWinRate={teamBaselineWinRate}
+              />
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );
@@ -214,10 +235,19 @@ export function RefTeamMatrix({
     MATRIX_DEFAULT_TEAM_PANEL_SORT,
   );
   const [crosshair, setCrosshair] = useState<MatrixCrosshair | null>(null);
+  const [refSearch, setRefSearch] = useState("");
+  const searchQuery = refSearch.trim().toLowerCase();
   const sortedRefs = useMemo(
     () => sortMatrixRefs(refs, matrix, refSort),
     [refs, matrix, refSort],
   );
+  const visibleRefs = useMemo(() => {
+    if (!searchQuery) return sortedRefs;
+    return sortedRefs.filter((ref) =>
+      ref.name.toLowerCase().includes(searchQuery),
+    );
+  }, [sortedRefs, searchQuery]);
+  const searchMatchCount = visibleRefs.length;
   const selectedTeam = useMemo(
     () =>
       selectedTeamAbbr
@@ -267,43 +297,72 @@ export function RefTeamMatrix({
 
   return (
     <div className="ref-matrix" data-league={sport}>
-      <div className="ref-matrix-legend" role="note">
-        <p className="ref-matrix-legend-copy">
-          Each cell shows that ref&apos;s approximate W-L with the team (not the
-          team&apos;s overall record). The baseline row under each logo is the
-          team&apos;s full sample W-L for coloring only. Cells need {minGames}+
-          games for ranking colors; thinner samples show a muted record. Empty
-          cells mean zero games together. Text color and a light
-          tint compare ref×team win rate to the team baseline (±
-          {MATRIX_TONE_DELTA_PTS} pts); splits at ±{MATRIX_EXTREME_DELTA_PTS}{" "}
-          pts or more are standout outliers. Delta text and W-L are shown in
-          every cell, not color alone. Click a team logo to rank the top and
-          bottom {TEAM_MATRIX_REF_PANEL_LIMIT} refs for that team; tap a cell for that
-          ref&apos;s profile (including tight-game proxy). Historical splits
-          only, not picks.
-        </p>
-        <div className="ref-matrix-legend-swatches" aria-hidden>
-          <span className="ref-matrix-swatch ref-matrix-cell--positive">
-            +{MATRIX_TONE_DELTA_PTS}+ pts above baseline
-          </span>
-          <span className="ref-matrix-swatch ref-matrix-cell--neutral">
-            Within ±{MATRIX_TONE_DELTA_PTS} pts
-          </span>
-          <span className="ref-matrix-swatch ref-matrix-cell--negative">
-            −{MATRIX_TONE_DELTA_PTS}+ pts below baseline
-          </span>
-          <span className="ref-matrix-swatch ref-matrix-cell--positive ref-matrix-cell--extreme-high">
-            Standout high (±{MATRIX_EXTREME_DELTA_PTS}+ pts)
-          </span>
-          <span className="ref-matrix-swatch ref-matrix-cell--negative ref-matrix-cell--extreme-low">
-            Standout low (±{MATRIX_EXTREME_DELTA_PTS}+ pts)
-          </span>
-        </div>
-        <div className="ref-matrix-toolbar">
-          <p className="ref-matrix-meta">
-            {refs.length} {officialNounPlural} × {teams.length} teams ·{" "}
-            {qualifiedCellCount} qualified cells
+      <details className="ref-matrix-legend-details">
+        <summary className="ref-matrix-legend-summary">
+          How to read this board
+        </summary>
+        <div className="ref-matrix-legend">
+          <p className="ref-matrix-legend-copy">
+            Each cell shows that ref&apos;s approximate W-L with the team (not the
+            team&apos;s overall record). The baseline row under each logo is the
+            team&apos;s full sample W-L for coloring only. Cells need {minGames}+
+            games for ranking colors; thinner samples show a muted record. Empty
+            cells mean zero games together. Text color and a light
+            tint compare ref×team win rate to the team baseline (±
+            {MATRIX_TONE_DELTA_PTS} pts); splits at ±{MATRIX_EXTREME_DELTA_PTS}{" "}
+            pts or more are standout outliers. Delta text and W-L are shown in
+            every cell, not color alone. Click a team logo to rank the top and
+            bottom {TEAM_MATRIX_REF_PANEL_LIMIT} refs for that team; tap a cell for that
+            ref&apos;s profile (including tight-game proxy). Historical splits
+            only, not picks.
           </p>
+          <div className="ref-matrix-legend-swatches" aria-hidden>
+            <span className="ref-matrix-swatch ref-matrix-cell--positive">
+              +{MATRIX_TONE_DELTA_PTS}+ pts above baseline
+            </span>
+            <span className="ref-matrix-swatch ref-matrix-cell--neutral">
+              Within ±{MATRIX_TONE_DELTA_PTS} pts
+            </span>
+            <span className="ref-matrix-swatch ref-matrix-cell--negative">
+              −{MATRIX_TONE_DELTA_PTS}+ pts below baseline
+            </span>
+            <span className="ref-matrix-swatch ref-matrix-cell--positive ref-matrix-cell--extreme-high">
+              Standout high (±{MATRIX_EXTREME_DELTA_PTS}+ pts)
+            </span>
+            <span className="ref-matrix-swatch ref-matrix-cell--negative ref-matrix-cell--extreme-low">
+              Standout low (±{MATRIX_EXTREME_DELTA_PTS}+ pts)
+            </span>
+          </div>
+        </div>
+      </details>
+
+      <div className="ref-matrix-toolbar">
+        <p className="ref-matrix-meta">
+          {refs.length} {officialNounPlural} × {teams.length} teams ·{" "}
+          {qualifiedCellCount} qualified cells
+        </p>
+        <div className="ref-matrix-toolbar-actions">
+          <div className="ref-matrix-search">
+            <label htmlFor="ref-matrix-search" className="ref-matrix-search-label">
+              Find official
+            </label>
+            <input
+              id="ref-matrix-search"
+              type="search"
+              value={refSearch}
+              onChange={(e) => setRefSearch(e.target.value)}
+              placeholder="e.g. Land Clark"
+              className="ref-matrix-search-input"
+              aria-describedby="ref-matrix-search-hint"
+            />
+            <p id="ref-matrix-search-hint" className="ref-matrix-search-hint">
+              {searchQuery
+                ? searchMatchCount > 0
+                  ? `${searchMatchCount} match${searchMatchCount === 1 ? "" : "es"} — thin-sample rows stay visible with a game count`
+                  : "No matches in this matrix — try a shorter name or check rankings"
+                : "Filter rows by name; includes below-gate samples"}
+            </p>
+          </div>
           <div className="ref-matrix-sort">
             <label htmlFor="ref-matrix-sort" className="ref-matrix-sort-label">
               Sort rows
@@ -407,12 +466,29 @@ export function RefTeamMatrix({
             </tr>
           </thead>
           <tbody>
-            {sortedRefs.map((ref) => {
+            {visibleRefs.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={teams.length + 1}
+                  className="ref-matrix-empty-search"
+                >
+                  No {officialNounPlural} match &ldquo;{refSearch.trim()}&rdquo;.
+                  Clear search or browse rankings.
+                </td>
+              </tr>
+            ) : (
+              visibleRefs.map((ref) => {
               const rowActive = crosshair?.refSlug === ref.slug;
+              const rowSearchHit = searchQuery.length > 0;
               return (
                 <tr
                   key={ref.slug}
-                  className={rowActive ? "ref-matrix-row--crosshair" : undefined}
+                  className={[
+                    rowActive ? "ref-matrix-row--crosshair" : undefined,
+                    rowSearchHit ? "ref-matrix-row--search-hit" : undefined,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 >
                   <th
                     scope="row"
@@ -495,8 +571,11 @@ export function RefTeamMatrix({
                         >
                           <span className="ref-matrix-record">{record}</span>
                           {cell.thinSample ? (
-                            <span className="ref-matrix-delta ref-matrix-delta--thin">
-                              thin
+                            <span
+                              className="ref-matrix-delta ref-matrix-delta--thin"
+                              title={`${cell.games} games — below ${minGames}-game ranking gate`}
+                            >
+                              {cell.games} gp
                             </span>
                           ) : (
                             <span
@@ -515,7 +594,8 @@ export function RefTeamMatrix({
                   })}
                 </tr>
               );
-            })}
+            })
+            )}
           </tbody>
         </table>
       </div>
@@ -576,13 +656,13 @@ export function RefTeamMatrix({
                   </p>
                 )}
                 <p className="ref-matrix-team-panel-lead">
-                  Top and bottom {TEAM_MATRIX_REF_PANEL_LIMIT}{" "}
-                  {officialNounPlural} ranked by{" "}
+                  Favorable and unfavorable {officialNounPlural} vs{" "}
+                  {selectedTeam.label}&apos;s sample baseline. Ranked by{" "}
                   {teamPanelSort === "record"
-                    ? "win rate vs team baseline"
+                    ? "win rate vs baseline"
                     : `${whistleDiffLabel.toLowerCase()} (positive favors the team)`}
-                  ; both W-L and {whistleDiffLabel.toLowerCase()} shown for
-                  context. {minGames}+ games required.
+                  . {minGames}+ games required for top/bottom lists; thinner
+                  samples appear below.
                 </p>
               </div>
             </div>
@@ -622,13 +702,14 @@ export function RefTeamMatrix({
           <div className="ref-matrix-team-panel-columns">
             <TeamRefRankColumn
               titleId="ref-matrix-team-panel-top-title"
-              title={`Top ${TEAM_MATRIX_REF_PANEL_LIMIT} ${
+              title="Favorable"
+              subtitle={
                 teamPanelSort === "record"
-                  ? "vs baseline"
-                  : whistleDiffLabel.toLowerCase()
-              }`}
-              entries={topRefsForTeam}
+                  ? `Win rate above ${selectedTeam.label} baseline`
+                  : `Best ${whistleDiffLabel.toLowerCase()} for ${selectedTeam.label}`
+              }
               variant="positive"
+              entries={topRefsForTeam}
               emptyMessage={`No qualified ${officialNounPlural} above baseline for ${selectedTeam.label} in this sample.`}
               basePath={basePath}
               sport={sport}
@@ -637,13 +718,14 @@ export function RefTeamMatrix({
             />
             <TeamRefRankColumn
               titleId="ref-matrix-team-panel-bottom-title"
-              title={`Bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} ${
+              title="Unfavorable"
+              subtitle={
                 teamPanelSort === "record"
-                  ? "vs baseline"
-                  : whistleDiffLabel.toLowerCase()
-              }`}
-              entries={bottomRefsForTeam}
+                  ? `Win rate below ${selectedTeam.label} baseline`
+                  : `Worst ${whistleDiffLabel.toLowerCase()} for ${selectedTeam.label}`
+              }
               variant="negative"
+              entries={bottomRefsForTeam}
               emptyMessage={`No qualified ${officialNounPlural} below baseline for ${selectedTeam.label} in this sample.`}
               basePath={basePath}
               sport={sport}
@@ -655,13 +737,23 @@ export function RefTeamMatrix({
           {thinRefsForTeam.length > 0 && (
             <div className="ref-matrix-team-panel-thin">
               <h4 className="ref-matrix-team-panel-column-title">
-                Below {minGames}-game sample ({thinRefsForTeam.length})
+                Limited sample — not ranked ({thinRefsForTeam.length})
               </h4>
               <p className="ref-matrix-team-panel-lead">
-                These {officialNounPlural} worked {selectedTeam.label} games but
-                do not meet the ranking gate, including cases like a 5-game
-                sample that looks missing from top/bottom.
+                These {officialNounPlural} worked {selectedTeam.label} but sit
+                below the {minGames}-game gate. They stay visible in the matrix
+                (game count in cell) but are excluded from favorable/unfavorable
+                lists — e.g. a 5-game stint that looks missing from top/bottom.
               </p>
+              <div
+                className="ref-matrix-team-panel-list-head ref-matrix-team-panel-list-head--thin"
+                aria-hidden
+              >
+                <span>Official</span>
+                <span>W-L</span>
+                <span>Gp</span>
+                <span>vs baseline</span>
+              </div>
               <ul className="ref-matrix-team-panel-thin-list">
                 {thinRefsForTeam.map((entry) => (
                   <li key={entry.refSlug}>
@@ -673,7 +765,24 @@ export function RefTeamMatrix({
                         {entry.refName}
                       </span>
                       <span className="ref-matrix-team-panel-thin-meta">
-                        {entry.wins}-{entry.losses} · {entry.games} gp
+                        {entry.wins}-{entry.losses}
+                      </span>
+                      <span className="ref-matrix-team-panel-thin-meta">
+                        {entry.games} gp
+                      </span>
+                      <span
+                        className={`ref-matrix-team-panel-thin-meta ${
+                          entry.deltaPts > 0
+                            ? "ref-matrix-delta--positive"
+                            : entry.deltaPts < 0
+                              ? "ref-matrix-delta--negative"
+                              : "ref-matrix-delta--neutral"
+                        }`}
+                      >
+                        {formatWinRateVsTeam(
+                          entry.winRate,
+                          selectedTeam.baselineWinRate,
+                        )}
                       </span>
                     </Link>
                   </li>

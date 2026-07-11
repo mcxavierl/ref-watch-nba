@@ -48,12 +48,13 @@ export function resolveScopedSeasonsForLeague(
 ): string[] {
   const dataLeagueMap: Record<
     LeagueId,
-    "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB"
+    "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB"
   > = {
     nba: "NBA",
     nhl: "NHL",
     nfl: "NFL",
     epl: "EPL",
+    laliga: "LALIGA",
     cbb: "CBB",
     cfb: "CFB",
     wnba: "NBA",

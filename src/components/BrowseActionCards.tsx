@@ -120,11 +120,95 @@ const EPL_LINKS: BrowseLink[] = [
   },
 ];
 
+const LALIGA_LINKS: BrowseLink[] = [
+  {
+    href: "/laliga/research",
+    label: "Research findings",
+    description: "La Liga dataset patterns ranked by effect size",
+  },
+  {
+    href: "/laliga/rankings",
+    label: "Referee tendency index",
+    description: "Goal and foul tendencies by referee",
+  },
+  {
+    href: "/laliga/teams",
+    label: "Club histories",
+    description: "Crew splits for every La Liga club",
+  },
+  {
+    href: "/laliga/refs",
+    label: "Browse all refs",
+    description: "Profiles across seasons",
+  },
+  {
+    href: "/laliga/trends",
+    label: "League trends",
+    description: "Season goal and card context",
+  },
+];
+
+const CBB_LINKS: BrowseLink[] = [
+  {
+    href: "/cbb/research",
+    label: "Research findings",
+    description: "CBB dataset patterns ranked by effect size",
+  },
+  {
+    href: "/cbb/rankings",
+    label: "Official tendency index",
+    description: "Scoring and foul tendencies by referee",
+  },
+  {
+    href: "/cbb/teams",
+    label: "Program histories",
+    description: "Crew splits for tracked D-I programs",
+  },
+  {
+    href: "/cbb/refs",
+    label: "Browse all refs",
+    description: "Profiles across seasons",
+  },
+  {
+    href: "/cbb/trends",
+    label: "League trends",
+    description: "Season scoring and foul context",
+  },
+];
+
+const CFB_LINKS: BrowseLink[] = [
+  {
+    href: "/cfb/research",
+    label: "Research findings",
+    description: "CFB dataset patterns ranked by effect size",
+  },
+  {
+    href: "/cfb/rankings",
+    label: "Official tendency index",
+    description: "Penalty and scoring tendencies by referee",
+  },
+  {
+    href: "/cfb/teams",
+    label: "Program histories",
+    description: "Crew splits for tracked programs",
+  },
+  {
+    href: "/cfb/refs",
+    label: "Browse all refs",
+    description: "Profiles across seasons",
+  },
+  {
+    href: "/cfb/trends",
+    label: "League trends",
+    description: "Season scoring and penalty context",
+  },
+];
+
 export function BrowseActionCards({
   league,
   compact = false,
 }: {
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   compact?: boolean;
 }) {
   const links =
@@ -132,9 +216,15 @@ export function BrowseActionCards({
       ? NBA_LINKS
       : league === "NFL"
         ? NFL_LINKS
-        : league === "EPL"
-          ? EPL_LINKS
-          : NHL_LINKS;
+        : league === "LALIGA"
+          ? LALIGA_LINKS
+          : league === "EPL"
+            ? EPL_LINKS
+            : league === "CBB"
+              ? CBB_LINKS
+              : league === "CFB"
+                ? CFB_LINKS
+                : NHL_LINKS;
   const gridClass = compact ? "browse-action-compact" : "browse-action-grid";
 
   return (

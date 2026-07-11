@@ -33,9 +33,8 @@ function LeagueIngestGateInner({
         <p className="section-kicker">Coming soon</p>
         <h1 className="page-title">{leagueLabel}</h1>
         <p className="page-lead">
-          Verified {leagueLabel} officiating data is in progress. Ref profiles,
-          crew splits, and analytics will publish here once real-source ingest
-          ships
+          We&apos;re still building verified {leagueLabel} data. Ref profiles, crew splits, and
+          analytics will appear here when it&apos;s ready
           {ticketUrl ? (
             <>
               {" "}
@@ -65,7 +64,7 @@ function LeagueIngestGateInner({
         <p className="mt-6 max-w-2xl text-xs text-zinc-500">
           Dev preview: append{" "}
           <code className="rounded bg-zinc-100 px-1.5 py-0.5">?preview=1</code>{" "}
-          to load synthetic {leagueLabel} data while ingest is in progress.
+          to load preview {leagueLabel} data while we finish the real dataset.
         </p>
       ) : null}
     </div>

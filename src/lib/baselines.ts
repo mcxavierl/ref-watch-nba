@@ -8,6 +8,7 @@ import {
   FALLBACK_CBB,
   FALLBACK_CFB,
   FALLBACK_EPL,
+  FALLBACK_LALIGA,
 } from "../../scripts/lib/baselines";
 import baselinesJson from "../../data/baselines.json";
 
@@ -24,7 +25,7 @@ export interface ResolvedBaseline {
   season: string | null;
 }
 
-type BaselineLeague = "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+type BaselineLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
 const EMPTY: BaselinesFile = {
   generatedAt: "",
@@ -35,6 +36,7 @@ const EMPTY: BaselinesFile = {
     CBB: { ...FALLBACK_CBB },
     CFB: { ...FALLBACK_CFB },
     EPL: { ...FALLBACK_EPL },
+    LALIGA: { ...FALLBACK_LALIGA },
   },
   NBA: {
     currentSeason: null,
@@ -72,6 +74,12 @@ const EMPTY: BaselinesFile = {
     aggregate: { season: "all", gameCount: 0, ...FALLBACK_EPL },
     usingFallback: true,
   },
+  LALIGA: {
+    currentSeason: null,
+    seasons: {},
+    aggregate: { season: "all", gameCount: 0, ...FALLBACK_LALIGA },
+    usingFallback: true,
+  },
 };
 
 function mergeBaselinesFile(parsed: BaselinesFile): BaselinesFile {
@@ -85,11 +93,12 @@ function mergeBaselinesFile(parsed: BaselinesFile): BaselinesFile {
     CBB: parsed.CBB ?? EMPTY.CBB,
     CFB: parsed.CFB ?? EMPTY.CFB,
     EPL: parsed.EPL ?? EMPTY.EPL,
+    LALIGA: parsed.LALIGA ?? EMPTY.LALIGA,
   };
 }
 
 function seasonCount(file: BaselinesFile): number {
-  return (["NBA", "NHL", "NFL", "EPL"] as const).reduce(
+  return (["NBA", "NHL", "NFL", "EPL", "LALIGA"] as const).reduce(
     (n, league) => n + Object.keys(file[league].seasons).length,
     0,
   );

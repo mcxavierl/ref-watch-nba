@@ -129,6 +129,7 @@ export default async function EplRefProfilePage({
             slug={profile.slug}
             sport="epl"
             size="xl"
+            decorative={false}
             className="ring-2 ring-zinc-200 shadow-md"
           />
           <div className="page-hero-head-copy">

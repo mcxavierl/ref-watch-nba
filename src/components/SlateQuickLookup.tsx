@@ -10,10 +10,18 @@ export type SlateQuickLookupRef = {
   name: string;
   games: number;
   href?: string;
+  leagueLabel?: string;
 };
 
 type LookupResult =
-  | { kind: "ref"; slug: string; label: string; detail: string; href: string }
+  | {
+      kind: "ref";
+      slug: string;
+      label: string;
+      detail: string;
+      href: string;
+      leagueLabel?: string;
+    }
   | { kind: "team"; abbr: string; label: string; detail: string; href: string }
   | { kind: "shortcut"; label: string; detail: string; href: string };
 
@@ -66,6 +74,7 @@ function buildResults(
         label: ref.name,
         detail: `${ref.games.toLocaleString()} games logged`,
         href: ref.href ?? `/refs/${ref.slug}`,
+        leagueLabel: ref.leagueLabel,
       }),
     );
 
@@ -224,7 +233,12 @@ export function SlateQuickLookup({
                   className={`slate-quick-lookup-result${index === activeIndex ? " slate-quick-lookup-result-active" : ""}`}
                   onMouseEnter={() => setActiveIndex(index)}
                 >
-                  <span className="slate-quick-lookup-result-label">{result.label}</span>
+                  <span className="slate-quick-lookup-result-main">
+                    {result.kind === "ref" && result.leagueLabel ? (
+                      <span className="slate-quick-lookup-league-badge">{result.leagueLabel}</span>
+                    ) : null}
+                    <span className="slate-quick-lookup-result-label">{result.label}</span>
+                  </span>
                   <span className="slate-quick-lookup-result-detail">{result.detail}</span>
                 </Link>
               </li>
@@ -253,6 +267,9 @@ export function SlateQuickLookup({
               href={ref.href ?? `/refs/${ref.slug}`}
               className="slate-quick-lookup-chip slate-quick-lookup-chip-ref"
             >
+              {ref.leagueLabel ? (
+                <span className="slate-quick-lookup-chip-badge">{ref.leagueLabel}</span>
+              ) : null}
               {ref.name}
               <ArrowRight className="slate-quick-lookup-chip-arrow" aria-hidden />
             </Link>

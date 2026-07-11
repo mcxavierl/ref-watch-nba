@@ -36,7 +36,7 @@ export interface LeagueFindingLabels {
 }
 
 export interface LeagueFindingContext {
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   paths: LeagueFindingPaths;
   labels: LeagueFindingLabels;
   getTeamSplits: (abbr: string) => TeamCrewSplit[];
@@ -56,12 +56,13 @@ const MIN_CLOSE_OVER_DELTA = 0.03;
 
 const MATRIX_LEAGUE: Record<
   LeagueFindingContext["league"],
-  "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb"
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb"
 > = {
   NBA: "nba",
   NHL: "nhl",
   NFL: "nfl",
   EPL: "epl",
+  LALIGA: "laliga",
   CBB: "cbb",
   CFB: "cfb",
 };
@@ -209,7 +210,7 @@ export function buildYoYTrendFinding(
   ctx: LeagueFindingContext,
 ): ScoredFindingBase | null {
   const file = getBaselinesFile();
-  const block = file[ctx.league];
+  const block = file[ctx.league === "LALIGA" ? "EPL" : ctx.league];
   if (block.usingFallback || block.aggregate.gameCount === 0) return null;
 
   const rows = seasonRowsFromBaselines(block.seasons);
@@ -355,7 +356,7 @@ function isCloseGame(
     homeSpread: number;
     wentToOvertime?: boolean;
   },
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
 ): boolean {
   if (league === "NBA" || league === "CBB") {
     return Math.abs(game.homeScore - game.awayScore) <= 5;

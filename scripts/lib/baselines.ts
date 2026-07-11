@@ -32,6 +32,7 @@ export interface BaselinesFile {
     CBB: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
     CFB: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
     EPL: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
+    LALIGA: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
     NHL: Omit<SeasonBaseline, "season" | "gameCount"> & { label: string };
   };
   NBA: LeagueBaselines;
@@ -40,6 +41,7 @@ export interface BaselinesFile {
   CBB: LeagueBaselines;
   CFB: LeagueBaselines;
   EPL: LeagueBaselines;
+  LALIGA: LeagueBaselines;
 }
 
 export const FALLBACK_NBA = {
@@ -69,6 +71,13 @@ export const FALLBACK_EPL = {
   leagueAvgTotal: 2.8,
   leagueOverBaseline: 2.5,
   leagueAvgFouls: 22,
+} as const;
+
+export const FALLBACK_LALIGA = {
+  label: "La Liga static fallback (empty or missing game logs)",
+  leagueAvgTotal: 2.6,
+  leagueOverBaseline: 2.5,
+  leagueAvgFouls: 25,
 } as const;
 
 export const FALLBACK_NFL={label:"NFL",leagueAvgTotal:45.8,leagueOverBaseline:46,leagueAvgFouls:13,leagueAvgPenaltyYards:95} as const;
@@ -149,7 +158,7 @@ function computeSeasonBaseline(
 }
 
 export function computeLeagueBaselines(
-  league: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL",
+  league: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL" | "LALIGA",
   games: GameLogEntry[],
 ): LeagueBaselines {
   if (games.length === 0) {
@@ -193,13 +202,14 @@ export function computeLeagueBaselines(
 }
 
 export function fallbackForLeague(
-  l: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL",
+  l: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL" | "LALIGA",
 ) {
   if (l === "NBA") return FALLBACK_NBA;
   if (l === "NFL") return FALLBACK_NFL;
   if (l === "CBB") return FALLBACK_CBB;
   if (l === "CFB") return FALLBACK_CFB;
   if (l === "EPL") return FALLBACK_EPL;
+  if (l === "LALIGA") return FALLBACK_LALIGA;
   return FALLBACK_NHL;
 }
 export function buildBaselinesFile(
@@ -208,6 +218,7 @@ export function buildBaselinesFile(
   note?: string,
   nflGames: GameLogEntry[] = [],
   eplGames: GameLogEntry[] = [],
+  laligaGames: GameLogEntry[] = [],
 ): BaselinesFile {
   return {
     generatedAt: new Date().toISOString(),
@@ -219,6 +230,7 @@ export function buildBaselinesFile(
       CBB: { ...FALLBACK_CBB },
       CFB: { ...FALLBACK_CFB },
       EPL: { ...FALLBACK_EPL },
+      LALIGA: { ...FALLBACK_LALIGA },
     },
     NBA: computeLeagueBaselines("NBA", nbaGames),
     NHL: computeLeagueBaselines("NHL", nhlGames),
@@ -226,6 +238,7 @@ export function buildBaselinesFile(
     CBB: computeLeagueBaselines("CBB", []),
     CFB: computeLeagueBaselines("CFB", []),
     EPL: computeLeagueBaselines("EPL", eplGames),
+    LALIGA: computeLeagueBaselines("LALIGA", laligaGames),
   };
 }
 

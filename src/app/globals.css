@@ -3131,6 +3131,10 @@ p {
     --league-accent: #3d195b;
   }
 
+  .league-nav-link[data-league="laliga"] {
+    --league-accent: #c8102e;
+  }
+
   .league-nav-link[data-league="cbb"] {
     --league-accent: var(--cbb-gold);
   }
@@ -3251,6 +3255,10 @@ p {
 
   .site-chrome[data-league="epl"] {
     --league-accent: #3d195b;
+  }
+
+  .site-chrome[data-league="laliga"] {
+    --league-accent: #c8102e;
   }
 
   .site-chrome[data-league="cbb"] {
@@ -3458,6 +3466,12 @@ p {
     outline: none;
   }
 
+  .slate-quick-lookup-input:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--raptors) 70%, #fff);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+
   .slate-quick-lookup-input::placeholder {
     color: var(--muted);
   }
@@ -3488,6 +3502,34 @@ p {
     text-decoration: none;
     outline-offset: 2px;
     transition: background-color 150ms ease-out;
+  }
+
+  .slate-quick-lookup-result-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .slate-quick-lookup-league-badge,
+  .slate-quick-lookup-chip-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0.08rem 0.35rem;
+    border-radius: 999px;
+    font-size: 0.58rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line);
+  }
+
+  .slate-quick-lookup-chip-badge {
+    font-size: 0.55rem;
   }
 
   .slate-quick-lookup-result:hover,
@@ -3920,6 +3962,72 @@ p {
     font-family: var(--font-data);
     font-variant-numeric: tabular-nums;
     font-weight: 600;
+  }
+
+  .game-slate-composite {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.625rem;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--surface-raised) 35%, var(--surface));
+  }
+
+  .game-slate-composite-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.65rem 0.75rem;
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  .game-slate-composite-stat:last-child {
+    border-right: none;
+  }
+
+  .game-slate-composite-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .game-slate-composite-value {
+    font-family: var(--font-data);
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+
+  .game-slate-composite-meta {
+    font-size: var(--text-xs);
+    line-height: 1.35;
+    color: var(--muted-strong);
+  }
+
+  .game-signal-line--detail {
+    margin-top: 0.35rem;
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+
+  @media (max-width: 639px) {
+    .game-slate-composite {
+      grid-template-columns: 1fr;
+    }
+
+    .game-slate-composite-stat {
+      border-right: none;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .game-slate-composite-stat:last-child {
+      border-bottom: none;
+    }
   }
 
   /* ── Table typography ── */
@@ -4426,6 +4534,48 @@ p {
     --league-accent: #8b6bb5;
   }
 
+  .league-hub-hero[data-league="laliga"] {
+    --league-accent: #c8102e;
+  }
+
+  .page-hero-slate .page-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  .page-hero-slate .league-slate-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 2px solid color-mix(in srgb, var(--league-accent) 55%, transparent);
+  }
+
+  .page-hero-slate .page-lead {
+    font-size: clamp(1rem, 2.2vw, 1.125rem);
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--foreground) 84%, transparent);
+  }
+
+  .league-hub-hero-inner::after {
+    content: "";
+    position: absolute;
+    inset: -20% -10% auto auto;
+    width: min(28rem, 55vw);
+    height: min(28rem, 55vw);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--league-accent) 14%, transparent),
+      transparent 68%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
   .league-hub-hero-inner {
     position: relative;
     z-index: 1;
@@ -4473,6 +4623,19 @@ p {
     height: auto;
     max-height: 92%;
     transform: translateY(-2%);
+    overflow: hidden;
+  }
+
+  .league-hub-hero[data-league="nhl"] .league-hub-hero-watermark {
+    opacity: 0.26;
+  }
+
+  .league-hub-hero[data-league="nfl"] .league-hub-hero-watermark-svg--nfl {
+    color: color-mix(in srgb, var(--nfl-green) 55%, #9ca3af);
+  }
+
+  .league-hub-hero-watermark-svg--nhl {
+    color: color-mix(in srgb, var(--nhl-blue) 35%, #9ca3af);
   }
 
   .league-hub-hero .page-title,
@@ -4890,6 +5053,95 @@ p {
     gap: var(--space-3);
   }
 
+  .ref-matrix-legend-details {
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.625rem;
+    background: color-mix(in srgb, var(--surface-raised) 40%, var(--surface));
+    padding: 0;
+  }
+
+  .ref-matrix-legend-summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.65rem 0.85rem;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--foreground);
+  }
+
+  .ref-matrix-legend-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ref-matrix-legend-details[open] .ref-matrix-legend {
+    padding: 0 0.85rem 0.85rem;
+  }
+
+  .ref-matrix-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .ref-matrix-toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .ref-matrix-search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1 1 14rem;
+    min-width: min(100%, 14rem);
+  }
+
+  .ref-matrix-search-label {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted-strong);
+  }
+
+  .ref-matrix-search-input {
+    width: 100%;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    padding: 0.5rem 0.65rem;
+    font-size: var(--text-sm);
+    color: var(--foreground);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent);
+  }
+
+  .ref-matrix-search-input:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--league-accent, var(--raptors)) 55%, #fff);
+    outline-offset: 2px;
+  }
+
+  .ref-matrix-search-hint {
+    font-size: var(--text-xs);
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  .ref-matrix-empty-search {
+    padding: var(--space-4);
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--muted-strong);
+    background: color-mix(in srgb, var(--surface-raised) 50%, var(--surface));
+  }
+
+  .ref-matrix-row--search-hit .ref-matrix-ref-head {
+    box-shadow: inset 3px 0 0 var(--league-accent, var(--raptors));
+  }
+
   .ref-matrix-legend-copy,
   .ref-matrix-meta,
   .ref-matrix-mobile-hint {
@@ -5222,6 +5474,52 @@ p {
     flex-direction: column;
     gap: var(--space-2);
     min-width: 0;
+    border-radius: 0.625rem;
+    padding: var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .ref-matrix-team-panel-column--positive {
+    border-color: color-mix(in srgb, var(--metric-positive-border) 45%, var(--border-subtle));
+    background: color-mix(in srgb, var(--metric-positive-bg) 35%, var(--surface));
+  }
+
+  .ref-matrix-team-panel-column--negative {
+    border-color: color-mix(in srgb, var(--metric-negative-border) 45%, var(--border-subtle));
+    background: color-mix(in srgb, var(--metric-negative-bg) 35%, var(--surface));
+  }
+
+  .ref-matrix-team-panel-column-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .ref-matrix-team-panel-column-subtitle {
+    font-size: var(--text-xs);
+    line-height: 1.35;
+    color: var(--muted-strong);
+  }
+
+  .ref-matrix-team-panel-list-head {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1.35fr) 4.75rem 3.25rem minmax(5.5rem, 7rem);
+    gap: var(--space-2);
+    padding: 0 0.65rem 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .ref-matrix-team-panel-list-head--thin {
+    grid-template-columns: minmax(0, 1.5fr) 3.5rem 2.5rem 4rem;
+    margin-top: var(--space-2);
+    padding-left: 0.15rem;
+    padding-right: 0.15rem;
   }
 
   /* Keep Top / Bottom as distinct sections when stacked on mobile */
@@ -5734,11 +6032,10 @@ p {
   }
 
   .ref-matrix-team-panel-thin-link {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem 1rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) 3.5rem 2.5rem 4rem;
+    gap: var(--space-2);
+    align-items: center;
     padding: 0.4rem 0.55rem;
     border-radius: 0.35rem;
     color: inherit;
@@ -6604,28 +6901,94 @@ p {
 
 /* Dark-theme remap for legacy light-mode Tailwind zinc utilities */
 .page-shell .text-zinc-900,
-.page-shell .text-zinc-800 {
+.page-shell .text-zinc-800,
+.page-shell-hub .text-zinc-900,
+.page-shell-hub .text-zinc-800,
+.page-shell-slate .text-zinc-900,
+.page-shell-slate .text-zinc-800 {
   color: var(--ink-secondary);
 }
 
 .page-shell .text-zinc-700,
 .page-shell .text-zinc-600,
-.page-shell .text-zinc-500 {
+.page-shell .text-zinc-500,
+.page-shell-hub .text-zinc-700,
+.page-shell-hub .text-zinc-600,
+.page-shell-hub .text-zinc-500,
+.page-shell-slate .text-zinc-700,
+.page-shell-slate .text-zinc-600,
+.page-shell-slate .text-zinc-500 {
   color: var(--muted);
 }
 
-.page-shell .text-zinc-400 {
+.page-shell .text-zinc-400,
+.page-shell-hub .text-zinc-400,
+.page-shell-slate .text-zinc-400 {
   color: color-mix(in srgb, var(--muted) 80%, transparent);
 }
 
 .page-shell .text-amber-800,
-.page-shell .text-amber-900 {
+.page-shell .text-amber-900,
+.page-shell-hub .text-amber-800,
+.page-shell-hub .text-amber-900,
+.page-shell-slate .text-amber-800,
+.page-shell-slate .text-amber-900 {
   color: #fbbf24;
 }
 
 .page-shell .hover\:text-zinc-800:hover,
-.page-shell .hover\:text-zinc-900:hover {
+.page-shell .hover\:text-zinc-900:hover,
+.page-shell-hub .hover\:text-zinc-800:hover,
+.page-shell-hub .hover\:text-zinc-900:hover,
+.page-shell-slate .hover\:text-zinc-800:hover,
+.page-shell-slate .hover\:text-zinc-900:hover {
   color: var(--ink);
+}
+
+.page-shell-insights .text-zinc-900,
+.page-shell-insights .text-zinc-800,
+.content-main .text-zinc-900,
+.content-main .text-zinc-800 {
+  color: var(--foreground) !important;
+}
+
+.page-shell-insights .text-zinc-700,
+.page-shell-insights .text-zinc-600,
+.page-shell-insights .text-zinc-500,
+.content-main .text-zinc-700,
+.content-main .text-zinc-600,
+.content-main .text-zinc-500 {
+  color: var(--ink-secondary) !important;
+}
+
+.page-shell-insights .text-zinc-400,
+.content-main .text-zinc-400 {
+  color: var(--muted) !important;
+}
+
+.page-shell .bg-white,
+.page-shell-hub .bg-white,
+.page-shell-slate .bg-white,
+.page-shell-insights .bg-white {
+  background-color: var(--surface);
+}
+
+.page-shell .bg-zinc-50,
+.page-shell-hub .bg-zinc-50,
+.page-shell-slate .bg-zinc-50,
+.page-shell-insights .bg-zinc-50 {
+  background-color: var(--surface-raised);
+}
+
+.page-shell .border-zinc-300,
+.page-shell-hub .border-zinc-300,
+.page-shell-slate .border-zinc-300,
+.page-shell-insights .border-zinc-300,
+.page-shell .hover\:border-zinc-300:hover,
+.page-shell-hub .hover\:border-zinc-300:hover,
+.page-shell-slate .hover\:border-zinc-300:hover,
+.page-shell-insights .hover\:border-zinc-300:hover {
+  border-color: var(--border);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -6961,6 +7324,739 @@ p {
   min-width: 0;
 }
 
+.overview-insight-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .overview-insight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.overview-insight-card {
+  --insight-accent: var(--muted);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.15rem 1.2rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--insight-accent) 22%, var(--line));
+  background:
+    radial-gradient(
+      ellipse 90% 70% at 100% 0%,
+      color-mix(in srgb, var(--insight-accent) 14%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 45%),
+    var(--surface-raised);
+  overflow: hidden;
+  animation: overview-insight-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--insight-index, 0) * 90ms);
+  transition:
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.overview-insight-card[data-league="nba"] {
+  --insight-accent: var(--raptors);
+}
+
+.overview-insight-card[data-league="nhl"] {
+  --insight-accent: var(--nhl-blue);
+}
+
+.overview-insight-card[data-league="nfl"] {
+  --insight-accent: var(--nfl-green);
+}
+
+.overview-insight-card[data-league="epl"] {
+  --insight-accent: #8b6bb5;
+}
+
+.overview-insight-card:hover {
+  border-color: color-mix(in srgb, var(--insight-accent) 42%, var(--line));
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+}
+
+.overview-insight-card-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.overview-insight-card > *:not(.overview-insight-card-cover) {
+  position: relative;
+  z-index: 1;
+}
+
+.overview-insight-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.overview-insight-league {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.overview-insight-league-mark {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--insight-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--insight-accent) 24%, transparent);
+}
+
+.overview-insight-league-label {
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--insight-accent) 72%, var(--ink));
+}
+
+.overview-insight-kicker {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.overview-insight-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.overview-insight-hero-value {
+  font-size: clamp(1.65rem, 4vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-insight-hero-label {
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.overview-insight-hero--positive .overview-insight-hero-value {
+  color: #86efac;
+}
+
+.overview-insight-hero--negative .overview-insight-hero-value {
+  color: #fca5a5;
+}
+
+.overview-insight-hero--neutral .overview-insight-hero-value {
+  color: var(--ink);
+}
+
+.overview-insight-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.overview-insight-headline {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.overview-insight-headline a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+.overview-insight-headline a:hover {
+  color: color-mix(in srgb, var(--insight-accent) 55%, var(--ink));
+}
+
+.overview-insight-team {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.overview-insight-story {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.overview-insight-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.overview-insight-stats dt {
+  margin: 0;
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.overview-insight-stats dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-insight-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.75rem;
+  margin-top: 0.15rem;
+}
+
+.overview-insight-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--muted);
+  pointer-events: auto;
+}
+
+.overview-insight-link:hover {
+  color: var(--ink);
+}
+
+.overview-insight-link--primary {
+  color: color-mix(in srgb, var(--insight-accent) 70%, var(--ink));
+}
+
+.overview-insight-link--primary:hover {
+  color: var(--insight-accent);
+}
+
+.overview-insight-link svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.overview-league-strip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+@media (min-width: 768px) {
+  .overview-league-strip-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.overview-league-strip-card {
+  --strip-accent: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--strip-accent) 18%, var(--line));
+  background: rgba(0, 0, 0, 0.14);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.overview-league-strip-card[data-league="nba"] {
+  --strip-accent: var(--raptors);
+}
+
+.overview-league-strip-card[data-league="nhl"] {
+  --strip-accent: var(--nhl-blue);
+}
+
+.overview-league-strip-card[data-league="nfl"] {
+  --strip-accent: var(--nfl-green);
+}
+
+.overview-league-strip-card[data-league="epl"] {
+  --strip-accent: #8b6bb5;
+}
+
+.overview-league-strip-card:hover {
+  border-color: color-mix(in srgb, var(--strip-accent) 38%, var(--line));
+  background: color-mix(in srgb, var(--strip-accent) 6%, rgba(0, 0, 0, 0.14));
+}
+
+.overview-league-strip-label {
+  font-size: 0.95rem;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+.overview-league-strip-meta {
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.overview-league-strip-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--strip-accent) 65%, var(--muted));
+}
+
+.overview-league-strip-cta svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+/* Overview round 2: league tabs, slate, pace cards, mobile */
+
+.overview-quicklists-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.15rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.overview-quicklists-tab {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.12);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease,
+    background-color 140ms ease;
+}
+
+.overview-quicklists-tab[data-league="nba"].overview-quicklists-tab--active {
+  border-color: color-mix(in srgb, var(--raptors) 45%, var(--line));
+  color: var(--raptors);
+  background: color-mix(in srgb, var(--raptors) 10%, rgba(0, 0, 0, 0.12));
+}
+
+.overview-quicklists-tab[data-league="nhl"].overview-quicklists-tab--active {
+  border-color: color-mix(in srgb, var(--nhl-blue) 45%, var(--line));
+  color: var(--nhl-blue);
+  background: color-mix(in srgb, var(--nhl-blue) 10%, rgba(0, 0, 0, 0.12));
+}
+
+.overview-quicklists-tab[data-league="nfl"].overview-quicklists-tab--active {
+  border-color: color-mix(in srgb, var(--nfl-green) 45%, var(--line));
+  color: var(--nfl-green);
+  background: color-mix(in srgb, var(--nfl-green) 10%, rgba(0, 0, 0, 0.12));
+}
+
+.overview-quicklists-tab[data-league="epl"].overview-quicklists-tab--active {
+  border-color: color-mix(in srgb, #8b6bb5 45%, var(--line));
+  color: #c4b5fd;
+  background: color-mix(in srgb, #8b6bb5 10%, rgba(0, 0, 0, 0.12));
+}
+
+.overview-quicklists-mobile {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .overview-quicklists-mobile {
+    display: none;
+  }
+}
+
+.overview-catalog-collapsible {
+  padding: var(--space-4);
+}
+
+.overview-catalog-summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.overview-catalog-summary::-webkit-details-marker {
+  display: none;
+}
+
+.overview-catalog-collapsible[open] .overview-catalog-summary {
+  margin-bottom: 0.85rem;
+}
+
+@media (min-width: 1024px) {
+  .overview-catalog-collapsible .overview-catalog-groups {
+    display: flex;
+  }
+
+  .overview-catalog-summary {
+    pointer-events: none;
+  }
+}
+
+.overview-slate-icon {
+  display: inline-block;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-right: 0.35rem;
+  vertical-align: -0.15rem;
+}
+
+.overview-slate-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.overview-slate-row {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.8rem;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.overview-slate-row-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.overview-slate-league-badge {
+  flex-shrink: 0;
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.overview-slate-matchup {
+  font-size: 0.92rem;
+  font-weight: 650;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overview-slate-date {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.overview-slate-notes {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0 0 0.85rem;
+  padding: 0;
+  list-style: none;
+}
+
+.overview-slate-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.overview-slate-row[data-status="scheduled"] {
+  border-style: dashed;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.upcoming-slate-matchups {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.overview-slate-crew {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.overview-slate-row-link {
+  font-size: 0.74rem;
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.overview-slate-offseason-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+@media (min-width: 768px) {
+  .overview-slate-offseason-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.overview-slate-offseason-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.8rem;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.12);
+  transition: border-color 160ms ease;
+}
+
+.overview-slate-offseason-card:hover {
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
+.overview-slate-offseason-label {
+  font-size: 0.95rem;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+.overview-slate-offseason-meta {
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.overview-slate-updated {
+  margin: 0.75rem 0 0;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.overview-pace-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .overview-pace-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .overview-pace-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.overview-pace-card {
+  --pace-accent: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1rem 1.05rem;
+  border-radius: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--pace-accent) 18%, var(--line));
+  background: rgba(0, 0, 0, 0.14);
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.overview-pace-card[data-league="nba"] { --pace-accent: var(--raptors); }
+.overview-pace-card[data-league="nhl"] { --pace-accent: var(--nhl-blue); }
+.overview-pace-card[data-league="nfl"] { --pace-accent: var(--nfl-green); }
+.overview-pace-card[data-league="epl"] { --pace-accent: #8b6bb5; }
+
+.overview-pace-card:hover {
+  border-color: color-mix(in srgb, var(--pace-accent) 38%, var(--line));
+  transform: translateY(-1px);
+}
+
+.overview-pace-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.overview-pace-label {
+  font-size: 1rem;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+.overview-pace-meta {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.overview-pace-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.overview-pace-metric-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.overview-pace-metric-head strong {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+.overview-pace-bar {
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.overview-pace-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  min-width: 4%;
+}
+
+.overview-pace-bar-fill--whistle {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--pace-accent) 55%, #fbbf24), var(--pace-accent));
+}
+
+.overview-pace-bar-fill--score {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--pace-accent) 35%, #38bdf8), color-mix(in srgb, var(--pace-accent) 75%, #fff));
+}
+
+.overview-pace-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: 0.1rem;
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--pace-accent) 65%, var(--muted));
+}
+
+.overview-pace-cta svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+@media (max-width: 1023px) {
+  .overview-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .overview-main {
+    order: 1;
+  }
+
+  .overview-sidebar {
+    order: 2;
+  }
+
+  .overview-sidebar-block--lists {
+    display: none;
+  }
+
+  .overview-catalog-groups {
+    max-height: none;
+  }
+
+  .overview-hero {
+    padding: var(--space-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .overview-catalog-collapsible {
+    display: block;
+  }
+
+  .overview-catalog-collapsible[open] .overview-catalog-summary {
+    margin-bottom: 0.85rem;
+  }
+}
+
+@keyframes overview-insight-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overview-insight-card {
+    animation: none;
+  }
+
+  .overview-insight-card:hover {
+    transform: none;
+  }
+}
+
 .overview-spotlight {
   display: grid;
   gap: var(--space-4);
@@ -6982,6 +8078,10 @@ p {
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--ink);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
 }
 
 .overview-section-header {

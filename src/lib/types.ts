@@ -21,7 +21,7 @@ export interface AssignmentGame {
   matchup: string;
   awayTeam: string;
   homeTeam: string;
-  league: "NBA" | "WNBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league: "NBA" | "WNBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   crew: RefOfficial[];
 }
 
@@ -30,6 +30,11 @@ export interface AssignmentsFile {
   date: string;
   source: "official.nba.com" | "api-web.nhle.com" | "espn" | "seeded" | "historical";
   games: AssignmentGame[];
+  /** Human-readable status when crews are not published yet (e.g. NFL preseason week). */
+  note?: string;
+  /** Matchups on the next slate date before crew assignments drop. */
+  scheduledGames?: AssignmentGame[];
+  nextSlateDate?: string;
 }
 
 export interface RefGameRecord {

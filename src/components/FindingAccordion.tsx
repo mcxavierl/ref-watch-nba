@@ -34,7 +34,7 @@ export function FindingAccordionItem({
   finding: Finding;
   index: number;
   defaultOpen?: boolean;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 }) {
   return (
     <details className="finding-accordion data-card" open={defaultOpen}>

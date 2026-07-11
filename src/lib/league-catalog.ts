@@ -27,7 +27,7 @@ export type CatalogLeagueEntry = {
 /** Live leagues are driven by verification; never duplicate routing here. */
 export const LIVE_CATALOG_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl"] as const satisfies readonly LeagueId[];
 
-export const PREVIEW_CATALOG_LEAGUE_IDS = ["cbb", "cfb"] as const satisfies readonly LeagueId[];
+export const PREVIEW_CATALOG_LEAGUE_IDS = ["cbb", "cfb", "laliga"] as const satisfies readonly LeagueId[];
 
 /**
  * Expanded competition catalog for the overview hub.
@@ -39,7 +39,7 @@ export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
   { id: "nhl", label: "NHL", region: "North America", sport: "hockey", status: "live", leagueId: "nhl", href: "/nhl", sort: 10 },
   { id: "nfl", label: "NFL", region: "USA", sport: "football", status: "live", leagueId: "nfl", href: "/nfl", sort: 20 },
   { id: "epl", label: "Premier League", region: "England", sport: "soccer", status: "live", leagueId: "epl", href: "/epl", sort: 30 },
-  { id: "la-liga", label: "La Liga", region: "Spain", sport: "soccer", status: "coming-soon", sort: 31 },
+  { id: "la-liga", label: "La Liga", region: "Spain", sport: "soccer", status: "preview", leagueId: "laliga", href: "/laliga", sort: 31 },
   { id: "serie-a", label: "Serie A", region: "Italy", sport: "soccer", status: "coming-soon", sort: 32 },
   { id: "bundesliga", label: "Bundesliga", region: "Germany", sport: "soccer", status: "coming-soon", sort: 33 },
   { id: "ligue-1", label: "Ligue 1", region: "France", sport: "soccer", status: "coming-soon", sort: 34 },

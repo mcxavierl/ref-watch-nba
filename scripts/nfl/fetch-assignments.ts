@@ -86,6 +86,7 @@ async function main() {
   const roster = loadOfficialRoster();
   const { date, eventIds } = await findSlateDate(requestedDate);
   const games: AssignmentGame[] = [];
+  const scheduledGames: AssignmentGame[] = [];
   let crewsPending = false;
 
   for (const event of eventIds) {
@@ -93,6 +94,14 @@ async function main() {
     const summary = await fetchEspnSummary(event.id);
     if (!summary || summary.officials.length === 0) {
       crewsPending = true;
+      scheduledGames.push({
+        id: event.id,
+        matchup: `${event.awayAbbr} @ ${event.homeAbbr}`,
+        awayTeam: event.awayAbbr,
+        homeTeam: event.homeAbbr,
+        league: "NFL",
+        crew: [],
+      });
       continue;
     }
 
@@ -117,11 +126,13 @@ async function main() {
           ? `No NFL games found within ${SCAN_DAYS} days of ${requestedDate}.`
           : undefined;
 
-  const data: AssignmentsFile & { note?: string } = {
+  const data: AssignmentsFile = {
     lastUpdated: new Date().toISOString(),
     date: hasSlate ? date : requestedDate,
     source: games.length > 0 ? "espn" : hasSlate ? "espn" : "seeded",
     games,
+    ...(scheduledGames.length > 0 ? { scheduledGames } : {}),
+    ...(hasSlate ? { nextSlateDate: date } : {}),
     ...(note ? { note } : {}),
   };
 

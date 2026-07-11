@@ -3,5 +3,16 @@
   "date": "2026-08-06",
   "source": "espn",
   "games": [],
+  "scheduledGames": [
+    {
+      "id": "401772971",
+      "matchup": "LAC @ DET",
+      "awayTeam": "LAC",
+      "homeTeam": "DET",
+      "league": "NFL",
+      "crew": []
+    }
+  ],
+  "nextSlateDate": "2026-08-06",
   "note": "Next NFL slate is 2026-08-06 (1 game on ESPN). Crew assignments not published yet."
 }

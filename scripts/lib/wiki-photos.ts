@@ -30,6 +30,70 @@ export function titleMatchesOfficial(name: string, title: string): boolean {
 
 export type OfficialSport = "nfl" | "nhl" | "epl" | "nba";
 
+/** Dataset display name → Wikipedia / Commons search name. */
+export const OFFICIAL_DISPLAY_ALIASES: Record<OfficialSport, Record<string, string>> = {
+  nfl: {
+    "Mike Jones": "Michael Jones",
+  },
+  nhl: {},
+  epl: {
+    "Andy Madley": "Andrew Madley",
+    "Tom Bramall": "Thomas Bramall",
+    "Michael Jones": "Mike Jones",
+  },
+  nba: {},
+};
+
+/** Collapse punctuation and initials for category-index lookup. */
+export function officialNameLookupKeys(name: string): string[] {
+  const n = name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\./g, "")
+    .replace(/[-']/g, " ")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const keys = new Set<string>([n]);
+  const parts = n.split(" ").filter(Boolean);
+  if (parts.length >= 2) {
+    keys.add(`${parts[0]} ${parts[parts.length - 1]}`);
+    if (parts.length >= 3) {
+      const initials = parts
+        .slice(0, -1)
+        .map((p) => p[0])
+        .join("");
+      keys.add(`${initials} ${parts[parts.length - 1]}`);
+    }
+  }
+  return [...keys];
+}
+
+export function resolveOfficialDisplayName(
+  name: string,
+  sport: OfficialSport,
+): string {
+  return OFFICIAL_DISPLAY_ALIASES[sport][name] ?? name;
+}
+
+export function lookupCategoryTitle(
+  name: string,
+  categoryIndex: Map<string, string>,
+  sport: OfficialSport,
+): string | null {
+  const resolved = resolveOfficialDisplayName(name, sport);
+  for (const key of officialNameLookupKeys(resolved)) {
+    const hit = categoryIndex.get(key);
+    if (hit) return hit;
+  }
+  for (const key of officialNameLookupKeys(name)) {
+    const hit = categoryIndex.get(key);
+    if (hit) return hit;
+  }
+  return null;
+}
+
 /** Sport-aware Wikipedia title match for officials. */
 export function titleMatchesSportOfficial(
   name: string,
@@ -263,9 +327,27 @@ export async function loadCategoryTitleIndex(
 
 function commonsFileLooksOfficial(file: string, name: string): boolean {
   const f = file.toLowerCase();
-  const parts = name.toLowerCase().split(/\s+/).filter(Boolean);
+  const parts = name.toLowerCase().split(/\s+/).filter((p) => p.length >= 2);
+  if (parts.length === 0) return false;
+
+  if (/\b_hc_|\bhead.?coach\b|secdef|troops|border.?official/i.test(f)) {
+    return false;
+  }
+  if (/eagles_washingtonfootball\d{4}/i.test(f) && !parts.every((p) => f.includes(p))) {
+    return false;
+  }
   if (!parts.every((p) => f.includes(p))) return false;
-  return /nfl|referee|official|football|super.?bowl|coin.?flip|lambeau|commanders|chargers|patriots|seahawks|falcons|bucs|eagles|raiders|broncos|cowboys|packers|field|stadium|cropped/i.test(
+
+  if (
+    !/(referee|official|nfl|super.?bowl|coin.?flip|cropped)/i.test(f) &&
+    /eagles|washington|stadium|field|patriots|seahawks|falcons|bucs|chargers|commanders|raiders|broncos|cowboys|packers|lambeau/i.test(
+      f,
+    )
+  ) {
+    return false;
+  }
+
+  return /nfl|referee|official|football|super.?bowl|coin.?flip|lambeau|cropped/i.test(
     f,
   );
 }
@@ -386,6 +468,7 @@ export async function commonsPhotoFromNflOfficialsFiles(
   for (const file of matches) {
     const details = await commonsFileDetails(file);
     if (!details) continue;
+    if (!commonsFileLooksOfficial(file, name)) continue;
     return {
       thumbUrl: details.thumbUrl,
       headshotUrl: details.headshotUrl,
@@ -486,6 +569,88 @@ export async function commonsPhotoForName(
         };
       }
       await sleep(50);
+    }
+    await sleep(80);
+  }
+  return null;
+}
+
+function commonsFileLooksEplOfficial(file: string, name: string): boolean {
+  const f = file.toLowerCase();
+  const parts = name
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((part) => part.length >= 2);
+  if (parts.length === 0) return false;
+  const nameMatch = parts.every((part) => {
+    if (f.includes(part)) return true;
+    if (part === "kavanagh" && f.includes("kavanaugh")) return true;
+    return false;
+  });
+  if (!nameMatch) return false;
+
+  const base = f.replace(/^file:/, "").replace(/\.(jpe?g|png|webp)$/i, "");
+  const normalizedName = parts.join(" ");
+  if (base === normalizedName || base === `${normalizedName} (cropped)`) {
+    return true;
+  }
+
+  // Two-token names are ambiguous on Commons — require officiating context.
+  const needsContext = parts.length <= 2;
+  const hasContext = /referee|\bref\b|football|premier|fa cup|match|cropped|soccer|referee\)|v_|_v_/i.test(
+    f,
+  );
+  if (needsContext && !hasContext) return false;
+
+  return hasContext;
+}
+
+/** Commons file search for Premier League referees (pages often lack infobox images). */
+export async function commonsPhotoForEplOfficial(
+  name: string,
+): Promise<WikiPhotoEntry | null> {
+  const resolved = resolveOfficialDisplayName(name, "epl");
+  for (const query of [
+    `"${resolved}" referee`,
+    `"${name}" referee`,
+    `${resolved} Premier League referee`,
+    `${resolved} football referee`,
+    `intitle:"${resolved}"`,
+    `${resolved}.jpg`,
+  ]) {
+    const url = new URL("https://commons.wikimedia.org/w/api.php");
+    url.searchParams.set("action", "query");
+    url.searchParams.set("list", "search");
+    url.searchParams.set("srsearch", query);
+    url.searchParams.set("srnamespace", "6");
+    url.searchParams.set("srlimit", "12");
+    url.searchParams.set("format", "json");
+
+    const res = await fetch(url, { headers: WIKI_HEADERS });
+    if (!res.ok) continue;
+
+    const body = (await res.json()) as {
+      query?: { search?: { title: string }[] };
+    };
+    const files =
+      body.query?.search
+        ?.map((s) => s.title)
+        .filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f)) ?? [];
+
+    for (const file of files) {
+      if (
+        !commonsFileLooksEplOfficial(file, resolved) &&
+        !commonsFileLooksEplOfficial(file, name)
+      ) {
+        continue;
+      }
+      const details = await commonsFileDetails(file);
+      if (!details) continue;
+      return {
+        thumbUrl: details.thumbUrl,
+        headshotUrl: details.headshotUrl,
+        source: `commons:${file}`,
+      };
     }
     await sleep(80);
   }

@@ -63,7 +63,7 @@ export function RefRankingsTable({
   signalCounts = {},
 }: {
   refs: RefProfile[];
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   minSampleSize: number;
   overBaseline: number;
   leagueAvgTotal?: number;
@@ -82,20 +82,35 @@ export function RefRankingsTable({
     [refs, sort, showLowSample, minSampleSize],
   );
 
-  const scoringLabel =
-    league === "NBA"
-      ? "Scoring Δ"
-      : league === "NFL"
-        ? "Points Δ"
-        : leagueAvgTotal && prefersPctScoringDelta(leagueAvgTotal)
-          ? "vs avg"
-          : "Goals Δ";
-  const whistleLabel =
-    league === "NBA" ? "Fouls Δ" : league === "NFL" ? "Flags Δ" : "Minors Δ";
+  const isBasketball = league === "NBA" || league === "CBB";
+  const scoringLabel = isBasketball
+    ? "Scoring Δ"
+    : league === "NFL"
+      ? "Points Δ"
+      : leagueAvgTotal && prefersPctScoringDelta(leagueAvgTotal)
+        ? "vs avg"
+        : "Goals Δ";
+  const whistleLabel = isBasketball
+    ? "Fouls Δ"
+    : league === "NFL"
+      ? "Flags Δ"
+      : "Minors Δ";
   const unit =
-    league === "NBA" ? "points" : league === "NFL" ? "points" : "goals";
+    isBasketball || league === "NFL" ? "points" : "goals";
   const sport =
-    league === "NHL" ? "nhl" : league === "NFL" ? "nfl" : "nba";
+    league === "NHL"
+      ? "nhl"
+      : league === "NFL"
+        ? "nfl"
+        : league === "CBB"
+          ? "cbb"
+          : league === "CFB"
+            ? "cfb"
+            : league === "EPL"
+              ? "epl"
+              : league === "LALIGA"
+                ? "laliga"
+                : "nba";
   const isNfl = league === "NFL";
 
   const handleSort = (field: SortField) => {

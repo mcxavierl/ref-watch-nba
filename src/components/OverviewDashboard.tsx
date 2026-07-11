@@ -1,25 +1,28 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarDays } from "lucide-react";
+import { OverviewQuickLists } from "@/components/OverviewQuickLists";
 import { SlateQuickLookup } from "@/components/SlateQuickLookup";
 import {
   catalogBySport,
   catalogCompetitionCount,
   liveCatalogCount,
-  overviewQuickListsForLeague,
   type CatalogLeagueEntry,
 } from "@/lib/league-catalog";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
+import type { LeagueInsightCard, LeagueInsightTone } from "@/lib/league-overview-insights";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
-import { LEAGUES } from "@/lib/leagues";
-import { formatSigned } from "@/lib/stats-utils";
+import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import type { OverviewSlateEntry } from "@/lib/overview-upcoming-slate";
 
 function formatCount(n: number): string {
   return n.toLocaleString("en-US");
 }
 
-function formatRate(n: number, digits = 2): string {
-  return n.toFixed(digits);
+function formatPace(value: number, leagueId: LeagueId): string {
+  if (leagueId === "epl") return value.toFixed(1);
+  if (leagueId === "nhl") return value.toFixed(1);
+  return value.toFixed(1);
 }
 
 function statusLabel(status: CatalogLeagueEntry["status"]): string {
@@ -52,22 +55,138 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
   return <div className="overview-catalog-row overview-catalog-row--static">{inner}</div>;
 }
 
-function WhistleSparkline({ values }: { values: number[] }) {
-  if (values.length === 0) {
-    return <div className="overview-sparkline overview-sparkline--empty" aria-hidden />;
-  }
-  const max = Math.max(...values, 1);
+function toneClass(tone: LeagueInsightTone): string {
+  if (tone === "positive") return "overview-insight-hero--positive";
+  if (tone === "negative") return "overview-insight-hero--negative";
+  return "overview-insight-hero--neutral";
+}
+
+function InsightCard({ card, index }: { card: LeagueInsightCard; index: number }) {
+  const leagueMeta = LEAGUES[card.leagueId];
+
   return (
-    <div className="overview-sparkline" aria-hidden>
-      {values.map((value, index) => (
-        <span
-          key={index}
-          className="overview-sparkline-bar"
-          style={{ height: `${Math.max(12, (value / max) * 100)}%` }}
-        />
-      ))}
-    </div>
+    <article
+      className="overview-insight-card"
+      data-league={card.leagueId}
+      style={{ "--insight-index": index } as CSSProperties}
+    >
+      <header className="overview-insight-card-head">
+        <div className="overview-insight-league">
+          <span className="overview-insight-league-mark" aria-hidden />
+          <span className="overview-insight-league-label">{card.shortLabel}</span>
+        </div>
+        <p className="overview-insight-kicker">{card.kicker}</p>
+      </header>
+
+      <div className={`overview-insight-hero ${toneClass(card.heroTone)}`}>
+        <span className="overview-insight-hero-value">{card.heroValue}</span>
+        <span className="overview-insight-hero-label">{card.heroLabel}</span>
+      </div>
+
+      <div className="overview-insight-body">
+        <h3 className="overview-insight-headline">
+          {card.entityHref && card.entityName ? (
+            <>
+              <Link href={card.entityHref}>{card.entityName}</Link>
+              {card.teamLabel ? (
+                <>
+                  {" "}
+                  <span className="overview-insight-team">× {card.teamLabel}</span>
+                </>
+              ) : null}
+            </>
+          ) : (
+            card.headline
+          )}
+        </h3>
+        <p className="overview-insight-story">{card.story}</p>
+      </div>
+
+      {card.stats.length > 0 ? (
+        <dl className="overview-insight-stats">
+          {card.stats.map((stat) => (
+            <div key={stat.label}>
+              <dt>{stat.label}</dt>
+              <dd>{stat.value}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+
+      <footer className="overview-insight-footer">
+        {card.links.map((link, linkIndex) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={
+              linkIndex === 0
+                ? "overview-insight-link overview-insight-link--primary"
+                : "overview-insight-link"
+            }
+          >
+            {link.label}
+            {linkIndex === 0 ? <ArrowRight aria-hidden /> : null}
+          </Link>
+        ))}
+      </footer>
+
+      <Link
+        href={leagueMeta.pathPrefix || "/"}
+        className="overview-insight-card-cover"
+        aria-label={`Open ${card.label} hub`}
+      />
+    </article>
   );
+}
+
+function SlateRow({ game }: { game: OverviewSlateEntry }) {
+  const dateLabel = game.slateDate
+    ? new Date(`${game.slateDate}T12:00:00`).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })
+    : null;
+
+  return (
+    <li className="overview-slate-row" data-league={game.leagueId} data-status={game.status}>
+      <div className="overview-slate-row-main">
+        <span className="overview-slate-league-badge">{game.leagueShortLabel}</span>
+        <span className="overview-slate-matchup">{game.matchup}</span>
+        {game.status === "scheduled" && dateLabel ? (
+          <span className="overview-slate-date">{dateLabel}</span>
+        ) : null}
+      </div>
+      <p className="overview-slate-crew">
+        {game.status === "scheduled" ? (
+          "Crews TBD"
+        ) : game.headRef ? (
+          <>
+            Head ref <strong>{game.headRef}</strong>
+            {game.crewCount > 1 ? ` · ${game.crewCount}-person crew` : null}
+          </>
+        ) : (
+          `${game.crewCount}-person crew`
+        )}
+      </p>
+      <Link href={game.href} className="overview-slate-row-link">
+        Open {game.leagueShortLabel} hub
+      </Link>
+    </li>
+  );
+}
+
+function sampleRefsPerLeague(
+  allRefs: CrossLeagueOverview["allRefs"],
+): CrossLeagueOverview["allRefs"] {
+  const seen = new Set<LeagueId>();
+  const picks: CrossLeagueOverview["allRefs"] = [];
+  for (const ref of allRefs) {
+    if (seen.has(ref.leagueId)) continue;
+    seen.add(ref.leagueId);
+    picks.push(ref);
+    if (seen.size === VERIFIED_LIVE_LEAGUE_IDS.length) break;
+  }
+  return picks;
 }
 
 type OverviewDashboardProps = {
@@ -76,13 +195,15 @@ type OverviewDashboardProps = {
 
 export function OverviewDashboard({ data }: OverviewDashboardProps) {
   const sportGroups = catalogBySport();
-  const quickLists = overviewQuickListsForLeague("nba");
   const lookupRefs = data.allRefs.slice(0, 400).map((ref) => ({
     slug: ref.slug,
     name: ref.name,
     games: ref.games,
     href: ref.href,
+    leagueLabel: ref.leagueLabel,
   }));
+  const sampleRefs = sampleRefsPerLeague(data.allRefs);
+  const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
 
   return (
     <div className="overview-page">
@@ -90,21 +211,21 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
         <div className="overview-hero-copy">
           <p className="overview-eyebrow">Multi-league overview</p>
           <h1 className="overview-title" id="overview-hero-heading">
-            Every whistle, every crew, every edge.
+            Referee analytics across all leagues.
           </h1>
           <p className="overview-lead">
-            Referee analytics across {formatCount(data.liveLeagueCount)} live leagues,{" "}
-            {formatCount(data.totalRefs)} officials, and {formatCount(data.totalGames)} indexed
-            games. {catalogCompetitionCount()} competitions on the roadmap.
+            One standout story per live league — ref×team edges, whistle outliers, and crew patterns
+            from {formatCount(data.totalGames)} indexed games and {formatCount(data.totalRefs)}{" "}
+            officials. {catalogCompetitionCount()} competitions on the roadmap.
           </p>
         </div>
 
         <div className="overview-hero-search">
           <SlateQuickLookup
             refs={lookupRefs}
-            sampleRefSlugs={lookupRefs.slice(0, 3).map((r) => r.slug)}
+            sampleRefSlugs={sampleRefs.map((r) => r.slug)}
             heading="Search officials"
-            lead="Find a ref profile across NBA, NHL, NFL, and EPL."
+            lead="Find any ref across NBA, NHL, NFL, and EPL — results show league badges."
             placeholder="Search refs across live leagues…"
             includeTeams={false}
             includeShortcuts={false}
@@ -136,11 +257,11 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
 
       <div className="overview-layout">
         <aside className="overview-sidebar" aria-label="Competitions and lists">
-          <section className="overview-sidebar-block">
-            <h2 className="overview-sidebar-heading">
+          <details className="overview-sidebar-block overview-catalog-collapsible">
+            <summary className="overview-sidebar-heading overview-catalog-summary">
               Competitions
               <span className="overview-sidebar-count">{catalogCompetitionCount()}</span>
-            </h2>
+            </summary>
             <div className="overview-catalog-groups">
               {sportGroups.map((group) => (
                 <div key={group.sport} className="overview-catalog-group">
@@ -153,110 +274,168 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                 </div>
               ))}
             </div>
-          </section>
+          </details>
 
-          <section className="overview-sidebar-block">
+          <section className="overview-sidebar-block overview-sidebar-block--lists">
             <h2 className="overview-sidebar-heading">Lists</h2>
-            <nav className="overview-quick-lists" aria-label="Quick lists">
-              {quickLists.map((list) => (
-                <Link
-                  key={list.id}
-                  href={list.href}
-                  className={`overview-quick-list overview-quick-list--${list.accent}`}
-                >
-                  <span className="overview-quick-list-label">{list.label}</span>
-                  <span className="overview-quick-list-desc">{list.description}</span>
-                </Link>
-              ))}
-            </nav>
-            <p className="overview-sidebar-note">
-              Lists open the NBA hub. Switch leagues above for NHL, NFL, or EPL views.
-            </p>
+            <OverviewQuickLists />
           </section>
         </aside>
 
         <div className="overview-main">
-          {data.spotlight ? (
-            <section className="overview-spotlight" aria-labelledby="overview-spotlight-heading">
-              <div className="overview-spotlight-copy">
-                <p className="overview-eyebrow">Top whistle rate</p>
-                <h2 className="overview-section-title" id="overview-spotlight-heading">
-                  <Link href={data.spotlight.href}>{data.spotlight.name}</Link>
-                </h2>
-                <p className="overview-spotlight-league">{data.spotlight.leagueLabel}</p>
-                <dl className="overview-spotlight-stats">
-                  <div>
-                    <dt>Games</dt>
-                    <dd>{formatCount(data.spotlight.games)}</dd>
-                  </div>
-                  <div>
-                    <dt>{data.spotlight.whistleLabel}</dt>
-                    <dd>{formatRate(data.spotlight.whistlePerGame)}</dd>
-                  </div>
-                  <div>
-                    <dt>vs league</dt>
-                    <dd>{formatSigned(data.spotlight.whistleDelta)}</dd>
-                  </div>
-                </dl>
-                <Link href={data.spotlight.href} className="overview-inline-link">
-                  View profile <ArrowRight aria-hidden />
-                </Link>
-              </div>
-              <div className="overview-spotlight-chart">
-                <p className="overview-spotlight-chart-label">Last {data.spotlight.recentWhistle.length} games</p>
-                <WhistleSparkline values={data.spotlight.recentWhistle} />
-              </div>
-            </section>
-          ) : null}
-
-          <section className="overview-leagues section-block" aria-labelledby="overview-leagues-heading">
+          <section className="overview-quicklists-mobile section-block">
             <div className="overview-section-header">
-              <h2 className="overview-section-title" id="overview-leagues-heading">
-                Highest-whistle leagues
+              <h2 className="overview-section-title">Quick lists</h2>
+              <p className="overview-section-lead">
+                Rankings, tendencies, and matrix edges — scoped to each live league.
+              </p>
+            </div>
+            <OverviewQuickLists />
+          </section>
+
+          <section className="overview-slate section-block" aria-labelledby="overview-slate-heading">
+            <div className="overview-section-header">
+              <h2 className="overview-section-title" id="overview-slate-heading">
+                <CalendarDays aria-hidden className="overview-slate-icon" />
+                {data.upcomingSlate.hasLiveCrews ? "Tonight's slate" : "Next slate"}
               </h2>
               <p className="overview-section-lead">
-                Live leagues ranked by average whistle pace per game.
+                {data.upcomingSlate.hasLiveCrews
+                  ? `${formatCount(data.upcomingSlate.totalGames)} games with published crews across live leagues.`
+                  : data.upcomingSlate.inSeason
+                    ? `${formatCount(data.upcomingSlate.totalScheduled)} upcoming matchup${data.upcomingSlate.totalScheduled === 1 ? "" : "s"}; crews not published yet.`
+                    : "All four leagues are in offseason. Historical matrices, rankings, and ref profiles stay live."}
               </p>
             </div>
 
-            <div className="overview-league-cards">
-              {data.leagueCards.map((card, index) => (
+            {data.upcomingSlate.inSeason ? (
+              <>
+                {data.upcomingSlate.leagueNotes.length > 0 ? (
+                  <ul className="overview-slate-notes">
+                    {data.upcomingSlate.leagueNotes.map((entry) => (
+                      <li key={entry.leagueId} className="overview-slate-note" data-league={entry.leagueId}>
+                        <span className="overview-slate-league-badge">{entry.leagueShortLabel}</span>
+                        {entry.note}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                <ul className="overview-slate-list">
+                  {data.upcomingSlate.games.map((game) => (
+                    <SlateRow key={`${game.leagueId}-${game.gameId}`} game={game} />
+                  ))}
+                </ul>
+                {data.upcomingSlate.lastUpdated ? (
+                  <p className="overview-slate-updated">
+                    Assignments last checked {new Date(data.upcomingSlate.lastUpdated).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                ) : null}
+              </>
+            ) : (
+              <div className="overview-slate-offseason">
+                <div className="overview-slate-offseason-grid">
+                  {VERIFIED_LIVE_LEAGUE_IDS.map((leagueId) => {
+                    const card = leagueCardById.get(leagueId);
+                    const league = LEAGUES[leagueId];
+                    if (!card) return null;
+                    return (
+                      <Link
+                        key={leagueId}
+                        href={card.href}
+                        className="overview-slate-offseason-card"
+                        data-league={leagueId}
+                      >
+                        <span className="overview-slate-offseason-label">{league.shortLabel}</span>
+                        <span className="overview-slate-offseason-meta">
+                          {formatCount(card.refCount)} refs · {formatCount(card.gameCount)} games
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+                {data.upcomingSlate.lastUpdated ? (
+                  <p className="overview-slate-updated">
+                    Assignments last checked {new Date(data.upcomingSlate.lastUpdated).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                ) : null}
+              </div>
+            )}
+          </section>
+
+          <section className="overview-insights section-block" aria-labelledby="overview-insights-heading">
+            <div className="overview-section-header">
+              <h2 className="overview-section-title" id="overview-insights-heading">
+                Four leagues, four stories
+              </h2>
+              <p className="overview-section-lead">
+                The biggest ref×team edges and outlier patterns in each live league right now.
+              </p>
+            </div>
+
+            <div className="overview-insight-grid">
+              {data.insightCards.map((card, index) => (
+                <InsightCard key={card.leagueId} card={card} index={index} />
+              ))}
+            </div>
+          </section>
+
+          <section
+            className="overview-pace section-block"
+            aria-labelledby="overview-pace-heading"
+          >
+            <div className="overview-section-header">
+              <h2 className="overview-section-title" id="overview-pace-heading">
+                League pace
+              </h2>
+              <p className="overview-section-lead">
+                Whistle and scoring environment by league — normalized for cross-sport comparison.
+              </p>
+            </div>
+
+            <div className="overview-pace-grid">
+              {data.leagueCards.map((card) => (
                 <Link
                   key={card.leagueId}
                   href={card.href}
-                  className="overview-league-card"
-                  style={{ "--league-rank": index + 1 } as CSSProperties}
+                  className="overview-pace-card"
+                  data-league={card.leagueId}
                 >
-                  <div className="overview-league-card-head">
-                    <span className="overview-league-rank">#{String(index + 1).padStart(2, "0")}</span>
-                    <span className="overview-league-card-title">{card.label}</span>
+                  <div className="overview-pace-card-head">
+                    <span className="overview-pace-label">{card.shortLabel}</span>
+                    <span className="overview-pace-meta">
+                      {formatCount(card.refCount)} refs · {card.seasonCount} seasons
+                    </span>
                   </div>
-                  <p className="overview-league-card-meta">
-                    {formatCount(card.refCount)} refs · {formatCount(card.gameCount)} games ·{" "}
-                    {card.seasonCount} seasons
-                  </p>
-                  <div className="overview-league-bars">
-                    <div className="overview-league-bar-row">
-                      <span className="overview-league-bar-label">{card.whistleLabel}</span>
-                      <span className="overview-league-bar-value">{formatRate(card.whistlePerGame)}</span>
-                      <span className="overview-league-bar-track" aria-hidden>
-                        <span
-                          className="overview-league-bar-fill overview-league-bar-fill--whistle"
-                          style={{ width: `${card.whistleBar * 100}%` }}
-                        />
-                      </span>
+
+                  <div className="overview-pace-metric">
+                    <div className="overview-pace-metric-head">
+                      <span>{card.whistleLabel}</span>
+                      <strong>{formatPace(card.whistlePerGame, card.leagueId)}</strong>
                     </div>
-                    <div className="overview-league-bar-row">
-                      <span className="overview-league-bar-label">{card.scoreLabel}</span>
-                      <span className="overview-league-bar-value">{formatRate(card.scorePerGame)}</span>
-                      <span className="overview-league-bar-track" aria-hidden>
-                        <span
-                          className="overview-league-bar-fill overview-league-bar-fill--score"
-                          style={{ width: `${card.scoreBar * 100}%` }}
-                        />
-                      </span>
+                    <div className="overview-pace-bar" aria-hidden>
+                      <span
+                        className="overview-pace-bar-fill overview-pace-bar-fill--whistle"
+                        style={{ width: `${Math.round(card.whistleBar * 100)}%` }}
+                      />
                     </div>
                   </div>
+
+                  <div className="overview-pace-metric">
+                    <div className="overview-pace-metric-head">
+                      <span>{card.scoreLabel}</span>
+                      <strong>{formatPace(card.scorePerGame, card.leagueId)}</strong>
+                    </div>
+                    <div className="overview-pace-bar" aria-hidden>
+                      <span
+                        className="overview-pace-bar-fill overview-pace-bar-fill--score"
+                        style={{ width: `${Math.round(card.scoreBar * 100)}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <span className="overview-pace-cta">
+                    Open hub <ArrowRight aria-hidden />
+                  </span>
                 </Link>
               ))}
             </div>
@@ -268,8 +447,8 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                 Expanding coverage
               </h2>
               <p className="overview-section-lead">
-                Soccer competitions and college leagues join the catalog as ingest ships. Live NBA,
-                NHL, NFL, and EPL routes stay unchanged.
+                More soccer leagues and college sports are on the way. NBA, NHL, NFL, and Premier
+                League pages stay live with no changes.
               </p>
             </div>
             <div className="overview-expansion-grid">

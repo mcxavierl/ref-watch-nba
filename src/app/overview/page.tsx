@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
 import { OverviewDashboard } from "@/components/OverviewDashboard";
-import { preloadLeagueRefStats } from "@/lib/edge-preload";
-import { buildCrossLeagueOverview } from "@/lib/cross-league-overview";
-import { catalogCompetitionCount } from "@/lib/league-catalog";
+import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
 import { buildPageMetadata } from "@/lib/seo";
-import { SITE_URL } from "@/lib/site";
-
-export const dynamic = "force-dynamic";
-
-const OVERVIEW_LEAGUES = ["nba", "nhl", "nfl", "epl"] as const;
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Multi-league overview",
   description:
-    "Cross-league referee analytics for the NBA, NHL, NFL, and Premier League. Dataset totals, whistle leaders, and an expanding competition catalog.",
+    "Cross-league referee analytics for the NBA, NHL, NFL, and Premier League. Standout ref×team splits, whistle outliers, and an expanding competition catalog.",
   path: "/overview",
   keywords: [
     "referee analytics",
@@ -23,11 +16,8 @@ export const metadata: Metadata = buildPageMetadata({
   ],
 });
 
-export default async function OverviewPage() {
-  await Promise.all(
-    OVERVIEW_LEAGUES.map((league) => preloadLeagueRefStats(SITE_URL, league)),
-  );
-  const data = buildCrossLeagueOverview(catalogCompetitionCount());
+export default function OverviewPage() {
+  const data = loadOverviewSnapshot();
 
   return (
     <div className="page-shell overview-shell">

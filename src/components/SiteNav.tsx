@@ -100,6 +100,13 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/epl/refs", label: "Refs", match: (p) => refsMatch(p, "/epl") },
     { href: "/epl/insights", label: "Insights", match: (p) => insightsMatch(p, "/epl") },
   ],
+  laliga: [
+    { href: "/laliga", label: "Slate", match: (p, home) => p === home },
+    { href: "/laliga/teams", label: "Teams", match: (p) => p === "/laliga/teams" || p.startsWith("/laliga/teams/") },
+    { href: "/laliga/matrix", label: "Matrix", match: (p) => p === "/laliga/matrix" || p.startsWith("/laliga/matrix/") },
+    { href: "/laliga/refs", label: "Refs", match: (p) => refsMatch(p, "/laliga") },
+    { href: "/laliga/insights", label: "Insights", match: (p) => insightsMatch(p, "/laliga") },
+  ],
 };
 
 const HEADER_LEAGUES: LeagueId[] = getHeaderLeagueIds();

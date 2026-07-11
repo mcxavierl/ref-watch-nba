@@ -5,6 +5,7 @@ import { GameSlateCard } from "@/components/GameSlateCard";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
+import { UpcomingSlateNotice } from "@/components/UpcomingSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
@@ -33,6 +34,7 @@ import {
 } from "@/lib/syndication";
 import { slatePageMetadata } from "@/lib/seo";
 import { absoluteUrl } from "@/lib/site";
+import { isOffseasonSlate, isPendingCrewSlate, upcomingMatchups } from "@/lib/offseason";
 import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
@@ -47,7 +49,8 @@ import { SITE_URL } from "@/lib/site";
 export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
   const feed = buildNflNightlyFeed();
-  const isOffseason = assignments.games.length === 0;
+  const isOffseason = isOffseasonSlate(assignments);
+  const isPending = isPendingCrewSlate(assignments);
   const description = isOffseason
     ? "NFL ref and crew analytics during the offseason, dataset findings, official profiles, and team histories."
     : slateMetadataDescription(feed);
@@ -80,7 +83,9 @@ export default async function NflHomePage() {
   const refStats = getRefStats();
   const odds = getOdds();
   const findings = computeFindings();
-  const isOffseason = assignments.games.length === 0;
+  const isOffseason = isOffseasonSlate(assignments);
+  const isPending = isPendingCrewSlate(assignments);
+  const pendingMatchups = upcomingMatchups(assignments).map((game) => game.matchup);
   const { games: slateGames } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
@@ -118,6 +123,15 @@ export default async function NflHomePage() {
         assignments={assignments}
         refStats={refStats}
       />
+
+      {isPending && (
+        <UpcomingSlateNotice
+          league="NFL"
+          note={assignments.note}
+          matchups={pendingMatchups}
+          slateDate={assignments.nextSlateDate ?? assignments.date}
+        />
+      )}
 
       {isOffseason && <OffseasonSlateNotice league="NFL" />}
 

@@ -3,6 +3,7 @@ import type { RefStatsFile } from "@/lib/types";
 import { isCbbSimulatedData, isCbbVerifiedData } from "@/lib/cbb/data-source";
 import { isCfbSimulatedData, isCfbVerifiedData } from "@/lib/cfb/data-source";
 import { isEplSimulatedData, isEplVerifiedData } from "@/lib/epl/data-source";
+import { isLaligaSimulatedData, isLaligaVerifiedData } from "@/lib/laliga/data-source";
 import {
   isNflHybridData,
   isNflSimulatedData,
@@ -18,7 +19,7 @@ export type LeagueVerification = {
 };
 
 /** Production leagues with verified real-source ingest — never show synthetic UI. */
-export const VERIFIED_LIVE_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl"] as const satisfies readonly LeagueId[];
+export const VERIFIED_LIVE_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl", "laliga"] as const satisfies readonly LeagueId[];
 
 export function isVerifiedLiveLeague(leagueId: LeagueId): boolean {
   return (VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
@@ -90,6 +91,19 @@ function inferEplVerification(meta: RefStatsFile["meta"]): LeagueVerification {
   };
 }
 
+function inferLaligaVerification(meta: RefStatsFile["meta"]): LeagueVerification {
+  const verified =
+    meta.data_verified === true &&
+    isLaligaVerifiedData(meta.source) &&
+    !isLaligaSimulatedData(meta.source);
+  return {
+    data_verified: verified,
+    data_source: meta.data_source ?? (verified ? "ESPN" : "synthetic"),
+    canRenderStats: verified,
+    verifiedSeasons: verified ? [...meta.seasons] : [],
+  };
+}
+
 function inferCollegeVerification(
   meta: RefStatsFile["meta"],
   league: "cbb" | "cfb",
@@ -126,6 +140,8 @@ export function resolveLeagueVerification(
       return inferNflVerification(meta);
     case "epl":
       return inferEplVerification(meta);
+    case "laliga":
+      return inferLaligaVerification(meta);
     case "cbb":
       return inferCollegeVerification(meta, "cbb");
     case "cfb":
@@ -166,12 +182,10 @@ export function unverifiedBannerMessage(
   const v = resolveLeagueVerification(leagueId, meta);
   if (v.data_verified) return "";
   if (leagueId === "nhl" || leagueId === "nfl") {
-    const ticket = ingestTicketUrl(leagueId);
-    return ticket
-      ? `Data ingest in progress. Verified ${leagueId.toUpperCase()} data ships in ${ticket}.`
-      : `Data ingest in progress. Verified ${leagueId.toUpperCase()} data ships soon.`;
+    const label = leagueId.toUpperCase();
+    return `We're still building verified ${label} data.`;
   }
-  return "Synthetic data: not from official sources";
+  return "Preview data: not from official sources";
 }
 
 export function filterVerifiedSeasons(

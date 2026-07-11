@@ -125,6 +125,7 @@ export default async function NhlRefProfilePage({
             slug={profile.slug}
             sport="nhl"
             size="lg"
+            decorative={false}
           />
           <div className="page-hero-head-copy">
             <div className="page-hero-head-title-row">

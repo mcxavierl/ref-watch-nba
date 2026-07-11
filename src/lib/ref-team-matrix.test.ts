@@ -7,6 +7,9 @@ import {
   computeRefTeamMatrix,
   MATRIX_MIN_GAMES,
   matrixWhistleDiffShortLabel,
+  refMatrixQualifiedGames,
+  refMatrixStandoutCount,
+  sortMatrixRefs,
   TEAM_MATRIX_REF_PANEL_LIMIT,
   topRefsBeatingBaselineForTeam,
 } from "@/lib/ref-team-matrix";
@@ -135,5 +138,74 @@ describe("ref-team matrix team panels", () => {
     assert.ok(matrix.teams[0]!.baselineGames > 0);
     const bottom = bottomRefsBelowBaselineForTeam(matrix, "ARS");
     assert.ok(bottom.length > 0);
+  });
+});
+
+describe("sortMatrixRefs", () => {
+  it("ranks refs with qualified samples above thin-only rows by default", () => {
+    const matrix = buildMatrix();
+    const sorted = sortMatrixRefs(matrix.refs, matrix, "standout-desc");
+    const firstQualGames = refMatrixQualifiedGames(matrix, sorted[0]!.slug);
+    const lastQualGames = refMatrixQualifiedGames(
+      matrix,
+      sorted[sorted.length - 1]!.slug,
+    );
+    assert.ok(firstQualGames > 0);
+    if (lastQualGames === 0) {
+      assert.ok(firstQualGames > lastQualGames);
+    }
+  });
+
+  it("ignores thin samples in standout count", () => {
+    const matrix = {
+      refs: [{ slug: "thin-ref", name: "Thin Ref" }],
+      teams: [
+        {
+          abbr: "BOS",
+          label: "Boston Celtics",
+          name: "Celtics",
+          baselineWins: 40,
+          baselineLosses: 40,
+          baselineGames: 80,
+          baselineWinRate: 0.5,
+        },
+      ],
+      cells: {
+        "thin-ref|BOS": {
+          refSlug: "thin-ref",
+          teamAbbr: "BOS",
+          games: 3,
+          wins: 0,
+          losses: 3,
+          winRate: 0,
+          avgFoulDifferential: 0,
+          thinSample: true,
+        },
+      },
+      minGames: MATRIX_MIN_GAMES,
+      qualifiedCellCount: 0,
+    };
+    assert.equal(refMatrixStandoutCount(matrix, "thin-ref"), 0);
+    assert.equal(refMatrixQualifiedGames(matrix, "thin-ref"), 0);
+  });
+
+  it("breaks standout ties by total qualified games", () => {
+    const matrix = buildMatrix();
+    const sorted = sortMatrixRefs(matrix.refs, matrix, "standout-desc");
+    for (let i = 1; i < sorted.length; i++) {
+      const prev = sorted[i - 1]!;
+      const curr = sorted[i]!;
+      const prevStandout = refMatrixStandoutCount(matrix, prev.slug);
+      const currStandout = refMatrixStandoutCount(matrix, curr.slug);
+      if (prevStandout !== currStandout) {
+        assert.ok(prevStandout >= currStandout);
+        continue;
+      }
+      const prevGames = refMatrixQualifiedGames(matrix, prev.slug);
+      const currGames = refMatrixQualifiedGames(matrix, curr.slug);
+      if (prevGames !== currGames) {
+        assert.ok(prevGames >= currGames);
+      }
+    }
   });
 });

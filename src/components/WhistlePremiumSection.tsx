@@ -200,7 +200,7 @@ export function GamePremiumStrip({
 }: {
   premium: CrewWhistlePremium;
   homeBias: CrewHomeBias | null;
-  sport?: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 }) {
   const benchmarkLabel =
     premium.benchmarkSource === "sportsbook"

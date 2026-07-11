@@ -10,12 +10,14 @@ function main() {
   const nhl = loadGameLogs("NHL");
   const nfl = loadGameLogs("NFL");
   const epl = loadGameLogs("EPL");
+  const laliga = loadGameLogs("LALIGA");
   const file = buildBaselinesFile(
     nba?.games ?? [],
     nhl?.games ?? [],
-    "Computed from NBA/NHL/NFL/EPL game logs",
+    "Computed from NBA/NHL/NFL/EPL/La Liga game logs",
     nfl?.games ?? [],
     epl?.games ?? [],
+    laliga?.games ?? [],
   );
   saveBaselines(file);
   console.log(
@@ -23,7 +25,8 @@ function main() {
       `NBA ${file.NBA.aggregate.gameCount} (${file.NBA.usingFallback ? "fallback" : "computed"}), ` +
       `NHL ${file.NHL.aggregate.gameCount} (${file.NHL.usingFallback ? "fallback" : "computed"}), ` +
       `NFL ${file.NFL.aggregate.gameCount} (${file.NFL.usingFallback ? "fallback" : "computed"}), ` +
-      `EPL ${file.EPL.aggregate.gameCount} (${file.EPL.usingFallback ? "fallback" : "computed"})`,
+      `EPL ${file.EPL.aggregate.gameCount} (${file.EPL.usingFallback ? "fallback" : "computed"}), ` +
+      `LALIGA ${file.LALIGA.aggregate.gameCount} (${file.LALIGA.usingFallback ? "fallback" : "computed"})`,
   );
 }
 

@@ -1,21 +1,17 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-11T00:01:00.152Z",
+    "lastUpdated": "2026-07-11T17:54:22.690Z",
     "source": "wikipedia+commons+curated",
-    "count": 42,
-    "missed": 166,
-    "note": "Verified NFL official headshots; striped badge fallback when missing."
+    "count": 34,
+    "missed": 169,
+    "newlyResolved": 1,
+    "note": "Verified NFL official headshots; striped badge fallback when missing. Purged bad/duplicate Commons matches."
   },
   "photos": {
     "greg-meyer-0": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Greg_Meyer_%28cropped%29.jpg/250px-Greg_Meyer_%28cropped%29.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Greg_Meyer_%28cropped%29.jpg",
       "source": "curated:wikipedia:Greg Meyer"
-    },
-    "boris-cheek-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
     },
     "carl-cheffers-51": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Carl_Cheffers_%282019%29.jpg/250px-Carl_Cheffers_%282019%29.jpg",
@@ -57,11 +53,6 @@
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Craig_Wrolstad.jpg",
       "source": "curated:wikipedia:Craig Wrolstad"
     },
-    "roy-ellison-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
-    },
     "jim-quirk-0": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Jim_Quirk_Jr._%2850744644342%29.jpg/250px-Jim_Quirk_Jr._%2850744644342%29.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Jim_Quirk_Jr._%2850744644342%29.jpg",
@@ -72,25 +63,10 @@
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Shawn_Hochuli.jpg",
       "source": "curated:commons:Shawn Hochuli.jpg"
     },
-    "greg-yette-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
-    },
     "scott-novak-1": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Scott_Novak_2021_%2850833237927%29_%28cropped%29.jpg/250px-Scott_Novak_2021_%2850833237927%29_%28cropped%29.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/2/24/Scott_Novak_2021_%2850833237927%29_%28cropped%29.jpg",
       "source": "curated:wikipedia:Scott Novak"
-    },
-    "james-coleman-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
-    },
-    "greg-bradley-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
     },
     "brad-rogers-126": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Brad_Rogers.jpg/250px-Brad_Rogers.jpg",
@@ -126,21 +102,6 @@
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/LandClark-12-31-2023.jpg/250px-LandClark-12-31-2023.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/8/88/LandClark-12-31-2023.jpg",
       "source": "curated:commons:LandClark"
-    },
-    "michael-banks-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/250425-D-PM193-1324_SecDef_Hegseth_Engages_with_Troops_and_Border_Officials_at_New_Mexico_Defense_Area.jpg/250px-250425-D-PM193-1324_SecDef_Hegseth_Engages_with_Troops_and_Border_Officials_at_New_Mexico_Defense_Area.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/250425-D-PM193-1324_SecDef_Hegseth_Engages_with_Troops_and_Border_Officials_at_New_Mexico_Defense_Area.jpg",
-      "source": "commons:File:250425-D-PM193-1324 SecDef Hegseth Engages with Troops and Border Officials at New Mexico Defense Area.jpg"
-    },
-    "tom-hill-29": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Giants_HC_Joe_Judge_%2850582361617%29.jpg/250px-Giants_HC_Joe_Judge_%2850582361617%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Giants_HC_Joe_Judge_%2850582361617%29.jpg",
-      "source": "commons:File:Giants HC Joe Judge (50582361617).jpg"
-    },
-    "patrick-holt-0": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/03_Jan_2021_-_Eagles_WashingtonFootball0003_%2850807591048%29.jpg",
-      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0003 (50807591048).jpg"
     },
     "tra-blake-3": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Tra_Blake_at_Commanders_vs._Jaguars_%28September_11%2C_2022%29.jpg/250px-Tra_Blake_at_Commanders_vs._Jaguars_%28September_11%2C_2022%29.jpg",
@@ -211,6 +172,11 @@
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Super_Bowl_50_%2824922489191%29.jpg/250px-Super_Bowl_50_%2824922489191%29.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Super_Bowl_50_%2824922489191%29.jpg",
       "source": "commons:File:Super Bowl 50 (24922489191).jpg"
+    },
+    "ron-torbert-62": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/03_Jan_2021_-_Eagles_WashingtonFootball0067_Ronald_Torbert_%2850808329481%29_%28cropped%29.jpg/250px-03_Jan_2021_-_Eagles_WashingtonFootball0067_Ronald_Torbert_%2850808329481%29_%28cropped%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/d/df/03_Jan_2021_-_Eagles_WashingtonFootball0067_Ronald_Torbert_%2850808329481%29_%28cropped%29.jpg",
+      "source": "commons:File:03 Jan 2021 - Eagles WashingtonFootball0067 Ronald Torbert (50808329481) (cropped).jpg"
     }
   }
 }

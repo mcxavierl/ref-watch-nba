@@ -15,6 +15,10 @@ import {
   getRefStats as getEplStats,
 } from "@/lib/epl/data";
 import {
+  formatRefStatsRange as formatLaligaRange,
+  getRefStats as getLaligaStats,
+} from "@/lib/laliga/data";
+import {
   formatRefStatsRange as formatCbbRange,
   getRefStats as getCbbStats,
 } from "@/lib/cbb/data";
@@ -61,6 +65,7 @@ const LOADERS: Record<LeagueId, () => LeagueStatsBundle> = {
   nhl: () => ({ stats: getNhlStats(), formatRange: formatNhlRange }),
   nfl: () => ({ stats: getNflStats(), formatRange: formatNflRange }),
   epl: () => ({ stats: getEplStats(), formatRange: formatEplRange }),
+  laliga: () => ({ stats: getLaligaStats(), formatRange: formatLaligaRange }),
   cbb: () => ({ stats: getCbbStats(), formatRange: formatCbbRange }),
   cfb: () => ({ stats: getCfbStats(), formatRange: formatCfbRange }),
   wnba: () => ({ stats: getNbaStats(), formatRange: formatNbaRange }),

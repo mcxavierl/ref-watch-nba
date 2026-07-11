@@ -126,6 +126,7 @@ export default async function NflRefProfilePage({
             slug={profile.slug}
             sport="nfl"
             size="xl"
+            decorative={false}
             className="ring-2 ring-zinc-200 shadow-md"
           />
           <div className="page-hero-head-copy">

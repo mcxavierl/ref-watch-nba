@@ -32,7 +32,7 @@ export function ResearchHubFindings({
   refCount,
 }: {
   findings: ResearchFinding[];
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   refCount: number;
 }) {
   const router = useRouter();

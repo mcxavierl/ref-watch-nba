@@ -8,7 +8,7 @@ export interface GameLogEntry {
   gameId: string;
   date: string;
   season: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA";
   homeTeam: string;
   awayTeam: string;
   homeScore: number;
@@ -30,20 +30,21 @@ export interface GameLogEntry {
 
 export interface GameLogFile {
   lastUpdated: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA";
   source: string;
   games: GameLogEntry[];
 }
 
-export function gameLogPath(league: "NBA" | "NHL" | "NFL" | "EPL"): string {
+export function gameLogPath(league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA"): string {
   const root = path.join(process.cwd(), "data");
   if (league === "NBA") return path.join(root, "game-logs.json");
   if (league === "NFL") return path.join(root, "nfl", "game-logs.json");
   if (league === "EPL") return path.join(root, "epl", "game-logs.json");
+  if (league === "LALIGA") return path.join(root, "laliga", "game-logs.json");
   return path.join(root, "nhl", "game-logs.json");
 }
 
-export function loadGameLogs(league: "NBA" | "NHL" | "NFL" | "EPL"): GameLogFile | null {
+export function loadGameLogs(league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA"): GameLogFile | null {
   const filePath = gameLogPath(league);
   try {
     return JSON.parse(fs.readFileSync(filePath, "utf8")) as GameLogFile;

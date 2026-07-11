@@ -1,6 +1,7 @@
 import { computeAllFindings as computeNbaFindings } from "@/lib/findings";
 import { computeAllFindings as computeNhlFindings } from "@/lib/nhl/findings";
 import { computeAllFindings as computeNflFindings } from "@/lib/nfl/findings";
+import { computeAllFindings as computeLaligaFindings } from "@/lib/laliga/findings";
 import { computeAllFindings as computeEplFindings } from "@/lib/epl/findings";
 import { computeAllFindings as computeCbbFindings } from "@/lib/cbb/findings";
 import { computeAllFindings as computeCfbFindings } from "@/lib/cfb/findings";
@@ -32,7 +33,8 @@ export function computeAllResearchFindings(): ResearchFinding[] {
   const epl = tagResearchFindings(computeEplFindings(), "EPL");
   const cbb = tagResearchFindings(computeCbbFindings(), "CBB");
   const cfb = tagResearchFindings(computeCfbFindings(), "CFB");
-  return [...nba, ...nhl, ...nfl, ...epl, ...cbb, ...cfb];
+  const laliga = tagResearchFindings(computeLaligaFindings(), "LALIGA");
+  return [...nba, ...nhl, ...nfl, ...epl, ...laliga, ...cbb, ...cfb];
 }
 
 const LEAGUE_FINDING_COMPUTERS: Partial<
@@ -42,6 +44,7 @@ const LEAGUE_FINDING_COMPUTERS: Partial<
   NHL: computeNhlFindings,
   NFL: computeNflFindings,
   EPL: computeEplFindings,
+  LALIGA: computeLaligaFindings,
   CBB: computeCbbFindings,
   CFB: computeCfbFindings,
 };

@@ -15,11 +15,13 @@ function RefStripesBadge({
   size,
   sport,
   className = "",
+  decorative = true,
 }: {
   name: string;
   size: keyof typeof sizeClasses;
-  sport?: "nhl" | "nfl" | "epl";
+  sport?: "nhl" | "nfl" | "epl" | "laliga";
   className?: string;
+  decorative?: boolean;
 }) {
   const patternId = `ref-stripes-${useId().replace(/:/g, "")}`;
   const ringClass =
@@ -27,15 +29,16 @@ function RefStripesBadge({
       ? "ring-[color:color-mix(in_srgb,var(--nfl-green)_45%,transparent)]"
       : sport === "nhl"
         ? "ring-[color:color-mix(in_srgb,var(--nhl-blue)_45%,transparent)]"
-        : sport === "epl"
+        : sport === "epl" || sport === "laliga"
           ? "ring-[color:color-mix(in_srgb,#3d195b_45%,transparent)]"
           : "ring-zinc-200/80";
 
   return (
     <span
       className={`inline-flex shrink-0 overflow-hidden rounded-full ring-2 ${ringClass} ${sizeClasses[size]} ${className}`}
-      aria-label={`${name} avatar`}
-      role="img"
+      aria-hidden={decorative || undefined}
+      aria-label={decorative ? undefined : `${name} avatar`}
+      role={decorative ? undefined : "img"}
     >
       <svg
         viewBox="0 0 32 32"
@@ -66,19 +69,22 @@ export function RefAvatar({
   sport,
   size = "md",
   className = "",
+  decorative = true,
 }: {
   name: string;
   slug: string;
-  sport: "nba" | "nhl" | "nfl" | "epl" | "cbb" | "cfb";
+  sport: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   size?: keyof typeof sizeClasses;
   className?: string;
+  /** When true (default), name is exposed by an adjacent label/link — image is decorative. */
+  decorative?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
 
   if (sport === "cbb" || sport === "cfb") return null;
 
   const photoSrc =
-    sport === "nba" || sport === "nhl" || sport === "nfl" || sport === "epl"
+    sport === "nba" || sport === "nhl" || sport === "nfl" || sport === "epl" || sport === "laliga"
       ? refPhotoUrl(slug, sport, size === "lg" || size === "xl" ? "headshot" : "thumb")
       : null;
 
@@ -87,8 +93,9 @@ export function RefAvatar({
       <RefStripesBadge
         name={name}
         size={size}
-        sport={sport === "nfl" || sport === "nhl" || sport === "epl" ? sport : undefined}
+        sport={sport === "nfl" || sport === "nhl" || sport === "epl" || sport === "laliga" ? sport : undefined}
         className={className}
+        decorative={decorative}
       />
     );
   }
@@ -98,7 +105,7 @@ export function RefAvatar({
       ? "ring-2 ring-[color:color-mix(in_srgb,var(--nfl-green)_40%,transparent)]"
       : sport === "nhl"
         ? "ring-2 ring-[color:color-mix(in_srgb,var(--nhl-blue)_40%,transparent)]"
-        : sport === "epl"
+        : sport === "epl" || sport === "laliga"
           ? "ring-2 ring-[color:color-mix(in_srgb,#3d195b_40%,transparent)]"
           : "ring-1 ring-zinc-200/80";
 
@@ -106,8 +113,8 @@ export function RefAvatar({
     // eslint-disable-next-line @next/next/no-img-element -- onError fallback to striped ref badge
     <img
       src={photoSrc}
-      alt=""
-      aria-hidden
+      alt={decorative ? "" : `Photo of ${name}`}
+      aria-hidden={decorative || undefined}
       className={`shrink-0 rounded-full object-cover object-top ${ringClass} ${sizeClasses[size]} ${className}`}
       onError={() => setFailed(true)}
     />

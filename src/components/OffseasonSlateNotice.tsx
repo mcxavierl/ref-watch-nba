@@ -1,6 +1,6 @@
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 
-type OffseasonLeague = "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB";
+type OffseasonLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
 const COLLEGE_LEAGUES = new Set<OffseasonLeague>(["CBB", "CFB"]);
 
@@ -18,6 +18,11 @@ const OFFSEASON_COPY: Record<OffseasonLeague, { status: string; detail?: string 
     status: "Matchday assignments return when the Premier League schedule resumes.",
     detail:
       "Team pages cover all 20 PL clubs for 2025-26. Ref profiles and card/foul tendencies populate as matches log.",
+  },
+  LALIGA: {
+    status: "Matchday assignments return when the La Liga schedule resumes.",
+    detail:
+      "Ref profiles and card/foul tendencies cover ESPN-verified matches from 2021-22 onward.",
   },
   CBB: {
     status: "Season opens soon. Crews and tendencies load from game data.",

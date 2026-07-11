@@ -169,7 +169,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "provenance-estimated": {
     label: "Estimated",
-    text: "This number is not computed from real game logs yet; it uses a fallback constant (e.g. league baseline or odds benchmark) until enough live data is ingested.",
+    text: "This number is not computed from real game logs yet; it uses a fallback constant (e.g. league baseline or odds benchmark) until we have enough real game data.",
   },
   "sample-gate": {
     label: "Sample gate",

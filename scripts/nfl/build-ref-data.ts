@@ -26,6 +26,7 @@ import {
   toRefOfficials,
   yyyymmdd,
 } from "./lib/espn";
+import { canonicalizeOfficialName } from "./lib/official-names";
 import {
   computeLeagueAvgFlags,
   computeLeagueAvgPenaltyYards,
@@ -38,7 +39,9 @@ import { applyGameLogTeamStats } from "./lib/rebuild-team-stats-from-logs";
 import {
   buildNflverseLineIndex,
   fetchNflverseGamesCsv,
+  listNflverseScheduleGames,
   lookupNflLine,
+  nflverseMatchupKey,
   type NflverseLineIndex,
 } from "./lib/nflverse-lines";
 import { homeCoverRate, NflBettingAccumulator } from "./lib/nfl-betting";
@@ -123,6 +126,171 @@ function nflSeasonDates(): string[] {
   return dates;
 }
 
+function writeGameLogsCheckpoint(
+  existingById: Map<string, NflGameLogEntry>,
+  label: string,
+): void {
+  const merged = [...existingById.values()].sort(
+    (a, b) => a.date.localeCompare(b.date) || a.gameId.localeCompare(b.gameId),
+  );
+  fs.writeFileSync(
+    path.join(DATA_DIR, "game-logs.json"),
+    `${JSON.stringify(
+      {
+        lastUpdated: new Date().toISOString(),
+        league: "NFL",
+        source: "espn",
+        games: merged,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  console.log(`  …${label}: ${merged.length} games in game-logs.json`);
+}
+
+function buildLogEntryFromSummary(
+  summary: NonNullable<Awaited<ReturnType<typeof fetchEspnSummary>>>,
+  roster: Map<string, number>,
+  lineIndex: NflverseLineIndex | null,
+  nflverseReferee?: string,
+): NflGameLogEntry | null {
+  const homeTeam = summary.homeAbbr;
+  const awayTeam = summary.awayAbbr;
+  if (!NFL_TEAM_ABBRS.includes(homeTeam) || !NFL_TEAM_ABBRS.includes(awayTeam)) {
+    return null;
+  }
+
+  const totalPoints = summary.homeScore + summary.awayScore;
+  const totalFouls = summary.homeFlags + summary.awayFlags;
+  const season = inferNflSeason(summary.date);
+  let crew =
+    summary.officials.length > 0
+      ? toRefOfficials(summary.officials, roster)
+      : [];
+  if (crew.length === 0 && nflverseReferee) {
+    const head = canonicalizeOfficialName(nflverseReferee, roster);
+    crew = [{ name: head.name, number: head.number, role: "referee" }];
+  }
+  if (crew.length === 0) return null;
+
+  const closingLine = lineIndex
+    ? lookupNflLine(lineIndex, {
+        gameId: summary.gameId,
+        date: summary.date,
+        awayTeam,
+        homeTeam,
+      })
+    : undefined;
+
+  return {
+    gameId: summary.gameId,
+    date: summary.date,
+    season,
+    league: "NFL",
+    homeTeam,
+    awayTeam,
+    homeScore: summary.homeScore,
+    awayScore: summary.awayScore,
+    totalPoints,
+    totalFouls,
+    homeFlags: summary.homeFlags,
+    awayFlags: summary.awayFlags,
+    homePenaltyYards: summary.homePenaltyYards,
+    awayPenaltyYards: summary.awayPenaltyYards,
+    closingTotal: closingLine?.total ?? LEAGUE_OVER_BASELINE,
+    homeSpread: closingLine?.homeSpread ?? 0,
+    lineSource: closingLine ? "external" : "synthetic",
+    officials: crew,
+  };
+}
+
+async function fillMissingNflverseGames(
+  existingById: Map<string, NflGameLogEntry>,
+  lineIndex: NflverseLineIndex | null,
+  roster: Map<string, number>,
+): Promise<number> {
+  const cachePath = path.join(DATA_DIR, "nflverse-games.csv");
+  if (!fs.existsSync(cachePath)) {
+    console.warn("NFL gap-fill skipped: nflverse-games.csv missing");
+    return 0;
+  }
+
+  const csv = fs.readFileSync(cachePath, "utf8");
+  const schedule = listNflverseScheduleGames(csv, {
+    minSeason: 2016,
+    maxSeason: 2025,
+  });
+  const haveId = new Set([...existingById.keys()].map(String));
+  const haveMatchup = new Set(
+    [...existingById.values()].map((g) =>
+      nflverseMatchupKey(g.date, g.awayTeam, g.homeTeam),
+    ),
+  );
+
+  const targets = schedule.filter(
+    (game) => game.espnId && !haveId.has(String(game.espnId)),
+  );
+  console.log(
+    `NFL gap-fill: ${targets.length} nflverse games missing from logs`,
+  );
+
+  let filled = 0;
+  let noEspnId = 0;
+  let noOfficials = 0;
+  let nflverseRefFallback = 0;
+
+  for (const target of targets) {
+    if (!target.espnId) {
+      noEspnId++;
+      continue;
+    }
+
+    await sleep(80);
+    let summary;
+    try {
+      summary = await fetchEspnSummary(target.espnId);
+    } catch (err) {
+      console.warn(`Gap summary ${target.espnId}: ${err}`);
+      continue;
+    }
+    if (!summary || summary.status !== "STATUS_FINAL") continue;
+
+    const nflverseRef =
+      summary.officials.length === 0 ? target.referee : undefined;
+    if (summary.officials.length === 0 && !nflverseRef) {
+      noOfficials++;
+      continue;
+    }
+
+    const logEntry = buildLogEntryFromSummary(
+      summary,
+      roster,
+      lineIndex,
+      nflverseRef,
+    );
+    if (!logEntry) continue;
+
+    if (nflverseRef) nflverseRefFallback++;
+
+    existingById.set(String(logEntry.gameId), logEntry);
+    haveId.add(String(logEntry.gameId));
+    haveMatchup.add(
+      nflverseMatchupKey(logEntry.date, logEntry.awayTeam, logEntry.homeTeam),
+    );
+    filled++;
+
+    if (filled % 50 === 0) {
+      writeGameLogsCheckpoint(existingById, `gap-fill +${filled}`);
+    }
+  }
+
+  console.log(
+    `Gap-fill done: +${filled} games (${noEspnId} without ESPN id, ${noOfficials} without officials, ${nflverseRefFallback} via nflverse referee)`,
+  );
+  return filled;
+}
+
 function loadOfficialRoster(seed: RefStatsFile): Map<string, number> {
   const roster = new Map<string, number>();
   for (const ref of seed.refs) {
@@ -196,7 +364,10 @@ function buildTeamSplit(
   };
 }
 
-async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
+async function buildFromEspn(
+  seed: RefStatsFile,
+  options: { gapFillOnly?: boolean } = {},
+): Promise<RefStatsFile | null> {
   const roster = loadOfficialRoster(seed);
   const lineIndex = await loadNflverseLines(DATA_DIR);
   const dates = nflSeasonDates();
@@ -226,6 +397,7 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
     teamByCrew.set(abbr, new Map());
   }
 
+  if (!options.gapFillOnly) {
   for (const date of dates) {
     const compact = date.replace(/-/g, "");
     let events;
@@ -424,6 +596,11 @@ async function buildFromEspn(seed: RefStatsFile): Promise<RefStatsFile | null> {
     }
     await sleep(100);
   }
+  } else {
+    console.log("Skipping date scan (--gap-fill-only); filling nflverse gaps only");
+  }
+
+  await fillMissingNflverseGames(existingById, lineIndex, roster);
 
   // Merge cached + newly fetched logs, then rebuild aggregates from the full set.
   const mergedLogs = [...existingById.values()]
@@ -665,7 +842,9 @@ async function main() {
     }
   }
 
-  const built = await buildFromEspn(base);
+  const built = await buildFromEspn(base, {
+    gapFillOnly: process.argv.includes("--gap-fill-only"),
+  });
   if (built) {
     let output = replaceOnly ? built : mergeNflRefStats(base, built);
     const logs = loadGameLogs("NFL");
