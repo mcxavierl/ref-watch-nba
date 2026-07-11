@@ -24,6 +24,7 @@ import {
   getPreferHydratedRefStats,
   loadRefStatsRawCachedFirst,
 } from "@/lib/ref-stats-preload";
+import { allowNodeDataFs, diskTeamSplitsFallback } from "@/lib/production-data-guard";
 import { getBundledNbaRefStatsCore } from "@/lib/ref-stats-bundled";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
@@ -53,14 +54,22 @@ function tryReadJson<T>(filename: string): T | null {
 
 function loadTeamSplitsRaw(): Record<string, TeamCrewSplit[]> {
   if (teamSplitsCache) return teamSplitsCache;
+  const cached = cachedTeamSplitsForLeague("nba");
+  if (Object.keys(cached).length > 0) {
+    teamSplitsCache = cached;
+    return cached;
+  }
   const fromFile =
-    tryReadJson<Record<string, TeamCrewSplit[]>>("team-splits.json") ?? {};
+    diskTeamSplitsFallback(() =>
+      tryReadJson<Record<string, TeamCrewSplit[]>>("team-splits.json") ?? {},
+    );
   teamSplitsCache = fromFile;
   return fromFile;
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
   return loadRefStatsRawCachedFirst("nba", () => {
+    if (!allowNodeDataFs()) return null;
     const fromFs =
       tryReadJson<RefStatsFile>("ref-stats-core.json") ??
       tryReadJson<RefStatsFile>("ref-stats.json");

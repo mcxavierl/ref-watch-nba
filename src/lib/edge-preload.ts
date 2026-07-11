@@ -5,6 +5,7 @@ import {
   attachTeamSplits,
   getCachedRefStats,
   getCachedTeamSplits,
+  pathNeedsTeamSplits,
   setCachedRefStats,
   setCachedTeamSplits,
 } from "@/lib/ref-stats-preload";
@@ -198,11 +199,12 @@ export async function preloadLeagueDataForPath(
 ): Promise<void> {
   const leagues = leaguesForPath(pathname);
   if (leagues.length === 0) return;
+  const includeTeamSplits = pathNeedsTeamSplits(pathname);
 
   try {
     await Promise.all(
       leagues.map((league) =>
-        preloadRefStats(origin, league, { includeTeamSplits: true }),
+        preloadRefStats(origin, league, { includeTeamSplits }),
       ),
     );
   } catch {

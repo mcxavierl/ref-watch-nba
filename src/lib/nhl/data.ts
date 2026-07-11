@@ -26,6 +26,7 @@ import {
   loadRefStatsRawCachedFirst,
   resolveTeamSplitsForLeague,
 } from "@/lib/ref-stats-preload";
+import { allowNodeDataFs, diskTeamSplitsFallback } from "@/lib/production-data-guard";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 import { isNhlLinesmanOfficial } from "@/lib/nhl/officials";
@@ -65,14 +66,17 @@ function resolveTeamSplits(
   if (Object.keys(cached).length > 0) {
     return resolveTeamSplitsForLeague("nhl", embedded, cached);
   }
-  return resolveTeamSplitsForLeague("nhl", embedded, loadTeamSplitsFromDisk());
+  return resolveTeamSplitsForLeague("nhl", embedded, diskTeamSplitsFallback(loadTeamSplitsFromDisk));
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  return loadRefStatsRawCachedFirst("nhl", () =>
-    tryReadJson<RefStatsFile>("ref-stats-core.json") ??
-    tryReadJson<RefStatsFile>("ref-stats.json"),
-  );
+  return loadRefStatsRawCachedFirst("nhl", () => {
+    if (!allowNodeDataFs()) return null;
+    return (
+      tryReadJson<RefStatsFile>("ref-stats-core.json") ??
+      tryReadJson<RefStatsFile>("ref-stats.json")
+    );
+  });
 }
 
 export function getAssignments(): AssignmentsFile {
@@ -155,7 +159,7 @@ function normalizeRefStats(data: RefStatsFile): RefStatsFile {
   }
   const cached = cachedTeamSplitsForLeague("nhl");
   const fromFile =
-    Object.keys(cached).length > 0 ? cached : loadTeamSplitsFromDisk();
+    Object.keys(cached).length > 0 ? cached : diskTeamSplitsFallback(loadTeamSplitsFromDisk);
   return attachTeamSplits(
     "nhl",
     {
@@ -206,7 +210,7 @@ export function getRefStats(): RefStatsFile {
     }
     const splits = cachedTeamSplitsForLeague("nhl");
     const fromFile =
-      Object.keys(splits).length > 0 ? splits : loadTeamSplitsFromDisk();
+      Object.keys(splits).length > 0 ? splits : diskTeamSplitsFallback(loadTeamSplitsFromDisk);
     resolvedRefStats = attachTeamSplits("nhl", stats, fromFile);
     return resolvedRefStats;
   } catch {

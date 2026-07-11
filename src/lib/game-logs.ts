@@ -9,6 +9,7 @@ import {
   type RuntimeGameLogEntry,
   type RuntimeGameLogFile,
 } from "@/lib/game-logs-preload";
+import { allowNodeDataFs } from "@/lib/production-data-guard";
 
 export type { GameLineSource, RuntimeGameLogEntry, RuntimeGameLogFile, DataLeague };
 export { getCachedGameLogs, setCachedGameLogs, preloadGameLogsFromAssets } from "@/lib/game-logs-preload";
@@ -114,6 +115,11 @@ export function loadRuntimeGameLogs(league: DataLeague): RuntimeGameLogFile | nu
   if (fromGlobal) {
     cache.set(league, fromGlobal);
     return fromGlobal;
+  }
+
+  if (!allowNodeDataFs()) {
+    cache.set(league, null);
+    return null;
   }
 
   try {

@@ -237,19 +237,17 @@ export async function preloadLeagueDataForPath(
 
 /** NBA /matrix rebuilds scoped stats from game logs; other league matrix routes do not. */
 export function pathNeedsGameLogs(pathname: string): boolean {
-  if (
-    pathname.startsWith("/overview") ||
-    pathname.startsWith("/methodology") ||
-    pathname.startsWith("/research") ||
-    pathname.startsWith("/sitemap") ||
-    pathname.startsWith("/feed")
-  ) {
-    return false;
-  }
-  if (pathname === "/matrix") return true;
-  if (/\/matrix\/?$/.test(pathname)) return false;
-  // League slates use precomputed ref-stats (teamStats on profiles); skip 10MB game-log parse.
-  if (/^\/(nhl|nfl|epl|laliga|cbb|cfb)\/?$/.test(pathname)) return false;
+  return false;
+}
+
+/** Matrix, findings, and team crew pages need sidecar team-splits; ref hubs do not. */
+export function pathNeedsTeamSplits(pathname: string): boolean {
+  if (pathname.startsWith("/overview")) return false;
+  if (pathname.startsWith("/methodology")) return false;
+  if (pathname.startsWith("/research")) return false;
+  if (pathname.startsWith("/sitemap")) return false;
+  if (pathname.startsWith("/feed")) return false;
+  if (/\/refs(\/|$)/.test(pathname)) return false;
   return true;
 }
 

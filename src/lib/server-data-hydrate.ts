@@ -4,7 +4,11 @@ import {
   preloadGameLogsFromAssets,
   type DataLeague,
 } from "@/lib/game-logs-preload";
-import { leaguesForPath, pathNeedsGameLogs } from "@/lib/ref-stats-preload";
+import {
+  leaguesForPath,
+  pathNeedsGameLogs,
+  pathNeedsTeamSplits,
+} from "@/lib/ref-stats-preload";
 import { SITE_URL } from "@/lib/site";
 
 const DATA_LEAGUE_FOR_ROUTE: Record<
