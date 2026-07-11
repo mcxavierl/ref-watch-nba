@@ -199,6 +199,9 @@ export async function preloadLeagueDataForPath(
 
 /** Load only the leagues a route needs, avoids parsing both 8MB files on every request. */
 export function leaguesForPath(pathname: string): League[] {
+  if (pathname.startsWith("/overview")) {
+    return ["nba", "nhl", "nfl", "epl"];
+  }
   if (pathname.startsWith("/epl")) return ["epl"];
   if (pathname.startsWith("/cfb")) return ["cfb"];
   if (pathname.startsWith("/cbb")) return ["cbb"];

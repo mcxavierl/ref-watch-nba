@@ -21,6 +21,9 @@ const REF_STATS_ASSET: Record<League, string> = {
 };
 
 function leaguesForPath(pathname: string): League[] {
+  if (pathname.startsWith("/overview")) {
+    return ["nba", "nhl", "nfl", "epl"];
+  }
   if (pathname.startsWith("/epl")) return ["epl"];
   if (pathname.startsWith("/cfb")) return ["cfb"];
   if (pathname.startsWith("/cbb")) return ["cbb"];

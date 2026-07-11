@@ -21,8 +21,8 @@ export default function OverviewPage() {
   const data = buildCrossLeagueOverview(catalogCompetitionCount());
 
   return (
-    <main id="main-content" className="page-shell overview-shell">
+    <div className="page-shell overview-shell">
       <OverviewDashboard data={data} />
-    </main>
+    </div>
   );
 }
