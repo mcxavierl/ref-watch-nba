@@ -205,6 +205,22 @@ export async function preloadLeagueDataForPath(
   await preloadOnEdge(origin, pathname);
 }
 
+/** NBA /matrix rebuilds scoped stats from game logs; other league matrix routes do not. */
+export function pathNeedsGameLogs(pathname: string): boolean {
+  if (
+    pathname.startsWith("/overview") ||
+    pathname.startsWith("/methodology") ||
+    pathname.startsWith("/research") ||
+    pathname.startsWith("/sitemap") ||
+    pathname.startsWith("/feed")
+  ) {
+    return false;
+  }
+  if (pathname === "/matrix") return true;
+  if (/\/matrix\/?$/.test(pathname)) return false;
+  return true;
+}
+
 /** Load only the leagues a route needs, avoids parsing both 8MB files on every request. */
 export function leaguesForPath(pathname: string): League[] {
   if (pathname.startsWith("/overview")) {

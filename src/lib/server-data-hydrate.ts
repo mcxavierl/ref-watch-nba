@@ -4,7 +4,7 @@ import {
   preloadGameLogsFromAssets,
   type DataLeague,
 } from "@/lib/game-logs-preload";
-import { leaguesForPath } from "@/lib/ref-stats-preload";
+import { leaguesForPath, pathNeedsGameLogs } from "@/lib/ref-stats-preload";
 import { SITE_URL } from "@/lib/site";
 
 const DATA_LEAGUE_FOR_ROUTE: Record<
@@ -25,6 +25,8 @@ export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
   if (pathname.startsWith("/overview")) return;
 
   await preloadLeagueDataForPath(SITE_URL, pathname);
+
+  if (!pathNeedsGameLogs(pathname)) return;
 
   const leagues = leaguesForPath(pathname);
   await Promise.all(

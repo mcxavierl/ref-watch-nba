@@ -84,7 +84,7 @@ export default async function RootLayout({
   const pathname = (await headers()).get("x-pathname") ?? "/";
   await hydrateLeagueDataForPath(pathname);
   if (!pathname.startsWith("/overview")) {
-    assertProductionLeagueVerification();
+    assertProductionLeagueVerification(pathname);
   }
 
   return (
