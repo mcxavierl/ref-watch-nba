@@ -39,6 +39,7 @@ import {
   nhlSeasonApiId,
 } from "../lib/ten-season-policy";
 
+/** Current 32-team roster keys used for teamSplits / routes. */
 const NHL_TEAM_ABBRS = [
   "ANA", "BOS", "BUF", "CAR", "CBJ", "CGY", "CHI", "COL", "DAL", "DET",
   "EDM", "FLA", "LAK", "MIN", "MTL", "NSH", "NJD", "NYI", "NYR", "OTT",
@@ -46,7 +47,40 @@ const NHL_TEAM_ABBRS = [
   "WPG", "WSH",
 ];
 
+/**
+ * Schedule collection includes historical franchise codes the NHL API still
+ * returns (ARI Coyotes → Utah). Games are normalized onto UTA below.
+ */
+const NHL_SCHEDULE_TEAM_ABBRS = [...NHL_TEAM_ABBRS, "ARI"];
+
+/** Map relocated / renamed franchise codes onto current team keys. */
+function normalizeNhlTeamAbbr(abbr: string): string {
+  const upper = abbr.toUpperCase();
+  if (upper === "ARI" || upper === "PHX") return "UTA";
+  return upper;
+}
+
 const MIN_SAMPLE = 30;
+/** Keep concurrency low — NHL right-rail returns empty crews when overloaded. */
+const FETCH_CONCURRENCY = Number.parseInt(
+  process.env.NHL_FETCH_CONCURRENCY ?? "2",
+  10,
+);
+/** Refuse to publish a "10-season" file with a one-season-sized sample. */
+const MIN_GAMES_FOR_LIVE_BUILD = Number.parseInt(
+  process.env.NHL_MIN_GAMES ?? "10000",
+  10,
+);
+/**
+ * Seasons below this game count are truncated / in-progress and must not be
+ * listed in meta.seasons as full coverage. 850 keeps COVID 2020-21 (~868) while
+ * excluding partial 2023-24+ until near a full ~1312-game slate — so we do not
+ * claim 8+ seasons and trip check:deploy's incomplete-ingest floor.
+ */
+const MEANINGFUL_SEASON_MIN_GAMES = Number.parseInt(
+  process.env.NHL_MEANINGFUL_SEASON_GAMES ?? "850",
+  10,
+);
 
 interface NhlOfficialRecord {
   firstName: string;
@@ -163,7 +197,7 @@ async function collectTenSeasonGames(): Promise<
   const seen = new Map<number, { date: string; game: ScheduleGame }>();
   for (const season of NHL_TEN_SEASONS) {
     let seasonNew = 0;
-    for (const team of NHL_TEAM_ABBRS) {
+    for (const team of NHL_SCHEDULE_TEAM_ABBRS) {
       const games = await fetchTeamSeasonGames(team, season);
       for (const g of games) {
         if (!seen.has(g.gameId)) {
@@ -171,7 +205,7 @@ async function collectTenSeasonGames(): Promise<
           seasonNew++;
         }
       }
-      await sleep(80);
+      await sleep(40);
     }
     console.log(
       `  ${season}: +${seasonNew} new games (${seen.size} unique total)`,
@@ -182,19 +216,33 @@ async function collectTenSeasonGames(): Promise<
 
 async function fetchWithRetry(
   url: string,
-  retries = 4,
+  retries = 5,
 ): Promise<Response> {
   let lastErr: unknown;
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          Accept: "application/json,text/plain,*/*",
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          Referer: "https://www.nhl.com/",
+          Origin: "https://www.nhl.com",
+        },
+      });
+      if (res.ok) return res;
+      // Retry rate limits / transient upstream errors.
+      if ([429, 500, 502, 503, 504].includes(res.status)) {
+        await sleep(400 * (attempt + 1) + Math.floor(Math.random() * 300));
+        continue;
+      }
       return res;
     } catch (err) {
       lastErr = err;
       await sleep(500 * (attempt + 1));
     }
   }
-  throw lastErr;
+  throw lastErr ?? new Error(`fetch failed for ${url}`);
 }
 
 async function fetchOfficialsMap(): Promise<Map<string, number>> {
@@ -238,9 +286,17 @@ async function fetchCrew(
     `https://api-web.nhle.com/v1/gamecenter/${gameId}/right-rail`,
   );
   if (!res.ok) return [];
-  const body = (await res.json()) as RightRailResponse;
+  const text = await res.text();
+  if (!text || text.trimStart().startsWith("<")) return [];
+  let body: RightRailResponse;
+  try {
+    body = JSON.parse(text) as RightRailResponse;
+  } catch {
+    return [];
+  }
   const crew: { name: string; number: number; role: RefRole }[] = [];
   for (const ref of body.gameInfo?.referees ?? []) {
+    if (!ref?.default) continue;
     crew.push({
       name: ref.default,
       number: lookupNumber(ref.default, officials),
@@ -248,6 +304,7 @@ async function fetchCrew(
     });
   }
   for (const lines of body.gameInfo?.linesmen ?? []) {
+    if (!lines?.default) continue;
     crew.push({
       name: lines.default,
       number: lookupNumber(lines.default, officials),
@@ -255,6 +312,20 @@ async function fetchCrew(
     });
   }
   return crew;
+}
+
+/** NHL often returns HTTP 200 with empty gameInfo when overloaded — retry. */
+async function fetchCrewWithRetry(
+  gameId: number,
+  officials: Map<string, number>,
+  attempts = 6,
+): Promise<{ name: string; number: number; role: RefRole }[]> {
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const crew = await fetchCrew(gameId, officials);
+    if (crew.length > 0) return crew;
+    await sleep(250 * (attempt + 1) + Math.floor(Math.random() * 400));
+  }
+  return [];
 }
 
 function teamPim(box: BoxscoreResponse, side: string): number {
@@ -454,14 +525,19 @@ function absorbGame(
 function replayGameLogs(logs: GameLogEntry[], maps: BuildMaps): void {
   for (const game of logs) {
     if (game.league !== "NHL") continue;
+    const homeTeam = normalizeNhlTeamAbbr(game.homeTeam);
+    const awayTeam = normalizeNhlTeamAbbr(game.awayTeam);
+    if (!NHL_TEAM_ABBRS.includes(homeTeam) || !NHL_TEAM_ABBRS.includes(awayTeam)) {
+      continue;
+    }
     const homePim = game.homeMinors ? game.homeMinors * 2 : game.totalFouls / 2;
     const awayPim = game.awayMinors ? game.awayMinors * 2 : game.totalFouls / 2;
     absorbGame(maps, {
       gameId: game.gameId,
       date: game.date,
       season: game.season,
-      homeTeam: game.homeTeam,
-      awayTeam: game.awayTeam,
+      homeTeam,
+      awayTeam,
       homeScore: game.homeScore,
       awayScore: game.awayScore,
       totalPim: game.totalFouls,
@@ -476,6 +552,150 @@ function replayGameLogs(logs: GameLogEntry[], maps: BuildMaps): void {
       lineSource: game.lineSource,
     });
   }
+}
+
+/** Seasons with enough logged games to claim as covered in meta.seasons. */
+function seasonsWithMeaningfulCoverage(logs: GameLogEntry[]): string[] {
+  const counts = new Map<string, number>();
+  for (const game of logs) {
+    if (!game.season) continue;
+    counts.set(game.season, (counts.get(game.season) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .filter(([, n]) => n >= MEANINGFUL_SEASON_MIN_GAMES)
+    .map(([season]) => season)
+    .sort();
+}
+
+function createEmptyMaps(): BuildMaps {
+  const teamByCrew = new Map<string, Map<string, TeamCrewBucket>>();
+  for (const abbr of NHL_TEAM_ABBRS) {
+    teamByCrew.set(abbr, new Map());
+  }
+  return {
+    refGames: new Map(),
+    refMinorGames: new Map(),
+    refMeta: new Map(),
+    refTeamBuckets: new Map(),
+    teamByCrew,
+    exportedGameLogs: [],
+    allDates: [],
+  };
+}
+
+/**
+ * Rebuild ref-stats + teamSplits from stored game logs (no network).
+ * meta.seasons lists only seasons with meaningful coverage; totals include all logs.
+ */
+function buildStatsFromLogs(rawLogs: GameLogEntry[]): RefStatsFile {
+  const dedupedLogs = dedupeGameLogs(rawLogs);
+  const maps = createEmptyMaps();
+  replayGameLogs(dedupedLogs, maps);
+  maps.allDates.sort();
+  const allGameRecords = [...maps.refGames.values()].flat();
+
+  const nhlBaselines = buildBaselinesFile([], dedupedLogs).NHL.aggregate;
+  const leagueAvgTotal = nhlBaselines.leagueAvgTotal;
+  const leagueAvgFouls = nhlBaselines.leagueAvgFouls;
+  const leagueOverBaseline = nhlBaselines.leagueOverBaseline;
+  const leagueAvgMinors =
+    nhlBaselines.leagueAvgMinors ?? computeLeagueAvgMinors(allGameRecords);
+  const leagueOvertimeRate =
+    nhlBaselines.leagueOvertimeRate ?? computeLeagueOvertimeRate(allGameRecords);
+
+  let teamSpecialTeams: Record<string, { ppPct: number; pkPct: number }> = {};
+  try {
+    const stPath = path.join(process.cwd(), "data", "nhl", "team-special-teams.json");
+    if (fs.existsSync(stPath)) {
+      const parsed = JSON.parse(fs.readFileSync(stPath, "utf8")) as {
+        teams: Record<string, { ppPct: number; pkPct: number }>;
+      };
+      teamSpecialTeams = parsed.teams;
+    }
+  } catch {
+    /* optional file */
+  }
+
+  const refs: RefProfile[] = [];
+  for (const [slug, games] of maps.refGames) {
+    const meta = maps.refMeta.get(slug)!;
+    const avgTotal = games.reduce((s, g) => s + g.totalPoints, 0) / games.length;
+    const overRate = games.filter((g) => g.overHit).length / games.length;
+    const avgFouls = games.reduce((s, g) => s + g.totalFouls, 0) / games.length;
+    const minorGames = maps.refMinorGames.get(slug) ?? [];
+    const nhlAnalytics =
+      meta.role === "referee"
+        ? computeNhlRefAnalytics(minorGames, leagueAvgMinors)
+        : undefined;
+
+    refs.push({
+      slug,
+      name: meta.name,
+      number: meta.number,
+      role: meta.role,
+      games: games.length,
+      avgTotalPoints: round1(avgTotal),
+      overRate: round3(overRate),
+      avgFouls: round1(avgFouls),
+      homeCoverRate: null,
+      totalPointsDelta: round1(avgTotal - leagueAvgTotal),
+      foulsDelta: round1(avgFouls - leagueAvgFouls),
+      seasons: [...new Set(games.map((g) => g.season))],
+      recentGames: games.slice(-8).reverse(),
+      teamStats: collectRefTeamStats(maps.refTeamBuckets.get(slug) ?? new Map()),
+      nhlAnalytics,
+    });
+  }
+  refs.sort((a, b) => b.games - a.games);
+  dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
+
+  const teamSplits: Record<string, TeamCrewSplit[]> = {};
+  for (const abbr of NHL_TEAM_ABBRS) {
+    teamSplits[abbr] = [...maps.teamByCrew.get(abbr)!.entries()]
+      .map(([key, data]) =>
+        buildTeamSplit(key, data.crewNames, data.games, leagueAvgTotal),
+      )
+      .sort((a, b) => b.games - a.games);
+  }
+
+  const coveredSeasons = seasonsWithMeaningfulCoverage(dedupedLogs);
+  const allSeasonLabels = [...new Set(dedupedLogs.map((g) => g.season))].sort();
+  const thinSeasons = allSeasonLabels.filter((s) => !coveredSeasons.includes(s));
+  if (thinSeasons.length > 0) {
+    console.log(
+      `Meaningful seasons (${MEANINGFUL_SEASON_MIN_GAMES}+ games): ${coveredSeasons.join(", ") || "(none)"}`,
+    );
+    console.log(
+      `Truncated / partial seasons omitted from meta.seasons: ${thinSeasons.join(", ")}`,
+    );
+  }
+
+  return {
+    meta: {
+      lastUpdated: new Date().toISOString(),
+      seasons: coveredSeasons,
+      leagueAvgTotal,
+      leagueAvgFouls,
+      leagueOverBaseline,
+      minSampleSize: MIN_SAMPLE,
+      source: "nhl-api",
+      data_verified: true,
+      data_source: "NHL API (api-web.nhle.com)",
+      atsAvailable: false,
+      refCount: refs.length,
+      totalGamesProcessed: dedupedLogs.length,
+      dateRange: {
+        earliest: maps.allDates[0],
+        latest: maps.allDates[maps.allDates.length - 1],
+      },
+      leagueAvgMinors,
+      leagueOvertimeRate,
+      teamSpecialTeams:
+        Object.keys(teamSpecialTeams).length > 0 ? teamSpecialTeams : undefined,
+    },
+    refs,
+    teamSplits,
+  };
 }
 
 interface TeamGameRow {
@@ -582,9 +802,12 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
 
   let processed = 0;
   let skipped = skipGameIds.size;
-  const CONCURRENCY = 4;
 
   const pending = queue.filter(([id]) => !skipGameIds.has(String(id)));
+
+  let skippedNoCrew = 0;
+  let skippedNoBox = 0;
+  let skippedBadTeam = 0;
 
   async function fetchAndAbsorbOne(
     gameId: number,
@@ -592,19 +815,29 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
     game: ScheduleGame,
   ): Promise<boolean> {
     try {
-      const homeTeam = game.homeTeam.abbrev.toUpperCase();
-      const awayTeam = game.awayTeam.abbrev.toUpperCase();
+      const homeTeam = normalizeNhlTeamAbbr(game.homeTeam.abbrev);
+      const awayTeam = normalizeNhlTeamAbbr(game.awayTeam.abbrev);
       if (!NHL_TEAM_ABBRS.includes(homeTeam) || !NHL_TEAM_ABBRS.includes(awayTeam)) {
+        skippedBadTeam++;
         return false;
       }
 
-      const crew = await fetchCrew(game.id, officials);
-      if (crew.length === 0) return false;
+      const crew = await fetchCrewWithRetry(game.id, officials);
+      if (crew.length === 0) {
+        skippedNoCrew++;
+        return false;
+      }
 
-      const box = await fetchBoxscore(game.id);
-      if (!box) return false;
+      const skipPbp = process.env.NHL_SKIP_PBP === "1";
+      const [box, penalties] = await Promise.all([
+        fetchBoxscore(game.id),
+        skipPbp ? Promise.resolve(null) : fetchGamePenalties(game.id),
+      ]);
+      if (!box) {
+        skippedNoBox++;
+        return false;
+      }
 
-      const penalties = await fetchGamePenalties(game.id);
       const wentToOvertime =
         penalties?.wentToOvertime ??
         inferOvertimeFromSchedule(game.periodDescriptor?.periodType);
@@ -640,6 +873,11 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
     }
   }
 
+  const CONCURRENCY = Math.max(2, Math.min(16, FETCH_CONCURRENCY));
+  console.log(
+    `Fetching ${pending.length} missing games (concurrency=${CONCURRENCY}, cached=${skipped})...`,
+  );
+
   for (let i = 0; i < pending.length && processed < maxGames; i += CONCURRENCY) {
     const batch = pending.slice(i, i + CONCURRENCY);
     const results = await Promise.all(
@@ -648,8 +886,10 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
       ),
     );
     processed += results.filter(Boolean).length;
+    // Pace requests so right-rail keeps returning officials.
+    await sleep(120);
 
-    if (processed > 0 && processed % 100 === 0) {
+    if (processed > 0 && processed % 25 === 0) {
       const partial = dedupeGameLogs([
         ...(existingLogs?.games ?? []),
         ...exportedGameLogs,
@@ -661,14 +901,32 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
         games: partial,
       });
       console.log(
-        `  …${processed} new games fetched (${skipped} cached, ${partial.length} total in logs)`,
+        `  …${processed} new / ${partial.length} total ` +
+          `(noCrew=${skippedNoCrew}, noBox=${skippedNoBox}, badTeam=${skippedBadTeam})`,
       );
     }
   }
 
-  if (processed + (existingLogs?.games.length ?? 0) < 500) {
+  console.log(
+    `Fetch done: +${processed} new. Skips: noCrew=${skippedNoCrew} noBox=${skippedNoBox} badTeam=${skippedBadTeam}`,
+  );
+
+  if (processed + (existingLogs?.games.length ?? 0) < MIN_GAMES_FOR_LIVE_BUILD) {
+    const total = processed + (existingLogs?.games.length ?? 0);
+    // Persist whatever we fetched so the next run can resume.
+    const partial = dedupeGameLogs([
+      ...(existingLogs?.games ?? []),
+      ...exportedGameLogs,
+    ]);
+    saveGameLogs({
+      lastUpdated: new Date().toISOString(),
+      league: "NHL",
+      source: "nhl-api",
+      games: partial,
+    });
     console.warn(
-      `Only ${processed} new games (${existingLogs?.games.length ?? 0} cached) — need 500+ for live build.`,
+      `Only ${partial.length} NHL games on disk (${processed} new this run) — ` +
+        `need >= ${MIN_GAMES_FOR_LIVE_BUILD} before publishing ref-stats. Resuming later.`,
     );
     return null;
   }
@@ -678,19 +936,6 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
     ...exportedGameLogs,
   ]);
 
-  // Rebuild aggregation maps from the full merged log set.
-  refGames.clear();
-  refMinorGames.clear();
-  refMeta.clear();
-  refTeamBuckets.clear();
-  for (const abbr of NHL_TEAM_ABBRS) {
-    teamByCrew.set(abbr, new Map());
-  }
-  exportedGameLogs.length = 0;
-  allDates.length = 0;
-  replayGameLogs(dedupedLogs, maps);
-  allDates.sort();
-  const allGameRecords = [...refGames.values()].flat();
   saveGameLogs({
     lastUpdated: new Date().toISOString(),
     league: "NHL",
@@ -699,132 +944,94 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
   });
 
   const nbaLogs = loadGameLogs("NBA");
+  const nflLogs = loadGameLogs("NFL");
+  const eplLogs = loadGameLogs("EPL");
   saveBaselines(
-    buildBaselinesFile(nbaLogs?.games ?? [], dedupedLogs, "NHL build snapshot"),
+    buildBaselinesFile(
+      nbaLogs?.games ?? [],
+      dedupedLogs,
+      "NHL build snapshot",
+      nflLogs?.games ?? [],
+      eplLogs?.games ?? [],
+    ),
   );
 
-  const nhlBaselines = buildBaselinesFile([], dedupedLogs).NHL.aggregate;
-  const leagueAvgTotal = nhlBaselines.leagueAvgTotal;
-  const leagueAvgFouls = nhlBaselines.leagueAvgFouls;
-  const leagueOverBaseline = nhlBaselines.leagueOverBaseline;
-  const leagueAvgMinors =
-    nhlBaselines.leagueAvgMinors ?? computeLeagueAvgMinors(allGameRecords);
-  const leagueOvertimeRate =
-    nhlBaselines.leagueOvertimeRate ?? computeLeagueOvertimeRate(allGameRecords);
+  return buildStatsFromLogs(dedupedLogs);
+}
 
-  let teamSpecialTeams: Record<string, { ppPct: number; pkPct: number }> = {};
-  try {
-    const stPath = path.join(process.cwd(), "data", "nhl", "team-special-teams.json");
-    if (fs.existsSync(stPath)) {
-      const parsed = JSON.parse(fs.readFileSync(stPath, "utf8")) as {
-        teams: Record<string, { ppPct: number; pkPct: number }>;
-      };
-      teamSpecialTeams = parsed.teams;
-    }
-  } catch {
-    /* optional file */
+function writeNhlStats(stats: RefStatsFile, statsPath: string, label: string): void {
+  const dataDir = path.dirname(statsPath);
+  fs.mkdirSync(dataDir, { recursive: true });
+  fs.writeFileSync(statsPath, `${JSON.stringify(stats, null, 2)}\n`);
+  const qualified = stats.refs.reduce(
+    (sum, ref) =>
+      sum +
+      Object.values(ref.teamStats ?? {}).filter((s) => s.games >= 3).length,
+    0,
+  );
+  const pairs = stats.refs.reduce(
+    (sum, ref) => sum + Object.keys(ref.teamStats ?? {}).length,
+    0,
+  );
+  console.log(
+    `${label}: ${stats.refs.length} officials, ${stats.meta.totalGamesProcessed} games, ` +
+      `${stats.meta.seasons.length} seasons (${stats.meta.seasons.join(", ")})`,
+  );
+  console.log(`Matrix coverage: ${qualified}/${pairs} ref×team pairs with 3+ games`);
+  const top = stats.refs.slice(0, 5);
+  for (const ref of top) {
+    console.log(`  ${ref.name}: ${ref.games} games`);
   }
-
-  const refs: RefProfile[] = [];
-  for (const [slug, games] of refGames) {
-    const meta = refMeta.get(slug)!;
-    const avgTotal = games.reduce((s, g) => s + g.totalPoints, 0) / games.length;
-    const overRate = games.filter((g) => g.overHit).length / games.length;
-    const avgFouls = games.reduce((s, g) => s + g.totalFouls, 0) / games.length;
-    const minorGames = refMinorGames.get(slug) ?? [];
-    const nhlAnalytics =
-      meta.role === "referee"
-        ? computeNhlRefAnalytics(minorGames, leagueAvgMinors)
-        : undefined;
-
-    refs.push({
-      slug,
-      name: meta.name,
-      number: meta.number,
-      role: meta.role,
-      games: games.length,
-      avgTotalPoints: round1(avgTotal),
-      overRate: round3(overRate),
-      avgFouls: round1(avgFouls),
-      homeCoverRate: null,
-      totalPointsDelta: round1(avgTotal - leagueAvgTotal),
-      foulsDelta: round1(avgFouls - leagueAvgFouls),
-      seasons: [...new Set(games.map((g) => g.season))],
-      recentGames: games.slice(-8).reverse(),
-      teamStats: collectRefTeamStats(refTeamBuckets.get(slug) ?? new Map()),
-      nhlAnalytics,
-    });
-  }
-  refs.sort((a, b) => b.games - a.games);
-  dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
-
-  const teamSplits: Record<string, TeamCrewSplit[]> = {};
-  for (const abbr of NHL_TEAM_ABBRS) {
-    teamSplits[abbr] = [...teamByCrew.get(abbr)!.entries()]
-      .map(([key, data]) =>
-        buildTeamSplit(key, data.crewNames, data.games, leagueAvgTotal),
-      )
-      .sort((a, b) => b.games - a.games);
-  }
-
-  return {
-    meta: {
-      lastUpdated: new Date().toISOString(),
-      seasons: [...new Set(refs.flatMap((r) => r.seasons))],
-      leagueAvgTotal,
-      leagueAvgFouls,
-      leagueOverBaseline,
-      minSampleSize: MIN_SAMPLE,
-      source: "nhl-api",
-      data_verified: true,
-      data_source: "NHL API (api-web.nhle.com)",
-      atsAvailable: false,
-      refCount: refs.length,
-      totalGamesProcessed: dedupedLogs.length,
-      dateRange: {
-        earliest: allDates[0],
-        latest: allDates[allDates.length - 1],
-      },
-      leagueAvgMinors,
-      leagueOvertimeRate,
-      teamSpecialTeams:
-        Object.keys(teamSpecialTeams).length > 0 ? teamSpecialTeams : undefined,
-    },
-    refs,
-    teamSplits,
-  };
 }
 
 async function main() {
   const dataDir = path.join(process.cwd(), "data", "nhl");
   const statsPath = path.join(dataDir, "ref-stats.json");
+  const fromLogs =
+    process.argv.includes("--from-logs") || process.env.NHL_FROM_LOGS === "1";
+
+  if (fromLogs) {
+    console.log("=== Ref Watch NHL rebuild from game-logs.json ===\n");
+    const existing = loadGameLogs("NHL");
+    if (!existing || existing.games.length === 0) {
+      console.error("No NHL game logs found at data/nhl/game-logs.json");
+      process.exit(1);
+    }
+    const deduped = dedupeGameLogs(existing.games);
+    saveGameLogs({
+      lastUpdated: new Date().toISOString(),
+      league: "NHL",
+      source: existing.source ?? "nhl-api",
+      games: deduped,
+    });
+    const nbaLogs = loadGameLogs("NBA");
+    const nflLogs = loadGameLogs("NFL");
+    const eplLogs = loadGameLogs("EPL");
+    saveBaselines(
+      buildBaselinesFile(
+        nbaLogs?.games ?? [],
+        deduped,
+        "NHL rebuild-from-logs snapshot",
+        nflLogs?.games ?? [],
+        eplLogs?.games ?? [],
+      ),
+    );
+    const stats = buildStatsFromLogs(deduped);
+    writeNhlStats(stats, statsPath, "Rebuilt from logs");
+    return;
+  }
 
   console.log("=== Ref Watch NHL data build (10 seasons) ===\n");
 
   const live = await buildLiveStats();
   if (live) {
-    fs.mkdirSync(dataDir, { recursive: true });
-    fs.writeFileSync(statsPath, `${JSON.stringify(live, null, 2)}\n`);
-    const qualified = live.refs.reduce(
-      (sum, ref) =>
-        sum +
-        Object.values(ref.teamStats ?? {}).filter((s) => s.games >= 3).length,
-      0,
-    );
-    const pairs = live.refs.reduce(
-      (sum, ref) => sum + Object.keys(ref.teamStats ?? {}).length,
-      0,
-    );
-    console.log(
-      `Live ref stats: ${live.refs.length} officials, ${live.meta.totalGamesProcessed} games, ` +
-        `${live.meta.seasons.length} seasons`,
-    );
-    console.log(`Matrix coverage: ${qualified}/${pairs} ref×team pairs with 3+ games`);
+    writeNhlStats(live, statsPath, "Live ref stats");
     return;
   }
 
   console.error(
-    "NHL live build failed — no verified output written. Re-run with network access.",
+    "NHL live build failed — no verified output written. Re-run with network access, " +
+      "or rebuild from existing logs: npm run rebuild-nhl-from-logs",
   );
   process.exit(1);
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T00:12:54.525Z",
+  "generatedAt": "2026-07-11T00:16:17.468Z",
   "note": "Computed from NBA/NHL/NFL/EPL game logs",
   "fallback": {
     "NBA": {
@@ -194,12 +194,12 @@
       },
       "2023-24": {
         "season": "2023-24",
-        "gameCount": 391,
-        "leagueAvgTotal": 6.3,
-        "leagueOverBaseline": 6.3,
-        "leagueAvgFouls": 19.8,
-        "leagueAvgMinors": 9.1,
-        "leagueOvertimeRate": 0.197
+        "gameCount": 841,
+        "leagueAvgTotal": 6.2,
+        "leagueOverBaseline": 6.2,
+        "leagueAvgFouls": 18.6,
+        "leagueAvgMinors": 9,
+        "leagueOvertimeRate": 0.21
       },
       "2024-25": {
         "season": "2024-25",
@@ -222,9 +222,9 @@
     },
     "aggregate": {
       "season": "all",
-      "gameCount": 9249,
-      "leagueAvgTotal": 6,
-      "leagueOverBaseline": 6,
+      "gameCount": 9699,
+      "leagueAvgTotal": 6.1,
+      "leagueOverBaseline": 6.1,
       "leagueAvgFouls": 17.2,
       "leagueAvgMinors": 8.3,
       "leagueOvertimeRate": 0.225

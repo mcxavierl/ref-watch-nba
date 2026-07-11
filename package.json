@@ -31,6 +31,7 @@
     "fetch-nhl-team-special-teams": "tsx scripts/nhl/fetch-team-special-teams.ts",
     "generate-nhl-seed": "tsx scripts/nhl/generate-seed.ts",
     "build-nhl-data": "tsx scripts/nhl/build-ref-data.ts",
+    "rebuild-nhl-from-logs": "tsx scripts/nhl/build-ref-data.ts --from-logs",
     "generate-nfl-seed": "tsx scripts/nfl/generate-seed.ts",
     "build-nfl-data": "tsx scripts/nfl/build-ref-data.ts",
     "rebuild-nfl-matrix": "tsx scripts/nfl/rebuild-matrix-from-logs.ts",

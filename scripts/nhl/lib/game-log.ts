@@ -99,12 +99,30 @@ export function parsePlayByPlay(body: PlayByPlayResponse): NhlPenaltySummary & {
 export async function fetchGamePenalties(
   gameId: number,
 ): Promise<(NhlPenaltySummary & { wentToOvertime: boolean }) | null> {
-  const res = await fetch(
-    `https://api-web.nhle.com/v1/gamecenter/${gameId}/play-by-play`,
-  );
-  if (!res.ok) return null;
-  const body = (await res.json()) as PlayByPlayResponse;
-  return parsePlayByPlay(body);
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const res = await fetch(
+        `https://api-web.nhle.com/v1/gamecenter/${gameId}/play-by-play`,
+        {
+          headers: {
+            Accept: "application/json,text/plain,*/*",
+            "User-Agent":
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            Referer: "https://www.nhl.com/",
+          },
+        },
+      );
+      if (res.ok) {
+        const body = (await res.json()) as PlayByPlayResponse;
+        return parsePlayByPlay(body);
+      }
+      if (![429, 500, 502, 503, 504].includes(res.status)) return null;
+    } catch {
+      /* retry */
+    }
+    await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
+  }
+  return null;
 }
 
 export function inferOvertimeFromSchedule(periodType?: string): boolean {

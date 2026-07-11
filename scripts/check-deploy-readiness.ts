@@ -149,6 +149,23 @@ function checkSeasonGameCoverage(
         `${league}: game-logs.json has ${logGames.length - uniqueIds.size} duplicate gameIds — dedupe before deploy`,
       );
     }
+
+    // Claimed meta.seasons must each have meaningful coverage in logs
+    // (e.g. do not list truncated NHL 2023–26 as full seasons).
+    const bySeason = new Map<string, number>();
+    for (const g of logGames) {
+      if (!g.season) continue;
+      bySeason.set(g.season, (bySeason.get(g.season) ?? 0) + 1);
+    }
+    for (const season of seasons) {
+      const n = bySeason.get(season) ?? 0;
+      if (n < floors.minPerSeason) {
+        fail(
+          `${league}: claimed season ${season} has only ${n} games in logs ` +
+            `(need >= ${floors.minPerSeason} for meaningful coverage) — omit from meta.seasons or finish ingest`,
+        );
+      }
+    }
   }
 }
 
