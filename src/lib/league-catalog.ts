@@ -1,3 +1,5 @@
+import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
+import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
@@ -72,17 +74,83 @@ export const CATALOG_SPORT_LABELS: Record<CatalogSportGroup, string> = {
   baseball: "Baseball",
 };
 
+export type OverviewQuickListPreview = {
+  value: string;
+  caption: string;
+};
+
 export type OverviewQuickList = {
   id: string;
   label: string;
   description: string;
   href: string;
   accent: "amber" | "rose" | "sky" | "emerald";
+  preview: OverviewQuickListPreview;
 };
 
-export function overviewQuickListsForLeague(leagueId: LeagueId): OverviewQuickList[] {
+export type OverviewQuickListContext = {
+  leagueCard?: LeagueOverviewCard;
+  insightCard?: LeagueInsightCard;
+};
+
+function whistlePreviewCaption(card: LeagueOverviewCard): string {
+  if (card.whistleLabel.includes("Flag")) return "Flags/g";
+  if (card.whistleLabel.includes("Minor")) return "Minors/g";
+  if (card.whistleLabel.includes("Card")) return "Cards/g";
+  return "Fouls/g";
+}
+
+function scorePreviewCaption(card: LeagueOverviewCard): string {
+  if (card.scoreLabel.includes("goal")) return "Goals/g";
+  return "Pts/g";
+}
+
+function previewForList(
+  listId: OverviewQuickList["id"],
+  ctx: OverviewQuickListContext,
+): OverviewQuickListPreview {
+  const { leagueCard: card, insightCard: insight } = ctx;
+  const gamesStat = insight?.stats.find((row) => row.label === "Games");
+
+  switch (listId) {
+    case "whistle-leaders":
+      return card
+        ? {
+            value: card.whistlePerGame.toFixed(1),
+            caption: whistlePreviewCaption(card),
+          }
+        : { value: "—", caption: "Whistle avg" };
+    case "scoring-outliers":
+      return card
+        ? {
+            value: card.scorePerGame.toFixed(1),
+            caption: scorePreviewCaption(card),
+          }
+        : { value: "—", caption: "Scoring avg" };
+    case "home-bias":
+      if (insight?.heroValue) {
+        return { value: insight.heroValue, caption: "vs baseline" };
+      }
+      return { value: "—", caption: "Cover Δ" };
+    case "matrix-edges":
+      if (gamesStat) {
+        return { value: gamesStat.value, caption: "Splits" };
+      }
+      if (card) {
+        return { value: String(card.refCount), caption: "Officials" };
+      }
+      return { value: "—", caption: "Splits" };
+    default:
+      return { value: "—", caption: "Preview" };
+  }
+}
+
+export function overviewQuickListsForLeague(
+  leagueId: LeagueId,
+  ctx: OverviewQuickListContext = {},
+): OverviewQuickList[] {
   const prefix = LEAGUES[leagueId].pathPrefix;
-  return [
+  const defs: Omit<OverviewQuickList, "preview">[] = [
     {
       id: "whistle-leaders",
       label: "Whistle leaders",
@@ -112,6 +180,11 @@ export function overviewQuickListsForLeague(leagueId: LeagueId): OverviewQuickLi
       accent: "emerald",
     },
   ];
+
+  return defs.map((list) => ({
+    ...list,
+    preview: previewForList(list.id, ctx),
+  }));
 }
 
 export function catalogBySport(): { sport: CatalogSportGroup; label: string; entries: CatalogLeagueEntry[] }[] {

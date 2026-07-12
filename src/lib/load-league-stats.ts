@@ -27,7 +27,9 @@ import {
   getRefStats as getCfbStats,
 } from "@/lib/cfb/data";
 import type { LeagueId } from "@/lib/leagues";
-import { buildScopedRefStats } from "@/lib/scoped-ref-stats";
+import {
+  buildScopedRefStats,
+} from "@/lib/scoped-ref-stats";
 import {
   filterVerifiedSeasons,
   resolveLeagueVerification,
@@ -86,24 +88,16 @@ function stripRefForHub(ref: RefProfile): RefProfile {
 }
 
 /** Filter refs by season without game-log rebuilds (Worker-safe for hub pages). */
-function filterStatsForHub(
-  full: RefStatsFile,
-  scopedSeasons: string[],
-): RefStatsFile {
-  const seasonSet = new Set(scopedSeasons);
-  const refs = full.refs
-    .filter((ref) => ref.seasons.some((season) => seasonSet.has(season)))
-    .map(stripRefForHub);
+function stripScopedForHub(stats: RefStatsFile): RefStatsFile {
   return {
-    ...full,
-    refs,
+    ...stats,
     teamSplits: {},
-    meta: {
-      ...full.meta,
-      seasons: scopedSeasons,
-      refCount: refs.length,
-    },
+    refs: stats.refs.map(stripRefForHub),
   };
+}
+
+function hubRebuildDepth(leagueId: LeagueId): "refs-only" | "meta-only" {
+  return leagueId === "nba" ? "refs-only" : "meta-only";
 }
 
 export type ScopedLeagueStatsBundle = LeagueStatsBundle & {
@@ -134,7 +128,12 @@ export function loadHubLeagueStats(
     verification.data_verified ||
     preview;
   const stats = canRender
-    ? filterStatsForHub(full, scopedSeasons)
+    ? stripScopedForHub(
+        buildScopedRefStats(leagueId, full, scopedSeasons, {
+          scopeMode,
+          depth: hubRebuildDepth(leagueId),
+        }),
+      )
     : { ...full, refs: [], teamSplits: {} };
   return {
     stats,

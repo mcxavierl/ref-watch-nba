@@ -8126,30 +8126,26 @@ p {
 .overview-quick-lists {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.5rem;
 }
 
 .overview-quick-list {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.65rem;
-  padding: 0.7rem 0.85rem;
-  border-radius: 0.7rem;
-  border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.12);
-  text-decoration: none;
-  transition:
-    border-color 140ms ease,
-    transform 140ms ease,
-    background-color 140ms ease;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .overview-quick-list-copy {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.2rem;
   min-width: 0;
+}
+
+.overview-quick-list-preview {
+  min-width: 4.25rem;
 }
 
 .overview-quick-list-arrow {
@@ -8163,11 +8159,6 @@ p {
 .overview-quick-list:hover .overview-quick-list-arrow {
   color: var(--ink-secondary);
   transform: translateX(2px);
-}
-
-.overview-quick-list:hover {
-  border-color: rgba(148, 163, 184, 0.35);
-  transform: translateY(-1px);
 }
 
 .overview-quick-list--amber { border-left: 3px solid #fbbf24; }
@@ -8901,6 +8892,52 @@ p {
   padding-bottom: 0.15rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
+}
+
+.overview-quicklists-segmented {
+  margin-bottom: 0.65rem;
+}
+
+.overview-quicklists-open-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--line);
+}
+
+.overview-quicklists-open-hint {
+  margin: 0;
+  flex: 1 1 12rem;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.overview-quicklists-open-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--raptors) 35%, var(--line));
+  background: color-mix(in srgb, var(--raptors) 12%, rgba(0, 0, 0, 0.15));
+  font-size: 0.74rem;
+  font-weight: 650;
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    transform 140ms ease;
+}
+
+.overview-quicklists-open-btn:hover {
+  border-color: color-mix(in srgb, var(--raptors) 50%, var(--line));
+  transform: translateY(-1px);
 }
 
 .overview-quicklists-step {
@@ -9744,8 +9781,35 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--neg
   color: var(--metric-negative-ink);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-quick-list {
+html[data-color="light"]:not([data-contrast="high"]) .overview-quick-list:not([aria-pressed="true"]) {
   background: var(--surface);
+  border-color: var(--border);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quick-list[aria-pressed="true"] {
+  background: var(--surface-raised);
+  border-color: color-mix(in srgb, var(--border) 55%, #71717a);
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segmented {
+  background: color-mix(in srgb, var(--surface-raised) 88%, #18181b);
+  border-color: var(--border);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[aria-selected="true"] {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--ink);
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment:not([aria-selected="true"]) {
+  color: var(--muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-open-btn {
+  background: color-mix(in srgb, var(--raptors) 8%, var(--surface));
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--coming-soon {

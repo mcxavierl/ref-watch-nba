@@ -250,13 +250,8 @@ export async function preloadLeagueDataForPath(
 
 /** Routes that rebuild scoped stats from stored game logs (era / season toggles). */
 export function pathNeedsGameLogs(pathname: string): boolean {
-  const path = normalizeAppPathname(pathname);
-  if (path === "/matrix" || path.startsWith("/teams/")) return true;
-  if (path.startsWith("/nhl/teams/") || path.startsWith("/nhl/matrix")) {
-    return true;
-  }
-  // Patriots era analysis only — not league-wide NFL matrix/teams (5MB logs + CPU rebuild).
-  if (path === "/nfl/teams/NE") return true;
+  // Game logs are hydrated per-page with season scope to avoid Worker 1102.
+  void pathname;
   return false;
 }
 

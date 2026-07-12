@@ -1,4 +1,9 @@
-import { loadRuntimeGameLogs, type RuntimeGameLogEntry } from "@/lib/game-logs";
+import { aggregateBaselineForSeasons } from "@/lib/baselines";
+import {
+  loadRuntimeGameLogs,
+  type RuntimeGameLogEntry,
+  type RuntimeGameLogFile,
+} from "@/lib/game-logs";
 import type { LeagueId } from "@/lib/leagues";
 import {
   needsGameLogRebuild,
@@ -168,8 +173,10 @@ function rebuildFromGameLogs(
   base: RefStatsFile,
   games: RuntimeGameLogEntry[],
   scopedSeasons: string[],
-  options?: { focusTeamAbbr?: string },
+  leagueId: LeagueId,
+  options?: { focusTeamAbbr?: string; includeTeamSplits?: boolean },
 ): RefStatsFile {
+  const includeTeamSplits = options?.includeTeamSplits !== false;
   const seasonSet = new Set(scopedSeasons);
   let filtered = games.filter((g) => seasonSet.has(g.season));
   const focusTeam = options?.focusTeamAbbr?.toUpperCase();
@@ -179,7 +186,7 @@ function rebuildFromGameLogs(
     );
   }
   if (filtered.length === 0) {
-    return filterByRefSeasons(base, scopedSeasons);
+    return filterByRefSeasons(base, scopedSeasons, leagueId);
   }
 
   const leagueAvgTotal =
@@ -199,24 +206,26 @@ function rebuildFromGameLogs(
     const key = crewKey(game.officials);
     const crewNames = game.officials.map((o) => o.name);
 
-    for (const [teamAbbr, teamWin, isHome] of [
-      [game.homeTeam, homeWin, true],
-      [game.awayTeam, !homeWin, false],
-    ] as const) {
-      const fouls = teamFoulSplit(game, isHome);
-      const teamMap = teamByCrew.get(teamAbbr) ?? new Map();
-      const bucket = teamMap.get(key) ?? { crewNames, games: [] };
-      bucket.games.push({
-        isHome,
-        teamWin,
-        totalPoints: game.totalPoints,
-        totalFouls: game.totalFouls,
-        teamFouls: fouls.teamFouls,
-        opponentFouls: fouls.opponentFouls,
-        overHit,
-      });
-      teamMap.set(key, bucket);
-      teamByCrew.set(teamAbbr, teamMap);
+    if (includeTeamSplits) {
+      for (const [teamAbbr, teamWin, isHome] of [
+        [game.homeTeam, homeWin, true],
+        [game.awayTeam, !homeWin, false],
+      ] as const) {
+        const fouls = teamFoulSplit(game, isHome);
+        const teamMap = teamByCrew.get(teamAbbr) ?? new Map();
+        const bucket = teamMap.get(key) ?? { crewNames, games: [] };
+        bucket.games.push({
+          isHome,
+          teamWin,
+          totalPoints: game.totalPoints,
+          totalFouls: game.totalFouls,
+          teamFouls: fouls.teamFouls,
+          opponentFouls: fouls.opponentFouls,
+          overHit,
+        });
+        teamMap.set(key, bucket);
+        teamByCrew.set(teamAbbr, teamMap);
+      }
     }
 
     for (const official of game.officials) {
@@ -230,22 +239,24 @@ function rebuildFromGameLogs(
       existing.push(recent);
       refGames.set(slug, existing);
 
-      for (const [teamAbbr, teamWin, isHome] of [
-        [game.homeTeam, homeWin, true],
-        [game.awayTeam, !homeWin, false],
-      ] as const) {
-        const fouls = teamFoulSplit(game, isHome);
-        const row: RefTeamGameRow = {
-          foulDifferential: fouls.teamFouls - fouls.opponentFouls,
-          totalPoints: game.totalPoints,
-          overHit,
-          teamWin,
-        };
-        const byTeam = refTeamBuckets.get(slug) ?? new Map();
-        const teamRows = byTeam.get(teamAbbr) ?? [];
-        teamRows.push(row);
-        byTeam.set(teamAbbr, teamRows);
-        refTeamBuckets.set(slug, byTeam);
+      if (includeTeamSplits) {
+        for (const [teamAbbr, teamWin, isHome] of [
+          [game.homeTeam, homeWin, true],
+          [game.awayTeam, !homeWin, false],
+        ] as const) {
+          const fouls = teamFoulSplit(game, isHome);
+          const row: RefTeamGameRow = {
+            foulDifferential: fouls.teamFouls - fouls.opponentFouls,
+            totalPoints: game.totalPoints,
+            overHit,
+            teamWin,
+          };
+          const byTeam = refTeamBuckets.get(slug) ?? new Map();
+          const teamRows = byTeam.get(teamAbbr) ?? [];
+          teamRows.push(row);
+          byTeam.set(teamAbbr, teamRows);
+          refTeamBuckets.set(slug, byTeam);
+        }
       }
     }
   }
@@ -261,13 +272,14 @@ function rebuildFromGameLogs(
     const overRate = gameRecords.filter((g) => g.overHit).length / n;
     const seasons = [...new Set(gameRecords.map((g) => g.season))].sort();
     const byTeam = refTeamBuckets.get(slug);
-    const teamStats = byTeam
-      ? Object.fromEntries(
-          [...byTeam.entries()]
-            .filter(([team]) => !focusTeam || team === focusTeam)
-            .map(([team, rows]) => [team, buildRefTeamStat(rows)]),
-        )
-      : {};
+    const teamStats =
+      includeTeamSplits && byTeam
+        ? Object.fromEntries(
+            [...byTeam.entries()]
+              .filter(([team]) => !focusTeam || team === focusTeam)
+              .map(([team, rows]) => [team, buildRefTeamStat(rows)]),
+          )
+        : {};
 
     const preserved = baseBySlug.get(slug);
     refs.push({
@@ -297,11 +309,13 @@ function rebuildFromGameLogs(
   refs.sort((a, b) => b.games - a.games);
 
   const teamSplits: Record<string, TeamCrewSplit[]> = {};
-  for (const [teamAbbr, crewMap] of teamByCrew) {
-    if (focusTeam && teamAbbr !== focusTeam) continue;
-    teamSplits[teamAbbr] = [...crewMap.entries()]
-      .map(([k, data]) => buildTeamSplit(k, data.crewNames, data.games))
-      .sort((a, b) => b.games - a.games);
+  if (includeTeamSplits) {
+    for (const [teamAbbr, crewMap] of teamByCrew) {
+      if (focusTeam && teamAbbr !== focusTeam) continue;
+      teamSplits[teamAbbr] = [...crewMap.entries()]
+        .map(([k, data]) => buildTeamSplit(k, data.crewNames, data.games))
+        .sort((a, b) => b.games - a.games);
+    }
   }
 
   const dates = filtered.map((g) => g.date).sort();
@@ -326,37 +340,106 @@ function rebuildFromGameLogs(
   };
 }
 
+function baselineLeagueForData(
+  dataLeague: DataLeague,
+): "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" {
+  return dataLeague;
+}
+
+function applyScopedMetaBaselines(
+  stats: RefStatsFile,
+  leagueId: LeagueId,
+  scopedSeasons: string[],
+): RefStatsFile {
+  const dataLeague = LEAGUE_ID_TO_DATA[leagueId];
+  const aggregate = aggregateBaselineForSeasons(
+    baselineLeagueForData(dataLeague),
+    scopedSeasons,
+  );
+  if (!aggregate) return stats;
+  return {
+    ...stats,
+    meta: {
+      ...stats.meta,
+      leagueAvgTotal: aggregate.leagueAvgTotal,
+      leagueAvgFouls: aggregate.leagueAvgFouls,
+      leagueOverBaseline: aggregate.leagueOverBaseline,
+      leagueAvgMinors: aggregate.leagueAvgMinors ?? stats.meta.leagueAvgMinors,
+      leagueAvgPenaltyYards:
+        aggregate.leagueAvgPenaltyYards ?? stats.meta.leagueAvgPenaltyYards,
+    },
+  };
+}
+
 function filterByRefSeasons(
   base: RefStatsFile,
   scopedSeasons: string[],
+  leagueId: LeagueId,
 ): RefStatsFile {
   const seasonSet = new Set(scopedSeasons);
   const refs = base.refs.filter((ref) =>
     ref.seasons.some((s) => seasonSet.has(s)),
   );
-  return {
-    ...base,
-    meta: {
-      ...base.meta,
-      seasons: scopedSeasons,
-      refCount: refs.length,
+  return applyScopedMetaBaselines(
+    {
+      ...base,
+      meta: {
+        ...base.meta,
+        seasons: scopedSeasons,
+        refCount: refs.length,
+      },
+      refs,
     },
-    refs,
-  };
+    leagueId,
+    scopedSeasons,
+  );
 }
 
-/** Season-filter refs but keep bundled team splits (Worker-safe for NFL hubs). */
+/** Season-filter refs but keep bundled team splits when game logs cannot rebuild. */
 function filterStatsPreservingTeamSplits(
   base: RefStatsFile,
   scopedSeasons: string[],
+  leagueId: LeagueId,
 ): RefStatsFile {
-  return { ...filterByRefSeasons(base, scopedSeasons), teamSplits: base.teamSplits };
+  return {
+    ...filterByRefSeasons(base, scopedSeasons, leagueId),
+    teamSplits: base.teamSplits,
+  };
 }
+
+type ScopedRebuildDepth = "full" | "refs-only" | "meta-only";
 
 type ScopedRebuildOptions = {
   scopeMode?: SeasonScopeMode;
   teamAbbr?: string;
+  depth?: ScopedRebuildDepth;
 };
+
+function shouldRebuildFromLogs(
+  leagueId: LeagueId,
+  scopeMode: SeasonScopeMode | undefined,
+  context: SeasonScopeContext | undefined,
+  logs: RuntimeGameLogFile | null,
+  isProperSubset: boolean,
+  depth: ScopedRebuildDepth,
+): boolean {
+  if (depth === "meta-only") return false;
+  if (!logs?.games?.length || !isProperSubset) return false;
+  if (leagueId === "nfl") {
+    if (!scopeMode) return false;
+    return needsGameLogRebuild(leagueId, scopeMode, context);
+  }
+  if (leagueId === "nba") return true;
+  return false;
+}
+
+function gamesForScopedRebuild(
+  games: RuntimeGameLogEntry[],
+  scopedSeasons: string[],
+): RuntimeGameLogEntry[] {
+  const seasonSet = new Set(scopedSeasons);
+  return games.filter((game) => seasonSet.has(game.season));
+}
 
 const SCOPED_STATS_CACHE_KEY = "__REFWATCH_SCOPED_STATS_CACHE__" as const;
 const SCOPED_STATS_CACHE_MAX = 12;
@@ -378,16 +461,11 @@ function scopedStatsCacheKey(
 ): string {
   return [
     leagueId,
+    options?.depth ?? "full",
     options?.scopeMode ?? "",
     options?.teamAbbr?.toUpperCase() ?? "",
     [...scopedSeasons].sort().join(","),
   ].join("|");
-}
-
-function baseHasTeamStats(base: RefStatsFile): boolean {
-  return base.refs.some(
-    (ref) => ref.teamStats && Object.keys(ref.teamStats).length > 0,
-  );
 }
 
 export function buildScopedRefStats(
@@ -411,7 +489,11 @@ export function buildScopedRefStats(
     ? { teamAbbr: options.teamAbbr }
     : undefined;
   const scopeMode = options?.scopeMode;
-  const cacheKey = scopedStatsCacheKey(leagueId, scopedSeasons, options);
+  const depth = options?.depth ?? "full";
+  const cacheKey = scopedStatsCacheKey(leagueId, scopedSeasons, {
+    ...options,
+    depth,
+  });
   const cached = scopedStatsCache().get(cacheKey);
   if (cached) return cached;
 
@@ -420,25 +502,32 @@ export function buildScopedRefStats(
   const dataLeague = LEAGUE_ID_TO_DATA[leagueId];
   const logs = loadRuntimeGameLogs(dataLeague);
 
-  const shouldRebuildFromLogs = (() => {
-    if (!logs?.games?.length || !isProperSubset) return false;
-    if (leagueId === "nfl") {
-      if (!scopeMode) return false;
-      return needsGameLogRebuild(leagueId, scopeMode, context);
-    }
-    if (leagueId === "nba") return true;
-    return !baseHasTeamStats(base);
-  })();
+  const rebuildFromLogs = shouldRebuildFromLogs(
+    leagueId,
+    scopeMode,
+    context,
+    logs,
+    isProperSubset,
+    depth,
+  );
 
   let result: RefStatsFile;
-  if (shouldRebuildFromLogs) {
-    result = rebuildFromGameLogs(base, logs!.games, scopedSeasons, {
-      focusTeamAbbr: context?.teamAbbr,
-    });
+  if (rebuildFromLogs) {
+    const scopedGames = gamesForScopedRebuild(logs!.games, scopedSeasons);
+    result = rebuildFromGameLogs(
+      base,
+      scopedGames,
+      scopedSeasons,
+      leagueId,
+      {
+        focusTeamAbbr: context?.teamAbbr,
+        includeTeamSplits: depth === "full",
+      },
+    );
   } else if (leagueId === "nfl") {
-    result = filterStatsPreservingTeamSplits(base, scopedSeasons);
+    result = filterStatsPreservingTeamSplits(base, scopedSeasons, leagueId);
   } else {
-    result = filterByRefSeasons(base, scopedSeasons);
+    result = filterByRefSeasons(base, scopedSeasons, leagueId);
   }
 
   scopedStatsCache().set(cacheKey, result);

@@ -204,9 +204,13 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
           <section className="overview-sidebar-block overview-sidebar-block--lists">
             <h2 className="overview-sidebar-heading overview-sidebar-heading--static">Quick lists</h2>
             <p className="overview-sidebar-note">
-              Pick a league tab, then open a rankings or matrix view for that sport.
+              Pick a league, select a list, then open the view — or click the same list
+              again to jump straight in.
             </p>
-            <OverviewQuickLists />
+            <OverviewQuickLists
+              leagueCards={data.leagueCards}
+              insightCards={data.insightCards}
+            />
           </section>
         </aside>
 
@@ -218,7 +222,10 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                 Rankings, tendencies, and matrix edges — scoped to each live league.
               </p>
             </div>
-            <OverviewQuickLists />
+            <OverviewQuickLists
+              leagueCards={data.leagueCards}
+              insightCards={data.insightCards}
+            />
           </section>
 
           <section className="overview-slate section-block" aria-labelledby="overview-slate-heading">

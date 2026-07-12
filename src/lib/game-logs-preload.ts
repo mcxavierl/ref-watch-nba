@@ -72,6 +72,55 @@ export function setCachedGameLogs(
 }
 
 /** Edge-safe: fetch game logs from static assets (no Node fs). */
+export async function preloadNbaGameLogSeasons(
+  origin: string,
+  seasons: string[],
+): Promise<void> {
+  if (!origin?.trim() || seasons.length === 0) return;
+
+  const seasonSet = new Set(seasons);
+  const cached = getCachedGameLogs("NBA");
+  if (cached) {
+    const scoped = cached.games.filter((game) => seasonSet.has(game.season));
+    if (scoped.length > 0) {
+      setCachedGameLogs("NBA", { ...cached, games: scoped });
+    }
+    return;
+  }
+
+  const games: RuntimeGameLogEntry[] = [];
+  for (const season of [...seasons].sort()) {
+    try {
+      const res = await fetch(`${origin}/data/nba/game-logs/${season}.ndjson`);
+      if (!res.ok) continue;
+      const text = await res.text();
+      for (const line of text.split("\n")) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        games.push(JSON.parse(trimmed) as RuntimeGameLogEntry);
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  if (games.length === 0) {
+    await preloadGameLogsFromAssets(origin, "NBA");
+    const full = getCachedGameLogs("NBA");
+    if (full) {
+      const scoped = full.games.filter((game) => seasonSet.has(game.season));
+      if (scoped.length > 0) {
+        setCachedGameLogs("NBA", { ...full, games: scoped });
+      }
+    }
+    return;
+  }
+
+  games.sort(
+    (a, b) => a.date.localeCompare(b.date) || a.gameId.localeCompare(b.gameId),
+  );
+}
+
 export async function preloadGameLogsFromAssets(
   origin: string,
   league: DataLeague,

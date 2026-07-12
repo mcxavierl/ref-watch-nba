@@ -8,7 +8,7 @@ type PageProps = {
   searchParams: Promise<{ scope?: string }>;
 };
 
-export default async function EplInsightsPage({ searchParams }: PageProps) {
+export default async function LaligaInsightsPage({ searchParams }: PageProps) {
   const { scope } = await searchParams;
   return (
     <InsightsHubPage

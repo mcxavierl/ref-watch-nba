@@ -178,3 +178,81 @@ export function baselineUsingFallback(league: BaselineLeague): boolean {
 export function getBaselinesFile(): BaselinesFile {
   return readBaselines();
 }
+
+function round1(n: number): number {
+  return Math.round(n * 10) / 10;
+}
+
+function round3(n: number): number {
+  return Math.round(n * 1000) / 1000;
+}
+
+/** Game-count-weighted league baseline across a season scope (hub fallback when logs are unavailable). */
+export function aggregateBaselineForSeasons(
+  league: BaselineLeague,
+  seasons: string[],
+): SeasonBaseline | null {
+  const file = readBaselines();
+  const block = file[league];
+  const rows = seasons
+    .map((season) => block.seasons[season])
+    .filter((row): row is SeasonBaseline => Boolean(row));
+  if (rows.length === 0) {
+    if (block.aggregate.gameCount > 0 && !block.usingFallback) {
+      return block.aggregate;
+    }
+    return null;
+  }
+
+  const gameCount = rows.reduce((sum, row) => sum + row.gameCount, 0);
+  if (gameCount <= 0) return null;
+
+  const weighted = (
+    pick: (row: SeasonBaseline) => number | undefined,
+  ): number | undefined => {
+    const values = rows
+      .map((row) => {
+        const value = pick(row);
+        return value === undefined ? null : { value, weight: row.gameCount };
+      })
+      .filter(
+        (entry): entry is { value: number; weight: number } => entry !== null,
+      );
+    if (values.length === 0) return undefined;
+    const totalWeight = values.reduce((sum, entry) => sum + entry.weight, 0);
+    if (totalWeight <= 0) return undefined;
+    return (
+      values.reduce((sum, entry) => sum + entry.value * entry.weight, 0) /
+      totalWeight
+    );
+  };
+
+  const leagueAvgTotal = round1(
+    weighted((row) => row.leagueAvgTotal) ?? block.aggregate.leagueAvgTotal,
+  );
+  const leagueAvgFouls = round1(
+    weighted((row) => row.leagueAvgFouls) ?? block.aggregate.leagueAvgFouls,
+  );
+  const leagueOverBaseline = round1(
+    weighted((row) => row.leagueOverBaseline) ?? leagueAvgTotal,
+  );
+  const leagueAvgMinors = weighted((row) => row.leagueAvgMinors);
+  const leagueOvertimeRate = weighted((row) => row.leagueOvertimeRate);
+  const leagueAvgPenaltyYards = weighted((row) => row.leagueAvgPenaltyYards);
+
+  return {
+    season: "scoped",
+    gameCount,
+    leagueAvgTotal,
+    leagueOverBaseline,
+    leagueAvgFouls,
+    leagueAvgMinors:
+      leagueAvgMinors !== undefined ? round1(leagueAvgMinors) : undefined,
+    leagueOvertimeRate:
+      leagueOvertimeRate !== undefined ? round3(leagueOvertimeRate) : undefined,
+    leagueAvgPenaltyYards:
+      leagueAvgPenaltyYards !== undefined
+        ? round1(leagueAvgPenaltyYards)
+        : undefined,
+  };
+}
