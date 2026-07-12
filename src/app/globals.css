@@ -451,7 +451,6 @@ p {
   .page-shell {
     @apply mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8;
     min-width: 0;
-    overflow-x: clip;
     animation: page-enter var(--duration-slow) var(--ease-out-quint) both;
   }
 
@@ -1288,7 +1287,6 @@ p {
     gap: var(--space-8);
     padding-top: 0;
     min-width: 0;
-    overflow-x: clip;
   }
 
   @media (min-width: 640px) {
