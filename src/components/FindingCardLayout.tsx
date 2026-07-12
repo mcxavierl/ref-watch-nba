@@ -4,18 +4,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { MouseEvent, ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
-import { ConfidenceStrengthIndicator } from "@/components/ConfidenceStrengthIndicator";
 import { FindingExplainer } from "@/components/FindingNameWall";
 import { delightValueSize } from "@/components/StandoutMetric";
 import type { Finding, FindingLeague, FindingStat } from "@/lib/findings-shared";
 import {
   FINDING_CATEGORY_LABELS,
   FINDING_CATEGORY_TO_FILTER,
+  filterDisplayStats,
   findingConfidenceTier,
+  resolveFindingExplainer,
   researchFindingHref,
-  researchHubFilterHref,
   researchHubHref,
 } from "@/lib/findings-shared";
+import { formatFindingCardMeta } from "@/lib/finding-copy";
 import {
   findingStatDelightTone,
   isDirectionalTone,
@@ -96,6 +97,21 @@ export function FindingMetaBadges({
   );
 }
 
+export function FindingSampleConfidenceMeta({
+  finding,
+  className = "",
+}: {
+  finding: Finding;
+  className?: string;
+}) {
+  const tier = findingConfidenceTier(finding);
+  return (
+    <p className={`finding-sample-confidence ${className}`.trim()}>
+      {formatFindingCardMeta(finding.sampleNote, tier)}
+    </p>
+  );
+}
+
 export function FindingHeaderRow({
   finding,
   index,
@@ -107,8 +123,6 @@ export function FindingHeaderRow({
   league?: FindingLeague;
   trailing?: ReactNode;
 }) {
-  const tier = findingConfidenceTier(finding);
-
   return (
     <div className="finding-card-header">
       <h3 className="finding-card-title">
@@ -126,14 +140,7 @@ export function FindingHeaderRow({
           index={index}
           league={league}
         />
-        <ConfidenceStrengthIndicator
-          tier={tier}
-          href={
-            league
-              ? researchHubFilterHref(league, { confidence: tier })
-              : undefined
-          }
-        />
+        <FindingSampleConfidenceMeta finding={finding} />
         {trailing}
       </div>
     </div>
@@ -181,11 +188,12 @@ function metricValueClass(stat: FindingStat, index: number): string {
 }
 
 export function FindingMetricsGrid({ stats }: { stats: FindingStat[] }) {
-  if (stats.length === 0) return null;
+  const displayStats = filterDisplayStats(stats);
+  if (displayStats.length === 0) return null;
 
   return (
-    <dl className={metricsGridClass(stats.length)} aria-label="Key metrics">
-      {stats.map((stat, index) => (
+    <dl className={metricsGridClass(displayStats.length)} aria-label="Key metrics">
+      {displayStats.map((stat, index) => (
         <div key={stat.label} className={metricCellClass(stat, index)}>
           <dd className={metricValueClass(stat, index)}>{stat.value}</dd>
           <dt className="finding-metric-label">{stat.label}</dt>
@@ -197,12 +205,10 @@ export function FindingMetricsGrid({ stats }: { stats: FindingStat[] }) {
 }
 
 export function FindingContextRow({ explainer }: { explainer?: string }) {
-  if (!explainer) return null;
-
   return (
     <p className="finding-card-context">
       <span className="finding-card-context-label">Why it matters: </span>
-      <FindingExplainer text={explainer} />
+      <FindingExplainer text={resolveFindingExplainer(explainer)} />
     </p>
   );
 }

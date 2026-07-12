@@ -19,6 +19,28 @@ export interface FindingStat {
   detail?: string;
 }
 
+/** Baseline explainer when a finding builder omits one. */
+export const DEFAULT_FINDING_EXPLAINER =
+  "Pattern surfaced from historical game logs in this dataset. Descriptive context only — not a betting signal or prediction.";
+
+export function resolveFindingExplainer(explainer?: string): string {
+  const trimmed = explainer?.trim();
+  return trimmed && trimmed.length > 0 ? trimmed : DEFAULT_FINDING_EXPLAINER;
+}
+
+const SAMPLE_STAT_LABEL = /^sample$/i;
+
+/** True when a stat cell is only sample-size metadata (not a substantive metric). */
+export function isSampleOnlyStat(stat: FindingStat): boolean {
+  return SAMPLE_STAT_LABEL.test(stat.label.trim());
+}
+
+/** Drop sample-only cells so the metrics grid stays at two substantive columns. */
+export function filterDisplayStats(stats: FindingStat[]): FindingStat[] {
+  const filtered = stats.filter((stat) => !isSampleOnlyStat(stat));
+  return filtered.length > 0 ? filtered : stats;
+}
+
 export interface Finding {
   id: string;
   category: FindingCategory;

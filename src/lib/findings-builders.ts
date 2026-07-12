@@ -5,9 +5,12 @@ import {
   closeGameLeanHeadline,
   formatFindingSampleMeta,
   isNeutralRate,
+  minorsPaceHeadline,
+  overBenchmarkStatLabel,
   overUnderFrequencyHeadline,
   whistlePaceHeadline,
 } from "@/lib/finding-copy";
+import { findingMetricLabels } from "@/lib/finding-labels";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { ScoredFindingBase } from "@/lib/findings-shared";
 import { rankScore } from "@/lib/findings-shared";
@@ -190,7 +193,7 @@ export function buildCrewDominanceFinding(
         detail: `vs members' other crews`,
       },
       {
-        label: "Over benchmark",
+        label: overBenchmarkStatLabel(best.overRate),
         value: formatPct(best.overRate),
         detail: `${stats.meta.leagueOverBaseline} ${ctx.labels.scoreUnit} line`,
       },
@@ -477,31 +480,34 @@ export function buildWhistleOutlierFinding(
   )[0];
   if (Math.abs(ref.foulsDelta) < MIN_WHISTLE_DELTA) return null;
 
+  const metricLabels = findingMetricLabels(ctx.league);
+
   return {
     id: `${ctx.paths.idPrefix}whistle-outlier`,
     category: "whistle-extreme",
     headline: whistlePaceHeadline(
       ref.name,
       ref.foulsDelta,
-      ctx.labels.whistleUnit,
+      metricLabels.whistle,
       ref.overRate,
     ),
-    summary: `${ref.name} averages ${ref.avgFouls} ${ctx.labels.whistleUnit} per game (${formatSigned(ref.foulsDelta)} vs league) across ${ref.games} games, the largest whistle delta among ${MIN_REF_GAMES}+ game refs.`,
+    summary: `${ref.name} averages ${ref.avgFouls} ${metricLabels.whistle} per game (${formatSigned(ref.foulsDelta)} vs league) across ${ref.games} games, the largest whistle delta among ${MIN_REF_GAMES}+ game refs.`,
+    explainer: `Whistle pace compares ${metricLabels.whistle} volume to the league average in this dataset. High or low foul counts do not automatically predict scoring or spread outcomes.`,
     stats: [
       {
-        label: `${ctx.labels.whistleUnit} per game`,
+        label: `${metricLabels.whistle} per game`,
         value: String(ref.avgFouls),
         detail: `${formatSigned(ref.foulsDelta)} vs ${stats.meta.leagueAvgFouls} league avg`,
       },
       {
-        label: "Over benchmark",
+        label: overBenchmarkStatLabel(ref.overRate),
         value: formatPct(ref.overRate),
-        detail: `${stats.meta.leagueOverBaseline} ${ctx.labels.scoreUnit}`,
+        detail: `${stats.meta.leagueOverBaseline} ${metricLabels.overBenchmark}`,
       },
       {
-        label: "Sample",
-        value: String(ref.games),
-        detail: `Min ${MIN_REF_GAMES} games`,
+        label: `Avg combined ${metricLabels.score}`,
+        value: String(ref.avgTotalPoints),
+        detail: `${formatSigned(ref.totalPointsDelta)} vs league`,
       },
     ],
     sampleNote: formatFindingSampleMeta(ref.games, stats.meta.seasons),
@@ -532,20 +538,22 @@ export function buildOverRateOutlierFinding(
   if (edge < 0.03 || isNeutralRate(ref.overRate)) return null;
 
   const lean = direction === "high" ? "over" : "under";
+  const metricLabels = findingMetricLabels(ctx.league);
 
   return {
     id: `${ctx.paths.idPrefix}${lean}-rate-outlier`,
     category: "ref-outlier",
     headline: overUnderFrequencyHeadline(ref.name, ref.overRate, direction),
-    summary: `${formatPct(ref.overRate)} of ${ref.name}'s ${ref.games} games finish ${lean} ${stats.meta.leagueOverBaseline} combined ${ctx.labels.scoreUnit}, ${(edge * 100).toFixed(1)} pts from a neutral 50% baseline.`,
+    summary: `${formatPct(ref.overRate)} of ${ref.name}'s ${ref.games} games finish ${lean} ${stats.meta.leagueOverBaseline} combined ${metricLabels.score}, ${(edge * 100).toFixed(1)} pts from a neutral 50% baseline.`,
+    explainer: `Personal over rate tracks how often this official's games clear the fixed ${stats.meta.leagueOverBaseline}-${metricLabels.overBenchmark} benchmark — descriptive frequency, not sportsbook pricing.`,
     stats: [
       {
-        label: "Over benchmark",
+        label: overBenchmarkStatLabel(ref.overRate),
         value: formatPct(ref.overRate),
         detail: `${ref.games} games`,
       },
       {
-        label: "Avg combined total",
+        label: `Avg combined ${metricLabels.score}`,
         value: String(ref.avgTotalPoints),
         detail: `${formatSigned(ref.totalPointsDelta)} vs league`,
       },
@@ -655,13 +663,14 @@ export function buildNhlMinorsOutlierFinding(
 
   if (!best) return null;
   const leagueMinors = stats.meta.leagueAvgMinors ?? 7.5;
+  const metricLabels = findingMetricLabels(ctx.league);
 
   return {
     id: `${ctx.paths.idPrefix}minors-outlier`,
     category: "whistle-extreme",
-    headline: `${best.ref.name} runs the heaviest minor-penalty pace`,
+    headline: minorsPaceHeadline(best.ref.name, best.delta),
     summary: `${best.ref.name} averages ${best.rate.toFixed(1)} two-minute minors per team per game (${formatSigned(best.delta)} vs league) across ${best.ref.games} games.`,
-    explainer: `Minor penalty rate is descriptive game-management pattern from NHL logs. Not a live foul-trouble or power-play edge.`,
+    explainer: `Minor penalty rate is a descriptive game-management pattern from NHL logs. Not a live foul-trouble or power-play edge.`,
     stats: [
       {
         label: "Minors per team",
@@ -669,14 +678,14 @@ export function buildNhlMinorsOutlierFinding(
         detail: `${formatSigned(best.delta)} vs ${leagueMinors.toFixed(1)} league avg`,
       },
       {
-        label: "Over benchmark",
+        label: overBenchmarkStatLabel(best.ref.overRate),
         value: formatPct(best.ref.overRate),
-        detail: `${stats.meta.leagueOverBaseline} goals`,
+        detail: `${stats.meta.leagueOverBaseline} ${metricLabels.overBenchmark}`,
       },
       {
-        label: "Sample",
-        value: String(best.ref.games),
-        detail: `Min ${MIN_ANALYTICS_GAMES} games`,
+        label: `Avg combined ${metricLabels.score}`,
+        value: String(best.ref.avgTotalPoints),
+        detail: `${formatSigned(best.ref.totalPointsDelta)} vs league`,
       },
     ],
     sampleNote: formatFindingSampleMeta(best.ref.games, stats.meta.seasons),
@@ -719,14 +728,18 @@ export function buildNhlOtOutlierFinding(
 
   if (!best) return null;
 
+  const metricLabels = findingMetricLabels(ctx.league);
+  const otLabel = metricLabels.otRate ?? "OT/SO rate";
+
   return {
     id: `${ctx.paths.idPrefix}ot-outlier`,
     category: "ref-outlier",
     headline: `${best.ref.name} pushes ${formatPct(best.rate)} of games to OT/SO`,
     summary: `${best.ref.name} reaches overtime or shootout ${formatPct(best.rate)} of the time (${best.otGames} of ${best.ref.games} games), ${(Math.abs(best.edge) * 100).toFixed(1)} pts ${best.edge >= 0 ? "above" : "below"} the ${formatPct(leagueOt)} league rate.`,
+    explainer: `${otLabel} shows how often games need extra time under this official. Descriptive pace context — not a prediction for tonight's slate.`,
     stats: [
       {
-        label: "OT/SO rate",
+        label: otLabel,
         value: formatPct(best.rate),
         detail: `${best.otGames} OT/SO games`,
       },
@@ -736,9 +749,9 @@ export function buildNhlOtOutlierFinding(
         detail: "Pool baseline",
       },
       {
-        label: "Sample",
-        value: String(best.ref.games),
-        detail: `Min ${MIN_ANALYTICS_GAMES} games`,
+        label: `Avg combined ${metricLabels.score}`,
+        value: String(best.ref.avgTotalPoints),
+        detail: `${formatSigned(best.ref.totalPointsDelta)} vs league`,
       },
     ],
     sampleNote: formatFindingSampleMeta(best.ref.games, stats.meta.seasons),

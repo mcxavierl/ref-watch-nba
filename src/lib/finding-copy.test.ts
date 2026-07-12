@@ -1,13 +1,19 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  BANNED_NEGATIVE_DELTA_HEADLINE,
+  deltaVsLeagueHeadline,
+  formatFindingCardMeta,
   formatFindingSampleMeta,
   formatSeasonSpan,
   isNeutralRate,
+  minorsPaceHeadline,
+  overBenchmarkStatLabel,
   overUnderFrequencyHeadline,
   whistleParadoxHeadline,
   whistlePaceHeadline,
 } from "@/lib/finding-copy";
+import { filterDisplayStats, isSampleOnlyStat } from "@/lib/findings-shared";
 
 describe("finding-copy", () => {
   it("detects neutral over rates between 49% and 51%", () => {
@@ -37,12 +43,59 @@ describe("finding-copy", () => {
 
   it("notes whistle/scoring divergence when pace is high but outcome is neutral", () => {
     const headline = whistlePaceHeadline("Mitchell Ervin", 1.2, "fouls", 0.5);
-    assert.match(headline, /high foul pace/i);
+    assert.match(headline, /heavy fouls pace/i);
     assert.match(headline, /dead-neutral/i);
+  });
+
+  it("uses fewer/below language for negative whistle deltas", () => {
+    const headline = whistlePaceHeadline("Ian Walsh", -1.2, "minors", 0.44);
+    assert.match(headline, /1\.2 fewer minors/i);
+    assert.doesNotMatch(headline, BANNED_NEGATIVE_DELTA_HEADLINE);
+  });
+
+  it("minors headline respects negative delta sign", () => {
+    const negative = minorsPaceHeadline("Kelly Sutherland", -1.2);
+    assert.match(negative, /1\.2 fewer minors than league average/i);
+    assert.doesNotMatch(negative, BANNED_NEGATIVE_DELTA_HEADLINE);
+
+    const positive = minorsPaceHeadline("Kelly Sutherland", 1.4);
+    assert.match(positive, /1\.4 more minors than league average/i);
+  });
+
+  it("deltaVsLeagueHeadline never uses superlatives on negative deltas", () => {
+    const headline = deltaVsLeagueHeadline("Scott Foster", -2.3, "fouls");
+    assert.match(headline, /fewer fouls/i);
+    assert.doesNotMatch(headline, BANNED_NEGATIVE_DELTA_HEADLINE);
+  });
+
+  it("overBenchmarkStatLabel matches rate direction", () => {
+    assert.equal(overBenchmarkStatLabel(0.52), "Over benchmark");
+    assert.equal(overBenchmarkStatLabel(0.48), "Under benchmark");
+    assert.equal(overBenchmarkStatLabel(0.5), "At benchmark");
+  });
+
+  it("formats compact card metadata with confidence tier", () => {
+    const meta = formatFindingCardMeta(
+      "Sample: 65 games over 3 seasons (2023–2026)",
+      "Strong",
+    );
+    assert.equal(meta, "Sample: 65 games • Confidence: High");
   });
 
   it("keeps paradox language when scoring is clearly under neutral", () => {
     const headline = whistleParadoxHeadline("Scott Foster", 0.44);
     assert.match(headline, /scores stay low/i);
+  });
+});
+
+describe("finding display stats", () => {
+  it("filters sample-only third columns from the metrics grid", () => {
+    const stats = [
+      { label: "Minors per team", value: "6.1", detail: "-1.2 vs 7.3 league avg" },
+      { label: "Under benchmark", value: "48%", detail: "5.5 goals" },
+      { label: "Sample", value: "65", detail: "Min 30 games" },
+    ];
+    assert.equal(isSampleOnlyStat(stats[2]!), true);
+    assert.equal(filterDisplayStats(stats).length, 2);
   });
 });

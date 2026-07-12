@@ -1,6 +1,12 @@
+import type { ConfidenceTier } from "@/lib/user-language";
+
 /** Inclusive band treated as neutral for over/under and benchmark claims. */
 export const NEUTRAL_RATE_MIN = 0.49;
 export const NEUTRAL_RATE_MAX = 0.51;
+
+/** Headline words that must not appear when delta is negative. */
+export const BANNED_NEGATIVE_DELTA_HEADLINE =
+  /\b(heaviest|highest|most|heavier|heaviest|max|peak)\b/i;
 
 export function isNeutralRate(rate: number): boolean {
   return rate >= NEUTRAL_RATE_MIN && rate <= NEUTRAL_RATE_MAX;
@@ -47,24 +53,58 @@ export function overUnderFrequencyHeadline(
   return `${refName} leads the pool on ${lean} frequency`;
 }
 
+/** Stat row label that matches over/under direction — never "Over benchmark" when rate is under 50%. */
+export function overBenchmarkStatLabel(rate: number): string {
+  if (isNeutralRate(rate)) return "At benchmark";
+  return rate >= 0.5 ? "Over benchmark" : "Under benchmark";
+}
+
+function formatDeltaMagnitude(delta: number): string {
+  return Math.abs(delta).toFixed(1);
+}
+
+/**
+ * Headline from signed delta vs league average.
+ * Negative deltas use fewer/below/under — never heaviest/highest.
+ */
+export function deltaVsLeagueHeadline(
+  subject: string,
+  delta: number,
+  unit: string,
+): string {
+  const magnitude = formatDeltaMagnitude(delta);
+  if (delta > 0) {
+    return `${subject} runs ${magnitude} more ${unit} than league average`;
+  }
+  if (delta < 0) {
+    return `${subject} runs ${magnitude} fewer ${unit} than league average`;
+  }
+  return `${subject} matches league average ${unit} pace`;
+}
+
+export function minorsPaceHeadline(refName: string, minorsDelta: number): string {
+  return deltaVsLeagueHeadline(refName, minorsDelta, "minors");
+}
+
 export function whistlePaceHeadline(
   refName: string,
   foulsDelta: number,
   whistleUnit: string,
   overRate: number,
 ): string {
-  const heavy = foulsDelta >= 0;
-  const paceClause = heavy
-    ? `runs the highest ${whistleUnit} pace in the pool`
-    : `runs the lowest ${whistleUnit} pace in the pool`;
+  const paceHeadline = deltaVsLeagueHeadline(refName, foulsDelta, whistleUnit);
 
   if (isNeutralRate(overRate)) {
-    return heavy
-      ? `${refName} calls high foul pace, yet overall scoring tracks dead-neutral`
-      : `${refName} calls a light whistle, yet overall scoring tracks dead-neutral`;
+    if (foulsDelta > 0) {
+      return `${refName} calls a heavy ${whistleUnit} pace, yet overall scoring tracks dead-neutral`;
+    }
+    if (foulsDelta < 0) {
+      return `${refName} calls a light ${whistleUnit} pace, yet overall scoring tracks dead-neutral`;
+    }
+    return `${refName} matches league ${whistleUnit} pace with dead-neutral scoring`;
   }
 
-  return `${refName} ${paceClause}`;
+  return paceHeadline;
 }
 
 export function whistleParadoxHeadline(refName: string, overRate: number): string {
@@ -134,4 +174,20 @@ export function closeGameLeanHeadline(
   }
   const lean = closeOverRate >= 0.5 ? "over" : "under";
   return `Competitive games lean ${lean} the ${benchmark}-${scoreUnit} benchmark`;
+}
+
+const CONFIDENCE_DISPLAY: Record<ConfidenceTier, string> = {
+  Strong: "High",
+  Moderate: "Moderate",
+  Thin: "Low",
+};
+
+/** Compact card metadata: sample size + confidence tier. */
+export function formatFindingCardMeta(
+  sampleNote: string,
+  tier: ConfidenceTier,
+): string {
+  const gamesMatch = sampleNote.match(/Sample:\s*([\d,]+)\s*games?/i);
+  const games = gamesMatch?.[1] ?? "—";
+  return `Sample: ${games} games • Confidence: ${CONFIDENCE_DISPLAY[tier]}`;
 }

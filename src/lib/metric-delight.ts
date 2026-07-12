@@ -97,12 +97,29 @@ function parseSignedNumber(value: string): number | null {
 }
 
 const NEUTRAL_PCT_BAND = 2;
+const SAMPLE_STAT_LABEL = /^sample$/i;
 
 /** Resolve delight tone for a finding stat cell (matches finding-highlights heuristics). */
 export function findingStatDelightTone(stat: FindingStat): MetricDelightTone {
+  const label = stat.label.toLowerCase();
+
+  if (SAMPLE_STAT_LABEL.test(stat.label.trim())) {
+    return "neutral";
+  }
+
+  if (label.includes("games") && !stat.value.includes("%")) {
+    return "neutral";
+  }
+
   const pct = parsePct(stat.value) ?? parsePct(stat.detail ?? "");
   if (pct != null) {
     const baseline = parseBaselineFromDetail(stat.detail) ?? 50;
+    if (label.includes("under benchmark") && pct >= baseline + NEUTRAL_PCT_BAND) {
+      return "neutral";
+    }
+    if (label.includes("over benchmark") && pct <= baseline - NEUTRAL_PCT_BAND) {
+      return "neutral";
+    }
     if (pct >= baseline + NEUTRAL_PCT_BAND) return "positive";
     if (pct <= baseline - NEUTRAL_PCT_BAND) return "negative";
     return "neutral";

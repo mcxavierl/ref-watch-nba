@@ -57,7 +57,6 @@ export function FindingAccordionItem({
         )}
 
         <div className="finding-accordion-footer">
-          <p className="finding-sample-meta">{finding.sampleNote}</p>
           <FindingFooterLinks links={finding.links} />
         </div>
       </div>
