@@ -9,6 +9,11 @@ import { leagueHeroCopy } from "@/lib/league-hero-copy";
 import { nbaSeasonScopeAuditNote } from "@/lib/nba-team-season-records";
 import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
 import { formatSeasonScope } from "@/lib/season-scope";
+import {
+  slateHeroActions,
+  slateHeroStatHref,
+  type SlateHeroStatKey,
+} from "@/lib/slate-hero-links";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 
 type SlateLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
@@ -27,18 +32,7 @@ function formatStatCount(value: number | undefined): string {
   return value.toLocaleString();
 }
 
-const PRODUCT_HOME_STAT_LINKS = [
-  { key: "officials" as const, href: "/refs" },
-  { key: "games" as const, href: "/matrix" },
-  { key: "seasons" as const, href: "/trends" },
-] as const;
-
-const PRODUCT_HOME_ACTIONS = [
-  { href: "/rankings", label: "Tendency index" },
-  { href: "/matrix", label: "Crew matrix" },
-  { href: "/teams", label: "Team histories" },
-  { href: "#dataset-findings", label: "Season highlights" },
-] as const;
+const SLATE_HERO_STAT_KEYS: SlateHeroStatKey[] = ["officials", "games", "seasons"];
 
 export function LeagueSlateHero({
   leagueId,
@@ -62,7 +56,9 @@ export function LeagueSlateHero({
       : snapshot?.seasonSpan ?? "-";
   const seasonAuditNote =
     leagueId === "nba" ? nbaSeasonScopeAuditNote(refStats.meta.seasons) : null;
-  const useInteractiveStats = productHome && isOffseason;
+  const seasonCount = refStats.meta.seasons.length;
+  const useInteractiveStats = isOffseason;
+  const heroActions = slateHeroActions(leagueId);
 
   const statValues = {
     officials: officialCount > 0 ? officialCount.toLocaleString() : "-",
@@ -84,27 +80,28 @@ export function LeagueSlateHero({
         {isOffseason ? copy.offseasonLead : isPending ? copy.pendingLead ?? copy.liveLead : copy.liveLead}
       </p>
 
-      <dl
+      <div
         className={`league-slate-stats${useInteractiveStats ? " league-slate-stats-interactive" : ""}`}
         aria-label={`${config.dataLeague} dataset scope`}
+        role={useInteractiveStats ? "group" : undefined}
       >
         {useInteractiveStats
-          ? PRODUCT_HOME_STAT_LINKS.map((item) => (
+          ? SLATE_HERO_STAT_KEYS.map((key) => (
               <Link
-                key={item.key}
-                href={item.href}
+                key={key}
+                href={slateHeroStatHref(leagueId, key, seasonCount)}
                 className="league-slate-stat league-slate-stat-link"
               >
                 <span className="league-slate-stat-label">
-                  {copy.statLabels[item.key]}
+                  {copy.statLabels[key]}
                 </span>
                 <span className="league-slate-stat-value data-signal">
-                  {statValues[item.key]}
+                  {statValues[key]}
                 </span>
               </Link>
             ))
           : (
-            <>
+            <dl className="contents">
               <div className="league-slate-stat">
                 <dt>{copy.statLabels.officials}</dt>
                 <dd className="data-signal">{statValues.officials}</dd>
@@ -117,16 +114,16 @@ export function LeagueSlateHero({
                 <dt>{copy.statLabels.seasons}</dt>
                 <dd className="data-signal">{statValues.seasons}</dd>
               </div>
-            </>
+            </dl>
           )}
-      </dl>
+      </div>
 
       {useInteractiveStats && (
         <nav
           className="league-slate-hero-actions"
           aria-label="Explore historical analytics"
         >
-          {PRODUCT_HOME_ACTIONS.map((action) => (
+          {heroActions.map((action) => (
             <Link
               key={action.href}
               href={action.href}
@@ -146,7 +143,7 @@ export function LeagueSlateHero({
             <span />
           )}
           <Suspense fallback={null}>
-            <SeasonScopeToggle />
+            <SeasonScopeToggle leagueId={leagueId} />
           </Suspense>
         </div>
       )}

@@ -56,6 +56,7 @@ export function FindingsSection({
   league,
   showScopeToggle = false,
   scopeLabel,
+  scopeLeagueId,
 }: {
   findings: Finding[];
   compact?: boolean;
@@ -69,6 +70,7 @@ export function FindingsSection({
   league?: FindingLeague;
   showScopeToggle?: boolean;
   scopeLabel?: string;
+  scopeLeagueId?: import("@/lib/leagues").LeagueId;
 }) {
   const scopedFindings = sortFindingsByStrength(
     league ? filterFindingsByLeague(findings, league) : findings,
@@ -100,7 +102,7 @@ export function FindingsSection({
             </h2>
             {showScopeToggle && (
               <Suspense fallback={null}>
-                <SeasonScopeToggle />
+                <SeasonScopeToggle leagueId={scopeLeagueId ?? "nba"} />
               </Suspense>
             )}
           </div>

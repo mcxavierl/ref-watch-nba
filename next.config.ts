@@ -25,6 +25,41 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/insights",
+        destination: "/rankings",
+        permanent: false,
+      },
+      {
+        source: "/nhl/insights",
+        destination: "/nhl/rankings",
+        permanent: false,
+      },
+      {
+        source: "/nfl/insights",
+        destination: "/nfl/rankings",
+        permanent: false,
+      },
+      {
+        source: "/epl/insights",
+        destination: "/epl/rankings",
+        permanent: false,
+      },
+      {
+        source: "/laliga/insights",
+        destination: "/laliga/rankings",
+        permanent: false,
+      },
+      {
+        source: "/cbb/insights",
+        destination: "/cbb/rankings",
+        permanent: false,
+      },
+      {
+        source: "/cfb/insights",
+        destination: "/cfb/rankings",
+        permanent: false,
+      },
+      {
         source: "/raptors",
         destination: "/teams/TOR",
         permanent: true,

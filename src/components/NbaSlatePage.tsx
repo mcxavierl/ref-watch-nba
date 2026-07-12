@@ -153,6 +153,7 @@ export async function NbaSlatePage({
         }
         league="NBA"
         showScopeToggle
+        scopeLeagueId="nba"
         scopeLabel={`${scoped.scopeLabel} · ${scoped.formatRange(scoped.stats.meta)}`}
         sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
       />

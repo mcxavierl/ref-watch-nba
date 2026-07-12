@@ -93,6 +93,17 @@ export function LeagueHubTabs({
   }, [syncInsightsTab, tabs, variant]);
 
   useEffect(() => {
+    if (variant !== "insights" || !leagueId) return;
+    const fromHash = insightsViewFromHash(window.location.hash);
+    if (!fromHash) return;
+    const canonical = insightsViewFromPathname(pathname);
+    if (canonical === fromHash) return;
+    const query = searchParams?.toString();
+    const href = insightsViewHref(leagueId, fromHash);
+    router.replace(query ? `${href}?${query}` : href);
+  }, [leagueId, pathname, router, searchParams, variant]);
+
+  useEffect(() => {
     syncFromHash();
     window.addEventListener("hashchange", syncFromHash);
     return () => window.removeEventListener("hashchange", syncFromHash);

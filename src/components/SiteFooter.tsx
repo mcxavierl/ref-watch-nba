@@ -19,6 +19,7 @@ import {
   formatRefStatsRange as formatCfbRange,
   getRefStats as getCfbRefStats,
 } from "@/lib/cfb/data";
+import { insightsViewHref } from "@/lib/insights-routes";
 import { LEAGUES } from "@/lib/leagues";
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 
@@ -91,7 +92,7 @@ export function SiteFooter({ league }: { league: FooterLeague }) {
   const config = LEAGUES[league];
   const prefix = config.pathPrefix;
   const hrefs: Record<string, string> = {
-    insights: prefix ? `${prefix}/insights` : "/insights",
+    insights: insightsViewHref(league as "nba" | "nhl" | "epl" | "cbb" | "cfb", "tendencies"),
     refs: prefix ? `${prefix}/refs` : "/refs",
     teams: prefix ? `${prefix}/teams` : "/teams",
     matrix: prefix ? `${prefix}/matrix` : "/matrix",
