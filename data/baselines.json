@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T20:13:36.925Z",
+  "generatedAt": "2026-07-12T20:48:23.442Z",
   "note": "Computed from NBA/NHL/NFL/EPL/La Liga game logs",
   "fallback": {
     "NBA": {
@@ -117,7 +117,7 @@
       },
       "2025-26": {
         "season": "2025-26",
-        "gameCount": 1230,
+        "gameCount": 1231,
         "leagueAvgTotal": 222,
         "leagueOverBaseline": 222,
         "leagueAvgFouls": 40.8
@@ -125,7 +125,7 @@
     },
     "aggregate": {
       "season": "all",
-      "gameCount": 12300,
+      "gameCount": 12301,
       "leagueAvgTotal": 222.4,
       "leagueOverBaseline": 222.4,
       "leagueAvgFouls": 41

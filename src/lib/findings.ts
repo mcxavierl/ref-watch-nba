@@ -754,31 +754,31 @@ function collectCandidates(
   options?: { hub?: boolean },
 ): ScoredFindingBase[] {
   const includeHeavy = !options?.hub;
-  const refTeams = aggregateRefTeams(stats);
+  const refTeams = includeHeavy ? aggregateRefTeams(stats) : new Map();
   const candidates: (ScoredFindingBase | null)[] = [
     leagueUnderFinding(stats),
     rareOverRefsFinding(stats),
-    overRateTeamSplitFinding(stats),
-    foulEdgeLosingFinding(stats),
-    scoringExtremesFinding(stats),
-    crossTeamWhistleFinding(stats, refTeams),
-    whistleParadoxFinding(stats),
     atsOutlierFinding(stats),
     ouAtsEdgeFinding(stats),
-    teamCrewAnomalyFinding(stats),
     scoringOutlierFinding(stats),
+    whistleParadoxFinding(stats),
+    buildYoYTrendFinding(stats, NBA_FINDING_CTX),
+    buildWhistleOutlierFinding(stats, NBA_FINDING_CTX),
+    buildOverRateOutlierFinding(stats, NBA_FINDING_CTX, "low"),
     ...(includeHeavy
       ? [
+          overRateTeamSplitFinding(stats),
+          foulEdgeLosingFinding(stats),
+          scoringExtremesFinding(stats),
+          crossTeamWhistleFinding(stats, refTeams),
+          teamCrewAnomalyFinding(stats),
           buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "low"),
           buildCrewDominanceFinding(stats, NBA_FINDING_CTX),
           buildCloseGameLeagueFinding(stats, NBA_FINDING_CTX),
+          buildTeamHomeRoadFinding(stats, NBA_FINDING_CTX),
         ]
       : []),
-    buildYoYTrendFinding(stats, NBA_FINDING_CTX),
-    buildTeamHomeRoadFinding(stats, NBA_FINDING_CTX),
-    buildWhistleOutlierFinding(stats, NBA_FINDING_CTX),
-    buildOverRateOutlierFinding(stats, NBA_FINDING_CTX, "low"),
   ];
   return candidates.filter((c): c is ScoredFindingBase => c !== null);
 }

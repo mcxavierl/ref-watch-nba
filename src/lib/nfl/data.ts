@@ -151,21 +151,7 @@ function applyBaselines(stats: RefStatsFile): RefStatsFile {
 }
 
 function normalizeRefStats(data: RefStatsFile): RefStatsFile {
-  const embedded = data.teamSplits ?? {};
-  if (Object.keys(embedded).length > 0) {
-    return { ...data, refs: data.refs ?? [] };
-  }
-  const cached = cachedTeamSplitsForLeague("nfl");
-  const fromFile =
-    Object.keys(cached).length > 0 ? cached : diskTeamSplitsFallback(loadTeamSplitsFromDisk);
-  return attachTeamSplits(
-    "nfl",
-    {
-      ...data,
-      refs: data.refs ?? [],
-    },
-    fromFile,
-  );
+  return { ...data, refs: data.refs ?? [], teamSplits: {} };
 }
 
 
@@ -187,10 +173,7 @@ export function getRefStats(): RefStatsFile {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     const stats = gateUnverifiedNflStats(applyBaselines(normalizeRefStats(raw)));
-    const splits = cachedTeamSplitsForLeague("nfl");
-    const fromFile =
-      Object.keys(splits).length > 0 ? splits : diskTeamSplitsFallback(loadTeamSplitsFromDisk);
-    resolvedRefStats = attachTeamSplits("nfl", stats, fromFile);
+    resolvedRefStats = stats;
     return resolvedRefStats;
   } catch {
     return EMPTY_REF_STATS;
@@ -347,13 +330,18 @@ export function formatDate(iso: string): string {
   });
 }
 
+function loadTeamSplitsMap(): Record<string, TeamCrewSplit[]> {
+  const cached = cachedTeamSplitsForLeague("nfl");
+  if (Object.keys(cached).length > 0) return cached;
+  return diskTeamSplitsFallback(loadTeamSplitsFromDisk);
+}
+
 export function getTeamSplits(abbr: string): TeamCrewSplit[] {
-  const stats = getRefStats();
-  return resolveTeamSplits(stats.teamSplits ?? {})[abbr.toUpperCase()] ?? [];
+  return loadTeamSplitsMap()[abbr.toUpperCase()] ?? [];
 }
 
 export function getAllTeamAbbrs(): string[] {
-  const fromSplits = Object.keys(getRefStats().teamSplits);
+  const fromSplits = Object.keys(loadTeamSplitsMap());
   if (fromSplits.length > 0) {
     return fromSplits.sort();
   }

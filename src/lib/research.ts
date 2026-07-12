@@ -65,9 +65,12 @@ export function computeResearchFindingsForLeague(
 export function getResearchFindingById(
   id: string,
 ): ResearchFinding | undefined {
-  const finding = computeAllResearchFindings().find((f) => f.id === id);
+  const league = inferFindingLeague({ id } as Finding);
+  const compute = LEAGUE_FINDING_COMPUTERS[league];
+  if (!compute) return undefined;
+  const finding = tagResearchFindings(compute(), league).find((f) => f.id === id);
   if (!finding) return undefined;
-  return { ...finding, league: inferFindingLeague(finding) };
+  return finding;
 }
 
 export function getAllResearchFindingIds(): string[] {

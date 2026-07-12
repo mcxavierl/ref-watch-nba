@@ -250,11 +250,11 @@ export function checkMatrixBaselines(
   } as const;
 
   const { stats, teams, getTeamSplits } = cases[league];
-  const hydratedTeams = Object.keys(stats.teamSplits).filter(
-    (k) => (stats.teamSplits[k]?.length ?? 0) > 0,
+  const hydratedTeams = teams.filter(
+    (team) => getTeamSplits(team.abbr).length > 0,
   ).length;
-  if (league !== "nba" && hydratedTeams === 0) {
-    failures.push(`${league}: getRefStats() returned empty teamSplits after hydration`);
+  if (hydratedTeams === 0) {
+    failures.push(`${league}: team splits unavailable after hydration`);
   }
 
   const matrix = computeRefTeamMatrix(

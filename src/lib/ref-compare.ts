@@ -1,7 +1,6 @@
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
-import { formatPct } from "@/lib/data";
-import { formatSigned } from "@/lib/stats-utils";
+import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import type { RefProfile, RefStatsFile } from "@/lib/types";

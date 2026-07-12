@@ -79,7 +79,7 @@ export default async function EplHomePage() {
   const assignments = getAssignments();
   const refStats = getRefStats();
   const odds = getOdds();
-  const findings = computeFindings();
+  const findings = computeFindings(6, undefined, { hub: true });
   const isOffseason = isOffseasonSlate(assignments);
   const isPending = isPendingCrewSlate(assignments);
   const pendingMatchups = upcomingMatchups(assignments).map((game) => game.matchup);

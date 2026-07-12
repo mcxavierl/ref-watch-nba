@@ -351,23 +351,23 @@ function collectCandidates(
   return [
     buildNflFlagsOutlierFinding(stats),
     buildLeagueSkewFinding(stats, NFL_FINDING_CTX),
-    teamCrewAnomalyFinding(stats),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
-    scoringExtremesFinding(stats),
+    buildYoYTrendFinding(stats, NFL_FINDING_CTX),
+    buildWhistleOutlierFinding(stats, NFL_FINDING_CTX),
+    buildOverRateOutlierFinding(stats, NFL_FINDING_CTX, "low"),
+    scoringOutlierFinding(stats),
     ...(includeHeavy
       ? [
+          teamCrewAnomalyFinding(stats),
+          scoringExtremesFinding(stats),
           buildMatrixExtremeFinding(stats, NFL_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(stats, NFL_FINDING_CTX, "low"),
           buildCrewDominanceFinding(stats, NFL_FINDING_CTX),
           buildCloseGameLeagueFinding(stats, NFL_FINDING_CTX),
+          buildTeamHomeRoadFinding(stats, NFL_FINDING_CTX),
         ]
       : []),
-    buildYoYTrendFinding(stats, NFL_FINDING_CTX),
-    buildTeamHomeRoadFinding(stats, NFL_FINDING_CTX),
-    buildWhistleOutlierFinding(stats, NFL_FINDING_CTX),
-    buildOverRateOutlierFinding(stats, NFL_FINDING_CTX, "low"),
-    scoringOutlierFinding(stats),
   ].filter((c): c is ScoredFindingBase => c !== null);
 }
 

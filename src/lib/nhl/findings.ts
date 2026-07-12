@@ -340,23 +340,23 @@ function collectCandidates(
     buildLeagueSkewFinding(refereeStats, NHL_FINDING_CTX),
     buildNhlOtOutlierFinding(refereeStats, NHL_FINDING_CTX),
     buildNhlMinorsOutlierFinding(refereeStats, NHL_FINDING_CTX),
-    teamCrewAnomalyFinding(refereeStats),
     ouAtsEdgeFinding(refereeStats),
     atsOutlierFinding(refereeStats),
-    scoringExtremesFinding(refereeStats),
+    buildYoYTrendFinding(refereeStats, NHL_FINDING_CTX),
+    buildWhistleOutlierFinding(refereeStats, NHL_FINDING_CTX),
+    buildOverRateOutlierFinding(refereeStats, NHL_FINDING_CTX, "low"),
+    scoringOutlierFinding(refereeStats),
     ...(includeHeavy
       ? [
+          teamCrewAnomalyFinding(refereeStats),
+          scoringExtremesFinding(refereeStats),
           buildMatrixExtremeFinding(refereeStats, NHL_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(refereeStats, NHL_FINDING_CTX, "low"),
           buildCrewDominanceFinding(refereeStats, NHL_FINDING_CTX),
           buildCloseGameLeagueFinding(refereeStats, NHL_FINDING_CTX),
+          buildTeamHomeRoadFinding(refereeStats, NHL_FINDING_CTX),
         ]
       : []),
-    buildYoYTrendFinding(refereeStats, NHL_FINDING_CTX),
-    buildTeamHomeRoadFinding(refereeStats, NHL_FINDING_CTX),
-    buildWhistleOutlierFinding(refereeStats, NHL_FINDING_CTX),
-    buildOverRateOutlierFinding(refereeStats, NHL_FINDING_CTX, "low"),
-    scoringOutlierFinding(refereeStats),
   ].filter((c): c is ScoredFindingBase => c !== null);
 }
 

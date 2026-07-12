@@ -368,23 +368,23 @@ function collectCandidates(
   return [
     buildEplFoulsOutlierFinding(stats),
     buildLeagueSkewFinding(stats, LALIGA_FINDING_CTX),
-            teamCrewAnomalyFinding(stats),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
-    scoringExtremesFinding(stats),
+    buildYoYTrendFinding(stats, LALIGA_FINDING_CTX),
+    buildWhistleOutlierFinding(stats, LALIGA_FINDING_CTX),
+    buildOverRateOutlierFinding(stats, LALIGA_FINDING_CTX, "low"),
+    scoringOutlierFinding(stats),
     ...(includeHeavy
       ? [
+          teamCrewAnomalyFinding(stats),
+          scoringExtremesFinding(stats),
           buildMatrixExtremeFinding(stats, LALIGA_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(stats, LALIGA_FINDING_CTX, "low"),
           buildCrewDominanceFinding(stats, LALIGA_FINDING_CTX),
           buildCloseGameLeagueFinding(stats, LALIGA_FINDING_CTX),
+          buildTeamHomeRoadFinding(stats, LALIGA_FINDING_CTX),
         ]
       : []),
-    buildYoYTrendFinding(stats, LALIGA_FINDING_CTX),
-    buildTeamHomeRoadFinding(stats, LALIGA_FINDING_CTX),
-    buildWhistleOutlierFinding(stats, LALIGA_FINDING_CTX),
-    buildOverRateOutlierFinding(stats, LALIGA_FINDING_CTX, "low"),
-    scoringOutlierFinding(stats),
   ].filter((c): c is ScoredFindingBase => c !== null);
 }
 

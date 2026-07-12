@@ -334,23 +334,23 @@ function collectCandidates(
   const includeHeavy = !options?.hub;
   return [
     buildLeagueSkewFinding(stats, CBB_FINDING_CTX),
-    teamCrewAnomalyFinding(stats),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
-    scoringExtremesFinding(stats),
+    buildYoYTrendFinding(stats, CBB_FINDING_CTX),
+    buildWhistleOutlierFinding(stats, CBB_FINDING_CTX),
+    buildOverRateOutlierFinding(stats, CBB_FINDING_CTX, "low"),
+    scoringOutlierFinding(stats),
     ...(includeHeavy
       ? [
+          teamCrewAnomalyFinding(stats),
+          scoringExtremesFinding(stats),
           buildMatrixExtremeFinding(stats, CBB_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(stats, CBB_FINDING_CTX, "low"),
           buildCrewDominanceFinding(stats, CBB_FINDING_CTX),
           buildCloseGameLeagueFinding(stats, CBB_FINDING_CTX),
+          buildTeamHomeRoadFinding(stats, CBB_FINDING_CTX),
         ]
       : []),
-    buildYoYTrendFinding(stats, CBB_FINDING_CTX),
-    buildTeamHomeRoadFinding(stats, CBB_FINDING_CTX),
-    buildWhistleOutlierFinding(stats, CBB_FINDING_CTX),
-    buildOverRateOutlierFinding(stats, CBB_FINDING_CTX, "low"),
-    scoringOutlierFinding(stats),
   ].filter((c): c is ScoredFindingBase => c !== null);
 }
 

@@ -80,7 +80,7 @@ export default function HomePage() {
   const assignments = getAssignments();
   const refStats = getRefStats();
   const odds = getOdds();
-  const findings = computeFindings();
+  const findings = computeFindings(6, undefined, { hub: true });
   const isOffseason = assignments.games.length === 0;
   const { games: slateGames } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
