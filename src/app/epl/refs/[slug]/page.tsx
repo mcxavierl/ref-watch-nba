@@ -159,6 +159,8 @@ export default async function EplRefProfilePage({
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           seeded={isEplSimulatedData(stats.meta.source)}
+          leagueId="epl"
+          slug={profile.slug}
         />
       </header>
 

@@ -19,14 +19,14 @@ import { matrixLeadSeasonPhrase, readSeasonScopeParam } from "@/lib/season-scope
 import { NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
 
 type PageProps = {
-  searchParams: Promise<{ scope?: string }>;
+  searchParams: Promise<{ scope?: string; team?: string; ref?: string }>;
 };
 
 export const dynamic = "force-dynamic";
 
 export default async function NflMatrixPage({ searchParams }: PageProps) {
   await preloadLeagueRefStats(SITE_URL, "nfl");
-  const { scope } = await searchParams;
+  const { scope, team, ref } = await searchParams;
   const scopeMode = readSeasonScopeParam(scope);
   const {
     stats,
@@ -89,14 +89,22 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">
-          <RefTeamMatrix
-            matrix={matrix}
-            basePath={league.pathPrefix}
-            leagueLabel={league.label}
-            officialNounPlural={league.officialNounPlural}
-            whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
-            sport="nfl"
-          />
+          <Suspense fallback={null}>
+            <RefTeamMatrix
+              matrix={matrix}
+              basePath={league.pathPrefix}
+              leagueLabel={league.label}
+              officialNounPlural={league.officialNounPlural}
+              whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
+              sport="nfl"
+              siteUrl={SITE_URL}
+              leagueId="nfl"
+              scopeMode={scopeMode}
+              scopeLabel={scopeLabel}
+              initialTeamAbbr={team}
+              initialRefSlug={ref}
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -129,6 +137,14 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
               className="text-zinc-800 hover:text-raptors hover:underline"
             >
               Official profiles →
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/compare"
+              className="text-zinc-800 hover:text-raptors hover:underline"
+            >
+              Compare officials →
             </Link>
           </li>
         </ul>

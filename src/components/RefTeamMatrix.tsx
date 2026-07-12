@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { MatrixSplitShareBar } from "@/components/MatrixSplitShareBar";
 import { RefAvatar } from "@/components/RefAvatar";
+import { RefCompareLink } from "@/components/RefCompareLink";
 import { TeamLogo } from "@/components/TeamLogo";
 import {
   formatMatrixTeamBaseline,
@@ -24,8 +27,18 @@ import {
   type RefTeamMatrix,
   type TeamTopRefEntry,
 } from "@/lib/ref-team-matrix";
+import {
+  buildMatrixSplitShareLinkText,
+  buildMatrixSplitShareText,
+  buildMatrixSplitShareUrl,
+  buildMatrixTeamShareLinkText,
+  buildMatrixTeamShareText,
+  buildMatrixTeamShareUrl,
+} from "@/lib/matrix-split-share";
+import type { LeagueId } from "@/lib/leagues";
 import { formatPct, formatSigned, formatWinRateVsTeam } from "@/lib/stats-utils";
 import { foulEdgeTone } from "@/lib/metricTone";
+import type { SeasonScopeMode } from "@/lib/season-scope";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import type { TeamStrengthOfSchedule } from "@/lib/nba-strength-of-schedule";
 
@@ -37,7 +50,27 @@ type RefTeamMatrixProps = {
   whistleDiffLabel: string;
   sport: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   teamSosByAbbr?: Record<string, TeamStrengthOfSchedule>;
+  siteUrl: string;
+  leagueId: LeagueId;
+  scopeMode: SeasonScopeMode;
+  scopeLabel: string;
+  initialTeamAbbr?: string | null;
+  initialRefSlug?: string | null;
 };
+
+function matrixPathFor(basePath: string): string {
+  return basePath ? `${basePath}/matrix` : "/matrix";
+}
+
+function resolveInitialTeamAbbr(
+  teams: RefTeamMatrix["teams"],
+  raw: string | null | undefined,
+): string | null {
+  if (!raw) return null;
+  const normalized = raw.trim().toUpperCase();
+  const match = teams.find((team) => team.abbr.toUpperCase() === normalized);
+  return match?.abbr ?? null;
+}
 
 function TeamRefRankListItem({
   entry,
@@ -45,6 +78,7 @@ function TeamRefRankListItem({
   variant,
   basePath,
   sport,
+  leagueId,
   whistleDiffLabel,
   teamBaselineWinRate,
 }: {
@@ -53,6 +87,7 @@ function TeamRefRankListItem({
   variant: "positive" | "negative";
   basePath: string;
   sport: RefTeamMatrixProps["sport"];
+  leagueId: LeagueId;
   whistleDiffLabel: string;
   teamBaselineWinRate: number;
 }) {
@@ -76,20 +111,27 @@ function TeamRefRankListItem({
       <span className="ref-matrix-team-panel-rank" aria-hidden>
         {rank}
       </span>
-      <Link
-        href={`${basePath}/refs/${entry.refSlug}#close-game`}
-        className="ref-matrix-team-panel-ref"
-        title={entry.refName}
-      >
-        <RefAvatar
-          name={entry.refName}
+      <div className="ref-matrix-team-panel-ref-wrap">
+        <Link
+          href={`${basePath}/refs/${entry.refSlug}#close-game`}
+          className="ref-matrix-team-panel-ref"
+          title={entry.refName}
+        >
+          <RefAvatar
+            name={entry.refName}
+            slug={entry.refSlug}
+            sport={sport}
+            size="md"
+            className="ref-matrix-team-panel-ref-avatar"
+          />
+          <span className="ref-matrix-team-panel-ref-name">{entry.refName}</span>
+        </Link>
+        <RefCompareLink
+          leagueId={leagueId}
           slug={entry.refSlug}
-          sport={sport}
-          size="md"
-          className="ref-matrix-team-panel-ref-avatar"
+          className="ref-matrix-team-panel-compare"
         />
-        <span className="ref-matrix-team-panel-ref-name">{entry.refName}</span>
-      </Link>
+      </div>
       <span className="ref-matrix-team-panel-record">
         <span className="ref-matrix-team-panel-record-line">
           {entry.wins}-{entry.losses}
@@ -121,6 +163,7 @@ function TeamRefRankColumn({
   emptyMessage,
   basePath,
   sport,
+  leagueId,
   whistleDiffLabel,
   teamBaselineWinRate,
 }: {
@@ -132,6 +175,7 @@ function TeamRefRankColumn({
   emptyMessage: string;
   basePath: string;
   sport: RefTeamMatrixProps["sport"];
+  leagueId: LeagueId;
   whistleDiffLabel: string;
   teamBaselineWinRate: number;
 }) {
@@ -173,6 +217,7 @@ function TeamRefRankColumn({
                 variant={variant}
                 basePath={basePath}
                 sport={sport}
+                leagueId={leagueId}
                 whistleDiffLabel={whistleDiffLabel}
                 teamBaselineWinRate={teamBaselineWinRate}
               />
@@ -229,14 +274,32 @@ export function RefTeamMatrix({
   whistleDiffLabel,
   sport,
   teamSosByAbbr,
+  siteUrl,
+  leagueId,
+  scopeMode,
+  scopeLabel,
+  initialTeamAbbr,
+  initialRefSlug,
 }: RefTeamMatrixProps) {
   const { refs, teams, cells, minGames, qualifiedCellCount } = matrix;
-  const [selectedTeamAbbr, setSelectedTeamAbbr] = useState<string | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const matrixPath = matrixPathFor(basePath);
+  const resolvedInitialTeam = resolveInitialTeamAbbr(teams, initialTeamAbbr);
+  const [selectedTeamAbbr, setSelectedTeamAbbr] = useState<string | null>(
+    resolvedInitialTeam,
+  );
   const [refSort, setRefSort] = useState<MatrixRefSort>(MATRIX_DEFAULT_REF_SORT);
   const [teamPanelSort, setTeamPanelSort] = useState<MatrixTeamPanelSort>(
     MATRIX_DEFAULT_TEAM_PANEL_SORT,
   );
-  const [crosshair, setCrosshair] = useState<MatrixCrosshair | null>(null);
+  const [crosshair, setCrosshair] = useState<MatrixCrosshair | null>(() => {
+    if (!initialRefSlug || !resolvedInitialTeam) return null;
+    return { refSlug: initialRefSlug, teamAbbr: resolvedInitialTeam };
+  });
+  const teamPanelRef = useRef<HTMLElement>(null);
+  const deepLinkScrolledRef = useRef(false);
   const [refSearch, setRefSearch] = useState("");
   const searchQuery = refSearch.trim().toLowerCase();
   const sortedRefs = useMemo(
@@ -276,12 +339,182 @@ export function RefTeamMatrix({
   const splitNoun =
     sport === "nhl" || sport === "nfl" || sport === "cfb" ? "Official" : "Ref";
 
+  const syncMatrixUrl = useCallback(
+    (next: { team?: string | null; ref?: string | null }) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (next.team) params.set("team", next.team.toUpperCase());
+      else if (next.team === null) params.delete("team");
+      if (next.ref) params.set("ref", next.ref);
+      else if (next.ref === null) params.delete("ref");
+      const query = params.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    },
+    [pathname, router, searchParams],
+  );
+
+  const crosshairShare = useMemo(() => {
+    if (!crosshair) return null;
+    const ref = refs.find((entry) => entry.slug === crosshair.refSlug);
+    const team = teams.find((entry) => entry.abbr === crosshair.teamAbbr);
+    if (!ref || !team) return null;
+    const cell = cells[matrixCellKey(ref.slug, team.abbr)];
+    if (!cell || cell.thinSample) return null;
+    return { ref, team, cell };
+  }, [cells, crosshair, refs, teams]);
+
+  const crosshairShareText = useMemo(() => {
+    if (!crosshairShare) return "";
+    return buildMatrixSplitShareText({
+      siteUrl,
+      matrixPath,
+      scopeMode,
+      leagueLabel,
+      scopeLabel,
+      whistleDiffLabel,
+      ref: crosshairShare.ref,
+      team: crosshairShare.team,
+      cell: crosshairShare.cell,
+    });
+  }, [
+    crosshairShare,
+    leagueLabel,
+    matrixPath,
+    scopeLabel,
+    scopeMode,
+    siteUrl,
+    whistleDiffLabel,
+  ]);
+
+  const crosshairShareUrl = useMemo(() => {
+    if (!crosshairShare) return "";
+    return buildMatrixSplitShareUrl({
+      siteUrl,
+      matrixPath,
+      scopeMode,
+      leagueLabel,
+      scopeLabel,
+      whistleDiffLabel,
+      ref: crosshairShare.ref,
+      team: crosshairShare.team,
+      cell: crosshairShare.cell,
+    });
+  }, [
+    crosshairShare,
+    leagueLabel,
+    matrixPath,
+    scopeLabel,
+    scopeMode,
+    siteUrl,
+    whistleDiffLabel,
+  ]);
+
+  const teamShareText = useMemo(() => {
+    if (!selectedTeam) return "";
+    return buildMatrixTeamShareText({
+      siteUrl,
+      matrixPath,
+      scopeMode,
+      leagueLabel,
+      scopeLabel,
+      team: selectedTeam,
+      officialNounPlural,
+    });
+  }, [
+    leagueLabel,
+    matrixPath,
+    officialNounPlural,
+    scopeLabel,
+    scopeMode,
+    selectedTeam,
+    siteUrl,
+  ]);
+
+  const teamLinkShareText = useMemo(() => {
+    if (!selectedTeam) return "";
+    return buildMatrixTeamShareLinkText({
+      siteUrl,
+      matrixPath,
+      scopeMode,
+      scopeLabel,
+      team: selectedTeam,
+    });
+  }, [matrixPath, scopeLabel, scopeMode, selectedTeam, siteUrl]);
+
+  const teamShareUrl = useMemo(() => {
+    if (!selectedTeam) return "";
+    return buildMatrixTeamShareUrl(
+      siteUrl,
+      matrixPath,
+      selectedTeam.abbr,
+      scopeMode,
+    );
+  }, [matrixPath, scopeMode, selectedTeam, siteUrl]);
+
+  const crosshairLinkShareText = useMemo(() => {
+    if (!crosshairShare) return "";
+    return buildMatrixSplitShareLinkText({
+      siteUrl,
+      matrixPath,
+      scopeMode,
+      leagueLabel,
+      scopeLabel,
+      whistleDiffLabel,
+      ref: crosshairShare.ref,
+      team: crosshairShare.team,
+      cell: crosshairShare.cell,
+    });
+  }, [
+    crosshairShare,
+    leagueLabel,
+    matrixPath,
+    scopeLabel,
+    scopeMode,
+    siteUrl,
+    whistleDiffLabel,
+  ]);
+
+  useEffect(() => {
+    if (deepLinkScrolledRef.current) return;
+    if (!resolvedInitialTeam && !initialRefSlug) return;
+
+    const scrollToDeepLinkTarget = () => {
+      if (deepLinkScrolledRef.current) return;
+
+      if (initialRefSlug && resolvedInitialTeam) {
+        const selector = `[data-matrix-cell="${CSS.escape(initialRefSlug)}:${CSS.escape(resolvedInitialTeam)}"]`;
+        const cell = document.querySelector(selector);
+        if (cell) {
+          cell.scrollIntoView({ behavior: "smooth", block: "center" });
+          deepLinkScrolledRef.current = true;
+          return;
+        }
+      }
+
+      if (resolvedInitialTeam && teamPanelRef.current) {
+        teamPanelRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        deepLinkScrolledRef.current = true;
+      }
+    };
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scrollToDeepLinkTarget);
+    });
+  }, [initialRefSlug, resolvedInitialTeam, selectedTeamAbbr]);
+
   function toggleTeamFilter(teamAbbr: string) {
-    setSelectedTeamAbbr((current) => (current === teamAbbr ? null : teamAbbr));
+    setSelectedTeamAbbr((current) => {
+      const next = current === teamAbbr ? null : teamAbbr;
+      syncMatrixUrl({
+        team: next,
+        ref: next ? crosshair?.refSlug ?? null : null,
+      });
+      return next;
+    });
   }
 
   function clearTeamFilter() {
     setSelectedTeamAbbr(null);
+    syncMatrixUrl({ team: null, ref: null });
   }
 
   function activateCrosshair(refSlug: string, teamAbbr: string) {
@@ -339,6 +572,9 @@ export function RefTeamMatrix({
           {qualifiedCellCount} qualified cells
         </p>
         <div className="ref-matrix-toolbar-actions">
+          <Link href="/compare" className="ref-matrix-compare-link">
+            Compare officials →
+          </Link>
           <div className="ref-matrix-search">
             <label htmlFor="ref-matrix-search" className="ref-matrix-search-label">
               Find official
@@ -527,6 +763,7 @@ export function RefTeamMatrix({
                       return (
                         <td
                           key={team.abbr}
+                          data-matrix-cell={`${ref.slug}:${team.abbr}`}
                           className={`ref-matrix-cell ref-matrix-cell--empty${isSelected ? " ref-matrix-cell--team-selected" : ""}${trackClass ? ` ${trackClass}` : ""}`.trim()}
                           aria-label={`${ref.name} vs ${team.abbr}: no games`}
                           onMouseEnter={() =>
@@ -555,6 +792,7 @@ export function RefTeamMatrix({
                     return (
                       <td
                         key={team.abbr}
+                        data-matrix-cell={`${ref.slug}:${team.abbr}`}
                         className={`ref-matrix-cell ${cell.thinSample ? "ref-matrix-cell--thin" : `${cellToneClass(tone)} ${extremeClass(extreme)}`}${isSelected ? " ref-matrix-cell--team-selected" : ""}${trackClass ? ` ${trackClass}` : ""}`.trim()}
                         onMouseEnter={() =>
                           activateCrosshair(ref.slug, team.abbr)
@@ -597,8 +835,19 @@ export function RefTeamMatrix({
         </table>
       </div>
 
+      {crosshairShare ? (
+        <MatrixSplitShareBar
+          title="Share this ref×team split"
+          preview={`${crosshairShare.ref.name} × ${crosshairShare.team.label}`}
+          shareText={crosshairShareText}
+          linkShareText={crosshairLinkShareText}
+          pageUrl={crosshairShareUrl}
+        />
+      ) : null}
+
       {selectedTeam && (
         <section
+          ref={teamPanelRef}
           className="ref-matrix-team-panel"
           aria-labelledby="ref-matrix-team-panel-title"
         >
@@ -710,6 +959,7 @@ export function RefTeamMatrix({
               emptyMessage={`No qualified ${officialNounPlural} above baseline for ${selectedTeam.label} in this sample.`}
               basePath={basePath}
               sport={sport}
+              leagueId={leagueId}
               whistleDiffLabel={whistleDiffLabel}
               teamBaselineWinRate={selectedTeam.baselineWinRate}
             />
@@ -726,10 +976,19 @@ export function RefTeamMatrix({
               emptyMessage={`No qualified ${officialNounPlural} below baseline for ${selectedTeam.label} in this sample.`}
               basePath={basePath}
               sport={sport}
+              leagueId={leagueId}
               whistleDiffLabel={whistleDiffLabel}
               teamBaselineWinRate={selectedTeam.baselineWinRate}
             />
           </div>
+
+          <MatrixSplitShareBar
+            title="Share team matrix view"
+            preview={`${selectedTeam.label} favorable/unfavorable ${officialNounPlural}`}
+            shareText={teamShareText}
+            linkShareText={teamLinkShareText}
+            pageUrl={teamShareUrl}
+          />
         </section>
       )}
     </div>

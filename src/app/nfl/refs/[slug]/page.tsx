@@ -155,6 +155,8 @@ export default async function NflRefProfilePage({
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           seeded={isNflSimulatedData(stats.meta.source)}
+          leagueId="nfl"
+          slug={profile.slug}
         />
       </header>
 

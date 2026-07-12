@@ -193,6 +193,12 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [
     ...leagueConfigs.flatMap((config) => leagueSitemapEntries(config)),
     {
+      url: absoluteUrl("/compare"),
+      lastModified: globalLastMod,
+      changeFrequency: "weekly",
+      priority: 0.68,
+    },
+    {
       url: absoluteUrl("/methodology"),
       lastModified: globalLastMod,
       changeFrequency: "monthly",

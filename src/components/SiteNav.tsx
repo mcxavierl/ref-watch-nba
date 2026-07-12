@@ -56,6 +56,11 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
       label: "Insights",
       match: (pathname) => insightsMatch(pathname, ""),
     },
+    {
+      href: "/compare",
+      label: "Compare",
+      match: (pathname) => pathname === "/compare",
+    },
   ],
   nhl: [
     { href: "/nhl", label: "Slate", match: (p, home) => p === home },
@@ -63,6 +68,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/nhl/matrix", label: "Matrix", match: (p) => p === "/nhl/matrix" || p.startsWith("/nhl/matrix/") },
     { href: "/nhl/refs", label: "Refs", match: (p) => refsMatch(p, "/nhl") },
     { href: "/nhl/rankings", label: "Insights", match: (p) => insightsMatch(p, "/nhl") },
+    { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   nfl: [
     { href: "/nfl", label: "Slate", match: (p, home) => p === home },
@@ -70,6 +76,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/nfl/matrix", label: "Matrix", match: (p) => p === "/nfl/matrix" || p.startsWith("/nfl/matrix/") },
     { href: "/nfl/refs", label: "Refs", match: (p) => refsMatch(p, "/nfl") },
     { href: "/nfl/rankings", label: "Insights", match: (p) => insightsMatch(p, "/nfl") },
+    { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   wnba: [
     { href: "/wnba", label: "Slate", match: (p, home) => p === home },
@@ -85,6 +92,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/cbb/matrix", label: "Matrix", match: (p) => p === "/cbb/matrix" || p.startsWith("/cbb/matrix/") },
     { href: "/cbb/refs", label: "Refs", match: (p) => refsMatch(p, "/cbb") },
     { href: "/cbb/rankings", label: "Insights", match: (p) => insightsMatch(p, "/cbb") },
+    { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   cfb: [
     { href: "/cfb", label: "Slate", match: (p, home) => p === home },
@@ -92,6 +100,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/cfb/matrix", label: "Matrix", match: (p) => p === "/cfb/matrix" || p.startsWith("/cfb/matrix/") },
     { href: "/cfb/refs", label: "Refs", match: (p) => refsMatch(p, "/cfb") },
     { href: "/cfb/rankings", label: "Insights", match: (p) => insightsMatch(p, "/cfb") },
+    { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   epl: [
     { href: "/epl", label: "Slate", match: (p, home) => p === home },
@@ -99,6 +108,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/epl/matrix", label: "Matrix", match: (p) => p === "/epl/matrix" || p.startsWith("/epl/matrix/") },
     { href: "/epl/refs", label: "Refs", match: (p) => refsMatch(p, "/epl") },
     { href: "/epl/rankings", label: "Insights", match: (p) => insightsMatch(p, "/epl") },
+    { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   laliga: [
     { href: "/laliga", label: "Slate", match: (p, home) => p === home },
@@ -106,6 +116,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/laliga/matrix", label: "Matrix", match: (p) => p === "/laliga/matrix" || p.startsWith("/laliga/matrix/") },
     { href: "/laliga/refs", label: "Refs", match: (p) => refsMatch(p, "/laliga") },
     { href: "/laliga/rankings", label: "Insights", match: (p) => insightsMatch(p, "/laliga") },
+    { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
 };
 

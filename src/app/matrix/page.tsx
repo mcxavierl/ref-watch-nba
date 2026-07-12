@@ -13,15 +13,16 @@ import { NBA_TEAMS, teamFullName } from "@/lib/teams";
 import { refTeamDataNote } from "@/lib/user-language";
 import { getNbaTeamSosCache } from "@/lib/nba-team-sos-cache";
 import { hubPageMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("nba", "matrix");
 
 type PageProps = {
-  searchParams: Promise<{ scope?: string }>;
+  searchParams: Promise<{ scope?: string; team?: string; ref?: string }>;
 };
 
 export default async function NbaMatrixPage({ searchParams }: PageProps) {
-  const { scope } = await searchParams;
+  const { scope, team, ref } = await searchParams;
   const scopeMode = readSeasonScopeParam(scope);
   const {
     stats,
@@ -77,15 +78,23 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">
-          <RefTeamMatrix
-            matrix={matrix}
-            basePath={league.pathPrefix}
-            leagueLabel={league.label}
-            officialNounPlural={league.officialNounPlural}
-            whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
-            sport="nba"
-            teamSosByAbbr={teamSosByAbbr}
-          />
+          <Suspense fallback={null}>
+            <RefTeamMatrix
+              matrix={matrix}
+              basePath={league.pathPrefix}
+              leagueLabel={league.label}
+              officialNounPlural={league.officialNounPlural}
+              whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
+              sport="nba"
+              teamSosByAbbr={teamSosByAbbr}
+              siteUrl={SITE_URL}
+              leagueId="nba"
+              scopeMode={scopeMode}
+              scopeLabel={scopeLabel}
+              initialTeamAbbr={team}
+              initialRefSlug={ref}
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -110,6 +119,11 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
           <li>
             <Link href="/refs" className="text-zinc-800 hover:text-raptors hover:underline">
               Ref profiles →
+            </Link>
+          </li>
+          <li>
+            <Link href="/compare" className="text-zinc-800 hover:text-raptors hover:underline">
+              Compare officials →
             </Link>
           </li>
         </ul>

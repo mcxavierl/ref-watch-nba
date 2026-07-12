@@ -142,6 +142,8 @@ export default async function RefProfilePage({
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           seeded={stats.meta.source === "seeded"}
+          leagueId="nba"
+          slug={profile.slug}
         />
         {bbrTeamNote && (
           <p className="mt-3 text-sm text-amber-800">{bbrTeamNote}</p>

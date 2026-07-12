@@ -156,6 +156,8 @@ export default async function CfbRefProfilePage({
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           seeded={isCfbSimulatedData(stats.meta.source)}
+          leagueId="cfb"
+          slug={profile.slug}
         />
       </header>
 

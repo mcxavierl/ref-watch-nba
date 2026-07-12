@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
@@ -6,13 +7,18 @@ import { getRefStats, getTeamSplits } from "@/lib/cbb/data";
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { CBB_TEAMS, teamFullName } from "@/lib/cbb/teams";
-import { matrixLeadSeasonPhrase } from "@/lib/season-scope";
+import { DEFAULT_SEASON_SCOPE_MODE, matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { refTeamDataNote } from "@/lib/user-language";
 import { hubPageMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 export const metadata = hubPageMetadata("cbb", "matrix");
 
+type PageProps = {
+  searchParams: Promise<{ team?: string; ref?: string }>;
+};
 
-export default function NbaMatrixPage() {
+export default async function CbbMatrixPage({ searchParams }: PageProps) {
+  const { team, ref } = await searchParams;
   const stats = getRefStats();
   const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);
   const seeded = stats.meta.source === "seeded";
@@ -60,14 +66,22 @@ export default function NbaMatrixPage() {
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">
-          <RefTeamMatrix
-            matrix={matrix}
-            basePath={league.pathPrefix}
-            leagueLabel={league.label}
-            officialNounPlural={league.officialNounPlural}
-            whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
-            sport="cbb"
-          />
+          <Suspense fallback={null}>
+            <RefTeamMatrix
+              matrix={matrix}
+              basePath={league.pathPrefix}
+              leagueLabel={league.label}
+              officialNounPlural={league.officialNounPlural}
+              whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
+              sport="cbb"
+              siteUrl={SITE_URL}
+              leagueId="cbb"
+              scopeMode={DEFAULT_SEASON_SCOPE_MODE}
+              scopeLabel={seasonSpan}
+              initialTeamAbbr={team}
+              initialRefSlug={ref}
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -92,6 +106,11 @@ export default function NbaMatrixPage() {
           <li>
             <Link href="/cbb/refs" className="text-zinc-800 hover:text-raptors hover:underline">
               Ref profiles →
+            </Link>
+          </li>
+          <li>
+            <Link href="/compare" className="text-zinc-800 hover:text-raptors hover:underline">
+              Compare officials →
             </Link>
           </li>
         </ul>

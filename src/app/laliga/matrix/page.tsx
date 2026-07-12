@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
@@ -13,12 +14,17 @@ import { SITE_URL } from "@/lib/site";
 export const metadata = hubPageMetadata("laliga", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
-import { matrixLeadSeasonPhrase } from "@/lib/season-scope";
+import { DEFAULT_SEASON_SCOPE_MODE, matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { isLaligaSimulatedData } from "@/lib/laliga/data-source";
 import { LALIGA_TEAMS, teamFullName } from "@/lib/laliga/teams";
 
-export default async function LaligaMatrixPage() {
+type PageProps = {
+  searchParams: Promise<{ team?: string; ref?: string }>;
+};
+
+export default async function LaligaMatrixPage({ searchParams }: PageProps) {
   await preloadLeagueRefStats(SITE_URL, "laliga");
+  const { team, ref } = await searchParams;
   const stats = getRefStats();
   const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);
   const seeded = isLaligaSimulatedData(stats.meta.source);
@@ -69,14 +75,22 @@ export default async function LaligaMatrixPage() {
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">
-          <RefTeamMatrix
-            matrix={matrix}
-            basePath={league.pathPrefix}
-            leagueLabel={league.label}
-            officialNounPlural={league.officialNounPlural}
-            whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
-            sport="laliga"
-          />
+          <Suspense fallback={null}>
+            <RefTeamMatrix
+              matrix={matrix}
+              basePath={league.pathPrefix}
+              leagueLabel={league.label}
+              officialNounPlural={league.officialNounPlural}
+              whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
+              sport="laliga"
+              siteUrl={SITE_URL}
+              leagueId="laliga"
+              scopeMode={DEFAULT_SEASON_SCOPE_MODE}
+              scopeLabel={seasonSpan}
+              initialTeamAbbr={team}
+              initialRefSlug={ref}
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -109,6 +123,14 @@ export default async function LaligaMatrixPage() {
               className="text-zinc-800 hover:text-raptors hover:underline"
             >
               Official profiles →
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/compare"
+              className="text-zinc-800 hover:text-raptors hover:underline"
+            >
+              Compare officials →
             </Link>
           </li>
         </ul>

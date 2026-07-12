@@ -152,6 +152,8 @@ export default async function NhlRefProfilePage({
           seasons={stats.meta.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
+          leagueId="nhl"
+          slug={profile.slug}
         />
       </header>
 
