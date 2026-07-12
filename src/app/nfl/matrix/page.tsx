@@ -25,7 +25,7 @@ type PageProps = {
 export const dynamic = "force-dynamic";
 
 export default async function NflMatrixPage({ searchParams }: PageProps) {
-  await preloadLeagueRefStats(SITE_URL, "nfl");
+  await preloadLeagueRefStats(SITE_URL, "nfl", { includeTeamSplits: true });
   const { scope, team, ref } = await searchParams;
   const scopeMode = readSeasonScopeParam(scope);
   const {

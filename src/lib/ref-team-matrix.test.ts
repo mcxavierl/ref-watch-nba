@@ -6,6 +6,7 @@ import {
   bottomRefsBelowBaselineForTeam,
   computeRefTeamMatrix,
   MATRIX_MIN_GAMES,
+  matrixCellStyle,
   matrixWhistleDiffShortLabel,
   refMatrixQualifiedGames,
   refMatrixStandoutCount,
@@ -138,6 +139,25 @@ describe("ref-team matrix team panels", () => {
     assert.ok(matrix.teams[0]!.baselineGames > 0);
     const bottom = bottomRefsBelowBaselineForTeam(matrix, "ARS");
     assert.ok(bottom.length > 0);
+  });
+
+  it("uses neutral tone when team baseline is unavailable", () => {
+    const style = matrixCellStyle(
+      {
+        refSlug: "ref-a",
+        teamAbbr: "BOS",
+        games: 12,
+        wins: 6,
+        losses: 6,
+        winRate: 0.5,
+        avgFoulDifferential: 0,
+      },
+      0,
+      0,
+    );
+    assert.equal(style.tone, "neutral");
+    assert.equal(style.extreme, null);
+    assert.equal(style.deltaPts, 0);
   });
 });
 

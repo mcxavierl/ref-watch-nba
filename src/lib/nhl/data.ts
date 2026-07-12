@@ -200,7 +200,12 @@ export function getRefStats(): RefStatsFile {
       );
       return resolvedRefStats;
     }
-    if (resolvedRefStats?.refs?.length) return resolvedRefStats;
+    if (resolvedRefStats?.refs?.length) {
+      resolvedRefStats = gateUnverifiedNhlStats(
+        applyBaselines(mergeTeamSpecialTeams(normalizeRefStats(resolvedRefStats))),
+      );
+      return resolvedRefStats;
+    }
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     const stats = gateUnverifiedNhlStats(

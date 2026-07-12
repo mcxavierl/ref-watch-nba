@@ -24,7 +24,7 @@ type PageProps = {
 };
 
 export default async function NhlMatrixPage({ searchParams }: PageProps) {
-  await preloadLeagueRefStats(SITE_URL, "nhl");
+  await preloadLeagueRefStats(SITE_URL, "nhl", { includeTeamSplits: true });
   const { team, ref } = await searchParams;
   const stats = getRefStats();
   const analyticsStats = nhlAnalyticsRefStats(stats);

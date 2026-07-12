@@ -173,12 +173,20 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
       <LeagueChooser cards={data.leagueCards} />
 
       <div className="overview-layout">
-        <aside className="overview-sidebar" aria-label="Competitions and lists">
-          <details className="overview-sidebar-block overview-catalog-collapsible">
+        <aside className="overview-sidebar" aria-label="League coverage and quick lists">
+          <details className="overview-sidebar-block overview-catalog-collapsible" open>
             <summary className="overview-sidebar-heading overview-catalog-summary">
-              Competitions
-              <span className="overview-sidebar-count">{catalogCompetitionCount()}</span>
+              <span className="overview-catalog-summary-copy">
+                <span className="overview-catalog-summary-title">League coverage</span>
+                <span className="overview-catalog-summary-hint">Live hubs and expansion roadmap</span>
+              </span>
+              <span className="overview-sidebar-count" aria-label={`${catalogCompetitionCount()} leagues tracked`}>
+                {catalogCompetitionCount()}
+              </span>
             </summary>
+            <p className="overview-catalog-lead">
+              Every league on Ref Watch — open a live hub or see what&apos;s coming next.
+            </p>
             <div className="overview-catalog-groups">
               {sportGroups.map((group) => (
                 <div key={group.sport} className="overview-catalog-group">
@@ -194,7 +202,10 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
           </details>
 
           <section className="overview-sidebar-block overview-sidebar-block--lists">
-            <h2 className="overview-sidebar-heading">Lists</h2>
+            <h2 className="overview-sidebar-heading overview-sidebar-heading--static">Quick lists</h2>
+            <p className="overview-sidebar-note">
+              Pick a league tab, then open a rankings or matrix view for that sport.
+            </p>
             <OverviewQuickLists />
           </section>
         </aside>

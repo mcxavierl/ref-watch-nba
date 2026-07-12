@@ -178,7 +178,12 @@ export function getRefStats(): RefStatsFile {
       resolvedRefStats = gateUnverifiedLaligaStats(applyBaselines(normalizeRefStats(hydrated)));
       return resolvedRefStats;
     }
-    if (resolvedRefStats?.refs?.length) return resolvedRefStats;
+    if (resolvedRefStats?.refs?.length) {
+      resolvedRefStats = gateUnverifiedLaligaStats(
+        applyBaselines(normalizeRefStats(resolvedRefStats)),
+      );
+      return resolvedRefStats;
+    }
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
     const stats = gateUnverifiedLaligaStats(applyBaselines(normalizeRefStats(raw)));

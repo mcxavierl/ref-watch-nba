@@ -23,7 +23,7 @@ type PageProps = {
 };
 
 export default async function LaligaMatrixPage({ searchParams }: PageProps) {
-  await preloadLeagueRefStats(SITE_URL, "laliga");
+  await preloadLeagueRefStats(SITE_URL, "laliga", { includeTeamSplits: true });
   const { team, ref } = await searchParams;
   const stats = getRefStats();
   const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);

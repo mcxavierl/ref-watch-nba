@@ -481,8 +481,12 @@ export interface MatrixCellStyle {
 export function matrixCellStyle(
   cell: RefTeamMatrixCell,
   teamBaseline: number,
+  teamBaselineGames?: number,
 ): MatrixCellStyle {
   if (cell.thinSample) {
+    return { tone: "neutral", extreme: null, deltaPts: 0 };
+  }
+  if (teamBaselineGames !== undefined && teamBaselineGames <= 0) {
     return { tone: "neutral", extreme: null, deltaPts: 0 };
   }
   const deltaPts = winRateDeltaPoints(cell.winRate, teamBaseline);

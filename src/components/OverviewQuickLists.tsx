@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import {
   overviewQuickListsForLeague,
@@ -22,10 +23,14 @@ export function OverviewQuickLists({
 
   return (
     <section className="overview-quicklists" aria-label="League quick lists">
+      <p className="overview-quicklists-step" id="overview-quicklists-step">
+        <span className="overview-quicklists-step-label">Step 1</span>
+        Choose league
+      </p>
       <div
         className="overview-quicklists-tabs"
         role="tablist"
-        aria-label="Choose league for quick lists"
+        aria-labelledby="overview-quicklists-step"
       >
         {VERIFIED_LIVE_LEAGUE_IDS.map((leagueId) => {
           const meta = LEAGUES[leagueId];
@@ -46,6 +51,10 @@ export function OverviewQuickLists({
         })}
       </div>
 
+      <p className="overview-quicklists-step">
+        <span className="overview-quicklists-step-label">Step 2</span>
+        Open a {league.shortLabel} view
+      </p>
       <nav
         className="overview-quick-lists"
         aria-label={`${league.shortLabel} quick lists`}
@@ -57,8 +66,11 @@ export function OverviewQuickLists({
             href={list.href}
             className={`overview-quick-list overview-quick-list--${list.accent}`}
           >
-            <span className="overview-quick-list-label">{list.label}</span>
-            <span className="overview-quick-list-desc">{list.description}</span>
+            <span className="overview-quick-list-copy">
+              <span className="overview-quick-list-label">{list.label}</span>
+              <span className="overview-quick-list-desc">{list.description}</span>
+            </span>
+            <ArrowRight className="overview-quick-list-arrow" aria-hidden />
           </Link>
         ))}
       </nav>

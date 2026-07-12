@@ -777,6 +777,7 @@ export function RefTeamMatrix({
                     const { tone, extreme, deltaPts } = matrixCellStyle(
                       cell,
                       team.baselineWinRate,
+                      team.baselineGames,
                     );
                     const record = `${cell.wins}-${cell.losses}`;
                     const ariaLabel = cell.thinSample
@@ -815,10 +816,12 @@ export function RefTeamMatrix({
                             <span
                               className={`ref-matrix-delta ${deltaClass(tone)}`}
                             >
-                              {formatWinRateVsTeam(
-                                cell.winRate,
-                                team.baselineWinRate,
-                              )}
+                              {team.baselineGames > 0
+                                ? formatWinRateVsTeam(
+                                    cell.winRate,
+                                    team.baselineWinRate,
+                                  )
+                                : "Baseline n/a"}
                             </span>
                           )}
                           <span className="ref-matrix-games">{cell.games} gp</span>

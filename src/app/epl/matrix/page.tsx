@@ -23,7 +23,7 @@ type PageProps = {
 };
 
 export default async function EplMatrixPage({ searchParams }: PageProps) {
-  await preloadLeagueRefStats(SITE_URL, "epl");
+  await preloadLeagueRefStats(SITE_URL, "epl", { includeTeamSplits: true });
   const { team, ref } = await searchParams;
   const stats = getRefStats();
   const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);
