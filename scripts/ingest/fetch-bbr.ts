@@ -16,11 +16,12 @@ function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-export async function fetchBbrHtml(
+/** Returns null when BBR has no page (404) instead of throwing. */
+export async function fetchBbrHtmlOptional(
   url: string,
   cacheKey: string,
   force = false,
-): Promise<string> {
+): Promise<string | null> {
   fs.mkdirSync(BBR_CACHE_DIR, { recursive: true });
   const cachePath = path.join(BBR_CACHE_DIR, `${cacheKey}.html`);
 
@@ -37,6 +38,9 @@ export async function fetchBbrHtml(
         headers: BBR_HEADERS,
         signal: controller.signal,
       });
+      if (res.status === 404) {
+        return null;
+      }
       if (res.status === 429) {
         await sleep(BBR_REQUEST_DELAY_MS * attempt * 4);
         continue;
@@ -49,13 +53,25 @@ export async function fetchBbrHtml(
       await sleep(BBR_REQUEST_DELAY_MS);
       return html;
     } catch (err) {
-      lastErr = err;
+      lastErr = err instanceof Error ? err : new Error(String(err));
       await sleep(BBR_REQUEST_DELAY_MS * attempt);
     } finally {
       clearTimeout(timer);
     }
   }
-  throw lastErr;
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr ?? "BBR fetch failed"));
+}
+
+export async function fetchBbrHtml(
+  url: string,
+  cacheKey: string,
+  force = false,
+): Promise<string> {
+  const html = await fetchBbrHtmlOptional(url, cacheKey, force);
+  if (html === null) {
+    throw new Error(`BBR HTTP 404 for ${url}`);
+  }
+  return html;
 }
 
 export function readBbrCache(cacheKey: string): string | null {

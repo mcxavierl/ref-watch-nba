@@ -10,7 +10,7 @@ const ROOT = path.join(__dirname, "..");
 const REF_STATS_PATH = path.join(ROOT, "data", "nfl", "ref-stats.json");
 const GAME_LOGS_PATH = path.join(ROOT, "data", "nfl", "game-logs.json");
 
-const ESPN_ABBR = { WSH: "WAS" };
+const ESPN_ABBR = { WSH: "WAS", OAK: "LV", SD: "LAC", STL: "LAR", LA: "LAR" };
 
 function parseArgs() {
   const seedArg = process.argv.find((a) => a.startsWith("--seed="));
@@ -58,16 +58,20 @@ function officialWorkedGame(officialName, game) {
   return (game.officials ?? []).some((o) => normalizeName(o.name) === key);
 }
 
+function abbrEquivalent(a, b) {
+  return normalizeAbbr(a) === normalizeAbbr(b);
+}
+
 function teamOutcome(game, teamAbbr) {
   const home = normalizeAbbr(game.homeTeam);
   const away = normalizeAbbr(game.awayTeam);
   const team = normalizeAbbr(teamAbbr);
-  if (team === home) {
+  if (abbrEquivalent(team, home)) {
     if (game.homeScore > game.awayScore) return "win";
     if (game.homeScore < game.awayScore) return "loss";
     return "push";
   }
-  if (team === away) {
+  if (abbrEquivalent(team, away)) {
     if (game.awayScore > game.homeScore) return "win";
     if (game.awayScore < game.homeScore) return "loss";
     return "push";
@@ -257,8 +261,8 @@ async function validateOfficial(ref, allGames) {
     const scoreOk =
       espn.homeScore === game.homeScore &&
       espn.awayScore === game.awayScore &&
-      espn.homeAbbr === normalizeAbbr(game.homeTeam) &&
-      espn.awayAbbr === normalizeAbbr(game.awayTeam);
+      abbrEquivalent(espn.homeAbbr, game.homeTeam) &&
+      abbrEquivalent(espn.awayAbbr, game.awayTeam);
 
     gameChecks.push(
       check(

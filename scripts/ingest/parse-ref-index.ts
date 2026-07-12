@@ -8,7 +8,7 @@ export interface BbrRefIndexEntry {
 }
 
 /** Known 2025-26 NBA referee jersey numbers (supplements BBR index which lacks numbers). */
-const NBA_REF_NUMBERS: Record<string, number> = {
+export const NBA_REF_NUMBERS: Record<string, number> = {
   "Ray Acosta": 54,
   "Brandon Adair": 67,
   "Brent Barnaky": 36,
@@ -52,6 +52,7 @@ const NBA_REF_NUMBERS: Record<string, number> = {
   "Suyash Mehta": 82,
   "Jamahl Mosley": 97,
   "Andy Nagy": 83,
+  "Brandon Schwab": 86,
   "J.T. Orr": 72,
   "Gediminas Petraitis": 78,
   "Phenizee Ransom": 70,
@@ -125,6 +126,19 @@ export function mergeOfficialIntoIndex(
 export function parseBbrBoxScoreOfficials(html: string): string[] {
   const $ = cheerio.load(html);
   const officials: string[] = [];
+
+  const linked = $("strong")
+    .filter((_, el) => /^Officials?:?$/i.test($(el).text().trim()))
+    .first()
+    .parent()
+    .find("a[href*='/referees/']");
+  if (linked.length > 0) {
+    linked.each((_, el) => {
+      const name = $(el).text().trim();
+      if (name) officials.push(name);
+    });
+    if (officials.length > 0) return officials;
+  }
 
   const scorebox = $(".scorebox_meta, #content .scorebox");
   const text = scorebox.text();
