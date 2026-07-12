@@ -201,7 +201,6 @@ function TeamRefRankColumn({
           >
             <span className="ref-matrix-team-panel-list-head-rank">#</span>
             <span className="ref-matrix-team-panel-list-head-official">
-              <span className="ref-matrix-team-panel-list-head-avatar-gap" />
               Official
             </span>
             <span className="ref-matrix-team-panel-list-head-stat">W-L</span>

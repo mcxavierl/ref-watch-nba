@@ -5286,6 +5286,13 @@ p {
     color: var(--muted);
   }
 
+  .refs-directory-head > * {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .refs-directory-col-rank {
     text-align: center;
     color: var(--muted);
@@ -5364,12 +5371,19 @@ p {
   .refs-directory-col-over {
     font-size: var(--text-sm);
     color: var(--ink-secondary);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .refs-directory-delta {
     display: inline-flex;
     justify-content: flex-end;
-    min-width: 2.75rem;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-family: var(--font-data);
     font-size: var(--text-sm);
     font-weight: 600;
@@ -5444,7 +5458,7 @@ p {
     animation: refs-directory-row-reveal 0.28s ease-out both;
   }
 
-  @media (max-width: 479px) {
+  @media (max-width: 639px) {
     .refs-directory-head {
       display: none;
     }
@@ -5967,7 +5981,9 @@ p {
   }
 
   .ref-matrix-team-panel-column {
-    --ref-matrix-panel-grid: 1.5rem minmax(0, 1.35fr) 4.75rem 3.25rem minmax(5.5rem, 7rem);
+    --ref-matrix-panel-grid: 1.5rem minmax(0, 1.35fr) 4.25rem 3rem minmax(4.75rem, 6.5rem);
+    container-type: inline-size;
+    container-name: matrix-panel-col;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
@@ -6024,20 +6040,19 @@ p {
     border-bottom: 1px solid var(--border-subtle);
   }
 
+  .ref-matrix-team-panel-list-head > * {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .ref-matrix-team-panel-list-head-rank {
     text-align: center;
   }
 
   .ref-matrix-team-panel-list-head-official {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    min-width: 0;
-  }
-
-  .ref-matrix-team-panel-list-head-avatar-gap {
-    flex-shrink: 0;
-    width: 2.5rem;
+    padding-left: calc(2.5rem + 0.45rem);
   }
 
   .ref-matrix-team-panel-list-head-stat {
@@ -6095,7 +6110,54 @@ p {
     border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
   }
 
-  @media (max-width: 639px) {
+  /* Compact panel rows when the column itself is narrow (e.g. 2-up at tablet width). */
+  @container matrix-panel-col (max-width: 30rem) {
+    .ref-matrix-team-panel-list-head {
+      display: none;
+    }
+
+    .ref-matrix-team-panel-item {
+      grid-template-columns: 1.25rem minmax(0, 1fr);
+      grid-template-areas:
+        "rank ref"
+        ". record"
+        ". games"
+        ". delta";
+      gap: 0.15rem 0.5rem;
+      padding: 0.55rem 0.65rem;
+    }
+
+    .ref-matrix-team-panel-rank {
+      grid-area: rank;
+    }
+
+    .ref-matrix-team-panel-ref-wrap {
+      grid-area: ref;
+      flex-wrap: wrap;
+    }
+
+    .ref-matrix-team-panel-compare {
+      margin-left: auto;
+    }
+
+    .ref-matrix-team-panel-record {
+      grid-area: record;
+    }
+
+    .ref-matrix-team-panel-games {
+      grid-area: games;
+    }
+
+    .ref-matrix-team-panel-delta {
+      grid-area: delta;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .ref-matrix-team-panel-list-head {
+      display: none;
+    }
+
     .ref-matrix-team-panel-item {
       grid-template-columns: 1.25rem minmax(0, 1fr);
       grid-template-areas:
@@ -6143,6 +6205,8 @@ p {
     align-items: center;
     gap: 0.45rem;
     min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
     color: var(--foreground);
     font-weight: 600;
     text-decoration: none;
@@ -6170,6 +6234,7 @@ p {
     align-items: center;
     gap: 0.35rem;
     min-width: 0;
+    overflow: hidden;
   }
 
   .ref-matrix-team-panel-compare {
@@ -6208,6 +6273,9 @@ p {
     font-size: var(--text-xs);
     font-variant-numeric: tabular-nums;
     text-align: right;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ref-matrix-team-panel-record {
@@ -9510,6 +9578,17 @@ p {
   margin-top: 0.25rem;
   font-size: var(--text-sm);
   color: var(--muted-strong);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.matrix-split-share > .flex {
+  min-width: 0;
+}
+
+.matrix-split-share > .flex > div:first-child {
+  min-width: 0;
+  flex: 1 1 12rem;
 }
 
 .ref-compare-page {
@@ -9618,11 +9697,19 @@ p {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  min-width: 0;
+}
+
+.ref-compare-header-copy {
+  min-width: 0;
 }
 
 .ref-compare-header-name {
   font-size: var(--text-lg);
   font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ref-compare-header-name a {
@@ -9641,6 +9728,8 @@ p {
   align-items: center;
   gap: 0.35rem;
   font-size: var(--text-sm);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .ref-compare-league-badge {
@@ -9666,6 +9755,8 @@ p {
   border-top: 1px solid var(--border-subtle);
   text-align: left;
   vertical-align: top;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .ref-compare-table thead th {
@@ -9675,12 +9766,16 @@ p {
   text-transform: uppercase;
   color: var(--muted-strong);
   background: var(--surface-raised);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ref-compare-table tbody th {
   font-weight: 650;
   color: var(--ink-secondary);
   width: 34%;
+  max-width: 12rem;
 }
 
 .ref-compare-value {
@@ -9730,6 +9825,8 @@ p {
   font-size: var(--text-sm);
   font-weight: 700;
   color: var(--ink-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ref-compare-league-metrics-list {
@@ -9748,4 +9845,6 @@ p {
   font-size: var(--text-xs);
   font-weight: 650;
   color: var(--muted-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
