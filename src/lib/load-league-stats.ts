@@ -39,7 +39,7 @@ import {
   scopedSinceSeason,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
-import type { RefStatsFile } from "@/lib/types";
+import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 /** Seasons that appear in ref profiles (honest pool when meta lists aspirational seasons). */
 function seasonsWithGameData(stats: RefStatsFile): string[] {
@@ -76,6 +76,36 @@ export function loadLeagueStats(leagueId: LeagueId): LeagueStatsBundle {
   return LOADERS[leagueId]();
 }
 
+/** Drop heavy per-ref payloads hub tables do not render. */
+function stripRefForHub(ref: RefProfile): RefProfile {
+  return {
+    ...ref,
+    recentGames: [],
+    teamStats: {},
+  };
+}
+
+/** Filter refs by season without game-log rebuilds (Worker-safe for hub pages). */
+function filterStatsForHub(
+  full: RefStatsFile,
+  scopedSeasons: string[],
+): RefStatsFile {
+  const seasonSet = new Set(scopedSeasons);
+  const refs = full.refs
+    .filter((ref) => ref.seasons.some((season) => seasonSet.has(season)))
+    .map(stripRefForHub);
+  return {
+    ...full,
+    refs,
+    teamSplits: {},
+    meta: {
+      ...full.meta,
+      seasons: scopedSeasons,
+      refCount: refs.length,
+    },
+  };
+}
+
 export type ScopedLeagueStatsBundle = LeagueStatsBundle & {
   scopeMode: SeasonScopeMode;
   scopedSeasons: string[];
@@ -83,6 +113,39 @@ export type ScopedLeagueStatsBundle = LeagueStatsBundle & {
   sinceSeason: string;
   scopeLabel: string;
 };
+
+export function loadHubLeagueStats(
+  leagueId: LeagueId,
+  scopeMode: SeasonScopeMode,
+): ScopedLeagueStatsBundle {
+  const { stats: full, formatRange } = loadLeagueStats(leagueId);
+  const verification = resolveLeagueVerification(leagueId, full.meta);
+  const preview = shouldShowUnverifiedData();
+  const availableSeasons = INGEST_GATED_LEAGUES.has(leagueId)
+    ? filterVerifiedSeasons(leagueId, full.meta, seasonsWithGameData(full), preview)
+    : seasonsWithGameData(full);
+  const scopedSeasons = resolveScopedSeasonsForLeague(
+    leagueId,
+    scopeMode,
+    availableSeasons,
+  );
+  const canRender =
+    !INGEST_GATED_LEAGUES.has(leagueId) ||
+    verification.data_verified ||
+    preview;
+  const stats = canRender
+    ? filterStatsForHub(full, scopedSeasons)
+    : { ...full, refs: [], teamSplits: {} };
+  return {
+    stats,
+    formatRange,
+    scopeMode,
+    scopedSeasons,
+    availableSeasons,
+    sinceSeason: scopedSinceSeason(scopedSeasons),
+    scopeLabel: formatSeasonScope(scopedSeasons.length),
+  };
+}
 
 export function loadScopedLeagueStats(
   leagueId: LeagueId,

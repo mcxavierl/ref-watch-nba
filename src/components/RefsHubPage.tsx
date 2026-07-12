@@ -14,7 +14,7 @@ import {
   crewDominanceSummary,
 } from "@/lib/crew-dominance";
 import { leagueHubHref, LEAGUES } from "@/lib/leagues";
-import { loadScopedLeagueStats } from "@/lib/load-league-stats";
+import { loadHubLeagueStats } from "@/lib/load-league-stats";
 import { linesmanSlugSet } from "@/lib/nhl/officials";
 import { buildRefsDirectoryContext } from "@/lib/refs-directory";
 import type { SeasonScopeMode } from "@/lib/season-scope";
@@ -33,7 +33,7 @@ export function RefsHubPage({
   scopeMode = defaultSeasonScopeForLeague(leagueId),
 }: RefsHubPageProps) {
   const league = LEAGUES[leagueId];
-  const { stats, formatRange, scopeLabel, availableSeasons } = loadScopedLeagueStats(
+  const { stats, formatRange, scopeLabel, availableSeasons } = loadHubLeagueStats(
     leagueId,
     scopeMode,
   );

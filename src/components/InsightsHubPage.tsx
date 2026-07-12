@@ -11,6 +11,7 @@ import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { getBaselinesFile } from "@/lib/baselines";
 import { leagueHubHref, LEAGUES } from "@/lib/leagues";
 import {
+  loadHubLeagueStats,
   loadLeagueStats,
   loadScopedLeagueStats,
 } from "@/lib/load-league-stats";
@@ -89,7 +90,9 @@ export function InsightsHubPage({
   const scopeContext =
     activeView === "trends"
       ? loadTrendsScopeContext(leagueId, scopeMode)
-      : loadScopedLeagueStats(leagueId, scopeMode);
+      : activeView === "tendencies"
+        ? loadHubLeagueStats(leagueId, scopeMode)
+        : loadScopedLeagueStats(leagueId, scopeMode);
 
   const {
     stats,
