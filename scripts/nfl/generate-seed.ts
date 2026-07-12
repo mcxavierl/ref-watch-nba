@@ -34,7 +34,7 @@ import type {
 import {
   computeLeagueAvgFlags,
   computeLeagueAvgPenaltyYards,
-  computeNflRefAnalytics,
+  buildNflRefAnalyticsForOfficial,
 } from "./lib/ref-analytics";
 import { buildBaselinesFile, saveBaselines } from "../lib/baselines";
 import { loadGameLogs } from "../lib/game-logs";
@@ -492,14 +492,12 @@ function generate(): { stats: RefStatsFile; gameLogs: NflGameLogEntry[] } {
     const overRate = games.filter((g) => g.overHit).length / games.length;
     const avgFouls = games.reduce((s, g) => s + g.totalFouls, 0) / games.length;
     const betting = refBetting.get(slug)?.finalize();
-    const nflAnalytics =
-      meta.role === "referee"
-        ? computeNflRefAnalytics(
-            refFlagGames.get(slug) ?? [],
-            leagueAvgFlags,
-            leagueAvgPenaltyYards,
-          )
-        : undefined;
+    const nflAnalytics = buildNflRefAnalyticsForOfficial(
+      refFlagGames.get(slug) ?? [],
+      games,
+      leagueAvgFlags,
+      leagueAvgPenaltyYards,
+    );
 
     refs.push({
       slug,

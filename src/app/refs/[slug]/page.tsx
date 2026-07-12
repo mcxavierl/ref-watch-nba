@@ -188,10 +188,20 @@ export default async function RefProfilePage({
       <details className="methodology-details panel-inset mt-8 px-5 py-4">
         <summary>How to read this profile</summary>
         <p className="text-sm leading-relaxed text-zinc-600">
-          <TermHelp id="ats" /> and <TermHelp id="over-under" /> tables use{" "}
-          <TermHelp id="closing-line">closing lines</TermHelp> per game. Where
-          sportsbook closing lines are unavailable, ATS/O/U splits use estimated
-          lines. Team foul splits live on{" "}
+          {stats.meta.atsAvailable ? (
+            <>
+              <TermHelp id="ats" /> and <TermHelp id="over-under" /> tables use{" "}
+              <TermHelp id="closing-line">closing lines</TermHelp> per game.
+              Where sportsbook closing lines are unavailable, ATS/O/U splits use
+              estimated lines.{" "}
+            </>
+          ) : (
+            <>
+              Scoring and foul totals come from NBA Stats API game logs.
+              Ref×team win-loss records come from Basketball-Reference.{" "}
+            </>
+          )}
+          Team foul splits live on{" "}
           <Link href="/teams" className="font-medium text-zinc-800 hover:underline">
             team pages
           </Link>

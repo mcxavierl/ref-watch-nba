@@ -78,10 +78,15 @@ function hybridNote(base: RefStatsFile, seasons: string[]): string {
     parts.push(
       "Foul, scoring, and ATS/O-U splits use simulated or estimated data.",
     );
-  } else if (base.meta.source === "nba-stats-api") {
-    parts.push(
-      "Foul and scoring from NBA Stats API; ATS/O-U per existing line source.",
-    );
+  } else if (
+    base.meta.source === "nba-stats-api" ||
+    base.meta.source === "hybrid" ||
+    (base.meta.data_verified && base.meta.source === "historical")
+  ) {
+    parts.push("Foul and scoring from NBA Stats API game logs.");
+    if (base.meta.atsAvailable) {
+      parts.push("ATS/O-U per sportsbook closing lines where available.");
+    }
   }
   if (base.meta.note && !base.meta.note.includes("Basketball-Reference")) {
     parts.push(base.meta.note);

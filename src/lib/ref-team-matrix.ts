@@ -81,6 +81,9 @@ export function teamRecordFromStat(
   stat: RefTeamStat,
 ): { wins: number; losses: number } {
   if (stat.wins !== undefined && stat.losses !== undefined) {
+    if (stat.games > 0 && stat.wins + stat.losses === 0) {
+      return approxTeamRecord(stat.games, stat.winRate);
+    }
     return { wins: stat.wins, losses: stat.losses };
   }
   return approxTeamRecord(stat.games, stat.winRate);

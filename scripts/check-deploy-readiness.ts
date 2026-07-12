@@ -228,6 +228,24 @@ function checkTrendsBaselines(): void {
   }
 }
 
+function checkNflAnalyticsCoverage(): void {
+  const statsPath = path.join(ROOT, "data/nfl/ref-stats-core.json");
+  const stats = readJson<RefStatsFile>(statsPath);
+  if (!stats?.refs?.length) {
+    fail("nfl: missing ref-stats-core for analytics coverage check");
+    return;
+  }
+  const min = stats.meta.minSampleSize;
+  const qualified = stats.refs.filter((ref) => ref.games >= min);
+  const withAnalytics = qualified.filter((ref) => ref.nflAnalytics);
+  const coverage = withAnalytics.length / Math.max(qualified.length, 1);
+  if (coverage < 0.85) {
+    fail(
+      `nfl: only ${withAnalytics.length}/${qualified.length} qualified refs have nflAnalytics (${Math.round(coverage * 100)}% — need >= 85%). Run scripts/nfl/backfill-ref-analytics.ts`,
+    );
+  }
+}
+
 function checkOverviewSnapshot(): void {
   const snapshotPath = path.join(ROOT, "data/overview-snapshot.json");
   if (!fs.existsSync(snapshotPath)) {
@@ -259,9 +277,24 @@ function checkOverviewSnapshot(): void {
   }
 }
 
+function checkRankingsRefLinks(): void {
+  const hub = fs.readFileSync(
+    path.join(ROOT, "src/components/InsightsHubPage.tsx"),
+    "utf8",
+  );
+  const matches = hub.match(/basePath=\{league\.pathPrefix\}/g) ?? [];
+  if (matches.length < 2) {
+    fail(
+      "InsightsHubPage must pass basePath={league.pathPrefix} to RankingsInsightCards and RefRankingsTable",
+    );
+  }
+}
+
 console.log("Deploy readiness check…");
 checkLiveHeader();
 checkWorkerPreloadContract();
+checkRankingsRefLinks();
+checkNflAnalyticsCoverage();
 checkOverviewSnapshot();
 for (const league of VERIFIED_LIVE_LEAGUE_IDS) {
   checkDeployArtifacts(league);

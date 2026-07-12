@@ -11,6 +11,7 @@ import {
   refMatrixQualifiedGames,
   refMatrixStandoutCount,
   sortMatrixRefs,
+  teamRecordFromStat,
   TEAM_MATRIX_REF_PANEL_LIMIT,
   topRefsBeatingBaselineForTeam,
 } from "@/lib/ref-team-matrix";
@@ -227,5 +228,21 @@ describe("sortMatrixRefs", () => {
         assert.ok(prevGames >= currGames);
       }
     }
+  });
+});
+
+describe("teamRecordFromStat", () => {
+  it("recomputes W-L from winRate when explicit 0-0 disagrees with game count", () => {
+    const record = teamRecordFromStat({
+      games: 8,
+      wins: 0,
+      losses: 0,
+      winRate: 0.625,
+      avgFoulDifferential: 0,
+      avgTotalPoints: 45,
+      overRate: 0.5,
+    });
+    assert.equal(record.wins, 5);
+    assert.equal(record.losses, 3);
   });
 });

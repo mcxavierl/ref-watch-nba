@@ -114,24 +114,52 @@ export function seededDataNote(): string {
   return "Historical line data unavailable for some games; see Methodology for details.";
 }
 
-/** Visible when ref×team W-L is from BBR but other splits are simulated/estimated. */
+/** Ref×team W-L sourced from Basketball-Reference game logs. */
 export function usesBbrRefTeamRecords(
   meta: { refTeamWinLossSource?: string },
 ): boolean {
   return meta.refTeamWinLossSource === "basketball-reference";
 }
 
+function isVerifiedNbaGameLogIngest(meta: {
+  source?: string;
+  data_verified?: boolean;
+}): boolean {
+  return (
+    meta.data_verified === true &&
+    (meta.source === "hybrid" ||
+      meta.source === "nba-stats-api" ||
+      meta.source === "historical")
+  );
+}
+
+/** Amber banner on ref/matrix pages when a data caveat is needed. */
 export function refTeamDataNote(
   meta: {
     source?: string;
     refTeamWinLossSource?: string;
+    data_verified?: boolean;
+    atsAvailable?: boolean;
   },
 ): string | null {
   if (!usesBbrRefTeamRecords(meta)) return null;
-  if (meta.source === "nba-stats-api") {
-    return "Ref×team win-loss is from Basketball-Reference; foul, scoring, and ATS splits use NBA Stats API data.";
+
+  if (isVerifiedNbaGameLogIngest(meta)) {
+    return null;
   }
-  return "Ref×team win-loss is from Basketball-Reference; foul, scoring, and ATS/O-U splits may use simulated or estimated data.";
+
+  if (meta.source === "nba-stats-api") {
+    const parts = [
+      "Ref×team win-loss is from Basketball-Reference",
+      "foul and scoring from NBA Stats API game logs",
+    ];
+    if (meta.atsAvailable) {
+      parts.push("ATS/O-U from sportsbook closing lines where available");
+    }
+    return `${parts.join("; ")}.`;
+  }
+
+  return null;
 }
 
 /** Strip developer-only npm hints from data meta notes before showing users. */

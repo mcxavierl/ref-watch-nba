@@ -310,6 +310,11 @@ export function leagueHref(leagueId: LeagueId, segment: string): string {
   return `${prefix}${path}`;
 }
 
+/** Canonical ref profile path for a league (rankings, matrix, directory links). */
+export function refProfileHref(leagueId: LeagueId, slug: string): string {
+  return leagueHref(leagueId, `/refs/${slug}`);
+}
+
 export function leagueNavLinks(leagueId: LeagueId) {
   const base = LEAGUES[leagueId].pathPrefix;
   const hub = leagueHubHref(leagueId);

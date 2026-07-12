@@ -11,6 +11,27 @@ function round3(n: number): number {
   return Math.round(n * 1000) / 1000;
 }
 
+/** Prefer referee-only samples; fall back to all crew games when none exist. */
+export function nflAnalyticsGameSample(
+  refereeGames: RefGameRecord[],
+  allGames: RefGameRecord[],
+): RefGameRecord[] {
+  return refereeGames.length > 0 ? refereeGames : allGames;
+}
+
+export function buildNflRefAnalyticsForOfficial(
+  refereeGames: RefGameRecord[],
+  allGames: RefGameRecord[],
+  leagueAvgFlags = LEAGUE_AVG_FLAGS,
+  leagueAvgPenaltyYards = LEAGUE_AVG_PENALTY_YARDS,
+): NflRefAnalytics | undefined {
+  return computeNflRefAnalytics(
+    nflAnalyticsGameSample(refereeGames, allGames),
+    leagueAvgFlags,
+    leagueAvgPenaltyYards,
+  );
+}
+
 export function computeNflRefAnalytics(
   games: RefGameRecord[],
   leagueAvgFlags = LEAGUE_AVG_FLAGS,

@@ -30,7 +30,7 @@ import { canonicalizeOfficialName } from "./lib/official-names";
 import {
   computeLeagueAvgFlags,
   computeLeagueAvgPenaltyYards,
-  computeNflRefAnalytics,
+  buildNflRefAnalyticsForOfficial,
 } from "./lib/ref-analytics";
 import { buildBaselinesFile, saveBaselines } from "../lib/baselines";
 import { loadGameLogs } from "../lib/game-logs";
@@ -728,10 +728,12 @@ async function buildFromEspn(
     const avgFouls = games.reduce((s, g) => s + g.totalFouls, 0) / games.length;
     const refOnly = refMinorGames.get(slug) ?? [];
     const betting = refBetting.get(slug)?.finalize();
-    const nflAnalytics =
-      meta.role === "referee"
-        ? computeNflRefAnalytics(refOnly, leagueAvgFlags, leagueAvgPenaltyYards)
-        : undefined;
+    const nflAnalytics = buildNflRefAnalyticsForOfficial(
+      refOnly,
+      games,
+      leagueAvgFlags,
+      leagueAvgPenaltyYards,
+    );
 
     refs.push({
       slug,

@@ -151,7 +151,10 @@ export function InsightsHubPage({
     );
     tendenciesPanel = (
       <>
-        <RankingsInsightCards synthesis={synthesis} />
+        <RankingsInsightCards
+          synthesis={synthesis}
+          basePath={league.pathPrefix}
+        />
         <section className="section-block">
           <div className="data-card">
             <RefRankingsTable
@@ -160,6 +163,7 @@ export function InsightsHubPage({
               minSampleSize={stats.meta.minSampleSize}
               overBaseline={stats.meta.leagueOverBaseline}
               signalCounts={signalCounts}
+              basePath={league.pathPrefix}
             />
           </div>
         </section>
