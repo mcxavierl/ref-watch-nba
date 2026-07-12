@@ -2890,25 +2890,28 @@ p {
   }
 
   @media (max-width: 767px) {
+    .site-header-league {
+      justify-content: center;
+    }
+
+    .site-header-league .league-nav {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .site-header-league .league-nav-scroll {
+      width: auto;
+      max-width: 100%;
+      margin-inline: auto;
+    }
+
     .site-header-league::after {
-      content: "";
-      pointer-events: none;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      z-index: 2;
-      width: 1.25rem;
-      background: linear-gradient(270deg, var(--header-chrome-bg) 0%, transparent 100%);
+      display: none;
     }
 
     .league-nav-scroll {
-      mask-image: linear-gradient(
-        90deg,
-        #000 0,
-        #000 calc(100% - 1.35rem),
-        transparent 100%
-      );
+      mask-image: none;
     }
   }
 
