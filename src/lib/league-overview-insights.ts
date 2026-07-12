@@ -14,6 +14,7 @@ import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "@/lib/nhl/teams";
 import type { Finding } from "@/lib/findings-shared";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { insightsViewHref } from "@/lib/insights-routes";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import {
   computeMatrixExtremes,
@@ -132,7 +133,11 @@ function matrixHref(leagueId: LeagueId): string {
 }
 
 function insightsHref(leagueId: LeagueId): string {
-  return `${leaguePrefix(leagueId)}/insights`;
+  return insightsViewHref(leagueId, "findings");
+}
+
+function trendsHref(leagueId: LeagueId): string {
+  return insightsViewHref(leagueId, "trends");
 }
 
 function formatDeltaPts(delta: number): string {
@@ -177,7 +182,7 @@ function cardFromMatrix(
     links: [
       { label: "Open matrix", href: matrixHref(leagueId) },
       { label: "Ref profile", href: refHref(leagueId, highlight.refSlug) },
-      { label: "Insights", href: insightsHref(leagueId) },
+      { label: "League trends", href: trendsHref(leagueId) },
     ],
     entityName: highlight.refName,
     entityHref: refHref(leagueId, highlight.refSlug),
@@ -221,7 +226,7 @@ function cardFromFinding(leagueId: LeagueId, finding: Finding): LeagueInsightCar
       .filter((stat): stat is { label: string; value: string } => Boolean(stat))
       .map((stat) => ({ label: stat.label, value: stat.value })),
     links: [
-      { label: "Full finding", href: `${insightsHref(leagueId)}#findings` },
+      { label: "Full finding", href: insightsHref(leagueId) },
       ...(refLink ? [{ label: refLink.label, href: refLink.href }] : []),
       { label: `${config.shortLabel} hub`, href: prefixOrRoot(leagueId) },
     ],

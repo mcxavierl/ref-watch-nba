@@ -1,31 +1,33 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { ArrowRight, BarChart3, Grid3x3, Users, UsersRound } from "lucide-react";
+import { insightsViewHref } from "@/lib/insights-routes";
+import { leagueHref } from "@/lib/leagues";
 
 const FEATURES = [
   {
-    href: "/insights#tendencies",
+    href: insightsViewHref("nba", "tendencies"),
     icon: BarChart3,
     title: "Official tendency index",
     description:
       "Rank refs by foul pace, over rate, and scoring delta on multi-season logs.",
   },
   {
-    href: "/matrix",
+    href: leagueHref("nba", "/matrix"),
     icon: Grid3x3,
     title: "Ref×team matrix",
     description:
       "Whistle and scoring splits for every ref and franchise pairing.",
   },
   {
-    href: "/teams",
+    href: leagueHref("nba", "/teams"),
     icon: Users,
     title: "Team histories",
     description:
       "Crew splits, home-road bias, and whistle context for all 30 franchises.",
   },
   {
-    href: "/refs",
+    href: leagueHref("nba", "/refs"),
     icon: UsersRound,
     title: "Refs and crews",
     description:
