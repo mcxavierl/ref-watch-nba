@@ -5,12 +5,12 @@ import { useMemo, useState, type ReactNode } from "react";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
-import { formatPct, formatSigned } from "@/lib/stats-utils";
+import { formatPct, formatSigned, bettingAtsRate, bettingOuRate } from "@/lib/stats-utils";
 import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
 import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
 import type { RefProfile } from "@/lib/types";
 
-type SortField = "games" | "scoring" | "whistle" | "overRate";
+type SortField = "games" | "scoring" | "whistle" | "overRate" | "ats" | "ouBetting";
 
 function toggleSort(current: RefRankingSort, field: SortField): RefRankingSort {
   const [activeField, direction] = current.split("-") as [string, "asc" | "desc"];
@@ -61,6 +61,7 @@ export function RefRankingsTable({
   leagueAvgTotal,
   basePath = "",
   signalCounts = {},
+  atsAvailable = false,
 }: {
   refs: RefProfile[];
   league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
@@ -69,6 +70,7 @@ export function RefRankingsTable({
   leagueAvgTotal?: number;
   basePath?: string;
   signalCounts?: Record<string, number>;
+  atsAvailable?: boolean;
 }) {
   const [sort, setSort] = useState<RefRankingSort>("scoring-desc");
   const [showLowSample, setShowLowSample] = useState(false);
@@ -137,6 +139,9 @@ export function RefRankingsTable({
         </div>
         <p className="ranking-toolbar-context">
           Over rate uses {overBaseline} combined {unit} benchmark.
+          {atsAvailable
+            ? " ATS and O/U % use closing lines where available (NHL uses synthetic lines)."
+            : null}
         </p>
       </div>
 
@@ -165,6 +170,22 @@ export function RefRankingsTable({
                 sort={sort}
                 onSort={handleSort}
               />
+              {atsAvailable ? (
+                <>
+                  <SortableHeader
+                    label="Home ATS"
+                    field="ats"
+                    sort={sort}
+                    onSort={handleSort}
+                  />
+                  <SortableHeader
+                    label="O/U hit %"
+                    field="ouBetting"
+                    sort={sort}
+                    onSort={handleSort}
+                  />
+                </>
+              ) : null}
               <th>Signals</th>
               {league === "NHL" && <th className="data-table-num">OT rate</th>}
               {isNfl && <th className="data-table-num">Yards Δ</th>}
@@ -236,6 +257,22 @@ export function RefRankingsTable({
                   <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
                     {formatPct(ref.overRate)}
                   </td>
+                  {atsAvailable ? (
+                    <>
+                      <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
+                        {(() => {
+                          const rate = bettingAtsRate(ref.bettingStats);
+                          return rate !== null ? formatPct(rate) : "-";
+                        })()}
+                      </td>
+                      <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
+                        {(() => {
+                          const rate = bettingOuRate(ref.bettingStats);
+                          return rate !== null ? formatPct(rate) : "-";
+                        })()}
+                      </td>
+                    </>
+                  ) : null}
                   <td className="px-4 py-3">
                     {signalCount > 0 ? (
                       <Link

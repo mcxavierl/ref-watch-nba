@@ -33,6 +33,10 @@ import {
   computeLeagueOvertimeRate,
   computeNhlRefAnalytics,
 } from "./lib/ref-analytics";
+import {
+  homeCoverRate,
+  NhlBettingAccumulator,
+} from "./lib/nhl-betting";
 import { teamWonGame } from "../lib/team-win";
 import {
   NHL_TEN_SEASONS,
@@ -374,9 +378,11 @@ interface BuildMaps {
   refMinorGames: Map<string, RefGameRecord[]>;
   refMeta: Map<string, { name: string; number: number; role: RefRole }>;
   refTeamBuckets: Map<string, Map<string, RefTeamGameRow[]>>;
+  refBetting: Map<string, NhlBettingAccumulator>;
   teamByCrew: Map<string, Map<string, TeamCrewBucket>>;
   exportedGameLogs: GameLogEntry[];
   allDates: string[];
+  linedGames: number;
 }
 
 function absorbGame(
@@ -424,6 +430,9 @@ function absorbGame(
   const totalPoints = homeScore + awayScore;
   const overHit = totalPoints > closingTotal;
   maps.allDates.push(date);
+  if (lineSource === "synthetic" || lineSource === "external") {
+    maps.linedGames++;
+  }
 
   const record: RefGameRecord = {
     gameId,
@@ -509,6 +518,17 @@ function absorbGame(
       maps.refMinorGames.set(slug, minorGames);
     }
 
+    if (lineSource === "synthetic" || lineSource === "external") {
+      const acc = maps.refBetting.get(slug) ?? new NhlBettingAccumulator(true);
+      acc.addGame({
+        homeScore,
+        awayScore,
+        homeSpread,
+        total: closingTotal,
+      });
+      maps.refBetting.set(slug, acc);
+    }
+
     for (const teamAbbr of [homeTeam, awayTeam]) {
       const row = makeRow(teamAbbr);
       if (!row) continue;
@@ -577,9 +597,11 @@ function createEmptyMaps(): BuildMaps {
     refMinorGames: new Map(),
     refMeta: new Map(),
     refTeamBuckets: new Map(),
+    refBetting: new Map(),
     teamByCrew,
     exportedGameLogs: [],
     allDates: [],
+    linedGames: 0,
   };
 }
 
@@ -627,6 +649,7 @@ function buildStatsFromLogs(rawLogs: GameLogEntry[]): RefStatsFile {
       meta.role === "referee"
         ? computeNhlRefAnalytics(minorGames, leagueAvgMinors)
         : undefined;
+    const betting = maps.refBetting.get(slug)?.finalize();
 
     refs.push({
       slug,
@@ -637,12 +660,13 @@ function buildStatsFromLogs(rawLogs: GameLogEntry[]): RefStatsFile {
       avgTotalPoints: round1(avgTotal),
       overRate: round3(overRate),
       avgFouls: round1(avgFouls),
-      homeCoverRate: null,
+      homeCoverRate: betting ? homeCoverRate(betting) : null,
       totalPointsDelta: round1(avgTotal - leagueAvgTotal),
       foulsDelta: round1(avgFouls - leagueAvgFouls),
       seasons: [...new Set(games.map((g) => g.season))],
       recentGames: games.slice(-8).reverse(),
       teamStats: collectRefTeamStats(maps.refTeamBuckets.get(slug) ?? new Map()),
+      bettingStats: betting,
       nhlAnalytics,
     });
   }
@@ -670,6 +694,9 @@ function buildStatsFromLogs(rawLogs: GameLogEntry[]): RefStatsFile {
     );
   }
 
+  const refsWithBetting = refs.filter((r) => r.bettingStats?.linesAvailable).length;
+  const atsAvailable = maps.linedGames >= 50 && refsWithBetting >= 3;
+
   return {
     meta: {
       lastUpdated: new Date().toISOString(),
@@ -681,7 +708,7 @@ function buildStatsFromLogs(rawLogs: GameLogEntry[]): RefStatsFile {
       source: "nhl-api",
       data_verified: true,
       data_source: "NHL API (api-web.nhle.com)",
-      atsAvailable: false,
+      atsAvailable,
       refCount: refs.length,
       totalGamesProcessed: dedupedLogs.length,
       dateRange: {
@@ -692,6 +719,9 @@ function buildStatsFromLogs(rawLogs: GameLogEntry[]): RefStatsFile {
       leagueOvertimeRate,
       teamSpecialTeams:
         Object.keys(teamSpecialTeams).length > 0 ? teamSpecialTeams : undefined,
+      note: atsAvailable
+        ? `Scores, PIM, and crews from NHL API. ATS/O-U from synthetic closing lines derived from final scores (${maps.linedGames}/${dedupedLogs.length} games) — descriptive only, not market odds.`
+        : undefined,
     },
     refs,
     teamSplits,

@@ -2289,6 +2289,37 @@ p {
     border-bottom: 0;
   }
 
+  .super-bowl-catalog-summary {
+    cursor: pointer;
+    font-size: var(--text-sm);
+    font-weight: 650;
+    color: var(--ink-secondary);
+  }
+
+  .super-bowl-catalog-table {
+    border-collapse: collapse;
+    min-width: 36rem;
+  }
+
+  .super-bowl-catalog-table th,
+  .super-bowl-catalog-table td {
+    padding: 0.45rem 0.65rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .super-bowl-catalog-table th {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .super-bowl-officiating--home {
+    margin-bottom: 2rem;
+  }
+
   .finding-accordion-summary {
     padding: var(--space-4) var(--space-4) var(--space-2);
     font-size: var(--text-sm);

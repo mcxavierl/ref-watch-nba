@@ -127,6 +127,13 @@ copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "game-
 copyPair(path.join(root, "data/nhl"), path.join(root, "public/data/nhl"), "ref-photos");
 copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "game-logs");
 copyPair(path.join(root, "data/nfl"), path.join(root, "public/data/nfl"), "ref-photos");
+const nflSuperBowl = path.join(root, "data/nfl/super-bowl-officiating.json");
+if (fs.existsSync(nflSuperBowl)) {
+  const dest = path.join(root, "public/data/nfl/super-bowl-officiating.json");
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(nflSuperBowl, dest);
+  console.log(`Copied ${nflSuperBowl} → ${dest}`);
+}
 copyPair(path.join(root, "data/nba"), path.join(root, "public/data/nba"), "ref-photos");
 copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "game-logs");
 copyPair(path.join(root, "data/cfb"), path.join(root, "public/data/cfb"), "ref-stats");

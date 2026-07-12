@@ -41,6 +41,7 @@ import {
 } from "@/lib/trust-charter";
 import { NflAnalyticsLeaders } from "@/components/NflAnalyticsLeaders";
 import { buildNflAnalyticsLeaders } from "@/lib/nfl/analytics-leaders";
+import { SuperBowlOfficiatingSection } from "@/components/SuperBowlOfficiatingSection";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 
@@ -141,6 +142,8 @@ export default async function NflHomePage() {
         league="NFL"
         sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
       />
+
+      <SuperBowlOfficiatingSection variant="home" limit={4} />
 
       <NflAnalyticsLeaders leaders={analyticsLeaders} />
 

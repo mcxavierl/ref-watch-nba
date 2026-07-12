@@ -208,6 +208,13 @@ export function homeCoverRate(stats: RefBettingStats): number | null {
   return Math.round((wins / decisions) * 1000) / 1000;
 }
 
+export function ouCoverRate(stats: RefBettingStats): number | null {
+  const { wins, losses, pushes } = stats.overUnder.overall;
+  const decisions = wins + losses + pushes;
+  if (decisions === 0) return null;
+  return Math.round((wins / decisions) * 1000) / 1000;
+}
+
 export function formatWlp(r: WlpRecord): string {
   if (r.pushes > 0) return `${r.wins}-${r.losses}-${r.pushes}`;
   return `${r.wins}-${r.losses}`;

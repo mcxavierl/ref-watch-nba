@@ -1,6 +1,6 @@
 import type { LeagueConfig } from "@/lib/leagues";
 import { filterNhlReferees } from "@/lib/nhl/officials";
-import { formatSigned } from "@/lib/stats-utils";
+import { formatSigned, bettingAtsRate, bettingOuRate, formatPct } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 export type RankingsInsight = {
@@ -43,11 +43,18 @@ export function buildRankingsSynthesis(
   const thin = pool.length - qualified.length;
   const baseline = stats.meta.leagueOverBaseline;
   const unit = league.metrics.scoreUnitPlural;
+  const atsAvailable = stats.meta.atsAvailable === true;
 
   const byScoring = [...qualified].sort((a, b) => b.totalPointsDelta - a.totalPointsDelta);
   const byOver = [...qualified].sort((a, b) => b.overRate - a.overRate);
   const byWhistle = [...qualified].sort(
     (a, b) => whistleDelta(b, league) - whistleDelta(a, league),
+  );
+  const byAts = [...qualified].sort(
+    (a, b) => (bettingAtsRate(b.bettingStats) ?? -1) - (bettingAtsRate(a.bettingStats) ?? -1),
+  );
+  const byOuBetting = [...qualified].sort(
+    (a, b) => (bettingOuRate(b.bettingStats) ?? -1) - (bettingOuRate(a.bettingStats) ?? -1),
   );
 
   const highScoring = byScoring.filter((r) => r.totalPointsDelta > 0.3);
@@ -56,6 +63,8 @@ export function buildRankingsSynthesis(
   const topScorer = byScoring[0];
   const topOver = byOver[0];
   const topWhistle = byWhistle[0];
+  const topAts = byAts.find((ref) => bettingAtsRate(ref.bettingStats) !== null);
+  const topOuBetting = byOuBetting.find((ref) => bettingOuRate(ref.bettingStats) !== null);
 
   const insights: RankingsInsight[] = [];
 
@@ -81,6 +90,32 @@ export function buildRankingsSynthesis(
       refName: topOver.name,
       statLabel: "Over rate",
       statValue: `${(topOver.overRate * 100).toFixed(1)}%`,
+    });
+  }
+
+  if (atsAvailable && topAts) {
+    const atsRate = bettingAtsRate(topAts.bettingStats)!;
+    insights.push({
+      id: "top-ats",
+      title: "Strongest home ATS track record",
+      body: `Home teams cover the spread most often in his games — descriptive history only, not a pick signal.`,
+      refSlug: topAts.slug,
+      refName: topAts.name,
+      statLabel: "Home ATS",
+      statValue: formatPct(atsRate),
+    });
+  }
+
+  if (atsAvailable && topOuBetting) {
+    const ouRate = bettingOuRate(topOuBetting.bettingStats)!;
+    insights.push({
+      id: "top-ou-betting",
+      title: "Highest O/U hit rate vs closing total",
+      body: `Games with this official most often finish over the listed total — past tendency, not a forecast.`,
+      refSlug: topOuBetting.slug,
+      refName: topOuBetting.name,
+      statLabel: "O/U hit %",
+      statValue: formatPct(ouRate),
     });
   }
 

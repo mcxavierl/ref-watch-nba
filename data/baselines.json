@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-12T17:35:17.593Z",
-  "note": "Computed from NBA/NHL/NFL/EPL/La Liga game logs",
+  "generatedAt": "2026-07-12T20:05:57.505Z",
+  "note": "NHL rebuild-from-logs snapshot",
   "fallback": {
     "NBA": {
       "label": "NBA static fallback (empty or missing game logs)",
@@ -605,53 +605,15 @@
     "usingFallback": false
   },
   "LALIGA": {
-    "currentSeason": "2025-26",
-    "seasons": {
-      "2021-22": {
-        "season": "2021-22",
-        "gameCount": 93,
-        "leagueAvgTotal": 2.4,
-        "leagueOverBaseline": 2.4,
-        "leagueAvgFouls": 24.6
-      },
-      "2022-23": {
-        "season": "2022-23",
-        "gameCount": 375,
-        "leagueAvgTotal": 2.5,
-        "leagueOverBaseline": 2.5,
-        "leagueAvgFouls": 24.3
-      },
-      "2023-24": {
-        "season": "2023-24",
-        "gameCount": 380,
-        "leagueAvgTotal": 2.6,
-        "leagueOverBaseline": 2.6,
-        "leagueAvgFouls": 25.8
-      },
-      "2024-25": {
-        "season": "2024-25",
-        "gameCount": 380,
-        "leagueAvgTotal": 2.6,
-        "leagueOverBaseline": 2.6,
-        "leagueAvgFouls": 24.6
-      },
-      "2025-26": {
-        "season": "2025-26",
-        "gameCount": 318,
-        "leagueAvgTotal": 2.7,
-        "leagueOverBaseline": 2.6,
-        "leagueAvgFouls": 25.2,
-        "meanClosingTotal": 2.6
-      }
-    },
+    "currentSeason": null,
+    "seasons": {},
     "aggregate": {
-      "season": "all",
-      "gameCount": 1546,
+      "season": "none",
+      "gameCount": 0,
       "leagueAvgTotal": 2.6,
-      "leagueOverBaseline": 2.6,
-      "leagueAvgFouls": 24.9,
-      "meanClosingTotal": 2.6
+      "leagueOverBaseline": 2.5,
+      "leagueAvgFouls": 25
     },
-    "usingFallback": false
+    "usingFallback": true
   }
 }

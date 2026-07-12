@@ -14,6 +14,7 @@ import {
   findingConfidenceTier,
   resolveFindingExplainer,
   researchFindingHref,
+  researchHubFilterHref,
   researchHubHref,
 } from "@/lib/findings-shared";
 import { formatFindingCardMeta } from "@/lib/finding-copy";

@@ -187,6 +187,8 @@ export function InsightsHubPage({
               league={dataLeague}
               minSampleSize={stats.meta.minSampleSize}
               overBaseline={stats.meta.leagueOverBaseline}
+              leagueAvgTotal={stats.meta.leagueAvgTotal}
+              atsAvailable={stats.meta.atsAvailable === true}
               signalCounts={signalCounts}
               basePath={league.pathPrefix}
             />

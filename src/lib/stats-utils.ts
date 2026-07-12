@@ -1,6 +1,22 @@
-import type { OuLean } from "@/lib/types";
+import type { OuLean, RefBettingStats } from "@/lib/types";
 
 /** Pure stat helpers safe for client components (no Node APIs). */
+
+function wlpRate(record: { wins: number; losses: number; pushes: number }): number | null {
+  const decisions = record.wins + record.losses + record.pushes;
+  if (decisions === 0) return null;
+  return record.wins / decisions;
+}
+
+export function bettingAtsRate(stats: RefBettingStats | undefined): number | null {
+  if (!stats?.linesAvailable) return null;
+  return wlpRate(stats.homeTeamAts);
+}
+
+export function bettingOuRate(stats: RefBettingStats | undefined): number | null {
+  if (!stats?.linesAvailable) return null;
+  return wlpRate(stats.overUnder.overall);
+}
 
 export function formatPct(rate: number): string {
   return `${(rate * 100).toFixed(1)}%`;
