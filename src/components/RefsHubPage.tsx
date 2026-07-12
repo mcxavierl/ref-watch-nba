@@ -17,8 +17,11 @@ import { leagueHubHref, LEAGUES } from "@/lib/leagues";
 import { loadHubLeagueStats } from "@/lib/load-league-stats";
 import { linesmanSlugSet } from "@/lib/nhl/officials";
 import { buildRefsDirectoryContext } from "@/lib/refs-directory";
-import type { SeasonScopeMode } from "@/lib/season-scope";
-import { defaultSeasonScopeForLeague } from "@/lib/season-scope";
+import {
+  defaultSeasonScopeForLeague,
+  formatDatingBackPhrase,
+  type SeasonScopeMode,
+} from "@/lib/season-scope";
 import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 
 type RefsHubPageProps = {
@@ -56,10 +59,11 @@ export function RefsHubPage({
     </div>
   );
 
+  const historyPhrase = formatDatingBackPhrase(ctx.meta.seasons);
   const refsLead =
     leagueId === "nhl"
-      ? `${ctx.meta.qualifiedCount} referees with game history across ${ctx.meta.seasons.join(", ")} (${range}). ${NHL_LINESMAN_METHODOLOGY_NOTE}`
-      : `${ctx.meta.qualifiedCount} ${league.officialNounPlural} with game history across ${ctx.meta.seasons.join(", ")} (${range}).`;
+      ? `${ctx.meta.qualifiedCount} referees with game history ${historyPhrase}. ${NHL_LINESMAN_METHODOLOGY_NOTE}`
+      : `${ctx.meta.qualifiedCount} ${league.officialNounPlural} with game history ${historyPhrase}.`;
 
   let refsPanel: ReactNode = null;
   if (activeView === "refs") {

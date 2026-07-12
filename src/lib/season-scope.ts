@@ -217,6 +217,15 @@ export function matrixLeadSeasonPhrase(seasonCount: number): string {
   return formatSeasonScope(seasonCount).toLowerCase();
 }
 
+/** Hub hero copy from scoped seasons, e.g. "dating back to 2016". */
+export function formatDatingBackPhrase(seasons: string[]): string {
+  if (seasons.length === 0) return "with limited history";
+  const since = scopedSinceSeason(seasons);
+  const year = since.slice(0, 4);
+  if (seasons.length === 1) return `for the ${since} season`;
+  return `dating back to ${year}`;
+}
+
 export function scopedSinceSeason(scopedSeasons: string[]): string {
   if (scopedSeasons.length === 0) return DEFAULT_SINCE_SEASON;
   return [...scopedSeasons].sort()[0] ?? DEFAULT_SINCE_SEASON;
