@@ -4811,10 +4811,25 @@ p {
 
   .page-hero-slate .league-slate-kicker {
     display: inline-flex;
+    align-self: flex-start;
+    width: fit-content;
+    max-width: min(20rem, 52vw);
     align-items: center;
     gap: 0.5rem;
     padding-bottom: 0.35rem;
-    border-bottom: 2px solid color-mix(in srgb, var(--league-accent) 55%, transparent);
+    border-bottom: none;
+    position: relative;
+  }
+
+  .page-hero-slate .league-slate-kicker::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: min(4.25rem, 100%);
+    height: 2px;
+    border-radius: 1px;
+    background: color-mix(in srgb, var(--league-accent) 55%, transparent);
   }
 
   .page-hero-slate .page-lead {
