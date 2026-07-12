@@ -8,10 +8,17 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   LeagueHubHero,
   type HubHeroLeagueId,
 } from "@/components/LeagueHubHero";
+import {
+  insightsViewFromHash,
+  insightsViewFromPathname,
+  insightsViewHref,
+  type InsightsHubView,
+} from "@/lib/insights-routes";
 
 export type LeagueHubTab = {
   id: string;
@@ -34,6 +41,20 @@ type LeagueHubTabsProps = {
   afterTablist?: ReactNode | ((activeId: string) => ReactNode);
 };
 
+function resolveInsightsTabId(
+  pathname: string,
+  defaultTabId: string,
+  tabIds: string[],
+): string {
+  const fromPath = insightsViewFromPathname(pathname);
+  if (fromPath && tabIds.includes(fromPath)) return fromPath;
+  if (typeof window !== "undefined") {
+    const fromHash = insightsViewFromHash(window.location.hash);
+    if (fromHash && tabIds.includes(fromHash)) return fromHash;
+  }
+  return defaultTabId;
+}
+
 export function LeagueHubTabs({
   tabs,
   defaultTabId,
@@ -43,15 +64,33 @@ export function LeagueHubTabs({
   before,
   afterTablist,
 }: LeagueHubTabsProps) {
-  const [activeId, setActiveId] = useState(defaultTabId);
+  const router = useRouter();
+  const pathname = usePathname() ?? "/";
+  const searchParams = useSearchParams();
+  const tabIds = tabs.map((tab) => tab.id);
+  const [activeId, setActiveId] = useState(() =>
+    variant === "insights" && leagueId
+      ? resolveInsightsTabId(pathname, defaultTabId, tabIds)
+      : defaultTabId,
+  );
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
+  const syncInsightsTab = useCallback(() => {
+    if (variant !== "insights" || !leagueId) return;
+    const next = resolveInsightsTabId(pathname, defaultTabId, tabIds);
+    setActiveId(next);
+  }, [defaultTabId, leagueId, pathname, tabIds, variant]);
+
   const syncFromHash = useCallback(() => {
+    if (variant === "insights") {
+      syncInsightsTab();
+      return;
+    }
     const hash = window.location.hash.replace(/^#/, "");
     if (hash && tabs.some((t) => t.id === hash)) {
       setActiveId(hash);
     }
-  }, [tabs]);
+  }, [syncInsightsTab, tabs, variant]);
 
   useEffect(() => {
     syncFromHash();
@@ -59,7 +98,18 @@ export function LeagueHubTabs({
     return () => window.removeEventListener("hashchange", syncFromHash);
   }, [syncFromHash]);
 
+  useEffect(() => {
+    if (variant === "insights") syncInsightsTab();
+  }, [syncInsightsTab, variant]);
+
   const selectTab = (id: string) => {
+    if (variant === "insights" && leagueId) {
+      const view = id as InsightsHubView;
+      const query = searchParams?.toString();
+      const href = insightsViewHref(leagueId, view);
+      router.push(query ? `${href}?${query}` : href);
+      return;
+    }
     setActiveId(id);
     const next = `${window.location.pathname}${window.location.search}#${id}`;
     window.history.replaceState(null, "", next);

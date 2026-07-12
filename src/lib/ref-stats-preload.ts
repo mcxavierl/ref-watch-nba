@@ -253,7 +253,6 @@ export function pathNeedsGameLogs(pathname: string): boolean {
   const path = normalizeAppPathname(pathname);
   if (path === "/matrix" || path.startsWith("/teams/")) return true;
   if (path.startsWith("/nfl/matrix") || path.startsWith("/nfl/teams/")) return true;
-  if (path.startsWith("/nfl/refs")) return true;
   if (path.startsWith("/nhl/teams/") || path.startsWith("/nhl/matrix")) return true;
   return false;
 }

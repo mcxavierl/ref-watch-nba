@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { CrewDominanceTable } from "@/components/CrewDominanceTable";
 import {
   LeagueHubHero,
@@ -39,11 +39,11 @@ export function RefsHubPage({
   );
   const range = formatRange(stats.meta);
   const ctx = buildRefsDirectoryContext(stats, league);
-  const entries = computeCrewDominance(stats);
   const homeHref = leagueHubHref(leagueId);
   const linesmen =
     leagueId === "nhl" ? linesmanSlugSet(stats.refs) : undefined;
   const seeded = stats.meta.source === "seeded";
+  const activeView = defaultTab;
 
   const scopeToolbar = (
     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -61,46 +61,53 @@ export function RefsHubPage({
       ? `${ctx.meta.qualifiedCount} referees with game history across ${ctx.meta.seasons.join(", ")} (${range}). ${NHL_LINESMAN_METHODOLOGY_NOTE}`
       : `${ctx.meta.qualifiedCount} ${league.officialNounPlural} with game history across ${ctx.meta.seasons.join(", ")} (${range}).`;
 
-  const refsPanel = (
-    <>
-      {scopeToolbar}
-      <RefsMacroInsight meta={ctx.meta} league={league} scopeLabel={scopeLabel} />
-      <section className="section-block">
-        <RefsDirectory
-          refs={ctx.refs}
-          meta={ctx.meta}
-          league={league}
-          basePath={league.pathPrefix}
-        />
-      </section>
-    </>
-  );
+  let refsPanel: ReactNode = null;
+  if (activeView === "refs") {
+    refsPanel = (
+      <>
+        {scopeToolbar}
+        <RefsMacroInsight meta={ctx.meta} league={league} scopeLabel={scopeLabel} />
+        <section className="section-block">
+          <RefsDirectory
+            refs={ctx.refs}
+            meta={ctx.meta}
+            league={league}
+            basePath={league.pathPrefix}
+          />
+        </section>
+      </>
+    );
+  }
 
-  const crewsPanel = (
-    <section className="section-block">
-      {scopeToolbar}
-      <p className="section-lead mb-4">
-        {crewDominanceSummary(entries, leagueId)} ({range}). Pace and whistle
-        deltas compare each crew to league baselines; dominance compares the
-        crew to the same officials in other pairings.
-      </p>
-      {seeded && (
-        <p className="mb-4 text-sm text-amber-800">
-          Historical dataset aggregated from stored team crew splits.
+  let crewsPanel: ReactNode = null;
+  if (activeView === "crews") {
+    const entries = computeCrewDominance(stats);
+    crewsPanel = (
+      <section className="section-block">
+        {scopeToolbar}
+        <p className="section-lead mb-4">
+          {crewDominanceSummary(entries, leagueId)} ({range}). Pace and whistle
+          deltas compare each crew to league baselines; dominance compares the
+          crew to the same officials in other pairings.
         </p>
-      )}
-      <div className="data-card">
-        <CrewDominanceTable
-          entries={entries}
-          basePath={league.pathPrefix}
-          league={leagueId}
-          overBaseline={stats.meta.leagueOverBaseline}
-          leagueAvgFouls={stats.meta.leagueAvgFouls}
-          linesmanSlugs={linesmen}
-        />
-      </div>
-    </section>
-  );
+        {seeded && (
+          <p className="mb-4 text-sm text-amber-800">
+            Historical dataset aggregated from stored team crew splits.
+          </p>
+        )}
+        <div className="data-card">
+          <CrewDominanceTable
+            entries={entries}
+            basePath={league.pathPrefix}
+            league={leagueId}
+            overBaseline={stats.meta.leagueOverBaseline}
+            leagueAvgFouls={stats.meta.leagueAvgFouls}
+            linesmanSlugs={linesmen}
+          />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <div className="page-shell page-shell-hub">

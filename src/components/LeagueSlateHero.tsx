@@ -30,11 +30,11 @@ function formatStatCount(value: number | undefined): string {
 const PRODUCT_HOME_STAT_LINKS = [
   { key: "officials" as const, href: "/refs" },
   { key: "games" as const, href: "/matrix" },
-  { key: "seasons" as const, href: "/insights#trends" },
+  { key: "seasons" as const, href: "/trends" },
 ] as const;
 
 const PRODUCT_HOME_ACTIONS = [
-  { href: "/insights#tendencies", label: "Tendency index" },
+  { href: "/rankings", label: "Tendency index" },
   { href: "/matrix", label: "Crew matrix" },
   { href: "/teams", label: "Team histories" },
   { href: "#dataset-findings", label: "Season highlights" },

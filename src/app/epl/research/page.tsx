@@ -1,8 +1,20 @@
 import { InsightsHubPage } from "@/components/InsightsHubPage";
 import { hubPageMetadata } from "@/lib/seo";
+import { readSeasonScopeParam } from "@/lib/season-scope";
+
 export const metadata = hubPageMetadata("epl", "research");
 
+type PageProps = {
+  searchParams: Promise<{ scope?: string }>;
+};
 
-export default function EplResearchPage() {
-  return <InsightsHubPage leagueId="epl" defaultTab="findings" />;
+export default async function EplResearchPage({ searchParams }: PageProps) {
+  const { scope } = await searchParams;
+  return (
+    <InsightsHubPage
+      leagueId="epl"
+      defaultTab="findings"
+      scopeMode={readSeasonScopeParam(scope)}
+    />
+  );
 }

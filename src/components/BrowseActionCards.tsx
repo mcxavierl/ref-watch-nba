@@ -10,12 +10,12 @@ type BrowseLink = {
 
 const NBA_LINKS: BrowseLink[] = [
   {
-    href: "/insights#findings",
+    href: "/research",
     label: "Research findings",
     description: "NBA dataset patterns ranked by effect size",
   },
   {
-    href: "/insights#tendencies",
+    href: "/rankings",
     label: "Official tendency index",
     description: "Crew scoring and foul tendencies",
   },
@@ -30,7 +30,7 @@ const NBA_LINKS: BrowseLink[] = [
     description: "Profiles across seasons",
   },
   {
-    href: "/insights#trends",
+    href: "/trends",
     label: "League trends",
     description: "Ten-season scoring and foul context",
   },
