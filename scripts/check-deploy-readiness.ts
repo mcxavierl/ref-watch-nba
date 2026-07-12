@@ -259,10 +259,25 @@ function checkOverviewSnapshot(): void {
   }
 }
 
+function checkLegacyPublicAliases(): void {
+  const aliases = [
+    "public/data/ref-stats.json",
+    "public/data/team-splits.json",
+    "public/data/game-logs.json",
+    "public/data/overview/snapshot.json",
+  ];
+  for (const rel of aliases) {
+    if (!fileExists(rel)) {
+      fail(`missing legacy public alias ${rel}`);
+    }
+  }
+}
+
 console.log("Deploy readiness check…");
 checkLiveHeader();
 checkWorkerPreloadContract();
 checkOverviewSnapshot();
+checkLegacyPublicAliases();
 for (const league of VERIFIED_LIVE_LEAGUE_IDS) {
   checkDeployArtifacts(league);
 }

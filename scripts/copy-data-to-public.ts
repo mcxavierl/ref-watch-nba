@@ -23,6 +23,9 @@ function copyRefStatsCore(root: string): void {
   writeMinifiedJson(path.join(root, "data", "team-splits.json"), teamSplits);
   writeMinifiedJson(path.join(root, "public", "data", "nba", "ref-stats.json"), core);
   writeMinifiedJson(path.join(root, "public", "data", "nba", "team-splits.json"), teamSplits);
+  // Legacy aliases for bookmarks and external consumers
+  writeMinifiedJson(path.join(root, "public", "data", "ref-stats.json"), core);
+  writeMinifiedJson(path.join(root, "public", "data", "team-splits.json"), teamSplits);
 }
 
 function copyLeagueRefStatsSplit(
@@ -115,6 +118,12 @@ copyRefStatsCore(root);
 const usedVerifiedNba = copyNbaVerifiedIngest(root);
 if (!usedVerifiedNba) {
   copyPair(path.join(root, "data"), path.join(root, "public/data/nba"), "game-logs");
+}
+const nbaGameLogsPublic = path.join(root, "public/data/nba/game-logs.json");
+if (fs.existsSync(nbaGameLogsPublic)) {
+  const legacyGameLogs = path.join(root, "public/data/game-logs.json");
+  fs.copyFileSync(nbaGameLogsPublic, legacyGameLogs);
+  console.log(`Copied legacy alias ${legacyGameLogs}`);
 }
 // ref-stats: slim core for Worker SSR hydration; teamSplits served separately
 copyLeagueRefStatsSplit(root, "nhl");
