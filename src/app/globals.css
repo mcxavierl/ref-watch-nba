@@ -20,6 +20,8 @@
   /* Ink ramp — tuned for ≥4.5:1 on dark surfaces */
   --muted: #a8a8b3;
   --muted-strong: #c4c4cc;
+  --ink: var(--foreground);
+  --line: var(--border);
   --ink-secondary: #e4e4e7;
 
   /* Brand & league accents */
@@ -7696,7 +7698,7 @@ p {
 
 .overview-hero {
   --overview-hero-padding-block: var(--space-8);
-  --overview-hero-padding-inline: 1rem;
+  --overview-hero-padding-inline: var(--space-5);
   display: grid;
   gap: var(--space-5);
   padding: var(--overview-hero-padding-block) var(--overview-hero-padding-inline);
@@ -7711,7 +7713,7 @@ p {
 
 @media (min-width: 640px) {
   .overview-hero {
-    --overview-hero-padding-inline: 1.5rem;
+    --overview-hero-padding-inline: var(--space-6);
   }
 }
 
@@ -7723,7 +7725,7 @@ p {
 
 @media (min-width: 1024px) {
   .overview-hero {
-    --overview-hero-padding-inline: 2rem;
+    --overview-hero-padding-inline: var(--space-8);
   }
 }
 
@@ -7758,11 +7760,11 @@ p {
 }
 
 .overview-hero-stats {
-  margin-top: var(--space-2);
+  margin-top: var(--space-4);
   margin-inline: calc(-1 * var(--overview-hero-padding-inline));
   padding: var(--space-6) var(--overview-hero-padding-inline);
-  border-top: 1px solid color-mix(in srgb, #27272a 60%, transparent);
-  background: color-mix(in srgb, #09090b 40%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+  background: color-mix(in srgb, var(--background) 55%, var(--surface-raised));
   border-radius: 0 0 calc(1.25rem - 1px) calc(1.25rem - 1px);
 }
 
@@ -7890,13 +7892,25 @@ p {
 
 .overview-hero-search .slate-quick-lookup {
   margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
+  padding: var(--space-5);
+  padding-bottom: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .overview-hero-search .slate-quick-lookup-header {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-4);
+}
+
+.overview-hero-search .slate-quick-lookup-shortcuts {
+  margin-top: var(--space-4);
+}
+
+.overview-hero-search .slate-quick-lookup-chip {
+  --chip-padding-inline: 1.1rem;
+  padding-block: 0.55rem;
 }
 
 .overview-hero-search .section-title {
@@ -7926,7 +7940,7 @@ p {
   padding: 0.85rem 1rem;
   border-radius: 0.85rem;
   border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.18);
+  background: color-mix(in srgb, var(--foreground) 5%, var(--surface-raised));
 }
 
 .overview-stat-label {
@@ -9235,8 +9249,8 @@ p {
   }
 
   .overview-hero {
-    --overview-hero-padding-block: var(--space-4);
-    --overview-hero-padding-inline: var(--space-4);
+    --overview-hero-padding-block: var(--space-6);
+    --overview-hero-padding-inline: var(--space-5);
   }
 }
 
@@ -9561,6 +9575,91 @@ p {
 .overview-expansion-soon-region {
   font-size: 0.72rem;
   color: var(--muted);
+}
+
+/* Overview — light mode polish */
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero {
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(216, 184, 93, 0.05), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), transparent 42%),
+    var(--surface);
+  border-color: var(--border);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero-stats {
+  border-top-color: var(--border);
+  background: color-mix(in srgb, var(--border-subtle) 55%, var(--surface-raised));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-stat {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--league-hub-hero-stat-shadow);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-stat-value {
+  color: var(--foreground);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero-search .slate-quick-lookup {
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-quick-lookup {
+  box-shadow: var(--card-shadow-light);
+  background: var(--surface);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-quick-lookup-input-row {
+  box-shadow: inset 0 1px 2px rgba(15, 23, 36, 0.06);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-quick-lookup-input-row:focus-within {
+  box-shadow:
+    inset 0 1px 2px rgba(15, 23, 36, 0.06),
+    0 0 0 2px color-mix(in srgb, var(--raptors) 14%, transparent);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-quick-lookup-league-badge,
+html[data-color="light"]:not([data-contrast="high"]) .slate-quick-lookup-chip-badge {
+  color: var(--muted-strong);
+  background: var(--surface-raised);
+  border-color: var(--border);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--live {
+  color: var(--metric-positive-ink);
+  background: color-mix(in srgb, var(--metric-positive-ink) 10%, transparent);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-live-status {
+  color: var(--metric-positive-ink);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--positive .overview-insight-hero-value {
+  color: var(--metric-positive-ink);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--negative .overview-insight-hero-value {
+  color: var(--metric-negative-ink);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quick-list {
+  background: var(--surface);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--coming-soon {
+  background: var(--surface-raised);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-soon {
+  background: var(--surface-raised);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-block,
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card,
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-card {
+  box-shadow: var(--card-shadow-light);
 }
 
 /* ── Compare officials + matrix share ── */
