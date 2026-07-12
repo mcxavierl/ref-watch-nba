@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { LeagueChooser } from "@/components/LeagueChooser";
 import { OverviewQuickLists } from "@/components/OverviewQuickLists";
@@ -11,7 +10,7 @@ import {
   type CatalogLeagueEntry,
 } from "@/lib/league-catalog";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
-import type { LeagueInsightCard, LeagueInsightTone } from "@/lib/league-overview-insights";
+import { OverviewInsightCard } from "@/components/OverviewInsightCard";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { OverviewSlateEntry } from "@/lib/overview-upcoming-slate";
@@ -54,88 +53,6 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
   }
 
   return <div className="overview-catalog-row overview-catalog-row--static">{inner}</div>;
-}
-
-function toneClass(tone: LeagueInsightTone): string {
-  if (tone === "positive") return "overview-insight-hero--positive";
-  if (tone === "negative") return "overview-insight-hero--negative";
-  return "overview-insight-hero--neutral";
-}
-
-function InsightCard({ card, index }: { card: LeagueInsightCard; index: number }) {
-  return (
-    <article
-      className="overview-insight-card"
-      data-league={card.leagueId}
-      style={{ "--insight-index": index } as CSSProperties}
-    >
-      <header className="overview-insight-card-head">
-        <div className="overview-insight-league">
-          <span className="overview-insight-league-mark" aria-hidden />
-          <span className="overview-insight-league-label">{card.shortLabel}</span>
-        </div>
-        <p className="overview-insight-kicker">{card.kicker}</p>
-      </header>
-
-      <div className={`overview-insight-hero ${toneClass(card.heroTone)}`}>
-        <span className="overview-insight-hero-value">{card.heroValue}</span>
-        <span className="overview-insight-hero-label">{card.heroLabel}</span>
-      </div>
-
-      <div className="overview-insight-body">
-        <h3 className="overview-insight-headline">
-          {card.entityHref && card.entityName ? (
-            <>
-              <Link href={card.entityHref}>{card.entityName}</Link>
-              {card.teamLabel ? (
-                <>
-                  {" "}
-                  <span className="overview-insight-team">× {card.teamLabel}</span>
-                </>
-              ) : null}
-            </>
-          ) : (
-            card.headline
-          )}
-        </h3>
-        <p className="overview-insight-story">{card.story}</p>
-      </div>
-
-      {card.stats.length > 0 ? (
-        <dl className="overview-insight-stats">
-          {card.stats.map((stat) => (
-            <div key={stat.label}>
-              <dt>{stat.label}</dt>
-              <dd>{stat.value}</dd>
-            </div>
-          ))}
-        </dl>
-      ) : null}
-
-      <footer className="overview-insight-footer">
-        {card.links.map((link, linkIndex) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={
-              linkIndex === 0
-                ? "overview-insight-link overview-insight-link--primary"
-                : "overview-insight-link"
-            }
-          >
-            {link.label}
-            {linkIndex === 0 ? <ArrowRight aria-hidden /> : null}
-          </Link>
-        ))}
-      </footer>
-
-      <Link
-        href={leagueHubHref(card.leagueId)}
-        className="overview-insight-card-cover"
-        aria-label={`Open ${card.label} hub`}
-      />
-    </article>
-  );
 }
 
 function SlateRow({ game }: { game: OverviewSlateEntry }) {
@@ -231,22 +148,24 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
           />
         </div>
 
-        <div className="overview-stats-row" aria-label="Dataset totals">
-          <div className="overview-stat">
-            <span className="overview-stat-label">Officials</span>
-            <span className="overview-stat-value">{formatCount(data.totalRefs)}</span>
-          </div>
-          <div className="overview-stat">
-            <span className="overview-stat-label">Live leagues</span>
-            <span className="overview-stat-value">{formatCount(liveCatalogCount())}</span>
-          </div>
-          <div className="overview-stat">
-            <span className="overview-stat-label">Matches</span>
-            <span className="overview-stat-value">{formatCount(data.totalGames)}</span>
-          </div>
-          <div className="overview-stat">
-            <span className="overview-stat-label">{data.whistleLabel}</span>
-            <span className="overview-stat-value">{formatCount(data.whistleEventsLogged)}</span>
+        <div className="overview-hero-stats" aria-label="Dataset totals">
+          <div className="overview-stats-row">
+            <div className="overview-stat">
+              <span className="overview-stat-label">Officials</span>
+              <span className="overview-stat-value">{formatCount(data.totalRefs)}</span>
+            </div>
+            <div className="overview-stat">
+              <span className="overview-stat-label">Live leagues</span>
+              <span className="overview-stat-value">{formatCount(liveCatalogCount())}</span>
+            </div>
+            <div className="overview-stat">
+              <span className="overview-stat-label">Matches</span>
+              <span className="overview-stat-value">{formatCount(data.totalGames)}</span>
+            </div>
+            <div className="overview-stat">
+              <span className="overview-stat-label">{data.whistleLabel}</span>
+              <span className="overview-stat-value">{formatCount(data.whistleEventsLogged)}</span>
+            </div>
           </div>
         </div>
       </section>
@@ -372,7 +291,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
 
             <div className="overview-insight-grid">
               {data.insightCards.map((card, index) => (
-                <InsightCard key={card.leagueId} card={card} index={index} />
+                <OverviewInsightCard key={card.leagueId} card={card} index={index} />
               ))}
             </div>
           </section>

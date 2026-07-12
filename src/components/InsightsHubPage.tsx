@@ -13,12 +13,12 @@ import { leagueHubHref, LEAGUES } from "@/lib/leagues";
 import {
   loadHubLeagueStats,
   loadLeagueStats,
-  loadScopedLeagueStats,
 } from "@/lib/load-league-stats";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { scopedBaselinesSeasons } from "@/lib/scoped-ref-stats";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
+import { computeFindings as computeNflFindings } from "@/lib/nfl/findings";
 import { computeResearchFindingsForLeague } from "@/lib/research";
 import { researchHubDatasetJsonLd } from "@/lib/syndication";
 import type { SeasonScopeMode } from "@/lib/season-scope";
@@ -90,9 +90,7 @@ export function InsightsHubPage({
   const scopeContext =
     activeView === "trends"
       ? loadTrendsScopeContext(leagueId, scopeMode)
-      : activeView === "tendencies"
-        ? loadHubLeagueStats(leagueId, scopeMode)
-        : loadScopedLeagueStats(leagueId, scopeMode);
+      : loadHubLeagueStats(leagueId, scopeMode);
 
   const {
     stats,
@@ -192,7 +190,13 @@ export function InsightsHubPage({
 
   let findingsPanel: ReactNode = null;
   if (activeView === "findings") {
-    const findings = computeResearchFindingsForLeague(dataLeague, scopedSeasons);
+    const findings =
+      leagueId === "nfl"
+        ? computeNflFindings(12, scopedSeasons, { hub: true }).map((finding) => ({
+            ...finding,
+            league: "NFL" as const,
+          }))
+        : computeResearchFindingsForLeague(dataLeague, scopedSeasons);
     findingsPanel = (
       <>
         <JsonLd

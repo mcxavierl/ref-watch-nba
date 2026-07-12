@@ -150,6 +150,7 @@ export function loadHubLeagueStats(
 export function loadScopedLeagueStats(
   leagueId: LeagueId,
   scopeMode: SeasonScopeMode,
+  options?: { teamAbbr?: string },
 ): ScopedLeagueStatsBundle {
   const { stats: full, formatRange } = loadLeagueStats(leagueId);
   const verification = resolveLeagueVerification(leagueId, full.meta);
@@ -167,7 +168,10 @@ export function loadScopedLeagueStats(
     verification.data_verified ||
     preview;
   const stats = canRender
-    ? buildScopedRefStats(leagueId, full, scopedSeasons)
+    ? buildScopedRefStats(leagueId, full, scopedSeasons, {
+        scopeMode,
+        teamAbbr: options?.teamAbbr,
+      })
     : { ...full, refs: [], teamSplits: {} };
   return {
     stats,

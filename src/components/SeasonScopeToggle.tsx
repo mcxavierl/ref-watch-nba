@@ -2,9 +2,9 @@
 
 import {
   SEASON_SCOPE_MODES,
-  NFL_SEASON_SCOPE_MODES,
   seasonScopeLabel,
   seasonScopeLabelForSeasons,
+  seasonScopeModesForLeague,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
 import type { LeagueId } from "@/lib/leagues";
@@ -19,8 +19,10 @@ type SeasonScopeToggleProps = {
   availableSeasons?: string[];
   /** Override pill set (defaults to standard three-mode toggle). */
   modes?: SeasonScopeMode[];
-  /** When set, NFL gets decade buckets by default. */
+  /** When set with Patriots team abbr, NFL gets decade buckets. */
   leagueId?: LeagueId;
+  /** Patriots-only era scope on NFL team pages. */
+  teamAbbr?: string;
 };
 
 export function SeasonScopeToggle({
@@ -30,12 +32,15 @@ export function SeasonScopeToggle({
   availableSeasons,
   modes,
   leagueId,
+  teamAbbr,
 }: SeasonScopeToggleProps) {
-  const { mode: urlMode, setMode } = useSeasonScope(leagueId);
+  const { mode: urlMode, setMode } = useSeasonScope({ leagueId, teamAbbr });
   const mode = controlledMode ?? urlMode;
   const options =
     modes ??
-    (leagueId === "nfl" ? NFL_SEASON_SCOPE_MODES : SEASON_SCOPE_MODES);
+    (leagueId
+      ? seasonScopeModesForLeague(leagueId, { teamAbbr })
+      : SEASON_SCOPE_MODES);
 
   function handleSelect(next: SeasonScopeMode) {
     if (onChange) {

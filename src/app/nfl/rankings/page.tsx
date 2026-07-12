@@ -14,7 +14,7 @@ export default async function NflRankingsPage({ searchParams }: PageProps) {
     <InsightsHubPage
       leagueId="nfl"
       defaultTab="tendencies"
-      scopeMode={readSeasonScopeParam(scope, "nfl")}
+      scopeMode={readSeasonScopeParam(scope)}
     />
   );
 }

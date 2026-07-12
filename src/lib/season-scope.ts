@@ -30,21 +30,61 @@ export const DEFAULT_SEASON_SCOPE_MODE: SeasonScopeMode = "last10";
 
 export const DEFAULT_NFL_SEASON_SCOPE_MODE: SeasonScopeMode = "era2020s";
 
+/** Patriots-only decade buckets for historical ref×team analysis. */
+export const PATRIOTS_ERA_TEAM_ABBR = "NE";
+
+export type SeasonScopeContext = {
+  teamAbbr?: string;
+};
+
+export function usesPatriotsEraScope(
+  leagueId?: LeagueId,
+  context?: SeasonScopeContext,
+): boolean {
+  return (
+    leagueId === "nfl" &&
+    context?.teamAbbr?.toUpperCase() === PATRIOTS_ERA_TEAM_ABBR
+  );
+}
+
+export function isEraScopeMode(mode: SeasonScopeMode): boolean {
+  return mode === "era2000s" || mode === "era2010s" || mode === "era2020s";
+}
+
+/** True only when a route must parse game logs and rebuild scoped stats (Worker-heavy). */
+export function needsGameLogRebuild(
+  leagueId: LeagueId,
+  scopeMode: SeasonScopeMode,
+  context?: SeasonScopeContext,
+): boolean {
+  if (leagueId === "nfl") {
+    return (
+      isEraScopeMode(scopeMode) && usesPatriotsEraScope(leagueId, context)
+    );
+  }
+  if (leagueId === "nba") return true;
+  return false;
+}
+
 export function parseSeasonScopeMode(
   raw: string | null | undefined,
   leagueId?: LeagueId,
+  context?: SeasonScopeContext,
 ): SeasonScopeMode {
+  if (raw === "current" || raw === "last5" || raw === "last10") {
+    return raw;
+  }
   if (
-    raw === "current" ||
-    raw === "last5" ||
-    raw === "last10" ||
     raw === "era2000s" ||
     raw === "era2010s" ||
     raw === "era2020s"
   ) {
-    return raw;
+    if (usesPatriotsEraScope(leagueId, context)) return raw;
+    return DEFAULT_SEASON_SCOPE_MODE;
   }
-  if (leagueId === "nfl") return DEFAULT_NFL_SEASON_SCOPE_MODE;
+  if (usesPatriotsEraScope(leagueId, context)) {
+    return DEFAULT_NFL_SEASON_SCOPE_MODE;
+  }
   return DEFAULT_SEASON_SCOPE_MODE;
 }
 
@@ -114,13 +154,21 @@ export function resolveScopedSeasonsForLeague(
   return resolveScopedSeasons(pool, mode);
 }
 
-export function seasonScopeModesForLeague(leagueId: LeagueId): SeasonScopeMode[] {
-  if (leagueId === "nfl") return NFL_SEASON_SCOPE_MODES;
+export function seasonScopeModesForLeague(
+  leagueId: LeagueId,
+  context?: SeasonScopeContext,
+): SeasonScopeMode[] {
+  if (usesPatriotsEraScope(leagueId, context)) return NFL_SEASON_SCOPE_MODES;
   return SEASON_SCOPE_MODES;
 }
 
-export function defaultSeasonScopeForLeague(leagueId: LeagueId): SeasonScopeMode {
-  if (leagueId === "nfl") return DEFAULT_NFL_SEASON_SCOPE_MODE;
+export function defaultSeasonScopeForLeague(
+  leagueId: LeagueId,
+  context?: SeasonScopeContext,
+): SeasonScopeMode {
+  if (usesPatriotsEraScope(leagueId, context)) {
+    return DEFAULT_NFL_SEASON_SCOPE_MODE;
+  }
   return DEFAULT_SEASON_SCOPE_MODE;
 }
 
@@ -176,6 +224,7 @@ export function isCurrentSeasonScope(mode: SeasonScopeMode): boolean {
 export function readSeasonScopeParam(
   scope: string | null | undefined,
   leagueId?: LeagueId,
+  context?: SeasonScopeContext,
 ): SeasonScopeMode {
-  return parseSeasonScopeMode(scope, leagueId);
+  return parseSeasonScopeMode(scope, leagueId, context);
 }

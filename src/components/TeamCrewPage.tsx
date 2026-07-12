@@ -30,7 +30,7 @@ import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import { getCachedTeamStrengthOfSchedule } from "@/lib/nba-team-sos-cache";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import type { SeasonScopeMode } from "@/lib/season-scope";
-import { DEFAULT_SEASON_SCOPE_MODE } from "@/lib/season-scope";
+import { DEFAULT_SEASON_SCOPE_MODE, usesPatriotsEraScope } from "@/lib/season-scope";
 
 const LEAGUE_MODULES = {
   nba: { data: nbaData, teams: nbaTeams, basePath: "", dataLeague: "NBA" as const, crewSize: "three", surface: "court" },
@@ -69,10 +69,11 @@ export function TeamCrewPage({
     scopeLabel,
     formatRange,
     availableSeasons,
-  } = loadScopedLeagueStats(league, scopeMode);
+  } = loadScopedLeagueStats(league, scopeMode, { teamAbbr: team.abbr });
 
   const isNhl = league === "nhl";
   const isNfl = league === "nfl" || league === "cfb";
+  const showPatriotsEra = usesPatriotsEraScope(league, { teamAbbr: team.abbr });
   const analyticsRefs = isNhl ? filterNhlReferees(stats.refs) : stats.refs;
   const splits = sortSplitsByGames(stats.teamSplits[team.abbr] ?? []);
   const refSplits = getTeamRefSplits(analyticsRefs, team.abbr);
@@ -135,13 +136,17 @@ export function TeamCrewPage({
           <span>{scopeLabel} ({formatRange(stats.meta)})</span>
         </p>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-          {isNfl ? (
+          {showPatriotsEra ? (
             <p className="text-sm font-medium text-muted-strong">Era scope</p>
           ) : (
             <span />
           )}
           <Suspense fallback={null}>
-            <SeasonScopeToggle leagueId={league} availableSeasons={availableSeasons} />
+            <SeasonScopeToggle
+              leagueId={showPatriotsEra ? league : undefined}
+              teamAbbr={showPatriotsEra ? team.abbr : undefined}
+              availableSeasons={availableSeasons}
+            />
           </Suspense>
         </div>
         {teamSos ? (

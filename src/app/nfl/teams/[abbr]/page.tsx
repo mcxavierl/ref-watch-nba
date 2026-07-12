@@ -41,7 +41,7 @@ export default async function NflTeamPage({
   return (
     <TeamCrewPage
       config={{ teamAbbr: team.abbr, league: "nfl" }}
-      scopeMode={readSeasonScopeParam(scope, "nfl")}
+      scopeMode={readSeasonScopeParam(scope, "nfl", { teamAbbr: team.abbr })}
     />
   );
 }

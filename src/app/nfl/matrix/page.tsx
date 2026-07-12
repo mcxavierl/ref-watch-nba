@@ -28,7 +28,7 @@ export const dynamic = "force-dynamic";
 export default async function NflMatrixPage({ searchParams }: PageProps) {
   await preloadLeagueRefStats(SITE_URL, "nfl");
   const { scope } = await searchParams;
-  const scopeMode = readSeasonScopeParam(scope, "nfl");
+  const scopeMode = readSeasonScopeParam(scope);
   const {
     stats,
     formatRange,
@@ -64,10 +64,7 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
           Team W-L when each of {matrix.refs.length} officials worked their
           games ({range}). Cells require {matrix.minGames}+ games in this
           dataset. Not predictions; see{" "}
-          <Link
-            href="/methodology"
-            className="font-medium text-zinc-200 hover:underline"
-          >
+          <Link href="/methodology" className="page-lead-link">
             methodology
           </Link>
           .
@@ -75,7 +72,7 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
         <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-zinc-400">{scopeLabel}</p>
           <Suspense fallback={null}>
-            <SeasonScopeToggle leagueId="nfl" availableSeasons={availableSeasons} />
+            <SeasonScopeToggle availableSeasons={availableSeasons} />
           </Suspense>
         </div>
         {stats.meta.source === "hybrid" && (

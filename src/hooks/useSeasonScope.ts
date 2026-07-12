@@ -6,18 +6,43 @@ import type { LeagueId } from "@/lib/leagues";
 import {
   defaultSeasonScopeForLeague,
   parseSeasonScopeMode,
+  type SeasonScopeContext,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
 
-export function useSeasonScope(leagueId?: LeagueId): {
+type UseSeasonScopeOptions = {
+  leagueId?: LeagueId;
+  teamAbbr?: string;
+};
+
+function resolveOptions(
+  options?: LeagueId | UseSeasonScopeOptions,
+): { leagueId?: LeagueId; context?: SeasonScopeContext } {
+  if (typeof options === "string") {
+    return { leagueId: options };
+  }
+  return {
+    leagueId: options?.leagueId,
+    context: options?.teamAbbr ? { teamAbbr: options.teamAbbr } : undefined,
+  };
+}
+
+export function useSeasonScope(
+  options?: LeagueId | UseSeasonScopeOptions,
+): {
   mode: SeasonScopeMode;
   setMode: (mode: SeasonScopeMode) => void;
 } {
+  const { leagueId, context } = resolveOptions(options);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const defaultMode = defaultSeasonScopeForLeague(leagueId ?? "nba");
-  const mode = parseSeasonScopeMode(searchParams?.get("scope") ?? null, leagueId);
+  const defaultMode = defaultSeasonScopeForLeague(leagueId ?? "nba", context);
+  const mode = parseSeasonScopeMode(
+    searchParams?.get("scope") ?? null,
+    leagueId,
+    context,
+  );
 
   const setMode = useCallback(
     (next: SeasonScopeMode) => {

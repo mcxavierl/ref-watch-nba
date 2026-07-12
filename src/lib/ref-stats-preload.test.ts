@@ -12,8 +12,9 @@ test("pathNeedsGameLogs enables scoped rebuild routes", () => {
   assert.equal(pathNeedsGameLogs("/nfl"), false);
   assert.equal(pathNeedsGameLogs("/matrix"), true);
   assert.equal(pathNeedsGameLogs("/teams/BOS"), true);
-  assert.equal(pathNeedsGameLogs("/nfl/matrix"), true);
+  assert.equal(pathNeedsGameLogs("/nfl/matrix"), false);
   assert.equal(pathNeedsGameLogs("/nfl/teams/NE"), true);
+  assert.equal(pathNeedsGameLogs("/nfl/teams/KC"), false);
   assert.equal(pathNeedsGameLogs("/nfl/refs"), false);
 });
 

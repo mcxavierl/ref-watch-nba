@@ -46,10 +46,7 @@ export default function CfbMatrixPage() {
           Team W-L when each of {matrix.refs.length} officials worked their
           games ({range}). Cells require {matrix.minGames}+ games in this
           dataset. Not predictions; see{" "}
-          <Link
-            href="/methodology"
-            className="font-medium text-zinc-200 hover:underline"
-          >
+          <Link href="/methodology" className="page-lead-link">
             methodology
           </Link>
           .

@@ -21,6 +21,9 @@ import {
   formatMatrixHighlightBaseline,
   type MatrixExtremeHighlight,
 } from "@/lib/ref-team-matrix";
+import {
+  insightDrilldownId,
+} from "@/lib/insight-drilldown-types";
 import { formatPct } from "@/lib/stats-utils";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
@@ -43,6 +46,10 @@ export type LeagueInsightCard = {
   entityName?: string;
   entityHref?: string;
   teamLabel?: string;
+  /** Matrix-edge drill-down lookup (client fetches static JSON shard). */
+  refSlug?: string;
+  teamAbbr?: string;
+  drilldownId?: string;
 };
 
 type LeagueInsightConfig = {
@@ -175,6 +182,13 @@ function cardFromMatrix(
     entityName: highlight.refName,
     entityHref: refHref(leagueId, highlight.refSlug),
     teamLabel: highlight.teamLabel,
+    refSlug: highlight.refSlug,
+    teamAbbr: highlight.teamAbbr,
+    drilldownId: insightDrilldownId(
+      leagueId,
+      highlight.refSlug,
+      highlight.teamAbbr,
+    ),
   };
 }
 

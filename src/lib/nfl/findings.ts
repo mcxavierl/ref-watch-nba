@@ -353,17 +353,25 @@ function buildNflFlagsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | n
   const a = best.nflAnalytics;
   return { id: "nfl-flags-outlier", category: "whistle-extreme", headline: `${best.name} flag pace outlier`, summary: `${best.name}: ${a.avgFlagsPerGame} flags/game.`, explainer: "NFL historical flags.", stats: [{ label: "Flags", value: String(a.avgFlagsPerGame), detail: `${formatSigned(a.flagsDelta)} vs ${leagueAvg}` }], sampleNote: `${best.games} games`, links: [{ label: best.name, href: `/nfl/refs/${best.slug}` }], score: rankScore(Math.abs(a.flagsDelta)/leagueAvg, best.games, MIN_REF_GAMES), sampleGames: best.games };
 }
-function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
+function collectCandidates(
+  stats: RefStatsFile,
+  options?: { hub?: boolean },
+): ScoredFindingBase[] {
+  const includeHeavy = !options?.hub;
   return [
     buildNflFlagsOutlierFinding(stats),
     buildLeagueSkewFinding(stats, NFL_FINDING_CTX),
-            teamCrewAnomalyFinding(stats),
+    teamCrewAnomalyFinding(stats),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
     scoringExtremesFinding(stats),
-    buildMatrixExtremeFinding(stats, NFL_FINDING_CTX, "high"),
-    buildMatrixExtremeFinding(stats, NFL_FINDING_CTX, "low"),
-    buildCrewDominanceFinding(stats, NFL_FINDING_CTX),
+    ...(includeHeavy
+      ? [
+          buildMatrixExtremeFinding(stats, NFL_FINDING_CTX, "high"),
+          buildMatrixExtremeFinding(stats, NFL_FINDING_CTX, "low"),
+          buildCrewDominanceFinding(stats, NFL_FINDING_CTX),
+        ]
+      : []),
     buildYoYTrendFinding(stats, NFL_FINDING_CTX),
     buildTeamHomeRoadFinding(stats, NFL_FINDING_CTX),
     buildCloseGameLeagueFinding(stats, NFL_FINDING_CTX),
@@ -382,19 +390,23 @@ function resolveStats(scopedSeasons?: string[]) {
 export function computeFindings(
   limit = 6,
   scopedSeasons?: string[],
+  options?: { hub?: boolean },
 ): Finding[] {
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  const ranked = rankScoredFindings(collectCandidates(stats));
+  const ranked = rankScoredFindings(collectCandidates(stats, options));
   return pickFeaturedFindings(ranked, limit);
 }
 
-export function computeAllFindings(scopedSeasons?: string[]): Finding[] {
+export function computeAllFindings(
+  scopedSeasons?: string[],
+  options?: { hub?: boolean },
+): Finding[] {
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  return rankScoredFindings(collectCandidates(stats))
+  return rankScoredFindings(collectCandidates(stats, options))
     .map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
       const { score, sampleGames, ...finding } = item;

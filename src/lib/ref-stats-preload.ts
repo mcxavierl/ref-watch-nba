@@ -252,8 +252,11 @@ export async function preloadLeagueDataForPath(
 export function pathNeedsGameLogs(pathname: string): boolean {
   const path = normalizeAppPathname(pathname);
   if (path === "/matrix" || path.startsWith("/teams/")) return true;
-  if (path.startsWith("/nfl/matrix") || path.startsWith("/nfl/teams/")) return true;
-  if (path.startsWith("/nhl/teams/") || path.startsWith("/nhl/matrix")) return true;
+  if (path.startsWith("/nhl/teams/") || path.startsWith("/nhl/matrix")) {
+    return true;
+  }
+  // Patriots era analysis only — not league-wide NFL matrix/teams (5MB logs + CPU rebuild).
+  if (path === "/nfl/teams/NE") return true;
   return false;
 }
 
