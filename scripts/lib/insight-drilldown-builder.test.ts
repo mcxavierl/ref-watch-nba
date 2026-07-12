@@ -17,13 +17,17 @@ test("overview drill-down shards include game rows for every live league", () =>
   }
 });
 
-test("NBA drill-down falls back to ref-stats recent games when logs miss officials", () => {
-  const nbaCard = cards.find((card) => card.leagueId === "nba");
+test("NBA Schwab drill-down uses verified game logs when available", () => {
+  const nbaCard = cards.find((card) => card.refSlug === "brandon-schwab-86");
   assert.ok(nbaCard);
   const payload = buildInsightDrilldownPayload(process.cwd(), nbaCard!);
   assert.ok(payload);
-  assert.ok(
-    payload.games.length > 0,
-    "NBA drill-down should use ref-stats fallback when game logs omit the official",
-  );
+  assert.ok(payload.games.length > 0);
+  const recordGames = payload.wins + payload.losses;
+  if (recordGames >= 8) {
+    assert.ok(
+      payload.games.length >= 8,
+      `expected at least 8 SAC games in drill-down, got ${payload.games.length}`,
+    );
+  }
 });

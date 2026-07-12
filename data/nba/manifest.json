@@ -1,0 +1,7 @@
+{
+  "data_verified": true,
+  "data_source": "Basketball-Reference + NBA Stats API",
+  "last_ingested_at": "2026-07-12T18:29:08.080Z",
+  "game_count": 12301,
+  "note": "Officials merged from BBR box scores; ref-stats preserved separately."
+}
