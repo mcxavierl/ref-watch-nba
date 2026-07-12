@@ -1,3 +1,46 @@
+import type { RefProfile, RefStatsFile } from "@/lib/types";
+
+export interface RefTeamScoringExtreme {
+  ref: RefProfile;
+  team: string;
+  avgTotal: number;
+  games: number;
+}
+
+/** Global hottest ref–team pair, then coldest from a different ref. */
+export function collectRefTeamScoringExtremes(
+  stats: RefStatsFile,
+  minTeamGames: number,
+): { hottest: RefTeamScoringExtreme; coldest: RefTeamScoringExtreme } | null {
+  let hottest: RefTeamScoringExtreme | undefined;
+
+  for (const ref of stats.refs) {
+    if (!ref.teamStats) continue;
+    for (const [team, st] of Object.entries(ref.teamStats)) {
+      if (st.games < minTeamGames) continue;
+      if (!hottest || st.avgTotalPoints > hottest.avgTotal) {
+        hottest = { ref, team, avgTotal: st.avgTotalPoints, games: st.games };
+      }
+    }
+  }
+
+  if (!hottest) return null;
+
+  let coldest: RefTeamScoringExtreme | undefined;
+  for (const ref of stats.refs) {
+    if (ref.slug === hottest.ref.slug || !ref.teamStats) continue;
+    for (const [team, st] of Object.entries(ref.teamStats)) {
+      if (st.games < minTeamGames) continue;
+      if (!coldest || st.avgTotalPoints < coldest.avgTotal) {
+        coldest = { ref, team, avgTotal: st.avgTotalPoints, games: st.games };
+      }
+    }
+  }
+
+  if (!coldest) return null;
+  return { hottest, coldest };
+}
+
 export type FindingCategory =
   | "league-trend"
   | "ref-outlier"
