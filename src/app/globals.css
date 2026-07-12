@@ -143,7 +143,7 @@
   --league-hub-hero-bg-end: #0d1016;
   --league-hub-hero-accent-glow: 10%;
   --league-hub-hero-watermark-color: #b8c0cc;
-  --league-hub-hero-watermark-opacity: 0.42;
+  --league-hub-hero-watermark-opacity: 0.28;
   --league-hub-hero-stat-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   --league-hub-hero-stat-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.45);
 
@@ -271,7 +271,7 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --league-hub-hero-bg-end: #e4e8ef;
   --league-hub-hero-accent-glow: 14%;
   --league-hub-hero-watermark-color: #64748b;
-  --league-hub-hero-watermark-opacity: 0.32;
+  --league-hub-hero-watermark-opacity: 0.2;
   --league-hub-hero-stat-shadow: 0 1px 3px rgba(15, 23, 36, 0.08);
   --league-hub-hero-stat-shadow-hover: 0 4px 14px rgba(15, 23, 36, 0.12);
 
@@ -4929,7 +4929,7 @@ p {
   }
 
   .league-hub-hero[data-league="nhl"] .league-hub-hero-watermark {
-    opacity: calc(var(--league-hub-hero-watermark-opacity) * 1.18);
+    opacity: var(--league-hub-hero-watermark-opacity);
   }
 
   .league-hub-hero[data-league="nfl"] .league-hub-hero-watermark-svg--nfl {
@@ -5041,7 +5041,7 @@ p {
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="nhl"] .league-hub-hero-watermark {
-    opacity: calc(var(--league-hub-hero-watermark-opacity) * 1.35);
+    opacity: var(--league-hub-hero-watermark-opacity);
     color: #7dd3fc;
   }
 
@@ -5063,11 +5063,26 @@ p {
 
   .league-hub-hero .page-lead {
     max-width: 48rem;
+    width: fit-content;
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+    background: color-mix(in srgb, var(--league-hub-hero-bg) 92%, var(--surface));
+    backdrop-filter: blur(10px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+    color: color-mix(in srgb, var(--foreground) 78%, var(--muted));
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero .page-lead {
+    border-color: var(--card-border-light, #e2e8f0);
+    background: color-mix(in srgb, #ffffff 96%, var(--league-hub-hero-bg));
+    box-shadow: var(--card-shadow-light, 0 8px 30px rgb(0 0 0 / 0.04));
+    color: #475569;
   }
 
   .league-hub-hero .season-scope-toggle {
     border-color: color-mix(in srgb, var(--border) 82%, transparent);
-    background: color-mix(in srgb, var(--league-hub-hero-bg) 90%, var(--surface));
+    background: color-mix(in srgb, var(--league-hub-hero-bg) 94%, var(--surface));
     backdrop-filter: blur(10px);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
   }
@@ -5089,7 +5104,7 @@ p {
 
   html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero .season-scope-toggle {
     border-color: var(--card-border-light, #e2e8f0);
-    background: color-mix(in srgb, #ffffff 94%, var(--league-hub-hero-bg));
+    background: color-mix(in srgb, #ffffff 98%, var(--league-hub-hero-bg));
     box-shadow: var(--card-shadow-light, 0 8px 30px rgb(0 0 0 / 0.04));
   }
 
