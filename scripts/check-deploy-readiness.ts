@@ -181,7 +181,7 @@ function checkWorkerPreloadContract(): void {
     fail("edge-preload.ts must merge team splits into ref-stats cache after preload");
   }
 
-  for (const league of ["nhl", "nfl", "epl", "laliga"] as const) {
+  for (const league of ["nhl", "nfl", "epl", "laliga", "nba"] as const) {
     const layoutPath = path.join(ROOT, `src/app/${league}/layout.tsx`);
     const layout = fs.readFileSync(layoutPath, "utf8");
     if (!layout.includes("preloadLeagueRefStats")) {

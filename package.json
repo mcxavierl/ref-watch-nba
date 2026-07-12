@@ -17,7 +17,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "tsx scripts/check-no-synthetic-imports.ts && tsx --test src/lib/finding-copy.test.ts src/lib/season-scope.test.ts src/lib/slate-hero-links.test.ts src/lib/nfl/data-source.test.ts scripts/nfl/lib/espn-season.test.ts src/lib/nba-team-season-records.test.ts src/lib/bbr-ref-team-records.test.ts src/lib/scoring-metrics.test.ts src/lib/nba-strength-of-schedule.test.ts src/lib/ref-number.test.ts src/lib/stats-query/stats-query.test.ts src/lib/ref-team-matrix.test.ts src/lib/json-asset-guards.test.ts src/lib/ref-stats-preload.test.ts src/lib/insights-routes.test.ts src/lib/ref-stats-bundled.test.ts src/lib/ref-stats-production.test.ts src/lib/deploy-readiness.test.ts scripts/lib/volume-regression.test.ts",
+    "test": "tsx scripts/check-no-synthetic-imports.ts && tsx --test src/lib/finding-copy.test.ts src/lib/season-scope.test.ts src/lib/slate-hero-links.test.ts src/lib/nfl/data-source.test.ts scripts/nfl/lib/espn-season.test.ts src/lib/nba-team-season-records.test.ts src/lib/bbr-ref-team-records.test.ts src/lib/scoring-metrics.test.ts src/lib/nba-strength-of-schedule.test.ts src/lib/ref-number.test.ts src/lib/stats-query/stats-query.test.ts src/lib/ref-team-matrix.test.ts src/lib/json-asset-guards.test.ts src/lib/ref-stats-preload.test.ts src/lib/insights-routes.test.ts src/lib/ref-stats-bundled.test.ts src/lib/ref-stats-production.test.ts src/lib/deploy-readiness.test.ts scripts/lib/volume-regression.test.ts scripts/lib/insight-drilldown-builder.test.ts",
     "fetch-assignments": "tsx scripts/fetch-assignments.ts",
     "fetch-odds": "tsx scripts/fetch-odds.ts",
     "morning-slate": "tsx scripts/morning-slate.ts",

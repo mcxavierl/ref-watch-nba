@@ -10,6 +10,7 @@ import {
 } from "../../src/lib/insight-drilldown-types";
 import type { RuntimeGameLogEntry } from "../../src/lib/game-logs-preload";
 import { LEAGUES, type LeagueId } from "../../src/lib/leagues";
+import type { RefGameRecord, RefProfile, RefStatsFile } from "../../src/lib/types";
 
 const DATA_LEAGUE: Record<
   (typeof import("../../src/lib/league-verification").VERIFIED_LIVE_LEAGUE_IDS)[number],
@@ -77,6 +78,120 @@ function loadLeagueGameLogs(
 
   const file = readJson<{ games: RuntimeGameLogEntry[] }>(filePath);
   return file?.games ?? [];
+}
+
+const REF_STATS_PATH: Partial<Record<LeagueId, string>> = {
+  nba: "data/ref-stats.json",
+  nhl: "data/nhl/ref-stats.json",
+  nfl: "data/nfl/ref-stats.json",
+  epl: "data/epl/ref-stats.json",
+  laliga: "data/laliga/ref-stats.json",
+};
+
+function loadLeagueRefStats(root: string, leagueId: LeagueId): RefStatsFile | null {
+  const rel = REF_STATS_PATH[leagueId];
+  if (!rel) return null;
+  const full = readJson<RefStatsFile>(path.join(root, rel));
+  if (full?.refs?.length) return full;
+  const coreRel =
+    leagueId === "nba" ? "data/ref-stats-core.json" : `data/${leagueId}/ref-stats-core.json`;
+  return readJson<RefStatsFile>(path.join(root, coreRel));
+}
+
+function findRefProfile(
+  stats: RefStatsFile,
+  refSlugValue: string,
+): RefProfile | undefined {
+  return stats.refs.find((ref) => ref.slug === refSlugValue);
+}
+
+function gameLogLookupKey(game: {
+  date: string;
+  homeTeam: string;
+  awayTeam: string;
+}): string {
+  return `${game.date}|${game.homeTeam}|${game.awayTeam}`;
+}
+
+function buildGameLogIndex(games: RuntimeGameLogEntry[]): {
+  byId: Map<string, RuntimeGameLogEntry>;
+  byTeamsDate: Map<string, RuntimeGameLogEntry>;
+} {
+  const byId = new Map<string, RuntimeGameLogEntry>();
+  const byTeamsDate = new Map<string, RuntimeGameLogEntry>();
+  for (const game of games) {
+    byId.set(game.gameId, game);
+    byTeamsDate.set(gameLogLookupKey(game), game);
+  }
+  return { byId, byTeamsDate };
+}
+
+function resolveScores(
+  record: RefGameRecord,
+  log: RuntimeGameLogEntry | undefined,
+  teamAbbr: string,
+): { teamScore: number; opponentScore: number; scoreLine: string; teamWon: boolean } {
+  const isHome = record.homeTeam === teamAbbr;
+
+  if (
+    log &&
+    typeof log.homeScore === "number" &&
+    typeof log.awayScore === "number"
+  ) {
+    const teamScore = isHome ? log.homeScore : log.awayScore;
+    const opponentScore = isHome ? log.awayScore : log.homeScore;
+    return {
+      teamScore,
+      opponentScore,
+      scoreLine: `${teamScore}-${opponentScore}`,
+      teamWon: teamScore > opponentScore,
+    };
+  }
+
+  return {
+    teamScore: 0,
+    opponentScore: 0,
+    scoreLine: `${record.totalPoints} pts`,
+    teamWon: false,
+  };
+}
+
+function buildDrilldownGamesFromRefRecent(
+  leagueId: LeagueId,
+  ref: RefProfile,
+  teamAbbr: string,
+  gameLogIndex: ReturnType<typeof buildGameLogIndex>,
+  limit = 10,
+): InsightDrilldownGame[] {
+  const whistleLabel = whistleLabelForLeague(leagueId);
+  const recent = (ref.recentGames ?? []).filter(
+    (game) => game.homeTeam === teamAbbr || game.awayTeam === teamAbbr,
+  );
+
+  return [...recent]
+    .sort((a, b) => b.date.localeCompare(a.date) || b.gameId.localeCompare(a.gameId))
+    .slice(0, limit)
+    .map((record) => {
+      const isHome = record.homeTeam === teamAbbr;
+      const log =
+        gameLogIndex.byId.get(record.gameId) ??
+        gameLogIndex.byTeamsDate.get(gameLogLookupKey(record));
+      const scores = resolveScores(record, log, teamAbbr);
+      return {
+        gameId: record.gameId,
+        date: record.date,
+        season: record.season,
+        isHome,
+        opponentLabel: isHome ? record.awayTeam : record.homeTeam,
+        teamScore: scores.teamScore,
+        opponentScore: scores.opponentScore,
+        scoreLine: scores.scoreLine,
+        whistleCount: record.totalFouls,
+        whistleLabel,
+        spreadCovered: log ? spreadCoveredForTeam(log, isHome) : null,
+        teamWon: scores.teamWon,
+      };
+    });
 }
 
 function whistleLabelForLeague(leagueId: LeagueId): string {
@@ -228,18 +343,42 @@ export function buildInsightDrilldownPayload(
     return involvesTeam && involvesRef;
   });
 
-  const tableGames = buildMatchupGames(
+  const gameLogIndex = buildGameLogIndex(games);
+  let tableGames = buildMatchupGames(
     leagueId,
     games,
     card.refSlug,
     card.teamAbbr,
   );
-  const homeRows = allMatchupGames
-    .filter((game) => game.homeTeam === card.teamAbbr)
-    .map((game) => ({ teamWon: game.homeScore > game.awayScore }));
-  const awayRows = allMatchupGames
-    .filter((game) => game.awayTeam === card.teamAbbr)
-    .map((game) => ({ teamWon: game.awayScore > game.homeScore }));
+  if (tableGames.length === 0) {
+    const refStats = loadLeagueRefStats(root, leagueId);
+    const refProfile =
+      refStats && findRefProfile(refStats, card.refSlug);
+    if (refProfile) {
+      tableGames = buildDrilldownGamesFromRefRecent(
+        leagueId,
+        refProfile,
+        card.teamAbbr,
+        gameLogIndex,
+      );
+    }
+  }
+  const homeRows =
+    allMatchupGames.length > 0
+      ? allMatchupGames
+          .filter((game) => game.homeTeam === card.teamAbbr)
+          .map((game) => ({ teamWon: game.homeScore > game.awayScore }))
+      : tableGames
+          .filter((game) => game.isHome)
+          .map((game) => ({ teamWon: game.teamWon }));
+  const awayRows =
+    allMatchupGames.length > 0
+      ? allMatchupGames
+          .filter((game) => game.awayTeam === card.teamAbbr)
+          .map((game) => ({ teamWon: game.awayScore > game.homeScore }))
+      : tableGames
+          .filter((game) => !game.isHome)
+          .map((game) => ({ teamWon: game.teamWon }));
 
   const record = parseRecord(
     card.stats.find((stat) => stat.label === "Ref×team record")?.value,
@@ -270,6 +409,9 @@ export function buildInsightDrilldownPayload(
     games: tableGames,
     homeSplit: venueSplit(homeRows),
     awaySplit: venueSplit(awayRows),
-    crewPartners: crewPartnersForGames(allMatchupGames, card.refSlug),
+    crewPartners:
+      allMatchupGames.length > 0
+        ? crewPartnersForGames(allMatchupGames, card.refSlug)
+        : [],
   };
 }
