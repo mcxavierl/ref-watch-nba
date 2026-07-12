@@ -4,8 +4,8 @@ import { RefComparePageClient } from "@/components/RefComparePageClient";
 import {
   buildCompareRefPicker,
   loadCompareRefBundle,
-  parseCompareRef,
-} from "@/lib/ref-compare";
+} from "@/lib/ref-compare-server";
+import { parseCompareRef } from "@/lib/ref-compare";
 import { hydrateScopedGameLogs } from "@/lib/scoped-game-log-hydrate";
 import { readSeasonScopeParam } from "@/lib/season-scope";
 import { buildPageMetadata } from "@/lib/seo";
