@@ -3,7 +3,7 @@ import { buildScopedRefStats } from "@/lib/scoped-ref-stats";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, CFB_TEAMS } from "@/lib/cfb/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
-import { rankScore } from "@/lib/findings-shared";
+import { collectRefTeamScoringExtremes, rankScore } from "@/lib/findings-shared";
 import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-significance";
 import {
   buildCloseGameLeagueFinding,
@@ -217,27 +217,9 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
 }
 
 function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
-  let hottest:
-    | { ref: RefProfile; team: string; avgTotal: number; games: number }
-    | undefined;
-  let coldest:
-    | { ref: RefProfile; team: string; avgTotal: number; games: number }
-    | undefined;
-
-  for (const ref of stats.refs) {
-    if (!ref.teamStats) continue;
-    for (const [team, st] of Object.entries(ref.teamStats)) {
-      if (st.games < MIN_TEAM_GAMES) continue;
-      if (!hottest || st.avgTotalPoints > hottest.avgTotal) {
-        hottest = { ref, team, avgTotal: st.avgTotalPoints, games: st.games };
-      }
-      if (!coldest || st.avgTotalPoints < coldest.avgTotal) {
-        coldest = { ref, team, avgTotal: st.avgTotalPoints, games: st.games };
-      }
-    }
-  }
-
-  if (!hottest || !coldest) return null;
+  const extremes = collectRefTeamScoringExtremes(stats, MIN_TEAM_GAMES);
+  if (!extremes) return null;
+  const { hottest, coldest } = extremes;
 
   const gap = hottest.avgTotal - coldest.avgTotal;
   const hotName = getTeam(hottest.team)
@@ -361,7 +343,11 @@ function buildNflFlagsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | n
   const a = best.cfbAnalytics;
   return { id: "cfb-flags-outlier", category: "whistle-extreme", headline: `${best.name} flag pace outlier`, summary: `${best.name}: ${a.avgFlagsPerGame} flags/game.`, explainer: "CFB historical flags.", stats: [{ label: "Flags", value: String(a.avgFlagsPerGame), detail: `${formatSigned(a.flagsDelta)} vs ${leagueAvg}` }], sampleNote: formatFindingSampleMeta(best.games, stats.meta.seasons), links: [{ label: best.name, href: `/cfb/refs/${best.slug}` }], score: rankScore(Math.abs(a.flagsDelta)/leagueAvg, best.games, MIN_REF_GAMES), sampleGames: best.games };
 }
-function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
+function collectCandidates(
+  stats: RefStatsFile,
+  options?: { hub?: boolean },
+): ScoredFindingBase[] {
+  const includeHeavy = !options?.hub;
   return [
     buildNflFlagsOutlierFinding(stats),
     buildLeagueSkewFinding(stats, CFB_FINDING_CTX),
@@ -369,12 +355,16 @@ function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
     scoringExtremesFinding(stats),
-    buildMatrixExtremeFinding(stats, CFB_FINDING_CTX, "high"),
-    buildMatrixExtremeFinding(stats, CFB_FINDING_CTX, "low"),
-    buildCrewDominanceFinding(stats, CFB_FINDING_CTX),
+    ...(includeHeavy
+      ? [
+          buildMatrixExtremeFinding(stats, CFB_FINDING_CTX, "high"),
+          buildMatrixExtremeFinding(stats, CFB_FINDING_CTX, "low"),
+          buildCrewDominanceFinding(stats, CFB_FINDING_CTX),
+          buildCloseGameLeagueFinding(stats, CFB_FINDING_CTX),
+        ]
+      : []),
     buildYoYTrendFinding(stats, CFB_FINDING_CTX),
     buildTeamHomeRoadFinding(stats, CFB_FINDING_CTX),
-    buildCloseGameLeagueFinding(stats, CFB_FINDING_CTX),
     buildWhistleOutlierFinding(stats, CFB_FINDING_CTX),
     buildOverRateOutlierFinding(stats, CFB_FINDING_CTX, "low"),
     scoringOutlierFinding(stats),
@@ -390,19 +380,23 @@ function resolveStats(scopedSeasons?: string[]) {
 export function computeFindings(
   limit = 6,
   scopedSeasons?: string[],
+  options?: { hub?: boolean },
 ): Finding[] {
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  const ranked = rankScoredFindings(collectCandidates(stats));
+  const ranked = rankScoredFindings(collectCandidates(stats, options));
   return pickFeaturedFindings(ranked, limit);
 }
 
-export function computeAllFindings(scopedSeasons?: string[]): Finding[] {
+export function computeAllFindings(
+  scopedSeasons?: string[],
+  options?: { hub?: boolean },
+): Finding[] {
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  return rankScoredFindings(collectCandidates(stats))
+  return rankScoredFindings(collectCandidates(stats, options))
     .map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
       const { score, sampleGames, ...finding } = item;

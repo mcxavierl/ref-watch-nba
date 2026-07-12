@@ -14,6 +14,7 @@ import type {
   ScoredFindingBase,
 } from "@/lib/findings-shared";
 import {
+  collectRefTeamScoringExtremes,
   FINDING_CATEGORY_LABELS,
   rankScore,
 } from "@/lib/findings-shared";
@@ -340,51 +341,9 @@ function foulEdgeLosingFinding(stats: RefStatsFile): ScoredFindingBase | null {
 }
 
 function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
-  let hottest:
-    | {
-        ref: RefProfile;
-        team: string;
-        avgTotal: number;
-        overRate: number;
-        games: number;
-      }
-    | undefined;
-  let coldest:
-    | {
-        ref: RefProfile;
-        team: string;
-        avgTotal: number;
-        overRate: number;
-        games: number;
-      }
-    | undefined;
-
-  for (const ref of stats.refs) {
-    if (!ref.teamStats) continue;
-    for (const [team, st] of Object.entries(ref.teamStats)) {
-      if (st.games < MIN_TEAM_GAMES) continue;
-      if (!hottest || st.avgTotalPoints > hottest.avgTotal) {
-        hottest = {
-          ref,
-          team,
-          avgTotal: st.avgTotalPoints,
-          overRate: st.overRate,
-          games: st.games,
-        };
-      }
-      if (!coldest || st.avgTotalPoints < coldest.avgTotal) {
-        coldest = {
-          ref,
-          team,
-          avgTotal: st.avgTotalPoints,
-          overRate: st.overRate,
-          games: st.games,
-        };
-      }
-    }
-  }
-
-  if (!hottest || !coldest) return null;
+  const extremes = collectRefTeamScoringExtremes(stats, MIN_TEAM_GAMES);
+  if (!extremes) return null;
+  const { hottest, coldest } = extremes;
 
   const hotTeam = getTeam(hottest.team)
     ? teamFullName(getTeam(hottest.team)!)
@@ -790,7 +749,11 @@ const NBA_FINDING_CTX: LeagueFindingContext = {
   })),
 };
 
-function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
+function collectCandidates(
+  stats: RefStatsFile,
+  options?: { hub?: boolean },
+): ScoredFindingBase[] {
+  const includeHeavy = !options?.hub;
   const refTeams = aggregateRefTeams(stats);
   const candidates: (ScoredFindingBase | null)[] = [
     leagueUnderFinding(stats),
@@ -804,12 +767,16 @@ function collectCandidates(stats: RefStatsFile): ScoredFindingBase[] {
     ouAtsEdgeFinding(stats),
     teamCrewAnomalyFinding(stats),
     scoringOutlierFinding(stats),
-    buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "high"),
-    buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "low"),
-    buildCrewDominanceFinding(stats, NBA_FINDING_CTX),
+    ...(includeHeavy
+      ? [
+          buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "high"),
+          buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "low"),
+          buildCrewDominanceFinding(stats, NBA_FINDING_CTX),
+          buildCloseGameLeagueFinding(stats, NBA_FINDING_CTX),
+        ]
+      : []),
     buildYoYTrendFinding(stats, NBA_FINDING_CTX),
     buildTeamHomeRoadFinding(stats, NBA_FINDING_CTX),
-    buildCloseGameLeagueFinding(stats, NBA_FINDING_CTX),
     buildWhistleOutlierFinding(stats, NBA_FINDING_CTX),
     buildOverRateOutlierFinding(stats, NBA_FINDING_CTX, "low"),
   ];
@@ -825,19 +792,23 @@ function resolveStats(scopedSeasons?: string[]) {
 export function computeFindings(
   limit = 6,
   scopedSeasons?: string[],
+  options?: { hub?: boolean },
 ): Finding[] {
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  const ranked = rankScoredFindings(collectCandidates(stats));
+  const ranked = rankScoredFindings(collectCandidates(stats, options));
   return pickFeaturedFindings(ranked, limit);
 }
 
-export function computeAllFindings(scopedSeasons?: string[]): Finding[] {
+export function computeAllFindings(
+  scopedSeasons?: string[],
+  options?: { hub?: boolean },
+): Finding[] {
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  return rankScoredFindings(collectCandidates(stats))
+  return rankScoredFindings(collectCandidates(stats, options))
     .map((item) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
       const { score, sampleGames, ...finding } = item;

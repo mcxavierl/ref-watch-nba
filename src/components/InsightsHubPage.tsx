@@ -18,8 +18,13 @@ import { resolveLeagueVerification } from "@/lib/league-verification";
 import { scopedBaselinesSeasons } from "@/lib/scoped-ref-stats";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
+import { computeFindings as computeNbaFindings } from "@/lib/findings";
+import { computeFindings as computeCbbFindings } from "@/lib/cbb/findings";
+import { computeFindings as computeCfbFindings } from "@/lib/cfb/findings";
+import { computeFindings as computeEplFindings } from "@/lib/epl/findings";
+import { computeFindings as computeLaligaFindings } from "@/lib/laliga/findings";
 import { computeFindings as computeNflFindings } from "@/lib/nfl/findings";
-import { computeResearchFindingsForLeague } from "@/lib/research";
+import { computeFindings as computeNhlFindings } from "@/lib/nhl/findings";
 import { researchHubDatasetJsonLd } from "@/lib/syndication";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import {
@@ -29,10 +34,30 @@ import {
 } from "@/lib/season-scope";
 import { buildYoYNarrative, seasonRowsFromBaselines } from "@/lib/trends";
 import { RANKINGS_PAGE_LEAD } from "@/lib/trust-charter";
-import type { FindingLeague } from "@/lib/findings-shared";
+import type { Finding, FindingLeague } from "@/lib/findings-shared";
 import type { SeasonBaseline } from "../../scripts/lib/baselines";
 
 type InsightsLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+
+const HUB_FINDINGS_COMPUTERS: Record<
+  InsightsLeagueId,
+  (limit: number, scopedSeasons: string[]) => Finding[]
+> = {
+  nba: (limit, scopedSeasons) =>
+    computeNbaFindings(limit, scopedSeasons, { hub: true }),
+  nhl: (limit, scopedSeasons) =>
+    computeNhlFindings(limit, scopedSeasons, { hub: true }),
+  nfl: (limit, scopedSeasons) =>
+    computeNflFindings(limit, scopedSeasons, { hub: true }),
+  epl: (limit, scopedSeasons) =>
+    computeEplFindings(limit, scopedSeasons, { hub: true }),
+  laliga: (limit, scopedSeasons) =>
+    computeLaligaFindings(limit, scopedSeasons, { hub: true }),
+  cbb: (limit, scopedSeasons) =>
+    computeCbbFindings(limit, scopedSeasons, { hub: true }),
+  cfb: (limit, scopedSeasons) =>
+    computeCfbFindings(limit, scopedSeasons, { hub: true }),
+};
 
 type InsightsHubPageProps = {
   leagueId: InsightsLeagueId;
@@ -194,13 +219,12 @@ export function InsightsHubPage({
 
   let findingsPanel: ReactNode = null;
   if (activeView === "findings") {
-    const findings =
-      leagueId === "nfl"
-        ? computeNflFindings(12, scopedSeasons, { hub: true }).map((finding) => ({
-            ...finding,
-            league: "NFL" as const,
-          }))
-        : computeResearchFindingsForLeague(dataLeague, scopedSeasons);
+    const findings = HUB_FINDINGS_COMPUTERS[leagueId](12, scopedSeasons).map(
+      (finding) => ({
+        ...finding,
+        league: dataLeague,
+      }),
+    );
     findingsPanel = (
       <>
         <JsonLd

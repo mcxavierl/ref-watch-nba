@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { computeFindings } from "@/lib/nfl/findings";
+import { computeAllFindings as computeNhlFindings } from "@/lib/nhl/findings";
 import {
   leaguesForPath,
   pathNeedsGameLogs,
@@ -57,4 +58,21 @@ test("leaguesForPath scopes preload to the active league", () => {
 
 test("computeFindings returns empty when scoped stats have no refs", () => {
   assert.deepEqual(computeFindings(6, ["2099-00"]), []);
+});
+
+test("hub mode skips matrix, crew-dominance, and close-game findings (Worker 1102 guard)", () => {
+  const full = computeNhlFindings();
+  const hub = computeNhlFindings(undefined, { hub: true });
+  assert.ok(full.length > 0);
+  assert.ok(hub.length > 0);
+
+  const heavyPattern = /matrix|crew-dominance|close-game/;
+  assert.ok(
+    full.some((finding) => heavyPattern.test(finding.id)),
+    "full findings should include at least one heavy builder",
+  );
+  assert.ok(
+    !hub.some((finding) => heavyPattern.test(finding.id)),
+    "hub findings must skip matrix, crew-dominance, and close-game builders",
+  );
 });

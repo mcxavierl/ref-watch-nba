@@ -3,7 +3,7 @@ import { buildScopedRefStats } from "@/lib/scoped-ref-stats";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, NFL_TEAMS } from "@/lib/nfl/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
-import { rankScore } from "@/lib/findings-shared";
+import { collectRefTeamScoringExtremes, rankScore } from "@/lib/findings-shared";
 import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-significance";
 import {
   buildCloseGameLeagueFinding,
@@ -217,27 +217,9 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
 }
 
 function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
-  let hottest:
-    | { ref: RefProfile; team: string; avgTotal: number; games: number }
-    | undefined;
-  let coldest:
-    | { ref: RefProfile; team: string; avgTotal: number; games: number }
-    | undefined;
-
-  for (const ref of stats.refs) {
-    if (!ref.teamStats) continue;
-    for (const [team, st] of Object.entries(ref.teamStats)) {
-      if (st.games < MIN_TEAM_GAMES) continue;
-      if (!hottest || st.avgTotalPoints > hottest.avgTotal) {
-        hottest = { ref, team, avgTotal: st.avgTotalPoints, games: st.games };
-      }
-      if (!coldest || st.avgTotalPoints < coldest.avgTotal) {
-        coldest = { ref, team, avgTotal: st.avgTotalPoints, games: st.games };
-      }
-    }
-  }
-
-  if (!hottest || !coldest) return null;
+  const extremes = collectRefTeamScoringExtremes(stats, MIN_TEAM_GAMES);
+  if (!extremes) return null;
+  const { hottest, coldest } = extremes;
 
   const gap = hottest.avgTotal - coldest.avgTotal;
   const hotName = getTeam(hottest.team)
@@ -378,11 +360,11 @@ function collectCandidates(
           buildMatrixExtremeFinding(stats, NFL_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(stats, NFL_FINDING_CTX, "low"),
           buildCrewDominanceFinding(stats, NFL_FINDING_CTX),
+          buildCloseGameLeagueFinding(stats, NFL_FINDING_CTX),
         ]
       : []),
     buildYoYTrendFinding(stats, NFL_FINDING_CTX),
     buildTeamHomeRoadFinding(stats, NFL_FINDING_CTX),
-    buildCloseGameLeagueFinding(stats, NFL_FINDING_CTX),
     buildWhistleOutlierFinding(stats, NFL_FINDING_CTX),
     buildOverRateOutlierFinding(stats, NFL_FINDING_CTX, "low"),
     scoringOutlierFinding(stats),

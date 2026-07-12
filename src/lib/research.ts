@@ -38,7 +38,10 @@ export function computeAllResearchFindings(): ResearchFinding[] {
 }
 
 const LEAGUE_FINDING_COMPUTERS: Partial<
-  Record<FindingLeague, (scopedSeasons?: string[]) => Finding[]>
+  Record<
+    FindingLeague,
+    (scopedSeasons?: string[], options?: { hub?: boolean }) => Finding[]
+  >
 > = {
   NBA: computeNbaFindings,
   NHL: computeNhlFindings,
@@ -52,10 +55,11 @@ const LEAGUE_FINDING_COMPUTERS: Partial<
 export function computeResearchFindingsForLeague(
   league: FindingLeague,
   scopedSeasons?: string[],
+  options?: { hub?: boolean },
 ): ResearchFinding[] {
   const compute = LEAGUE_FINDING_COMPUTERS[league];
   if (!compute) return [];
-  return tagResearchFindings(compute(scopedSeasons), league);
+  return tagResearchFindings(compute(scopedSeasons, options), league);
 }
 
 export function getResearchFindingById(
