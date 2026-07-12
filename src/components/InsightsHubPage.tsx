@@ -9,7 +9,7 @@ import { RefRankingsTable } from "@/components/RefRankingsTable";
 import { ResearchHubFindings } from "@/components/ResearchHubFindings";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { getBaselinesFile } from "@/lib/baselines";
-import { LEAGUES } from "@/lib/leagues";
+import { leagueHubHref, LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { resolveLeagueVerification } from "@/lib/league-verification";
 import { scopedBaselinesSeasons } from "@/lib/scoped-ref-stats";
@@ -54,7 +54,7 @@ export function InsightsHubPage({
     !verification.data_verified &&
     (leagueId === "cbb" || leagueId === "cfb");
   const range = formatRange(stats.meta);
-  const homeHref = league.pathPrefix || "/";
+  const homeHref = leagueHubHref(leagueId);
   const dataLeague = insightsDataLeague(leagueId);
   const findings = computeResearchFindingsForLeague(dataLeague, scopedSeasons);
   const baselines = getBaselinesFile();

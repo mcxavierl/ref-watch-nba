@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Atkinson_Hyperlegible, Barlow, IBM_Plex_Sans } from "next/font/google";
+import { Atkinson_Hyperlegible, Inter, Space_Grotesk } from "next/font/google";
 import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { JsonLd } from "@/components/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -14,17 +14,17 @@ import { assertProductionLeagueVerification } from "@/lib/production-verificatio
 import { normalizeAppPathname } from "@/lib/json-asset-guards";
 import "./globals.css";
 
-const barlow = Barlow({
-  variable: "--font-barlow",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const plexSans = IBM_Plex_Sans({
-  variable: "--font-plex-sans",
-  weight: ["400", "500", "600", "700"],
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -94,7 +94,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${barlow.variable} ${plexSans.variable} ${atkinson.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
+        className={`${spaceGrotesk.variable} ${inter.variable} ${atkinson.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
       >
         <a href="#main-content" className="skip-to-main">
           Skip to content

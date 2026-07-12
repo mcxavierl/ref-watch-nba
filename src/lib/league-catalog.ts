@@ -41,7 +41,7 @@ export const PREVIEW_CATALOG_LEAGUE_IDS = ["cbb", "cfb"] as const satisfies read
  * Coming-soon entries are roadmap only: no routes, no header switcher, no data loaders.
  */
 export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
-  { id: "nba", label: "NBA", region: "USA", sport: "basketball", status: "live", leagueId: "nba", href: "/", sort: 1 },
+  { id: "nba", label: "NBA", region: "USA", sport: "basketball", status: "live", leagueId: "nba", href: "/nba", sort: 1 },
   { id: "wnba", label: "WNBA", region: "USA", sport: "basketball", status: "coming-soon", sort: 2 },
   { id: "nhl", label: "NHL", region: "North America", sport: "hockey", status: "live", leagueId: "nhl", href: "/nhl", sort: 10 },
   { id: "nfl", label: "NFL", region: "USA", sport: "football", status: "live", leagueId: "nfl", href: "/nfl", sort: 20 },

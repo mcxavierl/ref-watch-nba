@@ -68,6 +68,7 @@ export function TeamCrewPage({
     sinceSeason,
     scopeLabel,
     formatRange,
+    availableSeasons,
   } = loadScopedLeagueStats(league, scopeMode);
 
   const isNhl = league === "nhl";
@@ -133,9 +134,14 @@ export function TeamCrewPage({
           <span className="mx-2 text-zinc-300">·</span>
           <span>{scopeLabel} ({formatRange(stats.meta)})</span>
         </p>
-        <div className="mt-3 flex flex-wrap justify-end">
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+          {isNfl ? (
+            <p className="text-sm font-medium text-muted-strong">Era scope</p>
+          ) : (
+            <span />
+          )}
           <Suspense fallback={null}>
-            <SeasonScopeToggle />
+            <SeasonScopeToggle leagueId={league} availableSeasons={availableSeasons} />
           </Suspense>
         </div>
         {teamSos ? (

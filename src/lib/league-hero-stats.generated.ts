@@ -12,9 +12,9 @@ export const LEAGUE_HERO_STATS: Record<string, LeagueHeroStatsSnapshot> = {
     "seasonSpan": "Last 10 seasons"
   },
   "nfl": {
-    "officials": 211,
-    "games": 2757,
-    "seasonSpan": "Last 10 seasons"
+    "officials": 264,
+    "games": 6825,
+    "seasonSpan": "Last 26 seasons"
   },
   "nhl": {
     "officials": 123,

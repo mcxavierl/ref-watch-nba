@@ -269,26 +269,52 @@ export const LEAGUES: Record<LeagueId, LeagueConfig> = {
 };
 
 export function leagueFromPathname(pathname: string): LeagueId {
+  const path = pathname.split("?")[0];
+  if (path === "/nba" || path.startsWith("/nba/")) {
+    return "nba";
+  }
   for (const id of LEAGUE_IDS) {
     const prefix = LEAGUES[id].pathPrefix;
-    if (prefix && (pathname === prefix || pathname.startsWith(`${prefix}/`))) {
+    if (prefix && (path === prefix || path.startsWith(`${prefix}/`))) {
       return id;
     }
   }
   return "nba";
 }
 
+/** Site landing page — multi-league overview hub. */
+export const SITE_HOME_PATH = "/";
+
+export function isOverviewPath(pathname: string): boolean {
+  const path = pathname.split("?")[0].replace(/\/$/, "") || "/";
+  return path === SITE_HOME_PATH || path === "/overview";
+}
+
+/** League slate hub (distinct from SITE_HOME_PATH for NBA). */
+export function leagueHubHref(leagueId: LeagueId): string {
+  if (leagueId === "nba") return "/nba";
+  const prefix = LEAGUES[leagueId].pathPrefix;
+  return prefix || "/nba";
+}
+
+/** Header sport switcher: no league highlighted on the overview hub. */
+export function headerActiveLeague(pathname: string): LeagueId | null {
+  if (isOverviewPath(pathname)) return null;
+  return leagueFromPathname(pathname);
+}
+
 export function leagueHref(leagueId: LeagueId, segment: string): string {
   const prefix = LEAGUES[leagueId].pathPrefix;
-  if (!segment || segment === "/") return prefix || "/";
+  if (!segment || segment === "/") return leagueHubHref(leagueId);
   const path = segment.startsWith("/") ? segment : `/${segment}`;
   return `${prefix}${path}`;
 }
 
 export function leagueNavLinks(leagueId: LeagueId) {
   const base = LEAGUES[leagueId].pathPrefix;
+  const hub = leagueHubHref(leagueId);
   return [
-    { href: base || "/", label: "Slate" },
+    { href: hub, label: "Slate" },
     { href: `${base}/rankings`, label: "Rankings" },
     { href: `${base}/teams`, label: "Teams" },
     { href: `${base}/refs`, label: "Refs" },

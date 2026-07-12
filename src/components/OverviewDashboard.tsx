@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { ArrowRight, CalendarDays } from "lucide-react";
+import { LeagueChooser } from "@/components/LeagueChooser";
 import { OverviewQuickLists } from "@/components/OverviewQuickLists";
 import { SlateQuickLookup } from "@/components/SlateQuickLookup";
 import {
@@ -12,7 +13,7 @@ import {
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import type { LeagueInsightCard, LeagueInsightTone } from "@/lib/league-overview-insights";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
-import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { OverviewSlateEntry } from "@/lib/overview-upcoming-slate";
 
 function formatCount(n: number): string {
@@ -62,8 +63,6 @@ function toneClass(tone: LeagueInsightTone): string {
 }
 
 function InsightCard({ card, index }: { card: LeagueInsightCard; index: number }) {
-  const leagueMeta = LEAGUES[card.leagueId];
-
   return (
     <article
       className="overview-insight-card"
@@ -131,7 +130,7 @@ function InsightCard({ card, index }: { card: LeagueInsightCard; index: number }
       </footer>
 
       <Link
-        href={leagueMeta.pathPrefix || "/"}
+        href={leagueHubHref(card.leagueId)}
         className="overview-insight-card-cover"
         aria-label={`Open ${card.label} hub`}
       />
@@ -251,6 +250,8 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
           </div>
         </div>
       </section>
+
+      <LeagueChooser cards={data.leagueCards} />
 
       <div className="overview-layout">
         <aside className="overview-sidebar" aria-label="Competitions and lists">
@@ -450,7 +451,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
             </div>
             <div className="overview-expansion-grid">
               {VERIFIED_LIVE_LEAGUE_IDS.map((id) => (
-                <Link key={id} href={LEAGUES[id].pathPrefix || "/"} className="overview-expansion-live">
+                <Link key={id} href={leagueHubHref(id)} className="overview-expansion-live">
                   <span className="overview-expansion-live-label">{LEAGUES[id].label}</span>
                   <span className="overview-expansion-live-status">Live</span>
                 </Link>

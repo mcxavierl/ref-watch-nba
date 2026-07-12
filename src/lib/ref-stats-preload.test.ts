@@ -7,10 +7,14 @@ import {
   pathNeedsTeamSplits,
 } from "@/lib/ref-stats-preload";
 
-test("pathNeedsGameLogs is disabled in production Workers", () => {
+test("pathNeedsGameLogs enables scoped rebuild routes", () => {
   assert.equal(pathNeedsGameLogs("/"), false);
-  assert.equal(pathNeedsGameLogs("/matrix"), false);
   assert.equal(pathNeedsGameLogs("/nfl"), false);
+  assert.equal(pathNeedsGameLogs("/matrix"), true);
+  assert.equal(pathNeedsGameLogs("/teams/BOS"), true);
+  assert.equal(pathNeedsGameLogs("/nfl/matrix"), true);
+  assert.equal(pathNeedsGameLogs("/nfl/teams/NE"), true);
+  assert.equal(pathNeedsGameLogs("/nfl/refs"), true);
 });
 
 test("pathNeedsTeamSplits skips ref hubs and static pages", () => {
@@ -19,6 +23,7 @@ test("pathNeedsTeamSplits skips ref hubs and static pages", () => {
   assert.equal(pathNeedsTeamSplits("/nfl/refs"), false);
   assert.equal(pathNeedsTeamSplits("/nfl/refs/scott-blank"), false);
   assert.equal(pathNeedsTeamSplits("/"), false);
+  assert.equal(pathNeedsTeamSplits("/nba"), false);
   assert.equal(pathNeedsTeamSplits("/nfl"), false);
   assert.equal(pathNeedsTeamSplits("/nhl"), false);
   assert.equal(pathNeedsTeamSplits("/nfl/matrix"), true);
@@ -38,11 +43,13 @@ test("pathNeedsTeamSplits skips insight and research hubs", () => {
 });
 
 test("leaguesForPath scopes preload to the active league", () => {
+  assert.deepEqual(leaguesForPath("/"), []);
   assert.deepEqual(leaguesForPath("/overview"), []);
+  assert.deepEqual(leaguesForPath("/nba"), ["nba"]);
   assert.deepEqual(leaguesForPath("/nfl"), ["nfl"]);
   assert.deepEqual(leaguesForPath("/laliga/insights"), ["laliga"]);
   assert.deepEqual(leaguesForPath("/research"), ["nba"]);
-  assert.deepEqual(leaguesForPath(""), ["nba"]);
+  assert.deepEqual(leaguesForPath(""), []);
   assert.deepEqual(leaguesForPath("/not-a-route"), ["nba"]);
 });
 

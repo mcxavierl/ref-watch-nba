@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
-import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { AssignmentsFile } from "@/lib/types";
 
 export type OverviewSlateStatus = "live" | "scheduled";
@@ -58,7 +58,7 @@ function pushEntry(
     leagueId,
     leagueLabel: league.label,
     leagueShortLabel: league.shortLabel,
-    href: league.pathPrefix || "/",
+    href: leagueHubHref(leagueId),
     gameId: game.id,
     matchup: game.matchup,
     awayTeam: game.awayTeam,

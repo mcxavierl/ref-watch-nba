@@ -246,7 +246,7 @@ export function buildNbaNightlyFeed(): NightlyFeed {
     isPreview,
     assignmentsSource: assignments.source,
     statsSource: stats.meta.source,
-    pageUrl: absoluteUrl("/"),
+    pageUrl: absoluteUrl("/nba"),
     disclaimer: SYNDICATION_DISCLAIMER,
     signals,
   });

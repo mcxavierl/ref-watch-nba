@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
+import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import {
   formatRefStatsRange,
-  getRefStats,
   getTeamSplits,
 } from "@/lib/nfl/data";
 import { preloadLeagueRefStats } from "@/lib/edge-preload";
@@ -13,13 +14,29 @@ import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("nfl", "matrix");
 import { LEAGUES } from "@/lib/leagues";
+import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 import { NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
 
-export default async function NflMatrixPage() {
+type PageProps = {
+  searchParams: Promise<{ scope?: string }>;
+};
+
+export const dynamic = "force-dynamic";
+
+export default async function NflMatrixPage({ searchParams }: PageProps) {
   await preloadLeagueRefStats(SITE_URL, "nfl");
-  const stats = getRefStats();
-  const range = formatRefStatsRange(stats.meta);
+  const { scope } = await searchParams;
+  const scopeMode = readSeasonScopeParam(scope, "nfl");
+  const {
+    stats,
+    formatRange,
+    sinceSeason,
+    scopeLabel,
+    availableSeasons,
+  } = loadScopedLeagueStats("nfl", scopeMode);
+  const range = formatRange(stats.meta);
   const espn = stats.meta.source === "espn" || stats.meta.source === "hybrid";
   const league = LEAGUES.nfl;
 
@@ -32,7 +49,7 @@ export default async function NflMatrixPage() {
     })),
     getTeamSplits,
     undefined,
-    { league: "nfl", filterEmptyRows: true },
+    { league: "nfl", filterEmptyRows: true, sinceSeason },
   );
   const extremes = computeMatrixExtremes(matrix);
 
@@ -55,6 +72,12 @@ export default async function NflMatrixPage() {
           </Link>
           .
         </p>
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-zinc-400">{scopeLabel}</p>
+          <Suspense fallback={null}>
+            <SeasonScopeToggle leagueId="nfl" availableSeasons={availableSeasons} />
+          </Suspense>
+        </div>
         {stats.meta.source === "hybrid" && (
           <p className="text-sm text-emerald-300/90">
             Ref×team W-L rebuilt from ESPN game logs; penalty and scoring splits

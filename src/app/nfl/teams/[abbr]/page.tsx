@@ -3,12 +3,14 @@ import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
 import { getTeam, NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
-
-export const dynamic = "force-static";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 
 export function generateStaticParams() {
   return NFL_TEAMS.map((team) => ({ abbr: team.abbr }));
 }
+
+/** Scope query params require request-time rendering. */
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -26,12 +28,20 @@ export async function generateMetadata({
 
 export default async function NflTeamPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ abbr: string }>;
+  searchParams: Promise<{ scope?: string }>;
 }) {
   const { abbr } = await params;
+  const { scope } = await searchParams;
   const team = getTeam(abbr);
   if (!team) notFound();
 
-  return <TeamCrewPage config={{ teamAbbr: team.abbr, league: "nfl" }} />;
+  return (
+    <TeamCrewPage
+      config={{ teamAbbr: team.abbr, league: "nfl" }}
+      scopeMode={readSeasonScopeParam(scope, "nfl")}
+    />
+  );
 }

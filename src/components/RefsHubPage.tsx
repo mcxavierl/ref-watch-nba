@@ -13,12 +13,12 @@ import {
   computeCrewDominance,
   crewDominanceSummary,
 } from "@/lib/crew-dominance";
-import { LEAGUES } from "@/lib/leagues";
+import { leagueHubHref, LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { linesmanSlugSet } from "@/lib/nhl/officials";
 import { buildRefsDirectoryContext } from "@/lib/refs-directory";
 import type { SeasonScopeMode } from "@/lib/season-scope";
-import { DEFAULT_SEASON_SCOPE_MODE } from "@/lib/season-scope";
+import { defaultSeasonScopeForLeague } from "@/lib/season-scope";
 import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 
 type RefsHubPageProps = {
@@ -30,17 +30,17 @@ type RefsHubPageProps = {
 export function RefsHubPage({
   leagueId,
   defaultTab = "refs",
-  scopeMode = DEFAULT_SEASON_SCOPE_MODE,
+  scopeMode = defaultSeasonScopeForLeague(leagueId),
 }: RefsHubPageProps) {
   const league = LEAGUES[leagueId];
-  const { stats, formatRange, scopeLabel } = loadScopedLeagueStats(
+  const { stats, formatRange, scopeLabel, availableSeasons } = loadScopedLeagueStats(
     leagueId,
     scopeMode,
   );
   const range = formatRange(stats.meta);
   const ctx = buildRefsDirectoryContext(stats, league);
   const entries = computeCrewDominance(stats);
-  const homeHref = league.pathPrefix || "/";
+  const homeHref = leagueHubHref(leagueId);
   const linesmen =
     leagueId === "nhl" ? linesmanSlugSet(stats.refs) : undefined;
   const seeded = stats.meta.source === "seeded";
@@ -51,7 +51,7 @@ export function RefsHubPage({
         {scopeLabel} ({range})
       </p>
       <Suspense fallback={null}>
-        <SeasonScopeToggle />
+        <SeasonScopeToggle leagueId={leagueId} availableSeasons={availableSeasons} />
       </Suspense>
     </div>
   );

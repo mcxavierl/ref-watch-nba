@@ -28,6 +28,7 @@ const DATA_LEAGUE_FOR_ROUTE: Record<
 export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
   const path = normalizeAppPathname(pathname);
   if (path.startsWith("/overview")) return;
+  if (path === "/") return;
 
   try {
     await preloadLeagueDataForPath(SITE_URL, path);

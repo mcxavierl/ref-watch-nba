@@ -5,7 +5,13 @@ import {
 } from "@/lib/league-seasons";
 import type { LeagueId } from "@/lib/leagues";
 
-export type SeasonScopeMode = "current" | "last5" | "last10";
+export type SeasonScopeMode =
+  | "current"
+  | "last5"
+  | "last10"
+  | "era2000s"
+  | "era2010s"
+  | "era2020s";
 
 export const SEASON_SCOPE_MODES: SeasonScopeMode[] = [
   "current",
@@ -13,13 +19,38 @@ export const SEASON_SCOPE_MODES: SeasonScopeMode[] = [
   "last10",
 ];
 
+/** NFL decade buckets requested for historical ref×team analysis. */
+export const NFL_SEASON_SCOPE_MODES: SeasonScopeMode[] = [
+  "era2020s",
+  "era2010s",
+  "era2000s",
+];
+
 export const DEFAULT_SEASON_SCOPE_MODE: SeasonScopeMode = "last10";
+
+export const DEFAULT_NFL_SEASON_SCOPE_MODE: SeasonScopeMode = "era2020s";
 
 export function parseSeasonScopeMode(
   raw: string | null | undefined,
+  leagueId?: LeagueId,
 ): SeasonScopeMode {
-  if (raw === "current" || raw === "last5" || raw === "last10") return raw;
+  if (
+    raw === "current" ||
+    raw === "last5" ||
+    raw === "last10" ||
+    raw === "era2000s" ||
+    raw === "era2010s" ||
+    raw === "era2020s"
+  ) {
+    return raw;
+  }
+  if (leagueId === "nfl") return DEFAULT_NFL_SEASON_SCOPE_MODE;
   return DEFAULT_SEASON_SCOPE_MODE;
+}
+
+function seasonStartYear(label: string): number | null {
+  const start = Number.parseInt(label.split("-")[0] ?? "", 10);
+  return Number.isFinite(start) ? start : null;
 }
 
 export function resolveScopedSeasons(
@@ -36,6 +67,21 @@ export function resolveScopedSeasons(
       return sorted.slice(-5);
     case "last10":
       return sorted.slice(-10);
+    case "era2000s":
+      return sorted.filter((season) => {
+        const start = seasonStartYear(season);
+        return start !== null && start >= 2000 && start <= 2009;
+      });
+    case "era2010s":
+      return sorted.filter((season) => {
+        const start = seasonStartYear(season);
+        return start !== null && start >= 2010 && start <= 2019;
+      });
+    case "era2020s":
+      return sorted.filter((season) => {
+        const start = seasonStartYear(season);
+        return start !== null && start >= 2020;
+      });
     default:
       return sorted;
   }
@@ -68,6 +114,16 @@ export function resolveScopedSeasonsForLeague(
   return resolveScopedSeasons(pool, mode);
 }
 
+export function seasonScopeModesForLeague(leagueId: LeagueId): SeasonScopeMode[] {
+  if (leagueId === "nfl") return NFL_SEASON_SCOPE_MODES;
+  return SEASON_SCOPE_MODES;
+}
+
+export function defaultSeasonScopeForLeague(leagueId: LeagueId): SeasonScopeMode {
+  if (leagueId === "nfl") return DEFAULT_NFL_SEASON_SCOPE_MODE;
+  return DEFAULT_SEASON_SCOPE_MODE;
+}
+
 export function seasonScopeLabel(mode: SeasonScopeMode): string {
   switch (mode) {
     case "current":
@@ -76,6 +132,12 @@ export function seasonScopeLabel(mode: SeasonScopeMode): string {
       return "Last 5 seasons";
     case "last10":
       return "Last 10 seasons";
+    case "era2000s":
+      return "2000–2010";
+    case "era2010s":
+      return "2010–2020";
+    case "era2020s":
+      return "2020–now";
   }
 }
 
@@ -84,18 +146,16 @@ export function seasonScopeLabelForSeasons(
   mode: SeasonScopeMode,
   availableSeasons: string[],
 ): string {
+  if (mode === "era2000s" || mode === "era2010s" || mode === "era2020s") {
+    const count = resolveScopedSeasons(availableSeasons, mode).length;
+    if (count === 0) return seasonScopeLabel(mode);
+    return `${seasonScopeLabel(mode)} (${count} seasons)`;
+  }
   return formatSeasonScope(resolveScopedSeasons(availableSeasons, mode).length);
 }
 
 export function formatSeasonScopeFromMode(mode: SeasonScopeMode): string {
-  switch (mode) {
-    case "current":
-      return "This season";
-    case "last5":
-      return "Last 5 seasons";
-    case "last10":
-      return "Last 10 seasons";
-  }
+  return seasonScopeLabel(mode);
 }
 
 export function formatSeasonScope(seasonCount: number): string {
@@ -115,6 +175,7 @@ export function isCurrentSeasonScope(mode: SeasonScopeMode): boolean {
 
 export function readSeasonScopeParam(
   scope: string | null | undefined,
+  leagueId?: LeagueId,
 ): SeasonScopeMode {
-  return parseSeasonScopeMode(scope);
+  return parseSeasonScopeMode(scope, leagueId);
 }

@@ -1,6 +1,6 @@
 # Honesty audit
 
-Generated: 2026-07-10T17:01:04.723Z
+Generated: 2026-07-11T20:01:13.338Z
 
 Counts reflect provenance tags that would be shown in the UI (ref profiles, betting splits, slate crew metrics).
 
@@ -18,28 +18,28 @@ No honesty violations flagged.
 ## NHL
 
 - Data source: **nhl-api**
-- Ref profiles: **120**
+- Ref profiles: **123**
 - League baseline fallback: **no**
-- Displayed metrics: **558** real · **126** partial · **0** estimated (684 total)
-- Refs below sample gate: **42**
-- Over-rate metrics marked estimated/partial: **42** / 120
+- Displayed metrics: **711** real · **21** partial · **0** estimated (732 total)
+- Refs below sample gate: **7**
+- Over-rate metrics marked estimated/partial: **7** / 123
 
 No honesty violations flagged.
 ## NFL
 
 - Data source: **espn**
-- Ref profiles: **208**
-- League baseline fallback: **yes**
-- Displayed metrics: **208** real · **0** partial · **0** estimated (208 total)
+- Ref profiles: **211**
+- League baseline fallback: **no**
+- Displayed metrics: **211** real · **0** partial · **0** estimated (211 total)
 
 No honesty violations flagged.
 
 ## CBB
 
-- Data source: **seeded**
-- Ref profiles: **0**
+- Data source: **espn**
+- Ref profiles: **386**
 - League baseline fallback: **yes**
-- Displayed metrics: **0** real · **0** partial · **0** estimated (0 total)
+- Displayed metrics: **386** real · **0** partial · **0** estimated (386 total)
 
 No honesty violations flagged.
 
@@ -56,7 +56,7 @@ No honesty violations flagged.
 
 - Data source: **football-data**
 - Ref profiles: **48**
-- League baseline fallback: **yes**
+- League baseline fallback: **no**
 - Displayed metrics: **0** real · **0** partial · **0** estimated (48 total)
 
 No honesty violations flagged.
@@ -67,9 +67,9 @@ No honesty violations flagged.
 | League | Real | Partial | Estimated | Total | Issues |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | NBA | 109 | 0 | 327 | 436 | 0 |
-| NHL | 558 | 126 | 0 | 684 | 0 |
-| NFL | 208 | 0 | 0 | 208 | 0 |
-| CBB | 0 | 0 | 0 | 0 | 0 |
+| NHL | 711 | 21 | 0 | 732 | 0 |
+| NFL | 211 | 0 | 0 | 211 | 0 |
+| CBB | 386 | 0 | 0 | 386 | 0 |
 | CFB | 0 | 0 | 0 | 0 | 0 |
 | EPL | 0 | 0 | 0 | 48 | 0 |
 

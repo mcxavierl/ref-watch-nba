@@ -2,10 +2,12 @@
 
 import {
   SEASON_SCOPE_MODES,
+  NFL_SEASON_SCOPE_MODES,
   seasonScopeLabel,
   seasonScopeLabelForSeasons,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
+import type { LeagueId } from "@/lib/leagues";
 import { useSeasonScope } from "@/hooks/useSeasonScope";
 
 type SeasonScopeToggleProps = {
@@ -15,6 +17,10 @@ type SeasonScopeToggleProps = {
   onChange?: (mode: SeasonScopeMode) => void;
   /** Full season pool for honest toggle labels (e.g. last10 with 5 seasons → "Last 5 seasons"). */
   availableSeasons?: string[];
+  /** Override pill set (defaults to standard three-mode toggle). */
+  modes?: SeasonScopeMode[];
+  /** When set, NFL gets decade buckets by default. */
+  leagueId?: LeagueId;
 };
 
 export function SeasonScopeToggle({
@@ -22,9 +28,14 @@ export function SeasonScopeToggle({
   mode: controlledMode,
   onChange,
   availableSeasons,
+  modes,
+  leagueId,
 }: SeasonScopeToggleProps) {
-  const { mode: urlMode, setMode } = useSeasonScope();
+  const { mode: urlMode, setMode } = useSeasonScope(leagueId);
   const mode = controlledMode ?? urlMode;
+  const options =
+    modes ??
+    (leagueId === "nfl" ? NFL_SEASON_SCOPE_MODES : SEASON_SCOPE_MODES);
 
   function handleSelect(next: SeasonScopeMode) {
     if (onChange) {
@@ -40,7 +51,7 @@ export function SeasonScopeToggle({
       role="group"
       aria-label="Season scope"
     >
-      {SEASON_SCOPE_MODES.map((option) => (
+      {options.map((option) => (
         <button
           key={option}
           type="button"

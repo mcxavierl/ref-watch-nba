@@ -101,9 +101,9 @@
   --measure-prose: 65ch;
   --measure-narrow: 42ch;
 
-  --font-heading: var(--font-barlow), system-ui, sans-serif;
-  --font-body: var(--font-plex-sans), system-ui, sans-serif;
-  --font-data: var(--font-plex-sans), system-ui, sans-serif;
+  --font-heading: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-data: var(--font-inter), system-ui, sans-serif;
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
   --duration-fast: 150ms;
 
@@ -146,6 +146,12 @@
   --league-hub-hero-watermark-opacity: 0.22;
   --league-hub-hero-stat-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   --league-hub-hero-stat-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.45);
+
+  /* Sport watermark line colors (hero SVG) */
+  --sport-line-red: #fca5a5;
+  --sport-line-blue: #93c5fd;
+  --sport-surface-tint: transparent;
+  --meta-updated-ink: var(--header-gold);
 }
 
 @theme inline {
@@ -217,13 +223,13 @@ html[data-text="large"] {
 }
 
 html[data-body-font="atkinson"] body {
-  font-family: var(--font-atkinson), var(--font-plex-sans), system-ui, sans-serif;
+  font-family: var(--font-atkinson), var(--font-inter), system-ui, sans-serif;
 }
 
 html[data-body-font="atkinson"] {
-  --font-heading: var(--font-atkinson), var(--font-barlow), system-ui, sans-serif;
-  --font-body: var(--font-atkinson), var(--font-plex-sans), system-ui, sans-serif;
-  --font-data: var(--font-atkinson), var(--font-plex-sans), system-ui, sans-serif;
+  --font-heading: var(--font-atkinson), var(--font-space-grotesk), system-ui, sans-serif;
+  --font-body: var(--font-atkinson), var(--font-inter), system-ui, sans-serif;
+  --font-data: var(--font-atkinson), var(--font-inter), system-ui, sans-serif;
 }
 
 /* Light colour mode — analytics desk in daylight */
@@ -268,6 +274,22 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --league-hub-hero-watermark-opacity: 0.16;
   --league-hub-hero-stat-shadow: 0 1px 3px rgba(15, 23, 36, 0.08);
   --league-hub-hero-stat-shadow-hover: 0 4px 14px rgba(15, 23, 36, 0.12);
+
+  /* Readable tertiary meta in light mode — amber/slate blend */
+  --header-gold: #b45309;
+  --header-gold-bright: #92400e;
+  --header-gold-deep: #78350f;
+  --meta-updated-ink: #92400e;
+
+  /* Sport watermark — icy/cool tones for NHL, crisp lines everywhere */
+  --sport-line-red: #fecaca;
+  --sport-line-blue: #bfdbfe;
+  --sport-surface-tint: rgba(186, 230, 253, 0.12);
+
+  /* Premium card depth */
+  --card-border-light: rgba(226, 232, 240, 0.6);
+  --card-shadow-light: 0 8px 30px rgb(0 0 0 / 0.02);
+  --card-shadow-light-hover: 0 12px 36px rgb(0 0 0 / 0.04);
 
   --color-white: #ffffff;
   --color-zinc-50: #fafafa;
@@ -510,7 +532,7 @@ p {
     font-family: var(--font-heading);
     font-size: var(--text-2xl);
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
     line-height: var(--leading-snug);
     color: var(--ink-secondary);
     min-width: 0;
@@ -552,7 +574,8 @@ p {
     font-size: var(--text-sm);
     font-variant-numeric: tabular-nums;
     font-weight: 500;
-    color: var(--header-gold);
+    letter-spacing: -0.01em;
+    color: var(--meta-updated-ink);
   }
 
   .page-meta .page-meta-updated {
@@ -563,7 +586,7 @@ p {
     font-family: var(--font-heading);
     font-size: var(--text-lg);
     font-weight: 700;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
     line-height: var(--leading-snug);
     color: var(--ink-secondary);
     text-wrap: balance;
@@ -1172,6 +1195,8 @@ p {
     font-family: var(--font-data);
     font-variant-numeric: tabular-nums;
     font-weight: 600;
+    letter-spacing: -0.015em;
+    font-feature-settings: "tnum" 1, "ss01" 1;
   }
 
   .section-kicker {
@@ -1466,6 +1491,18 @@ p {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   }
 
+  html[data-color="light"]:not([data-contrast="high"]) .browse-action-card {
+    border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
+    background: #ffffff;
+    box-shadow: var(--card-shadow-light, 0 8px 30px rgb(0 0 0 / 0.02));
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .browse-action-card:hover {
+    border-color: color-mix(in srgb, var(--header-sapphire) 14%, #e2e8f0);
+    background: #ffffff;
+    box-shadow: var(--card-shadow-light-hover, 0 12px 36px rgb(0 0 0 / 0.04));
+  }
+
   .browse-action-card:focus-visible {
     outline: 2px solid color-mix(in srgb, var(--header-sapphire) 50%, var(--border));
   }
@@ -1544,6 +1581,18 @@ p {
     border-color: color-mix(in srgb, var(--header-sapphire) 28%, var(--border));
     background: color-mix(in srgb, var(--header-sapphire) 3%, var(--surface));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .browse-action-compact-card {
+    border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
+    background: #ffffff;
+    box-shadow: var(--card-shadow-light, 0 8px 30px rgb(0 0 0 / 0.02));
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .browse-action-compact-card:hover {
+    border-color: color-mix(in srgb, var(--header-sapphire) 14%, #e2e8f0);
+    background: #ffffff;
+    box-shadow: var(--card-shadow-light-hover, 0 12px 36px rgb(0 0 0 / 0.04));
   }
 
   .browse-action-compact-card:focus-visible {
@@ -2564,10 +2613,11 @@ p {
 
   @media (min-width: 768px) {
     .site-header-inner {
-      display: flex;
-      flex-wrap: nowrap;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-rows: auto auto;
       align-items: center;
-      gap: 1rem;
+      gap: 0.55rem 1rem;
       padding-block: 0.45rem;
     }
   }
@@ -2624,27 +2674,44 @@ p {
 
   @media (min-width: 768px) {
     .site-header-brand {
-      order: 1;
-    }
-
-    .site-header-nav {
-      flex: 1 1 auto;
-      display: flex;
-      justify-content: center;
-      min-width: 0;
-      width: auto;
-      order: 2;
+      grid-column: 1;
+      grid-row: 1;
     }
 
     .site-header-league {
-      order: 3;
-      width: auto;
-      max-width: min(100%, 22rem);
+      grid-column: 2;
+      grid-row: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: none;
     }
 
     .site-header-util {
-      order: 4;
+      grid-column: 3;
+      grid-row: 1;
       gap: 0.55rem;
+    }
+
+    .site-header-nav {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      display: flex;
+      justify-content: center;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .site-header-league .league-nav {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .site-header-league .league-nav-scroll {
+      width: auto;
+      max-width: 100%;
     }
   }
 
@@ -2657,35 +2724,39 @@ p {
   }
 
   .site-global-link {
+    --header-pill-accent: var(--header-gold);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 2rem;
-    padding: 0.2rem 0.55rem;
+    padding: 0.35rem 0.85rem;
     border-radius: 999px;
     border: 1px solid transparent;
     font-size: 0.72rem;
     font-weight: 650;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--header-muted);
+    color: color-mix(in srgb, var(--header-ink) 78%, transparent);
     white-space: nowrap;
     transition:
       color 160ms ease,
       border-color 160ms ease,
-      background-color 160ms ease;
+      background-color 160ms ease,
+      box-shadow 160ms ease;
   }
 
   .site-global-link:hover {
     color: var(--header-ink);
-    border-color: rgba(148, 163, 184, 0.22);
-    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(148, 163, 184, 0.16);
+    background: var(--header-surface-hover);
   }
 
   .site-global-link--active {
     color: var(--header-ink);
-    border-color: rgba(216, 184, 93, 0.35);
-    background: rgba(216, 184, 93, 0.08);
+    font-weight: 700;
+    background: color-mix(in srgb, var(--header-pill-accent) 16%, rgba(255, 255, 255, 0.06));
+    border-color: color-mix(in srgb, var(--header-pill-accent) 32%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .site-global-link:focus-visible {
@@ -3128,7 +3199,7 @@ p {
   .league-nav-links {
     display: inline-flex;
     align-items: center;
-    gap: 0.2rem;
+    gap: 0.15rem;
     min-width: min-content;
     padding-block: 0.1rem;
   }
@@ -3189,11 +3260,25 @@ p {
   }
 
   .league-nav-link--active {
+    --header-pill-accent: var(--league-accent, var(--header-gold));
     color: var(--header-ink);
     font-weight: 700;
-    background: color-mix(in srgb, var(--league-accent, var(--header-gold)) 16%, rgba(255, 255, 255, 0.06));
-    border-color: color-mix(in srgb, var(--league-accent, var(--header-gold)) 32%, transparent);
+    background: color-mix(in srgb, var(--header-pill-accent) 16%, rgba(255, 255, 255, 0.06));
+    border-color: color-mix(in srgb, var(--header-pill-accent) 32%, transparent);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-nav-link--active {
+    background: color-mix(in srgb, var(--header-pill-accent) 10%, #ffffff);
+    border-color: color-mix(in srgb, var(--header-pill-accent) 22%, #e2e8f0);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-nav-link:hover {
+    border-color: rgba(148, 163, 184, 0.28);
+    background: rgba(241, 245, 249, 0.85);
   }
 
   .league-nav-link:focus-visible {
@@ -3626,10 +3711,11 @@ p {
   }
 
   .slate-quick-lookup-chip {
+    --chip-padding-inline: 1rem;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem var(--chip-padding-inline);
     border-radius: 999px;
     border: 1px solid var(--border);
     background: var(--surface);
@@ -3715,6 +3801,24 @@ p {
     background: color-mix(in srgb, var(--raptors) 4%, var(--surface));
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.42);
     transform: translateY(-1px);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .slate-feature-showcase-card {
+    border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
+    background: #ffffff;
+    box-shadow: var(--card-shadow-light, 0 8px 30px rgb(0 0 0 / 0.02));
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .slate-feature-showcase-card:hover {
+    border-color: color-mix(in srgb, var(--raptors) 18%, #e2e8f0);
+    background: #ffffff;
+    box-shadow: var(--card-shadow-light-hover, 0 12px 36px rgb(0 0 0 / 0.04));
+    transform: translateY(-1px);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .slate-feature-showcase-icon {
+    border-color: color-mix(in srgb, var(--raptors) 16%, #e2e8f0);
+    background: color-mix(in srgb, var(--raptors) 5%, #f8fafc);
   }
 
   .slate-feature-showcase-card:focus-visible {
@@ -3927,6 +4031,20 @@ p {
     background: rgba(216, 184, 93, 0.16);
     border-color: rgba(216, 184, 93, 0.34);
     box-shadow: inset 0 1px 0 rgba(255, 240, 167, 0.12);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .site-nav-link--active {
+    color: #92400e;
+    background: rgba(251, 191, 36, 0.14);
+    border-color: rgba(217, 119, 6, 0.22);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.85),
+      0 1px 2px rgba(15, 23, 42, 0.03);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .site-nav-link:hover {
+    border-color: rgba(148, 163, 184, 0.22);
+    background: rgba(241, 245, 249, 0.9);
   }
 
   .site-nav-link:focus-visible {
@@ -4494,6 +4612,24 @@ p {
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--header-sapphire) 30%, var(--border));
   }
 
+  html[data-color="light"]:not([data-contrast="high"]) .refs-directory-metric-toggle {
+    border-color: var(--card-border-light, #e2e8f0);
+    background: #ffffff;
+    box-shadow: var(--card-shadow-light, 0 8px 30px rgb(0 0 0 / 0.02));
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .refs-directory-metric-btn-active {
+    background: #f1f5f9;
+    color: #1e293b;
+    box-shadow:
+      inset 0 0 0 1px rgba(148, 163, 184, 0.35),
+      0 1px 2px rgba(15, 23, 42, 0.03);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .refs-directory-metric-btn:hover {
+    color: #334155;
+  }
+
   @media (max-width: 639px) {
     .refs-directory-toolbar {
       padding: var(--space-4);
@@ -4614,8 +4750,8 @@ p {
 
   .page-hero-slate .page-title {
     font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 800;
-    letter-spacing: -0.035em;
+    font-weight: 700;
+    letter-spacing: -0.04em;
     line-height: 1.05;
     text-wrap: balance;
   }
@@ -4648,6 +4784,23 @@ p {
     );
     pointer-events: none;
     z-index: 0;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero-inner::after {
+    opacity: 0.55;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--league-accent) 8%, transparent),
+      transparent 68%
+    );
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="nhl"] .league-hub-hero-inner::after {
+    background: radial-gradient(
+      circle,
+      rgba(186, 230, 253, 0.25),
+      transparent 68%
+    );
   }
 
   .league-hub-hero-inner {
@@ -4710,6 +4863,121 @@ p {
 
   .league-hub-hero-watermark-svg--nhl {
     color: color-mix(in srgb, var(--nhl-blue) 35%, var(--league-hub-hero-watermark-color));
+  }
+
+  /* ── Sport-specific hero atmospheres ── */
+  .league-hub-hero[data-league="nhl"] {
+    --sport-surface-tint: rgba(186, 230, 253, 0.1);
+  }
+
+  .league-hub-hero[data-league="nfl"],
+  .league-hub-hero[data-league="cfb"] {
+    --sport-surface-tint: rgba(52, 211, 153, 0.07);
+  }
+
+  .league-hub-hero[data-league="epl"],
+  .league-hub-hero[data-league="laliga"] {
+    --sport-surface-tint: rgba(74, 222, 128, 0.06);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="nhl"] {
+    --league-hub-hero-bg-start: #f0f9ff;
+    --league-hub-hero-bg: #e8f4fc;
+    --league-hub-hero-bg-end: #dbeafe;
+    --league-hub-hero-accent-glow: 0%;
+    --sport-line-red: #fecaca;
+    --sport-line-blue: #bfdbfe;
+    --sport-surface-tint: rgba(186, 230, 253, 0.18);
+    background:
+      radial-gradient(
+        ellipse 75% 65% at 72% 38%,
+        rgba(186, 230, 253, 0.3),
+        transparent 58%
+      ),
+      radial-gradient(
+        ellipse 55% 50% at 85% 55%,
+        rgba(165, 243, 252, 0.2),
+        transparent 52%
+      ),
+      linear-gradient(
+        165deg,
+        var(--league-hub-hero-bg-start) 0%,
+        var(--league-hub-hero-bg) 48%,
+        var(--league-hub-hero-bg-end) 100%
+      );
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="nba"],
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="cbb"] {
+    background:
+      radial-gradient(
+        ellipse 70% 60% at 72% 40%,
+        color-mix(in srgb, var(--league-accent) 8%, transparent),
+        transparent 58%
+      ),
+      linear-gradient(
+        165deg,
+        var(--league-hub-hero-bg-start) 0%,
+        var(--league-hub-hero-bg) 48%,
+        var(--league-hub-hero-bg-end) 100%
+      );
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="nfl"],
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="cfb"] {
+    --league-hub-hero-bg-start: #f4f8f5;
+    --league-hub-hero-bg: #eef4ef;
+    --league-hub-hero-bg-end: #e4ece5;
+    --league-hub-hero-accent-glow: 6%;
+    --sport-surface-tint: rgba(134, 239, 172, 0.12);
+    background:
+      radial-gradient(
+        ellipse 70% 60% at 72% 40%,
+        rgba(187, 247, 208, 0.22),
+        transparent 58%
+      ),
+      linear-gradient(
+        165deg,
+        var(--league-hub-hero-bg-start) 0%,
+        var(--league-hub-hero-bg) 48%,
+        var(--league-hub-hero-bg-end) 100%
+      );
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="epl"],
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="laliga"] {
+    --league-hub-hero-bg-start: #f3f7f4;
+    --league-hub-hero-bg: #ecf2ed;
+    --league-hub-hero-bg-end: #e2ebe4;
+    --league-hub-hero-accent-glow: 5%;
+    --sport-surface-tint: rgba(134, 239, 172, 0.1);
+    background:
+      radial-gradient(
+        ellipse 70% 60% at 72% 40%,
+        rgba(187, 247, 208, 0.18),
+        transparent 58%
+      ),
+      linear-gradient(
+        165deg,
+        var(--league-hub-hero-bg-start) 0%,
+        var(--league-hub-hero-bg) 48%,
+        var(--league-hub-hero-bg-end) 100%
+      );
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="nhl"] .league-hub-hero-watermark {
+    opacity: calc(var(--league-hub-hero-watermark-opacity) * 1.35);
+    color: #7dd3fc;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="nfl"] .league-hub-hero-watermark-svg--nfl,
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="cfb"] .league-hub-hero-watermark-svg--nfl {
+    color: color-mix(in srgb, #6ee7b7 45%, #94a3b8);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="epl"] .league-hub-hero-watermark-svg--soccer,
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="laliga"] .league-hub-hero-watermark-svg--soccer {
+    color: color-mix(in srgb, #6ee7b7 40%, #94a3b8);
   }
 
   .league-hub-hero .page-title,
@@ -5314,26 +5582,14 @@ p {
     gap: var(--space-3);
     border: 1px solid var(--border-subtle);
     border-radius: 0.75rem;
-    background: color-mix(in srgb, var(--surface-raised) 55%, var(--surface));
+    background: var(--surface);
     padding: var(--space-4);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
   }
 
-  .ref-matrix-team-panel-watermark {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
-
-  .ref-matrix-team-panel-watermark img {
-    width: min(20rem, 62%);
-    max-height: 72%;
-    object-fit: contain;
-    opacity: 0.28;
-    filter: brightness(1.45) contrast(1.15) saturate(1.1);
+  html[data-color="light"]:not([data-contrast="high"]) .ref-matrix-team-panel {
+    border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
+    box-shadow: var(--card-shadow-light, 0 8px 30px rgb(0 0 0 / 0.02));
   }
 
   .ref-matrix-team-panel-head,
@@ -5570,14 +5826,16 @@ p {
 
   .ref-matrix-team-panel-columns {
     display: grid;
-    gap: var(--space-5);
+    gap: var(--space-4);
     grid-template-columns: minmax(0, 1fr);
+    background: var(--surface);
+    border-radius: 0.625rem;
   }
 
   @media (min-width: 768px) {
     .ref-matrix-team-panel-columns {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-3) var(--space-5);
+      gap: var(--space-4);
     }
   }
 
@@ -5588,18 +5846,28 @@ p {
     min-width: 0;
     border-radius: 0.625rem;
     padding: var(--space-3);
-    background: var(--surface);
+    background: var(--surface-raised);
     border: 1px solid var(--border-subtle);
   }
 
   .ref-matrix-team-panel-column--positive {
     border-color: color-mix(in srgb, var(--metric-positive-border) 45%, var(--border-subtle));
-    background: color-mix(in srgb, var(--metric-positive-bg) 35%, var(--surface));
+    background: color-mix(in srgb, var(--metric-positive-bg) 22%, var(--surface));
   }
 
   .ref-matrix-team-panel-column--negative {
     border-color: color-mix(in srgb, var(--metric-negative-border) 45%, var(--border-subtle));
-    background: color-mix(in srgb, var(--metric-negative-bg) 35%, var(--surface));
+    background: color-mix(in srgb, var(--metric-negative-bg) 22%, var(--surface));
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .ref-matrix-team-panel-column--positive {
+    background: color-mix(in srgb, var(--metric-positive-bg) 18%, #ffffff);
+    border-color: color-mix(in srgb, var(--metric-positive-border) 30%, #e2e8f0);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .ref-matrix-team-panel-column--negative {
+    background: color-mix(in srgb, var(--metric-negative-bg) 18%, #ffffff);
+    border-color: color-mix(in srgb, var(--metric-negative-border) 30%, #e2e8f0);
   }
 
   .ref-matrix-team-panel-column-head {
@@ -5661,39 +5929,21 @@ p {
 
   .ref-matrix-team-panel-item {
     position: relative;
-    overflow: hidden;
     display: grid;
     grid-template-columns: 1.5rem minmax(0, 1.35fr) 4.75rem 3.25rem minmax(5.5rem, 7rem);
     align-items: center;
     gap: var(--space-2);
     border-radius: 0.5rem;
     padding: 0.5rem 0.65rem;
-    background: color-mix(in srgb, var(--surface) 72%, #000 28%);
-    border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
     font-size: var(--text-sm);
     min-height: 2.95rem;
   }
 
-  .ref-matrix-team-panel-item::after {
-    content: "";
-    position: absolute;
-    right: 0.35rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3.25rem;
-    height: 3.25rem;
-    background-image: var(--team-watermark-url);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0.2;
-    filter: brightness(1.4) contrast(1.12) saturate(1.05);
-    pointer-events: none;
-  }
-
-  .ref-matrix-team-panel-item > * {
-    position: relative;
-    z-index: 1;
+  html[data-color="light"]:not([data-contrast="high"]) .ref-matrix-team-panel-item {
+    background: #ffffff;
+    border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
   }
 
   @media (max-width: 639px) {
@@ -7177,15 +7427,23 @@ p {
 }
 
 .overview-hero {
+  --overview-hero-padding-block: var(--space-8);
+  --overview-hero-padding-inline: var(--space-6);
   display: grid;
   gap: var(--space-5);
-  padding: var(--space-6);
+  padding: var(--overview-hero-padding-block) var(--overview-hero-padding-inline);
   border-radius: 1.25rem;
   border: 1px solid var(--line);
   background:
     radial-gradient(ellipse 80% 60% at 10% 0%, rgba(216, 184, 93, 0.08), transparent 55%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 42%),
     var(--surface-raised);
+}
+
+@media (min-width: 768px) {
+  .overview-hero {
+    --overview-hero-padding-block: var(--space-10);
+  }
 }
 
 .overview-eyebrow {
@@ -7211,6 +7469,124 @@ p {
   font-size: 1rem;
   line-height: 1.55;
   color: var(--muted);
+}
+
+.overview-hero-search {
+  --overview-hero-search-margin-block: var(--space-6);
+  margin-block: var(--overview-hero-search-margin-block);
+}
+
+.overview-league-chooser-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .overview-league-chooser-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .overview-league-chooser-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .overview-league-chooser-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.overview-league-chooser-card {
+  --chooser-accent: var(--muted);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+  min-height: 9.5rem;
+  padding: 1.1rem 1.15rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--chooser-accent) 22%, var(--line));
+  background:
+    radial-gradient(
+      ellipse 90% 70% at 100% 0%,
+      color-mix(in srgb, var(--chooser-accent) 12%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 45%),
+    var(--surface-raised);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.overview-league-chooser-card[data-league="nba"] { --chooser-accent: var(--raptors); }
+.overview-league-chooser-card[data-league="nhl"] { --chooser-accent: var(--nhl-blue); }
+.overview-league-chooser-card[data-league="nfl"] { --chooser-accent: var(--nfl-green); }
+.overview-league-chooser-card[data-league="epl"] { --chooser-accent: #8b6bb5; }
+.overview-league-chooser-card[data-league="laliga"] { --chooser-accent: #c8102e; }
+
+.overview-league-chooser-card:hover {
+  border-color: color-mix(in srgb, var(--chooser-accent) 42%, var(--line));
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+}
+
+.overview-league-chooser-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--chooser-accent) 28%, var(--line));
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.overview-league-chooser-mark .league-nav-mark {
+  height: 1.15rem;
+  max-width: 1.85rem;
+}
+
+.overview-league-chooser-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.overview-league-chooser-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.overview-league-chooser-meta {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--muted-strong);
+}
+
+.overview-league-chooser-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: auto;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--chooser-accent) 72%, var(--ink));
+}
+
+.overview-league-chooser-cta svg {
+  width: 0.85rem;
+  height: 0.85rem;
 }
 
 .overview-hero-search .slate-quick-lookup {
@@ -7285,6 +7661,15 @@ p {
   .overview-layout {
     grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
     align-items: start;
+  }
+
+  .overview-sidebar > .overview-sidebar-block:first-child {
+    padding-top: 0;
+  }
+
+  .overview-sidebar > .overview-sidebar-block:first-child .overview-sidebar-heading,
+  .overview-sidebar > .overview-sidebar-block:first-child .overview-catalog-summary {
+    margin-top: 0;
   }
 }
 
@@ -7546,6 +7931,7 @@ p {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  padding-inline: 0.1rem 0.35rem;
 }
 
 .overview-insight-league {
@@ -7572,11 +7958,16 @@ p {
 
 .overview-insight-kicker {
   margin: 0;
-  font-size: 0.68rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 58%;
+  padding-right: 0.15rem;
+  font-size: 0.62rem;
   font-weight: 650;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--muted);
+  text-align: right;
 }
 
 .overview-insight-hero {
@@ -7651,7 +8042,7 @@ p {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--muted);
+  color: var(--muted-strong);
 }
 
 .overview-insight-stats {
@@ -7851,7 +8242,7 @@ p {
 }
 
 .overview-catalog-collapsible {
-  padding: var(--space-4);
+  padding: 0;
 }
 
 .overview-catalog-summary {
@@ -7895,11 +8286,11 @@ p {
 
 .overview-slate-row {
   display: grid;
-  gap: 0.25rem;
-  padding: 0.85rem 0.95rem;
-  border-radius: 0.8rem;
+  gap: 0.2rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.75rem;
   border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.14);
 }
 
 .overview-slate-row-main {
@@ -7956,8 +8347,14 @@ p {
 }
 
 .overview-slate-row[data-status="scheduled"] {
-  border-style: dashed;
-  background: rgba(255, 255, 255, 0.03);
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--line) 88%, transparent);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.overview-slate-row[data-status="scheduled"] .overview-slate-crew {
+  margin: 0;
+  font-size: 0.74rem;
 }
 
 .upcoming-slate-matchups {
@@ -8168,7 +8565,8 @@ p {
   }
 
   .overview-hero {
-    padding: var(--space-4);
+    --overview-hero-padding-block: var(--space-4);
+    --overview-hero-padding-inline: var(--space-4);
   }
 }
 

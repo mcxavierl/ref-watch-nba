@@ -36,6 +36,7 @@
     "rebuild-nhl-from-logs": "tsx scripts/nhl/build-ref-data.ts --from-logs",
     "generate-nfl-seed": "tsx scripts/nfl/generate-seed.ts",
     "build-nfl-data": "tsx scripts/nfl/build-ref-data.ts",
+    "ingest-nfl-historical": "tsx scripts/nfl/build-ref-data.ts --from-logs-only",
     "backfill-nfl-gaps": "tsx scripts/nfl/build-ref-data.ts --gap-fill-only",
     "rebuild-nfl-matrix": "tsx scripts/nfl/rebuild-matrix-from-logs.ts",
     "build-nfl-pfr-ref-team-data": "tsx scripts/nfl/build-pfr-ref-team-data.ts",

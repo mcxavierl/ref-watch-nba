@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { LeagueNavMark, leagueNavLabel } from "@/components/LeagueSwitchMark";
 import { getHeaderLeagueIds, isIngestGatedNavHidden, isNhlNavHidden } from "@/lib/header-leagues";
-import { LEAGUE_IDS, LEAGUES, type LeagueId } from "@/lib/leagues";
+import { headerActiveLeague, leagueFromPathname, leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 
 type NavLink = { href: string; label: string; match: (pathname: string, homeHref: string) => boolean };
 
@@ -32,9 +32,9 @@ function insightsMatch(pathname: string, prefix: string): boolean {
 const NAV_LINKS: Record<LeagueId, NavLink[]> = {
   nba: [
     {
-      href: "/",
+      href: "/nba",
       label: "Slate",
-      match: (pathname, home) => pathname === home,
+      match: (pathname, home) => pathname === home || pathname === "/nba",
     },
     {
       href: "/teams",
@@ -111,16 +111,6 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
 
 const HEADER_LEAGUES: LeagueId[] = getHeaderLeagueIds();
 
-function activeLeague(pathname: string): LeagueId {
-  for (const id of LEAGUE_IDS) {
-    const prefix = LEAGUES[id].pathPrefix;
-    if (prefix && (pathname === prefix || pathname.startsWith(`${prefix}/`))) {
-      return id;
-    }
-  }
-  return "nba";
-}
-
 type SiteNavProps = {
   id?: string;
 };
@@ -135,7 +125,7 @@ function LeagueNavLink({
   const config = LEAGUES[id];
   return (
     <Link
-      href={config.pathPrefix || "/"}
+      href={leagueHubHref(id)}
       aria-label={leagueNavLabel(id)}
       aria-current={active ? "page" : undefined}
       className={`league-nav-link${active ? " league-nav-link--active" : ""}`}
@@ -149,10 +139,10 @@ function LeagueNavLink({
 
 export function LeagueNav() {
   const pathname = usePathname();
-  const league = activeLeague(pathname ?? "/");
+  const league = headerActiveLeague(pathname ?? "/");
 
   return (
-    <nav className="league-nav" aria-label="Leagues" data-league={league}>
+    <nav className="league-nav" aria-label="Leagues" data-league={league ?? "overview"}>
       <div className="league-nav-scroll">
         <div className="league-nav-links">
           {HEADER_LEAGUES.map((id) => (
@@ -170,14 +160,14 @@ export const LeagueSwitch = LeagueNav;
 export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
   const pathname = usePathname();
   const resolvedPath = pathname ?? "/";
-  const league = activeLeague(resolvedPath);
+  const league = leagueFromPathname(resolvedPath);
 
   if (isIngestGatedNavHidden(league) || isNhlNavHidden(league)) {
     return null;
   }
 
   const links = NAV_LINKS[league] ?? NAV_LINKS.nba;
-  const homeHref = LEAGUES[league].pathPrefix || "/";
+  const homeHref = leagueHubHref(league);
 
   return (
     <div id={id} className="site-nav-shell" data-league={league}>

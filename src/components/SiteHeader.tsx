@@ -5,14 +5,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { A11ySettingsPanel } from "@/components/A11ySettingsPanel";
 import { Whistle } from "@/components/icons/Whistle";
-import { leagueFromPathname, LEAGUES } from "@/lib/leagues";
+import { headerActiveLeague, isOverviewPath, leagueFromPathname, SITE_HOME_PATH } from "@/lib/leagues";
 import { LeagueNav, SiteNav } from "./SiteNav";
 
 function OverviewNavLink({ pathname }: { pathname: string }) {
-  const active = pathname === "/overview";
+  const active = isOverviewPath(pathname);
   return (
     <Link
-      href="/overview"
+      href={SITE_HOME_PATH}
       aria-current={active ? "page" : undefined}
       className={`site-global-link${active ? " site-global-link--active" : ""}`}
     >
@@ -25,7 +25,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const resolvedPath = pathname ?? "/";
   const leagueId = leagueFromPathname(resolvedPath);
-  const homeHref = resolvedPath === "/overview" ? "/overview" : LEAGUES[leagueId].pathPrefix || "/";
+  const homeHref = SITE_HOME_PATH;
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -54,17 +54,17 @@ export function SiteHeader() {
             </span>
           </Link>
 
+          <div className="site-header-league">
+            <LeagueNav />
+          </div>
+
           <div className="site-header-util">
             <OverviewNavLink pathname={resolvedPath} />
             <A11ySettingsPanel />
           </div>
 
-          <div className="site-header-league">
-            <LeagueNav />
-          </div>
-
           <div className="site-header-nav">
-            {resolvedPath === "/overview" ? null : <SiteNav id="site-primary-nav" />}
+            {isOverviewPath(resolvedPath) ? null : <SiteNav id="site-primary-nav" />}
           </div>
         </div>
       </header>

@@ -1,6 +1,6 @@
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
-import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { LEAGUES, leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { loadOverviewInsightCards } from "@/lib/overview-insights-data";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import {
@@ -117,7 +117,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       leagueId,
       label: config.label,
       shortLabel: config.shortLabel,
-      href: config.pathPrefix || "/",
+      href: leagueHubHref(leagueId),
       refCount,
       gameCount,
       seasonCount: stats.meta.seasons.length,

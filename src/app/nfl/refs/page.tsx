@@ -16,7 +16,7 @@ export default async function NflRefsPage({ searchParams }: PageProps) {
   return (
     <RefsHubPage
       leagueId="nfl"
-      scopeMode={readSeasonScopeParam(scope)}
+      scopeMode={readSeasonScopeParam(scope, "nfl")}
     />
   );
 }

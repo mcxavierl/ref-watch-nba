@@ -44,6 +44,10 @@ import {
   nflverseMatchupKey,
   type NflverseLineIndex,
 } from "./lib/nflverse-lines";
+import {
+  ingestHistoricalNflverseGames,
+  type NflHistoricalGameLogEntry,
+} from "./lib/nflverse-historical";
 import { homeCoverRate, NflBettingAccumulator } from "./lib/nfl-betting";
 
 const NFL_TEAM_ABBRS = [
@@ -57,26 +61,7 @@ const MIN_SAMPLE = 30;
 const LEAGUE_OVER_BASELINE = 46;
 const DATA_DIR = path.join(process.cwd(), "data", "nfl");
 
-type NflGameLogEntry = {
-  gameId: string;
-  date: string;
-  season: string;
-  league: "NFL";
-  homeTeam: string;
-  awayTeam: string;
-  homeScore: number;
-  awayScore: number;
-  totalPoints: number;
-  totalFouls: number;
-  homeFlags: number;
-  awayFlags: number;
-  homePenaltyYards: number;
-  awayPenaltyYards: number;
-  closingTotal: number;
-  homeSpread: number;
-  lineSource: "synthetic" | "external";
-  officials: { name: string; number: number; role: RefRole }[];
-};
+type NflGameLogEntry = NflHistoricalGameLogEntry;
 
 interface TeamGameRow {
   totalPoints: number;
@@ -366,7 +351,7 @@ function buildTeamSplit(
 
 async function buildFromEspn(
   seed: RefStatsFile,
-  options: { gapFillOnly?: boolean } = {},
+  options: { gapFillOnly?: boolean; fromLogsOnly?: boolean; skipHistorical?: boolean } = {},
 ): Promise<RefStatsFile | null> {
   const roster = loadOfficialRoster(seed);
   const lineIndex = await loadNflverseLines(DATA_DIR);
@@ -397,7 +382,7 @@ async function buildFromEspn(
     teamByCrew.set(abbr, new Map());
   }
 
-  if (!options.gapFillOnly) {
+  if (!options.gapFillOnly && !options.fromLogsOnly) {
   for (const date of dates) {
     const compact = date.replace(/-/g, "");
     let events;
@@ -596,11 +581,22 @@ async function buildFromEspn(
     }
     await sleep(100);
   }
+  } else if (options.fromLogsOnly) {
+    console.log("Skipping ESPN date scan (--from-logs-only)");
   } else {
     console.log("Skipping date scan (--gap-fill-only); filling nflverse gaps only");
   }
 
-  await fillMissingNflverseGames(existingById, lineIndex, roster);
+  if (!options.gapFillOnly && !options.fromLogsOnly) {
+    await fillMissingNflverseGames(existingById, lineIndex, roster);
+  }
+
+  if (!options.skipHistorical) {
+    await ingestHistoricalNflverseGames(existingById, roster, DATA_DIR, {
+      minSeason: 2000,
+      maxSeason: 2015,
+    });
+  }
 
   // Merge cached + newly fetched logs, then rebuild aggregates from the full set.
   const mergedLogs = [...existingById.values()]
@@ -806,7 +802,7 @@ async function buildFromEspn(
       minSampleSize: MIN_SAMPLE,
       source: "espn",
       data_verified: true,
-      data_source: "ESPN + nflverse",
+      data_source: "ESPN + nflverse (2000–present)",
       atsAvailable,
       refCount: refs.length,
       totalGamesProcessed: processedTotal,
@@ -815,8 +811,8 @@ async function buildFromEspn(
         latest: allDates[allDates.length - 1],
       },
       note: atsAvailable
-        ? `Scores, penalties, and crews from ESPN. ATS/O-U from nflverse closing lines (${linedGames}/${processedTotal} games matched).`
-        : "Scores, penalty counts, and crews from ESPN. Ref×team W-L from those games. Run fetch-nfl-historical-lines for ATS/O-U.",
+        ? `Scores, penalties, and crews from ESPN (2016+) plus nflverse history (2000–2015). ATS/O-U from nflverse closing lines (${linedGames}/${processedTotal} games matched).`
+        : "Scores, penalties, and crews from ESPN (2016+) plus nflverse history (2000–2015). Ref×team W-L from stored game logs.",
     },
     refs,
     teamSplits,
@@ -844,6 +840,8 @@ async function main() {
 
   const built = await buildFromEspn(base, {
     gapFillOnly: process.argv.includes("--gap-fill-only"),
+    fromLogsOnly: process.argv.includes("--from-logs-only"),
+    skipHistorical: process.argv.includes("--skip-historical"),
   });
   if (built) {
     let output = replaceOnly ? built : mergeNflRefStats(base, built);

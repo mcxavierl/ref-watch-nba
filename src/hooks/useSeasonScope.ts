@@ -2,25 +2,27 @@
 
 import { useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type { LeagueId } from "@/lib/leagues";
 import {
-  DEFAULT_SEASON_SCOPE_MODE,
+  defaultSeasonScopeForLeague,
   parseSeasonScopeMode,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
 
-export function useSeasonScope(): {
+export function useSeasonScope(leagueId?: LeagueId): {
   mode: SeasonScopeMode;
   setMode: (mode: SeasonScopeMode) => void;
 } {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const mode = parseSeasonScopeMode(searchParams?.get("scope") ?? null);
+  const defaultMode = defaultSeasonScopeForLeague(leagueId ?? "nba");
+  const mode = parseSeasonScopeMode(searchParams?.get("scope") ?? null, leagueId);
 
   const setMode = useCallback(
     (next: SeasonScopeMode) => {
       const params = new URLSearchParams(searchParams?.toString() ?? "");
-      if (next === DEFAULT_SEASON_SCOPE_MODE) {
+      if (next === defaultMode) {
         params.delete("scope");
       } else {
         params.set("scope", next);
@@ -31,7 +33,7 @@ export function useSeasonScope(): {
         scroll: false,
       });
     },
-    [pathname, router, searchParams],
+    [defaultMode, pathname, router, searchParams],
   );
 
   return { mode, setMode };

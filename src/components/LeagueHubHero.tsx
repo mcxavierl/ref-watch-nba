@@ -18,10 +18,26 @@ type LeagueHubHeroProps = {
 const STROKE = {
   fill: "none",
   stroke: "currentColor",
-  strokeWidth: 1.35,
+  strokeWidth: 1.25,
   strokeLinecap: "round" as const,
   strokeLinejoin: "round" as const,
   vectorEffect: "non-scaling-stroke" as const,
+};
+
+const STROKE_CRISP = {
+  ...STROKE,
+  strokeWidth: 1.15,
+  strokeOpacity: 0.72,
+};
+
+const RINK_RED = {
+  stroke: "var(--sport-line-red, #fca5a5)",
+  strokeOpacity: 0.55,
+};
+
+const RINK_BLUE = {
+  stroke: "var(--sport-line-blue, #93c5fd)",
+  strokeOpacity: 0.5,
 };
 
 function WatermarkClip({
@@ -71,7 +87,7 @@ function BasketballCourtWatermark() {
 
   return (
     <svg
-      className="league-hub-hero-watermark-svg"
+      className="league-hub-hero-watermark-svg league-hub-hero-watermark-svg--nba"
       viewBox={`0 0 ${W} ${H}`}
       preserveAspectRatio="xMidYMid meet"
       aria-hidden
@@ -93,25 +109,26 @@ function BasketballCourtWatermark() {
         height={H - pad * 2}
         rx="2"
         {...STROKE}
-        strokeWidth={1.6}
+        strokeWidth={1.4}
+        strokeOpacity={0.85}
       />
       <g clipPath={`url(#${clipId})`}>
-        <line x1={midX} y1={pad} x2={midX} y2={H - pad} {...STROKE} />
-        <circle cx={midX} cy={midY} r="60" {...STROKE} />
+        <line x1={midX} y1={pad} x2={midX} y2={H - pad} {...STROKE_CRISP} />
+        <circle cx={midX} cy={midY} r="60" {...STROKE_CRISP} />
 
         <rect
           x={pad}
           y={midY - keyHalf}
           width={keyDepth - pad}
           height={keyHalf * 2}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
         <path
           d={`M ${keyDepth} ${midY - ftR} A ${ftR} ${ftR} 0 0 1 ${keyDepth} ${midY + ftR}`}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
-        <circle cx={basketL} cy={midY} r="40" {...STROKE} />
-        <circle cx={basketL} cy={midY} r="6" {...STROKE} />
+        <circle cx={basketL} cy={midY} r="40" {...STROKE_CRISP} />
+        <circle cx={basketL} cy={midY} r="6" {...STROKE_CRISP} />
         <path
           d={[
             `M ${pad} ${cornerInset}`,
@@ -119,7 +136,7 @@ function BasketballCourtWatermark() {
             `A ${threeR} ${threeR} 0 0 1 ${threeJoinL} ${H - cornerInset}`,
             `L ${pad} ${H - cornerInset}`,
           ].join(" ")}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
 
         <rect
@@ -127,14 +144,14 @@ function BasketballCourtWatermark() {
           y={midY - keyHalf}
           width={keyDepth - pad}
           height={keyHalf * 2}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
         <path
           d={`M ${W - keyDepth} ${midY - ftR} A ${ftR} ${ftR} 0 0 0 ${W - keyDepth} ${midY + ftR}`}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
-        <circle cx={basketR} cy={midY} r="40" {...STROKE} />
-        <circle cx={basketR} cy={midY} r="6" {...STROKE} />
+        <circle cx={basketR} cy={midY} r="40" {...STROKE_CRISP} />
+        <circle cx={basketR} cy={midY} r="6" {...STROKE_CRISP} />
         <path
           d={[
             `M ${W - pad} ${cornerInset}`,
@@ -142,7 +159,7 @@ function BasketballCourtWatermark() {
             `A ${threeR} ${threeR} 0 0 0 ${threeJoinR} ${H - cornerInset}`,
             `L ${W - pad} ${H - cornerInset}`,
           ].join(" ")}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
       </g>
     </svg>
@@ -174,8 +191,6 @@ function HockeyRinkWatermark() {
   const faceY1 = midY - 220;
   const faceY2 = midY + 220;
   const clipId = "rw-nhl-rink-clip";
-  const redLine = { stroke: "var(--nhl-red, #ef3b55)", strokeOpacity: 0.85 };
-  const blueLine = { stroke: "var(--nhl-blue, #4d9fff)", strokeOpacity: 0.75 };
 
   return (
     <svg
@@ -187,6 +202,17 @@ function HockeyRinkWatermark() {
       <defs>
         <WatermarkClip id={clipId} x={pad} y={pad} width={iceW} height={iceH} rx={r} />
       </defs>
+      {/* Ice surface tint */}
+      <rect
+        x={pad}
+        y={pad}
+        width={iceW}
+        height={iceH}
+        rx={r}
+        ry={r}
+        fill="var(--sport-surface-tint, rgba(186, 230, 253, 0.08))"
+        stroke="none"
+      />
       {/* Boards */}
       <rect
         x={pad}
@@ -197,9 +223,10 @@ function HockeyRinkWatermark() {
         ry={r}
         fill="none"
         stroke="currentColor"
-        strokeWidth={2}
+        strokeWidth={1.6}
         strokeLinecap="round"
         strokeLinejoin="round"
+        strokeOpacity={0.65}
         vectorEffect="non-scaling-stroke"
       />
       <g clipPath={`url(#${clipId})`}>
@@ -210,8 +237,8 @@ function HockeyRinkWatermark() {
           x2={midX}
           y2={H - pad}
           {...STROKE}
-          strokeWidth={1.8}
-          {...redLine}
+          strokeWidth={1.7}
+          {...RINK_RED}
         />
         <line
           x1={blueL}
@@ -219,8 +246,8 @@ function HockeyRinkWatermark() {
           x2={blueL}
           y2={H - pad}
           {...STROKE}
-          strokeWidth={1.6}
-          {...blueLine}
+          strokeWidth={1.5}
+          {...RINK_BLUE}
         />
         <line
           x1={blueR}
@@ -228,8 +255,8 @@ function HockeyRinkWatermark() {
           x2={blueR}
           y2={H - pad}
           {...STROKE}
-          strokeWidth={1.6}
-          {...blueLine}
+          strokeWidth={1.5}
+          {...RINK_BLUE}
         />
         <line
           x1={goalL}
@@ -237,8 +264,8 @@ function HockeyRinkWatermark() {
           x2={goalL}
           y2={H - pad}
           {...STROKE}
-          strokeWidth={1.5}
-          {...redLine}
+          strokeWidth={1.4}
+          {...RINK_RED}
         />
         <line
           x1={goalR}
@@ -246,12 +273,12 @@ function HockeyRinkWatermark() {
           x2={goalR}
           y2={H - pad}
           {...STROKE}
-          strokeWidth={1.5}
-          {...redLine}
+          strokeWidth={1.4}
+          {...RINK_RED}
         />
 
-        <circle cx={midX} cy={midY} r={faceR} {...STROKE} />
-        <circle cx={midX} cy={midY} r="12" fill="currentColor" stroke="none" opacity={0.55} />
+        <circle cx={midX} cy={midY} r={faceR} {...STROKE_CRISP} />
+        <circle cx={midX} cy={midY} r="12" fill="currentColor" stroke="none" opacity={0.35} />
 
         {[
           [(blueL + midX) / 2, faceY1],
@@ -270,24 +297,38 @@ function HockeyRinkWatermark() {
             r={dotR}
             fill="currentColor"
             stroke="none"
-            opacity={0.5}
+            opacity={0.38}
           />
         ))}
 
-        <circle cx={faceX1} cy={faceY1} r={faceR} {...STROKE} />
-        <circle cx={faceX1} cy={faceY2} r={faceR} {...STROKE} />
-        <circle cx={faceX2} cy={faceY1} r={faceR} {...STROKE} />
-        <circle cx={faceX2} cy={faceY2} r={faceR} {...STROKE} />
+        <circle cx={faceX1} cy={faceY1} r={faceR} {...STROKE_CRISP} />
+        <circle cx={faceX1} cy={faceY2} r={faceR} {...STROKE_CRISP} />
+        <circle cx={faceX2} cy={faceY1} r={faceR} {...STROKE_CRISP} />
+        <circle cx={faceX2} cy={faceY2} r={faceR} {...STROKE_CRISP} />
 
+        {/* Goal creases */}
         <path
           d={`M ${goalL} ${midY - creaseR} A ${creaseR} ${creaseR} 0 0 1 ${goalL} ${midY + creaseR}`}
           {...STROKE}
-          {...redLine}
+          strokeWidth={1.3}
+          {...RINK_RED}
         />
         <path
           d={`M ${goalR} ${midY - creaseR} A ${creaseR} ${creaseR} 0 0 0 ${goalR} ${midY + creaseR}`}
           {...STROKE}
-          {...redLine}
+          strokeWidth={1.3}
+          {...RINK_RED}
+        />
+        {/* Trapezoid behind goal (simplified) */}
+        <path
+          d={`M ${goalL} ${pad + 80} L ${goalL + 140} ${midY - 180} L ${goalL + 140} ${midY + 180} L ${goalL} ${H - pad - 80}`}
+          {...STROKE_CRISP}
+          strokeOpacity={0.35}
+        />
+        <path
+          d={`M ${goalR} ${pad + 80} L ${goalR - 140} ${midY - 180} L ${goalR - 140} ${midY + 180} L ${goalR} ${H - pad - 80}`}
+          {...STROKE_CRISP}
+          strokeOpacity={0.35}
         />
       </g>
     </svg>
@@ -352,15 +393,24 @@ function FootballFieldWatermark() {
       <defs>
         <WatermarkClip id={clipId} x={pad} y={pad} width={W - pad * 2} height={H - pad * 2} rx={4} />
       </defs>
-      <rect x={pad} y={pad} width={W - pad * 2} height={H - pad * 2} rx="4" {...STROKE} strokeWidth={1.6} />
+      <rect x={pad} y={pad} width={W - pad * 2} height={H - pad * 2} rx="4" {...STROKE} strokeWidth={1.4} strokeOpacity={0.8} />
       <g clipPath={`url(#${clipId})`}>
+        {/* Field surface tint */}
+        <rect
+          x={pad}
+          y={pad}
+          width={W - pad * 2}
+          height={H - pad * 2}
+          fill="var(--sport-surface-tint, rgba(52, 211, 153, 0.06))"
+          stroke="none"
+        />
         <rect
           x={pad}
           y={pad}
           width={end - pad}
           height={H - pad * 2}
           fill="currentColor"
-          opacity={0.06}
+          opacity={0.05}
           stroke="none"
         />
         <rect
@@ -369,12 +419,12 @@ function FootballFieldWatermark() {
           width={end - pad}
           height={H - pad * 2}
           fill="currentColor"
-          opacity={0.06}
+          opacity={0.05}
           stroke="none"
         />
-        <line x1={end} y1={pad} x2={end} y2={H - pad} {...STROKE} strokeWidth="2" />
-        <line x1={W - end} y1={pad} x2={W - end} y2={H - pad} {...STROKE} strokeWidth="2" />
-        <line x1={W / 2} y1={pad} x2={W / 2} y2={H - pad} {...STROKE} strokeWidth="2" />
+        <line x1={end} y1={pad} x2={end} y2={H - pad} {...STROKE} strokeWidth="1.6" strokeOpacity={0.75} />
+        <line x1={W - end} y1={pad} x2={W - end} y2={H - pad} {...STROKE} strokeWidth="1.6" strokeOpacity={0.75} />
+        <line x1={W / 2} y1={pad} x2={W / 2} y2={H - pad} {...STROKE} strokeWidth="1.6" strokeOpacity={0.75} />
         {yardLines}
         {hashes}
       </g>
@@ -411,7 +461,7 @@ function SoccerPitchWatermark() {
 
   return (
     <svg
-      className="league-hub-hero-watermark-svg"
+      className="league-hub-hero-watermark-svg league-hub-hero-watermark-svg--soccer"
       viewBox={`0 0 ${W} ${H}`}
       preserveAspectRatio="xMidYMid meet"
       aria-hidden
@@ -419,18 +469,27 @@ function SoccerPitchWatermark() {
       <defs>
         <WatermarkClip id={clipId} x={pad} y={pad} width={W - pad * 2} height={H - pad * 2} rx={2} />
       </defs>
-      <rect x={pad} y={pad} width={W - pad * 2} height={H - pad * 2} rx="2" {...STROKE} strokeWidth={1.6} />
+      <rect x={pad} y={pad} width={W - pad * 2} height={H - pad * 2} rx="2" {...STROKE} strokeWidth={1.4} strokeOpacity={0.8} />
       <g clipPath={`url(#${clipId})`}>
-        <line x1={midX} y1={pad} x2={midX} y2={H - pad} {...STROKE} />
-        <circle cx={midX} cy={midY} r={circleR} {...STROKE} />
-        <circle cx={midX} cy={midY} r="5" fill="currentColor" stroke="none" opacity={0.55} />
+        {/* Pitch surface tint */}
+        <rect
+          x={pad}
+          y={pad}
+          width={W - pad * 2}
+          height={H - pad * 2}
+          fill="var(--sport-surface-tint, rgba(52, 211, 153, 0.05))"
+          stroke="none"
+        />
+        <line x1={midX} y1={pad} x2={midX} y2={H - pad} {...STROKE_CRISP} />
+        <circle cx={midX} cy={midY} r={circleR} {...STROKE_CRISP} />
+        <circle cx={midX} cy={midY} r="5" fill="currentColor" stroke="none" opacity={0.38} />
 
-        <rect x={pad} y={midY - penW / 2} width={penD - pad} height={penW} {...STROKE} />
-        <rect x={pad} y={midY - sixW / 2} width={sixD - pad} height={sixW} {...STROKE} />
-        <circle cx={spot} cy={midY} r="4" fill="currentColor" stroke="none" opacity={0.55} />
+        <rect x={pad} y={midY - penW / 2} width={penD - pad} height={penW} {...STROKE_CRISP} />
+        <rect x={pad} y={midY - sixW / 2} width={sixD - pad} height={sixW} {...STROKE_CRISP} />
+        <circle cx={spot} cy={midY} r="4" fill="currentColor" stroke="none" opacity={0.38} />
         <path
           d={`M ${penD} ${midY - arcY} A ${circleR} ${circleR} 0 0 1 ${penD} ${midY + arcY}`}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
 
         <rect
@@ -438,19 +497,19 @@ function SoccerPitchWatermark() {
           y={midY - penW / 2}
           width={penD - pad}
           height={penW}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
         <rect
           x={W - sixD}
           y={midY - sixW / 2}
           width={sixD - pad}
           height={sixW}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
-        <circle cx={W - spot} cy={midY} r="4" fill="currentColor" stroke="none" opacity={0.55} />
+        <circle cx={W - spot} cy={midY} r="4" fill="currentColor" stroke="none" opacity={0.38} />
         <path
           d={`M ${W - penD} ${midY - arcY} A ${circleR} ${circleR} 0 0 0 ${W - penD} ${midY + arcY}`}
-          {...STROKE}
+          {...STROKE_CRISP}
         />
 
         {cornerArc(pad, pad, 0)}

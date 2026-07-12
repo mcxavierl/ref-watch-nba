@@ -248,18 +248,27 @@ export async function preloadLeagueDataForPath(
   await preloadOnEdge(origin, pathname);
 }
 
-/** NBA /matrix rebuilds scoped stats from game logs; other league matrix routes do not. */
+/** Routes that rebuild scoped stats from stored game logs (era / season toggles). */
 export function pathNeedsGameLogs(pathname: string): boolean {
+  const path = normalizeAppPathname(pathname);
+  if (path === "/matrix" || path.startsWith("/teams/")) return true;
+  if (path.startsWith("/nfl/matrix") || path.startsWith("/nfl/teams/")) return true;
+  if (path.startsWith("/nfl/refs")) return true;
+  if (path.startsWith("/nhl/teams/") || path.startsWith("/nhl/matrix")) return true;
   return false;
 }
 
 const HUB_ROUTE =
   /(^|\/)(insights|research|rankings|trends|crews)(\/|$)/;
 
+function isOverviewOnlyPath(path: string): boolean {
+  return path === "/" || path.startsWith("/overview");
+}
+
 /** Matrix and team pages need sidecar team-splits; slate and hub routes do not. */
 export function pathNeedsTeamSplits(pathname: string): boolean {
   const path = normalizeAppPathname(pathname);
-  if (path.startsWith("/overview")) return false;
+  if (isOverviewOnlyPath(path)) return false;
   if (path.startsWith("/methodology")) return false;
   if (path.startsWith("/research")) return false;
   if (path.startsWith("/sitemap")) return false;
@@ -267,7 +276,7 @@ export function pathNeedsTeamSplits(pathname: string): boolean {
   if (/\/refs(\/|$)/.test(path)) return false;
   if (HUB_ROUTE.test(path)) return false;
   // League slates only need slim ref-stats (~0.5–1.5MB); team-splits are 2–9MB each.
-  if (path === "/") return false;
+  if (path === "/nba") return false;
   if (/^\/(nhl|nfl|epl|laliga|cbb|cfb)\/?$/.test(path)) return false;
   return true;
 }
@@ -275,9 +284,10 @@ export function pathNeedsTeamSplits(pathname: string): boolean {
 /** Load only the leagues a route needs, avoids parsing both 8MB files on every request. */
 export function leaguesForPath(pathname: string): League[] {
   const path = normalizeAppPathname(pathname);
-  if (path.startsWith("/overview")) {
+  if (isOverviewOnlyPath(path)) {
     return [];
   }
+  if (path === "/nba" || path.startsWith("/nba/")) return ["nba"];
   if (path.startsWith("/epl")) return ["epl"];
   if (path.startsWith("/laliga")) return ["laliga"];
   if (path.startsWith("/cfb")) return ["cfb"];

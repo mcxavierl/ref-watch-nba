@@ -356,10 +356,16 @@ export function buildScopedRefStats(
 
   const dataLeague = LEAGUE_ID_TO_DATA[leagueId];
   const logs = loadRuntimeGameLogs(dataLeague);
-  // Only rebuild from game logs when ref-stats lack team splits (e.g. dev).
-  // Stale seed game-logs on CDN must not wipe verified ref-stats on Workers.
-  if (logs?.games?.length && !baseHasTeamStats(base)) {
-    return rebuildFromGameLogs(base, logs.games, scopedSeasons);
+  const isProperSubset =
+    sortedScoped.length > 0 &&
+    sortedScoped.length < sortedAll.length;
+  const shouldRebuildFromLogs =
+    Boolean(logs?.games?.length) &&
+    (isProperSubset || (leagueId === "nfl" && sortedScoped.length > 0)) &&
+    (leagueId === "nfl" || leagueId === "nba" || !baseHasTeamStats(base));
+
+  if (shouldRebuildFromLogs) {
+    return rebuildFromGameLogs(base, logs!.games, scopedSeasons);
   }
 
   return filterByRefSeasons(base, scopedSeasons);
