@@ -17,6 +17,11 @@ import {
   type LeagueFindingContext,
 } from "@/lib/findings-builders";
 import type { RefProfile, RefStatsFile, TeamCrewSplit, WlpRecord } from "@/lib/types";
+import {
+  formatFindingSampleMeta,
+  ouLeanHeadline,
+  teamCrewLeanHeadline,
+} from "@/lib/finding-copy";
 
 export type { Finding, FindingCategory } from "@/lib/findings-shared";
 export { FINDING_CATEGORY_LABELS } from "@/lib/findings-shared";
@@ -70,7 +75,7 @@ function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
   return {
     id: "cbb-team-crew-anomaly",
     category: "team-crew",
-    headline: `${teamName} ${lean}s with this crew ${(best.delta * 100).toFixed(0)} pts off neutral`,
+    headline: teamCrewLeanHeadline(teamName, best.split.overRate, best.delta),
     summary: `${crewLabel}${best.split.crewNames.length > 2 ? "…" : ""} on ${teamName}: ${formatPct(best.split.overRate)} over ${baseline} goals (${best.split.games} games).`,
     stats: [
       {
@@ -89,7 +94,7 @@ function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: "Both teams combined",
       },
     ],
-    sampleNote: `Min ${MIN_TEAM_CREW_GAMES} games per crew · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(best.split.games, stats.meta.seasons),
     links: [{ label: teamName, href: `/cbb/teams/${best.team}` }],
     score: rankScore(best.delta, best.split.games, MIN_TEAM_CREW_GAMES),
     sampleGames: best.split.games,
@@ -126,7 +131,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
   return {
     id: "cbb-ou-ats-edge",
     category: "ou-edge",
-    headline: `${best.ref.name} leans ${lean} vs closing goal totals`,
+    headline: ouLeanHeadline(best.ref.name, best.rate, "goal totals"),
     summary: `Totals go ${lean} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} (${formatWlpShort(record)}) across ${best.games} lined games.`,
     explainer: `O/U ATS uses estimated closing totals where sportsbook data is unavailable. Min ${MIN_OU_ATS_GAMES} decisive games required.`,
     stats: [
@@ -146,7 +151,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `Leans ${lean}`,
       },
     ],
-    sampleNote: `${best.games} O/U decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(best.games, stats.meta.seasons),
     links: [{ label: best.ref.name, href: `/cbb/refs/${best.ref.slug}` }],
     score: rankScore(best.edge, best.games, MIN_OU_ATS_GAMES),
     sampleGames: best.games,
@@ -201,7 +206,7 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: "Absolute deviation",
       },
     ],
-    sampleNote: `${best.games} ATS decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(best.games, stats.meta.seasons),
     links: [{ label: best.ref.name, href: `/cbb/refs/${best.ref.slug}` }],
     score: rankScore(best.edge, best.games, MIN_ATS_GAMES),
     sampleGames: best.games,
@@ -261,7 +266,10 @@ function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
       },
     ],
-    sampleNote: `Min ${MIN_TEAM_GAMES} games per pair · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(
+      hottest.games + coldest.games,
+      stats.meta.seasons,
+    ),
     links: [
       { label: hottest.ref.name, href: `/cbb/refs/${hottest.ref.slug}` },
       { label: hotName, href: `/cbb/teams/${hottest.team}` },
@@ -330,7 +338,7 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `${formatSigned(ref.foulsDelta)} vs league`,
       },
     ],
-    sampleNote: `${MIN_REF_GAMES}+ game sample · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(ref.games, stats.meta.seasons),
     links: [{ label: ref.name, href: `/cbb/refs/${ref.slug}` }],
     score: rankScore(effect, ref.games, MIN_REF_GAMES),
     sampleGames: ref.games,

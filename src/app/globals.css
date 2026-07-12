@@ -142,8 +142,8 @@
   --league-hub-hero-bg-start: #161a24;
   --league-hub-hero-bg-end: #0d1016;
   --league-hub-hero-accent-glow: 10%;
-  --league-hub-hero-watermark-color: #9ca3af;
-  --league-hub-hero-watermark-opacity: 0.22;
+  --league-hub-hero-watermark-color: #b8c0cc;
+  --league-hub-hero-watermark-opacity: 0.42;
   --league-hub-hero-stat-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   --league-hub-hero-stat-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.45);
 
@@ -270,8 +270,8 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --league-hub-hero-bg-start: #f7f8fb;
   --league-hub-hero-bg-end: #e4e8ef;
   --league-hub-hero-accent-glow: 14%;
-  --league-hub-hero-watermark-color: #94a3b8;
-  --league-hub-hero-watermark-opacity: 0.16;
+  --league-hub-hero-watermark-color: #64748b;
+  --league-hub-hero-watermark-opacity: 0.32;
   --league-hub-hero-stat-shadow: 0 1px 3px rgba(15, 23, 36, 0.08);
   --league-hub-hero-stat-shadow-hover: 0 4px 14px rgba(15, 23, 36, 0.12);
 
@@ -1491,10 +1491,10 @@ p {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
-    padding: var(--space-4);
+    padding: var(--space-3);
     border-radius: 0.5rem;
-    border: 1px solid var(--border);
-    background: var(--surface);
+    border: 1px solid color-mix(in srgb, #27272a 80%, transparent);
+    background: color-mix(in srgb, #18181b 40%, transparent);
     transition:
       border-color 200ms ease,
       background-color 200ms ease,
@@ -1505,8 +1505,8 @@ p {
   }
 
   .browse-action-card:hover {
-    border-color: color-mix(in srgb, var(--header-sapphire) 28%, var(--border));
-    background: color-mix(in srgb, var(--header-sapphire) 3%, var(--surface));
+    border-color: color-mix(in srgb, #3f3f46 85%, transparent);
+    background: color-mix(in srgb, #18181b 55%, transparent);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     transform: translateY(-0.25rem);
   }
@@ -1584,23 +1584,25 @@ p {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
-    min-height: 5.25rem;
-    padding: var(--space-4) var(--space-5);
+    min-height: 4.75rem;
+    padding: var(--space-3) var(--space-4);
     border-radius: 0.5rem;
-    border: 1px solid var(--border);
-    background: var(--surface);
+    border: 1px solid color-mix(in srgb, #27272a 80%, transparent);
+    background: color-mix(in srgb, #18181b 40%, transparent);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.32);
     transition:
-      border-color 180ms ease-out,
-      background-color 180ms ease-out,
-      box-shadow 180ms ease-out;
+      border-color 200ms ease,
+      background-color 200ms ease,
+      box-shadow 200ms ease,
+      transform 200ms ease;
     outline-offset: 2px;
   }
 
   .browse-action-compact-card:hover {
-    border-color: color-mix(in srgb, var(--header-sapphire) 28%, var(--border));
-    background: color-mix(in srgb, var(--header-sapphire) 3%, var(--surface));
+    border-color: color-mix(in srgb, #3f3f46 85%, transparent);
+    background: color-mix(in srgb, #18181b 55%, transparent);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    transform: translateY(-0.25rem);
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .browse-action-compact-card {
@@ -2313,18 +2315,40 @@ p {
 
   .finding-accordion-footer {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3) var(--space-5);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
     border-top: 1px solid var(--border-subtle);
-    padding: var(--space-4) var(--space-4);
+    padding: var(--space-3) var(--space-4);
   }
 
   @media (min-width: 640px) {
     .finding-accordion-footer {
-      padding: var(--space-4) var(--space-5);
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-3) var(--space-5);
+      padding: var(--space-3) var(--space-5);
     }
+  }
+
+  .finding-sample-meta {
+    flex: 1 1 12rem;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--muted) 92%, transparent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .finding-accordion-footer .flex {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: flex-end;
   }
 
   .finding-filter-bar {
@@ -3802,12 +3826,12 @@ p {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    min-height: 9rem;
-    padding: var(--space-4) var(--space-5);
+    gap: var(--space-1);
+    min-height: 7.5rem;
+    padding: var(--space-3) var(--space-4);
     border-radius: 0.5rem;
-    border: 1px solid var(--border);
-    background: var(--surface);
+    border: 1px solid color-mix(in srgb, #27272a 80%, transparent);
+    background: color-mix(in srgb, #18181b 40%, transparent);
     text-decoration: none;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.32);
     outline-offset: 2px;
@@ -3819,8 +3843,8 @@ p {
   }
 
   .slate-feature-showcase-card:hover {
-    border-color: color-mix(in srgb, var(--raptors) 30%, var(--border));
-    background: color-mix(in srgb, var(--raptors) 4%, var(--surface));
+    border-color: color-mix(in srgb, #3f3f46 85%, transparent);
+    background: color-mix(in srgb, #18181b 55%, transparent);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.42);
     transform: translateY(-1px);
   }
@@ -4729,6 +4753,11 @@ p {
     padding: var(--space-6) 0 var(--space-8);
     background:
       radial-gradient(
+        ellipse 58% 88% at 88% 50%,
+        var(--sport-surface-tint),
+        transparent 72%
+      ),
+      radial-gradient(
         ellipse 80% 70% at 70% 40%,
         color-mix(in srgb, var(--league-accent) var(--league-hub-hero-accent-glow), transparent),
         transparent 62%
@@ -4744,10 +4773,12 @@ p {
 
   .league-hub-hero[data-league="nba"] {
     --league-accent: var(--raptors);
+    --sport-surface-tint: rgba(148, 163, 184, 0.08);
   }
 
   .league-hub-hero[data-league="cbb"] {
     --league-accent: var(--cbb-gold);
+    --sport-surface-tint: rgba(216, 184, 93, 0.07);
   }
 
   .league-hub-hero[data-league="nhl"] {
@@ -4873,7 +4904,13 @@ p {
     height: auto;
     max-height: 92%;
     transform: translateY(-2%);
-    overflow: hidden;
+    overflow: visible;
+    filter: drop-shadow(0 0 1px color-mix(in srgb, currentColor 35%, transparent));
+  }
+
+  .league-hub-hero[data-league="nba"] .league-hub-hero-watermark-svg--nba,
+  .league-hub-hero[data-league="cbb"] .league-hub-hero-watermark-svg--nba {
+    color: color-mix(in srgb, var(--raptors) 22%, var(--league-hub-hero-watermark-color));
   }
 
   .league-hub-hero[data-league="nhl"] .league-hub-hero-watermark {

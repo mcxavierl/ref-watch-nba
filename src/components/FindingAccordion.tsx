@@ -57,9 +57,7 @@ export function FindingAccordionItem({
         )}
 
         <div className="finding-accordion-footer">
-          <p className="text-sm tabular-nums text-zinc-500">
-            {finding.sampleNote}
-          </p>
+          <p className="finding-sample-meta">{finding.sampleNote}</p>
           <FindingFooterLinks links={finding.links} />
         </div>
       </div>

@@ -1,6 +1,13 @@
 import { DEFAULT_SINCE_SEASON, NBA_TEN_SEASONS } from "@/lib/league-seasons";
 import { getBaselinesFile } from "@/lib/baselines";
 import { computeCrewDominance, CREW_DOMINANCE_MIN_GAMES } from "@/lib/crew-dominance";
+import {
+  closeGameLeanHeadline,
+  formatFindingSampleMeta,
+  isNeutralRate,
+  overUnderFrequencyHeadline,
+  whistlePaceHeadline,
+} from "@/lib/finding-copy";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { ScoredFindingBase } from "@/lib/findings-shared";
 import { rankScore } from "@/lib/findings-shared";
@@ -106,7 +113,7 @@ function matrixFindingFromHighlight(
         detail: direction.charAt(0).toUpperCase() + direction.slice(1),
       },
     ],
-    sampleNote: `${highlight.games} ref×team games · min ${MIN_MATRIX_GAMES} for matrix cells · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(highlight.games, stats.meta.seasons),
     links: [
       { label: highlight.refName, href: ctx.paths.refPath(highlight.refSlug) },
       { label: teamName, href: ctx.paths.teamPath(highlight.teamAbbr) },
@@ -188,7 +195,7 @@ export function buildCrewDominanceFinding(
         detail: `${stats.meta.leagueOverBaseline} ${ctx.labels.scoreUnit} line`,
       },
     ],
-    sampleNote: `${best.games} crew games · min ${MIN_CREW_DOMINANCE_GAMES} · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(best.games, stats.meta.seasons),
     links: [
       { label: "Crew breakdown", href: ctx.paths.crewsPath },
       ...best.crewNames.slice(0, 2).map((name, i) => ({
@@ -260,7 +267,10 @@ export function buildYoYTrendFinding(
         detail: ctx.labels.scoreUnit,
       },
     ],
-    sampleNote: `${rows.length} seasons · ${block.aggregate.gameCount.toLocaleString()} games in baselines · computed from game logs`,
+    sampleNote: formatFindingSampleMeta(
+      latest.gameCount + prior.gameCount,
+      rows.map((row) => row.season),
+    ),
     links: [{ label: "Full trends", href: ctx.paths.trendsPath }],
     score: rankScore(
       Math.abs(scoringDelta) / stats.meta.leagueAvgTotal,
@@ -339,7 +349,10 @@ export function buildTeamHomeRoadFinding(
         detail: "Win rate spread",
       },
     ],
-    sampleNote: `${best.split.games} crew games · min ${MIN_HOME_ROAD_SIDE} per side · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(
+      best.homeGames + best.awayGames,
+      stats.meta.seasons,
+    ),
     links: [
       { label: teamName, href: ctx.paths.teamPath(best.team) },
       { label: "Crew page", href: ctx.paths.crewsPath },
@@ -417,7 +430,11 @@ export function buildCloseGameLeagueFinding(
   return {
     id: `${ctx.paths.idPrefix}close-game-proxy`,
     category: "scoring-extreme",
-    headline: `Competitive games lean ${lean} the ${stats.meta.leagueOverBaseline}-${ctx.labels.scoreUnit} benchmark`,
+    headline: closeGameLeanHeadline(
+      closeOverRate,
+      stats.meta.leagueOverBaseline,
+      ctx.labels.scoreUnit,
+    ),
     summary: `${windowLabel}: ${formatPct(closeOverRate)} beat ${stats.meta.leagueOverBaseline} combined ${ctx.labels.scoreUnit} (${closeGames.toLocaleString()} games). All games: ${formatPct(fullOverRate)}.`,
     explainer: `Close-game proxy from game logs, not official last-two-minute data. Where spread lines are estimated, toss-up windows use the same proxy rules as profile pages.`,
     stats: [
@@ -437,7 +454,7 @@ export function buildCloseGameLeagueFinding(
         detail: `${formatSigned(avgDelta)} vs ${fullAvg.toFixed(1)} full avg`,
       },
     ],
-    sampleNote: `${closeGames.toLocaleString()} close games · proxy window · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(closeGames, stats.meta.seasons),
     links: [{ label: "Methodology", href: "/methodology" }],
     score: rankScore(
       Math.abs(overDelta) + Math.abs(avgDelta) / stats.meta.leagueAvgTotal,
@@ -460,12 +477,15 @@ export function buildWhistleOutlierFinding(
   )[0];
   if (Math.abs(ref.foulsDelta) < MIN_WHISTLE_DELTA) return null;
 
-  const direction = ref.foulsDelta >= 0 ? "heavy" : "light";
-
   return {
     id: `${ctx.paths.idPrefix}whistle-outlier`,
     category: "whistle-extreme",
-    headline: `${ref.name} runs the ${direction === "heavy" ? "highest" : "lowest"} ${ctx.labels.whistleUnit} pace in the pool`,
+    headline: whistlePaceHeadline(
+      ref.name,
+      ref.foulsDelta,
+      ctx.labels.whistleUnit,
+      ref.overRate,
+    ),
     summary: `${ref.name} averages ${ref.avgFouls} ${ctx.labels.whistleUnit} per game (${formatSigned(ref.foulsDelta)} vs league) across ${ref.games} games, the largest whistle delta among ${MIN_REF_GAMES}+ game refs.`,
     stats: [
       {
@@ -484,7 +504,7 @@ export function buildWhistleOutlierFinding(
         detail: `Min ${MIN_REF_GAMES} games`,
       },
     ],
-    sampleNote: `${ref.games} games · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(ref.games, stats.meta.seasons),
     links: [{ label: ref.name, href: ctx.paths.refPath(ref.slug) }],
     score: rankScore(
       Math.abs(ref.foulsDelta) / Math.max(stats.meta.leagueAvgFouls, 1),
@@ -509,14 +529,14 @@ export function buildOverRateOutlierFinding(
       : [...qualified].sort((a, b) => a.overRate - b.overRate);
   const ref = sorted[0];
   const edge = Math.abs(ref.overRate - 0.5);
-  if (edge < 0.03) return null;
+  if (edge < 0.03 || isNeutralRate(ref.overRate)) return null;
 
   const lean = direction === "high" ? "over" : "under";
 
   return {
     id: `${ctx.paths.idPrefix}${lean}-rate-outlier`,
     category: "ref-outlier",
-    headline: `${ref.name} leads the pool on ${lean} frequency`,
+    headline: overUnderFrequencyHeadline(ref.name, ref.overRate, direction),
     summary: `${formatPct(ref.overRate)} of ${ref.name}'s ${ref.games} games finish ${lean} ${stats.meta.leagueOverBaseline} combined ${ctx.labels.scoreUnit}, ${(edge * 100).toFixed(1)} pts from a neutral 50% baseline.`,
     stats: [
       {
@@ -535,7 +555,7 @@ export function buildOverRateOutlierFinding(
         detail: `Leans ${lean}`,
       },
     ],
-    sampleNote: `${MIN_REF_GAMES}+ game sample · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(ref.games, stats.meta.seasons),
     links: [{ label: ref.name, href: ctx.paths.refPath(ref.slug) }],
     score: rankScore(edge, ref.games, MIN_REF_GAMES),
     sampleGames: ref.games,
@@ -605,7 +625,7 @@ export function buildLeagueSkewFinding(
         detail: meta.seasons.join(", "),
       },
     ],
-    sampleNote: `${refs.length} refs · ${totalGames.toLocaleString()} games · ${meta.source} data`,
+    sampleNote: formatFindingSampleMeta(totalGames, meta.seasons),
     links: [{ label: "Browse refs", href: ctx.paths.refsBrowsePath }],
     score: rankScore(effectSize, totalGames, MIN_REF_GAMES),
     sampleGames: totalGames,
@@ -659,7 +679,7 @@ export function buildNhlMinorsOutlierFinding(
         detail: `Min ${MIN_ANALYTICS_GAMES} games`,
       },
     ],
-    sampleNote: `${best.ref.games} games · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(best.ref.games, stats.meta.seasons),
     links: [{ label: best.ref.name, href: ctx.paths.refPath(best.ref.slug) }],
     score: rankScore(
       Math.abs(best.rate - leagueMinors) / leagueMinors,
@@ -721,7 +741,7 @@ export function buildNhlOtOutlierFinding(
         detail: `Min ${MIN_ANALYTICS_GAMES} games`,
       },
     ],
-    sampleNote: `${best.ref.games} games · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(best.ref.games, stats.meta.seasons),
     links: [{ label: best.ref.name, href: ctx.paths.refPath(best.ref.slug) }],
     score: rankScore(Math.abs(best.edge), best.ref.games, MIN_ANALYTICS_GAMES),
     sampleGames: best.ref.games,

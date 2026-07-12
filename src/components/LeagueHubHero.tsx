@@ -27,7 +27,7 @@ const STROKE = {
 const STROKE_CRISP = {
   ...STROKE,
   strokeWidth: 1.15,
-  strokeOpacity: 0.72,
+  strokeOpacity: 0.88,
 };
 
 const RINK_RED = {
@@ -110,7 +110,7 @@ function BasketballCourtWatermark() {
         rx="2"
         {...STROKE}
         strokeWidth={1.4}
-        strokeOpacity={0.85}
+        strokeOpacity={0.95}
       />
       <g clipPath={`url(#${clipId})`}>
         <line x1={midX} y1={pad} x2={midX} y2={H - pad} {...STROKE_CRISP} />

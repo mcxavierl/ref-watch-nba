@@ -1,5 +1,11 @@
 import { formatPct, getRefStats } from "@/lib/data";
 import { buildScopedRefStats } from "@/lib/scoped-ref-stats";
+import {
+  formatFindingSampleMeta,
+  ouAtsHistoricalHeadline,
+  teamCrewOverHeadline,
+  whistleParadoxHeadline,
+} from "@/lib/finding-copy";
 import { formatSigned } from "@/lib/stats-utils";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName } from "@/lib/teams";
@@ -155,7 +161,7 @@ function rareOverRefsFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: "Combined pts proxy",
       },
     ],
-    sampleNote: `${qualified.length} refs with ${MIN_REF_GAMES}+ games · ${meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(qualified.length, meta.seasons),
     links: overRefs.slice(0, 3).map((r) => ({
       label: r.name,
       href: `/refs/${r.slug}`,
@@ -242,7 +248,10 @@ function overRateTeamSplitFinding(stats: RefStatsFile): ScoredFindingBase | null
         detail: "vs 50% neutral baseline",
       },
     ],
-    sampleNote: `Min ${MIN_TEAM_GAMES} games per team · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(
+      best.highGames + best.lowGames,
+      stats.meta.seasons,
+    ),
     links: [
       { label: best.ref.name, href: `/refs/${best.ref.slug}` },
       { label: highName, href: `/teams/${best.highTeam}` },
@@ -320,7 +329,7 @@ function foulEdgeLosingFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `Avg ${best.avgTotal} combined pts`,
       },
     ],
-    sampleNote: `${best.games} ${best.team} games · min ${MIN_TEAM_GAMES} game sample`,
+    sampleNote: formatFindingSampleMeta(best.games, stats.meta.seasons),
     links: [
       { label: best.ref.name, href: `/refs/${best.ref.slug}` },
       { label: teamName, href: `/teams/${best.team}` },
@@ -408,7 +417,10 @@ function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
       },
     ],
-    sampleNote: `Min ${MIN_TEAM_GAMES} games per ref–team pair · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(
+      hottest.games + coldest.games,
+      stats.meta.seasons,
+    ),
     links: [
       { label: hottest.ref.name, href: `/refs/${hottest.ref.slug}` },
       { label: hotTeam, href: `/teams/${hottest.team}` },
@@ -489,7 +501,10 @@ function crossTeamWhistleFinding(
         detail: "Fouls per game differential gap",
       },
     ],
-    sampleNote: `${favored.games + penalized.games} games across two teams · min ${MIN_TEAM_GAMES} per team`,
+    sampleNote: formatFindingSampleMeta(
+      favored.games + penalized.games,
+      stats.meta.seasons,
+    ),
     links: [
       { label: ref.name, href: `/refs/${ref.slug}` },
       { label: favoredName, href: `/teams/${favored.team}` },
@@ -509,7 +524,7 @@ function whistleParadoxFinding(stats: RefStatsFile): ScoredFindingBase | null {
   return {
     id: "whistle-paradox",
     category: "whistle-extreme",
-    headline: `${ref.name} whistles heavy, scores stay low`,
+    headline: whistleParadoxHeadline(ref.name, ref.overRate),
     summary: `${ref.name} averages ${ref.avgFouls} fouls (${formatSigned(ref.foulsDelta)} vs league) yet only ${formatPct(ref.overRate)} of games beat ${stats.meta.leagueOverBaseline} points.`,
     stats: [
       {
@@ -528,7 +543,7 @@ function whistleParadoxFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `${formatSigned(ref.totalPointsDelta)} vs ${stats.meta.leagueAvgTotal}`,
       },
     ],
-    sampleNote: `${ref.games} games · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(ref.games, stats.meta.seasons),
     links: [{ label: `${ref.name} profile`, href: `/refs/${ref.slug}` }],
     score: rankScoreLocal(ref.foulsDelta / 5 + (0.5 - ref.overRate), ref.games, MIN_WHISTLE_GAMES),
     sampleGames: ref.games,
@@ -584,7 +599,7 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: "Absolute deviation",
       },
     ],
-    sampleNote: `${best.games} ATS decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(best.games, stats.meta.seasons),
     links: [{ label: best.ref.name, href: `/refs/${best.ref.slug}` }],
     score: rankScoreLocal(best.edge, best.games, MIN_ATS_GAMES),
     sampleGames: best.games,
@@ -621,7 +636,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
   return {
     id: "ou-ats-edge",
     category: "ou-edge",
-    headline: `${best.ref.name}: highest historical ${lean} rate vs closing totals`,
+    headline: ouAtsHistoricalHeadline(best.ref.name, best.overRate, lean),
     summary: `Totals finish ${lean} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} (${formatWlpShort(record)}) across ${best.games} lined games, ${(best.edge * 100).toFixed(1)} pts from a neutral 50% baseline.`,
     explainer: `O/U ATS uses estimated closing totals where sportsbook data is unavailable. Minimum ${MIN_OU_ATS_GAMES}+ decisive games required before surfacing.`,
     stats: [
@@ -641,7 +656,7 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `Historical ${lean} association`,
       },
     ],
-    sampleNote: `${best.games} O/U decisions · estimated closing lines where needed · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(best.games, stats.meta.seasons),
     links: [{ label: best.ref.name, href: `/refs/${best.ref.slug}` }],
     score: rankScoreLocal(best.edge, best.games, MIN_OU_ATS_GAMES),
     sampleGames: best.games,
@@ -676,7 +691,7 @@ function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
   return {
     id: "team-crew-anomaly",
     category: "team-crew",
-    headline: `${teamName} runs ${lean} ${(best.delta * 100).toFixed(0)} pts off neutral with this crew`,
+    headline: teamCrewOverHeadline(teamName, best.split.overRate, best.delta),
     summary: `When ${crewLabel}${best.split.crewNames.length > 2 ? "…" : ""} work ${teamName} games, ${formatPct(best.split.overRate)} finish ${lean} ${baseline} combined points (${best.split.games} games).`,
     stats: [
       {
@@ -695,7 +710,7 @@ function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `${best.team} vs opponents`,
       },
     ],
-    sampleNote: `Min ${MIN_TEAM_CREW_GAMES} games per crew · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(best.split.games, stats.meta.seasons),
     links: [{ label: teamName, href: `/teams/${best.team}` }],
     score: rankScoreLocal(best.delta, best.split.games, MIN_TEAM_CREW_GAMES),
     sampleGames: best.split.games,
@@ -733,7 +748,7 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `${formatSigned(ref.foulsDelta)} vs league`,
       },
     ],
-    sampleNote: `${MIN_REF_GAMES}+ game sample · ${stats.meta.seasons.join(", ")}`,
+    sampleNote: formatFindingSampleMeta(ref.games, stats.meta.seasons),
     links: [{ label: ref.name, href: `/refs/${ref.slug}` }],
     score: rankScoreLocal(effect, ref.games, MIN_REF_GAMES),
     sampleGames: ref.games,

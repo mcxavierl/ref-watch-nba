@@ -49,9 +49,7 @@ export function ResearchFindingDetail({
           </p>
         )}
         <p className="finding-accordion-metric-preview mt-2">{finding.summary}</p>
-        <p className="mt-3 text-sm tabular-nums text-zinc-500">
-          {finding.sampleNote}
-        </p>
+        <p className="finding-sample-meta mt-3">{finding.sampleNote}</p>
       </header>
 
       {finding.stats.length > 0 && (

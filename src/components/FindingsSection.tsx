@@ -34,9 +34,7 @@ export function FindingCard({
       </div>
 
       <div className="finding-accordion-footer">
-        <p className="text-sm tabular-nums text-zinc-500">
-          {finding.sampleNote}
-        </p>
+        <p className="finding-sample-meta">{finding.sampleNote}</p>
         {finding.links.length > 0 && (
           <FindingFooterLinks links={finding.links} />
         )}
