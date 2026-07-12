@@ -132,11 +132,13 @@ function matrixHref(leagueId: LeagueId): string {
   return `${leaguePrefix(leagueId)}/matrix`;
 }
 
-function insightsHref(leagueId: LeagueId): string {
+type VerifiedLiveLeagueId = (typeof VERIFIED_LIVE_LEAGUE_IDS)[number];
+
+function insightsHref(leagueId: VerifiedLiveLeagueId): string {
   return insightsViewHref(leagueId, "findings");
 }
 
-function trendsHref(leagueId: LeagueId): string {
+function trendsHref(leagueId: VerifiedLiveLeagueId): string {
   return insightsViewHref(leagueId, "trends");
 }
 
@@ -152,7 +154,7 @@ function heroToneFromDelta(delta: number): LeagueInsightTone {
 }
 
 function cardFromMatrix(
-  leagueId: LeagueId,
+  leagueId: VerifiedLiveLeagueId,
   highlight: MatrixExtremeHighlight,
 ): LeagueInsightCard {
   const config = LEAGUES[leagueId];
@@ -197,7 +199,7 @@ function cardFromMatrix(
   };
 }
 
-function cardFromFinding(leagueId: LeagueId, finding: Finding): LeagueInsightCard {
+function cardFromFinding(leagueId: VerifiedLiveLeagueId, finding: Finding): LeagueInsightCard {
   const config = LEAGUES[leagueId];
   const primary = finding.stats[0];
   const secondary = finding.stats[1];
@@ -240,7 +242,7 @@ function prefixOrRoot(leagueId: LeagueId): string {
 }
 
 function pickInsight(
-  leagueId: LeagueId,
+  leagueId: VerifiedLiveLeagueId,
   matrix: MatrixExtremeHighlight | undefined,
   finding: Finding | undefined,
 ): LeagueInsightCard | null {

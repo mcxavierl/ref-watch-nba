@@ -261,11 +261,13 @@ export function InsightDrilldownModal({
               <div className="insight-drilldown-section-head">
                 <h3 className="insight-drilldown-section-title">Last {payload.games.length} games</h3>
                 <p className="insight-drilldown-section-lead">
-                  {venue === "all"
-                    ? "Most recent matchups in this sample."
-                    : venue === "home"
-                      ? "Home games in this ref×team sample."
-                      : "Road games in this ref×team sample."}
+                  {payload.games.length < payload.wins + payload.losses
+                    ? `Showing ${payload.games.length} of ${payload.wins + payload.losses} ref×team games available in the profile sample.`
+                    : venue === "all"
+                      ? "Most recent matchups in this sample."
+                      : venue === "home"
+                        ? "Home games in this ref×team sample."
+                        : "Road games in this ref×team sample."}
                 </p>
               </div>
               <div className="insight-drilldown-table-wrap">

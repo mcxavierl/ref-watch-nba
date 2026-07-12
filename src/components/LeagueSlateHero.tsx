@@ -32,6 +32,13 @@ function formatStatCount(value: number | undefined): string {
   return value.toLocaleString();
 }
 
+function seasonCountFromSnapshot(seasonSpan: string | undefined): number {
+  if (!seasonSpan) return 0;
+  if (seasonSpan.toLowerCase().includes("this season")) return 1;
+  const match = seasonSpan.match(/(\d+)/);
+  return match ? Number.parseInt(match[1]!, 10) : 0;
+}
+
 const SLATE_HERO_STAT_KEYS: SlateHeroStatKey[] = ["officials", "games", "seasons"];
 
 export function LeagueSlateHero({
@@ -47,7 +54,8 @@ export function LeagueSlateHero({
   const isOffseason = isOffseasonSlate(assignments);
   const isPending = isPendingCrewSlate(assignments);
   const snapshot = LEAGUE_HERO_STATS[leagueId];
-  const officialCount = refStats.refs?.length || snapshot?.officials || 0;
+  const officialCount =
+    refStats.refs?.length || snapshot?.officials || 0;
   const gamesProcessed =
     refStats.meta.totalGamesProcessed || snapshot?.games || 0;
   const seasonSpan =
@@ -56,7 +64,10 @@ export function LeagueSlateHero({
       : snapshot?.seasonSpan ?? "-";
   const seasonAuditNote =
     leagueId === "nba" ? nbaSeasonScopeAuditNote(refStats.meta.seasons) : null;
-  const seasonCount = refStats.meta.seasons.length;
+  const seasonCount =
+    refStats.meta.seasons.length > 0
+      ? refStats.meta.seasons.length
+      : seasonCountFromSnapshot(snapshot?.seasonSpan);
   const useInteractiveStats = isOffseason;
   const heroActions = slateHeroActions(leagueId);
 
