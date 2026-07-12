@@ -48,3 +48,6 @@ next-env.d.ts
 
 # copied from data/ during npm run build for Cloudflare static asset serving
 /public/data/
+
+# BBR ingest HTML cache (fetched locally; not shipped)
+/data/nba/cache/

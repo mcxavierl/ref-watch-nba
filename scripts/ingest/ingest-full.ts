@@ -5,7 +5,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { normalizeRefName } from "../../src/lib/bbr-ref-team-records";
-import { fetchBbrHtml } from "./fetch-bbr";
+import { fetchBbrHtml, fetchBbrHtmlOptional } from "./fetch-bbr";
 import {
   fetchGameSummary,
   fetchSeasonGameIds,
@@ -86,10 +86,11 @@ async function main() {
     let sched: ReturnType<typeof parseBbrSchedule> = [];
 
     for (const month of BBR_SCHEDULE_MONTHS) {
-      const monthHtml = await fetchBbrHtml(
+      const monthHtml = await fetchBbrHtmlOptional(
         bbrScheduleMonthUrl(season, month),
         `schedule_${season}_${month}`,
       );
+      if (!monthHtml) continue;
       pagesFetched++;
       const monthGames = parseBbrSchedule(monthHtml, season);
       sched.push(...monthGames);
@@ -279,9 +280,14 @@ async function main() {
   writeSeasonShards(finalGames);
   writeManifest(finalGames, pagesFetched);
 
-  const stats = buildRefStatsFromLogs();
-  const statsPath = path.join(process.cwd(), "data", "ref-stats.json");
-  fs.writeFileSync(statsPath, `${JSON.stringify(stats, null, 2)}\n`);
+  const logsOnly = process.argv.includes("--logs-only");
+  if (!logsOnly) {
+    const stats = buildRefStatsFromLogs();
+    const statsPath = path.join(process.cwd(), "data", "ref-stats.json");
+    fs.writeFileSync(statsPath, `${JSON.stringify(stats, null, 2)}\n`);
+  } else {
+    console.log("\n--logs-only: skipped ref-stats.json rebuild (preserving BBR merge)");
+  }
 
   console.log("\n=== INGEST COMPLETE ===");
   console.log(`Pages fetched: ${pagesFetched}`);

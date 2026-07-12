@@ -10,7 +10,7 @@ import {
 } from "../../src/lib/insight-drilldown-types";
 import type { RuntimeGameLogEntry } from "../../src/lib/game-logs-preload";
 import { LEAGUES, type LeagueId } from "../../src/lib/leagues";
-import type { RefGameRecord, RefProfile, RefStatsFile } from "../../src/lib/types";
+import type { RefGameRecord, RefProfile, RefStatsFile, TeamCrewSplit } from "../../src/lib/types";
 
 const DATA_LEAGUE: Record<
   (typeof import("../../src/lib/league-verification").VERIFIED_LIVE_LEAGUE_IDS)[number],
@@ -22,6 +22,48 @@ const DATA_LEAGUE: Record<
   epl: "EPL",
   laliga: "LALIGA",
 };
+
+function buildDrilldownGamesFromTeamSplits(
+  leagueId: LeagueId,
+  refSlugValue: string,
+  teamAbbr: string,
+  splits: TeamCrewSplit[],
+  limit = 10,
+): InsightDrilldownGame[] {
+  const whistleLabel = whistleLabelForLeague(leagueId);
+  const rows: InsightDrilldownGame[] = [];
+
+  for (const split of splits) {
+    if (!split.crewKey.split("|").includes(refSlugValue)) continue;
+    const partners = split.crewNames.filter(
+      (name) => refSlug(name, 0) !== refSlugValue,
+    );
+    const wins = split.wins ?? 0;
+    const losses = split.losses ?? Math.max(0, split.games - wins);
+
+    for (let i = 0; i < split.games; i++) {
+      const isWin = i < wins;
+      rows.push({
+        gameId: `${split.crewKey}--${i}`,
+        date: "",
+        season: "",
+        isHome: true,
+        opponentLabel:
+          partners.length > 0 ? `w/ ${partners.join(", ")}` : "Crew sample",
+        teamScore: 0,
+        opponentScore: 0,
+        scoreLine: split.games === 1 ? (isWin ? "W" : "L") : `${wins}-${losses}`,
+        whistleCount: Math.round(split.avgFouls ?? 0),
+        whistleLabel,
+        spreadCovered: null,
+        teamWon: isWin,
+      });
+      if (rows.length >= limit) return rows;
+    }
+  }
+
+  return rows;
+}
 
 function refSlug(name: string, number: number): string {
   const base = name
@@ -350,6 +392,12 @@ export function buildInsightDrilldownPayload(
     card.refSlug,
     card.teamAbbr,
   );
+  const record = parseRecord(
+    card.stats.find((stat) => stat.label === "Ref×team record")?.value,
+  );
+  const wins = record.wins;
+  const losses = record.losses;
+
   if (tableGames.length === 0) {
     const refStats = loadLeagueRefStats(root, leagueId);
     const refProfile =
@@ -361,6 +409,34 @@ export function buildInsightDrilldownPayload(
         card.teamAbbr,
         gameLogIndex,
       );
+    }
+  }
+  const refStatsForSplits = loadLeagueRefStats(root, leagueId);
+  const recordTotal = wins + losses;
+  if (
+    refStatsForSplits &&
+    recordTotal > 0 &&
+    tableGames.length < recordTotal
+  ) {
+    const splitGames = buildDrilldownGamesFromTeamSplits(
+      leagueId,
+      card.refSlug,
+      card.teamAbbr,
+      refStatsForSplits.teamSplits?.[card.teamAbbr] ?? [],
+      Math.min(10, recordTotal),
+    );
+    if (splitGames.length > 0) {
+      const merged = [...tableGames];
+      const seen = new Set(merged.map((game) => game.gameId));
+      for (const game of splitGames) {
+        if (merged.length >= Math.min(10, recordTotal)) break;
+        if (seen.has(game.gameId)) continue;
+        merged.push(game);
+        seen.add(game.gameId);
+      }
+      if (merged.length > tableGames.length) {
+        tableGames = merged.slice(0, Math.min(10, recordTotal));
+      }
     }
   }
   const homeRows =
@@ -380,11 +456,6 @@ export function buildInsightDrilldownPayload(
           .filter((game) => !game.isHome)
           .map((game) => ({ teamWon: game.teamWon }));
 
-  const record = parseRecord(
-    card.stats.find((stat) => stat.label === "Ref×team record")?.value,
-  );
-  const wins = record.wins;
-  const losses = record.losses;
   const winRate = wins + losses > 0 ? wins / (wins + losses) : 0;
   const baselineWinRate = parseBaselinePct(card.stats);
   const deltaPts = Number.parseFloat(card.heroValue.replace(/pp|\+/g, "")) || 0;
