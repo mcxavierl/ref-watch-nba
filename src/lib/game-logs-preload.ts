@@ -119,8 +119,15 @@ export async function preloadNbaGameLogSeasons(
   games.sort(
     (a, b) => a.date.localeCompare(b.date) || a.gameId.localeCompare(b.gameId),
   );
+  setCachedGameLogs("NBA", {
+    lastUpdated: new Date().toISOString(),
+    league: "NBA",
+    source: "Basketball-Reference + NBA Stats API",
+    games,
+  });
 }
 
+/** Edge-safe: fetch game logs from static assets (no Node fs). */
 export async function preloadGameLogsFromAssets(
   origin: string,
   league: DataLeague,

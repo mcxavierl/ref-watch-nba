@@ -6,6 +6,7 @@ import {
   loadCompareRefBundle,
   parseCompareRef,
 } from "@/lib/ref-compare";
+import { hydrateScopedGameLogs } from "@/lib/scoped-game-log-hydrate";
 import { readSeasonScopeParam } from "@/lib/season-scope";
 import { buildPageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
@@ -33,6 +34,9 @@ export default async function ComparePage({ searchParams }: PageProps) {
   const scopeMode = readSeasonScopeParam(scope);
   const parsedA = parseCompareRef(a);
   const parsedB = parseCompareRef(b);
+  if (parsedA?.leagueId === "nba" || parsedB?.leagueId === "nba") {
+    await hydrateScopedGameLogs(SITE_URL, "nba", scopeMode);
+  }
   const left = parsedA
     ? loadCompareRefBundle(parsedA.leagueId, parsedA.slug, scopeMode)
     : null;

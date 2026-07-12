@@ -3,7 +3,9 @@ import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
 import { getTeam, NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
+import { hydrateScopedGameLogs } from "@/lib/scoped-game-log-hydrate";
 import { readSeasonScopeParam } from "@/lib/season-scope";
+import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
   return NFL_TEAMS.map((team) => ({ abbr: team.abbr }));
@@ -37,11 +39,15 @@ export default async function NflTeamPage({
   const { scope } = await searchParams;
   const team = getTeam(abbr);
   if (!team) notFound();
+  const scopeMode = readSeasonScopeParam(scope, "nfl", { teamAbbr: team.abbr });
+  await hydrateScopedGameLogs(SITE_URL, "nfl", scopeMode, {
+    teamAbbr: team.abbr,
+  });
 
   return (
     <TeamCrewPage
       config={{ teamAbbr: team.abbr, league: "nfl" }}
-      scopeMode={readSeasonScopeParam(scope, "nfl", { teamAbbr: team.abbr })}
+      scopeMode={scopeMode}
     />
   );
 }
