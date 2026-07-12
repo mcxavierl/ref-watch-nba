@@ -85,7 +85,7 @@ function TeamRefRankListItem({
           name={entry.refName}
           slug={entry.refSlug}
           sport={sport}
-          size="sm"
+          size="md"
           className="ref-matrix-team-panel-ref-avatar"
         />
         <span className="ref-matrix-team-panel-ref-name">{entry.refName}</span>
@@ -155,11 +155,14 @@ function TeamRefRankColumn({
             className="ref-matrix-team-panel-list-head"
             aria-hidden
           >
-            <span>#</span>
-            <span>Official</span>
-            <span>W-L</span>
-            <span>Gp</span>
-            <span>{whistleUnit}</span>
+            <span className="ref-matrix-team-panel-list-head-rank">#</span>
+            <span className="ref-matrix-team-panel-list-head-official">
+              <span className="ref-matrix-team-panel-list-head-avatar-gap" />
+              Official
+            </span>
+            <span className="ref-matrix-team-panel-list-head-stat">W-L</span>
+            <span className="ref-matrix-team-panel-list-head-stat">Gp</span>
+            <span className="ref-matrix-team-panel-list-head-stat">{whistleUnit}</span>
           </div>
           <ul className="ref-matrix-team-panel-list" aria-labelledby={titleId}>
             {entries.slice(0, TEAM_MATRIX_REF_PANEL_LIMIT).map((entry, index) => (
@@ -608,7 +611,7 @@ export function RefTeamMatrix({
                   nbaId: selectedTeam.nbaId,
                 }}
                 sport={sport}
-                size="md"
+                size="xl"
                 className="ref-matrix-team-panel-logo"
               />
               <div className="ref-matrix-team-panel-copy">

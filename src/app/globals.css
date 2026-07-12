@@ -5744,8 +5744,10 @@ p {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.35rem;
-    border-radius: 0.5rem;
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+    padding: 0.55rem;
+    border-radius: 0.625rem;
     background: #ececf0;
     border: 1px solid color-mix(in srgb, var(--border-subtle) 55%, #fff);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.32);
@@ -5757,7 +5759,7 @@ p {
   }
 
   .ref-matrix-team-panel-logo .team-logo-plate__img {
-    padding: 0.15rem;
+    padding: 0.2rem;
   }
 
   .ref-matrix-team-panel-copy {
@@ -5965,6 +5967,7 @@ p {
   }
 
   .ref-matrix-team-panel-column {
+    --ref-matrix-panel-grid: 1.5rem minmax(0, 1.35fr) 4.75rem 3.25rem minmax(5.5rem, 7rem);
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
@@ -6009,7 +6012,8 @@ p {
 
   .ref-matrix-team-panel-list-head {
     display: grid;
-    grid-template-columns: 1.5rem minmax(0, 1.35fr) 4.75rem 3.25rem minmax(5.5rem, 7rem);
+    grid-template-columns: var(--ref-matrix-panel-grid);
+    align-items: end;
     gap: var(--space-2);
     padding: 0 0.65rem 0.35rem;
     font-size: 0.65rem;
@@ -6018,6 +6022,26 @@ p {
     text-transform: uppercase;
     color: var(--muted);
     border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .ref-matrix-team-panel-list-head-rank {
+    text-align: center;
+  }
+
+  .ref-matrix-team-panel-list-head-official {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+  }
+
+  .ref-matrix-team-panel-list-head-avatar-gap {
+    flex-shrink: 0;
+    width: 2.5rem;
+  }
+
+  .ref-matrix-team-panel-list-head-stat {
+    text-align: right;
   }
 
   .ref-matrix-team-panel-list-head--thin {
@@ -6055,7 +6079,7 @@ p {
   .ref-matrix-team-panel-item {
     position: relative;
     display: grid;
-    grid-template-columns: 1.5rem minmax(0, 1.35fr) 4.75rem 3.25rem minmax(5.5rem, 7rem);
+    grid-template-columns: var(--ref-matrix-panel-grid);
     align-items: center;
     gap: var(--space-2);
     border-radius: 0.5rem;
@@ -6063,7 +6087,7 @@ p {
     background: var(--surface);
     border: 1px solid var(--border-subtle);
     font-size: var(--text-sm);
-    min-height: 2.95rem;
+    min-height: 3.15rem;
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .ref-matrix-team-panel-item {
@@ -6130,6 +6154,8 @@ p {
 
   .ref-matrix-team-panel-ref-avatar {
     flex-shrink: 0;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
   }
 
   .ref-matrix-team-panel-ref-name {
