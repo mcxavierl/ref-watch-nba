@@ -5,7 +5,6 @@ import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import {
-  formatRefStatsRange,
   getTeamSplits,
 } from "@/lib/nfl/data";
 import { preloadLeagueRefStats } from "@/lib/edge-preload";
@@ -16,7 +15,7 @@ export const metadata = hubPageMetadata("nfl", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
-import { readSeasonScopeParam } from "@/lib/season-scope";
+import { matrixLeadSeasonPhrase, readSeasonScopeParam } from "@/lib/season-scope";
 import { NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
 
 type PageProps = {
@@ -31,12 +30,12 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
   const scopeMode = readSeasonScopeParam(scope);
   const {
     stats,
-    formatRange,
     sinceSeason,
     scopeLabel,
+    scopedSeasons,
     availableSeasons,
   } = loadScopedLeagueStats("nfl", scopeMode);
-  const range = formatRange(stats.meta);
+  const seasonSpan = matrixLeadSeasonPhrase(scopedSeasons.length);
   const espn = stats.meta.source === "espn" || stats.meta.source === "hybrid";
   const league = LEAGUES.nfl;
 
@@ -62,7 +61,7 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
         <h1 className="page-title">NFL official × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} officials worked their
-          games ({range}). Cells require {matrix.minGames}+ games in this
+          games ({seasonSpan}). Cells require {matrix.minGames}+ games in this
           dataset. Not predictions; see{" "}
           <Link href="/methodology" className="page-lead-link">
             methodology

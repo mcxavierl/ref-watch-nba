@@ -8,7 +8,7 @@ import { getTeamSplits } from "@/lib/data";
 import { LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
-import { readSeasonScopeParam } from "@/lib/season-scope";
+import { matrixLeadSeasonPhrase, readSeasonScopeParam } from "@/lib/season-scope";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";
 import { refTeamDataNote } from "@/lib/user-language";
 import { getNbaTeamSosCache } from "@/lib/nba-team-sos-cache";
@@ -25,11 +25,11 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
   const scopeMode = readSeasonScopeParam(scope);
   const {
     stats,
-    formatRange,
     sinceSeason,
     scopeLabel,
+    scopedSeasons,
   } = loadScopedLeagueStats("nba", scopeMode);
-  const range = formatRange(stats.meta);
+  const seasonSpan = matrixLeadSeasonPhrase(scopedSeasons.length);
   const bbrTeamNote = refTeamDataNote(stats.meta);
   const league = LEAGUES.nba;
 
@@ -57,7 +57,7 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
         <h1 className="page-title">NBA ref × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} referees worked their games
-          ({range}). Cells require {matrix.minGames}+ games in this dataset. Not
+          ({seasonSpan}). Cells require {matrix.minGames}+ games in this dataset. Not
           predictions; see{" "}
           <Link href="/methodology" className="page-lead-link">
             methodology

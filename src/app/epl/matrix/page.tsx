@@ -3,7 +3,6 @@ import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
-  formatRefStatsRange,
   getRefStats,
   getTeamSplits,
 } from "@/lib/epl/data";
@@ -14,13 +13,14 @@ import { SITE_URL } from "@/lib/site";
 export const metadata = hubPageMetadata("epl", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { isEplSimulatedData } from "@/lib/epl/data-source";
 import { EPL_TEAMS, teamFullName } from "@/lib/epl/teams";
 
 export default async function EplMatrixPage() {
   await preloadLeagueRefStats(SITE_URL, "epl");
   const stats = getRefStats();
-  const range = formatRefStatsRange(stats.meta);
+  const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);
   const seeded = isEplSimulatedData(stats.meta.source);
   const espn = stats.meta.source === "espn";
   const league = LEAGUES.epl;
@@ -47,7 +47,7 @@ export default async function EplMatrixPage() {
         <h1 className="page-title">EPL referee × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} officials worked their
-          games ({range}). Cells require {matrix.minGames}+ games in this
+          games ({seasonSpan}). Cells require {matrix.minGames}+ games in this
           dataset. Not predictions; see{" "}
           <Link href="/methodology" className="page-lead-link">
             methodology

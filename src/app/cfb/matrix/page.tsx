@@ -3,7 +3,6 @@ import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
-  formatRefStatsRange,
   getRefStats,
   getTeamSplits,
 } from "@/lib/cfb/data";
@@ -12,12 +11,13 @@ import { hubPageMetadata } from "@/lib/seo";
 export const metadata = hubPageMetadata("cfb", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { isCfbSimulatedData } from "@/lib/cfb/data-source";
 import { CFB_TEAMS, teamFullName } from "@/lib/cfb/teams";
 
 export default function CfbMatrixPage() {
   const stats = getRefStats();
-  const range = formatRefStatsRange(stats.meta);
+  const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);
   const seeded = isCfbSimulatedData(stats.meta.source);
   const espn = stats.meta.source === "espn";
   const league = LEAGUES.cfb;
@@ -44,7 +44,7 @@ export default function CfbMatrixPage() {
         <h1 className="page-title">CFB official × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} officials worked their
-          games ({range}). Cells require {matrix.minGames}+ games in this
+          games ({seasonSpan}). Cells require {matrix.minGames}+ games in this
           dataset. Not predictions; see{" "}
           <Link href="/methodology" className="page-lead-link">
             methodology

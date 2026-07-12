@@ -3,7 +3,6 @@ import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
-  formatRefStatsRange,
   getRefStats,
   getTeamSplits,
 } from "@/lib/laliga/data";
@@ -14,13 +13,14 @@ import { SITE_URL } from "@/lib/site";
 export const metadata = hubPageMetadata("laliga", "matrix");
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { isLaligaSimulatedData } from "@/lib/laliga/data-source";
 import { LALIGA_TEAMS, teamFullName } from "@/lib/laliga/teams";
 
 export default async function LaligaMatrixPage() {
   await preloadLeagueRefStats(SITE_URL, "laliga");
   const stats = getRefStats();
-  const range = formatRefStatsRange(stats.meta);
+  const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);
   const seeded = isLaligaSimulatedData(stats.meta.source);
   const espn = stats.meta.source === "espn";
   const league = LEAGUES.laliga;
@@ -47,7 +47,7 @@ export default async function LaligaMatrixPage() {
         <h1 className="page-title">La Liga referee × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} officials worked their
-          games ({range}). Cells require {matrix.minGames}+ games in this
+          games ({seasonSpan}). Cells require {matrix.minGames}+ games in this
           dataset. Not predictions; see{" "}
           <Link href="/methodology" className="page-lead-link">
             methodology

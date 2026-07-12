@@ -3,7 +3,6 @@ import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import {
-  formatRefStatsRange,
   getRefStats,
   getTeamSplits,
 } from "@/lib/nhl/data";
@@ -15,6 +14,7 @@ export const metadata = hubPageMetadata("nhl", "matrix");
 import { nhlAnalyticsRefStats } from "@/lib/nhl/officials";
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 import { NHL_TEAMS, teamFullName } from "@/lib/nhl/teams";
 
@@ -22,7 +22,7 @@ export default async function NhlMatrixPage() {
   await preloadLeagueRefStats(SITE_URL, "nhl");
   const stats = getRefStats();
   const analyticsStats = nhlAnalyticsRefStats(stats);
-  const range = formatRefStatsRange(stats.meta);
+  const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);
   const league = LEAGUES.nhl;
 
   const matrix = computeRefTeamMatrix(
@@ -47,7 +47,7 @@ export default async function NhlMatrixPage() {
         <h1 className="page-title">NHL official × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} referees worked their
-          games ({range}). Cells require {matrix.minGames}+ games in this
+          games ({seasonSpan}). Cells require {matrix.minGames}+ games in this
           dataset. {NHL_LINESMAN_METHODOLOGY_NOTE} Not predictions; see{" "}
           <Link href="/methodology" className="page-lead-link">
             methodology

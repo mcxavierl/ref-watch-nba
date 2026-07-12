@@ -2,10 +2,11 @@ import Link from "next/link";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
-import { formatRefStatsRange, getRefStats, getTeamSplits } from "@/lib/cbb/data";
+import { getRefStats, getTeamSplits } from "@/lib/cbb/data";
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { CBB_TEAMS, teamFullName } from "@/lib/cbb/teams";
+import { matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { refTeamDataNote } from "@/lib/user-language";
 import { hubPageMetadata } from "@/lib/seo";
 export const metadata = hubPageMetadata("cbb", "matrix");
@@ -13,7 +14,7 @@ export const metadata = hubPageMetadata("cbb", "matrix");
 
 export default function NbaMatrixPage() {
   const stats = getRefStats();
-  const range = formatRefStatsRange(stats.meta);
+  const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);
   const seeded = stats.meta.source === "seeded";
   const bbrTeamNote = refTeamDataNote(stats.meta);
   const league = LEAGUES.cbb;
@@ -40,7 +41,7 @@ export default function NbaMatrixPage() {
         <h1 className="page-title">CBB ref × team matrix</h1>
         <p className="page-lead">
           Team W-L when each of {matrix.refs.length} referees worked their games
-          ({range}). Cells require {matrix.minGames}+ games in this dataset. Not
+          ({seasonSpan}). Cells require {matrix.minGames}+ games in this dataset. Not
           predictions; see{" "}
           <Link href="/methodology" className="page-lead-link">
             methodology

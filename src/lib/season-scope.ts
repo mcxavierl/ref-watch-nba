@@ -212,6 +212,11 @@ export function formatSeasonScope(seasonCount: number): string {
   return `Last ${seasonCount} seasons`;
 }
 
+/** Lowercase season span for matrix page-lead parentheticals, e.g. "last 10 seasons". */
+export function matrixLeadSeasonPhrase(seasonCount: number): string {
+  return formatSeasonScope(seasonCount).toLowerCase();
+}
+
 export function scopedSinceSeason(scopedSeasons: string[]): string {
   if (scopedSeasons.length === 0) return DEFAULT_SINCE_SEASON;
   return [...scopedSeasons].sort()[0] ?? DEFAULT_SINCE_SEASON;
