@@ -68,11 +68,6 @@ export function RefStatGrid({
             label="Seasons"
             value={profile.seasons.join(", ")}
           />
-          <RefDashboardStatCell
-            label="Spread record"
-            value="N/A"
-            detail="No spread data yet"
-          />
         </RefDashboardStatGrid>
       </div>
     </section>

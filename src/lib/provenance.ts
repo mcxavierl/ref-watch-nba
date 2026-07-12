@@ -44,12 +44,18 @@ export function sampleGateStatus(
 }
 
 export function refStatsDataTag(meta: RefStatsFile["meta"]): ProvenanceTag {
+  if (meta.data_verified) {
+    return "computed-from-real";
+  }
+
   if (
     meta.source === "nba-stats-api" ||
     meta.source === "nhl-api" ||
     meta.source === "espn" ||
     meta.source === "football-data" ||
-    meta.source === "seeded"
+    meta.source === "seeded" ||
+    meta.source === "hybrid" ||
+    meta.source === "historical"
   ) {
     return "computed-from-real";
   }
