@@ -71,63 +71,70 @@ async function fetchText(url: string): Promise<{ status: number; body: string }>
 
 console.log(`Production deploy verify → ${ORIGIN}`);
 
-for (const route of ROUTES) {
-  const url = `${ORIGIN}${route.path}`;
-  try {
-    const { status, body } = await fetchText(url);
-    if (route.minStatus != null && status < route.minStatus) {
-      fail(`${route.path}: HTTP ${status} (need >= ${route.minStatus})`);
-    }
-    if (route.maxStatus != null && status > route.maxStatus) {
-      fail(`${route.path}: HTTP ${status} (need <= ${route.maxStatus})`);
-    }
-    for (const bad of route.mustNotInclude ?? []) {
-      if (body.includes(bad)) {
-        fail(`${route.path}: body contains forbidden "${bad}"`);
+async function main(): Promise<void> {
+  for (const route of ROUTES) {
+    const url = `${ORIGIN}${route.path}`;
+    try {
+      const { status, body } = await fetchText(url);
+      if (route.minStatus != null && status < route.minStatus) {
+        fail(`${route.path}: HTTP ${status} (need >= ${route.minStatus})`);
       }
+      if (route.maxStatus != null && status > route.maxStatus) {
+        fail(`${route.path}: HTTP ${status} (need <= ${route.maxStatus})`);
+      }
+      for (const bad of route.mustNotInclude ?? []) {
+        if (body.includes(bad)) {
+          fail(`${route.path}: body contains forbidden "${bad}"`);
+        }
+      }
+      const needles = route.mustIncludeOne ?? [];
+      if (
+        needles.length > 0 &&
+        !needles.some((needle) => body.includes(needle))
+      ) {
+        fail(`${route.path}: body missing expected content (${needles.join(" | ")})`);
+      }
+      console.log(`  ✓ ${route.path} HTTP ${status}`);
+    } catch (err) {
+      fail(`${route.path}: fetch failed (${err instanceof Error ? err.message : err})`);
     }
-    const needles = route.mustIncludeOne ?? [];
-    if (
-      needles.length > 0 &&
-      !needles.some((needle) => body.includes(needle))
-    ) {
-      fail(`${route.path}: body missing expected content (${needles.join(" | ")})`);
-    }
-    console.log(`  ✓ ${route.path} HTTP ${status}`);
-  } catch (err) {
-    fail(`${route.path}: fetch failed (${err instanceof Error ? err.message : err})`);
   }
+
+  for (const assetPath of JSON_ASSETS) {
+    const url = `${ORIGIN}${assetPath}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        fail(`${assetPath}: HTTP ${res.status}`);
+        continue;
+      }
+      const data = (await res.json()) as {
+        refs?: unknown[];
+        meta?: { totalGamesProcessed?: number; data_verified?: boolean };
+      };
+      const refs = data.refs?.length ?? 0;
+      const games = data.meta?.totalGamesProcessed ?? 0;
+      if (refs === 0) fail(`${assetPath}: refs array is empty`);
+      if (games === 0) fail(`${assetPath}: totalGamesProcessed is 0`);
+      if (!data.meta?.data_verified) fail(`${assetPath}: data_verified is false`);
+      console.log(`  ✓ ${assetPath} refs=${refs} games=${games}`);
+    } catch (err) {
+      fail(`${assetPath}: ${err instanceof Error ? err.message : err}`);
+    }
+  }
+
+  if (failures.length > 0) {
+    console.error("\nProduction deploy verify FAILED:\n");
+    for (const f of failures) {
+      console.error(`  ✗ ${f}`);
+    }
+    process.exit(1);
+  }
+
+  console.log("\nProduction deploy verify passed.");
 }
 
-for (const assetPath of JSON_ASSETS) {
-  const url = `${ORIGIN}${assetPath}`;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      fail(`${assetPath}: HTTP ${res.status}`);
-      continue;
-    }
-    const data = (await res.json()) as {
-      refs?: unknown[];
-      meta?: { totalGamesProcessed?: number; data_verified?: boolean };
-    };
-    const refs = data.refs?.length ?? 0;
-    const games = data.meta?.totalGamesProcessed ?? 0;
-    if (refs === 0) fail(`${assetPath}: refs array is empty`);
-    if (games === 0) fail(`${assetPath}: totalGamesProcessed is 0`);
-    if (!data.meta?.data_verified) fail(`${assetPath}: data_verified is false`);
-    console.log(`  ✓ ${assetPath} refs=${refs} games=${games}`);
-  } catch (err) {
-    fail(`${assetPath}: ${err instanceof Error ? err.message : err}`);
-  }
-}
-
-if (failures.length > 0) {
-  console.error("\nProduction deploy verify FAILED:\n");
-  for (const f of failures) {
-    console.error(`  ✗ ${f}`);
-  }
+main().catch((err) => {
+  console.error(err);
   process.exit(1);
-}
-
-console.log("\nProduction deploy verify passed.");
+});
