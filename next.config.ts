@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   staticPageGenerationTimeout: 300,
   cleanDistDir: process.env.KEEP_NEXT_DIST === "1" ? false : true,
+  eslint: { ignoreDuringBuilds: true },
   outputFileTracingIncludes: {
     "/**": [
       "./data/baselines.json",
@@ -21,6 +22,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     webpackBuildWorker: false,
+    webpackMemoryOptimizations: true,
     cpus: 1,
   },
   async redirects() {

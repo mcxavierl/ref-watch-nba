@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import {
   cpSync,
   existsSync,
@@ -36,6 +36,36 @@ function releaseLock() {
 
 function cleanNextDir() {
   rmSync(".next", { recursive: true, force: true, maxRetries: 8, retryDelay: 300 });
+}
+
+function hasWebpackCache() {
+  return existsSync(".next/cache/webpack");
+}
+
+/** SIGKILL/SIGTERM during webpack usually means OOM; keep cache instead of full clean. */
+function shouldPreservePartialNext(exitStatus) {
+  return exitStatus === 137 || exitStatus === 143 || hasWebpackCache();
+}
+
+function exitStatusFromResult(result) {
+  if (result.status != null) return result.status;
+  if (result.signal === "SIGKILL") return 137;
+  if (result.signal === "SIGTERM") return 143;
+  if (result.signal) return 128;
+  return 1;
+}
+
+function runNextBuild(env) {
+  const result = spawnSync("npx", ["next", "build", ...process.argv.slice(2)], {
+    stdio: "inherit",
+    env,
+    shell: false,
+  });
+  if (result.status === 0) return;
+  const exitStatus = exitStatusFromResult(result);
+  const err = new Error(`next build exited with status ${exitStatus}`);
+  err.exitStatus = exitStatus;
+  throw err;
 }
 
 const FALLBACK_500_HTML =
@@ -123,10 +153,7 @@ function tryRecoverNearCompleteBuild(attempt) {
   if (!existsSync(".next/required-server-files.json") || !existsSync(".next/next-server.js.nft.json")) {
     try {
       console.warn("next build retrying trace collection after 500.html recovery...");
-      execSync(cmd, {
-        stdio: "inherit",
-        env: { ...process.env, KEEP_NEXT_DIST: "1" },
-      });
+      runNextBuild({ ...process.env, KEEP_NEXT_DIST: "1" });
     } catch {
       ensure500HtmlArtifacts();
       materializeStandaloneOutput();
@@ -154,10 +181,9 @@ process.on("SIGTERM", () => {
 
 for (let attempt = 1; attempt <= maxAttempts; attempt++) {
   mkdirSync(".next/server/pages", { recursive: true });
-  const buildEnv =
-    attempt > 1 ? { ...process.env, KEEP_NEXT_DIST: "1" } : process.env;
+  const buildEnv = { ...process.env, KEEP_NEXT_DIST: "1" };
   try {
-    execSync(cmd, { stdio: "inherit", env: buildEnv });
+    runNextBuild(buildEnv);
     if (!hasCompleteStandaloneBuild()) {
       materializeStandaloneOutput();
     }
@@ -166,7 +192,8 @@ for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     }
     releaseLock();
     process.exit(0);
-  } catch {
+  } catch (error) {
+    const exitStatus = error?.exitStatus;
     if (tryRecoverNearCompleteBuild(attempt)) {
       releaseLock();
       process.exit(0);
@@ -176,12 +203,14 @@ for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       process.exit(1);
     }
     const hasPartialBuild = isNearCompleteBuild();
-    if (!hasPartialBuild) {
+    if (hasPartialBuild || shouldPreservePartialNext(exitStatus)) {
+      console.warn(
+        `next build attempt ${attempt} failed (exit ${exitStatus ?? "unknown"}); keeping partial .next and retrying...`,
+      );
+    } else {
       console.warn(`next build attempt ${attempt} failed; cleaning .next and retrying...`);
       cleanNextDir();
-    } else {
-      console.warn(`next build attempt ${attempt} failed; keeping partial .next and retrying...`);
     }
-    execSync("sleep 2");
+    execSync(exitStatus === 137 || exitStatus === 143 ? "sleep 15" : "sleep 5");
   }
 }

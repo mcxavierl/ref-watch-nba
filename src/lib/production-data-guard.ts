@@ -1,8 +1,28 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import type { TeamCrewSplit } from "@/lib/types";
 
-/** True when Node `data/` reads are expected (local dev / CI), not Cloudflare Workers. */
+let nodeDataDirAvailable: boolean | undefined;
+
+function hasLocalDataDir(): boolean {
+  if (nodeDataDirAvailable !== undefined) return nodeDataDirAvailable;
+  try {
+    nodeDataDirAvailable = fs.existsSync(
+      path.join(process.cwd(), "data", "baselines.json"),
+    );
+  } catch {
+    nodeDataDirAvailable = false;
+  }
+  return nodeDataDirAvailable;
+}
+
+/**
+ * True when Node can read repo `data/` (local dev, CI `next build`).
+ * False on Cloudflare Workers where multi-MB sync parses risk 1100/1102.
+ */
 export function allowNodeDataFs(): boolean {
-  return process.env.NODE_ENV !== "production";
+  if (process.env.NODE_ENV !== "production") return true;
+  return hasLocalDataDir();
 }
 
 /** Avoid sync-parsing multi-MB team-splits.json on Workers when CDN cache missed. */
