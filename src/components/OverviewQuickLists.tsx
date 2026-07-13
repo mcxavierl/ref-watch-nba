@@ -90,7 +90,7 @@ export function OverviewQuickLists({
 
       <p className="overview-quicklists-step">
         <span className="overview-quicklists-step-label">Step 2</span>
-        Select a {league.shortLabel} list
+        Select {league.shortLabel} list
       </p>
       <div
         className="overview-quick-lists"

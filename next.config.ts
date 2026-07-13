@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  staticPageGenerationTimeout: 180,
+  staticPageGenerationTimeout: 300,
   outputFileTracingIncludes: {
     "/**": [
       "./data/baselines.json",
