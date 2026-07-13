@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   staticPageGenerationTimeout: 300,
+  cleanDistDir: process.env.KEEP_NEXT_DIST === "1" ? false : true,
   outputFileTracingIncludes: {
     "/**": [
       "./data/baselines.json",
