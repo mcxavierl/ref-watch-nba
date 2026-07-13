@@ -43,7 +43,7 @@ const ROUTES: RouteCheck[] = [
     mustIncludeOne: ["officials", "Tendencies"],
   },
   {
-    path: "/nba/rankings",
+    path: "/rankings",
     maxStatus: 299,
     mustNotInclude: ["1102"],
     mustIncludeOne: ["officials", "Tendencies"],
