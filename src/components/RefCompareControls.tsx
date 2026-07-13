@@ -30,7 +30,8 @@ function SwapIcon() {
 }
 
 export function RefCompareControls({
-  entries,
+  leftEntries,
+  rightEntries,
   leftKey,
   rightKey,
   scopeMode,
@@ -39,7 +40,8 @@ export function RefCompareControls({
   onScopeChange,
   onSwap,
 }: {
-  entries: CompareRefPickerEntry[];
+  leftEntries: CompareRefPickerEntry[];
+  rightEntries: CompareRefPickerEntry[];
   leftKey: string;
   rightKey: string;
   scopeMode: SeasonScopeMode;
@@ -55,7 +57,7 @@ export function RefCompareControls({
           <RefCompareCombobox
             id="compare-ref-a"
             label="Official A"
-            entries={entries}
+            entries={leftEntries}
             value={leftKey}
             onChange={onLeftChange}
           />
@@ -78,7 +80,7 @@ export function RefCompareControls({
           <RefCompareCombobox
             id="compare-ref-b"
             label="Official B"
-            entries={entries}
+            entries={rightEntries}
             value={rightKey}
             onChange={onRightChange}
           />

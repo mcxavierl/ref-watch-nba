@@ -11,18 +11,13 @@ import {
 } from "@/lib/league-catalog";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { OverviewInsightCard } from "@/components/OverviewInsightCard";
+import { OverviewLeaguePaceGrid } from "@/components/OverviewLeaguePaceGrid";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { OverviewSlateEntry } from "@/lib/overview-upcoming-slate";
 
 function formatCount(n: number): string {
   return n.toLocaleString("en-US");
-}
-
-function formatPace(value: number, leagueId: LeagueId): string {
-  if (leagueId === "epl") return value.toFixed(1);
-  if (leagueId === "nhl") return value.toFixed(1);
-  return value.toFixed(1);
 }
 
 function statusLabel(status: CatalogLeagueEntry["status"]): string {
@@ -39,7 +34,6 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
         <span className={`overview-catalog-status overview-catalog-status--${entry.status}`}>
           {statusLabel(entry.status)}
         </span>
-        <span className="overview-catalog-region">{entry.region}</span>
       </span>
     </>
   );
@@ -327,53 +321,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               </p>
             </div>
 
-            <div className="overview-pace-grid">
-              {data.leagueCards.map((card) => (
-                <Link
-                  key={card.leagueId}
-                  href={card.href}
-                  className="overview-pace-card"
-                  data-league={card.leagueId}
-                >
-                  <div className="overview-pace-card-head">
-                    <span className="overview-pace-label">{card.shortLabel}</span>
-                    <span className="overview-pace-meta">
-                      {formatCount(card.refCount)} refs · {card.seasonCount} seasons
-                    </span>
-                  </div>
-
-                  <div className="overview-pace-metric">
-                    <div className="overview-pace-metric-head">
-                      <span>{card.whistleLabel}</span>
-                      <strong>{formatPace(card.whistlePerGame, card.leagueId)}</strong>
-                    </div>
-                    <div className="overview-pace-bar" aria-hidden>
-                      <span
-                        className="overview-pace-bar-fill overview-pace-bar-fill--whistle"
-                        style={{ width: `${Math.round(card.whistleBar * 100)}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="overview-pace-metric">
-                    <div className="overview-pace-metric-head">
-                      <span>{card.scoreLabel}</span>
-                      <strong>{formatPace(card.scorePerGame, card.leagueId)}</strong>
-                    </div>
-                    <div className="overview-pace-bar" aria-hidden>
-                      <span
-                        className="overview-pace-bar-fill overview-pace-bar-fill--score"
-                        style={{ width: `${Math.round(card.scoreBar * 100)}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <span className="overview-pace-cta">
-                    Open hub <ArrowRight aria-hidden />
-                  </span>
-                </Link>
-              ))}
-            </div>
+            <OverviewLeaguePaceGrid cards={data.leagueCards} />
           </section>
 
           <section className="overview-expansion section-block" aria-labelledby="overview-expansion-heading">
@@ -400,7 +348,6 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                 .map((entry) => (
                   <div key={entry.id} className="overview-expansion-soon">
                     <span className="overview-expansion-soon-label">{entry.label}</span>
-                    <span className="overview-expansion-soon-region">{entry.region}</span>
                   </div>
                 ))}
             </div>

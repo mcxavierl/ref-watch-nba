@@ -65,7 +65,7 @@ export function OverviewQuickLists({
         Choose league
       </p>
       <div
-        className="overview-quicklists-segmented grid grid-cols-5 gap-1 rounded-lg border border-zinc-800/40 bg-zinc-900/60 p-1"
+        className="overview-quicklists-segmented"
         role="tablist"
         aria-labelledby="overview-quicklists-step"
       >
@@ -78,11 +78,7 @@ export function OverviewQuickLists({
               type="button"
               role="tab"
               aria-selected={selected}
-              className={`overview-quicklists-segment rounded-md px-1 py-1.5 text-center text-[0.68rem] font-bold uppercase tracking-wide transition ${
-                selected
-                  ? "border border-zinc-700/50 bg-zinc-800 text-white shadow-sm"
-                  : "border border-transparent text-zinc-500 hover:bg-zinc-800/40 hover:text-zinc-300"
-              }`}
+              className="overview-quicklists-segment"
               data-league={leagueId}
               onClick={() => setActiveLeague(leagueId)}
             >
@@ -110,11 +106,7 @@ export function OverviewQuickLists({
               key={`${activeLeague}-${list.id}`}
               type="button"
               aria-pressed={selected}
-              className={`overview-quick-list overview-quick-list--${list.accent} flex w-full items-start justify-between gap-3 rounded-lg border px-3 py-2.5 text-left transition ${
-                selected
-                  ? "border-zinc-700 bg-zinc-900 shadow-md ring-1 ring-zinc-800"
-                  : "border-zinc-900 bg-zinc-900/20 hover:border-zinc-800 hover:bg-zinc-900/35"
-              }`}
+              className={`overview-quick-list overview-quick-list--${list.accent}`}
               onClick={() => handleListSelect(list)}
             >
               <span className="overview-quick-list-copy min-w-0 flex-1">

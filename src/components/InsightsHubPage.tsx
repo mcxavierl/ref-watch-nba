@@ -179,6 +179,8 @@ export function InsightsHubPage({
         <RankingsInsightCards
           synthesis={synthesis}
           basePath={league.pathPrefix}
+          leagueId={leagueId}
+          leagueShortLabel={league.shortLabel}
         />
         <section className="section-block">
           <div className="data-card">

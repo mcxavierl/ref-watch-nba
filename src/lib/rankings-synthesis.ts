@@ -1,4 +1,5 @@
 import type { LeagueConfig } from "@/lib/leagues";
+import { formatScoringDeltaStat } from "@/lib/scoring-metrics";
 import { filterNhlReferees } from "@/lib/nhl/officials";
 import { formatSigned, bettingAtsRate, bettingOuRate, formatPct } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
@@ -77,7 +78,7 @@ export function buildRankingsSynthesis(
       refSlug: topScorer.slug,
       refName: topScorer.name,
       statLabel: "Scoring delta vs average",
-      statValue: `${delta > 0 ? "+" : ""}${delta.toFixed(1)} ${league.id === "nba" ? "PTS" : "G"}`,
+      statValue: formatScoringDeltaStat(delta, league),
     });
   }
 

@@ -4388,7 +4388,41 @@ p {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
   }
 
+  .rankings-insight-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .rankings-insight-league {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--insight-accent, var(--border)) 35%, var(--border));
+    background: color-mix(in srgb, var(--insight-accent, var(--surface-raised)) 12%, var(--surface-raised));
+    font-size: 0.62rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--insight-accent, var(--ink)) 72%, var(--ink));
+  }
+
+  .rankings-insight-card[data-league="nba"] { --insight-accent: var(--raptors); }
+  .rankings-insight-card[data-league="nhl"] { --insight-accent: var(--nhl-blue); }
+  .rankings-insight-card[data-league="nfl"] { --insight-accent: var(--nfl-green); }
+  .rankings-insight-card[data-league="epl"] { --insight-accent: #8b6bb5; }
+  .rankings-insight-card[data-league="laliga"] { --insight-accent: #c8102e; }
+  .rankings-insight-card[data-league="cbb"] { --insight-accent: var(--cbb-gold); }
+  .rankings-insight-card[data-league="cfb"] { --insight-accent: var(--cfb-bronze); }
+
   .rankings-insight-kicker {
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: right;
     font-size: var(--text-xs);
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -8179,11 +8213,36 @@ p {
 }
 
 .overview-quick-list {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  text-align: left;
   cursor: pointer;
   font: inherit;
   color: inherit;
   appearance: none;
   -webkit-appearance: none;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.overview-quick-list:not([aria-pressed="true"]):hover {
+  border-color: color-mix(in srgb, var(--border) 70%, var(--ink-secondary));
+  background: color-mix(in srgb, var(--surface-raised) 65%, transparent);
+}
+
+.overview-quick-list[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--border) 55%, var(--ink-secondary));
+  background: var(--surface-raised);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
 }
 
 .overview-quick-list-copy {
@@ -8191,10 +8250,16 @@ p {
   flex-direction: column;
   gap: 0.2rem;
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .overview-quick-list-preview {
   min-width: 4.25rem;
+  flex-shrink: 0;
+  text-align: right;
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.75rem;
+  line-height: 1.25;
 }
 
 .overview-quick-list-arrow {
@@ -8944,7 +9009,45 @@ p {
 }
 
 .overview-quicklists-segmented {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.25rem;
   margin-bottom: 0.65rem;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface-raised) 55%, transparent);
+}
+
+.overview-quicklists-segment {
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  padding: 0.375rem 0.25rem;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted-strong);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.overview-quicklists-segment[aria-selected="true"] {
+  border-color: var(--border);
+  background: var(--surface-raised);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+
+.overview-quicklists-segment:not([aria-selected="true"]):hover {
+  background: color-mix(in srgb, var(--surface-raised) 45%, transparent);
+  color: var(--ink-secondary);
 }
 
 .overview-quicklists-open-row {
@@ -9287,20 +9390,7 @@ p {
 }
 
 .overview-pace-grid {
-  display: grid;
   gap: 0.75rem;
-}
-
-@media (min-width: 768px) {
-  .overview-pace-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1100px) {
-  .overview-pace-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
 }
 
 .overview-pace-card {
@@ -9321,6 +9411,7 @@ p {
 .overview-pace-card[data-league="nhl"] { --pace-accent: var(--nhl-blue); }
 .overview-pace-card[data-league="nfl"] { --pace-accent: var(--nfl-green); }
 .overview-pace-card[data-league="epl"] { --pace-accent: #8b6bb5; }
+.overview-pace-card[data-league="laliga"] { --pace-accent: #c8102e; }
 
 .overview-pace-card:hover {
   border-color: color-mix(in srgb, var(--pace-accent) 38%, var(--line));
@@ -9381,7 +9472,16 @@ p {
   display: block;
   height: 100%;
   border-radius: inherit;
+  min-width: 0;
+}
+
+.overview-pace-bar-fill:not(.overview-pace-bar-fill--zero) {
   min-width: 4%;
+}
+
+.overview-pace-bar-fill--zero {
+  width: 0 !important;
+  opacity: 0;
 }
 
 .overview-pace-bar-fill--whistle {

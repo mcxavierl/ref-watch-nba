@@ -4,6 +4,10 @@ import { LEAGUES, leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { loadOverviewInsightCards } from "@/lib/overview-insights-data";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import {
+  paceBarWidthPercent,
+  sortLeaguePaceCards,
+} from "@/lib/league-pace-bars";
+import {
   buildOverviewUpcomingSlate,
   type OverviewUpcomingSlate,
 } from "@/lib/overview-upcoming-slate";
@@ -130,14 +134,14 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
     });
   }
 
-  const maxWhistle = Math.max(...leagueCards.map((c) => c.whistlePerGame), 1);
-  const maxScore = Math.max(...leagueCards.map((c) => c.scorePerGame), 1);
   for (const card of leagueCards) {
-    card.whistleBar = card.whistlePerGame / maxWhistle;
-    card.scoreBar = card.scorePerGame / maxScore;
+    card.whistleBar =
+      paceBarWidthPercent(card.leagueId, "whistle", card.whistlePerGame) / 100;
+    card.scoreBar =
+      paceBarWidthPercent(card.leagueId, "score", card.scorePerGame) / 100;
   }
 
-  leagueCards.sort((a, b) => b.whistlePerGame - a.whistlePerGame);
+  const orderedLeagueCards = sortLeaguePaceCards(leagueCards);
 
   return {
     totalRefs,
@@ -146,7 +150,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
     catalogCompetitionCount,
     whistleEventsLogged,
     whistleLabel: "Whistle events logged",
-    leagueCards,
+    leagueCards: orderedLeagueCards,
     insightCards: loadOverviewInsightCards(),
     upcomingSlate: buildOverviewUpcomingSlate(),
     allRefs: allRefs.sort((a, b) => b.games - a.games),

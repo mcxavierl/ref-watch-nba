@@ -1,3 +1,4 @@
+import type { LeagueConfig } from "@/lib/leagues";
 import { formatSigned } from "@/lib/stats-utils";
 
 /** Percent above/below league average scoring (amplifies low-variance leagues like NHL). */
@@ -27,6 +28,21 @@ export function formatPctVsLeague(pct: number, decimals = 1): string {
 /** Use % for low-variance leagues; absolute delta for NBA-scale scoring. */
 export function prefersPctScoringDelta(leagueAvgTotal: number): boolean {
   return leagueAvgTotal < 25;
+}
+
+export function scoreDeltaAbbrev(league: LeagueConfig): string {
+  const unit = league.metrics.scoreUnit;
+  if (unit === "goal") return "G";
+  if (unit === "run") return "R";
+  return "PTS";
+}
+
+export function formatScoringDeltaStat(
+  delta: number,
+  league: LeagueConfig,
+): string {
+  const sign = delta > 0 ? "+" : "";
+  return `${sign}${delta.toFixed(1)} ${scoreDeltaAbbrev(league)}`;
 }
 
 export function directoryScoringDisplay(

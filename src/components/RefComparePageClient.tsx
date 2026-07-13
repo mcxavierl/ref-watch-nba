@@ -8,6 +8,7 @@ import { RefCompareView } from "@/components/RefCompareView";
 import {
   buildCompareShareText,
   buildCompareShareUrl,
+  parseCompareRef,
   type CompareRefBundle,
   type CompareRefKey,
   type CompareRefPickerEntry,
@@ -16,11 +17,24 @@ import {
   loadCompareRefPickerEntries,
   resolveCompareRefBundle,
 } from "@/lib/ref-compare-client";
+import type { LeagueId } from "@/lib/leagues";
 import {
   readSeasonScopeParam,
   seasonScopeLabel,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
+
+function leagueFromKey(key: string): LeagueId | null {
+  return parseCompareRef(key)?.leagueId ?? null;
+}
+
+function entriesForLeague(
+  entries: CompareRefPickerEntry[],
+  leagueId: LeagueId | null,
+): CompareRefPickerEntry[] {
+  if (!leagueId) return entries;
+  return entries.filter((entry) => entry.leagueId === leagueId);
+}
 
 function readCompareStateFromUrl(): {
   leftKey: string;
@@ -83,6 +97,26 @@ export function RefComparePageClient({ siteUrl }: { siteUrl: string }) {
     };
   }, []);
 
+  const leftLeague = leagueFromKey(leftKey);
+  const rightLeague = leagueFromKey(rightKey);
+
+  const leftEntries = useMemo(
+    () => entriesForLeague(entries, rightLeague),
+    [entries, rightLeague],
+  );
+  const rightEntries = useMemo(
+    () => entriesForLeague(entries, leftLeague),
+    [entries, leftLeague],
+  );
+
+  useEffect(() => {
+    if (!pickerReady || !leftLeague || !rightLeague || leftLeague === rightLeague) {
+      return;
+    }
+    setRightKey("");
+    syncUrl({ a: leftKey, b: "", scope: scopeMode });
+  }, [pickerReady, leftKey, leftLeague, rightLeague, scopeMode, syncUrl]);
+
   useEffect(() => {
     function onPopState() {
       const state = readCompareStateFromUrl();
@@ -118,18 +152,30 @@ export function RefComparePageClient({ siteUrl }: { siteUrl: string }) {
 
   const handleLeftChange = useCallback(
     (key: string) => {
+      const nextLeague = leagueFromKey(key);
+      let nextRightKey = rightKey;
+      if (key && rightKey && nextLeague && rightLeague && nextLeague !== rightLeague) {
+        nextRightKey = "";
+        setRightKey("");
+      }
       setLeftKey(key);
-      syncUrl({ a: key, b: rightKey, scope: scopeMode });
+      syncUrl({ a: key, b: nextRightKey, scope: scopeMode });
     },
-    [rightKey, scopeMode, syncUrl],
+    [rightKey, rightLeague, scopeMode, syncUrl],
   );
 
   const handleRightChange = useCallback(
     (key: string) => {
+      const nextLeague = leagueFromKey(key);
+      let nextLeftKey = leftKey;
+      if (key && leftKey && nextLeague && leftLeague && nextLeague !== leftLeague) {
+        nextLeftKey = "";
+        setLeftKey("");
+      }
       setRightKey(key);
-      syncUrl({ a: leftKey, b: key, scope: scopeMode });
+      syncUrl({ a: nextLeftKey, b: key, scope: scopeMode });
     },
-    [leftKey, scopeMode, syncUrl],
+    [leftKey, leftLeague, scopeMode, syncUrl],
   );
 
   const handleScopeChange = useCallback(
@@ -174,7 +220,8 @@ export function RefComparePageClient({ siteUrl }: { siteUrl: string }) {
   return (
     <div className="ref-compare-page">
       <RefCompareControls
-        entries={entries}
+        leftEntries={leftEntries}
+        rightEntries={rightEntries}
         leftKey={leftKey}
         rightKey={rightKey}
         scopeMode={scopeMode}
