@@ -21,7 +21,8 @@ import * as laligaTeams from "@/lib/laliga/teams";
 import * as eplTeams from "@/lib/epl/teams";
 import { getTeamRefSplits } from "@/lib/teamRefLeaderboards";
 import { TEAM_CREW_MIN_GAMES } from "@/lib/teamCrewSplits";
-import { getTeamDisplayRecord } from "@/lib/teamRecord";
+import { formatTeamSampleRecord, getTeamDisplayRecord } from "@/lib/teamRecord";
+import { resolveTeamCrewSplits } from "@/lib/teamCrewSplits";
 import { userFacingDataNote } from "@/lib/user-language";
 import { computeTeamCloseGameMetrics } from "@/lib/close-game";
 import { computeTeamInsights } from "@/lib/team-insights";
@@ -58,7 +59,7 @@ export function TeamCrewPage({
   const mod = LEAGUE_MODULES[league];
   const basePath = mod.basePath;
   const { getTeam, teamFullName, teamWithArticle } = mod.teams;
-  const { sortSplitsByGames, formatDate, formatPct } = mod.data;
+  const { sortSplitsByGames, formatDate, formatPct, getTeamSplits } = mod.data;
 
   const team = getTeam(config.teamAbbr);
   if (!team) return null;
@@ -75,7 +76,9 @@ export function TeamCrewPage({
   const isNfl = league === "nfl" || league === "cfb";
   const showPatriotsEra = usesPatriotsEraScope(league, { teamAbbr: team.abbr });
   const analyticsRefs = isNhl ? filterNhlReferees(stats.refs) : stats.refs;
-  const splits = sortSplitsByGames(stats.teamSplits[team.abbr] ?? []);
+  const splits = sortSplitsByGames(
+    resolveTeamCrewSplits(stats, team.abbr, getTeamSplits),
+  );
   const refSplits = getTeamRefSplits(analyticsRefs, team.abbr);
   const teamRecord = getTeamDisplayRecord(
     league,
@@ -125,8 +128,8 @@ export function TeamCrewPage({
           Every {team.name} game grouped by individual official, or by the same{" "}
           {crewSize} officials on the {playingSurface}. Over this sample {teamLabel}{" "}
           are{" "}
-          {teamRecord.wins}-{teamRecord.losses} ({formatPct(teamRecord.winRate)}
-          ); each ref and crew win rate below is compared to that team average.
+          {formatTeamSampleRecord(teamRecord)}; each ref and crew win rate below
+          is compared to that team average.
         </p>
         <p className="page-meta">
           <span className="page-meta-updated">
@@ -159,8 +162,7 @@ export function TeamCrewPage({
         ) : (
           <p className="page-meta mt-4">
             <span>
-              {team.name} record: {teamRecord.wins}-{teamRecord.losses} (
-              {formatPct(teamRecord.winRate)})
+              {team.name} record: {formatTeamSampleRecord(teamRecord)}
             </span>
           </p>
         )}
@@ -197,6 +199,7 @@ export function TeamCrewPage({
           leagueAvgFouls={stats.meta.leagueAvgFouls}
           overBaseline={stats.meta.leagueOverBaseline}
           basePath={basePath}
+          sport={league}
         />
       )}
 
@@ -221,8 +224,8 @@ export function TeamCrewPage({
           </li>
           <li>
             <span className="font-medium text-zinc-800">Team baseline</span>:{" "}
-            {teamLabel} went {teamRecord.wins}-{teamRecord.losses} (
-            {formatPct(teamRecord.winRate)}) across this sample. Ref and crew win
+            {teamLabel} went {formatTeamSampleRecord(teamRecord)} across this
+            sample. Ref and crew win
             rates show how they compare to that team average.
           </li>
           <li>
@@ -252,10 +255,12 @@ export function TeamCrewPage({
               <Link
                 key={ref.slug}
                 href={`${basePath}/refs/${ref.slug}`}
-                className="flex items-center justify-between px-4 py-2.5 text-sm transition hover:bg-zinc-50"
+                className="flex items-center gap-4 px-5 py-3 text-sm transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
               >
-                <span className="font-medium text-zinc-800">{ref.name}</span>
-                <span className="font-mono text-xs tabular-nums text-zinc-600">
+                <span className="min-w-0 flex-1 font-medium text-zinc-800 dark:text-zinc-100">
+                  {ref.name}
+                </span>
+                <span className="shrink-0 text-right font-mono text-xs leading-snug tabular-nums text-zinc-600 dark:text-zinc-400">
                   {formatPct(ref.overRate)} over {stats.meta.leagueOverBaseline}
                 </span>
               </Link>

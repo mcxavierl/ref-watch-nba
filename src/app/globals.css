@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-color="dark"], [data-color="dark"] *));
+
 :root {
   color-scheme: dark;
 
@@ -8319,28 +8321,8 @@ p {
 
 .overview-insight-card {
   --insight-accent: var(--muted);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  padding: 1.15rem 1.2rem 1rem;
-  border-radius: 1rem;
-  border: 1px solid color-mix(in srgb, var(--insight-accent) 22%, var(--line));
-  background:
-    radial-gradient(
-      ellipse 90% 70% at 100% 0%,
-      color-mix(in srgb, var(--insight-accent) 14%, transparent),
-      transparent 58%
-    ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 45%),
-    var(--surface-raised);
-  overflow: hidden;
   animation: overview-insight-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: calc(var(--insight-index, 0) * 90ms);
-  transition:
-    border-color 180ms ease,
-    transform 180ms ease,
-    box-shadow 180ms ease;
 }
 
 .overview-insight-card[data-league="nba"] {
@@ -8357,12 +8339,6 @@ p {
 
 .overview-insight-card[data-league="epl"] {
   --insight-accent: #8b6bb5;
-}
-
-.overview-insight-card:hover {
-  border-color: color-mix(in srgb, var(--insight-accent) 42%, var(--line));
-  transform: translateY(-2px);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
 }
 
 .overview-insight-card-cover {
@@ -8407,55 +8383,7 @@ p {
 }
 
 .overview-insight-kicker {
-  margin: 0;
-  flex: 1 1 auto;
-  min-width: 0;
-  max-width: 58%;
-  padding-right: 0.15rem;
-  font-size: 0.62rem;
-  font-weight: 650;
-  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--muted);
-  text-align: right;
-}
-
-.overview-insight-hero {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.75rem 0.85rem;
-  border-radius: 0.75rem;
-  border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.overview-insight-hero-value {
-  font-size: clamp(1.65rem, 4vw, 2.15rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.overview-insight-hero-label {
-  font-size: 0.72rem;
-  font-weight: 650;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.overview-insight-hero--positive .overview-insight-hero-value {
-  color: #86efac;
-}
-
-.overview-insight-hero--negative .overview-insight-hero-value {
-  color: #fca5a5;
-}
-
-.overview-insight-hero--neutral .overview-insight-hero-value {
-  color: var(--ink);
 }
 
 .overview-insight-body {
@@ -9970,8 +9898,7 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-soon {
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-block,
-html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card,
-html[data-color="light"]:not([data-contrast="high"]) .overview-insight-card {
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card {
   box-shadow: var(--card-shadow-light);
 }
 

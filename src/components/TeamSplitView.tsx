@@ -255,7 +255,7 @@ function TeamRefSplitCard({
           iconClassName={winTone === "positive" ? "text-emerald-600" : winTone === "negative" ? "text-rose-600" : "text-zinc-500"}
           label="Win rate"
           value={formatPct(entry.winRate)}
-          hint={`Team baseline ${formatPct(teamRecord.winRate)}`}
+          hint={`Team baseline ${teamRecord.games > 0 ? formatPct(teamRecord.winRate) : "n/a"}`}
           badge={formatWinRateVsTeam(entry.winRate, teamRecord.winRate)}
           badgeTone={winTone}
         />
@@ -293,6 +293,7 @@ export function TeamSplitView({
   leagueAvgFouls,
   overBaseline,
   basePath = "",
+  sport = "nba",
 }: {
   crewSplits: TeamCrewSplit[];
   refSplits: TeamRefLeaderboardEntry[];
@@ -304,6 +305,7 @@ export function TeamSplitView({
   leagueAvgFouls: number;
   overBaseline: number;
   basePath?: string;
+  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 }) {
   const [view, setView] = useState<SplitView>("ref");
   const [refSort, setRefSort] = useState<TeamRefSort>("winRate-desc");
@@ -324,7 +326,12 @@ export function TeamSplitView({
     () => sortTeamRefEntries(refSplits, refSort),
     [refSplits, refSort],
   );
-  const sport = basePath === "/nhl" ? "nhl" : "nba";
+  const qualifiedCrewCount = useMemo(
+    () => crewSplits.filter((split) => split.games >= TEAM_CREW_MIN_GAMES).length,
+    [crewSplits],
+  );
+  const crewTabCount =
+    qualifiedCrewCount > 0 ? qualifiedCrewCount : crewSplits.length;
 
   return (
     <div>
@@ -357,7 +364,7 @@ export function TeamSplitView({
               : "text-zinc-600 hover:text-zinc-900"
           }`}
         >
-          Crews ({crewSplits.length})
+          Crews ({crewTabCount})
         </button>
       </div>
 
@@ -394,8 +401,10 @@ export function TeamSplitView({
         )
       ) : (
         crewSplits.length === 0 ? (
-          <p className="text-sm text-zinc-600">
-            No crew history for {teamLabel} yet.
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            {refSplits.length > 0
+              ? `No crew groupings for ${teamLabel} in this sample yet. Use the Refs tab for individual official history (${refSplits.length} refs).`
+              : `No crew history for ${teamLabel} yet.`}
           </p>
         ) : (
           <>

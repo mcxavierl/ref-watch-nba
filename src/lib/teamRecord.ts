@@ -1,4 +1,5 @@
 import { getOfficialTeamRegularSeasonRecord } from "@/lib/team-record-query";
+import { formatPct } from "@/lib/stats-utils";
 import type { TeamCrewSplit } from "@/lib/types";
 
 export interface TeamSampleRecord {
@@ -43,6 +44,12 @@ export function getTeamDisplayRecord(
     return getOfficialTeamRegularSeasonRecord(teamAbbr, seasons, options);
   }
   return getTeamSampleRecord(splits);
+}
+
+/** Human-readable W-L (pct) for team baselines; avoids misleading 0-0 (0.0%). */
+export function formatTeamSampleRecord(record: TeamSampleRecord): string {
+  if (record.games <= 0) return "n/a";
+  return `${record.wins}-${record.losses} (${formatPct(record.winRate)})`;
 }
 
 /** Point difference vs team baseline (percentage points). */

@@ -1,5 +1,17 @@
-import type { TeamCrewSplit } from "@/lib/types";
+import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 import type { SortDirection } from "@/lib/teamRefLeaderboards";
+
+/** Prefer scoped rebuild splits; fall back to hydrated/disk team-splits sidecar. */
+export function resolveTeamCrewSplits(
+  stats: RefStatsFile,
+  teamAbbr: string,
+  getTeamSplits: (abbr: string) => TeamCrewSplit[],
+): TeamCrewSplit[] {
+  const key = teamAbbr.toUpperCase();
+  const embedded = stats.teamSplits[key] ?? stats.teamSplits[teamAbbr] ?? [];
+  if (embedded.length > 0) return embedded;
+  return getTeamSplits(teamAbbr);
+}
 
 /** Minimum games before a crew appears in team crew tables by default. */
 export const TEAM_CREW_MIN_GAMES = 8;

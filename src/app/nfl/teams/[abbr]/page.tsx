@@ -3,6 +3,7 @@ import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
 import { getTeam, NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { hydrateScopedGameLogs } from "@/lib/scoped-game-log-hydrate";
 import { readSeasonScopeParam } from "@/lib/season-scope";
 import { SITE_URL } from "@/lib/site";
@@ -40,6 +41,7 @@ export default async function NflTeamPage({
   const team = getTeam(abbr);
   if (!team) notFound();
   const scopeMode = readSeasonScopeParam(scope, "nfl", { teamAbbr: team.abbr });
+  await preloadLeagueRefStats(SITE_URL, "nfl", { includeTeamSplits: true });
   await hydrateScopedGameLogs(SITE_URL, "nfl", scopeMode, {
     teamAbbr: team.abbr,
   });

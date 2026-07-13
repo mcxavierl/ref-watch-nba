@@ -21,6 +21,8 @@ import {
   setCachedRefStats,
   setCachedTeamSplits,
 } from "@/lib/ref-stats-preload";
+import { getTeamDisplayRecord, formatTeamSampleRecord } from "@/lib/teamRecord";
+import { resolveTeamCrewSplits } from "@/lib/teamCrewSplits";
 import { loadSplitRefStatsFixture } from "@/lib/test-fixtures/split-ref-stats-fixture";
 
 function clearLeagueCaches(): void {
@@ -106,6 +108,18 @@ describe("deploy readiness regressions", () => {
         `${league} ${abbr} top/bottom overlap`,
       );
     }
+  });
+
+  it("team crew pages resolve baselines from sidecar splits when core embed is empty", () => {
+    clearLeagueCaches();
+    const stats = getNflRefStats();
+    const splits = resolveTeamCrewSplits(stats, "KC", getNflTeamSplits);
+    assert.ok(splits.length > 0, "KC crew splits");
+
+    const record = getTeamDisplayRecord("nfl", "KC", splits, stats.meta.seasons);
+    assert.ok(record.games > 0, "KC baseline games");
+    assert.ok(record.winRate > 0, "KC baseline win rate");
+    assert.notEqual(formatTeamSampleRecord(record), "n/a");
   });
 
   it("root layout uses single RoutedSiteFooter (not five SSR footers)", () => {
