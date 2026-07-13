@@ -248,12 +248,12 @@ export function inferFindingLeague(finding: Finding): FindingLeague {
   if (finding.id.startsWith("cbb-")) return "CBB";
   if (finding.id.startsWith("nfl-")) return "NFL";
   if (finding.id.startsWith("nhl-")) return "NHL";
-  if (finding.links.some((link) => link.href.startsWith("/laliga"))) return "LALIGA";
-  if (finding.links.some((link) => link.href.startsWith("/epl"))) return "EPL";
-  if (finding.links.some((link) => link.href.startsWith("/cfb"))) return "CFB";
-  if (finding.links.some((link) => link.href.startsWith("/cbb"))) return "CBB";
-  if (finding.links.some((link) => link.href.startsWith("/nfl"))) return "NFL";
-  if (finding.links.some((link) => link.href.startsWith("/nhl"))) return "NHL";
+  if (finding.links?.some((link) => link.href.startsWith("/laliga"))) return "LALIGA";
+  if (finding.links?.some((link) => link.href.startsWith("/epl"))) return "EPL";
+  if (finding.links?.some((link) => link.href.startsWith("/cfb"))) return "CFB";
+  if (finding.links?.some((link) => link.href.startsWith("/cbb"))) return "CBB";
+  if (finding.links?.some((link) => link.href.startsWith("/nfl"))) return "NFL";
+  if (finding.links?.some((link) => link.href.startsWith("/nhl"))) return "NHL";
   return "NBA";
 }
 
