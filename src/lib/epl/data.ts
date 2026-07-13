@@ -18,6 +18,7 @@ import {
   whistleBias,
 } from "@/lib/stats-utils";
 import { resolveLeagueBaseline } from "@/lib/baselines";
+import { enrichSoccerCardMeta } from "@/lib/soccer-card-metrics";
 import { eplCrewMetricsProvenance } from "@/lib/provenance";
 import {
   attachTeamSplits,
@@ -161,18 +162,22 @@ export function getRefStats(): RefStatsFile {
   try {
     const hydrated = getPreferHydratedRefStats("epl");
     if (hydrated?.refs?.length) {
-      resolvedRefStats = gateUnverifiedEplStats(applyBaselines(normalizeRefStats(hydrated)));
+      resolvedRefStats = gateUnverifiedEplStats(
+        enrichSoccerCardMeta(applyBaselines(normalizeRefStats(hydrated))),
+      );
       return resolvedRefStats;
     }
     if (resolvedRefStats?.refs?.length) {
       resolvedRefStats = gateUnverifiedEplStats(
-        applyBaselines(normalizeRefStats(resolvedRefStats)),
+        enrichSoccerCardMeta(applyBaselines(normalizeRefStats(resolvedRefStats))),
       );
       return resolvedRefStats;
     }
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    const stats = gateUnverifiedEplStats(applyBaselines(normalizeRefStats(raw)));
+    const stats = gateUnverifiedEplStats(
+      enrichSoccerCardMeta(applyBaselines(normalizeRefStats(raw))),
+    );
     resolvedRefStats = stats;
     return resolvedRefStats;
   } catch {

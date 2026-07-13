@@ -1,3 +1,4 @@
+import { leagueCardsPerGame } from "@/lib/soccer-card-metrics";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { LEAGUES, leagueHubHref, type LeagueId } from "@/lib/leagues";
@@ -99,7 +100,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       leagueId === "nhl"
         ? stats.meta.leagueAvgMinors ?? stats.meta.leagueAvgFouls
         : leagueId === "epl" || leagueId === "laliga"
-          ? (stats.meta.leagueAvgYellowCards ?? 0) + (stats.meta.leagueAvgRedCards ?? 0)
+          ? leagueCardsPerGame(stats)
           : stats.meta.leagueAvgFouls;
 
     totalRefs += refCount;

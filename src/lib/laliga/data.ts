@@ -18,6 +18,7 @@ import {
   whistleBias,
 } from "@/lib/stats-utils";
 import { resolveLeagueBaseline } from "@/lib/baselines";
+import { enrichSoccerCardMeta } from "@/lib/soccer-card-metrics";
 import { laligaCrewMetricsProvenance } from "@/lib/provenance";
 import {
   attachTeamSplits,
@@ -161,18 +162,22 @@ export function getRefStats(): RefStatsFile {
   try {
     const hydrated = getPreferHydratedRefStats("laliga");
     if (hydrated?.refs?.length) {
-      resolvedRefStats = gateUnverifiedLaligaStats(applyBaselines(normalizeRefStats(hydrated)));
+      resolvedRefStats = gateUnverifiedLaligaStats(
+        enrichSoccerCardMeta(applyBaselines(normalizeRefStats(hydrated))),
+      );
       return resolvedRefStats;
     }
     if (resolvedRefStats?.refs?.length) {
       resolvedRefStats = gateUnverifiedLaligaStats(
-        applyBaselines(normalizeRefStats(resolvedRefStats)),
+        enrichSoccerCardMeta(applyBaselines(normalizeRefStats(resolvedRefStats))),
       );
       return resolvedRefStats;
     }
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    const stats = gateUnverifiedLaligaStats(applyBaselines(normalizeRefStats(raw)));
+    const stats = gateUnverifiedLaligaStats(
+      enrichSoccerCardMeta(applyBaselines(normalizeRefStats(raw))),
+    );
     resolvedRefStats = stats;
     return resolvedRefStats;
   } catch {
