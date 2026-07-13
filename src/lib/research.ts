@@ -1,10 +1,10 @@
-import { computeAllFindings as computeNbaFindings } from "@/lib/findings";
-import { computeAllFindings as computeNhlFindings } from "@/lib/nhl/findings";
-import { computeAllFindings as computeNflFindings } from "@/lib/nfl/findings";
-import { computeAllFindings as computeLaligaFindings } from "@/lib/laliga/findings";
-import { computeAllFindings as computeEplFindings } from "@/lib/epl/findings";
-import { computeAllFindings as computeCbbFindings } from "@/lib/cbb/findings";
-import { computeAllFindings as computeCfbFindings } from "@/lib/cfb/findings";
+import { computeAllFindings as computeNbaFindings, computeFindings as computeNbaFindingsLimited } from "@/lib/findings";
+import { computeAllFindings as computeNhlFindings, computeFindings as computeNhlFindingsLimited } from "@/lib/nhl/findings";
+import { computeAllFindings as computeNflFindings, computeFindings as computeNflFindingsLimited } from "@/lib/nfl/findings";
+import { computeAllFindings as computeLaligaFindings, computeFindings as computeLaligaFindingsLimited } from "@/lib/laliga/findings";
+import { computeAllFindings as computeEplFindings, computeFindings as computeEplFindingsLimited } from "@/lib/epl/findings";
+import { computeAllFindings as computeCbbFindings, computeFindings as computeCbbFindingsLimited } from "@/lib/cbb/findings";
+import { computeAllFindings as computeCfbFindings, computeFindings as computeCfbFindingsLimited } from "@/lib/cfb/findings";
 import type { Finding } from "@/lib/findings-shared";
 import {
   filterFindingsByLeague,
@@ -52,6 +52,20 @@ const LEAGUE_FINDING_COMPUTERS: Partial<
   CFB: computeCfbFindings,
 };
 
+/** Worker-safe lookup: hub-ranked pool first; full league scan only when needed. */
+const LEAGUE_HUB_FINDING_COMPUTERS: Partial<
+  Record<FindingLeague, (scopedSeasons?: string[]) => Finding[]>
+> = {
+  NBA: (scopedSeasons) => computeNbaFindingsLimited(48, scopedSeasons, { hub: true }),
+  NHL: (scopedSeasons) => computeNhlFindingsLimited(48, scopedSeasons, { hub: true }),
+  NFL: (scopedSeasons) => computeNflFindingsLimited(48, scopedSeasons, { hub: true }),
+  EPL: (scopedSeasons) => computeEplFindingsLimited(48, scopedSeasons, { hub: true }),
+  LALIGA: (scopedSeasons) =>
+    computeLaligaFindingsLimited(48, scopedSeasons, { hub: true }),
+  CBB: (scopedSeasons) => computeCbbFindingsLimited(48, scopedSeasons, { hub: true }),
+  CFB: (scopedSeasons) => computeCfbFindingsLimited(48, scopedSeasons, { hub: true }),
+};
+
 export function computeResearchFindingsForLeague(
   league: FindingLeague,
   scopedSeasons?: string[],
@@ -66,15 +80,38 @@ export function getResearchFindingById(
   id: string,
 ): ResearchFinding | undefined {
   const league = inferFindingLeague({ id } as Finding);
-  const compute = LEAGUE_FINDING_COMPUTERS[league];
-  if (!compute) return undefined;
-  const finding = tagResearchFindings(compute(), league).find((f) => f.id === id);
+  const hubCompute = LEAGUE_HUB_FINDING_COMPUTERS[league];
+  const fullCompute = LEAGUE_FINDING_COMPUTERS[league];
+  if (!hubCompute || !fullCompute) return undefined;
+
+  const hubMatch = tagResearchFindings(hubCompute(), league).find(
+    (f) => f.id === id,
+  );
+  if (hubMatch) return hubMatch;
+
+  const finding = tagResearchFindings(fullCompute(), league).find(
+    (f) => f.id === id,
+  );
   if (!finding) return undefined;
   return finding;
 }
 
+/** Sitemap-safe: hub-ranked findings only — never scan all leagues with full builders. */
 export function getAllResearchFindingIds(): string[] {
-  return computeAllResearchFindings().map((f) => f.id);
+  const leagues: FindingLeague[] = [
+    "NBA",
+    "NHL",
+    "NFL",
+    "EPL",
+    "LALIGA",
+    "CBB",
+    "CFB",
+  ];
+  return leagues.flatMap((league) =>
+    computeResearchFindingsForLeague(league, undefined, { hub: true }).map(
+      (f) => f.id,
+    ),
+  );
 }
 
 export function getResearchFindingIdsForLeague(

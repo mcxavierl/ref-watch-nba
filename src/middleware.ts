@@ -1,7 +1,18 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { shouldRedirectHiddenLeague } from "@/lib/header-leagues";
-import { SITE_HOME_PATH } from "@/lib/leagues";
+import { LEAGUES, SITE_HOME_PATH } from "@/lib/leagues";
+import { COMING_SOON_LEAGUE_IDS } from "@/lib/site-route-config";
+
+function isComingSoonLeaguePath(pathname: string): boolean {
+  for (const leagueId of COMING_SOON_LEAGUE_IDS) {
+    const prefix = LEAGUES[leagueId].pathPrefix;
+    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -10,6 +21,12 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = SITE_HOME_PATH;
     return NextResponse.redirect(url, 308);
+  }
+
+  if (isComingSoonLeaguePath(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = SITE_HOME_PATH;
+    return NextResponse.redirect(url);
   }
 
   if (shouldRedirectHiddenLeague(pathname)) {

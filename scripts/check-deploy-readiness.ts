@@ -277,6 +277,19 @@ function checkOverviewSnapshot(): void {
   }
 }
 
+function checkSingleFooterLayout(): void {
+  const layoutPath = path.join(ROOT, "src/app/layout.tsx");
+  const layout = fs.readFileSync(layoutPath, "utf8");
+  if (layout.includes("SiteFooterWrapper")) {
+    fail(
+      "root layout must use RoutedSiteFooter — SiteFooterWrapper renders five getRefStats() calls and triggers Worker 1102",
+    );
+  }
+  if (!layout.includes("RoutedSiteFooter")) {
+    fail("root layout must render RoutedSiteFooter for path-scoped footer data");
+  }
+}
+
 function checkRankingsRefLinks(): void {
   const hub = fs.readFileSync(
     path.join(ROOT, "src/components/InsightsHubPage.tsx"),
@@ -293,6 +306,7 @@ function checkRankingsRefLinks(): void {
 console.log("Deploy readiness check…");
 checkLiveHeader();
 checkWorkerPreloadContract();
+checkSingleFooterLayout();
 checkRankingsRefLinks();
 checkNflAnalyticsCoverage();
 checkOverviewSnapshot();

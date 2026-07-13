@@ -1,4 +1,4 @@
-import { loadScopedLeagueStats } from "@/lib/load-league-stats";
+import { loadLeagueStats, loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import {
@@ -20,7 +20,8 @@ const COMPARE_LEAGUE_IDS: LeagueId[] = [
 export function buildCompareRefPicker(): CompareRefPickerEntry[] {
   const entries: CompareRefPickerEntry[] = [];
   for (const leagueId of COMPARE_LEAGUE_IDS) {
-    const { stats } = loadScopedLeagueStats(leagueId, "last10");
+    // Picker only needs slug/name/games — avoid scoped rebuilds across all leagues (Worker 1102).
+    const { stats } = loadLeagueStats(leagueId);
     const config = LEAGUES[leagueId];
     for (const ref of stats.refs) {
       entries.push({

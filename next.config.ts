@@ -60,6 +60,61 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
+        source: "/nba/compare",
+        destination: "/compare",
+        permanent: false,
+      },
+      {
+        source: "/nhl/compare",
+        destination: "/compare",
+        permanent: false,
+      },
+      {
+        source: "/nfl/compare",
+        destination: "/compare",
+        permanent: false,
+      },
+      {
+        source: "/epl/compare",
+        destination: "/compare",
+        permanent: false,
+      },
+      {
+        source: "/laliga/compare",
+        destination: "/compare",
+        permanent: false,
+      },
+      {
+        source: "/cbb/compare",
+        destination: "/compare",
+        permanent: false,
+      },
+      {
+        source: "/cfb/compare",
+        destination: "/compare",
+        permanent: false,
+      },
+      {
+        source: "/wnba",
+        destination: "/",
+        permanent: false,
+      },
+      {
+        source: "/wnba/:path*",
+        destination: "/",
+        permanent: false,
+      },
+      {
+        source: "/mlb",
+        destination: "/",
+        permanent: false,
+      },
+      {
+        source: "/mlb/:path*",
+        destination: "/",
+        permanent: false,
+      },
+      {
         source: "/raptors",
         destination: "/teams/TOR",
         permanent: true,

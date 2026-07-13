@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-11T05:12:09.826Z",
+    "lastUpdated": "2026-07-12T23:42:19.011Z",
     "seasons": [
       "2021-22",
       "2022-23",
@@ -25,7 +25,7 @@
       "earliest": "2021-10-16",
       "latest": "2026-05-24"
     },
-    "note": "Scores, fouls, cards, and referee assignments from ESPN (1546 games, 183 with sportsbook totals). Referee coverage begins 2021-22 (ESPN gameInfo.officials). Matrix: 472/634 ref×team pairs with 3+ games. 354 games skipped (no official listed)."
+    "note": "Scores, fouls, cards, and referee assignments from ESPN (1546 games, 183 with sportsbook totals). Referee coverage only where ESPN lists gameInfo.officials (2021-22 onward); games without referee names are excluded entirely. football-data.co.uk SP1 CSVs lack a Referee column and are not used. Matrix: 472/634 ref×team pairs with 3+ games. 354 games skipped (no official listed)."
   },
   "refs": [
     {

@@ -1,11 +1,39 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 import { getAllRefSlugs, getRefBySlug, getRefStats } from "@/lib/data";
 import { getAllRefSlugs as getNhlRefSlugs, getRefBySlug as getNhlRefBySlug, getRefStats as getNhlRefStats } from "@/lib/nhl/data";
 import { getAllRefSlugs as getNflRefSlugs, getRefBySlug as getNflRefBySlug, getRefStats as getNflRefStats } from "@/lib/nfl/data";
 import { refProfileHref } from "@/lib/leagues";
+import {
+  canonicalSiteRoutePaths,
+  routePathToPageModule,
+  siteNavHrefPaths,
+  siteRouteRedirects,
+  type SiteRouteRedirect,
+} from "@/lib/site-route-config";
+
+function pageModuleExists(routePath: string, root = process.cwd()): boolean {
+  return existsSync(join(root, routePathToPageModule(routePath)));
+}
+
+function resolveNavHref(href: string, redirects: SiteRouteRedirect[]): string | null {
+  const normalized = href.replace(/\/$/, "") || "/";
+  if (pageModuleExists(normalized)) return normalized;
+
+  for (const rule of redirects) {
+    if (rule.source === normalized) return rule.destination;
+    const wildcard = rule.source.endsWith("/:path*");
+    if (wildcard) {
+      const base = rule.source.replace("/:path*", "");
+      if (normalized === base || normalized.startsWith(`${base}/`)) {
+        return rule.destination;
+      }
+    }
+  }
+  return null;
+}
 
 describe("site link health", () => {
   it("rankings hub passes league basePath to ref profile links", () => {
@@ -59,6 +87,41 @@ describe("site link health", () => {
         assert.equal(href, `/${league}/refs/${sample}`);
         assert.notEqual(href, `/refs/${sample}`, "non-NBA refs must not link to NBA paths");
       }
+    }
+  });
+
+  it("canonical hub routes have App Router pages", () => {
+    const missing: string[] = [];
+    for (const path of canonicalSiteRoutePaths()) {
+      if (!pageModuleExists(path)) {
+        missing.push(`${path} → ${join("src/app", path === "/" ? "page.tsx" : `${path.slice(1)}/page.tsx`)}`);
+      }
+    }
+    assert.deepEqual(missing, [], `missing page modules:\n${missing.join("\n")}`);
+  });
+
+  it("site nav hrefs resolve to a page or redirect", () => {
+    const redirects = siteRouteRedirects();
+    const unresolved: string[] = [];
+    for (const href of siteNavHrefPaths()) {
+      if (!resolveNavHref(href, redirects)) unresolved.push(href);
+    }
+    assert.deepEqual(unresolved, [], `unresolved nav hrefs:\n${unresolved.join("\n")}`);
+  });
+
+  it("league compare aliases redirect to global compare", () => {
+    const redirects = siteRouteRedirects();
+    assert.equal(resolveNavHref("/compare", redirects), "/compare");
+    for (const source of [
+      "/nba/compare",
+      "/nhl/compare",
+      "/nfl/compare",
+      "/epl/compare",
+      "/laliga/compare",
+      "/cbb/compare",
+      "/cfb/compare",
+    ]) {
+      assert.equal(resolveNavHref(source, redirects), "/compare", `${source} should alias to /compare`);
     }
   });
 });

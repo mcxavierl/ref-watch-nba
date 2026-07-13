@@ -107,6 +107,13 @@ describe("deploy readiness regressions", () => {
     }
   });
 
+  it("root layout uses single RoutedSiteFooter (not five SSR footers)", () => {
+    const fs = require("node:fs") as typeof import("node:fs");
+    const layout = fs.readFileSync("src/app/layout.tsx", "utf8");
+    assert.ok(!layout.includes("SiteFooterWrapper"));
+    assert.ok(layout.includes("RoutedSiteFooter"));
+  });
+
   it("mergeCachedLeagueRefStats patches slim core in ref-stats cache", () => {
     clearLeagueCaches();
 

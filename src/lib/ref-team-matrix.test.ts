@@ -142,6 +142,24 @@ describe("ref-team matrix team panels", () => {
     assert.ok(bottom.length > 0);
   });
 
+  it("falls back to audited NBA seasons when meta.seasons is empty", () => {
+    const emptySeasons = {
+      ...stats,
+      meta: { ...stats.meta, seasons: [] },
+    } as RefStatsFile;
+    const matrix = computeRefTeamMatrix(
+      emptySeasons,
+      [{ abbr: "BOS", label: "Boston Celtics", name: "Celtics" }],
+      getTeamSplits,
+      MATRIX_MIN_GAMES,
+      { league: "nba", sinceSeason: DEFAULT_SINCE_SEASON },
+    );
+    const team = matrix.teams[0]!;
+    assert.ok(team.baselineGames > 0, "BOS baseline games");
+    assert.equal(team.baselineWins, 488);
+    assert.equal(team.baselineLosses, 332);
+  });
+
   it("uses neutral tone when team baseline is unavailable", () => {
     const style = matrixCellStyle(
       {

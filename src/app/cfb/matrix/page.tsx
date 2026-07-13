@@ -7,6 +7,7 @@ import {
   getRefStats,
   getTeamSplits,
 } from "@/lib/cfb/data";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { hubPageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 
@@ -22,6 +23,7 @@ type PageProps = {
 };
 
 export default async function CfbMatrixPage({ searchParams }: PageProps) {
+  await preloadLeagueRefStats(SITE_URL, "cfb", { includeTeamSplits: true });
   const { team, ref } = await searchParams;
   const stats = getRefStats();
   const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);

@@ -5,6 +5,7 @@ import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { getTeamSplits } from "@/lib/data";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { hydrateScopedGameLogs } from "@/lib/scoped-game-log-hydrate";
 import { LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
@@ -25,6 +26,7 @@ type PageProps = {
 export default async function NbaMatrixPage({ searchParams }: PageProps) {
   const { scope, team, ref } = await searchParams;
   const scopeMode = readSeasonScopeParam(scope);
+  await preloadLeagueRefStats(SITE_URL, "nba", { includeTeamSplits: true });
   await hydrateScopedGameLogs(SITE_URL, "nba", scopeMode);
   const {
     stats,

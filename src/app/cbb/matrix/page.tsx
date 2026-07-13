@@ -4,6 +4,7 @@ import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { getRefStats, getTeamSplits } from "@/lib/cbb/data";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { CBB_TEAMS, teamFullName } from "@/lib/cbb/teams";
@@ -18,6 +19,7 @@ type PageProps = {
 };
 
 export default async function CbbMatrixPage({ searchParams }: PageProps) {
+  await preloadLeagueRefStats(SITE_URL, "cbb", { includeTeamSplits: true });
   const { team, ref } = await searchParams;
   const stats = getRefStats();
   const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);

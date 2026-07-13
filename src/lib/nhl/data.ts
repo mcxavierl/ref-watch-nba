@@ -159,18 +159,15 @@ function normalizeRefStats(data: RefStatsFile): RefStatsFile {
 }
 
 function mergeTeamSpecialTeams(data: RefStatsFile): RefStatsFile {
-  try {
-    const st = readJson<{ teams: RefStatsFile["meta"]["teamSpecialTeams"] }>(
-      "team-special-teams.json",
-    );
-    if (st.teams && Object.keys(st.teams).length > 0) {
-      return {
-        ...data,
-        meta: { ...data.meta, teamSpecialTeams: st.teams },
-      };
-    }
-  } catch {
-    /* optional overlay */
+  if (!allowNodeDataFs()) return data;
+  const st = tryReadJson<{ teams: RefStatsFile["meta"]["teamSpecialTeams"] }>(
+    "team-special-teams.json",
+  );
+  if (st?.teams && Object.keys(st.teams).length > 0) {
+    return {
+      ...data,
+      meta: { ...data.meta, teamSpecialTeams: st.teams },
+    };
   }
   return data;
 }

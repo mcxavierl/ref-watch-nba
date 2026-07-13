@@ -1,5 +1,5 @@
 import type { LeagueMetricCopy } from "@/lib/leagues";
-import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
+import { dataLeagueTenSeasons, DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import { deltaTone } from "@/lib/metricTone";
 import { getTeamDisplayRecord, getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
 import { teamWhistleEdge } from "@/lib/stats-utils";
@@ -119,12 +119,17 @@ export function computeRefTeamMatrix(
   const cached = MATRIX_COMPUTE_CACHE.get(cacheKey);
   if (cached) return cached;
 
+  const nbaRecordSeasons =
+    league === "nba" && stats.meta.seasons.length === 0
+      ? [...dataLeagueTenSeasons("NBA")]
+      : stats.meta.seasons;
+
   const teams: RefTeamMatrixTeam[] = teamList.map((team) => {
     const abbr = team.abbr.toUpperCase();
     const splits = resolveMatrixTeamSplits(stats, team.abbr, getTeamSplits);
     const record =
       league === "nba"
-        ? getTeamDisplayRecord(league, abbr, splits, stats.meta.seasons, {
+        ? getTeamDisplayRecord(league, abbr, splits, nbaRecordSeasons, {
             sinceSeason,
           })
         : getTeamSampleRecord(splits);
