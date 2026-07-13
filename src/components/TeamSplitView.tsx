@@ -215,7 +215,7 @@ function TeamRefSplitCard({
   teamLabel: string;
   teamRecord: TeamSampleRecord;
   basePath?: string;
-  sport?: "nba" | "nhl";
+  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 }) {
   const wins = Math.round(entry.winRate * entry.games);
   const totalDelta = entry.avgTotalPoints - leagueAvgTotal;
