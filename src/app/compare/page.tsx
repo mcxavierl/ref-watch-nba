@@ -1,13 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { RefComparePageClient } from "@/components/RefComparePageClient";
-import {
-  buildCompareRefPicker,
-  loadCompareRefBundle,
-} from "@/lib/ref-compare-server";
-import { parseCompareRef } from "@/lib/ref-compare";
-import { hydrateScopedGameLogs } from "@/lib/scoped-game-log-hydrate";
-import { readSeasonScopeParam } from "@/lib/season-scope";
 import { buildPageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 
@@ -25,26 +18,8 @@ export const metadata = buildPageMetadata({
   ],
 });
 
-type PageProps = {
-  searchParams: Promise<{ a?: string; b?: string; scope?: string }>;
-};
-
-export default async function ComparePage({ searchParams }: PageProps) {
-  const { a, b, scope } = await searchParams;
-  const scopeMode = readSeasonScopeParam(scope);
-  const parsedA = parseCompareRef(a);
-  const parsedB = parseCompareRef(b);
-  if (parsedA?.leagueId === "nba" || parsedB?.leagueId === "nba") {
-    await hydrateScopedGameLogs(SITE_URL, "nba", scopeMode);
-  }
-  const left = parsedA
-    ? loadCompareRefBundle(parsedA.leagueId, parsedA.slug, scopeMode)
-    : null;
-  const right = parsedB
-    ? loadCompareRefBundle(parsedB.leagueId, parsedB.slug, scopeMode)
-    : null;
-  const allRefs = buildCompareRefPicker();
-
+/** Static shell — picker and bundles hydrate from CDN JSON on the client (Worker-safe). */
+export default function ComparePage() {
   return (
     <div className="page-shell">
       <Link href="/" className="back-link">
@@ -61,13 +36,7 @@ export default async function ComparePage({ searchParams }: PageProps) {
       </header>
 
       <Suspense fallback={null}>
-        <RefComparePageClient
-          allRefs={allRefs}
-          left={left}
-          right={right}
-          scopeMode={scopeMode}
-          siteUrl={SITE_URL}
-        />
+        <RefComparePageClient siteUrl={SITE_URL} />
       </Suspense>
     </div>
   );

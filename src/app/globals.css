@@ -9919,71 +9919,191 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
   gap: var(--space-4);
 }
 
-.ref-compare-controls-grid {
-  display: grid;
+.ref-compare-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ref-compare-selection-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3);
 }
 
 @media (min-width: 768px) {
-  .ref-compare-controls-grid {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: end;
+  .ref-compare-selection-row {
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--space-4);
   }
 }
 
-.ref-compare-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+.ref-compare-slot {
+  min-width: 0;
 }
 
-.ref-compare-picker-label {
+.ref-compare-swap-axis {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+@media (min-width: 768px) {
+  .ref-compare-swap-axis {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .ref-compare-swap-axis .ref-compare-swap-icon-btn {
+    pointer-events: auto;
+    box-shadow: 0 0 0 4px var(--background);
+  }
+}
+
+.ref-compare-swap-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ref-compare-scope-track {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.ref-compare-combobox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ref-compare-combobox-label {
   font-size: var(--text-sm);
   font-weight: 650;
   color: var(--ink-secondary);
 }
 
-.ref-compare-picker-search,
-.ref-compare-picker-select {
+.ref-compare-combobox-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ref-compare-combobox-input {
   width: 100%;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  padding: 0.55rem 0.7rem;
+  border-radius: 0.625rem;
+  border: 1px solid rgb(39 39 42 / 0.8);
+  background: rgb(24 24 27 / 0.55);
+  padding: 0.65rem 2.25rem 0.65rem 0.75rem;
   font-size: var(--text-sm);
   color: var(--foreground);
 }
 
-.ref-compare-picker-selected {
+.ref-compare-combobox-input:focus {
+  outline: 2px solid color-mix(in srgb, var(--league-accent, var(--raptors)) 45%, transparent);
+  outline-offset: 1px;
+}
+
+.ref-compare-combobox-clear {
+  position: absolute;
+  right: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ref-compare-combobox-clear:hover {
+  color: var(--foreground);
+  background: rgb(39 39 42 / 0.65);
+}
+
+.ref-compare-combobox-list {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  max-height: 14rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  border-radius: 0.625rem;
+  border: 1px solid rgb(39 39 42 / 0.9);
+  background: rgb(24 24 27 / 0.98);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+}
+
+.ref-compare-combobox-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.5rem 0.55rem;
+  border-radius: 0.45rem;
+  cursor: pointer;
+}
+
+.ref-compare-combobox-option--active,
+.ref-compare-combobox-option:hover {
+  background: rgb(39 39 42 / 0.85);
+}
+
+.ref-compare-combobox-option--selected {
+  border: 1px solid color-mix(in srgb, var(--league-accent, var(--raptors)) 35%, transparent);
+}
+
+.ref-compare-combobox-option-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.ref-compare-combobox-option-meta {
   font-size: var(--text-xs);
   color: var(--muted);
 }
 
-.ref-compare-picker-profile-link {
+.ref-compare-combobox-empty {
+  margin: 0.15rem 0 0;
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.ref-compare-combobox-profile {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.ref-compare-combobox-profile-link {
   font-weight: 600;
   color: var(--league-accent, var(--raptors));
   text-decoration: none;
 }
 
-.ref-compare-picker-profile-link:hover {
+.ref-compare-combobox-profile-link:hover {
   text-decoration: underline;
 }
 
-.ref-compare-swap-wrap {
-  display: flex;
-  justify-content: center;
-  padding-bottom: 0.15rem;
-}
-
-.ref-compare-swap-btn {
-  min-width: 4.5rem;
-}
-
-.ref-compare-scope {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: var(--space-3);
+.ref-compare-loading {
+  margin: 0;
 }
 
 .ref-compare-scope-btn {
@@ -10128,6 +10248,29 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
   font-size: var(--text-xs);
   line-height: var(--leading-relaxed);
   color: var(--muted-strong);
+}
+
+.ref-compare-view--ghost {
+  opacity: 0.72;
+}
+
+.ref-compare-table--ghost tbody th {
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.ref-compare-ghost-cell {
+  display: block;
+  width: 4.5rem;
+  max-width: 55%;
+  height: 0.85rem;
+  border-radius: 0.35rem;
+  background: linear-gradient(
+    90deg,
+    rgb(39 39 42 / 0.35) 0%,
+    rgb(63 63 70 / 0.55) 50%,
+    rgb(39 39 42 / 0.35) 100%
+  );
 }
 
 .ref-compare-league-metrics-grid {

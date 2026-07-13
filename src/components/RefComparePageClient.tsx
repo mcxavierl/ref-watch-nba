@@ -1,90 +1,150 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { MatrixSplitShareBar } from "@/components/MatrixSplitShareBar";
-import { RefComparePicker } from "@/components/RefComparePicker";
+import { RefCompareControls } from "@/components/RefCompareControls";
 import { RefCompareView } from "@/components/RefCompareView";
 import {
   buildCompareShareText,
   buildCompareShareUrl,
-  encodeCompareRef,
   type CompareRefBundle,
+  type CompareRefKey,
   type CompareRefPickerEntry,
 } from "@/lib/ref-compare";
 import {
-  SEASON_SCOPE_MODES,
+  loadCompareRefPickerEntries,
+  resolveCompareRefBundle,
+} from "@/lib/ref-compare-client";
+import {
+  readSeasonScopeParam,
   seasonScopeLabel,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
 
-export function RefComparePageClient({
-  allRefs,
-  left,
-  right,
-  scopeMode,
-  siteUrl,
-}: {
-  allRefs: CompareRefPickerEntry[];
-  left: CompareRefBundle | null;
-  right: CompareRefBundle | null;
+function readCompareStateFromUrl(): {
+  leftKey: string;
+  rightKey: string;
   scopeMode: SeasonScopeMode;
-  siteUrl: string;
-}) {
-  const router = useRouter();
+} {
+  if (typeof window === "undefined") {
+    return { leftKey: "", rightKey: "", scopeMode: "last10" };
+  }
+  const params = new URLSearchParams(window.location.search);
+  return {
+    leftKey: params.get("a") ?? "",
+    rightKey: params.get("b") ?? "",
+    scopeMode: readSeasonScopeParam(params.get("scope")),
+  };
+}
+
+export function RefComparePageClient({ siteUrl }: { siteUrl: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const leftKey = left ? encodeCompareRef(left.leagueId, left.slug) : "";
-  const rightKey = right ? encodeCompareRef(right.leagueId, right.slug) : "";
-
-  const replaceParams = useCallback(
-    (next: { a?: string; b?: string; scope?: SeasonScopeMode }) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (next.a) params.set("a", next.a);
-      else params.delete("a");
-      if (next.b) params.set("b", next.b);
-      else params.delete("b");
-      if (next.scope && next.scope !== "last10") params.set("scope", next.scope);
-      else if (next.scope === "last10") params.delete("scope");
-      const query = params.toString();
-      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
-    },
-    [pathname, router, searchParams],
+  const [entries, setEntries] = useState<CompareRefPickerEntry[]>([]);
+  const [pickerReady, setPickerReady] = useState(false);
+  const [leftKey, setLeftKey] = useState(() => searchParams.get("a") ?? "");
+  const [rightKey, setRightKey] = useState(() => searchParams.get("b") ?? "");
+  const [scopeMode, setScopeMode] = useState<SeasonScopeMode>(() =>
+    readSeasonScopeParam(searchParams.get("scope")),
   );
+  const [left, setLeft] = useState<CompareRefBundle | null>(null);
+  const [right, setRight] = useState<CompareRefBundle | null>(null);
+  const [bundlesReady, setBundlesReady] = useState(false);
+
+  const syncUrl = useCallback(
+    (next: { a?: string; b?: string; scope?: SeasonScopeMode }) => {
+      const params = new URLSearchParams();
+      const a = next.a ?? "";
+      const b = next.b ?? "";
+      const scope = next.scope ?? scopeMode;
+      if (a) params.set("a", a);
+      if (b) params.set("b", b);
+      if (scope !== "last10") params.set("scope", scope);
+      const query = params.toString();
+      const href = query ? `${pathname}?${query}` : pathname;
+      window.history.replaceState(window.history.state, "", href);
+    },
+    [pathname, scopeMode],
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    loadCompareRefPickerEntries()
+      .then((loaded) => {
+        if (!cancelled) setEntries(loaded);
+      })
+      .finally(() => {
+        if (!cancelled) setPickerReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    function onPopState() {
+      const state = readCompareStateFromUrl();
+      setLeftKey(state.leftKey);
+      setRightKey(state.rightKey);
+      setScopeMode(state.scopeMode);
+    }
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setBundlesReady(false);
+
+    Promise.all([
+      leftKey ? resolveCompareRefBundle(leftKey, scopeMode) : Promise.resolve(null),
+      rightKey ? resolveCompareRefBundle(rightKey, scopeMode) : Promise.resolve(null),
+    ])
+      .then(([leftBundle, rightBundle]) => {
+        if (cancelled) return;
+        setLeft(leftBundle);
+        setRight(rightBundle);
+      })
+      .finally(() => {
+        if (!cancelled) setBundlesReady(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [leftKey, rightKey, scopeMode]);
 
   const handleLeftChange = useCallback(
     (key: string) => {
-      replaceParams({ a: key || undefined, b: rightKey || undefined, scope: scopeMode });
+      setLeftKey(key);
+      syncUrl({ a: key, b: rightKey, scope: scopeMode });
     },
-    [replaceParams, rightKey, scopeMode],
+    [rightKey, scopeMode, syncUrl],
   );
 
   const handleRightChange = useCallback(
     (key: string) => {
-      replaceParams({ a: leftKey || undefined, b: key || undefined, scope: scopeMode });
+      setRightKey(key);
+      syncUrl({ a: leftKey, b: key, scope: scopeMode });
     },
-    [leftKey, replaceParams, scopeMode],
+    [leftKey, scopeMode, syncUrl],
   );
 
   const handleScopeChange = useCallback(
     (mode: SeasonScopeMode) => {
-      replaceParams({
-        a: leftKey || undefined,
-        b: rightKey || undefined,
-        scope: mode,
-      });
+      setScopeMode(mode);
+      syncUrl({ a: leftKey, b: rightKey, scope: mode });
     },
-    [leftKey, replaceParams, rightKey],
+    [leftKey, rightKey, syncUrl],
   );
 
   const swapRefs = useCallback(() => {
-    replaceParams({
-      a: rightKey || undefined,
-      b: leftKey || undefined,
-      scope: scopeMode,
-    });
-  }, [leftKey, replaceParams, rightKey, scopeMode]);
+    setLeftKey(rightKey);
+    setRightKey(leftKey);
+    syncUrl({ a: rightKey, b: leftKey, scope: scopeMode });
+  }, [leftKey, rightKey, scopeMode, syncUrl]);
 
   const shareText = useMemo(
     () => buildCompareShareText(left, right, seasonScopeLabel(scopeMode)),
@@ -94,8 +154,8 @@ export function RefComparePageClient({
     () =>
       buildCompareShareUrl(
         siteUrl,
-        leftKey || null,
-        rightKey || null,
+        (leftKey || null) as CompareRefKey | null,
+        (rightKey || null) as CompareRefKey | null,
         scopeMode,
       ),
     [leftKey, rightKey, scopeMode, siteUrl],
@@ -108,59 +168,34 @@ export function RefComparePageClient({
     ].join("\n");
   }, [left, right, scopeMode, shareUrl]);
 
+  const crossLeague =
+    Boolean(left && right) && left!.leagueId !== right!.leagueId;
+
   return (
     <div className="ref-compare-page">
-      <div className="ref-compare-controls data-card px-4 py-4 sm:px-5">
-        <div className="ref-compare-controls-grid">
-          <RefComparePicker
-            id="compare-ref-a"
-            label="Official A"
-            entries={allRefs}
-            value={leftKey}
-            onChange={handleLeftChange}
-          />
-          <div className="ref-compare-swap-wrap">
-            <button
-              type="button"
-              className="btn-secondary ref-compare-swap-btn"
-              onClick={swapRefs}
-              disabled={!leftKey && !rightKey}
-              aria-label="Swap officials"
-            >
-              Swap
-            </button>
-          </div>
-          <RefComparePicker
-            id="compare-ref-b"
-            label="Official B"
-            entries={allRefs}
-            value={rightKey}
-            onChange={handleRightChange}
-          />
-        </div>
+      <RefCompareControls
+        entries={entries}
+        leftKey={leftKey}
+        rightKey={rightKey}
+        scopeMode={scopeMode}
+        onLeftChange={handleLeftChange}
+        onRightChange={handleRightChange}
+        onScopeChange={handleScopeChange}
+        onSwap={swapRefs}
+      />
 
-        <div
-          className="ref-compare-scope"
-          role="group"
-          aria-label="Season scope"
-        >
-          {SEASON_SCOPE_MODES.map((mode) => (
-            <button
-              key={mode}
-              type="button"
-              className={`ref-compare-scope-btn${
-                scopeMode === mode ? " ref-compare-scope-btn--active" : ""
-              }`}
-              aria-pressed={scopeMode === mode}
-              onClick={() => handleScopeChange(mode)}
-            >
-              {seasonScopeLabel(mode)}
-            </button>
-          ))}
-        </div>
-      </div>
+      {!pickerReady ? (
+        <p className="ref-compare-loading text-sm text-zinc-500">
+          Loading official directory…
+        </p>
+      ) : null}
 
-      <RefCompareView left={left} right={right} />
+      <RefCompareView
+        left={bundlesReady ? left : null}
+        right={bundlesReady ? right : null}
+        crossLeagueHint={crossLeague}
+        loading={!bundlesReady && Boolean(leftKey || rightKey)}
+      />
 
       {left && right ? (
         <MatrixSplitShareBar

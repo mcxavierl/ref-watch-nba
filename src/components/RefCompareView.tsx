@@ -7,6 +7,7 @@ import {
   CROSS_LEAGUE_COMPARE_DISCLAIMER,
   type CompareRefBundle,
 } from "@/lib/ref-compare";
+import { COMPARE_GHOST_METRIC_ROWS } from "@/lib/ref-compare-client";
 import type { LeagueId } from "@/lib/leagues";
 
 function sportForLeague(leagueId: LeagueId) {
@@ -76,35 +77,96 @@ function LeagueMetricList({
   );
 }
 
-export function RefCompareView({
+function CompareGhostTable({
+  crossLeague,
   left,
   right,
 }: {
+  crossLeague?: boolean;
+  left?: CompareRefBundle | null;
+  right?: CompareRefBundle | null;
+}) {
+  const leftName = left?.profile.name ?? "Official A";
+  const rightName = right?.profile.name ?? "Official B";
+
+  return (
+    <div className="ref-compare-view ref-compare-view--ghost data-card overflow-hidden p-0">
+      {(left || right) && (
+        <div className="ref-compare-columns">
+          {left ? <CompareRefHeader bundle={left} /> : <div aria-hidden />}
+          {right ? <CompareRefHeader bundle={right} /> : <div aria-hidden />}
+        </div>
+      )}
+
+      <div className="ref-compare-table-wrap overflow-x-auto">
+        <table className="ref-compare-table ref-compare-table--ghost">
+          <thead>
+            <tr>
+              <th scope="col">Metric</th>
+              <th scope="col">{leftName}</th>
+              <th scope="col">{rightName}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {COMPARE_GHOST_METRIC_ROWS.map((label) => (
+              <tr key={label}>
+                <th scope="row">{label}</th>
+                <td>
+                  <span className="ref-compare-ghost-cell" aria-hidden />
+                </td>
+                <td>
+                  <span className="ref-compare-ghost-cell" aria-hidden />
+                </td>
+              </tr>
+            ))}
+            {crossLeague ? (
+              <tr className="ref-compare-disclaimer-row">
+                <td colSpan={3} className="ref-compare-disclaimer-cell">
+                  {CROSS_LEAGUE_COMPARE_DISCLAIMER}
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+export function RefCompareView({
+  left,
+  right,
+  crossLeagueHint = false,
+  loading = false,
+}: {
   left: CompareRefBundle | null;
   right: CompareRefBundle | null;
+  crossLeagueHint?: boolean;
+  loading?: boolean;
 }) {
-  if (!left && !right) {
+  if (loading) {
     return (
-      <div className="ref-compare-empty data-card px-4 py-8 sm:px-5">
-        <p className="text-sm text-zinc-600">
-          Pick two officials above to compare scoring, whistle, and over-rate
-          tendencies side by side. Cross-league compares use each league&apos;s
-          native metrics.
-        </p>
-      </div>
+      <CompareGhostTable
+        crossLeague={crossLeagueHint}
+        left={left}
+        right={right}
+      />
     );
+  }
+
+  if (!left && !right) {
+    return <CompareGhostTable crossLeague={false} />;
   }
 
   if (!left || !right) {
     const single = left ?? right;
-    if (!single) return null;
+    if (!single) return <CompareGhostTable crossLeague={false} />;
     return (
-      <div className="ref-compare-empty data-card px-4 py-8 sm:px-5">
-        <CompareRefHeader bundle={single} />
-        <p className="mt-4 text-sm text-zinc-600">
-          Select a second official to run the side-by-side comparison.
-        </p>
-      </div>
+      <CompareGhostTable
+        crossLeague={crossLeagueHint}
+        left={left}
+        right={right}
+      />
     );
   }
 

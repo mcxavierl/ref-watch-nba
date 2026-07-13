@@ -43,6 +43,12 @@ const ROUTES: RouteCheck[] = [
     mustIncludeOne: ["officials", "Tendencies"],
   },
   {
+    path: "/compare",
+    maxStatus: 299,
+    mustNotInclude: ["1102", "Error 1102", "Worker exceeded"],
+    mustIncludeOne: ["Official A", "Compare officials", "ref-compare"],
+  },
+  {
     path: "/rankings",
     maxStatus: 299,
     mustNotInclude: ["1102"],
