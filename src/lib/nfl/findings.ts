@@ -22,7 +22,9 @@ import { isNflFlagsOutlier } from "@/lib/findings-significance";
 import {
   formatFindingSampleMeta,
   ouLeanHeadline,
+  overBenchmarkStatLabel,
   teamCrewLeanHeadline,
+  whistlePaceHeadline,
 } from "@/lib/finding-copy";
 import type { RefProfile, RefStatsFile, TeamCrewSplit, WlpRecord } from "@/lib/types";
 
@@ -337,11 +339,50 @@ function buildNflFlagsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | n
   for (const ref of stats.refs) {
     const a = ref.nflAnalytics;
     if (!a || !isNflFlagsOutlier(a.avgFlagsPerGame, leagueAvg, ref.games)) continue;
-    if (!best || a.avgFlagsPerGame > (best.nflAnalytics?.avgFlagsPerGame ?? 0)) best = ref;
+    if (
+      !best ||
+      Math.abs(a.flagsDelta) > Math.abs(best.nflAnalytics?.flagsDelta ?? 0)
+    ) {
+      best = ref;
+    }
   }
   if (!best?.nflAnalytics) return null;
   const a = best.nflAnalytics;
-  return { id: "nfl-flags-outlier", category: "whistle-extreme", headline: `${best.name} flag pace outlier`, summary: `${best.name}: ${a.avgFlagsPerGame} flags/game.`, explainer: "NFL historical flags.", stats: [{ label: "Flags", value: String(a.avgFlagsPerGame), detail: `${formatSigned(a.flagsDelta)} vs ${leagueAvg}` }], sampleNote: formatFindingSampleMeta(best.games, stats.meta.seasons), links: [{ label: best.name, href: `/nfl/refs/${best.slug}` }], score: rankScore(Math.abs(a.flagsDelta)/leagueAvg, best.games, MIN_REF_GAMES), sampleGames: best.games };
+  const flagsDelta = a.flagsDelta;
+
+  return {
+    id: "nfl-flags-outlier",
+    category: "whistle-extreme",
+    headline: whistlePaceHeadline(best.name, flagsDelta, "flags", best.overRate),
+    summary: `${best.name} averages ${a.avgFlagsPerGame.toFixed(1)} flags per game (${formatSigned(flagsDelta)} vs the ${leagueAvg.toFixed(1)} league average) across ${best.games} assigned games — one of the clearest penalty-volume outliers in the NFL pool.`,
+    explainer:
+      "Flag pace compares how often a crew throws penalty flags relative to the league average in this dataset. Heavier or lighter flag volume is descriptive officiating style — it does not, by itself, predict spreads, totals, or game outcomes.",
+    stats: [
+      {
+        label: "Flags per game",
+        value: a.avgFlagsPerGame.toFixed(1),
+        detail: `${formatSigned(flagsDelta)} vs ${leagueAvg.toFixed(1)} league avg`,
+      },
+      {
+        label: overBenchmarkStatLabel(best.overRate),
+        value: formatPct(best.overRate),
+        detail: `${stats.meta.leagueOverBaseline} combined points`,
+      },
+      {
+        label: "Scoring delta",
+        value: formatSigned(best.totalPointsDelta),
+        detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
+      },
+    ],
+    sampleNote: formatFindingSampleMeta(best.games, stats.meta.seasons),
+    links: [{ label: best.name, href: `/nfl/refs/${best.slug}` }],
+    score: rankScore(
+      Math.abs(flagsDelta) / Math.max(leagueAvg, 1),
+      best.games,
+      MIN_REF_GAMES,
+    ),
+    sampleGames: best.games,
+  };
 }
 function collectCandidates(
   stats: RefStatsFile,
