@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "@/lib/live-header-leagues.generated";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
@@ -108,8 +109,7 @@ describe("deploy readiness regressions", () => {
   });
 
   it("root layout uses single RoutedSiteFooter (not five SSR footers)", () => {
-    const fs = require("node:fs") as typeof import("node:fs");
-    const layout = fs.readFileSync("src/app/layout.tsx", "utf8");
+    const layout = readFileSync("src/app/layout.tsx", "utf8");
     assert.ok(!layout.includes("SiteFooterWrapper"));
     assert.ok(layout.includes("RoutedSiteFooter"));
   });
