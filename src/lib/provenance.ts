@@ -90,7 +90,7 @@ export function baselineProvenance(
     note:
       resolved.source === "computed"
         ? `League baseline from ${resolved.season ?? "season"} game logs.`
-        : "Static league fallback; run npm run compute-baselines after game logs exist.",
+        : "Static league fallback until season game logs are available.",
   };
 }
 

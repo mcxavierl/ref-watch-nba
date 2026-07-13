@@ -1,3 +1,4 @@
+import { safeOriginFetch } from "@/lib/edge-fetch";
 import "@/lib/global-stats";
 import type { RefOfficial } from "@/lib/types";
 import { isGameLogsPayload } from "@/lib/json-asset-guards";
@@ -91,8 +92,8 @@ export async function preloadNbaGameLogSeasons(
   const games: RuntimeGameLogEntry[] = [];
   for (const season of [...seasons].sort()) {
     try {
-      const res = await fetch(`${origin}/data/nba/game-logs/${season}.ndjson`);
-      if (!res.ok) continue;
+      const res = await safeOriginFetch(origin, `/data/nba/game-logs/${season}.ndjson`);
+      if (!res?.ok) continue;
       const text = await res.text();
       for (const line of text.split("\n")) {
         const trimmed = line.trim();
@@ -136,8 +137,8 @@ export async function preloadGameLogsFromAssets(
   if (!origin?.trim()) return;
 
   try {
-    const res = await fetch(`${origin}${GAME_LOG_ASSET_BASE[league]}/game-logs.json`);
-    if (!res.ok) return;
+    const res = await safeOriginFetch(origin, `${GAME_LOG_ASSET_BASE[league]}/game-logs.json`);
+    if (!res?.ok) return;
     const data: unknown = await res.json();
     if (isGameLogsPayload(data) && data.games.length > 0) {
       setCachedGameLogs(league, data as RuntimeGameLogFile);

@@ -35,9 +35,8 @@ export function LeagueTrendsTable({
     return (
       <div className="data-card px-4 py-5 sm:px-5">
         <p className="text-sm text-zinc-600">
-          No season trend rows available for this scope. Re-run{" "}
-          <code className="text-xs">npm run compute-baselines</code> after game
-          logs are present.
+          No season trend rows available for this scope. Check back after game
+          logs are updated for this league.
         </p>
       </div>
     );

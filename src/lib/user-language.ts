@@ -162,13 +162,24 @@ export function refTeamDataNote(
   return null;
 }
 
+/** Strip developer-only paths and CLI hints from user-visible copy. */
+export function sanitizeUserFacingCopy(text: string): string {
+  return text
+    .replace(/\s+in data\/[\w./-]+\.json/gi, "")
+    .replace(/\b(?:data|public|src)\/[\w./-]+\.json\b/gi, "historical game logs")
+    .replace(/\bnpm run [\w:-]+/gi, "the next data refresh")
+    .replace(/\bRe-run\s+/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 /** Strip developer-only npm hints from data meta notes before showing users. */
 export function userFacingDataNote(note: string | undefined): string | undefined {
   if (!note) return undefined;
   if (/npm run/i.test(note)) {
     return "Historical stats are still loading for some teams; check back after the next data refresh.";
   }
-  return note;
+  return sanitizeUserFacingCopy(note);
 }
 
 export function ouLeanDisplay(lean: "over" | "under" | "neutral"): string {

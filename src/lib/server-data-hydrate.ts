@@ -32,20 +32,18 @@ export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
 
   try {
     await preloadLeagueDataForPath(SITE_URL, path);
-  } catch {
-    // Never fail SSR from hydration.
+  } catch (error) {
+    console.error("[refwatch] league data hydration failed", path, error);
   }
 
   if (!pathNeedsGameLogs(path)) return;
 
   const leagues = leaguesForPath(path);
-  try {
-    await Promise.all(
-      leagues.map((league) =>
-        preloadGameLogsFromAssets(SITE_URL, DATA_LEAGUE_FOR_ROUTE[league]),
-      ),
-    );
-  } catch {
-    // Never fail SSR from game-log hydration.
+  for (const league of leagues) {
+    try {
+      await preloadGameLogsFromAssets(SITE_URL, DATA_LEAGUE_FOR_ROUTE[league]);
+    } catch (error) {
+      console.error("[refwatch] game-log hydration failed", league, error);
+    }
   }
 });

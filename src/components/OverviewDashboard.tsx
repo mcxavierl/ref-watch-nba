@@ -22,7 +22,6 @@ function formatCount(n: number): string {
 
 function statusLabel(status: CatalogLeagueEntry["status"]): string {
   if (status === "live") return "Live";
-  if (status === "preview") return "Preview";
   return "Soon";
 }
 

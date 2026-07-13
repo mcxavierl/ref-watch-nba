@@ -4,7 +4,7 @@ import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 
-export type CatalogLeagueStatus = "live" | "preview" | "coming-soon";
+export type CatalogLeagueStatus = "live" | "coming-soon";
 
 export type CatalogSportGroup =
   | "basketball"
@@ -20,7 +20,7 @@ export type CatalogLeagueEntry = {
   region: string;
   sport: CatalogSportGroup;
   status: CatalogLeagueStatus;
-  /** Live/preview leagues map to Ref Watch routes. */
+  /** Live leagues map to Ref Watch routes. */
   leagueId?: LeagueId;
   href?: string;
   /** Rough ordering within sidebar groups. */
@@ -35,8 +35,6 @@ export const LIVE_CATALOG_LEAGUE_IDS = [
   "epl",
   "laliga",
 ] as const satisfies readonly LeagueId[];
-
-export const PREVIEW_CATALOG_LEAGUE_IDS = ["cbb", "cfb"] as const satisfies readonly LeagueId[];
 
 /**
  * Expanded competition catalog for the overview hub.
@@ -60,8 +58,8 @@ export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
   { id: "ucl", label: "UEFA Champions League", region: "Europe", sport: "soccer", status: "coming-soon", sort: 40 },
   { id: "uel", label: "UEFA Europa League", region: "Europe", sport: "soccer", status: "coming-soon", sort: 41 },
   { id: "libertadores", label: "CONMEBOL Libertadores", region: "South America", sport: "soccer", status: "coming-soon", sort: 42 },
-  { id: "cbb", label: "Men's college basketball", region: "USA", sport: "college", status: "preview", leagueId: "cbb", href: "/cbb", sort: 50 },
-  { id: "cfb", label: "College football", region: "USA", sport: "college", status: "preview", leagueId: "cfb", href: "/cfb", sort: 51 },
+  { id: "cbb", label: "Men's college basketball", region: "USA", sport: "college", status: "coming-soon", sort: 50 },
+  { id: "cfb", label: "College football", region: "USA", sport: "college", status: "coming-soon", sort: 51 },
   { id: "mlb", label: "MLB", region: "USA", sport: "baseball", status: "coming-soon", sort: 52 },
 ];
 

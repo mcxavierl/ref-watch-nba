@@ -1,3 +1,4 @@
+import { safeOriginJson } from "@/lib/edge-fetch";
 import {
   isRefStatsPayload,
   isTeamSplitsPayload,
@@ -49,21 +50,17 @@ async function fetchJsonAsset(assetPath: string): Promise<unknown | null> {
       | { fetch: (input: RequestInfo) => Promise<Response> }
       | undefined;
     if (assets) {
-      const res = await assets.fetch(`https://assets.local${assetPath}`);
-      if (res.ok) {
-        return parseJsonResponse(res);
+      try {
+        const res = await assets.fetch(`https://assets.local${assetPath}`);
+        if (res.ok) {
+          return parseJsonResponse(res);
+        }
+      } catch (error) {
+        console.error("[refwatch] ASSETS fetch failed", assetPath, error);
       }
     }
-
-    const worker = env.WORKER_SELF_REFERENCE as
-      | { fetch: (input: RequestInfo) => Promise<Response> }
-      | undefined;
-    if (worker) {
-      const res = await worker.fetch(`https://refwatch.internal${assetPath}`);
-      if (res.ok) {
-        return parseJsonResponse(res);
-      }
-    }
+    // Do not fall back to WORKER_SELF_REFERENCE for static JSON — it re-enters
+    // the full Next handler, doubles CPU/memory, and can recurse on cold isolates.
   } catch {
     // Not on Cloudflare Workers.
   }
@@ -87,14 +84,7 @@ async function fetchOriginJson(
   origin: string,
   assetPath: string,
 ): Promise<unknown | null> {
-  if (!origin?.trim()) return null;
-  try {
-    const res = await fetch(`${origin}${assetPath}`);
-    if (!res.ok) return null;
-    return parseJsonResponse(res);
-  } catch {
-    return null;
-  }
+  return safeOriginJson(origin, assetPath);
 }
 
 async function fetchTeamSplitsOrigin(
@@ -134,28 +124,25 @@ async function preloadRefStats(
     (!getCachedTeamSplits(league) ||
       Object.keys(getCachedTeamSplits(league)!).length === 0);
 
-  const statsPromise = needsStats
-    ? (async () => {
-        const assetPath = REF_STATS_ASSET[league];
-        return (
-          (await fetchRefStatsAsset(assetPath)) ??
-          (await fetchRefStatsOrigin(origin, assetPath))
-        );
-      })()
-    : Promise.resolve(cached);
+  // Load sequentially to cap peak memory (1102) — ref-stats then team-splits.
+  let stats: RefStatsFile | null = cached;
+  if (needsStats) {
+    const assetPath = REF_STATS_ASSET[league];
+    stats =
+      (await fetchRefStatsAsset(assetPath)) ??
+      (await fetchRefStatsOrigin(origin, assetPath));
+  }
 
-  const splitsPromise = needsSplits
-    ? (async () => {
-        const assetPath = `${ASSET_BASE[league]}/team-splits.json`;
-        const fromAssets = await fetchJsonAsset(assetPath);
-        if (isTeamSplitsPayload(fromAssets) && Object.keys(fromAssets).length > 0) {
-          return fromAssets;
-        }
-        return fetchTeamSplitsOrigin(origin, assetPath);
-      })()
-    : Promise.resolve(getCachedTeamSplits(league));
-
-  const [stats, splits] = await Promise.all([statsPromise, splitsPromise]);
+  let splits: Record<string, TeamCrewSplit[]> | null = getCachedTeamSplits(league);
+  if (needsSplits) {
+    const assetPath = `${ASSET_BASE[league]}/team-splits.json`;
+    const fromAssets = await fetchJsonAsset(assetPath);
+    if (isTeamSplitsPayload(fromAssets) && Object.keys(fromAssets).length > 0) {
+      splits = fromAssets;
+    } else {
+      splits = await fetchTeamSplitsOrigin(origin, assetPath);
+    }
+  }
 
   if (stats?.refs?.length) {
     const merged =
@@ -222,12 +209,10 @@ export async function preloadLeagueDataForPath(
   const includeTeamSplits = pathNeedsTeamSplits(path);
 
   try {
-    await Promise.all(
-      leagues.map((league) =>
-        preloadRefStats(origin, league, { includeTeamSplits }),
-      ),
-    );
-  } catch {
-    // Never fail the request from preload.
+    for (const league of leagues) {
+      await preloadRefStats(origin, league, { includeTeamSplits });
+    }
+  } catch (error) {
+    console.error("[refwatch] path preload failed", path, error);
   }
 }

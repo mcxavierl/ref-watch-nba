@@ -11,89 +11,105 @@ async function sendViaResend(
   email: string,
   league: "NBA" | "NHL",
 ): Promise<Response> {
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "Ref Watch <notify@refwatch.ca>",
-      to: [SEASON_NOTIFY_DESTINATION],
-      subject: `Ref Watch season notify, ${league}`,
-      text: [
-        `New season-start notification signup on ${SITE_NAME}.`,
-        "",
-        `Subscriber email: ${email}`,
-        `League: ${league}`,
-      ].join("\n"),
-    }),
-  });
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Ref Watch <notify@refwatch.ca>",
+        to: [SEASON_NOTIFY_DESTINATION],
+        subject: `Ref Watch season notify, ${league}`,
+        text: [
+          `New season-start notification signup on ${SITE_NAME}.`,
+          "",
+          `Subscriber email: ${email}`,
+          `League: ${league}`,
+        ].join("\n"),
+      }),
+    });
 
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    console.error("Resend season notify failed:", res.status, detail);
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "");
+      console.error("Resend season notify failed:", res.status, detail);
+      return Response.json(
+        { error: "Unable to send notification right now." },
+        { status: 502 },
+      );
+    }
+
+    return Response.json({ ok: true });
+  } catch (error) {
+    console.error("Resend season notify fetch failed:", error);
     return Response.json(
       { error: "Unable to send notification right now." },
       { status: 502 },
     );
   }
-
-  return Response.json({ ok: true });
 }
 
 async function sendViaFormSubmit(
   email: string,
   league: "NBA" | "NHL",
 ): Promise<Response> {
-  const res = await fetch(
-    `https://formsubmit.co/ajax/${encodeURIComponent(SEASON_NOTIFY_DESTINATION)}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Origin: "https://refwatch.ca",
-        Referer: "https://refwatch.ca/",
+  try {
+    const res = await fetch(
+      `https://formsubmit.co/ajax/${encodeURIComponent(SEASON_NOTIFY_DESTINATION)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Origin: "https://refwatch.ca",
+          Referer: "https://refwatch.ca/",
+        },
+        body: JSON.stringify({
+          email,
+          league,
+          _subject: `Ref Watch season notify, ${league}`,
+          _template: "table",
+          _captcha: "false",
+        }),
       },
-      body: JSON.stringify({
-        email,
-        league,
-        _subject: `Ref Watch season notify, ${league}`,
-        _template: "table",
-        _captcha: "false",
-      }),
-    },
-  );
+    );
 
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    console.error("FormSubmit season notify failed:", res.status, detail);
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "");
+      console.error("FormSubmit season notify failed:", res.status, detail);
+      return Response.json(
+        { error: "Unable to send notification right now." },
+        { status: 502 },
+      );
+    }
+
+    const data = (await res.json().catch(() => null)) as {
+      success?: string;
+      message?: string;
+    } | null;
+
+    if (data?.success !== "true") {
+      console.error("FormSubmit season notify unexpected response:", data);
+      const pendingActivation = data?.message?.includes("Activation");
+      return Response.json(
+        {
+          error: pendingActivation
+            ? "Signup is temporarily unavailable while email delivery is being activated."
+            : "Unable to send notification right now.",
+        },
+        { status: pendingActivation ? 503 : 502 },
+      );
+    }
+
+    return Response.json({ ok: true });
+  } catch (error) {
+    console.error("FormSubmit season notify fetch failed:", error);
     return Response.json(
       { error: "Unable to send notification right now." },
       { status: 502 },
     );
   }
-
-  const data = (await res.json().catch(() => null)) as {
-    success?: string;
-    message?: string;
-  } | null;
-
-  if (data?.success !== "true") {
-    console.error("FormSubmit season notify unexpected response:", data);
-    const pendingActivation = data?.message?.includes("Activation");
-    return Response.json(
-      {
-        error: pendingActivation
-          ? "Signup is temporarily unavailable while email delivery is being activated."
-          : "Unable to send notification right now.",
-      },
-      { status: pendingActivation ? 503 : 502 },
-    );
-  }
-
-  return Response.json({ ok: true });
 }
 
 export async function POST(request: Request) {

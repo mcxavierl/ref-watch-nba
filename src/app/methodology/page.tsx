@@ -83,8 +83,7 @@ export default function MethodologyPage() {
               NBA: {nbaStats.meta.seasons.join(", ")} (
               {formatRefStatsRange(nbaStats.meta)}). NHL:{" "}
               {nhlStats.meta.seasons.join(", ")} ({formatNhlRange(nhlStats.meta)}
-              ). League trends from up to ten seasons of game-log aggregates in{" "}
-              <code className="text-xs">data/baselines.json</code>.
+              ). League trends from up to ten seasons of game-log aggregates.
             </li>
             <li>
               When <TermHelp id="closing-line">closing lines</TermHelp> are

@@ -1,3 +1,4 @@
+import { safeOriginFetch } from "@/lib/edge-fetch";
 import "@/lib/global-stats";
 import type {
   CbbStatsGlobalKey,
@@ -209,8 +210,8 @@ export async function preloadRefStatsFromAssets(
   try {
     if (!getCachedRefStats(league)) {
       const assetPath = `${ASSET_BASE[league]}/ref-stats.json`;
-      const res = await fetch(`${origin}${assetPath}`);
-      if (res.ok) {
+      const res = await safeOriginFetch(origin, assetPath);
+      if (res?.ok) {
         const { isRefStatsPayload } = await import("@/lib/json-asset-guards");
         const data: unknown = await res.json();
         if (isRefStatsPayload(data) && data.refs.length > 0) {
@@ -224,8 +225,8 @@ export async function preloadRefStatsFromAssets(
     const cachedSplits = getCachedTeamSplits(league);
     if (!cachedSplits || Object.keys(cachedSplits).length === 0) {
       const splitsPath = `${ASSET_BASE[league]}/team-splits.json`;
-      const res = await fetch(`${origin}${splitsPath}`);
-      if (res.ok) {
+      const res = await safeOriginFetch(origin, splitsPath);
+      if (res?.ok) {
         const { isTeamSplitsPayload } = await import("@/lib/json-asset-guards");
         const splits: unknown = await res.json();
         if (isTeamSplitsPayload(splits) && Object.keys(splits).length > 0) {
@@ -233,8 +234,8 @@ export async function preloadRefStatsFromAssets(
         }
       }
     }
-  } catch {
-    // Never fail SSR from asset preload.
+  } catch (error) {
+    console.error("[refwatch] preloadRefStatsFromAssets failed", league, error);
   }
 }
 

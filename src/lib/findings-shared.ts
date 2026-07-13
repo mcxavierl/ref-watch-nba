@@ -1,3 +1,4 @@
+import { sanitizeUserFacingCopy } from "@/lib/user-language";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 export interface RefTeamScoringExtreme {
@@ -68,7 +69,8 @@ export const DEFAULT_FINDING_EXPLAINER =
 
 export function resolveFindingExplainer(explainer?: string): string {
   const trimmed = explainer?.trim();
-  return trimmed && trimmed.length > 0 ? trimmed : DEFAULT_FINDING_EXPLAINER;
+  if (!trimmed || trimmed.length === 0) return DEFAULT_FINDING_EXPLAINER;
+  return sanitizeUserFacingCopy(trimmed);
 }
 
 const SAMPLE_STAT_LABEL = /^sample$/i;

@@ -252,7 +252,7 @@ export function buildYoYTrendFinding(
     category: "league-trend",
     headline: narrative.headline,
     summary: narrative.body,
-    explainer: `Year-over-year context from ${rows.length} seasons in data/baselines.json (${block.aggregate.gameCount.toLocaleString()} total games). League-wide baselines, not ref-specific.`,
+    explainer: `Year-over-year context from ${rows.length} seasons (${block.aggregate.gameCount.toLocaleString()} total games). League-wide baselines, not ref-specific.`,
     stats: [
       {
         label: `${latest.season} avg total`,

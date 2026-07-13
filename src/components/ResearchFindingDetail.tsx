@@ -7,6 +7,7 @@ import { getRefStats as getNhlRefStats } from "@/lib/nhl/data";
 import {
   FINDING_CATEGORY_LABELS,
   researchHubHref,
+  resolveFindingExplainer,
 } from "@/lib/findings-shared";
 import type { ResearchFinding } from "@/lib/research";
 import { researchDatasetJsonLd } from "@/lib/syndication";
@@ -45,7 +46,7 @@ export function ResearchFindingDetail({
         {finding.explainer && (
           <p className="mt-3 text-sm leading-relaxed text-zinc-600">
             <span className="font-medium text-zinc-800">Why it matters: </span>
-            {finding.explainer}
+            {resolveFindingExplainer(finding.explainer)}
           </p>
         )}
         <p className="finding-accordion-metric-preview mt-2">{finding.summary}</p>
