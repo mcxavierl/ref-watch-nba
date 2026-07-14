@@ -901,6 +901,10 @@ async function main() {
     fs.writeFileSync(statsPath, `${JSON.stringify(honest, null, 2)}\n`);
     console.log("ESPN backfill insufficient — kept seed baseline.");
   }
+
+  console.log("\n--- Regenerating overview insights ---");
+  const { runPostIngestInsightGenerator } = await import("../lib/post-ingest-insights");
+  runPostIngestInsightGenerator();
 }
 
 main().catch((err) => {

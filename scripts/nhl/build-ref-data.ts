@@ -1048,6 +1048,11 @@ async function main() {
     );
     const stats = buildStatsFromLogs(deduped);
     writeNhlStats(stats, statsPath, "Rebuilt from logs");
+    console.log("\n--- Regenerating overview insights ---");
+    const { runPostIngestInsightGenerator: refreshInsights } = await import(
+      "../lib/post-ingest-insights"
+    );
+    refreshInsights();
     return;
   }
 
@@ -1056,6 +1061,11 @@ async function main() {
   const live = await buildLiveStats();
   if (live) {
     writeNhlStats(live, statsPath, "Live ref stats");
+    console.log("\n--- Regenerating overview insights ---");
+    const { runPostIngestInsightGenerator: refreshInsights } = await import(
+      "../lib/post-ingest-insights"
+    );
+    refreshInsights();
     return;
   }
 

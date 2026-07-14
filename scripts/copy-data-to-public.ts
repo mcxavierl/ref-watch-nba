@@ -342,6 +342,16 @@ export const LEAGUE_HERO_STATS: Record<string, LeagueHeroStatsSnapshot> = ${JSON
   console.log(`Wrote ${outPath}`);
 }
 
+function copyInsightsToPublic(root: string): void {
+  const source = path.join(root, "data", "overview-insights.json");
+  const dest = path.join(root, "public", "data", "insights.json");
+  if (!fs.existsSync(source)) return;
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(source, dest);
+  console.log(`Copied ${source} → ${dest}`);
+}
+
 writeLiveHeaderLeagues();
 writeNcaaLiveLeagues();
 writeLeagueHeroStats(root);
+copyInsightsToPublic(root);

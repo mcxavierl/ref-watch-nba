@@ -519,6 +519,10 @@ async function main() {
   console.log(`Team splits: ${Object.keys(built.stats.teamSplits).length} clubs`);
   console.log(`Matrix coverage: ${qualified}/${pairs} ref×team pairs with 3+ games`);
   console.log(`Game logs: ${built.gameLogs.length} matches → data/epl/game-logs.json`);
+
+  console.log("\n--- Regenerating overview insights ---");
+  const { runPostIngestInsightGenerator } = await import("../lib/post-ingest-insights");
+  runPostIngestInsightGenerator();
 }
 
 main().catch((err) => {

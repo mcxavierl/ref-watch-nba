@@ -68,6 +68,10 @@ async function main() {
   );
 
   console.log(`\nDone. Data written to ${dataDir}/`);
+
+  console.log("\n--- Regenerating overview insights ---");
+  const { runPostIngestInsightGenerator } = await import("./lib/post-ingest-insights");
+  runPostIngestInsightGenerator();
 }
 
 main().catch((err) => {

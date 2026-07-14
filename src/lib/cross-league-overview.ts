@@ -10,8 +10,9 @@ import {
   isLeagueAnalyticsUnlocked,
 } from "@/config/leagues";
 import { LEAGUES, leagueHubHref, type LeagueId } from "@/lib/leagues";
-import { loadOverviewInsightCards } from "@/lib/overview-insights-data";
+import { loadOverviewInsightCards, loadTopStoriesBundle } from "@/lib/overview-insights-data";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
+import type { TopStoriesStatus } from "@/lib/insights/generator";
 import {
   paceBarWidthPercent,
   sortLeaguePaceCards,
@@ -46,6 +47,9 @@ export type CrossLeagueOverview = {
   whistleLabel: string;
   leagueCards: LeagueOverviewCard[];
   insightCards: LeagueInsightCard[];
+  topStories: LeagueInsightCard[];
+  topStoriesStatus: TopStoriesStatus;
+  topStoriesGeneratedAt: string | null;
   upcomingSlate: OverviewUpcomingSlate;
   allRefs: {
     slug: string;
@@ -159,6 +163,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
   }
 
   const orderedLeagueCards = sortLeaguePaceCards(leagueCards);
+  const topStoriesBundle = loadTopStoriesBundle();
 
   return {
     totalRefs,
@@ -170,6 +175,9 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
     whistleLabel: "Whistle events logged",
     leagueCards: orderedLeagueCards,
     insightCards: loadOverviewInsightCards(),
+    topStories: topStoriesBundle.stories,
+    topStoriesStatus: topStoriesBundle.status,
+    topStoriesGeneratedAt: topStoriesBundle.generatedAt,
     upcomingSlate: buildOverviewUpcomingSlate(),
     allRefs: allRefs.sort((a, b) => b.games - a.games),
   };

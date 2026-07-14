@@ -1,17 +1,11 @@
 #!/usr/bin/env npx tsx
-import * as fs from "node:fs";
-import * as path from "node:path";
-import { buildLeagueInsightCards } from "../src/lib/league-overview-insights";
+import { execSync } from "node:child_process";
+import { runPostIngestInsightGenerator } from "./lib/post-ingest-insights";
 
-const root = process.cwd();
-const dest = path.join(root, "data", "overview-insights.json");
+runPostIngestInsightGenerator();
 
-const cards = buildLeagueInsightCards();
-const payload = {
-  generatedAt: new Date().toISOString(),
-  cards,
-};
-
-fs.mkdirSync(path.dirname(dest), { recursive: true });
-fs.writeFileSync(dest, `${JSON.stringify(payload)}\n`);
-console.log(`Wrote ${dest} (${cards.length} league insights)`);
+try {
+  execSync("npx tsx scripts/build-overview-drilldowns.ts", { stdio: "inherit" });
+} catch {
+  console.warn("Drilldown rebuild skipped or failed — overview insights still written.");
+}

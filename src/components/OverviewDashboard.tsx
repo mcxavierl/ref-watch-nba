@@ -125,7 +125,11 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
 
   return (
     <DashboardShell>
-      <OverviewTopStoriesCarousel cards={data.insightCards} />
+      <OverviewTopStoriesCarousel
+        cards={data.topStories}
+        status={data.topStoriesStatus}
+        generatedAt={data.topStoriesGeneratedAt}
+      />
 
       <div className="overview-dashboard-breathe">
         <LeagueChooser cards={data.leagueCards} />
