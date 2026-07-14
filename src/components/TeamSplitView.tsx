@@ -84,7 +84,7 @@ function RefLinkChip({
   return (
     <Link
       href={`${basePath}/refs/${slug}`}
-      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-zinc-50 px-3 py-1 text-sm text-zinc-700 transition hover:border-zinc-300 hover:bg-white hover:text-zinc-900"
+      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-raised px-3 py-1 text-sm text-ink-secondary transition hover:border-border hover:bg-surface hover:text-foreground"
     >
       {name}
     </Link>

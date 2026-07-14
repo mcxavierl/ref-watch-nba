@@ -18,47 +18,47 @@ const kindMeta: Record<
 > = {
   "win-rate-curse": {
     icon: TrendingDown,
-    tone: "text-rose-700 bg-rose-50 border-rose-200",
+    tone: "text-rose-300 bg-rose-500/10 border-rose-500/35",
     label: "Win-rate curse",
   },
   "win-rate-boost": {
     icon: TrendingUp,
-    tone: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    tone: "text-emerald-300 bg-emerald-500/10 border-emerald-500/35",
     label: "Win-rate boost",
   },
   "foul-spike": {
     icon: Volume2,
-    tone: "text-amber-800 bg-amber-50 border-amber-200",
+    tone: "text-amber-200 bg-amber-500/10 border-amber-500/35",
     label: "Whistle spike",
   },
   "foul-relief": {
     icon: Volume2,
-    tone: "text-sky-700 bg-sky-50 border-sky-200",
+    tone: "text-sky-300 bg-sky-500/10 border-sky-500/35",
     label: "Whistle relief",
   },
   "foul-edge-paradox": {
     icon: Scale,
-    tone: "text-violet-700 bg-violet-50 border-violet-200",
+    tone: "text-violet-300 bg-violet-500/10 border-violet-500/35",
     label: "Foul paradox",
   },
   "scoring-hot": {
     icon: Flame,
-    tone: "text-orange-700 bg-orange-50 border-orange-200",
+    tone: "text-orange-300 bg-orange-500/10 border-orange-500/35",
     label: "Hot totals",
   },
   "scoring-cold": {
     icon: TrendingDown,
-    tone: "text-sky-700 bg-sky-50 border-sky-200",
+    tone: "text-sky-300 bg-sky-500/10 border-sky-500/35",
     label: "Cold totals",
   },
   "crew-reunion": {
     icon: Users,
-    tone: "text-zinc-700 bg-zinc-50 border-zinc-200",
+    tone: "text-ink-secondary bg-surface-raised border-border",
     label: "Crew reunion",
   },
   "ref-split": {
     icon: Swords,
-    tone: "text-raptors bg-red-50 border-red-200",
+    tone: "text-raptors bg-red-500/10 border-red-500/35",
     label: "Split whistle",
   },
 };
@@ -136,7 +136,7 @@ export function GrudgeMatchSection({
           Grudge match radar
         </h2>
         {isPreview && (
-          <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-900">
+          <span className="rounded-full border border-amber-500/35 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-200">
             Offseason preview
           </span>
         )}

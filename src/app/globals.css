@@ -2166,13 +2166,13 @@ p {
     align-items: center;
     padding: 0.3rem 0.8rem;
     border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-    background: color-mix(in srgb, var(--surface-raised) 90%, var(--surface));
+    border: 1px solid var(--pill-border);
+    background: var(--pill-bg);
     font-size: var(--text-xs);
     font-weight: 600;
     line-height: 1.2;
     letter-spacing: 0.01em;
-    color: var(--muted-strong);
+    color: var(--pill-ink);
   }
 
   a.finding-meta-pill-link {
@@ -2183,9 +2183,9 @@ p {
   }
 
   a.finding-meta-pill-link:hover {
-    border-color: color-mix(in srgb, var(--header-gold) 45%, var(--border));
+    border-color: color-mix(in srgb, var(--header-gold) 45%, var(--pill-border));
     color: var(--foreground);
-    background: color-mix(in srgb, var(--header-gold) 10%, var(--surface));
+    background: color-mix(in srgb, var(--header-gold) 12%, var(--pill-bg));
   }
 
   a.confidence-tier-badge-link {
@@ -2199,7 +2199,8 @@ p {
 
   .finding-meta-pill-muted {
     color: var(--muted);
-    background: color-mix(in srgb, var(--surface-raised) 70%, var(--surface));
+    background: var(--pill-bg-muted);
+    border-color: var(--pill-border);
   }
 
   .confidence-tier-badge {
@@ -4649,13 +4650,13 @@ p {
     flex-shrink: 0;
     padding: 0.15rem 0.5rem;
     border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--insight-accent, var(--border)) 35%, var(--border));
-    background: color-mix(in srgb, var(--insight-accent, var(--surface-raised)) 12%, var(--surface-raised));
+    border: 1px solid color-mix(in srgb, var(--insight-accent, var(--pill-border)) 35%, var(--pill-border));
+    background: color-mix(in srgb, var(--insight-accent, var(--pill-bg)) 12%, var(--pill-bg));
     font-size: 0.62rem;
     font-weight: 750;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--insight-accent, var(--ink)) 72%, var(--ink));
+    color: color-mix(in srgb, var(--insight-accent, var(--pill-ink)) 72%, var(--pill-ink));
   }
 
   .friction-personnel-pill {
@@ -4663,8 +4664,8 @@ p {
     align-items: center;
     padding: 0.15rem 0.5rem;
     border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--surface-raised);
+    border: 1px solid var(--pill-border);
+    background: var(--pill-bg);
     font-size: 0.62rem;
     font-weight: 750;
     letter-spacing: 0.04em;
@@ -9056,14 +9057,14 @@ p {
   white-space: nowrap;
   padding: 0.125rem 0.5rem;
   border-radius: 0.25rem;
-  color: var(--text-muted);
-  background: var(--bg-surface-2);
-  border: 1px solid var(--border-subtle);
+  color: var(--pill-ink);
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
 }
 
 .overview-catalog-status--live {
-  color: var(--text-muted);
-  background: var(--bg-surface-2);
+  color: var(--pill-ink);
+  background: var(--pill-bg);
 }
 
 .overview-catalog-status--preview {
@@ -9609,7 +9610,7 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   padding: 0.85rem;
   border-radius: 0.75rem;
   border: 1px solid var(--border-subtle);
-  background: color-mix(in srgb, var(--surface-raised) 88%, var(--surface));
+  background: var(--bg-surface-2);
 }
 
 .overview-insight-hero-value {
@@ -10292,12 +10293,13 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   align-items: center;
   padding: 0.12rem 0.45rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--pill-border);
+  background: var(--pill-bg);
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--pill-ink);
 }
 
 .overview-quicklists-tab {
@@ -10457,12 +10459,13 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   flex-shrink: 0;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
+  border: 1px solid var(--pill-border);
   font-size: 0.62rem;
   font-weight: 750;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.06);
+  color: var(--pill-ink);
+  background: var(--pill-bg);
 }
 
 .overview-slate-matchup {

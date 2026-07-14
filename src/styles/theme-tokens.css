@@ -1,60 +1,15 @@
 /**
  * Ref Watch — semantic design tokens (WCAG 2.2 AA)
  *
- * Light mode:  :root / [data-theme="light"] / html[data-color="light"]
- * Dark mode:   [data-theme="dark"] / html[data-color="dark"] / html.dark
+ * Dark mode (default): :root / [data-theme="dark"] / html[data-color="dark"]
+ * Light mode:          html[data-color="light"] / [data-theme="light"]
  *
  * Body text pairings target ≥ 4.5:1 against --bg-surface-1.
  * Legacy aliases (--background, --surface, …) bridge existing components.
  */
 
-/* ── Light (default) ─────────────────────────────────────────────────────── */
+/* ── Dark (default — matches layout.tsx + product chrome) ───────────────── */
 :root,
-html[data-theme="light"]:not([data-contrast="high"]),
-html[data-color="light"]:not([data-contrast="high"]) {
-  color-scheme: light;
-
-  --bg-surface-0: #f9fafb;
-  --bg-surface-1: #ffffff;
-  --bg-surface-2: #f3f4f6;
-  --bg-surface-3: #e5e7eb;
-
-  --text-primary: #111827;
-  --text-secondary: #374151;
-  --text-muted: #6b7280;
-  --text-inverse: #f9fafb;
-
-  --border-default: #d1d5db;
-  --border-subtle: #e5e7eb;
-  --border-strong: #9ca3af;
-
-  --accent-brand: #2563eb;
-  --focus-ring: #1d4ed8;
-  --focus-ring-offset: var(--bg-surface-0);
-
-  --accent-positive: #047857;
-  --accent-positive-subtle: #d1fae5;
-  --accent-negative: #be123c;
-  --accent-negative-subtle: #ffe4e6;
-
-  --metric-positive-surface: color-mix(in srgb, var(--accent-positive) 8%, var(--bg-surface-1));
-  --metric-negative-surface: color-mix(in srgb, var(--accent-negative) 8%, var(--bg-surface-1));
-
-  --background: var(--bg-surface-0);
-  --foreground: var(--text-primary);
-  --surface: var(--bg-surface-1);
-  --surface-raised: var(--bg-surface-2);
-  --border: var(--border-default);
-  --muted: var(--text-muted);
-  --muted-strong: var(--text-secondary);
-  --ink: var(--text-primary);
-  --ink-secondary: var(--text-secondary);
-  --line: var(--border-default);
-  --metric-positive-ink: var(--accent-positive);
-  --metric-negative-ink: var(--accent-negative);
-}
-
-/* ── Dark ────────────────────────────────────────────────────────────────── */
 [data-theme="dark"],
 html[data-theme="dark"],
 html[data-color="dark"],
@@ -86,6 +41,62 @@ html.dark {
 
   --metric-positive-surface: color-mix(in srgb, var(--accent-positive) 12%, var(--bg-surface-1));
   --metric-negative-surface: color-mix(in srgb, var(--accent-negative) 12%, var(--bg-surface-1));
+
+  --pill-bg: #1a2230;
+  --pill-border: #2d3748;
+  --pill-ink: #9ca3af;
+  --pill-bg-muted: #131820;
+
+  --background: var(--bg-surface-0);
+  --foreground: var(--text-primary);
+  --surface: var(--bg-surface-1);
+  --surface-raised: var(--bg-surface-2);
+  --border: var(--border-default);
+  --muted: var(--text-muted);
+  --muted-strong: var(--text-secondary);
+  --ink: var(--text-primary);
+  --ink-secondary: var(--text-secondary);
+  --line: var(--border-default);
+  --metric-positive-ink: var(--accent-positive);
+  --metric-negative-ink: var(--accent-negative);
+}
+
+/* ── Light ─────────────────────────────────────────────────────────────────── */
+html[data-theme="light"]:not([data-contrast="high"]),
+html[data-color="light"]:not([data-contrast="high"]),
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-surface-0: #f9fafb;
+  --bg-surface-1: #ffffff;
+  --bg-surface-2: #f3f4f6;
+  --bg-surface-3: #e5e7eb;
+
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  --text-inverse: #f9fafb;
+
+  --border-default: #d1d5db;
+  --border-subtle: #e5e7eb;
+  --border-strong: #9ca3af;
+
+  --accent-brand: #2563eb;
+  --focus-ring: #1d4ed8;
+  --focus-ring-offset: var(--bg-surface-0);
+
+  --accent-positive: #047857;
+  --accent-positive-subtle: #d1fae5;
+  --accent-negative: #be123c;
+  --accent-negative-subtle: #ffe4e6;
+
+  --metric-positive-surface: color-mix(in srgb, var(--accent-positive) 8%, var(--bg-surface-1));
+  --metric-negative-surface: color-mix(in srgb, var(--accent-negative) 8%, var(--bg-surface-1));
+
+  --pill-bg: #f3f4f6;
+  --pill-border: #e5e7eb;
+  --pill-ink: #6b7280;
+  --pill-bg-muted: #f9fafb;
 
   --background: var(--bg-surface-0);
   --foreground: var(--text-primary);
@@ -465,8 +476,8 @@ html.dark .dashboard-insight-card:hover {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-surface-2);
+  border: 1px solid var(--pill-border);
+  background: var(--pill-bg);
   color: var(--text-secondary);
   font-size: 0.72rem;
   font-weight: 600;

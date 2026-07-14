@@ -36,7 +36,7 @@ function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
             {isHigh ? "High pace crew alert" : "Low pace crew alert"}
           </span>
           {premium.sampleQuality !== "strong" && (
-            <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-900">
+            <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/35 bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-200">
               <AlertTriangle className="size-3" aria-hidden />
               {premium.sampleQuality} sample
             </span>
@@ -154,7 +154,7 @@ export function WhistlePremiumSection({
           Whistle premium alerts
         </h2>
         {isPreview && (
-          <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-900">
+          <span className="rounded-full border border-amber-500/35 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-200">
             Offseason preview
           </span>
         )}

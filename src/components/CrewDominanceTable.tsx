@@ -80,7 +80,7 @@ export function CrewDominanceTable({ entries, basePath, league, overBaseline, le
               <td className="data-table-rank font-tabular text-xs text-zinc-500">{index + 1}</td>
               <td className="align-middle"><div className="flex flex-row flex-nowrap items-center gap-1.5 py-0.5">
                 {entry.memberSlugs.map((slug, i) => (
-                  <Link key={slug} href={`${basePath}/refs/${slug}#close-game`} className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-zinc-50 px-1.5 py-0.5 text-[11px] leading-tight text-zinc-700 transition hover:border-zinc-300 hover:bg-white hover:text-zinc-900">
+                  <Link key={slug} href={`${basePath}/refs/${slug}#close-game`} className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-surface-raised px-1.5 py-0.5 text-[11px] leading-tight text-ink-secondary transition hover:border-border hover:bg-surface hover:text-foreground">
                     <RefAvatar name={entry.crewNames[i] ?? slug} slug={slug} sport={sport} size="sm" className="!h-5 !w-5" />{entry.crewNames[i] ?? slug}
                     {linesmanSlugs?.has(slug) ? <OfficialRoleBadge role="linesman" /> : null}
                   </Link>))}
