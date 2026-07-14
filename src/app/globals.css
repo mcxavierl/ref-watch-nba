@@ -9630,7 +9630,7 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 }
 
 .overview-insight-hero-value--neutral {
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .overview-insight-hero-label {
@@ -9694,14 +9694,14 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   font-weight: 650;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 .overview-insight-stats dd {
   margin: 0.1rem 0 0;
   font-size: 0.92rem;
   font-weight: 700;
-  color: var(--ink);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -9718,16 +9718,16 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   gap: 0.25rem;
   font-size: 0.78rem;
   font-weight: 650;
-  color: var(--muted);
+  color: var(--text-muted);
   pointer-events: auto;
 }
 
 .overview-insight-link:hover {
-  color: var(--ink);
+  color: var(--text-primary);
 }
 
 .overview-insight-link--primary {
-  color: color-mix(in srgb, var(--insight-accent) 70%, var(--ink));
+  color: color-mix(in srgb, var(--insight-accent) 70%, var(--text-primary));
 }
 
 .overview-insight-link--primary:hover {
