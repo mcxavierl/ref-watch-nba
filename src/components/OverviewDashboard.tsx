@@ -5,6 +5,7 @@ import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewComparativeScorecard } from "@/components/OverviewComparativeScorecard";
 import { OverviewQuickLists } from "@/components/OverviewQuickLists";
 import { OverviewTopStoriesCarousel } from "@/components/OverviewTopStoriesCarousel";
+import { DashboardHeroHighlights } from "@/components/dashboard/DashboardHeroHighlights";
 import {
   DashboardBodyLayout,
   DashboardSection,
@@ -132,6 +133,10 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
       />
 
       <div className="overview-dashboard-breathe">
+        <DashboardHeroHighlights />
+      </div>
+
+      <div className="overview-dashboard-breathe">
         <LeagueChooser cards={data.leagueCards} />
       </div>
 
@@ -142,7 +147,11 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               <summary className="overview-sidebar-heading overview-catalog-summary">
                 <span className="overview-catalog-summary-copy">
                   <span className="overview-catalog-summary-title">League catalog</span>
-                  <span className="overview-catalog-summary-hint">Live hubs and limited NCAA</span>
+                  <span className="overview-catalog-summary-hint">
+                    {ncaaCatalog.length > 0
+                      ? "Live hubs and limited NCAA"
+                      : "Live verified hubs"}
+                  </span>
                 </span>
                 <span
                   className="overview-sidebar-count"
@@ -166,7 +175,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                   <section className="overview-catalog-segment overview-catalog-segment--ncaa">
                     <h3 className="overview-catalog-segment-title">NCAA coverage (limited)</h3>
                     <p className="overview-catalog-segment-hint">
-                      Key conferences only — not full-league live infrastructure.
+                      Key conferences only, not full-league live infrastructure.
                     </p>
                     <div className="overview-catalog-list">
                       {ncaaCatalog.map((entry) => (
@@ -192,7 +201,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
             <section className="overview-sidebar-block overview-sidebar-block--lists">
               <h2 className="overview-sidebar-heading overview-sidebar-heading--static">Quick lists</h2>
               <p className="overview-sidebar-note">
-                Live-league shortcuts only — rankings, tendencies, and matrix edges for verified
+                Live-league shortcuts only: rankings, tendencies, and matrix edges for verified
                 pro hubs.
               </p>
               <OverviewQuickLists
@@ -302,7 +311,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               className="overview-pace overview-pace--scorecard"
               title="Comparative scorecard"
               titleId="overview-pace-heading"
-              lead="Cross-league whistle and scoring pace at a glance — typography-first, with minimalist trend lines."
+              lead="Cross-league whistle and scoring pace at a glance: typography-first, with minimalist trend lines."
             >
               <OverviewComparativeScorecard cards={data.leagueCards} />
             </DashboardSection>

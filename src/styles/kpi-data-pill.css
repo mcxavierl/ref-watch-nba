@@ -31,21 +31,24 @@ html[data-color="light"]:not([data-contrast="high"]) {
 
 .kpi-data-pill__value {
   display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
+  align-items: baseline;
+  gap: 0.28rem;
   font-family: var(--font-data, ui-monospace, monospace);
   font-variant-numeric: tabular-nums;
   font-weight: 800;
   letter-spacing: -0.02em;
-  line-height: 1;
+  line-height: inherit;
   color: var(--kpi-pill-value-ink);
+  vertical-align: baseline;
 }
 
 .kpi-data-pill__accent {
   flex-shrink: 0;
-  font-size: 0.42em;
+  display: inline-block;
+  font-size: 0.55em;
   line-height: 1;
-  transform: translateY(-0.04em);
+  vertical-align: baseline;
+  transform: none;
 }
 
 .kpi-data-pill--positive .kpi-data-pill__accent {
@@ -94,18 +97,32 @@ html[data-color="light"]:not([data-contrast="high"]) {
 
 .kpi-data-pill--block .kpi-data-pill__value {
   font-size: clamp(1.65rem, 4vw, 2.15rem);
+  line-height: 1;
 }
 
 /* ── Inline (hero highlight sentence) ───────────────────────────────────── */
 
 .kpi-data-pill--inline {
   display: inline;
+  vertical-align: baseline;
+  white-space: normal;
 }
 
 .kpi-data-pill--inline .kpi-data-pill__value {
+  display: inline;
+  font-family: inherit;
   font-size: inherit;
   font-weight: 800;
   letter-spacing: -0.01em;
+  line-height: inherit;
+  vertical-align: baseline;
+}
+
+.kpi-data-pill--inline .kpi-data-pill__accent {
+  display: inline;
+  font-size: 0.55em;
+  vertical-align: baseline;
+  margin-inline-end: 0.12em;
 }
 
 .kpi-data-pill--inline.kpi-data-pill--secondary .kpi-data-pill__value {

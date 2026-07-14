@@ -8234,9 +8234,9 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 .overview-page .metric-delight-value--negative,
 .overview-page .metric-delight-value-hero--negative,
 .overview-page .metric-delight-badge-value--negative {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
+  display: inline;
+  vertical-align: baseline;
+  line-height: inherit;
   color: var(--kpi-pill-value-ink);
   text-shadow: none;
 }
@@ -8245,9 +8245,11 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 .overview-page .metric-delight-value-hero--positive::before,
 .overview-page .metric-delight-badge-value--positive::before {
   content: "●";
-  flex-shrink: 0;
-  font-size: 0.42em;
-  line-height: 1;
+  display: inline;
+  vertical-align: baseline;
+  margin-inline-end: 0.12em;
+  font-size: 0.55em;
+  line-height: inherit;
   color: var(--kpi-pill-accent-positive);
 }
 
@@ -8255,9 +8257,11 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 .overview-page .metric-delight-value-hero--negative::before,
 .overview-page .metric-delight-badge-value--negative::before {
   content: "●";
-  flex-shrink: 0;
-  font-size: 0.42em;
-  line-height: 1;
+  display: inline;
+  vertical-align: baseline;
+  margin-inline-end: 0.12em;
+  font-size: 0.55em;
+  line-height: inherit;
   color: var(--kpi-pill-accent-negative);
 }
 
@@ -8279,19 +8283,28 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   border: 1px solid var(--kpi-pill-border);
   background: var(--kpi-pill-bg);
   color: var(--kpi-pill-value-ink);
+  display: inline;
+  vertical-align: baseline;
+  line-height: inherit;
 }
 
 .overview-page .metric-delight-delta--positive::before {
   content: "●";
-  margin-right: 0.25rem;
+  display: inline;
+  vertical-align: baseline;
+  margin-inline-end: 0.12em;
   font-size: 0.55em;
+  line-height: inherit;
   color: var(--kpi-pill-accent-positive);
 }
 
 .overview-page .metric-delight-delta--negative::before {
   content: "●";
-  margin-right: 0.25rem;
+  display: inline;
+  vertical-align: baseline;
+  margin-inline-end: 0.12em;
   font-size: 0.55em;
+  line-height: inherit;
   color: var(--kpi-pill-accent-negative);
 }
 
@@ -8489,26 +8502,30 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 
 .dashboard-hero-highlight-body {
   margin: 0;
+  font-family: inherit;
   font-size: 0.86rem;
+  font-weight: 400;
   line-height: 1.5;
-  color: var(--foreground);
+  color: color-mix(in srgb, var(--foreground) 62%, var(--muted));
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-hero-highlight-body span,
+.dashboard-hero-highlight-body .kpi-data-pill--inline {
+  vertical-align: baseline;
+}
+
+.dashboard-hero-highlight-body span {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  letter-spacing: inherit;
 }
 
 .dashboard-hero-highlight-official {
-  font-weight: 700;
-  color: var(--foreground);
-}
-
-.dashboard-hero-highlight-metric {
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
-.dashboard-hero-highlight-metric[data-metric="secondary"] {
   font-weight: 650;
-  color: var(--muted);
 }
 
 .dashboard-hero-highlight-card:hover {
@@ -8632,6 +8649,16 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   border-color: #3f3f46;
   transform: translateY(-0.25rem);
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+}
+
+.overview-league-chooser-card:active {
+  transform: translateY(-0.1rem) scale(0.995);
+  transition-duration: 120ms;
+}
+
+.overview-league-chooser-card:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--chooser-accent) 55%, transparent);
+  outline-offset: 3px;
 }
 
 .overview-league-chooser-top {
@@ -9586,6 +9613,16 @@ html.dark .dashboard-hero-highlight-card {
     ),
     var(--bg-surface-2);
   border-color: color-mix(in srgb, var(--hero-highlight-glow) 32%, var(--border-subtle));
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .dashboard-hero-highlight-body,
+html.dark .dashboard-hero-highlight-body {
+  color: #e2e8f0;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .dashboard-hero-highlight-league,
+html.dark .dashboard-hero-highlight-league {
+  color: var(--text-primary);
 }
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-league-chooser-card,
@@ -11295,6 +11332,14 @@ html[data-color="light"]:not([data-contrast="high"]) .dashboard-hero-highlight-c
     0 0 0 1px color-mix(in srgb, var(--hero-highlight-glow) 12%, transparent),
     0 0 18px color-mix(in srgb, var(--hero-highlight-glow) 10%, transparent),
     var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .dashboard-hero-highlight-body {
+  color: #64748b;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .dashboard-hero-highlight-league {
+  color: var(--text-primary);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-stat,
