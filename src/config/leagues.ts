@@ -7,7 +7,7 @@ import {
 import type { LeagueId } from "@/lib/leagues";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { isVerifiedLiveLeague } from "@/lib/league-verification";
-import { resolveNcaaDataVerifiedForLeagueId } from "@/lib/ncaa-pipeline";
+import { isNcaaConferenceGatedLive } from "@/lib/verified-live-leagues";
 import type { RefStatsFile } from "@/lib/types";
 
 export type { LeagueRegistryEntry } from "@/config/leagueConfig";
@@ -73,11 +73,9 @@ export function isNcaaLeagueSlug(leagueId: LeagueId): leagueId is NcaaLeagueSlug
 
 function ncaaAnalyticsUnlocked(
   leagueId: NcaaLeagueSlug,
-  stats?: RefStatsFile | null,
+  _stats?: RefStatsFile | null,
 ): boolean {
-  const entry = NCAA_LEAGUE_REGISTRY[leagueId];
-  if (entry.dataVerified !== true) return false;
-  return resolveNcaaDataVerifiedForLeagueId(leagueId, stats ?? undefined);
+  return isNcaaConferenceGatedLive(leagueId);
 }
 
 /** Hub links, quick lists, and detailed analytics require full verification. */

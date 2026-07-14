@@ -1,9 +1,6 @@
-import { resolveLeagueVerification, VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
-import type { LeagueId } from "@/lib/leagues";
+import { isProVerifiedLiveLeague, resolveLeagueVerification } from "@/lib/league-verification";
 import { getCachedRefStats, leaguesForPath } from "@/lib/ref-stats-preload";
 import type { TeamCrewSplit } from "@/lib/types";
-
-const VERIFIED_LIVE = new Set<LeagueId>(VERIFIED_LIVE_LEAGUE_IDS);
 
 /**
  * Server-only: log when production serves unverified live-league meta or empty team splits.
@@ -14,7 +11,7 @@ export function assertProductionLeagueVerification(pathname: string): void {
   if (process.env.NODE_ENV !== "production") return;
 
   for (const leagueId of leaguesForPath(pathname)) {
-    if (!VERIFIED_LIVE.has(leagueId)) continue;
+    if (!isProVerifiedLiveLeague(leagueId)) continue;
 
     const stats = getCachedRefStats(leagueId);
     if (!stats?.refs?.length) continue;

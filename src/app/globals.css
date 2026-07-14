@@ -8711,8 +8711,16 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 .overview-pace-label-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem 0.55rem;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+}
+
+.overview-league-chooser-scope,
+.overview-pace-scope {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
 }
 
 .overview-section-lead-ncaa-note {

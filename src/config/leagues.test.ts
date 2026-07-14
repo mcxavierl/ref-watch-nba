@@ -11,6 +11,7 @@ import {
   isLeagueCardVisible,
   leagueLogoForTheme,
 } from "@/config/leagues";
+import { isNcaaConferenceGatedLive } from "@/lib/verified-live-leagues";
 
 test("NCAA brand assets map to dual-theme logo paths", () => {
   assert.equal(NCAA_BRAND_ASSETS.themeColor, "#009CDE");
@@ -43,35 +44,28 @@ test("CBB registry entry matches spec", () => {
   assert.equal(CBB_LEAGUE_ENTRY.dataVerified, false);
 });
 
-test("isDashboardLeagueExposed only shows verified live leagues", () => {
-  assert.equal(isDashboardLeagueExposed("cfb"), false);
-  assert.equal(isDashboardLeagueExposed("cbb"), false);
+test("isDashboardLeagueExposed shows pro leagues and conference-gated NCAA when live", () => {
   assert.equal(isDashboardLeagueExposed("nba"), true);
   assert.equal(isDashboardLeagueExposed("laliga"), true);
+  assert.equal(isDashboardLeagueExposed("cfb"), isNcaaConferenceGatedLive("cfb"));
+  assert.equal(isDashboardLeagueExposed("cbb"), isNcaaConferenceGatedLive("cbb"));
 });
 
-test("isLeagueAnalyticsUnlocked keeps NCAA hubs locked until verified", () => {
-  assert.equal(isLeagueAnalyticsUnlocked("cfb"), false);
-  assert.equal(isLeagueAnalyticsUnlocked("cbb"), false);
+test("isLeagueAnalyticsUnlocked unlocks NCAA when conference data is live", () => {
   assert.equal(isLeagueAnalyticsUnlocked("nba"), true);
+  assert.equal(isLeagueAnalyticsUnlocked("cfb"), isNcaaConferenceGatedLive("cfb"));
+  assert.equal(isLeagueAnalyticsUnlocked("cbb"), isNcaaConferenceGatedLive("cbb"));
 });
 
-test("manual dataVerified flag is the first NCAA analytics gate", () => {
-  assert.equal(CBB_LEAGUE_ENTRY.dataVerified, false);
-  assert.equal(CFB_LEAGUE_ENTRY.dataVerified, false);
-  assert.equal(isLeagueAnalyticsUnlocked("cbb"), false);
-  assert.equal(isLeagueAnalyticsUnlocked("cfb"), false);
-});
-
-test("isLeagueCardVisible hides NCAA until verified live", () => {
-  assert.equal(isLeagueCardVisible("cfb"), false);
-  assert.equal(isLeagueCardVisible("cbb"), false);
+test("isLeagueCardVisible follows conference-gated NCAA visibility", () => {
+  assert.equal(isLeagueCardVisible("cfb"), isNcaaConferenceGatedLive("cfb"));
+  assert.equal(isLeagueCardVisible("cbb"), isNcaaConferenceGatedLive("cbb"));
   assert.equal(isLeagueCardVisible("nba"), true);
 });
 
-test("isCatalogSlugVisible hides NCAA slugs until verified live", () => {
-  assert.equal(isCatalogSlugVisible("cfb"), false);
-  assert.equal(isCatalogSlugVisible("cbb"), false);
+test("isCatalogSlugVisible hides NCAA slugs until conference data is live", () => {
+  assert.equal(isCatalogSlugVisible("cfb"), isNcaaConferenceGatedLive("cfb"));
+  assert.equal(isCatalogSlugVisible("cbb"), isNcaaConferenceGatedLive("cbb"));
   assert.equal(isCatalogSlugVisible("serie-a"), true);
 });
 

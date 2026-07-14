@@ -9,9 +9,6 @@ import {
   isNflSimulatedData,
   isNflVerifiedData,
 } from "@/lib/nfl/data-source";
-import {
-  resolveNcaaDataVerified,
-} from "@/lib/ncaa-pipeline";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 
 export type LeagueVerification = {
@@ -22,11 +19,20 @@ export type LeagueVerification = {
 };
 
 import {
+  filterNcaaRefStats,
+  hasNcaaLiveConferenceCoverage,
+} from "@/lib/ncaa-conference-gate";
+import {
   isVerifiedLiveLeague,
+  PRO_VERIFIED_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
 export {
+  activeLiveLeagueIds,
+  isNcaaConferenceGatedLive,
+  isProVerifiedLiveLeague,
   isVerifiedLiveLeague,
+  PRO_VERIFIED_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
 
@@ -123,10 +129,9 @@ function inferCollegeVerification(
       ? isCbbSimulatedData(meta.source)
       : isCfbSimulatedData(meta.source);
   const sourceVerified = meta.data_verified === true || (isVerified && !isSim);
-  const pipelineVerified = stats
-    ? resolveNcaaDataVerified(league, stats)
-    : meta.ncaa_pipeline_verified === true && meta.ncaa_pipeline_coverage_pct === 100;
-  const verified = sourceVerified && pipelineVerified;
+  const scopedStats = stats ? filterNcaaRefStats(stats, league) : stats;
+  const conferenceGatedLive = hasNcaaLiveConferenceCoverage(league, scopedStats);
+  const verified = sourceVerified && conferenceGatedLive;
   return {
     data_verified: verified,
     data_source: meta.data_source ?? (verified ? "ESPN" : "synthetic"),

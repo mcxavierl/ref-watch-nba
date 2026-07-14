@@ -1,11 +1,14 @@
 import { leagueCardsPerGame } from "@/lib/soccer-card-metrics";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import {
+  isNcaaConferenceGatedLeague,
+  NCAA_KEY_CONFERENCES_LABEL,
+} from "@/lib/ncaa-conference-gate";
+import {
   DASHBOARD_GRID_LEAGUE_IDS,
   isDashboardLeagueExposed,
   isLeagueAnalyticsUnlocked,
 } from "@/config/leagues";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { LEAGUES, leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { loadOverviewInsightCards } from "@/lib/overview-insights-data";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
@@ -127,10 +130,14 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       }
     }
 
+    const ncaaSuffix = isNcaaConferenceGatedLeague(leagueId)
+      ? ` ${NCAA_KEY_CONFERENCES_LABEL}`
+      : "";
+
     leagueCards.push({
       leagueId,
-      label: config.label,
-      shortLabel: config.shortLabel,
+      label: `${config.label}${ncaaSuffix}`,
+      shortLabel: `${config.shortLabel}${ncaaSuffix}`,
       href: leagueHubHref(leagueId),
       refCount,
       gameCount,
@@ -156,7 +163,8 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
   return {
     totalRefs,
     totalGames,
-    liveLeagueCount: VERIFIED_LIVE_LEAGUE_IDS.length,
+    liveLeagueCount: leagueCards.filter((card) => isDashboardLeagueExposed(card.leagueId))
+      .length,
     catalogCompetitionCount,
     whistleEventsLogged,
     whistleLabel: "Whistle events logged",

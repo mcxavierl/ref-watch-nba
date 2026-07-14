@@ -6,6 +6,10 @@ import {
   isVerifiedLiveLeague,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/league-verification";
+import {
+  isNcaaConferenceGatedLeague,
+  NCAA_KEY_CONFERENCES_LABEL,
+} from "@/lib/ncaa-conference-gate";
 
 export type CatalogLeagueStatus = "live" | "coming-soon";
 
@@ -48,11 +52,20 @@ export function catalogStatusLabel(entry: CatalogLeagueEntry): string {
  * Expanded competition catalog for the overview hub.
  * Coming-soon entries are roadmap only: no routes, no header switcher, no data loaders.
  */
+export function catalogLeagueDisplayLabel(entry: CatalogLeagueEntry): string {
+  if (entry.leagueId && isNcaaConferenceGatedLeague(entry.leagueId)) {
+    return `${entry.label} ${NCAA_KEY_CONFERENCES_LABEL}`;
+  }
+  return entry.label;
+}
+
 export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
   { id: "nba", label: "NBA", region: "USA", sport: "basketball", status: "live", leagueId: "nba", href: "/nba", sort: 1 },
-  { id: "wnba", label: "WNBA", region: "USA", sport: "basketball", status: "coming-soon", sort: 2 },
+  { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "basketball", status: "live", leagueId: "cbb", href: "/cbb", sort: 2 },
+  { id: "wnba", label: "WNBA", region: "USA", sport: "basketball", status: "coming-soon", sort: 3 },
   { id: "nhl", label: "NHL", region: "North America", sport: "hockey", status: "live", leagueId: "nhl", href: "/nhl", sort: 10 },
   { id: "nfl", label: "NFL", region: "USA", sport: "football", status: "live", leagueId: "nfl", href: "/nfl", sort: 20 },
+  { id: "cfb", label: "NCAA Football", region: "USA", sport: "football", status: "live", leagueId: "cfb", href: "/cfb", sort: 21 },
   { id: "epl", label: "Premier League", region: "England", sport: "soccer", status: "live", leagueId: "epl", href: "/epl", sort: 30 },
   { id: "la-liga", label: "La Liga", region: "Spain", sport: "soccer", status: "live", leagueId: "laliga", href: "/laliga", sort: 31 },
   { id: "serie-a", label: "Serie A", region: "Italy", sport: "soccer", status: "coming-soon", sort: 32 },
@@ -91,6 +104,26 @@ export function catalogEntriesForDisplay(): CatalogLeagueEntry[] {
   });
 }
 
+export function catalogComingSoonEntries(): CatalogLeagueEntry[] {
+  return LEAGUE_CATALOG.filter(
+    (entry) => entry.status === "coming-soon" && isCatalogSlugVisible(entry.id),
+  );
+}
+
+/** Full-league pro competitions with verified ingest. */
+export function catalogLiveCompetitionEntries(): CatalogLeagueEntry[] {
+  return catalogEntriesForDisplay().filter(
+    (entry) => entry.leagueId && !isNcaaConferenceGatedLeague(entry.leagueId),
+  );
+}
+
+/** Conference-gated NCAA hubs (secondary coverage tier). */
+export function catalogNcaaCoverageEntries(): CatalogLeagueEntry[] {
+  return catalogEntriesForDisplay().filter(
+    (entry) => entry.leagueId && isNcaaConferenceGatedLeague(entry.leagueId),
+  );
+}
+
 export function catalogBySport(): { sport: CatalogSportGroup; label: string; entries: CatalogLeagueEntry[] }[] {
   const groups = new Map<CatalogSportGroup, CatalogLeagueEntry[]>();
   for (const entry of catalogEntriesForDisplay()) {
@@ -105,9 +138,9 @@ export function catalogBySport(): { sport: CatalogSportGroup; label: string; ent
   })).filter((g) => g.entries.length > 0);
 }
 
-/** Matches verified production leagues — single source of truth with overview stats. */
+/** Matches leagues with live product coverage right now. */
 export function liveCatalogCount(): number {
-  return VERIFIED_LIVE_LEAGUE_IDS.length;
+  return VERIFIED_LIVE_LEAGUE_IDS.filter((leagueId) => isVerifiedLiveLeague(leagueId)).length;
 }
 
 export function catalogCompetitionCount(): number {

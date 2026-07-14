@@ -1,5 +1,5 @@
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { isVerifiedLiveLeague } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
 
 export const OG_LEAGUE_ACCENTS: Partial<Record<LeagueId, string>> = {
@@ -49,7 +49,7 @@ export function brandOgContent(): BrandOgContent {
     ],
     leagues: snapshot.leagueCards
       .filter((card) =>
-        (VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(card.leagueId),
+        isVerifiedLiveLeague(card.leagueId),
       )
       .map((card) => ({
         label: card.shortLabel,

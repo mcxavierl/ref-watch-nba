@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
+import { CoverageComingSoon } from "@/components/CoverageComingSoon";
+import { teamInLiveNcaaConference } from "@/lib/ncaa-conference-gate";
 import { getTeam, CBB_TEAMS, teamFullName } from "@/lib/cbb/teams";
 
 export const dynamic = "force-static";
@@ -32,6 +34,15 @@ export default async function CbbTeamPage({
   const { abbr } = await params;
   const team = getTeam(abbr);
   if (!team) notFound();
+
+  if (!teamInLiveNcaaConference("cbb", team.abbr)) {
+    return (
+      <CoverageComingSoon
+        leagueId="cbb"
+        teamLabel={teamFullName(team)}
+      />
+    );
+  }
 
   return <TeamCrewPage config={{ teamAbbr: team.abbr }} />;
 }

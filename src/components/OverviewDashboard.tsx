@@ -1,40 +1,54 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { LeagueChooser } from "@/components/LeagueChooser";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
+import { OverviewComparativeScorecard } from "@/components/OverviewComparativeScorecard";
 import { OverviewQuickLists } from "@/components/OverviewQuickLists";
-import { DashboardHeroHighlights } from "@/components/dashboard/DashboardHeroHighlights";
+import { OverviewTopStoriesCarousel } from "@/components/OverviewTopStoriesCarousel";
 import {
   DashboardBodyLayout,
-  DashboardHeroSection,
   DashboardSection,
   DashboardShell,
 } from "@/components/dashboard/DashboardShell";
-import { OverviewInsightCard } from "@/components/OverviewInsightCard";
 import {
-  catalogBySport,
+  catalogComingSoonEntries,
   catalogCompetitionCount,
+  catalogLiveCompetitionEntries,
+  catalogNcaaCoverageEntries,
   catalogStatusLabel,
   type CatalogLeagueEntry,
 } from "@/lib/league-catalog";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
-import { OverviewLeaguePaceGrid } from "@/components/OverviewLeaguePaceGrid";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, overviewGamesSectionTitle } from "@/lib/leagues";
 import type { OverviewSlateEntry } from "@/lib/overview-upcoming-slate";
+import { CalendarDays } from "lucide-react";
+import "@/components/overview-dashboard.css";
 
 function formatCount(n: number): string {
   return n.toLocaleString("en-US");
 }
 
-function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
+function CatalogLeagueRow({
+  entry,
+  subdued = false,
+}: {
+  entry: CatalogLeagueEntry;
+  subdued?: boolean;
+}) {
   const inner = (
     <>
       <span className="overview-catalog-name">{entry.label}</span>
       <span className="overview-catalog-meta">
-        <span className={`overview-catalog-status overview-catalog-status--${entry.status}`}>
-          {catalogStatusLabel(entry)}
-        </span>
+        {subdued ? (
+          <span className="overview-limited-coverage-badge overview-limited-coverage-badge--catalog">
+            Limited coverage
+          </span>
+        ) : (
+          <span className={`overview-catalog-status overview-catalog-status--${entry.status}`}>
+            {catalogStatusLabel(entry)}
+          </span>
+        )}
       </span>
     </>
   );
@@ -43,14 +57,24 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
     return (
       <Link
         href={entry.href}
-        className="overview-catalog-row overview-catalog-row--link"
+        className={`overview-catalog-row overview-catalog-row--link${
+          subdued ? " overview-catalog-row--ncaa" : ""
+        }`}
       >
         {inner}
       </Link>
     );
   }
 
-  return <div className="overview-catalog-row overview-catalog-row--static">{inner}</div>;
+  return (
+    <div
+      className={`overview-catalog-row overview-catalog-row--static${
+        subdued ? " overview-catalog-row--ncaa" : ""
+      }`}
+    >
+      {inner}
+    </div>
+  );
 }
 
 function SlateRow({ game }: { game: OverviewSlateEntry }) {
@@ -94,20 +118,18 @@ type OverviewDashboardProps = {
 };
 
 export function OverviewDashboard({ data }: OverviewDashboardProps) {
-  const sportGroups = catalogBySport();
+  const liveCatalog = catalogLiveCompetitionEntries();
+  const ncaaCatalog = catalogNcaaCoverageEntries();
+  const comingSoonCatalog = catalogComingSoonEntries().slice(0, 6);
   const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
 
   return (
     <DashboardShell>
-      <DashboardHeroSection
-        eyebrow="Multi-league overview"
-        title="Referee analytics across all leagues."
-        titleId="overview-hero-heading"
-        lead="Actionable ref×team edges, over/under splits, and whistle outliers — ranked by sample depth and effect size across every live league."
-        highlights={<DashboardHeroHighlights />}
-      />
+      <OverviewTopStoriesCarousel cards={data.insightCards} />
 
-      <LeagueChooser cards={data.leagueCards} />
+      <div className="overview-dashboard-breathe">
+        <LeagueChooser cards={data.leagueCards} />
+      </div>
 
       <DashboardBodyLayout
         sidebar={
@@ -115,35 +137,59 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
             <details className="overview-sidebar-block overview-catalog-collapsible" open>
               <summary className="overview-sidebar-heading overview-catalog-summary">
                 <span className="overview-catalog-summary-copy">
-                  <span className="overview-catalog-summary-title">League coverage</span>
-                  <span className="overview-catalog-summary-hint">Live hubs and expansion roadmap</span>
+                  <span className="overview-catalog-summary-title">League catalog</span>
+                  <span className="overview-catalog-summary-hint">Live hubs and limited NCAA</span>
                 </span>
-                <span className="overview-sidebar-count" aria-label={`${catalogCompetitionCount()} leagues tracked`}>
+                <span
+                  className="overview-sidebar-count"
+                  aria-label={`${catalogCompetitionCount()} leagues tracked`}
+                >
                   {catalogCompetitionCount()}
                 </span>
               </summary>
-              <p className="overview-catalog-lead">
-                Every league on Ref Watch. Open a live hub or see what&apos;s coming next.
-              </p>
-              <div className="overview-catalog-groups">
-                {sportGroups.map((group) => (
-                  <div key={group.sport} className="overview-catalog-group">
-                    <h3 className="overview-catalog-group-label">{group.label}</h3>
+
+              <div className="overview-catalog-segments">
+                <section className="overview-catalog-segment overview-catalog-segment--live">
+                  <h3 className="overview-catalog-segment-title">Live competitions</h3>
+                  <div className="overview-catalog-list">
+                    {liveCatalog.map((entry) => (
+                      <CatalogLeagueRow key={entry.id} entry={entry} />
+                    ))}
+                  </div>
+                </section>
+
+                {ncaaCatalog.length > 0 ? (
+                  <section className="overview-catalog-segment overview-catalog-segment--ncaa">
+                    <h3 className="overview-catalog-segment-title">NCAA coverage (limited)</h3>
+                    <p className="overview-catalog-segment-hint">
+                      Key conferences only — not full-league live infrastructure.
+                    </p>
                     <div className="overview-catalog-list">
-                      {group.entries.map((entry) => (
-                        <CatalogLeagueRow key={entry.id} entry={entry} />
+                      {ncaaCatalog.map((entry) => (
+                        <CatalogLeagueRow key={entry.id} entry={entry} subdued />
                       ))}
                     </div>
-                  </div>
-                ))}
+                  </section>
+                ) : null}
+
+                {comingSoonCatalog.length > 0 ? (
+                  <section className="overview-catalog-segment overview-catalog-segment--soon">
+                    <h3 className="overview-catalog-segment-title">On the roadmap</h3>
+                    <div className="overview-catalog-list">
+                      {comingSoonCatalog.map((entry) => (
+                        <CatalogLeagueRow key={entry.id} entry={entry} subdued />
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
               </div>
             </details>
 
             <section className="overview-sidebar-block overview-sidebar-block--lists">
               <h2 className="overview-sidebar-heading overview-sidebar-heading--static">Quick lists</h2>
               <p className="overview-sidebar-note">
-                Pick a league, select a list, then open the view, or click the same list
-                again to jump straight in.
+                Live-league shortcuts only — rankings, tendencies, and matrix edges for verified
+                pro hubs.
               </p>
               <OverviewQuickLists
                 leagueCards={data.leagueCards}
@@ -158,7 +204,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               <div className="overview-section-header">
                 <h2 className="overview-section-title">Quick lists</h2>
                 <p className="overview-section-lead">
-                  Rankings, tendencies, and matrix edges, scoped to each live league.
+                  Rankings, tendencies, and matrix edges for live pro leagues.
                 </p>
               </div>
               <OverviewQuickLists
@@ -178,7 +224,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                     ? `${formatCount(data.upcomingSlate.totalGames)} games with published crews across live leagues.`
                     : data.upcomingSlate.inSeason
                       ? `${formatCount(data.upcomingSlate.totalScheduled)} upcoming matchup${data.upcomingSlate.totalScheduled === 1 ? "" : "s"}; crews not published yet.`
-                      : "All four leagues are in offseason. Historical matrices, rankings, and ref profiles stay live."}
+                      : "Live leagues are in offseason. Historical matrices, rankings, and ref profiles stay available."}
                 </p>
               </div>
 
@@ -213,24 +259,26 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               ) : (
                 <div className="overview-slate-offseason">
                   <div className="overview-slate-offseason-grid">
-                    {VERIFIED_LIVE_LEAGUE_IDS.map((leagueId) => {
-                      const card = leagueCardById.get(leagueId);
-                      const league = LEAGUES[leagueId];
-                      if (!card) return null;
-                      return (
-                        <Link
-                          key={leagueId}
-                          href={card.href}
-                          className="overview-slate-offseason-card rw-focus-ring"
-                          data-league={leagueId}
-                        >
-                          <span className="overview-slate-offseason-label">{league.shortLabel}</span>
-                          <span className="overview-slate-offseason-meta">
-                            {formatCount(card.refCount)} refs · {formatCount(card.gameCount)} games
-                          </span>
-                        </Link>
-                      );
-                    })}
+                    {activeLiveLeagueIds()
+                      .filter((leagueId) => leagueCardById.has(leagueId))
+                      .map((leagueId) => {
+                        const card = leagueCardById.get(leagueId);
+                        const league = LEAGUES[leagueId];
+                        if (!card) return null;
+                        return (
+                          <Link
+                            key={leagueId}
+                            href={card.href}
+                            className="overview-slate-offseason-card rw-focus-ring"
+                            data-league={leagueId}
+                          >
+                            <span className="overview-slate-offseason-label">{league.shortLabel}</span>
+                            <span className="overview-slate-offseason-meta">
+                              {formatCount(card.refCount)} refs · {formatCount(card.gameCount)} games
+                            </span>
+                          </Link>
+                        );
+                      })}
                   </div>
                   {data.upcomingSlate.lastUpdated ? (
                     <p className="overview-slate-updated">
@@ -247,49 +295,38 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
             </section>
 
             <DashboardSection
-              className="overview-insights"
-              title="Four leagues, four stories"
-              titleId="overview-insights-heading"
-              lead="The biggest ref×team edges and outlier patterns in each live league right now."
-            >
-              <div className="overview-insight-grid">
-                {data.insightCards.map((card, index) => (
-                  <OverviewInsightCard key={card.leagueId} card={card} index={index} />
-                ))}
-              </div>
-            </DashboardSection>
-
-            <DashboardSection
-              className="overview-pace"
-              title="League pace"
+              className="overview-pace overview-pace--scorecard"
+              title="Comparative scorecard"
               titleId="overview-pace-heading"
-              lead="Whistle and scoring environment by league, normalized for cross-sport comparison."
+              lead="Cross-league whistle and scoring pace at a glance — typography-first, with minimalist trend lines."
             >
-              <OverviewLeaguePaceGrid cards={data.leagueCards} />
+              <OverviewComparativeScorecard cards={data.leagueCards} />
             </DashboardSection>
 
             <DashboardSection
               className="overview-expansion"
               title="Expanding coverage"
               titleId="overview-expansion-heading"
-              lead="More soccer leagues and college sports are on the way. NBA, NHL, NFL, and Premier League pages stay live with no changes."
+              lead="More soccer leagues roll out on the roadmap. Live pro hubs and limited NCAA coverage stay unchanged."
             >
               <div className="overview-expansion-grid">
-                {VERIFIED_LIVE_LEAGUE_IDS.map((id) => (
-                  <Link key={id} href={leagueHubHref(id)} className="overview-expansion-live rw-focus-ring">
-                    <span className="overview-expansion-live-label">{LEAGUES[id].label}</span>
-                    <LeagueSeasonStartBadge leagueId={id} />
-                  </Link>
+                {liveCatalog.map((entry) =>
+                  entry.leagueId ? (
+                    <Link
+                      key={entry.id}
+                      href={leagueHubHref(entry.leagueId)}
+                      className="overview-expansion-live rw-focus-ring"
+                    >
+                      <span className="overview-expansion-live-label">{entry.label}</span>
+                      <LeagueSeasonStartBadge leagueId={entry.leagueId} />
+                    </Link>
+                  ) : null,
+                )}
+                {comingSoonCatalog.map((entry) => (
+                  <div key={entry.id} className="overview-expansion-soon">
+                    <span className="overview-expansion-soon-label">{entry.label}</span>
+                  </div>
                 ))}
-                {sportGroups
-                  .flatMap((g) => g.entries)
-                  .filter((e) => e.status === "coming-soon")
-                  .slice(0, 8)
-                  .map((entry) => (
-                    <div key={entry.id} className="overview-expansion-soon">
-                      <span className="overview-expansion-soon-label">{entry.label}</span>
-                    </div>
-                  ))}
               </div>
             </DashboardSection>
           </>

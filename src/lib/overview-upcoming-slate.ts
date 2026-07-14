@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { AssignmentsFile } from "@/lib/types";
 
@@ -76,7 +76,7 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
   const leagueNotes: OverviewLeagueNote[] = [];
   let lastUpdated: string | null = null;
 
-  for (const leagueId of VERIFIED_LIVE_LEAGUE_IDS) {
+  for (const leagueId of activeLiveLeagueIds()) {
     const filePath = assignmentsPath(leagueId);
     if (!fs.existsSync(filePath)) continue;
 
@@ -115,7 +115,7 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
   }
 
   const order = new Map<LeagueId, number>(
-    VERIFIED_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+    activeLiveLeagueIds().map((id, index) => [id, index]),
   );
   games.sort(
     (a, b) =>

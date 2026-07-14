@@ -11,7 +11,7 @@ import {
   type OverviewQuickList,
 } from "@/lib/league-quick-lists";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
+import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 
 const DEFAULT_LIST_ID = "whistle-leaders";
@@ -63,7 +63,7 @@ export function OverviewQuickLists({
         role="tablist"
         aria-labelledby="overview-quicklists-step"
       >
-        {VERIFIED_LIVE_LEAGUE_IDS.map((leagueId) => {
+        {PRO_VERIFIED_LIVE_LEAGUE_IDS.map((leagueId) => {
           const meta = LEAGUES[leagueId];
           const selected = leagueId === activeLeague;
           return (

@@ -1,0 +1,571 @@
+/* Overview dashboard redesign — whitespace-first, segmented live/NCAA tiers */
+
+.overview-dashboard-breathe {
+  margin-top: var(--space-10);
+}
+
+@media (min-width: 64rem) {
+  .overview-dashboard-breathe {
+    margin-top: var(--space-12);
+  }
+}
+
+/* —— Top stories carousel —— */
+.overview-top-stories {
+  padding-top: var(--space-2);
+}
+
+.overview-top-stories-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.overview-lead--stories {
+  margin-top: var(--space-3);
+  max-width: 42rem;
+}
+
+.overview-top-stories-controls {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.overview-top-stories-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  color: var(--text-muted);
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.overview-top-stories-nav:hover {
+  border-color: var(--border);
+  color: var(--text);
+  background: var(--surface-raised);
+}
+
+.overview-top-stories-nav svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.overview-top-stories-track {
+  position: relative;
+  min-height: 16.5rem;
+}
+
+.overview-top-story-card {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 7rem) minmax(0, 1fr);
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  background: var(--surface);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+  overflow: hidden;
+}
+
+.overview-top-story-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--chooser-accent, var(--raptors)) 14%, transparent) 0%,
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.overview-top-story-card[data-league="nba"] { --chooser-accent: var(--raptors); }
+.overview-top-story-card[data-league="nhl"] { --chooser-accent: var(--nhl-blue); }
+.overview-top-story-card[data-league="nfl"] { --chooser-accent: var(--nfl-green); }
+.overview-top-story-card[data-league="epl"] { --chooser-accent: #8b6bb5; }
+.overview-top-story-card[data-league="laliga"] { --chooser-accent: #c8102e; }
+
+.overview-top-story-card--active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.overview-top-story-visual {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--chooser-accent, var(--border)) 28%, var(--border-subtle));
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--chooser-accent, var(--raptors)) 22%, var(--surface-raised)) 0%,
+    color-mix(in srgb, var(--surface-raised) 90%, transparent) 100%
+  );
+}
+
+.overview-top-story-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  color: color-mix(in srgb, var(--chooser-accent, var(--text)) 80%, var(--text));
+}
+
+.overview-top-story-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.overview-top-story-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.65rem;
+}
+
+.overview-top-story-league {
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.overview-top-story-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.overview-top-story-hero {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.overview-top-story-value {
+  font-size: clamp(1.65rem, 4vw, 2.35rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-top-story-value-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.overview-top-story-headline {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.overview-top-story-team {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.overview-top-story-body {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.overview-top-story-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 0.35rem;
+}
+
+.overview-top-story-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.overview-top-story-link svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.overview-top-story-link--muted {
+  color: var(--text-muted);
+}
+
+.overview-top-story-link:hover {
+  text-decoration: underline;
+}
+
+.overview-top-stories-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: var(--space-5);
+}
+
+.overview-top-stories-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  background: color-mix(in srgb, var(--text-muted) 35%, transparent);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.overview-top-stories-dot--active {
+  transform: scale(1.25);
+  background: var(--text);
+}
+
+@media (max-width: 40rem) {
+  .overview-top-story-card {
+    grid-template-columns: 1fr;
+    min-height: 18rem;
+  }
+
+  .overview-top-story-visual {
+    min-height: 4.5rem;
+  }
+}
+
+/* —— Segmented league chooser —— */
+.overview-league-chooser--segmented .overview-section-header {
+  margin-bottom: var(--space-6);
+}
+
+.overview-chooser-tier + .overview-chooser-tier {
+  margin-top: var(--space-8);
+}
+
+.overview-chooser-tier-head {
+  margin-bottom: var(--space-4);
+}
+
+.overview-chooser-tier-title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.overview-chooser-tier--live .overview-chooser-tier-title {
+  color: var(--text);
+}
+
+.overview-chooser-tier--ncaa .overview-chooser-tier-title {
+  color: var(--text-muted);
+}
+
+.overview-chooser-tier-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.overview-chooser-tier--ncaa {
+  padding: var(--space-5);
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 80%, transparent);
+  background: color-mix(in srgb, var(--zinc-100) 35%, transparent);
+}
+
+.overview-league-chooser-card--live-tier {
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--chooser-accent, var(--border)) 25%, transparent);
+}
+
+.overview-league-chooser-card--ncaa-tier {
+  --chooser-accent: var(--border-strong);
+  opacity: 0.92;
+}
+
+.overview-league-chooser-grid--ncaa {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 40rem) {
+  .overview-league-chooser-grid--ncaa {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.overview-limited-coverage-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 90%, transparent);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.overview-limited-coverage-badge--catalog {
+  font-size: 0.58rem;
+}
+
+/* —— Segmented sidebar catalog —— */
+.overview-catalog-segments {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.overview-catalog-segment-title {
+  margin: 0 0 var(--space-3);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.overview-catalog-segment--live .overview-catalog-segment-title {
+  color: var(--text);
+}
+
+.overview-catalog-segment--ncaa {
+  padding: var(--space-4);
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 75%, transparent);
+  background: color-mix(in srgb, var(--zinc-100) 30%, transparent);
+}
+
+.overview-catalog-segment-hint {
+  margin: -0.35rem 0 var(--space-3);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+.overview-catalog-row--ncaa .overview-catalog-name {
+  color: var(--text-muted);
+  font-weight: 550;
+}
+
+/* —— Comparative scorecard —— */
+.overview-pace--scorecard .overview-section-header {
+  margin-bottom: var(--space-5);
+}
+
+.overview-scorecard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.overview-scorecard-section-head {
+  margin-bottom: var(--space-4);
+}
+
+.overview-scorecard-section-title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.overview-scorecard-section--live .overview-scorecard-section-title {
+  color: var(--text);
+}
+
+.overview-scorecard-section--ncaa .overview-scorecard-section-title {
+  color: var(--text-muted);
+}
+
+.overview-scorecard-section-hint {
+  margin: 0.3rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.overview-scorecard-section--ncaa {
+  padding: var(--space-5);
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 80%, transparent);
+  background: color-mix(in srgb, var(--zinc-100) 28%, transparent);
+}
+
+.overview-scorecard-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.overview-scorecard-row {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 1fr) minmax(0, 1.35fr) minmax(0, 1.35fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0.85rem 1rem;
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 65%, transparent);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.overview-scorecard-row:hover {
+  border-color: var(--border);
+  background: var(--surface-raised);
+}
+
+.overview-scorecard-section--ncaa .overview-scorecard-row {
+  opacity: 0.9;
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+}
+
+.overview-scorecard-league {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.overview-scorecard-league-label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.overview-scorecard-league-meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.overview-scorecard-metric {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, 5.5rem) minmax(3.5rem, 4.5rem) 2.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.overview-scorecard-metric-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.25;
+}
+
+.overview-scorecard-metric-value {
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  text-align: right;
+}
+
+.overview-scorecard-sparkline {
+  width: 100%;
+  max-width: 4.25rem;
+  height: 1rem;
+  overflow: visible;
+}
+
+.overview-scorecard-sparkline-line {
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.overview-scorecard-sparkline--whistle .overview-scorecard-sparkline-line,
+.overview-scorecard-sparkline--whistle .overview-scorecard-sparkline-dot {
+  stroke: color-mix(in srgb, #f59e0b 75%, var(--text-muted));
+  fill: #f59e0b;
+}
+
+.overview-scorecard-sparkline--score .overview-scorecard-sparkline-line,
+.overview-scorecard-sparkline--score .overview-scorecard-sparkline-dot {
+  stroke: color-mix(in srgb, var(--raptors) 70%, var(--text-muted));
+  fill: var(--raptors);
+}
+
+.overview-scorecard-sparkline-dot {
+  stroke: none;
+}
+
+.overview-scorecard-cta {
+  display: inline-flex;
+  color: var(--text-muted);
+}
+
+.overview-scorecard-cta svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (max-width: 48rem) {
+  .overview-scorecard-row {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .overview-scorecard-cta {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overview-top-story-card {
+    transition: none;
+  }
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-chooser-tier--ncaa,
+html.dark .overview-chooser-tier--ncaa,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-segment--ncaa,
+html.dark .overview-catalog-segment--ncaa,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-scorecard-section--ncaa,
+html.dark .overview-scorecard-section--ncaa {
+  background: color-mix(in srgb, var(--zinc-100) 42%, transparent);
+}

@@ -1,7 +1,7 @@
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { DataLeague, RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import type { LeagueId } from "@/lib/leagues";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import type { RefProfile } from "@/lib/types";
 import {
   gameWhistleTotal,
@@ -39,7 +39,7 @@ export interface RefWhistleFatigueProfile {
   metricLabel: string;
 }
 
-const LEAGUE_TO_DATA: Record<(typeof VERIFIED_LIVE_LEAGUE_IDS)[number], DataLeague> = {
+const LEAGUE_TO_DATA: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], DataLeague> = {
   nba: "NBA",
   nhl: "NHL",
   nfl: "NFL",
@@ -207,7 +207,7 @@ export function computeRefWhistleFatigue(
   profile: RefProfile,
   gameLogs?: RuntimeGameLogEntry[] | null,
 ): RefWhistleFatigueProfile | null {
-  if (!(VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
+  if (!(PRO_VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
     return null;
   }
 
@@ -216,7 +216,7 @@ export function computeRefWhistleFatigue(
   const cached = cache.get(cacheKey);
   if (cached) return cached as RefWhistleFatigueProfile;
 
-  const dataLeague = LEAGUE_TO_DATA[leagueId as (typeof VERIFIED_LIVE_LEAGUE_IDS)[number]];
+  const dataLeague = LEAGUE_TO_DATA[leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number]];
   let allGames: RuntimeGameLogEntry[] | null =
     gameLogs ?? loadRuntimeGameLogs(dataLeague)?.games ?? null;
 

@@ -14,7 +14,7 @@ import { findingMetricLabels } from "@/lib/finding-labels";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { ScoredFindingBase } from "@/lib/findings-shared";
 import { rankScore } from "@/lib/findings-shared";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { isProVerifiedLiveLeague } from "@/lib/league-verification";
 import {
   MARQUEE_CI_MIN_GAMES,
   scanLeagueMarqueeEfficiency,
@@ -780,7 +780,7 @@ export function buildMarqueeEfficiencyFinding(
   ctx: LeagueFindingContext,
 ): ScoredFindingBase | null {
   const leagueId = MATRIX_LEAGUE[ctx.league];
-  if (!(VERIFIED_LIVE_LEAGUE_IDS as readonly string[]).includes(leagueId)) {
+  if (!isProVerifiedLiveLeague(leagueId)) {
     return null;
   }
 

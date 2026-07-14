@@ -18,6 +18,7 @@ import type {
   TeamCrewSplit,
 } from "../../src/lib/types";
 import { CBB_TEAM_ABBRS } from "../../src/lib/cbb/teams";
+import { shouldIngestNcaaGame } from "../../src/lib/ncaa-conference-gate";
 import { CBB_ESPN_TEAM_IDS } from "./lib/team-ids";
 import {
   fetchCbbSummary,
@@ -212,6 +213,7 @@ async function buildFromEspn(seed: RefStatsFile): Promise<{
   let processed = 0;
   let linedGames = 0;
   let skippedNoOfficial = 0;
+  let skippedNonLiveConference = 0;
   let fetchErrors = 0;
 
   for (const abbr of CBB_TEAM_ABBRS) {
@@ -236,6 +238,11 @@ async function buildFromEspn(seed: RefStatsFile): Promise<{
     const trackedHome = CBB_TEAM_ABBRS.includes(summary.homeAbbr);
     const trackedAway = CBB_TEAM_ABBRS.includes(summary.awayAbbr);
     if (!trackedHome && !trackedAway) continue;
+
+    if (!shouldIngestNcaaGame("cbb", summary.homeAbbr, summary.awayAbbr)) {
+      skippedNonLiveConference++;
+      continue;
+    }
 
     const crew = toCbbOfficials(summary.officials, roster);
     const totalPoints = summary.homeScore + summary.awayScore;
@@ -408,7 +415,8 @@ async function buildFromEspn(seed: RefStatsFile): Promise<{
         `Scores, fouls, and referee crews from ESPN (${processed} games across ${CBB_TEAM_ABBRS.length} tracked programs, ${linedGames} with sportsbook totals). ` +
         `Coverage: ${CBB_ESPN_SEASONS.join(", ")}. ` +
         `Matrix: ${qualifiedPairs}/${teamStatsPairs} ref×team pairs with 3+ games. ` +
-        `${skippedNoOfficial} games skipped (no officials listed).`,
+        `${skippedNoOfficial} games skipped (no officials listed). ` +
+        `${skippedNonLiveConference} games skipped (outside live conference gate).`,
     },
     refs,
     teamSplits,

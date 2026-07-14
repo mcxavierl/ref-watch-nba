@@ -18,6 +18,7 @@ import {
   whistleBias,
 } from "@/lib/stats-utils";
 import { resolveLeagueBaseline } from "@/lib/baselines";
+import { filterNcaaRefStats } from "@/lib/ncaa-conference-gate";
 import { cbbCrewMetricsProvenance } from "@/lib/provenance";
 import {
   resolveRefStatsFromFsOrCache,
@@ -136,7 +137,7 @@ export function getRefStats(): RefStatsFile {
   try {
     const raw = loadRefStatsRaw();
     if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    return applyBaselines(normalizeRefStats(raw));
+    return filterNcaaRefStats(applyBaselines(normalizeRefStats(raw)), "cbb");
   } catch {
     return EMPTY_REF_STATS;
   }

@@ -1,0 +1,178 @@
+/* NCAA conference coverage — clinical modern live status panel */
+.ncaa-coverage-wrap {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-4) 0;
+}
+
+@media (min-width: 40rem) {
+  .ncaa-coverage-wrap {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (min-width: 64rem) {
+  .ncaa-coverage-wrap {
+    padding-inline: var(--space-8);
+  }
+}
+
+.ncaa-coverage-status {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 85%, transparent);
+  background: color-mix(in srgb, var(--zinc-100) 30%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--border-subtle) 40%, transparent);
+}
+
+.ncaa-coverage-status-head {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+  margin-bottom: var(--space-5);
+}
+
+.ncaa-coverage-live-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, #22c55e 35%, var(--border-subtle));
+  background: color-mix(in srgb, #22c55e 12%, transparent);
+}
+
+.ncaa-coverage-live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 color-mix(in srgb, #22c55e 55%, transparent);
+  animation: ncaa-coverage-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ncaa-coverage-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, #22c55e 45%, transparent);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, #22c55e 0%, transparent);
+    opacity: 0.85;
+  }
+}
+
+.ncaa-coverage-status-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.ncaa-coverage-eyebrow {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.ncaa-coverage-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.ncaa-coverage-lead {
+  margin: 0.15rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  max-width: 52rem;
+}
+
+.ncaa-coverage-live-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .ncaa-coverage-live-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.ncaa-coverage-live-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+}
+
+.ncaa-coverage-live-item-dot {
+  flex-shrink: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.ncaa-coverage-live-item-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.ncaa-coverage-live-item-badge {
+  flex-shrink: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #22c55e 75%, var(--text-muted));
+}
+
+.ncaa-coverage-upcoming {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid color-mix(in srgb, var(--border-subtle) 55%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  opacity: 0.72;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ncaa-coverage-live-dot {
+    animation: none;
+  }
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .ncaa-coverage-status,
+html.dark .ncaa-coverage-status {
+  background: color-mix(in srgb, var(--zinc-100) 45%, transparent);
+  border-color: color-mix(in srgb, var(--border-subtle) 90%, transparent);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .ncaa-coverage-live-item,
+html.dark .ncaa-coverage-live-item {
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+}
