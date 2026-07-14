@@ -53,7 +53,11 @@ export function OverviewQuickLists({
   };
 
   return (
-    <section className="overview-quicklists" aria-label="League quick lists">
+    <section
+      className="overview-quicklists"
+      data-league={activeLeague}
+      aria-label="League quick lists"
+    >
       <p className="overview-quicklists-step" id="overview-quicklists-step">
         <span className="overview-quicklists-step-label">Step 1</span>
         Choose league
@@ -88,6 +92,7 @@ export function OverviewQuickLists({
       </p>
       <div
         className="overview-quick-lists"
+        data-league={activeLeague}
         aria-label={`${league.shortLabel} quick lists`}
         role="tabpanel"
       >

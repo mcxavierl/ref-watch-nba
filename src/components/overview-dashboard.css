@@ -591,4 +591,398 @@
     stroke-dashoffset: 0;
     opacity: 1;
   }
+
+  .overview-catalog-row,
+  .overview-quick-list,
+  .overview-quicklists-open-btn {
+    transition: none;
+  }
+
+  .overview-catalog-row--link:hover,
+  .overview-quick-list:not([aria-pressed="true"]):hover,
+  .overview-quicklists-open-btn:hover {
+    transform: none;
+  }
 }
+
+/* —— League coverage sidebar —— */
+.overview-catalog--coverage {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--raptors) 18%, var(--line));
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 0% 0%,
+      color-mix(in srgb, var(--nhl-blue) 8%, transparent),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 90% 70% at 100% 0%,
+      color-mix(in srgb, var(--raptors) 10%, transparent),
+      transparent 48%
+    ),
+    var(--surface-raised);
+}
+
+.overview-catalog--coverage::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--raptors) 0%,
+    var(--cbb-gold) 16%,
+    var(--nhl-blue) 32%,
+    var(--nfl-green) 48%,
+    var(--cfb-bronze) 64%,
+    #8b6bb5 80%,
+    #c8102e 100%
+  );
+}
+
+.overview-catalog-summary-title {
+  color: var(--ink);
+}
+
+.overview-catalog-summary-hint {
+  color: color-mix(in srgb, var(--nhl-blue) 35%, var(--muted));
+}
+
+.overview-sidebar-count {
+  border: 1px solid color-mix(in srgb, var(--raptors) 22%, var(--line));
+  background: color-mix(in srgb, var(--raptors) 10%, rgba(255, 255, 255, 0.06));
+  color: color-mix(in srgb, var(--raptors) 75%, var(--ink));
+}
+
+.overview-catalog-segment--live .overview-catalog-segment-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.overview-catalog-segment--live .overview-catalog-segment-title::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--nfl-green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--nfl-green) 28%, transparent);
+}
+
+.overview-catalog-segment--soon .overview-catalog-segment-title {
+  color: color-mix(in srgb, #8b6bb5 55%, var(--text-muted));
+}
+
+.overview-catalog-row-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.overview-catalog-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--catalog-accent, var(--line)) 28%, var(--line));
+  background: color-mix(in srgb, var(--catalog-accent, var(--raptors)) 10%, rgba(0, 0, 0, 0.12));
+}
+
+.overview-catalog-mark .league-nav-mark {
+  height: 0.95rem;
+  max-width: 1.35rem;
+}
+
+.overview-catalog-mark .league-nav-mark--cbb,
+.overview-catalog-mark .league-nav-mark[data-league="cbb"],
+.overview-catalog-mark .league-nav-mark--cfb,
+.overview-catalog-mark .league-nav-mark[data-league="cfb"] {
+  height: 1.15rem;
+  width: 1.15rem;
+  max-width: 1.15rem;
+}
+
+.overview-catalog-mark--soon {
+  border-style: dashed;
+  border-color: color-mix(in srgb, #8b6bb5 35%, var(--line));
+  background: color-mix(in srgb, #8b6bb5 8%, transparent);
+}
+
+.overview-catalog-row[data-league="nba"] { --catalog-accent: var(--raptors); }
+.overview-catalog-row[data-league="cbb"] { --catalog-accent: var(--cbb-gold); }
+.overview-catalog-row[data-league="cfb"] { --catalog-accent: var(--cfb-bronze); }
+.overview-catalog-row[data-league="nhl"] { --catalog-accent: var(--nhl-blue); }
+.overview-catalog-row[data-league="nfl"] { --catalog-accent: var(--nfl-green); }
+.overview-catalog-row[data-league="epl"] { --catalog-accent: #8b6bb5; }
+.overview-catalog-row[data-league="laliga"] { --catalog-accent: #c8102e; }
+
+.overview-catalog-row--live .overview-catalog-status--live,
+.overview-catalog-row--live .overview-catalog-status--season-start {
+  color: color-mix(in srgb, var(--catalog-accent, var(--pill-ink)) 80%, var(--pill-ink));
+  border-color: color-mix(in srgb, var(--catalog-accent, var(--pill-border)) 35%, var(--pill-border));
+  background: color-mix(in srgb, var(--catalog-accent, var(--pill-bg)) 14%, var(--pill-bg));
+}
+
+/* —— Quick lists delight —— */
+.overview-quicklists-panel {
+  border-color: color-mix(in srgb, var(--nhl-blue) 18%, var(--line));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 100% 0%,
+      color-mix(in srgb, var(--nhl-blue) 9%, transparent),
+      transparent 55%
+    ),
+    var(--surface-raised);
+}
+
+.overview-sidebar-heading--quicklists {
+  color: var(--ink);
+  letter-spacing: 0.08em;
+}
+
+.overview-sidebar-heading--quicklists::after {
+  content: "";
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-left: 0.35rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--raptors), var(--nhl-blue));
+  vertical-align: 0.1rem;
+}
+
+.overview-quicklists {
+  --quicklist-accent: var(--raptors);
+}
+
+.overview-quicklists[data-league="nba"] { --quicklist-accent: var(--raptors); }
+.overview-quicklists[data-league="cbb"] { --quicklist-accent: var(--cbb-gold); }
+.overview-quicklists[data-league="cfb"] { --quicklist-accent: var(--cfb-bronze); }
+.overview-quicklists[data-league="nhl"] { --quicklist-accent: var(--nhl-blue); }
+.overview-quicklists[data-league="nfl"] { --quicklist-accent: var(--nfl-green); }
+.overview-quicklists[data-league="epl"] { --quicklist-accent: #8b6bb5; }
+.overview-quicklists[data-league="laliga"] { --quicklist-accent: #c8102e; }
+
+.overview-quicklists-step-label {
+  border-color: color-mix(in srgb, var(--quicklist-accent) 30%, var(--pill-border));
+  background: color-mix(in srgb, var(--quicklist-accent) 12%, var(--pill-bg));
+  color: color-mix(in srgb, var(--quicklist-accent) 72%, var(--pill-ink));
+}
+
+.overview-quicklists-segment[data-league="nba"][aria-selected="true"] {
+  border-color: color-mix(in srgb, var(--raptors) 45%, var(--line));
+  color: var(--raptors);
+  background: color-mix(in srgb, var(--raptors) 12%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--raptors) 18%, transparent);
+}
+
+.overview-quicklists-segment[data-league="cbb"][aria-selected="true"] {
+  border-color: color-mix(in srgb, var(--cbb-gold) 45%, var(--line));
+  color: var(--cbb-gold);
+  background: color-mix(in srgb, var(--cbb-gold) 12%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--cbb-gold) 18%, transparent);
+}
+
+.overview-quicklists-segment[data-league="cfb"][aria-selected="true"] {
+  border-color: color-mix(in srgb, var(--cfb-bronze) 45%, var(--line));
+  color: var(--cfb-bronze);
+  background: color-mix(in srgb, var(--cfb-bronze) 12%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--cfb-bronze) 18%, transparent);
+}
+
+.overview-quicklists-segment[data-league="nhl"][aria-selected="true"] {
+  border-color: color-mix(in srgb, var(--nhl-blue) 45%, var(--line));
+  color: var(--nhl-blue);
+  background: color-mix(in srgb, var(--nhl-blue) 12%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--nhl-blue) 18%, transparent);
+}
+
+.overview-quicklists-segment[data-league="nfl"][aria-selected="true"] {
+  border-color: color-mix(in srgb, var(--nfl-green) 45%, var(--line));
+  color: var(--nfl-green);
+  background: color-mix(in srgb, var(--nfl-green) 12%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--nfl-green) 18%, transparent);
+}
+
+.overview-quicklists-segment[data-league="epl"][aria-selected="true"] {
+  border-color: color-mix(in srgb, #8b6bb5 45%, var(--line));
+  color: #c4b5fd;
+  background: color-mix(in srgb, #8b6bb5 12%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 1px 4px color-mix(in srgb, #8b6bb5 18%, transparent);
+}
+
+.overview-quicklists-segment[data-league="laliga"][aria-selected="true"] {
+  border-color: color-mix(in srgb, #c8102e 45%, var(--line));
+  color: #f87171;
+  background: color-mix(in srgb, #c8102e 12%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 1px 4px color-mix(in srgb, #c8102e 18%, transparent);
+}
+
+.overview-quicklists-segment:not([aria-selected="true"]):hover {
+  border-color: color-mix(in srgb, var(--quicklist-accent) 22%, transparent);
+}
+
+.overview-quick-lists {
+  padding: 0.45rem;
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--quicklist-accent) 22%, var(--line));
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--quicklist-accent) 10%, transparent) 0%,
+      transparent 48%
+    ),
+    color-mix(in srgb, var(--surface) 35%, transparent);
+}
+
+.overview-quicklists-open-row {
+  border-top-color: color-mix(in srgb, var(--quicklist-accent) 18%, var(--line));
+}
+
+.overview-quicklists-open-hint strong,
+.overview-quicklists-open-hint {
+  color: color-mix(in srgb, var(--quicklist-accent) 35%, var(--muted));
+}
+
+.overview-quick-list-arrow {
+  color: color-mix(in srgb, var(--quicklist-accent) 65%, var(--muted));
+}
+
+.overview-quicklists-open-btn:hover .overview-quick-list-arrow {
+  color: color-mix(in srgb, var(--quicklist-accent) 85%, var(--ink));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-catalog--coverage {
+  border-color: color-mix(in srgb, var(--raptors) 14%, var(--border));
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 0% 0%,
+      color-mix(in srgb, var(--nhl-blue) 6%, transparent),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 90% 70% at 100% 0%,
+      color-mix(in srgb, var(--raptors) 7%, transparent),
+      transparent 48%
+    ),
+    var(--surface-raised);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-panel {
+  border-color: color-mix(in srgb, var(--nhl-blue) 14%, var(--border));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 100% 0%,
+      color-mix(in srgb, var(--nhl-blue) 6%, transparent),
+      transparent 55%
+    ),
+    var(--surface-raised);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="epl"][aria-selected="true"] {
+  color: #6d28d9;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="laliga"][aria-selected="true"] {
+  color: #c8102e;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-mark,
+html.dark .overview-catalog-mark {
+  background: color-mix(in srgb, var(--catalog-accent, var(--raptors)) 12%, var(--bg-surface-2));
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quick-lists,
+html.dark .overview-quick-lists {
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--quicklist-accent) 12%, transparent) 0%,
+      transparent 48%
+    ),
+    var(--bg-surface-2);
+  border-color: color-mix(in srgb, var(--quicklist-accent) 24%, var(--border-subtle));
+}
+
+/* —— Upcoming slate row logos —— */
+.overview-slate-row[data-league="nba"] { --slate-accent: var(--raptors); }
+.overview-slate-row[data-league="cbb"] { --slate-accent: var(--cbb-gold); }
+.overview-slate-row[data-league="cfb"] { --slate-accent: var(--cfb-bronze); }
+.overview-slate-row[data-league="nhl"] { --slate-accent: var(--nhl-blue); }
+.overview-slate-row[data-league="nfl"] { --slate-accent: var(--nfl-green); }
+.overview-slate-row[data-league="epl"] { --slate-accent: #8b6bb5; }
+.overview-slate-row[data-league="laliga"] { --slate-accent: #c8102e; }
+
+.overview-slate-league-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--slate-accent, var(--line)) 28%, var(--line));
+  background: color-mix(in srgb, var(--slate-accent, var(--raptors)) 10%, rgba(0, 0, 0, 0.12));
+}
+
+.overview-slate-league-mark .league-nav-mark {
+  height: 0.95rem;
+  max-width: 1.35rem;
+}
+
+.overview-slate-league-mark .league-nav-mark--nfl,
+.overview-slate-league-mark .league-nav-mark[data-league="nfl"] {
+  height: 1.05rem;
+  max-width: 0.85rem;
+}
+
+.overview-slate-league-mark .league-nav-mark--cbb,
+.overview-slate-league-mark .league-nav-mark[data-league="cbb"],
+.overview-slate-league-mark .league-nav-mark--cfb,
+.overview-slate-league-mark .league-nav-mark[data-league="cfb"] {
+  height: 1.15rem;
+  width: 1.15rem;
+  max-width: 1.15rem;
+}
+
+.overview-slate-matchup-logos {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.overview-slate-matchup-at {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: var(--muted);
+}
+
+.overview-slate-insight {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-slate-league-mark,
+html.dark .overview-slate-league-mark {
+  background: color-mix(in srgb, var(--slate-accent, var(--raptors)) 12%, var(--bg-surface-2));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-slate-league-mark {
+  background: color-mix(in srgb, var(--slate-accent, var(--raptors)) 8%, var(--surface));
+  border-color: color-mix(in srgb, var(--slate-accent, var(--line)) 22%, var(--line));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-slate-row[data-status="scheduled"] {
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+}
+

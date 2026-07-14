@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { LeagueChooser } from "@/components/LeagueChooser";
+import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewComparativeScorecard } from "@/components/OverviewComparativeScorecard";
 import { WorldCupResearchHubCard } from "@/components/WorldCupResearchHubCard";
 import { OverviewQuickLists } from "@/components/OverviewQuickLists";
+import { OverviewSlateRow } from "@/components/OverviewSlateRow";
 import { OverviewTopStoriesCarousel } from "@/components/OverviewTopStoriesCarousel";
 import { DashboardHeroHighlights } from "@/components/dashboard/DashboardHeroHighlights";
 import {
@@ -21,7 +23,6 @@ import {
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, overviewGamesSectionTitle } from "@/lib/leagues";
-import type { OverviewSlateEntry } from "@/lib/overview-upcoming-slate";
 import { CalendarDays } from "lucide-react";
 import "@/components/overview-dashboard.css";
 
@@ -30,9 +31,26 @@ function formatCount(n: number): string {
 }
 
 function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
+  const rowClass = [
+    "overview-catalog-row",
+    entry.status === "live" ? "overview-catalog-row--live" : "overview-catalog-row--static",
+    entry.href && entry.status !== "coming-soon" ? "overview-catalog-row--link" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   const inner = (
     <>
-      <span className="overview-catalog-name">{entry.label}</span>
+      <span className="overview-catalog-row-main">
+        {entry.leagueId ? (
+          <span className="overview-catalog-mark" aria-hidden>
+            <LeagueNavMark league={entry.leagueId} active={false} />
+          </span>
+        ) : (
+          <span className="overview-catalog-mark overview-catalog-mark--soon" aria-hidden />
+        )}
+        <span className="overview-catalog-name">{entry.label}</span>
+      </span>
       <span className="overview-catalog-meta">
         <span className={`overview-catalog-status overview-catalog-status--${entry.status}`}>
           {catalogStatusLabel(entry)}
@@ -43,52 +61,20 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
 
   if (entry.href && entry.status !== "coming-soon") {
     return (
-      <Link href={entry.href} className="overview-catalog-row overview-catalog-row--link">
+      <Link
+        href={entry.href}
+        className={rowClass}
+        data-league={entry.leagueId}
+      >
         {inner}
       </Link>
     );
   }
 
   return (
-    <div className="overview-catalog-row overview-catalog-row--static">
+    <div className={rowClass} data-league={entry.leagueId}>
       {inner}
     </div>
-  );
-}
-
-function SlateRow({ game }: { game: OverviewSlateEntry }) {
-  const dateLabel = game.slateDate
-    ? new Date(`${game.slateDate}T12:00:00`).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      })
-    : null;
-
-  return (
-    <li className="overview-slate-row" data-league={game.leagueId} data-status={game.status}>
-      <div className="overview-slate-row-main">
-        <span className="overview-slate-league-badge">{game.leagueShortLabel}</span>
-        <span className="overview-slate-matchup">{game.matchup}</span>
-        {game.status === "scheduled" && dateLabel ? (
-          <span className="overview-slate-date">{dateLabel}</span>
-        ) : null}
-      </div>
-      <p className="overview-slate-crew">
-        {game.status === "scheduled" ? (
-          "Crews TBD"
-        ) : game.headRef ? (
-          <>
-            Head ref <strong>{game.headRef}</strong>
-            {game.crewCount > 1 ? ` · ${game.crewCount}-person crew` : null}
-          </>
-        ) : (
-          `${game.crewCount}-person crew`
-        )}
-      </p>
-      <Link href={game.href} className="overview-slate-row-link">
-        Open {game.leagueShortLabel} hub
-      </Link>
-    </li>
   );
 }
 
@@ -122,7 +108,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
       <DashboardBodyLayout
         sidebar={
           <>
-            <details className="overview-sidebar-block overview-catalog-collapsible" open>
+            <details className="overview-sidebar-block overview-catalog-collapsible overview-catalog--coverage" open>
               <summary className="overview-sidebar-heading overview-catalog-summary">
                 <span className="overview-catalog-summary-copy">
                   <span className="overview-catalog-summary-title">League catalog</span>
@@ -159,8 +145,10 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               </div>
             </details>
 
-            <section className="overview-sidebar-block overview-sidebar-block--lists">
-              <h2 className="overview-sidebar-heading overview-sidebar-heading--static">Quick lists</h2>
+            <section className="overview-sidebar-block overview-sidebar-block--lists overview-quicklists-panel">
+              <h2 className="overview-sidebar-heading overview-sidebar-heading--static overview-sidebar-heading--quicklists">
+                Quick lists
+              </h2>
               <p className="overview-sidebar-note">
                 Live-league shortcuts: rankings, tendencies, and matrix edges for verified
                 hubs across all seven live competitions.
@@ -217,7 +205,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                   ) : null}
                   <ul className="overview-slate-list">
                     {data.upcomingSlate.games.map((game) => (
-                      <SlateRow key={`${game.leagueId}-${game.gameId}`} game={game} />
+                      <OverviewSlateRow key={`${game.leagueId}-${game.gameId}`} game={game} />
                     ))}
                   </ul>
                   {data.upcomingSlate.lastUpdated ? (
