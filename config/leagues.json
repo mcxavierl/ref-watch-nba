@@ -1,0 +1,26 @@
+{
+  "cfb": {
+    "conferences": [
+      {
+        "slug": "acc",
+        "name": "ACC",
+        "ingest": true
+      },
+      {
+        "slug": "sec",
+        "name": "SEC",
+        "ingest": true
+      },
+      {
+        "slug": "big-ten",
+        "name": "Big Ten",
+        "ingest": true
+      },
+      {
+        "slug": "big-12",
+        "name": "Big 12",
+        "ingest": false
+      }
+    ]
+  }
+}

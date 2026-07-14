@@ -14,7 +14,7 @@ import type {
   TeamCrewSplit,
 } from "../../../src/lib/types";
 import { CFB_TEAM_ABBRS } from "../../../src/lib/cfb/teams";
-import { shouldIngestNcaaGame } from "../../../src/lib/ncaa-conference-gate";
+import { shouldIngestCfbGame } from "./leagues-config";
 import { FALLBACK_CFB } from "../../lib/baselines";
 import { toCfbOfficials, normalizeName } from "./espn";
 import {
@@ -167,7 +167,10 @@ export interface CfbTransformResult {
   conferenceSkipped: number;
 }
 
-export function transformExtractedCfbGames(seed: RefStatsFile): CfbTransformResult {
+export function transformExtractedCfbGames(
+  seed: RefStatsFile,
+  options: { leagueSlug?: string } = {},
+): CfbTransformResult {
   const extracted = loadExtractedGames();
   const roster = loadOfficialRoster(seed);
 
@@ -208,7 +211,7 @@ export function transformExtractedCfbGames(seed: RefStatsFile): CfbTransformResu
     const trackedAway = CFB_TEAM_ABBRS.includes(record.awayAbbr);
     if (!trackedHome && !trackedAway) continue;
 
-    if (!shouldIngestNcaaGame("cfb", record.homeAbbr, record.awayAbbr)) {
+    if (!shouldIngestCfbGame(record.homeAbbr, record.awayAbbr, options.leagueSlug)) {
       conferenceSkipped++;
       continue;
     }
