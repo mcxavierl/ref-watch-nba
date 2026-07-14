@@ -2,10 +2,25 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { shouldRedirectHiddenLeague } from "@/lib/header-leagues";
 import { LEAGUES, SITE_HOME_PATH } from "@/lib/leagues";
-import { COMING_SOON_LEAGUE_IDS } from "@/lib/site-route-config";
+import { isVerifiedLiveLeague } from "@/lib/league-verification";
+import { COMING_SOON_LEAGUE_IDS, GATED_COLLEGE_LEAGUE_IDS } from "@/lib/site-route-config";
 
 function isComingSoonLeaguePath(pathname: string): boolean {
   for (const leagueId of COMING_SOON_LEAGUE_IDS) {
+    const prefix = LEAGUES[leagueId].pathPrefix;
+    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isGatedCollegePath(pathname: string): boolean {
+  if (pathname === "/ncaa" || pathname.startsWith("/ncaa/")) {
+    return true;
+  }
+  for (const leagueId of GATED_COLLEGE_LEAGUE_IDS) {
+    if (isVerifiedLiveLeague(leagueId)) continue;
     const prefix = LEAGUES[leagueId].pathPrefix;
     if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
       return true;
@@ -24,6 +39,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isComingSoonLeaguePath(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = SITE_HOME_PATH;
+    return NextResponse.redirect(url);
+  }
+
+  if (isGatedCollegePath(pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = SITE_HOME_PATH;
     return NextResponse.redirect(url);

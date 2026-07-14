@@ -43,9 +43,7 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
     return (
       <Link
         href={entry.href}
-        className={`overview-catalog-row overview-catalog-row--link${
-          entry.status === "audit-pending" ? " overview-catalog-row--audit" : ""
-        }`}
+        className="overview-catalog-row overview-catalog-row--link"
       >
         {inner}
       </Link>

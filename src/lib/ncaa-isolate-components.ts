@@ -234,8 +234,6 @@ export function pathNeedsNcaaComponents(pathname: string): NcaaRouteLeague | nul
 
 /** NCAA integrity audit hydrates both college pipelines on one page. */
 export function ncaaLeaguesForPath(pathname: string): NcaaRouteLeague[] {
-  const path = normalizeAppPathname(pathname);
-  if (path.startsWith("/ncaa/integrity-audit")) return ["cbb", "cfb"];
   const league = pathNeedsNcaaComponents(pathname);
   return league ? [league] : [];
 }

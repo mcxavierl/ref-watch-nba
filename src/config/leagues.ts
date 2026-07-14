@@ -97,17 +97,14 @@ export function isLeagueCardVisible(
   stats?: RefStatsFile | null,
 ): boolean {
   if (isNcaaLeagueSlug(leagueId)) {
-    return isDashboardLeagueExposed(leagueId);
+    return isVerifiedLiveLeague(leagueId);
   }
   return isLeagueAnalyticsUnlocked(leagueId, stats);
 }
 
-export function isCatalogSlugVisible(
-  slug: string,
-  stats?: RefStatsFile | null,
-): boolean {
+export function isCatalogSlugVisible(slug: string): boolean {
   if (slug in NCAA_LEAGUE_REGISTRY) {
-    return isDashboardLeagueExposed(slug as NcaaLeagueSlug);
+    return isVerifiedLiveLeague(slug as NcaaLeagueSlug);
   }
   return true;
 }

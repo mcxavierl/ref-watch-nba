@@ -306,7 +306,6 @@ export function leaguesForPath(pathname: string): League[] {
   if (isOverviewOnlyPath(path)) {
     return [];
   }
-  if (path.startsWith("/ncaa")) return ["cbb", "cfb"];
   if (path === "/nba" || path.startsWith("/nba/")) return ["nba"];
   if (path.startsWith("/epl")) return ["epl"];
   if (path.startsWith("/laliga")) return ["laliga"];

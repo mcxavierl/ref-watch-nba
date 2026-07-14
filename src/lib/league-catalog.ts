@@ -1,19 +1,19 @@
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
 import { formatLeagueSeasonStart } from "@/config/leagueConfig";
-import { NCAA_INTEGRITY_AUDIT_HREF } from "@/lib/ncaa-audit-status-display";
-import { isCatalogSlugVisible, isLeagueAnalyticsUnlocked } from "@/config/leagues";
-import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { isCatalogSlugVisible } from "@/config/leagues";
+import {
+  isVerifiedLiveLeague,
+  VERIFIED_LIVE_LEAGUE_IDS,
+} from "@/lib/league-verification";
 
-export type CatalogLeagueStatus = "live" | "coming-soon" | "audit-pending";
+export type CatalogLeagueStatus = "live" | "coming-soon";
 
 export type CatalogSportGroup =
   | "basketball"
   | "hockey"
   | "football"
   | "soccer"
-  | "college"
   | "baseball";
 
 export type CatalogLeagueEntry = {
@@ -30,13 +30,7 @@ export type CatalogLeagueEntry = {
 };
 
 /** Live leagues are driven by verification; never duplicate routing here. */
-export const LIVE_CATALOG_LEAGUE_IDS = [
-  "nba",
-  "nhl",
-  "nfl",
-  "epl",
-  "laliga",
-] as const satisfies readonly LeagueId[];
+export const LIVE_CATALOG_LEAGUE_IDS = VERIFIED_LIVE_LEAGUE_IDS;
 
 /** Short season-start labels for overview hub badges (MM/DD). */
 export function leagueSeasonStartBadge(leagueId: LeagueId): string | undefined {
@@ -44,7 +38,6 @@ export function leagueSeasonStartBadge(leagueId: LeagueId): string | undefined {
 }
 
 export function catalogStatusLabel(entry: CatalogLeagueEntry): string {
-  if (entry.status === "audit-pending") return "Audit";
   if (entry.status === "live" && entry.leagueId) {
     return leagueSeasonStartBadge(entry.leagueId) ?? "—";
   }
@@ -73,8 +66,6 @@ export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
   { id: "ucl", label: "UEFA Champions League", region: "Europe", sport: "soccer", status: "coming-soon", sort: 40 },
   { id: "uel", label: "UEFA Europa League", region: "Europe", sport: "soccer", status: "coming-soon", sort: 41 },
   { id: "libertadores", label: "CONMEBOL Libertadores", region: "South America", sport: "soccer", status: "coming-soon", sort: 42 },
-  { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "college", status: "audit-pending", leagueId: "cbb", href: `${NCAA_INTEGRITY_AUDIT_HREF}#cbb`, sort: 50 },
-  { id: "cfb", label: "NCAA Football", region: "USA", sport: "college", status: "audit-pending", leagueId: "cfb", href: `${NCAA_INTEGRITY_AUDIT_HREF}#cfb`, sort: 51 },
   { id: "mlb", label: "MLB", region: "USA", sport: "baseball", status: "coming-soon", sort: 52 },
 ];
 
@@ -83,7 +74,6 @@ export const CATALOG_SPORT_LABELS: Record<CatalogSportGroup, string> = {
   hockey: "Hockey",
   football: "American football",
   soccer: "Football",
-  college: "College",
   baseball: "Baseball",
 };
 
@@ -96,10 +86,8 @@ export { overviewQuickListsForLeague } from "@/lib/league-quick-lists";
 
 export function catalogEntriesForDisplay(): CatalogLeagueEntry[] {
   return LEAGUE_CATALOG.filter((entry) => {
-    if (entry.leagueId && isDashboardLeagueExposed(entry.leagueId)) return true;
-    if (entry.leagueId && !isLeagueAnalyticsUnlocked(entry.leagueId)) return false;
-    if (!entry.leagueId && !isCatalogSlugVisible(entry.id)) return false;
-    return true;
+    if (entry.leagueId) return isVerifiedLiveLeague(entry.leagueId);
+    return isCatalogSlugVisible(entry.id);
   });
 }
 

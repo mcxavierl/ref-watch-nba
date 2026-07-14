@@ -11,7 +11,6 @@ import {
   isLeagueCardVisible,
   leagueLogoForTheme,
 } from "@/config/leagues";
-import { formatNcaaAuditPillLabel } from "@/lib/ncaa-audit-status-display";
 
 test("NCAA brand assets map to dual-theme logo paths", () => {
   assert.equal(NCAA_BRAND_ASSETS.themeColor, "#009CDE");
@@ -44,10 +43,11 @@ test("CBB registry entry matches spec", () => {
   assert.equal(CBB_LEAGUE_ENTRY.dataVerified, false);
 });
 
-test("isDashboardLeagueExposed shows NCAA cards while registry gate is locked", () => {
-  assert.equal(isDashboardLeagueExposed("cfb"), true);
-  assert.equal(isDashboardLeagueExposed("cbb"), true);
+test("isDashboardLeagueExposed only shows verified live leagues", () => {
+  assert.equal(isDashboardLeagueExposed("cfb"), false);
+  assert.equal(isDashboardLeagueExposed("cbb"), false);
   assert.equal(isDashboardLeagueExposed("nba"), true);
+  assert.equal(isDashboardLeagueExposed("laliga"), true);
 });
 
 test("isLeagueAnalyticsUnlocked keeps NCAA hubs locked until verified", () => {
@@ -63,21 +63,16 @@ test("manual dataVerified flag is the first NCAA analytics gate", () => {
   assert.equal(isLeagueAnalyticsUnlocked("cfb"), false);
 });
 
-test("isLeagueCardVisible mirrors dashboard exposure for NCAA", () => {
-  assert.equal(isLeagueCardVisible("cfb"), true);
-  assert.equal(isLeagueCardVisible("cbb"), true);
+test("isLeagueCardVisible hides NCAA until verified live", () => {
+  assert.equal(isLeagueCardVisible("cfb"), false);
+  assert.equal(isLeagueCardVisible("cbb"), false);
   assert.equal(isLeagueCardVisible("nba"), true);
 });
 
-test("isCatalogSlugVisible exposes NCAA slugs on the roadmap", () => {
-  assert.equal(isCatalogSlugVisible("cfb"), true);
-  assert.equal(isCatalogSlugVisible("cbb"), true);
+test("isCatalogSlugVisible hides NCAA slugs until verified live", () => {
+  assert.equal(isCatalogSlugVisible("cfb"), false);
+  assert.equal(isCatalogSlugVisible("cbb"), false);
   assert.equal(isCatalogSlugVisible("serie-a"), true);
-});
-
-test("formatNcaaAuditPillLabel renders bracketed coverage copy", () => {
-  assert.equal(formatNcaaAuditPillLabel(72.5), "Audit: 72.5% Complete");
-  assert.equal(formatNcaaAuditPillLabel(100), "Audit: 100% Complete");
 });
 
 test("leagueLogoForTheme resolves dual-theme logo paths", () => {

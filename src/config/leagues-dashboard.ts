@@ -1,16 +1,13 @@
 import type { LeagueId } from "@/lib/leagues";
+import {
+  isVerifiedLiveLeague,
+  VERIFIED_LIVE_LEAGUE_IDS,
+} from "@/lib/league-verification";
 
-export const DASHBOARD_GRID_LEAGUE_IDS = [
-  "nba",
-  "nhl",
-  "nfl",
-  "epl",
-  "laliga",
-  "cbb",
-  "cfb",
-] as const satisfies readonly LeagueId[];
+/** Dashboard surfaces only show verified live leagues. */
+export const DASHBOARD_GRID_LEAGUE_IDS = VERIFIED_LIVE_LEAGUE_IDS;
 
-/** Dashboard grid cards render for every configured league (including locked NCAA). */
+/** Grid cards, chooser, and pace panels render only for verified live leagues. */
 export function isDashboardLeagueExposed(leagueId: LeagueId): boolean {
-  return (DASHBOARD_GRID_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
+  return isVerifiedLiveLeague(leagueId);
 }
