@@ -46,6 +46,9 @@ import { foulEdgeTone } from "@/lib/metricTone";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import type { TeamStrengthOfSchedule } from "@/lib/nba-strength-of-schedule";
+import "@/components/matrix-hub.css";
+
+type RefTeamMatrixLayout = "default" | "matrix-first";
 
 type RefTeamMatrixProps = {
   matrix: RefTeamMatrix;
@@ -63,10 +66,51 @@ type RefTeamMatrixProps = {
   initialRefSlug?: string | null;
   atsAvailable?: boolean;
   initialViewMode?: MatrixViewMode;
+  layout?: RefTeamMatrixLayout;
+  /** Shown in matrix-first footer beside methodology link. */
+  footerProvenanceNote?: string;
 };
 
 const MATRIX_ATS_VIEW_TOOLTIP =
   "Controls for selection bias in high-profile marquee matchups by evaluating performance against the closing line instead of raw wins and losses.";
+
+function MatrixLegendBlock({ minGames }: { minGames: number }) {
+  return (
+    <>
+      <p className="ref-matrix-legend-copy">
+        Each cell shows that ref&apos;s approximate W-L with the team (not the
+        team&apos;s overall record). The baseline row under each logo is the
+        team&apos;s full sample W-L for coloring only. Cells need {minGames}+
+        games for ranking colors; thinner samples show a muted record. Empty
+        cells mean zero games together. Text color and a light
+        tint compare ref×team win rate to the team baseline (±
+        {MATRIX_TONE_DELTA_PTS} pts); splits at ±{MATRIX_EXTREME_DELTA_PTS}{" "}
+        pts or more are standout outliers. Delta text and W-L are shown in
+        every cell, not color alone. Click a team logo to rank the top and
+        bottom {TEAM_MATRIX_REF_PANEL_LIMIT} refs for that team; tap a cell for that
+        ref&apos;s profile (including tight-game proxy). Historical splits
+        only, not picks.
+      </p>
+      <div className="ref-matrix-legend-swatches" aria-hidden>
+        <span className="ref-matrix-swatch ref-matrix-cell--positive">
+          +{MATRIX_TONE_DELTA_PTS}+ pts above baseline
+        </span>
+        <span className="ref-matrix-swatch ref-matrix-cell--neutral">
+          Within ±{MATRIX_TONE_DELTA_PTS} pts
+        </span>
+        <span className="ref-matrix-swatch ref-matrix-cell--negative">
+          −{MATRIX_TONE_DELTA_PTS}+ pts below baseline
+        </span>
+        <span className="ref-matrix-swatch ref-matrix-cell--positive ref-matrix-cell--extreme-high">
+          Standout high (±{MATRIX_EXTREME_DELTA_PTS}+ pts)
+        </span>
+        <span className="ref-matrix-swatch ref-matrix-cell--negative ref-matrix-cell--extreme-low">
+          Standout low (±{MATRIX_EXTREME_DELTA_PTS}+ pts)
+        </span>
+      </div>
+    </>
+  );
+}
 
 function teamPanelEntryRecord(
   entry: TeamTopRefEntry,
@@ -333,8 +377,11 @@ export function RefTeamMatrix({
   initialRefSlug,
   atsAvailable = false,
   initialViewMode = "wl",
+  layout = "default",
+  footerProvenanceNote,
 }: RefTeamMatrixProps) {
   const { refs, teams, cells, minGames, qualifiedCellCount } = matrix;
+  const matrixFirst = layout === "matrix-first";
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -604,55 +651,36 @@ export function RefTeamMatrix({
   }
 
   return (
-    <div className="ref-matrix" data-league={sport}>
-      <details className="ref-matrix-legend-details">
-        <summary className="ref-matrix-legend-summary">
-          How to read this board
-        </summary>
-        <div className="ref-matrix-legend">
-          <p className="ref-matrix-legend-copy">
-            Each cell shows that ref&apos;s approximate W-L with the team (not the
-            team&apos;s overall record). The baseline row under each logo is the
-            team&apos;s full sample W-L for coloring only. Cells need {minGames}+
-            games for ranking colors; thinner samples show a muted record. Empty
-            cells mean zero games together. Text color and a light
-            tint compare ref×team win rate to the team baseline (±
-            {MATRIX_TONE_DELTA_PTS} pts); splits at ±{MATRIX_EXTREME_DELTA_PTS}{" "}
-            pts or more are standout outliers. Delta text and W-L are shown in
-            every cell, not color alone. Click a team logo to rank the top and
-            bottom {TEAM_MATRIX_REF_PANEL_LIMIT} refs for that team; tap a cell for that
-            ref&apos;s profile (including tight-game proxy). Historical splits
-            only, not picks.
-          </p>
-          <div className="ref-matrix-legend-swatches" aria-hidden>
-            <span className="ref-matrix-swatch ref-matrix-cell--positive">
-              +{MATRIX_TONE_DELTA_PTS}+ pts above baseline
-            </span>
-            <span className="ref-matrix-swatch ref-matrix-cell--neutral">
-              Within ±{MATRIX_TONE_DELTA_PTS} pts
-            </span>
-            <span className="ref-matrix-swatch ref-matrix-cell--negative">
-              −{MATRIX_TONE_DELTA_PTS}+ pts below baseline
-            </span>
-            <span className="ref-matrix-swatch ref-matrix-cell--positive ref-matrix-cell--extreme-high">
-              Standout high (±{MATRIX_EXTREME_DELTA_PTS}+ pts)
-            </span>
-            <span className="ref-matrix-swatch ref-matrix-cell--negative ref-matrix-cell--extreme-low">
-              Standout low (±{MATRIX_EXTREME_DELTA_PTS}+ pts)
-            </span>
+    <div
+      className={`ref-matrix${matrixFirst ? " ref-matrix--matrix-first" : ""}`}
+      data-league={sport}
+    >
+      {!matrixFirst ? (
+        <details className="ref-matrix-legend-details">
+          <summary className="ref-matrix-legend-summary">
+            How to read this board
+          </summary>
+          <div className="ref-matrix-legend">
+            <MatrixLegendBlock minGames={minGames} />
           </div>
-        </div>
-      </details>
+        </details>
+      ) : null}
 
-      <div className="ref-matrix-toolbar">
-        <p className="ref-matrix-meta">
-          {refs.length} {officialNounPlural} × {teams.length} teams ·{" "}
-          {qualifiedCellCount} qualified cells
-        </p>
+      <div
+        className={`ref-matrix-toolbar${matrixFirst ? " ref-matrix-toolbar--compact" : ""}`}
+      >
+        {!matrixFirst ? (
+          <p className="ref-matrix-meta">
+            {refs.length} {officialNounPlural} × {teams.length} teams ·{" "}
+            {qualifiedCellCount} qualified cells
+          </p>
+        ) : null}
         <div className="ref-matrix-toolbar-actions">
-          <Link href="/compare" className="ref-matrix-compare-link">
-            Compare officials →
-          </Link>
+          {!matrixFirst ? (
+            <Link href="/compare" className="ref-matrix-compare-link">
+              Compare officials →
+            </Link>
+          ) : null}
           <div className="ref-matrix-search">
             <label htmlFor="ref-matrix-search" className="ref-matrix-search-label">
               Find official
@@ -666,7 +694,10 @@ export function RefTeamMatrix({
               className="ref-matrix-search-input"
               aria-describedby="ref-matrix-search-hint"
             />
-            <p id="ref-matrix-search-hint" className="ref-matrix-search-hint">
+            <p
+              id="ref-matrix-search-hint"
+              className={`ref-matrix-search-hint${matrixFirst ? " ref-matrix-toolbar-hint--compact" : ""}`}
+            >
               {searchQuery
                 ? searchMatchCount > 0
                   ? `${searchMatchCount} match${searchMatchCount === 1 ? "" : "es"}. Thin-sample rows stay visible with a game count`
@@ -697,7 +728,7 @@ export function RefTeamMatrix({
             {refSort === "standout-desc" ? (
               <p
                 id="ref-matrix-standout-explainer"
-                className="ref-matrix-sort-explainer"
+                className={`ref-matrix-sort-explainer${matrixFirst ? " ref-matrix-toolbar-hint--compact" : ""}`}
               >
                 {MATRIX_STANDOUT_SORT_EXPLAINER}
               </p>
@@ -731,7 +762,10 @@ export function RefTeamMatrix({
                   Against the Spread
                 </button>
               </div>
-              <p id="ref-matrix-ats-tooltip" className="ref-matrix-view-mode-tooltip">
+              <p
+                id="ref-matrix-ats-tooltip"
+                className={`ref-matrix-view-mode-tooltip${matrixFirst ? " ref-matrix-toolbar-hint--compact" : ""}`}
+              >
                 {MATRIX_ATS_VIEW_TOOLTIP}
               </p>
             </div>
@@ -1135,6 +1169,35 @@ export function RefTeamMatrix({
           />
         </section>
       )}
+
+      {matrixFirst ? (
+        <details className="ref-matrix-info-footer">
+          <summary className="ref-matrix-info-footer-summary">Info</summary>
+          <div className="ref-matrix-info-footer-body">
+            <p className="ref-matrix-meta">
+              {refs.length} {officialNounPlural} × {teams.length} teams ·{" "}
+              {qualifiedCellCount} qualified cells
+            </p>
+            <div className="ref-matrix-legend">
+              <MatrixLegendBlock minGames={minGames} />
+            </div>
+            {footerProvenanceNote ? (
+              <p className="ref-matrix-footer-provenance">
+                {footerProvenanceNote}{" "}
+                <Link href="/methodology" className="ref-matrix-footer-methodology">
+                  Methodology
+                </Link>
+              </p>
+            ) : (
+              <p className="ref-matrix-footer-provenance">
+                <Link href="/methodology" className="ref-matrix-footer-methodology">
+                  Methodology
+                </Link>
+              </p>
+            )}
+          </div>
+        </details>
+      ) : null}
     </div>
   );
 }

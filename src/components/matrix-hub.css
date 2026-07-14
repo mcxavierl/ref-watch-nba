@@ -374,3 +374,209 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/* ── Matrix-first layout (NFL matrix viewport priority) ─────────────────── */
+
+.page-shell-matrix-first {
+  gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .page-shell-matrix-first {
+    gap: var(--space-5);
+  }
+}
+
+.league-hub-hero--matrix-first {
+  margin-bottom: var(--space-3);
+  padding-block: var(--space-4) var(--space-3);
+}
+
+.league-hub-hero--matrix-first .league-hub-hero-watermark {
+  opacity: 0.45;
+}
+
+.league-hub-hero--matrix-first .league-hub-hero-inner {
+  gap: var(--space-3);
+}
+
+.league-hub-hero--matrix-first .league-hub-hero-header-block {
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.league-hub-hero--matrix-first .page-title {
+  font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.league-matrix-hero-scope {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-2);
+}
+
+.section-block--matrix-first {
+  margin-block: 0;
+}
+
+.ref-matrix--matrix-first {
+  gap: 0;
+  padding: var(--space-3) var(--space-3) var(--space-4);
+  --ref-matrix-logo-row-height: 4.25rem;
+}
+
+@media (min-width: 640px) {
+  .ref-matrix--matrix-first {
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+}
+
+.ref-matrix-toolbar--compact {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 8px;
+}
+
+.ref-matrix-toolbar--compact .ref-matrix-toolbar-actions {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem 0.75rem;
+}
+
+.ref-matrix-toolbar--compact .ref-matrix-search,
+.ref-matrix-toolbar--compact .ref-matrix-sort,
+.ref-matrix-toolbar--compact .ref-matrix-view-mode {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.ref-matrix-toolbar--compact .ref-matrix-search {
+  flex: 1 1 12rem;
+  max-width: 16rem;
+}
+
+.ref-matrix-toolbar--compact .ref-matrix-search-label,
+.ref-matrix-toolbar--compact .ref-matrix-sort-label,
+.ref-matrix-toolbar--compact .ref-matrix-view-mode-label {
+  font-size: 0.65rem;
+  margin-bottom: 0.15rem;
+}
+
+.ref-matrix-toolbar--compact .ref-matrix-search-input,
+.ref-matrix-toolbar--compact .ref-matrix-sort-select {
+  padding: 0.35rem 0.55rem;
+  font-size: 0.8125rem;
+  min-height: 2rem;
+}
+
+.ref-matrix-toolbar--compact .ref-matrix-view-mode-toggle .refs-directory-metric-btn {
+  padding: 0.3rem 0.55rem;
+  font-size: 0.68rem;
+}
+
+.ref-matrix-toolbar-hint--compact {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ref-matrix--matrix-first .ref-matrix-mobile-hint {
+  display: none;
+}
+
+.ref-matrix--matrix-first .ref-matrix-wrap {
+  max-height: min(78vh, 56rem);
+}
+
+.ref-matrix--matrix-first .ref-matrix-table tbody tr {
+  height: 2rem;
+}
+
+.ref-matrix--matrix-first .ref-matrix-table tbody .ref-matrix-cell {
+  padding-block: 0.35rem;
+}
+
+.ref-matrix--matrix-first .ref-matrix-baseline-corner {
+  padding: 0.2rem var(--space-2);
+  font-size: 0.58rem;
+}
+
+.ref-matrix--matrix-first .ref-matrix-baseline-cell {
+  padding: 0.15rem 0.15rem;
+}
+
+.ref-matrix--matrix-first .ref-matrix-baseline-record {
+  font-size: 0.58rem;
+}
+
+.ref-matrix--matrix-first .ref-matrix-baseline-meta {
+  font-size: 0.52rem;
+  margin-top: 0.05rem;
+}
+
+.ref-matrix--matrix-first .ref-matrix-logo-row .team-logo-plate {
+  transform: scale(0.92);
+  transform-origin: center;
+}
+
+.ref-matrix-info-footer {
+  margin-top: var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.625rem;
+  background: color-mix(in srgb, var(--surface-raised) 35%, var(--surface));
+}
+
+.ref-matrix-info-footer-summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.ref-matrix-info-footer-summary::-webkit-details-marker {
+  display: none;
+}
+
+.ref-matrix-info-footer-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: 0 0.85rem 0.85rem;
+}
+
+.ref-matrix-footer-provenance {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.ref-matrix-footer-methodology {
+  font-weight: 650;
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ref-matrix-footer-methodology:hover {
+  color: var(--raptors);
+}

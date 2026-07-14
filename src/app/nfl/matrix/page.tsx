@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Suspense } from "react";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
@@ -12,7 +11,7 @@ import { hubPageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("nfl", "matrix");
-import { leagueGamesHubBackLabel, LEAGUES } from "@/lib/leagues";
+import { LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { statsForMatrixPage } from "@/lib/matrix-page-stats";
 import {
@@ -21,8 +20,9 @@ import {
   type MatrixViewMode,
 } from "@/lib/ref-team-matrix";
 import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
-import { matrixLeadSeasonPhrase, readSeasonScopeParam } from "@/lib/season-scope";
+import { readSeasonScopeParam } from "@/lib/season-scope";
 import { NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
+import "@/components/matrix-hub.css";
 
 type PageProps = {
   searchParams: Promise<{ scope?: string; team?: string; ref?: string; mode?: string }>;
@@ -42,13 +42,10 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
   const {
     stats,
     sinceSeason,
-    scopeLabel,
     scopedSeasons,
     availableSeasons,
   } = loadScopedLeagueStats("nfl", scopeMode);
   const statsForMatrix = await statsForMatrixPage("nfl", stats, scopedSeasons);
-  const seasonSpan = matrixLeadSeasonPhrase(scopedSeasons.length);
-  const espn = stats.meta.source === "espn" || stats.meta.source === "hybrid";
   const league = LEAGUES.nfl;
 
   const matrix = computeRefTeamMatrix(
@@ -64,42 +61,31 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
   );
   const extremes = computeMatrixExtremes(matrix);
 
+  const footerProvenanceNote =
+    stats.meta.source === "hybrid"
+      ? "Ref×team W-L rebuilt from ESPN game logs; penalty and scoring splits merged where available."
+      : stats.meta.source === "espn"
+        ? "Penalty and scoring stats sourced from ESPN game summaries."
+        : undefined;
+
   return (
-    <div className="page-shell page-shell-hub">
-      <LeagueHubHero leagueId="nfl">
-        <Link href="/nfl" className="league-hub-hero-back">
-          ← {leagueGamesHubBackLabel("nfl")}
-        </Link>
-        <h1 className="page-title">NFL official × team matrix</h1>
-        <p className="page-lead">
-          Team W-L when each of {matrix.refs.length} officials worked their
-          games ({seasonSpan}). Cells require {matrix.minGames}+ games in this
-          dataset. Not predictions; see{" "}
-          <Link href="/methodology" className="page-lead-link">
-            methodology
-          </Link>
-          .
-        </p>
-        <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-zinc-400">{scopeLabel}</p>
+    <div className="page-shell page-shell-hub page-shell-matrix-first">
+      <LeagueHubHero
+        leagueId="nfl"
+        className="league-hub-hero--matrix-first"
+        aria-labelledby="nfl-matrix-heading"
+      >
+        <h1 className="page-title" id="nfl-matrix-heading">
+          NFL official × team matrix
+        </h1>
+        <div className="league-matrix-hero-scope">
           <Suspense fallback={null}>
             <SeasonScopeToggle availableSeasons={availableSeasons} />
           </Suspense>
         </div>
-        {stats.meta.source === "hybrid" && (
-          <p className="text-sm text-emerald-300/90">
-            Ref×team W-L rebuilt from ESPN game logs; penalty and scoring splits
-            merged where available.
-          </p>
-        )}
-        {espn && stats.meta.source === "espn" && (
-          <p className="text-sm text-emerald-300/90">
-            Penalty and scoring stats sourced from ESPN game summaries.
-          </p>
-        )}
       </LeagueHubHero>
 
-      <section className="section-block">
+      <section className="section-block section-block--matrix-first">
         <div className="data-card overflow-hidden p-0">
           <Suspense fallback={null}>
             <RefTeamMatrix
@@ -112,11 +98,13 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
               siteUrl={SITE_URL}
               leagueId="nfl"
               scopeMode={scopeMode}
-              scopeLabel={scopeLabel}
+              scopeLabel={scopedSeasons.length > 0 ? `${scopedSeasons.length} seasons` : "All seasons"}
               initialTeamAbbr={team}
               initialRefSlug={ref}
               atsAvailable={stats.meta.atsAvailable === true}
               initialViewMode={initialViewMode}
+              layout="matrix-first"
+              footerProvenanceNote={footerProvenanceNote}
             />
           </Suspense>
         </div>
@@ -129,31 +117,6 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
         lead="Cells where a team's win rate with that official diverges sharply from their baseline in this sample. Descriptive only, not picks."
         entityLabel="official"
       />
-
-      <section className="section-block">
-        <h2 className="section-title">Related views</h2>
-        <p className="section-lead">
-          Browse official profiles or compare officials side by side.
-        </p>
-        <ul className="mt-3 flex flex-wrap gap-3 text-sm font-medium">
-          <li>
-            <Link
-              href="/nfl/refs"
-              className="text-zinc-800 hover:text-raptors hover:underline"
-            >
-              Official profiles →
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/compare"
-              className="text-zinc-800 hover:text-raptors hover:underline"
-            >
-              Compare officials →
-            </Link>
-          </li>
-        </ul>
-      </section>
     </div>
   );
 }
