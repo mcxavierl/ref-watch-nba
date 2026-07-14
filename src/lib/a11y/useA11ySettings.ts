@@ -11,7 +11,7 @@ export { REFWATCH_A11Y_CHANGE_EVENT, REFWATCH_A11Y_STORAGE_KEY } from "@/lib/a11
 
 export type ContrastSetting = "default" | "high";
 export type TextSizeSetting = "default" | "large";
-/** User preference — `system` follows OS; `light` / `dark` are manual overrides. */
+/** User preference — `system` and `dark` resolve to dark (product default); `light` is explicit. */
 export type ColorModePreference = "system" | "light" | "dark";
 /** @deprecated Use ColorModePreference — kept for backward compatibility. */
 export type ColorModeSetting = ColorModePreference;
@@ -31,20 +31,19 @@ export type A11ySettings = {
 
 const DEFAULT_SETTINGS: A11ySettings = {
   contrast: "default",
-  colorMode: "system",
+  colorMode: "dark",
   textSize: "default",
   font: "default",
 };
 
 function normalizeColorMode(raw: unknown): ColorModePreference {
   if (raw === "system" || raw === "light" || raw === "dark") return raw;
-  return "system";
+  return "dark";
 }
 
 export function resolveColorMode(preference: ColorModePreference): ResolvedColorMode {
   if (preference === "light") return "light";
-  if (preference === "dark") return "dark";
-  return systemColorMode();
+  return "dark";
 }
 
 function normalizeFromStorage(parsed: unknown): A11ySettings | null {
@@ -61,16 +60,10 @@ function normalizeFromStorage(parsed: unknown): A11ySettings | null {
   };
 }
 
-function systemColorMode(): ResolvedColorMode {
-  if (typeof window === "undefined") return "dark";
-  if (window.matchMedia("(prefers-color-scheme: light)").matches) return "light";
-  return "dark";
-}
-
 function resolveInitialSettings(): A11ySettings {
   const stored = readStoredSettings();
   if (stored) return stored;
-  return { ...DEFAULT_SETTINGS, colorMode: "system" };
+  return { ...DEFAULT_SETTINGS };
 }
 
 function readStoredSettings(): A11ySettings | null {
