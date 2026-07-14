@@ -1,4 +1,3 @@
-import { AsyncLocalStorage } from "node:async_hooks";
 import type {
   RuntimeGameLogEntry,
   RuntimeGameLogFile,
@@ -91,7 +90,8 @@ export type WorkerIsolateStore = {
   marketExpectationEnrich: Map<string, RefStatsFile>;
 };
 
-const isolateAls = new AsyncLocalStorage<WorkerIsolateStore>();
+/** Request-scoped store — Workers isolates are single-threaded per fetch. */
+let requestStore: WorkerIsolateStore | null = null;
 const endCallbacks: Array<() => void> = [];
 
 function createEmptyStore(): WorkerIsolateStore {
@@ -161,62 +161,52 @@ function runEndCallbacks(): void {
 export async function runWithWorkerIsolateStore<T>(
   fn: () => T | Promise<T>,
 ): Promise<T> {
-  const active = isolateAls.getStore();
-  if (active?.requestActive) {
+  if (requestStore?.requestActive) {
     return fn();
   }
 
   clearLegacyGlobalHydration();
   runEndCallbacks();
-
-  return isolateAls.run(createEmptyStore(), async () => {
-    const store = isolateAls.getStore()!;
-    store.requestActive = true;
-    try {
-      return await fn();
-    } finally {
-      endWorkerIsolateRequest();
-    }
-  });
+  beginWorkerIsolateRequest();
+  try {
+    return await fn();
+  } finally {
+    endWorkerIsolateRequest();
+  }
 }
 
 /**
  * Layout hydration entry: ensure a request-scoped store exists before JSON fetch.
- * Does not tear down — that happens when the Worker fetch handler completes.
  */
 export function beginWorkerIsolateRequest(): void {
   clearLegacyGlobalHydration();
-  const store = isolateAls.getStore();
-  if (store?.requestActive) return;
+  if (requestStore?.requestActive) return;
 
-  if (store) {
-    clearMutableStore(store);
-    store.requestActive = true;
+  if (requestStore) {
+    clearMutableStore(requestStore);
+    requestStore.requestActive = true;
     return;
   }
 
-  const fresh = createEmptyStore();
-  fresh.requestActive = true;
-  isolateAls.enterWith(fresh);
+  requestStore = createEmptyStore();
+  requestStore.requestActive = true;
 }
 
 /** End-of-request: release heavy refs so the isolate cannot grow across fetches. */
 export function endWorkerIsolateRequest(): void {
-  const store = isolateAls.getStore();
-  if (store) {
-    clearMutableStore(store);
+  if (requestStore) {
+    clearMutableStore(requestStore);
+    requestStore = null;
   }
   clearLegacyGlobalHydration();
   runEndCallbacks();
-  isolateAls.enterWith(createEmptyStore());
 }
 
 export function getWorkerIsolateStore(): WorkerIsolateStore {
-  const existing = isolateAls.getStore();
-  if (existing) return existing;
-  const store = createEmptyStore();
-  isolateAls.enterWith(store);
-  return store;
+  if (!requestStore) {
+    requestStore = createEmptyStore();
+  }
+  return requestStore;
 }
 
 /** Drop a large parsed payload reference before awaiting more I/O. */
