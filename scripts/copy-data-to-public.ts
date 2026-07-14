@@ -157,6 +157,8 @@ if (fs.existsSync(ncaaPersonnel)) {
   console.log(`Copied ${ncaaPersonnel} → ${dest}`);
 }
 copyLeagueRefStatsSplit(root, "cfb");
+copyPair(path.join(root, "data/cfb"), path.join(root, "public/data/cfb"), "game-logs");
+copyPair(path.join(root, "data/cfb"), path.join(root, "public/data/cfb"), "build-state");
 copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "game-logs");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "game-logs");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "ref-photos");
