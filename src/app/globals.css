@@ -8002,6 +8002,21 @@ p {
   background: color-mix(in srgb, var(--raptors) 10%, var(--surface));
 }
 
+.data-source-banner--audit-pending {
+  border-color: var(--border-subtle);
+  background: var(--pill-bg-muted);
+}
+
+.data-source-banner--audit-pending .data-source-banner-icon {
+  color: var(--text-muted);
+  opacity: 0.65;
+}
+
+.data-source-banner--audit-pending .data-source-banner-text strong {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
 .data-source-banner--betting {
   border-color: color-mix(in srgb, #f59e0b 40%, var(--border));
   background: color-mix(in srgb, #f59e0b 10%, var(--surface));
@@ -8583,7 +8598,7 @@ p {
 
 .overview-league-chooser-card[data-league="cbb"],
 .overview-league-chooser-card[data-league="cfb"] {
-  --chooser-accent: #009cde;
+  --chooser-accent: var(--border-strong);
 }
 
 .overview-league-chooser-label-row,
@@ -8594,6 +8609,11 @@ p {
   gap: 0.4rem 0.55rem;
 }
 
+.overview-section-lead-ncaa-note {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
 .overview-league-chooser-pending,
 .overview-pace-pending {
   display: inline-flex;
@@ -8601,8 +8621,9 @@ p {
   gap: 0.35rem;
   margin-top: 0.15rem;
   font-size: 0.72rem;
-  font-weight: 600;
-  color: #fbbf24;
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .overview-league-chooser-pending-icon,
@@ -8610,35 +8631,59 @@ p {
   width: 0.85rem;
   height: 0.85rem;
   flex-shrink: 0;
+  color: var(--text-muted);
+  opacity: 0.55;
 }
 
 .overview-league-chooser-card--pending,
 .overview-pace-card--pending {
   border-style: dashed;
-  border-color: color-mix(in srgb, #fbbf24 35%, var(--line));
+  border-color: var(--border-subtle);
   cursor: pointer;
 }
 
 .overview-league-chooser-card--pending:hover,
 .overview-pace-card--pending:hover {
-  border-color: color-mix(in srgb, #fbbf24 55%, var(--line));
+  border-color: var(--border-default);
+}
+
+.overview-league-chooser-card--pending .overview-league-chooser-cta,
+.overview-pace-card--pending .overview-pace-cta {
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .ncaa-audit-status-pill {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.3rem 0.45rem;
+  gap: 0.25rem 0.4rem;
   padding: 0.15rem 0.45rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, #009cde 35%, var(--line));
-  background: color-mix(in srgb, #009cde 10%, transparent);
-  color: #7dd3fc;
+  border: 1px solid var(--pill-border);
+  background: var(--pill-bg);
+  color: var(--text-secondary);
   font-size: 0.62rem;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.02em;
   text-decoration: none;
   line-height: 1.3;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.ncaa-audit-status-pill:hover {
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+}
+
+.ncaa-audit-status-pill-icon {
+  width: 0.68rem;
+  height: 0.68rem;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  opacity: 0.55;
 }
 
 .ncaa-audit-status-pill--static {
@@ -8646,8 +8691,8 @@ p {
 }
 
 .ncaa-audit-status-pill-state {
-  color: #fde68a;
-  font-weight: 650;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .ncaa-integrity-audit-grid {
@@ -8665,8 +8710,8 @@ p {
 .ncaa-integrity-audit-panel {
   padding: 1.1rem 1.15rem;
   border-radius: 1rem;
-  border: 1px solid color-mix(in srgb, #009cde 22%, var(--line));
-  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-1);
 }
 
 .ncaa-integrity-audit-panel-head {
@@ -8685,13 +8730,14 @@ p {
 
 .ncaa-integrity-audit-panel-title {
   font-size: 1.1rem;
-  font-weight: 750;
-  color: var(--ink);
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 .ncaa-integrity-audit-panel-lead {
   font-size: 0.82rem;
-  color: var(--muted-strong);
+  font-weight: 400;
+  color: var(--text-muted);
 }
 
 .ncaa-integrity-audit-metrics {
@@ -8723,8 +8769,8 @@ p {
 
 .ncaa-integrity-audit-metric-value {
   font-size: 0.95rem;
-  font-weight: 750;
-  color: var(--ink);
+  font-weight: 650;
+  color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -8740,7 +8786,11 @@ p {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #009cde, #38bdf8);
+  background: linear-gradient(
+    90deg,
+    var(--border-strong),
+    color-mix(in srgb, var(--text-muted) 72%, var(--border-strong))
+  );
 }
 
 .ncaa-integrity-audit-failures {
@@ -8749,8 +8799,8 @@ p {
 
 .ncaa-integrity-audit-failures-title {
   font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--ink);
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .ncaa-integrity-audit-failure-list {
@@ -8774,16 +8824,17 @@ p {
   padding: 0.1rem 0.35rem;
   border-radius: 0.25rem;
   font-size: 0.62rem;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #fca5a5;
-  background: rgba(248, 113, 113, 0.12);
+  color: var(--text-muted);
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
 }
 
 .ncaa-integrity-audit-failure-id {
-  font-weight: 650;
-  color: var(--ink);
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .ncaa-integrity-audit-failures-more,
@@ -8800,7 +8851,8 @@ p {
   gap: 0.4rem;
   margin-top: 1rem;
   font-size: 0.78rem;
-  color: #86efac;
+  font-weight: 500;
+  color: var(--text-muted);
 }
 
 .ncaa-integrity-audit-clear-icon {
@@ -10601,21 +10653,23 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 .overview-pace-card[data-league="epl"] { --pace-accent: #8b6bb5; }
 .overview-pace-card[data-league="laliga"] { --pace-accent: #c8102e; }
 .overview-pace-card[data-league="cbb"],
-.overview-pace-card[data-league="cfb"] { --pace-accent: #009cde; }
+.overview-pace-card[data-league="cfb"] { --pace-accent: var(--border-strong); }
 
 .overview-pace-card--pending {
   border-style: dashed;
-  border-color: color-mix(in srgb, #fbbf24 35%, var(--line));
+  border-color: var(--border-subtle);
 }
 
 .overview-catalog-status--audit-pending {
-  color: #fde68a;
-  background: rgba(234, 179, 8, 0.12);
-  border: 1px solid rgba(234, 179, 8, 0.22);
+  color: var(--pill-ink);
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  font-weight: 500;
 }
 
 .overview-catalog-row--audit .overview-catalog-name {
-  color: color-mix(in srgb, #009cde 55%, var(--ink));
+  color: var(--text-secondary);
+  font-weight: 600;
 }
 
 .overview-pace-card:hover {

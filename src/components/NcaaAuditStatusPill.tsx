@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Clock } from "lucide-react";
 import {
   formatNcaaAuditPillLabel,
   type NcaaAuditPendingLabel,
@@ -22,6 +23,7 @@ export function NcaaAuditStatusPill({
 }: NcaaAuditStatusPillProps) {
   const content = (
     <>
+      <Clock aria-hidden className="ncaa-audit-status-pill-icon" />
       <span className="ncaa-audit-status-pill-label">
         [{formatNcaaAuditPillLabel(coveragePct)}]
       </span>

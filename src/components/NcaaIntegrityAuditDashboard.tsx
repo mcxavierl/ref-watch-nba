@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShieldCheck, ShieldAlert } from "lucide-react";
+import { Clock, ShieldCheck } from "lucide-react";
 import { CBB_LEAGUE_ENTRY, CFB_LEAGUE_ENTRY } from "@/config/leagues";
 import { NcaaAuditStatusPill } from "@/components/NcaaAuditStatusPill";
 import {
@@ -130,8 +130,8 @@ export function NcaaIntegrityAuditDashboard() {
         </p>
       </section>
 
-      <div className="data-source-banner data-source-banner--preview" role="status">
-        <ShieldAlert aria-hidden className="data-source-banner-icon" />
+      <div className="data-source-banner data-source-banner--audit-pending" role="status">
+        <Clock aria-hidden className="data-source-banner-icon" />
         <p className="data-source-banner-text">
           <strong>Audit in progress.</strong> NCAA league hubs are not open for production analytics
           until manual registry approval and automated pipeline verification both pass.

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ShieldAlert } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 import { isDashboardLeagueExposed } from "@/config/leagues";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { NcaaAuditStatusPill } from "@/components/NcaaAuditStatusPill";
@@ -46,7 +46,11 @@ export function LeagueChooser({ cards }: LeagueChooserProps) {
         </h2>
         <p className="overview-section-lead">
           Jump into tonight&apos;s games, ref rankings, crew matrices, and whistle analytics for each
-          live competition. NCAA hubs stay locked until the integrity audit completes.
+          live competition.
+          <span className="overview-section-lead-ncaa-note">
+            {" "}
+            NCAA hubs stay locked until the integrity audit completes.
+          </span>
         </p>
       </div>
 
@@ -78,7 +82,7 @@ export function LeagueChooser({ cards }: LeagueChooserProps) {
                   </span>
                   {pending ? (
                     <span className="overview-league-chooser-pending">
-                      <ShieldAlert aria-hidden className="overview-league-chooser-pending-icon" />
+                      <Lock aria-hidden className="overview-league-chooser-pending-icon" />
                       {card.auditPendingLabel ?? "Pending Verification"}
                     </span>
                   ) : null}

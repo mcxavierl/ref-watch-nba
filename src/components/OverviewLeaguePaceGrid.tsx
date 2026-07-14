@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ShieldAlert } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 import { isDashboardLeagueExposed } from "@/config/leagues";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { NcaaAuditStatusPill } from "@/components/NcaaAuditStatusPill";
@@ -67,7 +67,7 @@ function PaceCardBody({ card }: { card: LeagueOverviewCard }) {
         </span>
         {pending ? (
           <p className="overview-pace-pending">
-            <ShieldAlert aria-hidden className="overview-pace-pending-icon" />
+            <Lock aria-hidden className="overview-pace-pending-icon" />
             {card.auditPendingLabel ?? "Pending Verification"} — detailed analytics locked
           </p>
         ) : null}
