@@ -7,12 +7,12 @@
 html[data-theme="dark"],
 html[data-color="dark"],
 html.dark {
-  --kpi-pill-value-ink: #fafafa;
-  --kpi-pill-accent-positive: #34d399;
-  --kpi-pill-accent-negative: #f43f5e;
+  --kpi-pill-value-ink: #fafafa; /* zinc-50 — neutral metric text */
+  --kpi-pill-accent-positive: #34d399; /* emerald accent dot only */
+  --kpi-pill-accent-negative: #f43f5e; /* rose accent dot only */
   --kpi-pill-accent-neutral: #94a3b8;
-  --kpi-pill-bg: color-mix(in srgb, var(--bg-surface-2) 50%, transparent);
-  --kpi-pill-border: var(--pill-border);
+  --kpi-pill-bg: color-mix(in srgb, var(--bg-surface-0) 55%, transparent);
+  --kpi-pill-border: color-mix(in srgb, var(--border-subtle) 70%, transparent);
   --kpi-pill-secondary-ink: var(--text-muted);
 }
 

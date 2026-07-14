@@ -8196,7 +8196,26 @@ p {
   min-width: 0;
 }
 
-/* Overview KPI pills — neutral value text + muted accent dot */
+/* Overview KPI pills — KpiDataPill dark-mode surfaces */
+html[data-color="dark"]:not([data-contrast="high"]) .overview-page .kpi-data-pill--block,
+html.dark .overview-page .kpi-data-pill--block {
+  background: color-mix(in srgb, var(--bg-surface-0) 55%, transparent);
+  border-color: color-mix(in srgb, var(--border-subtle) 70%, transparent);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-page .kpi-data-pill__value,
+html.dark .overview-page .kpi-data-pill__value {
+  color: #fafafa;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-page .kpi-data-pill--positive .kpi-data-pill__value,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-page .kpi-data-pill--negative .kpi-data-pill__value,
+html.dark .overview-page .kpi-data-pill--positive .kpi-data-pill__value,
+html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
+  color: #fafafa;
+}
+
+/* Overview KPI pills — neutral value text + muted accent dot (metric-delight legacy) */
 .overview-page .metric-delight-value--positive,
 .overview-page .metric-delight-value-hero--positive,
 .overview-page .metric-delight-badge-value--positive,
