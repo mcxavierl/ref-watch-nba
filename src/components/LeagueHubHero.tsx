@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { LeagueHeroLogo } from "@/components/LeagueHeroLogo";
 import type { LeagueId } from "@/lib/leagues";
 
 /** Leagues with sport-watermark hub heroes (court / rink / field / pitch). */
@@ -11,6 +12,8 @@ type LeagueHubHeroProps = {
   leagueId: HubHeroLeagueId;
   children: ReactNode;
   className?: string;
+  /** Show league logo beside hero headline stack (default true). */
+  showLogo?: boolean;
   "aria-label"?: string;
   "aria-labelledby"?: string;
 };
@@ -545,6 +548,7 @@ export function LeagueHubHero({
   leagueId,
   children,
   className,
+  showLogo = true,
   ...aria
 }: LeagueHubHeroProps) {
   return (
@@ -556,7 +560,19 @@ export function LeagueHubHero({
       <div className="league-hub-hero-watermark" aria-hidden>
         <SportWatermark leagueId={leagueId} />
       </div>
-      <div className="league-hub-hero-inner">{children}</div>
+      <div
+        className={[
+          "league-hub-hero-inner",
+          showLogo ? "league-hub-hero-inner--branded" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        {showLogo ? (
+          <LeagueHeroLogo leagueId={leagueId} className="league-hub-hero-logo" />
+        ) : null}
+        {children}
+      </div>
     </section>
   );
 }
