@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   resolveWhistleMetricDisplay,
   type WhistleMetricView,
-} from "@/lib/nfl/ref-penalty-impact";
+} from "@/lib/nfl/ref-penalty-impact-display";
 import type { NflRefAnalytics } from "@/lib/types";
 
 export function RefereeWhistleMetricToggle({

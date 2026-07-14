@@ -1,5 +1,3 @@
-import "server-only";
-
 import type { Finding, FindingCategory } from "@/lib/findings-shared";
 import { DEFAULT_STANDARD_JUICE, type EvMarketSide, type FindingEvSnapshot } from "@/lib/finding-ev-display";
 export {
