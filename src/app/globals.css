@@ -1,30 +1,18 @@
 @import "tailwindcss";
+@import "../styles/theme-tokens.css";
 
 @custom-variant dark (&:where([data-color="dark"], [data-color="dark"] *));
 
 :root {
   color-scheme: dark;
 
-  /* Surfaces — late-night analytics desk */
-  --background: #0a0a0d;
-  --foreground: #f4f4f5;
-  --surface: #131318;
-  --surface-raised: #1a1a21;
-  --border: #2c2c36;
-  --border-subtle: #22222a;
+  /* Surfaces & ink — see theme-tokens.css (--bg-surface-*, --text-*) */
 
   /* Neutral tile behind team marks — lifts dark logos off dark surfaces */
   --logo-plate: #454550;
   --logo-plate-border: #5c5c68;
   --logo-plate-matrix: #ececf0;
   --logo-plate-matrix-border: color-mix(in srgb, var(--border-subtle) 55%, #fff);
-
-  /* Ink ramp — tuned for ≥4.5:1 on dark surfaces */
-  --muted: #a8a8b3;
-  --muted-strong: #c4c4cc;
-  --ink: var(--foreground);
-  --line: var(--border);
-  --ink-secondary: #e4e4e7;
 
   /* Brand & league accents */
   --raptors: #ef3b55;
@@ -35,8 +23,9 @@
   --nhl-blue: #4d9fff;
   --nhl-red: #ef3b55;
   --nfl-green: #34d399;
-  --cbb-gold: #d4a843;
-  --cfb-bronze: #c4783a;
+  --cbb-gold: #009CDE;
+  --cfb-bronze: #009CDE;
+  --ncaa-blue: #009CDE;
 
   /* Per-league accent (nav + hero) */
   --league-accent: var(--raptors);
@@ -70,14 +59,12 @@
   --header-gold-ink: #18324b;
   --header-wordmark: #ffffff;
 
-  /* Standout metric delight — one vocabulary for strong/directional stats */
-  --metric-positive-ink: #34d399;
+  /* Standout metric delight surfaces — ink tokens in theme-tokens.css */
   --metric-positive-muted: #047857;
   --metric-positive-bg: color-mix(in srgb, #10b981 11%, var(--surface));
   --metric-positive-border: color-mix(in srgb, #10b981 34%, var(--border));
   --metric-positive-glow: color-mix(in srgb, #10b981 28%, transparent);
 
-  --metric-negative-ink: #fb7185;
   --metric-negative-muted: #be123c;
   --metric-negative-bg: color-mix(in srgb, #f43f5e 11%, var(--surface));
   --metric-negative-border: color-mix(in srgb, #f43f5e 34%, var(--border));
@@ -167,6 +154,22 @@
   --color-border-subtle: var(--border-subtle);
   --color-muted: var(--muted);
   --color-muted-strong: var(--muted-strong);
+
+  /* Semantic design-system tokens */
+  --color-bg-surface-0: var(--bg-surface-0);
+  --color-bg-surface-1: var(--bg-surface-1);
+  --color-bg-surface-2: var(--bg-surface-2);
+  --color-bg-surface-3: var(--bg-surface-3);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+  --color-accent-brand: var(--accent-brand);
+  --color-accent-positive: var(--accent-positive);
+  --color-accent-negative: var(--accent-negative);
+  --color-focus-ring: var(--focus-ring);
+  --color-focus-ring-offset: var(--focus-ring-offset);
+
   --color-raptors: var(--raptors);
   --color-lakers: var(--lakers);
   --color-lakers-gold: var(--lakers-gold);
@@ -236,23 +239,14 @@ html[data-body-font="atkinson"] {
   --font-data: var(--font-atkinson), var(--font-inter), system-ui, sans-serif;
 }
 
-/* Light colour mode — analytics desk in daylight */
+/* Light colour mode — app chrome; surfaces/ink from theme-tokens.css */
 html[data-color="light"]:not([data-contrast="high"]) {
   color-scheme: light;
 
-  --background: #f4f4f6;
-  --foreground: #18181f;
-  --surface: #ffffff;
-  --surface-raised: #f0f0f4;
-  --border: #d4d4dc;
-  --border-subtle: #e4e4ea;
   --logo-plate: #e8e8ee;
   --logo-plate-border: #c8c8d0;
   --logo-plate-matrix: #ffffff;
   --logo-plate-matrix-border: var(--logo-plate-border);
-  --muted: #5c5c68;
-  --muted-strong: #3f3f48;
-  --ink-secondary: #27272f;
 
   --header-chrome-bg: #f7f8fb;
   --header-chrome-bg-scrolled: #eef1f6;
@@ -2353,6 +2347,106 @@ p {
 
   .finding-accordion-panel { border-top: 0; }
 
+  .official-findings-card .official-findings-confidence {
+    margin-top: 0.15rem;
+  }
+
+  .official-findings-card--single {
+    padding: 0;
+  }
+
+  .official-findings-single-body {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .finding-official-angle-lead {
+    margin: 0.65rem 0 0;
+    font-size: var(--text-sm);
+    font-weight: 650;
+    line-height: 1.35;
+    color: var(--ink-secondary);
+  }
+
+  .official-findings-card--single .finding-angle-summary {
+    margin-top: 0.45rem;
+  }
+
+  .finding-official-preview {
+    margin: 0.35rem 0 0;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .official-findings-panel {
+    padding-top: 0;
+  }
+
+  .finding-angle-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .finding-angle-block {
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  }
+
+  .finding-angle-block:first-child {
+    border-top: 0;
+  }
+
+  .finding-angle-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.45rem 0.65rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .finding-angle-category {
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .finding-angle-title {
+    margin: 0;
+    flex: 1 1 12rem;
+    min-width: 0;
+    font-size: var(--text-sm);
+    font-weight: 650;
+    line-height: 1.35;
+    color: var(--foreground);
+  }
+
+  .finding-angle-summary {
+    margin: 0.65rem 0 0;
+    font-size: var(--text-sm);
+    line-height: 1.45;
+    color: var(--muted-strong);
+  }
+
+  .finding-angle-context {
+    margin: 0.55rem 0 0;
+    font-size: var(--text-xs);
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .finding-angle-regional {
+    margin: 0.55rem 0 0;
+    font-size: var(--text-xs);
+    line-height: 1.45;
+    color: var(--muted);
+    padding-left: 0.75rem;
+    border-left: 2px solid color-mix(in srgb, var(--border) 75%, var(--accent) 25%);
+  }
+
+  .finding-angle-footer {
+    margin-top: 0.75rem;
+  }
+
   .finding-accordion-explainer {
     padding: var(--space-4) var(--space-4) 0;
     font-size: var(--text-sm);
@@ -4412,6 +4506,29 @@ p {
     color: color-mix(in srgb, var(--insight-accent, var(--ink)) 72%, var(--ink));
   }
 
+  .friction-personnel-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface-raised);
+    font-size: 0.62rem;
+    font-weight: 750;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+  }
+
+  .friction-personnel-pill-coach {
+    border-color: color-mix(in srgb, var(--raptors) 35%, var(--border));
+    color: color-mix(in srgb, var(--raptors) 80%, var(--ink));
+  }
+
+  .friction-personnel-pill-player {
+    border-color: color-mix(in srgb, var(--nhl-blue) 35%, var(--border));
+    color: color-mix(in srgb, var(--nhl-blue) 80%, var(--ink));
+  }
+
   .rankings-insight-card[data-league="nba"] { --insight-accent: var(--raptors); }
   .rankings-insight-card[data-league="nhl"] { --insight-accent: var(--nhl-blue); }
   .rankings-insight-card[data-league="nfl"] { --insight-accent: var(--nfl-green); }
@@ -5761,6 +5878,31 @@ p {
     font-size: var(--text-sm);
     color: var(--foreground);
     box-shadow: 0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent);
+  }
+
+  .ref-matrix-view-mode {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    max-width: 42rem;
+  }
+
+  .ref-matrix-view-mode-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .ref-matrix-view-mode-toggle {
+    flex-shrink: 0;
+  }
+
+  .ref-matrix-view-mode-tooltip {
+    flex: 1 1 100%;
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    color: var(--muted);
   }
 
   .ref-matrix-team-button {
@@ -7839,6 +7981,173 @@ p {
   color: var(--muted);
 }
 
+.overview-hero-highlights {
+  --overview-hero-highlights-margin-block: var(--space-6);
+  margin-block: var(--overview-hero-highlights-margin-block);
+}
+
+.dashboard-hero-highlights {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+@media (min-width: 640px) {
+  .dashboard-hero-highlights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .dashboard-hero-highlights {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+}
+
+.dashboard-hero-highlight-card {
+  --hero-highlight-glow: var(--muted);
+  --hero-highlight-metric: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-height: 100%;
+  padding: 0.95rem 1rem 1.05rem;
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--hero-highlight-glow) 38%, var(--border));
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      color-mix(in srgb, var(--hero-highlight-glow) 10%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--background) 42%, var(--surface));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--hero-highlight-glow) 14%, transparent),
+    0 0 22px color-mix(in srgb, var(--hero-highlight-glow) 16%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 4%, transparent);
+  color: var(--foreground);
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.dashboard-hero-highlight-card[data-tone="positive"] {
+  --hero-highlight-glow: #4ade80;
+  --hero-highlight-metric: #4ade80;
+}
+
+.dashboard-hero-highlight-card[data-tone="negative"] {
+  --hero-highlight-glow: #fb7185;
+  --hero-highlight-metric: #fb7185;
+}
+
+.dashboard-hero-highlight-card[data-league="nba"] .dashboard-hero-highlight-mark {
+  background: linear-gradient(135deg, var(--raptors), #8b1538);
+}
+
+.dashboard-hero-highlight-card[data-league="nfl"] .dashboard-hero-highlight-mark {
+  background: linear-gradient(135deg, var(--nfl-green), #0d3d1f);
+}
+
+.dashboard-hero-highlight-card[data-league="epl"] .dashboard-hero-highlight-mark {
+  background: linear-gradient(135deg, #8b6bb5, #4a2d6e);
+}
+
+.dashboard-hero-highlight-card[data-league="laliga"] .dashboard-hero-highlight-mark {
+  background: linear-gradient(135deg, #c8102e, #7a0a1c);
+}
+
+.dashboard-hero-highlight-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-hero-highlight-mark {
+  flex-shrink: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--hero-highlight-glow) 55%, transparent);
+}
+
+.dashboard-hero-highlight-league {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--foreground) 72%, var(--muted));
+}
+
+.dashboard-hero-highlight-body {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--foreground);
+}
+
+.dashboard-hero-highlight-official {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.dashboard-hero-highlight-metric {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--hero-highlight-metric);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--hero-highlight-metric) 35%, transparent);
+}
+
+.dashboard-hero-highlight-card:hover {
+  border-color: color-mix(in srgb, var(--hero-highlight-glow) 55%, var(--border));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--hero-highlight-glow) 22%, transparent),
+    0 0 28px color-mix(in srgb, var(--hero-highlight-glow) 24%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 5%, transparent);
+}
+
+.overview-hero .dashboard-metrics-strip {
+  margin-top: var(--space-4);
+  margin-inline: calc(-1 * var(--overview-hero-padding-inline));
+  margin-bottom: calc(-1 * var(--overview-hero-padding-block));
+  padding: var(--space-6) var(--overview-hero-padding-inline);
+  border-top: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+  border-bottom: none;
+  background: color-mix(in srgb, var(--background) 55%, var(--surface-raised));
+  border-radius: 0 0 calc(1.25rem - 1px) calc(1.25rem - 1px);
+  gap: 0.75rem;
+}
+
+.overview-hero .dashboard-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--foreground) 5%, var(--surface-raised));
+}
+
+.overview-hero .dashboard-metric-label {
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.overview-hero .dashboard-metric-value {
+  margin-top: 0;
+  font-size: clamp(1.25rem, 3vw, 1.65rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
 .overview-hero-search {
   --overview-hero-search-margin-block: var(--space-6);
   margin-block: var(--overview-hero-search-margin-block);
@@ -8180,17 +8489,22 @@ p {
 }
 
 .overview-catalog-status {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
 }
 
 .overview-catalog-status--live {
-  color: #86efac;
-  background: rgba(34, 197, 94, 0.12);
+  color: #a1a1aa;
+  background: #27272a;
 }
 
 .overview-catalog-status--preview {
@@ -8321,8 +8635,30 @@ p {
 
 .overview-insight-card {
   --insight-accent: var(--muted);
+  --insight-headline-ink: var(--foreground);
+  --insight-body-ink: var(--ink-secondary);
+  --insight-meta-ink: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.15rem 1.2rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  color: var(--foreground);
+  box-shadow: 0 1px 3px color-mix(in srgb, #000 14%, transparent);
+  transition:
+    border-color 200ms ease,
+    transform 200ms ease,
+    box-shadow 200ms ease;
   animation: overview-insight-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: calc(var(--insight-index, 0) * 90ms);
+}
+
+.overview-insight-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border);
+  box-shadow: 0 10px 28px color-mix(in srgb, #000 22%, transparent);
 }
 
 .overview-insight-card[data-league="nba"] {
@@ -8383,13 +8719,62 @@ p {
 }
 
 .overview-insight-kicker {
+  margin: 0;
+  min-width: 0;
+  max-width: 58%;
+  flex: 1 1 auto;
+  padding-inline-end: 0.15rem;
+  text-align: right;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--insight-meta-ink);
+}
+
+.overview-insight-hero-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface-raised) 88%, var(--surface));
+}
+
+.overview-insight-hero-value {
+  font-size: clamp(1.65rem, 4vw, 2.15rem);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-insight-hero-value--positive {
+  color: var(--metric-positive-ink);
+}
+
+.overview-insight-hero-value--negative {
+  color: var(--metric-negative-ink);
+}
+
+.overview-insight-hero-value--neutral {
+  color: var(--ink);
+}
+
+.overview-insight-hero-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--insight-meta-ink);
 }
 
 .overview-insight-body {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
+  margin-top: 0.85rem;
 }
 
 .overview-insight-headline {
@@ -8398,29 +8783,31 @@ p {
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.015em;
-  color: var(--ink);
+  color: var(--insight-headline-ink);
 }
 
-.overview-insight-headline a {
-  color: inherit;
+.overview-insight-headline a,
+.overview-insight-entity-link {
+  color: var(--insight-headline-ink);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.15em;
 }
 
-.overview-insight-headline a:hover {
-  color: color-mix(in srgb, var(--insight-accent) 55%, var(--ink));
+.overview-insight-headline a:hover,
+.overview-insight-entity-link:hover {
+  color: color-mix(in srgb, var(--insight-accent) 55%, var(--insight-headline-ink));
 }
 
 .overview-insight-team {
   font-weight: 600;
-  color: var(--muted);
+  color: var(--insight-body-ink);
 }
 
 .overview-insight-story {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--muted-strong);
+  color: var(--insight-body-ink);
 }
 
 .overview-insight-stats {
@@ -8492,7 +8879,7 @@ p {
   padding: 0;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: var(--foreground);
   text-align: left;
   cursor: pointer;
 }
@@ -9748,21 +10135,24 @@ p {
 .overview-expansion-live,
 .overview-expansion-soon {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.75rem 0.85rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
   border-radius: 0.75rem;
   border: 1px solid var(--line);
   min-width: 0;
 }
 
 .overview-expansion-live {
-  background: rgba(34, 197, 94, 0.06);
-  border-color: rgba(34, 197, 94, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+  border-color: color-mix(in srgb, var(--line) 85%, transparent);
 }
 
 .overview-expansion-live:hover {
-  border-color: rgba(34, 197, 94, 0.35);
+  border-color: color-mix(in srgb, var(--border) 70%, #71717a);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .overview-expansion-live-label,
@@ -9773,14 +10163,24 @@ p {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .overview-expansion-live-status {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #86efac;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  color: #a1a1aa;
+  background: #27272a;
 }
 
 .overview-expansion-soon {
@@ -9801,18 +10201,45 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-hero {
   border-color: var(--border);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-hero-stats {
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero-stats,
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero .dashboard-metrics-strip {
   border-top-color: var(--border);
   background: color-mix(in srgb, var(--border-subtle) 55%, var(--surface-raised));
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-stat {
+html[data-color="light"]:not([data-contrast="high"]) .dashboard-hero-highlight-card[data-tone="positive"] {
+  --hero-highlight-glow: #10b981;
+  --hero-highlight-metric: #059669;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .dashboard-hero-highlight-card[data-tone="negative"] {
+  --hero-highlight-glow: #f43f5e;
+  --hero-highlight-metric: #e11d48;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .dashboard-hero-highlight-card {
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      color-mix(in srgb, var(--hero-highlight-glow) 8%, transparent),
+      transparent 62%
+    ),
+    var(--surface);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--hero-highlight-glow) 12%, transparent),
+    0 0 18px color-mix(in srgb, var(--hero-highlight-glow) 10%, transparent),
+    var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-stat,
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero .dashboard-metric {
   background: var(--surface);
   border-color: var(--border);
   box-shadow: var(--league-hub-hero-stat-shadow);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-stat-value {
+html[data-color="light"]:not([data-contrast="high"]) .overview-stat-value,
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero .dashboard-metric-value {
   color: var(--foreground);
 }
 
@@ -9843,12 +10270,47 @@ html[data-color="light"]:not([data-contrast="high"]) .slate-quick-lookup-chip-ba
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--live {
-  color: var(--metric-positive-ink);
-  background: color-mix(in srgb, var(--metric-positive-ink) 10%, transparent);
+  color: #52525b;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-live-status {
-  color: var(--metric-positive-ink);
+  color: #52525b;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-card {
+  --insight-headline-ink: var(--ink);
+  --insight-body-ink: var(--muted-strong);
+  --insight-meta-ink: var(--muted);
+  background: var(--surface);
+  border-color: var(--card-border-light, var(--border-subtle));
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-card:hover {
+  border-color: var(--border);
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero-box {
+  background: color-mix(in srgb, var(--surface-raised) 70%, #fff);
+  border-color: var(--border-subtle);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero-value--positive {
+  color: var(--metric-positive-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero-value--negative {
+  color: var(--metric-negative-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-headline a:hover,
+html[data-color="light"]:not([data-contrast="high"]) .overview-insight-entity-link:hover {
+  color: color-mix(in srgb, var(--insight-accent) 45%, var(--insight-headline-ink));
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--positive .overview-insight-hero-value {
@@ -9857,6 +10319,38 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--pos
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--negative .overview-insight-hero-value {
   color: var(--metric-negative-ink);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-card {
+  --insight-headline-ink: #f4f4f5;
+  --insight-body-ink: #d4d4d8;
+  --insight-meta-ink: #a8a8b3;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-hero-box {
+  background: color-mix(in srgb, var(--surface-raised) 92%, #000);
+  border-color: var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-headline,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-headline a,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-entity-link {
+  color: var(--insight-headline-ink);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-story,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-team {
+  color: var(--insight-body-ink);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-kicker,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-hero-label,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-stats dt {
+  color: var(--insight-meta-ink);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-stats dd {
+  color: var(--insight-headline-ink);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-quick-list:not([aria-pressed="true"]) {

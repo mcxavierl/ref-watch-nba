@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { isLeagueCardVisible } from "@/config/leagues";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import {
   formatLeaguePaceValue,
@@ -35,7 +36,11 @@ function PaceBar({ leagueId, track, rawValue }: PaceBarProps) {
 }
 
 export function OverviewLeaguePaceGrid({ cards }: { cards: LeagueOverviewCard[] }) {
-  const orderedCards = sortLeaguePaceCards(cards);
+  const orderedCards = sortLeaguePaceCards(
+    cards.filter((card) => isLeagueCardVisible(card.leagueId)),
+  );
+
+  if (orderedCards.length === 0) return null;
 
   return (
     <div className="overview-pace-grid grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">

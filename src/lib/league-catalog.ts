@@ -2,7 +2,9 @@ import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
+import { isCatalogSlugVisible, isLeagueCardVisible, CBB_LEAGUE_ENTRY, CFB_LEAGUE_ENTRY } from "@/config/leagues";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 
 export type CatalogLeagueStatus = "live" | "coming-soon";
 
@@ -36,6 +38,28 @@ export const LIVE_CATALOG_LEAGUE_IDS = [
   "laliga",
 ] as const satisfies readonly LeagueId[];
 
+/** Short 2026 season-start labels for overview hub badges (replaces generic "Live"). */
+export const LEAGUE_SEASON_START_BADGE: Partial<Record<LeagueId, string>> = {
+  epl: "Aug 21",
+  laliga: "Aug 14",
+  nfl: "Sep 9",
+  nhl: "Oct 6",
+  nba: "Oct 2026",
+  cbb: CBB_LEAGUE_ENTRY.startDate,
+  cfb: CFB_LEAGUE_ENTRY.startDate,
+};
+
+export function leagueSeasonStartBadge(leagueId: LeagueId): string | undefined {
+  return LEAGUE_SEASON_START_BADGE[leagueId];
+}
+
+export function catalogStatusLabel(entry: CatalogLeagueEntry): string {
+  if (entry.status === "live" && entry.leagueId) {
+    return leagueSeasonStartBadge(entry.leagueId) ?? "Live";
+  }
+  return "Soon";
+}
+
 /**
  * Expanded competition catalog for the overview hub.
  * Coming-soon entries are roadmap only: no routes, no header switcher, no data loaders.
@@ -58,8 +82,8 @@ export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
   { id: "ucl", label: "UEFA Champions League", region: "Europe", sport: "soccer", status: "coming-soon", sort: 40 },
   { id: "uel", label: "UEFA Europa League", region: "Europe", sport: "soccer", status: "coming-soon", sort: 41 },
   { id: "libertadores", label: "CONMEBOL Libertadores", region: "South America", sport: "soccer", status: "coming-soon", sort: 42 },
-  { id: "cbb", label: "Men's college basketball", region: "USA", sport: "college", status: "coming-soon", sort: 50 },
-  { id: "cfb", label: "College football", region: "USA", sport: "college", status: "coming-soon", sort: 51 },
+  { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "college", status: "coming-soon", leagueId: "cbb", sort: 50 },
+  { id: "cfb", label: "NCAA Football", region: "USA", sport: "college", status: "coming-soon", leagueId: "cfb", sort: 51 },
   { id: "mlb", label: "MLB", region: "USA", sport: "baseball", status: "coming-soon", sort: 52 },
 ];
 
@@ -117,19 +141,19 @@ function previewForList(
             value: card.whistlePerGame.toFixed(1),
             caption: whistlePreviewCaption(card),
           }
-        : { value: "—", caption: "Whistle avg" };
+        : { value: EMPTY_DISPLAY, caption: "Whistle avg" };
     case "scoring-outliers":
       return card
         ? {
             value: card.scorePerGame.toFixed(1),
             caption: scorePreviewCaption(card),
           }
-        : { value: "—", caption: "Scoring avg" };
+        : { value: EMPTY_DISPLAY, caption: "Scoring avg" };
     case "home-bias":
       if (insight?.heroValue) {
         return { value: insight.heroValue, caption: "vs baseline" };
       }
-      return { value: "—", caption: "Cover Δ" };
+      return { value: EMPTY_DISPLAY, caption: "Cover Δ" };
     case "matrix-edges":
       if (gamesStat) {
         return { value: gamesStat.value, caption: "Splits" };
@@ -137,9 +161,9 @@ function previewForList(
       if (card) {
         return { value: String(card.refCount), caption: "Officials" };
       }
-      return { value: "—", caption: "Splits" };
+      return { value: EMPTY_DISPLAY, caption: "Splits" };
     default:
-      return { value: "—", caption: "Preview" };
+      return { value: EMPTY_DISPLAY, caption: "Preview" };
   }
 }
 
@@ -185,9 +209,17 @@ export function overviewQuickListsForLeague(
   }));
 }
 
+export function catalogEntriesForDisplay(): CatalogLeagueEntry[] {
+  return LEAGUE_CATALOG.filter((entry) => {
+    if (entry.leagueId && !isLeagueCardVisible(entry.leagueId)) return false;
+    if (!entry.leagueId && !isCatalogSlugVisible(entry.id)) return false;
+    return true;
+  });
+}
+
 export function catalogBySport(): { sport: CatalogSportGroup; label: string; entries: CatalogLeagueEntry[] }[] {
   const groups = new Map<CatalogSportGroup, CatalogLeagueEntry[]>();
-  for (const entry of LEAGUE_CATALOG) {
+  for (const entry of catalogEntriesForDisplay()) {
     const list = groups.get(entry.sport) ?? [];
     list.push(entry);
     groups.set(entry.sport, list);
@@ -205,5 +237,5 @@ export function liveCatalogCount(): number {
 }
 
 export function catalogCompetitionCount(): number {
-  return LEAGUE_CATALOG.length;
+  return catalogEntriesForDisplay().length;
 }

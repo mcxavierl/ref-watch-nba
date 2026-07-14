@@ -129,7 +129,7 @@ export function OverviewQuickLists({
       {selectedList ? (
         <div className="overview-quicklists-open-row">
           <p className="overview-quicklists-open-hint">
-            {selectedList.label} selected — open the live {league.shortLabel} view.
+            {selectedList.label} selected. Open the live {league.shortLabel} view.
           </p>
           <Link
             href={selectedList.href}

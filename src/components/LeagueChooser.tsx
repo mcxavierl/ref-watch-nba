@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { isLeagueCardVisible } from "@/config/leagues";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
@@ -17,9 +18,12 @@ function formatCount(n: number): string {
 const CHOOSER_LEAGUE_ORDER: LeagueId[] = ["nba", "nhl", "nfl", "epl", "laliga"];
 
 export function LeagueChooser({ cards }: LeagueChooserProps) {
-  const sortedCards = [...cards].sort(
+  const visibleCards = cards.filter((card) => isLeagueCardVisible(card.leagueId));
+  const sortedCards = [...visibleCards].sort(
     (a, b) => CHOOSER_LEAGUE_ORDER.indexOf(a.leagueId) - CHOOSER_LEAGUE_ORDER.indexOf(b.leagueId),
   );
+
+  if (sortedCards.length === 0) return null;
 
   return (
     <section className="overview-league-chooser section-block" aria-labelledby="overview-league-chooser-heading">
