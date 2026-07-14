@@ -3,6 +3,7 @@ import {
   cfbPreviewBannerMessage,
   isCfbVerifiedData,
 } from "@/lib/cfb/data-source";
+import { cfbGameLogPreviewMessage, isCfbGameLogsPreview } from "@/lib/cfb/build-state";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 
 export function CfbPreviewBanner({
@@ -12,12 +13,20 @@ export function CfbPreviewBanner({
   statsSource: RefStatsFile["meta"]["source"];
   assignmentsSource?: AssignmentsFile["source"];
 }) {
-  if (isCfbVerifiedData(statsSource) && assignmentsSource === "espn") {
+  const previewMessage = cfbGameLogPreviewMessage();
+  const inGameLogPreview = isCfbGameLogsPreview();
+
+  if (
+    !inGameLogPreview &&
+    isCfbVerifiedData(statsSource) &&
+    assignmentsSource === "espn"
+  ) {
     return null;
   }
 
   const verifiedStats = isCfbVerifiedData(statsSource);
-  const message = cfbPreviewBannerMessage(statsSource, assignmentsSource);
+  const message =
+    previewMessage ?? cfbPreviewBannerMessage(statsSource, assignmentsSource);
 
   return (
     <div
