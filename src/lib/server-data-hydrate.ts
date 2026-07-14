@@ -1,14 +1,10 @@
 import { cache } from "react";
-import {
-  preloadLeagueDataForPath,
-  preloadOverviewLeagueRefStats,
-} from "@/lib/edge-preload";
+import { preloadLeagueDataForPath } from "@/lib/edge-preload";
 import {
   preloadGameLogsFromAssets,
   type DataLeague,
 } from "@/lib/game-logs-preload";
 import { normalizeAppPathname } from "@/lib/json-asset-guards";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { preloadNcaaComponentsForPath } from "@/lib/ncaa-isolate-components";
 import {
   leaguesForPath,
@@ -37,14 +33,13 @@ export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
 
   const path = normalizeAppPathname(pathname);
 
-  try {
-    if (path === "/" || path.startsWith("/overview")) {
-      for (const leagueId of VERIFIED_LIVE_LEAGUE_IDS) {
-        await preloadOverviewLeagueRefStats(SITE_URL, leagueId);
-      }
-      return;
-    }
+  // Overview hub reads bundled snapshot JSON — skip multi-league ref-stats preload
+  // (cold Workers were 500/1019 when parsing five ref-stats payloads per request).
+  if (path === "/" || path.startsWith("/overview")) {
+    return;
+  }
 
+  try {
     await preloadLeagueDataForPath(SITE_URL, path);
     await preloadNcaaComponentsForPath(SITE_URL, path);
   } catch (error) {
