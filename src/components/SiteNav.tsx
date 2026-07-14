@@ -5,7 +5,15 @@ import { usePathname } from "next/navigation";
 
 import { LeagueNavMark, leagueNavLabel } from "@/components/LeagueSwitchMark";
 import { getHeaderLeagueIds, isIngestGatedNavHidden, isNhlNavHidden } from "@/lib/header-leagues";
-import { headerActiveLeague, leagueFromPathname, leagueHubHref, LEAGUE_GAMES_NAV_LABEL, LEAGUES, type LeagueId } from "@/lib/leagues";
+import {
+  headerActiveLeague,
+  isNcaaPath,
+  leagueFromPathname,
+  leagueHubHref,
+  LEAGUE_GAMES_NAV_LABEL,
+  LEAGUES,
+  type LeagueId,
+} from "@/lib/leagues";
 
 type NavLink = { href: string; label: string; match: (pathname: string, homeHref: string) => boolean };
 
@@ -166,6 +174,10 @@ export function SiteNav({ id = "site-primary-nav" }: SiteNavProps) {
   const pathname = usePathname();
   const resolvedPath = pathname ?? "/";
   const league = leagueFromPathname(resolvedPath);
+
+  if (isNcaaPath(resolvedPath)) {
+    return null;
+  }
 
   if (isIngestGatedNavHidden(league) || isNhlNavHidden(league)) {
     return null;

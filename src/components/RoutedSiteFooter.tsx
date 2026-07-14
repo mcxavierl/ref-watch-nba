@@ -1,7 +1,8 @@
 import { SiteFooter, type FooterLeague } from "@/components/SiteFooter";
-import { leagueFromPathname } from "@/lib/leagues";
+import { isNcaaPath, leagueFromPathname } from "@/lib/leagues";
 
 function footerLeagueForPath(pathname: string): FooterLeague {
+  if (isNcaaPath(pathname)) return "cbb";
   const league = leagueFromPathname(pathname);
   if (league === "nfl") return "nfl";
   if (league === "nhl") return "nhl";

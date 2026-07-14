@@ -26,7 +26,7 @@ test("pathNeedsNcaaComponents scopes to college routes", () => {
 test("ncaaLeaguesForPath scopes to active college routes", () => {
   assert.deepEqual(ncaaLeaguesForPath("/cbb"), ["cbb"]);
   assert.deepEqual(ncaaLeaguesForPath("/cfb/research"), ["cfb"]);
-  assert.deepEqual(ncaaLeaguesForPath("/ncaa/integrity-audit"), []);
+  assert.deepEqual(ncaaLeaguesForPath("/ncaa/integrity-audit"), ["cbb", "cfb"]);
   assert.deepEqual(ncaaLeaguesForPath("/nba"), []);
 });
 

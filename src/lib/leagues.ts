@@ -268,8 +268,16 @@ export const LEAGUES: Record<LeagueId, LeagueConfig> = {
   },
 };
 
+export function isNcaaPath(pathname: string): boolean {
+  const path = pathname.split("?")[0];
+  return path === "/ncaa" || path.startsWith("/ncaa/");
+}
+
 export function leagueFromPathname(pathname: string): LeagueId {
   const path = pathname.split("?")[0];
+  if (isNcaaPath(path)) {
+    return "cbb";
+  }
   if (path === "/nba" || path.startsWith("/nba/")) {
     return "nba";
   }
@@ -310,9 +318,9 @@ export function leagueHubHref(leagueId: LeagueId): string {
   return prefix || "/nba";
 }
 
-/** Header sport switcher: no league highlighted on the overview hub. */
+/** Header sport switcher: no league highlighted on overview or NCAA audit hubs. */
 export function headerActiveLeague(pathname: string): LeagueId | null {
-  if (isOverviewPath(pathname)) return null;
+  if (isOverviewPath(pathname) || isNcaaPath(pathname)) return null;
   return leagueFromPathname(pathname);
 }
 

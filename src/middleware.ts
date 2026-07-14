@@ -15,7 +15,17 @@ function isComingSoonLeaguePath(pathname: string): boolean {
   return false;
 }
 
+function isNcaaIntegrityAuditPath(pathname: string): boolean {
+  return (
+    pathname === "/ncaa/integrity-audit" ||
+    pathname.startsWith("/ncaa/integrity-audit/")
+  );
+}
+
 function isGatedCollegePath(pathname: string): boolean {
+  if (isNcaaIntegrityAuditPath(pathname)) {
+    return false;
+  }
   if (pathname === "/ncaa" || pathname.startsWith("/ncaa/")) {
     return true;
   }
@@ -42,6 +52,12 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = SITE_HOME_PATH;
     return NextResponse.redirect(url);
+  }
+
+  if (pathname === "/ncaa" || pathname === "/ncaa/") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/ncaa/integrity-audit";
+    return NextResponse.redirect(url, 308);
   }
 
   if (isGatedCollegePath(pathname)) {
