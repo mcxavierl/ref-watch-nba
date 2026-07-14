@@ -41,11 +41,15 @@ describe("site link health", () => {
       join(process.cwd(), "src/components/InsightsHubPage.tsx"),
       "utf8",
     );
-    assert.match(source, /basePath=\{league\.pathPrefix\}/);
-    assert.equal(
-      (source.match(/basePath=\{league\.pathPrefix\}/g) ?? []).length,
-      2,
-      "RankingsInsightCards and RefRankingsTable must both receive basePath",
+    assert.match(
+      source,
+      /<RankingsInsightCards[\s\S]*?basePath=\{league\.pathPrefix\}/,
+      "RankingsInsightCards must receive basePath",
+    );
+    assert.match(
+      source,
+      /<RefRankingsTable[\s\S]*?basePath=\{league\.pathPrefix\}/,
+      "RefRankingsTable must receive basePath",
     );
   });
 
