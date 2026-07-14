@@ -1,4 +1,17 @@
+import "server-only";
+
 import type { Finding, FindingCategory } from "@/lib/findings-shared";
+import { DEFAULT_STANDARD_JUICE, type EvMarketSide, type FindingEvSnapshot } from "@/lib/finding-ev-display";
+export {
+  DEFAULT_STANDARD_JUICE,
+  EDGE_NEGATIVE_THRESHOLD,
+  EDGE_POSITIVE_THRESHOLD,
+  EV_DISCLAIMER,
+  edgeTone,
+  pickStrongestEvSnapshot,
+  type EvMarketSide,
+  type FindingEvSnapshot,
+} from "@/lib/finding-ev-display";
 import { isWhistleTaxonomyLeague } from "@/config/penalty-types";
 import { extractOfficialFromFinding } from "@/lib/finding-grouping";
 import { loadLeagueOddsShard } from "@/lib/league-odds";
@@ -17,31 +30,6 @@ import type {
   RefProfile,
   RefStatsFile,
 } from "@/lib/types";
-
-/** Standard -110 juice used when a priced side is absent from the odds shard. */
-export const DEFAULT_STANDARD_JUICE = -110;
-
-/** Edge score (percentage points) above which a line reads as positive EV. */
-export const EDGE_POSITIVE_THRESHOLD = 2;
-
-/** Edge score (percentage points) below which a line reads as negative EV. */
-export const EDGE_NEGATIVE_THRESHOLD = -2;
-
-export const EV_DISCLAIMER =
-  "Expected Value is a statistical estimate, not a guaranteed return. Use this to identify market discrepancies, not as a source of truth.";
-
-export type EvMarketSide = "over" | "under" | "cover";
-
-export type FindingEvSnapshot = {
-  findingId: string;
-  impliedProbability: number;
-  adjustedProbability: number;
-  edgeScore: number;
-  lwisAdjustment: number;
-  marketOdds: number;
-  marketLabel: string;
-  marketSide: EvMarketSide;
-};
 
 export type LwisEvAdjustmentInput = {
   isHighImpactOutlier: boolean;
@@ -359,23 +347,3 @@ export function buildResearchFindingEvMap(
   return map;
 }
 
-export function pickStrongestEvSnapshot(
-  snapshots: Array<FindingEvSnapshot | null | undefined>,
-): FindingEvSnapshot | null {
-  let best: FindingEvSnapshot | null = null;
-  for (const snapshot of snapshots) {
-    if (!snapshot) continue;
-    if (!best || Math.abs(snapshot.edgeScore) > Math.abs(best.edgeScore)) {
-      best = snapshot;
-    }
-  }
-  return best;
-}
-
-export function edgeTone(
-  edgeScore: number,
-): "positive" | "negative" | "neutral" {
-  if (edgeScore > EDGE_POSITIVE_THRESHOLD) return "positive";
-  if (edgeScore < EDGE_NEGATIVE_THRESHOLD) return "negative";
-  return "neutral";
-}

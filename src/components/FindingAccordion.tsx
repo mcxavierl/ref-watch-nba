@@ -21,7 +21,7 @@ import {
   uniqueFindingCategories,
   type OfficialIdentity,
 } from "@/lib/finding-grouping";
-import { pickStrongestEvSnapshot, type FindingEvSnapshot } from "@/lib/ev-calculator";
+import { pickStrongestEvSnapshot, type FindingEvSnapshot } from "@/lib/finding-ev-display";
 import {
   FINDING_CATEGORY_LABELS,
   resolveFindingExplainer,

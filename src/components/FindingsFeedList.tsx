@@ -5,7 +5,7 @@ import {
   OfficialFindingsAccordionItem,
 } from "@/components/FindingAccordion";
 import type { OfficialIdentity } from "@/lib/finding-grouping";
-import type { FindingEvSnapshot } from "@/lib/ev-calculator";
+import type { FindingEvSnapshot } from "@/lib/finding-ev-display";
 import type { Finding, FindingLeague } from "@/lib/findings-shared";
 
 export type FindingsFeedItem =

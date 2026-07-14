@@ -5,7 +5,7 @@ import {
   EV_DISCLAIMER,
   edgeTone,
   type FindingEvSnapshot,
-} from "@/lib/ev-calculator";
+} from "@/lib/finding-ev-display";
 
 function formatEdgeScore(score: number): string {
   const rounded = Math.round(score * 10) / 10;

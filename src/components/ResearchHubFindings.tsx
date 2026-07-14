@@ -17,7 +17,7 @@ import {
   sortFindingsByStrength,
   type FindingFilterGroup,
 } from "@/lib/findings-shared";
-import type { FindingEvSnapshot } from "@/lib/ev-calculator";
+import type { FindingEvSnapshot } from "@/lib/finding-ev-display";
 import type { ConfidenceTier } from "@/lib/user-language";
 import { FilterResultsAnnouncer } from "@/lib/a11y/LiveRegion";
 import type { ResearchFinding } from "@/lib/research";
