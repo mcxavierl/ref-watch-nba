@@ -9,6 +9,7 @@ import { join } from "node:path";
 const workerPath = join(process.cwd(), ".open-next", "worker.js");
 const ISOLATE_RUN = "__refwatch_run_worker_isolate__";
 const ISOLATE_END = "__refwatch_end_worker_isolate__";
+const ISOLATE_CLOSE_MARKER = `__refwatchRun(__refwatchExec)`;
 
 if (!existsSync(workerPath)) {
   console.error("patch-worker-entry: missing .open-next/worker.js — run build:opennext first");
@@ -17,10 +18,12 @@ if (!existsSync(workerPath)) {
 
 let source = readFileSync(workerPath, "utf8");
 
-if (
+const isFullyPatched =
   source.includes("passThroughOnException") &&
-  source.includes(ISOLATE_RUN)
-) {
+  source.includes(ISOLATE_RUN) &&
+  source.includes(ISOLATE_CLOSE_MARKER);
+
+if (isFullyPatched) {
   console.log("patch-worker-entry: already patched");
   process.exit(0);
 }
@@ -128,8 +131,8 @@ const legacyFetchClose = `        });
     },
 };`;
 
-if (source.includes(ISOLATE_RUN)) {
-  console.log("patch-worker-entry: isolate wrapper already present");
+if (source.includes(ISOLATE_CLOSE_MARKER)) {
+  console.log("patch-worker-entry: close wrapper already present");
 } else if (source.includes(legacyFetchClose)) {
   source = source.replace(legacyFetchClose, fetchClosePatched);
 } else if (source.includes(fetchClose)) {
