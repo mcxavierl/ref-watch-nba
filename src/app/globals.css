@@ -8412,7 +8412,7 @@ p {
   }
 
   .trust-charter-compact {
-    @apply text-sm leading-relaxed text-zinc-600;
+    @apply mt-6 rounded-lg border border-border bg-surface-raised px-4 py-4 text-sm leading-relaxed text-zinc-600 sm:px-5;
   }
 
   .signal-limitations-note {
@@ -12146,8 +12146,9 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
 
 .integrity-data-card,
 .wc-methodology-card {
-  display: grid;
-  gap: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
 }
 
 .integrity-data-card-header,
@@ -12155,6 +12156,7 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  margin-bottom: var(--space-1);
 }
 
 .integrity-data-card-icon,
@@ -12187,9 +12189,11 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
 }
 
 .wc-methodology-card-lead {
+  margin: 0;
+  padding-top: var(--space-2);
   font-size: var(--text-sm);
   color: var(--ink-secondary);
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .integrity-data-card-note,
@@ -12227,8 +12231,21 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
 .overview-research-hub-card {
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
   border-color: color-mix(in srgb, var(--wc-research-accent) 35%, var(--border-subtle));
   background: var(--wc-research-surface);
+}
+
+.overview-research-hub-card-hero.kpi-data-pill--block {
+  gap: 0.4rem;
+  padding: 1rem 1.1rem;
+}
+
+.overview-research-hub-card-hero .kpi-data-pill__label {
+  line-height: 1.45;
+  max-width: 28ch;
 }
 
 .overview-research-hub-card-accent {
@@ -12378,7 +12395,7 @@ html.dark .overview-research-hub-card-stats dd {
 
 .wc-research-page-grid {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-6);
 }
 
 @media (min-width: 900px) {

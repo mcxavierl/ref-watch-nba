@@ -20,7 +20,7 @@ import {
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { filterNcaaRefStats } from "@/lib/ncaa-conference-gate";
 import { cfbCrewMetricsProvenance } from "@/lib/provenance";
-import { getCachedRefStats } from "@/lib/ref-stats-preload";
+import { getCachedRefStats, resolveRefStatsFromFsOrCache } from "@/lib/ref-stats-preload";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data", "cfb");
@@ -47,10 +47,10 @@ function tryReadJson<T>(filename: string): T | null {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs = tryReadJson<RefStatsFile>("ref-stats.json");
-  if (fromFs) return fromFs;
-
-  return getCachedRefStats("cfb");
+  const fromFs =
+    tryReadJson<RefStatsFile>("ref-stats-core.json") ??
+    tryReadJson<RefStatsFile>("ref-stats.json");
+  return resolveRefStatsFromFsOrCache("cfb", fromFs);
 }
 
 export function getAssignments(): AssignmentsFile {

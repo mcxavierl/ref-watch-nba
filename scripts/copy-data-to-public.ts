@@ -156,8 +156,8 @@ if (fs.existsSync(ncaaPersonnel)) {
   fs.copyFileSync(ncaaPersonnel, dest);
   console.log(`Copied ${ncaaPersonnel} → ${dest}`);
 }
+copyLeagueRefStatsSplit(root, "cfb");
 copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "game-logs");
-copyPair(path.join(root, "data/cfb"), path.join(root, "public/data/cfb"), "ref-stats");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "game-logs");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "ref-photos");
 copyPair(path.join(root, "data/laliga"), path.join(root, "public/data/laliga"), "game-logs");
@@ -246,6 +246,8 @@ function writeLeagueHeroStats(root: string): void {
     { id: "nhl", path: path.join(root, "data", "nhl", "ref-stats-core.json") },
     { id: "epl", path: path.join(root, "data", "epl", "ref-stats-core.json") },
     { id: "laliga", path: path.join(root, "data", "laliga", "ref-stats-core.json") },
+    { id: "cbb", path: path.join(root, "data", "cbb", "ref-stats-core.json") },
+    { id: "cfb", path: path.join(root, "data", "cfb", "ref-stats-core.json") },
   ];
 
   for (const { id, path: statsPath } of sources) {

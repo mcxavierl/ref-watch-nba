@@ -68,7 +68,7 @@ export const LEAGUE_CONFIG: Partial<Record<LeagueId, LeagueRegistryEntry>> = {
       light: "/assets/logos/ncaa.png",
       dark: "/assets/logos/ncaa.png",
     },
-    dataVerified: false,
+    dataVerified: true,
   },
   cfb: {
     id: "cfb",
@@ -81,7 +81,7 @@ export const LEAGUE_CONFIG: Partial<Record<LeagueId, LeagueRegistryEntry>> = {
       light: "/assets/logos/ncaa.png",
       dark: "/assets/logos/ncaa.png",
     },
-    dataVerified: false,
+    dataVerified: true,
   },
 };
 

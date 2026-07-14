@@ -31,7 +31,7 @@ test("CFB registry entry matches spec", () => {
   assert.equal(CFB_LEAGUE_ENTRY.slug, "cfb");
   assert.equal(formatLeagueSeasonStart("cfb"), "08/29");
   assert.equal(CFB_LEAGUE_ENTRY.themeColor, "#009CDE");
-  assert.equal(CFB_LEAGUE_ENTRY.dataVerified, false);
+  assert.equal(CFB_LEAGUE_ENTRY.dataVerified, true);
   assert.equal(CFB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa.png");
   assert.equal(CFB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa.png");
 });
@@ -41,7 +41,7 @@ test("CBB registry entry matches spec", () => {
   assert.equal(CBB_LEAGUE_ENTRY.slug, "cbb");
   assert.equal(formatLeagueSeasonStart("cbb"), "11/04");
   assert.equal(CBB_LEAGUE_ENTRY.themeColor, "#009CDE");
-  assert.equal(CBB_LEAGUE_ENTRY.dataVerified, false);
+  assert.equal(CBB_LEAGUE_ENTRY.dataVerified, true);
 });
 
 test("isDashboardLeagueExposed shows all verified live leagues including college", () => {
