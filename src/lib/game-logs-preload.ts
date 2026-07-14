@@ -77,7 +77,7 @@ const GAME_LOG_ASSET_BASE = freezeWorkerConfig({
 
 function readGlobalGameLogs(league: DataLeague): RuntimeGameLogFile | null {
   const key = GAME_LOG_GLOBAL_KEYS[league];
-  return (globalThis as Record<string, RuntimeGameLogFile | undefined>)[key] ?? null;
+  return (globalThis as unknown as Record<string, RuntimeGameLogFile | undefined>)[key] ?? null;
 }
 
 export function getCachedGameLogs(league: DataLeague): RuntimeGameLogFile | null {
@@ -90,7 +90,7 @@ export function setCachedGameLogs(
 ): void {
   getWorkerIsolateStore().gameLogs[league] = data;
   const key = GAME_LOG_GLOBAL_KEYS[league];
-  (globalThis as Record<string, RuntimeGameLogFile | undefined>)[key] = data;
+  (globalThis as unknown as Record<string, RuntimeGameLogFile | undefined>)[key] = data;
 }
 
 /** Edge-safe: fetch game logs from static assets (no Node fs). */

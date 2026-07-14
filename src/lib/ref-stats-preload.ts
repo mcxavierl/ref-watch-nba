@@ -47,12 +47,12 @@ const ASSET_BASE = freezeWorkerConfig({
 
 function readGlobalRefStats(league: League): RefStatsFile | null {
   const key = REF_STATS_CACHE_KEYS[league];
-  return (globalThis as Record<string, RefStatsFile | undefined>)[key] ?? null;
+  return (globalThis as unknown as Record<string, RefStatsFile | undefined>)[key] ?? null;
 }
 
 function writeGlobalRefStats(league: League, data: RefStatsFile): void {
   const key = REF_STATS_CACHE_KEYS[league];
-  (globalThis as Record<string, RefStatsFile | undefined>)[key] = data;
+  (globalThis as unknown as Record<string, RefStatsFile | undefined>)[key] = data;
 }
 
 export function getCachedRefStats(league: League): RefStatsFile | null {
@@ -143,7 +143,7 @@ function readGlobalTeamSplits(
 ): Record<string, TeamCrewSplit[]> | null {
   const key = TEAM_SPLITS_CACHE_KEYS[league as keyof typeof TEAM_SPLITS_CACHE_KEYS];
   if (!key) return null;
-  return (globalThis as Record<string, Record<string, TeamCrewSplit[]> | undefined>)[key] ?? null;
+  return (globalThis as unknown as Record<string, Record<string, TeamCrewSplit[]> | undefined>)[key] ?? null;
 }
 
 export function getCachedTeamSplits(
@@ -187,7 +187,7 @@ export function setCachedTeamSplits(
   getWorkerIsolateStore().teamSplits[league] = splits;
   const key = TEAM_SPLITS_CACHE_KEYS[league as keyof typeof TEAM_SPLITS_CACHE_KEYS];
   if (key) {
-    (globalThis as Record<string, Record<string, TeamCrewSplit[]> | undefined>)[key] =
+    (globalThis as unknown as Record<string, Record<string, TeamCrewSplit[]> | undefined>)[key] =
       splits;
   }
   mergeCachedLeagueRefStats(league);
