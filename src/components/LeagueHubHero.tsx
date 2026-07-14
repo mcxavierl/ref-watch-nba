@@ -1,6 +1,114 @@
-import type { ReactNode } from "react";
+import {
+  Children,
+  Fragment,
+  isValidElement,
+  type ReactNode,
+} from "react";
 import { LeagueHeroLogo } from "@/components/LeagueHeroLogo";
 import type { LeagueId } from "@/lib/leagues";
+
+type HeroChildRole = "back" | "kicker" | "title" | "head-wrapper" | "other";
+
+function classifyHeroChild(child: ReactNode): HeroChildRole {
+  if (!isValidElement(child)) return "other";
+  if (child.type === LeagueHubHeroHead) return "head-wrapper";
+
+  const props = child.props as { className?: string };
+  const className = typeof props.className === "string" ? props.className : "";
+
+  if (
+    className.includes("league-hub-hero-back") ||
+    className.includes("insights-hero-back")
+  ) {
+    return "back";
+  }
+  if (
+    className.includes("league-slate-kicker") ||
+    className.includes("section-kicker")
+  ) {
+    return "kicker";
+  }
+  if (
+    className.includes("page-title") ||
+    className.includes("insights-hero-title")
+  ) {
+    return "title";
+  }
+  if (child.type === "h1") return "title";
+  return "other";
+}
+
+function flattenHeroChildren(children: ReactNode): ReactNode[] {
+  const out: ReactNode[] = [];
+  Children.forEach(children, (child) => {
+    if (isValidElement(child) && child.type === Fragment) {
+      out.push(
+        ...flattenHeroChildren(
+          (child.props as { children?: ReactNode }).children,
+        ),
+      );
+      return;
+    }
+    out.push(child);
+  });
+  return out;
+}
+
+function partitionHeroChildren(children: ReactNode) {
+  const flat = flattenHeroChildren(children);
+  const before: ReactNode[] = [];
+  const head: ReactNode[] = [];
+  const body: ReactNode[] = [];
+
+  let index = 0;
+  while (index < flat.length) {
+    const role = classifyHeroChild(flat[index]!);
+    if (role === "back") {
+      before.push(flat[index]!);
+      index += 1;
+      continue;
+    }
+    if (role === "head-wrapper") {
+      head.push(flat[index]!);
+      index += 1;
+      continue;
+    }
+    if (role === "kicker" || role === "title") {
+      while (index < flat.length) {
+        const nextRole = classifyHeroChild(flat[index]!);
+        if (nextRole === "kicker" || nextRole === "title") {
+          head.push(flat[index]!);
+          index += 1;
+          continue;
+        }
+        if (nextRole === "head-wrapper") {
+          head.push(flat[index]!);
+          index += 1;
+          break;
+        }
+        break;
+      }
+      continue;
+    }
+    break;
+  }
+
+  while (index < flat.length) {
+    body.push(flat[index]!);
+    index += 1;
+  }
+
+  return { before, head, body };
+}
+
+function renderHeroHead(head: ReactNode[]) {
+  if (head.length === 0) return null;
+  const hasWrapper = head.some(
+    (child) => isValidElement(child) && child.type === LeagueHubHeroHead,
+  );
+  if (hasWrapper) return <>{head}</>;
+  return <div className="league-hub-hero-head-copy">{head}</div>;
+}
 
 /** Leagues with sport-watermark hub heroes (court / rink / field / pitch). */
 export type HubHeroLeagueId = Extract<
@@ -540,6 +648,11 @@ function SportWatermark({ leagueId }: { leagueId: HubHeroLeagueId }) {
   }
 }
 
+/** Optional explicit wrapper for hero kicker + title copy beside the league logo. */
+export function LeagueHubHeroHead({ children }: { children: ReactNode }) {
+  return <div className="league-hub-hero-head-copy">{children}</div>;
+}
+
 /**
  * Full-bleed dark charcoal hub hero with per-league sport watermark.
  * Shared by slate, matrix, refs, teams, insights, and other category hubs.
@@ -551,6 +664,9 @@ export function LeagueHubHero({
   showLogo = true,
   ...aria
 }: LeagueHubHeroProps) {
+  const { before, head, body } = partitionHeroChildren(children);
+  const headContent = renderHeroHead(head);
+
   return (
     <section
       className={["league-hub-hero", className].filter(Boolean).join(" ")}
@@ -568,11 +684,19 @@ export function LeagueHubHero({
           .filter(Boolean)
           .join(" ")}
       >
+        {before}
         {showLogo ? (
-          <LeagueHeroLogo leagueId={leagueId} className="league-hub-hero-logo" />
-        ) : null}
-        {children}
+          <div className="league-hub-hero-header-block">
+            <LeagueHeroLogo leagueId={leagueId} className="league-hub-hero-logo" />
+            {headContent}
+          </div>
+        ) : (
+          headContent
+        )}
+        {body}
       </div>
     </section>
   );
 }
+
+LeagueHubHero.Head = LeagueHubHeroHead;
