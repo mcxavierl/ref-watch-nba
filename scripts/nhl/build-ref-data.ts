@@ -720,7 +720,7 @@ function buildStatsFromLogs(rawLogs: GameLogEntry[]): RefStatsFile {
       teamSpecialTeams:
         Object.keys(teamSpecialTeams).length > 0 ? teamSpecialTeams : undefined,
       note: atsAvailable
-        ? `Scores, PIM, and crews from NHL API. ATS/O-U from synthetic closing lines derived from final scores (${maps.linedGames}/${dedupedLogs.length} games) — descriptive only, not market odds.`
+        ? `Scores, PIM, and crews from NHL API. ATS/O-U from synthetic closing lines derived from final scores (${maps.linedGames}/${dedupedLogs.length} games). Descriptive only, not market odds.`
         : undefined,
     },
     refs,

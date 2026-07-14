@@ -13,7 +13,7 @@
     "minSampleSize": 30,
     "source": "seeded",
     "atsAvailable": false,
-    "note": "Premier League offseason seed — PGMO roster with illustrative match samples. Run npm run build-epl-data for match backfill."
+    "note": "Premier League offseason seed, PGMO roster with illustrative match samples. Run npm run build-epl-data for match backfill."
   },
   "refs": [
     {

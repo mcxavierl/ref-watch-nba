@@ -14,6 +14,11 @@ import { findingMetricLabels } from "@/lib/finding-labels";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { ScoredFindingBase } from "@/lib/findings-shared";
 import { rankScore } from "@/lib/findings-shared";
+import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import {
+  MARQUEE_CI_MIN_GAMES,
+  scanLeagueMarqueeEfficiency,
+} from "@/lib/marquee-metrics";
 import {
   isLeagueBenchmarkSkewSignificant,
   leagueBenchmarkLean,
@@ -28,6 +33,12 @@ import {
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { buildYoYNarrative, seasonRowsFromBaselines } from "@/lib/trends";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
+import {
+  FRICTION_MIN_H2H_GAMES,
+  scanFrictionGrudgeMatrix,
+  type FrictionGrudgeFinding,
+} from "@/lib/friction-grudge-matrix";
+import type { LeagueId } from "@/lib/leagues";
 
 export interface LeagueFindingPaths {
   idPrefix: string;
@@ -545,7 +556,7 @@ export function buildOverRateOutlierFinding(
     category: "ref-outlier",
     headline: overUnderFrequencyHeadline(ref.name, ref.overRate, direction),
     summary: `${formatPct(ref.overRate)} of ${ref.name}'s ${ref.games} games finish ${lean} ${stats.meta.leagueOverBaseline} combined ${metricLabels.score}, ${(edge * 100).toFixed(1)} pts from a neutral 50% baseline.`,
-    explainer: `Personal over rate tracks how often this official's games clear the fixed ${stats.meta.leagueOverBaseline}-${metricLabels.overBenchmark} benchmark — descriptive frequency, not sportsbook pricing.`,
+    explainer: `Personal over rate tracks how often this official's games clear the fixed ${stats.meta.leagueOverBaseline}-${metricLabels.overBenchmark} benchmark. Descriptive frequency, not sportsbook pricing.`,
     stats: [
       {
         label: overBenchmarkStatLabel(ref.overRate),
@@ -736,7 +747,7 @@ export function buildNhlOtOutlierFinding(
     category: "ref-outlier",
     headline: `${best.ref.name} pushes ${formatPct(best.rate)} of games to OT/SO`,
     summary: `${best.ref.name} reaches overtime or shootout ${formatPct(best.rate)} of the time (${best.otGames} of ${best.ref.games} games), ${(Math.abs(best.edge) * 100).toFixed(1)} pts ${best.edge >= 0 ? "above" : "below"} the ${formatPct(leagueOt)} league rate.`,
-    explainer: `${otLabel} shows how often games need extra time under this official. Descriptive pace context — not a prediction for tonight's slate.`,
+    explainer: `${otLabel} shows how often games need extra time under this official. Descriptive pace context, not a prediction for tonight's slate.`,
     stats: [
       {
         label: otLabel,
@@ -759,4 +770,139 @@ export function buildNhlOtOutlierFinding(
     score: rankScore(Math.abs(best.edge), best.ref.games, MIN_ANALYTICS_GAMES),
     sampleGames: best.ref.games,
   };
+}
+
+const MIN_MARQUEE_FINDING_GAMES = 8;
+
+/** League-wide marquee-vs-baseline efficiency split for Research hub filtering. */
+export function buildMarqueeEfficiencyFinding(
+  stats: RefStatsFile,
+  ctx: LeagueFindingContext,
+): ScoredFindingBase | null {
+  const leagueId = MATRIX_LEAGUE[ctx.league];
+  if (!(VERIFIED_LIVE_LEAGUE_IDS as readonly string[]).includes(leagueId)) {
+    return null;
+  }
+
+  const scan = scanLeagueMarqueeEfficiency(leagueId, stats.refs);
+  if (!scan) return null;
+
+  const { performance, refName, deltaOverPp, deltaAtsPp, marqueeGames } = scan;
+  const metricLabels = findingMetricLabels(ctx.league);
+  const overPrimary =
+    Math.abs(deltaOverPp) >= Math.abs(deltaAtsPp ?? 0);
+  const primaryDelta = overPrimary ? deltaOverPp : (deltaAtsPp ?? deltaOverPp);
+  const primaryLean = primaryDelta >= 0 ? "higher" : "lower";
+  const foulDelta = performance.marqueeAvgFouls - performance.baselineAvgFouls;
+
+  const headline = overPrimary
+    ? `${refName} runs ${primaryLean} on overs in marquee games`
+    : `${refName} shifts ATS cover rate in marquee games`;
+
+  const summary = overPrimary
+    ? `Prime-time and high-profile slate: ${formatPct(performance.marqueeOverRate)} over rate (${marqueeGames} games) vs ${formatPct(performance.baselineOverRate)} baseline — ${formatSigned(deltaOverPp)} pts.`
+    : `Marquee slate ATS cover ${formatPct(performance.marqueeAtsCoverRate ?? 0)} vs ${formatPct(performance.baselineAtsCoverRate ?? 0)} baseline (${formatSigned(deltaAtsPp ?? 0)} pts) across ${marqueeGames} high-profile games.`;
+
+  const statsCells = [
+    {
+      label: "Marquee over rate",
+      value: formatPct(performance.marqueeOverRate),
+      detail: `${marqueeGames} marquee games`,
+    },
+    {
+      label: "Baseline over rate",
+      value: formatPct(performance.baselineOverRate),
+      detail: `${performance.baselineGames} non-marquee games`,
+    },
+    {
+      label: `Marquee ${metricLabels.whistle}`,
+      value: performance.marqueeAvgFouls.toFixed(1),
+      detail: `${formatSigned(foulDelta)} vs ${performance.baselineAvgFouls.toFixed(1)} baseline`,
+    },
+  ];
+
+  if (
+    performance.marqueeAtsCoverRate !== null &&
+    performance.baselineAtsCoverRate !== null
+  ) {
+    statsCells.push({
+      label: "Marquee ATS cover",
+      value: formatPct(performance.marqueeAtsCoverRate),
+      detail: `${formatSigned(deltaAtsPp ?? 0)} pts vs baseline`,
+    });
+  }
+
+  const explainer =
+    performance.marqueeGames >= MARQUEE_CI_MIN_GAMES && performance.overRateCi
+      ? `Marquee games flagged by objective metadata: national windows, derbies, top-table clashes, and max-capacity venues. Marquee over-rate 95% CI: ${performance.overRateCi.label}. Descriptive split only.`
+      : "Marquee games flagged by objective metadata: national windows, derbies, top-table clashes, and max-capacity venues. Descriptive split only, not a betting signal.";
+
+  return {
+    id: `${ctx.paths.idPrefix}marquee-efficiency`,
+    category: "marquee-efficiency",
+    headline,
+    summary,
+    explainer,
+    stats: statsCells.slice(0, 3),
+    sampleNote: formatFindingSampleMeta(marqueeGames, stats.meta.seasons),
+    links: [{ label: refName, href: ctx.paths.refPath(scan.refSlug) }],
+    score: rankScore(
+      Math.abs(primaryDelta) / 100,
+      marqueeGames,
+      MIN_MARQUEE_FINDING_GAMES,
+    ),
+    sampleGames: marqueeGames,
+  };
+}
+
+function frictionFindingCategory(
+  finding: FrictionGrudgeFinding,
+): "coach-friction" | "player-friction" {
+  return finding.personnelType === "coach" ? "coach-friction" : "player-friction";
+}
+
+function frictionFindingToScored(
+  finding: FrictionGrudgeFinding,
+  ctx: LeagueFindingContext,
+): ScoredFindingBase {
+  return {
+    id: `${ctx.paths.idPrefix}${finding.id}`,
+    category: frictionFindingCategory(finding),
+    headline: finding.headline,
+    summary: finding.summary,
+    explainer: finding.comparativeLine,
+    stats: [
+      {
+        label: finding.pillLabel,
+        value: finding.metricValue,
+        detail: finding.deltaLabel,
+      },
+      {
+        label: "Baseline",
+        value: finding.baselineValue,
+        detail: `${finding.games} head-to-head games`,
+      },
+      {
+        label: "Personnel",
+        value: finding.subjectName,
+        detail: finding.teamAbbr,
+      },
+    ],
+    sampleNote: formatFindingSampleMeta(finding.games, []),
+    links: [
+      { label: finding.refName, href: ctx.paths.refPath(finding.refSlug) },
+    ],
+    score: rankScore(finding.severity / 100, finding.games, FRICTION_MIN_H2H_GAMES),
+    sampleGames: finding.games,
+  };
+}
+
+/** Convert friction matrix outliers into Research findings. */
+export function buildFrictionGrudgeFindings(
+  stats: RefStatsFile,
+  ctx: LeagueFindingContext,
+  leagueId: LeagueId,
+): ScoredFindingBase[] {
+  const matrix = scanFrictionGrudgeMatrix(leagueId, stats);
+  return matrix.map((finding) => frictionFindingToScored(finding, ctx));
 }

@@ -6,6 +6,7 @@ import {
   superBowlCatalogMeta,
 } from "@/lib/nfl/super-bowl-officiating";
 import type { Finding } from "@/lib/findings-shared";
+import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 
 type SuperBowlOfficiatingSectionProps = {
   variant?: "hub" | "home";
@@ -29,8 +30,8 @@ export function SuperBowlOfficiatingSection({
 
   const lead =
     variant === "home"
-      ? `${meta.gameCount} championship games since 2000 — referee assignments, scoring extremes, and title-game context.`
-      : `Curated referee assignments and scoring context for every Super Bowl from XXXIV (${meta.gameCount} games, 2000–present). Descriptive history only — not a betting signal.`;
+      ? `${meta.gameCount} championship games since 2000: referee assignments, scoring extremes, and title-game context.`
+      : `Curated referee assignments and scoring context for every Super Bowl from XXXIV (${meta.gameCount} games, 2000–present). Descriptive history only, not a betting signal.`;
 
   return (
     <section
@@ -48,11 +49,10 @@ export function SuperBowlOfficiatingSection({
       </div>
 
       <div className="finding-accordion-stack mt-4">
-        {findings.map((finding: Finding, index: number) => (
+        {findings.map((finding: Finding) => (
           <FindingCard
             key={finding.id}
             finding={finding}
-            index={index}
             league="NFL"
           />
         ))}
@@ -88,7 +88,7 @@ export function SuperBowlOfficiatingSection({
                       {game.overtime ? " (OT)" : ""}
                     </td>
                     <td className="font-mono tabular-nums">
-                      {game.totalPenalties ?? "—"}
+                      {game.totalPenalties ?? EMPTY_DISPLAY}
                     </td>
                     <td>
                       {game.refereeSlug ? (

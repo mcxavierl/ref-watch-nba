@@ -49,7 +49,7 @@ export default function MethodologyPage() {
               Ref profiles and rankings default to officials with{" "}
               {nbaStats.meta.minSampleSize}+ games. Below-gate refs are hidden or
               dimmed; treat as directional only.{" "}
-              <TermHelp id="sample-gate" /> badges flag thin samples on slate
+              <TermHelp id="sample-gate" /> badges flag thin samples on game pages
               cards and profiles.
             </li>
             <li>

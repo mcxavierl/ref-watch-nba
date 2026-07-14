@@ -218,7 +218,7 @@ export const LEAGUES: Record<LeagueId, LeagueConfig> = {
   },
   cbb: {
     id: "cbb",
-    label: "NCAA Men's Basketball",
+    label: "NCAA Basketball",
     shortLabel: "CBB",
     pathPrefix: "/cbb",
     dataLeague: "CBB",
@@ -290,6 +290,19 @@ export function isOverviewPath(pathname: string): boolean {
   return path === SITE_HOME_PATH || path === "/overview";
 }
 
+/** Plain-language nav label for league game hubs (not insider "slate"). */
+export const LEAGUE_GAMES_NAV_LABEL = "Games";
+
+/** Back-link text from sub-pages to a league game hub. */
+export function leagueGamesHubBackLabel(leagueId: LeagueId): string {
+  return `${LEAGUES[leagueId].shortLabel} games`;
+}
+
+/** Overview hub section title — live crews vs scheduled matchups. */
+export function overviewGamesSectionTitle(hasLiveCrews: boolean): string {
+  return hasLiveCrews ? "Tonight" : "Upcoming";
+}
+
 /** League slate hub (distinct from SITE_HOME_PATH for NBA). */
 export function leagueHubHref(leagueId: LeagueId): string {
   if (leagueId === "nba") return "/nba";
@@ -319,7 +332,7 @@ export function leagueNavLinks(leagueId: LeagueId) {
   const base = LEAGUES[leagueId].pathPrefix;
   const hub = leagueHubHref(leagueId);
   return [
-    { href: hub, label: "Slate" },
+    { href: hub, label: LEAGUE_GAMES_NAV_LABEL },
     { href: `${base}/rankings`, label: "Rankings" },
     { href: `${base}/teams`, label: "Teams" },
     { href: `${base}/refs`, label: "Refs" },

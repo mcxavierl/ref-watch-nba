@@ -23,6 +23,7 @@ import {
   isDirectionalTone,
   isStandoutTone,
 } from "@/lib/metric-delight";
+import type { ConfidenceTier } from "@/lib/user-language";
 
 function AccordionSafeLink({
   href,
@@ -54,19 +55,21 @@ function AccordionSafeLink({
 export function FindingMetaBadges({
   finding,
   category,
-  index,
+  categories,
   league,
   className = "",
 }: {
-  finding: Finding;
-  category: Finding["category"];
-  index: number;
+  finding?: Finding;
+  category?: Finding["category"];
+  categories?: Finding["category"][];
   league?: FindingLeague;
   className?: string;
 }) {
   const resolvedLeague = league;
-  const categoryFilter = FINDING_CATEGORY_TO_FILTER[category];
-  const detailHref = researchFindingHref(finding, resolvedLeague);
+  const categoryList =
+    categories ??
+    (category ? [category] : finding ? [finding.category] : []);
+  const detailHref = finding ? researchFindingHref(finding, resolvedLeague) : null;
 
   return (
     <div className={`finding-meta-pills ${className}`.trim()}>
@@ -78,70 +81,84 @@ export function FindingMetaBadges({
           {resolvedLeague}
         </AccordionSafeLink>
       )}
-      <AccordionSafeLink
-        href={
-          resolvedLeague
-            ? researchHubFilterHref(resolvedLeague, { filter: categoryFilter })
-            : detailHref
-        }
-        className="finding-meta-pill finding-meta-pill-link"
-      >
-        {FINDING_CATEGORY_LABELS[category]}
-      </AccordionSafeLink>
-      <AccordionSafeLink
-        href={detailHref}
-        className="finding-meta-pill finding-meta-pill-muted finding-meta-pill-link"
-      >
-        Finding {index + 1}
-      </AccordionSafeLink>
+      {categoryList.map((item) => {
+        const categoryFilter = FINDING_CATEGORY_TO_FILTER[item];
+        return (
+          <AccordionSafeLink
+            key={item}
+            href={
+              resolvedLeague
+                ? researchHubFilterHref(resolvedLeague, { filter: categoryFilter })
+                : detailHref ?? "#"
+            }
+            className="finding-meta-pill finding-meta-pill-link"
+          >
+            {FINDING_CATEGORY_LABELS[item]}
+          </AccordionSafeLink>
+        );
+      })}
     </div>
   );
 }
 
 export function FindingSampleConfidenceMeta({
   finding,
+  sampleNote,
+  tier,
   className = "",
 }: {
-  finding: Finding;
+  finding?: Finding;
+  sampleNote?: string;
+  tier?: ConfidenceTier;
   className?: string;
 }) {
-  const tier = findingConfidenceTier(finding);
+  const resolvedTier =
+    tier ?? (finding ? findingConfidenceTier(finding) : "Moderate");
+  const note = sampleNote ?? finding?.sampleNote ?? "";
+  if (!note) return null;
   return (
     <p className={`finding-sample-confidence ${className}`.trim()}>
-      {formatFindingCardMeta(finding.sampleNote, tier)}
+      {formatFindingCardMeta(note, resolvedTier)}
     </p>
   );
 }
 
 export function FindingHeaderRow({
   finding,
-  index,
+  title,
+  titleHref,
+  categories,
   league,
   trailing,
 }: {
-  finding: Finding;
-  index: number;
+  finding?: Finding;
+  title?: string;
+  titleHref?: string;
+  categories?: Finding["category"][];
   league?: FindingLeague;
   trailing?: ReactNode;
 }) {
+  const resolvedTitle = title ?? finding?.headline ?? "";
+  const resolvedHref =
+    titleHref ?? (finding ? researchFindingHref(finding, league) : "#");
+
   return (
     <div className="finding-card-header">
       <h3 className="finding-card-title">
         <AccordionSafeLink
-          href={researchFindingHref(finding, league)}
+          href={resolvedHref}
           className="finding-card-title-link hover:text-raptors hover:underline"
         >
-          {finding.headline}
+          {resolvedTitle}
         </AccordionSafeLink>
       </h3>
       <div className="finding-card-header-actions">
         <FindingMetaBadges
           finding={finding}
-          category={finding.category}
-          index={index}
+          categories={categories}
           league={league}
         />
-        <FindingSampleConfidenceMeta finding={finding} />
+        {finding ? <FindingSampleConfidenceMeta finding={finding} /> : null}
         {trailing}
       </div>
     </div>
@@ -210,6 +227,17 @@ export function FindingContextRow({ explainer }: { explainer?: string }) {
     <p className="finding-card-context">
       <span className="finding-card-context-label">Why it matters: </span>
       <FindingExplainer text={resolveFindingExplainer(explainer)} />
+    </p>
+  );
+}
+
+export function FindingRegionalContext({ text }: { text?: string }) {
+  if (!text) return null;
+
+  return (
+    <p className="finding-angle-regional">
+      <span className="finding-card-context-label">Regional Context: </span>
+      {text}
     </p>
   );
 }

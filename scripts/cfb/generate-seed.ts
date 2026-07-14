@@ -19,7 +19,7 @@ function emptyStats(): RefStatsFile {
       source: "seeded",
       atsAvailable: false,
       note:
-        "NCAA football offseason seed — empty slate. Run npm run build-cfb-data for ESPN backfill.",
+        "NCAA football offseason seed. Empty slate. Run npm run build-cfb-data for ESPN backfill.",
     },
     refs: [],
     teamSplits: {},

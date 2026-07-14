@@ -2,6 +2,8 @@ import type { LeagueMetricCopy } from "@/lib/leagues";
 import { dataLeagueTenSeasons, DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import { deltaTone } from "@/lib/metricTone";
 import { getTeamDisplayRecord, getTeamSampleRecord, winRateDeltaPoints } from "@/lib/teamRecord";
+import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
+import { atsFieldsFromStat, getTeamAtsSampleRecord } from "@/lib/team-ats";
 import { teamWhistleEdge } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile, RefTeamStat, TeamCrewSplit } from "@/lib/types";
 
@@ -9,7 +11,10 @@ import type { RefProfile, RefStatsFile, RefTeamStat, TeamCrewSplit } from "@/lib
 /** Minimum ref×team games for a matrix cell (all live leagues). */
 export const MATRIX_MIN_GAMES = 8;
 
-const MATRIX_COMPUTE_CACHE = new Map<string, RefTeamMatrix>();
+
+function matrixComputeCache(): Map<string, unknown> {
+  return getWorkerIsolateStore().matrixCompute;
+}
 
 export interface RefTeamMatrixCell {
   refSlug: string;
@@ -18,11 +23,19 @@ export interface RefTeamMatrixCell {
   wins: number;
   losses: number;
   winRate: number;
+  /** ATS cover splits when closing lines exist. */
+  atsWins?: number;
+  atsLosses?: number;
+  atsPushes?: number;
+  atsGames?: number;
+  atsCoverRate?: number;
   /** Avg team-minus-opponent whistle volume per game (fouls, flags, minors, etc.). */
   avgFoulDifferential: number;
   /** True when 0 < games < minGames — shown muted, excluded from top/bottom panels. */
   thinSample?: boolean;
 }
+
+export type MatrixViewMode = "wl" | "ats";
 
 export interface RefTeamMatrixTeam {
   abbr: string;
@@ -34,6 +47,12 @@ export interface RefTeamMatrixTeam {
   baselineLosses: number;
   baselineGames: number;
   baselineWinRate: number;
+  /** Team ATS baseline across lined games in this sample. */
+  baselineAtsWins?: number;
+  baselineAtsLosses?: number;
+  baselineAtsPushes?: number;
+  baselineAtsGames?: number;
+  baselineAtsCoverRate?: number;
 }
 
 export interface RefTeamMatrixRef {
@@ -116,7 +135,7 @@ export function computeRefTeamMatrix(
     stats.meta.lastUpdated,
     stats.refs.reduce((sum, ref) => sum + ref.games, 0),
   ].join("|");
-  const cached = MATRIX_COMPUTE_CACHE.get(cacheKey);
+  const cached = matrixComputeCache().get(cacheKey) as RefTeamMatrix | undefined;
   if (cached) return cached;
 
   const nbaRecordSeasons =
@@ -133,6 +152,8 @@ export function computeRefTeamMatrix(
             sinceSeason,
           })
         : getTeamSampleRecord(splits);
+    const atsRecord =
+      stats.teamAtsBaselines?.[abbr] ?? getTeamAtsSampleRecord(splits);
     return {
       abbr: team.abbr,
       label: team.label,
@@ -142,6 +163,11 @@ export function computeRefTeamMatrix(
       baselineLosses: record.losses,
       baselineGames: record.games,
       baselineWinRate: record.winRate,
+      baselineAtsWins: atsRecord.atsWins,
+      baselineAtsLosses: atsRecord.atsLosses,
+      baselineAtsPushes: atsRecord.atsPushes,
+      baselineAtsGames: atsRecord.atsGames,
+      baselineAtsCoverRate: atsRecord.atsCoverRate,
     };
   });
 
@@ -162,6 +188,7 @@ export function computeRefTeamMatrix(
     for (const [teamAbbr, stat] of Object.entries(ref.teamStats)) {
       if (stat.games < 1) continue;
       const { wins, losses } = teamRecordFromStat(stat);
+      const ats = atsFieldsFromStat(stat);
       const thinSample = stat.games < minGames;
       cells[matrixCellKey(ref.slug, teamAbbr)] = {
         refSlug: ref.slug,
@@ -170,6 +197,11 @@ export function computeRefTeamMatrix(
         wins,
         losses,
         winRate: stat.winRate,
+        atsWins: ats.atsWins,
+        atsLosses: ats.atsLosses,
+        atsPushes: ats.atsPushes,
+        atsGames: ats.atsGames,
+        atsCoverRate: ats.atsCoverRate,
         avgFoulDifferential: teamWhistleEdge(stat.avgFoulDifferential),
         thinSample,
       };
@@ -192,7 +224,7 @@ export function computeRefTeamMatrix(
     minGames,
     qualifiedCellCount,
   };
-  MATRIX_COMPUTE_CACHE.set(cacheKey, result);
+  matrixComputeCache().set(cacheKey, result);
   return result;
 }
 
@@ -225,11 +257,76 @@ export const MATRIX_REF_SORT_OPTIONS: {
 function matrixTeamBaseline(
   matrix: RefTeamMatrix,
   teamAbbr: string,
+  viewMode: MatrixViewMode = "wl",
 ): number {
   const team = matrix.teams.find(
     (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
   );
-  return team?.baselineWinRate ?? 0;
+  if (!team) return 0;
+  return viewMode === "ats"
+    ? (team.baselineAtsCoverRate ?? 0)
+    : team.baselineWinRate;
+}
+
+export function matrixTeamMetricGames(
+  team: RefTeamMatrixTeam,
+  viewMode: MatrixViewMode,
+): number {
+  return viewMode === "ats" ? (team.baselineAtsGames ?? 0) : team.baselineGames;
+}
+
+export function matrixTeamMetricRate(
+  team: RefTeamMatrixTeam,
+  viewMode: MatrixViewMode,
+): number {
+  return viewMode === "ats"
+    ? (team.baselineAtsCoverRate ?? 0)
+    : team.baselineWinRate;
+}
+
+export function matrixCellMetricRate(
+  cell: RefTeamMatrixCell,
+  viewMode: MatrixViewMode,
+): number {
+  return viewMode === "ats" ? (cell.atsCoverRate ?? 0) : cell.winRate;
+}
+
+export function matrixCellMetricGames(
+  cell: RefTeamMatrixCell,
+  viewMode: MatrixViewMode,
+): number {
+  return viewMode === "ats" ? (cell.atsGames ?? 0) : cell.games;
+}
+
+export function matrixCellMetricRecord(
+  cell: RefTeamMatrixCell,
+  viewMode: MatrixViewMode,
+): string {
+  if (viewMode === "ats") {
+    const games = cell.atsGames ?? 0;
+    if (games <= 0) return "n/a";
+    const pushes = cell.atsPushes ?? 0;
+    return pushes > 0
+      ? `${cell.atsWins ?? 0}-${cell.atsLosses ?? 0}-${pushes}`
+      : `${cell.atsWins ?? 0}-${cell.atsLosses ?? 0}`;
+  }
+  return `${cell.wins}-${cell.losses}`;
+}
+
+export function matrixTeamMetricRecord(
+  team: RefTeamMatrixTeam,
+  viewMode: MatrixViewMode,
+): string {
+  if (viewMode === "ats") {
+    const games = team.baselineAtsGames ?? 0;
+    if (games <= 0) return "n/a";
+    const pushes = team.baselineAtsPushes ?? 0;
+    return pushes > 0
+      ? `${team.baselineAtsWins ?? 0}-${team.baselineAtsLosses ?? 0}-${pushes}`
+      : `${team.baselineAtsWins ?? 0}-${team.baselineAtsLosses ?? 0}`;
+  }
+  if (team.baselineGames <= 0) return "n/a";
+  return `${team.baselineWins}-${team.baselineLosses}`;
 }
 
 /** Total games in qualified (non-thin) ref×team cells for a ref row. */
@@ -250,6 +347,7 @@ export function refMatrixQualifiedGames(
 export function refMatrixStandoutCount(
   matrix: RefTeamMatrix,
   refSlug: string,
+  viewMode: MatrixViewMode = "wl",
 ): number {
   let count = 0;
   for (const team of matrix.teams) {
@@ -257,7 +355,10 @@ export function refMatrixStandoutCount(
     if (!cell || cell.thinSample) continue;
     if (
       matrixCellExtremeFromDelta(
-        winRateDeltaPoints(cell.winRate, matrixTeamBaseline(matrix, team.abbr)),
+        winRateDeltaPoints(
+          matrixCellMetricRate(cell, viewMode),
+          matrixTeamBaseline(matrix, team.abbr, viewMode),
+        ),
       )
     ) {
       count++;
@@ -270,13 +371,17 @@ export function refMatrixStandoutCount(
 export function refMatrixTotalDelta(
   matrix: RefTeamMatrix,
   refSlug: string,
+  viewMode: MatrixViewMode = "wl",
 ): number {
   let total = 0;
   for (const team of matrix.teams) {
     const cell = matrix.cells[matrixCellKey(refSlug, team.abbr)];
     if (!cell || cell.thinSample) continue;
     total += Math.abs(
-      winRateDeltaPoints(cell.winRate, matrixTeamBaseline(matrix, team.abbr)),
+      winRateDeltaPoints(
+        matrixCellMetricRate(cell, viewMode),
+        matrixTeamBaseline(matrix, team.abbr, viewMode),
+      ),
     );
   }
   return total;
@@ -337,6 +442,11 @@ export interface TeamTopRefEntry {
   wins: number;
   losses: number;
   winRate: number;
+  atsWins?: number;
+  atsLosses?: number;
+  atsPushes?: number;
+  atsGames?: number;
+  atsCoverRate?: number;
   /** Win-rate delta vs team baseline (secondary stat in team panel). */
   deltaPts: number;
   /** Team-minus-opponent whistle volume per game; primary team-panel sort key. */
@@ -395,6 +505,7 @@ function sortTeamPanelEntries(
 function teamPanelEntriesForTeam(
   matrix: RefTeamMatrix,
   teamAbbr: string,
+  viewMode: MatrixViewMode = "wl",
 ): TeamTopRefEntry[] {
   const team = matrix.teams.find(
     (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
@@ -413,7 +524,15 @@ function teamPanelEntriesForTeam(
       wins: cell.wins,
       losses: cell.losses,
       winRate: cell.winRate,
-      deltaPts: winRateDeltaPoints(cell.winRate, team.baselineWinRate),
+      atsWins: cell.atsWins,
+      atsLosses: cell.atsLosses,
+      atsPushes: cell.atsPushes,
+      atsGames: cell.atsGames,
+      atsCoverRate: cell.atsCoverRate,
+      deltaPts: winRateDeltaPoints(
+        matrixCellMetricRate(cell, viewMode),
+        matrixTeamMetricRate(team, viewMode),
+      ),
       avgFoulDifferential: cell.avgFoulDifferential,
     });
   }
@@ -427,9 +546,17 @@ export function topRefsBeatingBaselineForTeam(
   teamAbbr: string,
   limit = TEAM_MATRIX_REF_PANEL_LIMIT,
   sort: MatrixTeamPanelSort = MATRIX_DEFAULT_TEAM_PANEL_SORT,
+  viewMode: MatrixViewMode = "wl",
 ): TeamTopRefEntry[] {
+  const team = matrix.teams.find(
+    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
+  );
+  if (!team || (sort === "record" && matrixTeamMetricGames(team, viewMode) <= 0)) {
+    return [];
+  }
+
   const entries = filterTeamPanelEntries(
-    teamPanelEntriesForTeam(matrix, teamAbbr),
+    teamPanelEntriesForTeam(matrix, teamAbbr, viewMode),
     sort,
     "top",
   );
@@ -442,9 +569,17 @@ export function bottomRefsBelowBaselineForTeam(
   teamAbbr: string,
   limit = TEAM_MATRIX_REF_PANEL_LIMIT,
   sort: MatrixTeamPanelSort = MATRIX_DEFAULT_TEAM_PANEL_SORT,
+  viewMode: MatrixViewMode = "wl",
 ): TeamTopRefEntry[] {
+  const team = matrix.teams.find(
+    (entry) => entry.abbr.toUpperCase() === teamAbbr.toUpperCase(),
+  );
+  if (!team || (sort === "record" && matrixTeamMetricGames(team, viewMode) <= 0)) {
+    return [];
+  }
+
   const entries = filterTeamPanelEntries(
-    teamPanelEntriesForTeam(matrix, teamAbbr),
+    teamPanelEntriesForTeam(matrix, teamAbbr, viewMode),
     sort,
     "bottom",
   );
@@ -490,6 +625,7 @@ export function matrixCellStyle(
   cell: RefTeamMatrixCell,
   teamBaseline: number,
   teamBaselineGames?: number,
+  viewMode: MatrixViewMode = "wl",
 ): MatrixCellStyle {
   if (cell.thinSample) {
     return { tone: "neutral", extreme: null, deltaPts: 0 };
@@ -497,7 +633,10 @@ export function matrixCellStyle(
   if (teamBaselineGames !== undefined && teamBaselineGames <= 0) {
     return { tone: "neutral", extreme: null, deltaPts: 0 };
   }
-  const deltaPts = winRateDeltaPoints(cell.winRate, teamBaseline);
+  const deltaPts = winRateDeltaPoints(
+    matrixCellMetricRate(cell, viewMode),
+    teamBaseline,
+  );
   return {
     tone: deltaTone(deltaPts, MATRIX_TONE_DELTA_PTS),
     extreme: matrixCellExtremeFromDelta(deltaPts),
@@ -539,7 +678,16 @@ export interface MatrixExtremeHighlight {
   kind: MatrixCellExtreme;
 }
 
-export function formatMatrixTeamBaseline(team: RefTeamMatrixTeam): string {
+export function formatMatrixTeamBaseline(
+  team: RefTeamMatrixTeam,
+  viewMode: MatrixViewMode = "wl",
+): string {
+  if (viewMode === "ats") {
+    const games = team.baselineAtsGames ?? 0;
+    if (games <= 0) return "unavailable";
+    const record = matrixTeamMetricRecord(team, "ats");
+    return `${record} ATS (${games} lined gp, ${((team.baselineAtsCoverRate ?? 0) * 100).toFixed(1)}%)`;
+  }
   if (team.baselineGames <= 0) return "unavailable";
   return `${team.baselineWins}-${team.baselineLosses} (${team.baselineGames} gp, ${(team.baselineWinRate * 100).toFixed(1)}%)`;
 }
@@ -559,18 +707,23 @@ export function matrixCellAriaLabel(
   team: RefTeamMatrixTeam,
   cell: RefTeamMatrixCell,
   deltaPts: number,
+  viewMode: MatrixViewMode = "wl",
 ): string {
-  const splitRecord = `${cell.wins}-${cell.losses}`;
-  const baselineRecord = `${team.baselineWins}-${team.baselineLosses}`;
+  const splitRecord = matrixCellMetricRecord(cell, viewMode);
+  const baselineRecord = matrixTeamMetricRecord(team, viewMode);
+  const metricLabel = viewMode === "ats" ? "ATS cover rate" : "win rate";
+  const splitRate = matrixCellMetricRate(cell, viewMode);
+  const baselineRate = matrixTeamMetricRate(team, viewMode);
+  const baselineGames = matrixTeamMetricGames(team, viewMode);
   const deltaLabel =
     deltaPts === 0
       ? "at team baseline"
       : `${Math.abs(deltaPts).toFixed(1)} pts ${deltaPts > 0 ? "above" : "below"} team baseline`;
   const baselineLabel =
-    team.baselineGames > 0
-      ? `team sample baseline ${baselineRecord} in ${team.baselineGames} games (${(team.baselineWinRate * 100).toFixed(1)}%)`
+    baselineGames > 0
+      ? `team sample baseline ${baselineRecord} in ${baselineGames} lined games (${(baselineRate * 100).toFixed(1)}% ${metricLabel})`
       : "team sample baseline unavailable";
-  return `${refName} with ${team.label}: ref×team ${splitRecord} in ${cell.games} games (${(cell.winRate * 100).toFixed(1)}%), ${deltaLabel}; ${baselineLabel}`;
+  return `${refName} with ${team.label}: ref×team ${splitRecord} in ${cell.games} games (${(splitRate * 100).toFixed(1)}% ${metricLabel}), ${deltaLabel}; ${baselineLabel}`;
 }
 
 export function computeMatrixExtremes(
@@ -606,6 +759,7 @@ export function computeMatrixExtremes(
   }
 
   return highlights
+    .filter((highlight) => highlight.baselineGames > 0)
     .sort((a, b) => Math.abs(b.deltaPts) - Math.abs(a.deltaPts))
     .slice(0, limit);
 }

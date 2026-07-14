@@ -8,7 +8,7 @@
     "minSampleSize": 30,
     "source": "seeded",
     "atsAvailable": false,
-    "note": "NCAA men's basketball offseason seed — empty slate. Run npm run build-cbb-data for ESPN backfill."
+    "note": "NCAA men's basketball offseason seed, empty slate. Run npm run build-cbb-data for ESPN backfill."
   },
   "refs": [],
   "teamSplits": {}

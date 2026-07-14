@@ -17,12 +17,17 @@ import {
   collectRefTeamScoringExtremes,
   FINDING_CATEGORY_LABELS,
   rankScore,
+  buildMarketExpectationAtsFinding,
 } from "@/lib/findings-shared";
 import { pickFeaturedFindings, rankScoredFindings, weightedLeagueOverRate } from "@/lib/findings-significance";
+import { attachRegionalContextToFindings } from "@/lib/regional-context";
+import { prepareStatsForAtsAnalytics } from "@/lib/ref-market-expectation";
 import {
   buildCloseGameLeagueFinding,
   buildCrewDominanceFinding,
+  buildFrictionGrudgeFindings,
   buildLeagueSkewFinding,
+  buildMarqueeEfficiencyFinding,
   buildMatrixExtremeFinding,
   buildOverRateOutlierFinding,
   buildTeamHomeRoadFinding,
@@ -510,6 +515,9 @@ function whistleParadoxFinding(stats: RefStatsFile): ScoredFindingBase | null {
 }
 
 function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const marketFinding = buildMarketExpectationAtsFinding(stats, rankScoreLocal);
+  if (marketFinding) return marketFinding;
+
   if (!stats.meta.atsAvailable) return null;
 
   let best:
@@ -765,6 +773,8 @@ function collectCandidates(
     buildYoYTrendFinding(stats, NBA_FINDING_CTX),
     buildWhistleOutlierFinding(stats, NBA_FINDING_CTX),
     buildOverRateOutlierFinding(stats, NBA_FINDING_CTX, "low"),
+    buildMarqueeEfficiencyFinding(stats, NBA_FINDING_CTX),
+    ...buildFrictionGrudgeFindings(stats, NBA_FINDING_CTX, "nba"),
     ...(includeHeavy
       ? [
           overRateTeamSplitFinding(stats),
@@ -786,7 +796,11 @@ function collectCandidates(
 function resolveStats(scopedSeasons?: string[]) {
   const full = getRefStats();
   if (!scopedSeasons?.length) return full;
-  return buildScopedRefStats("nba", full, scopedSeasons);
+  return prepareStatsForAtsAnalytics(
+    "nba",
+    buildScopedRefStats("nba", full, scopedSeasons),
+    scopedSeasons,
+  );
 }
 
 export function computeFindings(
@@ -798,7 +812,10 @@ export function computeFindings(
   if (stats.refs.length === 0) return [];
 
   const ranked = rankScoredFindings(collectCandidates(stats, options));
-  return pickFeaturedFindings(ranked, limit);
+  return attachRegionalContextToFindings(
+    pickFeaturedFindings(ranked, limit),
+    stats,
+  );
 }
 
 export function computeAllFindings(
@@ -808,10 +825,13 @@ export function computeAllFindings(
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  return rankScoredFindings(collectCandidates(stats, options))
-    .map((item) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
-      const { score, sampleGames, ...finding } = item;
-      return finding;
-    });
+  return attachRegionalContextToFindings(
+    rankScoredFindings(collectCandidates(stats, options))
+      .map((item) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
+        const { score, sampleGames, ...finding } = item;
+        return finding;
+      }),
+    stats,
+  );
 }

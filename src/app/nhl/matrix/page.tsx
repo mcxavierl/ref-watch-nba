@@ -13,26 +13,37 @@ import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("nhl", "matrix");
 import { nhlAnalyticsRefStats } from "@/lib/nhl/officials";
-import { LEAGUES } from "@/lib/leagues";
-import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { leagueGamesHubBackLabel, LEAGUES } from "@/lib/leagues";
+import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel, type MatrixViewMode } from "@/lib/ref-team-matrix";
+import { statsForMatrixPage } from "@/lib/matrix-page-stats";
 import { DEFAULT_SEASON_SCOPE_MODE, matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { NHL_LINESMAN_METHODOLOGY_NOTE } from "@/lib/trust-charter";
 import { NHL_TEAMS, teamFullName } from "@/lib/nhl/teams";
 
 type PageProps = {
-  searchParams: Promise<{ team?: string; ref?: string }>;
+  searchParams: Promise<{ team?: string; ref?: string; mode?: string }>;
 };
+
+function readMatrixViewModeParam(mode?: string): MatrixViewMode {
+  return mode === "ats" ? "ats" : "wl";
+}
 
 export default async function NhlMatrixPage({ searchParams }: PageProps) {
   await preloadLeagueRefStats(SITE_URL, "nhl", { includeTeamSplits: true });
-  const { team, ref } = await searchParams;
+  const { team, ref, mode } = await searchParams;
+  const initialViewMode = readMatrixViewModeParam(mode);
   const stats = getRefStats();
   const analyticsStats = nhlAnalyticsRefStats(stats);
+  const statsForMatrix = await statsForMatrixPage(
+    "nhl",
+    analyticsStats,
+    analyticsStats.meta.seasons,
+  );
   const seasonSpan = matrixLeadSeasonPhrase(stats.meta.seasons.length);
   const league = LEAGUES.nhl;
 
   const matrix = computeRefTeamMatrix(
-    analyticsStats,
+    statsForMatrix,
     NHL_TEAMS.map((team) => ({
       abbr: team.abbr,
       label: teamFullName(team),
@@ -48,7 +59,7 @@ export default async function NhlMatrixPage({ searchParams }: PageProps) {
     <div className="page-shell page-shell-hub">
       <LeagueHubHero leagueId="nhl">
         <Link href="/nhl" className="league-hub-hero-back">
-          ← NHL slate
+          ← {leagueGamesHubBackLabel("nhl")}
         </Link>
         <h1 className="page-title">NHL official × team matrix</h1>
         <p className="page-lead">
@@ -78,6 +89,8 @@ export default async function NhlMatrixPage({ searchParams }: PageProps) {
               scopeLabel={seasonSpan}
               initialTeamAbbr={team}
               initialRefSlug={ref}
+              atsAvailable={stats.meta.atsAvailable === true}
+              initialViewMode={initialViewMode}
             />
           </Suspense>
         </div>

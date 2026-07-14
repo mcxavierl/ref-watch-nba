@@ -22,6 +22,16 @@ export function formatPct(rate: number): string {
   return `${(rate * 100).toFixed(1)}%`;
 }
 
+/** Team/matrix baselines with zero games must read "n/a", not "0.0%". */
+export function formatBaselinePct(baselineGames: number, winRate: number): string {
+  return baselineGames > 0 ? formatPct(winRate) : "n/a";
+}
+
+/** ATS cover rate; zero lined games read "n/a". */
+export function formatBaselineAtsPct(atsGames: number, coverRate: number): string {
+  return atsGames > 0 ? formatPct(coverRate) : "n/a";
+}
+
 /** Signed delta with fixed decimal precision (avoids float display artifacts). */
 export function formatSigned(n: number, decimals = 1): string {
   const formatted = n.toFixed(decimals);
@@ -38,6 +48,15 @@ export function teamWhistleEdge(storedTeamMinusOpponent: number): number {
 
 /** e.g. "+4.2 pts vs team" */
 export function formatWinRateVsTeam(
+  rate: number,
+  teamBaseline: number,
+): string {
+  const delta = Math.round((rate - teamBaseline) * 1000) / 10;
+  return `${formatSigned(delta)} pts vs team`;
+}
+
+/** e.g. "+4.2 pts vs team baseline (ATS)" */
+export function formatCoverRateVsTeam(
   rate: number,
   teamBaseline: number,
 ): string {

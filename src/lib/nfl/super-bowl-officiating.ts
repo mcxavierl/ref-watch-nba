@@ -145,11 +145,11 @@ export function computeSuperBowlFindings(limit = 6): Finding[] {
       category: "whistle-extreme",
       headline:
         flagDelta >= 0
-          ? `Super Bowl ${highestPenalties.roman} had ${highestPenalties.totalPenalties} flags — ${flagDelta.toFixed(0)} above regular-season pace`
+          ? `Super Bowl ${highestPenalties.roman} had ${highestPenalties.totalPenalties} flags, ${flagDelta.toFixed(0)} above regular-season pace`
           : `Super Bowl ${highestPenalties.roman} ran ${highestPenalties.totalPenalties} total penalties`,
       summary: `${highestPenalties.winnerLabel} ${highestPenalties.winnerScore}–${highestPenalties.loserScore} ${highestPenalties.loserLabel}. ${highestPenalties.referee} refereed.`,
       explainer: sbExplainer(
-        "Title-game penalty volume reflects crew tightness and game flow — useful context when comparing championship flags to regular-season benchmarks.",
+        "Title-game penalty volume reflects crew tightness and game flow. Useful context when comparing championship flags to regular-season benchmarks.",
       ),
       stats: [
         {
@@ -183,7 +183,7 @@ export function computeSuperBowlFindings(limit = 6): Finding[] {
           : `Super Bowl ${lowestPenalties.roman} stayed near league flag pace`,
       summary: `${lowestPenalties.winnerLabel} ${lowestPenalties.winnerScore}–${lowestPenalties.loserScore} ${lowestPenalties.loserLabel}. ${lowestPenalties.referee} refereed.`,
       explainer: sbExplainer(
-        "Low-penalty Super Bowls often feature clean play or a crew that lets the game breathe — compare to regular-season flag averages, not betting markets.",
+        "Low-penalty Super Bowls often feature clean play or a crew that lets the game breathe. Compare to regular-season flag averages, not betting markets.",
       ),
       stats: [
         {
@@ -238,7 +238,7 @@ export function computeSuperBowlFindings(limit = 6): Finding[] {
         : `Super Bowl ${lowest.roman} tracked near league scoring pace`,
     summary: `${lowest.winnerLabel} ${lowest.winnerScore}–${lowest.loserScore} ${lowest.loserLabel} (${lowest.totalPoints} combined). ${lowest.referee} refereed.`,
     explainer: sbExplainer(
-      "Low-scoring Super Bowls stress defensive game plans and clock-killing drives — useful context when comparing title-game totals to regular-season benchmarks.",
+      "Low-scoring Super Bowls stress defensive game plans and clock-killing drives. Useful context when comparing title-game totals to regular-season benchmarks.",
     ),
     stats: [
       {
@@ -261,7 +261,7 @@ export function computeSuperBowlFindings(limit = 6): Finding[] {
       id: "nfl-sb-repeat-referee",
       category: "ref-outlier",
       headline: `${repeatLeader.name} leads modern Super Bowl assignments (${repeatLeader.count} games)`,
-      summary: `${repeatLeader.name} has refereed ${repeatLeader.count} of ${games.length} Super Bowls since 2000 — the most in this span.`,
+      summary: `${repeatLeader.name} has refereed ${repeatLeader.count} of ${games.length} Super Bowls since 2000, the most in this span.`,
       explainer: sbExplainer(
         "The NFL grades officials all season, then slots the highest-rated referee into the Super Bowl. Repeat assignments signal sustained crew performance, not random rotation.",
       ),
@@ -288,7 +288,7 @@ export function computeSuperBowlFindings(limit = 6): Finding[] {
     headline: `Widest margin since 2000: ${widest.winnerLabel} by ${widest.margin} in Super Bowl ${widest.roman}`,
     summary: `${widest.winnerLabel} ${widest.winnerScore}–${widest.loserScore} ${widest.loserLabel}. Crew led by ${widest.referee}.`,
     explainer: sbExplainer(
-      "Blowout Super Bowls often see fewer late-game pressure penalties as teams abandon structure — margin context helps separate competitive vs. one-sided title games.",
+      "Blowout Super Bowls often see fewer late-game pressure penalties as teams abandon structure. Margin context helps separate competitive vs. one-sided title games.",
     ),
     stats: [
       {
@@ -313,7 +313,7 @@ export function computeSuperBowlFindings(limit = 6): Finding[] {
       headline: `Super Bowl ${otGame.roman} is the only overtime title game in this sample`,
       summary: `${otGame.winnerLabel} ${otGame.winnerScore}–${otGame.loserScore} ${otGame.loserLabel} in OT. ${otGame.referee} refereed.`,
       explainer: sbExplainer(
-        "Overtime Super Bowls extend snaps and can add late flags as fatigue sets in — a unique officiating environment compared with regulation-only title games.",
+        "Overtime Super Bowls extend snaps and can add late flags as fatigue sets in. A unique officiating environment compared with regulation-only title games.",
       ),
       stats: [
         {

@@ -1,9 +1,12 @@
+import { HeroHighlightsHeader } from "@/components/dashboard/HeroHighlightsHeader";
 import {
   DASHBOARD_HERO_HIGHLIGHTS,
   type DashboardHeroHighlight,
 } from "@/lib/dashboard-hero-highlights";
 
 function DashboardHeroHighlightCard({ highlight }: { highlight: DashboardHeroHighlight }) {
+  let metricIndex = 0;
+
   return (
     <article
       className="dashboard-hero-highlight-card"
@@ -22,6 +25,7 @@ function DashboardHeroHighlightCard({ highlight }: { highlight: DashboardHeroHig
               key={`${highlight.leagueId}-metric-${index}`}
               className="dashboard-hero-highlight-metric"
               data-tone={highlight.tone}
+              data-metric={metricIndex++ === 0 ? "primary" : "secondary"}
             >
               {part.value}
             </span>
@@ -36,16 +40,19 @@ function DashboardHeroHighlightCard({ highlight }: { highlight: DashboardHeroHig
 
 export function DashboardHeroHighlights() {
   return (
-    <div
-      className="dashboard-hero-highlights"
-      role="list"
-      aria-label="High-confidence outlier patterns across live leagues"
-    >
-      {DASHBOARD_HERO_HIGHLIGHTS.map((highlight) => (
-        <div key={highlight.leagueId} role="listitem">
-          <DashboardHeroHighlightCard highlight={highlight} />
-        </div>
-      ))}
+    <div className="hero-highlights-block">
+      <HeroHighlightsHeader />
+      <div
+        className="dashboard-hero-highlights"
+        role="list"
+        aria-label="High-confidence outlier patterns across live leagues"
+      >
+        {DASHBOARD_HERO_HIGHLIGHTS.map((highlight) => (
+          <div key={highlight.leagueId} role="listitem">
+            <DashboardHeroHighlightCard highlight={highlight} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

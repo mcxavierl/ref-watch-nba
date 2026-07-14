@@ -113,7 +113,7 @@ export function loadHubLeagueStats(
   scopeMode: SeasonScopeMode,
 ): ScopedLeagueStatsBundle {
   const { stats: full, formatRange } = loadLeagueStats(leagueId);
-  const verification = resolveLeagueVerification(leagueId, full.meta);
+  const verification = resolveLeagueVerification(leagueId, full.meta, full);
   const preview = shouldShowUnverifiedData();
   const availableSeasons = INGEST_GATED_LEAGUES.has(leagueId)
     ? filterVerifiedSeasons(leagueId, full.meta, seasonsWithGameData(full), preview)
@@ -152,7 +152,7 @@ export function loadScopedLeagueStats(
   options?: { teamAbbr?: string },
 ): ScopedLeagueStatsBundle {
   const { stats: full, formatRange } = loadLeagueStats(leagueId);
-  const verification = resolveLeagueVerification(leagueId, full.meta);
+  const verification = resolveLeagueVerification(leagueId, full.meta, full);
   const preview = shouldShowUnverifiedData();
   const availableSeasons = INGEST_GATED_LEAGUES.has(leagueId)
     ? filterVerifiedSeasons(leagueId, full.meta, seasonsWithGameData(full), preview)

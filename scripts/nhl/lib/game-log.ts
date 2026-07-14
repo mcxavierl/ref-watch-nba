@@ -15,7 +15,7 @@ interface PlayByPlayTeam {
 
 interface PlayByPlayPlay {
   typeDescKey?: string;
-  periodDescriptor?: { periodType?: string };
+  periodDescriptor?: { periodType?: string; number?: number };
   details?: {
     typeCode?: string;
     eventOwnerTeamId?: number;
@@ -54,6 +54,7 @@ function penaltyMinutes(play: PlayByPlayPlay): number {
 
 export function parsePlayByPlay(body: PlayByPlayResponse): NhlPenaltySummary & {
   wentToOvertime: boolean;
+  periodMinors: { period: number; home: number; away: number }[];
 } {
   const homeId = body.homeTeam?.id;
   const awayId = body.awayTeam?.id;
@@ -62,6 +63,7 @@ export function parsePlayByPlay(body: PlayByPlayResponse): NhlPenaltySummary & {
   let homePim = 0;
   let awayPim = 0;
   let wentToOvertime = false;
+  const periodMap = new Map<number, { home: number; away: number }>();
 
   for (const play of body.plays ?? []) {
     if (play.periodDescriptor?.periodType === "OT") {
@@ -75,15 +77,29 @@ export function parsePlayByPlay(body: PlayByPlayResponse): NhlPenaltySummary & {
     const pim = penaltyMinutes(play);
     const code = play.details?.typeCode;
     const isMinor = !code || MINOR_CODES.has(code) || pim === 2;
+    if (!isMinor) continue;
 
+    const periodNumber = play.periodDescriptor?.number ?? 1;
+    const bucket = periodMap.get(periodNumber) ?? { home: 0, away: 0 };
     if (teamId === homeId) {
+      homeMinors += 1;
       homePim += pim;
-      if (isMinor) homeMinors++;
+      bucket.home += 1;
     } else {
+      awayMinors += 1;
       awayPim += pim;
-      if (isMinor) awayMinors++;
+      bucket.away += 1;
     }
+    periodMap.set(periodNumber, bucket);
   }
+
+  const periodMinors = [...periodMap.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([period, counts]) => ({
+      period,
+      home: counts.home,
+      away: counts.away,
+    }));
 
   return {
     homeMinors,
@@ -93,6 +109,7 @@ export function parsePlayByPlay(body: PlayByPlayResponse): NhlPenaltySummary & {
     awayPim,
     totalPim: homePim + awayPim,
     wentToOvertime,
+    periodMinors,
   };
 }
 

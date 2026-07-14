@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { LeagueChooser } from "@/components/LeagueChooser";
+import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewQuickLists } from "@/components/OverviewQuickLists";
 import { DashboardHeroHighlights } from "@/components/dashboard/DashboardHeroHighlights";
 import {
   DashboardBodyLayout,
   DashboardHeroSection,
-  DashboardMetric,
   DashboardSection,
   DashboardShell,
 } from "@/components/dashboard/DashboardShell";
@@ -15,14 +15,12 @@ import {
   catalogBySport,
   catalogCompetitionCount,
   catalogStatusLabel,
-  leagueSeasonStartBadge,
-  liveCatalogCount,
   type CatalogLeagueEntry,
 } from "@/lib/league-catalog";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { OverviewLeaguePaceGrid } from "@/components/OverviewLeaguePaceGrid";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
-import { leagueHubHref, LEAGUES } from "@/lib/leagues";
+import { leagueHubHref, LEAGUES, overviewGamesSectionTitle } from "@/lib/leagues";
 import type { OverviewSlateEntry } from "@/lib/overview-upcoming-slate";
 
 function formatCount(n: number): string {
@@ -43,7 +41,12 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
 
   if (entry.href && entry.status !== "coming-soon") {
     return (
-      <Link href={entry.href} className="overview-catalog-row overview-catalog-row--link">
+      <Link
+        href={entry.href}
+        className={`overview-catalog-row overview-catalog-row--link${
+          entry.status === "audit-pending" ? " overview-catalog-row--audit" : ""
+        }`}
+      >
         {inner}
       </Link>
     );
@@ -102,22 +105,8 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
         eyebrow="Multi-league overview"
         title="Referee analytics across all leagues."
         titleId="overview-hero-heading"
-        lead={
-          <>
-            One standout story per live league: ref×team edges, whistle outliers, and crew patterns
-            from {formatCount(data.totalGames)} indexed games and {formatCount(data.totalRefs)}{" "}
-            officials. {catalogCompetitionCount()} competitions on the roadmap.
-          </>
-        }
+        lead="Actionable ref×team edges, over/under splits, and whistle outliers — ranked by sample depth and effect size across every live league."
         highlights={<DashboardHeroHighlights />}
-        metrics={
-          <>
-            <DashboardMetric label="Officials" value={formatCount(data.totalRefs)} />
-            <DashboardMetric label="Live leagues" value={formatCount(liveCatalogCount())} />
-            <DashboardMetric label="Matches" value={formatCount(data.totalGames)} />
-            <DashboardMetric label={data.whistleLabel} value={formatCount(data.whistleEventsLogged)} />
-          </>
-        }
       />
 
       <LeagueChooser cards={data.leagueCards} />
@@ -184,7 +173,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               <div className="overview-section-header">
                 <h2 className="overview-section-title" id="overview-slate-heading">
                   <CalendarDays aria-hidden className="overview-slate-icon" />
-                  {data.upcomingSlate.hasLiveCrews ? "Tonight's slate" : "Next slate"}
+                  {overviewGamesSectionTitle(data.upcomingSlate.hasLiveCrews)}
                 </h2>
                 <p className="overview-section-lead">
                   {data.upcomingSlate.hasLiveCrews
@@ -291,12 +280,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                 {VERIFIED_LIVE_LEAGUE_IDS.map((id) => (
                   <Link key={id} href={leagueHubHref(id)} className="overview-expansion-live rw-focus-ring">
                     <span className="overview-expansion-live-label">{LEAGUES[id].label}</span>
-                    <span
-                      className="overview-expansion-live-status"
-                      title={id === "nhl" ? "Preseason starts Sep 19" : undefined}
-                    >
-                      {leagueSeasonStartBadge(id) ?? "Live"}
-                    </span>
+                    <LeagueSeasonStartBadge leagueId={id} />
                   </Link>
                 ))}
                 {sportGroups

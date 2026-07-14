@@ -25,7 +25,8 @@ import {
 import {
   insightDrilldownId,
 } from "@/lib/insight-drilldown-types";
-import { formatPct } from "@/lib/stats-utils";
+import { formatBaselinePct, formatPct } from "@/lib/stats-utils";
+import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
 
@@ -160,7 +161,10 @@ function cardFromMatrix(
   const config = LEAGUES[leagueId];
   const prefix = leaguePrefix(leagueId);
   const splitPct = formatPct(highlight.winRate);
-  const baselinePct = formatPct(highlight.baselineWinRate);
+  const baselinePct = formatBaselinePct(
+    highlight.baselineGames,
+    highlight.baselineWinRate,
+  );
   const deltaLabel = formatDeltaPts(highlight.deltaPts);
   const direction =
     highlight.deltaPts > 0 ? "beats" : highlight.deltaPts < 0 ? "trails" : "matches";
@@ -221,7 +225,7 @@ function cardFromFinding(leagueId: VerifiedLiveLeagueId, finding: Finding): Leag
           : "League pattern",
     headline: finding.headline,
     story: finding.summary,
-    heroValue: primary?.value ?? "—",
+    heroValue: primary?.value ?? EMPTY_DISPLAY,
     heroLabel: primary?.label ?? "Lead stat",
     heroTone: "neutral",
     stats: [primary, secondary]

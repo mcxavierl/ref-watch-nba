@@ -12,22 +12,33 @@ import { hubPageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("nfl", "matrix");
-import { LEAGUES } from "@/lib/leagues";
+import { leagueGamesHubBackLabel, LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
-import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { statsForMatrixPage } from "@/lib/matrix-page-stats";
+import {
+  computeRefTeamMatrix,
+  computeMatrixExtremes,
+  matrixWhistleDiffShortLabel,
+  type MatrixViewMode,
+} from "@/lib/ref-team-matrix";
 import { matrixLeadSeasonPhrase, readSeasonScopeParam } from "@/lib/season-scope";
 import { NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
 
 type PageProps = {
-  searchParams: Promise<{ scope?: string; team?: string; ref?: string }>;
+  searchParams: Promise<{ scope?: string; team?: string; ref?: string; mode?: string }>;
 };
+
+function readMatrixViewModeParam(mode?: string): MatrixViewMode {
+  return mode === "ats" ? "ats" : "wl";
+}
 
 export const dynamic = "force-dynamic";
 
 export default async function NflMatrixPage({ searchParams }: PageProps) {
   await preloadLeagueRefStats(SITE_URL, "nfl", { includeTeamSplits: true });
-  const { scope, team, ref } = await searchParams;
+  const { scope, team, ref, mode } = await searchParams;
   const scopeMode = readSeasonScopeParam(scope);
+  const initialViewMode = readMatrixViewModeParam(mode);
   const {
     stats,
     sinceSeason,
@@ -35,12 +46,13 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
     scopedSeasons,
     availableSeasons,
   } = loadScopedLeagueStats("nfl", scopeMode);
+  const statsForMatrix = await statsForMatrixPage("nfl", stats, scopedSeasons);
   const seasonSpan = matrixLeadSeasonPhrase(scopedSeasons.length);
   const espn = stats.meta.source === "espn" || stats.meta.source === "hybrid";
   const league = LEAGUES.nfl;
 
   const matrix = computeRefTeamMatrix(
-    stats,
+    statsForMatrix,
     NFL_TEAMS.map((team) => ({
       abbr: team.abbr,
       label: teamFullName(team),
@@ -56,7 +68,7 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
     <div className="page-shell page-shell-hub">
       <LeagueHubHero leagueId="nfl">
         <Link href="/nfl" className="league-hub-hero-back">
-          ← NFL slate
+          ← {leagueGamesHubBackLabel("nfl")}
         </Link>
         <h1 className="page-title">NFL official × team matrix</h1>
         <p className="page-lead">
@@ -103,6 +115,8 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
               scopeLabel={scopeLabel}
               initialTeamAbbr={team}
               initialRefSlug={ref}
+              atsAvailable={stats.meta.atsAvailable === true}
+              initialViewMode={initialViewMode}
             />
           </Suspense>
         </div>

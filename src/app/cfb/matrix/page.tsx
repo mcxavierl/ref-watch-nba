@@ -12,7 +12,7 @@ import { hubPageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("cfb", "matrix");
-import { LEAGUES } from "@/lib/leagues";
+import { leagueGamesHubBackLabel, LEAGUES } from "@/lib/leagues";
 import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { DEFAULT_SEASON_SCOPE_MODE, matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { isCfbSimulatedData } from "@/lib/cfb/data-source";
@@ -48,7 +48,7 @@ export default async function CfbMatrixPage({ searchParams }: PageProps) {
     <div className="page-shell page-shell-hub">
       <LeagueHubHero leagueId="cfb">
         <Link href="/cfb" className="league-hub-hero-back">
-          ← CFB slate
+          ← {leagueGamesHubBackLabel("cfb")}
         </Link>
         <h1 className="page-title">CFB official × team matrix</h1>
         <p className="page-lead">

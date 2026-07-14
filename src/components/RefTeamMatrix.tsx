@@ -11,7 +11,11 @@ import {
   formatMatrixTeamBaseline,
   matrixCellAriaLabel,
   matrixCellKey,
+  matrixCellMetricRecord,
   matrixCellStyle,
+  matrixTeamMetricGames,
+  matrixTeamMetricRate,
+  matrixTeamMetricRecord,
   MATRIX_DEFAULT_REF_SORT,
   MATRIX_DEFAULT_TEAM_PANEL_SORT,
   MATRIX_EXTREME_DELTA_PTS,
@@ -24,6 +28,7 @@ import {
   topRefsBeatingBaselineForTeam,
   type MatrixRefSort,
   type MatrixTeamPanelSort,
+  type MatrixViewMode,
   type RefTeamMatrix,
   type TeamTopRefEntry,
 } from "@/lib/ref-team-matrix";
@@ -36,7 +41,7 @@ import {
   buildMatrixTeamShareUrl,
 } from "@/lib/matrix-split-share";
 import type { LeagueId } from "@/lib/leagues";
-import { formatPct, formatSigned, formatWinRateVsTeam } from "@/lib/stats-utils";
+import { formatBaselineAtsPct, formatBaselinePct, formatCoverRateVsTeam, formatSigned, formatWinRateVsTeam } from "@/lib/stats-utils";
 import { foulEdgeTone } from "@/lib/metricTone";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
@@ -56,7 +61,35 @@ type RefTeamMatrixProps = {
   scopeLabel: string;
   initialTeamAbbr?: string | null;
   initialRefSlug?: string | null;
+  atsAvailable?: boolean;
+  initialViewMode?: MatrixViewMode;
 };
+
+const MATRIX_ATS_VIEW_TOOLTIP =
+  "Controls for selection bias in high-profile marquee matchups by evaluating performance against the closing line instead of raw wins and losses.";
+
+function teamPanelEntryRecord(
+  entry: TeamTopRefEntry,
+  viewMode: MatrixViewMode,
+): string {
+  return matrixCellMetricRecord(
+    {
+      refSlug: entry.refSlug,
+      teamAbbr: "",
+      games: entry.games,
+      wins: entry.wins,
+      losses: entry.losses,
+      winRate: entry.winRate,
+      atsWins: entry.atsWins,
+      atsLosses: entry.atsLosses,
+      atsPushes: entry.atsPushes,
+      atsGames: entry.atsGames,
+      atsCoverRate: entry.atsCoverRate,
+      avgFoulDifferential: entry.avgFoulDifferential,
+    },
+    viewMode,
+  );
+}
 
 function matrixPathFor(basePath: string): string {
   return basePath ? `${basePath}/matrix` : "/matrix";
@@ -80,7 +113,9 @@ function TeamRefRankListItem({
   sport,
   leagueId,
   whistleDiffLabel,
-  teamBaselineWinRate,
+  teamBaselineRate,
+  teamBaselineGames,
+  viewMode,
 }: {
   entry: TeamTopRefEntry;
   rank: number;
@@ -89,7 +124,9 @@ function TeamRefRankListItem({
   sport: RefTeamMatrixProps["sport"];
   leagueId: LeagueId;
   whistleDiffLabel: string;
-  teamBaselineWinRate: number;
+  teamBaselineRate: number;
+  teamBaselineGames: number;
+  viewMode: MatrixViewMode;
 }) {
   const deltaClass =
     variant === "positive"
@@ -102,8 +139,16 @@ function TeamRefRankListItem({
       : foulTone === "negative"
         ? "ref-matrix-delta--negative"
         : "ref-matrix-delta--neutral";
-  const winDeltaLabel = formatWinRateVsTeam(entry.winRate, teamBaselineWinRate);
+  const metricRate =
+    viewMode === "ats" ? (entry.atsCoverRate ?? 0) : entry.winRate;
+  const deltaLabelFn =
+    viewMode === "ats" ? formatCoverRateVsTeam : formatWinRateVsTeam;
+  const winDeltaLabel =
+    teamBaselineGames > 0
+      ? deltaLabelFn(metricRate, teamBaselineRate)
+      : "Baseline n/a";
   const winDeltaShort = winDeltaLabel.replace(/\s+vs team$/i, "");
+  const recordLabel = viewMode === "ats" ? "ATS cover rate" : "Win rate";
   const whistleUnit = whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
 
   return (
@@ -134,11 +179,11 @@ function TeamRefRankListItem({
       </div>
       <span className="ref-matrix-team-panel-record">
         <span className="ref-matrix-team-panel-record-line">
-          {entry.wins}-{entry.losses}
+          {teamPanelEntryRecord(entry, viewMode)}
         </span>
         <span
           className={`ref-matrix-team-panel-win-delta ${deltaClass}`}
-          title={`Win rate vs team baseline: ${winDeltaLabel}`}
+          title={`${recordLabel} vs team baseline: ${winDeltaLabel}`}
         >
           {winDeltaShort}
         </span>
@@ -165,7 +210,9 @@ function TeamRefRankColumn({
   sport,
   leagueId,
   whistleDiffLabel,
-  teamBaselineWinRate,
+  teamBaselineRate,
+  teamBaselineGames,
+  viewMode,
 }: {
   titleId: string;
   title: string;
@@ -177,9 +224,12 @@ function TeamRefRankColumn({
   sport: RefTeamMatrixProps["sport"];
   leagueId: LeagueId;
   whistleDiffLabel: string;
-  teamBaselineWinRate: number;
+  teamBaselineRate: number;
+  teamBaselineGames: number;
+  viewMode: MatrixViewMode;
 }) {
   const whistleUnit = whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
+  const recordHead = viewMode === "ats" ? "ATS" : "W-L";
 
   return (
     <div
@@ -203,7 +253,7 @@ function TeamRefRankColumn({
             <span className="ref-matrix-team-panel-list-head-official">
               Official
             </span>
-            <span className="ref-matrix-team-panel-list-head-stat">W-L</span>
+            <span className="ref-matrix-team-panel-list-head-stat">{recordHead}</span>
             <span className="ref-matrix-team-panel-list-head-stat">Gp</span>
             <span className="ref-matrix-team-panel-list-head-stat">{whistleUnit}</span>
           </div>
@@ -218,7 +268,9 @@ function TeamRefRankColumn({
                 sport={sport}
                 leagueId={leagueId}
                 whistleDiffLabel={whistleDiffLabel}
-                teamBaselineWinRate={teamBaselineWinRate}
+                teamBaselineRate={teamBaselineRate}
+                teamBaselineGames={teamBaselineGames}
+                viewMode={viewMode}
               />
             ))}
           </ul>
@@ -279,6 +331,8 @@ export function RefTeamMatrix({
   scopeLabel,
   initialTeamAbbr,
   initialRefSlug,
+  atsAvailable = false,
+  initialViewMode = "wl",
 }: RefTeamMatrixProps) {
   const { refs, teams, cells, minGames, qualifiedCellCount } = matrix;
   const router = useRouter();
@@ -292,6 +346,9 @@ export function RefTeamMatrix({
   const [refSort, setRefSort] = useState<MatrixRefSort>(MATRIX_DEFAULT_REF_SORT);
   const [teamPanelSort, setTeamPanelSort] = useState<MatrixTeamPanelSort>(
     MATRIX_DEFAULT_TEAM_PANEL_SORT,
+  );
+  const [viewMode, setViewMode] = useState<MatrixViewMode>(
+    initialViewMode === "ats" && atsAvailable ? "ats" : "wl",
   );
   const [crosshair, setCrosshair] = useState<MatrixCrosshair | null>(() => {
     if (!initialRefSlug || !resolvedInitialTeam) return null;
@@ -322,16 +379,28 @@ export function RefTeamMatrix({
   const topRefsForTeam = useMemo(
     () =>
       selectedTeamAbbr
-        ? topRefsBeatingBaselineForTeam(matrix, selectedTeamAbbr, TEAM_MATRIX_REF_PANEL_LIMIT, teamPanelSort)
+        ? topRefsBeatingBaselineForTeam(
+            matrix,
+            selectedTeamAbbr,
+            TEAM_MATRIX_REF_PANEL_LIMIT,
+            teamPanelSort,
+            viewMode,
+          )
         : [],
-    [matrix, selectedTeamAbbr, teamPanelSort],
+    [matrix, selectedTeamAbbr, teamPanelSort, viewMode],
   );
   const bottomRefsForTeam = useMemo(
     () =>
       selectedTeamAbbr
-        ? bottomRefsBelowBaselineForTeam(matrix, selectedTeamAbbr, TEAM_MATRIX_REF_PANEL_LIMIT, teamPanelSort)
+        ? bottomRefsBelowBaselineForTeam(
+            matrix,
+            selectedTeamAbbr,
+            TEAM_MATRIX_REF_PANEL_LIMIT,
+            teamPanelSort,
+            viewMode,
+          )
         : [],
-    [matrix, selectedTeamAbbr, teamPanelSort],
+    [matrix, selectedTeamAbbr, teamPanelSort, viewMode],
   );
   const officialLabel =
     officialNounPlural.charAt(0).toUpperCase() + officialNounPlural.slice(1);
@@ -339,16 +408,26 @@ export function RefTeamMatrix({
     sport === "nhl" || sport === "nfl" || sport === "cfb" ? "Official" : "Ref";
 
   const syncMatrixUrl = useCallback(
-    (next: { team?: string | null; ref?: string | null }) => {
+    (next: { team?: string | null; ref?: string | null; mode?: MatrixViewMode | null }) => {
       const params = new URLSearchParams(searchParams.toString());
       if (next.team) params.set("team", next.team.toUpperCase());
       else if (next.team === null) params.delete("team");
       if (next.ref) params.set("ref", next.ref);
       else if (next.ref === null) params.delete("ref");
+      if (next.mode === "ats" && atsAvailable) params.set("mode", "ats");
+      else if (next.mode === "wl" || next.mode === null) params.delete("mode");
       const query = params.toString();
       router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
     },
-    [pathname, router, searchParams],
+    [atsAvailable, pathname, router, searchParams],
+  );
+
+  const setViewModeAndUrl = useCallback(
+    (mode: MatrixViewMode) => {
+      setViewMode(mode);
+      syncMatrixUrl({ mode });
+    },
+    [syncMatrixUrl],
   );
 
   const crosshairShare = useMemo(() => {
@@ -590,8 +669,8 @@ export function RefTeamMatrix({
             <p id="ref-matrix-search-hint" className="ref-matrix-search-hint">
               {searchQuery
                 ? searchMatchCount > 0
-                  ? `${searchMatchCount} match${searchMatchCount === 1 ? "" : "es"} — thin-sample rows stay visible with a game count`
-                  : "No matches in this matrix — try a shorter name or check rankings"
+                  ? `${searchMatchCount} match${searchMatchCount === 1 ? "" : "es"}. Thin-sample rows stay visible with a game count`
+                  : "No matches in this matrix. Try a shorter name or check rankings"
                 : "Filter rows by name; includes below-gate samples"}
             </p>
           </div>
@@ -624,12 +703,46 @@ export function RefTeamMatrix({
               </p>
             ) : null}
           </div>
+          {atsAvailable ? (
+            <div className="ref-matrix-view-mode">
+              <span className="ref-matrix-view-mode-label" id="ref-matrix-view-mode-label">
+                View mode
+              </span>
+              <div
+                className="refs-directory-metric-toggle ref-matrix-view-mode-toggle"
+                role="group"
+                aria-labelledby="ref-matrix-view-mode-label"
+              >
+                <button
+                  type="button"
+                  className={`refs-directory-metric-btn${viewMode === "wl" ? " refs-directory-metric-btn--active" : ""}`}
+                  aria-pressed={viewMode === "wl"}
+                  onClick={() => setViewModeAndUrl("wl")}
+                >
+                  Win/Loss
+                </button>
+                <button
+                  type="button"
+                  className={`refs-directory-metric-btn${viewMode === "ats" ? " refs-directory-metric-btn--active" : ""}`}
+                  aria-pressed={viewMode === "ats"}
+                  aria-describedby="ref-matrix-ats-tooltip"
+                  onClick={() => setViewModeAndUrl("ats")}
+                >
+                  Against the Spread
+                </button>
+              </div>
+              <p id="ref-matrix-ats-tooltip" className="ref-matrix-view-mode-tooltip">
+                {MATRIX_ATS_VIEW_TOOLTIP}
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
 
       <p className="ref-matrix-mobile-hint sm:hidden">
-        Scroll horizontally to compare all {leagueLabel} teams. Baseline W-L sits
-        under each logo; cell numbers are ref×team splits only.
+        Scroll horizontally to compare all {leagueLabel} teams. Baseline{" "}
+        {viewMode === "ats" ? "ATS" : "W-L"} sits under each logo; cell numbers are
+        ref×team splits only.
       </p>
 
       <div className="ref-matrix-wrap" onMouseLeave={clearCrosshair}>
@@ -673,24 +786,26 @@ export function RefTeamMatrix({
             </tr>
             <tr className="ref-matrix-baseline-row">
               <th scope="row" className="ref-matrix-baseline-corner">
-                Team baseline
+                {viewMode === "ats" ? "Team ATS baseline" : "Team baseline"}
               </th>
               {teams.map((team) => {
                 const isSelected = selectedTeamAbbr === team.abbr;
+                const baselineGames = matrixTeamMetricGames(team, viewMode);
+                const baselineRate = matrixTeamMetricRate(team, viewMode);
                 return (
                   <td
                     key={team.abbr}
                     className={`ref-matrix-baseline-cell${isSelected ? " ref-matrix-baseline-cell--selected" : ""}${colCrosshairClass(team.abbr, crosshair)}`}
-                    title={`${team.label} sample baseline: ${formatMatrixTeamBaseline(team)}`}
+                    title={`${team.label} sample baseline: ${formatMatrixTeamBaseline(team, viewMode)}`}
                     onMouseEnter={() => activateCrosshair("", team.abbr)}
                   >
                     <span className="ref-matrix-baseline-record">
-                      {team.baselineGames > 0
-                        ? `${team.baselineWins}-${team.baselineLosses}`
-                        : "n/a"}
+                      {matrixTeamMetricRecord(team, viewMode)}
                     </span>
                     <span className="ref-matrix-baseline-meta">
-                      {team.baselineGames > 0 ? formatPct(team.baselineWinRate) : "n/a"}
+                      {viewMode === "ats"
+                        ? formatBaselineAtsPct(baselineGames, baselineRate)
+                        : formatBaselinePct(baselineGames, baselineRate)}
                     </span>
                   </td>
                 );
@@ -774,12 +889,15 @@ export function RefTeamMatrix({
                       );
                     }
 
+                    const baselineGames = matrixTeamMetricGames(team, viewMode);
+                    const baselineRate = matrixTeamMetricRate(team, viewMode);
                     const { tone, extreme, deltaPts } = matrixCellStyle(
                       cell,
-                      team.baselineWinRate,
-                      team.baselineGames,
+                      baselineRate,
+                      baselineGames,
+                      viewMode,
                     );
-                    const record = `${cell.wins}-${cell.losses}`;
+                    const record = matrixCellMetricRecord(cell, viewMode);
                     const ariaLabel = cell.thinSample
                       ? `${ref.name} with ${team.label}: ${record} in ${cell.games} games (below ${minGames}-game sample gate)`
                       : matrixCellAriaLabel(
@@ -787,6 +905,7 @@ export function RefTeamMatrix({
                           team,
                           cell,
                           deltaPts,
+                          viewMode,
                         );
 
                     return (
@@ -808,7 +927,7 @@ export function RefTeamMatrix({
                           {cell.thinSample ? (
                             <span
                               className="ref-matrix-delta ref-matrix-delta--thin"
-                              title={`${cell.games} games — below ${minGames}-game ranking gate`}
+                              title={`${cell.games} games, below ${minGames}-game ranking gate`}
                             >
                               {cell.games} gp
                             </span>
@@ -816,11 +935,13 @@ export function RefTeamMatrix({
                             <span
                               className={`ref-matrix-delta ${deltaClass(tone)}`}
                             >
-                              {team.baselineGames > 0
-                                ? formatWinRateVsTeam(
-                                    cell.winRate,
-                                    team.baselineWinRate,
-                                  )
+                              {baselineGames > 0
+                                ? viewMode === "ats"
+                                  ? formatCoverRateVsTeam(
+                                      cell.atsCoverRate ?? 0,
+                                      baselineRate,
+                                    )
+                                  : formatWinRateVsTeam(cell.winRate, baselineRate)
                                 : "Baseline n/a"}
                             </span>
                           )}
@@ -876,6 +997,8 @@ export function RefTeamMatrix({
                   </Link>
                 </h3>
                 {sport === "nba" &&
+                viewMode === "wl" &&
+                selectedTeam.baselineGames > 0 &&
                 teamSosByAbbr?.[selectedTeam.abbr.toUpperCase()] ? (
                   <TeamRecordSosCard
                     record={{
@@ -888,14 +1011,23 @@ export function RefTeamMatrix({
                     teamName={selectedTeam.name}
                     className="ref-matrix-team-panel-sos"
                   />
-                ) : selectedTeam.baselineGames > 0 ? (
+                ) : matrixTeamMetricGames(selectedTeam, viewMode) > 0 ? (
                   <div className="ref-matrix-team-panel-baseline">
                     <span className="ref-matrix-team-panel-baseline-record">
-                      {selectedTeam.baselineWins}-{selectedTeam.baselineLosses}
+                      {matrixTeamMetricRecord(selectedTeam, viewMode)}
                     </span>
                     <span className="ref-matrix-team-panel-baseline-meta">
-                      {formatPct(selectedTeam.baselineWinRate)} team baseline ·{" "}
-                      {selectedTeam.baselineGames} gp sample
+                      {viewMode === "ats"
+                        ? formatBaselineAtsPct(
+                            matrixTeamMetricGames(selectedTeam, viewMode),
+                            matrixTeamMetricRate(selectedTeam, viewMode),
+                          )
+                        : formatBaselinePct(
+                            selectedTeam.baselineGames,
+                            selectedTeam.baselineWinRate,
+                          )}{" "}
+                      team baseline · {matrixTeamMetricGames(selectedTeam, viewMode)}{" "}
+                      {viewMode === "ats" ? "lined gp" : "gp"} sample
                     </span>
                   </div>
                 ) : (
@@ -907,7 +1039,9 @@ export function RefTeamMatrix({
                   Favorable and unfavorable {officialNounPlural} vs{" "}
                   {selectedTeam.label}&apos;s sample baseline. Ranked by{" "}
                   {teamPanelSort === "record"
-                    ? "win rate vs baseline"
+                    ? viewMode === "ats"
+                      ? "ATS cover rate vs baseline"
+                      : "win rate vs baseline"
                     : `${whistleDiffLabel.toLowerCase()} (positive = fewer on your team)`}
                   . {minGames}+ games required for top/bottom lists; thinner
                   samples appear below.
@@ -953,7 +1087,9 @@ export function RefTeamMatrix({
               title="Favorable"
               subtitle={
                 teamPanelSort === "record"
-                  ? `Win rate above ${selectedTeam.label} baseline`
+                  ? viewMode === "ats"
+                    ? `ATS cover above ${selectedTeam.label} baseline`
+                    : `Win rate above ${selectedTeam.label} baseline`
                   : `Most whistle edge for ${selectedTeam.label} (opponent − team)`
               }
               variant="positive"
@@ -963,14 +1099,18 @@ export function RefTeamMatrix({
               sport={sport}
               leagueId={leagueId}
               whistleDiffLabel={whistleDiffLabel}
-              teamBaselineWinRate={selectedTeam.baselineWinRate}
+              teamBaselineRate={matrixTeamMetricRate(selectedTeam, viewMode)}
+              teamBaselineGames={matrixTeamMetricGames(selectedTeam, viewMode)}
+              viewMode={viewMode}
             />
             <TeamRefRankColumn
               titleId="ref-matrix-team-panel-bottom-title"
               title="Unfavorable"
               subtitle={
                 teamPanelSort === "record"
-                  ? `Win rate below ${selectedTeam.label} baseline`
+                  ? viewMode === "ats"
+                    ? `ATS cover below ${selectedTeam.label} baseline`
+                    : `Win rate below ${selectedTeam.label} baseline`
                   : `Least whistle edge for ${selectedTeam.label} (opponent − team)`
               }
               variant="negative"
@@ -980,7 +1120,9 @@ export function RefTeamMatrix({
               sport={sport}
               leagueId={leagueId}
               whistleDiffLabel={whistleDiffLabel}
-              teamBaselineWinRate={selectedTeam.baselineWinRate}
+              teamBaselineRate={matrixTeamMetricRate(selectedTeam, viewMode)}
+              teamBaselineGames={matrixTeamMetricGames(selectedTeam, viewMode)}
+              viewMode={viewMode}
             />
           </div>
 

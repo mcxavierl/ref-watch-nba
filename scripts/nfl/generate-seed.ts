@@ -545,7 +545,7 @@ function generate(): { stats: RefStatsFile; gameLogs: NflGameLogEntry[] } {
           latest: allDates[allDates.length - 1],
         },
         note:
-          "Simulated preview data — not verified against official NFL records. " +
+          "Simulated preview data, not verified against official NFL records. " +
           "Run npm run build-nfl-data for ESPN backfill.",
       },
       refs,

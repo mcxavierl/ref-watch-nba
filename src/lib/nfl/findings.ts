@@ -3,12 +3,16 @@ import { buildScopedRefStats } from "@/lib/scoped-ref-stats";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, NFL_TEAMS } from "@/lib/nfl/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
-import { collectRefTeamScoringExtremes, rankScore } from "@/lib/findings-shared";
+import { collectRefTeamScoringExtremes, rankScore, buildMarketExpectationAtsFinding } from "@/lib/findings-shared";
 import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-significance";
+import { attachRegionalContextToFindings } from "@/lib/regional-context";
+import { prepareStatsForAtsAnalytics } from "@/lib/ref-market-expectation";
 import {
   buildCloseGameLeagueFinding,
   buildCrewDominanceFinding,
   buildLeagueSkewFinding,
+  buildMarqueeEfficiencyFinding,
+  buildFrictionGrudgeFindings,
   buildMatrixExtremeFinding,
   
   
@@ -164,6 +168,9 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
 }
 
 function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const marketFinding = buildMarketExpectationAtsFinding(stats, rankScore);
+  if (marketFinding) return marketFinding;
+
   if (!stats.meta.atsAvailable) return null;
 
   let best:
@@ -354,9 +361,9 @@ function buildNflFlagsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | n
     id: "nfl-flags-outlier",
     category: "whistle-extreme",
     headline: whistlePaceHeadline(best.name, flagsDelta, "flags", best.overRate),
-    summary: `${best.name} averages ${a.avgFlagsPerGame.toFixed(1)} flags per game (${formatSigned(flagsDelta)} vs the ${leagueAvg.toFixed(1)} league average) across ${best.games} assigned games — one of the clearest penalty-volume outliers in the NFL pool.`,
+    summary: `${best.name} averages ${a.avgFlagsPerGame.toFixed(1)} flags per game (${formatSigned(flagsDelta)} vs the ${leagueAvg.toFixed(1)} league average) across ${best.games} assigned games, one of the clearest penalty-volume outliers in the NFL pool.`,
     explainer:
-      "Flag pace compares how often a crew throws penalty flags relative to the league average in this dataset. Heavier or lighter flag volume is descriptive officiating style — it does not, by itself, predict spreads, totals, or game outcomes.",
+      "Flag pace compares how often a crew throws penalty flags relative to the league average in this dataset. Heavier or lighter flag volume is descriptive officiating style; it does not, by itself, predict spreads, totals, or game outcomes.",
     stats: [
       {
         label: "Flags per game",
@@ -398,6 +405,8 @@ function collectCandidates(
     buildWhistleOutlierFinding(stats, NFL_FINDING_CTX),
     buildOverRateOutlierFinding(stats, NFL_FINDING_CTX, "low"),
     scoringOutlierFinding(stats),
+    buildMarqueeEfficiencyFinding(stats, NFL_FINDING_CTX),
+    ...buildFrictionGrudgeFindings(stats, NFL_FINDING_CTX, "nfl"),
     ...(includeHeavy
       ? [
           teamCrewAnomalyFinding(stats),
@@ -415,7 +424,11 @@ function collectCandidates(
 function resolveStats(scopedSeasons?: string[]) {
   const full = getRefStats();
   if (!scopedSeasons?.length) return full;
-  return buildScopedRefStats("nfl", full, scopedSeasons);
+  return prepareStatsForAtsAnalytics(
+    "nfl",
+    buildScopedRefStats("nfl", full, scopedSeasons),
+    scopedSeasons,
+  );
 }
 
 export function computeFindings(
@@ -427,7 +440,10 @@ export function computeFindings(
   if (stats.refs.length === 0) return [];
 
   const ranked = rankScoredFindings(collectCandidates(stats, options));
-  return pickFeaturedFindings(ranked, limit);
+  return attachRegionalContextToFindings(
+    pickFeaturedFindings(ranked, limit),
+    stats,
+  );
 }
 
 export function computeAllFindings(
@@ -437,10 +453,13 @@ export function computeAllFindings(
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  return rankScoredFindings(collectCandidates(stats, options))
-    .map((item) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
-      const { score, sampleGames, ...finding } = item;
-      return finding;
-    });
+  return attachRegionalContextToFindings(
+    rankScoredFindings(collectCandidates(stats, options))
+      .map((item) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
+        const { score, sampleGames, ...finding } = item;
+        return finding;
+      }),
+    stats,
+  );
 }

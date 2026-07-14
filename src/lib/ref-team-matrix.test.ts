@@ -4,7 +4,9 @@ import { LEAGUES } from "@/lib/leagues";
 import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import {
   bottomRefsBelowBaselineForTeam,
+  computeMatrixExtremes,
   computeRefTeamMatrix,
+  matrixCellMetricRecord,
   MATRIX_MIN_GAMES,
   matrixCellStyle,
   matrixWhistleDiffShortLabel,
@@ -75,6 +77,39 @@ describe("ref-team matrix team panels", () => {
     for (const entry of top) {
       assert.ok(entry.deltaPts > 0);
     }
+  });
+
+  it("returns empty record panels when team baseline games are zero", () => {
+    const matrix = {
+      refs: [{ slug: "ref-a", name: "Ref A" }],
+      teams: [
+        {
+          abbr: "ZZZ",
+          label: "Zero Baseline",
+          name: "Zero",
+          baselineWins: 0,
+          baselineLosses: 0,
+          baselineGames: 0,
+          baselineWinRate: 0,
+        },
+      ],
+      cells: {
+        "ref-a|ZZZ": {
+          refSlug: "ref-a",
+          teamAbbr: "ZZZ",
+          games: 12,
+          wins: 10,
+          losses: 2,
+          winRate: 0.833,
+          avgFoulDifferential: 0,
+          thinSample: false,
+        },
+      },
+      minGames: MATRIX_MIN_GAMES,
+      qualifiedCellCount: 1,
+    };
+    assert.deepEqual(topRefsBeatingBaselineForTeam(matrix, "ZZZ"), []);
+    assert.deepEqual(bottomRefsBelowBaselineForTeam(matrix, "ZZZ"), []);
   });
 
   it("sorts top refs by whistle differential when penalty-diff mode is selected", () => {
@@ -249,6 +284,64 @@ describe("sortMatrixRefs", () => {
   });
 });
 
+describe("computeMatrixExtremes", () => {
+  it("excludes teams with zero baseline games from extremes", () => {
+    const matrix = {
+      refs: [{ slug: "ref-a", name: "Ref A" }],
+      teams: [
+        {
+          abbr: "ZZZ",
+          label: "Zero Baseline",
+          name: "Zero",
+          baselineWins: 0,
+          baselineLosses: 0,
+          baselineGames: 0,
+          baselineWinRate: 0,
+        },
+        {
+          abbr: "BOS",
+          label: "Boston Celtics",
+          name: "Celtics",
+          baselineWins: 40,
+          baselineLosses: 40,
+          baselineGames: 80,
+          baselineWinRate: 0.5,
+        },
+      ],
+      cells: {
+        "ref-a|ZZZ": {
+          refSlug: "ref-a",
+          teamAbbr: "ZZZ",
+          games: 12,
+          wins: 12,
+          losses: 0,
+          winRate: 1,
+          avgFoulDifferential: 0,
+          thinSample: false,
+        },
+        "ref-a|BOS": {
+          refSlug: "ref-a",
+          teamAbbr: "BOS",
+          games: 12,
+          wins: 10,
+          losses: 2,
+          winRate: 0.833,
+          avgFoulDifferential: 0,
+          thinSample: false,
+        },
+      },
+      minGames: MATRIX_MIN_GAMES,
+      qualifiedCellCount: 2,
+    };
+
+    const extremes = computeMatrixExtremes(matrix, 10);
+    assert.ok(extremes.every((highlight) => highlight.baselineGames > 0));
+    assert.ok(extremes.every((highlight) => highlight.teamAbbr !== "ZZZ"));
+    assert.equal(extremes.length, 1);
+    assert.equal(extremes[0]!.teamAbbr, "BOS");
+  });
+});
+
 describe("teamRecordFromStat", () => {
   it("recomputes W-L from winRate when explicit 0-0 disagrees with game count", () => {
     const record = teamRecordFromStat({
@@ -262,5 +355,41 @@ describe("teamRecordFromStat", () => {
     });
     assert.equal(record.wins, 5);
     assert.equal(record.losses, 3);
+  });
+});
+
+describe("matrix view mode helpers", () => {
+  it("returns n/a for ATS cells without lined games", () => {
+    const cell = {
+      refSlug: "ref-a",
+      teamAbbr: "KC",
+      games: 10,
+      wins: 6,
+      losses: 4,
+      winRate: 0.6,
+      atsGames: 0,
+      avgFoulDifferential: 0,
+    };
+    assert.equal(matrixCellMetricRecord(cell, "ats"), "n/a");
+    assert.equal(matrixCellMetricRecord(cell, "wl"), "6-4");
+  });
+
+  it("neutralizes ATS cell tone when team ATS baseline is empty", () => {
+    const cell = {
+      refSlug: "ref-a",
+      teamAbbr: "KC",
+      games: 10,
+      wins: 6,
+      losses: 4,
+      winRate: 0.6,
+      atsWins: 7,
+      atsLosses: 3,
+      atsGames: 10,
+      atsCoverRate: 0.7,
+      avgFoulDifferential: 0,
+    };
+    const style = matrixCellStyle(cell, 0.5, 0, "ats");
+    assert.equal(style.tone, "neutral");
+    assert.equal(style.deltaPts, 0);
   });
 });

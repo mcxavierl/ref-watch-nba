@@ -2,7 +2,13 @@
 
 import { useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FindingAccordionItem } from "@/components/FindingAccordion";
+import { EdgeFinderCell } from "@/components/EdgeFinderCell";
+import { FindingsFeedList } from "@/components/FindingsFeedList";
+import {
+  ResearchProViewToggle,
+  useResearchProView,
+} from "@/components/ResearchProViewToggle";
+import { countFeedCards, groupFindingsForFeed } from "@/lib/finding-grouping";
 import {
   FINDING_FILTER_GROUPS,
   FINDING_FILTER_LABELS,
@@ -11,7 +17,9 @@ import {
   sortFindingsByStrength,
   type FindingFilterGroup,
 } from "@/lib/findings-shared";
+import type { FindingEvSnapshot } from "@/lib/ev-calculator";
 import type { ConfidenceTier } from "@/lib/user-language";
+import { FilterResultsAnnouncer } from "@/lib/a11y/LiveRegion";
 import type { ResearchFinding } from "@/lib/research";
 
 function parseFilter(raw: string | null): FindingFilterGroup {
@@ -30,13 +38,16 @@ export function ResearchHubFindings({
   findings,
   league,
   refCount,
+  evByFindingId = {},
 }: {
   findings: ResearchFinding[];
   league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   refCount: number;
+  evByFindingId?: Record<string, FindingEvSnapshot | null>;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isProView = useResearchProView();
   const categoryFilter = parseFilter(searchParams.get("filter"));
   const confidenceFilter = parseConfidence(searchParams.get("confidence"));
 
@@ -60,6 +71,8 @@ export function ResearchHubFindings({
     return sortFindingsByStrength(byConfidence);
   }, [findings, categoryFilter, confidenceFilter]);
 
+  const feed = useMemo(() => groupFindingsForFeed(filtered), [filtered]);
+
   return (
     <>
       <div
@@ -80,6 +93,13 @@ export function ResearchHubFindings({
         ))}
       </div>
 
+      <FilterResultsAnnouncer
+        resultCount={filtered.length}
+        totalCount={findings.length}
+        filterLabel={FINDING_FILTER_LABELS[categoryFilter]}
+        entityLabel="findings"
+      />
+
       {confidenceFilter && (
         <p className="mt-3 text-sm text-zinc-600">
           Showing {confidenceFilter.toLowerCase()}-confidence findings.{" "}
@@ -98,28 +118,37 @@ export function ResearchHubFindings({
         </p>
       )}
 
-      {filtered.length === 0 ? (
+      {feed.length === 0 ? (
         <p className="mt-6 text-sm text-zinc-600">
           No findings match this filter. Try another category.
         </p>
       ) : (
         <section className="section-block mt-6">
-          <h2 className="section-title">{league} findings</h2>
-          <p className="section-lead">
-            {filtered.length} pattern
-            {filtered.length === 1 ? "" : "s"} from {refCount} officials.
-            Strong-confidence findings appear first; thin samples at the bottom.
-          </p>
-          <div className="finding-accordion-stack mt-4">
-            {filtered.map((finding, index) => (
-              <FindingAccordionItem
-                key={finding.id}
-                finding={finding}
-                index={index}
-                defaultOpen={index === 0}
-                league={league}
-              />
-            ))}
+          <div className="research-findings-header">
+            <div>
+              <h2 className="section-title">{league} findings</h2>
+              <p className="section-lead">
+                {countFeedCards(feed)} official insight card
+                {countFeedCards(feed) === 1 ? "" : "s"} from {refCount} officials.
+                Strong-confidence patterns appear first; thin samples at the bottom.
+              </p>
+            </div>
+            <ResearchProViewToggle />
+          </div>
+          {isProView ? (
+            <p className="research-pro-lead">
+              Pro view adds an Edge Finder column — model probability vs market
+              implied odds, adjusted for LWIS high-impact officials.
+            </p>
+          ) : null}
+          <div
+            className={`finding-accordion-stack mt-4${isProView ? " finding-accordion-stack--pro" : ""}`}
+          >
+            <FindingsFeedList
+              feed={feed}
+              league={league}
+              evByFindingId={isProView ? evByFindingId : undefined}
+            />
           </div>
         </section>
       )}

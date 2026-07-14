@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-13T00:00:00.000Z",
+    "league": "LALIGA",
+    "source": "manual-curation"
+  },
+  "officials": {
+    "alejandro-jos-hern-ndez-hern-ndez-0": {
+      "birthplace": "Andalusia, ESP"
+    },
+    "antonio-miguel-mateu-lahoz-0": {
+      "hometown": "Valencia, ESP"
+    }
+  }
+}

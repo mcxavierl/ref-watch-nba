@@ -1,6 +1,7 @@
 #!/usr/bin/env npx tsx
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { mergeMarketLinesForActiveLeagues } from "./lib/game-logs";
 import { NBA_TEN_SEASONS } from "./lib/ten-season-policy";
 import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
 
@@ -111,6 +112,7 @@ function copyNbaVerifiedIngest(root: string): boolean {
 }
 
 const root = process.cwd();
+mergeMarketLinesForActiveLeagues(root);
 copyRefStatsCore(root);
 const usedVerifiedNba = copyNbaVerifiedIngest(root);
 if (!usedVerifiedNba) {
@@ -135,6 +137,22 @@ if (fs.existsSync(nflSuperBowl)) {
   console.log(`Copied ${nflSuperBowl} → ${dest}`);
 }
 copyPair(path.join(root, "data/nba"), path.join(root, "public/data/nba"), "ref-photos");
+for (const league of ["nba", "nfl", "nhl"] as const) {
+  const personnel = path.join(root, `data/${league}/personnel-profiles.json`);
+  if (fs.existsSync(personnel)) {
+    const dest = path.join(root, `public/data/${league}/personnel-profiles.json`);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.copyFileSync(personnel, dest);
+    console.log(`Copied ${personnel} → ${dest}`);
+  }
+}
+const ncaaPersonnel = path.join(root, "data/ncaa/personnel-profiles.json");
+if (fs.existsSync(ncaaPersonnel)) {
+  const dest = path.join(root, "public/data/ncaa/personnel-profiles.json");
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(ncaaPersonnel, dest);
+  console.log(`Copied ${ncaaPersonnel} → ${dest}`);
+}
 copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "game-logs");
 copyPair(path.join(root, "data/cfb"), path.join(root, "public/data/cfb"), "ref-stats");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "game-logs");

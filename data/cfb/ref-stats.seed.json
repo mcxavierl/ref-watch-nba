@@ -9,7 +9,7 @@
     "minSampleSize": 30,
     "source": "seeded",
     "atsAvailable": false,
-    "note": "NCAA football offseason seed — empty slate. Run npm run build-cfb-data for ESPN backfill."
+    "note": "NCAA football offseason seed, empty slate. Run npm run build-cfb-data for ESPN backfill."
   },
   "refs": [],
   "teamSplits": {}

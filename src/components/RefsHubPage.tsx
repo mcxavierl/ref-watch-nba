@@ -13,7 +13,7 @@ import {
   computeCrewDominance,
   crewDominanceSummary,
 } from "@/lib/crew-dominance";
-import { leagueHubHref, LEAGUES } from "@/lib/leagues";
+import { leagueGamesHubBackLabel, leagueHubHref, LEAGUES } from "@/lib/leagues";
 import { loadHubLeagueStats } from "@/lib/load-league-stats";
 import { linesmanSlugSet } from "@/lib/nhl/officials";
 import { buildRefsDirectoryContext } from "@/lib/refs-directory";
@@ -117,7 +117,7 @@ export function RefsHubPage({
     <div className="page-shell page-shell-hub">
       <LeagueHubHero leagueId={leagueId}>
         <Link href={homeHref} className="league-hub-hero-back">
-          ← {league.shortLabel} slate
+          ← {leagueGamesHubBackLabel(leagueId)}
         </Link>
         <h1 className="page-title">
           {leagueId === "nhl"

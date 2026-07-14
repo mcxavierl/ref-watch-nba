@@ -1,7 +1,20 @@
+import {
+  formatLeagueSeasonStart,
+  getLeagueConfigEntry,
+  LEAGUE_CONFIG,
+  type LeagueRegistryEntry,
+} from "@/config/leagueConfig";
 import type { LeagueId } from "@/lib/leagues";
 import { isVerifiedLiveLeague } from "@/lib/league-verification";
 import { resolveNcaaDataVerifiedForLeagueId } from "@/lib/ncaa-pipeline";
 import type { RefStatsFile } from "@/lib/types";
+
+export type { LeagueRegistryEntry } from "@/config/leagueConfig";
+export {
+  formatLeagueSeasonStart,
+  getLeagueConfigEntry,
+  LEAGUE_CONFIG,
+} from "@/config/leagueConfig";
 
 export type LeagueThemeLogos = {
   /** Logo for light backgrounds (higher contrast mark). */
@@ -10,42 +23,20 @@ export type LeagueThemeLogos = {
   dark: string;
 };
 
-export type LeagueRegistryEntry = {
-  id: LeagueId;
-  name: string;
-  slug: string;
-  startDate: string;
+/** Shared NCAA brand assets for CBB and CFB league cards. */
+export const NCAA_BRAND_ASSETS = {
+  themeColor: "#009CDE",
+  logos: {
+    light: "/assets/logos/ncaa-blue.svg",
+    dark: "/assets/logos/ncaa-white.svg",
+  },
+} as const satisfies {
   themeColor: string;
   logos: LeagueThemeLogos;
-  /** When false, league cards must not render on the overview hub. */
-  dataVerified: boolean;
 };
 
-export const CFB_LEAGUE_ENTRY = {
-  id: "cfb",
-  name: "NCAA Football",
-  slug: "cfb",
-  startDate: "Aug 29",
-  themeColor: "#009CDE",
-  logos: {
-    light: "/assets/logos/ncaa-blue.svg",
-    dark: "/assets/logos/ncaa-white.svg",
-  },
-  dataVerified: false,
-} as const satisfies LeagueRegistryEntry;
-
-export const CBB_LEAGUE_ENTRY = {
-  id: "cbb",
-  name: "NCAA Basketball",
-  slug: "cbb",
-  startDate: "Nov 2026",
-  themeColor: "#009CDE",
-  logos: {
-    light: "/assets/logos/ncaa-blue.svg",
-    dark: "/assets/logos/ncaa-white.svg",
-  },
-  dataVerified: false,
-} as const satisfies LeagueRegistryEntry;
+export const CFB_LEAGUE_ENTRY = LEAGUE_CONFIG.cfb!;
+export const CBB_LEAGUE_ENTRY = LEAGUE_CONFIG.cbb!;
 
 /** Immutable NCAA registry entries keyed by slug. */
 export const NCAA_LEAGUE_REGISTRY = {
@@ -55,13 +46,20 @@ export const NCAA_LEAGUE_REGISTRY = {
 
 export type NcaaLeagueSlug = keyof typeof NCAA_LEAGUE_REGISTRY;
 
+export const DASHBOARD_GRID_LEAGUE_IDS = [
+  "nba",
+  "nhl",
+  "nfl",
+  "epl",
+  "laliga",
+  "cbb",
+  "cfb",
+] as const satisfies readonly LeagueId[];
+
 export function getLeagueRegistryEntry(
   leagueId: LeagueId,
 ): LeagueRegistryEntry | undefined {
-  if (leagueId in NCAA_LEAGUE_REGISTRY) {
-    return NCAA_LEAGUE_REGISTRY[leagueId as NcaaLeagueSlug];
-  }
-  return undefined;
+  return getLeagueConfigEntry(leagueId);
 }
 
 export function leagueLogoForTheme(
@@ -69,20 +67,48 @@ export function leagueLogoForTheme(
   colorMode: "light" | "dark",
 ): string | undefined {
   const entry = getLeagueRegistryEntry(leagueId);
-  if (!entry) return undefined;
+  if (!entry?.logos) return undefined;
   return colorMode === "light" ? entry.logos.light : entry.logos.dark;
 }
 
-/** Overview hub cards render only when underlying data is verified. */
+export function isNcaaLeagueSlug(leagueId: LeagueId): leagueId is NcaaLeagueSlug {
+  return leagueId in NCAA_LEAGUE_REGISTRY;
+}
+
+function ncaaAnalyticsUnlocked(
+  leagueId: NcaaLeagueSlug,
+  stats?: RefStatsFile | null,
+): boolean {
+  const entry = NCAA_LEAGUE_REGISTRY[leagueId];
+  if (entry.dataVerified !== true) return false;
+  return resolveNcaaDataVerifiedForLeagueId(leagueId, stats ?? undefined);
+}
+
+/** Dashboard grid cards render for every configured league (including locked NCAA). */
+export function isDashboardLeagueExposed(leagueId: LeagueId): boolean {
+  return (DASHBOARD_GRID_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
+}
+
+/** Hub links, quick lists, and detailed analytics require full verification. */
+export function isLeagueAnalyticsUnlocked(
+  leagueId: LeagueId,
+  stats?: RefStatsFile | null,
+): boolean {
+  if (isNcaaLeagueSlug(leagueId)) {
+    return ncaaAnalyticsUnlocked(leagueId, stats);
+  }
+  return isVerifiedLiveLeague(leagueId);
+}
+
+/** @deprecated Use isDashboardLeagueExposed for grid visibility or isLeagueAnalyticsUnlocked for hub access. */
 export function isLeagueCardVisible(
   leagueId: LeagueId,
   stats?: RefStatsFile | null,
 ): boolean {
-  const registry = getLeagueRegistryEntry(leagueId);
-  if (registry) {
-    return resolveNcaaDataVerifiedForLeagueId(leagueId, stats ?? undefined);
+  if (isNcaaLeagueSlug(leagueId)) {
+    return isDashboardLeagueExposed(leagueId);
   }
-  return isVerifiedLiveLeague(leagueId);
+  return isLeagueAnalyticsUnlocked(leagueId, stats);
 }
 
 export function isCatalogSlugVisible(
@@ -90,10 +116,7 @@ export function isCatalogSlugVisible(
   stats?: RefStatsFile | null,
 ): boolean {
   if (slug in NCAA_LEAGUE_REGISTRY) {
-    return resolveNcaaDataVerifiedForLeagueId(
-      slug as NcaaLeagueSlug,
-      stats ?? undefined,
-    );
+    return isDashboardLeagueExposed(slug as NcaaLeagueSlug);
   }
   return true;
 }

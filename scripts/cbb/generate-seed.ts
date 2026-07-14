@@ -18,7 +18,7 @@ function emptyStats(): RefStatsFile {
       source: "seeded",
       atsAvailable: false,
       note:
-        "NCAA men's basketball offseason seed — empty slate. Run npm run build-cbb-data for ESPN backfill.",
+        "NCAA men's basketball offseason seed. Empty slate. Run npm run build-cbb-data for ESPN backfill.",
     },
     refs: [],
     teamSplits: {},

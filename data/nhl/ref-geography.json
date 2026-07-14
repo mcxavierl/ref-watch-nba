@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-13T00:00:00.000Z",
+    "league": "NHL",
+    "source": "manual-curation"
+  },
+  "officials": {
+    "shandor-alphonso-52": {
+      "hometown": "Toronto, ON"
+    },
+    "matt-macpherson-83": {
+      "birthplace": "Winnipeg, MB"
+    }
+  }
+}

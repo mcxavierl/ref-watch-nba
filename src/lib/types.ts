@@ -59,6 +59,55 @@ export interface RefGameRecord {
   closingTotal?: number;
   /** Home puck line; negative = home favorite. */
   homeSpread?: number;
+  /** Sum of leverage-weighted penalty impact for this game when PBP events exist. */
+  highLeverageImpact?: number;
+  /** Share of flags classified high/critical leverage (0–1). */
+  highLeverageFlagRate?: number;
+  subjectiveFlags?: number;
+  administrativeFlags?: number;
+}
+
+/** Normalized NFL penalty type slug. */
+export type NflPenaltyTypeSlug =
+  | "defensive_pass_interference"
+  | "offensive_pass_interference"
+  | "pass_interference"
+  | "defensive_holding"
+  | "offensive_holding"
+  | "roughing_passer"
+  | "false_start"
+  | "illegal_formation"
+  | "delay_of_game"
+  | "unsportsmanlike_conduct"
+  | "neutral_zone"
+  | "illegal_contact"
+  | "face_mask"
+  | "other";
+
+export type PenaltyLeverageTier = "routine" | "moderate" | "high" | "critical";
+
+/** Situational leverage context for a single penalty flag. */
+export interface PenaltyLeverageState {
+  down?: number;
+  distance?: number;
+  /** Offense yard line 0–100 (nflverse yardline_100). */
+  yardLine?: number;
+  quarter?: number;
+  gameSecondsRemaining?: number;
+  scoreDifferential?: number;
+  wpBefore?: number;
+  wpaDelta?: number;
+  tier: PenaltyLeverageTier;
+}
+
+export interface NflPenaltyEvent {
+  type: NflPenaltyTypeSlug;
+  rawType: string;
+  team: string;
+  yards: number;
+  accepted: boolean;
+  leverage: PenaltyLeverageState;
+  leverageScore: number;
 }
 
 /** NHL-only referee analytics (minors, OT, penalty balance). */
@@ -82,7 +131,39 @@ export interface NhlRefAnalytics {
 }
 
 
-export interface NflRefAnalytics { avgFlagsPerGame:number; flagsDelta:number; avgPenaltyYardsPerGame:number; penaltyYardsDelta:number; avgFlagImbalance:number; balancedGameRate:number; balanceKind:"balancer"|"asymmetric"|"neutral"; provenance?:{avgFlagsPerGame:MetricProvenance;penaltyYards:MetricProvenance;penaltyBalance:MetricProvenance;flagsBaseline:MetricProvenance;sampleGate:SampleGateStatus;};}
+export interface NflRefAnalytics {
+  avgFlagsPerGame: number;
+  flagsDelta: number;
+  avgPenaltyYardsPerGame: number;
+  penaltyYardsDelta: number;
+  avgFlagImbalance: number;
+  balancedGameRate: number;
+  balanceKind: "balancer" | "asymmetric" | "neutral";
+  /** Leverage-weighted penalty impact per game (not raw flag count). */
+  avgHighLeverageImpactPerGame?: number;
+  highLeverageImpactDelta?: number;
+  /** Share of flags that are high/critical leverage (0–1). */
+  highLeverageFlagRate?: number;
+  /** Games with play-level penalty events backing leverage metrics. */
+  leverageSampleGames?: number;
+  /** Judgment/subjective flags per game (contact, PI, holding, etc.). */
+  avgSubjectiveFlagsPerGame?: number;
+  subjectiveFlagsDelta?: number;
+  /** Administrative/objective flags per game (delay, formation, false start). */
+  avgAdministrativeFlagsPerGame?: number;
+  administrativeFlagsDelta?: number;
+  subjectiveFlagShare?: number;
+  dispositionSampleGames?: number;
+  dispositionEventBackedGames?: number;
+  provenance?: {
+    avgFlagsPerGame: MetricProvenance;
+    penaltyYards: MetricProvenance;
+    penaltyBalance: MetricProvenance;
+    flagsBaseline: MetricProvenance;
+    highLeverageImpact?: MetricProvenance;
+    sampleGate: SampleGateStatus;
+  };
+}
 export type CfbRefAnalytics = NflRefAnalytics;
 
 /** EPL referee analytics (goals, fouls, cards, penalties). */
@@ -162,39 +243,18 @@ export interface RefTeamStat {
   /** Exact W-L when sourced from Basketball-Reference or game logs. */
   wins?: number;
   losses?: number;
-}
-
-export interface RefProfile {
-  slug: string;
-  name: string;
-  number: number;
-  /** NHL roster role when known (referee vs linesman). */
-  role?: RefRole;
-  games: number;
-  avgTotalPoints: number;
-  overRate: number;
-  avgFouls: number;
-  homeCoverRate: number | null;
-  totalPointsDelta: number;
-  foulsDelta: number;
-  seasons: string[];
-  recentGames: RefGameRecord[];
-  /** Keyed by team abbreviation (e.g. LAL, TOR). */
-  teamStats?: Record<string, RefTeamStat>;
-  /** ATS, O/U buckets, home scoring splits when closing lines are available. */
-  bettingStats?: RefBettingStats;
-  /** NHL referee-only analytics when available. */
-  nhlAnalytics?: NhlRefAnalytics;
-  nflAnalytics?: NflRefAnalytics;
-  cfbAnalytics?: CfbRefAnalytics;
-  eplAnalytics?: EplRefAnalytics;
-  provenance?: {
-    avgTotalPoints: MetricProvenance;
-    overRate: MetricProvenance;
-    avgFouls: MetricProvenance;
-    sampleGate: SampleGateStatus;
-    leagueBaseline: MetricProvenance;
-  };
+  /** ATS cover record when closing lines are available for ref×team games. */
+  atsWins?: number;
+  atsLosses?: number;
+  atsPushes?: number;
+  /** Lined games with an ATS decision (wins + losses + pushes). */
+  atsGames?: number;
+  atsCoverRate?: number;
+  /** ATS cover when team was market underdog (positive spread as home, or away vs favorite). */
+  underdogAtsCoverRate?: number;
+  underdogAtsGames?: number;
+  /** Signed deviation from 50% neutral market on lined ref×team games. */
+  atsDeviationFromNeutral?: number;
 }
 
 export interface WlpRecord {
@@ -212,6 +272,80 @@ export interface SpreadBucketStat {
   label: string;
   homeFavorite: WlpRecord;
   homeUnderdog: WlpRecord;
+}
+
+/** Referee-level performance vs closing-line market expectation (ATS-first). */
+export interface RefMarketExpectationStats {
+  /** Lined games with ATS decision across all crews for this official. */
+  linedGames: number;
+  atsCovers: number;
+  atsLosses: number;
+  atsPushes: number;
+  /** Team cover rate when this ref officiates (0–1). */
+  coverRate: number;
+  /** coverRate − 0.5 on lined games. */
+  deviationFromNeutral: number;
+  /** Games where the tracked team was market underdog. */
+  underdogGames: number;
+  underdogCoverRate: number;
+  /** Underdog cover deviation vs 50% neutral. */
+  underdogDeviationFromNeutral: number;
+  /** True when deviation exceeds league outlier threshold with adequate sample. */
+  isAtsOutlier: boolean;
+  outlierDirection: "covers_more" | "covers_less" | null;
+  /** Pearson-style correlation: underdog flag vs ATS cover on ref×team rows. */
+  underdogCoverCorrelation: number | null;
+  linesAvailable: boolean;
+  provenance?: {
+    aggregate: MetricProvenance;
+    outlierGate: SampleGateStatus;
+    correlation: MetricProvenance;
+  };
+}
+
+/** Optional birthplace / hometown strings for regional context enrichment. */
+export interface RefGeographyEntry {
+  birthplace?: string;
+  hometown?: string;
+}
+
+export interface RefProfile {
+  slug: string;
+  name: string;
+  number: number;
+  /** Official birthplace when known (e.g. "Sacramento, California"). */
+  birthplace?: string;
+  /** Official hometown when birthplace is unavailable. */
+  hometown?: string;
+  /** NHL roster role when known (referee vs linesman). */
+  role?: RefRole;
+  games: number;
+  avgTotalPoints: number;
+  overRate: number;
+  avgFouls: number;
+  homeCoverRate: number | null;
+  totalPointsDelta: number;
+  foulsDelta: number;
+  seasons: string[];
+  recentGames: RefGameRecord[];
+  /** Keyed by team abbreviation (e.g. LAL, TOR). */
+  teamStats?: Record<string, RefTeamStat>;
+  /** ATS, O/U buckets, home scoring splits when closing lines are available. */
+  bettingStats?: RefBettingStats;
+  /** Performance vs closing-line expectation (ATS-first, independent of straight-up W-L). */
+  marketExpectation?: RefMarketExpectationStats;
+  /** NHL referee-only analytics when available. */
+  nhlAnalytics?: NhlRefAnalytics;
+  nflAnalytics?: NflRefAnalytics;
+  cfbAnalytics?: CfbRefAnalytics;
+  eplAnalytics?: EplRefAnalytics;
+  provenance?: {
+    avgTotalPoints: MetricProvenance;
+    overRate: MetricProvenance;
+    avgFouls: MetricProvenance;
+    sampleGate: SampleGateStatus;
+    leagueBaseline: MetricProvenance;
+  };
 }
 
 export interface RefBettingStats {
@@ -252,6 +386,12 @@ export interface TeamCrewSplit {
   homeLosses: number;
   awayWins: number;
   awayLosses: number;
+  /** ATS cover splits when closing lines exist for this crew bucket. */
+  atsWins?: number;
+  atsLosses?: number;
+  atsPushes?: number;
+  atsGames?: number;
+  atsCoverRate?: number;
   avgTeamFouls: number;
   avgOpponentFouls: number;
   foulDifferential: number;
@@ -303,13 +443,43 @@ export interface RefStatsFile {
     leagueOvertimeRate?: number;
     /** NHL: season PP/PK by team abbr. */
     teamSpecialTeams?: Record<string, NhlTeamSpecialTeams>;
+    /** NCAA: per-conference whistle/scoring baselines for context-adjusted analytics. */
+    conferenceBaselines?: Record<
+      string,
+      {
+        conference: string;
+        games: number;
+        avgTotalPoints: number;
+        avgFouls: number;
+        avgHomeFouls: number;
+        avgAwayFouls: number;
+        avgFlags: number;
+        avgHomeFlags: number;
+        avgAwayFlags: number;
+        avgPenaltyYards: number;
+        foulDifferentialVariance: number;
+      }
+    >;
   };
   refs: RefProfile[];
+  /** Optional geography index keyed by ref slug (merged at ingest). */
+  refGeography?: Record<string, RefGeographyEntry>;
   teamSplits: Record<string, TeamCrewSplit[]>;
   /** @deprecated Migrated to teamSplits.TOR on read */
   raptorsSplits?: TeamCrewSplit[];
   /** @deprecated Migrated to teamSplits.LAL on read */
   lakersSplits?: TeamCrewSplit[];
+  /** Team ATS baselines keyed by abbr when matrix enrichment runs from game logs. */
+  teamAtsBaselines?: Record<
+    string,
+    {
+      atsWins: number;
+      atsLosses: number;
+      atsPushes: number;
+      atsGames: number;
+      atsCoverRate: number;
+    }
+  >;
 }
 
 export type OuLean = "over" | "under" | "neutral";
@@ -322,6 +492,12 @@ export interface GameOddsLine {
   total: number;
   /** Home spread; negative = home favorite. */
   homeSpread?: number;
+  /** American price for the over side (totals market). */
+  overOdds?: number;
+  /** American price for the under side (totals market). */
+  underOdds?: number;
+  /** American price for the home spread side. */
+  homeSpreadOdds?: number;
   source: string;
   lastUpdated: string;
 }

@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { REFWATCH_A11Y_CHANGE_EVENT } from "@/lib/a11y/a11yStorageConstants";
-import type { ColorModeSetting } from "@/lib/a11y/useA11ySettings";
+import type { ResolvedColorMode } from "@/lib/a11y/useA11ySettings";
 
-export function readColorMode(): ColorModeSetting {
+export function readColorMode(): ResolvedColorMode {
   if (typeof document === "undefined") return "dark";
   return document.documentElement.dataset.color === "light" ? "light" : "dark";
 }
 
-/** Subscribes to a11y storage + `data-color` on `<html>`. */
-export function useColorMode(): ColorModeSetting {
-  const [colorMode, setColorMode] = useState<ColorModeSetting>("dark");
+/** Subscribes to a11y storage + resolved `data-color` on `<html>`. */
+export function useColorMode(): ResolvedColorMode {
+  const [colorMode, setColorMode] = useState<ResolvedColorMode>("dark");
 
   useEffect(() => {
     setColorMode(readColorMode());

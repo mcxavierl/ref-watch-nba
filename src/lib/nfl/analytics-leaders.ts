@@ -3,6 +3,7 @@ import type { RefProfile, RefStatsFile } from "@/lib/types";
 export type NflLeaderCategory =
   | "flags"
   | "penaltyYards"
+  | "leverageImpact"
   | "scoring"
   | "overRate"
   | "balance";
@@ -36,6 +37,13 @@ export function buildNflAnalyticsLeaders(stats: RefStatsFile): NflLeaderEntry[] 
       (b.nflAnalytics!.penaltyYardsDelta ?? 0) -
       (a.nflAnalytics!.penaltyYardsDelta ?? 0),
   );
+  const byLeverage = [...pool]
+    .filter((r) => r.nflAnalytics?.avgHighLeverageImpactPerGame !== undefined)
+    .sort(
+      (a, b) =>
+        (b.nflAnalytics!.highLeverageImpactDelta ?? 0) -
+        (a.nflAnalytics!.highLeverageImpactDelta ?? 0),
+    );
   const byScoring = [...pool].sort(
     (a, b) => b.totalPointsDelta - a.totalPointsDelta,
   );
@@ -69,6 +77,18 @@ export function buildNflAnalyticsLeaders(stats: RefStatsFile): NflLeaderEntry[] 
       ref: yardsRef,
       value: `+${yardsRef.nflAnalytics.penaltyYardsDelta.toFixed(1)} vs league`,
       delta: yardsRef.nflAnalytics.penaltyYardsDelta,
+    });
+  }
+
+  const leverageRef = byLeverage[0];
+  if (leverageRef?.nflAnalytics?.avgHighLeverageImpactPerGame !== undefined) {
+    leaders.push({
+      category: "leverageImpact",
+      title: "Highest leverage impact",
+      detail: `${leverageRef.nflAnalytics.avgHighLeverageImpactPerGame} impact/game`,
+      ref: leverageRef,
+      value: `+${(leverageRef.nflAnalytics.highLeverageImpactDelta ?? 0).toFixed(1)} vs league`,
+      delta: leverageRef.nflAnalytics.highLeverageImpactDelta,
     });
   }
 

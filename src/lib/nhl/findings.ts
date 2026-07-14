@@ -4,12 +4,16 @@ import { filterNhlReferees } from "@/lib/nhl/officials";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, NHL_TEAMS } from "@/lib/nhl/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
-import { collectRefTeamScoringExtremes, rankScore } from "@/lib/findings-shared";
+import { collectRefTeamScoringExtremes, rankScore, buildMarketExpectationAtsFinding } from "@/lib/findings-shared";
 import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-significance";
+import { attachRegionalContextToFindings } from "@/lib/regional-context";
+import { prepareStatsForAtsAnalytics } from "@/lib/ref-market-expectation";
 import {
   buildCloseGameLeagueFinding,
   buildCrewDominanceFinding,
   buildLeagueSkewFinding,
+  buildMarqueeEfficiencyFinding,
+  buildFrictionGrudgeFindings,
   buildMatrixExtremeFinding,
   buildNhlMinorsOutlierFinding,
   buildNhlOtOutlierFinding,
@@ -162,6 +166,9 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
 }
 
 function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const marketFinding = buildMarketExpectationAtsFinding(stats, rankScore);
+  if (marketFinding) return marketFinding;
+
   if (!stats.meta.atsAvailable) return null;
 
   let best:
@@ -346,6 +353,8 @@ function collectCandidates(
     buildWhistleOutlierFinding(refereeStats, NHL_FINDING_CTX),
     buildOverRateOutlierFinding(refereeStats, NHL_FINDING_CTX, "low"),
     scoringOutlierFinding(refereeStats),
+    buildMarqueeEfficiencyFinding(refereeStats, NHL_FINDING_CTX),
+    ...buildFrictionGrudgeFindings(refereeStats, NHL_FINDING_CTX, "nhl"),
     ...(includeHeavy
       ? [
           teamCrewAnomalyFinding(refereeStats),
@@ -363,7 +372,11 @@ function collectCandidates(
 function resolveStats(scopedSeasons?: string[]) {
   const full = getRefStats();
   if (!scopedSeasons?.length) return full;
-  return buildScopedRefStats("nhl", full, scopedSeasons);
+  return prepareStatsForAtsAnalytics(
+    "nhl",
+    buildScopedRefStats("nhl", full, scopedSeasons),
+    scopedSeasons,
+  );
 }
 
 export function computeFindings(
@@ -375,7 +388,10 @@ export function computeFindings(
   if (stats.refs.length === 0) return [];
 
   const ranked = rankScoredFindings(collectCandidates(stats, options));
-  return pickFeaturedFindings(ranked, limit);
+  return attachRegionalContextToFindings(
+    pickFeaturedFindings(ranked, limit),
+    stats,
+  );
 }
 
 export function computeAllFindings(
@@ -385,10 +401,13 @@ export function computeAllFindings(
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  return rankScoredFindings(collectCandidates(stats, options))
-    .map((item) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
-      const { score, sampleGames, ...finding } = item;
-      return finding;
-    });
+  return attachRegionalContextToFindings(
+    rankScoredFindings(collectCandidates(stats, options))
+      .map((item) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
+        const { score, sampleGames, ...finding } = item;
+        return finding;
+      }),
+    stats,
+  );
 }

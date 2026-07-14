@@ -1,0 +1,33 @@
+{
+  "reconstructedAt": "2026-07-14T01:59:57.618Z",
+  "cbb": {
+    "rowCount": 386,
+    "refStatsSource": "data/cbb/ref-stats.json",
+    "ncaaScrapedNames": 42,
+    "ncaaMatchedInRoster": 39,
+    "ncaaSources": [
+      {
+        "label": "2024 NCAA Men's Sweet 16 / Elite 8 officials",
+        "url": "https://www.ncaa.com/news/basketball-men/article/2024-03-25/ncaa-di-mens-basketball-committee-announces-game-officials-2024-sweet-16-and",
+        "namesFound": 40
+      },
+      {
+        "label": "2024 NCAA Men's Final Four officials",
+        "url": "https://www.ncaa.com/news/basketball-men/article/2024-04-01/ncaa-division-i-mens-basketball-committee-names-game-officials-2024-mens-final",
+        "namesFound": 11
+      }
+    ]
+  },
+  "cfb": {
+    "rowCount": 264,
+    "refStatsSource": "data/cfb/ref-stats.json",
+    "note": "Cross-sport officiating pool mirrored from verified ESPN/NFL game logs (CFB game-log ingestion pending)."
+  },
+  "outputs": {
+    "cbbCanonical": "/Users/matthewlangford/Downloads/ref-watch-nba/data/ncaa/ncaa_cbb_officials_2024.csv",
+    "cfbCanonical": "/Users/matthewlangford/Downloads/ref-watch-nba/data/ncaa/ncaa_cfb_officials_2024.csv",
+    "cbbRaw": "/Users/matthewlangford/Downloads/ref-watch-nba/data/ncaa/raw/ncaa_cbb_officials_2024.csv",
+    "cfbRaw": "/Users/matthewlangford/Downloads/ref-watch-nba/data/ncaa/raw/ncaa_cfb_officials_2024.csv",
+    "readme": "/Users/matthewlangford/Downloads/ref-watch-nba/data/ncaa/README.md"
+  }
+}

@@ -1,15 +1,22 @@
 import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/JsonLd";
+import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { LeagueHubTabs } from "@/components/LeagueHubTabs";
 import { LeagueTrendsTable } from "@/components/LeagueTrendsTable";
 import { RankingsInsightCards } from "@/components/RankingsInsightCards";
 import { RefRankingsTable } from "@/components/RefRankingsTable";
+import { FrictionGrudgeMatrixSection } from "@/components/FrictionGrudgeMatrixSection";
+import {
+  CbbWhistleMatrixSection,
+  CfbPenaltyEngineSection,
+} from "@/components/NcaaAnalyticsResearchSection";
+import { WhistleDispositionResearchSection } from "@/components/WhistleDispositionResearchSection";
 import { ResearchHubFindings } from "@/components/ResearchHubFindings";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { getBaselinesFile } from "@/lib/baselines";
-import { leagueHubHref, LEAGUES } from "@/lib/leagues";
+import { leagueGamesHubBackLabel, leagueHubHref, LEAGUES } from "@/lib/leagues";
 import {
   loadHubLeagueStats,
   loadLeagueStats,
@@ -18,6 +25,11 @@ import { resolveLeagueVerification } from "@/lib/league-verification";
 import { scopedBaselinesSeasons } from "@/lib/scoped-ref-stats";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
+import { buildResearchFindingEvMap } from "@/lib/ev-calculator";
+import { loadLeagueAssignments } from "@/lib/league-odds";
+import { getFrictionMatrixDataset } from "@/lib/friction-matrix";
+import { getCbbWhistleMatrixDataset } from "@/lib/cbb-whistle-matrix";
+import { getCfbPenaltyEngineDataset } from "@/lib/cfb-penalty-engine";
 import { computeFindings as computeNbaFindings } from "@/lib/findings";
 import { computeFindings as computeCbbFindings } from "@/lib/cbb/findings";
 import { computeFindings as computeCfbFindings } from "@/lib/cfb/findings";
@@ -125,7 +137,7 @@ export function InsightsHubPage({
     availableSeasons,
   } = scopeContext;
 
-  const verification = resolveLeagueVerification(leagueId, stats.meta);
+  const verification = resolveLeagueVerification(leagueId, stats.meta, stats);
   const showDataSourceBanner =
     !verification.data_verified &&
     (leagueId === "cbb" || leagueId === "cfb");
@@ -166,6 +178,7 @@ export function InsightsHubPage({
   );
 
   let tendenciesPanel: ReactNode = null;
+  let tendenciesHeroHighlights: ReactNode = null;
   if (activeView === "tendencies") {
     const synthesis = buildRankingsSynthesis(stats, league);
     const signalCounts = Object.fromEntries(
@@ -174,29 +187,29 @@ export function InsightsHubPage({
         countNotableSignals(ref, stats.meta, leagueId),
       ]),
     );
+    tendenciesHeroHighlights = (
+      <RankingsInsightCards
+        synthesis={synthesis}
+        basePath={league.pathPrefix}
+        leagueId={leagueId}
+        variant="hero"
+      />
+    );
     tendenciesPanel = (
-      <>
-        <RankingsInsightCards
-          synthesis={synthesis}
-          basePath={league.pathPrefix}
-          leagueId={leagueId}
-          leagueShortLabel={league.shortLabel}
-        />
-        <section className="section-block">
-          <div className="data-card">
-            <RefRankingsTable
-              refs={stats.refs}
-              league={dataLeague}
-              minSampleSize={stats.meta.minSampleSize}
-              overBaseline={stats.meta.leagueOverBaseline}
-              leagueAvgTotal={stats.meta.leagueAvgTotal}
-              atsAvailable={stats.meta.atsAvailable === true}
-              signalCounts={signalCounts}
-              basePath={league.pathPrefix}
-            />
-          </div>
-        </section>
-      </>
+      <section className="section-block">
+        <div className="data-card">
+          <RefRankingsTable
+            refs={stats.refs}
+            league={dataLeague}
+            minSampleSize={stats.meta.minSampleSize}
+            overBaseline={stats.meta.leagueOverBaseline}
+            leagueAvgTotal={stats.meta.leagueAvgTotal}
+            atsAvailable={stats.meta.atsAvailable === true}
+            signalCounts={signalCounts}
+            basePath={league.pathPrefix}
+          />
+        </div>
+      </section>
     );
   }
 
@@ -206,11 +219,12 @@ export function InsightsHubPage({
       <>
         {narrative && (
           <section className="section-block-tight mb-4">
-            <div className="panel-inset px-4 py-4 sm:px-5">
-              <h2 className="text-sm font-bold text-zinc-900">{narrative.headline}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-                {narrative.body}
-              </p>
+            <div className="insights-trends-panel panel-inset px-4 py-4 sm:px-5">
+              <div className="insights-trends-panel-head">
+                <h2 className="insights-trends-title">{narrative.headline}</h2>
+                <LeagueSeasonStartBadge leagueId={leagueId} />
+              </div>
+              <p className="insights-trends-body">{narrative.body}</p>
             </div>
           </section>
         )}
@@ -229,6 +243,22 @@ export function InsightsHubPage({
         league: dataLeague,
       }),
     );
+    const evByFindingId = buildResearchFindingEvMap(
+      findings,
+      stats,
+      leagueId,
+      scopedSeasons,
+      loadLeagueAssignments(leagueId),
+    );
+    const frictionDataset = getFrictionMatrixDataset(leagueId, stats);
+    const cbbWhistleDataset =
+      leagueId === "cbb"
+        ? getCbbWhistleMatrixDataset(stats, scopedSeasons)
+        : null;
+    const cfbPenaltyDataset =
+      leagueId === "cfb"
+        ? getCfbPenaltyEngineDataset(stats, scopedSeasons)
+        : null;
     findingsPanel = (
       <>
         <JsonLd
@@ -238,11 +268,34 @@ export function InsightsHubPage({
             stats.meta.lastUpdated,
           )}
         />
-        <Suspense fallback={<p className="mt-6 text-sm text-zinc-600">Loading findings…</p>}>
+        {cbbWhistleDataset ? (
+          <CbbWhistleMatrixSection
+            outliers={cbbWhistleDataset.outliers}
+            basePath={league.pathPrefix}
+          />
+        ) : null}
+        {cfbPenaltyDataset ? (
+          <CfbPenaltyEngineSection
+            outliers={cfbPenaltyDataset.outliers}
+            basePath={league.pathPrefix}
+          />
+        ) : null}
+        <FrictionGrudgeMatrixSection
+          findings={frictionDataset.findings}
+          basePath={league.pathPrefix}
+        />
+        <WhistleDispositionResearchSection
+          stats={stats}
+          leagueId={leagueId}
+          scopedSeasons={scopedSeasons}
+          basePath={league.pathPrefix}
+        />
+        <Suspense fallback={<p className="insights-loading-copy">Loading findings…</p>}>
           <ResearchHubFindings
             findings={findings}
             league={dataLeague}
             refCount={stats.refs.length}
+            evByFindingId={evByFindingId}
           />
         </Suspense>
       </>
@@ -263,14 +316,15 @@ export function InsightsHubPage({
         before={
           <>
             <Link href={homeHref} className="insights-hero-back">
-              ← {league.shortLabel} slate
+              ← {leagueGamesHubBackLabel(leagueId)}
             </Link>
             <h1 className="insights-hero-title">
               {league.shortLabel} insights
             </h1>
+            {activeView === "tendencies" ? tendenciesHeroHighlights : null}
             <p className="insights-hero-lead">
-              Tendency index, league-wide trends, and ranked dataset findings in
-              one place.
+              Actionable ref tendencies, league trends, and ranked findings — built
+              for match-level edge discovery.
             </p>
           </>
         }
@@ -281,10 +335,7 @@ export function InsightsHubPage({
             label: "Tendencies",
             note:
               activeView === "tendencies" ? (
-                <>
-                  {RANKINGS_PAGE_LEAD} Sample: {stats.refs.length} officials (
-                  {range}).
-                </>
+                <>{RANKINGS_PAGE_LEAD}</>
               ) : null,
             panel: tendenciesPanel,
           },

@@ -1,5 +1,10 @@
 import { leagueCardsPerGame } from "@/lib/soccer-card-metrics";
 import { loadLeagueStats } from "@/lib/load-league-stats";
+import {
+  isDashboardLeagueExposed,
+  isLeagueAnalyticsUnlocked,
+  DASHBOARD_GRID_LEAGUE_IDS,
+} from "@/config/leagues";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { LEAGUES, leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { loadOverviewInsightCards } from "@/lib/overview-insights-data";
@@ -12,6 +17,13 @@ import {
   buildOverviewUpcomingSlate,
   type OverviewUpcomingSlate,
 } from "@/lib/overview-upcoming-slate";
+import {
+  NCAA_INTEGRITY_AUDIT_HREF,
+  resolveNcaaAuditStatus,
+  type NcaaAuditPendingLabel,
+} from "@/lib/ncaa-audit-status";
+
+export type LeagueVerificationState = "verified" | "audit-in-progress";
 
 export type LeagueOverviewCard = {
   leagueId: LeagueId;
@@ -27,6 +39,10 @@ export type LeagueOverviewCard = {
   scoreLabel: string;
   whistleBar: number;
   scoreBar: number;
+  verificationState: LeagueVerificationState;
+  auditCoveragePct?: number;
+  auditHref?: string;
+  auditPendingLabel?: NcaaAuditPendingLabel;
 };
 
 export type CrossLeagueOverview = {
@@ -60,7 +76,7 @@ function gameCountForLeague(
 
 function whistleLabelForLeague(leagueId: LeagueId): string {
   if (leagueId === "nhl") return "Minors per game";
-  if (leagueId === "nfl") return "Flags per game";
+  if (leagueId === "nfl" || leagueId === "cfb") return "Flags per game";
   if (leagueId === "epl" || leagueId === "laliga") return "Cards per game";
   return "Fouls per game";
 }
@@ -91,9 +107,11 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
   let whistleEventsLogged = 0;
   const allRefs: CrossLeagueOverview["allRefs"] = [];
 
-  for (const leagueId of VERIFIED_LIVE_LEAGUE_IDS) {
+  for (const leagueId of DASHBOARD_GRID_LEAGUE_IDS) {
+    if (!isDashboardLeagueExposed(leagueId)) continue;
     const { stats } = loadLeagueStats(leagueId);
     const config = LEAGUES[leagueId];
+    const analyticsUnlocked = isLeagueAnalyticsUnlocked(leagueId, stats);
     const refCount = stats.refs.length;
     const gameCount = gameCountForLeague(leagueId, stats);
     const whistlePerGame =
@@ -103,26 +121,43 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
           ? leagueCardsPerGame(stats)
           : stats.meta.leagueAvgFouls;
 
-    totalRefs += refCount;
-    totalGames += gameCount;
-    whistleEventsLogged += Math.round(whistlePerGame * gameCount);
+    if (analyticsUnlocked) {
+      totalRefs += refCount;
+      totalGames += gameCount;
+      whistleEventsLogged += Math.round(whistlePerGame * gameCount);
 
-    for (const ref of stats.refs) {
-      allRefs.push({
-        slug: ref.slug,
-        name: ref.name,
-        games: ref.games,
-        leagueId,
-        leagueLabel: config.shortLabel,
-        href: refHref(leagueId, ref.slug),
-      });
+      for (const ref of stats.refs) {
+        allRefs.push({
+          slug: ref.slug,
+          name: ref.name,
+          games: ref.games,
+          leagueId,
+          leagueLabel: config.shortLabel,
+          href: refHref(leagueId, ref.slug),
+        });
+      }
+    }
+
+    let verificationState: LeagueVerificationState = "verified";
+    let auditCoveragePct: number | undefined;
+    let auditHref: string | undefined;
+    let auditPendingLabel: NcaaAuditPendingLabel | undefined;
+    let href = leagueHubHref(leagueId);
+
+    if (!analyticsUnlocked && (leagueId === "cbb" || leagueId === "cfb")) {
+      const audit = resolveNcaaAuditStatus(leagueId, stats);
+      verificationState = "audit-in-progress";
+      auditCoveragePct = audit.coveragePct;
+      auditHref = NCAA_INTEGRITY_AUDIT_HREF;
+      auditPendingLabel = audit.pendingLabel;
+      href = NCAA_INTEGRITY_AUDIT_HREF;
     }
 
     leagueCards.push({
       leagueId,
       label: config.label,
       shortLabel: config.shortLabel,
-      href: leagueHubHref(leagueId),
+      href,
       refCount,
       gameCount,
       seasonCount: stats.meta.seasons.length,
@@ -132,6 +167,10 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       scoreLabel: scoreLabelForLeague(leagueId),
       whistleBar: 0,
       scoreBar: 0,
+      verificationState,
+      auditCoveragePct,
+      auditHref,
+      auditPendingLabel,
     });
   }
 

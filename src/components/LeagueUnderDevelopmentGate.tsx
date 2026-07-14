@@ -37,7 +37,7 @@ export async function LeagueUnderDevelopmentGate({
   await preloadLeagueRefStatsForPath(SITE_URL, leagueId, pathname);
 
   const stats = REF_LOADERS[leagueId]();
-  const verification = resolveLeagueVerification(leagueId, stats.meta);
+  const verification = resolveLeagueVerification(leagueId, stats.meta, stats);
   const league = LEAGUES[leagueId as LeagueId];
 
   if (!verification.data_verified && !shouldShowUnverifiedData()) {

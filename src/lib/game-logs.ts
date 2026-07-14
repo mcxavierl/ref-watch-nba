@@ -10,8 +10,10 @@ import {
   type RuntimeGameLogFile,
 } from "@/lib/game-logs-preload";
 import { allowNodeDataFs } from "@/lib/production-data-guard";
+import { registerWorkerIsolateEndCallback } from "@/lib/worker-isolate-store";
 
 export type { GameLineSource, RuntimeGameLogEntry, RuntimeGameLogFile, DataLeague };
+export type { WhistlePeriodSplits } from "@/lib/whistle-period-splits";
 export { getCachedGameLogs, setCachedGameLogs, preloadGameLogsFromAssets } from "@/lib/game-logs-preload";
 
 export const NBA_INGEST_SEASONS = [
@@ -28,6 +30,12 @@ export const NBA_INGEST_SEASONS = [
 ] as const;
 
 const cache = new Map<DataLeague, RuntimeGameLogFile | null>();
+
+export function clearRuntimeGameLogsModuleCache(): void {
+  cache.clear();
+}
+
+registerWorkerIsolateEndCallback(clearRuntimeGameLogsModuleCache);
 
 function nbaSeasonShardPath(season: string): string {
   return path.join(process.cwd(), "data", "nba", "game-logs", `${season}.ndjson`);
@@ -104,6 +112,7 @@ function gameLogPath(league: DataLeague): string {
   if (league === "NHL") return path.join(root, "nhl", "game-logs.json");
   if (league === "NFL") return path.join(root, "nfl", "game-logs.json");
   if (league === "EPL") return path.join(root, "epl", "game-logs.json");
+  if (league === "LALIGA") return path.join(root, "laliga", "game-logs.json");
   if (league === "CBB") return path.join(root, "cbb", "game-logs.json");
   return path.join(root, "cfb", "game-logs.json");
 }

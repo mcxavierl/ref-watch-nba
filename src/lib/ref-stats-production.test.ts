@@ -6,12 +6,14 @@ import { getRefStats as getNhlRefStats } from "@/lib/nhl/data";
 import { getRefStats as getEplRefStats } from "@/lib/epl/data";
 import { getRefStats as getLaligaRefStats } from "@/lib/laliga/data";
 
+import {
+  beginWorkerIsolateRequest,
+  endWorkerIsolateRequest,
+} from "@/lib/worker-isolate-store";
+
 function clearLeagueCaches(): void {
-  globalThis.__REFWATCH_NBA_REF_STATS__ = undefined;
-  globalThis.__REFWATCH_NHL_REF_STATS__ = undefined;
-  globalThis.__REFWATCH_NFL_REF_STATS__ = undefined;
-  globalThis.__REFWATCH_EPL_REF_STATS__ = undefined;
-  globalThis.__REFWATCH_LALIGA_REF_STATS__ = undefined;
+  endWorkerIsolateRequest();
+  beginWorkerIsolateRequest();
 }
 
 describe("production getRefStats fallbacks", () => {

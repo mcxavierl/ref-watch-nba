@@ -5,21 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { A11ySettingsPanel } from "@/components/A11ySettingsPanel";
 import { Whistle } from "@/components/icons/Whistle";
-import { headerActiveLeague, isOverviewPath, leagueFromPathname, SITE_HOME_PATH } from "@/lib/leagues";
+import { isOverviewPath, leagueFromPathname, SITE_HOME_PATH } from "@/lib/leagues";
 import { LeagueNav, SiteNav } from "./SiteNav";
-
-function OverviewNavLink({ pathname }: { pathname: string }) {
-  const active = isOverviewPath(pathname);
-  return (
-    <Link
-      href={SITE_HOME_PATH}
-      aria-current={active ? "page" : undefined}
-      className={`site-global-link${active ? " site-global-link--active" : ""}`}
-    >
-      Overview
-    </Link>
-  );
-}
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -59,7 +46,6 @@ export function SiteHeader() {
           </div>
 
           <div className="site-header-util">
-            <OverviewNavLink pathname={resolvedPath} />
             <A11ySettingsPanel />
           </div>
 

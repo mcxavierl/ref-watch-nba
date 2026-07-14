@@ -1,5 +1,15 @@
 import { aggregateBaselineForSeasons } from "@/lib/baselines";
 import {
+  applyConferenceAdjustedMeta,
+  isNcaaMetricsLeague,
+} from "@/lib/metrics-computer";
+import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
+import {
+  atsCoverRateFromRecord,
+  hasClosingSpreadLine,
+  teamAtsResult,
+} from "@/lib/team-ats";
+import {
   loadRuntimeGameLogs,
   type RuntimeGameLogEntry,
   type RuntimeGameLogFile,
@@ -60,6 +70,7 @@ interface RefTeamGameRow {
   totalPoints: number;
   overHit: boolean;
   teamWin: boolean;
+  teamAtsResult?: "win" | "loss" | "push" | null;
 }
 
 interface TeamCrewGameRow {
@@ -94,6 +105,11 @@ function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
   const n = games.length;
   const wins = games.filter((g) => g.teamWin).length;
   const losses = n - wins;
+  const atsGames = games.filter((g) => g.teamAtsResult);
+  const atsWins = atsGames.filter((g) => g.teamAtsResult === "win").length;
+  const atsLosses = atsGames.filter((g) => g.teamAtsResult === "loss").length;
+  const atsPushes = atsGames.filter((g) => g.teamAtsResult === "push").length;
+  const atsDecisions = atsWins + atsLosses + atsPushes;
   return {
     games: n,
     wins,
@@ -106,6 +122,15 @@ function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
     ),
     overRate: round3(games.filter((g) => g.overHit).length / n),
     winRate: round3(wins / n),
+    ...(atsDecisions > 0
+      ? {
+          atsWins,
+          atsLosses,
+          atsPushes,
+          atsGames: atsDecisions,
+          atsCoverRate: atsCoverRateFromRecord(atsWins, atsLosses, atsPushes),
+        }
+      : {}),
   };
 }
 
@@ -203,6 +228,7 @@ function rebuildFromGameLogs(
   for (const game of filtered) {
     const overHit = game.totalPoints > game.closingTotal;
     const homeWin = game.homeScore > game.awayScore;
+    const hasLine = hasClosingSpreadLine(game);
     const key = crewKey(game.officials);
     const crewNames = game.officials.map((o) => o.name);
 
@@ -250,6 +276,13 @@ function rebuildFromGameLogs(
             totalPoints: game.totalPoints,
             overHit,
             teamWin,
+            teamAtsResult: teamAtsResult(
+              isHome,
+              game.homeScore,
+              game.awayScore,
+              game.homeSpread,
+              hasLine,
+            ),
           };
           const byTeam = refTeamBuckets.get(slug) ?? new Map();
           const teamRows = byTeam.get(teamAbbr) ?? [];
@@ -287,6 +320,8 @@ function rebuildFromGameLogs(
       name: meta.name,
       number: meta.number,
       role: preserved?.role,
+      birthplace: preserved?.birthplace,
+      hometown: preserved?.hometown,
       games: n,
       avgTotalPoints: round1(avgTotal),
       overRate: round3(overRate),
@@ -298,6 +333,7 @@ function rebuildFromGameLogs(
       recentGames: gameRecords.slice(-8).reverse(),
       teamStats,
       bettingStats: preserved?.bettingStats,
+      marketExpectation: preserved?.marketExpectation,
       nhlAnalytics: preserved?.nhlAnalytics,
       nflAnalytics: preserved?.nflAnalytics,
       cfbAnalytics: preserved?.cfbAnalytics,
@@ -346,6 +382,20 @@ function baselineLeagueForData(
   return dataLeague;
 }
 
+function overlayNcaaConferenceBaselines(
+  stats: RefStatsFile,
+  leagueId: LeagueId,
+  scopedSeasons: string[],
+): RefStatsFile {
+  if (!isNcaaMetricsLeague(leagueId)) return stats;
+  const dataLeague = LEAGUE_ID_TO_DATA[leagueId];
+  const logs = loadRuntimeGameLogs(dataLeague);
+  if (!logs?.games?.length) return stats;
+  const seasonSet = new Set(scopedSeasons);
+  const scopedGames = logs.games.filter((game) => seasonSet.has(game.season));
+  return applyConferenceAdjustedMeta(stats, scopedGames, leagueId);
+}
+
 function applyScopedMetaBaselines(
   stats: RefStatsFile,
   leagueId: LeagueId,
@@ -381,15 +431,19 @@ function filterByRefSeasons(
     ref.seasons.some((s) => seasonSet.has(s)),
   );
   return applyScopedMetaBaselines(
-    {
-      ...base,
-      meta: {
-        ...base.meta,
-        seasons: scopedSeasons,
-        refCount: refs.length,
+    overlayNcaaConferenceBaselines(
+      {
+        ...base,
+        meta: {
+          ...base.meta,
+          seasons: scopedSeasons,
+          refCount: refs.length,
+        },
+        refs,
       },
-      refs,
-    },
+      leagueId,
+      scopedSeasons,
+    ),
     leagueId,
     scopedSeasons,
   );
@@ -430,6 +484,7 @@ function shouldRebuildFromLogs(
     return needsGameLogRebuild(leagueId, scopeMode, context);
   }
   if (leagueId === "nba") return true;
+  if (leagueId === "cbb" || leagueId === "cfb") return true;
   return false;
 }
 
@@ -441,17 +496,10 @@ function gamesForScopedRebuild(
   return games.filter((game) => seasonSet.has(game.season));
 }
 
-const SCOPED_STATS_CACHE_KEY = "__REFWATCH_SCOPED_STATS_CACHE__" as const;
 const SCOPED_STATS_CACHE_MAX = 12;
 
 function scopedStatsCache(): Map<string, RefStatsFile> {
-  const g = globalThis as typeof globalThis & {
-    [SCOPED_STATS_CACHE_KEY]?: Map<string, RefStatsFile>;
-  };
-  if (!g[SCOPED_STATS_CACHE_KEY]) {
-    g[SCOPED_STATS_CACHE_KEY] = new Map();
-  }
-  return g[SCOPED_STATS_CACHE_KEY]!;
+  return getWorkerIsolateStore().scopedStats;
 }
 
 function scopedStatsCacheKey(
@@ -524,10 +572,17 @@ export function buildScopedRefStats(
         includeTeamSplits: depth === "full",
       },
     );
+    if (isNcaaMetricsLeague(leagueId)) {
+      result = applyConferenceAdjustedMeta(result, scopedGames, leagueId);
+    }
   } else if (leagueId === "nfl") {
     result = filterStatsPreservingTeamSplits(base, scopedSeasons, leagueId);
   } else {
     result = filterByRefSeasons(base, scopedSeasons, leagueId);
+  }
+
+  if (isNcaaMetricsLeague(leagueId)) {
+    result = overlayNcaaConferenceBaselines(result, leagueId, scopedSeasons);
   }
 
   scopedStatsCache().set(cacheKey, result);

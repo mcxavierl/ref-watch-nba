@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-13T00:00:00.000Z",
+    "league": "NFL",
+    "source": "manual-curation"
+  },
+  "officials": {
+    "brad-allen-122": {
+      "hometown": "Boston, MA"
+    },
+    "dale-shaw-0": {
+      "birthplace": "Los Angeles, California"
+    },
+    "jerome-boger-23": {
+      "birthplace": "Atlanta, Georgia"
+    }
+  }
+}

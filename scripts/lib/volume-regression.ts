@@ -383,7 +383,7 @@ export function formatVolumeSummaryTable(summaries: LeagueVolumeSummary[]): stri
     "league  seasons  ref-stats  log-games  thin-seasons  ghosts  matrix-gp  panels";
   const rows = summaries.map((s) => {
     const thin =
-      s.thinSeasons.length > 0 ? s.thinSeasons.join(",") : "—";
+      s.thinSeasons.length > 0 ? s.thinSeasons.join(",") : "-";
     const panels = `${s.matrixTopPanel}/${s.matrixBottomPanel}`;
     return [
       s.league.padEnd(6),

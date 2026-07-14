@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-13T00:00:00.000Z",
+    "league": "NBA",
+    "source": "manual-curation"
+  },
+  "officials": {
+    "brandon-schwab-86": {
+      "birthplace": "Sacramento, California"
+    },
+    "scott-foster-48": {
+      "hometown": "Boston, MA"
+    }
+  }
+}

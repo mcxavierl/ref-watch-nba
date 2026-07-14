@@ -22,13 +22,13 @@ export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
     tone: "positive",
     official: "Scott Foster",
     parts: [
-      { type: "text", value: "Over bettors are " },
+      { type: "text", value: "Over bettors hit " },
       { type: "metric", value: "72.1%" },
-      { type: "text", value: " in Kings games (vs. " },
+      { type: "text", value: " in Kings matches (vs. " },
       { type: "metric", value: "54.1%" },
-      { type: "text", value: " baseline). Sample: " },
+      { type: "text", value: " baseline across " },
       { type: "metric", value: "61" },
-      { type: "text", value: " games." },
+      { type: "text", value: " matches." },
     ],
   },
   {
@@ -37,9 +37,11 @@ export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
     tone: "negative",
     official: "Brad Allen",
     parts: [
-      { type: "text", value: "Under bettors are " },
+      { type: "text", value: "Under bettors hit " },
       { type: "metric", value: "65.4%" },
-      { type: "text", value: " in 30-Game Sample (vs. " },
+      { type: "text", value: " across " },
+      { type: "metric", value: "30" },
+      { type: "text", value: " matches (vs. " },
       { type: "metric", value: "48.2%" },
       { type: "text", value: " baseline)." },
     ],
@@ -50,9 +52,9 @@ export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
     tone: "positive",
     official: "Michael Oliver",
     parts: [
-      { type: "text", value: "Total match cards are " },
+      { type: "text", value: "Cards run " },
       { type: "metric", value: "+1.2" },
-      { type: "text", value: " per game vs. baseline." },
+      { type: "text", value: " per match vs. league baseline." },
     ],
   },
   {
@@ -63,9 +65,9 @@ export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
     parts: [
       { type: "text", value: "Home teams score " },
       { type: "metric", value: "-0.9" },
-      { type: "text", value: " goals vs. baseline in last " },
+      { type: "text", value: " goals vs. baseline in " },
       { type: "metric", value: "10" },
-      { type: "text", value: " matches." },
+      { type: "text", value: " recent matches." },
     ],
   },
 ];

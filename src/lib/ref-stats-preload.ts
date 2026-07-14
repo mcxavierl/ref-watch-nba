@@ -1,14 +1,9 @@
 import { safeOriginFetch } from "@/lib/edge-fetch";
-import "@/lib/global-stats";
-import type {
-  CbbStatsGlobalKey,
-  CfbStatsGlobalKey,
-  EplStatsGlobalKey,
-  LaligaStatsGlobalKey,
-  NbaStatsGlobalKey,
-  NflStatsGlobalKey,
-  NhlStatsGlobalKey,
-} from "@/lib/global-stats";
+import {
+  freezeWorkerConfig,
+  getWorkerIsolateStore,
+  releaseParsedPayload,
+} from "@/lib/worker-isolate-store";
 import {
   isVerifiedLiveLeague,
   resolveLeagueVerification,
@@ -16,45 +11,20 @@ import {
 import type { LeagueId } from "@/lib/leagues";
 import { normalizeAppPathname } from "@/lib/json-asset-guards";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
+import { enrichRefStatsWithGeography } from "@/lib/ref-geography";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
-type CacheKey =
-  | NbaStatsGlobalKey
-  | NhlStatsGlobalKey
-  | NflStatsGlobalKey
-  | CbbStatsGlobalKey
-  | CfbStatsGlobalKey
-  | EplStatsGlobalKey
-  | LaligaStatsGlobalKey;
 
-const CACHE_KEYS: Record<League, CacheKey> = {
-  nba: "__REFWATCH_NBA_REF_STATS__",
-  nhl: "__REFWATCH_NHL_REF_STATS__",
-  nfl: "__REFWATCH_NFL_REF_STATS__",
-  epl: "__REFWATCH_EPL_REF_STATS__",
-  laliga: "__REFWATCH_LALIGA_REF_STATS__",
-  cbb: "__REFWATCH_CBB_REF_STATS__",
-  cfb: "__REFWATCH_CFB_REF_STATS__",
-};
-
-type TeamSplitsCacheKey =
-  | "__REFWATCH_NBA_TEAM_SPLITS__"
-  | "__REFWATCH_NHL_TEAM_SPLITS__"
-  | "__REFWATCH_NFL_TEAM_SPLITS__"
-  | "__REFWATCH_EPL_TEAM_SPLITS__"
-  | "__REFWATCH_LALIGA_TEAM_SPLITS__"
-  | "__REFWATCH_CBB_TEAM_SPLITS__";
-
-const TEAM_SPLITS_CACHE_KEYS: Partial<Record<League, TeamSplitsCacheKey>> = {
+const TEAM_SPLITS_CACHE_KEYS = freezeWorkerConfig({
   nba: "__REFWATCH_NBA_TEAM_SPLITS__",
   nhl: "__REFWATCH_NHL_TEAM_SPLITS__",
   nfl: "__REFWATCH_NFL_TEAM_SPLITS__",
   epl: "__REFWATCH_EPL_TEAM_SPLITS__",
   laliga: "__REFWATCH_LALIGA_TEAM_SPLITS__",
   cbb: "__REFWATCH_CBB_TEAM_SPLITS__",
-};
+} as const);
 
-const ASSET_BASE: Record<League, string> = {
+const ASSET_BASE = freezeWorkerConfig({
   nba: "/data/nba",
   nhl: "/data/nhl",
   nfl: "/data/nfl",
@@ -62,10 +32,10 @@ const ASSET_BASE: Record<League, string> = {
   laliga: "/data/laliga",
   cbb: "/data/cbb",
   cfb: "/data/cfb",
-};
+} as const);
 
 export function getCachedRefStats(league: League): RefStatsFile | null {
-  return globalThis[CACHE_KEYS[league]] ?? null;
+  return getWorkerIsolateStore().refStats[league] ?? null;
 }
 
 /** SSR-hydrated stats from ASSETS — skip Node fs re-parses on Workers. */
@@ -75,7 +45,7 @@ export function getPreferHydratedRefStats(league: League): RefStatsFile | null {
   const leagueId = league as LeagueId;
   if (
     isVerifiedLiveLeague(leagueId) &&
-    !resolveLeagueVerification(leagueId, cached.meta).data_verified
+    !resolveLeagueVerification(leagueId, cached.meta, cached).data_verified
   ) {
     return null;
   }
@@ -107,18 +77,24 @@ export function resolveRefStatsFromFsOrCache(
   const leagueId = league as LeagueId;
   const cachedVerified = Boolean(
     cached?.refs?.length &&
-      resolveLeagueVerification(leagueId, cached.meta).data_verified,
+      resolveLeagueVerification(leagueId, cached.meta, cached).data_verified,
   );
   const fsVerified = Boolean(
     fromFs?.refs?.length &&
-      resolveLeagueVerification(leagueId, fromFs.meta).data_verified,
+      resolveLeagueVerification(leagueId, fromFs.meta, fromFs).data_verified,
   );
 
   if (cachedVerified && cached) {
-    return attachTeamSplits(league, cached, getCachedTeamSplits(league) ?? {});
+    return withGeography(
+      league,
+      attachTeamSplits(league, cached, getCachedTeamSplits(league) ?? {}),
+    );
   }
   if (fsVerified && fromFs) {
-    return attachTeamSplits(league, fromFs, getCachedTeamSplits(league) ?? {});
+    return withGeography(
+      league,
+      attachTeamSplits(league, fromFs, getCachedTeamSplits(league) ?? {}),
+    );
   }
 
   // Never serve stale seeded bundle data for verified live leagues on Workers.
@@ -130,23 +106,29 @@ export function resolveRefStatsFromFsOrCache(
   const cachedRefs = cached?.refs?.length ?? 0;
   const splits = getCachedTeamSplits(league) ?? {};
   if (cached && cachedRefs >= fsRefs) {
-    return attachTeamSplits(league, cached, splits);
+    return withGeography(league, attachTeamSplits(league, cached, splits));
   }
-  if (fsRefs > 0 && fromFs) return attachTeamSplits(league, fromFs, splits);
+  if (fsRefs > 0 && fromFs) {
+    return withGeography(league, attachTeamSplits(league, fromFs, splits));
+  }
   const fallback = cached ?? fromFs;
-  return fallback ? attachTeamSplits(league, fallback, splits) : null;
+  return fallback
+    ? withGeography(league, attachTeamSplits(league, fallback, splits))
+    : null;
 }
 
 export function getCachedTeamSplits(
   league: League,
 ): Record<string, TeamCrewSplit[]> | null {
-  const key = TEAM_SPLITS_CACHE_KEYS[league];
-  if (!key) return null;
-  return globalThis[key] ?? null;
+  return getWorkerIsolateStore().teamSplits[league] ?? null;
+}
+
+function withGeography(league: League, stats: RefStatsFile): RefStatsFile {
+  return enrichRefStatsWithGeography(league as LeagueId, stats);
 }
 
 function writeCachedRefStats(league: League, data: RefStatsFile): void {
-  globalThis[CACHE_KEYS[league]] = data;
+  getWorkerIsolateStore().refStats[league] = withGeography(league, data);
 }
 
 /** Merge sidecar team splits into the slim ref-stats object already in cache. */
@@ -168,9 +150,10 @@ export function setCachedTeamSplits(
   league: League,
   splits: Record<string, TeamCrewSplit[]>,
 ): void {
-  const key = TEAM_SPLITS_CACHE_KEYS[league];
-  if (!key) return;
-  globalThis[key] = splits;
+  if (!TEAM_SPLITS_CACHE_KEYS[league as keyof typeof TEAM_SPLITS_CACHE_KEYS]) {
+    return;
+  }
+  getWorkerIsolateStore().teamSplits[league] = splits;
   mergeCachedLeagueRefStats(league);
 }
 
@@ -213,10 +196,11 @@ export async function preloadRefStatsFromAssets(
       const res = await safeOriginFetch(origin, assetPath);
       if (res?.ok) {
         const { isRefStatsPayload } = await import("@/lib/json-asset-guards");
-        const data: unknown = await res.json();
+        let data: unknown = await res.json();
         if (isRefStatsPayload(data) && data.refs.length > 0) {
-          setCachedRefStats(league, data);
+          setCachedRefStats(league, data as RefStatsFile);
         }
+        data = releaseParsedPayload(data);
       }
     }
 
@@ -228,10 +212,11 @@ export async function preloadRefStatsFromAssets(
       const res = await safeOriginFetch(origin, splitsPath);
       if (res?.ok) {
         const { isTeamSplitsPayload } = await import("@/lib/json-asset-guards");
-        const splits: unknown = await res.json();
+        let splits: unknown = await res.json();
         if (isTeamSplitsPayload(splits) && Object.keys(splits).length > 0) {
-          setCachedTeamSplits(league, splits);
+          setCachedTeamSplits(league, splits as Record<string, TeamCrewSplit[]>);
         }
+        splits = releaseParsedPayload(splits);
       }
     }
   } catch (error) {

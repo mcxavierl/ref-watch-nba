@@ -2,11 +2,13 @@ import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
-import { isCatalogSlugVisible, isLeagueCardVisible, CBB_LEAGUE_ENTRY, CFB_LEAGUE_ENTRY } from "@/config/leagues";
+import { formatLeagueSeasonStart } from "@/config/leagueConfig";
+import { NCAA_INTEGRITY_AUDIT_HREF } from "@/lib/ncaa-audit-status";
+import { isCatalogSlugVisible, isDashboardLeagueExposed, isLeagueAnalyticsUnlocked } from "@/config/leagues";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 
-export type CatalogLeagueStatus = "live" | "coming-soon";
+export type CatalogLeagueStatus = "live" | "coming-soon" | "audit-pending";
 
 export type CatalogSportGroup =
   | "basketball"
@@ -38,24 +40,15 @@ export const LIVE_CATALOG_LEAGUE_IDS = [
   "laliga",
 ] as const satisfies readonly LeagueId[];
 
-/** Short 2026 season-start labels for overview hub badges (replaces generic "Live"). */
-export const LEAGUE_SEASON_START_BADGE: Partial<Record<LeagueId, string>> = {
-  epl: "Aug 21",
-  laliga: "Aug 14",
-  nfl: "Sep 9",
-  nhl: "Oct 6",
-  nba: "Oct 2026",
-  cbb: CBB_LEAGUE_ENTRY.startDate,
-  cfb: CFB_LEAGUE_ENTRY.startDate,
-};
-
+/** Short season-start labels for overview hub badges (MM/DD). */
 export function leagueSeasonStartBadge(leagueId: LeagueId): string | undefined {
-  return LEAGUE_SEASON_START_BADGE[leagueId];
+  return formatLeagueSeasonStart(leagueId);
 }
 
 export function catalogStatusLabel(entry: CatalogLeagueEntry): string {
+  if (entry.status === "audit-pending") return "Audit";
   if (entry.status === "live" && entry.leagueId) {
-    return leagueSeasonStartBadge(entry.leagueId) ?? "Live";
+    return leagueSeasonStartBadge(entry.leagueId) ?? "—";
   }
   return "Soon";
 }
@@ -82,8 +75,8 @@ export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
   { id: "ucl", label: "UEFA Champions League", region: "Europe", sport: "soccer", status: "coming-soon", sort: 40 },
   { id: "uel", label: "UEFA Europa League", region: "Europe", sport: "soccer", status: "coming-soon", sort: 41 },
   { id: "libertadores", label: "CONMEBOL Libertadores", region: "South America", sport: "soccer", status: "coming-soon", sort: 42 },
-  { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "college", status: "coming-soon", leagueId: "cbb", sort: 50 },
-  { id: "cfb", label: "NCAA Football", region: "USA", sport: "college", status: "coming-soon", leagueId: "cfb", sort: 51 },
+  { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "college", status: "audit-pending", leagueId: "cbb", href: `${NCAA_INTEGRITY_AUDIT_HREF}#cbb`, sort: 50 },
+  { id: "cfb", label: "NCAA Football", region: "USA", sport: "college", status: "audit-pending", leagueId: "cfb", href: `${NCAA_INTEGRITY_AUDIT_HREF}#cfb`, sort: 51 },
   { id: "mlb", label: "MLB", region: "USA", sport: "baseball", status: "coming-soon", sort: 52 },
 ];
 
@@ -211,7 +204,8 @@ export function overviewQuickListsForLeague(
 
 export function catalogEntriesForDisplay(): CatalogLeagueEntry[] {
   return LEAGUE_CATALOG.filter((entry) => {
-    if (entry.leagueId && !isLeagueCardVisible(entry.leagueId)) return false;
+    if (entry.leagueId && isDashboardLeagueExposed(entry.leagueId)) return true;
+    if (entry.leagueId && !isLeagueAnalyticsUnlocked(entry.leagueId)) return false;
     if (!entry.leagueId && !isCatalogSlugVisible(entry.id)) return false;
     return true;
   });

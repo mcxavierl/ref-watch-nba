@@ -66,7 +66,7 @@ async function fetchOdds(): Promise<OddsFile> {
     return {
       lastUpdated: new Date().toISOString(),
       source: "benchmark",
-      note: "ODDS_API_KEY not set — app uses 6.0 league proxy for NHL gap calculations.",
+      note: "ODDS_API_KEY not set. App uses 6.0 league proxy for NHL gap calculations.",
       lines: [],
     };
   }

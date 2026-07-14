@@ -1,6 +1,6 @@
 # Honesty audit
 
-Generated: 2026-07-11T20:01:13.338Z
+Generated: 2026-07-12T23:42:52.224Z
 
 Counts reflect provenance tags that would be shown in the UI (ref profiles, betting splits, slate crew metrics).
 
@@ -9,9 +9,9 @@ Counts reflect provenance tags that would be shown in the UI (ref profiles, bett
 - Data source: **hybrid**
 - Ref profiles: **109**
 - League baseline fallback: **no**
-- Displayed metrics: **109** real · **0** partial · **327** estimated (436 total)
+- Displayed metrics: **400** real · **36** partial · **0** estimated (436 total)
 - Refs below sample gate: **12**
-- Over-rate metrics marked estimated/partial: **109** / 109
+- Over-rate metrics marked estimated/partial: **12** / 109
 
 No honesty violations flagged.
 
@@ -20,7 +20,7 @@ No honesty violations flagged.
 - Data source: **nhl-api**
 - Ref profiles: **123**
 - League baseline fallback: **no**
-- Displayed metrics: **711** real · **21** partial · **0** estimated (732 total)
+- Displayed metrics: **1306** real · **41** partial · **0** estimated (1347 total)
 - Refs below sample gate: **7**
 - Over-rate metrics marked estimated/partial: **7** / 123
 
@@ -28,9 +28,9 @@ No honesty violations flagged.
 ## NFL
 
 - Data source: **espn**
-- Ref profiles: **211**
+- Ref profiles: **264**
 - League baseline fallback: **no**
-- Displayed metrics: **211** real · **0** partial · **0** estimated (211 total)
+- Displayed metrics: **264** real · **0** partial · **0** estimated (264 total)
 
 No honesty violations flagged.
 
@@ -66,9 +66,9 @@ No honesty violations flagged.
 
 | League | Real | Partial | Estimated | Total | Issues |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| NBA | 109 | 0 | 327 | 436 | 0 |
-| NHL | 711 | 21 | 0 | 732 | 0 |
-| NFL | 211 | 0 | 0 | 211 | 0 |
+| NBA | 400 | 36 | 0 | 436 | 0 |
+| NHL | 1306 | 41 | 0 | 1347 | 0 |
+| NFL | 264 | 0 | 0 | 264 | 0 |
 | CBB | 386 | 0 | 0 | 386 | 0 |
 | CFB | 0 | 0 | 0 | 0 | 0 |
 | EPL | 0 | 0 | 0 | 48 | 0 |

@@ -49,6 +49,7 @@ import {
   type NflHistoricalGameLogEntry,
 } from "./lib/nflverse-historical";
 import { homeCoverRate, NflBettingAccumulator } from "./lib/nfl-betting";
+import { enrichGameLogsWithPenaltyEvents } from "./lib/attach-penalty-events";
 
 const NFL_TEAM_ABBRS = [
   "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN",
@@ -599,7 +600,7 @@ async function buildFromEspn(
   }
 
   // Merge cached + newly fetched logs, then rebuild aggregates from the full set.
-  const mergedLogs = [...existingById.values()]
+  let mergedLogs = [...existingById.values()]
     .map((g) => ({ ...g, season: inferNflSeason(g.date) }))
     .sort(
       (a, b) =>
@@ -609,6 +610,14 @@ async function buildFromEspn(
   console.log(
     `Fetch pass done: +${processed} new, ${skippedCached} cached skips, ${mergedLogs.length} unique total`,
   );
+
+  const enriched = enrichGameLogsWithPenaltyEvents(mergedLogs, DATA_DIR);
+  mergedLogs = enriched.games;
+  if (enriched.applied > 0) {
+    console.log(
+      `Attached play-level penalty events to ${enriched.applied}/${mergedLogs.length} games`,
+    );
+  }
 
   if (mergedLogs.length < 500) {
     console.warn(`Only ${mergedLogs.length} ESPN games — keeping seed fallback.`);
@@ -647,6 +656,10 @@ async function buildFromEspn(
       raptorsInvolved: false,
       closingTotal: game.closingTotal,
       homeSpread: game.homeSpread,
+      highLeverageImpact: game.highLeverageImpact,
+      highLeverageFlagRate: game.highLeverageFlagRate,
+      subjectiveFlags: game.subjectiveFlags,
+      administrativeFlags: game.administrativeFlags,
     };
     const key = crewKey(game.officials);
     const crewNames = game.officials.map((o) => o.name);
@@ -881,7 +894,7 @@ async function main() {
         atsAvailable: false,
         lastUpdated: new Date().toISOString(),
         note:
-          "Simulated preview data with full ref×team matrix — not verified against official NFL records. " +
+          "Simulated preview data with full ref×team matrix, not verified against official NFL records. " +
           "Run build-nfl-data when ESPN backfill succeeds to merge verified penalty splits.",
       },
     };

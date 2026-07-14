@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-13T00:00:00.000Z",
+    "league": "EPL",
+    "source": "manual-curation"
+  },
+  "officials": {
+    "michael-oliver-0": {
+      "birthplace": "Ashington, England"
+    },
+    "anthony-taylor-0": {
+      "hometown": "Manchester, England"
+    }
+  }
+}

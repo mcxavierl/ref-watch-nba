@@ -2,10 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CloseGameSection } from "@/components/CloseGameSection";
+import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefBettingProfile } from "@/components/RefBettingProfile";
-import { FavoritesStar } from "@/components/FavoritesStar";
-import { RefAvatar } from "@/components/RefAvatar";
 import { JsonLd } from "@/components/JsonLd";
 import { EplRefAnalyticsSection } from "@/components/EplRefAnalyticsSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
@@ -122,38 +121,27 @@ export default async function EplRefProfilePage({
         ← Home
       </Link>
 
-      <header className="page-profile-header">
-        <div className="page-hero-head">
-          <RefAvatar
-            name={profile.name}
-            slug={profile.slug}
-            sport="epl"
-            size="xl"
-            decorative={false}
-            className="ring-2 ring-zinc-200 shadow-md"
+      <RefereeMasterCard
+        profile={profile}
+        leagueId="epl"
+        stats={stats}
+        sport="epl"
+        qualified={qualified}
+        avatarSize="xl"
+        avatarClassName="ring-2 ring-zinc-200 shadow-md"
+        numberSlot={
+          <RefJerseyNumber
+            number={profile.number}
+            className="font-mono text-sm text-zinc-500"
           />
-          <div className="page-hero-head-copy">
-            <div className="page-hero-head-title-row">
-              <h1 className="page-title">{profile.name}</h1>
-              <RefJerseyNumber
-                number={profile.number}
-                className="font-mono text-sm text-zinc-500"
-              />
-              <FavoritesStar
-                id={profile.slug}
-                kind="ref"
-                league="epl"
-                label={profile.name}
-              />
-            </div>
-          </div>
-        </div>
-        {!qualified && (
-          <p className="mt-3 text-sm text-amber-800">
+        }
+        sampleGateMessage={
+          <>
             Below {stats.meta.minSampleSize}-game minimum, metrics hidden until
             sample gate clears.
-          </p>
-        )}
+          </>
+        }
+      >
         <RefProfileMetadataBar
           seasons={stats.meta.seasons}
           games={profile.games}
@@ -162,7 +150,7 @@ export default async function EplRefProfilePage({
           leagueId="epl"
           slug={profile.slug}
         />
-      </header>
+      </RefereeMasterCard>
 
       <EplPreviewBanner statsSource={stats.meta.source} />
 
@@ -202,6 +190,7 @@ export default async function EplRefProfilePage({
             league="EPL"
             embedded
           />
+
         </div>
 
         <div className="ref-dashboard-sidebar">

@@ -104,7 +104,7 @@ export function ResearchFindingDetail({
           href={homeHref}
           className="font-medium text-zinc-800 hover:text-raptors hover:underline"
         >
-          Tonight&apos;s {finding.league} slate →
+          Tonight&apos;s {finding.league} games →
         </Link>
       </div>
     </div>

@@ -21,7 +21,7 @@ export function UpcomingSlateNotice({
     <div
       className="offseason-status-strip upcoming-slate-notice"
       role="status"
-      aria-label={`${league} upcoming slate, crews pending`}
+      aria-label={`${league} upcoming games, crews pending`}
     >
       <div className="offseason-status-copy-block">
         <p className="offseason-status-copy">

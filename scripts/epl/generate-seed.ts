@@ -134,7 +134,7 @@ function buildStats(): RefStatsFile {
       source: "seeded",
       atsAvailable: false,
       note:
-        "Premier League offseason seed — PGMO roster with illustrative match samples. Run npm run build-epl-data for match backfill.",
+        "Premier League offseason seed. PGMO roster with illustrative match samples. Run npm run build-epl-data for match backfill.",
     },
     refs,
     teamSplits: seedTeamSplits(refs),

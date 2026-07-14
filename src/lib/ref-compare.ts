@@ -1,4 +1,5 @@
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
 import type { SeasonScopeMode } from "@/lib/season-scope";
@@ -177,7 +178,7 @@ export function buildCompareLeagueMetrics(
 }
 
 export const CROSS_LEAGUE_COMPARE_DISCLAIMER =
-  "Cross-league compare: scoring, whistle, and over-rate use each sport's native definitions (e.g. NBA fouls vs EPL fouls). Only games are shown side-by-side below — league-specific metrics appear in each official's column.";
+  "Cross-league compare: scoring, whistle, and over-rate use each sport's native definitions (e.g. NBA fouls vs EPL fouls). Only games are shown side-by-side below; league-specific metrics appear in each official's column.";
 
 export function buildCompareMetricRows(
   left: CompareRefBundle,
@@ -225,7 +226,7 @@ export function buildCompareMetricRows(
       id: leftRow.id,
       label: leftRow.label,
       valueA: leftRow.value,
-      valueB: rightRow?.value ?? "—",
+      valueB: rightRow?.value ?? EMPTY_DISPLAY,
       detailA: leftRow.detail,
       detailB: rightRow?.detail,
       kind: "metric",
@@ -237,7 +238,7 @@ export function buildCompareMetricRows(
     merged.push({
       id: rightRow.id,
       label: rightRow.label,
-      valueA: "—",
+      valueA: EMPTY_DISPLAY,
       valueB: rightRow.value,
       detailB: rightRow.detail,
       kind: "metric",

@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-07-07T04:03:44.526Z",
-  "note": "Only games with lineSource=external are scored. Synthetic or missing lines are excluded — not fabricated.",
+  "note": "Only games with lineSource=external are scored. Synthetic or missing lines are excluded, not fabricated.",
   "nbaWhistlePremium": {
     "signal": "NBA Whistle Premium (pace alert)",
     "methodology": "Walk-forward: ref crew averages exclude target game and later games. High pace: scoring premium ≥ +4 and gap vs closing total ≥ +3. Low pace: scoring premium ≤ −4 and gap ≤ −3. Sample gate: ≥2 qualified refs (30+ games) and non-weak sample.",
@@ -13,7 +13,7 @@
     "breakEvenRate": 0.5238095238095238,
     "buckets": [
       {
-        "label": "Signal cleared — high pace (bet Over)",
+        "label": "Signal cleared, high pace (bet Over)",
         "sampleSize": 0,
         "ouWins": 0,
         "ouLosses": 0,
@@ -26,7 +26,7 @@
         "roiPct": null
       },
       {
-        "label": "Signal cleared — low pace (bet Under)",
+        "label": "Signal cleared, low pace (bet Under)",
         "sampleSize": 0,
         "ouWins": 0,
         "ouLosses": 0,
@@ -78,7 +78,7 @@
         "roiPct": null
       }
     ],
-    "summary": "No external-line NBA games in game logs — backtest not scored."
+    "summary": "No external-line NBA games in game logs, backtest not scored."
   },
   "nhlPpPremium": {
     "signal": "NHL PP Premium",
@@ -144,6 +144,6 @@
         "roiPct": null
       }
     ],
-    "summary": "No external-line NHL games in game logs — backtest not scored."
+    "summary": "No external-line NHL games in game logs, backtest not scored."
   }
 }

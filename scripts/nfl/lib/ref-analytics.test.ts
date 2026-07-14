@@ -46,5 +46,8 @@ describe("NFL ref analytics", () => {
     assert.ok(analytics);
     assert.ok(analytics.penaltyYardsDelta !== undefined);
     assert.ok(analytics.balanceKind);
+    assert.ok(analytics.avgHighLeverageImpactPerGame !== undefined);
+    assert.ok(analytics.avgSubjectiveFlagsPerGame !== undefined);
+    assert.ok(analytics.avgAdministrativeFlagsPerGame !== undefined);
   });
 });

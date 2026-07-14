@@ -1,5 +1,9 @@
 import { safeOriginJson } from "@/lib/edge-fetch";
 import {
+  freezeWorkerConfig,
+  releaseParsedPayload,
+} from "@/lib/worker-isolate-store";
+import {
   isRefStatsPayload,
   isTeamSplitsPayload,
   normalizeAppPathname,
@@ -24,7 +28,7 @@ type PreloadOptions = {
   includeTeamSplits?: boolean;
 };
 
-const REF_STATS_ASSET: Record<League, string> = {
+const REF_STATS_ASSET = freezeWorkerConfig({
   nba: "/data/nba/ref-stats.json",
   nhl: "/data/nhl/ref-stats.json",
   nfl: "/data/nfl/ref-stats.json",
@@ -32,7 +36,7 @@ const REF_STATS_ASSET: Record<League, string> = {
   laliga: "/data/laliga/ref-stats.json",
   cbb: "/data/cbb/ref-stats.json",
   cfb: "/data/cfb/ref-stats.json",
-};
+} as const);
 
 async function parseJsonResponse(response: Response): Promise<unknown | null> {
   try {
@@ -68,16 +72,22 @@ async function fetchJsonAsset(assetPath: string): Promise<unknown | null> {
 }
 
 async function fetchRefStatsAsset(assetPath: string): Promise<RefStatsFile | null> {
-  const data = await fetchJsonAsset(assetPath);
-  return isRefStatsPayload(data) && data.refs.length > 0 ? data : null;
+  let data: unknown = await fetchJsonAsset(assetPath);
+  const stats =
+    isRefStatsPayload(data) && data.refs.length > 0 ? (data as RefStatsFile) : null;
+  data = releaseParsedPayload(data);
+  return stats;
 }
 
 async function fetchRefStatsOrigin(
   origin: string,
   assetPath: string,
 ): Promise<RefStatsFile | null> {
-  const data = await fetchOriginJson(origin, assetPath);
-  return isRefStatsPayload(data) && data.refs.length > 0 ? data : null;
+  let data: unknown = await fetchOriginJson(origin, assetPath);
+  const stats =
+    isRefStatsPayload(data) && data.refs.length > 0 ? (data as RefStatsFile) : null;
+  data = releaseParsedPayload(data);
+  return stats;
 }
 
 async function fetchOriginJson(
@@ -91,13 +101,16 @@ async function fetchTeamSplitsOrigin(
   origin: string,
   assetPath: string,
 ): Promise<Record<string, TeamCrewSplit[]> | null> {
-  const data = await fetchOriginJson(origin, assetPath);
-  return isTeamSplitsPayload(data) && Object.keys(data).length > 0
-    ? data
-    : null;
+  let data: unknown = await fetchOriginJson(origin, assetPath);
+  const splits =
+    isTeamSplitsPayload(data) && Object.keys(data).length > 0
+      ? (data as Record<string, TeamCrewSplit[]>)
+      : null;
+  data = releaseParsedPayload(data);
+  return splits;
 }
 
-const ASSET_BASE: Record<League, string> = {
+const ASSET_BASE = freezeWorkerConfig({
   nba: "/data/nba",
   nhl: "/data/nhl",
   nfl: "/data/nfl",
@@ -105,7 +118,7 @@ const ASSET_BASE: Record<League, string> = {
   laliga: "/data/laliga",
   cbb: "/data/cbb",
   cfb: "/data/cfb",
-};
+} as const);
 
 async function preloadRefStats(
   origin: string,
@@ -124,37 +137,43 @@ async function preloadRefStats(
     (!getCachedTeamSplits(league) ||
       Object.keys(getCachedTeamSplits(league)!).length === 0);
 
-  // Load sequentially to cap peak memory (1102) — ref-stats then team-splits.
   let stats: RefStatsFile | null = cached;
-  if (needsStats) {
-    const assetPath = REF_STATS_ASSET[league];
-    stats =
-      (await fetchRefStatsAsset(assetPath)) ??
-      (await fetchRefStatsOrigin(origin, assetPath));
-  }
-
   let splits: Record<string, TeamCrewSplit[]> | null = getCachedTeamSplits(league);
-  if (needsSplits) {
-    const assetPath = `${ASSET_BASE[league]}/team-splits.json`;
-    const fromAssets = await fetchJsonAsset(assetPath);
-    if (isTeamSplitsPayload(fromAssets) && Object.keys(fromAssets).length > 0) {
-      splits = fromAssets;
-    } else {
-      splits = await fetchTeamSplitsOrigin(origin, assetPath);
-    }
-  }
 
-  if (stats?.refs?.length) {
-    const merged =
-      splits && Object.keys(splits).length > 0
-        ? attachTeamSplits(league, stats, splits)
-        : stats;
-    setCachedRefStats(league, merged);
-    if (splits && Object.keys(splits).length > 0) {
+  try {
+    if (needsStats) {
+      const assetPath = REF_STATS_ASSET[league];
+      stats =
+        (await fetchRefStatsAsset(assetPath)) ??
+        (await fetchRefStatsOrigin(origin, assetPath));
+    }
+
+    if (needsSplits) {
+      const assetPath = `${ASSET_BASE[league]}/team-splits.json`;
+      let fromAssets: unknown = await fetchJsonAsset(assetPath);
+      if (isTeamSplitsPayload(fromAssets) && Object.keys(fromAssets).length > 0) {
+        splits = fromAssets;
+      } else {
+        splits = await fetchTeamSplitsOrigin(origin, assetPath);
+      }
+      fromAssets = releaseParsedPayload(fromAssets);
+    }
+
+    if (stats?.refs?.length) {
+      const merged =
+        splits && Object.keys(splits).length > 0
+          ? attachTeamSplits(league, stats, splits)
+          : stats;
+      setCachedRefStats(league, merged);
+      if (splits && Object.keys(splits).length > 0) {
+        setCachedTeamSplits(league, splits);
+      }
+    } else if (splits && Object.keys(splits).length > 0) {
       setCachedTeamSplits(league, splits);
     }
-  } else if (splits && Object.keys(splits).length > 0) {
-    setCachedTeamSplits(league, splits);
+  } finally {
+    stats = releaseParsedPayload(stats);
+    splits = releaseParsedPayload(splits);
   }
 }
 
@@ -204,7 +223,7 @@ export async function preloadLeagueDataForPath(
 ): Promise<void> {
   if (!origin?.trim()) return;
   const path = normalizeAppPathname(pathname);
-  const leagues = leaguesForPath(path);
+  let leagues = leaguesForPath(path);
   if (leagues.length === 0) return;
   const includeTeamSplits = pathNeedsTeamSplits(path);
 
@@ -214,5 +233,7 @@ export async function preloadLeagueDataForPath(
     }
   } catch (error) {
     console.error("[refwatch] path preload failed", path, error);
+  } finally {
+    leagues = releaseParsedPayload(leagues)!;
   }
 }

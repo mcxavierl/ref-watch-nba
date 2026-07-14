@@ -11,7 +11,11 @@ export { REFWATCH_A11Y_CHANGE_EVENT, REFWATCH_A11Y_STORAGE_KEY } from "@/lib/a11
 
 export type ContrastSetting = "default" | "high";
 export type TextSizeSetting = "default" | "large";
-export type ColorModeSetting = "light" | "dark";
+/** User preference — `system` follows OS; `light` / `dark` are manual overrides. */
+export type ColorModePreference = "system" | "light" | "dark";
+/** @deprecated Use ColorModePreference — kept for backward compatibility. */
+export type ColorModeSetting = ColorModePreference;
+export type ResolvedColorMode = "light" | "dark";
 /**
  * Body/UI sans: `default` is Barlow + IBM Plex; `atkinson` enables Atkinson Hyperlegible
  * for all page text via `html[data-body-font="atkinson"]`.
@@ -20,33 +24,53 @@ export type FontSetting = "default" | "atkinson";
 
 export type A11ySettings = {
   contrast: ContrastSetting;
-  colorMode: ColorModeSetting;
+  colorMode: ColorModePreference;
   textSize: TextSizeSetting;
   font: FontSetting;
 };
 
 const DEFAULT_SETTINGS: A11ySettings = {
   contrast: "default",
-  colorMode: "dark",
+  colorMode: "system",
   textSize: "default",
   font: "default",
 };
+
+function normalizeColorMode(raw: unknown): ColorModePreference {
+  if (raw === "system" || raw === "light" || raw === "dark") return raw;
+  return "system";
+}
+
+export function resolveColorMode(preference: ColorModePreference): ResolvedColorMode {
+  if (preference === "light") return "light";
+  if (preference === "dark") return "dark";
+  return systemColorMode();
+}
 
 function normalizeFromStorage(parsed: unknown): A11ySettings | null {
   if (!parsed || typeof parsed !== "object") return null;
   const v = parsed as Record<string, unknown>;
   if (v.contrast !== "default" && v.contrast !== "high") return null;
   if (v.textSize !== "default" && v.textSize !== "large") return null;
-  if (v.colorMode !== undefined && v.colorMode !== "light" && v.colorMode !== "dark") {
-    return null;
-  }
   const font: FontSetting = bodyFontFromStoredField(v.font);
   return {
     contrast: v.contrast as ContrastSetting,
-    colorMode: (v.colorMode === "light" ? "light" : "dark") as ColorModeSetting,
+    colorMode: normalizeColorMode(v.colorMode),
     textSize: v.textSize as TextSizeSetting,
     font,
   };
+}
+
+function systemColorMode(): ResolvedColorMode {
+  if (typeof window === "undefined") return "dark";
+  if (window.matchMedia("(prefers-color-scheme: light)").matches) return "light";
+  return "dark";
+}
+
+function resolveInitialSettings(): A11ySettings {
+  const stored = readStoredSettings();
+  if (stored) return stored;
+  return { ...DEFAULT_SETTINGS, colorMode: "system" };
 }
 
 function readStoredSettings(): A11ySettings | null {
@@ -64,15 +88,17 @@ function readStoredSettings(): A11ySettings | null {
 function writeRootDataAttributes(settings: A11ySettings): void {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
+  const resolved = resolveColorMode(settings.colorMode);
   root.dataset.contrast = settings.contrast;
-  root.dataset.color = settings.colorMode;
+  root.dataset.color = resolved;
+  root.dataset.theme = resolved;
   root.dataset.text = settings.textSize;
   if (settings.font === "atkinson") {
     root.dataset.bodyFont = "atkinson";
   } else {
     delete root.dataset.bodyFont;
   }
-  if (settings.colorMode === "dark") {
+  if (resolved === "dark") {
     root.classList.add("dark");
   } else {
     root.classList.remove("dark");
@@ -88,7 +114,7 @@ function persistAndNotify(settings: A11ySettings): void {
 export function useA11ySettings(): {
   settings: A11ySettings;
   setContrast: (contrast: ContrastSetting) => void;
-  setColorMode: (colorMode: ColorModeSetting) => void;
+  setColorMode: (colorMode: ColorModePreference) => void;
   setTextSize: (textSize: TextSizeSetting) => void;
   setFont: (font: FontSetting) => void;
 } {
@@ -96,8 +122,7 @@ export function useA11ySettings(): {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const stored = readStoredSettings();
-    const initial: A11ySettings = stored ?? DEFAULT_SETTINGS;
+    const initial = resolveInitialSettings();
     setSettings(initial);
     writeRootDataAttributes(initial);
     setHydrated(true);
@@ -113,7 +138,7 @@ export function useA11ySettings(): {
     setSettings((prev) => ({ ...prev, contrast }));
   }, []);
 
-  const setColorMode = useCallback((colorMode: ColorModeSetting) => {
+  const setColorMode = useCallback((colorMode: ColorModePreference) => {
     setSettings((prev) => ({ ...prev, colorMode }));
   }, []);
 

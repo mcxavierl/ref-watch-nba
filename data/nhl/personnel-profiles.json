@@ -1,0 +1,1256 @@
+{
+  "lastUpdated": "2026-07-14T00:21:38.061Z",
+  "league": "NHL",
+  "coaches": [
+    {
+      "coachId": "dallaseakic",
+      "name": "Dallas Eakins",
+      "team": "ANA",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 6.182926829268292,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "jimmontgomc",
+      "name": "Jim Montgomery",
+      "team": "BOS",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.634146341463414,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "dongranatoc",
+      "name": "Don Granato",
+      "team": "BUF",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.780487804878049,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "rodbrindamc",
+      "name": "Rod Brind'Amour",
+      "team": "CAR",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.073170731707317,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "mikebabcocc",
+      "name": "Mike Babcock",
+      "team": "CBJ",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 3.841463414634146,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "ryanhuskac",
+      "name": "Ryan Huska",
+      "team": "CGY",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.426829268292683,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "lukericharc",
+      "name": "Luke Richardson",
+      "team": "CHI",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.317073170731708,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "jaredbednac",
+      "name": "Jared Bednar",
+      "team": "COL",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.2439024390243905,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "petedeboerc",
+      "name": "Pete DeBoer",
+      "team": "DAL",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 3.292682926829268,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "dereklalonc",
+      "name": "Derek Lalonde",
+      "team": "DET",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.2926829268292686,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "jaywoodcroc",
+      "name": "Jay Woodcroft",
+      "team": "EDM",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.560975609756097,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "paulmauricc",
+      "name": "Paul Maurice",
+      "team": "FLA",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 6.682926829268292,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "toddmclellc",
+      "name": "Todd McLellan",
+      "team": "LAK",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.2073170731707314,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "deanevasonc",
+      "name": "Dean Evason",
+      "team": "MIN",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 5.573170731707317,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "martinstloc",
+      "name": "Martin St. Louis",
+      "team": "MTL",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.7317073170731705,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "lindyruffc",
+      "name": "Lindy Ruff",
+      "team": "NJD",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.463414634146342,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "johnhynesc",
+      "name": "John Hynes",
+      "team": "NSH",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.804878048780488,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "lanelamberc",
+      "name": "Lane Lambert",
+      "team": "NYI",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 3.5,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "peterlavioc",
+      "name": "Peter Laviolette",
+      "team": "NYR",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.548780487804878,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "djsmithc",
+      "name": "D.J. Smith",
+      "team": "OTT",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 5.170731707317073,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "johntortorc",
+      "name": "John Tortorella",
+      "team": "PHI",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.987804878048781,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "mikesullivc",
+      "name": "Mike Sullivan",
+      "team": "PIT",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 3.5121951219512195,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "davehakstoc",
+      "name": "Dave Hakstol",
+      "team": "SEA",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 3.8780487804878048,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "davidquinnc",
+      "name": "David Quinn",
+      "team": "SJS",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.536585365853658,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "craigberubc",
+      "name": "Craig Berube",
+      "team": "STL",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 3.524390243902439,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "joncooperc",
+      "name": "Jon Cooper",
+      "team": "TBL",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 5.414634146341464,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "sheldonkeec",
+      "name": "Sheldon Keefe",
+      "team": "TOR",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.658536585365853,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "andretouric",
+      "name": "André Tourigny",
+      "team": "UTA",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 5.695121951219512,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "ricktocchec",
+      "name": "Rick Tocchet",
+      "team": "VAN",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 4.378048780487805,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "brucecassic",
+      "name": "Bruce Cassidy",
+      "team": "VGK",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 3.597560975609756,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "rickbownesc",
+      "name": "Rick Bowness",
+      "team": "WPG",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 3.902439024390244,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "spencercarc",
+      "name": "Spencer Carbery",
+      "team": "WSH",
+      "season": "2023-24",
+      "careerAvgWhistleEvents": 3.6951219512195124,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "gregcroninc",
+      "name": "Greg Cronin",
+      "team": "ANA",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.2317073170731705,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "jimmontgomc",
+      "name": "Jim Montgomery",
+      "team": "BOS",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.902439024390244,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "dongranatoc",
+      "name": "Don Granato",
+      "team": "BUF",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.963414634146342,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "rodbrindamc",
+      "name": "Rod Brind'Amour",
+      "team": "CAR",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.4878048780487805,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "deanevasonc",
+      "name": "Dean Evason",
+      "team": "CBJ",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.060975609756097,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "ryanhuskac",
+      "name": "Ryan Huska",
+      "team": "CGY",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.451219512195122,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "lukericharc",
+      "name": "Luke Richardson",
+      "team": "CHI",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.121951219512195,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "jaredbednac",
+      "name": "Jared Bednar",
+      "team": "COL",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.2804878048780486,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "petedeboerc",
+      "name": "Pete DeBoer",
+      "team": "DAL",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.292682926829268,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "toddmclellc",
+      "name": "Todd McLellan",
+      "team": "DET",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.3658536585365852,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "krisknoblac",
+      "name": "Kris Knoblauch",
+      "team": "EDM",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.7804878048780486,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "paulmauricc",
+      "name": "Paul Maurice",
+      "team": "FLA",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 5.195121951219512,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "jimhillerc",
+      "name": "Jim Hiller",
+      "team": "LAK",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.8658536585365852,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "deanevasonc",
+      "name": "Dean Evason",
+      "team": "MIN",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.841463414634146,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "martinstloc",
+      "name": "Martin St. Louis",
+      "team": "MTL",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.597560975609756,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "sheldonkeec",
+      "name": "Sheldon Keefe",
+      "team": "NJD",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.121951219512195,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "andrewbrunc",
+      "name": "Andrew Brunette",
+      "team": "NSH",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.634146341463414,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "patrickroyc",
+      "name": "Patrick Roy",
+      "team": "NYI",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 2.768292682926829,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "peterlavioc",
+      "name": "Peter Laviolette",
+      "team": "NYR",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.073170731707317,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "travisgreec",
+      "name": "Travis Green",
+      "team": "OTT",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.134146341463414,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "johntortorc",
+      "name": "John Tortorella",
+      "team": "PHI",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.4390243902439024,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "mikesullivc",
+      "name": "Mike Sullivan",
+      "team": "PIT",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.3536585365853657,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "danbylsmac",
+      "name": "Dan Bylsma",
+      "team": "SEA",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.2195121951219514,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "ryanwarsofc",
+      "name": "Ryan Warsofsky",
+      "team": "SJS",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.097560975609756,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "drewbannisc",
+      "name": "Drew Bannister",
+      "team": "STL",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.7195121951219514,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "joncooperc",
+      "name": "Jon Cooper",
+      "team": "TBL",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.9146341463414633,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "craigberubc",
+      "name": "Craig Berube",
+      "team": "TOR",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.817073170731707,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "andretouric",
+      "name": "André Tourigny",
+      "team": "UTA",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.658536585365853,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "ricktocchec",
+      "name": "Rick Tocchet",
+      "team": "VAN",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.524390243902439,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "brucecassic",
+      "name": "Bruce Cassidy",
+      "team": "VGK",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 2.731707317073171,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "scottarniec",
+      "name": "Scott Arniel",
+      "team": "WPG",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 3.5853658536585367,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "spencercarc",
+      "name": "Spencer Carbery",
+      "team": "WSH",
+      "season": "2024-25",
+      "careerAvgWhistleEvents": 4.341463414634147,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "gregcroninc",
+      "name": "Greg Cronin",
+      "team": "ANA",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.353658536585366,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "jimmontgomc",
+      "name": "Jim Montgomery",
+      "team": "BOS",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 5.451219512195122,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "dongranatoc",
+      "name": "Don Granato",
+      "team": "BUF",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.475609756097561,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "rodbrindamc",
+      "name": "Rod Brind'Amour",
+      "team": "CAR",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.731707317073171,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "deanevasonc",
+      "name": "Dean Evason",
+      "team": "CBJ",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.792682926829268,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "ryanhuskac",
+      "name": "Ryan Huska",
+      "team": "CGY",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 5.170731707317073,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "lukericharc",
+      "name": "Luke Richardson",
+      "team": "CHI",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.170731707317073,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "jaredbednac",
+      "name": "Jared Bednar",
+      "team": "COL",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.5121951219512195,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "petedeboerc",
+      "name": "Pete DeBoer",
+      "team": "DAL",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.036585365853658,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "toddmclellc",
+      "name": "Todd McLellan",
+      "team": "DET",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.6097560975609757,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "krisknoblac",
+      "name": "Kris Knoblauch",
+      "team": "EDM",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.2073170731707314,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "paulmauricc",
+      "name": "Paul Maurice",
+      "team": "FLA",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 5.182926829268292,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "jimhillerc",
+      "name": "Jim Hiller",
+      "team": "LAK",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.8536585365853657,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "deanevasonc",
+      "name": "Dean Evason",
+      "team": "MIN",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.768292682926829,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "martinstloc",
+      "name": "Martin St. Louis",
+      "team": "MTL",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.7560975609756095,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "sheldonkeec",
+      "name": "Sheldon Keefe",
+      "team": "NJD",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.3536585365853657,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "andrewbrunc",
+      "name": "Andrew Brunette",
+      "team": "NSH",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.121951219512195,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "patrickroyc",
+      "name": "Patrick Roy",
+      "team": "NYI",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.524390243902439,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "peterlavioc",
+      "name": "Peter Laviolette",
+      "team": "NYR",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.7560975609756095,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "travisgreec",
+      "name": "Travis Green",
+      "team": "OTT",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.487804878048781,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "johntortorc",
+      "name": "John Tortorella",
+      "team": "PHI",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.597560975609756,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "mikesullivc",
+      "name": "Mike Sullivan",
+      "team": "PIT",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.817073170731707,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "danbylsmac",
+      "name": "Dan Bylsma",
+      "team": "SEA",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.5609756097560976,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "ryanwarsofc",
+      "name": "Ryan Warsofsky",
+      "team": "SJS",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "drewbannisc",
+      "name": "Drew Bannister",
+      "team": "STL",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.817073170731707,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "joncooperc",
+      "name": "Jon Cooper",
+      "team": "TBL",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 6.829268292682927,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "craigberubc",
+      "name": "Craig Berube",
+      "team": "TOR",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.9146341463414633,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "andretouric",
+      "name": "André Tourigny",
+      "team": "UTA",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.2439024390243905,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "ricktocchec",
+      "name": "Rick Tocchet",
+      "team": "VAN",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.6707317073170733,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "brucecassic",
+      "name": "Bruce Cassidy",
+      "team": "VGK",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.426829268292683,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "scottarniec",
+      "name": "Scott Arniel",
+      "team": "WPG",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 3.817073170731707,
+      "gamesSampled": 82
+    },
+    {
+      "coachId": "spencercarc",
+      "name": "Spencer Carbery",
+      "team": "WSH",
+      "season": "2025-26",
+      "careerAvgWhistleEvents": 4.182926829268292,
+      "gamesSampled": 82
+    }
+  ],
+  "starPlayers": [
+    {
+      "playerId": "mcdavid97",
+      "name": "Connor McDavid",
+      "team": "EDM",
+      "season": "2023-24",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 1.2,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "matthew34",
+      "name": "Auston Matthews",
+      "team": "TOR",
+      "season": "2023-24",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 1,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "mackinn29",
+      "name": "Nathan MacKinnon",
+      "team": "COL",
+      "season": "2023-24",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 1.1,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "panarin10",
+      "name": "Artemi Panarin",
+      "team": "NYR",
+      "season": "2023-24",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.8,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "kucherov86",
+      "name": "Nikita Kucherov",
+      "team": "TBL",
+      "season": "2023-24",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "pastrnak88",
+      "name": "David Pastrnak",
+      "team": "BOS",
+      "season": "2023-24",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "ovechin08",
+      "name": "Alex Ovechkin",
+      "team": "WSH",
+      "season": "2023-24",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.7,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "draisait29",
+      "name": "Leon Draisaitl",
+      "team": "EDM",
+      "season": "2023-24",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 1,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "marchand63",
+      "name": "Brad Marchand",
+      "team": "BOS",
+      "season": "2023-24",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "point21",
+      "name": "Brayden Point",
+      "team": "TBL",
+      "season": "2023-24",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.8,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "mikheyev97",
+      "name": "Kirill Kaprizov",
+      "team": "MIN",
+      "season": "2023-24",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "ehlers27",
+      "name": "Jack Hughes",
+      "team": "NJD",
+      "season": "2023-24",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.8,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "shesterk30",
+      "name": "Igor Shesterkin",
+      "team": "NYR",
+      "season": "2023-24",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.2,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "vasilevskiy88",
+      "name": "Andrei Vasilevskiy",
+      "team": "TBL",
+      "season": "2023-24",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.2,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "makar08",
+      "name": "Cale Makar",
+      "team": "COL",
+      "season": "2023-24",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.7,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "fox05",
+      "name": "Adam Fox",
+      "team": "NYR",
+      "season": "2023-24",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.6,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "mcdavid97",
+      "name": "Connor McDavid",
+      "team": "EDM",
+      "season": "2024-25",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 1.2,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "matthew34",
+      "name": "Auston Matthews",
+      "team": "TOR",
+      "season": "2024-25",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 1,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "mackinn29",
+      "name": "Nathan MacKinnon",
+      "team": "COL",
+      "season": "2024-25",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 1.1,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "panarin10",
+      "name": "Artemi Panarin",
+      "team": "NYR",
+      "season": "2024-25",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.8,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "kucherov86",
+      "name": "Nikita Kucherov",
+      "team": "TBL",
+      "season": "2024-25",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "pastrnak88",
+      "name": "David Pastrnak",
+      "team": "BOS",
+      "season": "2024-25",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "ovechin08",
+      "name": "Alex Ovechkin",
+      "team": "WSH",
+      "season": "2024-25",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.7,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "draisait29",
+      "name": "Leon Draisaitl",
+      "team": "EDM",
+      "season": "2024-25",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 1,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "marchand63",
+      "name": "Brad Marchand",
+      "team": "BOS",
+      "season": "2024-25",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "point21",
+      "name": "Brayden Point",
+      "team": "TBL",
+      "season": "2024-25",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.8,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "mikheyev97",
+      "name": "Kirill Kaprizov",
+      "team": "MIN",
+      "season": "2024-25",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "ehlers27",
+      "name": "Jack Hughes",
+      "team": "NJD",
+      "season": "2024-25",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.8,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "shesterk30",
+      "name": "Igor Shesterkin",
+      "team": "NYR",
+      "season": "2024-25",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.2,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "vasilevskiy88",
+      "name": "Andrei Vasilevskiy",
+      "team": "TBL",
+      "season": "2024-25",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.2,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "makar08",
+      "name": "Cale Makar",
+      "team": "COL",
+      "season": "2024-25",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.7,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "fox05",
+      "name": "Adam Fox",
+      "team": "NYR",
+      "season": "2024-25",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.6,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "mcdavid97",
+      "name": "Connor McDavid",
+      "team": "EDM",
+      "season": "2025-26",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 1.2,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "matthew34",
+      "name": "Auston Matthews",
+      "team": "TOR",
+      "season": "2025-26",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 1,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "mackinn29",
+      "name": "Nathan MacKinnon",
+      "team": "COL",
+      "season": "2025-26",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 1.1,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "panarin10",
+      "name": "Artemi Panarin",
+      "team": "NYR",
+      "season": "2025-26",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.8,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "kucherov86",
+      "name": "Nikita Kucherov",
+      "team": "TBL",
+      "season": "2025-26",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "pastrnak88",
+      "name": "David Pastrnak",
+      "team": "BOS",
+      "season": "2025-26",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "ovechin08",
+      "name": "Alex Ovechkin",
+      "team": "WSH",
+      "season": "2025-26",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.7,
+      "starTierPercentile": 99,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "draisait29",
+      "name": "Leon Draisaitl",
+      "team": "EDM",
+      "season": "2025-26",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 1,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "marchand63",
+      "name": "Brad Marchand",
+      "team": "BOS",
+      "season": "2025-26",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "point21",
+      "name": "Brayden Point",
+      "team": "TBL",
+      "season": "2025-26",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.8,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "mikheyev97",
+      "name": "Kirill Kaprizov",
+      "team": "MIN",
+      "season": "2025-26",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.9,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "ehlers27",
+      "name": "Jack Hughes",
+      "team": "NJD",
+      "season": "2025-26",
+      "usageRank": 2,
+      "seasonAvgFoulsDrawn": 0.8,
+      "starTierPercentile": 96,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "shesterk30",
+      "name": "Igor Shesterkin",
+      "team": "NYR",
+      "season": "2025-26",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.2,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "vasilevskiy88",
+      "name": "Andrei Vasilevskiy",
+      "team": "TBL",
+      "season": "2025-26",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.2,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "makar08",
+      "name": "Cale Makar",
+      "team": "COL",
+      "season": "2025-26",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.7,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    },
+    {
+      "playerId": "fox05",
+      "name": "Adam Fox",
+      "team": "NYR",
+      "season": "2025-26",
+      "usageRank": 3,
+      "seasonAvgFoulsDrawn": 0.6,
+      "starTierPercentile": 93,
+      "gamesSampled": 82
+    }
+  ]
+}

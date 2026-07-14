@@ -1,6 +1,13 @@
 import { safeOriginFetch } from "@/lib/edge-fetch";
+import {
+  freezeWorkerConfig,
+  getWorkerIsolateStore,
+  releaseParsedPayload,
+} from "@/lib/worker-isolate-store";
 import "@/lib/global-stats";
 import type { RefOfficial } from "@/lib/types";
+import type { WhistlePeriodSplits } from "@/lib/whistle-period-splits";
+import type { GamePersonnelSnapshot } from "@/lib/personnel-types";
 import { isGameLogsPayload } from "@/lib/json-asset-guards";
 
 export type GameLineSource = "external" | "synthetic";
@@ -27,6 +34,16 @@ export interface RuntimeGameLogEntry {
   homeSpread: number;
   lineSource: GameLineSource;
   officials: RefOfficial[];
+  /** Quarter/half/period foul or penalty distributions when ingested. */
+  whistlePeriodSplits?: WhistlePeriodSplits;
+  /** Coaches, stars, and per-player whistle splits when enriched. */
+  personnel?: GamePersonnelSnapshot;
+  /** Play-level NFL penalties with leverage scoring when ingested. */
+  penaltyEvents?: import("@/lib/types").NflPenaltyEvent[];
+  highLeverageImpact?: number;
+  highLeverageFlagRate?: number;
+  subjectiveFlags?: number;
+  administrativeFlags?: number;
 }
 
 export interface RuntimeGameLogFile {
@@ -38,7 +55,7 @@ export interface RuntimeGameLogFile {
 
 export type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
-const GAME_LOG_GLOBAL_KEYS: Record<DataLeague, keyof typeof globalThis> = {
+const GAME_LOG_GLOBAL_KEYS = freezeWorkerConfig({
   NBA: "__REFWATCH_NBA_GAME_LOGS__",
   NHL: "__REFWATCH_NHL_GAME_LOGS__",
   NFL: "__REFWATCH_NFL_GAME_LOGS__",
@@ -46,9 +63,9 @@ const GAME_LOG_GLOBAL_KEYS: Record<DataLeague, keyof typeof globalThis> = {
   LALIGA: "__REFWATCH_LALIGA_GAME_LOGS__",
   CBB: "__REFWATCH_CBB_GAME_LOGS__",
   CFB: "__REFWATCH_CFB_GAME_LOGS__",
-};
+} as const);
 
-const GAME_LOG_ASSET_BASE: Record<DataLeague, string> = {
+const GAME_LOG_ASSET_BASE = freezeWorkerConfig({
   NBA: "/data/nba",
   NHL: "/data/nhl",
   NFL: "/data/nfl",
@@ -56,20 +73,17 @@ const GAME_LOG_ASSET_BASE: Record<DataLeague, string> = {
   LALIGA: "/data/laliga",
   CBB: "/data/cbb",
   CFB: "/data/cfb",
-};
+} as const);
 
 export function getCachedGameLogs(league: DataLeague): RuntimeGameLogFile | null {
-  return (
-    (globalThis[GAME_LOG_GLOBAL_KEYS[league]] as RuntimeGameLogFile | undefined) ??
-    null
-  );
+  return getWorkerIsolateStore().gameLogs[league] ?? null;
 }
 
 export function setCachedGameLogs(
   league: DataLeague,
   data: RuntimeGameLogFile,
 ): void {
-  (globalThis as Record<string, unknown>)[GAME_LOG_GLOBAL_KEYS[league]] = data;
+  getWorkerIsolateStore().gameLogs[league] = data;
 }
 
 /** Edge-safe: fetch game logs from static assets (no Node fs). */
@@ -139,10 +153,11 @@ export async function preloadGameLogsFromAssets(
   try {
     const res = await safeOriginFetch(origin, `${GAME_LOG_ASSET_BASE[league]}/game-logs.json`);
     if (!res?.ok) return;
-    const data: unknown = await res.json();
+    let data: unknown = await res.json();
     if (isGameLogsPayload(data) && data.games.length > 0) {
       setCachedGameLogs(league, data as RuntimeGameLogFile);
     }
+    data = releaseParsedPayload(data);
   } catch {
     // Never fail SSR from game-log preload.
   }

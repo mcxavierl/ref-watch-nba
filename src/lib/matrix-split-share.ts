@@ -97,7 +97,7 @@ export function buildMatrixSplitShareText(input: MatrixSplitShareInput): string 
     `⚖️ Ref Watch Split: ${input.ref.name} × ${input.team.abbr.toUpperCase()} (${input.scopeLabel})`,
     `📊 ${record} in ${input.cell.games} games · ${winDelta} · ${whistle} ${whistleUnit}/game (${toneNote})`,
     `🔗 Check out the complete whistle trends and historical game logs: ${url}`,
-    "ℹ️ Historical splits only — descriptive, not picks.",
+    "ℹ️ Historical splits only. Descriptive, not picks.",
   ].join("\n");
 }
 

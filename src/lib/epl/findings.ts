@@ -3,12 +3,16 @@ import { buildScopedRefStats } from "@/lib/scoped-ref-stats";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, EPL_TEAMS } from "@/lib/epl/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
-import { collectRefTeamScoringExtremes, rankScore } from "@/lib/findings-shared";
+import { collectRefTeamScoringExtremes, rankScore, buildMarketExpectationAtsFinding } from "@/lib/findings-shared";
 import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-significance";
+import { attachRegionalContextToFindings } from "@/lib/regional-context";
+import { prepareStatsForAtsAnalytics } from "@/lib/ref-market-expectation";
 import {
   buildCloseGameLeagueFinding,
   buildCrewDominanceFinding,
   buildLeagueSkewFinding,
+  buildMarqueeEfficiencyFinding,
+  buildFrictionGrudgeFindings,
   buildMatrixExtremeFinding,
   
   
@@ -161,6 +165,9 @@ function ouAtsEdgeFinding(stats: RefStatsFile): ScoredFindingBase | null {
 }
 
 function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const marketFinding = buildMarketExpectationAtsFinding(stats, rankScore);
+  if (marketFinding) return marketFinding;
+
   if (!stats.meta.atsAvailable) return null;
 
   let best:
@@ -374,6 +381,8 @@ function collectCandidates(
     buildWhistleOutlierFinding(stats, EPL_FINDING_CTX),
     buildOverRateOutlierFinding(stats, EPL_FINDING_CTX, "low"),
     scoringOutlierFinding(stats),
+    buildMarqueeEfficiencyFinding(stats, EPL_FINDING_CTX),
+    ...buildFrictionGrudgeFindings(stats, EPL_FINDING_CTX, "epl"),
     ...(includeHeavy
       ? [
           teamCrewAnomalyFinding(stats),
@@ -391,7 +400,11 @@ function collectCandidates(
 function resolveStats(scopedSeasons?: string[]) {
   const full = getRefStats();
   if (!scopedSeasons?.length) return full;
-  return buildScopedRefStats("epl", full, scopedSeasons);
+  return prepareStatsForAtsAnalytics(
+    "epl",
+    buildScopedRefStats("epl", full, scopedSeasons),
+    scopedSeasons,
+  );
 }
 
 export function computeFindings(
@@ -403,7 +416,10 @@ export function computeFindings(
   if (stats.refs.length === 0) return [];
 
   const ranked = rankScoredFindings(collectCandidates(stats, options));
-  return pickFeaturedFindings(ranked, limit);
+  return attachRegionalContextToFindings(
+    pickFeaturedFindings(ranked, limit),
+    stats,
+  );
 }
 
 export function computeAllFindings(
@@ -413,10 +429,13 @@ export function computeAllFindings(
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  return rankScoredFindings(collectCandidates(stats, options))
-    .map((item) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
-      const { score, sampleGames, ...finding } = item;
-      return finding;
-    });
+  return attachRegionalContextToFindings(
+    rankScoredFindings(collectCandidates(stats, options))
+      .map((item) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
+        const { score, sampleGames, ...finding } = item;
+        return finding;
+      }),
+    stats,
+  );
 }

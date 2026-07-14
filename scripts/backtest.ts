@@ -233,8 +233,8 @@ function backtestNbaWhistlePremium(games: GameLogEntry[]): SignalBacktest {
   };
 
   const buckets = {
-    signalClearedHigh: emptyBucket("Signal cleared — high pace (bet Over)"),
-    signalClearedLow: emptyBucket("Signal cleared — low pace (bet Under)"),
+    signalClearedHigh: emptyBucket("Signal cleared: high pace (bet Over)"),
+    signalClearedLow: emptyBucket("Signal cleared: low pace (bet Under)"),
     gateNotCleared: emptyBucket("Threshold met, sample gate not cleared"),
     noSignal: emptyBucket("No signal (control)"),
     allRealLine: emptyBucket("All real-line games (coin-flip control)"),
@@ -347,7 +347,7 @@ function backtestNbaWhistlePremium(games: GameLogEntry[]): SignalBacktest {
     buckets: bucketList,
     summary:
       realLineGames === 0
-        ? "No external-line NBA games in game logs — backtest not scored."
+        ? "No external-line NBA games in game logs. Backtest not scored."
         : cleared === 0
           ? `${realLineGames} real-line games; no cleared pace alerts fired.`
           : `Cleared signals: ${cleared} bets, ${clearedHit !== null ? (clearedHit * 100).toFixed(1) : "n/a"}% O/U hit rate vs ${(BREAK_EVEN_RATE * 100).toFixed(2)}% break-even.`,
@@ -493,7 +493,7 @@ function backtestNhlPpPremium(games: GameLogEntry[]): SignalBacktest {
     buckets: bucketList,
     summary:
       realLineGames === 0
-        ? "No external-line NHL games in game logs — backtest not scored."
+        ? "No external-line NHL games in game logs. Backtest not scored."
         : cleared.sampleSize === 0
           ? `${realLineGames} real-line games; no PP Premium signals cleared threshold.`
           : `Cleared PP Premium: ${cleared.sampleSize} bets, ${cleared.ouHitRate !== null ? (cleared.ouHitRate * 100).toFixed(1) : "n/a"}% Over hit rate, ROI ${cleared.roiPct ?? "n/a"}% at -110.`,
@@ -509,7 +509,7 @@ function main() {
   const results: BacktestResults = {
     generatedAt: new Date().toISOString(),
     note:
-      "Only games with lineSource=external are scored. Synthetic or missing lines are excluded — not fabricated.",
+      "Only games with lineSource=external are scored. Synthetic or missing lines are excluded, not fabricated.",
     nbaWhistlePremium: backtestNbaWhistlePremium(nbaGames),
     nhlPpPremium: backtestNhlPpPremium(nhlGames),
   };
@@ -534,7 +534,7 @@ function renderMarkdown(r: BacktestResults): string {
     const rows = s.buckets
       .map(
         (b) =>
-          `| ${b.label} | ${b.sampleSize} | ${b.ouHitRate !== null ? (b.ouHitRate * 100).toFixed(1) + "%" : "—"} | ${b.atsHitRate !== null ? (b.atsHitRate * 100).toFixed(1) + "%" : "—"} | ${b.roiPct !== null ? b.roiPct + "%" : "—"} |`,
+          `| ${b.label} | ${b.sampleSize} | ${b.ouHitRate !== null ? (b.ouHitRate * 100).toFixed(1) + "%" : "-"} | ${b.atsHitRate !== null ? (b.atsHitRate * 100).toFixed(1) + "%" : "-"} | ${b.roiPct !== null ? b.roiPct + "%" : "-"} |`,
       )
       .join("\n");
 

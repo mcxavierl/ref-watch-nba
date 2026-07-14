@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
+import { FindingsFeedList } from "@/components/FindingsFeedList";
 import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { MethodologyLink } from "@/components/MethodologyLink";
-import { FindingAccordionItem } from "@/components/FindingAccordion";
 import {
   FindingContextRow,
   FindingHeaderRow,
   FindingMetricsGrid,
+  FindingRegionalContext,
 } from "@/components/FindingCardLayout";
+import { dedupeFindingStats, groupFindingsForFeed } from "@/lib/finding-grouping";
 import type { Finding, FindingLeague } from "@/lib/findings-shared";
 import {
   filterFindingsByLeague,
@@ -18,19 +20,18 @@ import {
 
 export function FindingCard({
   finding,
-  index,
   league,
 }: {
   finding: Finding;
-  index: number;
   league?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 }) {
   return (
     <article className="data-card finding-card-static">
       <div className="finding-card-body">
-        <FindingHeaderRow finding={finding} index={index} league={league} />
-        <FindingMetricsGrid stats={finding.stats} />
+        <FindingHeaderRow finding={finding} league={league} />
+        <FindingMetricsGrid stats={dedupeFindingStats(finding.stats)} />
         <FindingContextRow explainer={finding.explainer} />
+        <FindingRegionalContext text={finding.regionalContext} />
       </div>
 
       <div className="finding-accordion-footer">
@@ -74,13 +75,14 @@ export function FindingsSection({
   const scopedFindings = sortFindingsByStrength(
     league ? filterFindingsByLeague(findings, league) : findings,
   );
+  const feed = groupFindingsForFeed(scopedFindings);
 
-  if (scopedFindings.length === 0) return null;
+  if (feed.length === 0) return null;
 
   const visible = featured
-    ? scopedFindings.slice(0, initialVisibleCount)
-    : scopedFindings;
-  const hidden = featured ? scopedFindings.slice(initialVisibleCount) : [];
+    ? feed.slice(0, initialVisibleCount)
+    : feed;
+  const hidden = featured ? feed.slice(initialVisibleCount) : [];
 
   const sectionClass = [
     slateHero ? "slate-findings-hero scroll-mt-24" : "",
@@ -143,39 +145,15 @@ export function FindingsSection({
       <div
         className={`finding-accordion-stack ${slateHero ? "slate-findings-hero-stack" : compact && !featured ? "" : "mt-4"}`}
       >
-        {featured
-          ? visible.map((finding, index) => (
-              <FindingAccordionItem
-                key={finding.id}
-                finding={finding}
-                index={index}
-                defaultOpen={index === 0}
-                league={league}
-              />
-            ))
-          : visible.map((finding, index) => (
-              <FindingCard
-                key={finding.id}
-                finding={finding}
-                index={index}
-                league={league}
-              />
-            ))}
+        <FindingsFeedList feed={visible} league={league} />
       </div>
       {hidden.length > 0 && (
         <details className="findings-expand-more">
           <summary className="findings-expand-more-btn">
-            {hidden.length} more finding{hidden.length === 1 ? "" : "s"}
+            {hidden.length} more insight card{hidden.length === 1 ? "" : "s"}
           </summary>
           <div className="finding-accordion-stack mt-3">
-            {hidden.map((finding, index) => (
-              <FindingAccordionItem
-                key={finding.id}
-                finding={finding}
-                index={visible.length + index}
-                league={league}
-              />
-            ))}
+            <FindingsFeedList feed={hidden} league={league} openFirst={false} />
           </div>
         </details>
       )}

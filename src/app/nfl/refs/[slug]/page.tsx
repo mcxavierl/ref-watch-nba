@@ -2,10 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CloseGameSection } from "@/components/CloseGameSection";
+import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefBettingProfile } from "@/components/RefBettingProfile";
-import { FavoritesStar } from "@/components/FavoritesStar";
-import { RefAvatar } from "@/components/RefAvatar";
 import { JsonLd } from "@/components/JsonLd";
 import { NflRefAnalyticsSection } from "@/components/NflRefAnalyticsSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
@@ -119,37 +118,21 @@ export default async function NflRefProfilePage({
         ← Home
       </Link>
 
-      <header className="page-profile-header">
-        <div className="page-hero-head">
-          <RefAvatar
-            name={profile.name}
-            slug={profile.slug}
-            sport="nfl"
-            size="xl"
-            decorative={false}
-            className="ring-2 ring-zinc-200 shadow-md"
-          />
-          <div className="page-hero-head-copy">
-            <div className="page-hero-head-title-row">
-              <h1 className="page-title">{profile.name}</h1>
-              <span className="font-mono text-sm text-zinc-500">
-                #{profile.number}
-              </span>
-              <FavoritesStar
-                id={profile.slug}
-                kind="ref"
-                league="nfl"
-                label={profile.name}
-              />
-            </div>
-          </div>
-        </div>
-        {!qualified && (
-          <p className="mt-3 text-sm text-amber-800">
+      <RefereeMasterCard
+        profile={profile}
+        leagueId="nfl"
+        stats={stats}
+        sport="nfl"
+        qualified={qualified}
+        avatarSize="xl"
+        avatarClassName="ring-2 ring-zinc-200 shadow-md"
+        sampleGateMessage={
+          <>
             Below {stats.meta.minSampleSize}-game minimum, metrics hidden until
             sample gate clears.
-          </p>
-        )}
+          </>
+        }
+      >
         <RefProfileMetadataBar
           seasons={stats.meta.seasons}
           games={profile.games}
@@ -158,7 +141,7 @@ export default async function NflRefProfilePage({
           leagueId="nfl"
           slug={profile.slug}
         />
-      </header>
+      </RefereeMasterCard>
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">
@@ -194,6 +177,7 @@ export default async function NflRefProfilePage({
             league="NFL"
             embedded
           />
+
         </div>
 
         <div className="ref-dashboard-sidebar">

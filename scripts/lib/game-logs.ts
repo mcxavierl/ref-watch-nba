@@ -1,6 +1,10 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { RefOfficial, RefRole } from "../../src/lib/types";
+import {
+  buildMarketLineIndex,
+  lookupMarketLine,
+} from "../../src/lib/market-lines";
 
 export type GameLineSource = "external" | "synthetic";
 
@@ -26,6 +30,7 @@ export interface GameLogEntry {
   homeSpread: number;
   lineSource: GameLineSource;
   officials: RefOfficial[];
+  whistlePeriodSplits?: import("../../src/lib/whistle-period-splits").WhistlePeriodSplits;
 }
 
 export interface GameLogFile {
@@ -103,6 +108,63 @@ export function loadExternalLineMap(
     /* optional file */
   }
   return map;
+}
+
+/** Apply closing spread/total shards onto a league game-log file. */
+export function applyMarketLineShards(
+  file: GameLogFile,
+  root = process.cwd(),
+): { file: GameLogFile; applied: number } {
+  const index = buildMarketLineIndex(file.league, root);
+  let applied = 0;
+
+  const games = file.games.map((game) => {
+    const line = lookupMarketLine(index, game);
+    if (!line) return game;
+    applied += 1;
+    return {
+      ...game,
+      closingTotal: line.total,
+      homeSpread: line.homeSpread,
+      lineSource: "external" as const,
+    };
+  });
+
+  return {
+    file: {
+      ...file,
+      lastUpdated: new Date().toISOString(),
+      games,
+    },
+    applied,
+  };
+}
+
+export function mergeMarketLinesForLeague(
+  league: GameLogFile["league"],
+  root = process.cwd(),
+): number {
+  const existing = loadGameLogs(league);
+  if (!existing) return 0;
+  const { file, applied } = applyMarketLineShards(existing, root);
+  saveGameLogs(file);
+  return applied;
+}
+
+export function mergeMarketLinesForActiveLeagues(root = process.cwd()): void {
+  const leagues: GameLogFile["league"][] = [
+    "NBA",
+    "NHL",
+    "NFL",
+    "EPL",
+    "LALIGA",
+  ];
+  for (const league of leagues) {
+    const applied = mergeMarketLinesForLeague(league, root);
+    if (applied > 0) {
+      console.log(`${league}: merged ${applied} external closing lines`);
+    }
+  }
 }
 
 export function toOfficials(

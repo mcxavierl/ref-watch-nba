@@ -5,6 +5,7 @@ import { getTeam, teamFullName, CBB_TEAMS } from "@/lib/cbb/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
 import { collectRefTeamScoringExtremes, rankScore } from "@/lib/findings-shared";
 import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-significance";
+import { attachRegionalContextToFindings } from "@/lib/regional-context";
 import {
   buildCloseGameLeagueFinding,
   buildCrewDominanceFinding,
@@ -369,7 +370,10 @@ export function computeFindings(
   if (stats.refs.length === 0) return [];
 
   const ranked = rankScoredFindings(collectCandidates(stats, options));
-  return pickFeaturedFindings(ranked, limit);
+  return attachRegionalContextToFindings(
+    pickFeaturedFindings(ranked, limit),
+    stats,
+  );
 }
 
 export function computeAllFindings(
@@ -379,10 +383,13 @@ export function computeAllFindings(
   const stats = resolveStats(scopedSeasons);
   if (stats.refs.length === 0) return [];
 
-  return rankScoredFindings(collectCandidates(stats, options))
-    .map((item) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
-      const { score, sampleGames, ...finding } = item;
-      return finding;
-    });
+  return attachRegionalContextToFindings(
+    rankScoredFindings(collectCandidates(stats, options))
+      .map((item) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
+        const { score, sampleGames, ...finding } = item;
+        return finding;
+      }),
+    stats,
+  );
 }

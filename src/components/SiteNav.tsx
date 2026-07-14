@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { LeagueNavMark, leagueNavLabel } from "@/components/LeagueSwitchMark";
 import { getHeaderLeagueIds, isIngestGatedNavHidden, isNhlNavHidden } from "@/lib/header-leagues";
-import { headerActiveLeague, leagueFromPathname, leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
+import { headerActiveLeague, leagueFromPathname, leagueHubHref, LEAGUE_GAMES_NAV_LABEL, LEAGUES, type LeagueId } from "@/lib/leagues";
 
 type NavLink = { href: string; label: string; match: (pathname: string, homeHref: string) => boolean };
 
@@ -33,7 +33,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
   nba: [
     {
       href: "/nba",
-      label: "Slate",
+      label: LEAGUE_GAMES_NAV_LABEL,
       match: (pathname, home) => pathname === home || pathname === "/nba",
     },
     {
@@ -63,7 +63,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     },
   ],
   nhl: [
-    { href: "/nhl", label: "Slate", match: (p, home) => p === home },
+    { href: "/nhl", label: LEAGUE_GAMES_NAV_LABEL, match: (p, home) => p === home },
     { href: "/nhl/teams", label: "Teams", match: (p) => p === "/nhl/teams" || p.startsWith("/nhl/teams/") },
     { href: "/nhl/matrix", label: "Matrix", match: (p) => p === "/nhl/matrix" || p.startsWith("/nhl/matrix/") },
     { href: "/nhl/refs", label: "Refs", match: (p) => refsMatch(p, "/nhl") },
@@ -71,7 +71,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   nfl: [
-    { href: "/nfl", label: "Slate", match: (p, home) => p === home },
+    { href: "/nfl", label: LEAGUE_GAMES_NAV_LABEL, match: (p, home) => p === home },
     { href: "/nfl/teams", label: "Teams", match: (p) => p === "/nfl/teams" || p.startsWith("/nfl/teams/") },
     { href: "/nfl/matrix", label: "Matrix", match: (p) => p === "/nfl/matrix" || p.startsWith("/nfl/matrix/") },
     { href: "/nfl/refs", label: "Refs", match: (p) => refsMatch(p, "/nfl") },
@@ -79,15 +79,15 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   wnba: [
-    { href: "/wnba", label: "Slate", match: (p, home) => p === home },
+    { href: "/wnba", label: LEAGUE_GAMES_NAV_LABEL, match: (p, home) => p === home },
     { href: "/wnba/rankings", label: "Insights", match: (p) => p === "/wnba/rankings" || p.startsWith("/wnba/rankings/") },
   ],
   mlb: [
-    { href: "/mlb", label: "Slate", match: (p, home) => p === home },
+    { href: "/mlb", label: LEAGUE_GAMES_NAV_LABEL, match: (p, home) => p === home },
     { href: "/mlb/rankings", label: "Insights", match: (p) => p === "/mlb/rankings" || p.startsWith("/mlb/rankings/") },
   ],
   cbb: [
-    { href: "/cbb", label: "Slate", match: (p, home) => p === home },
+    { href: "/cbb", label: LEAGUE_GAMES_NAV_LABEL, match: (p, home) => p === home },
     { href: "/cbb/teams", label: "Teams", match: (p) => p === "/cbb/teams" || p.startsWith("/cbb/teams/") },
     { href: "/cbb/matrix", label: "Matrix", match: (p) => p === "/cbb/matrix" || p.startsWith("/cbb/matrix/") },
     { href: "/cbb/refs", label: "Refs", match: (p) => refsMatch(p, "/cbb") },
@@ -95,7 +95,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   cfb: [
-    { href: "/cfb", label: "Slate", match: (p, home) => p === home },
+    { href: "/cfb", label: LEAGUE_GAMES_NAV_LABEL, match: (p, home) => p === home },
     { href: "/cfb/teams", label: "Teams", match: (p) => p === "/cfb/teams" || p.startsWith("/cfb/teams/") },
     { href: "/cfb/matrix", label: "Matrix", match: (p) => p === "/cfb/matrix" || p.startsWith("/cfb/matrix/") },
     { href: "/cfb/refs", label: "Refs", match: (p) => refsMatch(p, "/cfb") },
@@ -103,7 +103,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   epl: [
-    { href: "/epl", label: "Slate", match: (p, home) => p === home },
+    { href: "/epl", label: LEAGUE_GAMES_NAV_LABEL, match: (p, home) => p === home },
     { href: "/epl/teams", label: "Teams", match: (p) => p === "/epl/teams" || p.startsWith("/epl/teams/") },
     { href: "/epl/matrix", label: "Matrix", match: (p) => p === "/epl/matrix" || p.startsWith("/epl/matrix/") },
     { href: "/epl/refs", label: "Refs", match: (p) => refsMatch(p, "/epl") },
@@ -111,7 +111,7 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
     { href: "/compare", label: "Compare", match: (p) => p === "/compare" },
   ],
   laliga: [
-    { href: "/laliga", label: "Slate", match: (p, home) => p === home },
+    { href: "/laliga", label: LEAGUE_GAMES_NAV_LABEL, match: (p, home) => p === home },
     { href: "/laliga/teams", label: "Teams", match: (p) => p === "/laliga/teams" || p.startsWith("/laliga/teams/") },
     { href: "/laliga/matrix", label: "Matrix", match: (p) => p === "/laliga/matrix" || p.startsWith("/laliga/matrix/") },
     { href: "/laliga/refs", label: "Refs", match: (p) => refsMatch(p, "/laliga") },

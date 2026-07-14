@@ -1,0 +1,97 @@
+/**
+ * Ref Watch — accessible Tailwind utility layer
+ * Import after theme-tokens.css. Maps semantic CSS variables to @utility classes.
+ */
+
+/* ── Semantic text utilities (≥ 4.5:1 on --bg-surface-1) ─────────────────── */
+@utility text-primary {
+  color: var(--text-primary);
+}
+
+@utility text-secondary {
+  color: var(--text-secondary);
+}
+
+@utility text-muted {
+  color: var(--text-muted);
+}
+
+@utility text-inverse {
+  color: var(--text-inverse);
+}
+
+@utility text-accent-brand {
+  color: var(--accent-brand);
+}
+
+@utility text-accent-positive {
+  color: var(--accent-positive);
+}
+
+@utility text-accent-negative {
+  color: var(--accent-negative);
+}
+
+/* ── Semantic surface utilities ──────────────────────────────────────────── */
+@utility bg-surface-0 {
+  background-color: var(--bg-surface-0);
+}
+
+@utility bg-surface-1 {
+  background-color: var(--bg-surface-1);
+}
+
+@utility bg-surface-2 {
+  background-color: var(--bg-surface-2);
+}
+
+@utility bg-surface-3 {
+  background-color: var(--bg-surface-3);
+}
+
+@utility bg-metric-positive {
+  background-color: var(--metric-positive-surface);
+}
+
+@utility bg-metric-negative {
+  background-color: var(--metric-negative-surface);
+}
+
+/* ── Semantic border utilities (≥ 3:1 against adjacent surface) ────────── */
+@utility border-subtle {
+  border-color: var(--border-subtle);
+}
+
+@utility border-default {
+  border-color: var(--border-default);
+}
+
+@utility border-strong {
+  border-color: var(--border-strong);
+}
+
+/* ── High-contrast focus ring (keyboard only) ────────────────────────────── */
+@utility rw-ring {
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow:
+      0 0 0 2px var(--focus-ring-offset),
+      0 0 0 4px var(--focus-ring);
+  }
+}
+
+/* Screen-reader only live region container */
+@utility sr-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

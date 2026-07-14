@@ -25,15 +25,14 @@ import { getTeamDisplayRecord, formatTeamSampleRecord } from "@/lib/teamRecord";
 import { resolveTeamCrewSplits } from "@/lib/teamCrewSplits";
 import { loadSplitRefStatsFixture } from "@/lib/test-fixtures/split-ref-stats-fixture";
 
+import {
+  beginWorkerIsolateRequest,
+  endWorkerIsolateRequest,
+} from "@/lib/worker-isolate-store";
+
 function clearLeagueCaches(): void {
-  globalThis.__REFWATCH_NBA_REF_STATS__ = undefined;
-  globalThis.__REFWATCH_NBA_TEAM_SPLITS__ = undefined;
-  globalThis.__REFWATCH_NHL_REF_STATS__ = undefined;
-  globalThis.__REFWATCH_NHL_TEAM_SPLITS__ = undefined;
-  globalThis.__REFWATCH_NFL_REF_STATS__ = undefined;
-  globalThis.__REFWATCH_NFL_TEAM_SPLITS__ = undefined;
-  globalThis.__REFWATCH_EPL_REF_STATS__ = undefined;
-  globalThis.__REFWATCH_EPL_TEAM_SPLITS__ = undefined;
+  endWorkerIsolateRequest();
+  beginWorkerIsolateRequest();
 }
 
 describe("deploy readiness regressions", () => {

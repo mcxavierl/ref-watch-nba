@@ -1,3 +1,8 @@
+import { formatFindingSampleMeta } from "@/lib/finding-copy";
+import {
+  MIN_MARKET_EXPECTATION_GAMES,
+  pickStrongestMarketAtsOutlier,
+} from "@/lib/ref-market-expectation";
 import { sanitizeUserFacingCopy } from "@/lib/user-language";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
@@ -50,7 +55,10 @@ export type FindingCategory =
   | "scoring-extreme"
   | "ats-edge"
   | "ou-edge"
-  | "ref-team-split";
+  | "ref-team-split"
+  | "marquee-efficiency"
+  | "coach-friction"
+  | "player-friction";
 
 export interface FindingLink {
   label: string;
@@ -65,7 +73,7 @@ export interface FindingStat {
 
 /** Baseline explainer when a finding builder omits one. */
 export const DEFAULT_FINDING_EXPLAINER =
-  "Pattern surfaced from historical game logs in this dataset. Descriptive context only — not a betting signal or prediction.";
+  "Pattern surfaced from historical game logs in this dataset. Descriptive context only, not a betting signal or prediction.";
 
 export function resolveFindingExplainer(explainer?: string): string {
   const trimmed = explainer?.trim();
@@ -95,6 +103,8 @@ export interface Finding {
   stats: FindingStat[];
   sampleNote: string;
   links: FindingLink[];
+  /** Objective birthplace context when high-confidence + extreme delta gates pass. */
+  regionalContext?: string;
 }
 
 export interface ScoredFindingBase extends Finding {
@@ -193,6 +203,9 @@ export const FINDING_CATEGORY_LABELS: Record<FindingCategory, string> = {
   "ats-edge": "ATS historical tendency",
   "ou-edge": "O/U historical tendency",
   "ref-team-split": "Ref–team split",
+  "marquee-efficiency": "Marquee efficiency",
+  "coach-friction": "Coach Friction",
+  "player-friction": "Player Friction",
 };
 
 export type FindingFilterGroup =
@@ -200,7 +213,9 @@ export type FindingFilterGroup =
   | "ref-outliers"
   | "team-trends"
   | "ats-edges"
-  | "over-under";
+  | "over-under"
+  | "marquee"
+  | "friction";
 
 export const FINDING_FILTER_GROUPS: FindingFilterGroup[] = [
   "all",
@@ -208,6 +223,8 @@ export const FINDING_FILTER_GROUPS: FindingFilterGroup[] = [
   "team-trends",
   "ats-edges",
   "over-under",
+  "marquee",
+  "friction",
 ];
 
 export const FINDING_FILTER_LABELS: Record<FindingFilterGroup, string> = {
@@ -216,6 +233,8 @@ export const FINDING_FILTER_LABELS: Record<FindingFilterGroup, string> = {
   "team-trends": "Team Trends",
   "ats-edges": "ATS tendencies",
   "over-under": "Over/Under",
+  marquee: "Marquee / Prime-Time",
+  friction: "Friction / Grudge",
 };
 
 export const FINDING_CATEGORY_TO_FILTER: Record<
@@ -230,6 +249,9 @@ export const FINDING_CATEGORY_TO_FILTER: Record<
   "ats-edge": "ats-edges",
   "ou-edge": "over-under",
   "ref-team-split": "team-trends",
+  "marquee-efficiency": "marquee",
+  "coach-friction": "friction",
+  "player-friction": "friction",
 };
 
 export function findingMatchesFilter(
@@ -323,4 +345,68 @@ export function researchHubFilterHref(
   }
   const qs = params.toString();
   return qs ? `${base}?${qs}` : base;
+}
+
+function formatCoverPct(rate: number): string {
+  return `${(rate * 100).toFixed(1)}%`;
+}
+
+/**
+ * ATS outlier from market-expectation enrichment (independent of straight-up W-L).
+ * Returns null when scoped stats were not enriched or no ref clears the gate.
+ */
+export function buildMarketExpectationAtsFinding(
+  stats: RefStatsFile,
+  rankScoreFn: (
+    effectSize: number,
+    sampleGames: number,
+    minSample: number,
+  ) => number,
+): ScoredFindingBase | null {
+  if (!stats.meta.atsAvailable) return null;
+
+  const pick = pickStrongestMarketAtsOutlier(stats);
+  if (!pick) return null;
+
+  const { ref, market } = pick;
+  const edge = Math.abs(market.deviationFromNeutral);
+  const direction =
+    market.outlierDirection === "covers_more" ? "cover" : "fail to cover";
+  const correlationNote =
+    market.underdogCoverCorrelation !== null
+      ? ` Underdog ATS correlation: ${(market.underdogCoverCorrelation * 100).toFixed(0)}% (φ).`
+      : "";
+
+  return {
+    id: "ats-outlier",
+    category: "ats-edge",
+    headline: `${ref.name}: teams ${direction} ${formatCoverPct(market.coverRate)} ATS vs market`,
+    summary: `Across ${market.linedGames} lined games, teams are ${formatCoverPct(market.coverRate)} against the spread with ${ref.name} — ${(edge * 100).toFixed(1)} pts from a neutral 50% split, independent of straight-up wins.${correlationNote}`,
+    explainer:
+      "Performance vs. market expectation uses closing spreads only (lineSource=external). Synthetic lines are excluded.",
+    stats: [
+      {
+        label: "ATS cover",
+        value: formatCoverPct(market.coverRate),
+        detail: `${market.atsCovers}-${market.atsLosses}-${market.atsPushes}`,
+      },
+      {
+        label: "Sample",
+        value: String(market.linedGames),
+        detail: `Min ${MIN_MARKET_EXPECTATION_GAMES} lined games`,
+      },
+      {
+        label: "Deviation vs 50%",
+        value: `${(edge * 100).toFixed(1)} pts`,
+        detail: "Absolute ATS deviation",
+      },
+    ],
+    sampleNote: formatFindingSampleMeta(
+      market.linedGames,
+      stats.meta.seasons,
+    ),
+    links: [{ label: ref.name, href: `/refs/${ref.slug}` }],
+    score: rankScoreFn(edge, market.linedGames, MIN_MARKET_EXPECTATION_GAMES),
+    sampleGames: market.linedGames,
+  };
 }

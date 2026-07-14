@@ -9,6 +9,7 @@ import type {
 } from "@/lib/insight-drilldown-types";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import { formatPct } from "@/lib/stats-utils";
+import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 
 type VenueFilter = "all" | "home" | "away";
 
@@ -27,12 +28,12 @@ function toneClass(tone: InsightDrilldownPayload["heroTone"]): string {
 }
 
 function formatWinRate(split: InsightVenueSplit): string {
-  if (split.games === 0 || split.winRate === null) return "—";
+  if (split.games === 0 || split.winRate === null) return EMPTY_DISPLAY;
   return formatPct(split.winRate);
 }
 
 function formatSpreadResult(covered: boolean | null): string {
-  if (covered === null) return "—";
+  if (covered === null) return EMPTY_DISPLAY;
   return covered ? "Cover" : "No cover";
 }
 

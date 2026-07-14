@@ -13,6 +13,7 @@ const outPath = path.join(process.cwd(), "data", "odds.json");
 interface OddsApiOutcome {
   name: string;
   point?: number;
+  price?: number;
 }
 
 interface OddsApiMarket {
@@ -50,18 +51,61 @@ function consensusFromMarket(
   return Math.round(avg * 2) / 2;
 }
 
-function consensusTotal(event: OddsApiEvent): number | null {
-  return consensusFromMarket(event, "totals", (market) => {
+function consensusTotal(event: OddsApiEvent): {
+  total: number;
+  overOdds?: number;
+  underOdds?: number;
+} | null {
+  const values: number[] = [];
+  let overOdds: number | undefined;
+  let underOdds: number | undefined;
+
+  for (const book of event.bookmakers) {
+    const market = book.markets.find((m) => m.key === "totals");
+    if (!market) continue;
     const over = market.outcomes.find((o) => o.name === "Over" && o.point);
-    return over?.point ?? null;
-  });
+    if (over?.point) values.push(over.point);
+    if (over?.price !== undefined && overOdds === undefined) {
+      overOdds = over.price;
+    }
+    const under = market.outcomes.find((o) => o.name === "Under" && o.point);
+    if (under?.price !== undefined && underOdds === undefined) {
+      underOdds = under.price;
+    }
+  }
+
+  if (values.length === 0) return null;
+  const avg = values.reduce((a, b) => a + b, 0) / values.length;
+  return {
+    total: Math.round(avg * 2) / 2,
+    overOdds,
+    underOdds,
+  };
 }
 
-function consensusHomeSpread(event: OddsApiEvent): number | null {
-  return consensusFromMarket(event, "spreads", (market) => {
+function consensusHomeSpread(event: OddsApiEvent): {
+  spread: number;
+  homeSpreadOdds?: number;
+} | null {
+  const values: number[] = [];
+  let homeSpreadOdds: number | undefined;
+
+  for (const book of event.bookmakers) {
+    const market = book.markets.find((m) => m.key === "spreads");
+    if (!market) continue;
     const home = market.outcomes.find((o) => o.name === event.home_team);
-    return home?.point ?? null;
-  });
+    if (home?.point !== undefined) values.push(home.point);
+    if (home?.price !== undefined && homeSpreadOdds === undefined) {
+      homeSpreadOdds = home.price;
+    }
+  }
+
+  if (values.length === 0) return null;
+  const avg = values.reduce((a, b) => a + b, 0) / values.length;
+  return {
+    spread: Math.round(avg * 2) / 2,
+    homeSpreadOdds,
+  };
 }
 
 async function fetchOdds(): Promise<OddsFile> {
@@ -70,7 +114,7 @@ async function fetchOdds(): Promise<OddsFile> {
     return {
       lastUpdated: new Date().toISOString(),
       source: "benchmark",
-      note: "ODDS_API_KEY not set — app uses 225 league proxy for gap calculations.",
+      note: "ODDS_API_KEY not set. App uses 225 league proxy for gap calculations.",
       lines: [],
     };
   }
@@ -92,16 +136,20 @@ async function fetchOdds(): Promise<OddsFile> {
   const lines: GameOddsLine[] = [];
 
   for (const event of events) {
-    const total = consensusTotal(event);
-    if (total === null) continue;
+    const totalLine = consensusTotal(event);
+    if (totalLine === null) continue;
     if (!matchTeamString(event.home_team) || !matchTeamString(event.away_team)) {
       continue;
     }
+    const spreadLine = consensusHomeSpread(event);
     lines.push({
       awayTeam: event.away_team,
       homeTeam: event.home_team,
-      total,
-      homeSpread: consensusHomeSpread(event) ?? undefined,
+      total: totalLine.total,
+      overOdds: totalLine.overOdds,
+      underOdds: totalLine.underOdds,
+      homeSpread: spreadLine?.spread ?? undefined,
+      homeSpreadOdds: spreadLine?.homeSpreadOdds,
       source: "consensus",
       lastUpdated: event.commence_time,
     });

@@ -1,0 +1,13 @@
+export {
+  computeFrictionMatrix,
+  FRICTION_MIN_DEVIATION_PCT,
+  FRICTION_MIN_H2H_GAMES,
+  getFrictionMatrixDataset,
+  isFrictionMatrixLeague,
+  scanFrictionGrudgeMatrix,
+  type FrictionGrudgeFinding,
+  type FrictionMatrixDataset,
+  type FrictionOfficialBundle,
+  type FrictionPersonnelType,
+  type PlayerFrictionPattern,
+} from "@/lib/friction-matrix";

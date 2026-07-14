@@ -9,6 +9,9 @@ import {
   isNflSimulatedData,
   isNflVerifiedData,
 } from "@/lib/nfl/data-source";
+import {
+  resolveNcaaDataVerified,
+} from "@/lib/ncaa-pipeline";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 
 export type LeagueVerification = {
@@ -107,6 +110,7 @@ function inferLaligaVerification(meta: RefStatsFile["meta"]): LeagueVerification
 function inferCollegeVerification(
   meta: RefStatsFile["meta"],
   league: "cbb" | "cfb",
+  stats?: RefStatsFile,
 ): LeagueVerification {
   const isVerified =
     league === "cbb"
@@ -116,7 +120,11 @@ function inferCollegeVerification(
     league === "cbb"
       ? isCbbSimulatedData(meta.source)
       : isCfbSimulatedData(meta.source);
-  const verified = meta.data_verified === true || (isVerified && !isSim);
+  const sourceVerified = meta.data_verified === true || (isVerified && !isSim);
+  const pipelineVerified = stats
+    ? resolveNcaaDataVerified(league, stats)
+    : meta.ncaa_pipeline_verified === true && meta.ncaa_pipeline_coverage_pct === 100;
+  const verified = sourceVerified && pipelineVerified;
   return {
     data_verified: verified,
     data_source: meta.data_source ?? (verified ? "ESPN" : "synthetic"),
@@ -128,6 +136,7 @@ function inferCollegeVerification(
 export function resolveLeagueVerification(
   leagueId: LeagueId,
   meta: RefStatsFile["meta"],
+  stats?: RefStatsFile,
 ): LeagueVerification {
   switch (leagueId) {
     case "nba":
@@ -143,9 +152,9 @@ export function resolveLeagueVerification(
     case "laliga":
       return inferLaligaVerification(meta);
     case "cbb":
-      return inferCollegeVerification(meta, "cbb");
+      return inferCollegeVerification(meta, "cbb", stats);
     case "cfb":
-      return inferCollegeVerification(meta, "cfb");
+      return inferCollegeVerification(meta, "cfb", stats);
     default:
       return {
         data_verified: false,

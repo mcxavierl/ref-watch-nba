@@ -32,6 +32,11 @@ export type NflHistoricalGameLogEntry = {
   homeSpread: number;
   lineSource: "external" | "synthetic";
   officials: { name: string; number: number; role: RefRole }[];
+  penaltyEvents?: import("../../../src/lib/types").NflPenaltyEvent[];
+  highLeverageImpact?: number;
+  highLeverageFlagRate?: number;
+  subjectiveFlags?: number;
+  administrativeFlags?: number;
 };
 
 const NFL_TEAM_ABBRS = new Set([

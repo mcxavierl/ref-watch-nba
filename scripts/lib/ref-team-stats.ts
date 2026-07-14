@@ -5,6 +5,7 @@ export interface RefTeamGameRow {
   totalPoints: number;
   overHit: boolean;
   teamWin: boolean;
+  teamAtsResult?: "win" | "loss" | "push" | null;
 }
 
 function round1(n: number): number {
@@ -19,6 +20,11 @@ export function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
   const n = games.length;
   const wins = games.filter((g) => g.teamWin).length;
   const losses = n - wins;
+  const atsGames = games.filter((g) => g.teamAtsResult);
+  const atsWins = atsGames.filter((g) => g.teamAtsResult === "win").length;
+  const atsLosses = atsGames.filter((g) => g.teamAtsResult === "loss").length;
+  const atsPushes = atsGames.filter((g) => g.teamAtsResult === "push").length;
+  const atsDecisions = atsWins + atsLosses + atsPushes;
   return {
     games: n,
     wins,
@@ -31,6 +37,15 @@ export function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
     ),
     overRate: round3(games.filter((g) => g.overHit).length / n),
     winRate: round3(wins / n),
+    ...(atsDecisions > 0
+      ? {
+          atsWins,
+          atsLosses,
+          atsPushes,
+          atsGames: atsDecisions,
+          atsCoverRate: round3(atsWins / atsDecisions),
+        }
+      : {}),
   };
 }
 

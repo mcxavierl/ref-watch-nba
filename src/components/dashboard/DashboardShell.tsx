@@ -20,14 +20,12 @@ export function DashboardHeroSection({
   titleId,
   lead,
   highlights,
-  metrics,
 }: {
   eyebrow: string;
   title: string;
   titleId: string;
   lead: ReactNode;
   highlights: ReactNode;
-  metrics: ReactNode;
 }) {
   return (
     <section
@@ -39,14 +37,11 @@ export function DashboardHeroSection({
         <h1 className="overview-title" id={titleId}>
           {title}
         </h1>
-        <p className="overview-lead">{lead}</p>
       </div>
 
       <div className="overview-hero-highlights">{highlights}</div>
 
-      <div className="dashboard-metrics-strip" aria-label="Dataset totals">
-        {metrics}
-      </div>
+      <p className="overview-lead overview-lead--hero">{lead}</p>
     </section>
   );
 }

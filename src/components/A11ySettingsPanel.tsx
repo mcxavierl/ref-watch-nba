@@ -213,6 +213,7 @@ export function A11ySettingsPanel() {
               value={settings.colorMode}
               onChange={(v) => setColorMode(v as ColorModeSetting)}
               options={[
+                { value: "system", label: "System" },
                 { value: "light", label: "Light" },
                 { value: "dark", label: "Dark" },
               ]}

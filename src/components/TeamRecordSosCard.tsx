@@ -5,7 +5,7 @@ import {
   formatWinsAboveExpected,
   roundExpectedRecord,
 } from "@/lib/nba-strength-of-schedule";
-import { formatPct } from "@/lib/stats-utils";
+import { formatBaselinePct, formatPct } from "@/lib/stats-utils";
 
 const TIER_LABELS = {
   top10: "Top 10 opponents",
@@ -32,7 +32,9 @@ export function TeamRecordSosCard({
   return (
     <div className={`team-record-sos-card ${className}`.trim()}>
       <p className="team-record-sos-primary">
-        {record.wins}-{record.losses} ({formatPct(record.winRate)})
+        {record.games > 0
+          ? `${record.wins}-${record.losses} (${formatBaselinePct(record.games, record.winRate)})`
+          : "n/a"}
       </p>
       <p className="team-record-sos-context">
         vs. opp avg {formatOpponentAvgWinPct(sos.avgOpponentWinPct)} · expected{" "}
