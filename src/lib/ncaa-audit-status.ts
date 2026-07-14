@@ -8,9 +8,12 @@ import {
 } from "@/lib/ncaa-pipeline";
 import type { RefStatsFile } from "@/lib/types";
 
-export const NCAA_INTEGRITY_AUDIT_HREF = "/ncaa/integrity-audit";
-
-export type NcaaAuditPendingLabel = "Audit in Progress" | "Pending Verification";
+import type { NcaaAuditPendingLabel } from "@/lib/ncaa-audit-status-display";
+export {
+  formatNcaaAuditPillLabel,
+  NCAA_INTEGRITY_AUDIT_HREF,
+  type NcaaAuditPendingLabel,
+} from "@/lib/ncaa-audit-status-display";
 
 export type NcaaAuditStatus = {
   leagueId: "cbb" | "cfb";
@@ -58,8 +61,3 @@ export function resolveNcaaAuditStatus(
   };
 }
 
-export function formatNcaaAuditPillLabel(coveragePct: number): string {
-  const rounded =
-    coveragePct % 1 === 0 ? String(Math.round(coveragePct)) : coveragePct.toFixed(1);
-  return `Audit: ${rounded}% Complete`;
-}

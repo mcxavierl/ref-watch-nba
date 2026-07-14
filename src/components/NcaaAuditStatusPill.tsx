@@ -3,7 +3,7 @@ import { Clock } from "lucide-react";
 import {
   formatNcaaAuditPillLabel,
   type NcaaAuditPendingLabel,
-} from "@/lib/ncaa-audit-status";
+} from "@/lib/ncaa-audit-status-display";
 
 type NcaaAuditStatusPillProps = {
   coveragePct: number;

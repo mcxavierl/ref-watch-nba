@@ -11,7 +11,7 @@ import {
   isLeagueCardVisible,
   leagueLogoForTheme,
 } from "@/config/leagues";
-import { formatNcaaAuditPillLabel } from "@/lib/ncaa-audit-status";
+import { formatNcaaAuditPillLabel } from "@/lib/ncaa-audit-status-display";
 
 test("NCAA brand assets map to dual-theme logo paths", () => {
   assert.equal(NCAA_BRAND_ASSETS.themeColor, "#009CDE");

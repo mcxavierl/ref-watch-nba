@@ -3,7 +3,7 @@ import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
 import { formatLeagueSeasonStart } from "@/config/leagueConfig";
-import { NCAA_INTEGRITY_AUDIT_HREF } from "@/lib/ncaa-audit-status";
+import { NCAA_INTEGRITY_AUDIT_HREF } from "@/lib/ncaa-audit-status-display";
 import { isCatalogSlugVisible, isDashboardLeagueExposed, isLeagueAnalyticsUnlocked } from "@/config/leagues";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { EMPTY_DISPLAY } from "@/lib/finding-copy";
