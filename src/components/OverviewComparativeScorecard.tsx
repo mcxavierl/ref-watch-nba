@@ -62,6 +62,10 @@ function Sparkline({
 }
 
 function ScorecardRow({ card }: { card: LeagueOverviewCard }) {
+  if (!card.analyticsUnlocked) {
+    return null;
+  }
+
   return (
     <Link
       href={card.href}

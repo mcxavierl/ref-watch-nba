@@ -11,7 +11,8 @@ import {
   isLeagueCardVisible,
   leagueLogoForTheme,
 } from "@/config/leagues";
-import { isNcaaConferenceGatedLive } from "@/lib/verified-live-leagues";
+import { getRefStats as getCbbRefStats } from "@/lib/cbb/data";
+import { getRefStats as getCfbRefStats } from "@/lib/cfb/data";
 
 test("NCAA brand assets map to dual-theme logo paths", () => {
   assert.equal(NCAA_BRAND_ASSETS.themeColor, "#009CDE");
@@ -53,8 +54,14 @@ test("isDashboardLeagueExposed shows all verified live leagues including college
 
 test("isLeagueAnalyticsUnlocked unlocks NCAA when conference data is live", () => {
   assert.equal(isLeagueAnalyticsUnlocked("nba"), true);
-  assert.equal(isLeagueAnalyticsUnlocked("cfb"), isNcaaConferenceGatedLive("cfb"));
-  assert.equal(isLeagueAnalyticsUnlocked("cbb"), isNcaaConferenceGatedLive("cbb"));
+  assert.equal(
+    isLeagueAnalyticsUnlocked("cfb", getCfbRefStats()),
+    getCfbRefStats().refs.length > 0,
+  );
+  assert.equal(
+    isLeagueAnalyticsUnlocked("cbb", getCbbRefStats()),
+    getCbbRefStats().refs.length > 0,
+  );
 });
 
 test("isLeagueCardVisible shows launched college leagues on the overview hub", () => {

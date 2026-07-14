@@ -9,7 +9,7 @@ import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { getRefStats as getCbbRefStats } from "@/lib/cbb/data";
 import { getRefStats as getCfbRefStats } from "@/lib/cfb/data";
 import { hasNcaaLiveConferenceCoverage } from "@/lib/ncaa-conference-gate";
-import { isNcaaConferenceGatedLive, isVerifiedLiveLeague } from "@/lib/league-verification";
+import { isVerifiedLiveLeague } from "@/lib/league-verification";
 import type { RefStatsFile } from "@/lib/types";
 
 export type { LeagueRegistryEntry } from "@/config/leagueConfig";
@@ -82,9 +82,11 @@ function ncaaAnalyticsUnlocked(
   leagueId: NcaaLeagueSlug,
   stats?: RefStatsFile | null,
 ): boolean {
-  if (isNcaaConferenceGatedLive(leagueId)) return true;
+  const entry = NCAA_LEAGUE_REGISTRY[leagueId];
+  if (entry.dataVerified !== true) return false;
   const resolved = stats ?? NCAA_REF_LOADERS[leagueId]();
-  return hasNcaaLiveConferenceCoverage(leagueId, resolved);
+  if (!hasNcaaLiveConferenceCoverage(leagueId, resolved)) return false;
+  return resolved.refs.length > 0;
 }
 
 /** Hub links, quick lists, and detailed analytics require full verification. */

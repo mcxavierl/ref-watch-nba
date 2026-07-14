@@ -481,6 +481,42 @@
   opacity: 0.85;
 }
 
+.overview-sidebar-research-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--wc-gold, #c9a227) 28%, var(--border-subtle));
+  background: color-mix(in srgb, var(--wc-gold, #c9a227) 6%, transparent);
+  text-decoration: none;
+  color: inherit;
+}
+
+.overview-sidebar-research-link:hover {
+  border-color: color-mix(in srgb, var(--wc-gold, #c9a227) 42%, var(--border-subtle));
+}
+
+.overview-sidebar-research-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.overview-sidebar-research-meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.dashboard-hero-highlight-card--link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.dashboard-hero-highlight-card--link:hover {
+  border-color: color-mix(in srgb, var(--league-accent, var(--border-subtle)) 40%, var(--border-subtle));
+}
+
 /* —— Comparative scorecard —— */
 .overview-pace--scorecard .overview-section-header {
   margin-bottom: var(--space-5);

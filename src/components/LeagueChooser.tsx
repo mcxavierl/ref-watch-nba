@@ -22,10 +22,14 @@ function formatCount(n: number): string {
 }
 
 function ChooserCard({ card }: { card: LeagueOverviewCard }) {
+  const pending = !card.analyticsUnlocked;
+
   return (
     <Link
-      href={card.href}
-      className="overview-league-chooser-card overview-league-chooser-card--live-tier rw-focus-ring"
+      href={pending ? (card.auditHref ?? card.href) : card.href}
+      className={`overview-league-chooser-card overview-league-chooser-card--live-tier rw-focus-ring${
+        pending ? " overview-league-chooser-card--pending" : ""
+      }`}
       data-league={card.leagueId}
     >
       <span className="overview-league-chooser-top">
@@ -39,10 +43,15 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
           <span className="overview-league-chooser-meta">
             {formatCount(card.refCount)} refs · {formatCount(card.gameCount)} games
           </span>
+          {pending ? (
+            <span className="overview-league-chooser-pending">
+              {card.auditPendingLabel ?? "Pending Verification"} — hub locked
+            </span>
+          ) : null}
         </span>
       </span>
       <span className="overview-league-chooser-cta">
-        Open hub
+        {pending ? "View audit status" : "Open hub"}
         <ArrowRight aria-hidden />
       </span>
     </Link>
