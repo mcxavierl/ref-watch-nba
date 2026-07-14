@@ -1,6 +1,8 @@
 import type { ConfidenceTier } from "@/lib/user-language";
 
-/** Inclusive band treated as neutral for over/under and benchmark claims. */
+/** Shown when a stat or label has no value (no em dash). */
+export const EMPTY_DISPLAY = "-";
+
 export const NEUTRAL_RATE_MIN = 0.49;
 export const NEUTRAL_RATE_MAX = 0.51;
 
@@ -13,7 +15,7 @@ export function isNeutralRate(rate: number): boolean {
 }
 
 export function formatSeasonSpan(seasons: string[]): string {
-  if (seasons.length === 0) return "—";
+  if (seasons.length === 0) return EMPTY_DISPLAY;
   const startYear = Number.parseInt(seasons[0].slice(0, 4), 10);
   const last = seasons[seasons.length - 1];
   const match = last.match(/^(\d{4})-(\d{2})$/);
@@ -53,7 +55,7 @@ export function overUnderFrequencyHeadline(
   return `${refName} leads the pool on ${lean} frequency`;
 }
 
-/** Stat row label that matches over/under direction — never "Over benchmark" when rate is under 50%. */
+/** Stat row label that matches over/under direction; never "Over benchmark" when rate is under 50%. */
 export function overBenchmarkStatLabel(rate: number): string {
   if (isNeutralRate(rate)) return "At benchmark";
   return rate >= 0.5 ? "Over benchmark" : "Under benchmark";
@@ -65,7 +67,7 @@ function formatDeltaMagnitude(delta: number): string {
 
 /**
  * Headline from signed delta vs league average.
- * Negative deltas use fewer/below/under — never heaviest/highest.
+ * Negative deltas use fewer/below/under, never heaviest/highest.
  */
 export function deltaVsLeagueHeadline(
   subject: string,
@@ -188,6 +190,6 @@ export function formatFindingCardMeta(
   tier: ConfidenceTier,
 ): string {
   const gamesMatch = sampleNote.match(/Sample:\s*([\d,]+)\s*games?/i);
-  const games = gamesMatch?.[1] ?? "—";
+  const games = gamesMatch?.[1] ?? EMPTY_DISPLAY;
   return `Sample: ${games} games • Confidence: ${CONFIDENCE_DISPLAY[tier]}`;
 }
