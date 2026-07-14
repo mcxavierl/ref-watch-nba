@@ -9,7 +9,7 @@ import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { getRefStats as getCbbRefStats } from "@/lib/cbb/data";
 import { getRefStats as getCfbRefStats } from "@/lib/cfb/data";
 import { hasNcaaLiveConferenceCoverage } from "@/lib/ncaa-conference-gate";
-import { isVerifiedLiveLeague } from "@/lib/league-verification";
+import { isNcaaConferenceGatedLive, isVerifiedLiveLeague } from "@/lib/league-verification";
 import type { RefStatsFile } from "@/lib/types";
 
 export type { LeagueRegistryEntry } from "@/config/leagueConfig";
@@ -30,8 +30,8 @@ export type LeagueThemeLogos = {
 export const NCAA_BRAND_ASSETS = {
   themeColor: "#009CDE",
   logos: {
-    light: "/assets/logos/ncaa-blue.svg",
-    dark: "/assets/logos/ncaa-white.svg",
+    light: "/assets/logos/ncaa.png",
+    dark: "/assets/logos/ncaa.png",
   },
 } as const satisfies {
   themeColor: string;
@@ -82,6 +82,7 @@ function ncaaAnalyticsUnlocked(
   leagueId: NcaaLeagueSlug,
   stats?: RefStatsFile | null,
 ): boolean {
+  if (isNcaaConferenceGatedLive(leagueId)) return true;
   const resolved = stats ?? NCAA_REF_LOADERS[leagueId]();
   return hasNcaaLiveConferenceCoverage(leagueId, resolved);
 }

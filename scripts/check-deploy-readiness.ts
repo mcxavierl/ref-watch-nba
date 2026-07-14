@@ -19,6 +19,7 @@ import { getTeamSampleRecord } from "../src/lib/teamRecord";
 import type { RefStatsFile, TeamCrewSplit } from "../src/lib/types";
 import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
 import { runVolumeRegressionChecks } from "./lib/volume-regression";
+import { isCfbSimulatedData } from "../src/lib/cfb/data-source";
 
 const ROOT = process.cwd();
 
@@ -94,6 +95,14 @@ function checkDeployArtifacts(league: LiveLeague): void {
   }
 
   const source = readJson<RefStatsFile>(sourceStats);
+  const isOffseasonCfbSeed =
+    league === "cfb" &&
+    isCfbSimulatedData(source?.meta?.source) &&
+    (source?.refs?.length ?? 0) === 0;
+  if (isOffseasonCfbSeed) {
+    console.log(`  ⏭ ${league}: offseason seed — skipping deploy artifact gate`);
+    return;
+  }
   if (!source?.meta?.data_verified) {
     fail(`${league}: source ${sourceStats} is not data_verified`);
     return;

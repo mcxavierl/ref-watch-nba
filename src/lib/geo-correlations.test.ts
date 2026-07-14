@@ -3,7 +3,12 @@ import test from "node:test";
 import {
   MIN_REGIONAL_GAMES,
   computeGeoCorrelationsForLeague,
+  computeMatchupOriginVariance,
+  computeRefOriginVariance,
+  inferCountryFromBirthplace,
+  isOriginVarianceOutlier,
   isTopGeoFinding,
+  nationalOriginDistance,
   resolveOfficialTerritories,
   teamInTerritory,
 } from "@/lib/geo-correlations";
@@ -154,4 +159,34 @@ test("computeGeoCorrelationsForLeague rejects thin regional samples", () => {
 
 test("computeGeoCorrelationsForLeague returns empty without game logs", () => {
   assert.deepEqual(computeGeoCorrelationsForLeague("NBA", STATS, null), []);
+});
+
+test("nationalOriginDistance scores geopolitical distance for origin variance", () => {
+  assert.equal(nationalOriginDistance("USA", "USA"), 0);
+  assert.equal(nationalOriginDistance("USA", "MEX"), 0.5);
+  assert.equal(nationalOriginDistance("USA", "BRA"), 1);
+  assert.equal(inferCountryFromBirthplace("Boston, MA"), "USA");
+  assert.equal(inferCountryFromBirthplace("Madrid, Spain"), "ESP");
+  assert.equal(computeMatchupOriginVariance("USA", "ENG", "ESP"), 1);
+
+  const variance = computeRefOriginVariance(
+    {
+      birthCountry: "USA",
+      teamStats: {
+        LAL: {
+          games: 20,
+          winRate: 0.55,
+          wins: 11,
+          losses: 9,
+          avgTotalPoints: 220,
+          overRate: 0.5,
+          avgFoulDifferential: 0,
+        },
+      },
+    },
+    () => "USA",
+  );
+  assert.equal(variance, 0);
+  assert.equal(isOriginVarianceOutlier({ originVariance: 0.8 }), true);
+  assert.equal(isOriginVarianceOutlier({ originVariance: 0.2 }), false);
 });

@@ -49,10 +49,15 @@ function normalizeGeographyEntry(
   const birthplace =
     typeof entry.birthplace === "string" ? entry.birthplace.trim() : "";
   const hometown = typeof entry.hometown === "string" ? entry.hometown.trim() : "";
-  if (!birthplace && !hometown) return undefined;
+  const birthCountry =
+    typeof entry.birthCountry === "string" ? entry.birthCountry.trim() : "";
+  const region = typeof entry.region === "string" ? entry.region.trim() : "";
+  if (!birthplace && !hometown && !birthCountry && !region) return undefined;
   return {
     ...(birthplace ? { birthplace } : {}),
     ...(hometown ? { hometown } : {}),
+    ...(birthCountry ? { birthCountry } : {}),
+    ...(region ? { region } : {}),
   };
 }
 
@@ -79,11 +84,15 @@ export function mergeRefGeographyIntoStats(
     const indexEntry = mergedIndex[ref.slug];
     const birthplace = ref.birthplace?.trim() || indexEntry?.birthplace?.trim();
     const hometown = ref.hometown?.trim() || indexEntry?.hometown?.trim();
-    if (!birthplace && !hometown) return ref;
+    const birthCountry = ref.birthCountry?.trim() || indexEntry?.birthCountry?.trim();
+    const region = ref.region?.trim() || indexEntry?.region?.trim();
+    if (!birthplace && !hometown && !birthCountry && !region) return ref;
     return {
       ...ref,
       ...(birthplace ? { birthplace } : {}),
       ...(hometown ? { hometown } : {}),
+      ...(birthCountry ? { birthCountry } : {}),
+      ...(region ? { region } : {}),
     };
   });
 

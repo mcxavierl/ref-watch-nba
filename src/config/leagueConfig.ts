@@ -65,8 +65,8 @@ export const LEAGUE_CONFIG: Partial<Record<LeagueId, LeagueRegistryEntry>> = {
     seasonStartDay: 4,
     themeColor: "#009CDE",
     logos: {
-      light: "/assets/logos/ncaa-cbb-blue.svg",
-      dark: "/assets/logos/ncaa-cbb-white.svg",
+      light: "/assets/logos/ncaa.png",
+      dark: "/assets/logos/ncaa.png",
     },
     dataVerified: false,
   },
@@ -78,8 +78,8 @@ export const LEAGUE_CONFIG: Partial<Record<LeagueId, LeagueRegistryEntry>> = {
     seasonStartDay: 29,
     themeColor: "#009CDE",
     logos: {
-      light: "/assets/logos/ncaa-cfb-blue.svg",
-      dark: "/assets/logos/ncaa-cfb-white.svg",
+      light: "/assets/logos/ncaa.png",
+      dark: "/assets/logos/ncaa.png",
     },
     dataVerified: false,
   },

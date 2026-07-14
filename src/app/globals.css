@@ -58,6 +58,17 @@
   --header-gold-bright: #fff0a7;
   --header-gold-deep: #9a7431;
   --header-gold-ink: #18324b;
+
+  /* FIFA World Cup 2026 research accent */
+  --wc-gold-gradient: linear-gradient(
+    135deg,
+    #c9a227 0%,
+    #f4e4a6 42%,
+    #9a7431 100%
+  );
+  --wc-research-accent: #c9a227;
+  --wc-research-accent-muted: color-mix(in srgb, var(--wc-research-accent) 22%, transparent);
+  --wc-research-surface: color-mix(in srgb, var(--wc-research-accent) 8%, var(--bg-surface-1));
   --header-wordmark: #ffffff;
 
   /* Standout metric delight surfaces — ink tokens in theme-tokens.css */
@@ -12129,4 +12140,257 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
   color: var(--muted-strong);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ── Integrity & methodology data cards ───────────────────────────────────── */
+
+.integrity-data-card,
+.wc-methodology-card {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.integrity-data-card-header,
+.wc-methodology-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.integrity-data-card-icon,
+.wc-methodology-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.65rem;
+  background: var(--surface-raised);
+  color: var(--accent-brand);
+}
+
+.integrity-data-card-title,
+.wc-methodology-card-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.integrity-data-card-list,
+.wc-methodology-card-list {
+  display: grid;
+  gap: var(--space-2);
+  padding-left: 1.1rem;
+  color: var(--ink-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.wc-methodology-card-lead {
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  line-height: 1.55;
+}
+
+.integrity-data-card-note,
+.wc-methodology-card-note {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.integrity-data-card-cta,
+.wc-methodology-card-cta {
+  font-size: var(--text-sm);
+  font-weight: 650;
+  color: var(--accent-brand);
+  text-decoration: none;
+}
+
+.integrity-data-card-cta:hover,
+.wc-methodology-card-cta:hover {
+  text-decoration: underline;
+}
+
+.wc-methodology-card {
+  border-color: color-mix(in srgb, var(--wc-research-accent) 28%, var(--border-subtle));
+  background: var(--wc-research-surface);
+}
+
+.wc-methodology-card-icon {
+  background: var(--wc-research-accent-muted);
+  color: var(--wc-research-accent);
+}
+
+/* ── World Cup Research Hub (overview dashboard) ─────────────────────────── */
+
+.overview-research-hub-card {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--wc-research-accent) 35%, var(--border-subtle));
+  background: var(--wc-research-surface);
+}
+
+.overview-research-hub-card-accent {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--wc-gold-gradient);
+}
+
+.overview-research-hub-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.overview-research-hub-card-brand {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.overview-research-hub-card-logo-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 3.25rem;
+  height: 2.35rem;
+  padding: 0.3rem 0.45rem;
+  border-radius: 0.55rem;
+  background: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 85%, #0f172a);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.overview-research-hub-card-logo {
+  width: auto;
+  height: 1.25rem;
+  max-width: 2.75rem;
+  object-fit: contain;
+}
+
+html.dark .overview-research-hub-card {
+  border-color: color-mix(in srgb, var(--wc-research-accent) 42%, var(--border-subtle));
+  background: color-mix(in srgb, var(--wc-research-accent) 12%, var(--bg-surface-1));
+}
+
+html.dark .overview-research-hub-card-logo-wrap {
+  background: #ffffff;
+  border-color: color-mix(in srgb, #ffffff 24%, var(--border-subtle));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+html.dark .overview-research-hub-card-title,
+html.dark .overview-research-hub-card-stats dd {
+  color: var(--ink);
+}
+
+.overview-research-hub-card-kicker {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wc-research-accent);
+}
+
+.overview-research-hub-card-title {
+  font-size: var(--text-lg);
+  font-weight: 750;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.overview-research-hub-card-badge {
+  flex-shrink: 0;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--header-gold-ink);
+  background: var(--wc-gold-gradient);
+}
+
+.overview-research-hub-card-story {
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+  line-height: 1.55;
+}
+
+.overview-research-hub-card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.overview-research-hub-card-stats dt {
+  font-size: var(--text-xs);
+  font-weight: 650;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.overview-research-hub-card-stats dd {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.overview-research-hub-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.overview-research-hub-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--wc-research-accent);
+  text-decoration: none;
+}
+
+.overview-research-hub-card-cta:hover {
+  text-decoration: underline;
+}
+
+.overview-research-hub-card-link {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.overview-research-hub-card-link:hover {
+  color: var(--ink-secondary);
+  text-decoration: underline;
+}
+
+.wc-research-page-grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+@media (min-width: 900px) {
+  .wc-research-page-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: start;
+  }
+}
+
+.refs-directory-outlier-hint {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--muted);
 }

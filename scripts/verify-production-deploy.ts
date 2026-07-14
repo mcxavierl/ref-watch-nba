@@ -3,6 +3,7 @@
  * Post-deploy smoke test — fails loudly on 1102 or zero-data regressions.
  */
 import { VERIFIED_LIVE_LEAGUE_IDS } from "../src/lib/league-verification";
+import { isCfbSimulatedData } from "../src/lib/cfb/data-source";
 
 const ORIGIN = (process.env.REFWATCH_DEPLOY_URL ?? "https://refwatch.ca").replace(
   /\/$/,
@@ -49,6 +50,12 @@ const ROUTES: RouteCheck[] = [
     mustIncludeOne: ["Official A", "Compare officials", "ref-compare"],
   },
   {
+    path: "/cfb",
+    maxStatus: 299,
+    mustNotInclude: ["1102", "Error 1102", "Worker exceeded"],
+    mustIncludeOne: ["NCAA", "football", "CFB", "offseason"],
+  },
+  {
     path: "/rankings",
     maxStatus: 299,
     mustNotInclude: ["1102"],
@@ -56,7 +63,7 @@ const ROUTES: RouteCheck[] = [
   },
 ];
 
-const JSON_ASSETS = VERIFIED_LIVE_LEAGUE_IDS.map((league) =>
+const JSON_ASSETS = VERIFIED_LIVE_LEAGUE_IDS.filter((league) => league !== "cfb").map((league) =>
   league === "nba"
     ? "/data/nba/ref-stats.json"
     : `/data/${league}/ref-stats.json`,
@@ -127,6 +134,26 @@ async function main(): Promise<void> {
     } catch (err) {
       fail(`${assetPath}: ${err instanceof Error ? err.message : err}`);
     }
+  }
+
+  const cfbAsset = `${ORIGIN}/data/cfb/ref-stats.json`;
+  try {
+    const res = await fetch(cfbAsset);
+    if (!res.ok) {
+      fail(`/data/cfb/ref-stats.json: HTTP ${res.status}`);
+    } else {
+      const data = (await res.json()) as {
+        refs?: unknown[];
+        meta?: { source?: string };
+      };
+      const offseason =
+        isCfbSimulatedData(data.meta?.source) && (data.refs?.length ?? 0) === 0;
+      console.log(
+        `  ✓ /data/cfb/ref-stats.json ${offseason ? "offseason seed" : `refs=${data.refs?.length ?? 0}`}`,
+      );
+    }
+  } catch (err) {
+    fail(`/data/cfb/ref-stats.json: ${err instanceof Error ? err.message : err}`);
   }
 
   if (failures.length > 0) {

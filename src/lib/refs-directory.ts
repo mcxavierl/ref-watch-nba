@@ -1,4 +1,10 @@
-import type { LeagueConfig } from "@/lib/leagues";
+import type { LeagueConfig, LeagueId } from "@/lib/leagues";
+import type { LeagueInsightCard, LeagueInsightTone } from "@/lib/league-overview-insights";
+import {
+  enrichRefWithOriginVariance,
+  isOriginVarianceOutlier,
+} from "@/lib/geo-correlations";
+import { teamNationForLeague } from "@/lib/world-cup-research";
 import { filterNhlReferees } from "@/lib/nhl/officials";
 import { deltaTone as metricDeltaTone } from "@/lib/metricTone";
 import {
@@ -8,7 +14,7 @@ import {
   whistleVsLeaguePct,
 } from "@/lib/scoring-metrics";
 import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
-import { formatSigned } from "@/lib/stats-utils";
+import { formatPct, formatSigned } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 export type NflDirectoryMetric = "points" | "flags" | "penaltyYards";
@@ -58,6 +64,13 @@ export const REFS_DIRECTORY_TABS: {
 ];
 
 export const REFS_DIRECTORY_INITIAL_COUNT = 25;
+export const REFS_DIRECTORY_SPOTLIGHT_COUNT = 3;
+
+export type RefsDiscoveryFilter = {
+  query?: string;
+  outliersOnly?: boolean;
+  pool?: RefProfile[];
+};
 
 export interface RefsDirectoryMeta {
   seasons: string[];
@@ -91,7 +104,9 @@ export function buildRefsDirectoryContext(
 ): RefsDirectoryContext {
   const pool =
     league.id === "nhl" ? filterNhlReferees(stats.refs) : stats.refs;
-  const qualified = qualifiedRefs(pool, stats.meta.minSampleSize);
+  const resolveTeamNation = (abbr: string) => teamNationForLeague(league.id, abbr);
+  const enriched = pool.map((ref) => enrichRefWithOriginVariance(ref, resolveTeamNation));
+  const qualified = qualifiedRefs(enriched, stats.meta.minSampleSize);
   const totalGameRecords = qualified.reduce((sum, ref) => sum + ref.games, 0);
 
   return {
@@ -206,4 +221,151 @@ export function directoryDeltaTone(
     return metricDeltaTone(delta, threshold);
   }
   return deltaTone(delta, overBaseline);
+}
+
+export function computeOverRateMean(refs: RefProfile[]): number {
+  if (refs.length === 0) return 0;
+  return refs.reduce((sum, ref) => sum + ref.overRate, 0) / refs.length;
+}
+
+function overRateDeviation(ref: RefProfile, mean: number): number {
+  return Math.abs(ref.overRate - mean);
+}
+
+export function selectSpotlightRefs(
+  refs: RefProfile[],
+  tab: RefsDirectoryTab,
+  count = REFS_DIRECTORY_SPOTLIGHT_COUNT,
+): RefProfile[] {
+  return sortRefsDirectory(refs, tab).slice(0, count);
+}
+
+export function filterRefsDiscovery(
+  refs: RefProfile[],
+  filter: RefsDiscoveryFilter,
+): RefProfile[] {
+  let result = refs;
+
+  if (filter.query?.trim()) {
+    const q = filter.query.trim().toLowerCase();
+    result = result.filter(
+      (ref) =>
+        ref.name.toLowerCase().includes(q) ||
+        ref.slug.toLowerCase().includes(q),
+    );
+  }
+
+  if (filter.outliersOnly) {
+    const pool = filter.pool ?? refs;
+    const mean = computeOverRateMean(pool);
+    const variance =
+      pool.reduce((sum, ref) => sum + (ref.overRate - mean) ** 2, 0) /
+      pool.length;
+    const stdDev = Math.sqrt(variance);
+    result = result.filter(
+      (ref) =>
+        (stdDev > 0 && overRateDeviation(ref, mean) >= stdDev) ||
+        isOriginVarianceOutlier(ref),
+    );
+  }
+
+  return result;
+}
+
+export function sortRefsByOutlierDeviation(refs: RefProfile[]): RefProfile[] {
+  const mean = computeOverRateMean(refs);
+  return [...refs].sort((a, b) => {
+    const devA = overRateDeviation(a, mean);
+    const devB = overRateDeviation(b, mean);
+    if (devB !== devA) return devB - devA;
+    return (b.originVariance ?? 0) - (a.originVariance ?? 0);
+  });
+}
+
+function spotlightHeroForTab(
+  ref: RefProfile,
+  tab: RefsDirectoryTab,
+  league: LeagueConfig,
+): {
+  kicker: string;
+  heroValue: string;
+  heroLabel: string;
+  heroTone: LeagueInsightTone;
+  story: string;
+} {
+  const overPct = formatPct(ref.overRate);
+  const underPct = formatPct(1 - ref.overRate);
+  const scoreUnit = league.metrics.scoreUnitPlural;
+
+  switch (tab) {
+    case "over-high":
+      return {
+        kicker: "Highest over rate",
+        heroValue: overPct,
+        heroLabel: "Games over benchmark",
+        heroTone: ref.overRate >= 0.55 ? "positive" : "neutral",
+        story: `${ref.games} games logged · ${formatSigned(ref.totalPointsDelta)} ${scoreUnit} vs league avg.`,
+      };
+    case "over-low":
+      return {
+        kicker: "Highest under rate",
+        heroValue: underPct,
+        heroLabel: "Games under benchmark",
+        heroTone: ref.overRate <= 0.45 ? "negative" : "neutral",
+        story: `${overPct} over rate across ${ref.games} games · ${formatSigned(ref.totalPointsDelta)} ${scoreUnit} vs avg.`,
+      };
+    case "experienced":
+      return {
+        kicker: "Most experienced",
+        heroValue: String(ref.games),
+        heroLabel: "Games in sample",
+        heroTone: "neutral",
+        story: `${overPct} over rate · ${ref.seasons.length} season${ref.seasons.length === 1 ? "" : "s"} tracked (${ref.seasons.slice(-2).join(", ")}).`,
+      };
+  }
+}
+
+export function buildRefsSpotlightCards(
+  refs: RefProfile[],
+  tab: RefsDirectoryTab,
+  meta: RefsDirectoryMeta,
+  league: LeagueConfig,
+  basePath = "",
+): LeagueInsightCard[] {
+  const mean = computeOverRateMean(refs);
+
+  return selectSpotlightRefs(refs, tab).map((ref, index) => {
+    const hero = spotlightHeroForTab(ref, tab, league);
+    const deviation = overRateDeviation(ref, mean);
+    const profileHref = `${basePath}/refs/${ref.slug}`;
+
+    return {
+      leagueId: league.id as LeagueId,
+      label: league.label,
+      shortLabel: league.shortLabel,
+      kind: "ref-outlier",
+      kicker: `#${index + 1} · ${hero.kicker}`,
+      headline: ref.name,
+      story: hero.story,
+      heroValue: hero.heroValue,
+      heroLabel: hero.heroLabel,
+      heroTone: hero.heroTone,
+      stats: [
+        { label: "Games", value: String(ref.games) },
+        { label: "Over rate", value: formatPct(ref.overRate) },
+        {
+          label: "Vs mean",
+          value: `${formatSigned((ref.overRate - mean) * 100, 1)}pp`,
+        },
+        {
+          label: "Deviation",
+          value: `${formatSigned(deviation * 100, 1)}pp`,
+        },
+      ],
+      links: [{ label: "Full profile", href: profileHref }],
+      entityName: ref.name,
+      entityHref: profileHref,
+      refSlug: ref.slug,
+    };
+  });
 }

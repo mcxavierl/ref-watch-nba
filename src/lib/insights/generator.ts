@@ -30,6 +30,7 @@ import {
   type OverviewInsightsPayload,
   type TopStoriesStatus,
 } from "@/lib/insights/generator-core";
+import { scanInternationalMatchupOutliers } from "@/lib/insights/international-matchups";
 import {
   stripRefProfileForInsights,
   type SlimLeagueStats,
@@ -150,6 +151,7 @@ export function scanAllProLeagueOutliers(): InsightOutlierCandidate[] {
   for (const leagueId of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
     all.push(...scanLeagueOutliers(leagueId));
   }
+  all.push(...scanInternationalMatchupOutliers());
   return all.sort((a, b) => b.significance - a.significance);
 }
 

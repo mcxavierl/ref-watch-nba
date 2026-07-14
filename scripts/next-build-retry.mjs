@@ -55,6 +55,15 @@ function exitStatusFromResult(result) {
   return 1;
 }
 
+const BUILD_HEAP_MB = 8192;
+
+function buildEnv(extra = {}) {
+  const nodeOptions = process.env.NODE_OPTIONS?.includes("max-old-space-size")
+    ? process.env.NODE_OPTIONS
+    : `--max-old-space-size=${BUILD_HEAP_MB}`;
+  return { ...process.env, KEEP_NEXT_DIST: "1", NODE_OPTIONS: nodeOptions, ...extra };
+}
+
 function runNextBuild(env) {
   const result = spawnSync("npx", ["next", "build", ...process.argv.slice(2)], {
     stdio: "inherit",
@@ -153,7 +162,7 @@ function tryRecoverNearCompleteBuild(attempt) {
   if (!existsSync(".next/required-server-files.json") || !existsSync(".next/next-server.js.nft.json")) {
     try {
       console.warn("next build retrying trace collection after 500.html recovery...");
-      runNextBuild({ ...process.env, KEEP_NEXT_DIST: "1" });
+      runNextBuild(buildEnv());
     } catch {
       ensure500HtmlArtifacts();
       materializeStandaloneOutput();
@@ -181,9 +190,9 @@ process.on("SIGTERM", () => {
 
 for (let attempt = 1; attempt <= maxAttempts; attempt++) {
   mkdirSync(".next/server/pages", { recursive: true });
-  const buildEnv = { ...process.env, KEEP_NEXT_DIST: "1" };
+  const buildEnvVars = buildEnv();
   try {
-    runNextBuild(buildEnv);
+    runNextBuild(buildEnvVars);
     if (!hasCompleteStandaloneBuild()) {
       materializeStandaloneOutput();
     }

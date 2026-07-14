@@ -307,6 +307,10 @@ export interface RefMarketExpectationStats {
 export interface RefGeographyEntry {
   birthplace?: string;
   hometown?: string;
+  /** ISO-style birth nation when known (e.g. "USA", "ESP"). */
+  birthCountry?: string;
+  /** FIFA confederation or macro-region (e.g. "uefa", "concacaf"). */
+  region?: string;
 }
 
 export interface RefProfile {
@@ -317,6 +321,12 @@ export interface RefProfile {
   birthplace?: string;
   /** Official hometown when birthplace is unavailable. */
   hometown?: string;
+  /** Birth nation when known (e.g. "USA", "MEX"). */
+  birthCountry?: string;
+  /** FIFA confederation or macro-region for international analysis. */
+  region?: string;
+  /** Mean geopolitical distance from birth nation to officiated team origins (0–1). */
+  originVariance?: number;
   /** NHL roster role when known (referee vs linesman). */
   role?: RefRole;
   games: number;

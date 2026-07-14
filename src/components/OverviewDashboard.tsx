@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LeagueChooser } from "@/components/LeagueChooser";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewComparativeScorecard } from "@/components/OverviewComparativeScorecard";
+import { WorldCupResearchHubCard } from "@/components/WorldCupResearchHubCard";
 import { OverviewQuickLists } from "@/components/OverviewQuickLists";
 import { OverviewTopStoriesCarousel } from "@/components/OverviewTopStoriesCarousel";
 import { DashboardHeroHighlights } from "@/components/dashboard/DashboardHeroHighlights";
@@ -266,6 +267,19 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                   ) : null}
                 </div>
               )}
+            </section>
+
+            <section className="overview-research-hub section-block" aria-labelledby="overview-research-hub-heading">
+              <div className="overview-section-header">
+                <h2 className="overview-section-title" id="overview-research-hub-heading">
+                  Research hub
+                </h2>
+                <p className="overview-section-lead">
+                  Exploratory analytics distinct from live league insights — starting with
+                  2026 World Cup officiating origin variance.
+                </p>
+              </div>
+              <WorldCupResearchHubCard />
             </section>
 
             <DashboardSection

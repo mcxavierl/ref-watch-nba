@@ -8,6 +8,13 @@ type OverviewSnapshotFile = {
 
 /** Bundled at build time — overview must not parse multi-league ref-stats at request time. */
 export function loadOverviewSnapshot(): CrossLeagueOverview {
-  const file = overviewSnapshotJson as OverviewSnapshotFile;
-  return file.snapshot;
+  const file = overviewSnapshotJson as unknown as OverviewSnapshotFile;
+  const snap = file.snapshot as Partial<CrossLeagueOverview> & typeof file.snapshot;
+  return {
+    ...snap,
+    topStories: snap.topStories ?? snap.insightCards ?? [],
+    topStoriesStatus: snap.topStoriesStatus ?? "ready",
+    topStoriesGeneratedAt:
+      snap.topStoriesGeneratedAt ?? file.generatedAt ?? null,
+  } as CrossLeagueOverview;
 }

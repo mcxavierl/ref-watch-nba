@@ -21,6 +21,11 @@ import {
 } from "@/lib/insights/insight-input-slim";
 import type { LeagueCardBuildSetup } from "@/lib/insights/league-card-from-stats";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
+import type { InternationalMatchupHighlight } from "@/lib/insights/international-matchups";
+import {
+  internationalOriginHeadline,
+  internationalOriginStory,
+} from "@/lib/insights/international-matchups";
 
 export const TOP_STORY_LIMIT = 3;
 export const WIN_RATE_OUTLIER_PP = 15;
@@ -30,7 +35,7 @@ export const MIN_WHISTLE_REF_GAMES = 50;
 
 export type TopStoriesStatus = "generated" | "fallback";
 
-export type InsightOutlierKind = "win-rate" | "whistle-pace";
+export type InsightOutlierKind = "win-rate" | "whistle-pace" | "international-origin";
 
 export type InsightOutlierCandidate = {
   leagueId: (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
@@ -43,6 +48,12 @@ export type InsightOutlierCandidate = {
   matrix?: MatrixExtremeHighlight;
   ref?: RefProfile;
   whistleVariancePct?: number;
+  /** International referee-origin vs team-origin edge. */
+  internationalHighlight?: InternationalMatchupHighlight;
+  originVariance?: number;
+  refNation?: string;
+  teamNation?: string;
+  confederation?: string;
 };
 
 export type OverviewInsightsPayload = {
@@ -210,6 +221,39 @@ export function candidateToInsightCard(candidate: InsightOutlierCandidate): Leag
         highlight.refSlug,
         highlight.teamAbbr,
       ),
+    };
+  }
+
+  if (candidate.kind === "international-origin" && candidate.internationalHighlight) {
+    const highlight = candidate.internationalHighlight;
+    const varianceLabel = formatPct(highlight.originDistance);
+
+    return {
+      leagueId: candidate.leagueId,
+      label: config.label,
+      shortLabel: config.shortLabel,
+      kind: "league-pattern",
+      kicker: "Referee-origin vs team-origin",
+      headline: internationalOriginHeadline(candidate, config.shortLabel),
+      story: internationalOriginStory(candidate),
+      heroValue: varianceLabel,
+      heroLabel: "Origin variance score",
+      heroTone: highlight.originDistance >= 0.75 ? "positive" : "neutral",
+      stats: [
+        { label: "Ref nation", value: highlight.refNation },
+        { label: "Team nation", value: highlight.teamNation },
+        { label: "Games", value: String(highlight.games) },
+      ],
+      links: [
+        { label: "Ref profile", href: refHref(candidate.leagueId, highlight.refSlug) },
+        { label: "WC 2026 research", href: "/research/world-cup-2026" },
+        { label: `${config.shortLabel} hub`, href: leaguePrefix(candidate.leagueId) || "/" },
+      ],
+      entityName: highlight.refName,
+      entityHref: refHref(candidate.leagueId, highlight.refSlug),
+      teamLabel: highlight.teamLabel,
+      refSlug: highlight.refSlug,
+      teamAbbr: highlight.teamAbbr,
     };
   }
 
