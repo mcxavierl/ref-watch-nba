@@ -9,7 +9,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "../src/lib/live-header-leagues.generated";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "../src/lib/league-verification";
+import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "../src/lib/league-verification";
 import {
   MATRIX_MIN_GAMES,
 } from "../src/lib/ref-team-matrix";
@@ -22,7 +22,7 @@ import { runVolumeRegressionChecks } from "./lib/volume-regression";
 
 const ROOT = process.cwd();
 
-type LiveLeague = (typeof VERIFIED_LIVE_LEAGUE_IDS)[number];
+type LiveLeague = (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
 
 const SAMPLE_TEAMS: Record<LiveLeague, string> = {
   nba: "LAL",
@@ -157,7 +157,7 @@ function checkDeployArtifacts(league: LiveLeague): void {
 }
 
 function checkLiveHeader(): void {
-  for (const league of VERIFIED_LIVE_LEAGUE_IDS) {
+  for (const league of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
     if (!(PRODUCTION_LIVE_HEADER_LEAGUE_IDS as readonly string[]).includes(league)) {
       fail(
         `live header missing verified league "${league}" (have: ${PRODUCTION_LIVE_HEADER_LEAGUE_IDS.join(", ")})`,
@@ -264,9 +264,9 @@ function checkOverviewSnapshot(): void {
     fail("overview-snapshot.json missing snapshot payload");
     return;
   }
-  if ((snapshot.insightCards?.length ?? 0) < VERIFIED_LIVE_LEAGUE_IDS.length) {
+  if ((snapshot.insightCards?.length ?? 0) < PRO_VERIFIED_LIVE_LEAGUE_IDS.length) {
     fail(
-      `overview-snapshot.json has ${snapshot.insightCards?.length ?? 0} insight cards (need ${VERIFIED_LIVE_LEAGUE_IDS.length})`,
+      `overview-snapshot.json has ${snapshot.insightCards?.length ?? 0} insight cards (need ${PRO_VERIFIED_LIVE_LEAGUE_IDS.length})`,
     );
   }
   if ((snapshot.totalRefs ?? 0) < 400) {
@@ -310,7 +310,7 @@ checkSingleFooterLayout();
 checkRankingsRefLinks();
 checkNflAnalyticsCoverage();
 checkOverviewSnapshot();
-for (const league of VERIFIED_LIVE_LEAGUE_IDS) {
+for (const league of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
   checkDeployArtifacts(league);
 }
 const volume = runVolumeRegressionChecks(ROOT);
@@ -331,5 +331,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Deploy readiness check passed (${VERIFIED_LIVE_LEAGUE_IDS.length} live leagues, artifacts + matrix panels + trends OK).`,
+  `Deploy readiness check passed (${PRO_VERIFIED_LIVE_LEAGUE_IDS.length} live leagues, artifacts + matrix panels + trends OK).`,
 );

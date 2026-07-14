@@ -4,7 +4,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "../../src/lib/league-verification";
+import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "../../src/lib/league-verification";
 import {
   bottomRefsBelowBaselineForTeam,
   MATRIX_MIN_GAMES,
@@ -28,7 +28,7 @@ import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "../../src/lib/nhl/te
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "../../src/lib/teams";
 import { findReverseNameGhosts } from "./ref-identity";
 
-export type LiveLeague = (typeof VERIFIED_LIVE_LEAGUE_IDS)[number];
+export type LiveLeague = (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
 
 export const MIN_TOTAL_GAMES_FOR_CLAIMED_SEASONS: Record<
   LiveLeague,
@@ -339,7 +339,7 @@ export function runVolumeRegressionChecks(root = process.cwd()): VolumeRegressio
   const failures: string[] = [];
   const summaries: LeagueVolumeSummary[] = [];
 
-  for (const league of VERIFIED_LIVE_LEAGUE_IDS) {
+  for (const league of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
     const source = readJson<RefStatsFile>(root, refStatsPath(league));
     if (!source?.meta?.data_verified) {
       failures.push(`${league}: ${refStatsPath(league)} is not data_verified`);
