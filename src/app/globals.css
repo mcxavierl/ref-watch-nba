@@ -533,7 +533,7 @@ p {
     font-weight: 700;
     letter-spacing: -0.025em;
     line-height: var(--leading-snug);
-    color: var(--ink-secondary);
+    color: var(--text-primary);
     min-width: 0;
     text-wrap: balance;
   }
@@ -2914,54 +2914,6 @@ p {
     outline: 2px solid var(--header-gold-bright);
   }
 
-  .site-global-link {
-    --header-pill-accent: var(--header-gold);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2rem;
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    font-size: 0.72rem;
-    font-weight: 650;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--header-ink) 78%, transparent);
-    white-space: nowrap;
-    transition:
-      color 160ms ease,
-      border-color 160ms ease,
-      background-color 160ms ease,
-      box-shadow 160ms ease;
-  }
-
-  .site-global-link:hover {
-    color: var(--header-ink);
-    border-color: rgba(148, 163, 184, 0.16);
-    background: var(--header-surface-hover);
-  }
-
-  .site-global-link--active {
-    color: var(--header-ink);
-    font-weight: 700;
-    background: color-mix(in srgb, var(--header-pill-accent) 16%, rgba(255, 255, 255, 0.06));
-    border-color: color-mix(in srgb, var(--header-pill-accent) 32%, transparent);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  }
-
-  .site-global-link:focus-visible {
-    outline: 2px solid var(--header-gold-bright);
-    outline-offset: 2px;
-  }
-
-  @media (max-width: 479px) {
-    .site-global-link {
-      padding-inline: 0.45rem;
-      font-size: 0.68rem;
-    }
-  }
-
   .site-header-mark {
     position: relative;
     display: grid;
@@ -4554,7 +4506,7 @@ p {
     font-weight: 700;
     letter-spacing: -0.015em;
     line-height: var(--leading-snug);
-    color: var(--ink-secondary);
+    color: var(--text-primary);
     transition: color 150ms ease-out;
   }
 
@@ -4570,7 +4522,7 @@ p {
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.03em;
     line-height: var(--leading-tight);
-    color: var(--ink-secondary);
+    color: var(--text-primary);
   }
 
   .rankings-insight-metric--positive {
@@ -8284,6 +8236,247 @@ p {
   height: 0.85rem;
 }
 
+.overview-league-chooser-card[data-league="cbb"],
+.overview-league-chooser-card[data-league="cfb"] {
+  --chooser-accent: #009cde;
+}
+
+.overview-league-chooser-label-row,
+.overview-pace-label-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.55rem;
+}
+
+.overview-league-chooser-pending,
+.overview-pace-pending {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fbbf24;
+}
+
+.overview-league-chooser-pending-icon,
+.overview-pace-pending-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex-shrink: 0;
+}
+
+.overview-league-chooser-card--pending,
+.overview-pace-card--pending {
+  border-style: dashed;
+  border-color: color-mix(in srgb, #fbbf24 35%, var(--line));
+  cursor: pointer;
+}
+
+.overview-league-chooser-card--pending:hover,
+.overview-pace-card--pending:hover {
+  border-color: color-mix(in srgb, #fbbf24 55%, var(--line));
+}
+
+.ncaa-audit-status-pill {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.45rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, #009cde 35%, var(--line));
+  background: color-mix(in srgb, #009cde 10%, transparent);
+  color: #7dd3fc;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+.ncaa-audit-status-pill--static {
+  pointer-events: none;
+}
+
+.ncaa-audit-status-pill-state {
+  color: #fde68a;
+  font-weight: 650;
+}
+
+.ncaa-integrity-audit-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .ncaa-integrity-audit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.ncaa-integrity-audit-panel {
+  padding: 1.1rem 1.15rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, #009cde 22%, var(--line));
+  background: var(--surface-raised);
+}
+
+.ncaa-integrity-audit-panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ncaa-integrity-audit-panel-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ncaa-integrity-audit-panel-title {
+  font-size: 1.1rem;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+.ncaa-integrity-audit-panel-lead {
+  font-size: 0.82rem;
+  color: var(--muted-strong);
+}
+
+.ncaa-integrity-audit-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 640px) {
+  .ncaa-integrity-audit-metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.ncaa-integrity-audit-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.ncaa-integrity-audit-metric-label {
+  font-size: 0.68rem;
+  font-weight: 650;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ncaa-integrity-audit-metric-value {
+  font-size: 0.95rem;
+  font-weight: 750;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.ncaa-integrity-audit-progress {
+  margin-top: 0.85rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--line) 80%, transparent);
+  overflow: hidden;
+}
+
+.ncaa-integrity-audit-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #009cde, #38bdf8);
+}
+
+.ncaa-integrity-audit-failures {
+  margin-top: 1rem;
+}
+
+.ncaa-integrity-audit-failures-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.ncaa-integrity-audit-failure-list {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ncaa-integrity-audit-failure-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.55rem;
+  font-size: 0.74rem;
+  color: var(--muted-strong);
+}
+
+.ncaa-integrity-audit-failure-scope {
+  grid-row: span 2;
+  align-self: start;
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.25rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #fca5a5;
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.ncaa-integrity-audit-failure-id {
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.ncaa-integrity-audit-failures-more,
+.ncaa-integrity-audit-note {
+  margin-top: 0.65rem;
+  font-size: 0.74rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.ncaa-integrity-audit-clear {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  color: #86efac;
+}
+
+.ncaa-integrity-audit-clear-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.ncaa-integrity-audit-charter {
+  margin-top: 1.25rem;
+}
+
+.ncaa-integrity-audit-charter-list {
+  margin-top: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--muted-strong);
+}
+
 .overview-hero-search .slate-quick-lookup {
   margin: 0;
   padding: var(--space-5);
@@ -8502,9 +8695,31 @@ p {
   border-radius: 0.25rem;
 }
 
+.overview-catalog-status--season-start,
+.overview-catalog-status--live,
+.league-season-start-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 2.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  white-space: nowrap;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  color: var(--text-muted);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+}
+
 .overview-catalog-status--live {
-  color: #a1a1aa;
-  background: #27272a;
+  color: var(--text-muted);
+  background: var(--bg-surface-2);
 }
 
 .overview-catalog-status--preview {
@@ -8635,9 +8850,9 @@ p {
 
 .overview-insight-card {
   --insight-accent: var(--muted);
-  --insight-headline-ink: var(--foreground);
-  --insight-body-ink: var(--ink-secondary);
-  --insight-meta-ink: var(--muted);
+  --insight-headline-ink: var(--text-primary);
+  --insight-body-ink: var(--text-secondary);
+  --insight-meta-ink: var(--text-muted);
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
@@ -8694,6 +8909,317 @@ p {
   justify-content: space-between;
   gap: 0.75rem;
   padding-inline: 0.1rem 0.35rem;
+}
+
+.overview-insight-card-meta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.overview-insight-card-meta .overview-insight-kicker {
+  max-width: none;
+  flex: 0 1 auto;
+}
+
+.league-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.league-header--compact {
+  width: 100%;
+}
+
+.league-header-label {
+  font-size: inherit;
+  font-weight: inherit;
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.league-header-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.insights-trends-panel {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+}
+
+.insights-trends-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.insights-trends-title {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.insights-trends-body {
+  margin: 0.5rem 0 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+
+.insights-loading-copy {
+  margin-top: 1.5rem;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.ref-sample-gate-notice {
+  margin-top: 0.75rem;
+  font-size: var(--text-sm);
+  color: var(--accent-negative);
+  background: var(--metric-negative-surface);
+  border: 1px solid color-mix(in srgb, var(--accent-negative) 28%, var(--border-subtle));
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.referee-master-card-shell {
+  transition:
+    background-color var(--duration-normal, 220ms) ease,
+    border-color var(--duration-normal, 220ms) ease,
+    box-shadow var(--duration-normal, 220ms) ease;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-pace-card,
+html.dark .overview-pace-card {
+  background: var(--bg-surface-1);
+  border-color: color-mix(in srgb, var(--pace-accent) 18%, var(--border-subtle));
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--bg-surface-0) 80%, transparent);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-pace-card:hover,
+html.dark .overview-pace-card:hover {
+  border-color: color-mix(in srgb, var(--pace-accent) 38%, var(--border-default));
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--bg-surface-0) 55%, transparent);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-card,
+html.dark .overview-insight-card {
+  --insight-headline-ink: var(--text-primary);
+  --insight-body-ink: var(--text-secondary);
+  --insight-meta-ink: var(--text-muted);
+  background: var(--bg-surface-1);
+  border-color: var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-stats dd,
+html.dark .overview-insight-stats dd {
+  color: var(--text-primary);
+}
+
+/* Overview hub — dark mode surfaces & quick-list contrast */
+html[data-color="dark"]:not([data-contrast="high"]) .overview-hero,
+html.dark .overview-hero {
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(216, 184, 93, 0.06), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 42%),
+    var(--bg-surface-1);
+  border-color: var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-title,
+html.dark .overview-title,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-section-title,
+html.dark .overview-section-title {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-hero .dashboard-metrics-strip,
+html.dark .overview-hero .dashboard-metrics-strip {
+  background: color-mix(in srgb, var(--bg-surface-0) 65%, var(--bg-surface-2));
+  border-top-color: var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-hero .dashboard-metric,
+html.dark .overview-hero .dashboard-metric {
+  background: var(--bg-surface-2);
+  border-color: var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-hero .dashboard-metric-value,
+html.dark .overview-hero .dashboard-metric-value {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .dashboard-hero-highlight-card,
+html.dark .dashboard-hero-highlight-card {
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      color-mix(in srgb, var(--hero-highlight-glow) 10%, transparent),
+      transparent 62%
+    ),
+    var(--bg-surface-2);
+  border-color: color-mix(in srgb, var(--hero-highlight-glow) 32%, var(--border-subtle));
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-league-chooser-card,
+html.dark .overview-league-chooser-card {
+  background:
+    radial-gradient(
+      ellipse 90% 70% at 100% 0%,
+      color-mix(in srgb, var(--chooser-accent) 10%, transparent),
+      transparent 58%
+    ),
+    var(--bg-surface-1);
+  border-color: color-mix(in srgb, var(--chooser-accent) 22%, var(--border-subtle));
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-sidebar-block,
+html.dark .overview-sidebar-block {
+  background: var(--bg-surface-1);
+  border-color: var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segmented,
+html.dark .overview-quicklists-segmented {
+  background: var(--bg-surface-2);
+  border-color: var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment,
+html.dark .overview-quicklists-segment {
+  color: var(--text-muted);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[aria-selected="true"],
+html.dark .overview-quicklists-segment[aria-selected="true"] {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--bg-surface-0) 55%, transparent);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quick-list,
+html.dark .overview-quick-list {
+  background: var(--bg-surface-1);
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quick-list-label,
+html.dark .overview-quick-list-label {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quick-list-desc,
+html.dark .overview-quick-list-desc {
+  color: var(--text-muted);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quick-list[aria-pressed="true"],
+html.dark .overview-quick-list[aria-pressed="true"] {
+  background: var(--bg-surface-2);
+  border-color: var(--border-default);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--bg-surface-0) 65%, transparent);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-open-btn,
+html.dark .overview-quicklists-open-btn {
+  background: color-mix(in srgb, var(--raptors) 14%, var(--bg-surface-2));
+  border-color: color-mix(in srgb, var(--raptors) 35%, var(--border-subtle));
+  color: var(--text-primary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .league-season-start-badge,
+html.dark .league-season-start-badge {
+  color: var(--text-muted);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-status--season-start,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-status--live,
+html.dark .overview-catalog-status--season-start,
+html.dark .overview-catalog-status--live {
+  color: var(--text-muted);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-link,
+html.dark .overview-insight-link {
+  color: var(--text-muted);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-link:hover,
+html.dark .overview-insight-link:hover {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-drilldown-hint,
+html.dark .overview-insight-drilldown-hint {
+  color: color-mix(in srgb, var(--insight-accent) 55%, var(--text-muted));
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-hero-box,
+html.dark .overview-insight-hero-box {
+  background: var(--bg-surface-2);
+  border-color: var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-headline,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-headline a,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-entity-link,
+html.dark .overview-insight-headline,
+html.dark .overview-insight-headline a,
+html.dark .overview-insight-entity-link {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-story,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-team,
+html.dark .overview-insight-story,
+html.dark .overview-insight-team {
+  color: var(--text-secondary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-kicker,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-hero-label,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-stats dt,
+html.dark .overview-insight-kicker,
+html.dark .overview-insight-hero-label,
+html.dark .overview-insight-stats dt {
+  color: var(--text-muted);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .rankings-insight-card,
+html.dark .rankings-insight-card {
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--metric-standout-flag-bg) 85%, var(--bg-surface-1)) 0%,
+      var(--bg-surface-1) 55%
+    );
+  border-color: color-mix(in srgb, var(--metric-standout-flag-border) 45%, var(--border-subtle));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--season-start,
+html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge {
+  color: var(--text-muted);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
 }
 
 .overview-insight-league {
@@ -9727,6 +10253,23 @@ p {
 .overview-pace-card[data-league="nfl"] { --pace-accent: var(--nfl-green); }
 .overview-pace-card[data-league="epl"] { --pace-accent: #8b6bb5; }
 .overview-pace-card[data-league="laliga"] { --pace-accent: #c8102e; }
+.overview-pace-card[data-league="cbb"],
+.overview-pace-card[data-league="cfb"] { --pace-accent: #009cde; }
+
+.overview-pace-card--pending {
+  border-style: dashed;
+  border-color: color-mix(in srgb, #fbbf24 35%, var(--line));
+}
+
+.overview-catalog-status--audit-pending {
+  color: #fde68a;
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.22);
+}
+
+.overview-catalog-row--audit .overview-catalog-name {
+  color: color-mix(in srgb, #009cde 55%, var(--ink));
+}
 
 .overview-pace-card:hover {
   border-color: color-mix(in srgb, var(--pace-accent) 38%, var(--line));
@@ -10170,17 +10713,21 @@ p {
 .overview-expansion-live-status {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  min-width: 2.75rem;
   font-size: 0.75rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
   line-height: 1.2;
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
   text-transform: none;
   white-space: nowrap;
   padding: 0.125rem 0.5rem;
   border-radius: 0.25rem;
-  color: #a1a1aa;
-  background: #27272a;
+  color: var(--text-muted);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
 }
 
 .overview-expansion-soon {
@@ -10319,38 +10866,6 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--pos
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--negative .overview-insight-hero-value {
   color: var(--metric-negative-ink);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-card {
-  --insight-headline-ink: #f4f4f5;
-  --insight-body-ink: #d4d4d8;
-  --insight-meta-ink: #a8a8b3;
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-hero-box {
-  background: color-mix(in srgb, var(--surface-raised) 92%, #000);
-  border-color: var(--border-subtle);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-headline,
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-headline a,
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-entity-link {
-  color: var(--insight-headline-ink);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-story,
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-team {
-  color: var(--insight-body-ink);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-kicker,
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-hero-label,
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-stats dt {
-  color: var(--insight-meta-ink);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-stats dd {
-  color: var(--insight-headline-ink);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-quick-list:not([aria-pressed="true"]) {
