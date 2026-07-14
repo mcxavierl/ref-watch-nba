@@ -4,6 +4,12 @@ import { normalizeRefName } from "@/lib/bbr-ref-team-records";
 import { formatScoringDeltaStat } from "@/lib/scoring-metrics";
 import { filterNhlReferees } from "@/lib/nhl/officials";
 import { loadLeagueStats } from "@/lib/load-league-stats";
+import {
+  scoringPaceRankTitle,
+  thirdPersonScoringPaceBody,
+  thirdPersonWhistlePaceBody,
+  whistlePaceRankTitle,
+} from "@/lib/finding-copy";
 import { formatSigned, bettingAtsRate, bettingOuRate, formatPct } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
@@ -137,8 +143,8 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
         const delta = ref.totalPointsDelta;
         return {
           id: "top-scoring",
-          title: "Biggest scoring bump",
-          body: `He averages ${Math.abs(delta).toFixed(1)} more combined ${ctx.unit} than the league baseline in his matches.`,
+          title: scoringPaceRankTitle(delta),
+          body: thirdPersonScoringPaceBody(delta, ctx.unit),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: "Scoring delta vs average",
@@ -227,12 +233,12 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
         const wd = whistleDelta(ref, ctx.league);
         return {
           id: "top-whistle",
-          title: `Heaviest ${ctx.league.metrics.whistleShort.toLowerCase()} ref`,
-          body: `He runs ${Math.abs(wd).toFixed(1)} ${ctx.league.metrics.whistlePlain} above average per match.`,
+          title: whistlePaceRankTitle(wd, ctx.league.metrics.whistleShort),
+          body: thirdPersonWhistlePaceBody(wd, ctx.league.metrics.whistlePlain),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: `${ctx.league.metrics.whistleShort} delta vs average`,
-          statValue: `${wd > 0 ? "+" : ""}${wd.toFixed(1)}`,
+          statValue: formatSigned(wd),
         };
       },
     },

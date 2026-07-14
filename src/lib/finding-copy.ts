@@ -65,6 +65,61 @@ function formatDeltaMagnitude(delta: number): string {
   return Math.abs(delta).toFixed(1);
 }
 
+/** Third-person ranking card copy for whistle pace vs league average. */
+export function thirdPersonWhistlePaceBody(
+  delta: number,
+  whistlePlain: string,
+): string {
+  const magnitude = formatDeltaMagnitude(delta);
+  if (delta > 0) {
+    return `He runs ${magnitude} ${whistlePlain} above average per match.`;
+  }
+  if (delta < 0) {
+    return `He runs ${magnitude} ${whistlePlain} below average per match.`;
+  }
+  return `He matches league average ${whistlePlain} pace per match.`;
+}
+
+/** Ranking card title for whistle outliers; never "heaviest" on negative deltas. */
+export function whistlePaceRankTitle(delta: number, whistleShort: string): string {
+  const unit = whistleShort.toLowerCase();
+  if (delta >= 0) return `Heaviest ${unit} ref`;
+  return `Lightest ${unit} ref`;
+}
+
+/** Third-person ranking card copy for combined scoring vs league baseline. */
+export function thirdPersonScoringPaceBody(delta: number, unit: string): string {
+  const magnitude = formatDeltaMagnitude(delta);
+  if (delta > 0) {
+    return `He averages ${magnitude} more combined ${unit} than the league baseline in his matches.`;
+  }
+  if (delta < 0) {
+    return `He averages ${magnitude} fewer combined ${unit} than the league baseline in his matches.`;
+  }
+  return `He matches the league baseline for combined ${unit} in his matches.`;
+}
+
+/** Ranking card title for scoring outliers; never "bump" on negative deltas. */
+export function scoringPaceRankTitle(delta: number): string {
+  if (delta >= 0) return "Biggest scoring bump";
+  return "Biggest scoring dip";
+}
+
+/** Edge-summary phrasing for crew scoring premium vs league average. */
+export function crewScoringPremiumEdge(
+  scoringPremium: number,
+  unit: string,
+): string {
+  const magnitude = formatDeltaMagnitude(scoringPremium);
+  if (scoringPremium > 0) {
+    return `Crew historically adds ${magnitude} ${unit} above average`;
+  }
+  if (scoringPremium < 0) {
+    return `Crew historically runs ${magnitude} ${unit} below average`;
+  }
+  return `Crew historically matches league average ${unit} pace`;
+}
+
 /**
  * Headline from signed delta vs league average.
  * Negative deltas use fewer/below/under, never heaviest/highest.

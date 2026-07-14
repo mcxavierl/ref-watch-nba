@@ -1,4 +1,5 @@
 import { formatSigned } from "@/lib/data";
+import { crewScoringPremiumEdge } from "@/lib/finding-copy";
 import type { GrudgeStoryline } from "@/lib/grudge-match";
 import type { Finding } from "@/lib/findings-shared";
 import {
@@ -55,7 +56,7 @@ function premiumEdge(
   return {
     id: `premium-${premium.gameId}`,
     matchup: premium.matchup,
-    edge: `Crew historically adds ${formatSigned(premium.scoringPremium)} ${unit} above average`,
+    edge: crewScoringPremiumEdge(premium.scoringPremium, unit),
     sample: sampleGames > 0 ? formatSampleCount(sampleGames) : `${premium.avgTotalPoints} avg`,
     confidence: tier,
     href: gameAnchor(premium.gameId),

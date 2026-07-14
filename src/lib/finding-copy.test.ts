@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   BANNED_NEGATIVE_DELTA_HEADLINE,
+  crewScoringPremiumEdge,
   deltaVsLeagueHeadline,
   formatFindingCardMeta,
   formatFindingSampleMeta,
@@ -10,8 +11,12 @@ import {
   minorsPaceHeadline,
   overBenchmarkStatLabel,
   overUnderFrequencyHeadline,
+  scoringPaceRankTitle,
+  thirdPersonScoringPaceBody,
+  thirdPersonWhistlePaceBody,
   whistleParadoxHeadline,
   whistlePaceHeadline,
+  whistlePaceRankTitle,
 } from "@/lib/finding-copy";
 import { filterDisplayStats, isSampleOnlyStat } from "@/lib/findings-shared";
 
@@ -66,6 +71,40 @@ describe("finding-copy", () => {
     const headline = deltaVsLeagueHeadline("Scott Foster", -2.3, "fouls");
     assert.match(headline, /fewer fouls/i);
     assert.doesNotMatch(headline, BANNED_NEGATIVE_DELTA_HEADLINE);
+  });
+
+  it("third-person ranking copy matches signed whistle delta direction", () => {
+    assert.equal(
+      thirdPersonWhistlePaceBody(-2, "fouls called"),
+      "He runs 2.0 fouls called below average per match.",
+    );
+    assert.equal(
+      thirdPersonWhistlePaceBody(2, "fouls called"),
+      "He runs 2.0 fouls called above average per match.",
+    );
+    assert.equal(whistlePaceRankTitle(-2, "Whistle"), "Lightest whistle ref");
+    assert.equal(whistlePaceRankTitle(2, "Whistle"), "Heaviest whistle ref");
+    assert.doesNotMatch(whistlePaceRankTitle(-2, "Whistle"), BANNED_NEGATIVE_DELTA_HEADLINE);
+  });
+
+  it("third-person scoring copy matches signed delta direction", () => {
+    assert.equal(
+      thirdPersonScoringPaceBody(-1.4, "points"),
+      "He averages 1.4 fewer combined points than the league baseline in his matches.",
+    );
+    assert.equal(scoringPaceRankTitle(-1.4), "Biggest scoring dip");
+    assert.equal(scoringPaceRankTitle(1.4), "Biggest scoring bump");
+  });
+
+  it("crew scoring premium edge uses above/below language consistently", () => {
+    assert.equal(
+      crewScoringPremiumEdge(2.1, "pts"),
+      "Crew historically adds 2.1 pts above average",
+    );
+    assert.equal(
+      crewScoringPremiumEdge(-2.1, "pts"),
+      "Crew historically runs 2.1 pts below average",
+    );
   });
 
   it("overBenchmarkStatLabel matches rate direction", () => {
