@@ -3,7 +3,7 @@ import type { LeagueInsightCard, LeagueInsightTone } from "@/lib/league-overview
 import {
   enrichRefWithOriginVariance,
   isOriginVarianceOutlier,
-} from "@/lib/geo-correlations";
+} from "@/lib/geo-origin-variance";
 import { teamNationForLeague } from "@/lib/world-cup-research";
 import { filterNhlReferees } from "@/lib/nhl/officials";
 import { deltaTone as metricDeltaTone } from "@/lib/metricTone";
