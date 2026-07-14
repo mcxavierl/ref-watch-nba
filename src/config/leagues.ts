@@ -24,7 +24,7 @@ export type LeagueThemeLogos = {
   dark: string;
 };
 
-/** Shared NCAA brand assets for CBB and CFB league cards. */
+/** Shared NCAA brand color; sport-specific marks live on each league entry. */
 export const NCAA_BRAND_ASSETS = {
   themeColor: "#009CDE",
   logos: {

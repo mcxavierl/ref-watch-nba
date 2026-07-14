@@ -3628,6 +3628,18 @@ p {
     opacity: 1;
   }
 
+  .league-nav-mark--cbb,
+  .league-nav-mark[data-league="cbb"],
+  .league-nav-mark--cfb,
+  .league-nav-mark[data-league="cfb"] {
+    height: 1.15rem;
+    width: 1.15rem;
+    max-width: 1.15rem;
+    object-fit: contain;
+    filter: none;
+    opacity: 1;
+  }
+
   html[data-color="light"] .league-nav-mark--laliga,
   html[data-color="light"] .league-nav-mark[data-league="laliga"] {
     opacity: 1;
@@ -8644,6 +8656,15 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 .overview-league-chooser-mark .league-nav-mark {
   height: 1.15rem;
   max-width: 1.85rem;
+}
+
+.overview-league-chooser-mark .league-nav-mark--cbb,
+.overview-league-chooser-mark .league-nav-mark[data-league="cbb"],
+.overview-league-chooser-mark .league-nav-mark--cfb,
+.overview-league-chooser-mark .league-nav-mark[data-league="cfb"] {
+  height: 1.55rem;
+  width: 1.55rem;
+  max-width: 1.55rem;
 }
 
 .overview-league-chooser-body {

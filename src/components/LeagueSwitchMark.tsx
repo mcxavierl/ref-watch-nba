@@ -72,8 +72,8 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
       aria-hidden
       className={`league-nav-mark${className ? ` ${className}` : ""}${active ? " league-nav-mark--on-pill" : ""}`}
       data-league={league}
-      width={league === "nfl" ? 13 : 28}
-      height={league === "nfl" ? 18 : 18}
+      width={league === "nfl" ? 13 : league === "cbb" || league === "cfb" ? 18 : 28}
+      height={league === "nfl" ? 18 : league === "cbb" || league === "cfb" ? 18 : 18}
       decoding="async"
       referrerPolicy="no-referrer"
     />

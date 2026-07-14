@@ -17,8 +17,13 @@ test("NCAA brand assets map to dual-theme logo paths", () => {
   assert.equal(NCAA_BRAND_ASSETS.themeColor, "#009CDE");
   assert.equal(NCAA_BRAND_ASSETS.logos.light, "/assets/logos/ncaa-blue.svg");
   assert.equal(NCAA_BRAND_ASSETS.logos.dark, "/assets/logos/ncaa-white.svg");
-  assert.deepEqual(CFB_LEAGUE_ENTRY.logos, NCAA_BRAND_ASSETS.logos);
-  assert.deepEqual(CBB_LEAGUE_ENTRY.logos, NCAA_BRAND_ASSETS.logos);
+});
+
+test("college leagues use sport-specific NCAA marks", () => {
+  assert.equal(CBB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa-cbb-blue.svg");
+  assert.equal(CBB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa-cbb-white.svg");
+  assert.equal(CFB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa-cfb-blue.svg");
+  assert.equal(CFB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa-cfb-white.svg");
 });
 
 test("CFB registry entry matches spec", () => {
@@ -27,8 +32,8 @@ test("CFB registry entry matches spec", () => {
   assert.equal(formatLeagueSeasonStart("cfb"), "08/29");
   assert.equal(CFB_LEAGUE_ENTRY.themeColor, "#009CDE");
   assert.equal(CFB_LEAGUE_ENTRY.dataVerified, false);
-  assert.equal(CFB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa-blue.svg");
-  assert.equal(CFB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa-white.svg");
+  assert.equal(CFB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa-cfb-blue.svg");
+  assert.equal(CFB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa-cfb-white.svg");
 });
 
 test("CBB registry entry matches spec", () => {
@@ -78,11 +83,11 @@ test("formatNcaaAuditPillLabel renders bracketed coverage copy", () => {
 test("leagueLogoForTheme resolves dual-theme logo paths", () => {
   assert.equal(
     leagueLogoForTheme("cfb", "light"),
-    "/assets/logos/ncaa-blue.svg",
+    "/assets/logos/ncaa-cfb-blue.svg",
   );
   assert.equal(
     leagueLogoForTheme("cbb", "dark"),
-    "/assets/logos/ncaa-white.svg",
+    "/assets/logos/ncaa-cbb-white.svg",
   );
   assert.equal(leagueLogoForTheme("nba", "light"), undefined);
 });
