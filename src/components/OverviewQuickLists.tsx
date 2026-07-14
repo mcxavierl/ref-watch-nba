@@ -9,7 +9,7 @@ import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import {
   overviewQuickListsForLeague,
   type OverviewQuickList,
-} from "@/lib/league-catalog";
+} from "@/lib/league-quick-lists";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";

@@ -5,6 +5,7 @@ import {
   type LeagueRegistryEntry,
 } from "@/config/leagueConfig";
 import type { LeagueId } from "@/lib/leagues";
+import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { isVerifiedLiveLeague } from "@/lib/league-verification";
 import { resolveNcaaDataVerifiedForLeagueId } from "@/lib/ncaa-pipeline";
 import type { RefStatsFile } from "@/lib/types";
@@ -46,15 +47,10 @@ export const NCAA_LEAGUE_REGISTRY = {
 
 export type NcaaLeagueSlug = keyof typeof NCAA_LEAGUE_REGISTRY;
 
-export const DASHBOARD_GRID_LEAGUE_IDS = [
-  "nba",
-  "nhl",
-  "nfl",
-  "epl",
-  "laliga",
-  "cbb",
-  "cfb",
-] as const satisfies readonly LeagueId[];
+export {
+  DASHBOARD_GRID_LEAGUE_IDS,
+  isDashboardLeagueExposed,
+} from "@/config/leagues-dashboard";
 
 export function getLeagueRegistryEntry(
   leagueId: LeagueId,
@@ -82,11 +78,6 @@ function ncaaAnalyticsUnlocked(
   const entry = NCAA_LEAGUE_REGISTRY[leagueId];
   if (entry.dataVerified !== true) return false;
   return resolveNcaaDataVerifiedForLeagueId(leagueId, stats ?? undefined);
-}
-
-/** Dashboard grid cards render for every configured league (including locked NCAA). */
-export function isDashboardLeagueExposed(leagueId: LeagueId): boolean {
-  return (DASHBOARD_GRID_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
 }
 
 /** Hub links, quick lists, and detailed analytics require full verification. */

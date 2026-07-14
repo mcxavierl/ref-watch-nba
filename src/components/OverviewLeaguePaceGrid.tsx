@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Lock } from "lucide-react";
-import { isDashboardLeagueExposed } from "@/config/leagues";
+import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { NcaaAuditStatusPill } from "@/components/NcaaAuditStatusPill";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
