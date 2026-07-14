@@ -8,12 +8,12 @@ import { getRefStats as getNhlRefStats, getTeamSplits as getNhlTeamSplits } from
 import { getRefStats as getNflRefStats, getTeamSplits as getNflTeamSplits } from "@/lib/nfl/data";
 import {
   bottomRefsBelowBaselineForTeam,
-  computeRefTeamMatrix,
   MATRIX_MIN_GAMES,
   resolveMatrixTeamSplits,
   topRefsBeatingBaselineForTeam,
   TEAM_MATRIX_REF_PANEL_LIMIT,
 } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import {
   attachTeamSplits,
   getCachedRefStats,

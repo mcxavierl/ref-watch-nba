@@ -7,11 +7,11 @@ import * as path from "node:path";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "../../src/lib/league-verification";
 import {
   bottomRefsBelowBaselineForTeam,
-  computeRefTeamMatrix,
   MATRIX_MIN_GAMES,
   topRefsBeatingBaselineForTeam,
   TEAM_MATRIX_REF_PANEL_LIMIT,
 } from "../../src/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "../../src/lib/ref-team-matrix-compute";
 import { getBaselinesFile } from "../../src/lib/baselines";
 import { seasonRowsFromBaselines } from "../../src/lib/trends";
 import type { RefStatsFile } from "../../src/lib/types";

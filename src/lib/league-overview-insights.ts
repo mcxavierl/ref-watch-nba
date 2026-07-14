@@ -18,10 +18,10 @@ import { insightsViewHref } from "@/lib/insights-routes";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import {
   computeMatrixExtremes,
-  computeRefTeamMatrix,
   formatMatrixHighlightBaseline,
   type MatrixExtremeHighlight,
 } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import {
   insightDrilldownId,
 } from "@/lib/insight-drilldown-types";

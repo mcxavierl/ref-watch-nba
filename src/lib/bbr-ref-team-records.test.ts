@@ -8,10 +8,10 @@ import {
   type BbrRefTeamRecordsFile,
 } from "@/lib/bbr-ref-team-records";
 import {
-  computeRefTeamMatrix,
   matrixCellKey,
   teamRecordFromStat,
 } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import { getTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";
 import type { RefStatsFile } from "@/lib/types";

@@ -8,7 +8,7 @@ import {
   DEFAULT_SINCE_SEASON,
 } from "@/lib/nba-team-season-records";
 import { NBA_TEN_SEASONS } from "@/lib/league-seasons";
-import { computeRefTeamMatrix } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import { getOfficialTeamRegularSeasonRecord } from "@/lib/team-record-query";
 import type { RefStatsFile } from "@/lib/types";
 import statsJson from "../../data/ref-stats.json" with { type: "json" };

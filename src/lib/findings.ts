@@ -17,8 +17,8 @@ import {
   collectRefTeamScoringExtremes,
   FINDING_CATEGORY_LABELS,
   rankScore,
-  buildMarketExpectationAtsFinding,
 } from "@/lib/findings-shared";
+import { buildMarketExpectationAtsFinding } from "@/lib/findings-market";
 import { pickFeaturedFindings, rankScoredFindings, weightedLeagueOverRate } from "@/lib/findings-significance";
 import { attachRegionalContextToFindings } from "@/lib/regional-context";
 import { prepareStatsForAtsAnalytics } from "@/lib/ref-market-expectation";

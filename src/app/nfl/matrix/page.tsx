@@ -16,11 +16,11 @@ import { leagueGamesHubBackLabel, LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { statsForMatrixPage } from "@/lib/matrix-page-stats";
 import {
-  computeRefTeamMatrix,
   computeMatrixExtremes,
   matrixWhistleDiffShortLabel,
   type MatrixViewMode,
 } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import { matrixLeadSeasonPhrase, readSeasonScopeParam } from "@/lib/season-scope";
 import { NFL_TEAMS, teamFullName } from "@/lib/nfl/teams";
 

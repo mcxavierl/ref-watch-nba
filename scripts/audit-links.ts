@@ -60,10 +60,10 @@ import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import { LEAGUES, leagueHref, refProfileHref, type LeagueId } from "@/lib/leagues";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import {
-  computeRefTeamMatrix,
   matrixCellKey,
   MATRIX_MIN_GAMES,
 } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import { getAllResearchFindingIds, getResearchFindingById } from "@/lib/research";
 import {
   canonicalSiteRoutePaths,

@@ -27,9 +27,9 @@ import {
 } from "@/lib/findings-significance";
 import {
   computeMatrixExtremes,
-  computeRefTeamMatrix,
   type MatrixExtremeHighlight,
 } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { buildYoYNarrative, seasonRowsFromBaselines } from "@/lib/trends";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";

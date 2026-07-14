@@ -5,7 +5,6 @@ import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import {
   bottomRefsBelowBaselineForTeam,
   computeMatrixExtremes,
-  computeRefTeamMatrix,
   matrixCellMetricRecord,
   MATRIX_MIN_GAMES,
   matrixCellStyle,
@@ -17,6 +16,7 @@ import {
   TEAM_MATRIX_REF_PANEL_LIMIT,
   topRefsBeatingBaselineForTeam,
 } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import { getTeamSplits } from "@/lib/data";
 import { loadSplitRefStatsFixture } from "@/lib/test-fixtures/split-ref-stats-fixture";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";

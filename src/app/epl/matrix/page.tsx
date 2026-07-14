@@ -13,7 +13,8 @@ import { SITE_URL } from "@/lib/site";
 
 export const metadata = hubPageMetadata("epl", "matrix");
 import { LEAGUES } from "@/lib/leagues";
-import { computeRefTeamMatrix, computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
+import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import { DEFAULT_SEASON_SCOPE_MODE, matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { isEplSimulatedData } from "@/lib/epl/data-source";
 import { EPL_TEAMS, teamFullName } from "@/lib/epl/teams";
