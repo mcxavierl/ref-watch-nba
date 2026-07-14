@@ -3,6 +3,7 @@ import { LeagueChooser } from "@/components/LeagueChooser";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewComparativeScorecard } from "@/components/OverviewComparativeScorecard";
+import { OverviewCollegePaceGrid } from "@/components/OverviewLeaguePaceGrid";
 import { WorldCupResearchHubCard } from "@/components/WorldCupResearchHubCard";
 import { OverviewQuickLists } from "@/components/OverviewQuickLists";
 import { OverviewSlateRow } from "@/components/OverviewSlateRow";
@@ -109,6 +110,31 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
         <LeagueChooser cards={data.leagueCards} />
       </div>
 
+      <section
+        className="overview-research-hub section-block overview-dashboard-breathe"
+        aria-labelledby="overview-research-hub-heading"
+      >
+        <div className="overview-section-header">
+          <h2 className="overview-section-title" id="overview-research-hub-heading">
+            Research hub
+          </h2>
+          <p className="overview-section-lead">
+            Exploratory analytics distinct from live league insights — 2026 World Cup
+            officiating origin variance.
+          </p>
+        </div>
+        <WorldCupResearchHubCard />
+      </section>
+
+      <DashboardSection
+        className="overview-pace overview-pace--college"
+        title="College sports pace"
+        titleId="overview-college-pace-heading"
+        lead="NCAA basketball and football whistle and scoring pace from verified key-conference coverage."
+      >
+        <OverviewCollegePaceGrid cards={data.leagueCards} />
+      </DashboardSection>
+
       <DashboardBodyLayout
         sidebar={
           <>
@@ -162,6 +188,19 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                 ) : null}
               </div>
             </details>
+
+            <section className="overview-sidebar-block overview-sidebar-block--research">
+              <h2 className="overview-sidebar-heading overview-sidebar-heading--static">
+                Research
+              </h2>
+              <Link
+                href="/research/world-cup-2026"
+                className="overview-sidebar-research-link rw-focus-ring"
+              >
+                <span className="overview-sidebar-research-label">World Cup 2026</span>
+                <span className="overview-sidebar-research-meta">Officiating origin variance</span>
+              </Link>
+            </section>
 
             <section className="overview-sidebar-block overview-sidebar-block--lists overview-quicklists-panel">
               <h2 className="overview-sidebar-heading overview-sidebar-heading--static overview-sidebar-heading--quicklists">
@@ -273,19 +312,6 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                   ) : null}
                 </div>
               )}
-            </section>
-
-            <section className="overview-research-hub section-block" aria-labelledby="overview-research-hub-heading">
-              <div className="overview-section-header">
-                <h2 className="overview-section-title" id="overview-research-hub-heading">
-                  Research hub
-                </h2>
-                <p className="overview-section-lead">
-                  Exploratory analytics distinct from live league insights — starting with
-                  2026 World Cup officiating origin variance.
-                </p>
-              </div>
-              <WorldCupResearchHubCard />
             </section>
 
             <DashboardSection

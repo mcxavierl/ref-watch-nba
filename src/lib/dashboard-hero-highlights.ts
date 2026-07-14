@@ -7,16 +7,32 @@ export type HeroHighlightPart =
   | { type: "metric"; value: string };
 
 export type DashboardHeroHighlight = {
+  id: string;
   leagueId: LeagueId;
   leagueLabel: string;
   tone: HeroHighlightTone;
   official: string;
+  href?: string;
   parts: HeroHighlightPart[];
 };
 
 /** Curated high-confidence outlier patterns for the overview hero strip. */
 export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
   {
+    id: "wc-2026-research",
+    leagueId: "epl",
+    leagueLabel: "Research",
+    tone: "positive",
+    official: "World Cup 2026",
+    href: "/research/world-cup-2026",
+    parts: [
+      { type: "text", value: "Exploratory " },
+      { type: "metric", value: "origin variance" },
+      { type: "text", value: " analytics for international officiating." },
+    ],
+  },
+  {
+    id: "nba-foster-kings",
     leagueId: "nba",
     leagueLabel: "NBA",
     tone: "positive",
@@ -32,6 +48,7 @@ export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
     ],
   },
   {
+    id: "nfl-allen-under",
     leagueId: "nfl",
     leagueLabel: "NFL",
     tone: "negative",
@@ -47,6 +64,7 @@ export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
     ],
   },
   {
+    id: "cbb-henderson-marq",
     leagueId: "cbb",
     leagueLabel: "CBB",
     tone: "negative",
@@ -62,6 +80,7 @@ export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
     ],
   },
   {
+    id: "cfb-vinovich-ala",
     leagueId: "cfb",
     leagueLabel: "CFB",
     tone: "negative",
@@ -77,6 +96,7 @@ export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
     ],
   },
   {
+    id: "epl-oliver-cards",
     leagueId: "epl",
     leagueLabel: "EPL",
     tone: "positive",
@@ -88,6 +108,7 @@ export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
     ],
   },
   {
+    id: "laliga-hernandez-home",
     leagueId: "laliga",
     leagueLabel: "La Liga",
     tone: "negative",
