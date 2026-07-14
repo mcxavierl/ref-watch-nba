@@ -1,12 +1,12 @@
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooter, type FooterLeague } from "@/components/SiteFooter";
 import { leagueFromPathname } from "@/lib/leagues";
-
-type FooterLeague = "nba" | "nhl" | "epl" | "cbb" | "cfb";
 
 function footerLeagueForPath(pathname: string): FooterLeague {
   const league = leagueFromPathname(pathname);
+  if (league === "nfl") return "nfl";
   if (league === "nhl") return "nhl";
-  if (league === "epl" || league === "laliga") return "epl";
+  if (league === "laliga") return "laliga";
+  if (league === "epl") return "epl";
   if (league === "cbb") return "cbb";
   if (league === "cfb") return "cfb";
   return "nba";

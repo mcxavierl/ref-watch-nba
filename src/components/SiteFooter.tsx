@@ -19,11 +19,26 @@ import {
   formatRefStatsRange as formatCfbRange,
   getRefStats as getCfbRefStats,
 } from "@/lib/cfb/data";
+import {
+  formatRefStatsRange as formatNflRange,
+  getRefStats as getNflRefStats,
+} from "@/lib/nfl/data";
+import {
+  formatRefStatsRange as formatLaligaRange,
+  getRefStats as getLaligaRefStats,
+} from "@/lib/laliga/data";
 import { insightsViewHref } from "@/lib/insights-routes";
 import { LEAGUES } from "@/lib/leagues";
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 
-type FooterLeague = "nba" | "nhl" | "epl" | "cbb" | "cfb";
+export type FooterLeague =
+  | "nba"
+  | "nhl"
+  | "nfl"
+  | "epl"
+  | "laliga"
+  | "cbb"
+  | "cfb";
 
 const DATA_SOURCES: Record<
   FooterLeague,
@@ -38,6 +53,11 @@ const DATA_SOURCES: Record<
     label: "NHL",
     href: "https://api-web.nhle.com",
     linkText: "api-web.nhle.com",
+  },
+  nfl: {
+    label: "the NFL",
+    href: "https://www.espn.com/nfl/",
+    linkText: "espn.com/nfl",
   },
   cbb: {
     label: "NCAA men's basketball",
@@ -54,12 +74,21 @@ const DATA_SOURCES: Record<
     href: "https://www.premierleague.com",
     linkText: "premierleague.com",
   },
+  laliga: {
+    label: "La Liga",
+    href: "https://www.laliga.com",
+    linkText: "laliga.com",
+  },
 };
 
 function footerData(league: FooterLeague) {
   switch (league) {
     case "nhl":
       return { stats: getNhlRefStats(), formatRange: formatNhlRange };
+    case "nfl":
+      return { stats: getNflRefStats(), formatRange: formatNflRange };
+    case "laliga":
+      return { stats: getLaligaRefStats(), formatRange: formatLaligaRange };
     case "cbb":
       return { stats: getCbbRefStats(), formatRange: formatCbbRange };
     case "cfb":
@@ -92,7 +121,7 @@ export function SiteFooter({ league }: { league: FooterLeague }) {
   const config = LEAGUES[league];
   const prefix = config.pathPrefix;
   const hrefs: Record<string, string> = {
-    insights: insightsViewHref(league as "nba" | "nhl" | "epl" | "cbb" | "cfb", "tendencies"),
+    insights: insightsViewHref(league, "tendencies"),
     refs: prefix ? `${prefix}/refs` : "/refs",
     teams: prefix ? `${prefix}/teams` : "/teams",
     matrix: prefix ? `${prefix}/matrix` : "/matrix",
@@ -154,7 +183,16 @@ export function SiteFooter({ league }: { league: FooterLeague }) {
             </p>
             <p className="mt-3 site-footer-body">
               <SeasonNotifyCta
-                league={config.dataLeague as "NBA" | "NHL" | "NFL" | "EPL" | "CBB" | "CFB"}
+                league={
+                  config.dataLeague as
+                    | "NBA"
+                    | "NHL"
+                    | "NFL"
+                    | "EPL"
+                    | "LALIGA"
+                    | "CBB"
+                    | "CFB"
+                }
                 variant="link"
               />
             </p>
