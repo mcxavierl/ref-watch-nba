@@ -10,15 +10,9 @@ import {
   overviewQuickListsForLeague,
   type OverviewQuickList,
 } from "@/lib/league-catalog";
+import { KpiDataPill } from "@/components/ui/KpiDataPill";
 import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
-
-const PREVIEW_ACCENT_CLASS: Record<OverviewQuickList["accent"], string> = {
-  amber: "text-amber-400",
-  rose: "text-rose-400",
-  sky: "text-sky-400",
-  emerald: "text-emerald-400",
-};
 
 const DEFAULT_LIST_ID = "whistle-leaders";
 
@@ -99,7 +93,6 @@ export function OverviewQuickLists({
       >
         {lists.map((list) => {
           const selected = list.id === selectedListId;
-          const previewClass = PREVIEW_ACCENT_CLASS[list.accent];
 
           return (
             <button
@@ -113,14 +106,13 @@ export function OverviewQuickLists({
                 <span className="overview-quick-list-label block">{list.label}</span>
                 <span className="overview-quick-list-desc block">{list.description}</span>
               </span>
-              <span
-                className={`overview-quick-list-preview shrink-0 text-right font-mono text-xs leading-tight ${previewClass}`}
-              >
-                <span className="block font-semibold tabular-nums">{list.preview.value}</span>
-                <span className="mt-0.5 block text-[0.62rem] font-medium uppercase tracking-wide opacity-80">
-                  {list.preview.caption}
-                </span>
-              </span>
+              <KpiDataPill
+                variant="compact"
+                value={list.preview.value}
+                caption={list.preview.caption}
+                accent={list.accent}
+                className="overview-quick-list-preview"
+              />
             </button>
           );
         })}

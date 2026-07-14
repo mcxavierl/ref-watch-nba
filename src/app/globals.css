@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/theme-tokens.css";
+@import "../styles/kpi-data-pill.css";
 
 @custom-variant dark (&:where([data-color="dark"], [data-color="dark"] *));
 
@@ -8195,6 +8196,74 @@ p {
   min-width: 0;
 }
 
+/* Overview KPI pills — neutral value text + muted accent dot */
+.overview-page .metric-delight-value--positive,
+.overview-page .metric-delight-value-hero--positive,
+.overview-page .metric-delight-badge-value--positive,
+.overview-page .metric-delight-value--negative,
+.overview-page .metric-delight-value-hero--negative,
+.overview-page .metric-delight-badge-value--negative {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--kpi-pill-value-ink);
+  text-shadow: none;
+}
+
+.overview-page .metric-delight-value--positive::before,
+.overview-page .metric-delight-value-hero--positive::before,
+.overview-page .metric-delight-badge-value--positive::before {
+  content: "●";
+  flex-shrink: 0;
+  font-size: 0.42em;
+  line-height: 1;
+  color: var(--kpi-pill-accent-positive);
+}
+
+.overview-page .metric-delight-value--negative::before,
+.overview-page .metric-delight-value-hero--negative::before,
+.overview-page .metric-delight-badge-value--negative::before {
+  content: "●";
+  flex-shrink: 0;
+  font-size: 0.42em;
+  line-height: 1;
+  color: var(--kpi-pill-accent-negative);
+}
+
+.overview-page .metric-delight-value-hero--standout.metric-delight-value-hero--positive,
+.overview-page .metric-delight-value--standout.metric-delight-value--positive,
+.overview-page .metric-delight-value-hero--standout.metric-delight-value-hero--negative,
+.overview-page .metric-delight-value--standout.metric-delight-value--negative {
+  text-shadow: none;
+}
+
+.overview-page .metric-delight-badge--positive,
+.overview-page .metric-delight-badge--negative {
+  border-color: var(--kpi-pill-border);
+  background: var(--kpi-pill-bg);
+}
+
+.overview-page .metric-delight-delta--positive,
+.overview-page .metric-delight-delta--negative {
+  border: 1px solid var(--kpi-pill-border);
+  background: var(--kpi-pill-bg);
+  color: var(--kpi-pill-value-ink);
+}
+
+.overview-page .metric-delight-delta--positive::before {
+  content: "●";
+  margin-right: 0.25rem;
+  font-size: 0.55em;
+  color: var(--kpi-pill-accent-positive);
+}
+
+.overview-page .metric-delight-delta--negative::before {
+  content: "●";
+  margin-right: 0.25rem;
+  font-size: 0.55em;
+  color: var(--kpi-pill-accent-negative);
+}
+
 .overview-hero {
   --overview-hero-padding-block: var(--space-8);
   --overview-hero-padding-inline: var(--space-5);
@@ -8340,13 +8409,13 @@ p {
 }
 
 .dashboard-hero-highlight-card[data-tone="positive"] {
-  --hero-highlight-glow: #22c55e;
-  --hero-highlight-metric: #22c55e;
+  --hero-highlight-glow: var(--kpi-pill-accent-positive);
+  --hero-highlight-metric: var(--text-primary);
 }
 
 .dashboard-hero-highlight-card[data-tone="negative"] {
-  --hero-highlight-glow: #ef4444;
-  --hero-highlight-metric: #ef4444;
+  --hero-highlight-glow: var(--kpi-pill-accent-negative);
+  --hero-highlight-metric: var(--text-primary);
 }
 
 .dashboard-hero-highlight-card[data-league="nba"] .dashboard-hero-highlight-mark {
@@ -8403,14 +8472,12 @@ p {
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
-  color: var(--hero-highlight-metric);
-  text-shadow: 0 0 18px color-mix(in srgb, var(--hero-highlight-metric) 35%, transparent);
+  color: var(--text-primary);
 }
 
 .dashboard-hero-highlight-metric[data-metric="secondary"] {
   font-weight: 650;
   color: var(--muted);
-  text-shadow: none;
 }
 
 .dashboard-hero-highlight-card:hover {
@@ -9182,10 +9249,6 @@ p {
 .overview-quick-list-preview {
   min-width: 4.25rem;
   flex-shrink: 0;
-  text-align: right;
-  font-family: var(--font-data, ui-monospace, monospace);
-  font-size: 0.75rem;
-  line-height: 1.25;
 }
 
 .overview-quick-list-arrow {
@@ -9680,11 +9743,11 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 }
 
 .overview-insight-hero-value--positive {
-  color: var(--metric-positive-ink);
+  color: var(--kpi-pill-value-ink);
 }
 
 .overview-insight-hero-value--negative {
-  color: var(--metric-negative-ink);
+  color: var(--kpi-pill-value-ink);
 }
 
 .overview-insight-hero-value--neutral {
@@ -11155,13 +11218,13 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-hero .dashboard-m
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .dashboard-hero-highlight-card[data-tone="positive"] {
-  --hero-highlight-glow: #16a34a;
-  --hero-highlight-metric: #16a34a;
+  --hero-highlight-glow: var(--kpi-pill-accent-positive);
+  --hero-highlight-metric: var(--text-primary);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .dashboard-hero-highlight-card[data-tone="negative"] {
-  --hero-highlight-glow: #dc2626;
-  --hero-highlight-metric: #dc2626;
+  --hero-highlight-glow: var(--kpi-pill-accent-negative);
+  --hero-highlight-metric: var(--text-primary);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .dashboard-hero-highlight-card {
@@ -11248,11 +11311,11 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero-box 
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero-value--positive {
-  color: var(--metric-positive-muted);
+  color: var(--kpi-pill-value-ink);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero-value--negative {
-  color: var(--metric-negative-muted);
+  color: var(--kpi-pill-value-ink);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-insight-headline a:hover,
@@ -11261,11 +11324,11 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-insight-entity-li
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--positive .overview-insight-hero-value {
-  color: var(--metric-positive-ink);
+  color: var(--kpi-pill-value-ink);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-insight-hero--negative .overview-insight-hero-value {
-  color: var(--metric-negative-ink);
+  color: var(--kpi-pill-value-ink);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-quick-list:not([aria-pressed="true"]) {

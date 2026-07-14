@@ -1,4 +1,5 @@
 import { HeroHighlightsHeader } from "@/components/dashboard/HeroHighlightsHeader";
+import { KpiDataPill } from "@/components/ui/KpiDataPill";
 import {
   DASHBOARD_HERO_HIGHLIGHTS,
   type DashboardHeroHighlight,
@@ -19,20 +20,26 @@ function DashboardHeroHighlightCard({ highlight }: { highlight: DashboardHeroHig
       </header>
       <p className="dashboard-hero-highlight-body">
         <span className="dashboard-hero-highlight-official">{highlight.official}:</span>{" "}
-        {highlight.parts.map((part, index) =>
-          part.type === "metric" ? (
-            <span
+        {highlight.parts.map((part, index) => {
+          if (part.type !== "metric") {
+            return (
+              <span key={`${highlight.leagueId}-text-${index}`}>{part.value}</span>
+            );
+          }
+
+          const isPrimary = metricIndex === 0;
+          metricIndex += 1;
+
+          return (
+            <KpiDataPill
               key={`${highlight.leagueId}-metric-${index}`}
-              className="dashboard-hero-highlight-metric"
-              data-tone={highlight.tone}
-              data-metric={metricIndex++ === 0 ? "primary" : "secondary"}
-            >
-              {part.value}
-            </span>
-          ) : (
-            <span key={`${highlight.leagueId}-text-${index}`}>{part.value}</span>
-          ),
-        )}
+              variant="inline"
+              value={part.value}
+              tone={isPrimary ? highlight.tone : "neutral"}
+              metricPriority={isPrimary ? "primary" : "secondary"}
+            />
+          );
+        })}
       </p>
     </article>
   );

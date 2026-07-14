@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useState, type CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
-import type { LeagueInsightCard, LeagueInsightTone } from "@/lib/league-overview-insights";
+import { KpiDataPill } from "@/components/ui/KpiDataPill";
+import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import { leagueHubHref } from "@/lib/leagues";
 
 const InsightDrilldownModal = dynamic(
@@ -15,12 +16,6 @@ const InsightDrilldownModal = dynamic(
     ),
   { ssr: false },
 );
-
-function heroValueToneClass(tone: LeagueInsightTone): string {
-  if (tone === "positive") return "overview-insight-hero-value--positive";
-  if (tone === "negative") return "overview-insight-hero-value--negative";
-  return "overview-insight-hero-value--neutral";
-}
 
 type OverviewInsightCardProps = {
   card: LeagueInsightCard;
@@ -69,14 +64,12 @@ export function OverviewInsightCard({ card, index }: OverviewInsightCardProps) {
               : undefined
           }
         >
-          <div className="overview-insight-hero-box">
-            <span
-              className={`overview-insight-hero-value ${heroValueToneClass(card.heroTone)}`}
-            >
-              {card.heroValue}
-            </span>
-            <span className="overview-insight-hero-label">{card.heroLabel}</span>
-          </div>
+          <KpiDataPill
+            variant="block"
+            value={card.heroValue}
+            tone={card.heroTone}
+            label={card.heroLabel}
+          />
 
           <div className="overview-insight-body">
             <h3 className="overview-insight-headline">
