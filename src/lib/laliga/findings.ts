@@ -10,7 +10,6 @@ import { attachRegionalContextToFindings } from "@/lib/regional-context";
 import { prepareStatsForAtsAnalytics } from "@/lib/ref-market-expectation";
 import {
   buildCloseGameLeagueFinding,
-  buildCrewDominanceFinding,
   buildLeagueSkewFinding,
   buildMarqueeEfficiencyFinding,
   buildFrictionGrudgeFindings,
@@ -390,7 +389,6 @@ function collectCandidates(
           scoringExtremesFinding(stats),
           buildMatrixExtremeFinding(stats, LALIGA_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(stats, LALIGA_FINDING_CTX, "low"),
-          buildCrewDominanceFinding(stats, LALIGA_FINDING_CTX),
           buildCloseGameLeagueFinding(stats, LALIGA_FINDING_CTX),
           buildTeamHomeRoadFinding(stats, LALIGA_FINDING_CTX),
         ]

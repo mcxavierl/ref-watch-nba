@@ -24,7 +24,6 @@ import { attachRegionalContextToFindings } from "@/lib/regional-context";
 import { prepareStatsForAtsAnalytics } from "@/lib/ref-market-expectation";
 import {
   buildCloseGameLeagueFinding,
-  buildCrewDominanceFinding,
   buildFrictionGrudgeFindings,
   buildLeagueSkewFinding,
   buildMarqueeEfficiencyFinding,
@@ -784,7 +783,6 @@ function collectCandidates(
           teamCrewAnomalyFinding(stats),
           buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(stats, NBA_FINDING_CTX, "low"),
-          buildCrewDominanceFinding(stats, NBA_FINDING_CTX),
           buildCloseGameLeagueFinding(stats, NBA_FINDING_CTX),
           buildTeamHomeRoadFinding(stats, NBA_FINDING_CTX),
         ]

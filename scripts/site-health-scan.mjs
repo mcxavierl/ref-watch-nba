@@ -15,13 +15,13 @@ const STATIC = [
 ];
 
 const LEAGUES = [
-  { id: "nba", prefix: "", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams", "crews"] },
-  { id: "nhl", prefix: "/nhl", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams", "crews"] },
-  { id: "nfl", prefix: "/nfl", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams", "crews"] },
-  { id: "epl", prefix: "/epl", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams", "crews"] },
-  { id: "laliga", prefix: "/laliga", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams", "crews"] },
-  { id: "cbb", prefix: "/cbb", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams", "crews"] },
-  { id: "cfb", prefix: "/cfb", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams", "crews"] },
+  { id: "nba", prefix: "", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
+  { id: "nhl", prefix: "/nhl", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
+  { id: "nfl", prefix: "/nfl", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
+  { id: "epl", prefix: "/epl", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
+  { id: "laliga", prefix: "/laliga", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
+  { id: "cbb", prefix: "/cbb", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
+  { id: "cfb", prefix: "/cfb", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
 ];
 
 const COMING_SOON = ["/wnba", "/wnba/rankings", "/mlb", "/mlb/rankings"];

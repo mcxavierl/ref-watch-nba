@@ -29,7 +29,7 @@ const FEATURES = [
   {
     href: leagueHref("nba", "/refs"),
     icon: UsersRound,
-    title: "Refs and crews",
+    title: "Ref profiles",
     description:
       "Profiles, game logs, and betting splits for every indexed official.",
   },

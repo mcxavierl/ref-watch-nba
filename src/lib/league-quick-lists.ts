@@ -90,7 +90,7 @@ export function overviewQuickListsForLeague(
     {
       id: "scoring-outliers",
       label: "Scoring outliers",
-      description: "Crews furthest above league scoring pace.",
+      description: "Highest scoring rates above league pace.",
       href: `${prefix}/rankings`,
       accent: "rose",
     },

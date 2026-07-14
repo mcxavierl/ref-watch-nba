@@ -63,6 +63,41 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
+        source: "/crews",
+        destination: "/refs",
+        permanent: false,
+      },
+      {
+        source: "/nhl/crews",
+        destination: "/nhl/refs",
+        permanent: false,
+      },
+      {
+        source: "/nfl/crews",
+        destination: "/nfl/refs",
+        permanent: false,
+      },
+      {
+        source: "/epl/crews",
+        destination: "/epl/refs",
+        permanent: false,
+      },
+      {
+        source: "/laliga/crews",
+        destination: "/laliga/refs",
+        permanent: false,
+      },
+      {
+        source: "/cbb/crews",
+        destination: "/cbb/refs",
+        permanent: false,
+      },
+      {
+        source: "/cfb/crews",
+        destination: "/cfb/refs",
+        permanent: false,
+      },
+      {
         source: "/nba/compare",
         destination: "/compare",
         permanent: false,

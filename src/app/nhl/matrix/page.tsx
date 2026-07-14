@@ -108,18 +108,9 @@ export default async function NhlMatrixPage({ searchParams }: PageProps) {
       <section className="section-block">
         <h2 className="section-title">Related views</h2>
         <p className="section-lead">
-          Compare recurring crews or browse official profiles for late-game
-          proxies.
+          Browse official profiles or compare officials side by side.
         </p>
         <ul className="mt-3 flex flex-wrap gap-3 text-sm font-medium">
-          <li>
-            <Link
-              href="/nhl/crews"
-              className="text-zinc-800 hover:text-raptors hover:underline"
-            >
-              Crew dynamics →
-            </Link>
-          </li>
           <li>
             <Link
               href="/nhl/refs"

@@ -11,13 +11,7 @@ type NavLink = { href: string; label: string; match: (pathname: string, homeHref
 
 function refsMatch(pathname: string, prefix: string): boolean {
   const refs = prefix ? `${prefix}/refs` : "/refs";
-  const crews = prefix ? `${prefix}/crews` : "/crews";
-  return (
-    pathname === refs ||
-    pathname.startsWith(`${refs}/`) ||
-    pathname === crews ||
-    pathname.startsWith(`${crews}/`)
-  );
+  return pathname === refs || pathname.startsWith(`${refs}/`);
 }
 
 function insightsMatch(pathname: string, prefix: string): boolean {

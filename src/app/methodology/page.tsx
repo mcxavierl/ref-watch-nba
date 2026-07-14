@@ -139,7 +139,7 @@ export default function MethodologyPage() {
           NHL insights →
         </Link>
         <Link href="/refs" className="font-medium text-zinc-800 hover:underline">
-          Refs & crews →
+          Refs →
         </Link>
       </div>
     </div>

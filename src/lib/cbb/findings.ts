@@ -8,7 +8,6 @@ import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-signifi
 import { attachRegionalContextToFindings } from "@/lib/regional-context";
 import {
   buildCloseGameLeagueFinding,
-  buildCrewDominanceFinding,
   buildLeagueSkewFinding,
   buildMatrixExtremeFinding,
   buildOverRateOutlierFinding,
@@ -347,7 +346,6 @@ function collectCandidates(
           scoringExtremesFinding(stats),
           buildMatrixExtremeFinding(stats, CBB_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(stats, CBB_FINDING_CTX, "low"),
-          buildCrewDominanceFinding(stats, CBB_FINDING_CTX),
           buildCloseGameLeagueFinding(stats, CBB_FINDING_CTX),
           buildTeamHomeRoadFinding(stats, CBB_FINDING_CTX),
         ]

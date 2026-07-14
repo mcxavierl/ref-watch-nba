@@ -102,7 +102,7 @@ function footerData(league: FooterLeague) {
 
 const EXPLORE_LINKS = [
   { key: "insights", label: "Insights" },
-  { key: "refs", label: "Refs & crews" },
+  { key: "refs", label: "Refs" },
   { key: "teams", label: "Teams" },
   { key: "matrix", label: "Matrix" },
   { key: "methodology", label: "Methodology", href: "/methodology" },

@@ -369,7 +369,7 @@ export function buildTeamHomeRoadFinding(
     ),
     links: [
       { label: teamName, href: ctx.paths.teamPath(best.team) },
-      { label: "Crew page", href: ctx.paths.crewsPath },
+      { label: "Ref×team matrix", href: ctx.paths.matrixPath },
     ],
     score: rankScore(best.gap, best.homeGames + best.awayGames, MIN_TEAM_CREW_GAMES),
     sampleGames: best.homeGames + best.awayGames,
@@ -800,7 +800,7 @@ export function buildMarqueeEfficiencyFinding(
     : `${refName} shifts ATS cover rate in marquee games`;
 
   const summary = overPrimary
-    ? `Prime-time and high-profile slate: ${formatPct(performance.marqueeOverRate)} over rate (${marqueeGames} games) vs ${formatPct(performance.baselineOverRate)} baseline — ${formatSigned(deltaOverPp)} pts.`
+    ? `Prime-time and high-profile slate: ${formatPct(performance.marqueeOverRate)} over rate (${marqueeGames} games) vs ${formatPct(performance.baselineOverRate)} baseline, ${formatSigned(deltaOverPp)} pts.`
     : `Marquee slate ATS cover ${formatPct(performance.marqueeAtsCoverRate ?? 0)} vs ${formatPct(performance.baselineAtsCoverRate ?? 0)} baseline (${formatSigned(deltaAtsPp ?? 0)} pts) across ${marqueeGames} high-profile games.`;
 
   const statsCells = [

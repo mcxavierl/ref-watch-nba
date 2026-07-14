@@ -11,7 +11,6 @@ import { attachRegionalContextToFindings } from "@/lib/regional-context";
 import { prepareStatsForAtsAnalytics } from "@/lib/ref-market-expectation";
 import {
   buildCloseGameLeagueFinding,
-  buildCrewDominanceFinding,
   buildLeagueSkewFinding,
   buildMarqueeEfficiencyFinding,
   buildFrictionGrudgeFindings,
@@ -362,7 +361,6 @@ function collectCandidates(
           scoringExtremesFinding(refereeStats),
           buildMatrixExtremeFinding(refereeStats, NHL_FINDING_CTX, "high"),
           buildMatrixExtremeFinding(refereeStats, NHL_FINDING_CTX, "low"),
-          buildCrewDominanceFinding(refereeStats, NHL_FINDING_CTX),
           buildCloseGameLeagueFinding(refereeStats, NHL_FINDING_CTX),
           buildTeamHomeRoadFinding(refereeStats, NHL_FINDING_CTX),
         ]

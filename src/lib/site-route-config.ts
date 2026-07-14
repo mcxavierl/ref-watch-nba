@@ -9,7 +9,6 @@ export const HUB_SEGMENTS = [
   "matrix",
   "refs",
   "teams",
-  "crews",
 ] as const;
 
 /** Leagues that ship full hub routes in the App Router. */
@@ -46,6 +45,10 @@ export function siteRouteRedirects(): SiteRouteRedirect[] {
     redirects.push({
       source: `${hubPrefix}/insights`,
       destination: `${hubPrefix}/rankings`,
+    });
+    redirects.push({
+      source: `${hubPrefix}/crews`,
+      destination: `${hubPrefix}/refs`,
     });
     if (leagueId === "nba") {
       redirects.push({ source: "/nba/compare", destination: "/compare" });

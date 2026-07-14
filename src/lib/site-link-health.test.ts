@@ -128,4 +128,17 @@ describe("site link health", () => {
       assert.equal(resolveNavHref(source, redirects), "/compare", `${source} should alias to /compare`);
     }
   });
+
+  it("legacy crews routes redirect to refs hubs", () => {
+    const redirects = siteRouteRedirects();
+    const cases = [
+      ["/crews", "/refs"],
+      ["/nhl/crews", "/nhl/refs"],
+      ["/nfl/crews", "/nfl/refs"],
+      ["/cbb/crews", "/cbb/refs"],
+    ] as const;
+    for (const [source, destination] of cases) {
+      assert.equal(resolveNavHref(source, redirects), destination, `${source} should redirect`);
+    }
+  });
 });

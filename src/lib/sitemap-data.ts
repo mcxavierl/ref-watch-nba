@@ -55,7 +55,6 @@ type LeagueSitemapConfig = {
 
 const SHARED_HUB_PAGES = [
   "refs",
-  "crews",
   "matrix",
   "teams",
   "insights",
