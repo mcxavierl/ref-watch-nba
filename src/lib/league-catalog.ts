@@ -4,6 +4,8 @@ import { formatLeagueSeasonStart } from "@/config/leagueConfig";
 import { isCatalogSlugVisible } from "@/config/leagues";
 import {
   isVerifiedLiveLeague,
+  isNcaaConferenceGatedLive,
+  PRIMARY_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/league-verification";
 import {
@@ -43,7 +45,7 @@ export function leagueSeasonStartBadge(leagueId: LeagueId): string | undefined {
 
 export function catalogStatusLabel(entry: CatalogLeagueEntry): string {
   if (entry.status === "live" && entry.leagueId) {
-    return leagueSeasonStartBadge(entry.leagueId) ?? "—";
+    return leagueSeasonStartBadge(entry.leagueId) ?? "N/A";
   }
   return "Soon";
 }
@@ -110,17 +112,32 @@ export function catalogComingSoonEntries(): CatalogLeagueEntry[] {
   );
 }
 
-/** Full-league pro competitions with verified ingest. */
+/** Full-league pro competitions plus conference-gated NCAA when build reports live data. */
 export function catalogLiveCompetitionEntries(): CatalogLeagueEntry[] {
-  return catalogEntriesForDisplay().filter(
-    (entry) => entry.leagueId && !isNcaaConferenceGatedLeague(entry.leagueId),
+  const order = new Map<LeagueId, number>(
+    PRIMARY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
   );
+  return catalogEntriesForDisplay()
+    .filter((entry) => {
+      if (!entry.leagueId) return false;
+      if (isNcaaConferenceGatedLeague(entry.leagueId)) {
+        return isNcaaConferenceGatedLive(entry.leagueId);
+      }
+      return true;
+    })
+    .sort(
+      (a, b) =>
+        (order.get(a.leagueId!) ?? 99) - (order.get(b.leagueId!) ?? 99),
+    );
 }
 
-/** Conference-gated NCAA hubs (secondary coverage tier). */
+/** Conference-gated NCAA hubs awaiting verified ingest (not yet in live tier). */
 export function catalogNcaaCoverageEntries(): CatalogLeagueEntry[] {
   return catalogEntriesForDisplay().filter(
-    (entry) => entry.leagueId && isNcaaConferenceGatedLeague(entry.leagueId),
+    (entry) =>
+      entry.leagueId &&
+      isNcaaConferenceGatedLeague(entry.leagueId) &&
+      !isNcaaConferenceGatedLive(entry.leagueId),
   );
 }
 

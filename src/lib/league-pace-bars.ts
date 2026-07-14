@@ -55,9 +55,10 @@ export function paceBarWidthPercent(
   return Math.min(100, Math.round((rawValue / max) * 100));
 }
 
-/** Stable hub pace row: NBA, NFL, NHL, La Liga, EPL. */
+/** Stable hub pace row: NBA, CBB, NFL, NHL, La Liga, EPL. */
 export const LEAGUE_PACE_DISPLAY_ORDER: LeagueId[] = [
   "nba",
+  "cbb",
   "nfl",
   "nhl",
   "laliga",

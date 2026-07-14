@@ -32,6 +32,7 @@ export {
   isNcaaConferenceGatedLive,
   isProVerifiedLiveLeague,
   isVerifiedLiveLeague,
+  PRIMARY_LIVE_LEAGUE_IDS,
   PRO_VERIFIED_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";

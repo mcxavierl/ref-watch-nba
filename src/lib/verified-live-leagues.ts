@@ -14,6 +14,19 @@ export const PRO_VERIFIED_LIVE_LEAGUE_IDS = [
   "laliga",
 ] as const satisfies readonly LeagueId[];
 
+/**
+ * Primary overview chooser / pace grid order.
+ * Includes live conference-gated NCAA basketball alongside pro leagues.
+ */
+export const PRIMARY_LIVE_LEAGUE_IDS = [
+  "nba",
+  "cbb",
+  "nhl",
+  "nfl",
+  "epl",
+  "laliga",
+] as const satisfies readonly LeagueId[];
+
 /** Product catalog includes conference-gated NCAA when live data exists. */
 export const VERIFIED_LIVE_LEAGUE_IDS = [
   ...PRO_VERIFIED_LIVE_LEAGUE_IDS,

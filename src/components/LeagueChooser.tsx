@@ -8,8 +8,8 @@ import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
 import { isNcaaConferenceGatedLeague } from "@/lib/ncaa-conference-gate";
 import {
-  isProVerifiedLiveLeague,
-  PRO_VERIFIED_LIVE_LEAGUE_IDS,
+  isNcaaConferenceGatedLive,
+  PRIMARY_LIVE_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
 
 type LeagueChooserProps = {
@@ -31,7 +31,7 @@ function ChooserCard({ card, variant }: ChooserCardProps) {
   return (
     <Link
       href={card.href}
-      className={`overview-league-chooser-card${
+      className={`overview-league-chooser-card rw-focus-ring${
         isNcaa ? " overview-league-chooser-card--ncaa-tier" : " overview-league-chooser-card--live-tier"
       }`}
       data-league={card.leagueId}
@@ -62,16 +62,28 @@ function ChooserCard({ card, variant }: ChooserCardProps) {
 
 export function LeagueChooser({ cards }: LeagueChooserProps) {
   const visibleCards = cards.filter((card) => isDashboardLeagueExposed(card.leagueId));
-  const proOrder = new Map<LeagueId, number>(
-    PRO_VERIFIED_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+  const liveOrder = new Map<LeagueId, number>(
+    PRIMARY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
   );
 
   const liveCards = visibleCards
-    .filter((card) => isProVerifiedLiveLeague(card.leagueId))
-    .sort((a, b) => (proOrder.get(a.leagueId) ?? 99) - (proOrder.get(b.leagueId) ?? 99));
+    .filter((card) => {
+      if (!(PRIMARY_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(card.leagueId)) {
+        return false;
+      }
+      if (isNcaaConferenceGatedLeague(card.leagueId)) {
+        return isNcaaConferenceGatedLive(card.leagueId);
+      }
+      return true;
+    })
+    .sort((a, b) => (liveOrder.get(a.leagueId) ?? 99) - (liveOrder.get(b.leagueId) ?? 99));
 
   const ncaaCards = visibleCards
-    .filter((card) => isNcaaConferenceGatedLeague(card.leagueId))
+    .filter(
+      (card) =>
+        isNcaaConferenceGatedLeague(card.leagueId) &&
+        !isNcaaConferenceGatedLive(card.leagueId),
+    )
     .sort((a, b) => a.label.localeCompare(b.label));
 
   if (liveCards.length === 0 && ncaaCards.length === 0) return null;
@@ -86,7 +98,7 @@ export function LeagueChooser({ cards }: LeagueChooserProps) {
           Choose a league
         </h2>
         <p className="overview-section-lead">
-          Start with a live pro hub, or explore limited NCAA key-conference coverage.
+          Start with a verified live hub. College basketball joins the pro leagues when key-conference data is available.
         </p>
       </div>
 
@@ -94,7 +106,9 @@ export function LeagueChooser({ cards }: LeagueChooserProps) {
         <div className="overview-chooser-tier overview-chooser-tier--live">
           <div className="overview-chooser-tier-head">
             <h3 className="overview-chooser-tier-title">Live competitions</h3>
-            <p className="overview-chooser-tier-hint">Full verified leagues with complete hub tooling.</p>
+            <p className="overview-chooser-tier-hint">
+              Verified leagues with full hub tooling, including live NCAA basketball.
+            </p>
           </div>
           <div className="overview-league-chooser-grid overview-league-chooser-grid--live">
             {liveCards.map((card) => (
@@ -109,7 +123,7 @@ export function LeagueChooser({ cards }: LeagueChooserProps) {
           <div className="overview-chooser-tier-head">
             <h3 className="overview-chooser-tier-title">NCAA coverage (limited)</h3>
             <p className="overview-chooser-tier-hint">
-              Key conferences only — secondary to live pro infrastructure.
+              Key conferences only, secondary to live pro infrastructure.
             </p>
           </div>
           <div className="overview-league-chooser-grid overview-league-chooser-grid--ncaa">

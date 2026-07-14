@@ -201,8 +201,8 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
             <section className="overview-sidebar-block overview-sidebar-block--lists">
               <h2 className="overview-sidebar-heading overview-sidebar-heading--static">Quick lists</h2>
               <p className="overview-sidebar-note">
-                Live-league shortcuts only: rankings, tendencies, and matrix edges for verified
-                pro hubs.
+                Live-league shortcuts: rankings, tendencies, and matrix edges for verified
+                hubs, including college basketball.
               </p>
               <OverviewQuickLists
                 leagueCards={data.leagueCards}
@@ -217,7 +217,8 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               <div className="overview-section-header">
                 <h2 className="overview-section-title">Quick lists</h2>
                 <p className="overview-section-lead">
-                  Rankings, tendencies, and matrix edges for live pro leagues.
+                  Rankings, tendencies, and matrix edges for live leagues, including college
+                  basketball.
                 </p>
               </div>
               <OverviewQuickLists

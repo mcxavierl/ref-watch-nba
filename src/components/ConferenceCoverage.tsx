@@ -41,7 +41,7 @@ export function ConferenceCoverage({ leagueId }: ConferenceCoverageProps) {
           <div className="ncaa-coverage-status-copy">
             <p className="ncaa-coverage-eyebrow">Live coverage</p>
             <h2 className="ncaa-coverage-title" id={headingId}>
-              {league.label} — key conferences
+              {league.label}: key conferences
             </h2>
             <p className="ncaa-coverage-lead">
               Referee analytics below reflect verified game and crew data for the conferences
@@ -61,7 +61,7 @@ export function ConferenceCoverage({ leagueId }: ConferenceCoverageProps) {
       </ul>
 
       <p className="ncaa-coverage-upcoming">
-        Additional conferences coming in future integrity audit cycles.
+        Additional conferences are planned for future coverage expansions.
       </p>
       </section>
     </div>

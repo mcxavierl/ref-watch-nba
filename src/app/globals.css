@@ -8654,7 +8654,13 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 
 @media (min-width: 1024px) {
   .overview-league-chooser-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .overview-league-chooser-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
 
@@ -8686,6 +8692,7 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 }
 
 .overview-league-chooser-card[data-league="nba"] { --chooser-accent: var(--raptors); }
+.overview-league-chooser-card[data-league="cbb"] { --chooser-accent: var(--cbb-gold); }
 .overview-league-chooser-card[data-league="nhl"] { --chooser-accent: var(--nhl-blue); }
 .overview-league-chooser-card[data-league="nfl"] { --chooser-accent: var(--nfl-green); }
 .overview-league-chooser-card[data-league="epl"] { --chooser-accent: #8b6bb5; }
@@ -8775,7 +8782,6 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   height: 0.85rem;
 }
 
-.overview-league-chooser-card[data-league="cbb"],
 .overview-league-chooser-card[data-league="cfb"] {
   --chooser-accent: var(--border-strong);
 }
@@ -8838,235 +8844,6 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 .overview-pace-card--pending .overview-pace-cta {
   color: var(--text-muted);
   font-weight: 500;
-}
-
-.ncaa-audit-status-pill {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 0.4rem;
-  padding: 0.15rem 0.45rem;
-  border-radius: 999px;
-  border: 1px solid var(--pill-border);
-  background: var(--pill-bg);
-  color: var(--text-secondary);
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  line-height: 1.3;
-  transition:
-    border-color 140ms ease,
-    color 140ms ease;
-}
-
-.ncaa-audit-status-pill:hover {
-  border-color: var(--border-default);
-  color: var(--text-secondary);
-}
-
-.ncaa-audit-status-pill-icon {
-  width: 0.68rem;
-  height: 0.68rem;
-  flex-shrink: 0;
-  color: var(--text-muted);
-  opacity: 0.55;
-}
-
-.ncaa-audit-status-pill--static {
-  pointer-events: none;
-}
-
-.ncaa-audit-status-pill-state {
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.ncaa-integrity-audit-grid {
-  display: grid;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-@media (min-width: 900px) {
-  .ncaa-integrity-audit-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.ncaa-integrity-audit-panel {
-  padding: 1.1rem 1.15rem;
-  border-radius: 1rem;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-surface-1);
-}
-
-.ncaa-integrity-audit-panel-head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.ncaa-integrity-audit-panel-title-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.ncaa-integrity-audit-panel-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-}
-
-.ncaa-integrity-audit-panel-lead {
-  font-size: 0.82rem;
-  font-weight: 400;
-  color: var(--text-muted);
-}
-
-.ncaa-integrity-audit-metrics {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem;
-  margin-top: 1rem;
-}
-
-@media (min-width: 640px) {
-  .ncaa-integrity-audit-metrics {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-.ncaa-integrity-audit-metric {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-.ncaa-integrity-audit-metric-label {
-  font-size: 0.68rem;
-  font-weight: 650;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.ncaa-integrity-audit-metric-value {
-  font-size: 0.95rem;
-  font-weight: 650;
-  color: var(--text-secondary);
-  font-variant-numeric: tabular-nums;
-}
-
-.ncaa-integrity-audit-progress {
-  margin-top: 0.85rem;
-  height: 0.35rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--line) 80%, transparent);
-  overflow: hidden;
-}
-
-.ncaa-integrity-audit-progress-fill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(
-    90deg,
-    var(--border-strong),
-    color-mix(in srgb, var(--text-muted) 72%, var(--border-strong))
-  );
-}
-
-.ncaa-integrity-audit-failures {
-  margin-top: 1rem;
-}
-
-.ncaa-integrity-audit-failures-title {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.ncaa-integrity-audit-failure-list {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.ncaa-integrity-audit-failure-item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.2rem 0.55rem;
-  font-size: 0.74rem;
-  color: var(--muted-strong);
-}
-
-.ncaa-integrity-audit-failure-scope {
-  grid-row: span 2;
-  align-self: start;
-  padding: 0.1rem 0.35rem;
-  border-radius: 0.25rem;
-  font-size: 0.62rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-  background: var(--pill-bg);
-  border: 1px solid var(--pill-border);
-}
-
-.ncaa-integrity-audit-failure-id {
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.ncaa-integrity-audit-failures-more,
-.ncaa-integrity-audit-note {
-  margin-top: 0.65rem;
-  font-size: 0.74rem;
-  color: var(--muted);
-  line-height: 1.45;
-}
-
-.ncaa-integrity-audit-awaiting {
-  grid-column: 1 / -1;
-  margin: 0;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.ncaa-integrity-audit-clear {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 1rem;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.ncaa-integrity-audit-clear-icon {
-  width: 1rem;
-  height: 1rem;
-}
-
-.ncaa-integrity-audit-charter {
-  margin-top: 1.25rem;
-}
-
-.ncaa-integrity-audit-charter-list {
-  margin-top: 0.65rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: var(--muted-strong);
 }
 
 .overview-hero-search .slate-quick-lookup {
@@ -10856,11 +10633,11 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 }
 
 .overview-pace-card[data-league="nba"] { --pace-accent: var(--raptors); }
+.overview-pace-card[data-league="cbb"] { --pace-accent: var(--cbb-gold); }
 .overview-pace-card[data-league="nhl"] { --pace-accent: var(--nhl-blue); }
 .overview-pace-card[data-league="nfl"] { --pace-accent: var(--nfl-green); }
 .overview-pace-card[data-league="epl"] { --pace-accent: #8b6bb5; }
 .overview-pace-card[data-league="laliga"] { --pace-accent: #c8102e; }
-.overview-pace-card[data-league="cbb"],
 .overview-pace-card[data-league="cfb"] { --pace-accent: var(--border-strong); }
 
 .overview-pace-card--pending {

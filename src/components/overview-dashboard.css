@@ -44,7 +44,20 @@
   border: 1px solid var(--border-subtle);
   background: var(--surface);
   color: var(--text-muted);
-  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.overview-top-stories-nav:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--raptors) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.overview-top-stories-nav:active {
+  transform: scale(0.96);
 }
 
 .overview-top-stories-nav:hover {
@@ -75,10 +88,10 @@
   background: var(--surface);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(6px);
+  transform: translateY(8px);
   transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
+    opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
   overflow: hidden;
 }
 
@@ -95,6 +108,7 @@
 }
 
 .overview-top-story-card[data-league="nba"] { --chooser-accent: var(--raptors); }
+.overview-top-story-card[data-league="cbb"] { --chooser-accent: var(--cbb-gold); }
 .overview-top-story-card[data-league="nhl"] { --chooser-accent: var(--nhl-blue); }
 .overview-top-story-card[data-league="nfl"] { --chooser-accent: var(--nfl-green); }
 .overview-top-story-card[data-league="epl"] { --chooser-accent: #8b6bb5; }
@@ -575,6 +589,31 @@
   stroke-linejoin: round;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .overview-scorecard-sparkline-line {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    animation: overview-sparkline-draw 0.55s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  .overview-scorecard-sparkline-dot {
+    opacity: 0;
+    animation: overview-sparkline-dot-in 0.25s ease 0.4s forwards;
+  }
+}
+
+@keyframes overview-sparkline-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes overview-sparkline-dot-in {
+  to {
+    opacity: 1;
+  }
+}
+
 .overview-scorecard-sparkline--whistle .overview-scorecard-sparkline-line,
 .overview-scorecard-sparkline--whistle .overview-scorecard-sparkline-dot {
   stroke: color-mix(in srgb, #f59e0b 75%, var(--text-muted));
@@ -615,6 +654,13 @@
 @media (prefers-reduced-motion: reduce) {
   .overview-top-story-card {
     transition: none;
+  }
+
+  .overview-scorecard-sparkline-line,
+  .overview-scorecard-sparkline-dot {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
   }
 }
 
