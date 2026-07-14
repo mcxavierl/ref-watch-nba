@@ -11,7 +11,7 @@ import {
   type OverviewQuickList,
 } from "@/lib/league-quick-lists";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
-import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 
 const DEFAULT_LIST_ID = "whistle-leaders";

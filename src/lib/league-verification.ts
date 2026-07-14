@@ -21,12 +21,14 @@ export type LeagueVerification = {
   verifiedSeasons: string[];
 };
 
-/** Production leagues with verified real-source ingest — never show synthetic UI. */
-export const VERIFIED_LIVE_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl", "laliga"] as const satisfies readonly LeagueId[];
-
-export function isVerifiedLiveLeague(leagueId: LeagueId): boolean {
-  return (VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
-}
+import {
+  isVerifiedLiveLeague,
+  VERIFIED_LIVE_LEAGUE_IDS,
+} from "@/lib/verified-live-leagues";
+export {
+  isVerifiedLiveLeague,
+  VERIFIED_LIVE_LEAGUE_IDS,
+} from "@/lib/verified-live-leagues";
 
 const INGEST_TICKET_URLS: Partial<Record<LeagueId, string>> = {
   nhl: "https://github.com/mcxavierl/ref-watch-nba/issues/6",
