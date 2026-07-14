@@ -30,8 +30,8 @@ export type LeagueThemeLogos = {
 export const NCAA_BRAND_ASSETS = {
   themeColor: "#009CDE",
   logos: {
-    light: "/assets/logos/ncaa.png",
-    dark: "/assets/logos/ncaa.png",
+    light: "/assets/logos/ncaa.svg",
+    dark: "/assets/logos/ncaa.svg",
   },
 } as const satisfies {
   themeColor: string;
