@@ -86,7 +86,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   return (
     <ThemeContext.Provider value={value}>
-      <div data-theme={resolvedMode} className="contents">
+      <div className="contents">
         {children}
       </div>
     </ThemeContext.Provider>

@@ -9119,14 +9119,13 @@ p {
   background: var(--pill-bg);
 }
 
-.overview-catalog-status--preview {
-  color: #fde68a;
-  background: rgba(234, 179, 8, 0.12);
-}
-
-.overview-catalog-status--coming-soon {
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.05);
+.overview-catalog-status--preview,
+.overview-catalog-status--coming-soon,
+.overview-catalog-status--audit-pending {
+  color: var(--pill-ink);
+  background: var(--pill-bg-muted);
+  border: 1px solid var(--pill-border);
+  font-weight: 500;
 }
 
 .overview-catalog-region {
@@ -9572,8 +9571,8 @@ html.dark .overview-insight-drilldown-hint {
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-hero-box,
 html.dark .overview-insight-hero-box {
-  background: var(--bg-surface-2);
-  border-color: var(--border-subtle);
+  background: var(--pill-bg-muted);
+  border-color: var(--pill-border);
 }
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-insight-headline,
@@ -9661,8 +9660,8 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   gap: 0.15rem;
   padding: 0.85rem;
   border-radius: 0.75rem;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-surface-2);
+  border: 1px solid var(--pill-border);
+  background: var(--pill-bg-muted);
 }
 
 .overview-insight-hero-value {
@@ -10660,13 +10659,6 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   border-color: var(--border-subtle);
 }
 
-.overview-catalog-status--audit-pending {
-  color: var(--pill-ink);
-  background: var(--pill-bg);
-  border: 1px solid var(--pill-border);
-  font-weight: 500;
-}
-
 .overview-catalog-row--audit .overview-catalog-name {
   color: var(--text-secondary);
   font-weight: 600;
@@ -11103,7 +11095,7 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 .overview-expansion-soon-label {
   font-size: 0.84rem;
   font-weight: 650;
-  color: var(--ink);
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -11126,9 +11118,9 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   white-space: nowrap;
   padding: 0.125rem 0.5rem;
   border-radius: 0.25rem;
-  color: var(--text-muted);
-  background: var(--bg-surface-2);
-  border: 1px solid var(--border-subtle);
+  color: var(--pill-ink);
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
 }
 
 .overview-expansion-soon {
@@ -11300,8 +11292,12 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-open-b
   background: color-mix(in srgb, var(--raptors) 8%, var(--surface));
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--coming-soon {
-  background: var(--surface-raised);
+html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--coming-soon,
+html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--preview,
+html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--audit-pending {
+  color: var(--pill-ink);
+  background: var(--pill-bg-muted);
+  border: 1px solid var(--pill-border);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-soon {

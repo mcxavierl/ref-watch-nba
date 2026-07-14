@@ -10,7 +10,6 @@
 
 /* ── Dark (default — matches layout.tsx + product chrome) ───────────────── */
 :root,
-[data-theme="dark"],
 html[data-theme="dark"],
 html[data-color="dark"],
 html.dark {
@@ -63,8 +62,7 @@ html.dark {
 
 /* ── Light ─────────────────────────────────────────────────────────────────── */
 html[data-theme="light"]:not([data-contrast="high"]),
-html[data-color="light"]:not([data-contrast="high"]),
-[data-theme="light"] {
+html[data-color="light"]:not([data-contrast="high"]) {
   color-scheme: light;
 
   --bg-surface-0: #f9fafb;
