@@ -1,6 +1,9 @@
 export const NCAA_INTEGRITY_AUDIT_HREF = "/ncaa/integrity-audit";
 
-export type NcaaAuditPendingLabel = "Audit in Progress" | "Pending Verification";
+export type NcaaAuditPendingLabel =
+  | "Audit in Progress"
+  | "Pending Verification"
+  | "Awaiting ingest";
 
 export function formatNcaaAuditPillLabel(coveragePct: number): string {
   const rounded =

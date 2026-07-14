@@ -51,6 +51,7 @@ test("leaguesForPath scopes preload to the active league", () => {
   assert.deepEqual(leaguesForPath("/nba"), ["nba"]);
   assert.deepEqual(leaguesForPath("/nfl"), ["nfl"]);
   assert.deepEqual(leaguesForPath("/laliga/insights"), ["laliga"]);
+  assert.deepEqual(leaguesForPath("/ncaa/integrity-audit"), ["cbb", "cfb"]);
   assert.deepEqual(leaguesForPath("/research"), ["nba"]);
   assert.deepEqual(leaguesForPath(""), []);
   assert.deepEqual(leaguesForPath("/not-a-route"), ["nba"]);

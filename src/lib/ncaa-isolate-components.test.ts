@@ -6,6 +6,7 @@ import { teamsByConference as cfbTeamsByConference } from "@/lib/cfb/teams";
 import {
   isHydratableConferenceMap,
   isHydratableGameLogFile,
+  ncaaLeaguesForPath,
   pathNeedsNcaaComponents,
   preloadNcaaSportComponents,
   shardGamesBySeason,
@@ -20,6 +21,13 @@ test("pathNeedsNcaaComponents scopes to college routes", () => {
   assert.equal(pathNeedsNcaaComponents("/cbb/matrix"), "cbb");
   assert.equal(pathNeedsNcaaComponents("/cfb/research"), "cfb");
   assert.equal(pathNeedsNcaaComponents("/nba"), null);
+});
+
+test("ncaaLeaguesForPath hydrates both pipelines on integrity audit", () => {
+  assert.deepEqual(ncaaLeaguesForPath("/ncaa/integrity-audit"), ["cbb", "cfb"]);
+  assert.deepEqual(ncaaLeaguesForPath("/ncaa/integrity-audit#cbb"), ["cbb", "cfb"]);
+  assert.deepEqual(ncaaLeaguesForPath("/cbb"), ["cbb"]);
+  assert.deepEqual(ncaaLeaguesForPath("/nba"), []);
 });
 
 test("shardGamesBySeason partitions games without retaining source array refs", () => {

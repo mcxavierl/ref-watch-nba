@@ -8930,6 +8930,14 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   line-height: 1.45;
 }
 
+.ncaa-integrity-audit-awaiting {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
 .ncaa-integrity-audit-clear {
   display: flex;
   align-items: center;

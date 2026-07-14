@@ -20,6 +20,8 @@ function AuditLeaguePanel({ audit }: { audit: NcaaAuditStatus }) {
   const league = LEAGUES[audit.leagueId];
   const registryEntry = audit.leagueId === "cbb" ? CBB_LEAGUE_ENTRY : CFB_LEAGUE_ENTRY;
   const failures = audit.verification.failures.slice(0, 8);
+  const hasIngestedData = audit.totalGames > 0 || audit.totalRefs > 0;
+  const pipelineReady = audit.coveragePct >= 100 && audit.failureCount === 0;
 
   return (
     <section
@@ -36,7 +38,7 @@ function AuditLeaguePanel({ audit }: { audit: NcaaAuditStatus }) {
           <NcaaAuditStatusPill
             coveragePct={audit.coveragePct}
             auditHref={`${NCAA_INTEGRITY_AUDIT_HREF}#${audit.leagueId}`}
-            pendingLabel={audit.pendingLabel}
+            pendingLabel={hasIngestedData ? audit.pendingLabel : "Awaiting ingest"}
           />
         </div>
         <p className="ncaa-integrity-audit-panel-lead">
@@ -47,38 +49,51 @@ function AuditLeaguePanel({ audit }: { audit: NcaaAuditStatus }) {
       </header>
 
       <div className="ncaa-integrity-audit-metrics">
-        <div className="ncaa-integrity-audit-metric">
-          <span className="ncaa-integrity-audit-metric-label">Coverage</span>
-          <strong className="ncaa-integrity-audit-metric-value">
-            {formatNcaaAuditPillLabel(audit.coveragePct).replace("Audit: ", "")}
-          </strong>
-        </div>
-        <div className="ncaa-integrity-audit-metric">
-          <span className="ncaa-integrity-audit-metric-label">Games verified</span>
-          <strong className="ncaa-integrity-audit-metric-value">
-            {formatCount(audit.verifiedGames)} / {formatCount(audit.totalGames)}
-          </strong>
-        </div>
-        <div className="ncaa-integrity-audit-metric">
-          <span className="ncaa-integrity-audit-metric-label">Officials verified</span>
-          <strong className="ncaa-integrity-audit-metric-value">
-            {formatCount(audit.verifiedRefs)} / {formatCount(audit.totalRefs)}
-          </strong>
-        </div>
-        <div className="ncaa-integrity-audit-metric">
-          <span className="ncaa-integrity-audit-metric-label">Open failures</span>
-          <strong className="ncaa-integrity-audit-metric-value">{formatCount(audit.failureCount)}</strong>
-        </div>
+        {hasIngestedData ? (
+          <>
+            <div className="ncaa-integrity-audit-metric">
+              <span className="ncaa-integrity-audit-metric-label">Coverage</span>
+              <strong className="ncaa-integrity-audit-metric-value">
+                {formatNcaaAuditPillLabel(audit.coveragePct).replace("Audit: ", "")}
+              </strong>
+            </div>
+            <div className="ncaa-integrity-audit-metric">
+              <span className="ncaa-integrity-audit-metric-label">Games verified</span>
+              <strong className="ncaa-integrity-audit-metric-value">
+                {formatCount(audit.verifiedGames)} / {formatCount(audit.totalGames)}
+              </strong>
+            </div>
+            <div className="ncaa-integrity-audit-metric">
+              <span className="ncaa-integrity-audit-metric-label">Officials verified</span>
+              <strong className="ncaa-integrity-audit-metric-value">
+                {formatCount(audit.verifiedRefs)} / {formatCount(audit.totalRefs)}
+              </strong>
+            </div>
+            <div className="ncaa-integrity-audit-metric">
+              <span className="ncaa-integrity-audit-metric-label">Open failures</span>
+              <strong className="ncaa-integrity-audit-metric-value">
+                {formatCount(audit.failureCount)}
+              </strong>
+            </div>
+          </>
+        ) : (
+          <p className="ncaa-integrity-audit-awaiting">
+            Ingest has not started for this league yet. Coverage metrics appear once game logs and
+            official records are loaded into the pipeline.
+          </p>
+        )}
       </div>
 
-      <div className="ncaa-integrity-audit-progress" aria-hidden>
-        <span
-          className="ncaa-integrity-audit-progress-fill"
-          style={{ width: `${Math.min(100, Math.max(0, audit.coveragePct))}%` }}
-        />
-      </div>
+      {hasIngestedData ? (
+        <div className="ncaa-integrity-audit-progress" aria-hidden>
+          <span
+            className="ncaa-integrity-audit-progress-fill"
+            style={{ width: `${Math.min(100, Math.max(0, audit.coveragePct))}%` }}
+          />
+        </div>
+      ) : null}
 
-      {failures.length > 0 ? (
+      {!hasIngestedData ? null : failures.length > 0 ? (
         <div className="ncaa-integrity-audit-failures">
           <h3 className="ncaa-integrity-audit-failures-title">Sample integrity failures</h3>
           <ul className="ncaa-integrity-audit-failure-list">
@@ -99,13 +114,20 @@ function AuditLeaguePanel({ audit }: { audit: NcaaAuditStatus }) {
       ) : (
         <p className="ncaa-integrity-audit-clear">
           <ShieldCheck aria-hidden className="ncaa-integrity-audit-clear-icon" />
-          No open integrity failures in the sampled audit log.
+          {pipelineReady
+            ? "Pipeline checks passed for all ingested game logs and official records."
+            : "No open integrity failures in the current audit sample."}
         </p>
       )}
 
       <p className="ncaa-integrity-audit-note">
-        {audit.pendingLabel}. Hub analytics unlock when the registry{" "}
-        <code>dataVerified</code> flag is true and pipeline coverage reaches 100%.
+        {registryEntry.dataVerified === true
+          ? "Registry released. Hub analytics unlock when pipeline coverage reaches 100%."
+          : pipelineReady
+            ? "Pipeline verification complete. Awaiting manual registry release before hub analytics unlock."
+            : hasIngestedData
+              ? `${audit.pendingLabel}. Hub analytics unlock when registry approval and 100% pipeline coverage both pass.`
+              : "College hubs stay locked until ingest completes and passes automated verification."}
       </p>
     </section>
   );
@@ -124,17 +146,16 @@ export function NcaaIntegrityAuditDashboard() {
         <p className="section-kicker">Data integrity</p>
         <h1 className="page-title">NCAA Data Integrity Audit</h1>
         <p className="page-lead">
-          Live verification status for college basketball and football ingest pipelines. Dashboard
-          cards stay visible while detailed analytics remain locked until every game log and official
-          record passes the integrity gate.
+          Verification status for college basketball and football ingest. Analytics hubs stay locked
+          until registry approval and automated pipeline checks both pass.
         </p>
       </section>
 
       <div className="data-source-banner data-source-banner--audit-pending" role="status">
         <Clock aria-hidden className="data-source-banner-icon" />
         <p className="data-source-banner-text">
-          <strong>Audit in progress.</strong> NCAA league hubs are not open for production analytics
-          until manual registry approval and automated pipeline verification both pass.
+          <strong>College data in review.</strong> NCAA hubs are locked until ingest completes and
+          passes automated verification.
         </p>
       </div>
 
