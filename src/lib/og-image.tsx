@@ -25,6 +25,14 @@ const TEXT_SECONDARY = "#d1d5db";
 const TEXT_MUTED = "#9ca3af";
 const BORDER_SUBTLE = "rgba(45, 55, 72, 0.9)";
 
+function hexAlpha(hex: string, alpha: number): string {
+  const normalized = hex.replace("#", "");
+  const r = Number.parseInt(normalized.slice(0, 2), 16);
+  const g = Number.parseInt(normalized.slice(2, 4), 16);
+  const b = Number.parseInt(normalized.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 function OgWhistleMark({ size }: { size: number }) {
   const ringSize = Math.round(size * 1.08);
   const iconSize = Math.round(size * 0.58);
@@ -99,7 +107,7 @@ function OgAtmosphere({ accent }: { accent?: string }) {
           width: 460,
           height: 460,
           borderRadius: 999,
-          background: `radial-gradient(circle, color-mix(in srgb, ${glow} 22%, transparent) 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${hexAlpha(glow, 0.22)} 0%, transparent 70%)`,
         }}
       />
       <div
@@ -226,8 +234,8 @@ function OgHeaderBand({
                   background: `linear-gradient(180deg, ${HEADER_GOLD_BRIGHT} 0%, ${HEADER_GOLD} 58%, #b98d3e 100%)`,
                   padding: "7px 14px",
                   borderRadius: 999,
-                  border: `1px solid color-mix(in srgb, ${pillAccent} 35%, #fff)`,
-                  boxShadow: `0 0 0 1px color-mix(in srgb, ${pillAccent} 18%, transparent), 0 6px 16px rgba(0, 0, 0, 0.28)`,
+                  border: `1px solid ${hexAlpha(pillAccent, 0.35)}`,
+                  boxShadow: `0 0 0 1px ${hexAlpha(pillAccent, 0.18)}, 0 6px 16px rgba(0, 0, 0, 0.28)`,
                 }}
               >
                 {leagueLabel}
@@ -367,8 +375,8 @@ export function renderBrandOgImage(content: BrandOgContent) {
                   padding: "8px 14px",
                   borderRadius: 999,
                   background: "rgba(255, 255, 255, 0.04)",
-                  border: `1px solid color-mix(in srgb, ${league.accent} 28%, ${BORDER_SUBTLE})`,
-                  boxShadow: `0 0 18px color-mix(in srgb, ${league.accent} 12%, transparent)`,
+                  border: `1px solid ${hexAlpha(league.accent, 0.28)}`,
+                  boxShadow: `0 0 18px ${hexAlpha(league.accent, 0.12)}`,
                 }}
               >
                 <div
@@ -406,8 +414,8 @@ export function renderBrandOgImage(content: BrandOgContent) {
                   gap: 8,
                   padding: "14px 16px",
                   borderRadius: 14,
-                  background: `linear-gradient(155deg, color-mix(in srgb, ${highlight.accent} 10%, ${BG_ELEVATED}) 0%, ${BG_SURFACE} 100%)`,
-                  border: `1px solid color-mix(in srgb, ${highlight.accent} 24%, ${BORDER_SUBTLE})`,
+                  background: `linear-gradient(155deg, ${hexAlpha(highlight.accent, 0.1)} 0%, ${BG_SURFACE} 100%)`,
+                  border: `1px solid ${hexAlpha(highlight.accent, 0.24)}`,
                   boxShadow: "0 8px 20px rgba(0, 0, 0, 0.24)",
                 }}
               >
@@ -505,12 +513,12 @@ export function renderSlateOgImage(content: ReturnType<typeof nbaOgContent>) {
                   borderRadius: 14,
                   background:
                     index === 0
-                      ? `linear-gradient(155deg, color-mix(in srgb, ${accent} 12%, ${BG_ELEVATED}) 0%, ${BG_SURFACE} 100%)`
+                      ? `linear-gradient(155deg, ${hexAlpha(accent, 0.12)} 0%, ${BG_SURFACE} 100%)`
                       : `linear-gradient(160deg, rgba(255, 255, 255, 0.04) 0%, ${BG_ELEVATED} 100%)`,
-                  border: `1px solid color-mix(in srgb, ${accent} ${index === 0 ? 28 : 14}%, ${BORDER_SUBTLE})`,
+                  border: `1px solid ${hexAlpha(accent, index === 0 ? 0.28 : 0.14)}`,
                   boxShadow:
                     index === 0
-                      ? `0 10px 24px rgba(0, 0, 0, 0.28), 0 0 24px color-mix(in srgb, ${accent} 10%, transparent)`
+                      ? `0 10px 24px rgba(0, 0, 0, 0.28), 0 0 24px ${hexAlpha(accent, 0.1)}`
                       : "0 6px 16px rgba(0, 0, 0, 0.18)",
                 }}
               >
