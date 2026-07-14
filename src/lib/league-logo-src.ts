@@ -1,4 +1,4 @@
-import { leagueLogoForTheme } from "@/config/leagues";
+import { getLeagueConfigEntry } from "@/config/leagueConfig";
 import type { LeagueId } from "@/lib/leagues";
 
 type LeagueNavId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
@@ -30,6 +30,15 @@ const PRO_LEAGUE_LOGOS: Record<Exclude<LeagueNavId, "cbb" | "cfb">, LeagueLogoSe
     onLight: "/logos/laliga-red.png",
   },
 };
+
+function leagueLogoForTheme(
+  leagueId: LeagueId,
+  colorMode: "light" | "dark",
+): string | undefined {
+  const entry = getLeagueConfigEntry(leagueId);
+  if (!entry?.logos) return undefined;
+  return colorMode === "light" ? entry.logos.light : entry.logos.dark;
+}
 
 /** Resolve themed league logo src for nav marks, hero badges, and chooser cards. */
 export function leagueLogoSrc(
