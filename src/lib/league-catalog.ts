@@ -2,8 +2,12 @@ import type { LeagueId } from "@/lib/leagues";
 import { formatLeagueSeasonStart } from "@/config/leagueConfig";
 import { isCatalogSlugVisible } from "@/config/leagues";
 import {
+  isCollegeLiveLeague,
+  isProOnlyLiveLeague,
   isVerifiedLiveLeague,
+  LAUNCHED_NCAA_LEAGUE_IDS,
   PRIMARY_LIVE_LEAGUE_IDS,
+  PRO_ONLY_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/league-verification";
 
@@ -103,13 +107,49 @@ export function catalogComingSoonEntries(): CatalogLeagueEntry[] {
   );
 }
 
-/** Verified live competitions in overview hub order. */
+/** Verified live competitions in overview hub order (all seven leagues). */
 export function catalogLiveCompetitionEntries(): CatalogLeagueEntry[] {
   const order = new Map<LeagueId, number>(
     PRIMARY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
   );
   return catalogEntriesForDisplay()
     .filter((entry) => entry.leagueId && entry.status === "live")
+    .sort(
+      (a, b) =>
+        (order.get(a.leagueId!) ?? 99) - (order.get(b.leagueId!) ?? 99),
+    );
+}
+
+/** Pro leagues only — sidebar and chooser primary tier. */
+export function catalogProLiveEntries(): CatalogLeagueEntry[] {
+  const order = new Map<LeagueId, number>(
+    PRO_ONLY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+  );
+  return catalogEntriesForDisplay()
+    .filter(
+      (entry) =>
+        entry.leagueId &&
+        entry.status === "live" &&
+        isProOnlyLiveLeague(entry.leagueId),
+    )
+    .sort(
+      (a, b) =>
+        (order.get(a.leagueId!) ?? 99) - (order.get(b.leagueId!) ?? 99),
+    );
+}
+
+/** Live college sports — CBB and CFB verified hubs. */
+export function catalogCollegeLiveEntries(): CatalogLeagueEntry[] {
+  const order = new Map<LeagueId, number>(
+    LAUNCHED_NCAA_LEAGUE_IDS.map((id, index) => [id, index]),
+  );
+  return catalogEntriesForDisplay()
+    .filter(
+      (entry) =>
+        entry.leagueId &&
+        entry.status === "live" &&
+        isCollegeLiveLeague(entry.leagueId),
+    )
     .sort(
       (a, b) =>
         (order.get(a.leagueId!) ?? 99) - (order.get(b.leagueId!) ?? 99),

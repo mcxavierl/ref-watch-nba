@@ -363,6 +363,40 @@
   color: var(--text);
 }
 
+.overview-chooser-tier--college {
+  padding: var(--space-5);
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--ncaa-blue) 28%, var(--border-subtle));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 0% 0%,
+      color-mix(in srgb, var(--cbb-gold) 12%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 90% 70% at 100% 0%,
+      color-mix(in srgb, var(--cfb-bronze) 12%, transparent),
+      transparent 50%
+    ),
+    color-mix(in srgb, var(--surface-raised) 92%, transparent);
+}
+
+.overview-chooser-tier--college .overview-chooser-tier-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text);
+}
+
+.overview-chooser-tier--college .overview-chooser-tier-title::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--ncaa-blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ncaa-blue) 28%, transparent);
+}
+
 .overview-chooser-tier-hint {
   margin: 0.35rem 0 0;
   font-size: 0.82rem;
@@ -372,6 +406,16 @@
 
 .overview-league-chooser-card--live-tier {
   box-shadow: 0 1px 0 color-mix(in srgb, var(--chooser-accent, var(--border)) 25%, transparent);
+}
+
+.overview-league-chooser-grid--college {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 40rem) {
+  .overview-league-chooser-grid--college {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* —— Segmented sidebar catalog —— */
@@ -393,6 +437,40 @@
 
 .overview-catalog-segment--live .overview-catalog-segment-title {
   color: var(--text);
+}
+
+.overview-catalog-segment--college {
+  padding: var(--space-4);
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--ncaa-blue) 24%, var(--border-subtle));
+  background:
+    radial-gradient(
+      ellipse 100% 70% at 0% 0%,
+      color-mix(in srgb, var(--cbb-gold) 10%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 90% 60% at 100% 0%,
+      color-mix(in srgb, var(--cfb-bronze) 10%, transparent),
+      transparent 52%
+    ),
+    color-mix(in srgb, var(--surface-raised) 88%, transparent);
+}
+
+.overview-catalog-segment--college .overview-catalog-segment-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text);
+}
+
+.overview-catalog-segment--college .overview-catalog-segment-title::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--ncaa-blue);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ncaa-blue) 26%, transparent);
 }
 
 .overview-catalog-segment-hint {
@@ -428,6 +506,40 @@
 
 .overview-scorecard-section--live .overview-scorecard-section-title {
   color: var(--text);
+}
+
+.overview-scorecard-section--college {
+  padding: var(--space-5);
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--ncaa-blue) 24%, var(--border-subtle));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 0% 0%,
+      color-mix(in srgb, var(--cbb-gold) 10%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 90% 70% at 100% 0%,
+      color-mix(in srgb, var(--cfb-bronze) 10%, transparent),
+      transparent 50%
+    ),
+    color-mix(in srgb, var(--surface) 55%, transparent);
+}
+
+.overview-scorecard-section--college .overview-scorecard-section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text);
+}
+
+.overview-scorecard-section--college .overview-scorecard-section-title::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--ncaa-blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ncaa-blue) 26%, transparent);
 }
 
 .overview-scorecard-section-hint {
@@ -984,5 +1096,26 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-slate-league-mark
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-slate-row[data-status="scheduled"] {
   background: color-mix(in srgb, var(--surface) 92%, transparent);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-chooser-tier--college,
+html.dark .overview-chooser-tier--college,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-segment--college,
+html.dark .overview-catalog-segment--college,
+html[data-color="dark"]:not([data-contrast="high"]) .overview-scorecard-section--college,
+html.dark .overview-scorecard-section--college {
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 0% 0%,
+      color-mix(in srgb, var(--cbb-gold) 14%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 90% 70% at 100% 0%,
+      color-mix(in srgb, var(--cfb-bronze) 14%, transparent),
+      transparent 50%
+    ),
+    color-mix(in srgb, var(--bg-surface-2) 88%, transparent);
+  border-color: color-mix(in srgb, var(--ncaa-blue) 32%, var(--border-subtle));
 }
 

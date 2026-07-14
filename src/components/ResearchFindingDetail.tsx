@@ -1,11 +1,11 @@
 import Link from "next/link";
+import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { JsonLd } from "@/components/JsonLd";
 import { StatCell, StatStrip } from "@/components/StatStrip";
 import { getRefStats } from "@/lib/data";
 import { getRefStats as getNhlRefStats } from "@/lib/nhl/data";
 import {
-  FINDING_CATEGORY_LABELS,
   researchHubHref,
   resolveFindingExplainer,
 } from "@/lib/findings-shared";
@@ -39,7 +39,7 @@ export function ResearchFindingDetail({
       <header className="page-profile-header">
         <div className="hero-headline-stack">
           <p className="section-kicker">
-            {finding.league} · {FINDING_CATEGORY_LABELS[finding.category]}
+            {finding.league} · <FindingCategoryPillLabel category={finding.category} />
           </p>
           <h1 className="page-title">{finding.headline}</h1>
         </div>

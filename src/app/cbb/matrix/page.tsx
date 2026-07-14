@@ -13,6 +13,7 @@ import { DEFAULT_SEASON_SCOPE_MODE, matrixLeadSeasonPhrase } from "@/lib/season-
 import { refTeamDataNote } from "@/lib/user-language";
 import { hubPageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
+import "@/components/matrix-hub.css";
 export const metadata = hubPageMetadata("cbb", "matrix");
 
 type PageProps = {

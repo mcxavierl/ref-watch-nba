@@ -10,6 +10,7 @@ import {
 import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { hubPageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
+import "@/components/matrix-hub.css";
 
 export const metadata = hubPageMetadata("cfb", "matrix");
 import { leagueGamesHubBackLabel, LEAGUES } from "@/lib/leagues";

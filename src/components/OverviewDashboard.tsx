@@ -15,8 +15,10 @@ import {
 } from "@/components/dashboard/DashboardShell";
 import {
   catalogComingSoonEntries,
+  catalogCollegeLiveEntries,
   catalogCompetitionCount,
   catalogLiveCompetitionEntries,
+  catalogProLiveEntries,
   catalogStatusLabel,
   type CatalogLeagueEntry,
 } from "@/lib/league-catalog";
@@ -83,6 +85,8 @@ type OverviewDashboardProps = {
 };
 
 export function OverviewDashboard({ data }: OverviewDashboardProps) {
+  const proCatalog = catalogProLiveEntries();
+  const collegeCatalog = catalogCollegeLiveEntries();
   const liveCatalog = catalogLiveCompetitionEntries();
   const comingSoonCatalog = catalogComingSoonEntries().slice(0, 6);
   const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
@@ -126,11 +130,25 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                 <section className="overview-catalog-segment overview-catalog-segment--live">
                   <h3 className="overview-catalog-segment-title">Live competitions</h3>
                   <div className="overview-catalog-list">
-                    {liveCatalog.map((entry) => (
+                    {proCatalog.map((entry) => (
                       <CatalogLeagueRow key={entry.id} entry={entry} />
                     ))}
                   </div>
                 </section>
+
+                {collegeCatalog.length > 0 ? (
+                  <section className="overview-catalog-segment overview-catalog-segment--college">
+                    <h3 className="overview-catalog-segment-title">College sports</h3>
+                    <p className="overview-catalog-segment-hint">
+                      Live NCAA basketball and football hubs.
+                    </p>
+                    <div className="overview-catalog-list">
+                      {collegeCatalog.map((entry) => (
+                        <CatalogLeagueRow key={entry.id} entry={entry} />
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
 
                 {comingSoonCatalog.length > 0 ? (
                   <section className="overview-catalog-segment overview-catalog-segment--soon">
@@ -151,7 +169,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               </h2>
               <p className="overview-sidebar-note">
                 Live-league shortcuts: rankings, tendencies, and matrix edges for verified
-                hubs across all seven live competitions.
+                pro and college hubs across all seven live competitions.
               </p>
               <OverviewQuickLists
                 leagueCards={data.leagueCards}

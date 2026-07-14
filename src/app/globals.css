@@ -2200,6 +2200,19 @@ p {
     background: color-mix(in srgb, var(--header-gold) 12%, var(--pill-bg));
   }
 
+  .finding-meta-pill-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .finding-meta-pill-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex-shrink: 0;
+    opacity: 0.88;
+  }
+
   a.confidence-tier-badge-link {
     text-decoration: none;
     cursor: pointer;
@@ -8867,8 +8880,14 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 
 @media (min-width: 1100px) {
   .dashboard-hero-highlights {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.9rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .dashboard-hero-highlights {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
 
@@ -8914,6 +8933,14 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 
 .dashboard-hero-highlight-card[data-league="nfl"] .dashboard-hero-highlight-mark {
   background: linear-gradient(135deg, var(--nfl-green), #0d3d1f);
+}
+
+.dashboard-hero-highlight-card[data-league="cbb"] .dashboard-hero-highlight-mark {
+  background: linear-gradient(135deg, var(--cbb-gold), #006fa8);
+}
+
+.dashboard-hero-highlight-card[data-league="cfb"] .dashboard-hero-highlight-mark {
+  background: linear-gradient(135deg, var(--cfb-bronze), #006fa8);
 }
 
 .dashboard-hero-highlight-card[data-league="epl"] .dashboard-hero-highlight-mark {

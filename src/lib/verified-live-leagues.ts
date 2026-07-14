@@ -13,6 +13,15 @@ export const PRO_VERIFIED_LIVE_LEAGUE_IDS = [
   "laliga",
 ] as const satisfies readonly LeagueId[];
 
+/** Pro leagues in overview chooser, scorecard, and catalog (excludes college). */
+export const PRO_ONLY_LIVE_LEAGUE_IDS = [
+  "nba",
+  "nhl",
+  "nfl",
+  "epl",
+  "laliga",
+] as const satisfies readonly LeagueId[];
+
 /** Overview chooser, pace grid, and quick-list order. */
 export const PRIMARY_LIVE_LEAGUE_IDS = [
   "nba",
@@ -30,6 +39,9 @@ export const LAUNCHED_NCAA_LEAGUE_IDS = [
   "cfb",
 ] as const satisfies readonly LeagueId[];
 
+/** @deprecated Alias for LAUNCHED_NCAA_LEAGUE_IDS — college sports live on the overview. */
+export const COLLEGE_LIVE_LEAGUE_IDS = LAUNCHED_NCAA_LEAGUE_IDS;
+
 /** Product catalog includes all verified live leagues. */
 export const VERIFIED_LIVE_LEAGUE_IDS = [
   ...PRO_VERIFIED_LIVE_LEAGUE_IDS,
@@ -37,6 +49,14 @@ export const VERIFIED_LIVE_LEAGUE_IDS = [
 
 export function isProVerifiedLiveLeague(leagueId: LeagueId): boolean {
   return (PRO_VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
+}
+
+export function isProOnlyLiveLeague(leagueId: LeagueId): boolean {
+  return (PRO_ONLY_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
+}
+
+export function isCollegeLiveLeague(leagueId: LeagueId): boolean {
+  return (LAUNCHED_NCAA_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
 }
 
 /** NCAA hub has verified conference ingest per build artifact. */

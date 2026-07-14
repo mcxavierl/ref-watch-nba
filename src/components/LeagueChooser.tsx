@@ -6,7 +6,12 @@ import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
-import { PRIMARY_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
+import {
+  COLLEGE_LIVE_LEAGUE_IDS,
+  isCollegeLiveLeague,
+  isProOnlyLiveLeague,
+  PRO_ONLY_LIVE_LEAGUE_IDS,
+} from "@/lib/verified-live-leagues";
 
 type LeagueChooserProps = {
   cards: LeagueOverviewCard[];
@@ -45,19 +50,26 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
 }
 
 export function LeagueChooser({ cards }: LeagueChooserProps) {
-  const liveOrder = new Map<LeagueId, number>(
-    PRIMARY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+  const proOrder = new Map<LeagueId, number>(
+    PRO_ONLY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+  );
+  const collegeOrder = new Map<LeagueId, number>(
+    COLLEGE_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
   );
 
-  const liveCards = cards
-    .filter(
-      (card) =>
-        isDashboardLeagueExposed(card.leagueId) &&
-        (PRIMARY_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(card.leagueId),
-    )
-    .sort((a, b) => (liveOrder.get(a.leagueId) ?? 99) - (liveOrder.get(b.leagueId) ?? 99));
+  const visibleCards = cards.filter((card) => isDashboardLeagueExposed(card.leagueId));
 
-  if (liveCards.length === 0) return null;
+  const proCards = visibleCards
+    .filter((card) => isProOnlyLiveLeague(card.leagueId))
+    .sort((a, b) => (proOrder.get(a.leagueId) ?? 99) - (proOrder.get(b.leagueId) ?? 99));
+
+  const collegeCards = visibleCards
+    .filter((card) => isCollegeLiveLeague(card.leagueId))
+    .sort(
+      (a, b) => (collegeOrder.get(a.leagueId) ?? 99) - (collegeOrder.get(b.leagueId) ?? 99),
+    );
+
+  if (proCards.length === 0 && collegeCards.length === 0) return null;
 
   return (
     <section
@@ -73,19 +85,37 @@ export function LeagueChooser({ cards }: LeagueChooserProps) {
         </p>
       </div>
 
-      <div className="overview-chooser-tier overview-chooser-tier--live">
-        <div className="overview-chooser-tier-head">
-          <h3 className="overview-chooser-tier-title">Live competitions</h3>
-          <p className="overview-chooser-tier-hint">
-            Verified leagues with full hub tooling across seven live competitions.
-          </p>
+      {proCards.length > 0 ? (
+        <div className="overview-chooser-tier overview-chooser-tier--live">
+          <div className="overview-chooser-tier-head">
+            <h3 className="overview-chooser-tier-title">Live competitions</h3>
+            <p className="overview-chooser-tier-hint">
+              Verified pro leagues with full hub tooling across five live competitions.
+            </p>
+          </div>
+          <div className="overview-league-chooser-grid overview-league-chooser-grid--live">
+            {proCards.map((card) => (
+              <ChooserCard key={card.leagueId} card={card} />
+            ))}
+          </div>
         </div>
-        <div className="overview-league-chooser-grid overview-league-chooser-grid--live">
-          {liveCards.map((card) => (
-            <ChooserCard key={card.leagueId} card={card} />
-          ))}
+      ) : null}
+
+      {collegeCards.length > 0 ? (
+        <div className="overview-chooser-tier overview-chooser-tier--college">
+          <div className="overview-chooser-tier-head">
+            <h3 className="overview-chooser-tier-title">College sports</h3>
+            <p className="overview-chooser-tier-hint">
+              Live NCAA basketball and football hubs with verified key-conference coverage.
+            </p>
+          </div>
+          <div className="overview-league-chooser-grid overview-league-chooser-grid--college">
+            {collegeCards.map((card) => (
+              <ChooserCard key={card.leagueId} card={card} />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </section>
   );
 }

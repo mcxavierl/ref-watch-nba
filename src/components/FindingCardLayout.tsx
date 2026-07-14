@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { MouseEvent, ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
+import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { FindingExplainer } from "@/components/FindingNameWall";
 import { delightValueSize } from "@/components/StandoutMetric";
 import type { Finding, FindingLeague, FindingStat } from "@/lib/findings-shared";
 import {
-  FINDING_CATEGORY_LABELS,
   FINDING_CATEGORY_TO_FILTER,
   filterDisplayStats,
   findingConfidenceTier,
@@ -93,7 +93,7 @@ export function FindingMetaBadges({
             }
             className="finding-meta-pill finding-meta-pill-link"
           >
-            {FINDING_CATEGORY_LABELS[item]}
+            <FindingCategoryPillLabel category={item} />
           </AccordionSafeLink>
         );
       })}

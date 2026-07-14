@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { EdgeFinderCell } from "@/components/EdgeFinderCell";
 import {
   FindingAccordionChevron,
@@ -23,7 +24,6 @@ import {
 } from "@/lib/finding-grouping";
 import { pickStrongestEvSnapshot, type FindingEvSnapshot } from "@/lib/finding-ev-display";
 import {
-  FINDING_CATEGORY_LABELS,
   resolveFindingExplainer,
   type Finding,
   type FindingLink,
@@ -109,7 +109,7 @@ function FindingAngleBlock({
     <article className="finding-angle-block">
       <div className="finding-angle-header">
         <span className="finding-meta-pill finding-angle-category">
-          {FINDING_CATEGORY_LABELS[finding.category]}
+          <FindingCategoryPillLabel category={finding.category} />
         </span>
         <h4 className="finding-angle-title">{angleHeadline(finding, officialName)}</h4>
         {evSnapshot !== undefined ? (

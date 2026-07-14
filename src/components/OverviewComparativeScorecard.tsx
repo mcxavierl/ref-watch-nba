@@ -3,7 +3,12 @@ import { ArrowRight } from "lucide-react";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
-import { PRIMARY_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
+import {
+  COLLEGE_LIVE_LEAGUE_IDS,
+  isCollegeLiveLeague,
+  isProOnlyLiveLeague,
+  PRO_ONLY_LIVE_LEAGUE_IDS,
+} from "@/lib/verified-live-leagues";
 
 type OverviewComparativeScorecardProps = {
   cards: LeagueOverviewCard[];
@@ -94,35 +99,59 @@ function ScorecardRow({ card }: { card: LeagueOverviewCard }) {
 }
 
 export function OverviewComparativeScorecard({ cards }: OverviewComparativeScorecardProps) {
-  const order = new Map<LeagueId, number>(
-    PRIMARY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+  const visible = cards.filter((card) => isDashboardLeagueExposed(card.leagueId));
+  const proOrder = new Map<LeagueId, number>(
+    PRO_ONLY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+  );
+  const collegeOrder = new Map<LeagueId, number>(
+    COLLEGE_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
   );
 
-  const liveCards = cards
-    .filter(
-      (card) =>
-        isDashboardLeagueExposed(card.leagueId) &&
-        (PRIMARY_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(card.leagueId),
-    )
-    .sort((a, b) => (order.get(a.leagueId) ?? 99) - (order.get(b.leagueId) ?? 99));
+  const proCards = visible
+    .filter((card) => isProOnlyLiveLeague(card.leagueId))
+    .sort((a, b) => (proOrder.get(a.leagueId) ?? 99) - (proOrder.get(b.leagueId) ?? 99));
 
-  if (liveCards.length === 0) return null;
+  const collegeCards = visible
+    .filter((card) => isCollegeLiveLeague(card.leagueId))
+    .sort(
+      (a, b) => (collegeOrder.get(a.leagueId) ?? 99) - (collegeOrder.get(b.leagueId) ?? 99),
+    );
+
+  if (proCards.length === 0 && collegeCards.length === 0) return null;
 
   return (
     <div className="overview-scorecard">
-      <div className="overview-scorecard-section overview-scorecard-section--live">
-        <div className="overview-scorecard-section-head">
-          <h3 className="overview-scorecard-section-title">Live competitions</h3>
-          <p className="overview-scorecard-section-hint">
-            Normalized whistle and scoring pace across verified live leagues.
-          </p>
+      {proCards.length > 0 ? (
+        <div className="overview-scorecard-section overview-scorecard-section--live">
+          <div className="overview-scorecard-section-head">
+            <h3 className="overview-scorecard-section-title">Live competitions</h3>
+            <p className="overview-scorecard-section-hint">
+              Normalized whistle and scoring pace across verified pro leagues.
+            </p>
+          </div>
+          <div className="overview-scorecard-rows" role="list">
+            {proCards.map((card) => (
+              <ScorecardRow key={card.leagueId} card={card} />
+            ))}
+          </div>
         </div>
-        <div className="overview-scorecard-rows" role="list">
-          {liveCards.map((card) => (
-            <ScorecardRow key={card.leagueId} card={card} />
-          ))}
+      ) : null}
+
+      {collegeCards.length > 0 ? (
+        <div className="overview-scorecard-section overview-scorecard-section--college">
+          <div className="overview-scorecard-section-head">
+            <h3 className="overview-scorecard-section-title">College sports</h3>
+            <p className="overview-scorecard-section-hint">
+              Live NCAA basketball and football pace from verified key-conference coverage.
+            </p>
+          </div>
+          <div className="overview-scorecard-rows" role="list">
+            {collegeCards.map((card) => (
+              <ScorecardRow key={card.leagueId} card={card} />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

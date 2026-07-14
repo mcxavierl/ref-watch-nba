@@ -29,10 +29,15 @@ import {
 } from "@/lib/verified-live-leagues";
 export {
   activeLiveLeagueIds,
+  COLLEGE_LIVE_LEAGUE_IDS,
+  isCollegeLiveLeague,
   isNcaaConferenceGatedLive,
+  isProOnlyLiveLeague,
   isProVerifiedLiveLeague,
   isVerifiedLiveLeague,
+  LAUNCHED_NCAA_LEAGUE_IDS,
   PRIMARY_LIVE_LEAGUE_IDS,
+  PRO_ONLY_LIVE_LEAGUE_IDS,
   PRO_VERIFIED_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
