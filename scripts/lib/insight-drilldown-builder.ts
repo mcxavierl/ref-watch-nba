@@ -148,6 +148,19 @@ function loadLeagueRefStats(root: string, leagueId: LeagueId): RefStatsFile | nu
   return readJson<RefStatsFile>(path.join(root, coreRel));
 }
 
+function loadLeagueTeamSplits(
+  root: string,
+  leagueId: LeagueId,
+  refStats: RefStatsFile | null,
+): Record<string, TeamCrewSplit[]> {
+  const embedded = refStats?.teamSplits;
+  if (embedded && Object.keys(embedded).length > 0) return embedded;
+
+  const sidecarRel =
+    leagueId === "nba" ? "data/team-splits.json" : `data/${leagueId}/team-splits.json`;
+  return readJson<Record<string, TeamCrewSplit[]>>(path.join(root, sidecarRel)) ?? {};
+}
+
 function findRefProfile(
   stats: RefStatsFile,
   refSlugValue: string,
@@ -382,7 +395,6 @@ export function buildInsightDrilldownPayload(
   if (!(leagueId in DATA_LEAGUE)) return null;
 
   const games = loadLeagueGameLogs(root, leagueId);
-  if (games.length === 0) return null;
 
   const allMatchupGames = games.filter((game) => {
     const involvesTeam =
@@ -420,6 +432,7 @@ export function buildInsightDrilldownPayload(
     }
   }
   const refStatsForSplits = loadLeagueRefStats(root, leagueId);
+  const teamSplits = loadLeagueTeamSplits(root, leagueId, refStatsForSplits);
   const recordTotal = wins + losses;
   if (
     refStatsForSplits &&
@@ -430,7 +443,7 @@ export function buildInsightDrilldownPayload(
       leagueId,
       card.refSlug,
       card.teamAbbr,
-      refStatsForSplits.teamSplits?.[card.teamAbbr] ?? [],
+      teamSplits[card.teamAbbr] ?? [],
       Math.min(10, recordTotal),
     );
     if (splitGames.length > 0) {
@@ -469,6 +482,8 @@ export function buildInsightDrilldownPayload(
   const deltaPts = Number.parseFloat(card.heroValue.replace(/pp|\+/g, "")) || 0;
 
   const drilldownId = insightDrilldownId(leagueId, card.refSlug, card.teamAbbr);
+
+  if (tableGames.length === 0) return null;
 
   return {
     drilldownId,
