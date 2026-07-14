@@ -4,7 +4,6 @@ import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { JsonLd } from "@/components/JsonLd";
 import { RoutedSiteFooter } from "@/components/RoutedSiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 import { A11Y_BLOCKING_SCRIPT } from "@/lib/a11y/a11yBootstrap";
 import { DEFAULT_SITE_DESCRIPTION, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { AFFILIATION_DISCLAIMER, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -100,14 +99,12 @@ export default async function RootLayout({
           Skip to content
         </a>
         <JsonLd data={[websiteJsonLd(), organizationJsonLd()]} />
-        <ThemeProvider>
-          <SiteHeader />
-          <main id="main-content" className="flex-1" tabIndex={-1}>
-            {children}
-          </main>
-          <RoutedSiteFooter pathname={pathname} />
-          <GamblingDisclaimer />
-        </ThemeProvider>
+        <SiteHeader />
+        <main id="main-content" className="flex-1" tabIndex={-1}>
+          {children}
+        </main>
+        <RoutedSiteFooter pathname={pathname} />
+        <GamblingDisclaimer />
       </body>
     </html>
   );

@@ -5,7 +5,6 @@ import {
   clearLegacyGlobalHydration,
   endWorkerIsolateRequest,
   getWorkerIsolateStore,
-  LEGACY_HYDRATION_GLOBAL_KEYS,
   runWithWorkerIsolateStore,
 } from "@/lib/worker-isolate-store";
 import {
@@ -56,15 +55,20 @@ const stubStats = {
 } as RefStatsFile;
 
 describe("worker isolate store", () => {
-  it("stores hydration in request scope instead of globalThis", () => {
+  it("mirrors hydration to globalThis for Workers ALS fallback", () => {
     beginWorkerIsolateRequest();
     setCachedRefStats("nba", stubStats);
     assert.equal(getCachedRefStats("nba")?.refs.length, 1);
-    for (const key of LEGACY_HYDRATION_GLOBAL_KEYS) {
-      assert.equal((globalThis as Record<string, unknown>)[key], undefined);
-    }
+    assert.equal(
+      (globalThis as Record<string, unknown>).__REFWATCH_NBA_REF_STATS__,
+      getCachedRefStats("nba"),
+    );
     endWorkerIsolateRequest();
     assert.equal(getCachedRefStats("nba"), null);
+    assert.equal(
+      (globalThis as Record<string, unknown>).__REFWATCH_NBA_REF_STATS__,
+      undefined,
+    );
   });
 
   it("clears legacy globals on beginWorkerIsolateRequest", () => {

@@ -1,4 +1,5 @@
 import { safeOriginFetch } from "@/lib/edge-fetch";
+import "@/lib/global-stats";
 import {
   freezeWorkerConfig,
   getWorkerIsolateStore,
@@ -14,6 +15,16 @@ import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 import { enrichRefStatsWithGeography } from "@/lib/ref-geography";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+
+const REF_STATS_CACHE_KEYS = freezeWorkerConfig({
+  nba: "__REFWATCH_NBA_REF_STATS__",
+  nhl: "__REFWATCH_NHL_REF_STATS__",
+  nfl: "__REFWATCH_NFL_REF_STATS__",
+  epl: "__REFWATCH_EPL_REF_STATS__",
+  laliga: "__REFWATCH_LALIGA_REF_STATS__",
+  cbb: "__REFWATCH_CBB_REF_STATS__",
+  cfb: "__REFWATCH_CFB_REF_STATS__",
+} as const);
 
 const TEAM_SPLITS_CACHE_KEYS = freezeWorkerConfig({
   nba: "__REFWATCH_NBA_TEAM_SPLITS__",
@@ -34,8 +45,18 @@ const ASSET_BASE = freezeWorkerConfig({
   cfb: "/data/cfb",
 } as const);
 
+function readGlobalRefStats(league: League): RefStatsFile | null {
+  const key = REF_STATS_CACHE_KEYS[league];
+  return (globalThis as Record<string, RefStatsFile | undefined>)[key] ?? null;
+}
+
+function writeGlobalRefStats(league: League, data: RefStatsFile): void {
+  const key = REF_STATS_CACHE_KEYS[league];
+  (globalThis as Record<string, RefStatsFile | undefined>)[key] = data;
+}
+
 export function getCachedRefStats(league: League): RefStatsFile | null {
-  return getWorkerIsolateStore().refStats[league] ?? null;
+  return getWorkerIsolateStore().refStats[league] ?? readGlobalRefStats(league);
 }
 
 /** SSR-hydrated stats from ASSETS — skip Node fs re-parses on Workers. */
@@ -117,10 +138,18 @@ export function resolveRefStatsFromFsOrCache(
     : null;
 }
 
+function readGlobalTeamSplits(
+  league: League,
+): Record<string, TeamCrewSplit[]> | null {
+  const key = TEAM_SPLITS_CACHE_KEYS[league as keyof typeof TEAM_SPLITS_CACHE_KEYS];
+  if (!key) return null;
+  return (globalThis as Record<string, Record<string, TeamCrewSplit[]> | undefined>)[key] ?? null;
+}
+
 export function getCachedTeamSplits(
   league: League,
 ): Record<string, TeamCrewSplit[]> | null {
-  return getWorkerIsolateStore().teamSplits[league] ?? null;
+  return getWorkerIsolateStore().teamSplits[league] ?? readGlobalTeamSplits(league);
 }
 
 function withGeography(league: League, stats: RefStatsFile): RefStatsFile {
@@ -128,7 +157,9 @@ function withGeography(league: League, stats: RefStatsFile): RefStatsFile {
 }
 
 function writeCachedRefStats(league: League, data: RefStatsFile): void {
-  getWorkerIsolateStore().refStats[league] = withGeography(league, data);
+  const enriched = withGeography(league, data);
+  getWorkerIsolateStore().refStats[league] = enriched;
+  writeGlobalRefStats(league, enriched);
 }
 
 /** Merge sidecar team splits into the slim ref-stats object already in cache. */
@@ -154,6 +185,11 @@ export function setCachedTeamSplits(
     return;
   }
   getWorkerIsolateStore().teamSplits[league] = splits;
+  const key = TEAM_SPLITS_CACHE_KEYS[league as keyof typeof TEAM_SPLITS_CACHE_KEYS];
+  if (key) {
+    (globalThis as Record<string, Record<string, TeamCrewSplit[]> | undefined>)[key] =
+      splits;
+  }
   mergeCachedLeagueRefStats(league);
 }
 
