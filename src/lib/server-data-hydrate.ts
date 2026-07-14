@@ -29,8 +29,6 @@ const DATA_LEAGUE_FOR_ROUTE = freezeWorkerConfig({
 
 /** SSR isolate: fetch /public data assets when Workers cannot read data/ from disk. */
 export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
-  beginWorkerIsolateRequest();
-
   const path = normalizeAppPathname(pathname);
 
   // Overview hub reads bundled snapshot JSON — skip multi-league ref-stats preload
@@ -38,6 +36,8 @@ export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
   if (path === "/" || path.startsWith("/overview")) {
     return;
   }
+
+  beginWorkerIsolateRequest();
 
   try {
     await preloadLeagueDataForPath(SITE_URL, path);
