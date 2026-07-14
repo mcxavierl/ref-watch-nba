@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="NCAA Football">
-  <rect width="32" height="32" rx="7" fill="#009CDE"/>
-  <ellipse cx="16" cy="15" rx="10" ry="6.2" fill="none" stroke="#ffffff" stroke-width="1.6"/>
-  <path d="M8.5 15h15" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round"/>
-  <path d="M11.5 12.2v5.6M20.5 12.2v5.6" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round"/>
-  <text x="16" y="29" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="4.5" font-weight="700" fill="#ffffff" letter-spacing="0.12em">CFB</text>
-</svg>

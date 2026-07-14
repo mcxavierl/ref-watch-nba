@@ -15,15 +15,15 @@ import { isNcaaConferenceGatedLive } from "@/lib/verified-live-leagues";
 
 test("NCAA brand assets map to dual-theme logo paths", () => {
   assert.equal(NCAA_BRAND_ASSETS.themeColor, "#009CDE");
-  assert.equal(NCAA_BRAND_ASSETS.logos.light, "/assets/logos/ncaa.png");
-  assert.equal(NCAA_BRAND_ASSETS.logos.dark, "/assets/logos/ncaa.png");
+  assert.equal(NCAA_BRAND_ASSETS.logos.light, "/assets/logos/ncaa.svg");
+  assert.equal(NCAA_BRAND_ASSETS.logos.dark, "/assets/logos/ncaa.svg");
 });
 
 test("college leagues use sport-specific NCAA marks", () => {
-  assert.equal(CBB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa.png");
-  assert.equal(CBB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa.png");
-  assert.equal(CFB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa.png");
-  assert.equal(CFB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa.png");
+  assert.equal(CBB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa.svg");
+  assert.equal(CBB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa.svg");
+  assert.equal(CFB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa.svg");
+  assert.equal(CFB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa.svg");
 });
 
 test("CFB registry entry matches spec", () => {
@@ -32,8 +32,8 @@ test("CFB registry entry matches spec", () => {
   assert.equal(formatLeagueSeasonStart("cfb"), "08/29");
   assert.equal(CFB_LEAGUE_ENTRY.themeColor, "#009CDE");
   assert.equal(CFB_LEAGUE_ENTRY.dataVerified, true);
-  assert.equal(CFB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa.png");
-  assert.equal(CFB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa.png");
+  assert.equal(CFB_LEAGUE_ENTRY.logos?.light, "/assets/logos/ncaa.svg");
+  assert.equal(CFB_LEAGUE_ENTRY.logos?.dark, "/assets/logos/ncaa.svg");
 });
 
 test("CBB registry entry matches spec", () => {
@@ -72,11 +72,11 @@ test("isCatalogSlugVisible shows launched college slugs on the overview hub", ()
 test("leagueLogoForTheme resolves dual-theme logo paths", () => {
   assert.equal(
     leagueLogoForTheme("cfb", "light"),
-    "/assets/logos/ncaa.png",
+    "/assets/logos/ncaa.svg",
   );
   assert.equal(
     leagueLogoForTheme("cbb", "dark"),
-    "/assets/logos/ncaa.png",
+    "/assets/logos/ncaa.svg",
   );
   assert.equal(leagueLogoForTheme("nba", "light"), undefined);
 });
