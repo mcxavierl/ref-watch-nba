@@ -232,7 +232,7 @@ export function pathNeedsNcaaComponents(pathname: string): NcaaRouteLeague | nul
   return null;
 }
 
-/** NCAA integrity audit hydrates both college pipelines on one page. */
+/** Routes scoped to a single college sport (no legacy /ncaa audit hub). */
 export function ncaaLeaguesForPath(pathname: string): NcaaRouteLeague[] {
   const league = pathNeedsNcaaComponents(pathname);
   return league ? [league] : [];

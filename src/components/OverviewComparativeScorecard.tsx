@@ -1,14 +1,9 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
-import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
-import { isNcaaConferenceGatedLeague } from "@/lib/ncaa-conference-gate";
-import {
-  isProVerifiedLiveLeague,
-  PRO_VERIFIED_LIVE_LEAGUE_IDS,
-} from "@/lib/verified-live-leagues";
+import { PRIMARY_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 
 type OverviewComparativeScorecardProps = {
   cards: LeagueOverviewCard[];
@@ -99,54 +94,35 @@ function ScorecardRow({ card }: { card: LeagueOverviewCard }) {
 }
 
 export function OverviewComparativeScorecard({ cards }: OverviewComparativeScorecardProps) {
-  const visible = cards.filter((card) => isDashboardLeagueExposed(card.leagueId));
   const order = new Map<LeagueId, number>(
-    PRO_VERIFIED_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+    PRIMARY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
   );
 
-  const proCards = visible
-    .filter((card) => isProVerifiedLiveLeague(card.leagueId))
+  const liveCards = cards
+    .filter(
+      (card) =>
+        isDashboardLeagueExposed(card.leagueId) &&
+        (PRIMARY_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(card.leagueId),
+    )
     .sort((a, b) => (order.get(a.leagueId) ?? 99) - (order.get(b.leagueId) ?? 99));
 
-  const ncaaCards = visible
-    .filter((card) => isNcaaConferenceGatedLeague(card.leagueId))
-    .sort((a, b) => a.label.localeCompare(b.label));
-
-  if (proCards.length === 0 && ncaaCards.length === 0) return null;
+  if (liveCards.length === 0) return null;
 
   return (
     <div className="overview-scorecard">
-      {proCards.length > 0 ? (
-        <div className="overview-scorecard-section overview-scorecard-section--live">
-          <div className="overview-scorecard-section-head">
-            <h3 className="overview-scorecard-section-title">Live competitions</h3>
-            <p className="overview-scorecard-section-hint">
-              Normalized whistle and scoring pace across verified pro leagues.
-            </p>
-          </div>
-          <div className="overview-scorecard-rows" role="list">
-            {proCards.map((card) => (
-              <ScorecardRow key={card.leagueId} card={card} />
-            ))}
-          </div>
+      <div className="overview-scorecard-section overview-scorecard-section--live">
+        <div className="overview-scorecard-section-head">
+          <h3 className="overview-scorecard-section-title">Live competitions</h3>
+          <p className="overview-scorecard-section-hint">
+            Normalized whistle and scoring pace across verified live leagues.
+          </p>
         </div>
-      ) : null}
-
-      {ncaaCards.length > 0 ? (
-        <div className="overview-scorecard-section overview-scorecard-section--ncaa">
-          <div className="overview-scorecard-section-head">
-            <h3 className="overview-scorecard-section-title">NCAA coverage (limited)</h3>
-            <p className="overview-scorecard-section-hint">
-              Key-conference subsets only — not comparable to full-league pro pace.
-            </p>
-          </div>
-          <div className="overview-scorecard-rows" role="list">
-            {ncaaCards.map((card) => (
-              <ScorecardRow key={card.leagueId} card={card} />
-            ))}
-          </div>
+        <div className="overview-scorecard-rows" role="list">
+          {liveCards.map((card) => (
+            <ScorecardRow key={card.leagueId} card={card} />
+          ))}
         </div>
-      ) : null}
+      </div>
     </div>
   );
 }

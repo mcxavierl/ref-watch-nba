@@ -11,11 +11,7 @@ import {
   type OverviewQuickList,
 } from "@/lib/league-quick-lists";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
-import {
-  isNcaaConferenceGatedLive,
-  PRIMARY_LIVE_LEAGUE_IDS,
-  PRO_VERIFIED_LIVE_LEAGUE_IDS,
-} from "@/lib/verified-live-leagues";
+import { PRIMARY_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 
 const DEFAULT_LIST_ID = "whistle-leaders";
@@ -67,14 +63,7 @@ export function OverviewQuickLists({
         role="tablist"
         aria-labelledby="overview-quicklists-step"
       >
-        {PRIMARY_LIVE_LEAGUE_IDS.filter(
-          (leagueId) =>
-            leagueId === "cbb"
-              ? isNcaaConferenceGatedLive("cbb")
-              : (PRO_VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(
-                  leagueId,
-                ),
-        ).map((leagueId) => {
+        {PRIMARY_LIVE_LEAGUE_IDS.map((leagueId) => {
           const meta = LEAGUES[leagueId];
           const selected = leagueId === activeLeague;
           return (

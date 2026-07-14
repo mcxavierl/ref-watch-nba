@@ -1,36 +1,19 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import {
-  catalogLiveCompetitionEntries,
-  catalogNcaaCoverageEntries,
-} from "@/lib/league-catalog";
-import { isNcaaConferenceGatedLive } from "@/lib/verified-live-leagues";
+import { catalogLiveCompetitionEntries } from "@/lib/league-catalog";
+import { PRIMARY_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 
-describe("league catalog NCAA tiers", () => {
-  it("places live CBB in live competitions, not limited coverage", () => {
+describe("league catalog live competitions", () => {
+  it("includes CBB and CFB in live competitions with no limited tier", () => {
     const live = catalogLiveCompetitionEntries();
-    const ncaaLimited = catalogNcaaCoverageEntries();
+    const liveIds = live.map((entry) => entry.leagueId);
 
-    if (isNcaaConferenceGatedLive("cbb")) {
-      assert.ok(live.some((entry) => entry.leagueId === "cbb"));
-      assert.equal(ncaaLimited.some((entry) => entry.leagueId === "cbb"), false);
-    }
+    assert.ok(liveIds.includes("cbb"));
+    assert.ok(liveIds.includes("cfb"));
+    assert.ok(liveIds.includes("nba"));
 
-    for (const entry of live) {
-      if (entry.leagueId === "cbb" || entry.leagueId === "cfb") {
-        assert.equal(isNcaaConferenceGatedLive(entry.leagueId), true);
-      }
-    }
-
-    for (const entry of ncaaLimited) {
-      assert.ok(entry.leagueId === "cbb" || entry.leagueId === "cfb");
-      assert.equal(isNcaaConferenceGatedLive(entry.leagueId), false);
-    }
-
-    const liveIds = new Set(live.map((e) => e.id));
-    const limitedIds = new Set(ncaaLimited.map((e) => e.id));
-    for (const id of limitedIds) {
-      assert.equal(liveIds.has(id), false, `${id} should not appear in both tiers`);
+    for (const leagueId of PRIMARY_LIVE_LEAGUE_IDS) {
+      assert.ok(liveIds.includes(leagueId), `${leagueId} should appear in live catalog`);
     }
   });
 });

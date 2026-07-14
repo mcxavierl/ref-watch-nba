@@ -44,11 +44,11 @@ test("CBB registry entry matches spec", () => {
   assert.equal(CBB_LEAGUE_ENTRY.dataVerified, false);
 });
 
-test("isDashboardLeagueExposed shows pro leagues and conference-gated NCAA when live", () => {
+test("isDashboardLeagueExposed shows all verified live leagues including college", () => {
   assert.equal(isDashboardLeagueExposed("nba"), true);
   assert.equal(isDashboardLeagueExposed("laliga"), true);
-  assert.equal(isDashboardLeagueExposed("cfb"), isNcaaConferenceGatedLive("cfb"));
-  assert.equal(isDashboardLeagueExposed("cbb"), isNcaaConferenceGatedLive("cbb"));
+  assert.equal(isDashboardLeagueExposed("cfb"), true);
+  assert.equal(isDashboardLeagueExposed("cbb"), true);
 });
 
 test("isLeagueAnalyticsUnlocked unlocks NCAA when conference data is live", () => {
@@ -57,15 +57,15 @@ test("isLeagueAnalyticsUnlocked unlocks NCAA when conference data is live", () =
   assert.equal(isLeagueAnalyticsUnlocked("cbb"), isNcaaConferenceGatedLive("cbb"));
 });
 
-test("isLeagueCardVisible follows conference-gated NCAA visibility", () => {
-  assert.equal(isLeagueCardVisible("cfb"), isNcaaConferenceGatedLive("cfb"));
-  assert.equal(isLeagueCardVisible("cbb"), isNcaaConferenceGatedLive("cbb"));
+test("isLeagueCardVisible shows launched college leagues on the overview hub", () => {
+  assert.equal(isLeagueCardVisible("cfb"), true);
+  assert.equal(isLeagueCardVisible("cbb"), true);
   assert.equal(isLeagueCardVisible("nba"), true);
 });
 
-test("isCatalogSlugVisible hides NCAA slugs until conference data is live", () => {
-  assert.equal(isCatalogSlugVisible("cfb"), isNcaaConferenceGatedLive("cfb"));
-  assert.equal(isCatalogSlugVisible("cbb"), isNcaaConferenceGatedLive("cbb"));
+test("isCatalogSlugVisible shows launched college slugs on the overview hub", () => {
+  assert.equal(isCatalogSlugVisible("cfb"), true);
+  assert.equal(isCatalogSlugVisible("cbb"), true);
   assert.equal(isCatalogSlugVisible("serie-a"), true);
 });
 

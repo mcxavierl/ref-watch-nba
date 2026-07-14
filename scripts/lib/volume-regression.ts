@@ -6,6 +6,10 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "../../src/lib/league-verification";
 import {
+  hasNcaaLiveConferenceCoverage,
+  isNcaaConferenceGatedLeague,
+} from "../../src/lib/ncaa-conference-gate";
+import {
   bottomRefsBelowBaselineForTeam,
   MATRIX_MIN_GAMES,
   topRefsBeatingBaselineForTeam,
@@ -15,6 +19,10 @@ import { computeRefTeamMatrix } from "../../src/lib/ref-team-matrix-compute";
 import { getBaselinesFile } from "../../src/lib/baselines";
 import { seasonRowsFromBaselines } from "../../src/lib/trends";
 import type { RefStatsFile } from "../../src/lib/types";
+import { getRefStats as getCbbRefStats, getTeamSplits as getCbbTeamSplits } from "../../src/lib/cbb/data";
+import { CBB_TEAMS, teamFullName as cbbTeamFullName } from "../../src/lib/cbb/teams";
+import { getRefStats as getCfbRefStats, getTeamSplits as getCfbTeamSplits } from "../../src/lib/cfb/data";
+import { CFB_TEAMS, teamFullName as cfbTeamFullName } from "../../src/lib/cfb/teams";
 import { getRefStats as getEplRefStats, getTeamSplits as getEplTeamSplits } from "../../src/lib/epl/data";
 import { getRefStats as getLaligaRefStats, getTeamSplits as getLaligaTeamSplits } from "../../src/lib/laliga/data";
 import { getRefStats as getNbaRefStats, getTeamSplits as getNbaTeamSplits } from "../../src/lib/data";
@@ -35,16 +43,20 @@ export const MIN_TOTAL_GAMES_FOR_CLAIMED_SEASONS: Record<
   { minTotal: number; minPerSeason: number }
 > = {
   nba: { minTotal: 10_000, minPerSeason: 900 },
+  cbb: { minTotal: 400, minPerSeason: 80 },
   nhl: { minTotal: 10_000, minPerSeason: 700 },
   nfl: { minTotal: 2_500, minPerSeason: 220 },
+  cfb: { minTotal: 400, minPerSeason: 80 },
   epl: { minTotal: 3_500, minPerSeason: 300 },
   laliga: { minTotal: 1_200, minPerSeason: 90 },
 };
 
 const SAMPLE_TEAMS: Record<LiveLeague, string> = {
   nba: "LAL",
+  cbb: "DUKE",
   nhl: "WPG",
   nfl: "KC",
+  cfb: "ALA",
   epl: "ARS",
   laliga: "BAR",
 };
@@ -247,6 +259,24 @@ export function checkMatrixBaselines(
       })),
       getTeamSplits: getLaligaTeamSplits,
     },
+    cbb: {
+      stats: getCbbRefStats(),
+      teams: CBB_TEAMS.map((t) => ({
+        abbr: t.abbr,
+        label: cbbTeamFullName(t),
+        name: t.name,
+      })),
+      getTeamSplits: getCbbTeamSplits,
+    },
+    cfb: {
+      stats: getCfbRefStats(),
+      teams: CFB_TEAMS.map((t) => ({
+        abbr: t.abbr,
+        label: cfbTeamFullName(t),
+        name: t.name,
+      })),
+      getTeamSplits: getCfbTeamSplits,
+    },
   } as const;
 
   const { stats, teams, getTeamSplits } = cases[league];
@@ -335,14 +365,30 @@ export function checkTrendBaselines(root: string, failures: string[]): void {
   }
 }
 
+function shouldRunVolumeCheck(
+  league: LiveLeague,
+  source: RefStatsFile | null,
+): source is RefStatsFile {
+  if (!source?.meta?.data_verified) return false;
+  if (isNcaaConferenceGatedLeague(league)) {
+    return hasNcaaLiveConferenceCoverage(league, source);
+  }
+  return true;
+}
+
 export function runVolumeRegressionChecks(root = process.cwd()): VolumeRegressionReport {
   const failures: string[] = [];
   const summaries: LeagueVolumeSummary[] = [];
 
   for (const league of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
     const source = readJson<RefStatsFile>(root, refStatsPath(league));
-    if (!source?.meta?.data_verified) {
-      failures.push(`${league}: ${refStatsPath(league)} is not data_verified`);
+    if (!shouldRunVolumeCheck(league, source)) {
+      if (
+        !source?.meta?.data_verified &&
+        !isNcaaConferenceGatedLeague(league)
+      ) {
+        failures.push(`${league}: ${refStatsPath(league)} is not data_verified`);
+      }
       continue;
     }
 

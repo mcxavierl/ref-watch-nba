@@ -8,61 +8,50 @@ import { getTeamSplits as getNflTeamSplits } from "@/lib/nfl/data";
 import { NFL_TEAMS, teamFullName as nflTeamFullName } from "@/lib/nfl/teams";
 import { getTeamSplits as getNhlTeamSplits } from "@/lib/nhl/data";
 import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "@/lib/nhl/teams";
+import { getTeamSplits as getCbbTeamSplits } from "@/lib/cbb/data";
+import { CBB_TEAMS, teamFullName as cbbTeamFullName } from "@/lib/cbb/teams";
+import { getTeamSplits as getCfbTeamSplits } from "@/lib/cfb/data";
+import { CFB_TEAMS, teamFullName as cfbTeamFullName } from "@/lib/cfb/teams";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
-import { insightsViewHref } from "@/lib/insights-routes";
-import { LEAGUES, type LeagueId } from "@/lib/leagues";
-import {
-  computeMatrixExtremes,
-  formatMatrixHighlightBaseline,
-  type MatrixExtremeHighlight,
-} from "@/lib/ref-team-matrix";
-import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
-import { insightDrilldownId } from "@/lib/insight-drilldown-types";
-import { formatBaselinePct, formatPct, formatSigned } from "@/lib/stats-utils";
-import { sportCopy } from "@/lib/user-language";
-import type { LeagueInsightCard, LeagueInsightTone } from "@/lib/league-overview-insights";
-import { buildLeagueInsightCards } from "@/lib/league-overview-insights";
-import { EVERGREEN_TOP_STORIES } from "@/lib/insights/evergreen";
+import type { LeagueId } from "@/lib/leagues";
+import { formatPct } from "@/lib/stats-utils";
 import { applyClinicalTone } from "@/lib/insights/tone-filter";
-import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
+import type { TeamInsight } from "@/lib/team-insights";
+import type { RefStatsFile } from "@/lib/types";
+import { formatSigned } from "@/lib/stats-utils";
+import { buildLeagueInsightCards } from "@/lib/league-overview-insights";
+import {
+  generateTopStoriesFromCandidates,
+  scanLeagueOutliersFromSlim,
+  TOP_STORY_LIMIT,
+  type InsightOutlierCandidate,
+  type LeagueGeneratorSetup,
+  type OverviewInsightsPayload,
+  type TopStoriesStatus,
+} from "@/lib/insights/generator-core";
+import {
+  stripRefProfileForInsights,
+  type SlimLeagueStats,
+} from "@/lib/insights/insight-input-slim";
 
-export const TOP_STORY_LIMIT = 3;
-export const WIN_RATE_OUTLIER_PP = 15;
-export const FOUL_RATE_VARIANCE_PCT = 10;
-export const MIN_MATRIX_GAMES = 8;
-export const MIN_WHISTLE_REF_GAMES = 50;
-
-export type TopStoriesStatus = "generated" | "fallback";
-
-export type InsightOutlierKind = "win-rate" | "whistle-pace";
-
-export type InsightOutlierCandidate = {
-  leagueId: (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
-  kind: InsightOutlierKind;
-  significance: number;
-  refSlug: string;
-  refName: string;
-  teamAbbr?: string;
-  teamLabel?: string;
-  matrix?: MatrixExtremeHighlight;
-  ref?: RefProfile;
-  whistleVariancePct?: number;
-};
-
-export type OverviewInsightsPayload = {
-  generatedAt: string;
-  cards: LeagueInsightCard[];
-  topStories: LeagueInsightCard[];
-  topStoriesStatus: TopStoriesStatus;
-};
-
-type LeagueGeneratorSetup = {
-  leagueId: (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
-  teams: { abbr: string; label: string; name: string; nbaId?: number }[];
-  getTeamSplits: (abbr: string) => TeamCrewSplit[];
-  matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga";
-};
+export {
+  candidateToInsightCard,
+  dedupeCards,
+  FOUL_RATE_VARIANCE_PCT,
+  generateTopStoriesFromCandidates,
+  MIN_MATRIX_GAMES,
+  MIN_WHISTLE_REF_GAMES,
+  scanLeagueOutliersFromSlim,
+  TOP_STORY_LIMIT,
+  WIN_RATE_OUTLIER_PP,
+} from "@/lib/insights/generator-core";
+export type {
+  InsightOutlierCandidate,
+  InsightOutlierKind,
+  OverviewInsightsPayload,
+  TopStoriesStatus,
+} from "@/lib/insights/generator-core";
 
 const LEAGUE_SETUP: Record<
   (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number],
@@ -77,6 +66,16 @@ const LEAGUE_SETUP: Record<
     })),
     getTeamSplits: getNbaTeamSplits,
     matrixLeague: "nba",
+  },
+  cbb: {
+    leagueId: "cbb",
+    teams: CBB_TEAMS.map((team) => ({
+      abbr: team.abbr,
+      label: cbbTeamFullName(team),
+      name: team.name,
+    })),
+    getTeamSplits: getCbbTeamSplits,
+    matrixLeague: "cbb",
   },
   nhl: {
     leagueId: "nhl",
@@ -97,6 +96,16 @@ const LEAGUE_SETUP: Record<
     })),
     getTeamSplits: getNflTeamSplits,
     matrixLeague: "nfl",
+  },
+  cfb: {
+    leagueId: "cfb",
+    teams: CFB_TEAMS.map((team) => ({
+      abbr: team.abbr,
+      label: cfbTeamFullName(team),
+      name: team.name,
+    })),
+    getTeamSplits: getCfbTeamSplits,
+    matrixLeague: "cfb",
   },
   epl: {
     leagueId: "epl",
@@ -120,40 +129,12 @@ const LEAGUE_SETUP: Record<
   },
 };
 
-function leaguePrefix(leagueId: LeagueId): string {
-  return LEAGUES[leagueId].pathPrefix;
-}
-
-function refHref(leagueId: LeagueId, slug: string): string {
-  return `${leaguePrefix(leagueId)}/refs/${slug}`;
-}
-
-function matrixHref(leagueId: LeagueId): string {
-  return `${leaguePrefix(leagueId)}/matrix`;
-}
-
-function trendsHref(leagueId: (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number]): string {
-  return insightsViewHref(leagueId, "trends");
-}
-
-function formatDeltaPts(delta: number): string {
-  const sign = delta > 0 ? "+" : "";
-  return `${sign}${delta.toFixed(1)}pp`;
-}
-
-function heroToneFromDelta(delta: number): LeagueInsightTone {
-  if (delta >= WIN_RATE_OUTLIER_PP) return "positive";
-  if (delta <= -WIN_RATE_OUTLIER_PP) return "negative";
-  return "neutral";
-}
-
-function whistleVariancePct(ref: RefProfile, stats: RefStatsFile): number {
-  const baseline = Math.max(stats.meta.leagueAvgFouls, 0.01);
-  return (Math.abs(ref.foulsDelta) / baseline) * 100;
-}
-
-function leaguePaceWhistlePerGame(stats: RefStatsFile): number {
-  return stats.meta.leagueAvgFouls ?? 0;
+function statsToSlim(stats: RefStatsFile): SlimLeagueStats {
+  return {
+    meta: stats.meta,
+    refs: stats.refs.map(stripRefProfileForInsights),
+    teamAtsBaselines: stats.teamAtsBaselines,
+  };
 }
 
 export function scanLeagueOutliers(
@@ -161,53 +142,7 @@ export function scanLeagueOutliers(
 ): InsightOutlierCandidate[] {
   const setup = LEAGUE_SETUP[leagueId];
   const { stats } = loadLeagueStats(leagueId);
-  if (stats.refs.length === 0) return [];
-
-  const candidates: InsightOutlierCandidate[] = [];
-
-  const matrix = computeRefTeamMatrix(
-    stats,
-    setup.teams,
-    setup.getTeamSplits,
-    MIN_MATRIX_GAMES,
-    { league: setup.matrixLeague },
-  );
-
-  for (const highlight of computeMatrixExtremes(matrix, 12)) {
-    if (highlight.games < MIN_MATRIX_GAMES) continue;
-    if (Math.abs(highlight.deltaPts) < WIN_RATE_OUTLIER_PP) continue;
-    candidates.push({
-      leagueId,
-      kind: "win-rate",
-      significance: Math.abs(highlight.deltaPts) * Math.log10(highlight.games + 1),
-      refSlug: highlight.refSlug,
-      refName: highlight.refName,
-      teamAbbr: highlight.teamAbbr,
-      teamLabel: highlight.teamLabel,
-      matrix: highlight,
-    });
-  }
-
-  const leagueAvg = Math.max(stats.meta.leagueAvgFouls, 0.01);
-  for (const ref of stats.refs) {
-    if (ref.games < MIN_WHISTLE_REF_GAMES) continue;
-    const variancePct = whistleVariancePct(ref, stats);
-    if (variancePct < FOUL_RATE_VARIANCE_PCT) continue;
-    candidates.push({
-      leagueId,
-      kind: "whistle-pace",
-      significance: variancePct * Math.log10(ref.games + 1),
-      refSlug: ref.slug,
-      refName: ref.name,
-      ref,
-      whistleVariancePct: variancePct,
-    });
-  }
-
-  void leaguePaceWhistlePerGame(stats);
-  void leagueAvg;
-
-  return candidates;
+  return scanLeagueOutliersFromSlim(statsToSlim(stats), setup);
 }
 
 export function scanAllProLeagueOutliers(): InsightOutlierCandidate[] {
@@ -218,147 +153,11 @@ export function scanAllProLeagueOutliers(): InsightOutlierCandidate[] {
   return all.sort((a, b) => b.significance - a.significance);
 }
 
-function winRateHeadline(
-  candidate: InsightOutlierCandidate,
-  leagueLabel: string,
-): string {
-  const highlight = candidate.matrix!;
-  const pct = Math.abs(highlight.deltaPts).toFixed(1);
-  const direction = highlight.deltaPts > 0 ? "above" : "below";
-  return applyClinicalTone(
-    `${highlight.refName} is showing a ${pct}% win-rate outlier ${direction} the ${highlight.teamLabel} baseline in ${leagueLabel} games`,
-  );
-}
-
-function whistleHeadline(
-  candidate: InsightOutlierCandidate,
-  leagueLabel: string,
-  whistleUnit: string,
-): string {
-  const ref = candidate.ref!;
-  const variance = candidate.whistleVariancePct!.toFixed(1);
-  const direction = ref.foulsDelta > 0 ? "above" : "below";
-  return applyClinicalTone(
-    `${ref.name} is pacing ${variance}% ${direction} league average for ${whistleUnit} in ${leagueLabel}`,
-  );
-}
-
-export function candidateToInsightCard(candidate: InsightOutlierCandidate): LeagueInsightCard {
-  const config = LEAGUES[candidate.leagueId];
-  const copy = sportCopy(candidate.leagueId);
-
-  if (candidate.kind === "win-rate" && candidate.matrix) {
-    const highlight = candidate.matrix;
-    const splitPct = formatPct(highlight.winRate);
-    const baselinePct = formatBaselinePct(
-      highlight.baselineGames,
-      highlight.baselineWinRate,
-    );
-    const deltaLabel = formatDeltaPts(highlight.deltaPts);
-
-    return {
-      leagueId: candidate.leagueId,
-      label: config.label,
-      shortLabel: config.shortLabel,
-      kind: "matrix-edge",
-      kicker: "Statistically significant ref×team split",
-      headline: winRateHeadline(candidate, config.shortLabel),
-      story: applyClinicalTone(
-        `${highlight.wins}-${highlight.losses} (${splitPct}) across ${highlight.games} games. Team sample without this official: ${baselinePct} (${formatMatrixHighlightBaseline(highlight)}).`,
-      ),
-      heroValue: deltaLabel,
-      heroLabel: "Win rate vs team baseline",
-      heroTone: heroToneFromDelta(highlight.deltaPts),
-      stats: [
-        { label: "Ref×team record", value: `${highlight.wins}-${highlight.losses}` },
-        { label: "Games", value: String(highlight.games) },
-        { label: "Team baseline", value: baselinePct },
-      ],
-      links: [
-        { label: "Open matrix", href: matrixHref(candidate.leagueId) },
-        { label: "Ref profile", href: refHref(candidate.leagueId, highlight.refSlug) },
-        { label: "League trends", href: trendsHref(candidate.leagueId) },
-      ],
-      entityName: highlight.refName,
-      entityHref: refHref(candidate.leagueId, highlight.refSlug),
-      teamLabel: highlight.teamLabel,
-      refSlug: highlight.refSlug,
-      teamAbbr: highlight.teamAbbr,
-      drilldownId: insightDrilldownId(
-        candidate.leagueId,
-        highlight.refSlug,
-        highlight.teamAbbr,
-      ),
-    };
-  }
-
-  const ref = candidate.ref!;
-  const varianceLabel = `${candidate.whistleVariancePct!.toFixed(1)}%`;
-
-  return {
-    leagueId: candidate.leagueId,
-    label: config.label,
-    shortLabel: config.shortLabel,
-    kind: "ref-outlier",
-    kicker: "Whistle pace outlier",
-    headline: whistleHeadline(candidate, config.shortLabel, copy.whistleUnit),
-    story: applyClinicalTone(
-      `${ref.name} averages ${ref.avgFouls} ${copy.whistleUnit} per game (${formatSigned(ref.foulsDelta)} vs league) across ${ref.games} verified games.`,
-    ),
-    heroValue: varianceLabel,
-    heroLabel: `${copy.whistleUnit} variance vs league`,
-    heroTone: ref.foulsDelta > 0 ? "positive" : "negative",
-    stats: [
-      { label: `${copy.whistleUnit} per game`, value: String(ref.avgFouls) },
-      { label: "Vs league avg", value: formatSigned(ref.foulsDelta) },
-      { label: "Sample", value: `${ref.games} games` },
-    ],
-    links: [
-      { label: "Ref profile", href: refHref(candidate.leagueId, ref.slug) },
-      { label: "League findings", href: insightsViewHref(candidate.leagueId, "findings") },
-      { label: `${config.shortLabel} hub`, href: leaguePrefix(candidate.leagueId) || "/" },
-    ],
-    entityName: ref.name,
-    entityHref: refHref(candidate.leagueId, ref.slug),
-    refSlug: ref.slug,
-  };
-}
-
-function dedupeCards(cards: LeagueInsightCard[]): LeagueInsightCard[] {
-  const seen = new Set<string>();
-  const out: LeagueInsightCard[] = [];
-  for (const card of cards) {
-    const key = `${card.leagueId}:${card.refSlug ?? card.headline}:${card.teamAbbr ?? ""}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(card);
-  }
-  return out;
-}
-
 export function generateTopStories(limit = TOP_STORY_LIMIT): {
-  stories: LeagueInsightCard[];
+  stories: import("@/lib/league-overview-insights").LeagueInsightCard[];
   status: TopStoriesStatus;
 } {
-  const candidates = scanAllProLeagueOutliers();
-  const generated = dedupeCards(candidates.map(candidateToInsightCard)).slice(0, limit);
-
-  if (generated.length >= limit) {
-    return { stories: generated, status: "generated" };
-  }
-
-  if (generated.length > 0) {
-    const filler = EVERGREEN_TOP_STORIES.filter(
-      (card) => !generated.some((g) => g.leagueId === card.leagueId),
-    );
-    const merged = dedupeCards([...generated, ...filler]).slice(0, limit);
-    return { stories: merged, status: merged.length === generated.length ? "generated" : "fallback" };
-  }
-
-  return {
-    stories: EVERGREEN_TOP_STORIES.slice(0, limit),
-    status: "fallback",
-  };
+  return generateTopStoriesFromCandidates(scanAllProLeagueOutliers(), limit);
 }
 
 export function generateOverviewInsightsPayload(): OverviewInsightsPayload {
@@ -376,4 +175,101 @@ export function generateOverviewInsightsPayload(): OverviewInsightsPayload {
 /** Pro-league scope guard for ingest + generator pipelines. */
 export function isAllowedInsightLeague(leagueId: LeagueId): boolean {
   return (PRO_VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
+}
+
+export type TeamTopFinding = {
+  headline: string;
+  body: string;
+  refSlug?: string;
+  refName?: string;
+  category: "win-rate" | "whistle-pace" | "team-insight";
+  heroValue?: string;
+  sampleGames?: number;
+};
+
+function formatDeltaPts(delta: number): string {
+  const sign = delta > 0 ? "+" : "";
+  return `${sign}${delta.toFixed(1)}pp`;
+}
+
+function teamTopFindingFromOutlier(
+  candidate: InsightOutlierCandidate,
+): TeamTopFinding | null {
+  if (candidate.kind === "win-rate" && candidate.matrix) {
+    const highlight = candidate.matrix;
+    const deltaLabel = formatDeltaPts(highlight.deltaPts);
+    const direction = highlight.deltaPts > 0 ? "above" : "below";
+    return {
+      headline: applyClinicalTone(
+        `${highlight.refName}: ${formatPct(highlight.winRate)} win rate ${direction} ${highlight.teamLabel} baseline`,
+      ),
+      body: applyClinicalTone(
+        `${highlight.wins}-${highlight.losses} across ${highlight.games} games (${deltaLabel} vs team sample).`,
+      ),
+      refSlug: highlight.refSlug,
+      refName: highlight.refName,
+      category: "win-rate",
+      heroValue: deltaLabel,
+      sampleGames: highlight.games,
+    };
+  }
+
+  if (candidate.kind === "whistle-pace" && candidate.ref) {
+    const ref = candidate.ref;
+    const variance = candidate.whistleVariancePct!.toFixed(1);
+    return {
+      headline: applyClinicalTone(
+        `${ref.name}: ${variance}% whistle pace variance vs league`,
+      ),
+      body: applyClinicalTone(
+        `${ref.avgFouls} per game (${formatSigned(ref.foulsDelta)} vs league) across ${ref.games} games.`,
+      ),
+      refSlug: ref.slug,
+      refName: ref.name,
+      category: "whistle-pace",
+      heroValue: `${variance}%`,
+      sampleGames: ref.games,
+    };
+  }
+
+  return null;
+}
+
+function teamTopFindingFromInsight(insight: TeamInsight): TeamTopFinding {
+  return {
+    headline: applyClinicalTone(insight.title),
+    body: applyClinicalTone(insight.body),
+    refSlug: insight.refSlug,
+    refName: insight.refName,
+    category: "team-insight",
+    sampleGames: insight.sampleGames,
+  };
+}
+
+/** Most significant league or team-scoped finding for a team insight hub header. */
+export function findTeamTopFinding(
+  leagueId: LeagueId,
+  teamAbbr: string,
+  fallbackInsights?: TeamInsight[],
+): TeamTopFinding | null {
+  const abbr = teamAbbr.toUpperCase();
+
+  if (isAllowedInsightLeague(leagueId)) {
+    const outliers = scanLeagueOutliers(
+      leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number],
+    )
+      .filter((candidate) => candidate.teamAbbr?.toUpperCase() === abbr)
+      .sort((a, b) => b.significance - a.significance);
+
+    if (outliers.length > 0) {
+      const finding = teamTopFindingFromOutlier(outliers[0]!);
+      if (finding) return finding;
+    }
+  }
+
+  if (fallbackInsights && fallbackInsights.length > 0) {
+    return teamTopFindingFromInsight(fallbackInsights[0]!);
+  }
+
+  return null;
 }

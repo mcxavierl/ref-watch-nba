@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   FOUL_RATE_VARIANCE_PCT,
+  findTeamTopFinding,
   generateTopStories,
   isAllowedInsightLeague,
   scanAllProLeagueOutliers,
@@ -12,12 +13,11 @@ import { EVERGREEN_TOP_STORIES } from "./evergreen";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 
 describe("insight generator", () => {
-  it("only scans pro verified live leagues", () => {
+  it("scans verified live leagues including college when data exists", () => {
     for (const leagueId of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
       assert.equal(isAllowedInsightLeague(leagueId), true);
     }
-    assert.equal(isAllowedInsightLeague("cbb"), false);
-    assert.equal(isAllowedInsightLeague("cfb"), false);
+    assert.equal(isAllowedInsightLeague("wnba"), false);
   });
 
   it("applies clinical tone filter to sensational copy", () => {
@@ -60,5 +60,34 @@ describe("insight generator", () => {
       assert.ok(Array.isArray(story.links));
       assert.ok(story.links.length > 0);
     }
+  });
+
+  it("findTeamTopFinding filters league outliers by team", () => {
+    const finding = findTeamTopFinding("nba", "LAL");
+    if (finding) {
+      assert.equal(typeof finding.headline, "string");
+      assert.equal(typeof finding.body, "string");
+      assert.ok(
+        finding.category === "win-rate" ||
+          finding.category === "whistle-pace" ||
+          finding.category === "team-insight",
+      );
+    }
+  });
+
+  it("findTeamTopFinding falls back to team insights for NCAA leagues", () => {
+    const fallback = [
+      {
+        id: "cbb-win",
+        category: "win-record" as const,
+        title: "Win rate pattern",
+        body: "Sample insight for Duke.",
+        sampleGames: 8,
+      },
+    ];
+    const finding = findTeamTopFinding("cbb", "DUKE", fallback);
+    assert.ok(finding);
+    assert.equal(finding?.category, "team-insight");
+    assert.match(finding?.headline ?? "", /Win rate pattern/i);
   });
 });

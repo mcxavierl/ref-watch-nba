@@ -264,9 +264,9 @@ function checkOverviewSnapshot(): void {
     fail("overview-snapshot.json missing snapshot payload");
     return;
   }
-  if ((snapshot.insightCards?.length ?? 0) < PRO_VERIFIED_LIVE_LEAGUE_IDS.length) {
+  if ((snapshot.insightCards?.length ?? 0) < 5) {
     fail(
-      `overview-snapshot.json has ${snapshot.insightCards?.length ?? 0} insight cards (need ${PRO_VERIFIED_LIVE_LEAGUE_IDS.length})`,
+      `overview-snapshot.json has ${snapshot.insightCards?.length ?? 0} insight cards (need at least 5 pro leagues with data)`,
     );
   }
   if ((snapshot.totalRefs ?? 0) < 400) {

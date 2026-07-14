@@ -11,7 +11,7 @@ export const EVERGREEN_TOP_STORIES: LeagueInsightCard[] = [
     headline: "Historical ref-team pairing trends are being updated",
     story:
       "The ref×team matrix is recalculating after the latest ingest. Check back for verified win-rate and whistle outliers once sample thresholds are met.",
-    heroValue: "—",
+    heroValue: "N/A",
     heroLabel: "Status",
     heroTone: "neutral",
     stats: [
@@ -32,7 +32,7 @@ export const EVERGREEN_TOP_STORIES: LeagueInsightCard[] = [
     headline: "League whistle pace baselines are recalibrating",
     story:
       "Flag-volume and scoring pace metrics are syncing with the latest game logs. Outlier headlines appear when variance clears the significance threshold.",
-    heroValue: "—",
+    heroValue: "N/A",
     heroLabel: "Status",
     heroTone: "neutral",
     stats: [
@@ -53,7 +53,7 @@ export const EVERGREEN_TOP_STORIES: LeagueInsightCard[] = [
     headline: "No material outliers in the current ingest window",
     story:
       "Sample sizes and baseline comparisons did not surface a headline-grade split this cycle. Verified ref profiles and matrix cells remain available in each league hub.",
-    heroValue: "—",
+    heroValue: "N/A",
     heroLabel: "Status",
     heroTone: "neutral",
     stats: [

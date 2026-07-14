@@ -17,8 +17,10 @@ const DATA_LEAGUE: Record<
   RuntimeGameLogEntry["league"]
 > = {
   nba: "NBA",
+  cbb: "CBB",
   nhl: "NHL",
   nfl: "NFL",
+  cfb: "CFB",
   epl: "EPL",
   laliga: "LALIGA",
 };
@@ -116,7 +118,11 @@ function loadLeagueGameLogs(
         ? path.join(root, "data", "nfl", "game-logs.json")
         : leagueId === "epl"
           ? path.join(root, "data", "epl", "game-logs.json")
-          : path.join(root, "data", "laliga", "game-logs.json");
+          : leagueId === "cbb"
+            ? path.join(root, "data", "cbb", "game-logs.json")
+            : leagueId === "cfb"
+              ? path.join(root, "data", "cfb", "game-logs.json")
+              : path.join(root, "data", "laliga", "game-logs.json");
 
   const file = readJson<{ games: RuntimeGameLogEntry[] }>(filePath);
   return file?.games ?? [];
@@ -124,8 +130,10 @@ function loadLeagueGameLogs(
 
 const REF_STATS_PATH: Partial<Record<LeagueId, string>> = {
   nba: "data/ref-stats.json",
+  cbb: "data/cbb/ref-stats.json",
   nhl: "data/nhl/ref-stats.json",
   nfl: "data/nfl/ref-stats.json",
+  cfb: "data/cfb/ref-stats.json",
   epl: "data/epl/ref-stats.json",
   laliga: "data/laliga/ref-stats.json",
 };

@@ -1,17 +1,11 @@
-import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
 import { formatLeagueSeasonStart } from "@/config/leagueConfig";
 import { isCatalogSlugVisible } from "@/config/leagues";
 import {
   isVerifiedLiveLeague,
-  isNcaaConferenceGatedLive,
   PRIMARY_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/league-verification";
-import {
-  isNcaaConferenceGatedLeague,
-  NCAA_KEY_CONFERENCES_LABEL,
-} from "@/lib/ncaa-conference-gate";
 
 export type CatalogLeagueStatus = "live" | "coming-soon";
 
@@ -55,9 +49,6 @@ export function catalogStatusLabel(entry: CatalogLeagueEntry): string {
  * Coming-soon entries are roadmap only: no routes, no header switcher, no data loaders.
  */
 export function catalogLeagueDisplayLabel(entry: CatalogLeagueEntry): string {
-  if (entry.leagueId && isNcaaConferenceGatedLeague(entry.leagueId)) {
-    return `${entry.label} ${NCAA_KEY_CONFERENCES_LABEL}`;
-  }
   return entry.label;
 }
 
@@ -112,33 +103,17 @@ export function catalogComingSoonEntries(): CatalogLeagueEntry[] {
   );
 }
 
-/** Full-league pro competitions plus conference-gated NCAA when build reports live data. */
+/** Verified live competitions in overview hub order. */
 export function catalogLiveCompetitionEntries(): CatalogLeagueEntry[] {
   const order = new Map<LeagueId, number>(
     PRIMARY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
   );
   return catalogEntriesForDisplay()
-    .filter((entry) => {
-      if (!entry.leagueId) return false;
-      if (isNcaaConferenceGatedLeague(entry.leagueId)) {
-        return isNcaaConferenceGatedLive(entry.leagueId);
-      }
-      return true;
-    })
+    .filter((entry) => entry.leagueId && entry.status === "live")
     .sort(
       (a, b) =>
         (order.get(a.leagueId!) ?? 99) - (order.get(b.leagueId!) ?? 99),
     );
-}
-
-/** Conference-gated NCAA hubs awaiting verified ingest (not yet in live tier). */
-export function catalogNcaaCoverageEntries(): CatalogLeagueEntry[] {
-  return catalogEntriesForDisplay().filter(
-    (entry) =>
-      entry.leagueId &&
-      isNcaaConferenceGatedLeague(entry.leagueId) &&
-      !isNcaaConferenceGatedLive(entry.leagueId),
-  );
 }
 
 export function catalogBySport(): { sport: CatalogSportGroup; label: string; entries: CatalogLeagueEntry[] }[] {

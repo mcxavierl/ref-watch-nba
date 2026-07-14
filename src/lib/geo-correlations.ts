@@ -77,8 +77,10 @@ const LEAGUE_TO_DATA: Record<FindingLeague, DataLeague> = {
 
 const LEAGUE_ID_TO_FINDING: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], FindingLeague> = {
   nba: "NBA",
-  nfl: "NFL",
+  cbb: "CBB",
   nhl: "NHL",
+  nfl: "NFL",
+  cfb: "CFB",
   epl: "EPL",
   laliga: "LALIGA",
 };

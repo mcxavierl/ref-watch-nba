@@ -1,0 +1,218 @@
+/* Unified insight card — Clinical Modern tokens */
+.insight-card {
+  --insight-accent: var(--muted);
+  --insight-border: color-mix(in srgb, var(--border) 70%, transparent);
+  --insight-surface: var(--surface);
+  color: var(--text);
+}
+
+.insight-card[data-league="nba"] { --insight-accent: var(--raptors); }
+.insight-card[data-league="nhl"] { --insight-accent: var(--nhl-blue); }
+.insight-card[data-league="nfl"] { --insight-accent: var(--nfl-green); }
+.insight-card[data-league="epl"] { --insight-accent: #8b6bb5; }
+.insight-card[data-league="laliga"] { --insight-accent: #c8102e; }
+
+/* Inline variant — team pages, quick lists */
+.insight-card--inline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--insight-border);
+  background: var(--insight-surface);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.2s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .insight-card--inline:hover {
+    border-color: color-mix(in srgb, var(--insight-accent) 35%, var(--insight-border));
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--insight-accent) 8%, transparent);
+  }
+}
+
+.insight-card--inline:focus-within {
+  outline: 2px solid color-mix(in srgb, var(--insight-accent) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.insight-card--inline .insight-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem 0.65rem;
+}
+
+.insight-card--inline .insight-card-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.insight-card--inline .insight-card-league {
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.insight-card--inline .insight-card-hero {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.insight-card--inline .insight-card-hero-value {
+  font-size: 1.35rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.insight-card--inline .insight-card-hero-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.insight-card--inline .insight-card-headline {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.insight-card--inline .insight-card-team {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.insight-card--inline .insight-card-story {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.insight-card--inline .insight-card-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+  gap: 0.5rem 0.75rem;
+  margin: 0;
+}
+
+.insight-card--inline .insight-card-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.insight-card--inline .insight-card-stats dt {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.insight-card--inline .insight-card-stats dd {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.insight-card--inline .insight-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  margin-top: 0.15rem;
+}
+
+.insight-card--inline .insight-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.insight-card--inline .insight-card-link:hover {
+  text-decoration: underline;
+}
+
+.insight-card--inline .insight-card-link svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.insight-card--inline .insight-card-entity-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--insight-accent) 45%, transparent);
+  text-underline-offset: 2px;
+}
+
+.insight-card--inline .insight-card-drilldown-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.insight-card--drilldown .insight-card-drilldown-trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+
+.insight-card--drilldown .insight-card-drilldown-trigger:disabled {
+  cursor: default;
+}
+
+/* Carousel variant reuses overview-top-story-card layout from overview-dashboard.css */
+.insight-card--carousel.overview-top-story-card::before {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--insight-accent, var(--raptors)) 14%, transparent) 0%,
+    transparent 55%
+  );
+}
+
+.insight-card--carousel .overview-top-story-visual {
+  border-color: color-mix(in srgb, var(--insight-accent, var(--border)) 28%, var(--border-subtle));
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--insight-accent, var(--raptors)) 22%, var(--surface-raised)) 0%,
+    color-mix(in srgb, var(--surface-raised) 90%, transparent) 100%
+  );
+}
+
+.insight-card--carousel .overview-top-story-icon {
+  color: color-mix(in srgb, var(--insight-accent, var(--text)) 80%, var(--text));
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .insight-card--inline,
+html.dark .insight-card--inline {
+  background: var(--bg-surface-1);
+  border-color: var(--border-subtle);
+}

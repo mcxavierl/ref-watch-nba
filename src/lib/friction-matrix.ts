@@ -76,8 +76,10 @@ export const LWIS_HIGH_IMPACT_Z_THRESHOLD = 2;
 
 const LEAGUE_TO_DATA: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], DataLeague> = {
   nba: "NBA",
+  cbb: "CBB",
   nhl: "NHL",
   nfl: "NFL",
+  cfb: "CFB",
   epl: "EPL",
   laliga: "LALIGA",
 };
@@ -380,7 +382,7 @@ function scanPlayerFriction(
       games: bucket.games,
       headline,
       summary: `Star-player proxy uses ${drawLabel} as a drawn-foul stand-in until full boxscore player splits are ingested.`,
-      comparativeLine: `With ${bucket.player.name} active, this official's games average ${avgDrawnProxy.toFixed(1)} ${drawLabel} (${bucket.games} games) vs ${seasonAvg.toFixed(1)} seasonal baseline — ${formatSigned(deltaPct)}% shift.`,
+      comparativeLine: `With ${bucket.player.name} active, this official's games average ${avgDrawnProxy.toFixed(1)} ${drawLabel} (${bucket.games} games) vs ${seasonAvg.toFixed(1)} seasonal baseline, a ${formatSigned(deltaPct)}% shift.`,
       pillLabel,
       metricValue: avgDrawnProxy.toFixed(1),
       baselineValue: seasonAvg.toFixed(1),

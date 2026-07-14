@@ -1,49 +1,20 @@
 "use client";
 
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
-import {
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  Flame,
-  Globe2,
-  Shield,
-  Snowflake,
-  Star,
-  type LucideIcon,
-} from "lucide-react";
-import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
-import type { LeagueInsightCard } from "@/lib/league-overview-insights";
-import type { TopStoriesStatus } from "@/lib/insights/generator";
-import { leagueHubHref, type LeagueId } from "@/lib/leagues";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { InsightCard } from "@/components/shared/InsightCard";
+import { useInsights } from "@/hooks/useInsights";
+import type { InsightsQueryResult } from "@/lib/insights/insights-query";
 
 const STORY_LIMIT = 3;
-const INSIGHTS_PUBLIC_PATH = "/data/insights.json";
-
-const STORY_ICONS: Partial<Record<LeagueId, LucideIcon>> = {
-  nba: Flame,
-  nfl: Shield,
-  nhl: Snowflake,
-  epl: Globe2,
-  laliga: Star,
-};
-
-type InsightsJsonPayload = {
-  topStories?: LeagueInsightCard[];
-  topStoriesStatus?: TopStoriesStatus;
-  cards?: LeagueInsightCard[];
-};
 
 type CarouselPhase = "loading" | "ready" | "fallback";
 
 type OverviewTopStoriesCarouselProps = {
-  cards: LeagueInsightCard[];
-  status?: TopStoriesStatus;
-  generatedAt?: string | null;
+  initialData: InsightsQueryResult;
 };
 
-function resolvePhase(status: TopStoriesStatus | undefined, storyCount: number): CarouselPhase {
+function resolvePhase(status: InsightsQueryResult["status"], storyCount: number): CarouselPhase {
   if (storyCount === 0) return "loading";
   if (status === "fallback") return "fallback";
   return "ready";
@@ -66,58 +37,25 @@ function StorySkeleton() {
   );
 }
 
-export function OverviewTopStoriesCarousel({
-  cards: initialCards,
-  status: initialStatus,
-  generatedAt,
-}: OverviewTopStoriesCarouselProps) {
-  const [cards, setCards] = useState(initialCards.slice(0, STORY_LIMIT));
-  const [status, setStatus] = useState<TopStoriesStatus | undefined>(initialStatus);
+export function OverviewTopStoriesCarousel({ initialData }: OverviewTopStoriesCarouselProps) {
+  const { insights, status, generatedAt } = useInsights({
+    initialData,
+    limit: STORY_LIMIT,
+  });
   const [phase, setPhase] = useState<CarouselPhase>(() =>
-    resolvePhase(initialStatus, initialCards.length),
+    resolvePhase(initialData.status, initialData.insights.length),
   );
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    setCards(initialCards.slice(0, STORY_LIMIT));
-    setStatus(initialStatus);
-    setPhase(resolvePhase(initialStatus, initialCards.length));
-  }, [initialCards, initialStatus]);
+    setPhase(resolvePhase(status, insights.length));
+  }, [insights, status]);
 
   useEffect(() => {
-    let cancelled = false;
-    const controller = new AbortController();
-
-    async function refreshFromPublicCache() {
-      try {
-        const response = await fetch(INSIGHTS_PUBLIC_PATH, {
-          signal: controller.signal,
-          cache: "no-store",
-        });
-        if (!response.ok) return;
-        const payload = (await response.json()) as InsightsJsonPayload;
-        if (cancelled) return;
-
-        const nextStories = payload.topStories ?? payload.cards?.slice(0, STORY_LIMIT) ?? [];
-        if (nextStories.length === 0) return;
-
-        setCards(nextStories.slice(0, STORY_LIMIT));
-        setStatus(payload.topStoriesStatus ?? "generated");
-        setPhase(resolvePhase(payload.topStoriesStatus, nextStories.length));
-        setActiveIndex(0);
-      } catch {
-        // Keep SSR bundle on network failure.
-      }
-    }
-
-    void refreshFromPublicCache();
-    return () => {
-      cancelled = true;
-      controller.abort();
-    };
+    setActiveIndex(0);
   }, [generatedAt]);
 
-  const stories = cards.slice(0, STORY_LIMIT);
+  const stories = useMemo(() => insights.slice(0, STORY_LIMIT), [insights]);
   const storyCount = stories.length;
 
   const goTo = useCallback(
@@ -154,7 +92,7 @@ export function OverviewTopStoriesCarousel({
             Live whistle edges worth watching
           </h1>
           <p className="overview-lead overview-lead--stories">
-            Three high-confidence patterns from verified leagues — refreshed from the latest
+            Three high-confidence patterns from verified leagues, refreshed from the latest
             ref×team matrix and outlier scans.
           </p>
           {phase === "fallback" ? (
@@ -188,67 +126,15 @@ export function OverviewTopStoriesCarousel({
       <div className="overview-top-stories-track">
         {showSkeleton ? <StorySkeleton /> : null}
 
-        {stories.map((card, index) => {
-          const Icon = STORY_ICONS[card.leagueId] ?? Flame;
-          const isActive = index === activeIndex;
-
-          return (
-            <article
-              key={`${card.leagueId}-${card.refSlug ?? card.headline}-${index}`}
-              className={`overview-top-story-card${isActive ? " overview-top-story-card--active" : ""}`}
-              data-league={card.leagueId}
-              data-tone={card.heroTone}
-              aria-hidden={!isActive}
-            >
-              <div className="overview-top-story-visual" aria-hidden>
-                <Icon className="overview-top-story-icon" />
-              </div>
-
-              <div className="overview-top-story-copy">
-                <header className="overview-top-story-meta">
-                  <span className="overview-top-story-league">{card.shortLabel}</span>
-                  <LeagueSeasonStartBadge leagueId={card.leagueId} />
-                  <span className="overview-top-story-kicker">{card.kicker}</span>
-                </header>
-
-                <p className="overview-top-story-hero">
-                  <span className="overview-top-story-value">{card.heroValue}</span>
-                  <span className="overview-top-story-value-label">{card.heroLabel}</span>
-                </p>
-
-                <h2 className="overview-top-story-headline">
-                  {card.entityName ? (
-                    <>
-                      {card.entityName}
-                      {card.teamLabel ? (
-                        <span className="overview-top-story-team"> × {card.teamLabel}</span>
-                      ) : null}
-                    </>
-                  ) : (
-                    card.headline
-                  )}
-                </h2>
-
-                <p className="overview-top-story-body">{card.story}</p>
-
-                <div className="overview-top-story-actions">
-                  {card.links[0] ? (
-                    <Link href={card.links[0].href} className="overview-top-story-link">
-                      {card.links[0].label}
-                      <ArrowRight aria-hidden />
-                    </Link>
-                  ) : null}
-                  <Link
-                    href={leagueHubHref(card.leagueId)}
-                    className="overview-top-story-link overview-top-story-link--muted"
-                  >
-                    Open {card.shortLabel} hub
-                  </Link>
-                </div>
-              </div>
-            </article>
-          );
-        })}
+        {stories.map((card, index) => (
+          <InsightCard
+            key={`${card.leagueId}-${card.refSlug ?? card.headline}-${index}`}
+            card={card}
+            variant="carousel"
+            index={index}
+            active={index === activeIndex}
+          />
+        ))}
       </div>
 
       {storyCount > 1 ? (

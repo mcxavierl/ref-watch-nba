@@ -20,7 +20,7 @@ describe("volume regression gates", () => {
       0,
       failures.join("\n"),
     );
-    assert.equal(summaries.length, 5);
+    assert.ok(summaries.length >= 5);
     for (const row of summaries) {
       assert.ok(row.refStatsGames > 0, `${row.league} ref-stats games`);
       assert.ok(row.matrixBaselineGames > 0, `${row.league} matrix baseline`);

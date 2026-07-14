@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { LeagueChooser } from "@/components/LeagueChooser";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewComparativeScorecard } from "@/components/OverviewComparativeScorecard";
@@ -15,7 +14,6 @@ import {
   catalogComingSoonEntries,
   catalogCompetitionCount,
   catalogLiveCompetitionEntries,
-  catalogNcaaCoverageEntries,
   catalogStatusLabel,
   type CatalogLeagueEntry,
 } from "@/lib/league-catalog";
@@ -30,49 +28,28 @@ function formatCount(n: number): string {
   return n.toLocaleString("en-US");
 }
 
-function CatalogLeagueRow({
-  entry,
-  subdued = false,
-}: {
-  entry: CatalogLeagueEntry;
-  subdued?: boolean;
-}) {
+function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
   const inner = (
     <>
       <span className="overview-catalog-name">{entry.label}</span>
       <span className="overview-catalog-meta">
-        {subdued ? (
-          <span className="overview-limited-coverage-badge overview-limited-coverage-badge--catalog">
-            Limited coverage
-          </span>
-        ) : (
-          <span className={`overview-catalog-status overview-catalog-status--${entry.status}`}>
-            {catalogStatusLabel(entry)}
-          </span>
-        )}
+        <span className={`overview-catalog-status overview-catalog-status--${entry.status}`}>
+          {catalogStatusLabel(entry)}
+        </span>
       </span>
     </>
   );
 
   if (entry.href && entry.status !== "coming-soon") {
     return (
-      <Link
-        href={entry.href}
-        className={`overview-catalog-row overview-catalog-row--link${
-          subdued ? " overview-catalog-row--ncaa" : ""
-        }`}
-      >
+      <Link href={entry.href} className="overview-catalog-row overview-catalog-row--link">
         {inner}
       </Link>
     );
   }
 
   return (
-    <div
-      className={`overview-catalog-row overview-catalog-row--static${
-        subdued ? " overview-catalog-row--ncaa" : ""
-      }`}
-    >
+    <div className="overview-catalog-row overview-catalog-row--static">
       {inner}
     </div>
   );
@@ -120,16 +97,17 @@ type OverviewDashboardProps = {
 
 export function OverviewDashboard({ data }: OverviewDashboardProps) {
   const liveCatalog = catalogLiveCompetitionEntries();
-  const ncaaCatalog = catalogNcaaCoverageEntries();
   const comingSoonCatalog = catalogComingSoonEntries().slice(0, 6);
   const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
 
   return (
     <DashboardShell>
       <OverviewTopStoriesCarousel
-        cards={data.topStories}
-        status={data.topStoriesStatus}
-        generatedAt={data.topStoriesGeneratedAt}
+        initialData={{
+          insights: data.topStories,
+          status: data.topStoriesStatus,
+          generatedAt: data.topStoriesGeneratedAt,
+        }}
       />
 
       <div className="overview-dashboard-breathe">
@@ -147,11 +125,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               <summary className="overview-sidebar-heading overview-catalog-summary">
                 <span className="overview-catalog-summary-copy">
                   <span className="overview-catalog-summary-title">League catalog</span>
-                  <span className="overview-catalog-summary-hint">
-                    {ncaaCatalog.length > 0
-                      ? "Live hubs and limited NCAA"
-                      : "Live verified hubs"}
-                  </span>
+                  <span className="overview-catalog-summary-hint">Live verified hubs</span>
                 </span>
                 <span
                   className="overview-sidebar-count"
@@ -171,26 +145,12 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                   </div>
                 </section>
 
-                {ncaaCatalog.length > 0 ? (
-                  <section className="overview-catalog-segment overview-catalog-segment--ncaa">
-                    <h3 className="overview-catalog-segment-title">NCAA coverage (limited)</h3>
-                    <p className="overview-catalog-segment-hint">
-                      Key conferences only, not full-league live infrastructure.
-                    </p>
-                    <div className="overview-catalog-list">
-                      {ncaaCatalog.map((entry) => (
-                        <CatalogLeagueRow key={entry.id} entry={entry} subdued />
-                      ))}
-                    </div>
-                  </section>
-                ) : null}
-
                 {comingSoonCatalog.length > 0 ? (
                   <section className="overview-catalog-segment overview-catalog-segment--soon">
                     <h3 className="overview-catalog-segment-title">On the roadmap</h3>
                     <div className="overview-catalog-list">
                       {comingSoonCatalog.map((entry) => (
-                        <CatalogLeagueRow key={entry.id} entry={entry} subdued />
+                        <CatalogLeagueRow key={entry.id} entry={entry} />
                       ))}
                     </div>
                   </section>
@@ -202,7 +162,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               <h2 className="overview-sidebar-heading overview-sidebar-heading--static">Quick lists</h2>
               <p className="overview-sidebar-note">
                 Live-league shortcuts: rankings, tendencies, and matrix edges for verified
-                hubs, including college basketball.
+                hubs across all seven live competitions.
               </p>
               <OverviewQuickLists
                 leagueCards={data.leagueCards}
@@ -217,8 +177,8 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               <div className="overview-section-header">
                 <h2 className="overview-section-title">Quick lists</h2>
                 <p className="overview-section-lead">
-                  Rankings, tendencies, and matrix edges for live leagues, including college
-                  basketball.
+                  Rankings, tendencies, and matrix edges for live leagues across basketball,
+                  hockey, football, and soccer.
                 </p>
               </div>
               <OverviewQuickLists
@@ -321,7 +281,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               className="overview-expansion"
               title="Expanding coverage"
               titleId="overview-expansion-heading"
-              lead="More soccer leagues roll out on the roadmap. Live pro hubs and limited NCAA coverage stay unchanged."
+              lead="More soccer leagues roll out on the roadmap. Live hubs above stay unchanged."
             >
               <div className="overview-expansion-grid">
                 {liveCatalog.map((entry) =>

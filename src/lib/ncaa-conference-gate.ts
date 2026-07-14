@@ -15,7 +15,7 @@ export type NcaaConferenceTerritory =
   | "Pac-12"
   | "Other";
 
-/** High-value D-I conferences included in the phased NCAA launch. */
+/** Audited D-I conferences verified for phased NCAA launch (ACC, SEC, Big Ten). */
 export const LIVE_NCAA_CONFERENCES = [
   "ACC",
   "SEC",

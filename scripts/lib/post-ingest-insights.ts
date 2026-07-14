@@ -3,9 +3,8 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { generateOverviewInsightsPayload } from "../../src/lib/insights/generator";
-
-const ROOT = process.cwd();
+import { buildOverviewInsightsPayload } from "./insights-build";
+import type { OverviewInsightsPayload } from "../../src/lib/insights/generator-core";
 
 export type OverviewWriteResult = {
   dataPath: string;
@@ -15,10 +14,19 @@ export type OverviewWriteResult = {
   topStoriesStatus: "generated" | "fallback";
 };
 
-export function writeOverviewInsightsArtifacts(): OverviewWriteResult {
-  const payload = generateOverviewInsightsPayload();
-  const dataDir = path.join(ROOT, "data");
-  const publicDir = path.join(ROOT, "public", "data");
+export type PostIngestInsightOptions = {
+  force?: boolean;
+};
+
+export async function writeOverviewInsightsArtifacts(
+  options: PostIngestInsightOptions = {},
+): Promise<OverviewWriteResult> {
+  const payload: OverviewInsightsPayload = await buildOverviewInsightsPayload({
+    force: options.force,
+  });
+  const root = process.env.INSIGHTS_BUILD_ROOT ?? process.cwd();
+  const dataDir = path.join(root, "data");
+  const publicDir = path.join(root, "public", "data");
 
   fs.mkdirSync(dataDir, { recursive: true });
   fs.mkdirSync(publicDir, { recursive: true });
@@ -39,8 +47,10 @@ export function writeOverviewInsightsArtifacts(): OverviewWriteResult {
   };
 }
 
-export function runPostIngestInsightGenerator(): OverviewWriteResult {
-  const result = writeOverviewInsightsArtifacts();
+export async function runPostIngestInsightGenerator(
+  options: PostIngestInsightOptions = {},
+): Promise<OverviewWriteResult> {
+  const result = await writeOverviewInsightsArtifacts(options);
   console.log(
     `Insights: ${result.leagueCards} league cards, ${result.topStories} top stories (${result.topStoriesStatus})`,
   );

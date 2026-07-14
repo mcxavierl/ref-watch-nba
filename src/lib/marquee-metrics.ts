@@ -38,8 +38,10 @@ export interface RefMarqueePerformance {
 
 const LEAGUE_TO_DATA: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], DataLeague> = {
   nba: "NBA",
+  cbb: "CBB",
   nhl: "NHL",
   nfl: "NFL",
+  cfb: "CFB",
   epl: "EPL",
   laliga: "LALIGA",
 };

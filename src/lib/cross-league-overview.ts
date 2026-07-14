@@ -1,16 +1,15 @@
 import { leagueCardsPerGame } from "@/lib/soccer-card-metrics";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import {
-  isNcaaConferenceGatedLeague,
-  NCAA_KEY_CONFERENCES_LABEL,
-} from "@/lib/ncaa-conference-gate";
-import {
   DASHBOARD_GRID_LEAGUE_IDS,
   isDashboardLeagueExposed,
   isLeagueAnalyticsUnlocked,
 } from "@/config/leagues";
 import { LEAGUES, leagueHubHref, type LeagueId } from "@/lib/leagues";
-import { loadOverviewInsightCards, loadTopStoriesBundle } from "@/lib/overview-insights-data";
+import {
+  loadInsightsBundle,
+  loadOverviewInsightCards,
+} from "@/lib/insights/insights-query";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import type { TopStoriesStatus } from "@/lib/insights/generator";
 import {
@@ -134,14 +133,10 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       }
     }
 
-    const ncaaSuffix = isNcaaConferenceGatedLeague(leagueId)
-      ? ` ${NCAA_KEY_CONFERENCES_LABEL}`
-      : "";
-
     leagueCards.push({
       leagueId,
-      label: `${config.label}${ncaaSuffix}`,
-      shortLabel: `${config.shortLabel}${ncaaSuffix}`,
+      label: config.label,
+      shortLabel: config.shortLabel,
       href: leagueHubHref(leagueId),
       refCount,
       gameCount,
@@ -163,7 +158,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
   }
 
   const orderedLeagueCards = sortLeaguePaceCards(leagueCards);
-  const topStoriesBundle = loadTopStoriesBundle();
+  const topStoriesBundle = loadInsightsBundle();
 
   return {
     totalRefs,
@@ -175,7 +170,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
     whistleLabel: "Whistle events logged",
     leagueCards: orderedLeagueCards,
     insightCards: loadOverviewInsightCards(),
-    topStories: topStoriesBundle.stories,
+    topStories: topStoriesBundle.insights,
     topStoriesStatus: topStoriesBundle.status,
     topStoriesGeneratedAt: topStoriesBundle.generatedAt,
     upcomingSlate: buildOverviewUpcomingSlate(),

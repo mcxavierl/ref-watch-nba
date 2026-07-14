@@ -1,3 +1,9 @@
+import { computeFindings as computeCbbFindings } from "@/lib/cbb/findings";
+import { getTeamSplits as getCbbTeamSplits } from "@/lib/cbb/data";
+import { CBB_TEAMS, teamFullName as cbbTeamFullName } from "@/lib/cbb/teams";
+import { computeFindings as computeCfbFindings } from "@/lib/cfb/findings";
+import { getTeamSplits as getCfbTeamSplits } from "@/lib/cfb/data";
+import { CFB_TEAMS, teamFullName as cfbTeamFullName } from "@/lib/cfb/teams";
 import { computeFindings as computeNbaFindings } from "@/lib/findings";
 import { computeFindings as computeEplFindings } from "@/lib/epl/findings";
 import { getTeamSplits as getEplTeamSplits } from "@/lib/epl/data";
@@ -14,6 +20,10 @@ import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "@/lib/nhl/teams";
 import type { Finding } from "@/lib/findings-shared";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import {
+  hasNcaaLiveConferenceCoverage,
+  isNcaaConferenceGatedLeague,
+} from "@/lib/ncaa-conference-gate";
 import { insightsViewHref } from "@/lib/insights-routes";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import {
@@ -29,6 +39,8 @@ import { formatBaselinePct, formatPct } from "@/lib/stats-utils";
 import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
+
+export { buildLeagueInsightCardForLeague } from "@/lib/insights/league-card-from-stats";
 
 export type LeagueInsightTone = "positive" | "negative" | "neutral";
 
@@ -59,7 +71,7 @@ type LeagueInsightConfig = {
   teams: { abbr: string; label: string; name: string; nbaId?: number }[];
   getTeamSplits: (abbr: string) => import("@/lib/types").TeamCrewSplit[];
   computeFindings: (limit?: number) => Finding[];
-  matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga";
+  matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 };
 
 const LEAGUE_CONFIG: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], LeagueInsightConfig> = {
@@ -74,6 +86,17 @@ const LEAGUE_CONFIG: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], Leagu
     getTeamSplits: getNbaTeamSplits,
     computeFindings: computeNbaFindings,
     matrixLeague: "nba",
+  },
+  cbb: {
+    leagueId: "cbb",
+    teams: CBB_TEAMS.map((team) => ({
+      abbr: team.abbr,
+      label: cbbTeamFullName(team),
+      name: team.name,
+    })),
+    getTeamSplits: getCbbTeamSplits,
+    computeFindings: computeCbbFindings,
+    matrixLeague: "cbb",
   },
   nhl: {
     leagueId: "nhl",
@@ -96,6 +119,17 @@ const LEAGUE_CONFIG: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], Leagu
     getTeamSplits: getNflTeamSplits,
     computeFindings: computeNflFindings,
     matrixLeague: "nfl",
+  },
+  cfb: {
+    leagueId: "cfb",
+    teams: CFB_TEAMS.map((team) => ({
+      abbr: team.abbr,
+      label: cfbTeamFullName(team),
+      name: team.name,
+    })),
+    getTeamSplits: getCfbTeamSplits,
+    computeFindings: computeCfbFindings,
+    matrixLeague: "cfb",
   },
   epl: {
     leagueId: "epl",
@@ -269,6 +303,12 @@ export function buildLeagueInsightCards(): LeagueInsightCard[] {
     const setup = LEAGUE_CONFIG[leagueId];
     const { stats } = loadLeagueStats(leagueId);
     if (stats.refs.length === 0) continue;
+    if (
+      isNcaaConferenceGatedLeague(leagueId) &&
+      !hasNcaaLiveConferenceCoverage(leagueId, stats)
+    ) {
+      continue;
+    }
 
     const matrix = computeRefTeamMatrix(
       stats,
