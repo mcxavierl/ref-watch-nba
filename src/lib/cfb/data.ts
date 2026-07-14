@@ -20,7 +20,11 @@ import {
 import { resolveLeagueBaseline } from "@/lib/baselines";
 import { filterNcaaRefStats } from "@/lib/ncaa-conference-gate";
 import { cfbCrewMetricsProvenance } from "@/lib/provenance";
-import { getCachedRefStats, resolveRefStatsFromFsOrCache } from "@/lib/ref-stats-preload";
+import {
+  resolveRefStatsFromFsOrCache,
+  resolveTeamSplitsForLeague,
+  attachTeamSplits,
+} from "@/lib/ref-stats-preload";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data", "cfb");
@@ -105,11 +109,29 @@ function applyBaselines(stats: RefStatsFile): RefStatsFile {
   };
 }
 
+function loadTeamSplitsFromDisk(): Record<string, TeamCrewSplit[]> {
+  return tryReadJson<Record<string, TeamCrewSplit[]>>("team-splits.json") ?? {};
+}
+
+function resolveTeamSplits(
+  embedded: Record<string, TeamCrewSplit[]>,
+): Record<string, TeamCrewSplit[]> {
+  return resolveTeamSplitsForLeague("cfb", embedded, loadTeamSplitsFromDisk());
+}
+
 function normalizeRefStats(data: RefStatsFile): RefStatsFile {
+  const withSplits = attachTeamSplits(
+    "cfb",
+    {
+      ...data,
+      refs: data.refs ?? [],
+      teamSplits: migrateLegacySplits(data),
+    },
+    loadTeamSplitsFromDisk(),
+  );
   return {
-    ...data,
-    refs: data.refs ?? [],
-    teamSplits: migrateLegacySplits(data),
+    ...withSplits,
+    teamSplits: resolveTeamSplits(withSplits.teamSplits ?? {}),
   };
 }
 
