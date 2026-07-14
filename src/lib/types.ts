@@ -277,6 +277,10 @@ export interface RefStatsFile {
       | "hybrid";
     /** Hard gate: only true when stats come from verified real-source ingest. */
     data_verified?: boolean;
+    /** NCAA pipeline integrity gate (100% game + ref coverage). */
+    ncaa_pipeline_verified?: boolean;
+    /** NCAA pipeline coverage percentage (0-100). */
+    ncaa_pipeline_coverage_pct?: number;
     /** Human-readable provenance label for UI and agent responses. */
     data_source?: string;
     /** When ref×team W-L is merged from Basketball-Reference. */
