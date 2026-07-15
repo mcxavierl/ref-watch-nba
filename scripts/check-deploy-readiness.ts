@@ -19,7 +19,10 @@ import { getTeamSampleRecord } from "../src/lib/teamRecord";
 import type { RefStatsFile, TeamCrewSplit } from "../src/lib/types";
 import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
 import { runVolumeRegressionChecks } from "./lib/volume-regression";
-import { isCfbSimulatedData } from "../src/lib/cfb/data-source";
+import {
+  isCfbOfficialsPending,
+  isCfbSimulatedData,
+} from "../src/lib/cfb/data-source";
 
 const ROOT = process.cwd();
 
@@ -95,12 +98,15 @@ function checkDeployArtifacts(league: LiveLeague): void {
   }
 
   const source = readJson<RefStatsFile>(sourceStats);
-  const isOffseasonCfbSeed =
+  const skipCfbDeployArtifactGate =
     league === "cfb" &&
-    isCfbSimulatedData(source?.meta?.source) &&
-    (source?.refs?.length ?? 0) === 0;
-  if (isOffseasonCfbSeed) {
-    console.log(`  ⏭ ${league}: offseason seed — skipping deploy artifact gate`);
+    ((isCfbSimulatedData(source?.meta?.source) &&
+      (source?.refs?.length ?? 0) === 0) ||
+      isCfbOfficialsPending(source));
+  if (skipCfbDeployArtifactGate) {
+    console.log(
+      `  ⏭ ${league}: game-log-only ingest (officials pending) — skipping ref/matrix deploy gate`,
+    );
     return;
   }
   if (!source?.meta?.data_verified) {

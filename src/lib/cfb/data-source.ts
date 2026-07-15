@@ -10,6 +10,18 @@ export function isCfbSimulatedData(source: string | undefined): boolean {
   return source === "seeded" || source === "historical";
 }
 
+/** ESPN game logs shipped; ref crews blocked until a non-ESPN officials source lands. */
+export function isCfbOfficialsPending(
+  stats: Pick<RefStatsFile, "meta" | "refs"> | null | undefined,
+): boolean {
+  if (!stats?.meta) return false;
+  return (
+    isCfbVerifiedData(stats.meta.source) &&
+    (stats.refs?.length ?? 0) === 0 &&
+    (stats.meta.totalGamesProcessed ?? 0) > 0
+  );
+}
+
 export function cfbUsesSimulatedStats(meta: RefStatsFile["meta"]): boolean {
   return isCfbSimulatedData(meta.source) || !meta.atsAvailable;
 }

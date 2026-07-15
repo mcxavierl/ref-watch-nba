@@ -49,12 +49,7 @@ jobs:
             echo "No data changes to commit."
             exit 0
           fi
-          git commit -m "$(cat <<'EOF'
-chore: daily sports data refresh (CBB + CFB).
-
-Automated ESPN build pipeline update.
-EOF
-)"
+          git commit -m "chore: daily sports data refresh (CBB + CFB)" -m "Automated ESPN build pipeline update."
           git push
 
   notify-failure:
@@ -74,4 +69,4 @@ EOF
             echo "- Inspect \`logs/errors/cfb-ingest.json\` for unresolved ingest errors"
             echo "- Run \`npm run cfb-health\` locally after fixing schema/parser issues"
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "::error title=Sports data refresh failed::Build failed — check logs/errors/cfb-ingest.json and workflow logs."
+          echo "::error title=Sports data refresh failed::Build failed - check logs/errors/cfb-ingest.json and workflow logs."

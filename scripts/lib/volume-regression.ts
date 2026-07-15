@@ -21,6 +21,7 @@ import { seasonRowsFromBaselines } from "../../src/lib/trends";
 import type { RefStatsFile } from "../../src/lib/types";
 import { getRefStats as getCbbRefStats, getTeamSplits as getCbbTeamSplits } from "../../src/lib/cbb/data";
 import { CBB_TEAMS, teamFullName as cbbTeamFullName } from "../../src/lib/cbb/teams";
+import { isCfbOfficialsPending } from "../../src/lib/cfb/data-source";
 import { getRefStats as getCfbRefStats, getTeamSplits as getCfbTeamSplits } from "../../src/lib/cfb/data";
 import { CFB_TEAMS, teamFullName as cfbTeamFullName } from "../../src/lib/cfb/teams";
 import { getRefStats as getEplRefStats, getTeamSplits as getEplTeamSplits } from "../../src/lib/epl/data";
@@ -211,6 +212,10 @@ export function checkMatrixBaselines(
   topPanel: number;
   bottomPanel: number;
 } {
+  if (league === "cfb" && isCfbOfficialsPending(getCfbRefStats())) {
+    return { baselineGames: 0, topPanel: 0, bottomPanel: 0 };
+  }
+
   const sample = SAMPLE_TEAMS[league];
   const cases = {
     nba: {
