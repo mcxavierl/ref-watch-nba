@@ -1,5 +1,15 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
+import {
+  REF_CARD_BODY_CLASS,
+  REF_CARD_HEAD_CLASS,
+  REF_CARD_ICON_CLASS,
+  REF_CARD_KICKER_CLASS,
+  REF_CARD_METRIC_CLASS,
+  REF_CARD_METRIC_DETAIL_CLASS,
+  REF_CARD_METRIC_LABEL_CLASS,
+  RefCard,
+} from "@/components/hub/RefCard";
 import { RefAvatar } from "@/components/RefAvatar";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import type { HighlightCardAccent, HighlightCardTone } from "@/lib/highlight-card-visuals";
@@ -55,28 +65,32 @@ export function HighlightStatCard({
     ) : null;
 
   return (
-    <li
-      className="rankings-insight-card highlight-stat-card"
+    <RefCard
       data-league={leagueId}
       data-insight={insightKind}
       data-accent={accent}
       data-tone={tone}
     >
-      <div className="rankings-insight-card-head">
-        <span className="rankings-insight-icon" aria-hidden>
+      <div className={REF_CARD_HEAD_CLASS}>
+        <span className={`${REF_CARD_ICON_CLASS} ref-card-icon--badge`} aria-hidden>
           <Icon className="rankings-insight-icon-glyph" strokeWidth={2.1} />
         </span>
-        <p className="rankings-insight-kicker">{kicker}</p>
+        <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
       </div>
       {profile}
       {statValue ? (
-        <div className="rankings-insight-metric" aria-label={statLabel}>
-          <StandoutMetricValue tone={metricTone} size="lg">
-            {statValue}
-          </StandoutMetricValue>
+        <div className="ref-card-metric-block" aria-label={statLabel}>
+          <div className={REF_CARD_METRIC_CLASS}>
+            <StandoutMetricValue tone={metricTone} size="lg">
+              {statValue}
+            </StandoutMetricValue>
+          </div>
+          {statLabel ? (
+            <p className={REF_CARD_METRIC_LABEL_CLASS}>{statLabel}</p>
+          ) : null}
         </div>
       ) : null}
-      <p className="rankings-insight-body">{body}</p>
-    </li>
+      <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>{body}</p>
+    </RefCard>
   );
 }

@@ -20,6 +20,7 @@ import {
 import { formatFindingCardMeta } from "@/lib/finding-copy";
 import {
   findingStatDelightTone,
+  isContextualBenchmarkStat,
   isDirectionalTone,
   isStandoutTone,
 } from "@/lib/metric-delight";
@@ -175,7 +176,9 @@ function metricCellClass(stat: FindingStat, index: number): string {
   const tone = findingStatDelightTone(stat);
   const classes = ["finding-metric-cell"];
 
-  if (tone === "positive" || tone === "standout-high") {
+  if (isContextualBenchmarkStat(stat)) {
+    classes.push("finding-metric-cell--contextual");
+  } else if (tone === "positive" || tone === "standout-high") {
     classes.push("finding-metric-cell--positive");
   } else if (tone === "negative" || tone === "standout-low") {
     classes.push("finding-metric-cell--negative");
@@ -190,15 +193,28 @@ function metricCellClass(stat: FindingStat, index: number): string {
 
 function metricValueClass(stat: FindingStat, index: number): string {
   const tone = findingStatDelightTone(stat);
-  const size = delightValueSize(tone, index);
-  const classes = ["finding-metric-value"];
+  const contextual = isContextualBenchmarkStat(stat);
+  let size: "hero" | "lg" | "md";
+  if (contextual) {
+    size = "md";
+  } else if (index === 1 && isDirectionalTone(tone)) {
+    size = "hero";
+  } else {
+    size = delightValueSize(tone, index);
+  }
+  const classes = ["finding-metric-value", "tabular-nums"];
 
-  if (size === "hero") classes.push("finding-metric-value--hero");
-  else if (size === "lg") classes.push("finding-metric-value--lg");
+  if (contextual) {
+    classes.push("finding-metric-value--contextual");
+  } else if (size === "hero") {
+    classes.push("finding-metric-value--hero");
+  } else if (size === "lg") {
+    classes.push("finding-metric-value--lg");
+  }
 
-  if (isStandoutTone(tone)) {
+  if (!contextual && isStandoutTone(tone)) {
     classes.push(`finding-metric-value--${tone}`);
-  } else if (isDirectionalTone(tone)) {
+  } else if (!contextual && isDirectionalTone(tone)) {
     classes.push(`finding-metric-value--${tone}`);
   }
 
@@ -215,7 +231,11 @@ export function FindingMetricsGrid({ stats }: { stats: FindingStat[] }) {
         <div key={stat.label} className={metricCellClass(stat, index)}>
           <dd className={metricValueClass(stat, index)}>{stat.value}</dd>
           <dt className="finding-metric-label">{stat.label}</dt>
-          {stat.detail && <dd className="finding-metric-detail">{stat.detail}</dd>}
+          {stat.detail && (
+            <dd className="finding-metric-detail finding-metric-detail--muted">
+              {stat.detail}
+            </dd>
+          )}
         </div>
       ))}
     </dl>

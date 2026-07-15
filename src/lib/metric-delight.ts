@@ -104,11 +104,25 @@ function parseSignedNumber(value: string): number | null {
 
 const SAMPLE_STAT_LABEL = /^sample$/i;
 
+/** Contextual over/under rate - muted, not semantically colored. */
+export function isContextualBenchmarkStat(stat: FindingStat): boolean {
+  const label = stat.label.toLowerCase();
+  return (
+    label.includes("over benchmark") ||
+    label.includes("under benchmark") ||
+    label.includes("at benchmark")
+  );
+}
+
 /** Resolve delight tone for a finding stat cell (matches finding-highlights heuristics). */
 export function findingStatDelightTone(stat: FindingStat): MetricDelightTone {
   const label = stat.label.toLowerCase();
 
   if (SAMPLE_STAT_LABEL.test(stat.label.trim())) {
+    return "neutral";
+  }
+
+  if (isContextualBenchmarkStat(stat)) {
     return "neutral";
   }
 
@@ -119,12 +133,6 @@ export function findingStatDelightTone(stat: FindingStat): MetricDelightTone {
   const pct = parsePct(stat.value) ?? parsePct(stat.detail ?? "");
   if (pct != null) {
     const baseline = parseBaselineFromDetail(stat.detail) ?? 50;
-    if (label.includes("under benchmark") && pct >= baseline + RATE_SIGNIFICANT_PCT) {
-      return "neutral";
-    }
-    if (label.includes("over benchmark") && pct <= baseline - RATE_SIGNIFICANT_PCT) {
-      return "neutral";
-    }
     if (pct >= baseline + RATE_SIGNIFICANT_PCT) return "positive";
     if (pct <= baseline - RATE_SIGNIFICANT_PCT) return "negative";
     return "neutral";

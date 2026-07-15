@@ -138,3 +138,24 @@ describe("finding display stats", () => {
     assert.equal(filterDisplayStats(stats).length, 2);
   });
 });
+
+describe("metric delight tones", () => {
+  it("keeps contextual benchmark percentages neutral", async () => {
+    const { findingStatDelightTone, isContextualBenchmarkStat } = await import(
+      "@/lib/metric-delight"
+    );
+    const stat = { label: "Under benchmark", value: "36.0%", detail: "65 games" };
+    assert.equal(isContextualBenchmarkStat(stat), true);
+    assert.equal(findingStatDelightTone(stat), "neutral");
+  });
+
+  it("colors comparative scoring deltas", async () => {
+    const { findingStatDelightTone } = await import("@/lib/metric-delight");
+    const stat = {
+      label: "Delta vs baseline",
+      value: "-2.4 goals",
+      detail: "vs 2.8 league avg",
+    };
+    assert.equal(findingStatDelightTone(stat), "negative");
+  });
+});

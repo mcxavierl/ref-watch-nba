@@ -564,14 +564,9 @@ export function buildOverRateOutlierFinding(
         detail: `${ref.games} games`,
       },
       {
-        label: `Avg combined ${metricLabels.score}`,
-        value: String(ref.avgTotalPoints),
-        detail: `${formatSigned(ref.totalPointsDelta)} vs league`,
-      },
-      {
-        label: "Delta vs 50%",
-        value: `${(edge * 100).toFixed(1)} pts`,
-        detail: `Leans ${lean}`,
+        label: "Delta vs baseline",
+        value: `${formatSigned(ref.totalPointsDelta)} ${metricLabels.score}`,
+        detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
       },
     ],
     sampleNote: formatFindingSampleMeta(ref.games, stats.meta.seasons),
