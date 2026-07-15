@@ -2,20 +2,11 @@ import { loadLeagueStats, loadScopedLeagueStats } from "@/lib/load-league-stats"
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import {
+  COMPARE_LEAGUE_IDS,
   encodeCompareRef,
   type CompareRefBundle,
   type CompareRefPickerEntry,
 } from "@/lib/ref-compare";
-
-const COMPARE_LEAGUE_IDS: LeagueId[] = [
-  "nba",
-  "nhl",
-  "nfl",
-  "epl",
-  "laliga",
-  "cbb",
-  "cfb",
-];
 
 export function buildCompareRefPicker(): CompareRefPickerEntry[] {
   const entries: CompareRefPickerEntry[] = [];

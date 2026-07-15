@@ -122,8 +122,6 @@ const NAV_LINKS: Record<LeagueId, NavLink[]> = {
   ],
 };
 
-const HEADER_LEAGUES: LeagueId[] = getHeaderLeagueIds();
-
 type SiteNavProps = {
   id?: string;
 };
@@ -153,12 +151,13 @@ function LeagueNavLink({
 export function LeagueNav() {
   const pathname = usePathname();
   const league = headerActiveLeague(pathname ?? "/");
+  const headerLeagues = getHeaderLeagueIds();
 
   return (
     <nav className="league-nav" aria-label="Leagues" data-league={league ?? "overview"}>
       <div className="league-nav-scroll">
         <div className="league-nav-links">
-          {HEADER_LEAGUES.map((id) => (
+          {headerLeagues.map((id) => (
             <LeagueNavLink key={id} id={id} active={league === id} />
           ))}
         </div>

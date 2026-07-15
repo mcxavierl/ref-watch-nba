@@ -1,6 +1,7 @@
 import { isRefStatsPayload } from "@/lib/json-asset-guards";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import {
+  COMPARE_LEAGUE_IDS,
   encodeCompareRef,
   parseCompareRef,
   type CompareRefBundle,
@@ -13,15 +14,6 @@ import {
 } from "@/lib/season-scope";
 import type { RefStatsFile } from "@/lib/types";
 
-const COMPARE_LEAGUE_IDS: LeagueId[] = [
-  "nba",
-  "nhl",
-  "nfl",
-  "epl",
-  "laliga",
-  "cbb",
-  "cfb",
-];
 
 const statsCache = new Map<LeagueId, RefStatsFile>();
 let pickerCache: CompareRefPickerEntry[] | null = null;

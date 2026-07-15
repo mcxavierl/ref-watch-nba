@@ -7,7 +7,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata = buildPageMetadata({
   title: "Compare officials",
   description:
-    "Side-by-side referee and official tendency compare across NBA, NHL, NFL, EPL, La Liga, and college leagues. Scoring, whistle, and over-rate deltas, descriptive only.",
+    "Side-by-side referee and official tendency compare across NBA, NHL, NFL, EPL, and La Liga. Scoring, whistle, and over-rate deltas, descriptive only.",
   path: "/compare",
   keywords: [
     "referee compare",

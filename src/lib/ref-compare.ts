@@ -52,9 +52,9 @@ const COMPARE_LEAGUE_IDS: LeagueId[] = [
   "nfl",
   "epl",
   "laliga",
-  "cbb",
-  "cfb",
 ];
+
+export { COMPARE_LEAGUE_IDS };
 
 export function encodeCompareRef(leagueId: LeagueId, slug: string): CompareRefKey {
   return `${leagueId}:${slug}`;

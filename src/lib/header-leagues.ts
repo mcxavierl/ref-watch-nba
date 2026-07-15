@@ -7,15 +7,16 @@ export const INGEST_GATED_LEAGUE_IDS = [] as const satisfies readonly LeagueId[]
 
 export type IngestGatedLeagueId = (typeof INGEST_GATED_LEAGUE_IDS)[number];
 
+/** College leagues never appear in the site header sport switcher. */
+const HEADER_HIDDEN_LEAGUE_IDS: readonly LeagueId[] = ["cbb", "cfb"];
+
 /** Leagues with verified ingest shown in the header sport switcher. */
 export function getHeaderLeagueIds(): LeagueId[] {
-  if (isShowUnverifiedEnv()) {
-    return [...HEADER_LEAGUE_IDS];
-  }
-  if (process.env.NODE_ENV !== "production") {
-    return [...HEADER_LEAGUE_IDS];
-  }
-  return [...PRODUCTION_LIVE_HEADER_LEAGUE_IDS];
+  const base =
+    isShowUnverifiedEnv() || process.env.NODE_ENV !== "production"
+      ? [...HEADER_LEAGUE_IDS]
+      : [...PRODUCTION_LIVE_HEADER_LEAGUE_IDS];
+  return base.filter((id) => !HEADER_HIDDEN_LEAGUE_IDS.includes(id));
 }
 
 export function isIngestGatedLeague(leagueId: LeagueId): leagueId is IngestGatedLeagueId {

@@ -22,15 +22,9 @@ export const PRO_ONLY_LIVE_LEAGUE_IDS = [
   "laliga",
 ] as const satisfies readonly LeagueId[];
 
-/** Overview chooser, pace grid, and quick-list order. */
+/** Overview chooser, pace grid, and quick-list order (pro leagues only). */
 export const PRIMARY_LIVE_LEAGUE_IDS = [
-  "nba",
-  "cbb",
-  "nhl",
-  "nfl",
-  "cfb",
-  "epl",
-  "laliga",
+  ...PRO_ONLY_LIVE_LEAGUE_IDS,
 ] as const satisfies readonly LeagueId[];
 
 /** NCAA hubs on the overview dashboard — hidden until ingest is production-ready. */
