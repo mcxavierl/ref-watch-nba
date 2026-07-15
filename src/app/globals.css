@@ -132,6 +132,7 @@
   --z-raised: 10;
   --z-dropdown: 20;
   --z-sticky: 40;
+  --site-scroll-offset: 5.75rem;
   --z-overlay: 50;
   --z-tooltip: 60;
   --z-a11y: 90;
@@ -238,10 +239,15 @@ body {
 }
 
 html {
-  scroll-padding-top: 7.5rem;
+  scroll-padding-top: var(--site-scroll-offset);
 }
 
-/* ── Accessibility prefs (html data-* from A11ySettingsPanel) ── */
+@media (min-width: 768px) {
+  :root {
+    --site-scroll-offset: 4.85rem;
+  }
+}
+
 html[data-text="large"] {
   font-size: 118%;
 }

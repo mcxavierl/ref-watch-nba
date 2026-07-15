@@ -174,7 +174,7 @@ export function GameSlateCard({
         : null;
 
   return (
-    <article id={`game-${gameId}`} className="data-card scroll-mt-24" style={{ "--slate-i": slateIndex } as CSSProperties}>
+    <article id={`game-${gameId}`} className="data-card" style={{ "--slate-i": slateIndex } as CSSProperties}>
       <div className="data-card-header">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">

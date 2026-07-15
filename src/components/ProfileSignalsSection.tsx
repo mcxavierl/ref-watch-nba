@@ -33,7 +33,7 @@ export function ProfileSignalsSection({
 
   if (variant === "sidebar") {
     return (
-      <aside id="profile-signals" className="ref-signals-sidebar scroll-mt-24">
+      <aside id="profile-signals" className="ref-signals-sidebar">
         <div className="border-b border-border-subtle px-4 py-3 sm:px-5">
           <h2 className="text-sm font-semibold text-zinc-800">Profile signals</h2>
           <p className="mt-1 text-xs leading-relaxed text-zinc-500">
@@ -122,7 +122,7 @@ export function ProfileSignalsSection({
   }
 
   return (
-    <section id="profile-signals" className="section-block scroll-mt-24">
+    <section id="profile-signals" className="section-block">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="section-title">Profile signals</h2>

@@ -36,7 +36,7 @@ export function CloseGameSection({
     league === "NBA" || league === "CBB" ? "points" : league === "NHL" ? "goals" : "points";
   const sectionTitle =
     league === "NBA" || league === "CBB" ? "Tight-game proxy" : "Late-game proxy";
-  const sectionClass = embedded ? "" : "section-block scroll-mt-24";
+  const sectionClass = embedded ? "" : "section-block";
 
   return (
     <section id="close-game" className={sectionClass}>

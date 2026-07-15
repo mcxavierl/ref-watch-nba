@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Atkinson_Hyperlegible, Inter, Space_Grotesk } from "next/font/google";
+import { AnchorScrollManager } from "@/components/AnchorScrollManager";
 import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { JsonLd } from "@/components/JsonLd";
 import { RoutedSiteFooter } from "@/components/RoutedSiteFooter";
@@ -100,6 +101,7 @@ export default async function RootLayout({
         </a>
         <JsonLd data={[websiteJsonLd(), organizationJsonLd()]} />
         <SiteHeader />
+        <AnchorScrollManager />
         <main id="main-content" className="flex-1" tabIndex={-1}>
           {children}
         </main>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { scrollToElement } from "@/lib/scroll-offset";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MatrixSplitShareBar } from "@/components/MatrixSplitShareBar";
@@ -612,15 +613,15 @@ export function RefTeamMatrix({
       if (initialRefSlug && resolvedInitialTeam) {
         const selector = `[data-matrix-cell="${CSS.escape(initialRefSlug)}:${CSS.escape(resolvedInitialTeam)}"]`;
         const cell = document.querySelector(selector);
-        if (cell) {
-          cell.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (cell instanceof HTMLElement) {
+          scrollToElement(cell, "smooth");
           deepLinkScrolledRef.current = true;
           return;
         }
       }
 
       if (resolvedInitialTeam && teamPanelRef.current) {
-        teamPanelRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        scrollToElement(teamPanelRef.current, "smooth");
         deepLinkScrolledRef.current = true;
       }
     };

@@ -250,6 +250,24 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "signedDeltaTone for row metrics",
       ),
   },
+  {
+    name: "AnchorScrollManager wired in root layout",
+    run: () =>
+      auditFileContains(
+        "src/app/layout.tsx",
+        /AnchorScrollManager/,
+        "AnchorScrollManager in layout",
+      ),
+  },
+  {
+    name: "Single site scroll offset token in globals.css",
+    run: () =>
+      auditFileContains(
+        "src/app/globals.css",
+        /--site-scroll-offset/,
+        "--site-scroll-offset token",
+      ),
+  },
 ];
 
 function main(): void {

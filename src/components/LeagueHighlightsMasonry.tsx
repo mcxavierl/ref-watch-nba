@@ -85,7 +85,6 @@ export function LeagueHighlightsMasonry({
   return (
     <section
       id="dataset-findings"
-      className="scroll-mt-24"
       aria-labelledby={`${leagueId}-highlights-heading`}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">

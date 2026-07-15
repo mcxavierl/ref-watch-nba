@@ -85,8 +85,8 @@ export function FindingsSection({
   const hidden = featured ? feed.slice(initialVisibleCount) : [];
 
   const sectionClass = [
-    slateHero ? "slate-findings-hero scroll-mt-24" : "",
-    !slateHero && compact && !featured ? "" : !slateHero ? "mb-10 scroll-mt-24" : "",
+    slateHero ? "slate-findings-hero" : "",
+    !slateHero && compact && !featured ? "" : !slateHero ? "mb-10" : "",
   ]
     .filter(Boolean)
     .join(" ");
