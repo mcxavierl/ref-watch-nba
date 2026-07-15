@@ -87,7 +87,7 @@ describe("insight editorial helpers", () => {
     assert.ok((comparison?.leagueValue ?? 0) < comparison!.crewValue);
   });
 
-  it("builds win-rate comparison for matrix-edge cards", () => {
+  it("builds delta-vs-baseline comparison for matrix-edge cards", () => {
     const comparison = insightMetricComparison(
       sampleCard({
         kind: "matrix-edge",
@@ -102,8 +102,30 @@ describe("insight editorial helpers", () => {
     );
     assert.ok(comparison);
     assert.equal(comparison?.format, "pct");
-    assert.equal(comparison?.crewValue, 100);
+    assert.equal(comparison?.deltaPp, 51.5);
+    assert.equal(comparison?.refWinRate, 100);
+    assert.equal(comparison?.teamBaseline, 48.5);
+    assert.equal(comparison?.crewValue, 51.5);
     assert.equal(comparison?.leagueValue, 48.5);
+  });
+
+  it("derives negative delta from ref win rate and team baseline", () => {
+    const comparison = insightMetricComparison(
+      sampleCard({
+        kind: "matrix-edge",
+        heroValue: "-12.0pp",
+        heroLabel: "Win rate vs team baseline",
+        stats: [
+          { label: "Ref×team record", value: "2-6" },
+          { label: "Games", value: "8" },
+          { label: "Team baseline", value: "37.0%" },
+        ],
+      }),
+    );
+    assert.ok(comparison);
+    assert.equal(comparison?.deltaPp, -12);
+    assert.equal(comparison?.refWinRate, 25);
+    assert.equal(comparison?.teamBaseline, 37);
   });
 
   it("scores confidence from sample depth", () => {

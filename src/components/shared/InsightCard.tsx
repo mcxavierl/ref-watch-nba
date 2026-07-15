@@ -62,6 +62,19 @@ function carouselMetaLabel(card: LeagueInsightCard): string {
   return normalizeCarouselCopy(`${card.shortLabel} ref×team split`);
 }
 
+function comparisonImpactTone(
+  comparison: NonNullable<ReturnType<typeof insightMetricComparison>>,
+): "positive" | "negative" | "neutral" {
+  if (comparison.deltaPp !== undefined) {
+    if (comparison.deltaPp > 0) return "positive";
+    if (comparison.deltaPp < 0) return "negative";
+    return "neutral";
+  }
+  if (comparison.crewValue > comparison.leagueValue) return "positive";
+  if (comparison.crewValue < comparison.leagueValue) return "negative";
+  return "neutral";
+}
+
 function InsightCardMeta({
   card,
   compact = false,
@@ -75,7 +88,11 @@ function InsightCardMeta({
   return (
     <div className="insight-card-meta">
       {comparison ? (
-        <InsightMetricComparison comparison={comparison} compact={compact} />
+        <InsightMetricComparison
+          comparison={comparison}
+          compact={compact}
+          crewImpactTone={comparisonImpactTone(comparison)}
+        />
       ) : null}
       <InsightConfidenceBar score={confidence} compact={compact} />
     </div>

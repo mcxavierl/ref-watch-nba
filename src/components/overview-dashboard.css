@@ -642,10 +642,18 @@
 
 .overview-top-story-value {
   font-size: clamp(1.65rem, 4vw, 2.35rem);
-  font-weight: 750;
+  font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--text);
   font-variant-numeric: tabular-nums;
+}
+
+.overview-top-story-card[data-tone="positive"] .overview-top-story-value {
+  color: var(--accent-positive);
+}
+
+.overview-top-story-card[data-tone="negative"] .overview-top-story-value {
+  color: var(--accent-negative);
 }
 
 .overview-top-story-value-label {

@@ -13,11 +13,17 @@ export type EditorialInsightView = {
 };
 
 export type InsightMetricComparison = {
+  /** Bar magnitude for the crew / delta row. */
   crewValue: number;
+  /** Bar magnitude for the league / baseline row. */
   leagueValue: number;
   crewLabel: string;
   leagueLabel: string;
   format: "pct" | "decimal";
+  /** Ref×team matrix split: delta vs team baseline (percentage points). */
+  deltaPp?: number;
+  refWinRate?: number;
+  teamBaseline?: number;
 };
 
 function normalizeCopy(text: string): string {
@@ -234,21 +240,22 @@ export function insightMetricComparison(
     const baselinePct = baselineStat ? parsePctToken(baselineStat.value) : null;
 
     if (baselinePct !== null) {
-      const delta = parseNumericToken(card.heroValue);
       const recordWinRate = recordStat ? winRateFromRecord(recordStat.value) : null;
-      const crewPct =
-        recordWinRate ??
-        (delta !== null
-          ? Math.min(100, Math.max(0, baselinePct + delta))
-          : null);
+      const heroDelta = parseNumericToken(card.heroValue);
+      const deltaPp =
+        heroDelta ??
+        (recordWinRate !== null ? recordWinRate - baselinePct : null);
 
-      if (crewPct !== null) {
+      if (deltaPp !== null && recordWinRate !== null) {
         return {
-          crewValue: crewPct,
+          crewValue: Math.abs(deltaPp),
           leagueValue: baselinePct,
           crewLabel: "Ref×team win rate",
           leagueLabel: "Team baseline",
           format: "pct",
+          deltaPp,
+          refWinRate: recordWinRate,
+          teamBaseline: baselinePct,
         };
       }
     }

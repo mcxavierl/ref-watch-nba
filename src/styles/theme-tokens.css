@@ -38,6 +38,10 @@ html.dark {
   --accent-negative: #fb7185;
   --accent-negative-subtle: #881337;
 
+  --accent-green-rgb: 52, 211, 153;
+  --accent-red-rgb: 251, 113, 133;
+  --text-secondary-rgb: 209, 213, 219;
+
   --metric-positive-surface: color-mix(in srgb, var(--accent-positive) 12%, var(--bg-surface-1));
   --metric-negative-surface: color-mix(in srgb, var(--accent-negative) 12%, var(--bg-surface-1));
 
@@ -87,6 +91,10 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --accent-positive-subtle: #d1fae5;
   --accent-negative: #be123c;
   --accent-negative-subtle: #ffe4e6;
+
+  --accent-green-rgb: 4, 120, 87;
+  --accent-red-rgb: 190, 18, 60;
+  --text-secondary-rgb: 55, 65, 81;
 
   --metric-positive-surface: color-mix(in srgb, var(--accent-positive) 8%, var(--bg-surface-1));
   --metric-negative-surface: color-mix(in srgb, var(--accent-negative) 8%, var(--bg-surface-1));

@@ -335,9 +335,25 @@ html.dark .insight-card--inline {
 
 .insight-editorial-metric-value {
   font-size: 1.15rem;
-  font-weight: 750;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
   color: var(--text);
+}
+
+.insight-card[data-tone="positive"] .insight-editorial-metric--primary .insight-editorial-metric-value {
+  color: var(--accent-positive);
+}
+
+.insight-card[data-tone="negative"] .insight-editorial-metric--primary .insight-editorial-metric-value {
+  color: var(--accent-negative);
+}
+
+.insight-card .kpi-data-pill--block.kpi-data-pill--positive .kpi-data-pill__value {
+  color: var(--accent-positive);
+}
+
+.insight-card .kpi-data-pill--block.kpi-data-pill--negative .kpi-data-pill__value {
+  color: var(--accent-negative);
 }
 
 .insight-card--featured .insight-editorial-metric-value {
@@ -388,7 +404,7 @@ html.dark .insight-card--inline {
 .insight-card-meta {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0;
   margin: 0.65rem 0 0.5rem;
 }
 
@@ -396,16 +412,18 @@ html.dark .insight-card--inline {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  margin-bottom: 8px;
 }
 
 .insight-metric-comparison-row {
-  display: grid;
-  grid-template-columns: minmax(4.5rem, 6.5rem) 1fr auto;
+  display: flex;
   align-items: center;
   gap: 0.45rem;
 }
 
 .insight-metric-comparison-label {
+  flex: 0 0 120px;
+  width: 120px;
   font-size: 0.68rem;
   font-weight: 600;
   color: var(--text-muted);
@@ -414,6 +432,8 @@ html.dark .insight-card--inline {
 
 .insight-metric-comparison-track {
   position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
   height: 0.38rem;
   border-radius: 999px;
   background: color-mix(in srgb, var(--border) 55%, transparent);
@@ -427,15 +447,24 @@ html.dark .insight-card--inline {
   transition: width 0.25s ease;
 }
 
-.insight-metric-comparison-bar--crew {
-  background: color-mix(in srgb, var(--insight-accent) 78%, var(--text));
+.insight-metric-comparison-bar--crew.insight-metric-comparison-bar--positive {
+  background: rgba(var(--accent-green-rgb), 0.6);
+}
+
+.insight-metric-comparison-bar--crew.insight-metric-comparison-bar--negative {
+  background: rgba(var(--accent-red-rgb), 0.6);
+}
+
+.insight-metric-comparison-bar--crew.insight-metric-comparison-bar--neutral {
+  background: rgba(var(--text-secondary-rgb), 0.45);
 }
 
 .insight-metric-comparison-bar--league {
-  background: color-mix(in srgb, var(--text-muted) 55%, var(--border));
+  background: rgba(var(--text-secondary-rgb), 0.3);
 }
 
 .insight-metric-comparison-value {
+  flex: 0 0 auto;
   font-size: 0.72rem;
   font-weight: 650;
   font-variant-numeric: tabular-nums;
@@ -444,11 +473,47 @@ html.dark .insight-card--inline {
   text-align: right;
 }
 
-.insight-metric-comparison--compact .insight-metric-comparison-row {
-  grid-template-columns: minmax(3.75rem, 5.5rem) 1fr auto;
+.insight-metric-comparison-values {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  flex: 0 0 auto;
+  min-width: 4.5rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.insight-metric-comparison--compact .insight-metric-comparison-label,
+.insight-metric-comparison-value--delta {
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.1;
+}
+
+.insight-metric-comparison-value--delta[data-tone="positive"] {
+  color: var(--accent-positive);
+}
+
+.insight-metric-comparison-value--delta[data-tone="negative"] {
+  color: var(--accent-negative);
+}
+
+.insight-metric-comparison-value--rate {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.1;
+}
+
+.insight-metric-comparison--compact .insight-metric-comparison-row {
+  gap: 0.35rem;
+}
+
+.insight-metric-comparison--compact .insight-metric-comparison-label {
+  flex-basis: 7.5rem;
+  width: 7.5rem;
+  font-size: 0.66rem;
+}
+
 .insight-metric-comparison--compact .insight-metric-comparison-value {
   font-size: 0.66rem;
 }
