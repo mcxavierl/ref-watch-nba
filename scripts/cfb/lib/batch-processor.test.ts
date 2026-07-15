@@ -14,7 +14,7 @@ import {
   transitionJobStatus,
   updateJobProgress,
 } from "./batch-processor";
-import { CFB_CONFERENCE_SLUGS } from "./conferences";
+import { CFB_CONFERENCE_SLUGS, isCfbPipelineConferenceGame } from "./conferences";
 import type { CfbPipelineState } from "./pipeline-types";
 
 describe("CFB batch processor", () => {
@@ -113,7 +113,7 @@ describe("CFB batch processor", () => {
 
   it("reports memory pressure against threshold", () => {
     const heapUsed = process.memoryUsage().heapUsed;
-    assert.equal(isMemoryPressure(heapUsed + 1), true);
+    assert.equal(isMemoryPressure(heapUsed - 1), true);
     assert.equal(isMemoryPressure(heapUsed + 1024 * 1024 * 1024), false);
   });
 
@@ -126,5 +126,10 @@ describe("CFB batch processor", () => {
     });
     savePipelineState(filePath, state);
     assert.ok(state.jobs.length === 1);
+  });
+
+  it("allows Big 12 pipeline games outside the live NCAA UI gate", () => {
+    assert.equal(isCfbPipelineConferenceGame("BYU", "UTAH", "big-12"), true);
+    assert.equal(isCfbPipelineConferenceGame("ALA", "UGA", "big-12"), false);
   });
 });

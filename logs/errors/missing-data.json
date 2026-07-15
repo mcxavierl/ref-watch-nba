@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T03:11:33.380Z",
+  "generatedAt": "2026-07-15T04:05:21.031Z",
   "checks": [
     {
       "jobId": "2025-sec",
@@ -14,8 +14,8 @@
       "jobId": "2025-big-12",
       "season": 2025,
       "conference": "big-12",
-      "expectedCount": 0,
-      "ingestedCount": 0,
+      "expectedCount": 48,
+      "ingestedCount": 48,
       "missingGameIds": [],
       "extraGameIds": []
     },

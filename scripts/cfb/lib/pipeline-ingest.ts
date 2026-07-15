@@ -3,10 +3,13 @@ import * as path from "node:path";
 import { CFB_TEAM_ABBRS } from "../../../src/lib/cfb/teams";
 import {
   resolveGameConferenceTerritory,
-  shouldIngestNcaaGame,
 } from "../../../src/lib/ncaa-conference-gate";
 import type { RefStatsFile } from "../../../src/lib/types";
-import { resolveConferenceSpec, type CfbConferenceSlug } from "./conferences";
+import {
+  isCfbPipelineConferenceGame,
+  resolveConferenceSpec,
+  type CfbConferenceSlug,
+} from "./conferences";
 import {
   fetchCfbSummary,
   fetchTeamSchedule,
@@ -25,13 +28,6 @@ import {
 } from "./transform";
 import type { CfbExtractedGame, CfbExtractedGamesFile } from "./types";
 import type { CfbPipelinePartialProgress } from "./pipeline-types";
-
-const CONF_LABEL_TO_SLUG: Record<string, CfbConferenceSlug> = {
-  SEC: "sec",
-  ACC: "acc",
-  "Big Ten": "big-ten",
-  "Big 12": "big-12",
-};
 
 export type CfbScheduleMeta = {
   season: string;
@@ -57,15 +53,6 @@ export function loadOfficialRoster(seed: RefStatsFile | null): Map<string, numbe
   return roster;
 }
 
-function gameBelongsToConferenceJob(
-  homeTeam: string,
-  awayTeam: string,
-  conference: CfbConferenceSlug,
-): boolean {
-  const territory = resolveGameConferenceTerritory("cfb", homeTeam, awayTeam);
-  return CONF_LABEL_TO_SLUG[territory] === conference;
-}
-
 export async function collectScheduleForJob(
   season: number,
   conference: CfbConferenceSlug,
@@ -85,8 +72,7 @@ export async function collectScheduleForJob(
         const events = await fetchTeamSchedule(teamId, season, seasonType);
         for (const ev of events) {
           if (!byId.has(ev.eventId)) {
-            if (!shouldIngestNcaaGame("cfb", ev.homeAbbr, ev.awayAbbr)) continue;
-            if (!gameBelongsToConferenceJob(ev.homeAbbr, ev.awayAbbr, conference)) continue;
+            if (!isCfbPipelineConferenceGame(ev.homeAbbr, ev.awayAbbr, conference)) continue;
             byId.set(ev.eventId, {
               season: ev.season,
               awayAbbr: ev.awayAbbr,
@@ -144,8 +130,7 @@ export async function processGameChunk(input: {
     const trackedAway = CFB_TEAM_ABBRS.includes(summary.awayAbbr);
     if (!trackedHome && !trackedAway) continue;
 
-    if (!shouldIngestNcaaGame("cfb", summary.homeAbbr, summary.awayAbbr)) continue;
-    if (!gameBelongsToConferenceJob(summary.homeAbbr, summary.awayAbbr, input.conference)) {
+    if (!isCfbPipelineConferenceGame(summary.homeAbbr, summary.awayAbbr, input.conference)) {
       continue;
     }
 

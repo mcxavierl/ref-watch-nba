@@ -2,10 +2,10 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { CFB_TEAM_ABBRS } from "../../../src/lib/cfb/teams";
 import {
-  resolveGameConferenceTerritory,
-  shouldIngestNcaaGame,
-} from "../../../src/lib/ncaa-conference-gate";
-import { resolveConferenceSpec, type CfbConferenceSlug } from "./conferences";
+  isCfbPipelineConferenceGame,
+  resolveConferenceSpec,
+  type CfbConferenceSlug,
+} from "./conferences";
 import { fetchTeamSchedule, sleep } from "./espn";
 import { CFB_ESPN_TEAM_IDS } from "./team-ids";
 import type { CfbGameLogEntry } from "./transform";
@@ -23,8 +23,7 @@ function gameBelongsToConferenceJob(
   awayTeam: string,
   conference: CfbConferenceSlug,
 ): boolean {
-  const territory = resolveGameConferenceTerritory("cfb", homeTeam, awayTeam);
-  return CONF_LABEL_TO_SLUG[territory] === conference;
+  return isCfbPipelineConferenceGame(homeTeam, awayTeam, conference);
 }
 
 export async function collectExpectedGameIdsForJob(
@@ -45,8 +44,7 @@ export async function collectExpectedGameIdsForJob(
       try {
         const events = await fetchTeamSchedule(teamId, season, seasonType);
         for (const ev of events) {
-          if (!shouldIngestNcaaGame("cfb", ev.homeAbbr, ev.awayAbbr)) continue;
-          if (!gameBelongsToConferenceJob(ev.homeAbbr, ev.awayAbbr, conference)) continue;
+          if (!isCfbPipelineConferenceGame(ev.homeAbbr, ev.awayAbbr, conference)) continue;
           ids.add(ev.eventId);
         }
       } catch {

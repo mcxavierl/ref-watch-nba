@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-15T03:11:26.006Z",
+  "updatedAt": "2026-07-15T04:04:55.050Z",
   "config": {
     "startSeason": 2025,
     "endSeason": 2025,
@@ -29,12 +29,12 @@
       "season": 2025,
       "conference": "big-12",
       "status": "completed",
-      "cursor": 0,
-      "gamesTotal": 0,
-      "gamesProcessed": 0,
-      "updatedAt": "2026-07-15T03:10:50.454Z",
-      "startedAt": "2026-07-15T03:10:46.832Z",
-      "completedAt": "2026-07-15T03:10:50.454Z"
+      "cursor": 48,
+      "gamesTotal": 48,
+      "gamesProcessed": 48,
+      "updatedAt": "2026-07-15T04:04:55.050Z",
+      "startedAt": "2026-07-15T04:04:39.753Z",
+      "completedAt": "2026-07-15T04:04:55.050Z"
     },
     {
       "id": "2025-acc",

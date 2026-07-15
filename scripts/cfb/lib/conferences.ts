@@ -1,6 +1,26 @@
+import { resolveGameConferenceTerritory } from "../../../src/lib/ncaa-conference-gate";
 import { CFB_TEAMS, type CfbTeam } from "../../../src/lib/cfb/teams";
 
 export type CfbConferenceSlug = "sec" | "big-12" | "acc" | "big-ten";
+
+const PIPELINE_CONF_LABEL_TO_SLUG: Record<
+  "SEC" | "ACC" | "Big Ten" | "Big 12",
+  CfbConferenceSlug
+> = {
+  SEC: "sec",
+  ACC: "acc",
+  "Big Ten": "big-ten",
+  "Big 12": "big-12",
+};
+
+function pipelineSlugForTerritory(territory: string): CfbConferenceSlug | null {
+  if (territory in PIPELINE_CONF_LABEL_TO_SLUG) {
+    return PIPELINE_CONF_LABEL_TO_SLUG[
+      territory as keyof typeof PIPELINE_CONF_LABEL_TO_SLUG
+    ];
+  }
+  return null;
+}
 
 export type CfbConferenceSpec = {
   slug: CfbConferenceSlug;
@@ -69,6 +89,18 @@ export function isGameInConference(
     tracked.has(game.homeTeam.toUpperCase()) ||
     tracked.has(game.awayTeam.toUpperCase())
   );
+}
+
+/** Pipeline ingest gate: tracked team in conference bucket (not the live NCAA UI gate). */
+export function isCfbPipelineConferenceGame(
+  homeTeam: string,
+  awayTeam: string,
+  conference: CfbConferenceSlug,
+): boolean {
+  const spec = resolveConferenceSpec(conference);
+  if (!isGameInConference({ homeTeam, awayTeam }, spec)) return false;
+  const territory = resolveGameConferenceTerritory("cfb", homeTeam, awayTeam);
+  return pipelineSlugForTerritory(territory) === conference;
 }
 
 export function volumeWithinTolerance(
