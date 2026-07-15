@@ -4,7 +4,7 @@ import {
   researchFindingHref,
   researchHubHref,
 } from "@/lib/findings-shared";
-import { relatedInsightsForLeague } from "@/lib/related-insights";
+import { relatedInsightsForLeague } from "@/lib/related-insights-server";
 import type { ResearchFinding } from "@/lib/research";
 
 type RelatedInsightsFooterProps = {

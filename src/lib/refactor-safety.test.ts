@@ -55,4 +55,32 @@ describe("refactor safety static checks", () => {
       "FooterLeague must be imported from @/lib/footer-league",
     );
   });
+
+  it("refs-directory stays client-safe (no server data loaders)", () => {
+    const source = readSrc("src/lib/refs-directory.ts");
+    assert.doesNotMatch(
+      source,
+      /from\s*["']@\/lib\/insights\/international-matchups["']/,
+      "refs-directory must not import international-matchups (pulls loadLeagueStats)",
+    );
+    assert.doesNotMatch(
+      source,
+      /from\s*["']@\/lib\/load-league-stats["']/,
+      "refs-directory must not import load-league-stats",
+    );
+    assert.match(
+      source,
+      /from\s*["']@\/lib\/insights\/team-nation["']/,
+      "refs-directory must import teamNationForLeague from team-nation",
+    );
+  });
+
+  it("scanAllProLeagueOutliers excludes international-origin candidates", () => {
+    const source = readSrc("src/lib/insights/generator.ts");
+    assert.doesNotMatch(
+      source,
+      /scanInternationalMatchupOutliers\(\)/,
+      "top-story scan must not surface international-origin cards until the product is ready",
+    );
+  });
 });

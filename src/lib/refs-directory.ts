@@ -4,7 +4,7 @@ import {
   enrichRefWithOriginVariance,
   isOriginVarianceOutlier,
 } from "@/lib/geo-origin-variance";
-import { teamNationForLeague } from "@/lib/insights/international-matchups";
+import { teamNationForLeague } from "@/lib/insights/team-nation";
 import { filterNhlReferees } from "@/lib/nhl/officials";
 import { deltaTone as metricDeltaTone } from "@/lib/metricTone";
 import {

@@ -18,7 +18,8 @@
 .live-highlights-ticker-inner {
   max-width: var(--page-max, 72rem);
   margin-inline: auto;
-  padding: 0.55rem clamp(1rem, 3vw, 1.5rem);
+  padding: 0.7rem clamp(1rem, 3vw, 1.5rem);
+  min-height: 2.25rem;
 }
 
 .live-highlights-ticker-track,

@@ -277,6 +277,7 @@ function checkOverviewSnapshot(): void {
       totalRefs?: number;
       insightCards?: unknown[];
       allRefs?: unknown[];
+      leagueCards?: { leagueId?: string }[];
     };
   };
   const snapshot = file.snapshot;
@@ -294,6 +295,16 @@ function checkOverviewSnapshot(): void {
   }
   if ((snapshot.allRefs?.length ?? 0) < 400) {
     fail(`overview-snapshot.json allRefs=${snapshot.allRefs?.length ?? 0} (need >= 400)`);
+  }
+
+  const leagueCards = snapshot.leagueCards ?? [];
+  const blocked = leagueCards
+    .map((card) => card.leagueId)
+    .filter((id): id is string => id === "cbb" || id === "cfb");
+  if (blocked.length > 0) {
+    fail(
+      `overview-snapshot.json still exposes college league cards (${blocked.join(", ")}) — rebuild with scripts/build-overview-snapshot.ts`,
+    );
   }
 }
 

@@ -4209,10 +4209,6 @@ p {
       display: none;
     }
 
-    .slate-findings-hero-stack .finding-accordion:nth-child(n + 3) {
-      display: none;
-    }
-
     .league-slate-stats {
       gap: var(--space-3) var(--space-4);
       padding: var(--space-3);

@@ -46,8 +46,19 @@ function sortBySignificance(cards: LeagueInsightCard[]): LeagueInsightCard[] {
   );
 }
 
+function isInternationalOriginCard(card: LeagueInsightCard): boolean {
+  const haystack = `${card.headline} ${card.story}`.toLowerCase();
+  return (
+    haystack.includes("origin variance") ||
+    haystack.includes("confederation") ||
+    haystack.includes("cross-confederation")
+  );
+}
+
 function filterProLiveCards(cards: LeagueInsightCard[]): LeagueInsightCard[] {
-  return cards.filter((card) => isProOnlyLiveLeague(card.leagueId));
+  return cards.filter(
+    (card) => isProOnlyLiveLeague(card.leagueId) && !isInternationalOriginCard(card),
+  );
 }
 
 function dedupeCards(cards: LeagueInsightCard[]): LeagueInsightCard[] {
