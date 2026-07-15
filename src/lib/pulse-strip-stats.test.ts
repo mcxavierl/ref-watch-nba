@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { buildTrustBarStats, formatTrustBarSegment } from "@/lib/trust-bar-stats";
+import { buildPulseStripStats } from "@/lib/pulse-strip-stats";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 
 function sampleOverview(
@@ -52,10 +52,10 @@ function sampleOverview(
     topStoriesStatus: "generated",
     topStoriesGeneratedAt: null,
     upcomingSlate: {
-      inSeason: false,
-      hasLiveCrews: false,
-      totalGames: 0,
-      totalScheduled: 0,
+      inSeason: true,
+      hasLiveCrews: true,
+      totalGames: 4,
+      totalScheduled: 6,
       lastUpdated: null,
       games: [],
       leagueNotes: [],
@@ -65,21 +65,19 @@ function sampleOverview(
   };
 }
 
-describe("trust bar stats", () => {
-  it("derives totals and deepest season span from overview data", () => {
-    const stats = buildTrustBarStats(sampleOverview());
-    assert.equal(stats.gamesAnalyzed, 36432);
-    assert.equal(stats.officials, 577);
-    assert.equal(stats.seasons, 26);
+describe("pulse strip stats", () => {
+  it("sums live and scheduled slate games for games today", () => {
+    const stats = buildPulseStripStats(sampleOverview());
+    assert.equal(stats.gamesToday, 10);
   });
 
-  it("formats trust bar segments with locale counts", () => {
-    const segments = formatTrustBarSegment(buildTrustBarStats(sampleOverview()));
-    assert.deepEqual(segments, [
-      "36,432 Games Analyzed",
-      "577 Officials",
-      "26 Seasons",
-      "Historical Archive",
-    ]);
+  it("computes game-weighted cross-league foul rate", () => {
+    const stats = buildPulseStripStats(sampleOverview());
+    assert.equal(stats.foulRate, "30.5");
+  });
+
+  it("reports verified status", () => {
+    const stats = buildPulseStripStats(sampleOverview());
+    assert.equal(stats.status, "VERIFIED");
   });
 });

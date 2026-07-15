@@ -5,7 +5,7 @@ import { LeagueChooser } from "@/components/LeagueChooser";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewHistoricalLeaders } from "@/components/OverviewHistoricalLeaders";
-import { TrustBar } from "@/components/TrustBar";
+import { PulseStrip } from "@/components/PulseStrip";
 import {
   DashboardBodyLayout,
   DashboardSection,
@@ -90,14 +90,12 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
 type OverviewDashboardProps = {
   data: CrossLeagueOverview;
   hero: ReactNode;
-  highlightsTicker?: ReactNode;
   exploreTabs: ReactNode;
 };
 
 export function OverviewDashboard({
   data,
   hero,
-  highlightsTicker,
   exploreTabs,
 }: OverviewDashboardProps) {
   const proCatalog = catalogProLiveEntries();
@@ -108,15 +106,9 @@ export function OverviewDashboard({
     <DashboardShell>
       {hero}
 
+      <PulseStrip data={data} />
+
       <LeagueChooser cards={data.leagueCards} placement="primary" />
-
-      <TrustBar data={data} />
-
-      {highlightsTicker ? (
-        <div className="overview-dashboard-breathe overview-dashboard-breathe--tight">
-          {highlightsTicker}
-        </div>
-      ) : null}
 
       <div className="overview-dashboard-league-to-insight">
         <OverviewEditorialNarrative

@@ -8,7 +8,81 @@
   margin-top: var(--space-6);
 }
 
-/* —— Live highlights ticker —— */
+/* —— Pulse strip (static telemetry) —— */
+.overview-pulse-strip-shell {
+  width: 100%;
+  background: rgb(255 255 255 / 0.02);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  pointer-events: none;
+}
+
+.overview-pulse-strip {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  max-width: var(--page-max, 72rem);
+  margin-inline: auto;
+  padding: 0 clamp(1rem, 3vw, 1.5rem);
+}
+
+.overview-pulse-strip-copy {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  min-width: 0;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--text-muted) 92%, var(--text));
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overview-pulse-strip-token {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.overview-pulse-strip-dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  margin-right: 0.35rem;
+  border-radius: 50%;
+}
+
+.overview-pulse-strip-dot--live {
+  background: color-mix(in srgb, var(--nfl-green) 52%, var(--text-muted));
+}
+
+.overview-pulse-strip-dot--neutral {
+  background: color-mix(in srgb, var(--text-muted) 72%, transparent);
+}
+
+.overview-pulse-strip-dot--verified {
+  background: color-mix(in srgb, var(--nfl-green) 45%, var(--text-muted));
+}
+
+.overview-pulse-strip-label {
+  color: color-mix(in srgb, var(--text-muted) 88%, var(--text));
+}
+
+.overview-pulse-strip-value {
+  color: color-mix(in srgb, var(--text-muted) 96%, var(--text));
+}
+
+.overview-pulse-strip-divider {
+  margin: 0 0.65rem;
+  color: color-mix(in srgb, var(--text-muted) 42%, transparent);
+  font-variant: normal;
+  letter-spacing: 0;
+}
+
+/* —— Live highlights ticker (legacy; retained for optional reuse) —— */
 .live-highlights-ticker {
   border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
   background: rgb(15 23 42 / 0.5);
@@ -231,41 +305,6 @@
 .overview-hero-minimal-cta:hover {
   border-color: color-mix(in srgb, var(--raptors) 35%, var(--border));
   background: var(--surface-raised);
-}
-
-/* —— Trust bar —— */
-.overview-trust-bar {
-  margin-top: var(--space-3);
-  padding: 0.45rem 0.75rem;
-  border-top: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
-  background: color-mix(in srgb, var(--surface) 88%, var(--surface-raised));
-}
-
-.overview-trust-bar-copy {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem 0.55rem;
-  margin: 0;
-  font-size: 0.72rem;
-  font-weight: 650;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--text-muted) 92%, var(--text));
-  font-variant-numeric: tabular-nums;
-}
-
-.overview-trust-bar-segment {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  white-space: nowrap;
-}
-
-.overview-trust-bar-divider {
-  color: color-mix(in srgb, var(--text-muted) 55%, transparent);
-  font-weight: 500;
 }
 
 /* —— Visual hierarchy: primary vs secondary —— */
