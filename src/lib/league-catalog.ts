@@ -56,11 +56,11 @@ export function catalogLeagueDisplayLabel(entry: CatalogLeagueEntry): string {
 
 export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
   { id: "nba", label: "NBA", region: "USA", sport: "basketball", status: "live", leagueId: "nba", href: "/nba", sort: 1 },
-  { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "basketball", status: "coming-soon", leagueId: "cbb", sort: 2 },
+  { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "basketball", status: "coming-soon", sort: 2 },
   { id: "wnba", label: "WNBA", region: "USA", sport: "basketball", status: "coming-soon", sort: 3 },
   { id: "nhl", label: "NHL", region: "North America", sport: "hockey", status: "live", leagueId: "nhl", href: "/nhl", sort: 10 },
   { id: "nfl", label: "NFL", region: "USA", sport: "football", status: "live", leagueId: "nfl", href: "/nfl", sort: 20 },
-  { id: "cfb", label: "NCAA Football", region: "USA", sport: "football", status: "coming-soon", leagueId: "cfb", sort: 21 },
+  { id: "cfb", label: "NCAA Football", region: "USA", sport: "football", status: "coming-soon", sort: 21 },
   { id: "epl", label: "Premier League", region: "England", sport: "soccer", status: "live", leagueId: "epl", href: "/epl", sort: 30 },
   { id: "la-liga", label: "La Liga", region: "Spain", sport: "soccer", status: "live", leagueId: "laliga", href: "/laliga", sort: 31 },
   { id: "serie-a", label: "Serie A", region: "Italy", sport: "soccer", status: "coming-soon", sort: 32 },
@@ -92,11 +92,8 @@ export type {
 } from "@/lib/league-quick-lists";
 export { overviewQuickListsForLeague } from "@/lib/league-quick-lists";
 
-const NCAA_CATALOG_IDS = new Set(["cbb", "cfb"]);
-
 export function catalogEntriesForDisplay(): CatalogLeagueEntry[] {
   return LEAGUE_CATALOG.filter((entry) => {
-    if (NCAA_CATALOG_IDS.has(entry.id)) return true;
     if (entry.leagueId) return isVerifiedLiveLeague(entry.leagueId);
     return isCatalogSlugVisible(entry.id);
   });
@@ -139,15 +136,9 @@ export function catalogProLiveEntries(): CatalogLeagueEntry[] {
     );
 }
 
-/** College sports hidden from live hubs until NCAA ingest is ready. */
+/** @deprecated College leagues appear in catalogComingSoonEntries. */
 export function catalogCollegeComingSoonEntries(): CatalogLeagueEntry[] {
-  const order = new Map<string, number>([
-    ["cbb", 0],
-    ["cfb", 1],
-  ]);
-  return catalogEntriesForDisplay()
-    .filter((entry) => NCAA_CATALOG_IDS.has(entry.id))
-    .sort((a, b) => (order.get(a.id) ?? 99) - (order.get(b.id) ?? 99));
+  return [];
 }
 
 /** @deprecated NCAA hubs are coming soon — use catalogCollegeComingSoonEntries. */

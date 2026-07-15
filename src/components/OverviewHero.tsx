@@ -6,7 +6,7 @@ export function OverviewHero() {
           Verified Officiating Analytics
         </h1>
         <p className="overview-hero-minimal-bridge">
-          Live league hubs with matrix, rankings, and ref profiles. NCAA college sports are coming soon.
+          Live league hubs with matrix, rankings, and ref profiles. More leagues coming soon.
         </p>
       </div>
     </section>

@@ -1,40 +1,31 @@
-import {
-  hasNcaaLiveConferenceCoverage,
-} from "@/lib/ncaa-conference-gate";
-import { getRefStats as getCbbRefStats } from "@/lib/cbb/data";
-import { getRefStats as getCfbRefStats } from "@/lib/cfb/data";
-import { ConferenceCoverage } from "@/components/ConferenceCoverage";
-import { CoverageComingSoon } from "@/components/CoverageComingSoon";
-import type { NcaaRouteLeague } from "@/lib/ncaa-conference-gate";
-import "@/components/conference-coverage.css";
+import Link from "next/link";
+import { LEAGUES, type LeagueId } from "@/lib/leagues";
 
-const REF_LOADERS = {
-  cbb: getCbbRefStats,
-  cfb: getCfbRefStats,
-} as const;
+type NcaaRouteLeague = Extract<LeagueId, "cbb" | "cfb">;
 
 export function CollegeLeagueGate({
   leagueId,
-  children,
 }: {
   leagueId: NcaaRouteLeague;
   children: React.ReactNode;
 }) {
-  const stats = REF_LOADERS[leagueId]();
-
-  if (!hasNcaaLiveConferenceCoverage(leagueId, stats)) {
-    return (
-      <>
-        <ConferenceCoverage leagueId={leagueId} />
-        <CoverageComingSoon leagueId={leagueId} />
-      </>
-    );
-  }
+  const league = LEAGUES[leagueId];
 
   return (
-    <>
-      <ConferenceCoverage leagueId={leagueId} />
-      {children}
-    </>
+    <div className="page-shell">
+      <section className="page-hero max-w-2xl">
+        <p className="section-kicker">Coming soon</p>
+        <h1 className="page-title">{league.label}</h1>
+        <p className="page-lead">
+          This league hub is not live yet. Check back when NCAA coverage launches.
+        </p>
+      </section>
+
+      <nav className="mt-8">
+        <Link href="/" className="site-footer-inline-link">
+          Return to overview →
+        </Link>
+      </nav>
+    </div>
   );
 }

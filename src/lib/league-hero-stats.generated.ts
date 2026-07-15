@@ -30,15 +30,5 @@ export const LEAGUE_HERO_STATS: Record<string, LeagueHeroStatsSnapshot> = {
     "officials": 33,
     "games": 1546,
     "seasonSpan": "Last 5 seasons"
-  },
-  "cbb": {
-    "officials": 386,
-    "games": 4256,
-    "seasonSpan": "Last 6 seasons"
-  },
-  "cfb": {
-    "officials": 4,
-    "games": 150,
-    "seasonSpan": "This season"
   }
 };

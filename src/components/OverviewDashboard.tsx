@@ -10,7 +10,6 @@ import {
 } from "@/components/dashboard/DashboardShell";
 import {
   catalogComingSoonEntries,
-  catalogCollegeComingSoonEntries,
   catalogCompetitionCount,
   catalogLiveCompetitionEntries,
   catalogProLiveEntries,
@@ -83,11 +82,8 @@ export function OverviewDashboard({
   secondaryTabs,
 }: OverviewDashboardProps) {
   const proCatalog = catalogProLiveEntries();
-  const collegeCatalog = catalogCollegeComingSoonEntries();
   const liveCatalog = catalogLiveCompetitionEntries();
-  const comingSoonCatalog = catalogComingSoonEntries()
-    .filter((entry) => entry.id !== "cbb" && entry.id !== "cfb")
-    .slice(0, 6);
+  const comingSoonCatalog = catalogComingSoonEntries().slice(0, 8);
 
   return (
     <DashboardShell>
@@ -126,20 +122,6 @@ export function OverviewDashboard({
                   </div>
                 </section>
 
-                {collegeCatalog.length > 0 ? (
-                  <section className="overview-catalog-segment overview-catalog-segment--college">
-                    <h3 className="overview-catalog-segment-title">College sports</h3>
-                    <p className="overview-catalog-segment-note">
-                      NCAA hubs are hidden while we finish ingest - coming soon.
-                    </p>
-                    <div className="overview-catalog-list">
-                      {collegeCatalog.map((entry) => (
-                        <CatalogLeagueRow key={entry.id} entry={entry} />
-                      ))}
-                    </div>
-                  </section>
-                ) : null}
-
                 {comingSoonCatalog.length > 0 ? (
                   <section className="overview-catalog-segment overview-catalog-segment--soon">
                     <h3 className="overview-catalog-segment-title">On the roadmap</h3>
@@ -162,7 +144,7 @@ export function OverviewDashboard({
               className="overview-expansion overview-section--secondary"
               title="Expanding coverage"
               titleId="overview-expansion-heading"
-              lead="More soccer leagues on the roadmap. NCAA basketball and football hubs are coming soon."
+              lead="More soccer leagues and college sports on the roadmap."
             >
               <div className="overview-expansion-grid">
                 {liveCatalog.map((entry) =>

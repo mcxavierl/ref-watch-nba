@@ -122,10 +122,11 @@ describe("site link health", () => {
       "/nfl/compare",
       "/epl/compare",
       "/laliga/compare",
-      "/cbb/compare",
-      "/cfb/compare",
     ]) {
       assert.equal(resolveNavHref(source, redirects), "/compare", `${source} should alias to /compare`);
+    }
+    for (const source of ["/cbb/compare", "/cfb/compare"]) {
+      assert.equal(resolveNavHref(source, redirects), "/", `${source} should redirect home (coming soon)`);
     }
   });
 
@@ -135,10 +136,10 @@ describe("site link health", () => {
       ["/crews", "/refs"],
       ["/nhl/crews", "/nhl/refs"],
       ["/nfl/crews", "/nfl/refs"],
-      ["/cbb/crews", "/cbb/refs"],
     ] as const;
     for (const [source, destination] of cases) {
       assert.equal(resolveNavHref(source, redirects), destination, `${source} should redirect`);
     }
+    assert.equal(resolveNavHref("/cbb/crews", redirects), "/", "/cbb/crews should redirect home (coming soon)");
   });
 });

@@ -18,16 +18,19 @@ export const ROUTED_LEAGUE_IDS = [
   "nfl",
   "epl",
   "laliga",
-  "cbb",
-  "cfb",
 ] as const satisfies readonly LeagueId[];
 
 export type RoutedLeagueId = (typeof ROUTED_LEAGUE_IDS)[number];
 
-/** Coming-soon leagues linked from dev nav but without ingest pages. */
-export const COMING_SOON_LEAGUE_IDS = ["wnba", "mlb"] as const satisfies readonly LeagueId[];
+/** Coming-soon leagues linked from roadmap catalog but without live hubs. */
+export const COMING_SOON_LEAGUE_IDS = [
+  "wnba",
+  "mlb",
+  "cbb",
+  "cfb",
+] as const satisfies readonly LeagueId[];
 
-/** Routed college leagues hidden until conference-gated NCAA data is live. */
+/** @deprecated Use COMING_SOON_LEAGUE_IDS */
 export const GATED_COLLEGE_LEAGUE_IDS = ["cbb", "cfb"] as const satisfies readonly LeagueId[];
 
 export type SiteRouteRedirect = {

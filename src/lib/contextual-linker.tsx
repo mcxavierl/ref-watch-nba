@@ -37,16 +37,6 @@ const LEAGUE_LINK_TERMS: LeagueLinkTerm[] = [
     ariaLabel: "NHL hub",
   },
   {
-    pattern: /\bCFB\b/g,
-    href: leagueHubHref("cfb"),
-    ariaLabel: "College football hub",
-  },
-  {
-    pattern: /\bCBB\b/g,
-    href: leagueHubHref("cbb"),
-    ariaLabel: "College basketball hub",
-  },
-  {
     pattern: /\bEPL\b/g,
     href: leagueHubHref("epl"),
     ariaLabel: "Premier League hub",

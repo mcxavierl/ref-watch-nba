@@ -113,7 +113,7 @@ export function isLeagueCardVisible(
 
 export function isCatalogSlugVisible(slug: string): boolean {
   if (slug in NCAA_LEAGUE_REGISTRY) {
-    return isVerifiedLiveLeague(slug as NcaaLeagueSlug);
+    return true;
   }
   return true;
 }

@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { catalogLiveCompetitionEntries } from "@/lib/league-catalog";
+import {
+  catalogComingSoonEntries,
+  catalogLiveCompetitionEntries,
+  catalogStatusLabel,
+} from "@/lib/league-catalog";
 import { PRO_ONLY_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 
 describe("league catalog live competitions", () => {
@@ -15,5 +19,18 @@ describe("league catalog live competitions", () => {
     for (const leagueId of PRO_ONLY_LIVE_LEAGUE_IDS) {
       assert.ok(liveIds.includes(leagueId), `${leagueId} should appear in live catalog`);
     }
+  });
+
+  it("shows NCAA entries as coming soon without live stats", () => {
+    const soon = catalogComingSoonEntries();
+    const cbb = soon.find((entry) => entry.id === "cbb");
+    const cfb = soon.find((entry) => entry.id === "cfb");
+
+    assert.ok(cbb);
+    assert.ok(cfb);
+    assert.equal(cbb.leagueId, undefined);
+    assert.equal(cfb.leagueId, undefined);
+    assert.equal(catalogStatusLabel(cbb), "Coming Soon");
+    assert.equal(catalogStatusLabel(cfb), "Coming Soon");
   });
 });

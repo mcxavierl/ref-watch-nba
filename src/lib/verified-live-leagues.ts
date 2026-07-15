@@ -5,10 +5,8 @@ import type { LeagueId } from "@/lib/leagues";
 /** Verified live leagues with full dashboard + insight pipeline coverage. */
 export const PRO_VERIFIED_LIVE_LEAGUE_IDS = [
   "nba",
-  "cbb",
   "nhl",
   "nfl",
-  "cfb",
   "epl",
   "laliga",
 ] as const satisfies readonly LeagueId[];

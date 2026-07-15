@@ -26,7 +26,7 @@ const OverviewSecondaryTabs = dynamic(
 export const metadata: Metadata = buildPageMetadata({
   title: "Verified officiating analytics",
   description:
-    "Cross-league referee analytics for the NBA, NHL, NFL, Premier League, La Liga, and NCAA. Live league hubs with matrix, rankings, and ref profiles.",
+    "Cross-league referee analytics for the NBA, NHL, NFL, Premier League, and La Liga. NCAA college hubs coming soon.",
   path: SITE_HOME_PATH,
   keywords: [
     "referee analytics",

@@ -228,8 +228,6 @@ function writeLeagueHeroStats(root: string): void {
     { id: "nhl", path: path.join(root, "data", "nhl", "ref-stats-core.json") },
     { id: "epl", path: path.join(root, "data", "epl", "ref-stats-core.json") },
     { id: "laliga", path: path.join(root, "data", "laliga", "ref-stats-core.json") },
-    { id: "cbb", path: path.join(root, "data", "cbb", "ref-stats-core.json") },
-    { id: "cfb", path: path.join(root, "data", "cfb", "ref-stats-core.json") },
   ];
 
   for (const { id, path: statsPath } of sources) {
