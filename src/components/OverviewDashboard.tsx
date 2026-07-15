@@ -71,6 +71,7 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
 type OverviewDashboardProps = {
   data: CrossLeagueOverview;
   hero: ReactNode;
+  highlightsTicker?: ReactNode;
   topStories: ReactNode;
   secondaryTabs: ReactNode;
 };
@@ -78,6 +79,7 @@ type OverviewDashboardProps = {
 export function OverviewDashboard({
   data,
   hero,
+  highlightsTicker,
   topStories,
   secondaryTabs,
 }: OverviewDashboardProps) {
@@ -88,6 +90,12 @@ export function OverviewDashboard({
   return (
     <DashboardShell>
       {hero}
+
+      {highlightsTicker ? (
+        <div className="overview-dashboard-breathe overview-dashboard-breathe--tight">
+          {highlightsTicker}
+        </div>
+      ) : null}
 
       <div className="overview-dashboard-breathe overview-dashboard-breathe--tight">
         <LeagueChooser cards={data.leagueCards} />

@@ -4,8 +4,17 @@ import { HomeHeroPreload } from "@/components/HomeHeroPreload";
 import { OverviewDashboard } from "@/components/OverviewDashboard";
 import { OverviewHero } from "@/components/OverviewHero";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
+import { buildLiveHighlightTickerItems } from "@/lib/live-highlights-ticker";
 import { buildPageMetadata } from "@/lib/seo";
 import { SITE_HOME_PATH } from "@/lib/leagues";
+
+const LiveHighlightsTicker = dynamic(
+  () =>
+    import("@/components/LiveHighlightsTicker").then(
+      (mod) => mod.LiveHighlightsTicker,
+    ),
+  { loading: () => null },
+);
 
 const OverviewTopStoriesCarousel = dynamic(
   () =>
@@ -38,6 +47,9 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function HomePage() {
   const data = loadOverviewSnapshot();
+  const tickerItems = buildLiveHighlightTickerItems(
+    data.insightCards.length > 0 ? data.insightCards : data.topStories,
+  );
 
   return (
     <>
@@ -46,6 +58,11 @@ export default function HomePage() {
         <OverviewDashboard
           data={data}
           hero={<OverviewHero />}
+          highlightsTicker={
+            tickerItems.length > 0 ? (
+              <LiveHighlightsTicker items={tickerItems} />
+            ) : null
+          }
           topStories={<OverviewTopStoriesCarousel initialData={{
             insights: data.topStories,
             status: data.topStoriesStatus,
