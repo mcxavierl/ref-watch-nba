@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-07-15T03:11:33.380Z",
+  "checks": [
+    {
+      "jobId": "2025-sec",
+      "season": 2025,
+      "conference": "sec",
+      "expectedCount": 83,
+      "ingestedCount": 83,
+      "missingGameIds": [],
+      "extraGameIds": []
+    },
+    {
+      "jobId": "2025-big-12",
+      "season": 2025,
+      "conference": "big-12",
+      "expectedCount": 0,
+      "ingestedCount": 0,
+      "missingGameIds": [],
+      "extraGameIds": []
+    },
+    {
+      "jobId": "2025-acc",
+      "season": 2025,
+      "conference": "acc",
+      "expectedCount": 48,
+      "ingestedCount": 48,
+      "missingGameIds": [],
+      "extraGameIds": []
+    },
+    {
+      "jobId": "2025-big-ten",
+      "season": 2025,
+      "conference": "big-ten",
+      "expectedCount": 75,
+      "ingestedCount": 75,
+      "missingGameIds": [],
+      "extraGameIds": []
+    }
+  ]
+}
