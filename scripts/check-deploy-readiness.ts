@@ -9,7 +9,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "../src/lib/live-header-leagues.generated";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "../src/lib/league-verification";
+import { PRO_ONLY_LIVE_LEAGUE_IDS, PRO_VERIFIED_LIVE_LEAGUE_IDS } from "../src/lib/verified-live-leagues";
 import {
   MATRIX_MIN_GAMES,
 } from "../src/lib/ref-team-matrix";
@@ -166,11 +166,16 @@ function checkDeployArtifacts(league: LiveLeague): void {
 }
 
 function checkLiveHeader(): void {
-  for (const league of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
+  for (const league of PRO_ONLY_LIVE_LEAGUE_IDS) {
     if (!(PRODUCTION_LIVE_HEADER_LEAGUE_IDS as readonly string[]).includes(league)) {
       fail(
         `live header missing verified league "${league}" (have: ${PRODUCTION_LIVE_HEADER_LEAGUE_IDS.join(", ")})`,
       );
+    }
+  }
+  for (const league of PRODUCTION_LIVE_HEADER_LEAGUE_IDS) {
+    if (!(PRO_ONLY_LIVE_LEAGUE_IDS as readonly string[]).includes(league as (typeof PRO_ONLY_LIVE_LEAGUE_IDS)[number])) {
+      fail(`live header includes non-pro league "${league}"`);
     }
   }
 }
