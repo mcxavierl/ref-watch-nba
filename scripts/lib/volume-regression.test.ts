@@ -4,6 +4,8 @@ import {
   MIN_TOTAL_GAMES_FOR_CLAIMED_SEASONS,
   runVolumeRegressionChecks,
 } from "./volume-regression";
+import { isCfbOfficialsPending } from "../../src/lib/cfb/data-source";
+import { getRefStats as getCfbRefStats } from "../../src/lib/cfb/data";
 
 describe("volume regression gates", () => {
   it("enforces conservative floors for all live leagues", () => {
@@ -23,6 +25,9 @@ describe("volume regression gates", () => {
     assert.ok(summaries.length >= 5);
     for (const row of summaries) {
       assert.ok(row.refStatsGames > 0, `${row.league} ref-stats games`);
+      const cfbOfficialsPending =
+        row.league === "cfb" && isCfbOfficialsPending(getCfbRefStats());
+      if (cfbOfficialsPending) continue;
       assert.ok(row.matrixBaselineGames > 0, `${row.league} matrix baseline`);
       assert.ok(row.matrixTopPanel > 0, `${row.league} top panel`);
       assert.ok(row.matrixBottomPanel > 0, `${row.league} bottom panel`);
