@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { OverviewSlateRow } from "@/components/OverviewSlateRow";
