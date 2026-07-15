@@ -113,9 +113,6 @@ export function LeagueChooser({ cards, placement = "default" }: LeagueChooserPro
 
       {proCards.length > 0 ? (
         <div className="overview-chooser-tier overview-chooser-tier--live">
-          <div className="overview-chooser-tier-head">
-            <h3 className="overview-chooser-tier-title">Live competitions</h3>
-          </div>
           <div className="overview-league-chooser-grid overview-league-chooser-grid--live">
             {proCards.map((card) => (
               <ChooserCard key={card.leagueId} card={card} />

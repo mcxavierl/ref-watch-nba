@@ -11,7 +11,11 @@ import {
   WHISTLE_PATHS,
 } from "@/lib/brand-colors";
 import type { BrandOgContent } from "@/lib/og-brand";
-import { leagueAccentFromOgTitle } from "@/lib/og-brand";
+import {
+  OG_DELTA_NEGATIVE,
+  OG_DELTA_POSITIVE,
+  leagueAccentFromOgTitle,
+} from "@/lib/og-brand";
 import type { nbaOgContent } from "@/lib/og-slate";
 
 export const ogImageSize = { width: 1200, height: 630 };
@@ -24,6 +28,13 @@ const TEXT_PRIMARY = "#f9fafb";
 const TEXT_SECONDARY = "#d1d5db";
 const TEXT_MUTED = "#9ca3af";
 const BORDER_SUBTLE = "rgba(45, 55, 72, 0.9)";
+const LEAGUE_LABEL_WIDTH = 34;
+
+function ogDeltaColor(tone: "positive" | "negative" | "neutral"): string {
+  if (tone === "positive") return OG_DELTA_POSITIVE;
+  if (tone === "negative") return OG_DELTA_NEGATIVE;
+  return HEADER_GOLD_BRIGHT;
+}
 
 function hexAlpha(hex: string, alpha: number): string {
   const normalized = hex.replace("#", "");
@@ -214,11 +225,11 @@ function OgHeaderBand({
               style={{
                 display: "flex",
                 fontSize: 42,
-                fontWeight: 800,
-                letterSpacing: "0.06em",
+                fontWeight: 900,
+                letterSpacing: "0.08em",
                 color: HEADER_GOLD,
                 textShadow:
-                  "0 1px 0 rgba(255, 244, 185, 0.22), 0 4px 18px rgba(0, 24, 51, 0.42)",
+                  "0 1px 0 rgba(255, 244, 185, 0.28), 0 4px 18px rgba(0, 24, 51, 0.42)",
               }}
             >
               REF WATCH
@@ -259,33 +270,27 @@ function OgHeaderBand({
   );
 }
 
-function OgFooter({ lines }: { lines: string[] }) {
+function OgFooter({ line }: { line: string }) {
   return (
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
         padding: "0 48px 26px",
-        gap: 6,
         marginTop: "auto",
       }}
     >
-      {lines.map((line) => (
-        <div
-          key={line}
-          style={{
-            display: "flex",
-            fontSize: line === "refwatch.ca" ? 12 : 13,
-            fontWeight: line === "refwatch.ca" ? 700 : 500,
-            letterSpacing: line === "refwatch.ca" ? "0.08em" : "0.01em",
-            textTransform: line === "refwatch.ca" ? "uppercase" : "none",
-            color: line === "refwatch.ca" ? HEADER_GOLD : TEXT_MUTED,
-            lineHeight: 1.35,
-          }}
-        >
-          {line}
-        </div>
-      ))}
+      <div
+        style={{
+          display: "flex",
+          fontSize: 13,
+          fontWeight: 600,
+          letterSpacing: "0.03em",
+          color: TEXT_MUTED,
+          lineHeight: 1.35,
+        }}
+      >
+        {line}
+      </div>
     </div>
   );
 }
@@ -344,6 +349,7 @@ export function renderBrandOgImage(content: BrandOgContent) {
                     fontWeight: 800,
                     color: HEADER_GOLD_BRIGHT,
                     letterSpacing: "-0.02em",
+                    fontVariantNumeric: "tabular-nums",
                   }}
                 >
                   {metric.value}
@@ -386,6 +392,7 @@ export function renderBrandOgImage(content: BrandOgContent) {
                     height: 8,
                     borderRadius: 999,
                     background: league.accent,
+                    flexShrink: 0,
                   }}
                 />
                 <div
@@ -395,6 +402,7 @@ export function renderBrandOgImage(content: BrandOgContent) {
                     fontWeight: 700,
                     letterSpacing: "0.06em",
                     color: TEXT_PRIMARY,
+                    width: LEAGUE_LABEL_WIDTH,
                   }}
                 >
                   {league.label}
@@ -414,7 +422,9 @@ export function renderBrandOgImage(content: BrandOgContent) {
                   gap: 8,
                   padding: "14px 16px",
                   borderRadius: 14,
-                  background: `linear-gradient(155deg, ${hexAlpha(highlight.accent, 0.1)} 0%, ${BG_SURFACE} 100%)`,
+                  background:
+                    highlight.cardBackground ??
+                    `linear-gradient(155deg, ${hexAlpha(highlight.accent, 0.1)} 0%, ${BG_SURFACE} 100%)`,
                   border: `1px solid ${hexAlpha(highlight.accent, 0.24)}`,
                   boxShadow: "0 8px 20px rgba(0, 0, 0, 0.24)",
                 }}
@@ -423,21 +433,43 @@ export function renderBrandOgImage(content: BrandOgContent) {
                   <div
                     style={{
                       display: "flex",
-                      fontSize: 11,
-                      fontWeight: 700,
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      color: highlight.accent,
+                      alignItems: "center",
+                      gap: 8,
+                      flexShrink: 0,
                     }}
                   >
-                    {highlight.league}
+                    <div
+                      style={{
+                        display: "flex",
+                        width: 8,
+                        height: 8,
+                        borderRadius: 999,
+                        background: highlight.accent,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                        color: highlight.accent,
+                        width: LEAGUE_LABEL_WIDTH,
+                      }}
+                    >
+                      {highlight.league}
+                    </div>
                   </div>
                   <div
                     style={{
                       display: "flex",
                       fontSize: 18,
                       fontWeight: 800,
-                      color: HEADER_GOLD_BRIGHT,
+                      fontVariantNumeric: "tabular-nums",
+                      letterSpacing: "-0.02em",
+                      color: ogDeltaColor(highlight.heroTone),
                     }}
                   >
                     {highlight.heroValue}
@@ -449,6 +481,7 @@ export function renderBrandOgImage(content: BrandOgContent) {
                     fontSize: 14,
                     fontWeight: 600,
                     lineHeight: 1.35,
+                    letterSpacing: "-0.01em",
                     color: TEXT_SECONDARY,
                   }}
                 >
@@ -459,7 +492,7 @@ export function renderBrandOgImage(content: BrandOgContent) {
           </div>
         </div>
 
-        <OgFooter lines={[content.footer, "refwatch.ca"]} />
+        <OgFooter line={content.footer} />
       </OgCanvas>
     ),
     ogImageSize,
@@ -568,7 +601,9 @@ export function renderSlateOgImage(content: ReturnType<typeof nbaOgContent>) {
           )}
         </div>
 
-        <OgFooter lines={[content.dataNote, content.footer, "refwatch.ca"]} />
+        <OgFooter
+          line={[content.dataNote, content.footer].filter(Boolean).join(" · ")}
+        />
       </OgCanvas>
     ),
     ogImageSize,
