@@ -103,7 +103,7 @@ export default async function RootLayout({
         <main id="main-content" className="flex-1" tabIndex={-1}>
           {children}
         </main>
-        <RoutedSiteFooter pathname={pathname} />
+        <RoutedSiteFooter />
         <GamblingDisclaimer />
       </body>
     </html>
