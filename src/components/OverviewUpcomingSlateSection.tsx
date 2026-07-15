@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
+import { NflSlateGamesList } from "@/components/NflSlateGamesList";
 import { OverviewSlateRow } from "@/components/OverviewSlateRow";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { LEAGUES } from "@/lib/leagues";
@@ -19,6 +20,8 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
   const { upcomingSlate } = data;
   const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
   const matchupCount = upcomingSlate.totalGames + upcomingSlate.totalScheduled;
+  const nonNflGames = upcomingSlate.games.filter((game) => game.leagueId !== "nfl");
+  const nflGames = upcomingSlate.games.filter((game) => game.leagueId === "nfl");
 
   return (
     <section
@@ -53,9 +56,10 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
           ) : null}
           {upcomingSlate.games.length > 0 ? (
             <ul className="overview-slate-list">
-              {upcomingSlate.games.map((game) => (
+              {nonNflGames.map((game) => (
                 <OverviewSlateRow key={`${game.leagueId}-${game.gameId}`} game={game} />
               ))}
+              <NflSlateGamesList games={nflGames} />
             </ul>
           ) : (
             <p className="overview-slate-empty">No published matchups yet. Check back closer to tip-off.</p>

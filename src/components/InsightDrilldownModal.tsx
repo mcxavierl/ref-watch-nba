@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useState, type MouseEvent } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { fetchInsightDrilldown } from "@/lib/insight-drilldown-fetch";
 import type {
@@ -155,9 +156,15 @@ export function InsightDrilldownModal({
 
   if (!rendered) return null;
 
-  return (
+  const modal = (
     <div
-      className={`insight-drilldown-backdrop${visible ? " insight-drilldown-backdrop--visible" : ""}`}
+      className={[
+        "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm",
+        "insight-drilldown-backdrop",
+        visible ? "insight-drilldown-backdrop--visible" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       role="presentation"
       onClick={handleBackdropClick}
     >
@@ -368,4 +375,7 @@ export function InsightDrilldownModal({
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(modal, document.body);
 }

@@ -1414,7 +1414,32 @@ html.dark .overview-quick-lists {
   color: var(--text-muted);
 }
 
-/* —— Upcoming slate row logos —— */
+.overview-slate-view-more {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0 0;
+}
+
+.overview-slate-view-more-btn {
+  width: 100%;
+  border: 1px dashed color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  padding: 0.65rem 0.85rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.overview-slate-view-more-btn:hover {
+  border-color: color-mix(in srgb, var(--nfl-green) 45%, var(--border));
+  color: var(--text);
+  background: color-mix(in srgb, var(--nfl-green) 8%, var(--surface));
+}
+
+/* Upcoming slate row logos */
 .overview-slate-row[data-league="nba"] { --slate-accent: var(--raptors); }
 .overview-slate-row[data-league="cbb"] { --slate-accent: var(--cbb-gold); }
 .overview-slate-row[data-league="cfb"] { --slate-accent: var(--cfb-bronze); }
