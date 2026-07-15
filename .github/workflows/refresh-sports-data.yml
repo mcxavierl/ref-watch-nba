@@ -1,0 +1,77 @@
+name: Refresh sports data
+
+# Daily NCAA basketball + football data refresh from ESPN build pipelines.
+# Commits updated artifacts under data/ to main when builds succeed.
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: refresh-sports-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build CBB data
+        run: npm run build-cbb-data
+
+      - name: Build CFB data
+        run: npm run build-cfb-data
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "No data changes to commit."
+            exit 0
+          fi
+          git commit -m "$(cat <<'EOF'
+chore: daily sports data refresh (CBB + CFB).
+
+Automated ESPN build pipeline update.
+EOF
+)"
+          git push
+
+  notify-failure:
+    needs: refresh
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify build failure
+        run: |
+          {
+            echo "## Sports data refresh failed"
+            echo ""
+            echo "The scheduled CBB/CFB build did not complete successfully."
+            echo ""
+            echo "**Next steps:**"
+            echo "- Review the [\`refresh\` job logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo "- Inspect \`logs/errors/cfb-ingest.json\` for unresolved ingest errors"
+            echo "- Run \`npm run cfb-health\` locally after fixing schema/parser issues"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error title=Sports data refresh failed::Build failed — check logs/errors/cfb-ingest.json and workflow logs."

@@ -86,7 +86,7 @@ function ncaaAnalyticsUnlocked(
   if (entry.dataVerified !== true) return false;
   const resolved = stats ?? NCAA_REF_LOADERS[leagueId]();
   if (!hasNcaaLiveConferenceCoverage(leagueId, resolved)) return false;
-  return resolved.refs.length > 0;
+  return true;
 }
 
 /** Hub links, quick lists, and detailed analytics require full verification. */

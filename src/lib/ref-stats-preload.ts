@@ -16,6 +16,14 @@ import { enrichRefStatsWithGeography } from "@/lib/ref-geography";
 
 type League = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 
+function hasGameLogOnlyIngest(stats: RefStatsFile | null | undefined): boolean {
+  if (!stats) return false;
+  return (
+    (stats.meta.totalGamesProcessed ?? 0) > 0 &&
+    stats.meta.source === "espn"
+  );
+}
+
 const REF_STATS_CACHE_KEYS = freezeWorkerConfig({
   nba: "__REFWATCH_NBA_REF_STATS__",
   nhl: "__REFWATCH_NHL_REF_STATS__",
@@ -115,6 +123,19 @@ export function resolveRefStatsFromFsOrCache(
     return withGeography(
       league,
       attachTeamSplits(league, fromFs, getCachedTeamSplits(league) ?? {}),
+    );
+  }
+
+  if (fromFs && hasGameLogOnlyIngest(fromFs)) {
+    return withGeography(
+      league,
+      attachTeamSplits(league, fromFs, getCachedTeamSplits(league) ?? {}),
+    );
+  }
+  if (cached && hasGameLogOnlyIngest(cached)) {
+    return withGeography(
+      league,
+      attachTeamSplits(league, cached, getCachedTeamSplits(league) ?? {}),
     );
   }
 
@@ -233,7 +254,10 @@ export async function preloadRefStatsFromAssets(
       if (res?.ok) {
         const { isRefStatsPayload } = await import("@/lib/json-asset-guards");
         let data: unknown = await res.json();
-        if (isRefStatsPayload(data) && data.refs.length > 0) {
+        if (
+          isRefStatsPayload(data) &&
+          (data.refs.length > 0 || (data.meta.totalGamesProcessed ?? 0) > 0)
+        ) {
           setCachedRefStats(league, data as RefStatsFile);
         }
         data = releaseParsedPayload(data);

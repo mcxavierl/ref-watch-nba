@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T23:42:36.235Z",
+  "generatedAt": "2026-07-15T00:27:46.381Z",
   "note": "Computed from NBA/NHL/NFL/EPL/La Liga game logs",
   "fallback": {
     "NBA": {
@@ -499,16 +499,72 @@
     "usingFallback": true
   },
   "CFB": {
-    "currentSeason": null,
-    "seasons": {},
-    "aggregate": {
-      "season": "none",
-      "gameCount": 0,
-      "leagueAvgTotal": 52,
-      "leagueOverBaseline": 52,
-      "leagueAvgFouls": 10
+    "currentSeason": "2025-26",
+    "seasons": {
+      "2020-21": {
+        "season": "2020-21",
+        "gameCount": 132,
+        "leagueAvgTotal": 61,
+        "leagueOverBaseline": 58.4,
+        "leagueAvgFouls": 12.4,
+        "leagueAvgPenaltyYards": 105.9,
+        "meanClosingTotal": 58.4
+      },
+      "2021-22": {
+        "season": "2021-22",
+        "gameCount": 202,
+        "leagueAvgTotal": 56.4,
+        "leagueOverBaseline": 57.1,
+        "leagueAvgFouls": 12.3,
+        "leagueAvgPenaltyYards": 105.3,
+        "meanClosingTotal": 57.1
+      },
+      "2022-23": {
+        "season": "2022-23",
+        "gameCount": 204,
+        "leagueAvgTotal": 58.2,
+        "leagueOverBaseline": 57.6,
+        "leagueAvgFouls": 12.2,
+        "leagueAvgPenaltyYards": 103.7,
+        "meanClosingTotal": 57.6
+      },
+      "2023-24": {
+        "season": "2023-24",
+        "gameCount": 230,
+        "leagueAvgTotal": 54.9,
+        "leagueOverBaseline": 56,
+        "leagueAvgFouls": 11.6,
+        "leagueAvgPenaltyYards": 98.5,
+        "meanClosingTotal": 56
+      },
+      "2024-25": {
+        "season": "2024-25",
+        "gameCount": 208,
+        "leagueAvgTotal": 51.6,
+        "leagueOverBaseline": 51.6,
+        "leagueAvgFouls": 11.5,
+        "leagueAvgPenaltyYards": 98.5
+      },
+      "2025-26": {
+        "season": "2025-26",
+        "gameCount": 190,
+        "leagueAvgTotal": 50.7,
+        "leagueOverBaseline": 49.8,
+        "leagueAvgFouls": 11,
+        "leagueAvgPenaltyYards": 95.1,
+        "meanClosingTotal": 49.8
+      }
     },
-    "usingFallback": true
+    "aggregate": {
+      "season": "all",
+      "gameCount": 1166,
+      "leagueAvgTotal": 55.2,
+      "leagueOverBaseline": 57.2,
+      "leagueAvgFouls": 11.8,
+      "leagueAvgPenaltyYards": 100.9,
+      "meanClosingTotal": 57.2
+    },
+    "usingFallback": false
   },
   "EPL": {
     "currentSeason": "2025-26",

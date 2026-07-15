@@ -139,11 +139,19 @@ function normalizeRefStats(data: RefStatsFile): RefStatsFile {
 export function getRefStats(): RefStatsFile {
   try {
     const raw = loadRefStatsRaw();
-    if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    return filterNcaaRefStats(
-      applyBaselines(normalizeRefStats(raw)),
-      "cfb",
-    );
+    if (!raw) return EMPTY_REF_STATS;
+
+    const normalized = applyBaselines(normalizeRefStats(raw));
+
+    if (!raw.refs?.length) {
+      const hasGameData =
+        (normalized.meta.totalGamesProcessed ?? 0) > 0 ||
+        normalized.meta.source === "espn";
+      if (hasGameData) return normalized;
+      return EMPTY_REF_STATS;
+    }
+
+    return filterNcaaRefStats(normalized, "cfb");
   } catch {
     return EMPTY_REF_STATS;
   }

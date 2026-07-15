@@ -2,6 +2,7 @@ import { getTeam as getCbbTeam } from "@/lib/cbb/teams";
 import { getTeam as getCfbTeam } from "@/lib/cfb/teams";
 import type { RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import type { LeagueId } from "@/lib/leagues";
+import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 export type NcaaRouteLeague = "cbb" | "cfb";
@@ -149,9 +150,20 @@ export function hasNcaaLiveConferenceCoverage(
   league: NcaaRouteLeague,
   stats: RefStatsFile | null | undefined,
 ): boolean {
-  if (!stats?.refs?.length) return false;
-  const filtered = filterNcaaRefStats(stats, league);
-  return filtered.refs.some((ref) => ref.games > 0);
+  if (stats?.refs?.length) {
+    const filtered = filterNcaaRefStats(stats, league);
+    if (filtered.refs.some((ref) => ref.games > 0)) {
+      return true;
+    }
+  }
+
+  const dataLeague = league === "cbb" ? "CBB" : "CFB";
+  const logs = loadRuntimeGameLogs(dataLeague)?.games ?? [];
+  const liveGames = filterNcaaGameLogs(
+    league,
+    logs as Pick<RuntimeGameLogEntry, "homeTeam" | "awayTeam">[],
+  );
+  return liveGames.length > 0;
 }
 
 export function liveNcaaConferencesForLeague(

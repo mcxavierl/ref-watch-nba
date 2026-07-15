@@ -56,7 +56,7 @@ test("isLeagueAnalyticsUnlocked unlocks NCAA when conference data is live", () =
   assert.equal(isLeagueAnalyticsUnlocked("nba"), true);
   assert.equal(
     isLeagueAnalyticsUnlocked("cfb", getCfbRefStats()),
-    getCfbRefStats().refs.length > 0,
+    true,
   );
   assert.equal(
     isLeagueAnalyticsUnlocked("cbb", getCbbRefStats()),
