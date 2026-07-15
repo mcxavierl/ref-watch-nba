@@ -16,14 +16,6 @@ const LiveHighlightsTicker = dynamic(
   { loading: () => null },
 );
 
-const OverviewTopStoriesCarousel = dynamic(
-  () =>
-    import("@/components/OverviewTopStoriesCarousel").then(
-      (mod) => mod.OverviewTopStoriesCarousel,
-    ),
-  { loading: () => null },
-);
-
 const OverviewSecondaryTabs = dynamic(
   () =>
     import("@/components/OverviewSecondaryTabs").then(
@@ -63,12 +55,7 @@ export default function HomePage() {
               <LiveHighlightsTicker items={tickerItems} />
             ) : null
           }
-          topStories={<OverviewTopStoriesCarousel initialData={{
-            insights: data.topStories,
-            status: data.topStoriesStatus,
-            generatedAt: data.topStoriesGeneratedAt,
-          }} />}
-          secondaryTabs={<OverviewSecondaryTabs data={data} />}
+          exploreTabs={<OverviewSecondaryTabs data={data} />}
         />
       </div>
     </>

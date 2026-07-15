@@ -408,6 +408,7 @@ html[data-contrast="high"][data-color="dark"] {
   --header-gold-bright: #fff0a7;
 
   --raptors: #ff6b81;
+  --metric-neutral-ink: #94a3b8;
   --metric-positive-ink: #6ee7b7;
   --metric-negative-ink: #fda4af;
 
@@ -787,7 +788,7 @@ p {
 
   .metric-delight-value--neutral,
   .metric-delight-value-hero--neutral {
-    color: var(--ink-secondary);
+    color: var(--metric-neutral-ink, var(--ink-secondary));
   }
 
   .metric-delight-value-hero--standout.metric-delight-value-hero--positive,
@@ -4693,12 +4694,14 @@ p {
     --insight-card-glow: #94a3b8;
   }
 
-  .rankings-insight-card[data-tone="positive"] .metric-delight-value {
-    color: #22c55e;
+  .rankings-insight-card[data-tone="positive"] .metric-delight-value,
+  .rankings-insight-card[data-tone="negative"] .metric-delight-value {
+    color: inherit;
   }
 
-  .rankings-insight-card[data-tone="negative"] .metric-delight-value {
-    color: #ef4444;
+  .rankings-insight-card .metric-delight-value--neutral,
+  .rankings-insight-card .metric-delight-value-hero--neutral {
+    color: var(--metric-neutral-ink, var(--ink-secondary));
   }
 
   .rankings-insight-card-head {

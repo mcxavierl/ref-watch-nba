@@ -8,6 +8,10 @@ import { teamNationForLeague } from "@/lib/insights/team-nation";
 import { filterNhlReferees } from "@/lib/nhl/officials";
 import { deltaTone as metricDeltaTone } from "@/lib/metricTone";
 import {
+  overRateHeroTone,
+  populationStdDev,
+} from "@/lib/metric-significance";
+import {
   directoryScoringDisplay,
   directoryWhistleDisplay,
   scoringVsLeaguePct,
@@ -286,6 +290,8 @@ function spotlightHeroForTab(
   ref: RefProfile,
   tab: RefsDirectoryTab,
   league: LeagueConfig,
+  overRateMean: number,
+  overRateStdDev: number,
 ): {
   kicker: string;
   heroValue: string;
@@ -296,6 +302,7 @@ function spotlightHeroForTab(
   const overPct = formatPct(ref.overRate);
   const underPct = formatPct(1 - ref.overRate);
   const scoreUnit = league.metrics.scoreUnitPlural;
+  const rateTone = overRateHeroTone(ref.overRate, overRateMean, overRateStdDev);
 
   switch (tab) {
     case "over-high":
@@ -303,7 +310,7 @@ function spotlightHeroForTab(
         kicker: "Highest over rate",
         heroValue: overPct,
         heroLabel: "Games over benchmark",
-        heroTone: ref.overRate >= 0.55 ? "positive" : "neutral",
+        heroTone: rateTone === "negative" ? "neutral" : rateTone,
         story: `${ref.games} games logged · ${formatSigned(ref.totalPointsDelta)} ${scoreUnit} vs league avg.`,
       };
     case "over-low":
@@ -311,7 +318,7 @@ function spotlightHeroForTab(
         kicker: "Highest under rate",
         heroValue: underPct,
         heroLabel: "Games under benchmark",
-        heroTone: ref.overRate <= 0.45 ? "negative" : "neutral",
+        heroTone: rateTone === "positive" ? "neutral" : rateTone,
         story: `${overPct} over rate across ${ref.games} games · ${formatSigned(ref.totalPointsDelta)} ${scoreUnit} vs avg.`,
       };
     case "experienced":
@@ -333,9 +340,10 @@ export function buildRefsSpotlightCards(
   basePath = "",
 ): LeagueInsightCard[] {
   const mean = computeOverRateMean(refs);
+  const stdDev = populationStdDev(refs.map((ref) => ref.overRate));
 
   return selectSpotlightRefs(refs, tab).map((ref, index) => {
-    const hero = spotlightHeroForTab(ref, tab, league);
+    const hero = spotlightHeroForTab(ref, tab, league, mean, stdDev);
     const deviation = overRateDeviation(ref, mean);
     const profileHref = `${basePath}/refs/${ref.slug}`;
 

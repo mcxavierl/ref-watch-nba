@@ -34,7 +34,7 @@ import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
 
-export { buildLeagueInsightCardForLeague } from "@/lib/insights/league-card-from-stats";
+import { heroToneFromWinRateDelta } from "@/lib/metric-significance";
 
 export type LeagueInsightTone = "positive" | "negative" | "neutral";
 
@@ -154,10 +154,10 @@ function formatDeltaPts(delta: number): string {
   return `${sign}${delta.toFixed(1)}pp`;
 }
 
+export { buildLeagueInsightCardForLeague } from "@/lib/insights/league-card-from-stats";
+
 function heroToneFromDelta(delta: number): LeagueInsightTone {
-  if (delta >= 12) return "positive";
-  if (delta <= -12) return "negative";
-  return "neutral";
+  return heroToneFromWinRateDelta(delta);
 }
 
 function cardFromMatrix(
@@ -181,7 +181,7 @@ function cardFromMatrix(
     shortLabel: config.shortLabel,
     kind: "matrix-edge",
     kicker: "Standout ref×team split",
-    headline: `${highlight.refName} ${direction} ${highlight.teamLabel} baseline`,
+    headline: `${highlight.refName} ${direction === "beats" ? "boosts" : direction === "trails" ? "drags" : "shifts"} ${highlight.teamLabel} results in ${config.shortLabel} games`,
     story: `${highlight.wins}-${highlight.losses} (${splitPct}) across ${highlight.games} games. Team sample without this ref: ${baselinePct} (${formatMatrixHighlightBaseline(highlight)}).`,
     heroValue: deltaLabel,
     heroLabel: "Win rate vs team baseline",

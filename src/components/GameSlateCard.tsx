@@ -53,9 +53,11 @@ import {
 } from "@/lib/user-language";
 import { formatSigned } from "@/lib/stats-utils";
 import { formatPremiumLabel } from "@/lib/whistle-premium";
+import { whistleIndexFromCrewMetrics } from "@/lib/whistle-index";
 import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { RefAvatar } from "@/components/RefAvatar";
+import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import { GameGrudgeStorylines } from "./GrudgeMatchSection";
 import { NhlSlateSignalBadges } from "./NhlSlateSignalBadges";
 import { OuLeanBadge } from "./OuLeanBadge";
@@ -163,6 +165,7 @@ export function GameSlateCard({
   );
 
   const grudgeHeadline = storylines[0]?.headline;
+  const whistleIndex = whistleIndexFromCrewMetrics(metrics);
   const paceLabel =
     premium.alert === "high_pace"
       ? "High scoring crew"
@@ -242,6 +245,9 @@ export function GameSlateCard({
           </p>
         ) : (
           <>
+            {whistleIndex !== null ? (
+              <WhistleIndexGauge index={whistleIndex} size="md" className="mb-3" />
+            ) : null}
             <div className="game-slate-composite" aria-label="Crew composite tendencies">
               <div className="game-slate-composite-stat">
                 <span className="game-slate-composite-label">{copy.scoringLabel}</span>

@@ -5,8 +5,10 @@ import { useCallback, useEffect, useId, useRef, useState, type MouseEvent } from
 import { ArrowRight, X } from "lucide-react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
+import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import type { LeagueConfig } from "@/lib/leagues";
 import type { RefProfile } from "@/lib/types";
+import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 
 const DRAWER_TRANSITION_MS = 220;
@@ -47,6 +49,7 @@ export function RefProfilePreviewDrawer({
     league.id === "nhl" ? "nhl" : league.id === "nfl" ? "nfl" : "nba";
   const profileHref = profile ? `${basePath}/refs/${profile.slug}` : "";
   const recentGames = profile?.recentGames.slice(0, RECENT_GAME_COUNT) ?? [];
+  const whistleIndex = profile ? whistleIndexFromRefProfile(profile) : null;
 
   useEffect(() => {
     if (open) {
@@ -137,6 +140,9 @@ export function RefProfilePreviewDrawer({
         </header>
 
         <div className="ref-preview-drawer-body">
+          {whistleIndex !== null ? (
+            <WhistleIndexGauge index={whistleIndex} size="sm" className="mb-4" />
+          ) : null}
           <dl className="ref-preview-drawer-stats">
             <div>
               <dt>Games</dt>

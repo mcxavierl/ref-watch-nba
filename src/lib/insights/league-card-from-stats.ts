@@ -11,6 +11,7 @@ import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 import type { LeagueInsightCard, LeagueInsightTone } from "@/lib/league-overview-insights";
+import { heroToneFromWinRateDelta } from "@/lib/metric-significance";
 
 type VerifiedLiveLeagueId = (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
 
@@ -42,9 +43,7 @@ function formatDeltaPts(delta: number): string {
 }
 
 function heroToneFromDelta(delta: number): LeagueInsightTone {
-  if (delta >= 12) return "positive";
-  if (delta <= -12) return "negative";
-  return "neutral";
+  return heroToneFromWinRateDelta(delta);
 }
 
 function cardFromMatrix(

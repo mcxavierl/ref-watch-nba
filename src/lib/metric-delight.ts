@@ -1,4 +1,12 @@
 import type { FindingStat } from "@/lib/findings-shared";
+import {
+  DELTA_SIGNIFICANT_ABS,
+  DELTA_STANDOUT_ABS,
+  FINDING_DELTA_SIGNIFICANT_ABS,
+  RATE_SIGNIFICANT_PCT,
+  significantSignedTone,
+  statValueSignificanceTone,
+} from "@/lib/metric-significance";
 import type { MatrixCellExtreme } from "@/lib/ref-team-matrix";
 
 type FindingHighlightTone =
@@ -59,11 +67,9 @@ export function matrixExtremeTone(kind: MatrixCellExtreme): MetricDelightTone {
 
 export function signedDeltaTone(
   value: number,
-  threshold = 0,
+  threshold = DELTA_SIGNIFICANT_ABS,
 ): "positive" | "negative" | "neutral" {
-  if (value > threshold) return "positive";
-  if (value < -threshold) return "negative";
-  return "neutral";
+  return significantSignedTone(value, threshold);
 }
 
 export function metricDelightClass(
@@ -96,7 +102,6 @@ function parseSignedNumber(value: string): number | null {
   return match ? parseFloat(match[1]) : null;
 }
 
-const NEUTRAL_PCT_BAND = 2;
 const SAMPLE_STAT_LABEL = /^sample$/i;
 
 /** Resolve delight tone for a finding stat cell (matches finding-highlights heuristics). */
@@ -114,14 +119,14 @@ export function findingStatDelightTone(stat: FindingStat): MetricDelightTone {
   const pct = parsePct(stat.value) ?? parsePct(stat.detail ?? "");
   if (pct != null) {
     const baseline = parseBaselineFromDetail(stat.detail) ?? 50;
-    if (label.includes("under benchmark") && pct >= baseline + NEUTRAL_PCT_BAND) {
+    if (label.includes("under benchmark") && pct >= baseline + RATE_SIGNIFICANT_PCT) {
       return "neutral";
     }
-    if (label.includes("over benchmark") && pct <= baseline - NEUTRAL_PCT_BAND) {
+    if (label.includes("over benchmark") && pct <= baseline - RATE_SIGNIFICANT_PCT) {
       return "neutral";
     }
-    if (pct >= baseline + NEUTRAL_PCT_BAND) return "positive";
-    if (pct <= baseline - NEUTRAL_PCT_BAND) return "negative";
+    if (pct >= baseline + RATE_SIGNIFICANT_PCT) return "positive";
+    if (pct <= baseline - RATE_SIGNIFICANT_PCT) return "negative";
     return "neutral";
   }
 
@@ -129,13 +134,13 @@ export function findingStatDelightTone(stat: FindingStat): MetricDelightTone {
   if (signed != null) {
     if (stat.label.toLowerCase().includes("delta")) {
       return highlightToneToDelight(
-        signed > 0.05 ? "positive" : signed < -0.05 ? "negative" : "neutral",
+        significantSignedTone(signed, FINDING_DELTA_SIGNIFICANT_ABS),
       );
     }
-    if (Math.abs(signed) >= 12) {
+    if (Math.abs(signed) >= DELTA_STANDOUT_ABS) {
       return signed > 0 ? "standout-high" : "standout-low";
     }
-    if (Math.abs(signed) >= 2) {
+    if (Math.abs(signed) >= DELTA_SIGNIFICANT_ABS) {
       return signed > 0 ? "positive" : "negative";
     }
   }
@@ -144,16 +149,5 @@ export function findingStatDelightTone(stat: FindingStat): MetricDelightTone {
 }
 
 export function statValueDelightTone(value: string): MetricDelightTone {
-  const trimmed = value.trim();
-  if (trimmed.startsWith("+") && !/^\+0(\.0+)?(\s|$|%)/.test(trimmed)) {
-    const num = parseSignedNumber(trimmed);
-    if (num != null && Math.abs(num) >= 12) return "standout-high";
-    return "positive";
-  }
-  if (trimmed.startsWith("-")) {
-    const num = parseSignedNumber(trimmed);
-    if (num != null && Math.abs(num) >= 12) return "standout-low";
-    return "negative";
-  }
-  return "neutral";
+  return statValueSignificanceTone(value);
 }

@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-15T02:44:58.116Z",
+  "config": {
+    "startSeason": 2025,
+    "endSeason": 2025,
+    "conferences": [
+      "sec",
+      "big-12",
+      "acc",
+      "big-ten"
+    ]
+  },
+  "jobs": [
+    {
+      "id": "2025-sec",
+      "season": 2025,
+      "conference": "sec",
+      "status": "pending",
+      "cursor": 0,
+      "gamesTotal": 0,
+      "gamesProcessed": 0
+    },
+    {
+      "id": "2025-big-12",
+      "season": 2025,
+      "conference": "big-12",
+      "status": "pending",
+      "cursor": 0,
+      "gamesTotal": 0,
+      "gamesProcessed": 0
+    },
+    {
+      "id": "2025-acc",
+      "season": 2025,
+      "conference": "acc",
+      "status": "pending",
+      "cursor": 0,
+      "gamesTotal": 0,
+      "gamesProcessed": 0
+    },
+    {
+      "id": "2025-big-ten",
+      "season": 2025,
+      "conference": "big-ten",
+      "status": "pending",
+      "cursor": 0,
+      "gamesTotal": 0,
+      "gamesProcessed": 0
+    }
+  ]
+}

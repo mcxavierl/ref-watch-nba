@@ -27,8 +27,14 @@ import {
   internationalOriginStory,
 } from "@/lib/insights/international-matchups";
 
+import {
+  heroToneFromWhistlePct,
+  heroToneFromWinRateDelta,
+  WIN_RATE_OUTLIER_PP,
+} from "@/lib/metric-significance";
+
 export const TOP_STORY_LIMIT = 3;
-export const WIN_RATE_OUTLIER_PP = 15;
+export { WIN_RATE_OUTLIER_PP };
 export const FOUL_RATE_VARIANCE_PCT = 10;
 export const MIN_MATRIX_GAMES = 8;
 export const MIN_WHISTLE_REF_GAMES = 50;
@@ -89,9 +95,7 @@ function formatDeltaPts(delta: number): string {
 }
 
 function heroToneFromDelta(delta: number): LeagueInsightTone {
-  if (delta >= WIN_RATE_OUTLIER_PP) return "positive";
-  if (delta <= -WIN_RATE_OUTLIER_PP) return "negative";
-  return "neutral";
+  return heroToneFromWinRateDelta(delta);
 }
 
 function whistleVariancePct(ref: Pick<SlimRefProfile, "foulsDelta">, stats: RefStatsFile): number {
@@ -271,7 +275,7 @@ export function candidateToInsightCard(candidate: InsightOutlierCandidate): Leag
     ),
     heroValue: varianceLabel,
     heroLabel: `${copy.whistleUnit} variance vs league`,
-    heroTone: ref.foulsDelta > 0 ? "positive" : "negative",
+    heroTone: heroToneFromWhistlePct(candidate.whistleVariancePct ?? 0),
     stats: [
       { label: `${copy.whistleUnit} per game`, value: String(ref.avgFouls) },
       { label: "Vs league avg", value: formatSigned(ref.foulsDelta) },

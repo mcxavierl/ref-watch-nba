@@ -71,6 +71,109 @@
   cursor: default;
 }
 
+/* —— Editorial narrative layout —— */
+.overview-editorial-narrative {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.overview-editorial-section--hero {
+  margin-top: 0;
+}
+
+.overview-editorial-trends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-4);
+}
+
+.overview-editorial-spotlight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-4);
+}
+
+.overview-editorial-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+@media (max-width: 900px) {
+  .overview-editorial-quick-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.overview-explore-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.overview-historical-leaders-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.overview-historical-leader {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  background: var(--surface);
+}
+
+.overview-historical-leader-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--border) 40%, transparent);
+}
+
+.overview-historical-leader-name {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.overview-historical-leader-name:hover {
+  text-decoration: underline;
+}
+
+.overview-historical-leader-meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.overview-historical-leader-cta {
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.overview-historical-leader-cta:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
 @media (min-width: 64rem) {
   .overview-dashboard-breathe {
     margin-top: var(--space-12);
@@ -124,6 +227,41 @@
 .overview-hero-minimal-cta:hover {
   border-color: color-mix(in srgb, var(--raptors) 35%, var(--border));
   background: var(--surface-raised);
+}
+
+/* —— Trust bar —— */
+.overview-trust-bar {
+  margin-top: var(--space-3);
+  padding: 0.45rem 0.75rem;
+  border-top: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  background: color-mix(in srgb, var(--surface) 88%, var(--surface-raised));
+}
+
+.overview-trust-bar-copy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text-muted) 92%, var(--text));
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-trust-bar-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+}
+
+.overview-trust-bar-divider {
+  color: color-mix(in srgb, var(--text-muted) 55%, transparent);
+  font-weight: 500;
 }
 
 /* —— Visual hierarchy: primary vs secondary —— */

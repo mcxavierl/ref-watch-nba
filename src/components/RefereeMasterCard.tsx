@@ -4,7 +4,9 @@ import { FavoritesStar } from "@/components/FavoritesStar";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefereeWhistleDispositionStrip } from "@/components/RefereeWhistleDispositionStrip";
 import { RefereeWhistleMetricToggle } from "@/components/RefereeWhistleMetricToggle";
+import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import { buildRefMasterInsights } from "@/lib/ref-master-insights";
+import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
 import { isWhistleTaxonomyLeague } from "@/config/penalty-types";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
@@ -42,6 +44,7 @@ export function RefereeMasterCard({
   children,
 }: RefereeMasterCardProps) {
   const insights = buildRefMasterInsights(leagueId, profile, stats, qualified);
+  const whistleIndex = qualified ? whistleIndexFromRefProfile(profile) : null;
 
   return (
     <header className="page-profile-header">
@@ -68,6 +71,11 @@ export function RefereeMasterCard({
             />
           </div>
           <DynamicInsightPillRow insights={insights} />
+          {whistleIndex !== null ? (
+            <div className="mt-3 max-w-xs">
+              <WhistleIndexGauge index={whistleIndex} size="sm" />
+            </div>
+          ) : null}
           {isWhistleTaxonomyLeague(leagueId) ? (
             <RefereeWhistleDispositionStrip
               profile={profile}

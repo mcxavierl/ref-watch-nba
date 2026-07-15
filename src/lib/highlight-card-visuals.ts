@@ -10,7 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Whistle } from "@/components/icons/Whistle";
-import { statValueDelightTone } from "@/lib/metric-delight";
+import { statValueDelightTone, signedDeltaTone } from "@/lib/metric-delight";
 import type { RankingsInsight } from "@/lib/rankings-synthesis";
 
 export type HighlightCardTone = "positive" | "negative" | "neutral";
@@ -76,13 +76,6 @@ function toneFromStatValue(statValue?: string): HighlightCardTone {
 }
 
 export function rankingsInsightCardTone(insight: RankingsInsight): HighlightCardTone {
-  if (
-    insight.id === "top-over" ||
-    insight.id === "top-ats" ||
-    insight.id === "top-ou-betting"
-  ) {
-    return "positive";
-  }
   return toneFromStatValue(insight.statValue);
 }
 
@@ -91,9 +84,10 @@ export function leaderHighlightTone(
   value?: string,
   delta?: number,
 ): HighlightCardTone {
+  void category;
   if (delta !== undefined) {
-    if (delta > 0.05) return "positive";
-    if (delta < -0.05) return "negative";
+    const tone = signedDeltaTone(delta);
+    if (tone !== "neutral") return tone;
   }
   return toneFromStatValue(value);
 }

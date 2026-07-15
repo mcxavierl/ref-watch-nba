@@ -7,13 +7,22 @@ import {
 } from "@/lib/highlight-card-visuals";
 
 describe("highlight-card-visuals", () => {
-  it("treats leaderboard rate cards as positive tone", () => {
+  it("uses stat significance for leaderboard rate cards", () => {
     assert.equal(
       rankingsInsightCardTone({
         id: "top-ats",
         title: "Strongest home ATS track record",
         body: "sample",
         statValue: "62.8%",
+      }),
+      "neutral",
+    );
+    assert.equal(
+      rankingsInsightCardTone({
+        id: "top-ats",
+        title: "Strongest home ATS track record",
+        body: "sample",
+        statValue: "+14.2pp",
       }),
       "positive",
     );

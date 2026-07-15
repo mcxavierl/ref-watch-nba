@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { inferSignificantKpiTone } from "@/lib/metric-significance";
 
 export type KpiDataPillTone = "positive" | "negative" | "neutral";
 export type KpiDataPillVariant = "block" | "inline" | "compact";
@@ -12,14 +13,7 @@ function accentToTone(accent: KpiDataPillAccent): KpiDataPillTone {
 
 /** Infer directional tone from a signed KPI string (e.g. "+57.8pp", "-0.9"). */
 export function inferKpiTone(value: string): KpiDataPillTone {
-  const trimmed = value.trim();
-  if (trimmed.startsWith("+") && !/^\+0(?:\.0+)?(?:\s|$|pp|%)/.test(trimmed)) {
-    return "positive";
-  }
-  if (trimmed.startsWith("-") && !/^-0(?:\.0+)?(?:\s|$|pp|%)/.test(trimmed)) {
-    return "negative";
-  }
-  return "neutral";
+  return inferSignificantKpiTone(value);
 }
 
 export type KpiDataPillProps = {
