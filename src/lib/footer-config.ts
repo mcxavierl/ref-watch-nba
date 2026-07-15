@@ -89,7 +89,7 @@ const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
   overview: {
     affiliationLabel: "the NBA, NHL, NFL, Premier League, La Liga, or NCAA",
     sourceLead:
-      "Independent multi-league referee research. No sportsbook affiliate links. Assignment sources vary by sport — open a league hub for specifics.",
+      "Independent multi-league referee research. No sportsbook affiliate links. Assignment sources vary by sport - open a league hub for specifics.",
     historyRange: "2016 – present",
     exploreLinks: OVERVIEW_EXPLORE,
   },
