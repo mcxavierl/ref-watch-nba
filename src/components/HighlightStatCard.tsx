@@ -1,5 +1,8 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges, and sample-gate provenance metadata.
+ */
 import {
   REF_CARD_BODY_CLASS,
   REF_CARD_HEAD_CLASS,

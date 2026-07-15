@@ -4,7 +4,16 @@ import type { MetricProvenance } from "@/lib/types";
 import { ProvenanceMarker, provenanceValueClass } from "@/components/ProvenanceMarker";
 import { isFallbackMetric } from "@/lib/provenance-utils";
 import { metricDelightClass } from "@/lib/metric-delight";
+import {
+  ProvenanceIndicator,
+  StatusBadge,
+  badgeToneToVerdict,
+} from "@/components/hub";
 
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
+ * and sample-gate provenance metadata.
+ */
 export function MetricBlock({
   icon: Icon,
   iconClassName = "text-zinc-500",
@@ -15,6 +24,10 @@ export function MetricBlock({
   badgeTone = "neutral",
   provenance,
   valueTone,
+  sampleSize,
+  source,
+  lastUpdated,
+  useStatusBadge = true,
 }: {
   icon?: LucideIcon;
   iconClassName?: string;
@@ -25,6 +38,10 @@ export function MetricBlock({
   badgeTone?: "positive" | "negative" | "neutral" | "warning";
   provenance?: MetricProvenance;
   valueTone?: "positive" | "negative" | "neutral";
+  sampleSize?: number;
+  source?: string;
+  lastUpdated?: string;
+  useStatusBadge?: boolean;
 }) {
   const hidden = isFallbackMetric(provenance);
   const valueClasses = [
@@ -38,8 +55,8 @@ export function MetricBlock({
     .join(" ");
 
   return (
-    <div className="flex flex-col gap-2 bg-surface px-4 py-4 sm:px-5">
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+    <div className="clinical-metric-card flex flex-col gap-2 bg-surface px-4 py-4 backdrop-blur-md sm:px-5">
+      <div className="clinical-metric-card-head flex flex-wrap items-center gap-x-2 gap-y-1">
         {Icon && (
           <Icon
             className={`size-3.5 shrink-0 ${iconClassName}`}
@@ -48,21 +65,40 @@ export function MetricBlock({
           />
         )}
         <span className="min-w-0 text-sm font-medium text-zinc-600">{label}</span>
-        {!hidden && <ProvenanceMarker provenance={provenance} compact />}
+        {!hidden && (
+          <>
+            <ProvenanceIndicator
+              sampleSize={sampleSize}
+              source={source}
+              lastUpdated={lastUpdated}
+              provenance={provenance}
+            />
+            <ProvenanceMarker provenance={provenance} compact />
+          </>
+        )}
       </div>
       <p className={valueClasses}>{hidden ? "-" : value}</p>
-      {hint && !hidden && <p className="text-sm leading-snug text-zinc-600">{hint}</p>}
-      {badge && (
-        <span
-          className={`metric-block-badge inline-flex w-fit max-w-full rounded-md px-2 py-0.5 text-sm font-medium ${
-            badgeTone === "warning"
-              ? "border border-amber-500/35 bg-amber-500/10 text-amber-200"
-              : metricDelightClass(badgeTone, "badge")
-          }`}
-        >
-          {badge}
-        </span>
+      {hint && !hidden && (
+        <p className="text-sm leading-snug text-primary-muted">{hint}</p>
       )}
+      {badge &&
+        (useStatusBadge && typeof badge === "string" ? (
+          <StatusBadge
+            verdict={badgeToneToVerdict(badgeTone)}
+            label={badge}
+            compact
+          />
+        ) : (
+          <span
+            className={`metric-block-badge inline-flex w-fit max-w-full rounded-md px-2 py-0.5 text-sm font-medium tabular-nums ${
+              badgeTone === "warning"
+                ? "border border-amber-500/35 bg-amber-500/10 text-amber-200"
+                : metricDelightClass(badgeTone, "badge")
+            }`}
+          >
+            {badge}
+          </span>
+        ))}
     </div>
   );
 }

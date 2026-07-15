@@ -48,7 +48,7 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
     run: () =>
       auditFileContains(
         "src/components/hub/RefCard.tsx",
-        /Clinical Modern ref card standard/,
+        /CLINICAL MODERN STANDARD/,
         "Clinical Modern doc comment",
       ),
   },
@@ -200,8 +200,71 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
     run: () =>
       auditFileContains(
         "src/app/globals.css",
-        /--semantic-positive/,
-        "--semantic-positive token",
+        /--semantic-positive:\s*#166534/,
+        "--semantic-positive Clinical Modern token",
+      ),
+  },
+  {
+    name: "StatusBadge component exists with Clinical Modern comment",
+    run: () =>
+      auditFileContains(
+        "src/components/hub/StatusBadge.tsx",
+        /CLINICAL MODERN STANDARD.*icon-paired status badges/s,
+        "StatusBadge Clinical Modern comment",
+      ),
+  },
+  {
+    name: "ProvenanceIndicator component exists",
+    run: () =>
+      auditFileContains(
+        "src/components/hub/ProvenanceIndicator.tsx",
+        /ProvenanceIndicator/,
+        "ProvenanceIndicator component",
+      ),
+  },
+  {
+    name: "ClinicalCard shell exports glass card class",
+    run: () =>
+      auditFileContains(
+        "src/components/hub/ClinicalCard.tsx",
+        /backdrop-blur-md/,
+        "ClinicalCard backdrop-blur",
+      ),
+  },
+  {
+    name: "ProfileSignalsSection uses progressive disclosure",
+    run: () =>
+      auditFileContains(
+        "src/components/ProfileSignalsSection.tsx",
+        /profile-signals-details/,
+        "profile signals accordion",
+      ),
+  },
+  {
+    name: "ProfileSignalsSection uses StatusBadge",
+    run: () =>
+      auditFileContains(
+        "src/components/ProfileSignalsSection.tsx",
+        /StatusBadge/,
+        "StatusBadge in profile signals",
+      ),
+  },
+  {
+    name: "SampleGateBadge delegates to StatusBadge",
+    run: () =>
+      auditFileContains(
+        "src/components/SampleGateBadge.tsx",
+        /from "@\/components\/hub\/StatusBadge"/,
+        "SampleGateBadge StatusBadge import",
+      ),
+  },
+  {
+    name: "ClinicalMetricCard shell exists",
+    run: () =>
+      auditFileContains(
+        "src/components/hub/ClinicalMetricCard.tsx",
+        /CLINICAL MODERN STANDARD/,
+        "ClinicalMetricCard comment",
       ),
   },
   {
@@ -266,6 +329,51 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "src/app/globals.css",
         /--site-scroll-offset/,
         "--site-scroll-offset token",
+      ),
+  },
+  {
+    name: "StatusBadge hub component exists",
+    run: () =>
+      auditFileContains(
+        "src/components/hub/StatusBadge.tsx",
+        /CLINICAL MODERN STANDARD/,
+        "StatusBadge Clinical Modern comment",
+      ),
+  },
+  {
+    name: "ProvenanceIndicator hub component exists",
+    run: () =>
+      auditFileContains(
+        "src/components/hub/ProvenanceIndicator.tsx",
+        /provenance-indicator-tooltip/,
+        "hover tooltip markup",
+      ),
+  },
+  {
+    name: "ProfileSignalsSection uses progressive disclosure",
+    run: () =>
+      auditFileContains(
+        "src/components/ProfileSignalsSection.tsx",
+        /profile-signals-details/,
+        "profile signals details accordion",
+      ),
+  },
+  {
+    name: "ProfileSignalsSection uses StatusBadge",
+    run: () =>
+      auditFileContains(
+        "src/components/ProfileSignalsSection.tsx",
+        /StatusBadge/,
+        "StatusBadge in profile signals",
+      ),
+  },
+  {
+    name: "globals.css defines status badge styles",
+    run: () =>
+      auditFileContains(
+        "src/app/globals.css",
+        /\.status-badge--pass/,
+        "status badge pass variant",
       ),
   },
 ];

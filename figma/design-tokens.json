@@ -20,8 +20,9 @@
       "numeric": "tabular-nums on all metrics"
     },
     "semantic": {
-      "positive": "var(--semantic-positive)",
-      "negative": "var(--semantic-negative)",
+      "positive": "#166534",
+      "negative": "#991B1B",
+      "caution": "#92400E",
       "muted": "var(--text-primary-muted)"
     },
     "interaction": {

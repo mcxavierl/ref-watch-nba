@@ -1,5 +1,9 @@
 "use client";
 
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges, and sample-gate provenance metadata.
+ */
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { MouseEvent, ReactNode } from "react";

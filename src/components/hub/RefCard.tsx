@@ -1,18 +1,19 @@
 import type { ReactNode } from "react";
+import { CLINICAL_CARD_CLASS } from "@/components/hub/ClinicalCard";
 
 /**
- * Clinical Modern ref card standard for Ref Watch league hubs.
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges, and sample-gate provenance metadata.
  *
- * MUST apply to all league hubs (NBA, NFL, NHL, EPL, La Liga, CBB, CFB):
+ * Ref card shell for league hubs (NBA, NFL, NHL, EPL, La Liga, CBB, CFB):
  * - tabular-nums on all primary metrics
- * - Semantic color-coding on comparative deltas (--semantic-positive / --semantic-negative), not contextual percentages
- * - Glass-morphism card surfaces (.ref-card, .rankings-insight-card)
+ * - Semantic color-coding on comparative deltas (--semantic-positive / --semantic-negative)
+ * - Glass-morphism card surfaces (.ref-card, .rankings-insight-card, .clinical-card)
  * - Muted comparative copy via --text-primary-muted
  *
  * Design tokens: figma/design-tokens.json and src/app/globals.css
  */
 export const REF_CARD_CLASS =
-  "ref-card rankings-insight-card highlight-stat-card";
+  `ref-card rankings-insight-card highlight-stat-card ${CLINICAL_CARD_CLASS}`;
 export const REF_CARD_HEAD_CLASS = "ref-card-head rankings-insight-card-head";
 export const REF_CARD_ICON_CLASS = "ref-card-icon rankings-insight-icon";
 export const REF_CARD_KICKER_CLASS = "ref-card-kicker rankings-insight-kicker";

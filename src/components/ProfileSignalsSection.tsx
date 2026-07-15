@@ -1,9 +1,26 @@
 import Link from "next/link";
-import type { ProfileSignalsBundle } from "@/lib/profile-signals";
-import { StandoutFlag, StandoutMetricValue } from "@/components/StandoutMetric";
+import type { ProfileSignal, ProfileSignalsBundle } from "@/lib/profile-signals";
+import { StatusBadge } from "@/components/hub/StatusBadge";
+import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
+import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { researchHubHref, type FindingLeague } from "@/lib/findings-shared";
 import { findingStatDelightTone, isDirectionalTone } from "@/lib/metric-delight";
 import { NO_SIGNAL_COPY, SIGNAL_LIMITATION_COPY } from "@/lib/trust-charter";
+
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges, and sample-gate provenance metadata.
+ */
+
+const KEY_SIGNAL_KINDS = new Set<ProfileSignal["kind"]>([
+  "scoring-delta",
+  "whistle-delta",
+]);
+
+function keyFindingLabel(signal: ProfileSignal): string {
+  if (signal.kind === "scoring-delta") return "Scoring outlier";
+  if (signal.kind === "whistle-delta") return "Whistle extreme";
+  return signal.headline;
+}
 
 function profileStatToneClass(label: string, value: string, detail?: string) {
   const tone = findingStatDelightTone({ label, value, detail });
@@ -16,11 +33,131 @@ function profileStatToneClass(label: string, value: string, detail?: string) {
   return "profile-signal-stat";
 }
 
+function SignalStats({ stats }: { stats: ProfileSignal["stats"] }) {
+  if (stats.length === 0) return null;
+
+  return (
+    <dl className="mt-3 grid gap-2">
+      {stats.map((stat) => {
+        const tone = findingStatDelightTone(stat);
+        return (
+          <div
+            key={stat.label}
+            className={profileStatToneClass(stat.label, stat.value, stat.detail)}
+          >
+            <dt className="text-xs font-medium text-zinc-500">{stat.label}</dt>
+            <dd className="mt-0.5">
+              <StandoutMetricValue
+                tone={tone}
+                size={isDirectionalTone(tone) ? "lg" : "md"}
+              >
+                {stat.value}
+              </StandoutMetricValue>
+            </dd>
+            {stat.detail && (
+              <dd className="mt-0.5 text-xs text-primary-muted tabular-nums">
+                {stat.detail}
+              </dd>
+            )}
+          </div>
+        );
+      })}
+    </dl>
+  );
+}
+
+function SignalCard({
+  signal,
+  variant,
+  showKeyLabel = false,
+}: {
+  signal: ProfileSignal;
+  variant: "full" | "sidebar";
+  showKeyLabel?: boolean;
+}) {
+  const titleClass =
+    variant === "sidebar"
+      ? "min-w-0 flex-1 text-sm font-semibold text-zinc-900"
+      : "min-w-0 flex-1 text-base font-semibold text-zinc-900";
+  const bodyClass =
+    variant === "sidebar"
+      ? "mt-2 text-xs leading-relaxed text-zinc-600"
+      : "mt-2 text-sm leading-relaxed text-zinc-600";
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-start gap-x-2 gap-y-1">
+        <h3 className={titleClass}>
+          {showKeyLabel ? keyFindingLabel(signal) : signal.headline}
+        </h3>
+        {signal.notable && (
+          <StatusBadge
+            verdict="caution"
+            label="Notable"
+            compact
+            className="profile-signal-badge"
+          />
+        )}
+      </div>
+      <p className={bodyClass}>{signal.body}</p>
+      <SignalStats stats={signal.stats} />
+    </div>
+  );
+}
+
+function ProgressiveSignalList({
+  signals,
+  variant,
+}: {
+  signals: ProfileSignal[];
+  variant: "full" | "sidebar";
+}) {
+  const keySignals = signals.filter(
+    (signal) => KEY_SIGNAL_KINDS.has(signal.kind) && signal.notable,
+  );
+  const secondarySignals = signals.filter(
+    (signal) => !(KEY_SIGNAL_KINDS.has(signal.kind) && signal.notable),
+  );
+
+  const paddingClass = variant === "sidebar" ? "px-4 py-4 sm:px-5" : "px-4 py-5 sm:px-5";
+
+  return (
+    <>
+      {keySignals.length > 0 && (
+        <ul className="divide-y divide-border-subtle">
+          {keySignals.map((signal) => (
+            <li key={signal.kind} className={paddingClass}>
+              <SignalCard signal={signal} variant={variant} showKeyLabel />
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {secondarySignals.length > 0 && (
+        <details className="profile-signals-details border-t border-border-subtle">
+          <summary className={`profile-signals-details-summary ${paddingClass}`}>
+            {secondarySignals.length} more signal
+            {secondarySignals.length === 1 ? "" : "s"}
+          </summary>
+          <ul className="divide-y divide-border-subtle border-t border-border-subtle">
+            {secondarySignals.map((signal) => (
+              <li key={signal.kind} className={paddingClass}>
+                <SignalCard signal={signal} variant={variant} />
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </>
+  );
+}
+
 export function ProfileSignalsSection({
   bundle,
   refName,
   variant = "full",
   league = "NBA",
+  lastUpdated,
 }: {
   bundle: ProfileSignalsBundle;
   refName: string;
@@ -33,10 +170,17 @@ export function ProfileSignalsSection({
 
   if (variant === "sidebar") {
     return (
-      <aside id="profile-signals" className="ref-signals-sidebar">
+      <aside id="profile-signals" className="ref-signals-sidebar clinical-card">
         <div className="border-b border-border-subtle px-4 py-3 sm:px-5">
-          <h2 className="text-sm font-semibold text-zinc-800">Profile signals</h2>
-          <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-sm font-semibold text-zinc-800">Profile signals</h2>
+            <ProvenanceIndicator
+              sampleSize={bundle.sampleGate.sampleSize}
+              lastUpdated={lastUpdated}
+              source={`${bundle.sampleGames} games logged`}
+            />
+          </div>
+          <p className="mt-1 text-xs leading-relaxed text-primary-muted">
             Data-led patterns, informational only.
           </p>
         </div>
@@ -44,61 +188,13 @@ export function ProfileSignalsSection({
         {isEmpty ? (
           <div className="ref-signals-empty">
             <p className="text-sm font-medium text-zinc-800">No standout patterns</p>
-            <p className="mt-2 text-xs leading-relaxed text-zinc-500">
+            <p className="mt-2 text-xs leading-relaxed text-primary-muted">
               {refName}&apos;s metrics sit near league averages. Check back as more
               games are logged.
             </p>
           </div>
         ) : (
-          <ul className="divide-y divide-border-subtle">
-            {bundle.signals.map((signal) => (
-              <li key={signal.kind} className="px-4 py-4 sm:px-5">
-                <div className="flex flex-wrap items-start gap-x-2 gap-y-1">
-                  <h3 className="min-w-0 flex-1 text-sm font-semibold text-zinc-900">
-                    {signal.headline}
-                  </h3>
-                  {signal.notable && <StandoutFlag>Notable</StandoutFlag>}
-                </div>
-                <p className="mt-2 text-xs leading-relaxed text-zinc-600">
-                  {signal.body}
-                </p>
-                {signal.stats.length > 0 && (
-                  <dl className="mt-3 grid gap-2">
-                    {signal.stats.map((stat) => {
-                      const tone = findingStatDelightTone(stat);
-                      return (
-                        <div
-                          key={stat.label}
-                          className={profileStatToneClass(
-                            stat.label,
-                            stat.value,
-                            stat.detail,
-                          )}
-                        >
-                          <dt className="text-xs font-medium text-zinc-500">
-                            {stat.label}
-                          </dt>
-                          <dd className="mt-0.5">
-                            <StandoutMetricValue
-                              tone={tone}
-                              size={isDirectionalTone(tone) ? "lg" : "md"}
-                            >
-                              {stat.value}
-                            </StandoutMetricValue>
-                          </dd>
-                          {stat.detail && (
-                            <dd className="mt-0.5 text-xs text-zinc-500">
-                              {stat.detail}
-                            </dd>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </dl>
-                )}
-              </li>
-            ))}
-          </ul>
+          <ProgressiveSignalList signals={bundle.signals} variant="sidebar" />
         )}
 
         {seeded && (
@@ -125,7 +221,14 @@ export function ProfileSignalsSection({
     <section id="profile-signals" className="section-block">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="section-title">Profile signals</h2>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="section-title">Profile signals</h2>
+            <ProvenanceIndicator
+              sampleSize={bundle.sampleGate.sampleSize}
+              lastUpdated={lastUpdated}
+              source={`${bundle.sampleGames} games logged`}
+            />
+          </div>
           <p className="section-lead">
             Data-led patterns for {refName}, historical associations only.
           </p>
@@ -138,67 +241,19 @@ export function ProfileSignalsSection({
         </Link>
       </div>
 
-      <div className="data-card">
+      <div className="clinical-card data-card">
         {isEmpty ? (
           <div className="px-4 py-8 text-center sm:px-5">
             <p className="text-sm font-medium text-zinc-800">
               {NO_SIGNAL_COPY}
             </p>
-            <p className="mx-auto mt-2 max-w-md text-sm text-zinc-600">
+            <p className="mx-auto mt-2 max-w-md text-sm text-primary-muted">
               {refName}&apos;s metrics sit near league averages across scoring,
               whistle rate, and over frequency. {SIGNAL_LIMITATION_COPY}
             </p>
           </div>
         ) : (
-          <ul className="divide-y divide-border-subtle">
-            {bundle.signals.map((signal) => (
-              <li key={signal.kind} className="px-4 py-5 sm:px-5">
-                <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
-                  <h3 className="min-w-0 flex-1 text-base font-semibold text-zinc-900">
-                    {signal.headline}
-                  </h3>
-                  {signal.notable && <StandoutFlag>Notable</StandoutFlag>}
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-                  {signal.body}
-                </p>
-                {signal.stats.length > 0 && (
-                  <dl className="mt-4 grid gap-3 sm:grid-cols-3">
-                    {signal.stats.map((stat) => {
-                      const tone = findingStatDelightTone(stat);
-                      return (
-                        <div
-                          key={stat.label}
-                          className={profileStatToneClass(
-                            stat.label,
-                            stat.value,
-                            stat.detail,
-                          )}
-                        >
-                          <dt className="text-xs font-medium text-zinc-500">
-                            {stat.label}
-                          </dt>
-                          <dd className="mt-0.5">
-                            <StandoutMetricValue
-                              tone={tone}
-                              size={isDirectionalTone(tone) ? "lg" : "md"}
-                            >
-                              {stat.value}
-                            </StandoutMetricValue>
-                          </dd>
-                          {stat.detail && (
-                            <dd className="mt-0.5 text-xs text-zinc-500">
-                              {stat.detail}
-                            </dd>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </dl>
-                )}
-              </li>
-            ))}
-          </ul>
+          <ProgressiveSignalList signals={bundle.signals} variant="full" />
         )}
 
         {seeded && (

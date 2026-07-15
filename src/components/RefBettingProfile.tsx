@@ -8,6 +8,11 @@ import {
   RefDashboardStatGrid,
 } from "@/components/RefDashboardStatGrid";
 
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
+ * and sample-gate provenance metadata.
+ */
+
 function bucketGames(record: {
   wins: number;
   losses: number;
@@ -80,10 +85,10 @@ export function RefBettingProfile({
     <>
       <section className="data-card">
         <div className="ref-table-section-header">
-          <h2 className="text-sm font-semibold text-zinc-800">General stats</h2>
-          <p className="mt-1 text-sm text-zinc-600">
-            <TermHelp id="closing-line" /> Records use per-game closing lines
-            where available.
+          <h2 className="text-sm font-semibold text-zinc-800">Historical tendency</h2>
+          <p className="mt-1 text-sm text-primary-muted">
+            Scoring and foul rates from verified game logs. Over rate uses a fixed
+            benchmark proxy, not live sportsbook lines.
           </p>
         </div>
         <div className="px-4 py-4 sm:px-5">
@@ -116,17 +121,21 @@ export function RefBettingProfile({
               label="Avg total score"
               value={String(profile.avgTotalPoints)}
               detail={`${formatSigned(profile.totalPointsDelta)} vs league`}
+              detailMuted
               provenance={profile.provenance?.avgTotalPoints}
             />
             <RefDashboardStatCell
               label="Fouls per game"
               value={String(profile.avgFouls)}
               detail={`${formatSigned(profile.foulsDelta)} vs league`}
+              detailMuted
               provenance={profile.provenance?.avgFouls}
             />
             <RefDashboardStatCell
               label={<TermHelp id="over-225">Over rate (225 proxy)</TermHelp>}
               value={formatPct(profile.overRate)}
+              detail="Historical tendency, not sportsbook O/U"
+              detailMuted
               provenance={profile.provenance?.overRate}
             />
           </RefDashboardStatGrid>
@@ -136,6 +145,9 @@ export function RefBettingProfile({
       <section className="data-card">
         <div className="ref-table-section-header">
           <TermHeading id="over-under" />
+          <p className="mt-1 text-sm text-primary-muted">
+            Sportsbook closing totals where matched. Estimated lines elsewhere.
+          </p>
         </div>
         <div className="overflow-x-auto">
           <table className="ref-data-table data-table min-w-[28rem] w-full">
@@ -203,6 +215,9 @@ export function RefBettingProfile({
               Spread: home favorite / underdog
             </TermHelp>
           </h2>
+          <p className="mt-1 text-sm text-primary-muted">
+            ATS splits from per-game closing spreads. Historical sportsbook data only.
+          </p>
         </div>
         <div className="overflow-x-auto">
           <table className="ref-data-table data-table min-w-[28rem] w-full">

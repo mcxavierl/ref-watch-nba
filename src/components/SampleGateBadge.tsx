@@ -1,5 +1,10 @@
 import type { SampleGateStatus } from "@/lib/types";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
+ * and sample-gate provenance metadata.
+ */
 export function SampleGateBadge({
   gate,
   className = "",
@@ -10,14 +15,11 @@ export function SampleGateBadge({
   if (!gate) return null;
 
   return (
-    <span
-      className={`inline-flex w-fit rounded-md px-2 py-0.5 text-xs font-medium ${
-        gate.cleared
-          ? "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/80"
-          : "bg-amber-50 text-amber-900 ring-1 ring-amber-200/80"
-      } ${className}`}
-    >
-      {gate.label}
-    </span>
+    <StatusBadge
+      verdict={gate.cleared ? "pass" : "caution"}
+      label={<span className="tabular-nums">{gate.label}</span>}
+      className={className}
+      compact
+    />
   );
 }

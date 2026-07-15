@@ -72,20 +72,22 @@
   --header-wordmark: #ffffff;
 
   /* Standout metric delight surfaces — ink tokens in theme-tokens.css */
-  --metric-positive-muted: #047857;
-  --metric-positive-bg: color-mix(in srgb, #10b981 11%, var(--surface));
-  --metric-positive-border: color-mix(in srgb, #10b981 34%, var(--border));
-  --metric-positive-glow: color-mix(in srgb, #10b981 28%, transparent);
+  --metric-positive-muted: #166534;
+  --metric-positive-bg: color-mix(in srgb, #166534 11%, var(--surface));
+  --metric-positive-border: color-mix(in srgb, #166534 34%, var(--border));
+  --metric-positive-glow: color-mix(in srgb, #166534 28%, transparent);
 
-  --metric-negative-muted: #be123c;
-  --metric-negative-bg: color-mix(in srgb, #f43f5e 11%, var(--surface));
-  --metric-negative-border: color-mix(in srgb, #f43f5e 34%, var(--border));
-  --metric-negative-glow: color-mix(in srgb, #f43f5e 28%, transparent);
+  --metric-negative-muted: #991b1b;
+  --metric-negative-bg: color-mix(in srgb, #991b1b 11%, var(--surface));
+  --metric-negative-border: color-mix(in srgb, #991b1b 34%, var(--border));
+  --metric-negative-glow: color-mix(in srgb, #991b1b 28%, transparent);
 
   /* Clinical Modern semantic deltas — insight cards & comparison tables */
-  --semantic-positive: var(--metric-positive-muted);
-  --semantic-negative: var(--metric-negative-muted);
+  --semantic-positive: #166534;
+  --semantic-negative: #991b1b;
+  --semantic-caution: #92400e;
   --text-primary-muted: color-mix(in srgb, var(--foreground) 86%, transparent);
+  --clinical-card-border: #e5e7eb;
 
   --metric-standout-flag-bg: color-mix(in srgb, var(--header-gold) 14%, var(--surface));
   --metric-standout-flag-border: color-mix(in srgb, var(--header-gold) 42%, var(--border));
@@ -1121,7 +1123,10 @@ p {
   .ref-stat-card {
     padding: var(--space-4);
     border-radius: 0.625rem;
-    background: color-mix(in srgb, var(--surface-raised) 70%, transparent);
+    border: 1px solid var(--clinical-card-border, #e5e7eb);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
   }
 
   .ref-stat-label {
@@ -1152,7 +1157,26 @@ p {
     margin-top: var(--space-2);
     font-size: var(--text-sm);
     line-height: var(--leading-snug);
-    color: var(--muted);
+    color: var(--text-primary-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ref-stat-detail--muted {
+    color: var(--text-primary-muted);
+  }
+
+  .clinical-metric-card {
+    border: 1px solid var(--clinical-card-border, #e5e7eb);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .clinical-metric-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem;
   }
 
   .ref-table-section-header {
@@ -1912,6 +1936,28 @@ p {
   .profile-signal-stat--negative {
     border-color: var(--metric-negative-border);
     background: var(--metric-negative-bg);
+  }
+
+  .profile-signals-details-summary {
+    cursor: pointer;
+    list-style: none;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-primary-muted);
+  }
+
+  .profile-signals-details-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .profile-signals-details-summary::after {
+    content: " ↓";
+    font-size: var(--text-xs);
+    font-weight: 500;
+  }
+
+  .profile-signals-details[open] .profile-signals-details-summary::after {
+    content: " ↑";
   }
 
   /* ── Methodology accordion ── */
@@ -4646,13 +4692,127 @@ p {
     }
   }
 
+  .clinical-card {
+    border-radius: 0.85rem;
+    border: 1px solid var(--clinical-card-border, #e5e7eb);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--clinical-card-border, #e5e7eb);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    padding: 0.2rem 0.5rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+    color: var(--foreground);
+  }
+
+  .status-badge--compact {
+    padding: 0.125rem 0.375rem;
+    font-size: 0.6875rem;
+  }
+
+  .status-badge-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .status-badge--pass {
+    border-color: color-mix(in srgb, var(--semantic-positive) 35%, var(--clinical-card-border));
+    color: var(--semantic-positive);
+    background: color-mix(in srgb, var(--semantic-positive) 8%, var(--surface));
+  }
+
+  .status-badge--fail {
+    border-color: color-mix(in srgb, var(--semantic-negative) 35%, var(--clinical-card-border));
+    color: var(--semantic-negative);
+    background: color-mix(in srgb, var(--semantic-negative) 8%, var(--surface));
+  }
+
+  .status-badge--caution {
+    border-color: color-mix(in srgb, var(--semantic-caution) 35%, var(--clinical-card-border));
+    color: var(--semantic-caution);
+    background: color-mix(in srgb, var(--semantic-caution) 8%, var(--surface));
+  }
+
+  .provenance-indicator {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    cursor: help;
+  }
+
+  .provenance-indicator-dot {
+    display: block;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--foreground) 35%, transparent);
+    border: 1px solid var(--clinical-card-border, #e5e7eb);
+  }
+
+  .provenance-indicator--estimated .provenance-indicator-dot {
+    background: color-mix(in srgb, var(--semantic-caution) 55%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-caution) 40%, var(--clinical-card-border));
+  }
+
+  .provenance-indicator--compact .provenance-indicator-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+  }
+
+  .provenance-indicator-tooltip {
+    position: absolute;
+    z-index: var(--z-tooltip);
+    left: 50%;
+    bottom: calc(100% + 0.4rem);
+    transform: translateX(-50%);
+    display: none;
+    min-width: 10rem;
+    max-width: 16rem;
+    flex-direction: column;
+    gap: 0.15rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--clinical-card-border, #e5e7eb);
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    padding: 0.45rem 0.55rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--text-primary-muted);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .provenance-indicator:hover .provenance-indicator-tooltip,
+  .provenance-indicator:focus-visible .provenance-indicator-tooltip {
+    display: flex;
+  }
+
+  .text-primary-muted {
+    color: var(--text-primary-muted);
+  }
+
   .rankings-insight-card {
     --insight-card-glow: color-mix(in srgb, var(--insight-accent, var(--muted)) 72%, var(--foreground));
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
     border-radius: 0.85rem;
-    border: 1px solid color-mix(in srgb, var(--insight-card-glow) 38%, var(--border));
+    border: 1px solid color-mix(in srgb, var(--insight-card-glow) 38%, var(--clinical-card-border, var(--border)));
     background:
       radial-gradient(
         ellipse 120% 80% at 50% 0%,
