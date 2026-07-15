@@ -2,6 +2,7 @@ import overviewInsightsJson from "../../../data/overview-insights.json";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import { EVERGREEN_TOP_STORIES } from "@/lib/insights/evergreen";
 import type { TopStoriesStatus } from "@/lib/insights/generator";
+import { isProOnlyLiveLeague } from "@/lib/verified-live-leagues";
 
 export const INSIGHTS_PUBLIC_PATH = "/data/insights.json";
 
@@ -45,6 +46,10 @@ function sortBySignificance(cards: LeagueInsightCard[]): LeagueInsightCard[] {
   );
 }
 
+function filterProLiveCards(cards: LeagueInsightCard[]): LeagueInsightCard[] {
+  return cards.filter((card) => isProOnlyLiveLeague(card.leagueId));
+}
+
 function dedupeCards(cards: LeagueInsightCard[]): LeagueInsightCard[] {
   const seen = new Set<string>();
   const result: LeagueInsightCard[] = [];
@@ -70,7 +75,10 @@ export function queryInsights(
   const generatedAt = payload.generatedAt ?? null;
 
   if (options.teamId) {
-    const pool = [...(payload.topStories ?? []), ...(payload.cards ?? [])];
+    const pool = filterProLiveCards([
+      ...(payload.topStories ?? []),
+      ...(payload.cards ?? []),
+    ]);
     const filtered = sortBySignificance(dedupeCards(filterByTeam(pool, options.teamId)));
     return {
       insights: filtered.slice(0, limit),
@@ -79,10 +87,11 @@ export function queryInsights(
     };
   }
 
-  const stories =
+  const stories = filterProLiveCards(
     Array.isArray(payload.topStories) && payload.topStories.length > 0
       ? payload.topStories
-      : (payload.cards?.slice(0, limit) ?? []);
+      : (payload.cards?.slice(0, limit) ?? []),
+  );
 
   if (stories.length === 0) {
     return {
@@ -106,7 +115,7 @@ export function loadInsightsBundle(options: InsightsQueryOptions = {}): Insights
 export function loadOverviewInsightCards(): LeagueInsightCard[] {
   const cards = bundledPayload().cards;
   if (Array.isArray(cards) && cards.length > 0) {
-    return cards;
+    return filterProLiveCards(cards);
   }
   return [];
 }

@@ -1,9 +1,3 @@
-import { computeFindings as computeCbbFindings } from "@/lib/cbb/findings";
-import { getTeamSplits as getCbbTeamSplits } from "@/lib/cbb/data";
-import { CBB_TEAMS, teamFullName as cbbTeamFullName } from "@/lib/cbb/teams";
-import { computeFindings as computeCfbFindings } from "@/lib/cfb/findings";
-import { getTeamSplits as getCfbTeamSplits } from "@/lib/cfb/data";
-import { CFB_TEAMS, teamFullName as cfbTeamFullName } from "@/lib/cfb/teams";
 import { computeFindings as computeNbaFindings } from "@/lib/findings";
 import { computeFindings as computeEplFindings } from "@/lib/epl/findings";
 import { getTeamSplits as getEplTeamSplits } from "@/lib/epl/data";
@@ -71,7 +65,7 @@ type LeagueInsightConfig = {
   teams: { abbr: string; label: string; name: string; nbaId?: number }[];
   getTeamSplits: (abbr: string) => import("@/lib/types").TeamCrewSplit[];
   computeFindings: (limit?: number) => Finding[];
-  matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga";
 };
 
 const LEAGUE_CONFIG: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], LeagueInsightConfig> = {
@@ -86,17 +80,6 @@ const LEAGUE_CONFIG: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], Leagu
     getTeamSplits: getNbaTeamSplits,
     computeFindings: computeNbaFindings,
     matrixLeague: "nba",
-  },
-  cbb: {
-    leagueId: "cbb",
-    teams: CBB_TEAMS.map((team) => ({
-      abbr: team.abbr,
-      label: cbbTeamFullName(team),
-      name: team.name,
-    })),
-    getTeamSplits: getCbbTeamSplits,
-    computeFindings: computeCbbFindings,
-    matrixLeague: "cbb",
   },
   nhl: {
     leagueId: "nhl",
@@ -119,17 +102,6 @@ const LEAGUE_CONFIG: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], Leagu
     getTeamSplits: getNflTeamSplits,
     computeFindings: computeNflFindings,
     matrixLeague: "nfl",
-  },
-  cfb: {
-    leagueId: "cfb",
-    teams: CFB_TEAMS.map((team) => ({
-      abbr: team.abbr,
-      label: cfbTeamFullName(team),
-      name: team.name,
-    })),
-    getTeamSplits: getCfbTeamSplits,
-    computeFindings: computeCfbFindings,
-    matrixLeague: "cfb",
   },
   epl: {
     leagueId: "epl",

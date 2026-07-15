@@ -8,10 +8,6 @@ import { getTeamSplits as getNflTeamSplits } from "@/lib/nfl/data";
 import { NFL_TEAMS, teamFullName as nflTeamFullName } from "@/lib/nfl/teams";
 import { getTeamSplits as getNhlTeamSplits } from "@/lib/nhl/data";
 import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "@/lib/nhl/teams";
-import { getTeamSplits as getCbbTeamSplits } from "@/lib/cbb/data";
-import { CBB_TEAMS, teamFullName as cbbTeamFullName } from "@/lib/cbb/teams";
-import { getTeamSplits as getCfbTeamSplits } from "@/lib/cfb/data";
-import { CFB_TEAMS, teamFullName as cfbTeamFullName } from "@/lib/cfb/teams";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
 import type { LeagueId } from "@/lib/leagues";
@@ -68,16 +64,6 @@ const LEAGUE_SETUP: Record<
     getTeamSplits: getNbaTeamSplits,
     matrixLeague: "nba",
   },
-  cbb: {
-    leagueId: "cbb",
-    teams: CBB_TEAMS.map((team) => ({
-      abbr: team.abbr,
-      label: cbbTeamFullName(team),
-      name: team.name,
-    })),
-    getTeamSplits: getCbbTeamSplits,
-    matrixLeague: "cbb",
-  },
   nhl: {
     leagueId: "nhl",
     teams: NHL_TEAMS.map((team) => ({
@@ -97,16 +83,6 @@ const LEAGUE_SETUP: Record<
     })),
     getTeamSplits: getNflTeamSplits,
     matrixLeague: "nfl",
-  },
-  cfb: {
-    leagueId: "cfb",
-    teams: CFB_TEAMS.map((team) => ({
-      abbr: team.abbr,
-      label: cfbTeamFullName(team),
-      name: team.name,
-    })),
-    getTeamSplits: getCfbTeamSplits,
-    matrixLeague: "cfb",
   },
   epl: {
     leagueId: "epl",

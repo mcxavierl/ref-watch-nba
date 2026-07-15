@@ -86,10 +86,8 @@ export const LWIS_HIGH_IMPACT_Z_THRESHOLD = 2;
 
 const LEAGUE_TO_DATA: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], DataLeague> = {
   nba: "NBA",
-  cbb: "CBB",
   nhl: "NHL",
   nfl: "NFL",
-  cfb: "CFB",
   epl: "EPL",
   laliga: "LALIGA",
 };
