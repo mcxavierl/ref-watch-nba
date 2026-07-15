@@ -1,6 +1,7 @@
+import type { HubHeroLeagueId } from "@/components/LeagueHubHero";
 import type { FooterLeague } from "@/lib/footer-league";
 import { insightsViewHref } from "@/lib/insights-routes";
-import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { LEAGUES } from "@/lib/leagues";
 
 export type FooterExploreLink = {
   key: string;
@@ -32,7 +33,7 @@ const LEAGUE_HISTORY_RANGE: Record<
   cfb: "2020-21 – 2025-26",
 };
 
-function leagueExploreLinks(leagueId: LeagueId): FooterExploreLink[] {
+function leagueExploreLinks(leagueId: HubHeroLeagueId): FooterExploreLink[] {
   const prefix = LEAGUES[leagueId].pathPrefix;
   return [
     {

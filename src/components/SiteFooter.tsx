@@ -4,9 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 import { footerConfigForLeague } from "@/lib/footer-config";
-import { footerLeagueForPath } from "@/lib/footer-league";
+import {
+  footerLeagueForPath,
+  type FooterLeague,
+} from "@/lib/footer-league";
 
-export type { FooterLeague } from "@/lib/footer-league";
+export type { FooterLeague };
 
 export function SiteFooter({ league }: { league?: FooterLeague }) {
   const pathname = usePathname() ?? "/";

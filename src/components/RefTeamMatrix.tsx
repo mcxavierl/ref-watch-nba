@@ -12,6 +12,7 @@ import {
   matrixCellAriaLabel,
   matrixCellKey,
   matrixCellMetricRecord,
+  matrixCellMetricGames,
   matrixCellStyle,
   matrixTeamMetricGames,
   matrixTeamMetricRate,

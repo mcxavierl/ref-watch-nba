@@ -1,4 +1,4 @@
-import { InsightsHubPage } from "@/components/InsightsHubRoute";
+import { InsightsHubRoute } from "@/components/InsightsHubRoute";
 import { hubPageMetadata } from "@/lib/seo";
 import { readSeasonScopeParam } from "@/lib/season-scope";
 

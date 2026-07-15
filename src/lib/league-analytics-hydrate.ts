@@ -3,10 +3,8 @@ import {
   type DataLeague,
 } from "@/lib/game-logs-preload";
 import type { LeagueId } from "@/lib/leagues";
-import {
-  isFrictionMatrixLeague,
-  preloadPersonnelProfilesFromAssets,
-} from "@/lib/personnel-profiles";
+import { isFrictionMatrixLeague } from "@/lib/friction-matrix";
+import { preloadPersonnelProfilesFromAssets } from "@/lib/personnel-profiles";
 import { SITE_URL } from "@/lib/site";
 
 const LEAGUE_ID_TO_DATA: Record<LeagueId, DataLeague> = {

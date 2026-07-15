@@ -1,4 +1,4 @@
-import { getCachedGameLogs } from "@/lib/game-logs-preload";
+import { getCachedGameLogs, type DataLeague } from "@/lib/game-logs-preload";
 import type { LeagueId } from "@/lib/leagues";
 import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
 import {

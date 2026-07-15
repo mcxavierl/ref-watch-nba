@@ -66,8 +66,8 @@ test("every league insights hub route matches NFL scope wiring", () => {
     );
     assert.match(
       source,
-      /InsightsHubPage[\s\S]*scopeMode=/,
-      `${rel} must forward scopeMode to InsightsHubPage`,
+      /InsightsHubRoute[\s\S]*scopeMode=/,
+      `${rel} must forward scopeMode to InsightsHubRoute`,
     );
     assert.match(
       source,
