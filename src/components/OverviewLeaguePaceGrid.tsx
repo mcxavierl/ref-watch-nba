@@ -62,7 +62,7 @@ function PaceCardBody({ card }: { card: LeagueOverviewCard }) {
         {pending ? (
           <p className="overview-pace-pending">
             <ShieldAlert aria-hidden className="overview-pace-pending-icon" />
-            {card.auditPendingLabel ?? "Pending Verification"} — detailed analytics locked
+            {card.auditPendingLabel ?? "Pending Verification"} - detailed analytics locked
           </p>
         ) : null}
       </div>

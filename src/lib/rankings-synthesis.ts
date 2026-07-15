@@ -318,7 +318,7 @@ export function buildRankingsSynthesis(
 
   const leagueSummary =
     qualified.length > 0
-      ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} trend toward higher scoring. ${lowScoring.length} trend lower. Past match tendencies — not predictions.`
+      ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} trend toward higher scoring. ${lowScoring.length} trend lower. Past match tendencies - not predictions.`
       : `Not enough matches in the sample yet. Turn on “Show thin samples” below to browse everyone.`;
 
   return {

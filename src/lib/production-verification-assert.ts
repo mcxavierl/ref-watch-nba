@@ -30,7 +30,7 @@ export function assertProductionLeagueVerification(pathname: string): void {
       ).length;
       if (teamsWithSplits === 0) {
         console.error(
-          `[production] League ${leagueId} is verified but teamSplits are empty — matrix baselines will show 0-0. Re-run copy-data-to-public and check-deploy-readiness.`,
+          `[production] League ${leagueId} is verified but teamSplits are empty - matrix baselines will show 0-0. Re-run copy-data-to-public and check-deploy-readiness.`,
         );
       }
     }

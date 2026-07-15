@@ -46,7 +46,7 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
           </span>
           {pending ? (
             <span className="overview-league-chooser-pending">
-              {card.auditPendingLabel ?? "Pending Verification"} — hub locked
+              {card.auditPendingLabel ?? "Pending Verification"} - hub locked
             </span>
           ) : (
             <span className="overview-league-chooser-metrics">

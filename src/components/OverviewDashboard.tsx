@@ -178,7 +178,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                   Research hub
                 </h2>
                 <p className="overview-section-lead">
-                  Exploratory analytics — 2026 World Cup officiating origin variance.
+                  Exploratory analytics - 2026 World Cup officiating origin variance.
                 </p>
               </div>
               <WorldCupResearchHubCard />

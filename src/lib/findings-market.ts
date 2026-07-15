@@ -40,7 +40,7 @@ export function buildMarketExpectationAtsFinding(
     id: "ats-outlier",
     category: "ats-edge",
     headline: `${ref.name}: teams ${direction} ${formatCoverPct(market.coverRate)} ATS vs market`,
-    summary: `Across ${market.linedGames} lined games, teams are ${formatCoverPct(market.coverRate)} against the spread with ${ref.name} — ${(edge * 100).toFixed(1)} pts from a neutral 50% split, independent of straight-up wins.${correlationNote}`,
+    summary: `Across ${market.linedGames} lined games, teams are ${formatCoverPct(market.coverRate)} against the spread with ${ref.name} - ${(edge * 100).toFixed(1)} pts from a neutral 50% split, independent of straight-up wins.${correlationNote}`,
     explainer:
       "Performance vs. market expectation uses closing spreads only (lineSource=external). Synthetic lines are excluded.",
     stats: [

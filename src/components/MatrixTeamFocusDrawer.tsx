@@ -254,7 +254,7 @@ export function MatrixTeamFocusDrawer({
         </div>
 
         <p className="matrix-team-drawer-footnote">
-          {minGames}+ games required for ranked lists. Historical splits only — not picks.
+          {minGames}+ games required for ranked lists. Historical splits only - not picks.
         </p>
 
         <MatrixSplitShareBar

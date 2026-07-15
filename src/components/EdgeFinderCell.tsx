@@ -23,7 +23,7 @@ export function EdgeFinderCell({
     return (
       <div className="edge-finder-cell edge-finder-cell--empty" aria-hidden={compact}>
         {!compact ? <span className="edge-finder-label">Edge</span> : null}
-        <span className="edge-finder-value edge-finder-value--muted">—</span>
+        <span className="edge-finder-value edge-finder-value--muted">-</span>
       </div>
     );
   }

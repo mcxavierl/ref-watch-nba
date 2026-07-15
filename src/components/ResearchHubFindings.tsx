@@ -137,7 +137,7 @@ export function ResearchHubFindings({
           </div>
           {isProView ? (
             <p className="research-pro-lead">
-              Pro view adds an Edge Finder column — model probability vs market
+              Pro view adds an Edge Finder column - model probability vs market
               implied odds, adjusted for LWIS high-impact officials.
             </p>
           ) : null}

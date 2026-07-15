@@ -150,7 +150,7 @@ function insightFromMarquee(
     shortLine: `Marquee O/U ${formatSigned(overDeltaPp)} pts vs baseline`,
     headline: "Prime-time and marquee slate efficiency split",
     summary:
-      "High-profile games — national windows, derbies, and capacity venues — compared to this official's general baseline.",
+      "High-profile games - national windows, derbies, and capacity venues - compared to this official's general baseline.",
     confidence: highConfidence ? "high" : "moderate",
     interactive: true,
     stats: [
@@ -169,7 +169,7 @@ function insightFromMarquee(
         value:
           performance.marqueeAtsCoverRate !== null
             ? formatPct(performance.marqueeAtsCoverRate)
-            : "—",
+            : "-",
         detail:
           atsDeltaPp !== null && performance.baselineAtsCoverRate !== null
             ? `Baseline ${formatPct(performance.baselineAtsCoverRate)} (${formatSigned(atsDeltaPp)} pts)`
@@ -256,7 +256,7 @@ function insightFromHighLeverage(profile: RefProfile): RefMasterInsight | null {
     shortLine: `${formatSigned(delta)} leverage impact vs ${LEAGUE_AVG_HIGH_LEVERAGE_IMPACT} league avg`,
     headline: `${direction.charAt(0).toUpperCase()}${direction.slice(1)} game-altering penalty impact`,
     summary:
-      "Leverage-weighted scoring uses down, distance, field position, and WPA deltas — not raw flag counts.",
+      "Leverage-weighted scoring uses down, distance, field position, and WPA deltas - not raw flag counts.",
     confidence:
       (analytics.leverageSampleGames ?? 0) >= 20 ? "high" : "moderate",
     interactive: true,

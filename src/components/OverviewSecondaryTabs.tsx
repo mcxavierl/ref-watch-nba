@@ -41,7 +41,7 @@ export function OverviewSecondaryTabs({ data }: OverviewSecondaryTabsProps) {
           More from the dashboard
         </h2>
         <p className="overview-section-lead">
-          Schedules, cross-league pace, and ranked shortcuts — open when you need them.
+          Schedules, cross-league pace, and ranked shortcuts - open when you need them.
         </p>
       </div>
 
@@ -79,7 +79,7 @@ export function OverviewSecondaryTabs({ data }: OverviewSecondaryTabsProps) {
               ? `${formatCount(data.upcomingSlate.totalGames)} games with published crews.`
               : data.upcomingSlate.inSeason
                 ? `${formatCount(data.upcomingSlate.totalScheduled)} upcoming matchup${data.upcomingSlate.totalScheduled === 1 ? "" : "s"}.`
-                : "Offseason — historical data stays available in each hub."}
+                : "Offseason - historical data stays available in each hub."}
           </p>
         </div>
 

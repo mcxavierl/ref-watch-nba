@@ -122,7 +122,7 @@ export function DynamicInsightPill({
     return (
       <div
         className={`inline-flex max-w-full items-center gap-1.5 rounded-full border bg-[var(--bg-surface-2)] px-2.5 py-1.5 ${tone.border} ${className}`}
-        title={`${current.badgeText}: ${current.metric} — ${current.description}`}
+        title={`${current.badgeText}: ${current.metric} - ${current.description}`}
       >
         {pillBody}
       </div>

@@ -4,7 +4,7 @@ import type { LeagueId } from "@/lib/leagues";
 export const WC_RESEARCH_PRINCIPLES = [
   "We identify statistical tendencies in officiating patterns, not assign bias.",
   "Referee birthplace and confederation context are descriptive covariates only.",
-  "Origin variance measures geopolitical distance — not intent or favoritism.",
+  "Origin variance measures geopolitical distance - not intent or favoritism.",
   "Every signal passes minimum sample gates with confidence tiers.",
   "Patterns describe historical associations; they do not predict individual outcomes.",
 ] as const;

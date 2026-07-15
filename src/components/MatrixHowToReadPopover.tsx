@@ -72,7 +72,7 @@ export function MatrixHowToReadPopover({
             reflects win-rate delta vs baseline (±{MATRIX_TONE_DELTA_PTS} pts for tint; ±
             {MATRIX_EXTREME_DELTA_PTS} pts for standout outliers). Hover a cell for the exact
             delta. Click a team logo to drill into favorable and unfavorable officials (top{" "}
-            {TEAM_MATRIX_REF_PANEL_LIMIT} each). Historical splits only — not picks.
+            {TEAM_MATRIX_REF_PANEL_LIMIT} each). Historical splits only - not picks.
           </p>
           <div className="matrix-how-to-read-swatches" aria-hidden>
             <span className="matrix-how-to-read-swatch matrix-how-to-read-swatch--positive">

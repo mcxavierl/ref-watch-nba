@@ -323,7 +323,7 @@ export function InsightsHubPage({
             </h1>
             {activeView === "tendencies" ? tendenciesHeroHighlights : null}
             <p className="insights-hero-lead">
-              Actionable ref tendencies, league trends, and ranked findings — built
+              Actionable ref tendencies, league trends, and ranked findings - built
               for match-level edge discovery.
             </p>
           </>

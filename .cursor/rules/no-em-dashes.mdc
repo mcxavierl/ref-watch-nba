@@ -1,0 +1,18 @@
+---
+description: Never use em dashes in user-facing site copy; hyphens are fine.
+alwaysApply: true
+---
+
+# No em dashes on Ref Watch
+
+Never use em dashes (`—`, Unicode U+2014) anywhere that can appear on refwatch.ca.
+
+- **Allowed:** hyphens (`-`), commas, colons, periods
+- **Not allowed:** em dashes in UI copy, metadata, JSON data notes, alt text, or tooltips
+
+When joining clauses, use a hyphen with spaces, a comma, or rephrase:
+
+- Bad: `Live hubs — pick a sport below`
+- Good: `Live hubs - pick a sport below` or `Live hubs. Pick a sport below.`
+
+Run `npm run check:no-em-dashes` before committing user-facing copy.
