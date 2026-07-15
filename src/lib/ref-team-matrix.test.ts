@@ -149,19 +149,33 @@ describe("ref-team matrix team panels", () => {
   it("hydrates non-NBA baselines from getTeamSplits when core strips teamSplits", () => {
     const { core: eplCore, teamSplits: eplTeamSplits } =
       loadSplitRefStatsFixture("epl");
+    const getEplTeamSplits = (abbr: string) =>
+      eplTeamSplits[abbr.toUpperCase()] ?? [];
 
-    const refWithArs = eplCore.refs.find(
-      (r) => r.teamStats?.ARS && r.teamStats.ARS.games >= MATRIX_MIN_GAMES,
+    const baselineProbe = computeRefTeamMatrix(
+      eplCore,
+      [{ abbr: "ARS", label: "Arsenal", name: "Arsenal" }],
+      getEplTeamSplits,
+      MATRIX_MIN_GAMES,
+      { league: "epl" },
     );
-    assert.ok(refWithArs, "fixture needs a ref with ARS games");
+    const baselineWinRate = baselineProbe.teams[0]!.baselineWinRate;
+
+    const refWithArs = eplCore.refs.find((r) => {
+      const stat = r.teamStats?.ARS;
+      return (
+        stat &&
+        stat.games >= MATRIX_MIN_GAMES &&
+        stat.winRate < baselineWinRate
+      );
+    });
+    assert.ok(refWithArs, "fixture needs a ref below ARS baseline");
 
     const slimStats: RefStatsFile = {
       ...eplCore,
       teamSplits: { ARS: [] },
       refs: [refWithArs],
     };
-    const getEplTeamSplits = (abbr: string) =>
-      eplTeamSplits[abbr.toUpperCase()] ?? [];
 
     const matrix = computeRefTeamMatrix(
       slimStats,
