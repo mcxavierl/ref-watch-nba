@@ -47,7 +47,7 @@ const STORY_ICONS: Partial<Record<LeagueId, LucideIcon>> = {
 
 type InsightCardProps = {
   card: LeagueInsightCard;
-  variant: "carousel" | "inline" | "hero" | "trend" | "quick";
+  variant: "carousel" | "inline" | "featured" | "trend" | "quick";
   index?: number;
   active?: boolean;
   className?: string;
@@ -161,7 +161,7 @@ function EditorialInsightCard({
   className,
 }: {
   card: LeagueInsightCard;
-  variant: "hero" | "trend" | "quick";
+  variant: "featured" | "trend" | "quick";
   index?: number;
   className?: string;
 }) {
@@ -170,7 +170,7 @@ function EditorialInsightCard({
   const editorial = editorialInsightView(card);
   const primaryLink = card.links[0];
   const whistleIndex =
-    variant === "hero" ? whistleIndexFromInsightCard(card) : null;
+    variant === "featured" ? whistleIndexFromInsightCard(card) : null;
   const metaCompact = variant === "quick";
 
   function openDrilldown() {
@@ -374,7 +374,7 @@ export const InsightCard = memo(function InsightCard({
   active = true,
   className,
 }: InsightCardProps) {
-  if (variant === "hero" || variant === "trend" || variant === "quick") {
+  if (variant === "featured" || variant === "trend" || variant === "quick") {
     return (
       <EditorialInsightCard
         card={card}

@@ -78,7 +78,11 @@
   gap: var(--space-10);
 }
 
-.overview-editorial-section--hero {
+.overview-dashboard-league-to-insight {
+  margin-top: 3rem;
+}
+
+.overview-editorial-section--featured {
   margin-top: 0;
 }
 
@@ -312,13 +316,17 @@
 }
 
 .overview-league-chooser--primary {
-  padding: var(--space-6);
+  padding: var(--space-4);
   border-radius: 1rem;
   background: var(--surface-raised);
 }
 
+.overview-league-chooser--primary .overview-section-header {
+  margin-bottom: var(--space-4);
+}
+
 .overview-league-chooser--primary .overview-league-chooser-card {
-  min-height: 9.5rem;
+  min-height: 7.5rem;
   border: 1px solid var(--border-subtle);
   background: var(--surface);
   box-shadow: none;

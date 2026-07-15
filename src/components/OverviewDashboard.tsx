@@ -108,6 +108,8 @@ export function OverviewDashboard({
     <DashboardShell>
       {hero}
 
+      <LeagueChooser cards={data.leagueCards} placement="primary" />
+
       <TrustBar data={data} />
 
       {highlightsTicker ? (
@@ -116,7 +118,7 @@ export function OverviewDashboard({
         </div>
       ) : null}
 
-      <div className="overview-dashboard-breathe">
+      <div className="overview-dashboard-league-to-insight">
         <OverviewEditorialNarrative
           insightCards={data.insightCards}
           topStories={data.topStories}
@@ -145,10 +147,6 @@ export function OverviewDashboard({
             insightCards={data.insightCards}
             topStories={data.topStories}
           />
-
-          <div className="overview-dashboard-breathe overview-dashboard-breathe--tight">
-            <LeagueChooser cards={data.leagueCards} />
-          </div>
 
           <DashboardBodyLayout
             sidebar={

@@ -35,7 +35,7 @@ function headlineLooksNarrative(headline: string): boolean {
   );
 }
 
-/** Human-first headline for insight surfaces (hero, trends, quick lists). */
+/** Human-first headline for insight surfaces (featured, trends, quick lists). */
 export function humanCentricHeadline(card: LeagueInsightCard): string {
   if (headlineLooksNarrative(card.headline)) {
     return normalizeCopy(card.headline);
@@ -129,8 +129,8 @@ function heroValueMagnitude(value: string): number {
   return Math.abs(Number.parseFloat(match[1]));
 }
 
-/** Pick the strongest card for the full-width hero slot. */
-export function pickHeroInsightCard(cards: LeagueInsightCard[]): LeagueInsightCard | null {
+/** Pick the strongest card for the full-width featured insight slot. */
+export function pickTopInsightCard(cards: LeagueInsightCard[]): LeagueInsightCard | null {
   if (cards.length === 0) return null;
   return [...cards].sort(
     (a, b) => heroValueMagnitude(b.heroValue) - heroValueMagnitude(a.heroValue),
@@ -155,21 +155,21 @@ export function quickInsightCards(cards: LeagueInsightCard[], limit = 3): League
     .slice(0, limit);
 }
 
-/** Crew spotlight cards: top stories after the hero, de-duplicated. */
+/** Crew spotlight cards: top stories after the featured insight, de-duplicated. */
 export function spotlightInsightCards(
-  hero: LeagueInsightCard | null,
+  topInsight: LeagueInsightCard | null,
   candidates: LeagueInsightCard[],
   limit = 3,
 ): LeagueInsightCard[] {
-  const heroKey = hero
-    ? `${hero.leagueId}:${hero.refSlug ?? hero.headline}:${hero.teamAbbr ?? ""}`
+  const topInsightKey = topInsight
+    ? `${topInsight.leagueId}:${topInsight.refSlug ?? topInsight.headline}:${topInsight.teamAbbr ?? ""}`
     : "";
   const seen = new Set<string>();
   const result: LeagueInsightCard[] = [];
 
   for (const card of candidates) {
     const key = `${card.leagueId}:${card.refSlug ?? card.headline}:${card.teamAbbr ?? ""}`;
-    if (key === heroKey || seen.has(key)) continue;
+    if (key === topInsightKey || seen.has(key)) continue;
     seen.add(key);
     result.push(card);
     if (result.length >= limit) break;

@@ -5,7 +5,7 @@ import {
   humanCentricHeadline,
   insightConfidenceScore,
   insightMetricComparison,
-  pickHeroInsightCard,
+  pickTopInsightCard,
   quickInsightCards,
   trendInsightCards,
 } from "@/lib/insight-editorial";
@@ -63,7 +63,7 @@ describe("insight editorial helpers", () => {
     assert.ok(view.whyItMatters.length > 20);
   });
 
-  it("picks hero and trend sets", () => {
+  it("picks top insight and trend sets", () => {
     const cards = [
       sampleCard({ heroValue: "+8.2pp", leagueId: "nba", shortLabel: "NBA" }),
       sampleCard({ heroValue: "+51.5pp" }),
@@ -74,7 +74,7 @@ describe("insight editorial helpers", () => {
         entityName: "John Grandt",
       }),
     ];
-    assert.equal(pickHeroInsightCard(cards)?.entityName, "Dale Shaw");
+    assert.equal(pickTopInsightCard(cards)?.entityName, "Dale Shaw");
     assert.equal(trendInsightCards(cards).length, 3);
     assert.equal(quickInsightCards(cards, 2).length, 2);
   });

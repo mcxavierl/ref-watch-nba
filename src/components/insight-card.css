@@ -240,7 +240,7 @@ html.dark .insight-card--inline {
   padding: 1rem 1.1rem;
 }
 
-.insight-card--hero.insight-card--editorial {
+.insight-card--featured.insight-card--editorial {
   padding: 1.25rem 1.35rem;
   border-color: color-mix(in srgb, var(--insight-accent) 35%, var(--insight-border));
   background: linear-gradient(
@@ -303,7 +303,7 @@ html.dark .insight-card--inline {
   text-wrap: balance;
 }
 
-.insight-card--hero .insight-editorial-headline {
+.insight-card--featured .insight-editorial-headline {
   font-size: clamp(1.25rem, 2.4vw, 1.65rem);
 }
 
@@ -312,7 +312,7 @@ html.dark .insight-card--inline {
   max-width: 22rem;
 }
 
-.insight-card--hero .insight-editorial-whistle-index {
+.insight-card--featured .insight-editorial-whistle-index {
   max-width: 26rem;
 }
 
@@ -340,7 +340,7 @@ html.dark .insight-card--inline {
   color: var(--text);
 }
 
-.insight-card--hero .insight-editorial-metric-value {
+.insight-card--featured .insight-editorial-metric-value {
   font-size: 1.45rem;
 }
 

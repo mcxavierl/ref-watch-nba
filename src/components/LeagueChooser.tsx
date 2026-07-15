@@ -16,6 +16,7 @@ import {
 
 type LeagueChooserProps = {
   cards: LeagueOverviewCard[];
+  placement?: "primary" | "default";
 };
 
 function formatCount(n: number): string {
@@ -70,7 +71,7 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
   );
 }
 
-export function LeagueChooser({ cards }: LeagueChooserProps) {
+export function LeagueChooser({ cards, placement = "default" }: LeagueChooserProps) {
   const proOrder = new Map<LeagueId, number>(
     PRO_ONLY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
   );
@@ -92,9 +93,16 @@ export function LeagueChooser({ cards }: LeagueChooserProps) {
 
   if (proCards.length === 0 && collegeCards.length === 0) return null;
 
+  const sectionClass = [
+    "overview-league-chooser overview-league-chooser--segmented section-block",
+    placement === "primary" ? "overview-league-chooser--primary" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <section
-      className="overview-league-chooser overview-league-chooser--segmented section-block overview-league-chooser--primary"
+      className={sectionClass}
       aria-labelledby="overview-league-chooser-heading"
     >
       <div className="overview-section-header overview-section-header--primary">

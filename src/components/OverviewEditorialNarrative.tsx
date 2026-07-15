@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { InsightCard } from "@/components/shared/InsightCard";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import {
-  pickHeroInsightCard,
+  pickTopInsightCard,
   spotlightInsightCards,
   trendInsightCards,
 } from "@/lib/insight-editorial";
@@ -37,33 +37,33 @@ export function OverviewEditorialNarrative({
     [insightCards, topStories],
   );
 
-  const heroCard = useMemo(() => pickHeroInsightCard(pool), [pool]);
+  const topInsightCard = useMemo(() => pickTopInsightCard(pool), [pool]);
   const trendCards = useMemo(() => trendInsightCards(insightCards), [insightCards]);
   const spotlightCards = useMemo(
-    () => spotlightInsightCards(heroCard, topStories.length > 0 ? topStories : pool, 3),
-    [heroCard, pool, topStories],
+    () => spotlightInsightCards(topInsightCard, topStories.length > 0 ? topStories : pool, 3),
+    [topInsightCard, pool, topStories],
   );
 
-  if (!heroCard && trendCards.length === 0 && spotlightCards.length === 0) {
+  if (!topInsightCard && trendCards.length === 0 && spotlightCards.length === 0) {
     return null;
   }
 
   return (
     <div className="overview-editorial-narrative">
-      {heroCard ? (
+      {topInsightCard ? (
         <section
-          className="overview-editorial-section overview-editorial-section--hero section-block"
-          aria-labelledby="overview-hero-insight-heading"
+          className="overview-editorial-section overview-editorial-section--featured section-block"
+          aria-labelledby="overview-top-insight-heading"
         >
           <div className="overview-section-header overview-section-header--primary">
-            <h2 className="overview-section-title" id="overview-hero-insight-heading">
-              Hero insight
+            <h2 className="overview-section-title" id="overview-top-insight-heading">
+              Top verified whistle edge
             </h2>
             <p className="overview-section-lead">
               The strongest verified whistle edge across live leagues right now.
             </p>
           </div>
-          <InsightCard card={heroCard} variant="hero" />
+          <InsightCard card={topInsightCard} variant="featured" />
         </section>
       ) : null}
 
@@ -98,7 +98,7 @@ export function OverviewEditorialNarrative({
               Crew spotlight
             </h2>
             <p className="overview-section-lead">
-              Officials driving the next layer of story beyond the hero card.
+              Officials driving the next layer of verified whistle stories.
             </p>
           </div>
           <div className="overview-editorial-spotlight-grid">
