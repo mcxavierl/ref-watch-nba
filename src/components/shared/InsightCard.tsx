@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
+import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import { leagueHubHref, type LeagueId } from "@/lib/leagues";
@@ -42,6 +43,15 @@ type InsightCardProps = {
   className?: string;
 };
 
+/** Enforce spaced hyphens instead of em/en dashes in carousel copy. */
+function normalizeCarouselCopy(text: string): string {
+  return text.replace(/\u2014|\u2013/g, " - ");
+}
+
+function carouselMetaLabel(card: LeagueInsightCard): string {
+  return normalizeCarouselCopy(`${card.shortLabel} ref×team split`);
+}
+
 function CarouselInsightCard({
   card,
   active,
@@ -52,6 +62,16 @@ function CarouselInsightCard({
   className?: string;
 }) {
   const Icon = STORY_ICONS[card.leagueId] ?? Flame;
+  const headline = card.entityName ? (
+    <>
+      {normalizeCarouselCopy(card.entityName)}
+      {card.teamLabel ? (
+        <span className="overview-top-story-team"> × {normalizeCarouselCopy(card.teamLabel)}</span>
+      ) : null}
+    </>
+  ) : (
+    normalizeCarouselCopy(card.headline)
+  );
 
   return (
     <article
@@ -68,44 +88,41 @@ function CarouselInsightCard({
 
       <div className="overview-top-story-copy">
         <header className="overview-top-story-meta">
-          <span className="overview-top-story-league">{card.shortLabel}</span>
-          <LeagueSeasonStartBadge leagueId={card.leagueId} />
-          <span className="overview-top-story-kicker">{card.kicker}</span>
+          <span className="overview-top-story-meta-pill">
+            <LeagueNavMark league={card.leagueId} />
+            <span>{carouselMetaLabel(card)}</span>
+          </span>
         </header>
 
-        <p className="overview-top-story-hero">
-          <span className="overview-top-story-value">{card.heroValue}</span>
-          <span className="overview-top-story-value-label">{card.heroLabel}</span>
-        </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-6">
+          <div className="shrink-0 md:max-w-[11rem]">
+            <p className="overview-top-story-hero m-0 flex flex-col gap-1 md:gap-0.5">
+              <span className="overview-top-story-value">{card.heroValue}</span>
+              <span className="overview-top-story-value-label">
+                {normalizeCarouselCopy(card.heroLabel)}
+              </span>
+            </p>
+          </div>
 
-        <h2 className="overview-top-story-headline">
-          {card.entityName ? (
-            <>
-              {card.entityName}
-              {card.teamLabel ? (
-                <span className="overview-top-story-team"> × {card.teamLabel}</span>
+          <div className="min-w-0 flex-1">
+            <h2 className="overview-top-story-headline">{headline}</h2>
+            <p className="overview-top-story-body">{normalizeCarouselCopy(card.story)}</p>
+
+            <div className="overview-top-story-actions">
+              {card.links[0] ? (
+                <Link href={card.links[0].href} className="overview-top-story-link">
+                  {card.links[0].label}
+                  <ArrowRight aria-hidden />
+                </Link>
               ) : null}
-            </>
-          ) : (
-            card.headline
-          )}
-        </h2>
-
-        <p className="overview-top-story-body">{card.story}</p>
-
-        <div className="overview-top-story-actions">
-          {card.links[0] ? (
-            <Link href={card.links[0].href} className="overview-top-story-link">
-              {card.links[0].label}
-              <ArrowRight aria-hidden />
-            </Link>
-          ) : null}
-          <Link
-            href={leagueHubHref(card.leagueId)}
-            className="overview-top-story-link overview-top-story-link--muted"
-          >
-            Open {card.shortLabel} hub
-          </Link>
+              <Link
+                href={leagueHubHref(card.leagueId)}
+                className="overview-top-story-link overview-top-story-link--muted"
+              >
+                Open {card.shortLabel} hub
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </article>

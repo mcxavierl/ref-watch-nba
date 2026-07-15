@@ -33,11 +33,8 @@ export const PRIMARY_LIVE_LEAGUE_IDS = [
   "laliga",
 ] as const satisfies readonly LeagueId[];
 
-/** NCAA hubs launched on the overview dashboard (independent of build artifact). */
-export const LAUNCHED_NCAA_LEAGUE_IDS = [
-  "cbb",
-  "cfb",
-] as const satisfies readonly LeagueId[];
+/** NCAA hubs on the overview dashboard — hidden until ingest is production-ready. */
+export const LAUNCHED_NCAA_LEAGUE_IDS = [] as const satisfies readonly LeagueId[];
 
 /** @deprecated Alias for LAUNCHED_NCAA_LEAGUE_IDS — college sports live on the overview. */
 export const COLLEGE_LIVE_LEAGUE_IDS = LAUNCHED_NCAA_LEAGUE_IDS;

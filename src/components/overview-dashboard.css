@@ -215,6 +215,31 @@
   justify-content: space-between;
   gap: var(--space-4);
   margin-bottom: var(--space-4);
+  text-align: left;
+}
+
+.overview-top-stories-head .overview-section-title,
+.overview-top-stories-head .overview-section-lead {
+  text-align: left;
+}
+
+.overview-top-story-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.65rem 0.3rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+.overview-top-story-meta-pill .league-nav-mark {
+  flex-shrink: 0;
 }
 
 .overview-lead--stories {
@@ -361,8 +386,9 @@
 
 .overview-top-story-hero {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
   margin: 0;
 }
 
@@ -598,6 +624,13 @@
   font-weight: 750;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.overview-catalog-segment-note {
+  margin: -0.35rem 0 var(--space-3);
+  font-size: 0.78rem;
+  line-height: 1.45;
   color: var(--text-muted);
 }
 

@@ -8,7 +8,7 @@ export function OverviewHero() {
           Verified Officiating Analytics
         </h1>
         <p className="overview-hero-minimal-bridge">
-          Live league hubs with matrix, rankings, and ref profiles - pick a sport below.
+          Live league hubs with matrix, rankings, and ref profiles. NCAA college sports are coming soon.
         </p>
       </div>
       <Link href="#overview-league-chooser-heading" className="overview-hero-minimal-cta rw-focus-ring">

@@ -2,10 +2,8 @@ import type { LeagueId } from "@/lib/leagues";
 import { formatLeagueSeasonStart } from "@/config/leagueConfig";
 import { isCatalogSlugVisible } from "@/config/leagues";
 import {
-  isCollegeLiveLeague,
   isProOnlyLiveLeague,
   isVerifiedLiveLeague,
-  LAUNCHED_NCAA_LEAGUE_IDS,
   PRIMARY_LIVE_LEAGUE_IDS,
   PRO_ONLY_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
@@ -45,7 +43,7 @@ export function catalogStatusLabel(entry: CatalogLeagueEntry): string {
   if (entry.status === "live" && entry.leagueId) {
     return leagueSeasonStartBadge(entry.leagueId) ?? "N/A";
   }
-  return "Soon";
+  return "Coming Soon";
 }
 
 /**
@@ -58,11 +56,11 @@ export function catalogLeagueDisplayLabel(entry: CatalogLeagueEntry): string {
 
 export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
   { id: "nba", label: "NBA", region: "USA", sport: "basketball", status: "live", leagueId: "nba", href: "/nba", sort: 1 },
-  { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "basketball", status: "live", leagueId: "cbb", href: "/cbb", sort: 2 },
+  { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "basketball", status: "coming-soon", leagueId: "cbb", sort: 2 },
   { id: "wnba", label: "WNBA", region: "USA", sport: "basketball", status: "coming-soon", sort: 3 },
   { id: "nhl", label: "NHL", region: "North America", sport: "hockey", status: "live", leagueId: "nhl", href: "/nhl", sort: 10 },
   { id: "nfl", label: "NFL", region: "USA", sport: "football", status: "live", leagueId: "nfl", href: "/nfl", sort: 20 },
-  { id: "cfb", label: "NCAA Football", region: "USA", sport: "football", status: "live", leagueId: "cfb", href: "/cfb", sort: 21 },
+  { id: "cfb", label: "NCAA Football", region: "USA", sport: "football", status: "coming-soon", leagueId: "cfb", sort: 21 },
   { id: "epl", label: "Premier League", region: "England", sport: "soccer", status: "live", leagueId: "epl", href: "/epl", sort: 30 },
   { id: "la-liga", label: "La Liga", region: "Spain", sport: "soccer", status: "live", leagueId: "laliga", href: "/laliga", sort: 31 },
   { id: "serie-a", label: "Serie A", region: "Italy", sport: "soccer", status: "coming-soon", sort: 32 },
@@ -94,8 +92,11 @@ export type {
 } from "@/lib/league-quick-lists";
 export { overviewQuickListsForLeague } from "@/lib/league-quick-lists";
 
+const NCAA_CATALOG_IDS = new Set(["cbb", "cfb"]);
+
 export function catalogEntriesForDisplay(): CatalogLeagueEntry[] {
   return LEAGUE_CATALOG.filter((entry) => {
+    if (NCAA_CATALOG_IDS.has(entry.id)) return true;
     if (entry.leagueId) return isVerifiedLiveLeague(entry.leagueId);
     return isCatalogSlugVisible(entry.id);
   });
@@ -138,22 +139,20 @@ export function catalogProLiveEntries(): CatalogLeagueEntry[] {
     );
 }
 
-/** Live college sports — CBB and CFB verified hubs. */
-export function catalogCollegeLiveEntries(): CatalogLeagueEntry[] {
-  const order = new Map<LeagueId, number>(
-    LAUNCHED_NCAA_LEAGUE_IDS.map((id, index) => [id, index]),
-  );
+/** College sports hidden from live hubs until NCAA ingest is ready. */
+export function catalogCollegeComingSoonEntries(): CatalogLeagueEntry[] {
+  const order = new Map<string, number>([
+    ["cbb", 0],
+    ["cfb", 1],
+  ]);
   return catalogEntriesForDisplay()
-    .filter(
-      (entry) =>
-        entry.leagueId &&
-        entry.status === "live" &&
-        isCollegeLiveLeague(entry.leagueId),
-    )
-    .sort(
-      (a, b) =>
-        (order.get(a.leagueId!) ?? 99) - (order.get(b.leagueId!) ?? 99),
-    );
+    .filter((entry) => NCAA_CATALOG_IDS.has(entry.id))
+    .sort((a, b) => (order.get(a.id) ?? 99) - (order.get(b.id) ?? 99));
+}
+
+/** @deprecated NCAA hubs are coming soon — use catalogCollegeComingSoonEntries. */
+export function catalogCollegeLiveEntries(): CatalogLeagueEntry[] {
+  return [];
 }
 
 export function catalogBySport(): { sport: CatalogSportGroup; label: string; entries: CatalogLeagueEntry[] }[] {

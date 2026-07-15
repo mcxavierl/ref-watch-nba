@@ -12,7 +12,7 @@ import {
 } from "@/components/dashboard/DashboardShell";
 import {
   catalogComingSoonEntries,
-  catalogCollegeLiveEntries,
+  catalogCollegeComingSoonEntries,
   catalogCompetitionCount,
   catalogLiveCompetitionEntries,
   catalogProLiveEntries,
@@ -77,9 +77,11 @@ type OverviewDashboardProps = {
 
 export function OverviewDashboard({ data }: OverviewDashboardProps) {
   const proCatalog = catalogProLiveEntries();
-  const collegeCatalog = catalogCollegeLiveEntries();
+  const collegeCatalog = catalogCollegeComingSoonEntries();
   const liveCatalog = catalogLiveCompetitionEntries();
-  const comingSoonCatalog = catalogComingSoonEntries().slice(0, 6);
+  const comingSoonCatalog = catalogComingSoonEntries()
+    .filter((entry) => entry.id !== "cbb" && entry.id !== "cfb")
+    .slice(0, 6);
 
   return (
     <DashboardShell>
@@ -129,6 +131,9 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                 {collegeCatalog.length > 0 ? (
                   <section className="overview-catalog-segment overview-catalog-segment--college">
                     <h3 className="overview-catalog-segment-title">College sports</h3>
+                    <p className="overview-catalog-segment-note">
+                      NCAA hubs are hidden while we finish ingest - coming soon.
+                    </p>
                     <div className="overview-catalog-list">
                       {collegeCatalog.map((entry) => (
                         <CatalogLeagueRow key={entry.id} entry={entry} />
@@ -159,7 +164,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
               className="overview-expansion overview-section--secondary"
               title="Expanding coverage"
               titleId="overview-expansion-heading"
-              lead="More soccer leagues on the roadmap."
+              lead="More soccer leagues on the roadmap. NCAA basketball and football hubs are coming soon."
             >
               <div className="overview-expansion-grid">
                 {liveCatalog.map((entry) =>

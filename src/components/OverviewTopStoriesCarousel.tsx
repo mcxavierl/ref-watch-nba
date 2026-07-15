@@ -29,9 +29,13 @@ function StorySkeleton() {
       <div className="overview-top-story-visual overview-top-story-skeleton-block" />
       <div className="overview-top-story-copy">
         <div className="overview-top-story-skeleton-line overview-top-story-skeleton-line--short" />
-        <div className="overview-top-story-skeleton-line overview-top-story-skeleton-line--hero" />
-        <div className="overview-top-story-skeleton-line" />
-        <div className="overview-top-story-skeleton-line overview-top-story-skeleton-line--body" />
+        <div className="flex flex-col gap-4 md:flex-row md:gap-6">
+          <div className="overview-top-story-skeleton-line overview-top-story-skeleton-line--hero md:w-28" />
+          <div className="min-w-0 flex-1">
+            <div className="overview-top-story-skeleton-line" />
+            <div className="overview-top-story-skeleton-line overview-top-story-skeleton-line--body" />
+          </div>
+        </div>
       </div>
     </article>
   );
@@ -86,11 +90,11 @@ export function OverviewTopStoriesCarousel({ initialData }: OverviewTopStoriesCa
       data-carousel-phase={phase}
     >
       <div className="overview-top-stories-head">
-        <div>
-          <h2 className="overview-section-title" id="overview-top-stories-heading">
+        <div className="min-w-0 flex-1 text-left">
+          <h2 className="overview-section-title text-left" id="overview-top-stories-heading">
             Today&apos;s edges
           </h2>
-          <p className="overview-section-lead">
+          <p className="overview-section-lead text-left">
             Three high-confidence patterns from verified leagues.
           </p>
           {phase === "fallback" ? (
