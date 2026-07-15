@@ -1,3 +1,5 @@
+// App route pages must import { InsightsHubRoute } from this file and render
+// <InsightsHubRoute>, not InsightsHubPage. See insights-routes.test.ts.
 import { InsightsHubPage } from "@/components/InsightsHubPage";
 import { hydrateLeagueAnalyticsData } from "@/lib/league-analytics-hydrate";
 import type { SeasonScopeMode } from "@/lib/season-scope";

@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Refactor safety checks
+        run: npm run check:refactor-safety
+
       - name: Typecheck
         run: npm run typecheck
 

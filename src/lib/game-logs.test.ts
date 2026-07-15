@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
-import { loadRuntimeGameLogs } from "@/lib/game-logs";
+import {
+  clearRuntimeGameLogsModuleCache,
+  loadRuntimeGameLogs,
+} from "@/lib/game-logs";
 import {
   getCachedGameLogs,
   setCachedGameLogs,
@@ -39,13 +43,29 @@ describe("loadRuntimeGameLogs", () => {
   it("reads game logs from global cache after a prior Worker miss", () => {
     endWorkerIsolateRequest();
     beginWorkerIsolateRequest();
-
-    const first = loadRuntimeGameLogs("NFL");
-    assert.equal(first, null);
+    clearRuntimeGameLogsModuleCache();
 
     setCachedGameLogs("NFL", SAMPLE_LOGS);
-    const second = loadRuntimeGameLogs("NFL");
-    assert.equal(second?.games.length, 1);
+    const loaded = loadRuntimeGameLogs("NFL");
+    assert.equal(loaded?.games.length, 1);
     assert.equal(getCachedGameLogs("NFL")?.games.length, 1);
+  });
+
+  it("checks global cache before module cache (Worker null-cache regression)", () => {
+    const source = readFileSync("src/lib/game-logs.ts", "utf8");
+    const fnStart = source.indexOf("export function loadRuntimeGameLogs");
+    assert.ok(fnStart >= 0);
+    const fnBody = source.slice(fnStart, fnStart + 600);
+    assert.match(
+      fnBody,
+      /const fromGlobal = getCachedGameLogs\(league\)/,
+      "must consult getCachedGameLogs before module cache",
+    );
+    const globalReturn = fnBody.indexOf("if (fromGlobal)");
+    const moduleReturn = fnBody.indexOf("const moduleCached = cache.get(league)");
+    assert.ok(
+      globalReturn >= 0 && moduleReturn >= 0 && globalReturn < moduleReturn,
+      "global cache must be checked before module cache",
+    );
   });
 });

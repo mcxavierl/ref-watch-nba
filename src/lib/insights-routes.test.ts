@@ -34,6 +34,23 @@ const LEAGUE_PREFIXES = [
   "cfb",
 ] as const;
 
+/** insights + trends + rankings hub routes (21 pages across leagues). */
+const INSIGHTS_HUB_ROUTE_PAGES = [
+  ...INSIGHTS_HUB_PAGES,
+  ...LEAGUE_PREFIXES.flatMap((prefix) =>
+    (["rankings", "trends"] as const).map((segment) =>
+      prefix
+        ? `src/app/${prefix}/${segment}/page.tsx`
+        : `src/app/${segment}/page.tsx`,
+    ),
+  ),
+] as const;
+
+const INSIGHTS_HUB_ROUTE_IMPORT =
+  /import\s*\{\s*InsightsHubRoute\s*\}\s*from\s*["']@\/components\/InsightsHubRoute["']/;
+const INSIGHTS_HUB_PAGE_IMPORT_FROM_ROUTE =
+  /import\s*\{[^}]*InsightsHubPage[^}]*\}\s*from\s*["']@\/components\/InsightsHubRoute["']/;
+
 test("insightsViewHref maps tabs to canonical routes", () => {
   assert.equal(insightsViewHref("nba", "trends"), "/trends");
   assert.equal(insightsViewHref("nba", "tendencies"), "/rankings");
@@ -54,6 +71,32 @@ test("insightsViewFromPathname resolves active tab from URL", () => {
 test("insightsViewFromHash supports legacy rankings alias", () => {
   assert.equal(insightsViewFromHash("rankings"), "tendencies");
   assert.equal(insightsViewFromHash("trends"), "trends");
+});
+
+test("insights hub route pages import InsightsHubRoute and render <InsightsHubRoute>", () => {
+  for (const rel of INSIGHTS_HUB_ROUTE_PAGES) {
+    const source = readFileSync(join(process.cwd(), rel), "utf8");
+    assert.match(
+      source,
+      INSIGHTS_HUB_ROUTE_IMPORT,
+      `${rel} must import { InsightsHubRoute } from @/components/InsightsHubRoute`,
+    );
+    assert.doesNotMatch(
+      source,
+      INSIGHTS_HUB_PAGE_IMPORT_FROM_ROUTE,
+      `${rel} must not import InsightsHubPage from InsightsHubRoute (batch sed mistake)`,
+    );
+    assert.match(
+      source,
+      /<InsightsHubRoute[\s>/]/,
+      `${rel} must render <InsightsHubRoute> in JSX`,
+    );
+    assert.doesNotMatch(
+      source,
+      /<InsightsHubPage[\s>/]/,
+      `${rel} must not render <InsightsHubPage> directly (use InsightsHubRoute wrapper)`,
+    );
+  }
 });
 
 test("every league insights hub route matches NFL scope wiring", () => {
