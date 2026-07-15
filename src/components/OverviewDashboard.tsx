@@ -4,7 +4,6 @@ import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewHero } from "@/components/OverviewHero";
 import { OverviewSecondaryTabs } from "@/components/OverviewSecondaryTabs";
-import { WorldCupResearchHubCard } from "@/components/WorldCupResearchHubCard";
 import { OverviewTopStoriesCarousel } from "@/components/OverviewTopStoriesCarousel";
 import {
   DashboardBodyLayout,
@@ -150,39 +149,11 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
                 ) : null}
               </div>
             </details>
-
-            <section className="overview-sidebar-block overview-sidebar-block--research overview-section--secondary">
-              <h2 className="overview-sidebar-heading overview-sidebar-heading--static">
-                Research
-              </h2>
-              <Link
-                href="/research/world-cup-2026"
-                className="overview-sidebar-research-link rw-focus-ring"
-              >
-                <span className="overview-sidebar-research-label">World Cup 2026</span>
-                <span className="overview-sidebar-research-meta">Officiating origin variance</span>
-              </Link>
-            </section>
           </>
         }
         main={
           <>
             <OverviewSecondaryTabs data={data} />
-
-            <section
-              className="overview-research-hub section-block overview-section--secondary overview-dashboard-breathe"
-              aria-labelledby="overview-research-hub-heading"
-            >
-              <div className="overview-section-header overview-section-header--compact">
-                <h2 className="overview-section-title" id="overview-research-hub-heading">
-                  Research hub
-                </h2>
-                <p className="overview-section-lead">
-                  Exploratory analytics - 2026 World Cup officiating origin variance.
-                </p>
-              </div>
-              <WorldCupResearchHubCard />
-            </section>
 
             <DashboardSection
               className="overview-expansion overview-section--secondary"

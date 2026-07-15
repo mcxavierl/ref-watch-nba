@@ -74,7 +74,6 @@ export function canonicalSiteRoutePaths(): string[] {
     "/methodology",
     "/partners",
     "/overview",
-    "/research/world-cup-2026",
     "/ncaa/integrity-audit",
   ];
 

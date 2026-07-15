@@ -1,9 +1,28 @@
 import { getTeam as getCbbTeam } from "@/lib/cbb/teams";
 import { getTeam as getCfbTeam } from "@/lib/cfb/teams";
-import type { RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import type { LeagueId } from "@/lib/leagues";
-import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
+
+type NcaaGameLogRow = {
+  homeTeam: string;
+  awayTeam: string;
+};
+
+const GAME_LOG_GLOBAL_KEYS = {
+  CBB: "__REFWATCH_CBB_GAME_LOGS__",
+  CFB: "__REFWATCH_CFB_GAME_LOGS__",
+} as const;
+
+function readHydratedNcaaGameLogs(
+  league: "CBB" | "CFB",
+): NcaaGameLogRow[] {
+  const key = GAME_LOG_GLOBAL_KEYS[league];
+  const file = (globalThis as unknown as Record<
+    string,
+    { games?: NcaaGameLogRow[] } | undefined
+  >)[key];
+  return file?.games ?? [];
+}
 
 export type NcaaRouteLeague = "cbb" | "cfb";
 
@@ -89,7 +108,7 @@ export function shouldIngestNcaaGame(
   return gameTouchesLiveNcaaConference(league, homeTeam, awayTeam);
 }
 
-export function filterNcaaGameLogs<T extends Pick<RuntimeGameLogEntry, "homeTeam" | "awayTeam">>(
+export function filterNcaaGameLogs<T extends NcaaGameLogRow>(
   league: NcaaRouteLeague,
   games: T[],
 ): T[] {
@@ -149,6 +168,7 @@ export function filterNcaaRefStats(stats: RefStatsFile, league: NcaaRouteLeague)
 export function hasNcaaLiveConferenceCoverage(
   league: NcaaRouteLeague,
   stats: RefStatsFile | null | undefined,
+  gameLogs?: NcaaGameLogRow[] | null,
 ): boolean {
   if (stats?.refs?.length) {
     const filtered = filterNcaaRefStats(stats, league);
@@ -158,11 +178,8 @@ export function hasNcaaLiveConferenceCoverage(
   }
 
   const dataLeague = league === "cbb" ? "CBB" : "CFB";
-  const logs = loadRuntimeGameLogs(dataLeague)?.games ?? [];
-  const liveGames = filterNcaaGameLogs(
-    league,
-    logs as Pick<RuntimeGameLogEntry, "homeTeam" | "awayTeam">[],
-  );
+  const logs = gameLogs ?? readHydratedNcaaGameLogs(dataLeague);
+  const liveGames = filterNcaaGameLogs(league, logs);
   return liveGames.length > 0;
 }
 

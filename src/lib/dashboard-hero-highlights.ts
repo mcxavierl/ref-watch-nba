@@ -19,19 +19,6 @@ export type DashboardHeroHighlight = {
 /** Curated high-confidence outlier patterns for the overview hero strip. */
 export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
   {
-    id: "wc-2026-research",
-    leagueId: "epl",
-    leagueLabel: "Research",
-    tone: "positive",
-    official: "World Cup 2026",
-    href: "/research/world-cup-2026",
-    parts: [
-      { type: "text", value: "Exploratory " },
-      { type: "metric", value: "origin variance" },
-      { type: "text", value: " analytics for international officiating." },
-    ],
-  },
-  {
     id: "nba-foster-kings",
     leagueId: "nba",
     leagueLabel: "NBA",

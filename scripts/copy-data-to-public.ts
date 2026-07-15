@@ -205,6 +205,22 @@ export const PRODUCTION_LIVE_HEADER_LEAGUE_IDS = ${JSON.stringify(leagues, null,
   console.log(`Wrote ${outPath}: ${leagues.join(", ")}`);
 }
 
+function readNcaaGameLogEntries(
+  root: string,
+  league: "cbb" | "cfb",
+): { homeTeam: string; awayTeam: string }[] {
+  const filePath = path.join(root, "data", league, "game-logs.json");
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as {
+      games?: { homeTeam: string; awayTeam: string }[];
+    };
+    return parsed.games ?? [];
+  } catch {
+    return [];
+  }
+}
+
 function writeNcaaLiveLeagues(): void {
   const live: ("cbb" | "cfb")[] = [];
 
@@ -219,7 +235,8 @@ function writeNcaaLiveLeagues(): void {
       stats = JSON.parse(fs.readFileSync(candidate, "utf8")) as RefStatsFile;
       break;
     }
-    if (hasNcaaLiveConferenceCoverage(league, stats)) {
+    const gameLogs = readNcaaGameLogEntries(root, league);
+    if (hasNcaaLiveConferenceCoverage(league, stats, gameLogs)) {
       live.push(league);
     }
   }

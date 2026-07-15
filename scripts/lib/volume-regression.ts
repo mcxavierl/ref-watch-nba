@@ -370,13 +370,31 @@ export function checkTrendBaselines(root: string, failures: string[]): void {
   }
 }
 
+function readNcaaGameLogEntries(
+  root: string,
+  league: "cbb" | "cfb",
+): { homeTeam: string; awayTeam: string }[] {
+  const filePath = path.join(root, "data", league, "game-logs.json");
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as {
+      games?: { homeTeam: string; awayTeam: string }[];
+    };
+    return parsed.games ?? [];
+  } catch {
+    return [];
+  }
+}
+
 function shouldRunVolumeCheck(
   league: LiveLeague,
   source: RefStatsFile | null,
+  root = process.cwd(),
 ): source is RefStatsFile {
   if (!source?.meta?.data_verified) return false;
   if (isNcaaConferenceGatedLeague(league)) {
-    return hasNcaaLiveConferenceCoverage(league, source);
+    const gameLogs = readNcaaGameLogEntries(root, league);
+    return hasNcaaLiveConferenceCoverage(league, source, gameLogs);
   }
   return true;
 }
@@ -387,7 +405,7 @@ export function runVolumeRegressionChecks(root = process.cwd()): VolumeRegressio
 
   for (const league of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
     const source = readJson<RefStatsFile>(root, refStatsPath(league));
-    if (!shouldRunVolumeCheck(league, source)) {
+    if (!shouldRunVolumeCheck(league, source, root)) {
       if (
         !source?.meta?.data_verified &&
         !isNcaaConferenceGatedLeague(league)

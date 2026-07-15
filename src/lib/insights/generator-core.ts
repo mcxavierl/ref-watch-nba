@@ -246,7 +246,6 @@ export function candidateToInsightCard(candidate: InsightOutlierCandidate): Leag
       ],
       links: [
         { label: "Ref profile", href: refHref(candidate.leagueId, highlight.refSlug) },
-        { label: "WC 2026 research", href: "/research/world-cup-2026" },
         { label: `${config.shortLabel} hub`, href: leaguePrefix(candidate.leagueId) || "/" },
       ],
       entityName: highlight.refName,
