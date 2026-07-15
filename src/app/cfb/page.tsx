@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import {
@@ -26,13 +27,11 @@ import type { AssignmentGame } from "@/lib/types";
 import {
   buildCfbNightlyFeed,
   buildShareText,
-  slateDatasetJsonLd,
+  buildLeagueSlateJsonLd,
   slateMetadataDescription,
-  slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
-import { slatePageMetadata } from "@/lib/seo";
-import { absoluteUrl } from "@/lib/site";
+import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
 import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
@@ -47,15 +46,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
   const feed = buildCfbNightlyFeed();
   const isOffseason = assignments.games.length === 0;
-  const description = isOffseason
-    ? "CFB ref and crew analytics during the offseason, dataset findings, official profiles, and team histories."
-    : slateMetadataDescription(feed);
-  const title = isOffseason ? "CFB ref data (offseason)" : "Tonight's CFB slate";
-  return slatePageMetadata({
-    title,
-    description,
-    path: "/cfb",
-    keywords: ["CFB officials","college football refs"],
+  return generateLeagueSlateMetadata("cfb", {
+    isOffseason,
+    slateDescription: isOffseason ? undefined : slateMetadataDescription(feed),
   });
 }
 
@@ -98,18 +91,11 @@ export default function CfbHomePage() {
   return (
     <div className="page-shell page-shell-slate">
       <JsonLd
-        data={[
-          {
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: isOffseason ? "CFB ref data (offseason)" : "Tonight's CFB slate",
-            description: slateMetadataDescription(nightlyFeed),
-            url: absoluteUrl("/cfb"),
-            dateModified: assignments.lastUpdated,
-          },
-          slateDatasetJsonLd(nightlyFeed),
-          ...slateSportsEvents("CFB"),
-        ]}
+        data={buildLeagueSlateJsonLd(
+          leagueSlatePageTitle("cfb", { isOffseason }),
+          nightlyFeed,
+          assignments.lastUpdated,
+        )}
       />
       <LeagueSlateHero
         leagueId="cfb"
@@ -189,6 +175,8 @@ export default function CfbHomePage() {
       )}
 
       <TrustCharterSummary />
+
+      <RelatedInsightsFooter league="CFB" />
 
       <ProComingSoonTease league="CFB" />
     </div>

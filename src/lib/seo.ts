@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { leagueHeroCopy } from "@/lib/league-hero-copy";
 import { leagueHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -157,6 +158,66 @@ export function slatePageMetadata({
   keywords,
 }: BuildPageMetadataInput): Metadata {
   return buildPageMetadata({ title, description, path, keywords });
+}
+
+export type SlateHubLeagueId = Extract<
+  LeagueId,
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb"
+>;
+
+const SLATE_HUB_KEYWORDS: Record<SlateHubLeagueId, string[]> = {
+  nba: ["NBA refs", "NBA referee crew", "referee analytics", "basketball officiating"],
+  nhl: ["NHL officials", "NHL referee crew", "penalty analytics", "hockey officiating"],
+  nfl: ["NFL officials", "NFL referee crew", "penalty analytics", "football officiating"],
+  epl: ["Premier League referees", "EPL matchday", "referee analytics", "soccer officiating"],
+  laliga: ["La Liga referees", "La Liga matchday", "referee analytics", "soccer officiating"],
+  cbb: ["CBB referees", "college basketball refs", "NCAA officiating"],
+  cfb: ["CFB officials", "college football refs", "NCAA officiating"],
+};
+
+export function leagueSlateHubPath(leagueId: SlateHubLeagueId): string {
+  return leagueId === "nba" ? "/nba" : `/${leagueId}`;
+}
+
+export function leagueSlateHubKeywords(leagueId: SlateHubLeagueId): string[] {
+  const league = LEAGUES[leagueId];
+  return [
+    ...SLATE_HUB_KEYWORDS[leagueId],
+    league.officialNoun,
+    `${league.shortLabel} referee analytics`,
+  ];
+}
+
+export function generateLeagueSlateMetadata(
+  leagueId: SlateHubLeagueId,
+  opts: {
+    isOffseason: boolean;
+    isPending?: boolean;
+    slateDescription?: string;
+  },
+): Metadata {
+  const copy = leagueHeroCopy(leagueId);
+  const title = leagueSlatePageTitle(leagueId, opts);
+  const description = opts.isOffseason
+    ? copy.offseasonLead
+    : (opts.slateDescription ?? copy.liveLead);
+
+  return slatePageMetadata({
+    title,
+    description,
+    path: leagueSlateHubPath(leagueId),
+    keywords: leagueSlateHubKeywords(leagueId),
+  });
+}
+
+export function leagueSlatePageTitle(
+  leagueId: SlateHubLeagueId,
+  opts: { isOffseason: boolean; isPending?: boolean },
+): string {
+  const copy = leagueHeroCopy(leagueId);
+  if (opts.isOffseason) return copy.offseasonTitle;
+  if (opts.isPending && copy.pendingTitle) return copy.pendingTitle;
+  return copy.liveTitle;
 }
 
 export function entityNotFoundMetadata(

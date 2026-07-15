@@ -7,6 +7,7 @@ import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { UpcomingSlateNotice } from "@/components/UpcomingSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import {
@@ -27,13 +28,11 @@ import type { AssignmentGame } from "@/lib/types";
 import {
   buildEplNightlyFeed,
   buildShareText,
-  slateDatasetJsonLd,
+  buildLeagueSlateJsonLd,
   slateMetadataDescription,
-  slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
-import { slatePageMetadata } from "@/lib/seo";
-import { absoluteUrl } from "@/lib/site";
+import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
 import { isOffseasonSlate, isPendingCrewSlate, upcomingMatchups } from "@/lib/offseason";
 import {
   NO_SIGNAL_SLATE_COPY,
@@ -49,15 +48,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const feed = buildEplNightlyFeed();
   const isOffseason = isOffseasonSlate(assignments);
   const isPending = isPendingCrewSlate(assignments);
-  const description = isOffseason
-    ? "EPL referee analytics during the offseason, dataset findings, ref profiles, and club histories."
-    : slateMetadataDescription(feed);
-  const title = isOffseason ? "EPL ref data (offseason)" : "Tonight's EPL matchday";
-  return slatePageMetadata({
-    title,
-    description,
-    path: "/epl",
-    keywords: ["Premier League referees","EPL matchday","referee analytics"],
+  return generateLeagueSlateMetadata("epl", {
+    isOffseason,
+    isPending,
+    slateDescription: isOffseason ? undefined : slateMetadataDescription(feed),
   });
 }
 
@@ -103,18 +97,11 @@ export default async function EplHomePage() {
   return (
     <div className="page-shell page-shell-slate">
       <JsonLd
-        data={[
-          {
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: isOffseason ? "EPL ref data (offseason)" : "Tonight's EPL matchday",
-            description: slateMetadataDescription(nightlyFeed),
-            url: absoluteUrl("/epl"),
-            dateModified: assignments.lastUpdated,
-          },
-          slateDatasetJsonLd(nightlyFeed),
-          ...slateSportsEvents("EPL"),
-        ]}
+        data={buildLeagueSlateJsonLd(
+          leagueSlatePageTitle("epl", { isOffseason, isPending }),
+          nightlyFeed,
+          assignments.lastUpdated,
+        )}
       />
       <LeagueSlateHero
         leagueId="epl"
@@ -202,6 +189,8 @@ export default async function EplHomePage() {
       )}
 
       <TrustCharterSummary />
+
+      <RelatedInsightsFooter league="EPL" />
 
       <ProComingSoonTease league="EPL" />
     </div>

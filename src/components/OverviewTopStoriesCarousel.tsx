@@ -92,7 +92,7 @@ export function OverviewTopStoriesCarousel({ initialData }: OverviewTopStoriesCa
       <div className="overview-top-stories-head">
         <div className="min-w-0 flex-1 text-left">
           <h2 className="overview-section-title text-left" id="overview-top-stories-heading">
-            Today&apos;s edges
+            Research insights
           </h2>
           <p className="overview-section-lead text-left">
             Three high-confidence patterns from verified leagues.

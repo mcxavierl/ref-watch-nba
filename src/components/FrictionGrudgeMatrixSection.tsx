@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { FrictionGrudgeFinding } from "@/lib/friction-grudge-matrix";
 import { FRICTION_MIN_H2H_GAMES } from "@/lib/friction-grudge-matrix";
+import { ContextualLinkerText } from "@/lib/contextual-linker";
 
 export function FrictionGrudgeMatrixSection({
   findings,
@@ -44,7 +45,9 @@ export function FrictionGrudgeMatrixSection({
               vs {finding.subjectName} ({finding.teamAbbr})
             </p>
             <p className="rankings-insight-body mt-2">{finding.comparativeLine}</p>
-            <p className="mt-2 text-sm text-secondary">{finding.summary}</p>
+            <p className="mt-2 text-sm text-secondary">
+              <ContextualLinkerText text={finding.summary} />
+            </p>
             <p className="mt-2 text-xs text-muted">
               {finding.games} shared games · {finding.deltaLabel}
             </p>

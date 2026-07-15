@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import { GameSlateCard } from "@/components/GameSlateCard";
@@ -31,13 +32,11 @@ import type { AssignmentGame } from "@/lib/types";
 import {
   buildNhlNightlyFeed,
   buildShareText,
-  slateDatasetJsonLd,
+  buildLeagueSlateJsonLd,
   slateMetadataDescription,
-  slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
-import { slatePageMetadata } from "@/lib/seo";
-import { absoluteUrl } from "@/lib/site";
+import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
 import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
@@ -47,15 +46,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
   const feed = buildNhlNightlyFeed();
   const isOffseason = assignments.games.length === 0;
-  const description = isOffseason
-    ? "NHL ref and crew analytics during the offseason, dataset findings, ref profiles, and team histories."
-    : slateMetadataDescription(feed);
-  const title = isOffseason ? "NHL ref data (offseason)" : "Tonight's NHL slate";
-  return slatePageMetadata({
-    title,
-    description,
-    path: "/nhl",
-    keywords: ["NHL officials","NHL referee crew","tonight's NHL slate"],
+  return generateLeagueSlateMetadata("nhl", {
+    isOffseason,
+    slateDescription: isOffseason ? undefined : slateMetadataDescription(feed),
   });
 }
 
@@ -103,18 +96,11 @@ export default async function NhlHomePage() {
   return (
     <div className="page-shell page-shell-slate">
       <JsonLd
-        data={[
-          {
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: isOffseason ? "NHL ref data (offseason)" : "Tonight's NHL slate",
-            description: slateMetadataDescription(nightlyFeed),
-            url: absoluteUrl("/nhl"),
-            dateModified: assignments.lastUpdated,
-          },
-          slateDatasetJsonLd(nightlyFeed),
-          ...slateSportsEvents("NHL"),
-        ]}
+        data={buildLeagueSlateJsonLd(
+          leagueSlatePageTitle("nhl", { isOffseason }),
+          nightlyFeed,
+          assignments.lastUpdated,
+        )}
       />
       <LeagueSlateHero
         leagueId="nhl"
@@ -184,6 +170,8 @@ export default async function NhlHomePage() {
       )}
 
       <TrustCharterSummary />
+
+      <RelatedInsightsFooter league="NHL" />
 
       <ProComingSoonTease league="NHL" />
     </div>

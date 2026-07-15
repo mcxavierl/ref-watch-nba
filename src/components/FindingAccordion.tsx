@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { EdgeFinderCell } from "@/components/EdgeFinderCell";
+import { ContextualLinkerText } from "@/lib/contextual-linker";
 import {
   FindingAccordionChevron,
   FindingContextRow,
@@ -77,7 +78,9 @@ export function FindingAccordionItem({
 
       <div className="finding-accordion-panel">
         {finding.summary && (
-          <p className="finding-accordion-summary">{finding.summary}</p>
+          <p className="finding-accordion-summary">
+            <ContextualLinkerText text={finding.summary} />
+          </p>
         )}
 
         <FindingRegionalContext text={finding.regionalContext} />
@@ -122,7 +125,9 @@ function FindingAngleBlock({
       ) : null}
 
       {finding.summary ? (
-        <p className="finding-angle-summary">{finding.summary}</p>
+        <p className="finding-angle-summary">
+          <ContextualLinkerText text={finding.summary} />
+        </p>
       ) : null}
 
       {finding.explainer ? (

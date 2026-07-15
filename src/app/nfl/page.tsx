@@ -7,6 +7,7 @@ import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { UpcomingSlateNotice } from "@/components/UpcomingSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import {
@@ -27,13 +28,11 @@ import type { AssignmentGame } from "@/lib/types";
 import {
   buildNflNightlyFeed,
   buildShareText,
-  slateDatasetJsonLd,
+  buildLeagueSlateJsonLd,
   slateMetadataDescription,
-  slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
-import { slatePageMetadata } from "@/lib/seo";
-import { absoluteUrl } from "@/lib/site";
+import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
 import { isOffseasonSlate, isPendingCrewSlate, upcomingMatchups } from "@/lib/offseason";
 import {
   NO_SIGNAL_SLATE_COPY,
@@ -50,15 +49,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const feed = buildNflNightlyFeed();
   const isOffseason = isOffseasonSlate(assignments);
   const isPending = isPendingCrewSlate(assignments);
-  const description = isOffseason
-    ? "NFL ref and crew analytics during the offseason, dataset findings, official profiles, and team histories."
-    : slateMetadataDescription(feed);
-  const title = isOffseason ? "NFL ref data (offseason)" : "Tonight's NFL slate";
-  return slatePageMetadata({
-    title,
-    description,
-    path: "/nfl",
-    keywords: ["NFL officials","NFL referee crew","tonight's NFL slate"],
+  return generateLeagueSlateMetadata("nfl", {
+    isOffseason,
+    isPending,
+    slateDescription: isOffseason ? undefined : slateMetadataDescription(feed),
   });
 }
 
@@ -103,18 +97,11 @@ export default async function NflHomePage() {
   return (
     <div className="page-shell page-shell-slate">
       <JsonLd
-        data={[
-          {
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: isOffseason ? "NFL ref data (offseason)" : "Tonight's NFL slate",
-            description: slateMetadataDescription(nightlyFeed),
-            url: absoluteUrl("/nfl"),
-            dateModified: assignments.lastUpdated,
-          },
-          slateDatasetJsonLd(nightlyFeed),
-          ...slateSportsEvents("NFL"),
-        ]}
+        data={buildLeagueSlateJsonLd(
+          leagueSlatePageTitle("nfl", { isOffseason, isPending }),
+          nightlyFeed,
+          assignments.lastUpdated,
+        )}
       />
       <LeagueSlateHero
         leagueId="nfl"
@@ -200,6 +187,8 @@ export default async function NflHomePage() {
       )}
 
       <TrustCharterSummary />
+
+      <RelatedInsightsFooter league="NFL" />
 
       <ProComingSoonTease league="NFL" />
     </div>

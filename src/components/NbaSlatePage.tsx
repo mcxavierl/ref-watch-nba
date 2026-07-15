@@ -4,6 +4,7 @@ import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateFeatureShowcase } from "@/components/SlateFeatureShowcase";
 import { SlateQuickLookupSection } from "@/components/SlateQuickLookupSection";
 import { SlateShareBar } from "@/components/SlateShareBar";
@@ -36,13 +37,11 @@ import type { AssignmentGame } from "@/lib/types";
 import {
   buildNbaNightlyFeed,
   buildShareText,
-  slateDatasetJsonLd,
+  buildLeagueSlateJsonLd,
   slateMetadataDescription,
-  slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
-import { absoluteUrl } from "@/lib/site";
-import { slatePageMetadata } from "@/lib/seo";
+import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
 import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
@@ -68,17 +67,9 @@ export async function generateNbaSlateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
   const feed = buildNbaNightlyFeed();
   const isOffseason = assignments.games.length === 0;
-  const description = isOffseason
-    ? "Historical ref×team edges, crew matrices, and multi-season whistle analytics across every indexed NBA official."
-    : slateMetadataDescription(feed);
-  const title = isOffseason
-    ? "NBA officiating analytics"
-    : "Tonight's NBA slate";
-  return slatePageMetadata({
-    title,
-    description,
-    path: NBA_SLATE_PATH,
-    keywords: ["NBA refs", "NBA referee crew", "tonight's NBA slate", "referee analytics"],
+  return generateLeagueSlateMetadata("nba", {
+    isOffseason,
+    slateDescription: isOffseason ? undefined : slateMetadataDescription(feed),
   });
 }
 
@@ -114,18 +105,11 @@ export async function NbaSlatePage({
   return (
     <div className="page-shell page-shell-slate">
       <JsonLd
-        data={[
-          {
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: isOffseason ? "NBA officiating analytics" : "Tonight's NBA slate",
-            description: slateMetadataDescription(nightlyFeed),
-            url: absoluteUrl(NBA_SLATE_PATH),
-            dateModified: assignments.lastUpdated,
-          },
-          slateDatasetJsonLd(nightlyFeed),
-          ...slateSportsEvents("NBA"),
-        ]}
+        data={buildLeagueSlateJsonLd(
+          leagueSlatePageTitle("nba", { isOffseason }),
+          nightlyFeed,
+          assignments.lastUpdated,
+        )}
       />
       <LeagueSlateHero
         leagueId="nba"
@@ -206,6 +190,8 @@ export async function NbaSlatePage({
       )}
 
       <TrustCharterSummary />
+
+      <RelatedInsightsFooter league="NBA" />
 
       <ProComingSoonTease league="NBA" compact={isOffseason} />
     </div>

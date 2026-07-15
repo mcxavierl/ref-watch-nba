@@ -3,6 +3,7 @@ import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel"
 import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { JsonLd } from "@/components/JsonLd";
 import { StatCell, StatStrip } from "@/components/StatStrip";
+import { ContextualLinkerText } from "@/lib/contextual-linker";
 import { getRefStats } from "@/lib/data";
 import { getRefStats as getNhlRefStats } from "@/lib/nhl/data";
 import {
@@ -10,7 +11,7 @@ import {
   resolveFindingExplainer,
 } from "@/lib/findings-shared";
 import type { ResearchFinding } from "@/lib/research";
-import { researchDatasetJsonLd } from "@/lib/syndication";
+import { researchDatasetJsonLd, researchArticleJsonLd } from "@/lib/syndication";
 
 export function ResearchFindingDetail({
   finding,
@@ -26,10 +27,10 @@ export function ResearchFindingDetail({
   return (
     <div className="page-shell">
       <JsonLd
-        data={researchDatasetJsonLd(
-          finding,
-          stats.meta.lastUpdated,
-        )}
+        data={[
+          researchDatasetJsonLd(finding, stats.meta.lastUpdated),
+          researchArticleJsonLd(finding, stats.meta.lastUpdated),
+        ]}
       />
 
       <Link href={researchHubHref(finding.league)} className="back-link">
@@ -46,10 +47,12 @@ export function ResearchFindingDetail({
         {finding.explainer && (
           <p className="mt-3 text-sm leading-relaxed text-zinc-600">
             <span className="font-medium text-zinc-800">Why it matters: </span>
-            {resolveFindingExplainer(finding.explainer)}
+            <ContextualLinkerText text={resolveFindingExplainer(finding.explainer)} />
           </p>
         )}
-        <p className="finding-accordion-metric-preview mt-2">{finding.summary}</p>
+        <p className="finding-accordion-metric-preview mt-2">
+          <ContextualLinkerText text={finding.summary} />
+        </p>
         <p className="finding-sample-meta mt-3">{finding.sampleNote}</p>
       </header>
 

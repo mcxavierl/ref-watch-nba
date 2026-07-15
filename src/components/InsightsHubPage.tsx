@@ -37,7 +37,11 @@ import { computeFindings as computeEplFindings } from "@/lib/epl/findings";
 import { computeFindings as computeLaligaFindings } from "@/lib/laliga/findings";
 import { computeFindings as computeNflFindings } from "@/lib/nfl/findings";
 import { computeFindings as computeNhlFindings } from "@/lib/nhl/findings";
-import { researchHubDatasetJsonLd } from "@/lib/syndication";
+import { ContextualLinkerText } from "@/lib/contextual-linker";
+import {
+  researchHubArticleJsonLd,
+  researchHubDatasetJsonLd,
+} from "@/lib/syndication";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import {
   DEFAULT_SEASON_SCOPE_MODE,
@@ -224,7 +228,9 @@ export function InsightsHubPage({
                 <h2 className="insights-trends-title">{narrative.headline}</h2>
                 <LeagueSeasonStartBadge leagueId={leagueId} />
               </div>
-              <p className="insights-trends-body">{narrative.body}</p>
+              <p className="insights-trends-body">
+                <ContextualLinkerText text={narrative.body} />
+              </p>
             </div>
           </section>
         )}
@@ -262,11 +268,18 @@ export function InsightsHubPage({
     findingsPanel = (
       <>
         <JsonLd
-          data={researchHubDatasetJsonLd(
-            dataLeague,
-            findings.length,
-            stats.meta.lastUpdated,
-          )}
+          data={[
+            researchHubDatasetJsonLd(
+              dataLeague,
+              findings.length,
+              stats.meta.lastUpdated,
+            ),
+            researchHubArticleJsonLd(
+              dataLeague,
+              findings.length,
+              stats.meta.lastUpdated,
+            ),
+          ]}
         />
         {cbbWhistleDataset ? (
           <CbbWhistleMatrixSection

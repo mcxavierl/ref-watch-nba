@@ -687,7 +687,11 @@ export function LeagueHubHero({
         {before}
         {showLogo ? (
           <div className="league-hub-hero-header-block">
-            <LeagueHeroLogo leagueId={leagueId} className="league-hub-hero-logo" />
+            <LeagueHeroLogo
+              leagueId={leagueId}
+              className="league-hub-hero-logo"
+              priority
+            />
             {headContent}
           </div>
         ) : (

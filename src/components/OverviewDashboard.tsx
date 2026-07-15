@@ -1,10 +1,8 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { LeagueChooser } from "@/components/LeagueChooser";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
-import { OverviewHero } from "@/components/OverviewHero";
-import { OverviewSecondaryTabs } from "@/components/OverviewSecondaryTabs";
-import { OverviewTopStoriesCarousel } from "@/components/OverviewTopStoriesCarousel";
 import {
   DashboardBodyLayout,
   DashboardSection,
@@ -73,9 +71,17 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
 
 type OverviewDashboardProps = {
   data: CrossLeagueOverview;
+  hero: ReactNode;
+  topStories: ReactNode;
+  secondaryTabs: ReactNode;
 };
 
-export function OverviewDashboard({ data }: OverviewDashboardProps) {
+export function OverviewDashboard({
+  data,
+  hero,
+  topStories,
+  secondaryTabs,
+}: OverviewDashboardProps) {
   const proCatalog = catalogProLiveEntries();
   const collegeCatalog = catalogCollegeComingSoonEntries();
   const liveCatalog = catalogLiveCompetitionEntries();
@@ -85,21 +91,13 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
 
   return (
     <DashboardShell>
-      <OverviewHero />
+      {hero}
 
       <div className="overview-dashboard-breathe overview-dashboard-breathe--tight">
         <LeagueChooser cards={data.leagueCards} />
       </div>
 
-      <div className="overview-dashboard-breathe">
-        <OverviewTopStoriesCarousel
-          initialData={{
-            insights: data.topStories,
-            status: data.topStoriesStatus,
-            generatedAt: data.topStoriesGeneratedAt,
-          }}
-        />
-      </div>
+      <div className="overview-dashboard-breathe">{topStories}</div>
 
       <DashboardBodyLayout
         sidebar={
@@ -107,7 +105,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
             <details className="overview-sidebar-block overview-catalog-collapsible overview-catalog--coverage" open>
               <summary className="overview-sidebar-heading overview-catalog-summary">
                 <span className="overview-catalog-summary-copy">
-                  <span className="overview-catalog-summary-title">League catalog</span>
+                  <h2 className="overview-catalog-summary-title">League catalog</h2>
                   <span className="overview-catalog-summary-hint">Live verified hubs</span>
                 </span>
                 <span
@@ -158,7 +156,7 @@ export function OverviewDashboard({ data }: OverviewDashboardProps) {
         }
         main={
           <>
-            <OverviewSecondaryTabs data={data} />
+            {secondaryTabs}
 
             <DashboardSection
               className="overview-expansion overview-section--secondary"

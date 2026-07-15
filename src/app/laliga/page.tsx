@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import {
@@ -26,13 +27,11 @@ import type { AssignmentGame } from "@/lib/types";
 import {
   buildLaligaNightlyFeed,
   buildShareText,
-  slateDatasetJsonLd,
+  buildLeagueSlateJsonLd,
   slateMetadataDescription,
-  slateSportsEvents,
   topShareSignals,
 } from "@/lib/syndication";
-import { slatePageMetadata } from "@/lib/seo";
-import { absoluteUrl } from "@/lib/site";
+import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
 import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
@@ -46,15 +45,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
   const feed = buildLaligaNightlyFeed();
   const isOffseason = assignments.games.length === 0;
-  const description = isOffseason
-    ? "La Liga referee analytics during the offseason, dataset findings, ref profiles, and club histories."
-    : slateMetadataDescription(feed);
-  const title = isOffseason ? "La Liga ref data (offseason)" : "Tonight's La Liga matchday";
-  return slatePageMetadata({
-    title,
-    description,
-    path: "/laliga",
-    keywords: ["La Liga referees","La Liga matchday","referee analytics"],
+  return generateLeagueSlateMetadata("laliga", {
+    isOffseason,
+    slateDescription: isOffseason ? undefined : slateMetadataDescription(feed),
   });
 }
 
@@ -98,18 +91,11 @@ export default async function LaligaHomePage() {
   return (
     <div className="page-shell page-shell-slate">
       <JsonLd
-        data={[
-          {
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: isOffseason ? "La Liga ref data (offseason)" : "Tonight's La Liga matchday",
-            description: slateMetadataDescription(nightlyFeed),
-            url: absoluteUrl("/laliga"),
-            dateModified: assignments.lastUpdated,
-          },
-          slateDatasetJsonLd(nightlyFeed),
-          ...slateSportsEvents("LALIGA"),
-        ]}
+        data={buildLeagueSlateJsonLd(
+          leagueSlatePageTitle("laliga", { isOffseason }),
+          nightlyFeed,
+          assignments.lastUpdated,
+        )}
       />
       <LeagueSlateHero
         leagueId="laliga"
@@ -188,6 +174,8 @@ export default async function LaligaHomePage() {
       )}
 
       <TrustCharterSummary />
+
+      <RelatedInsightsFooter league="LALIGA" />
 
       <ProComingSoonTease league="LALIGA" />
     </div>

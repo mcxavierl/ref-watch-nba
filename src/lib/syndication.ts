@@ -53,7 +53,11 @@ import {
   provenanceLabel,
   refStatsDataTag,
 } from "@/lib/provenance";
-import { leagueRefPath } from "@/lib/seo";
+import {
+  leagueRefPath,
+  leagueSlateHubKeywords,
+  type SlateHubLeagueId,
+} from "@/lib/seo";
 import { absoluteUrl, SYNDICATION_DISCLAIMER } from "@/lib/site";
 import {
   computeSlatePremiums,
@@ -547,7 +551,10 @@ export function slateSportsEvents(
   }));
 }
 
-export function slateDatasetJsonLd(feed: NightlyFeed): Record<string, unknown> {
+export function slateDatasetJsonLd(
+  feed: NightlyFeed,
+  keywords?: string[],
+): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "Dataset",
@@ -556,6 +563,11 @@ export function slateDatasetJsonLd(feed: NightlyFeed): Record<string, unknown> {
     url: feed.pageUrl,
     dateModified: feed.generatedAt,
     temporalCoverage: feed.slateDate,
+    keywords: keywords ?? [
+      feed.league,
+      "referee analytics",
+      "officiating tendencies",
+    ],
     license: "https://creativecommons.org/licenses/by/4.0/",
     isAccessibleForFree: true,
     creator: {
@@ -572,8 +584,70 @@ export function slateDatasetJsonLd(feed: NightlyFeed): Record<string, unknown> {
   };
 }
 
+const SLATE_LEAGUE_ID: Record<
+  NightlyFeed["league"],
+  SlateHubLeagueId
+> = {
+  NBA: "nba",
+  NHL: "nhl",
+  NFL: "nfl",
+  EPL: "epl",
+  LALIGA: "laliga",
+  CBB: "cbb",
+  CFB: "cfb",
+};
+
+export function leagueHubArticleJsonLd(input: {
+  headline: string;
+  description: string;
+  url: string;
+  keywords: string[];
+  dateModified: string;
+}): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: input.headline,
+    description: input.description,
+    url: input.url,
+    keywords: input.keywords,
+    dateModified: input.dateModified,
+    author: { "@type": "Organization", name: "Ref Watch" },
+    publisher: { "@type": "Organization", name: "Ref Watch" },
+    isAccessibleForFree: true,
+  };
+}
+
+export function buildLeagueSlateJsonLd(
+  headline: string,
+  feed: NightlyFeed,
+  dateModified: string,
+): Record<string, unknown>[] {
+  const leagueId = SLATE_LEAGUE_ID[feed.league];
+  const keywords = leagueSlateHubKeywords(leagueId);
+  const description = slateMetadataDescription(feed);
+
+  return [
+    leagueHubArticleJsonLd({
+      headline,
+      description,
+      url: feed.pageUrl,
+      keywords,
+      dateModified,
+    }),
+    slateDatasetJsonLd(feed, keywords),
+    ...slateSportsEvents(feed.league),
+  ];
+}
+
 export function researchDatasetJsonLd(
-  finding: { id: string; headline: string; summary: string; league: string },
+  finding: {
+    id: string;
+    headline: string;
+    summary: string;
+    league: string;
+    category?: string;
+  },
   lastUpdated: string,
 ): Record<string, unknown> {
   return {
@@ -585,10 +659,42 @@ export function researchDatasetJsonLd(
       researchFindingHref(finding.id, finding.league as FindingLeague),
     ),
     dateModified: lastUpdated,
-    keywords: [finding.league, "referee analytics", "historical tendency"],
+    keywords: [
+      finding.league,
+      "referee analytics",
+      "historical tendency",
+      ...(finding.category ? [finding.category] : []),
+    ],
     variableMeasured: finding.summary,
     isAccessibleForFree: true,
     creator: { "@type": "Organization", name: "Ref Watch" },
+  };
+}
+
+export function researchArticleJsonLd(
+  finding: {
+    id: string;
+    headline: string;
+    summary: string;
+    league: string;
+    category: string;
+  },
+  lastUpdated: string,
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: finding.headline,
+    description: finding.summary,
+    url: absoluteUrl(
+      researchFindingHref(finding.id, finding.league as FindingLeague),
+    ),
+    dateModified: lastUpdated,
+    keywords: [finding.league, finding.category, "referee analytics"],
+    articleSection: finding.category,
+    author: { "@type": "Organization", name: "Ref Watch" },
+    publisher: { "@type": "Organization", name: "Ref Watch" },
+    isAccessibleForFree: true,
   };
 }
 
@@ -604,8 +710,28 @@ export function researchHubDatasetJsonLd(
     description: `${count} ranked historical patterns from the ${league} referee dataset.`,
     url: absoluteUrl(researchHubHref(league)),
     dateModified: lastUpdated,
+    keywords: [league, "referee research", "historical patterns", "dataset findings"],
     isAccessibleForFree: true,
     creator: { "@type": "Organization", name: "Ref Watch" },
+  };
+}
+
+export function researchHubArticleJsonLd(
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  count: number,
+  lastUpdated: string,
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `${league} research findings`,
+    description: `${count} ranked historical patterns from the ${league} referee dataset.`,
+    url: absoluteUrl(researchHubHref(league)),
+    dateModified: lastUpdated,
+    keywords: [league, "referee research", "historical patterns"],
+    author: { "@type": "Organization", name: "Ref Watch" },
+    publisher: { "@type": "Organization", name: "Ref Watch" },
+    isAccessibleForFree: true,
   };
 }
 

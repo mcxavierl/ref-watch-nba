@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useColorMode } from "@/lib/a11y/useColorMode";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { leagueLogoNavClass, leagueLogoSrc } from "@/lib/league-logo-src";
@@ -7,14 +8,21 @@ import { leagueLogoNavClass, leagueLogoSrc } from "@/lib/league-logo-src";
 type LeagueHeroLogoProps = {
   leagueId: LeagueId;
   className?: string;
+  /** Prioritize hero logo for LCP on league hub pages. */
+  priority?: boolean;
 };
 
 /**
  * League brand mark for hub/slate/insights heroes (larger than nav toggle marks).
  */
-export function LeagueHeroLogo({ leagueId, className = "" }: LeagueHeroLogoProps) {
+export function LeagueHeroLogo({
+  leagueId,
+  className = "",
+  priority = false,
+}: LeagueHeroLogoProps) {
   const colorMode = useColorMode();
   const src = leagueLogoSrc(leagueId, colorMode);
+  const label = LEAGUES[leagueId].label;
 
   if (!src) {
     return (
@@ -27,15 +35,18 @@ export function LeagueHeroLogo({ leagueId, className = "" }: LeagueHeroLogoProps
     );
   }
 
+  const width = leagueId === "nfl" || leagueId === "cfb" ? 36 : 52;
+  const height = leagueId === "nfl" || leagueId === "cfb" ? 48 : 40;
+
   return (
-    <img
+    <Image
       src={src}
-      alt=""
-      aria-hidden
+      alt={`${label} logo`}
+      width={width}
+      height={height}
       className={`league-hero-logo ${leagueLogoNavClass(leagueId)} ${className}`.trim()}
       data-league={leagueId}
-      width={leagueId === "nfl" || leagueId === "cfb" ? 36 : 52}
-      height={leagueId === "nfl" || leagueId === "cfb" ? 48 : 40}
+      priority={priority}
       decoding="async"
       referrerPolicy="no-referrer"
     />

@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   staticPageGenerationTimeout: 300,
   cleanDistDir: process.env.KEEP_NEXT_DIST === "1" ? false : true,
   eslint: { ignoreDuringBuilds: true },
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.nba.com", pathname: "/**" },
+      { protocol: "https", hostname: "assets.nhle.com", pathname: "/**" },
+    ],
+  },
   outputFileTracingIncludes: {
     "/**": [
       "./data/baselines.json",
