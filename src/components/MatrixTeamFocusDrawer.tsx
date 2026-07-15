@@ -185,7 +185,10 @@ export function MatrixTeamFocusDrawer({
                           selectedTeam.baselineGames,
                           selectedTeam.baselineWinRate,
                         )}{" "}
-                    team baseline
+                    team baseline ·{" "}
+                    <VerifiedGamesHint>
+                      {matrixTeamMetricGames(selectedTeam, viewMode)} gp
+                    </VerifiedGamesHint>
                   </span>
                 </p>
               ) : null}
