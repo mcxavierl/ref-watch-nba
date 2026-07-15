@@ -1,9 +1,20 @@
 {
-  "generatedAt": "2026-07-15T03:11:03.478Z",
+  "generatedAt": "2026-07-15T06:39:47.721Z",
   "conference": "ACC",
   "conferenceSlug": "acc",
   "dryRun": false,
   "games": [
+    {
+      "gameId": "401240173",
+      "date": "2021-01-02",
+      "season": "2020-21",
+      "homeTeam": "CLEM",
+      "awayTeam": "OSU",
+      "conference": "ACC",
+      "totalPoints": 77,
+      "totalFouls": 12,
+      "officials": []
+    },
     {
       "gameId": "401234562",
       "date": "2020-09-12",
@@ -13,28 +24,6 @@
       "conference": "ACC",
       "totalPoints": 50,
       "totalFouls": 6,
-      "officials": []
-    },
-    {
-      "gameId": "401234563",
-      "date": "2020-09-12",
-      "season": "2020-21",
-      "homeTeam": "FSU",
-      "awayTeam": "GT",
-      "conference": "ACC",
-      "totalPoints": 29,
-      "totalFouls": 18,
-      "officials": []
-    },
-    {
-      "gameId": "401234564",
-      "date": "2020-09-13",
-      "season": "2020-21",
-      "homeTeam": "LOU",
-      "awayTeam": "WKU",
-      "conference": "ACC",
-      "totalPoints": 56,
-      "totalFouls": 7,
       "officials": []
     },
     {
@@ -49,50 +38,6 @@
       "officials": []
     },
     {
-      "gameId": "401234569",
-      "date": "2020-09-19",
-      "season": "2020-21",
-      "homeTeam": "LOU",
-      "awayTeam": "MIAMI",
-      "conference": "ACC",
-      "totalPoints": 81,
-      "totalFouls": 18,
-      "officials": []
-    },
-    {
-      "gameId": "401234593",
-      "date": "2020-09-26",
-      "season": "2020-21",
-      "homeTeam": "MIAMI",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 62,
-      "totalFouls": 20,
-      "officials": []
-    },
-    {
-      "gameId": "401234595",
-      "date": "2020-09-26",
-      "season": "2020-21",
-      "homeTeam": "PITT",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 43,
-      "totalFouls": 9,
-      "officials": []
-    },
-    {
-      "gameId": "401238034",
-      "date": "2020-10-03",
-      "season": "2020-21",
-      "homeTeam": "FSU",
-      "awayTeam": "JVST",
-      "conference": "ACC",
-      "totalPoints": 65,
-      "totalFouls": 19,
-      "officials": []
-    },
-    {
       "gameId": "401234598",
       "date": "2020-10-04",
       "season": "2020-21",
@@ -101,17 +46,6 @@
       "conference": "ACC",
       "totalPoints": 64,
       "totalFouls": 9,
-      "officials": []
-    },
-    {
-      "gameId": "401234601",
-      "date": "2020-10-09",
-      "season": "2020-21",
-      "homeTeam": "GT",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 73,
-      "totalFouls": 16,
       "officials": []
     },
     {
@@ -137,17 +71,6 @@
       "officials": []
     },
     {
-      "gameId": "401234612",
-      "date": "2020-10-17",
-      "season": "2020-21",
-      "homeTeam": "FSU",
-      "awayTeam": "UNC",
-      "conference": "ACC",
-      "totalPoints": 59,
-      "totalFouls": 19,
-      "officials": []
-    },
-    {
       "gameId": "401234618",
       "date": "2020-10-24",
       "season": "2020-21",
@@ -156,17 +79,6 @@
       "conference": "ACC",
       "totalPoints": 68,
       "totalFouls": 9,
-      "officials": []
-    },
-    {
-      "gameId": "401234619",
-      "date": "2020-10-24",
-      "season": "2020-21",
-      "homeTeam": "LOU",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 64,
-      "totalFouls": 18,
       "officials": []
     },
     {
@@ -181,61 +93,6 @@
       "officials": []
     },
     {
-      "gameId": "401234627",
-      "date": "2020-10-31",
-      "season": "2020-21",
-      "homeTeam": "LOU",
-      "awayTeam": "VT",
-      "conference": "ACC",
-      "totalPoints": 77,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
-      "gameId": "401234634",
-      "date": "2020-11-07",
-      "season": "2020-21",
-      "homeTeam": "FSU",
-      "awayTeam": "PITT",
-      "conference": "ACC",
-      "totalPoints": 58,
-      "totalFouls": 17,
-      "officials": []
-    },
-    {
-      "gameId": "401257934",
-      "date": "2020-11-14",
-      "season": "2020-21",
-      "homeTeam": "UVA",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 48,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401234639",
-      "date": "2020-11-15",
-      "season": "2020-21",
-      "homeTeam": "NCST",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 60,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
-      "gameId": "401234643",
-      "date": "2020-11-21",
-      "season": "2020-21",
-      "homeTeam": "LOU",
-      "awayTeam": "SYR",
-      "conference": "ACC",
-      "totalPoints": 30,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
       "gameId": "401234651",
       "date": "2020-11-28",
       "season": "2020-21",
@@ -244,17 +101,6 @@
       "conference": "ACC",
       "totalPoints": 69,
       "totalFouls": 14,
-      "officials": []
-    },
-    {
-      "gameId": "401234649",
-      "date": "2020-11-28",
-      "season": "2020-21",
-      "homeTeam": "BC",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 61,
-      "totalFouls": 7,
       "officials": []
     },
     {
@@ -269,6 +115,83 @@
       "officials": []
     },
     {
+      "gameId": "401234563",
+      "date": "2020-09-12",
+      "season": "2020-21",
+      "homeTeam": "FSU",
+      "awayTeam": "GT",
+      "conference": "ACC",
+      "totalPoints": 29,
+      "totalFouls": 18,
+      "officials": []
+    },
+    {
+      "gameId": "401234593",
+      "date": "2020-09-26",
+      "season": "2020-21",
+      "homeTeam": "MIAMI",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 62,
+      "totalFouls": 20,
+      "officials": []
+    },
+    {
+      "gameId": "401238034",
+      "date": "2020-10-03",
+      "season": "2020-21",
+      "homeTeam": "FSU",
+      "awayTeam": "JVST",
+      "conference": "ACC",
+      "totalPoints": 65,
+      "totalFouls": 19,
+      "officials": []
+    },
+    {
+      "gameId": "401234612",
+      "date": "2020-10-17",
+      "season": "2020-21",
+      "homeTeam": "FSU",
+      "awayTeam": "UNC",
+      "conference": "ACC",
+      "totalPoints": 59,
+      "totalFouls": 19,
+      "officials": []
+    },
+    {
+      "gameId": "401234619",
+      "date": "2020-10-24",
+      "season": "2020-21",
+      "homeTeam": "LOU",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 64,
+      "totalFouls": 18,
+      "officials": []
+    },
+    {
+      "gameId": "401234634",
+      "date": "2020-11-07",
+      "season": "2020-21",
+      "homeTeam": "FSU",
+      "awayTeam": "PITT",
+      "conference": "ACC",
+      "totalPoints": 58,
+      "totalFouls": 17,
+      "officials": []
+    },
+    {
+      "gameId": "401234639",
+      "date": "2020-11-15",
+      "season": "2020-21",
+      "homeTeam": "NCST",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 60,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
       "gameId": "401266694",
       "date": "2020-12-12",
       "season": "2020-21",
@@ -280,6 +203,94 @@
       "officials": []
     },
     {
+      "gameId": "401234569",
+      "date": "2020-09-19",
+      "season": "2020-21",
+      "homeTeam": "LOU",
+      "awayTeam": "MIAMI",
+      "conference": "ACC",
+      "totalPoints": 81,
+      "totalFouls": 18,
+      "officials": []
+    },
+    {
+      "gameId": "401234564",
+      "date": "2020-09-13",
+      "season": "2020-21",
+      "homeTeam": "LOU",
+      "awayTeam": "WKU",
+      "conference": "ACC",
+      "totalPoints": 56,
+      "totalFouls": 7,
+      "officials": []
+    },
+    {
+      "gameId": "401234595",
+      "date": "2020-09-26",
+      "season": "2020-21",
+      "homeTeam": "PITT",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 43,
+      "totalFouls": 9,
+      "officials": []
+    },
+    {
+      "gameId": "401234601",
+      "date": "2020-10-09",
+      "season": "2020-21",
+      "homeTeam": "GT",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 73,
+      "totalFouls": 16,
+      "officials": []
+    },
+    {
+      "gameId": "401234627",
+      "date": "2020-10-31",
+      "season": "2020-21",
+      "homeTeam": "LOU",
+      "awayTeam": "VT",
+      "conference": "ACC",
+      "totalPoints": 77,
+      "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401257934",
+      "date": "2020-11-14",
+      "season": "2020-21",
+      "homeTeam": "UVA",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 48,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401234643",
+      "date": "2020-11-21",
+      "season": "2020-21",
+      "homeTeam": "LOU",
+      "awayTeam": "SYR",
+      "conference": "ACC",
+      "totalPoints": 30,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401234649",
+      "date": "2020-11-28",
+      "season": "2020-21",
+      "homeTeam": "BC",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 61,
+      "totalFouls": 7,
+      "officials": []
+    },
+    {
       "gameId": "401266696",
       "date": "2020-12-12",
       "season": "2020-21",
@@ -287,17 +298,6 @@
       "awayTeam": "WAKE",
       "conference": "ACC",
       "totalPoints": 66,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
-      "gameId": "401240173",
-      "date": "2021-01-02",
-      "season": "2020-21",
-      "homeTeam": "CLEM",
-      "awayTeam": "OSU",
-      "conference": "ACC",
-      "totalPoints": 77,
       "totalFouls": 12,
       "officials": []
     },
@@ -324,28 +324,6 @@
       "officials": []
     },
     {
-      "gameId": "401282614",
-      "date": "2021-09-05",
-      "season": "2021-22",
-      "homeTeam": "FSU",
-      "awayTeam": "ND",
-      "conference": "ACC",
-      "totalPoints": 79,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
-      "gameId": "401282055",
-      "date": "2021-09-07",
-      "season": "2021-22",
-      "homeTeam": "MISS",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 67,
-      "totalFouls": 23,
-      "officials": []
-    },
-    {
       "gameId": "401282615",
       "date": "2021-09-11",
       "season": "2021-22",
@@ -354,50 +332,6 @@
       "conference": "ACC",
       "totalPoints": 52,
       "totalFouls": 15,
-      "officials": []
-    },
-    {
-      "gameId": "401282620",
-      "date": "2021-09-11",
-      "season": "2021-22",
-      "homeTeam": "MIA",
-      "awayTeam": "APP",
-      "conference": "ACC",
-      "totalPoints": 48,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
-      "gameId": "401282619",
-      "date": "2021-09-11",
-      "season": "2021-22",
-      "homeTeam": "LOU",
-      "awayTeam": "EKU",
-      "conference": "ACC",
-      "totalPoints": 33,
-      "totalFouls": 8,
-      "officials": []
-    },
-    {
-      "gameId": "401282617",
-      "date": "2021-09-12",
-      "season": "2021-22",
-      "homeTeam": "FSU",
-      "awayTeam": "JVST",
-      "conference": "ACC",
-      "totalPoints": 37,
-      "totalFouls": 24,
-      "officials": []
-    },
-    {
-      "gameId": "401282626",
-      "date": "2021-09-17",
-      "season": "2021-22",
-      "homeTeam": "LOU",
-      "awayTeam": "UCF",
-      "conference": "ACC",
-      "totalPoints": 77,
-      "totalFouls": 11,
       "officials": []
     },
     {
@@ -412,28 +346,6 @@
       "officials": []
     },
     {
-      "gameId": "401282635",
-      "date": "2021-09-18",
-      "season": "2021-22",
-      "homeTeam": "WAKE",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 49,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
-      "gameId": "401282629",
-      "date": "2021-09-18",
-      "season": "2021-22",
-      "homeTeam": "MIA",
-      "awayTeam": "MSU",
-      "conference": "ACC",
-      "totalPoints": 55,
-      "totalFouls": 19,
-      "officials": []
-    },
-    {
       "gameId": "401282643",
       "date": "2021-09-25",
       "season": "2021-22",
@@ -445,6 +357,138 @@
       "officials": []
     },
     {
+      "gameId": "401282647",
+      "date": "2021-10-02",
+      "season": "2021-22",
+      "homeTeam": "CLEM",
+      "awayTeam": "BC",
+      "conference": "ACC",
+      "totalPoints": 32,
+      "totalFouls": 16,
+      "officials": []
+    },
+    {
+      "gameId": "401282657",
+      "date": "2021-10-15",
+      "season": "2021-22",
+      "homeTeam": "SYR",
+      "awayTeam": "CLEM",
+      "conference": "ACC",
+      "totalPoints": 31,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401282666",
+      "date": "2021-10-23",
+      "season": "2021-22",
+      "homeTeam": "PITT",
+      "awayTeam": "CLEM",
+      "conference": "ACC",
+      "totalPoints": 44,
+      "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401282670",
+      "date": "2021-10-30",
+      "season": "2021-22",
+      "homeTeam": "CLEM",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 50,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401282680",
+      "date": "2021-11-06",
+      "season": "2021-22",
+      "homeTeam": "LOU",
+      "awayTeam": "CLEM",
+      "conference": "ACC",
+      "totalPoints": 54,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401282684",
+      "date": "2021-11-13",
+      "season": "2021-22",
+      "homeTeam": "CLEM",
+      "awayTeam": "CONN",
+      "conference": "ACC",
+      "totalPoints": 51,
+      "totalFouls": 16,
+      "officials": []
+    },
+    {
+      "gameId": "401282693",
+      "date": "2021-11-20",
+      "season": "2021-22",
+      "homeTeam": "CLEM",
+      "awayTeam": "WAKE",
+      "conference": "ACC",
+      "totalPoints": 75,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401282152",
+      "date": "2021-11-28",
+      "season": "2021-22",
+      "homeTeam": "SC",
+      "awayTeam": "CLEM",
+      "conference": "ACC",
+      "totalPoints": 30,
+      "totalFouls": 8,
+      "officials": []
+    },
+    {
+      "gameId": "401331227",
+      "date": "2021-12-29",
+      "season": "2021-22",
+      "homeTeam": "ISU",
+      "awayTeam": "CLEM",
+      "conference": "ACC",
+      "totalPoints": 33,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401282614",
+      "date": "2021-09-05",
+      "season": "2021-22",
+      "homeTeam": "FSU",
+      "awayTeam": "ND",
+      "conference": "ACC",
+      "totalPoints": 79,
+      "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401282617",
+      "date": "2021-09-12",
+      "season": "2021-22",
+      "homeTeam": "FSU",
+      "awayTeam": "JVST",
+      "conference": "ACC",
+      "totalPoints": 37,
+      "totalFouls": 24,
+      "officials": []
+    },
+    {
+      "gameId": "401282635",
+      "date": "2021-09-18",
+      "season": "2021-22",
+      "homeTeam": "WAKE",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 49,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
       "gameId": "401282640",
       "date": "2021-09-25",
       "season": "2021-22",
@@ -453,6 +497,94 @@
       "conference": "ACC",
       "totalPoints": 54,
       "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401282648",
+      "date": "2021-10-02",
+      "season": "2021-22",
+      "homeTeam": "FSU",
+      "awayTeam": "SYR",
+      "conference": "ACC",
+      "totalPoints": 63,
+      "totalFouls": 6,
+      "officials": []
+    },
+    {
+      "gameId": "401282654",
+      "date": "2021-10-09",
+      "season": "2021-22",
+      "homeTeam": "UNC",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 60,
+      "totalFouls": 17,
+      "officials": []
+    },
+    {
+      "gameId": "401282663",
+      "date": "2021-10-23",
+      "season": "2021-22",
+      "homeTeam": "FSU",
+      "awayTeam": "MASS",
+      "conference": "ACC",
+      "totalPoints": 62,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401282679",
+      "date": "2021-11-06",
+      "season": "2021-22",
+      "homeTeam": "FSU",
+      "awayTeam": "NCST",
+      "conference": "ACC",
+      "totalPoints": 42,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401282685",
+      "date": "2021-11-13",
+      "season": "2021-22",
+      "homeTeam": "FSU",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 59,
+      "totalFouls": 22,
+      "officials": []
+    },
+    {
+      "gameId": "401282692",
+      "date": "2021-11-20",
+      "season": "2021-22",
+      "homeTeam": "BC",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 49,
+      "totalFouls": 18,
+      "officials": []
+    },
+    {
+      "gameId": "401282620",
+      "date": "2021-09-11",
+      "season": "2021-22",
+      "homeTeam": "MIA",
+      "awayTeam": "APP",
+      "conference": "ACC",
+      "totalPoints": 48,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401282629",
+      "date": "2021-09-18",
+      "season": "2021-22",
+      "homeTeam": "MIA",
+      "awayTeam": "MSU",
+      "conference": "ACC",
+      "totalPoints": 55,
+      "totalFouls": 19,
       "officials": []
     },
     {
@@ -478,72 +610,6 @@
       "officials": []
     },
     {
-      "gameId": "401282647",
-      "date": "2021-10-02",
-      "season": "2021-22",
-      "homeTeam": "CLEM",
-      "awayTeam": "BC",
-      "conference": "ACC",
-      "totalPoints": 32,
-      "totalFouls": 16,
-      "officials": []
-    },
-    {
-      "gameId": "401282648",
-      "date": "2021-10-02",
-      "season": "2021-22",
-      "homeTeam": "FSU",
-      "awayTeam": "SYR",
-      "conference": "ACC",
-      "totalPoints": 63,
-      "totalFouls": 6,
-      "officials": []
-    },
-    {
-      "gameId": "401282651",
-      "date": "2021-10-02",
-      "season": "2021-22",
-      "homeTeam": "WAKE",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 71,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
-      "gameId": "401282654",
-      "date": "2021-10-09",
-      "season": "2021-22",
-      "homeTeam": "UNC",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 60,
-      "totalFouls": 17,
-      "officials": []
-    },
-    {
-      "gameId": "401282653",
-      "date": "2021-10-09",
-      "season": "2021-22",
-      "homeTeam": "LOU",
-      "awayTeam": "UVA",
-      "conference": "ACC",
-      "totalPoints": 67,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401282657",
-      "date": "2021-10-15",
-      "season": "2021-22",
-      "homeTeam": "SYR",
-      "awayTeam": "CLEM",
-      "conference": "ACC",
-      "totalPoints": 31,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
       "gameId": "401282659",
       "date": "2021-10-16",
       "season": "2021-22",
@@ -555,28 +621,6 @@
       "officials": []
     },
     {
-      "gameId": "401282666",
-      "date": "2021-10-23",
-      "season": "2021-22",
-      "homeTeam": "PITT",
-      "awayTeam": "CLEM",
-      "conference": "ACC",
-      "totalPoints": 44,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
-      "gameId": "401282663",
-      "date": "2021-10-23",
-      "season": "2021-22",
-      "homeTeam": "FSU",
-      "awayTeam": "MASS",
-      "conference": "ACC",
-      "totalPoints": 62,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
       "gameId": "401282665",
       "date": "2021-10-23",
       "season": "2021-22",
@@ -584,28 +628,6 @@
       "awayTeam": "NCST",
       "conference": "ACC",
       "totalPoints": 61,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
-      "gameId": "401282664",
-      "date": "2021-10-23",
-      "season": "2021-22",
-      "homeTeam": "LOU",
-      "awayTeam": "BC",
-      "conference": "ACC",
-      "totalPoints": 42,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
-      "gameId": "401282670",
-      "date": "2021-10-30",
-      "season": "2021-22",
-      "homeTeam": "CLEM",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 50,
       "totalFouls": 15,
       "officials": []
     },
@@ -621,39 +643,6 @@
       "officials": []
     },
     {
-      "gameId": "401282672",
-      "date": "2021-10-30",
-      "season": "2021-22",
-      "homeTeam": "NCST",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 41,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
-      "gameId": "401282680",
-      "date": "2021-11-06",
-      "season": "2021-22",
-      "homeTeam": "LOU",
-      "awayTeam": "CLEM",
-      "conference": "ACC",
-      "totalPoints": 54,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401282679",
-      "date": "2021-11-06",
-      "season": "2021-22",
-      "homeTeam": "FSU",
-      "awayTeam": "NCST",
-      "conference": "ACC",
-      "totalPoints": 42,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
       "gameId": "401282681",
       "date": "2021-11-06",
       "season": "2021-22",
@@ -662,72 +651,6 @@
       "conference": "ACC",
       "totalPoints": 63,
       "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401282684",
-      "date": "2021-11-13",
-      "season": "2021-22",
-      "homeTeam": "CLEM",
-      "awayTeam": "CONN",
-      "conference": "ACC",
-      "totalPoints": 51,
-      "totalFouls": 16,
-      "officials": []
-    },
-    {
-      "gameId": "401282685",
-      "date": "2021-11-13",
-      "season": "2021-22",
-      "homeTeam": "FSU",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 59,
-      "totalFouls": 22,
-      "officials": []
-    },
-    {
-      "gameId": "401282687",
-      "date": "2021-11-13",
-      "season": "2021-22",
-      "homeTeam": "LOU",
-      "awayTeam": "SYR",
-      "conference": "ACC",
-      "totalPoints": 44,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401282691",
-      "date": "2021-11-19",
-      "season": "2021-22",
-      "homeTeam": "DUKE",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 84,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401282693",
-      "date": "2021-11-20",
-      "season": "2021-22",
-      "homeTeam": "CLEM",
-      "awayTeam": "WAKE",
-      "conference": "ACC",
-      "totalPoints": 75,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401282692",
-      "date": "2021-11-20",
-      "season": "2021-22",
-      "homeTeam": "BC",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 49,
-      "totalFouls": 18,
       "officials": []
     },
     {
@@ -753,14 +676,102 @@
       "officials": []
     },
     {
-      "gameId": "401282152",
-      "date": "2021-11-28",
+      "gameId": "401282055",
+      "date": "2021-09-07",
       "season": "2021-22",
-      "homeTeam": "SC",
-      "awayTeam": "CLEM",
+      "homeTeam": "MISS",
+      "awayTeam": "LOU",
       "conference": "ACC",
-      "totalPoints": 30,
+      "totalPoints": 67,
+      "totalFouls": 23,
+      "officials": []
+    },
+    {
+      "gameId": "401282619",
+      "date": "2021-09-11",
+      "season": "2021-22",
+      "homeTeam": "LOU",
+      "awayTeam": "EKU",
+      "conference": "ACC",
+      "totalPoints": 33,
       "totalFouls": 8,
+      "officials": []
+    },
+    {
+      "gameId": "401282626",
+      "date": "2021-09-17",
+      "season": "2021-22",
+      "homeTeam": "LOU",
+      "awayTeam": "UCF",
+      "conference": "ACC",
+      "totalPoints": 77,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401282651",
+      "date": "2021-10-02",
+      "season": "2021-22",
+      "homeTeam": "WAKE",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 71,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401282653",
+      "date": "2021-10-09",
+      "season": "2021-22",
+      "homeTeam": "LOU",
+      "awayTeam": "UVA",
+      "conference": "ACC",
+      "totalPoints": 67,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401282664",
+      "date": "2021-10-23",
+      "season": "2021-22",
+      "homeTeam": "LOU",
+      "awayTeam": "BC",
+      "conference": "ACC",
+      "totalPoints": 42,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401282672",
+      "date": "2021-10-30",
+      "season": "2021-22",
+      "homeTeam": "NCST",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 41,
+      "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401282687",
+      "date": "2021-11-13",
+      "season": "2021-22",
+      "homeTeam": "LOU",
+      "awayTeam": "SYR",
+      "conference": "ACC",
+      "totalPoints": 44,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401282691",
+      "date": "2021-11-19",
+      "season": "2021-22",
+      "homeTeam": "DUKE",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 84,
+      "totalFouls": 11,
       "officials": []
     },
     {
@@ -786,47 +797,14 @@
       "officials": []
     },
     {
-      "gameId": "401331227",
-      "date": "2021-12-29",
-      "season": "2021-22",
-      "homeTeam": "ISU",
-      "awayTeam": "CLEM",
-      "conference": "ACC",
-      "totalPoints": 33,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401411090",
-      "date": "2022-08-27",
-      "season": "2021-22",
+      "gameId": "401442033",
+      "date": "2022-12-29",
+      "season": "2022-23",
       "homeTeam": "FSU",
-      "awayTeam": "DUQ",
+      "awayTeam": "OU",
       "conference": "ACC",
-      "totalPoints": 54,
-      "totalFouls": 9,
-      "officials": []
-    },
-    {
-      "gameId": "401411097",
-      "date": "2022-09-03",
-      "season": "2022-23",
-      "homeTeam": "MIA",
-      "awayTeam": "BCU",
-      "conference": "ACC",
-      "totalPoints": 83,
-      "totalFouls": 19,
-      "officials": []
-    },
-    {
-      "gameId": "401411099",
-      "date": "2022-09-04",
-      "season": "2022-23",
-      "homeTeam": "SYR",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 38,
-      "totalFouls": 25,
+      "totalPoints": 67,
+      "totalFouls": 10,
       "officials": []
     },
     {
@@ -841,17 +819,6 @@
       "officials": []
     },
     {
-      "gameId": "401415613",
-      "date": "2022-09-09",
-      "season": "2022-23",
-      "homeTeam": "UCF",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 34,
-      "totalFouls": 23,
-      "officials": []
-    },
-    {
       "gameId": "401411102",
       "date": "2022-09-10",
       "season": "2022-23",
@@ -863,28 +830,6 @@
       "officials": []
     },
     {
-      "gameId": "401411105",
-      "date": "2022-09-10",
-      "season": "2022-23",
-      "homeTeam": "MIA",
-      "awayTeam": "USM",
-      "conference": "ACC",
-      "totalPoints": 37,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
-      "gameId": "401411109",
-      "date": "2022-09-16",
-      "season": "2022-23",
-      "homeTeam": "LOU",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 66,
-      "totalFouls": 17,
-      "officials": []
-    },
-    {
       "gameId": "401426556",
       "date": "2022-09-18",
       "season": "2022-23",
@@ -892,17 +837,6 @@
       "awayTeam": "LT",
       "conference": "ACC",
       "totalPoints": 68,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
-      "gameId": "401403890",
-      "date": "2022-09-18",
-      "season": "2022-23",
-      "homeTeam": "TA&M",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 26,
       "totalFouls": 12,
       "officials": []
     },
@@ -918,39 +852,6 @@
       "officials": []
     },
     {
-      "gameId": "401426568",
-      "date": "2022-09-24",
-      "season": "2022-23",
-      "homeTeam": "MIA",
-      "awayTeam": "MTSU",
-      "conference": "ACC",
-      "totalPoints": 76,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
-      "gameId": "401411119",
-      "date": "2022-09-24",
-      "season": "2022-23",
-      "homeTeam": "LOU",
-      "awayTeam": "USF",
-      "conference": "ACC",
-      "totalPoints": 44,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401411118",
-      "date": "2022-09-25",
-      "season": "2022-23",
-      "homeTeam": "FSU",
-      "awayTeam": "BC",
-      "conference": "ACC",
-      "totalPoints": 58,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
       "gameId": "401411125",
       "date": "2022-10-01",
       "season": "2022-23",
@@ -958,28 +859,6 @@
       "awayTeam": "NCST",
       "conference": "ACC",
       "totalPoints": 50,
-      "totalFouls": 19,
-      "officials": []
-    },
-    {
-      "gameId": "401411127",
-      "date": "2022-10-01",
-      "season": "2022-23",
-      "homeTeam": "FSU",
-      "awayTeam": "WAKE",
-      "conference": "ACC",
-      "totalPoints": 52,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
-      "gameId": "401411124",
-      "date": "2022-10-01",
-      "season": "2022-23",
-      "homeTeam": "BC",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 67,
       "totalFouls": 19,
       "officials": []
     },
@@ -995,39 +874,6 @@
       "officials": []
     },
     {
-      "gameId": "401411133",
-      "date": "2022-10-08",
-      "season": "2022-23",
-      "homeTeam": "MIA",
-      "awayTeam": "UNC",
-      "conference": "ACC",
-      "totalPoints": 51,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401411136",
-      "date": "2022-10-08",
-      "season": "2022-23",
-      "homeTeam": "UVA",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 51,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401411134",
-      "date": "2022-10-09",
-      "season": "2022-23",
-      "homeTeam": "NCST",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 36,
-      "totalFouls": 18,
-      "officials": []
-    },
-    {
       "gameId": "401411138",
       "date": "2022-10-15",
       "season": "2022-23",
@@ -1036,17 +882,6 @@
       "conference": "ACC",
       "totalPoints": 62,
       "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401411140",
-      "date": "2022-10-15",
-      "season": "2022-23",
-      "homeTeam": "VT",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 34,
-      "totalFouls": 23,
       "officials": []
     },
     {
@@ -1061,25 +896,113 @@
       "officials": []
     },
     {
-      "gameId": "401411144",
-      "date": "2022-10-22",
+      "gameId": "401411158",
+      "date": "2022-11-12",
       "season": "2022-23",
-      "homeTeam": "MIA",
-      "awayTeam": "DUKE",
+      "homeTeam": "CLEM",
+      "awayTeam": "LOU",
       "conference": "ACC",
-      "totalPoints": 66,
+      "totalPoints": 47,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401411165",
+      "date": "2022-11-19",
+      "season": "2022-23",
+      "homeTeam": "CLEM",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 50,
       "totalFouls": 8,
       "officials": []
     },
     {
-      "gameId": "401411143",
-      "date": "2022-10-23",
+      "gameId": "401403962",
+      "date": "2022-11-26",
+      "season": "2022-23",
+      "homeTeam": "CLEM",
+      "awayTeam": "SC",
+      "conference": "ACC",
+      "totalPoints": 61,
+      "totalFouls": 8,
+      "officials": []
+    },
+    {
+      "gameId": "401437009",
+      "date": "2022-12-04",
+      "season": "2022-23",
+      "homeTeam": "UNC",
+      "awayTeam": "CLEM",
+      "conference": "ACC",
+      "totalPoints": 49,
+      "totalFouls": 9,
+      "officials": []
+    },
+    {
+      "gameId": "401442019",
+      "date": "2022-12-31",
+      "season": "2022-23",
+      "homeTeam": "CLEM",
+      "awayTeam": "TENN",
+      "conference": "ACC",
+      "totalPoints": 45,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401411090",
+      "date": "2022-08-27",
+      "season": "2022-23",
+      "homeTeam": "FSU",
+      "awayTeam": "DUQ",
+      "conference": "ACC",
+      "totalPoints": 54,
+      "totalFouls": 9,
+      "officials": []
+    },
+    {
+      "gameId": "401411109",
+      "date": "2022-09-16",
       "season": "2022-23",
       "homeTeam": "LOU",
-      "awayTeam": "PITT",
+      "awayTeam": "FSU",
       "conference": "ACC",
-      "totalPoints": 34,
-      "totalFouls": 13,
+      "totalPoints": 66,
+      "totalFouls": 17,
+      "officials": []
+    },
+    {
+      "gameId": "401411118",
+      "date": "2022-09-25",
+      "season": "2022-23",
+      "homeTeam": "FSU",
+      "awayTeam": "BC",
+      "conference": "ACC",
+      "totalPoints": 58,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401411127",
+      "date": "2022-10-01",
+      "season": "2022-23",
+      "homeTeam": "FSU",
+      "awayTeam": "WAKE",
+      "conference": "ACC",
+      "totalPoints": 52,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401411134",
+      "date": "2022-10-09",
+      "season": "2022-23",
+      "homeTeam": "NCST",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 36,
+      "totalFouls": 18,
       "officials": []
     },
     {
@@ -1094,28 +1017,6 @@
       "officials": []
     },
     {
-      "gameId": "401411150",
-      "date": "2022-10-29",
-      "season": "2022-23",
-      "homeTeam": "UVA",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 26,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401411148",
-      "date": "2022-10-29",
-      "season": "2022-23",
-      "homeTeam": "LOU",
-      "awayTeam": "WAKE",
-      "conference": "ACC",
-      "totalPoints": 69,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
       "gameId": "401411153",
       "date": "2022-11-05",
       "season": "2022-23",
@@ -1123,39 +1024,6 @@
       "awayTeam": "FSU",
       "conference": "ACC",
       "totalPoints": 48,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401411152",
-      "date": "2022-11-05",
-      "season": "2022-23",
-      "homeTeam": "LOU",
-      "awayTeam": "JMU",
-      "conference": "ACC",
-      "totalPoints": 44,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401411158",
-      "date": "2022-11-12",
-      "season": "2022-23",
-      "homeTeam": "CLEM",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 47,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401411160",
-      "date": "2022-11-12",
-      "season": "2022-23",
-      "homeTeam": "GT",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 49,
       "totalFouls": 13,
       "officials": []
     },
@@ -1171,17 +1039,6 @@
       "officials": []
     },
     {
-      "gameId": "401411165",
-      "date": "2022-11-19",
-      "season": "2022-23",
-      "homeTeam": "CLEM",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 50,
-      "totalFouls": 8,
-      "officials": []
-    },
-    {
       "gameId": "401411166",
       "date": "2022-11-19",
       "season": "2022-23",
@@ -1190,28 +1047,6 @@
       "conference": "ACC",
       "totalPoints": 66,
       "totalFouls": 12,
-      "officials": []
-    },
-    {
-      "gameId": "401411167",
-      "date": "2022-11-19",
-      "season": "2022-23",
-      "homeTeam": "LOU",
-      "awayTeam": "NCST",
-      "conference": "ACC",
-      "totalPoints": 35,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401403962",
-      "date": "2022-11-26",
-      "season": "2022-23",
-      "homeTeam": "CLEM",
-      "awayTeam": "SC",
-      "conference": "ACC",
-      "totalPoints": 61,
-      "totalFouls": 8,
       "officials": []
     },
     {
@@ -1226,14 +1061,102 @@
       "officials": []
     },
     {
-      "gameId": "401403960",
-      "date": "2022-11-26",
+      "gameId": "401411097",
+      "date": "2022-09-03",
       "season": "2022-23",
-      "homeTeam": "UK",
-      "awayTeam": "LOU",
+      "homeTeam": "MIA",
+      "awayTeam": "BCU",
       "conference": "ACC",
-      "totalPoints": 39,
+      "totalPoints": 83,
+      "totalFouls": 19,
+      "officials": []
+    },
+    {
+      "gameId": "401411105",
+      "date": "2022-09-10",
+      "season": "2022-23",
+      "homeTeam": "MIA",
+      "awayTeam": "USM",
+      "conference": "ACC",
+      "totalPoints": 37,
       "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401403890",
+      "date": "2022-09-18",
+      "season": "2022-23",
+      "homeTeam": "TA&M",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 26,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401426568",
+      "date": "2022-09-24",
+      "season": "2022-23",
+      "homeTeam": "MIA",
+      "awayTeam": "MTSU",
+      "conference": "ACC",
+      "totalPoints": 76,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401411133",
+      "date": "2022-10-08",
+      "season": "2022-23",
+      "homeTeam": "MIA",
+      "awayTeam": "UNC",
+      "conference": "ACC",
+      "totalPoints": 51,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401411140",
+      "date": "2022-10-15",
+      "season": "2022-23",
+      "homeTeam": "VT",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 34,
+      "totalFouls": 23,
+      "officials": []
+    },
+    {
+      "gameId": "401411144",
+      "date": "2022-10-22",
+      "season": "2022-23",
+      "homeTeam": "MIA",
+      "awayTeam": "DUKE",
+      "conference": "ACC",
+      "totalPoints": 66,
+      "totalFouls": 8,
+      "officials": []
+    },
+    {
+      "gameId": "401411150",
+      "date": "2022-10-29",
+      "season": "2022-23",
+      "homeTeam": "UVA",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 26,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401411160",
+      "date": "2022-11-12",
+      "season": "2022-23",
+      "homeTeam": "GT",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 49,
+      "totalFouls": 13,
       "officials": []
     },
     {
@@ -1248,14 +1171,113 @@
       "officials": []
     },
     {
-      "gameId": "401437009",
-      "date": "2022-12-04",
+      "gameId": "401411099",
+      "date": "2022-09-04",
       "season": "2022-23",
-      "homeTeam": "UNC",
-      "awayTeam": "CLEM",
+      "homeTeam": "SYR",
+      "awayTeam": "LOU",
       "conference": "ACC",
-      "totalPoints": 49,
-      "totalFouls": 9,
+      "totalPoints": 38,
+      "totalFouls": 25,
+      "officials": []
+    },
+    {
+      "gameId": "401415613",
+      "date": "2022-09-09",
+      "season": "2022-23",
+      "homeTeam": "UCF",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 34,
+      "totalFouls": 23,
+      "officials": []
+    },
+    {
+      "gameId": "401411119",
+      "date": "2022-09-24",
+      "season": "2022-23",
+      "homeTeam": "LOU",
+      "awayTeam": "USF",
+      "conference": "ACC",
+      "totalPoints": 44,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401411124",
+      "date": "2022-10-01",
+      "season": "2022-23",
+      "homeTeam": "BC",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 67,
+      "totalFouls": 19,
+      "officials": []
+    },
+    {
+      "gameId": "401411136",
+      "date": "2022-10-08",
+      "season": "2022-23",
+      "homeTeam": "UVA",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 51,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401411143",
+      "date": "2022-10-23",
+      "season": "2022-23",
+      "homeTeam": "LOU",
+      "awayTeam": "PITT",
+      "conference": "ACC",
+      "totalPoints": 34,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401411148",
+      "date": "2022-10-29",
+      "season": "2022-23",
+      "homeTeam": "LOU",
+      "awayTeam": "WAKE",
+      "conference": "ACC",
+      "totalPoints": 69,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401411152",
+      "date": "2022-11-05",
+      "season": "2022-23",
+      "homeTeam": "LOU",
+      "awayTeam": "JMU",
+      "conference": "ACC",
+      "totalPoints": 44,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401411167",
+      "date": "2022-11-19",
+      "season": "2022-23",
+      "homeTeam": "LOU",
+      "awayTeam": "NCST",
+      "conference": "ACC",
+      "totalPoints": 35,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401403960",
+      "date": "2022-11-26",
+      "season": "2022-23",
+      "homeTeam": "UK",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 39,
+      "totalFouls": 14,
       "officials": []
     },
     {
@@ -1270,47 +1292,14 @@
       "officials": []
     },
     {
-      "gameId": "401442033",
-      "date": "2022-12-29",
-      "season": "2022-23",
+      "gameId": "401551773",
+      "date": "2023-12-30",
+      "season": "2023-24",
       "homeTeam": "FSU",
-      "awayTeam": "OU",
+      "awayTeam": "UGA",
       "conference": "ACC",
-      "totalPoints": 67,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401442019",
-      "date": "2022-12-31",
-      "season": "2022-23",
-      "homeTeam": "CLEM",
-      "awayTeam": "TENN",
-      "conference": "ACC",
-      "totalPoints": 45,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401525463",
-      "date": "2023-09-01",
-      "season": "2023-24",
-      "homeTeam": "MIA",
-      "awayTeam": "M-OH",
-      "conference": "ACC",
-      "totalPoints": 41,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401525462",
-      "date": "2023-09-01",
-      "season": "2023-24",
-      "homeTeam": "GT",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 73,
-      "totalFouls": 9,
+      "totalPoints": 66,
+      "totalFouls": 8,
       "officials": []
     },
     {
@@ -1336,17 +1325,6 @@
       "officials": []
     },
     {
-      "gameId": "401525469",
-      "date": "2023-09-07",
-      "season": "2023-24",
-      "homeTeam": "LOU",
-      "awayTeam": "MUR",
-      "conference": "ACC",
-      "totalPoints": 56,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
       "gameId": "401525491",
       "date": "2023-09-09",
       "season": "2023-24",
@@ -1355,61 +1333,6 @@
       "conference": "ACC",
       "totalPoints": 83,
       "totalFouls": 6,
-      "officials": []
-    },
-    {
-      "gameId": "401520201",
-      "date": "2023-09-09",
-      "season": "2023-24",
-      "homeTeam": "MIA",
-      "awayTeam": "TA&M",
-      "conference": "ACC",
-      "totalPoints": 81,
-      "totalFouls": 17,
-      "officials": []
-    },
-    {
-      "gameId": "401525493",
-      "date": "2023-09-10",
-      "season": "2023-24",
-      "homeTeam": "FSU",
-      "awayTeam": "USM",
-      "conference": "ACC",
-      "totalPoints": 79,
-      "totalFouls": 16,
-      "officials": []
-    },
-    {
-      "gameId": "401525499",
-      "date": "2023-09-14",
-      "season": "2023-24",
-      "homeTeam": "MIA",
-      "awayTeam": "BCU",
-      "conference": "ACC",
-      "totalPoints": 55,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401525500",
-      "date": "2023-09-16",
-      "season": "2023-24",
-      "homeTeam": "BC",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 60,
-      "totalFouls": 23,
-      "officials": []
-    },
-    {
-      "gameId": "401520230",
-      "date": "2023-09-16",
-      "season": "2023-24",
-      "homeTeam": "IU",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 35,
-      "totalFouls": 10,
       "officials": []
     },
     {
@@ -1435,39 +1358,6 @@
       "officials": []
     },
     {
-      "gameId": "401525509",
-      "date": "2023-09-23",
-      "season": "2023-24",
-      "homeTeam": "TEM",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 48,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401525506",
-      "date": "2023-09-23",
-      "season": "2023-24",
-      "homeTeam": "LOU",
-      "awayTeam": "BC",
-      "conference": "ACC",
-      "totalPoints": 84,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401525512",
-      "date": "2023-09-29",
-      "season": "2023-24",
-      "homeTeam": "NCSU",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 23,
-      "totalFouls": 20,
-      "officials": []
-    },
-    {
       "gameId": "401525514",
       "date": "2023-09-30",
       "season": "2023-24",
@@ -1487,83 +1377,6 @@
       "conference": "ACC",
       "totalPoints": 29,
       "totalFouls": 9,
-      "officials": []
-    },
-    {
-      "gameId": "401525518",
-      "date": "2023-10-07",
-      "season": "2023-24",
-      "homeTeam": "FSU",
-      "awayTeam": "VT",
-      "conference": "ACC",
-      "totalPoints": 56,
-      "totalFouls": 18,
-      "officials": []
-    },
-    {
-      "gameId": "401525439",
-      "date": "2023-10-07",
-      "season": "2023-24",
-      "homeTeam": "LOU",
-      "awayTeam": "ND",
-      "conference": "ACC",
-      "totalPoints": 53,
-      "totalFouls": 9,
-      "officials": []
-    },
-    {
-      "gameId": "401525519",
-      "date": "2023-10-08",
-      "season": "2023-24",
-      "homeTeam": "MIA",
-      "awayTeam": "GT",
-      "conference": "ACC",
-      "totalPoints": 43,
-      "totalFouls": 17,
-      "officials": []
-    },
-    {
-      "gameId": "401525524",
-      "date": "2023-10-14",
-      "season": "2023-24",
-      "homeTeam": "FSU",
-      "awayTeam": "SYR",
-      "conference": "ACC",
-      "totalPoints": 44,
-      "totalFouls": 8,
-      "officials": []
-    },
-    {
-      "gameId": "401525526",
-      "date": "2023-10-14",
-      "season": "2023-24",
-      "homeTeam": "UNC",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 72,
-      "totalFouls": 21,
-      "officials": []
-    },
-    {
-      "gameId": "401525525",
-      "date": "2023-10-14",
-      "season": "2023-24",
-      "homeTeam": "PITT",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 59,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401525530",
-      "date": "2023-10-21",
-      "season": "2023-24",
-      "homeTeam": "FSU",
-      "awayTeam": "DUKE",
-      "conference": "ACC",
-      "totalPoints": 58,
-      "totalFouls": 15,
       "officials": []
     },
     {
@@ -1589,39 +1402,6 @@
       "officials": []
     },
     {
-      "gameId": "401525536",
-      "date": "2023-10-28",
-      "season": "2023-24",
-      "homeTeam": "WAKE",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 57,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
-      "gameId": "401525538",
-      "date": "2023-10-28",
-      "season": "2023-24",
-      "homeTeam": "MIA",
-      "awayTeam": "UVA",
-      "conference": "ACC",
-      "totalPoints": 55,
-      "totalFouls": 2,
-      "officials": []
-    },
-    {
-      "gameId": "401525535",
-      "date": "2023-10-28",
-      "season": "2023-24",
-      "homeTeam": "LOU",
-      "awayTeam": "DUKE",
-      "conference": "ACC",
-      "totalPoints": 23,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
       "gameId": "401525441",
       "date": "2023-11-04",
       "season": "2023-24",
@@ -1633,50 +1413,6 @@
       "officials": []
     },
     {
-      "gameId": "401525541",
-      "date": "2023-11-04",
-      "season": "2023-24",
-      "homeTeam": "PITT",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 31,
-      "totalFouls": 17,
-      "officials": []
-    },
-    {
-      "gameId": "401525543",
-      "date": "2023-11-04",
-      "season": "2023-24",
-      "homeTeam": "LOU",
-      "awayTeam": "VT",
-      "conference": "ACC",
-      "totalPoints": 37,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
-      "gameId": "401525544",
-      "date": "2023-11-05",
-      "season": "2023-24",
-      "homeTeam": "NCSU",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 26,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401525546",
-      "date": "2023-11-10",
-      "season": "2023-24",
-      "homeTeam": "LOU",
-      "awayTeam": "UVA",
-      "conference": "ACC",
-      "totalPoints": 55,
-      "totalFouls": 20,
-      "officials": []
-    },
-    {
       "gameId": "401525548",
       "date": "2023-11-11",
       "season": "2023-24",
@@ -1684,17 +1420,6 @@
       "awayTeam": "GT",
       "conference": "ACC",
       "totalPoints": 63,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401525550",
-      "date": "2023-11-11",
-      "season": "2023-24",
-      "homeTeam": "FSU",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 47,
       "totalFouls": 10,
       "officials": []
     },
@@ -1710,6 +1435,116 @@
       "officials": []
     },
     {
+      "gameId": "401520441",
+      "date": "2023-11-26",
+      "season": "2023-24",
+      "homeTeam": "SC",
+      "awayTeam": "CLEM",
+      "conference": "ACC",
+      "totalPoints": 23,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401551766",
+      "date": "2023-12-29",
+      "season": "2023-24",
+      "homeTeam": "UK",
+      "awayTeam": "CLEM",
+      "conference": "ACC",
+      "totalPoints": 73,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401525493",
+      "date": "2023-09-10",
+      "season": "2023-24",
+      "homeTeam": "FSU",
+      "awayTeam": "USM",
+      "conference": "ACC",
+      "totalPoints": 79,
+      "totalFouls": 16,
+      "officials": []
+    },
+    {
+      "gameId": "401525500",
+      "date": "2023-09-16",
+      "season": "2023-24",
+      "homeTeam": "BC",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 60,
+      "totalFouls": 23,
+      "officials": []
+    },
+    {
+      "gameId": "401525518",
+      "date": "2023-10-07",
+      "season": "2023-24",
+      "homeTeam": "FSU",
+      "awayTeam": "VT",
+      "conference": "ACC",
+      "totalPoints": 56,
+      "totalFouls": 18,
+      "officials": []
+    },
+    {
+      "gameId": "401525524",
+      "date": "2023-10-14",
+      "season": "2023-24",
+      "homeTeam": "FSU",
+      "awayTeam": "SYR",
+      "conference": "ACC",
+      "totalPoints": 44,
+      "totalFouls": 8,
+      "officials": []
+    },
+    {
+      "gameId": "401525530",
+      "date": "2023-10-21",
+      "season": "2023-24",
+      "homeTeam": "FSU",
+      "awayTeam": "DUKE",
+      "conference": "ACC",
+      "totalPoints": 58,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401525536",
+      "date": "2023-10-28",
+      "season": "2023-24",
+      "homeTeam": "WAKE",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 57,
+      "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401525541",
+      "date": "2023-11-04",
+      "season": "2023-24",
+      "homeTeam": "PITT",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 31,
+      "totalFouls": 17,
+      "officials": []
+    },
+    {
+      "gameId": "401525550",
+      "date": "2023-11-11",
+      "season": "2023-24",
+      "homeTeam": "FSU",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 47,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
       "gameId": "401525556",
       "date": "2023-11-18",
       "season": "2023-24",
@@ -1718,6 +1553,105 @@
       "conference": "ACC",
       "totalPoints": 71,
       "totalFouls": 16,
+      "officials": []
+    },
+    {
+      "gameId": "401539478",
+      "date": "2023-12-03",
+      "season": "2023-24",
+      "homeTeam": "FSU",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 22,
+      "totalFouls": 8,
+      "officials": []
+    },
+    {
+      "gameId": "401525463",
+      "date": "2023-09-01",
+      "season": "2023-24",
+      "homeTeam": "MIA",
+      "awayTeam": "M-OH",
+      "conference": "ACC",
+      "totalPoints": 41,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401520201",
+      "date": "2023-09-09",
+      "season": "2023-24",
+      "homeTeam": "MIA",
+      "awayTeam": "TA&M",
+      "conference": "ACC",
+      "totalPoints": 81,
+      "totalFouls": 17,
+      "officials": []
+    },
+    {
+      "gameId": "401525499",
+      "date": "2023-09-14",
+      "season": "2023-24",
+      "homeTeam": "MIA",
+      "awayTeam": "BCU",
+      "conference": "ACC",
+      "totalPoints": 55,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401525509",
+      "date": "2023-09-23",
+      "season": "2023-24",
+      "homeTeam": "TEM",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 48,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401525519",
+      "date": "2023-10-08",
+      "season": "2023-24",
+      "homeTeam": "MIA",
+      "awayTeam": "GT",
+      "conference": "ACC",
+      "totalPoints": 43,
+      "totalFouls": 17,
+      "officials": []
+    },
+    {
+      "gameId": "401525526",
+      "date": "2023-10-14",
+      "season": "2023-24",
+      "homeTeam": "UNC",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 72,
+      "totalFouls": 21,
+      "officials": []
+    },
+    {
+      "gameId": "401525538",
+      "date": "2023-10-28",
+      "season": "2023-24",
+      "homeTeam": "MIA",
+      "awayTeam": "UVA",
+      "conference": "ACC",
+      "totalPoints": 55,
+      "totalFouls": 2,
+      "officials": []
+    },
+    {
+      "gameId": "401525544",
+      "date": "2023-11-05",
+      "season": "2023-24",
+      "homeTeam": "NCSU",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 26,
+      "totalFouls": 11,
       "officials": []
     },
     {
@@ -1743,39 +1677,6 @@
       "officials": []
     },
     {
-      "gameId": "401520432",
-      "date": "2023-11-25",
-      "season": "2023-24",
-      "homeTeam": "LOU",
-      "awayTeam": "UK",
-      "conference": "ACC",
-      "totalPoints": 69,
-      "totalFouls": 3,
-      "officials": []
-    },
-    {
-      "gameId": "401520441",
-      "date": "2023-11-26",
-      "season": "2023-24",
-      "homeTeam": "SC",
-      "awayTeam": "CLEM",
-      "conference": "ACC",
-      "totalPoints": 23,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401539478",
-      "date": "2023-12-03",
-      "season": "2023-24",
-      "homeTeam": "FSU",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 22,
-      "totalFouls": 8,
-      "officials": []
-    },
-    {
       "gameId": "401551762",
       "date": "2023-12-28",
       "season": "2023-24",
@@ -1787,80 +1688,124 @@
       "officials": []
     },
     {
-      "gameId": "401551766",
-      "date": "2023-12-29",
-      "season": "2023-24",
-      "homeTeam": "UK",
-      "awayTeam": "CLEM",
-      "conference": "ACC",
-      "totalPoints": 73,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401551773",
-      "date": "2023-12-30",
-      "season": "2023-24",
-      "homeTeam": "FSU",
-      "awayTeam": "UGA",
-      "conference": "ACC",
-      "totalPoints": 66,
-      "totalFouls": 8,
-      "officials": []
-    },
-    {
-      "gameId": "401635525",
-      "date": "2024-08-24",
-      "season": "2023-24",
-      "homeTeam": "GT",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 45,
-      "totalFouls": 4,
-      "officials": []
-    },
-    {
-      "gameId": "401632062",
-      "date": "2024-08-31",
+      "gameId": "401525439",
+      "date": "2023-10-07",
       "season": "2023-24",
       "homeTeam": "LOU",
-      "awayTeam": "APSU",
+      "awayTeam": "ND",
       "conference": "ACC",
-      "totalPoints": 62,
-      "totalFouls": 5,
+      "totalPoints": 53,
+      "totalFouls": 9,
       "officials": []
     },
     {
-      "gameId": "401634306",
-      "date": "2024-09-02",
-      "season": "2024-25",
-      "homeTeam": "FSU",
-      "awayTeam": "BC",
+      "gameId": "401525462",
+      "date": "2023-09-01",
+      "season": "2023-24",
+      "homeTeam": "GT",
+      "awayTeam": "LOU",
       "conference": "ACC",
-      "totalPoints": 41,
-      "totalFouls": 8,
+      "totalPoints": 73,
+      "totalFouls": 9,
       "officials": []
     },
     {
-      "gameId": "401635536",
-      "date": "2024-09-07",
-      "season": "2024-25",
-      "homeTeam": "MIA",
-      "awayTeam": "FAMU",
+      "gameId": "401525469",
+      "date": "2023-09-07",
+      "season": "2023-24",
+      "homeTeam": "LOU",
+      "awayTeam": "MUR",
       "conference": "ACC",
-      "totalPoints": 65,
+      "totalPoints": 56,
       "totalFouls": 14,
       "officials": []
     },
     {
-      "gameId": "401635535",
-      "date": "2024-09-07",
-      "season": "2024-25",
-      "homeTeam": "LOU",
-      "awayTeam": "JVST",
+      "gameId": "401520230",
+      "date": "2023-09-16",
+      "season": "2023-24",
+      "homeTeam": "IU",
+      "awayTeam": "LOU",
       "conference": "ACC",
-      "totalPoints": 63,
+      "totalPoints": 35,
       "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401525506",
+      "date": "2023-09-23",
+      "season": "2023-24",
+      "homeTeam": "LOU",
+      "awayTeam": "BC",
+      "conference": "ACC",
+      "totalPoints": 84,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401525512",
+      "date": "2023-09-29",
+      "season": "2023-24",
+      "homeTeam": "NCSU",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 23,
+      "totalFouls": 20,
+      "officials": []
+    },
+    {
+      "gameId": "401525525",
+      "date": "2023-10-14",
+      "season": "2023-24",
+      "homeTeam": "PITT",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 59,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401525535",
+      "date": "2023-10-28",
+      "season": "2023-24",
+      "homeTeam": "LOU",
+      "awayTeam": "DUKE",
+      "conference": "ACC",
+      "totalPoints": 23,
+      "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401525543",
+      "date": "2023-11-04",
+      "season": "2023-24",
+      "homeTeam": "LOU",
+      "awayTeam": "VT",
+      "conference": "ACC",
+      "totalPoints": 37,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401525546",
+      "date": "2023-11-10",
+      "season": "2023-24",
+      "homeTeam": "LOU",
+      "awayTeam": "UVA",
+      "conference": "ACC",
+      "totalPoints": 55,
+      "totalFouls": 20,
+      "officials": []
+    },
+    {
+      "gameId": "401520432",
+      "date": "2023-11-25",
+      "season": "2023-24",
+      "homeTeam": "LOU",
+      "awayTeam": "UK",
+      "conference": "ACC",
+      "totalPoints": 69,
+      "totalFouls": 3,
       "officials": []
     },
     {
@@ -1875,28 +1820,6 @@
       "officials": []
     },
     {
-      "gameId": "401635542",
-      "date": "2024-09-14",
-      "season": "2024-25",
-      "homeTeam": "FSU",
-      "awayTeam": "MEM",
-      "conference": "ACC",
-      "totalPoints": 32,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401635544",
-      "date": "2024-09-14",
-      "season": "2024-25",
-      "homeTeam": "MIA",
-      "awayTeam": "BALL",
-      "conference": "ACC",
-      "totalPoints": 62,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
       "gameId": "401635552",
       "date": "2024-09-21",
       "season": "2024-25",
@@ -1905,50 +1828,6 @@
       "conference": "ACC",
       "totalPoints": 94,
       "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401635551",
-      "date": "2024-09-21",
-      "season": "2024-25",
-      "homeTeam": "FSU",
-      "awayTeam": "CAL",
-      "conference": "ACC",
-      "totalPoints": 23,
-      "totalFouls": 17,
-      "officials": []
-    },
-    {
-      "gameId": "401635555",
-      "date": "2024-09-21",
-      "season": "2024-25",
-      "homeTeam": "USF",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 65,
-      "totalFouls": 22,
-      "officials": []
-    },
-    {
-      "gameId": "401635554",
-      "date": "2024-09-21",
-      "season": "2024-25",
-      "homeTeam": "LOU",
-      "awayTeam": "GT",
-      "conference": "ACC",
-      "totalPoints": 50,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401634767",
-      "date": "2024-09-27",
-      "season": "2024-25",
-      "homeTeam": "MIA",
-      "awayTeam": "VT",
-      "conference": "ACC",
-      "totalPoints": 72,
-      "totalFouls": 12,
       "officials": []
     },
     {
@@ -1963,17 +1842,6 @@
       "officials": []
     },
     {
-      "gameId": "401635563",
-      "date": "2024-09-29",
-      "season": "2024-25",
-      "homeTeam": "SMU",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 58,
-      "totalFouls": 17,
-      "officials": []
-    },
-    {
       "gameId": "401635569",
       "date": "2024-10-05",
       "season": "2024-25",
@@ -1982,28 +1850,6 @@
       "conference": "ACC",
       "totalPoints": 42,
       "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401635571",
-      "date": "2024-10-05",
-      "season": "2024-25",
-      "homeTeam": "LOU",
-      "awayTeam": "SMU",
-      "conference": "ACC",
-      "totalPoints": 61,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
-      "gameId": "401635568",
-      "date": "2024-10-06",
-      "season": "2024-25",
-      "homeTeam": "CAL",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 77,
-      "totalFouls": 15,
       "officials": []
     },
     {
@@ -2018,28 +1864,6 @@
       "officials": []
     },
     {
-      "gameId": "401635578",
-      "date": "2024-10-12",
-      "season": "2024-25",
-      "homeTeam": "UVA",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 44,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
-      "gameId": "401634769",
-      "date": "2024-10-18",
-      "season": "2024-25",
-      "homeTeam": "DUKE",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 39,
-      "totalFouls": 14,
-      "officials": []
-    },
-    {
       "gameId": "401635588",
       "date": "2024-10-19",
       "season": "2024-25",
@@ -2051,39 +1875,6 @@
       "officials": []
     },
     {
-      "gameId": "401635589",
-      "date": "2024-10-19",
-      "season": "2024-25",
-      "homeTeam": "LOU",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 97,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401634771",
-      "date": "2024-10-25",
-      "season": "2024-25",
-      "homeTeam": "BC",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 58,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401635596",
-      "date": "2024-10-26",
-      "season": "2024-25",
-      "homeTeam": "MIA",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 50,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
       "gameId": "401635600",
       "date": "2024-11-02",
       "season": "2024-25",
@@ -2091,28 +1882,6 @@
       "awayTeam": "LOU",
       "conference": "ACC",
       "totalPoints": 54,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401635602",
-      "date": "2024-11-02",
-      "season": "2024-25",
-      "homeTeam": "FSU",
-      "awayTeam": "UNC",
-      "conference": "ACC",
-      "totalPoints": 46,
-      "totalFouls": 5,
-      "officials": []
-    },
-    {
-      "gameId": "401635601",
-      "date": "2024-11-02",
-      "season": "2024-25",
-      "homeTeam": "MIA",
-      "awayTeam": "DUKE",
-      "conference": "ACC",
-      "totalPoints": 84,
       "totalFouls": 11,
       "officials": []
     },
@@ -2128,17 +1897,6 @@
       "officials": []
     },
     {
-      "gameId": "401635609",
-      "date": "2024-11-09",
-      "season": "2024-25",
-      "homeTeam": "GT",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 51,
-      "totalFouls": 6,
-      "officials": []
-    },
-    {
       "gameId": "401635582",
       "date": "2024-11-16",
       "season": "2024-25",
@@ -2147,17 +1905,6 @@
       "conference": "ACC",
       "totalPoints": 44,
       "totalFouls": 19,
-      "officials": []
-    },
-    {
-      "gameId": "401635517",
-      "date": "2024-11-16",
-      "season": "2024-25",
-      "homeTeam": "STAN",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 73,
-      "totalFouls": 16,
       "officials": []
     },
     {
@@ -2172,39 +1919,6 @@
       "officials": []
     },
     {
-      "gameId": "401635616",
-      "date": "2024-11-23",
-      "season": "2024-25",
-      "homeTeam": "FSU",
-      "awayTeam": "CHSO",
-      "conference": "ACC",
-      "totalPoints": 48,
-      "totalFouls": 7,
-      "officials": []
-    },
-    {
-      "gameId": "401635618",
-      "date": "2024-11-23",
-      "season": "2024-25",
-      "homeTeam": "MIA",
-      "awayTeam": "WAKE",
-      "conference": "ACC",
-      "totalPoints": 56,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401635617",
-      "date": "2024-11-23",
-      "season": "2024-25",
-      "homeTeam": "LOU",
-      "awayTeam": "PITT",
-      "conference": "ACC",
-      "totalPoints": 46,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
       "gameId": "401628444",
       "date": "2024-11-30",
       "season": "2024-25",
@@ -2216,24 +1930,112 @@
       "officials": []
     },
     {
-      "gameId": "401635623",
-      "date": "2024-11-30",
+      "gameId": "401673463",
+      "date": "2024-12-08",
       "season": "2024-25",
-      "homeTeam": "SYR",
-      "awayTeam": "MIA",
+      "homeTeam": "SMU",
+      "awayTeam": "CLEM",
       "conference": "ACC",
-      "totalPoints": 80,
-      "totalFouls": 13,
+      "totalPoints": 65,
+      "totalFouls": 6,
       "officials": []
     },
     {
-      "gameId": "401628440",
-      "date": "2024-11-30",
+      "gameId": "401635525",
+      "date": "2024-08-24",
       "season": "2024-25",
-      "homeTeam": "UK",
-      "awayTeam": "LOU",
+      "homeTeam": "GT",
+      "awayTeam": "FSU",
       "conference": "ACC",
-      "totalPoints": 55,
+      "totalPoints": 45,
+      "totalFouls": 4,
+      "officials": []
+    },
+    {
+      "gameId": "401634306",
+      "date": "2024-09-02",
+      "season": "2024-25",
+      "homeTeam": "FSU",
+      "awayTeam": "BC",
+      "conference": "ACC",
+      "totalPoints": 41,
+      "totalFouls": 8,
+      "officials": []
+    },
+    {
+      "gameId": "401635542",
+      "date": "2024-09-14",
+      "season": "2024-25",
+      "homeTeam": "FSU",
+      "awayTeam": "MEM",
+      "conference": "ACC",
+      "totalPoints": 32,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401635551",
+      "date": "2024-09-21",
+      "season": "2024-25",
+      "homeTeam": "FSU",
+      "awayTeam": "CAL",
+      "conference": "ACC",
+      "totalPoints": 23,
+      "totalFouls": 17,
+      "officials": []
+    },
+    {
+      "gameId": "401635563",
+      "date": "2024-09-29",
+      "season": "2024-25",
+      "homeTeam": "SMU",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 58,
+      "totalFouls": 17,
+      "officials": []
+    },
+    {
+      "gameId": "401634769",
+      "date": "2024-10-18",
+      "season": "2024-25",
+      "homeTeam": "DUKE",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 39,
+      "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401635596",
+      "date": "2024-10-26",
+      "season": "2024-25",
+      "homeTeam": "MIA",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 50,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401635602",
+      "date": "2024-11-02",
+      "season": "2024-25",
+      "homeTeam": "FSU",
+      "awayTeam": "UNC",
+      "conference": "ACC",
+      "totalPoints": 46,
+      "totalFouls": 5,
+      "officials": []
+    },
+    {
+      "gameId": "401635616",
+      "date": "2024-11-23",
+      "season": "2024-25",
+      "homeTeam": "FSU",
+      "awayTeam": "CHSO",
+      "conference": "ACC",
+      "totalPoints": 48,
       "totalFouls": 7,
       "officials": []
     },
@@ -2249,14 +2051,113 @@
       "officials": []
     },
     {
-      "gameId": "401673463",
-      "date": "2024-12-08",
+      "gameId": "401635536",
+      "date": "2024-09-07",
       "season": "2024-25",
-      "homeTeam": "SMU",
-      "awayTeam": "CLEM",
+      "homeTeam": "MIA",
+      "awayTeam": "FAMU",
       "conference": "ACC",
       "totalPoints": 65,
+      "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401635544",
+      "date": "2024-09-14",
+      "season": "2024-25",
+      "homeTeam": "MIA",
+      "awayTeam": "BALL",
+      "conference": "ACC",
+      "totalPoints": 62,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401635555",
+      "date": "2024-09-21",
+      "season": "2024-25",
+      "homeTeam": "USF",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 65,
+      "totalFouls": 22,
+      "officials": []
+    },
+    {
+      "gameId": "401634767",
+      "date": "2024-09-27",
+      "season": "2024-25",
+      "homeTeam": "MIA",
+      "awayTeam": "VT",
+      "conference": "ACC",
+      "totalPoints": 72,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401635568",
+      "date": "2024-10-06",
+      "season": "2024-25",
+      "homeTeam": "CAL",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 77,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401635589",
+      "date": "2024-10-19",
+      "season": "2024-25",
+      "homeTeam": "LOU",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 97,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401635601",
+      "date": "2024-11-02",
+      "season": "2024-25",
+      "homeTeam": "MIA",
+      "awayTeam": "DUKE",
+      "conference": "ACC",
+      "totalPoints": 84,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401635609",
+      "date": "2024-11-09",
+      "season": "2024-25",
+      "homeTeam": "GT",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 51,
       "totalFouls": 6,
+      "officials": []
+    },
+    {
+      "gameId": "401635618",
+      "date": "2024-11-23",
+      "season": "2024-25",
+      "homeTeam": "MIA",
+      "awayTeam": "WAKE",
+      "conference": "ACC",
+      "totalPoints": 56,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401635623",
+      "date": "2024-11-30",
+      "season": "2024-25",
+      "homeTeam": "SYR",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 80,
+      "totalFouls": 13,
       "officials": []
     },
     {
@@ -2268,6 +2169,105 @@
       "conference": "ACC",
       "totalPoints": 83,
       "totalFouls": 8,
+      "officials": []
+    },
+    {
+      "gameId": "401632062",
+      "date": "2024-08-31",
+      "season": "2024-25",
+      "homeTeam": "LOU",
+      "awayTeam": "APSU",
+      "conference": "ACC",
+      "totalPoints": 62,
+      "totalFouls": 5,
+      "officials": []
+    },
+    {
+      "gameId": "401635535",
+      "date": "2024-09-07",
+      "season": "2024-25",
+      "homeTeam": "LOU",
+      "awayTeam": "JVST",
+      "conference": "ACC",
+      "totalPoints": 63,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401635554",
+      "date": "2024-09-21",
+      "season": "2024-25",
+      "homeTeam": "LOU",
+      "awayTeam": "GT",
+      "conference": "ACC",
+      "totalPoints": 50,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401635571",
+      "date": "2024-10-05",
+      "season": "2024-25",
+      "homeTeam": "LOU",
+      "awayTeam": "SMU",
+      "conference": "ACC",
+      "totalPoints": 61,
+      "totalFouls": 14,
+      "officials": []
+    },
+    {
+      "gameId": "401635578",
+      "date": "2024-10-12",
+      "season": "2024-25",
+      "homeTeam": "UVA",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 44,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401634771",
+      "date": "2024-10-25",
+      "season": "2024-25",
+      "homeTeam": "BC",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 58,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401635517",
+      "date": "2024-11-16",
+      "season": "2024-25",
+      "homeTeam": "STAN",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 73,
+      "totalFouls": 16,
+      "officials": []
+    },
+    {
+      "gameId": "401635617",
+      "date": "2024-11-23",
+      "season": "2024-25",
+      "homeTeam": "LOU",
+      "awayTeam": "PITT",
+      "conference": "ACC",
+      "totalPoints": 46,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401628440",
+      "date": "2024-11-30",
+      "season": "2024-25",
+      "homeTeam": "UK",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 55,
+      "totalFouls": 7,
       "officials": []
     },
     {
@@ -2293,36 +2293,14 @@
       "officials": []
     },
     {
-      "gameId": "401754519",
-      "date": "2025-08-30",
+      "gameId": "401778317",
+      "date": "2025-12-27",
       "season": "2025-26",
-      "homeTeam": "LOU",
-      "awayTeam": "EKU",
+      "homeTeam": "CLEM",
+      "awayTeam": "PSU",
       "conference": "ACC",
-      "totalPoints": 68,
-      "totalFouls": 20,
-      "officials": []
-    },
-    {
-      "gameId": "401754522",
-      "date": "2025-08-31",
-      "season": "2025-26",
-      "homeTeam": "MIA",
-      "awayTeam": "ND",
-      "conference": "ACC",
-      "totalPoints": 51,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401754528",
-      "date": "2025-09-05",
-      "season": "2025-26",
-      "homeTeam": "LOU",
-      "awayTeam": "JMU",
-      "conference": "ACC",
-      "totalPoints": 42,
-      "totalFouls": 17,
+      "totalPoints": 32,
+      "totalFouls": 4,
       "officials": []
     },
     {
@@ -2337,28 +2315,6 @@
       "officials": []
     },
     {
-      "gameId": "401754621",
-      "date": "2025-09-06",
-      "season": "2025-26",
-      "homeTeam": "FSU",
-      "awayTeam": "ETAM",
-      "conference": "ACC",
-      "totalPoints": 80,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401754641",
-      "date": "2025-09-06",
-      "season": "2025-26",
-      "homeTeam": "MIA",
-      "awayTeam": "BCU",
-      "conference": "ACC",
-      "totalPoints": 48,
-      "totalFouls": 6,
-      "officials": []
-    },
-    {
       "gameId": "401754623",
       "date": "2025-09-13",
       "season": "2025-26",
@@ -2370,17 +2326,6 @@
       "officials": []
     },
     {
-      "gameId": "401754535",
-      "date": "2025-09-13",
-      "season": "2025-26",
-      "homeTeam": "MIA",
-      "awayTeam": "USF",
-      "conference": "ACC",
-      "totalPoints": 61,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
       "gameId": "401754537",
       "date": "2025-09-20",
       "season": "2025-26",
@@ -2388,61 +2333,6 @@
       "awayTeam": "SYR",
       "conference": "ACC",
       "totalPoints": 55,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
-      "gameId": "401754541",
-      "date": "2025-09-20",
-      "season": "2025-26",
-      "homeTeam": "FSU",
-      "awayTeam": "KENT",
-      "conference": "ACC",
-      "totalPoints": 76,
-      "totalFouls": 10,
-      "officials": []
-    },
-    {
-      "gameId": "401752709",
-      "date": "2025-09-20",
-      "season": "2025-26",
-      "homeTeam": "MIA",
-      "awayTeam": "FLA",
-      "conference": "ACC",
-      "totalPoints": 33,
-      "totalFouls": 9,
-      "officials": []
-    },
-    {
-      "gameId": "401754642",
-      "date": "2025-09-20",
-      "season": "2025-26",
-      "homeTeam": "LOU",
-      "awayTeam": "BGSU",
-      "conference": "ACC",
-      "totalPoints": 57,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
-      "gameId": "401754543",
-      "date": "2025-09-26",
-      "season": "2025-26",
-      "homeTeam": "UVA",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 84,
-      "totalFouls": 9,
-      "officials": []
-    },
-    {
-      "gameId": "401754547",
-      "date": "2025-09-27",
-      "season": "2025-26",
-      "homeTeam": "PITT",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 61,
       "totalFouls": 15,
       "officials": []
     },
@@ -2458,28 +2348,6 @@
       "officials": []
     },
     {
-      "gameId": "401754553",
-      "date": "2025-10-04",
-      "season": "2025-26",
-      "homeTeam": "FSU",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 50,
-      "totalFouls": 18,
-      "officials": []
-    },
-    {
-      "gameId": "401754554",
-      "date": "2025-10-04",
-      "season": "2025-26",
-      "homeTeam": "LOU",
-      "awayTeam": "UVA",
-      "conference": "ACC",
-      "totalPoints": 57,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
       "gameId": "401754558",
       "date": "2025-10-11",
       "season": "2025-26",
@@ -2488,28 +2356,6 @@
       "conference": "ACC",
       "totalPoints": 51,
       "totalFouls": 6,
-      "officials": []
-    },
-    {
-      "gameId": "401754559",
-      "date": "2025-10-11",
-      "season": "2025-26",
-      "homeTeam": "FSU",
-      "awayTeam": "PITT",
-      "conference": "ACC",
-      "totalPoints": 65,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401754564",
-      "date": "2025-10-17",
-      "season": "2025-26",
-      "homeTeam": "MIA",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 45,
-      "totalFouls": 15,
       "officials": []
     },
     {
@@ -2524,39 +2370,6 @@
       "officials": []
     },
     {
-      "gameId": "401754567",
-      "date": "2025-10-19",
-      "season": "2025-26",
-      "homeTeam": "STAN",
-      "awayTeam": "FSU",
-      "conference": "ACC",
-      "totalPoints": 33,
-      "totalFouls": 18,
-      "officials": []
-    },
-    {
-      "gameId": "401754572",
-      "date": "2025-10-25",
-      "season": "2025-26",
-      "homeTeam": "MIA",
-      "awayTeam": "STAN",
-      "conference": "ACC",
-      "totalPoints": 49,
-      "totalFouls": 7,
-      "officials": []
-    },
-    {
-      "gameId": "401754570",
-      "date": "2025-10-25",
-      "season": "2025-26",
-      "homeTeam": "LOU",
-      "awayTeam": "BC",
-      "conference": "ACC",
-      "totalPoints": 62,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
       "gameId": "401754577",
       "date": "2025-11-01",
       "season": "2025-26",
@@ -2565,50 +2378,6 @@
       "conference": "ACC",
       "totalPoints": 91,
       "totalFouls": 17,
-      "officials": []
-    },
-    {
-      "gameId": "401754578",
-      "date": "2025-11-01",
-      "season": "2025-26",
-      "homeTeam": "FSU",
-      "awayTeam": "WAKE",
-      "conference": "ACC",
-      "totalPoints": 49,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
-      "gameId": "401754581",
-      "date": "2025-11-01",
-      "season": "2025-26",
-      "homeTeam": "SMU",
-      "awayTeam": "MIA",
-      "conference": "ACC",
-      "totalPoints": 46,
-      "totalFouls": 16,
-      "officials": []
-    },
-    {
-      "gameId": "401754580",
-      "date": "2025-11-01",
-      "season": "2025-26",
-      "homeTeam": "VT",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 44,
-      "totalFouls": 11,
-      "officials": []
-    },
-    {
-      "gameId": "401754587",
-      "date": "2025-11-08",
-      "season": "2025-26",
-      "homeTeam": "MIA",
-      "awayTeam": "SYR",
-      "conference": "ACC",
-      "totalPoints": 48,
-      "totalFouls": 13,
       "officials": []
     },
     {
@@ -2623,17 +2392,6 @@
       "officials": []
     },
     {
-      "gameId": "401754585",
-      "date": "2025-11-09",
-      "season": "2025-26",
-      "homeTeam": "LOU",
-      "awayTeam": "CAL",
-      "conference": "ACC",
-      "totalPoints": 55,
-      "totalFouls": 12,
-      "officials": []
-    },
-    {
       "gameId": "401754591",
       "date": "2025-11-15",
       "season": "2025-26",
@@ -2645,14 +2403,102 @@
       "officials": []
     },
     {
-      "gameId": "401754595",
-      "date": "2025-11-15",
+      "gameId": "401754605",
+      "date": "2025-11-22",
       "season": "2025-26",
-      "homeTeam": "MIA",
-      "awayTeam": "NCSU",
+      "homeTeam": "CLEM",
+      "awayTeam": "FUR",
       "conference": "ACC",
-      "totalPoints": 48,
+      "totalPoints": 55,
+      "totalFouls": 9,
+      "officials": []
+    },
+    {
+      "gameId": "401752790",
+      "date": "2025-11-29",
+      "season": "2025-26",
+      "homeTeam": "SC",
+      "awayTeam": "CLEM",
+      "conference": "ACC",
+      "totalPoints": 42,
       "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401754621",
+      "date": "2025-09-06",
+      "season": "2025-26",
+      "homeTeam": "FSU",
+      "awayTeam": "ETAM",
+      "conference": "ACC",
+      "totalPoints": 80,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401754541",
+      "date": "2025-09-20",
+      "season": "2025-26",
+      "homeTeam": "FSU",
+      "awayTeam": "KENT",
+      "conference": "ACC",
+      "totalPoints": 76,
+      "totalFouls": 10,
+      "officials": []
+    },
+    {
+      "gameId": "401754543",
+      "date": "2025-09-26",
+      "season": "2025-26",
+      "homeTeam": "UVA",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 84,
+      "totalFouls": 9,
+      "officials": []
+    },
+    {
+      "gameId": "401754553",
+      "date": "2025-10-04",
+      "season": "2025-26",
+      "homeTeam": "FSU",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 50,
+      "totalFouls": 18,
+      "officials": []
+    },
+    {
+      "gameId": "401754559",
+      "date": "2025-10-11",
+      "season": "2025-26",
+      "homeTeam": "FSU",
+      "awayTeam": "PITT",
+      "conference": "ACC",
+      "totalPoints": 65,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401754567",
+      "date": "2025-10-19",
+      "season": "2025-26",
+      "homeTeam": "STAN",
+      "awayTeam": "FSU",
+      "conference": "ACC",
+      "totalPoints": 33,
+      "totalFouls": 18,
+      "officials": []
+    },
+    {
+      "gameId": "401754578",
+      "date": "2025-11-01",
+      "season": "2025-26",
+      "homeTeam": "FSU",
+      "awayTeam": "WAKE",
+      "conference": "ACC",
+      "totalPoints": 49,
+      "totalFouls": 15,
       "officials": []
     },
     {
@@ -2663,17 +2509,6 @@
       "awayTeam": "VT",
       "conference": "ACC",
       "totalPoints": 48,
-      "totalFouls": 9,
-      "officials": []
-    },
-    {
-      "gameId": "401754605",
-      "date": "2025-11-22",
-      "season": "2025-26",
-      "homeTeam": "CLEM",
-      "awayTeam": "FUR",
-      "conference": "ACC",
-      "totalPoints": 55,
       "totalFouls": 9,
       "officials": []
     },
@@ -2689,6 +2524,105 @@
       "officials": []
     },
     {
+      "gameId": "401754522",
+      "date": "2025-08-31",
+      "season": "2025-26",
+      "homeTeam": "MIA",
+      "awayTeam": "ND",
+      "conference": "ACC",
+      "totalPoints": 51,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401754641",
+      "date": "2025-09-06",
+      "season": "2025-26",
+      "homeTeam": "MIA",
+      "awayTeam": "BCU",
+      "conference": "ACC",
+      "totalPoints": 48,
+      "totalFouls": 6,
+      "officials": []
+    },
+    {
+      "gameId": "401754535",
+      "date": "2025-09-13",
+      "season": "2025-26",
+      "homeTeam": "MIA",
+      "awayTeam": "USF",
+      "conference": "ACC",
+      "totalPoints": 61,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401752709",
+      "date": "2025-09-20",
+      "season": "2025-26",
+      "homeTeam": "MIA",
+      "awayTeam": "FLA",
+      "conference": "ACC",
+      "totalPoints": 33,
+      "totalFouls": 9,
+      "officials": []
+    },
+    {
+      "gameId": "401754564",
+      "date": "2025-10-17",
+      "season": "2025-26",
+      "homeTeam": "MIA",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 45,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401754572",
+      "date": "2025-10-25",
+      "season": "2025-26",
+      "homeTeam": "MIA",
+      "awayTeam": "STAN",
+      "conference": "ACC",
+      "totalPoints": 49,
+      "totalFouls": 7,
+      "officials": []
+    },
+    {
+      "gameId": "401754581",
+      "date": "2025-11-01",
+      "season": "2025-26",
+      "homeTeam": "SMU",
+      "awayTeam": "MIA",
+      "conference": "ACC",
+      "totalPoints": 46,
+      "totalFouls": 16,
+      "officials": []
+    },
+    {
+      "gameId": "401754587",
+      "date": "2025-11-08",
+      "season": "2025-26",
+      "homeTeam": "MIA",
+      "awayTeam": "SYR",
+      "conference": "ACC",
+      "totalPoints": 48,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401754595",
+      "date": "2025-11-15",
+      "season": "2025-26",
+      "homeTeam": "MIA",
+      "awayTeam": "NCSU",
+      "conference": "ACC",
+      "totalPoints": 48,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
       "gameId": "401754603",
       "date": "2025-11-22",
       "season": "2025-26",
@@ -2697,28 +2631,6 @@
       "conference": "ACC",
       "totalPoints": 51,
       "totalFouls": 16,
-      "officials": []
-    },
-    {
-      "gameId": "401754602",
-      "date": "2025-11-22",
-      "season": "2025-26",
-      "homeTeam": "SMU",
-      "awayTeam": "LOU",
-      "conference": "ACC",
-      "totalPoints": 44,
-      "totalFouls": 13,
-      "officials": []
-    },
-    {
-      "gameId": "401752790",
-      "date": "2025-11-29",
-      "season": "2025-26",
-      "homeTeam": "SC",
-      "awayTeam": "CLEM",
-      "conference": "ACC",
-      "totalPoints": 42,
-      "totalFouls": 12,
       "officials": []
     },
     {
@@ -2733,17 +2645,6 @@
       "officials": []
     },
     {
-      "gameId": "401752787",
-      "date": "2025-11-29",
-      "season": "2025-26",
-      "homeTeam": "LOU",
-      "awayTeam": "UK",
-      "conference": "ACC",
-      "totalPoints": 41,
-      "totalFouls": 15,
-      "officials": []
-    },
-    {
       "gameId": "401779841",
       "date": "2025-12-20",
       "season": "2025-26",
@@ -2752,28 +2653,6 @@
       "conference": "ACC",
       "totalPoints": 13,
       "totalFouls": 8,
-      "officials": []
-    },
-    {
-      "gameId": "401778309",
-      "date": "2025-12-23",
-      "season": "2025-26",
-      "homeTeam": "LOU",
-      "awayTeam": "TOL",
-      "conference": "ACC",
-      "totalPoints": 49,
-      "totalFouls": 20,
-      "officials": []
-    },
-    {
-      "gameId": "401778317",
-      "date": "2025-12-27",
-      "season": "2025-26",
-      "homeTeam": "CLEM",
-      "awayTeam": "PSU",
-      "conference": "ACC",
-      "totalPoints": 32,
-      "totalFouls": 4,
       "officials": []
     },
     {
@@ -2796,6 +2675,127 @@
       "conference": "ACC",
       "totalPoints": 48,
       "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401754519",
+      "date": "2025-08-30",
+      "season": "2025-26",
+      "homeTeam": "LOU",
+      "awayTeam": "EKU",
+      "conference": "ACC",
+      "totalPoints": 68,
+      "totalFouls": 20,
+      "officials": []
+    },
+    {
+      "gameId": "401754528",
+      "date": "2025-09-05",
+      "season": "2025-26",
+      "homeTeam": "LOU",
+      "awayTeam": "JMU",
+      "conference": "ACC",
+      "totalPoints": 42,
+      "totalFouls": 17,
+      "officials": []
+    },
+    {
+      "gameId": "401754642",
+      "date": "2025-09-20",
+      "season": "2025-26",
+      "homeTeam": "LOU",
+      "awayTeam": "BGSU",
+      "conference": "ACC",
+      "totalPoints": 57,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401754547",
+      "date": "2025-09-27",
+      "season": "2025-26",
+      "homeTeam": "PITT",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 61,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401754554",
+      "date": "2025-10-04",
+      "season": "2025-26",
+      "homeTeam": "LOU",
+      "awayTeam": "UVA",
+      "conference": "ACC",
+      "totalPoints": 57,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401754570",
+      "date": "2025-10-25",
+      "season": "2025-26",
+      "homeTeam": "LOU",
+      "awayTeam": "BC",
+      "conference": "ACC",
+      "totalPoints": 62,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401754580",
+      "date": "2025-11-01",
+      "season": "2025-26",
+      "homeTeam": "VT",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 44,
+      "totalFouls": 11,
+      "officials": []
+    },
+    {
+      "gameId": "401754585",
+      "date": "2025-11-09",
+      "season": "2025-26",
+      "homeTeam": "LOU",
+      "awayTeam": "CAL",
+      "conference": "ACC",
+      "totalPoints": 55,
+      "totalFouls": 12,
+      "officials": []
+    },
+    {
+      "gameId": "401754602",
+      "date": "2025-11-22",
+      "season": "2025-26",
+      "homeTeam": "SMU",
+      "awayTeam": "LOU",
+      "conference": "ACC",
+      "totalPoints": 44,
+      "totalFouls": 13,
+      "officials": []
+    },
+    {
+      "gameId": "401752787",
+      "date": "2025-11-29",
+      "season": "2025-26",
+      "homeTeam": "LOU",
+      "awayTeam": "UK",
+      "conference": "ACC",
+      "totalPoints": 41,
+      "totalFouls": 15,
+      "officials": []
+    },
+    {
+      "gameId": "401778309",
+      "date": "2025-12-23",
+      "season": "2025-26",
+      "homeTeam": "LOU",
+      "awayTeam": "TOL",
+      "conference": "ACC",
+      "totalPoints": 49,
+      "totalFouls": 20,
       "officials": []
     }
   ],
