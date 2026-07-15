@@ -3,11 +3,58 @@ import { describe, it } from "node:test";
 import {
   buildTeamGameCountMap,
   countDistinctGames,
+  countRefGamesFromLogs,
   countTeamGamesFromLogs,
+  dedupeByGameId,
   gameCountDeviationPct,
   gameCountFromCrewSplits,
 } from "@/lib/game-count";
 import type { TeamCrewSplit } from "@/lib/types";
+
+describe("dedupeByGameId", () => {
+  it("keeps first row per gameId", () => {
+    const rows = dedupeByGameId([
+      { gameId: "a", value: 1 },
+      { gameId: "a", value: 2 },
+      { gameId: "b", value: 3 },
+    ]);
+    assert.equal(rows.length, 2);
+    assert.equal(rows[0]?.value, 1);
+  });
+});
+
+describe("countRefGamesFromLogs", () => {
+  const games = [
+    {
+      gameId: "g1",
+      season: "2023-24",
+      homeTeam: "LAL",
+      awayTeam: "BOS",
+      officials: [{ name: "Scott Foster", number: 48 }],
+    },
+    {
+      gameId: "g2",
+      season: "2023-24",
+      homeTeam: "LAL",
+      awayTeam: "MIA",
+      officials: [{ name: "Scott Foster", number: 48 }],
+    },
+    {
+      gameId: "g1",
+      season: "2023-24",
+      homeTeam: "LAL",
+      awayTeam: "BOS",
+      officials: [{ name: "Scott Foster", number: 48 }],
+    },
+  ];
+
+  it("counts DISTINCT game_id for a ref slug", () => {
+    assert.equal(
+      countRefGamesFromLogs(games, "scott-foster-48", ["2023-24"]),
+      2,
+    );
+  });
+});
 
 describe("countDistinctGames", () => {
   it("dedupes duplicate gameIds", () => {

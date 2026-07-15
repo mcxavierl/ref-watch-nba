@@ -11,7 +11,9 @@
  * profile — a safe approximation because alias variants are almost always tiny
  * fragments of the primary profile.
  */
+import { dedupeByGameId } from "../../src/lib/game-count";
 import type { RefProfile, RefTeamStat } from "../../src/lib/types";
+import { dedupeByGameId } from "../../src/lib/game-count";
 import {
   canonicalRefKey,
   chooseRefIdentity,
@@ -99,6 +101,15 @@ function lastDateOf(p: RefProfile): string {
   return p.recentGames?.[0]?.date ?? "";
 }
 
+/** Merge profile game totals without double-counting shared games. */
+function mergeRefGameCounts(profiles: RefProfile[]): number {
+  const numbers = new Set(profiles.map((p) => p.number));
+  if (numbers.size === 1) {
+    return Math.max(...profiles.map((p) => p.games));
+  }
+  return profiles.reduce((sum, p) => sum + p.games, 0);
+}
+
 export interface MergeDuplicateOptions {
   leagueAvgTotal: number;
   leagueAvgFouls: number;
@@ -140,14 +151,13 @@ export function mergeDuplicateRefProfiles(
     );
     void _lastDate;
     const name = displayNameForKey(key, dominant.name);
-    const totalGames = group.reduce((s, p) => s + p.games, 0);
+    const totalGames = mergeRefGameCounts(group);
     const avgTotal = weightedMean(group, (p) => p.avgTotalPoints);
     const avgFouls = weightedMean(group, (p) => p.avgFouls);
     const overRate = weightedMean(group, (p) => p.overRate);
     const coverProfiles = group.filter((p) => p.homeCoverRate !== null);
     const seasons = [...new Set(group.flatMap((p) => p.seasons))].sort();
-    const recentGames = group
-      .flatMap((p) => p.recentGames ?? [])
+    const recentGames = dedupeByGameId(group.flatMap((p) => p.recentGames ?? []))
       .sort((a, b) => b.date.localeCompare(a.date))
       .slice(0, 8);
 

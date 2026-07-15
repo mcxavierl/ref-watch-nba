@@ -1,22 +1,26 @@
 #!/usr/bin/env npx tsx
 /**
  * Sanity-check team game counts: DISTINCT game_id from logs vs crew-split totals.
- * Fails when counts deviate >10% from expected league averages.
+ * Also verifies ref.games against DISTINCT game_id rows in game logs.
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
 import {
+  countRefGamesFromLogs,
+  countRefGamesFromLogsMatching,
   countTeamGamesFromLogs,
   gameCountDeviationPct,
   gameCountFromCrewSplits,
   type GameLogRow,
+  type RefGameLogRow,
 } from "../src/lib/game-count";
 import {
   leagueTenSeasons,
   NFL_TEN_SEASONS,
 } from "../src/lib/league-seasons";
 import type { LeagueId } from "../src/lib/leagues";
-import type { TeamCrewSplit } from "../src/lib/types";
+import type { RefProfile, RefStatsFile, TeamCrewSplit } from "../src/lib/types";
+import { canonicalRefKey } from "./lib/ref-identity";
 
 const ROOT = process.cwd();
 
@@ -140,7 +144,13 @@ const TEAM_SPLITS_PATHS: Partial<Record<LeagueId, string>> = {
   cfb: "data/cfb/team-splits.json",
 };
 
-const MAX_DEVIATION_PCT = 10;
+const REF_STATS_PATHS: Partial<Record<LeagueId, string>> = {
+  nba: "data/ref-stats-core.json",
+  nfl: "data/nfl/ref-stats-core.json",
+};
+
+const NBA_REF_MAX_DRIFT_PCT = 1;
+const NFL_REF_MAX_DRIFT_PCT = 3;
 
 const warnings: string[] = [];
 const failures: string[] = [];
@@ -170,6 +180,20 @@ function loadGameRows(league: LeagueId): GameLogRow[] {
   if (!rel) return [];
   const file = readJson<{ games?: GameLogRow[] }>(rel);
   return file?.games ?? [];
+}
+
+function loadRefGameRows(league: LeagueId): RefGameLogRow[] {
+  const rel = GAME_LOG_PATHS[league];
+  if (!rel) return [];
+  const file = readJson<{ games?: RefGameLogRow[] }>(rel);
+  return file?.games ?? [];
+}
+
+function loadRefStats(league: LeagueId): RefProfile[] {
+  const rel = REF_STATS_PATHS[league];
+  if (!rel) return [];
+  const file = readJson<RefStatsFile>(rel);
+  return file?.refs ?? [];
 }
 
 function loadTeamSplits(league: LeagueId): Record<string, TeamCrewSplit[]> {
@@ -214,12 +238,72 @@ function checkTeamSample(check: TeamIntegrityCheck): void {
   }
 }
 
+function checkRefGameCounts(
+  league: LeagueId,
+  maxDriftPct: number,
+): void {
+  const logs = loadRefGameRows(league);
+  const refs = loadRefStats(league);
+  if (logs.length === 0 || refs.length === 0) {
+    warn(`${league}: skipping ref game-count check (missing logs or ref stats)`);
+    return;
+  }
+
+  const statsFile = readJson<RefStatsFile>(REF_STATS_PATHS[league]!);
+  const seasons = statsFile?.meta.seasons?.length
+    ? statsFile.meta.seasons
+    : league === "nba"
+      ? leagueTenSeasons("nba")
+      : league === "nfl"
+        ? NFL_TEN_SEASONS
+        : undefined;
+
+  let mismatches = 0;
+  let checked = 0;
+  const samples: string[] = [];
+
+  for (const ref of refs) {
+    const expected =
+      league === "nba"
+        ? countRefGamesFromLogsMatching(
+            logs,
+            (official) =>
+              canonicalRefKey(official.name) === canonicalRefKey(ref.name),
+            seasons,
+          )
+        : countRefGamesFromLogs(logs, ref.slug, seasons);
+    if (expected === 0) continue;
+    checked++;
+    const drift = gameCountDeviationPct(ref.games, expected);
+    if (drift > maxDriftPct) {
+      mismatches++;
+      if (samples.length < 5) {
+        samples.push(`${ref.name}: stored=${ref.games} logs=${expected} (${drift.toFixed(1)}%)`);
+      }
+      fail(
+        `${league.toUpperCase()} ref ${ref.name}: stored ${ref.games} vs DISTINCT logs ${expected} (${drift.toFixed(1)}% drift)`,
+      );
+    }
+  }
+
+  console.log(
+    `${league.toUpperCase()} ref game counts: checked ${checked}, mismatches ${mismatches} (max ${maxDriftPct}% drift)`,
+  );
+  if (samples.length > 0) {
+    console.log(`  samples: ${samples.join("; ")}`);
+  }
+}
+
 function main(): void {
   console.log("Data integrity verification\n");
 
   for (const check of TEAM_CHECKS) {
     checkTeamSample(check);
   }
+
+  console.log("");
+  checkRefGameCounts("nba", NBA_REF_MAX_DRIFT_PCT);
+  checkRefGameCounts("nfl", NFL_REF_MAX_DRIFT_PCT);
 
   console.log("");
   if (warnings.length > 0) {

@@ -14,6 +14,7 @@
     "audit:links": "tsx scripts/audit-links.ts",
     "audit:card-consistency": "tsx scripts/audit-card-consistency.ts",
     "check:volume": "tsx scripts/check-volume-regression.ts",
+    "fix-ref-game-counts": "tsx scripts/fix-ref-game-counts.ts",
     "verify:data-integrity": "tsx scripts/verify-data-integrity.ts",
     "check:production-env": "tsx scripts/check-production-env.ts --production",
     "preview": "tsx scripts/copy-data-to-public.ts && opennextjs-cloudflare build && opennextjs-cloudflare preview",

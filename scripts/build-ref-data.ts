@@ -7,6 +7,7 @@ import { loadBbrRefTeamRecords } from "./lib/bbr-ref-team-records";
 import { fetchAssignments } from "./lib/parse-assignments";
 import { buildBaselinesFile, saveBaselines } from "./lib/baselines";
 import { loadGameLogs } from "./lib/game-logs";
+import { dedupeRefsInPlace } from "./lib/merge-duplicate-refs";
 
 async function main() {
   const dataDir = path.join(process.cwd(), "data");
@@ -46,6 +47,12 @@ async function main() {
       "No data/bbr-ref-team-records.json — run npm run build-bbr-ref-team-data for real ref×team W-L",
     );
   }
+
+  dedupeRefsInPlace(
+    refStats.refs,
+    refStats.meta.leagueAvgTotal,
+    refStats.meta.leagueAvgFouls,
+  );
 
   fs.writeFileSync(
     path.join(dataDir, "ref-stats.json"),

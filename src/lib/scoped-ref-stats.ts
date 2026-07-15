@@ -1,4 +1,5 @@
 import { aggregateBaselineForSeasons } from "@/lib/baselines";
+import { dedupeByGameId } from "@/lib/game-count";
 import {
   applyConferenceAdjustedMeta,
   isNcaaMetricsLeague,
@@ -66,6 +67,7 @@ function crewKey(officials: { name: string; number: number }[]): string {
 }
 
 interface RefTeamGameRow {
+  gameId?: string;
   foulDifferential: number;
   totalPoints: number;
   overHit: boolean;
@@ -102,10 +104,11 @@ function teamFoulSplit(
 }
 
 function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
-  const n = games.length;
-  const wins = games.filter((g) => g.teamWin).length;
+  const rows = dedupeByGameId(games);
+  const n = rows.length;
+  const wins = rows.filter((g) => g.teamWin).length;
   const losses = n - wins;
-  const atsGames = games.filter((g) => g.teamAtsResult);
+  const atsGames = rows.filter((g) => g.teamAtsResult);
   const atsWins = atsGames.filter((g) => g.teamAtsResult === "win").length;
   const atsLosses = atsGames.filter((g) => g.teamAtsResult === "loss").length;
   const atsPushes = atsGames.filter((g) => g.teamAtsResult === "push").length;
@@ -115,12 +118,12 @@ function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
     wins,
     losses,
     avgFoulDifferential: round1(
-      games.reduce((s, g) => s + g.foulDifferential, 0) / n,
+      rows.reduce((s, g) => s + g.foulDifferential, 0) / n,
     ),
     avgTotalPoints: round1(
-      games.reduce((s, g) => s + g.totalPoints, 0) / n,
+      rows.reduce((s, g) => s + g.totalPoints, 0) / n,
     ),
-    overRate: round3(games.filter((g) => g.overHit).length / n),
+    overRate: round3(rows.filter((g) => g.overHit).length / n),
     winRate: round3(wins / n),
     ...(atsDecisions > 0
       ? {
@@ -262,8 +265,10 @@ function rebuildFromGameLogs(
 
       const recent = toRecentGame(game, overHit);
       const existing = refGames.get(slug) ?? [];
-      existing.push(recent);
-      refGames.set(slug, existing);
+      if (!existing.some((row) => row.gameId === recent.gameId)) {
+        existing.push(recent);
+        refGames.set(slug, existing);
+      }
 
       if (includeTeamSplits) {
         for (const [teamAbbr, teamWin, isHome] of [
@@ -272,6 +277,7 @@ function rebuildFromGameLogs(
         ] as const) {
           const fouls = teamFoulSplit(game, isHome);
           const row: RefTeamGameRow = {
+            gameId: game.gameId,
             foulDifferential: fouls.teamFouls - fouls.opponentFouls,
             totalPoints: game.totalPoints,
             overHit,
@@ -297,7 +303,8 @@ function rebuildFromGameLogs(
   const baseBySlug = new Map(base.refs.map((r) => [r.slug, r]));
   const refs: RefProfile[] = [];
 
-  for (const [slug, gameRecords] of refGames) {
+  for (const [slug, gameRecordsRaw] of refGames) {
+    const gameRecords = dedupeByGameId(gameRecordsRaw);
     const meta = refMeta.get(slug)!;
     const n = gameRecords.length;
     const avgTotal = gameRecords.reduce((s, g) => s + g.totalPoints, 0) / n;
@@ -330,7 +337,9 @@ function rebuildFromGameLogs(
       totalPointsDelta: round1(avgTotal - leagueAvgTotal),
       foulsDelta: round1(avgFouls - leagueAvgFouls),
       seasons,
-      recentGames: gameRecords.slice(-8).reverse(),
+      recentGames: dedupeByGameId(gameRecords)
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(0, 8),
       teamStats,
       bettingStats: preserved?.bettingStats,
       marketExpectation: preserved?.marketExpectation,

@@ -8,6 +8,7 @@ import {
   displayNameForKey,
   type RefVariant,
 } from "./ref-identity";
+import { dedupeRefsInPlace } from "./merge-duplicate-refs";
 import {
   collectRefTeamStats,
   pushRefTeamGame,
@@ -26,6 +27,8 @@ import {
   toOfficials,
   type GameLogEntry,
 } from "./game-logs";
+import { dedupeRefsInPlace } from "./merge-duplicate-refs";
+import { dedupeByGameId } from "../../src/lib/game-count";
 import {
   buildBaselinesFile,
   saveBaselines,
@@ -36,6 +39,7 @@ import type {
   RefStatsFile,
   TeamCrewSplit,
 } from "./types";
+import { dedupeByGameId } from "../../src/lib/game-count";
 
 const NBA_TEAM_ABBRS = [
   "ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW",
@@ -538,6 +542,7 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
           const teamRow = teamGameRow(box, teamAbbr, linesRaw.total);
           if (!teamRow) continue;
           pushRefTeamGame(refTeamBuckets, refKey, teamAbbr, {
+            gameId,
             foulDifferential: teamRow.teamFouls - teamRow.opponentFouls,
             totalPoints: teamRow.totalPoints,
             overHit: teamRow.overHit,
@@ -590,7 +595,8 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
   const leagueOverBaseline = nbaBaselines.aggregate.leagueOverBaseline;
 
   const refs: RefProfile[] = [];
-  for (const [refKey, games] of refGames) {
+  for (const [refKey, gamesRaw] of refGames) {
+    const games = dedupeByGameId(gamesRaw);
     if (games.length === 0) continue;
     const identity = chooseRefIdentity(refIdentities.get(refKey)!.values());
     const name = displayNameForKey(refKey, identity.name);
@@ -625,6 +631,7 @@ async function buildFromApi(): Promise<RefStatsFile | null> {
   }
 
   refs.sort((a, b) => b.games - a.games);
+  dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
 
   const teamSplits: Record<string, TeamCrewSplit[]> = {};
   for (const abbr of NBA_TEAM_ABBRS) {

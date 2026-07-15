@@ -19,6 +19,8 @@ import {
 import { teamWonGame } from "../lib/team-win";
 import { buildBaselinesFile, saveBaselines } from "../lib/baselines";
 import { loadGameLogs } from "../lib/game-logs";
+import { dedupeRefsInPlace } from "../lib/merge-duplicate-refs";
+import { dedupeByGameId } from "../../src/lib/game-count";
 import type {
   RefGameRecord,
   RefProfile,
@@ -26,7 +28,8 @@ import type {
   TeamCrewSplit,
 } from "../lib/types";
 import { NBA_TEAM_ABBRS } from "./config";
-import { INGEST_SEASONS } from "./config";
+import { dedupeByGameId } from "../../src/lib/game-count";
+import { dedupeRefsInPlace } from "../lib/merge-duplicate-refs";
 import { GAME_LOGS_DIR, MANIFEST_PATH } from "./config";
 
 function round1(n: number): number {
@@ -214,6 +217,7 @@ export function buildRefStatsFromLogs(): RefStatsFile {
         const foulDifferential = teamFouls - opponentFouls;
 
         pushRefTeamGame(refTeamBuckets, refKey, teamAbbr, {
+          gameId: game.gameId,
           foulDifferential,
           totalPoints: game.totalPoints,
           overHit: record.overHit,
@@ -256,7 +260,9 @@ export function buildRefStatsFromLogs(): RefStatsFile {
   const leagueOverBaseline = baselines.NBA.aggregate.leagueOverBaseline;
 
   const refs: RefProfile[] = [];
-  for (const [refKey, gList] of refGames) {
+  for (const [refKey, gListRaw] of refGames) {
+    const gList = dedupeByGameId(gListRaw);
+    if (gList.length === 0) continue;
     const identity = chooseRefIdentity(refIdentities.get(refKey)!.values());
     const name = displayNameForKey(refKey, identity.name);
     const slug = refSlug(name, identity.number);
@@ -285,6 +291,7 @@ export function buildRefStatsFromLogs(): RefStatsFile {
   }
 
   refs.sort((a, b) => b.games - a.games);
+  dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
 
   const teamSplits: Record<string, TeamCrewSplit[]> = {};
   for (const [team, buckets] of teamByCrew) {

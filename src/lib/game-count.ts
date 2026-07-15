@@ -1,3 +1,4 @@
+import { refSlug } from "@/lib/data";
 import type { TeamCrewSplit } from "@/lib/types";
 
 /** Hover copy for verified game totals shown in the UI. */
@@ -11,6 +12,29 @@ export interface GameLogRow {
   awayTeam: string;
 }
 
+export interface RefGameLogRow extends GameLogRow {
+  officials: readonly { name: string; number: number }[];
+}
+
+/** Keep the first row for each DISTINCT game_id (stable order). */
+export function dedupeByGameId<T extends { gameId?: string | null }>(
+  rows: readonly T[],
+): T[] {
+  const seen = new Set<string>();
+  const out: T[] = [];
+  for (const row of rows) {
+    const id = row.gameId ? String(row.gameId) : "";
+    if (!id) {
+      out.push(row);
+      continue;
+    }
+    if (seen.has(id)) continue;
+    seen.add(id);
+    out.push(row);
+  }
+  return out.length > 0 ? out : [...rows];
+}
+
 /** COUNT(DISTINCT game_id) for a list of game-log rows. */
 export function countDistinctGames(
   games: readonly { gameId?: string | null }[],
@@ -19,6 +43,39 @@ export function countDistinctGames(
   for (const game of games) {
     const id = game.gameId;
     if (id) ids.add(String(id));
+  }
+  return ids.size;
+}
+
+/** COUNT(DISTINCT game_id) for games where the ref officiated (slug match). */
+export function countRefGamesFromLogs(
+  games: readonly RefGameLogRow[],
+  slug: string,
+  seasons?: readonly string[],
+): number {
+  return countRefGamesFromLogsMatching(
+    games,
+    (official) => refSlug(official.name, official.number) === slug,
+    seasons,
+  );
+}
+
+/** COUNT(DISTINCT game_id) with a custom official matcher (e.g. canonical name). */
+export function countRefGamesFromLogsMatching(
+  games: readonly RefGameLogRow[],
+  matchesOfficial: (official: { name: string; number: number }) => boolean,
+  seasons?: readonly string[],
+): number {
+  const seasonSet = seasons ? new Set(seasons) : null;
+  const ids = new Set<string>();
+  for (const game of games) {
+    if (seasonSet && game.season && !seasonSet.has(game.season)) continue;
+    for (const official of game.officials) {
+      if (matchesOfficial(official)) {
+        if (game.gameId) ids.add(String(game.gameId));
+        break;
+      }
+    }
   }
   return ids.size;
 }
