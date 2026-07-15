@@ -2,6 +2,8 @@ export {
   computeFrictionMatrix,
   FRICTION_MIN_DEVIATION_PCT,
   FRICTION_MIN_H2H_GAMES,
+  FRICTION_MIN_H2H_GAMES_NFL,
+  frictionMinHeadToHeadGames,
   getFrictionMatrixDataset,
   isFrictionMatrixLeague,
   scanFrictionGrudgeMatrix,

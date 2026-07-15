@@ -1,4 +1,4 @@
-import { InsightsHubPage } from "@/components/InsightsHubPage";
+import { InsightsResearchPage } from "@/components/InsightsResearchPage";
 import { hubPageMetadata } from "@/lib/seo";
 import { readSeasonScopeParam } from "@/lib/season-scope";
 
@@ -11,9 +11,8 @@ type PageProps = {
 export default async function NhlResearchPage({ searchParams }: PageProps) {
   const { scope } = await searchParams;
   return (
-    <InsightsHubPage
+    <InsightsResearchPage
       leagueId="nhl"
-      defaultTab="findings"
       scopeMode={readSeasonScopeParam(scope)}
     />
   );

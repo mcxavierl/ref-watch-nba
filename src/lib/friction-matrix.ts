@@ -1,5 +1,9 @@
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
-import type { DataLeague, RuntimeGameLogEntry } from "@/lib/game-logs-preload";
+import {
+  getCachedGameLogs,
+  type DataLeague,
+  type RuntimeGameLogEntry,
+} from "@/lib/game-logs-preload";
 import type { LeagueId } from "@/lib/leagues";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import {
@@ -29,7 +33,13 @@ import {
 } from "@/lib/worker-isolate-store";
 
 export const FRICTION_MIN_H2H_GAMES = 15;
+/** NFL crews rotate faster; max observed ref×coach overlap is ~7 games in our ingest. */
+export const FRICTION_MIN_H2H_GAMES_NFL = 5;
 export const FRICTION_MIN_DEVIATION_PCT = 12;
+
+export function frictionMinHeadToHeadGames(leagueId: LeagueId): number {
+  return leagueId === "nfl" ? FRICTION_MIN_H2H_GAMES_NFL : FRICTION_MIN_H2H_GAMES;
+}
 
 export type FrictionPersonnelType = "coach" | "player";
 export type PlayerFrictionPattern = "protection" | "tightness" | "neutral";
@@ -255,8 +265,8 @@ function finalizeAts(bucket: Bucket): number | null {
   );
 }
 
-function passesHeadToHeadGate(games: number): boolean {
-  return games >= FRICTION_MIN_H2H_GAMES;
+function passesHeadToHeadGate(games: number, leagueId: LeagueId): boolean {
+  return games >= frictionMinHeadToHeadGames(leagueId);
 }
 
 function scanCoachFriction(
@@ -265,12 +275,13 @@ function scanCoachFriction(
   refBaselines: Map<string, { whistle: number; fouls: number; ats: number | null }>,
   leagueBaselineWhistle: number,
   dataLeague: DataLeague,
+  leagueId: LeagueId,
 ): FrictionGrudgeFinding[] {
   const findings: FrictionGrudgeFinding[] = [];
   const metricLabel = COACH_METRIC_LABEL[dataLeague];
 
   for (const bucket of coachBuckets.values()) {
-    if (!passesHeadToHeadGate(bucket.games)) continue;
+    if (!passesHeadToHeadGate(bucket.games, leagueId)) continue;
     const ref = refs.find((row) => row.slug === bucket.refSlug);
     if (!ref) continue;
 
@@ -336,6 +347,7 @@ function scanPlayerFriction(
     Bucket & { player: StarPlayerProfile; refSlug: string }
   >,
   dataLeague: DataLeague,
+  leagueId: LeagueId,
 ): FrictionGrudgeFinding[] {
   const findings: FrictionGrudgeFinding[] = [];
   const drawLabel =
@@ -346,7 +358,7 @@ function scanPlayerFriction(
         : "opponent fouls";
 
   for (const bucket of playerBuckets.values()) {
-    if (!passesHeadToHeadGate(bucket.games)) continue;
+    if (!passesHeadToHeadGate(bucket.games, leagueId)) continue;
     const ref = refs.find((row) => row.slug === bucket.refSlug);
     if (!ref) continue;
 
@@ -522,8 +534,9 @@ function aggregateFrictionFindings(
       refBaselines,
       leagueBaselineWhistle,
       dataLeague,
+      leagueId,
     ),
-    ...scanPlayerFriction(stats.refs, playerBuckets, dataLeague),
+    ...scanPlayerFriction(stats.refs, playerBuckets, dataLeague, leagueId),
   ]
     .sort((a, b) => b.severity - a.severity)
     .slice(0, 12);
@@ -548,7 +561,10 @@ export function computeFrictionMatrix(
 
   const dataLeague = LEAGUE_TO_DATA[leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number]];
   let allGames: RuntimeGameLogEntry[] | null =
-    gameLogs ?? loadRuntimeGameLogs(dataLeague)?.games ?? null;
+    gameLogs ??
+    getCachedGameLogs(dataLeague)?.games ??
+    loadRuntimeGameLogs(dataLeague)?.games ??
+    null;
 
   if (!allGames?.length) {
     releaseParsedPayload(allGames);
@@ -588,7 +604,7 @@ export function getFrictionMatrixDataset(
   return {
     version: 1,
     leagueId,
-    minHeadToHeadGames: FRICTION_MIN_H2H_GAMES,
+    minHeadToHeadGames: frictionMinHeadToHeadGames(leagueId),
     generatedAt: new Date().toISOString(),
     findings,
     officials: groupFindingsByOfficial(findings),

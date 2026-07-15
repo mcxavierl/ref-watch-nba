@@ -95,11 +95,19 @@ test("every league insights sub-route matches NFL defaultTab wiring", () => {
         /readSeasonScopeParam\(scope\)/,
         `${rel} must pass scopeMode from searchParams like NFL`,
       );
-      assert.match(
-        source,
-        new RegExp(`defaultTab="${defaultTabs[segment]}"`),
-        `${rel} must set defaultTab like NFL`,
-      );
+      if (segment === "research") {
+        assert.match(
+          source,
+          /defaultTab="findings"|InsightsResearchPage/,
+          `${rel} must render findings via defaultTab or InsightsResearchPage`,
+        );
+      } else {
+        assert.match(
+          source,
+          new RegExp(`defaultTab="${defaultTabs[segment]}"`),
+          `${rel} must set defaultTab like NFL`,
+        );
+      }
     }
   }
 });

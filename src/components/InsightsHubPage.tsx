@@ -283,6 +283,7 @@ export function InsightsHubPage({
         <FrictionGrudgeMatrixSection
           findings={frictionDataset.findings}
           basePath={league.pathPrefix}
+          minHeadToHeadGames={frictionDataset.minHeadToHeadGames}
         />
         <WhistleDispositionResearchSection
           stats={stats}

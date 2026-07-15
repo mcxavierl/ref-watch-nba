@@ -34,7 +34,7 @@ import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { buildYoYNarrative, seasonRowsFromBaselines } from "@/lib/trends";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
 import {
-  FRICTION_MIN_H2H_GAMES,
+  frictionMinHeadToHeadGames,
   scanFrictionGrudgeMatrix,
   type FrictionGrudgeFinding,
 } from "@/lib/friction-grudge-matrix";
@@ -864,6 +864,7 @@ function frictionFindingCategory(
 function frictionFindingToScored(
   finding: FrictionGrudgeFinding,
   ctx: LeagueFindingContext,
+  leagueId: LeagueId,
 ): ScoredFindingBase {
   return {
     id: `${ctx.paths.idPrefix}${finding.id}`,
@@ -892,7 +893,11 @@ function frictionFindingToScored(
     links: [
       { label: finding.refName, href: ctx.paths.refPath(finding.refSlug) },
     ],
-    score: rankScore(finding.severity / 100, finding.games, FRICTION_MIN_H2H_GAMES),
+    score: rankScore(
+      finding.severity / 100,
+      finding.games,
+      frictionMinHeadToHeadGames(leagueId),
+    ),
     sampleGames: finding.games,
   };
 }
@@ -904,5 +909,5 @@ export function buildFrictionGrudgeFindings(
   leagueId: LeagueId,
 ): ScoredFindingBase[] {
   const matrix = scanFrictionGrudgeMatrix(leagueId, stats);
-  return matrix.map((finding) => frictionFindingToScored(finding, ctx));
+  return matrix.map((finding) => frictionFindingToScored(finding, ctx, leagueId));
 }

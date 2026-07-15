@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import {
   computeFrictionMatrix,
   FRICTION_MIN_H2H_GAMES,
+  frictionMinHeadToHeadGames,
   getFrictionMatrixDataset,
   isFrictionMatrixLeague,
 } from "@/lib/friction-matrix";
@@ -137,6 +138,10 @@ describe("friction-matrix", () => {
       officials: [REF],
     }));
     const findings = computeFrictionMatrix("nfl", nflStats, nflGames);
-    assert.ok(findings.every((row) => row.games >= FRICTION_MIN_H2H_GAMES));
+    assert.ok(
+      findings.every(
+        (row) => row.games >= frictionMinHeadToHeadGames("nfl"),
+      ),
+    );
   });
 });

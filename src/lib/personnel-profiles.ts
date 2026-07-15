@@ -1,5 +1,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { fetchStaticJson } from "@/lib/edge-fetch";
 import type { LeagueId } from "@/lib/leagues";
 import { allowNodeDataFs } from "@/lib/production-data-guard";
 import { registerWorkerIsolateEndCallback } from "@/lib/worker-isolate-store";
@@ -46,6 +47,20 @@ const PERSONNEL_RELATIVE_PATHS: Partial<Record<FrictionMatrixLeagueId, string>> 
   nhl: path.join("data", "nhl", "personnel-profiles.json"),
 };
 
+const PERSONNEL_ASSET_BASE: Partial<Record<FrictionMatrixLeagueId, string>> = {
+  nba: "/data/nba",
+  nfl: "/data/nfl",
+  nhl: "/data/nhl",
+};
+
+function isPersonnelProfileFile(value: unknown): value is PersonnelProfileFile {
+  if (typeof value !== "object" || value === null) return false;
+  const candidate = value as PersonnelProfileFile;
+  return (
+    Array.isArray(candidate.coaches) && Array.isArray(candidate.starPlayers)
+  );
+}
+
 function personnelPath(leagueId: LeagueId): string | null {
   if (leagueId === "epl") {
     return path.join(process.cwd(), "data", "epl", "personnel-profiles.json");
@@ -72,7 +87,7 @@ export function loadPersonnelProfiles(
 
   if (cache.has(leagueId)) return cache.get(leagueId) ?? null;
   if (!allowNodeDataFs()) {
-    cache.set(leagueId, null);
+    // Leave cache unset so SSR asset preload can populate before compute.
     return null;
   }
 
@@ -122,6 +137,33 @@ export function starPlayersForTeamSeason(
 
 export function clearPersonnelProfilesCache(): void {
   cache.clear();
+}
+
+/** Edge-safe: fetch personnel sidecars from static assets (no Node fs). */
+export async function preloadPersonnelProfilesFromAssets(
+  origin: string,
+  leagueId: LeagueId,
+): Promise<void> {
+  if (cache.has(leagueId) && cache.get(leagueId)) return;
+  if (!origin?.trim()) return;
+
+  const assetBase =
+    PERSONNEL_ASSET_BASE[leagueId as FrictionMatrixLeagueId] ??
+    (leagueId === "epl"
+      ? "/data/epl"
+      : leagueId === "laliga"
+        ? "/data/laliga"
+        : null);
+  if (!assetBase) return;
+
+  try {
+    const data = await fetchStaticJson(origin, `${assetBase}/personnel-profiles.json`);
+    if (isPersonnelProfileFile(data)) {
+      cache.set(leagueId, data);
+    }
+  } catch {
+    // Never fail SSR from personnel preload.
+  }
 }
 
 registerWorkerIsolateEndCallback(clearPersonnelProfilesCache);
