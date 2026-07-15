@@ -14,17 +14,27 @@ export function readScrollOffsetPx(): number {
   return 92;
 }
 
+/** Scroll so element top sits below sticky header (uses scroll-margin-top on el). */
 export function scrollToElement(
   el: HTMLElement,
   behavior: ScrollBehavior = "auto",
 ): void {
-  const top = el.getBoundingClientRect().top + window.scrollY - readScrollOffsetPx();
-  window.scrollTo({ top: Math.max(0, top), behavior });
+  el.scrollIntoView({ block: "start", behavior });
 }
 
-export function scrollToId(id: string, behavior: ScrollBehavior = "auto"): boolean {
+export function scrollToId(
+  id: string,
+  behavior: ScrollBehavior = "auto",
+  retries = 4,
+): boolean {
   const el = document.getElementById(id);
-  if (!el) return false;
-  scrollToElement(el, behavior);
-  return true;
+  if (el) {
+    scrollToElement(el, behavior);
+    return true;
+  }
+  if (retries <= 0) return false;
+  requestAnimationFrame(() => {
+    scrollToId(id, behavior, retries - 1);
+  });
+  return false;
 }

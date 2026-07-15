@@ -240,14 +240,24 @@ body {
   font-optical-sizing: auto;
 }
 
-html {
-  scroll-padding-top: var(--site-scroll-offset);
-}
-
 @media (min-width: 768px) {
   :root {
     --site-scroll-offset: 4.85rem;
   }
+}
+
+/* Sticky header clearance for in-page anchors and deep links. */
+:is(
+  #profile-signals,
+  .league-hub-panel,
+  .insights-hub-panel,
+  [id^="hub-panel-"],
+  [data-matrix-cell],
+  .ref-matrix-team-panel,
+  .methodology-details,
+  #main-content
+) {
+  scroll-margin-top: var(--site-scroll-offset);
 }
 
 html[data-text="large"] {

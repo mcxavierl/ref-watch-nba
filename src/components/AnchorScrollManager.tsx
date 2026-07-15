@@ -2,8 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { insightsViewFromPathname } from "@/lib/insights-routes";
-import { scrollToId, scrollToElement } from "@/lib/scroll-offset";
+import { scrollToId } from "@/lib/scroll-offset";
 
 function syncScrollOffsetToken(): void {
   const chrome = document.querySelector(".site-chrome");
@@ -44,16 +43,7 @@ export function AnchorScrollManager() {
         scrollToId(hash, "auto");
         return;
       }
-
-      const insightsView = insightsViewFromPathname(pathname);
-      if (!insightsView) return;
-
-      const panel =
-        document.getElementById(`hub-panel-${insightsView}`) ??
-        document.querySelector(".insights-hub-panel");
-      if (panel instanceof HTMLElement) {
-        scrollToElement(panel, "auto");
-      }
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     });
   }, [pathname]);
 
