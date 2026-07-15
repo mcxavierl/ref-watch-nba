@@ -5,7 +5,7 @@ import { LeagueChooser } from "@/components/LeagueChooser";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewHistoricalLeaders } from "@/components/OverviewHistoricalLeaders";
-import { PulseStrip } from "@/components/PulseStrip";
+import { OverviewUpcomingSlateSection } from "@/components/OverviewUpcomingSlateSection";
 import {
   DashboardBodyLayout,
   DashboardSection,
@@ -106,7 +106,7 @@ export function OverviewDashboard({
     <DashboardShell>
       {hero}
 
-      <PulseStrip data={data} />
+      <OverviewUpcomingSlateSection data={data} />
 
       <LeagueChooser cards={data.leagueCards} placement="primary" />
 
