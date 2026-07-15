@@ -8,16 +8,18 @@ import {
   pathNeedsTeamSplits,
 } from "@/lib/ref-stats-preload";
 
-test("pathNeedsGameLogs defers to per-page scoped hydration (Worker 1102 guard)", () => {
+test("pathNeedsGameLogs hydrates ref and team pages from layout (not hub routes)", () => {
   assert.equal(pathNeedsGameLogs("/"), false);
   assert.equal(pathNeedsGameLogs("/nfl"), false);
   assert.equal(pathNeedsGameLogs("/matrix"), false);
-  assert.equal(pathNeedsGameLogs("/teams/BOS"), false);
+  assert.equal(pathNeedsGameLogs("/teams/BOS"), true);
   assert.equal(pathNeedsGameLogs("/nfl/matrix"), false);
-  assert.equal(pathNeedsGameLogs("/nfl/teams/NE"), false);
-  assert.equal(pathNeedsGameLogs("/nfl/teams/KC"), false);
-  assert.equal(pathNeedsGameLogs("/nfl/refs"), false);
+  assert.equal(pathNeedsGameLogs("/nfl/teams/NE"), true);
+  assert.equal(pathNeedsGameLogs("/nfl/teams/KC"), true);
+  assert.equal(pathNeedsGameLogs("/nfl/refs"), true);
+  assert.equal(pathNeedsGameLogs("/nfl/refs/scott-blank"), true);
   assert.equal(pathNeedsGameLogs("/nfl/rankings"), false);
+  assert.equal(pathNeedsGameLogs("/nfl/research"), false);
 });
 
 test("pathNeedsTeamSplits skips ref hubs and static pages", () => {

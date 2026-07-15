@@ -296,8 +296,16 @@ export async function preloadLeagueDataForPath(
 
 /** Routes that rebuild scoped stats from stored game logs (era / season toggles). */
 export function pathNeedsGameLogs(pathname: string): boolean {
-  // Game logs are hydrated per-page with season scope to avoid Worker 1102.
-  void pathname;
+  const path = normalizeAppPathname(pathname);
+  if (isOverviewOnlyPath(path)) return false;
+  if (path.startsWith("/methodology")) return false;
+  if (path.startsWith("/sitemap")) return false;
+  if (path.startsWith("/feed")) return false;
+  if (path.startsWith("/compare")) return false;
+  // Hub routes hydrate game logs in InsightsHubRoute / matrix page handlers.
+  if (HUB_ROUTE.test(path)) return false;
+  if (/\/refs(\/|$)/.test(path)) return true;
+  if (/\/teams(\/|$)/.test(path)) return true;
   return false;
 }
 

@@ -1,5 +1,4 @@
-import { InsightsHubPage } from "@/components/InsightsHubPage";
-import { hydrateInsightsFindingsData } from "@/lib/insights-findings-hydrate";
+import { InsightsHubRoute } from "@/components/InsightsHubRoute";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 
 type InsightsResearchPageProps = {
@@ -11,10 +10,8 @@ export async function InsightsResearchPage({
   leagueId,
   scopeMode,
 }: InsightsResearchPageProps) {
-  await hydrateInsightsFindingsData(leagueId);
-
   return (
-    <InsightsHubPage
+    <InsightsHubRoute
       leagueId={leagueId}
       defaultTab="findings"
       scopeMode={scopeMode}

@@ -9,6 +9,7 @@ import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { hydrateScopedGameLogs } from "@/lib/scoped-game-log-hydrate";
 import { LEAGUES } from "@/lib/leagues";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
+import { statsForMatrixPage } from "@/lib/matrix-page-stats";
 import { computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import { matrixLeadSeasonPhrase, readSeasonScopeParam } from "@/lib/season-scope";
@@ -35,12 +36,13 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
     scopeLabel,
     scopedSeasons,
   } = loadScopedLeagueStats("nba", scopeMode);
+  const statsForMatrix = await statsForMatrixPage("nba", stats, scopedSeasons);
   const seasonSpan = matrixLeadSeasonPhrase(scopedSeasons.length);
   const bbrTeamNote = refTeamDataNote(stats.meta);
   const league = LEAGUES.nba;
 
   const matrix = computeRefTeamMatrix(
-    stats,
+    statsForMatrix,
     NBA_TEAMS.map((team) => ({
       abbr: team.abbr,
       label: teamFullName(team),

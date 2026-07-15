@@ -118,16 +118,16 @@ function gameLogPath(league: DataLeague): string {
 }
 
 export function loadRuntimeGameLogs(league: DataLeague): RuntimeGameLogFile | null {
-  if (cache.has(league)) return cache.get(league) ?? null;
-
   const fromGlobal = getCachedGameLogs(league);
   if (fromGlobal) {
     cache.set(league, fromGlobal);
     return fromGlobal;
   }
 
+  const moduleCached = cache.get(league);
+  if (moduleCached) return moduleCached;
+
   if (!allowNodeDataFs()) {
-    cache.set(league, null);
     return null;
   }
 
