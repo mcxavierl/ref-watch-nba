@@ -1,4 +1,4 @@
-import { loadRuntimeGameLogs, type DataLeague } from "@/lib/game-logs";
+import { getCachedGameLogs } from "@/lib/game-logs-preload";
 import type { LeagueId } from "@/lib/leagues";
 import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
 import {
@@ -97,7 +97,7 @@ export function enrichRefStatsForMatrixAts(
   const cached = getWorkerIsolateStore().matrixAtsEnrich.get(cacheKey);
   if (cached) return cached;
 
-  const logs = loadRuntimeGameLogs(LEAGUE_ID_TO_DATA[leagueId]);
+  const logs = getCachedGameLogs(LEAGUE_ID_TO_DATA[leagueId]);
   if (!logs?.games?.length) return stats;
 
   const seasonSet = new Set(scopedSeasons);

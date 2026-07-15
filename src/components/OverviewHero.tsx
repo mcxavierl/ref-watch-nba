@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export function OverviewHero() {
   return (
     <section className="overview-hero-minimal section-block" aria-labelledby="overview-hero-heading">
@@ -11,9 +9,6 @@ export function OverviewHero() {
           Live league hubs with matrix, rankings, and ref profiles. NCAA college sports are coming soon.
         </p>
       </div>
-      <Link href="#overview-league-chooser-heading" className="overview-hero-minimal-cta rw-focus-ring">
-        Browse league hubs
-      </Link>
     </section>
   );
 }

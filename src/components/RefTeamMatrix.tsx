@@ -961,9 +961,9 @@ export function RefTeamMatrix({
                           {cell.thinSample ? (
                             <span
                               className="ref-matrix-delta ref-matrix-delta--thin"
-                              title={`${cell.games} games, below ${minGames}-game ranking gate`}
+                              title={`${matrixCellMetricGames(cell, viewMode)} games, below ${minGames}-game ranking gate`}
                             >
-                              {cell.games} gp
+                              {matrixCellMetricGames(cell, viewMode)} gp
                             </span>
                           ) : (
                             <span
@@ -979,7 +979,9 @@ export function RefTeamMatrix({
                                 : "Baseline n/a"}
                             </span>
                           )}
-                          <span className="ref-matrix-games">{cell.games} gp</span>
+                          <span className="ref-matrix-games">
+                            {matrixCellMetricGames(cell, viewMode)} gp
+                          </span>
                         </Link>
                       </td>
                     );

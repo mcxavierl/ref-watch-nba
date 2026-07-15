@@ -1,4 +1,4 @@
-import { safeOriginFetch } from "@/lib/edge-fetch";
+import { fetchStaticJson, safeOriginFetch } from "@/lib/edge-fetch";
 import {
   freezeWorkerConfig,
   getWorkerIsolateStore,
@@ -158,9 +158,7 @@ export async function preloadGameLogsFromAssets(
   if (!origin?.trim()) return;
 
   try {
-    const res = await safeOriginFetch(origin, `${GAME_LOG_ASSET_BASE[league]}/game-logs.json`);
-    if (!res?.ok) return;
-    let data: unknown = await res.json();
+    let data: unknown = await fetchStaticJson(origin, `${GAME_LOG_ASSET_BASE[league]}/game-logs.json`);
     if (isGameLogsPayload(data) && data.games.length > 0) {
       setCachedGameLogs(league, data as RuntimeGameLogFile);
     }

@@ -64,6 +64,35 @@ export async function safeOriginFetch(
   }
 }
 
+/** Fetch a static JSON file from the ASSETS binding (Workers) or origin URL (local). */
+export async function fetchStaticJson(
+  origin: string,
+  assetPath: string,
+): Promise<unknown | null> {
+  if (!assetPath.startsWith("/")) return null;
+
+  try {
+    const { getCloudflareContext } = await import("@opennextjs/cloudflare");
+    const { env } = await getCloudflareContext({ async: true });
+    const assets = (env as { ASSETS?: { fetch: (input: RequestInfo) => Promise<Response> } })
+      .ASSETS;
+    if (assets) {
+      try {
+        const res = await assets.fetch(`https://assets.local${assetPath}`);
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch (error) {
+        console.error("[refwatch] ASSETS fetch failed", assetPath, error);
+      }
+    }
+  } catch {
+    // Not on Cloudflare Workers.
+  }
+
+  return safeOriginJson(origin, assetPath);
+}
+
 export async function safeOriginJson(
   origin: string,
   assetPath: string,
