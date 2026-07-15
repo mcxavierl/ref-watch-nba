@@ -45,20 +45,17 @@ function PaceCardBody({ card }: { card: LeagueOverviewCard }) {
     <>
       <div className="overview-pace-card-head">
         <div className="league-header league-header--compact">
-          <span className="overview-pace-label-row">
-            <span className="overview-pace-label">{card.shortLabel}</span>
-            {pending && card.auditCoveragePct != null && card.auditHref ? (
-              <NcaaAuditStatusPill
-                coveragePct={card.auditCoveragePct}
-                auditHref={card.auditHref}
-                pendingLabel={card.auditPendingLabel}
-                className="overview-pace-audit-pill"
-                asLabel
-              />
-            ) : null}
-          </span>
+          <span className="overview-pace-label">{card.shortLabel}</span>
           <LeagueSeasonStartBadge leagueId={card.leagueId} />
         </div>
+        {pending && card.auditCoveragePct != null && card.auditHref ? (
+          <NcaaAuditStatusPill
+            coveragePct={card.auditCoveragePct}
+            auditHref={card.auditHref}
+            className="overview-pace-audit-pill"
+            asLabel
+          />
+        ) : null}
         <span className="overview-pace-meta">
           {formatCount(card.refCount)} refs · {card.seasonCount} seasons
         </span>

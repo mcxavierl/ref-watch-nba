@@ -25,7 +25,7 @@ export function NcaaAuditStatusPill({
     <>
       <Clock aria-hidden className="ncaa-audit-status-pill-icon" />
       <span className="ncaa-audit-status-pill-label">
-        [{formatNcaaAuditPillLabel(coveragePct)}]
+        {formatNcaaAuditPillLabel(coveragePct)}
       </span>
       {pendingLabel ? (
         <span className="ncaa-audit-status-pill-state">{pendingLabel}</span>

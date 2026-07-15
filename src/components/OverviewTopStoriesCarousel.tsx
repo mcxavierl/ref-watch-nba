@@ -80,24 +80,22 @@ export function OverviewTopStoriesCarousel({ initialData }: OverviewTopStoriesCa
 
   return (
     <section
-      className="overview-top-stories section-block"
+      className="overview-top-stories section-block overview-section--secondary"
       aria-labelledby="overview-top-stories-heading"
       aria-roledescription="carousel"
       data-carousel-phase={phase}
     >
       <div className="overview-top-stories-head">
         <div>
-          <p className="overview-eyebrow">Top stories</p>
-          <h1 className="overview-title" id="overview-top-stories-heading">
-            Live whistle edges worth watching
-          </h1>
-          <p className="overview-lead overview-lead--stories">
-            Three high-confidence patterns from verified leagues, refreshed from the latest
-            ref×team matrix and outlier scans.
+          <h2 className="overview-section-title" id="overview-top-stories-heading">
+            Today&apos;s edges
+          </h2>
+          <p className="overview-section-lead">
+            Three high-confidence patterns from verified leagues.
           </p>
           {phase === "fallback" ? (
             <p className="overview-top-stories-fallback-note" role="status">
-              Showing evergreen context while the latest ingest cycle produces new outliers.
+              Evergreen context while the latest ingest cycle runs.
             </p>
           ) : null}
         </div>

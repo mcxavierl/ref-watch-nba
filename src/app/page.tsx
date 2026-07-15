@@ -5,9 +5,9 @@ import { buildPageMetadata } from "@/lib/seo";
 import { SITE_HOME_PATH } from "@/lib/leagues";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Multi-league overview",
+  title: "Verified officiating analytics",
   description:
-    "Cross-league referee analytics for the NBA, NHL, NFL, Premier League, and La Liga. Standout ref×team splits, whistle outliers, and an expanding competition catalog.",
+    "Cross-league referee analytics for the NBA, NHL, NFL, Premier League, La Liga, and NCAA. Live league hubs with matrix, rankings, and ref profiles.",
   path: SITE_HOME_PATH,
   keywords: [
     "referee analytics",

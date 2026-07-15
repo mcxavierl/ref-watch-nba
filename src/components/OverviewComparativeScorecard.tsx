@@ -129,9 +129,6 @@ export function OverviewComparativeScorecard({ cards }: OverviewComparativeScore
         <div className="overview-scorecard-section overview-scorecard-section--live">
           <div className="overview-scorecard-section-head">
             <h3 className="overview-scorecard-section-title">Live competitions</h3>
-            <p className="overview-scorecard-section-hint">
-              Normalized whistle and scoring pace across verified pro leagues.
-            </p>
           </div>
           <div className="overview-scorecard-rows" role="list">
             {proCards.map((card) => (
@@ -145,9 +142,6 @@ export function OverviewComparativeScorecard({ cards }: OverviewComparativeScore
         <div className="overview-scorecard-section overview-scorecard-section--college">
           <div className="overview-scorecard-section-head">
             <h3 className="overview-scorecard-section-title">College sports</h3>
-            <p className="overview-scorecard-section-hint">
-              Live NCAA basketball and football pace from verified key-conference coverage.
-            </p>
           </div>
           <div className="overview-scorecard-rows" role="list">
             {collegeCards.map((card) => (

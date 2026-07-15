@@ -4,15 +4,209 @@
   margin-top: var(--space-10);
 }
 
+.overview-dashboard-breathe--tight {
+  margin-top: var(--space-6);
+}
+
 @media (min-width: 64rem) {
   .overview-dashboard-breathe {
     margin-top: var(--space-12);
   }
+
+  .overview-dashboard-breathe--tight {
+    margin-top: var(--space-8);
+  }
+}
+
+/* —— Minimal hero —— */
+.overview-hero-minimal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
+  padding-bottom: var(--space-2);
+}
+
+.overview-hero-minimal-copy {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.overview-hero-minimal-bridge {
+  margin: 0.65rem 0 0;
+  max-width: 36rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.overview-hero-minimal-cta {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.overview-hero-minimal-cta:hover {
+  border-color: color-mix(in srgb, var(--raptors) 35%, var(--border));
+  background: var(--surface-raised);
+}
+
+/* —— Visual hierarchy: primary vs secondary —— */
+.overview-section--secondary {
+  --overview-section-title-size: 1rem;
+  --overview-section-title-weight: 650;
+  --overview-section-lead-opacity: 0.82;
+}
+
+.overview-section--secondary .overview-section-title {
+  font-size: var(--overview-section-title-size);
+  font-weight: var(--overview-section-title-weight);
+  color: color-mix(in srgb, var(--ink) 82%, var(--muted));
+}
+
+.overview-section--secondary .overview-section-lead {
+  font-size: 0.84rem;
+  color: color-mix(in srgb, var(--muted) 92%, transparent);
+  opacity: var(--overview-section-lead-opacity);
+}
+
+.overview-section-header--primary {
+  margin-bottom: var(--space-6);
+}
+
+.overview-section-header--primary .overview-section-title {
+  font-size: clamp(1.35rem, 3vw, 1.65rem);
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.overview-section-header--compact {
+  margin-bottom: var(--space-4);
+}
+
+.overview-section-header--nested {
+  margin-bottom: var(--space-4);
+}
+
+.overview-secondary-panel-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.92rem;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--ink) 78%, var(--muted));
+}
+
+.overview-league-chooser--primary {
+  padding: var(--space-6);
+  border-radius: 1rem;
+  background: var(--surface-raised);
+}
+
+.overview-league-chooser--primary .overview-league-chooser-card {
+  min-height: 9.5rem;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  box-shadow: none;
+}
+
+.overview-league-chooser--primary .overview-league-chooser-card:hover {
+  border-color: color-mix(in srgb, var(--chooser-accent, var(--border)) 28%, var(--border));
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--chooser-accent, #000) 8%, transparent);
+  transform: translateY(-2px);
+}
+
+.overview-league-chooser--primary .overview-league-chooser-label {
+  font-size: 1.05rem;
+  font-weight: 750;
+}
+
+.overview-league-chooser-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 0.35rem;
+}
+
+.overview-league-chooser-metric {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+}
+
+.overview-league-chooser-metric-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.overview-league-chooser-metric strong {
+  font-size: 0.95rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+/* —— Secondary tabbed panel —— */
+.overview-secondary-tabs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.overview-secondary-tab {
+  padding: 0.45rem 0.85rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.overview-secondary-tab:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface-raised) 80%, transparent);
+}
+
+.overview-secondary-tab--active {
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--border-subtle);
+}
+
+.overview-secondary-tab:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--raptors) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.overview-secondary-tabpanel[hidden] {
+  display: none;
 }
 
 /* —— Top stories carousel —— */
 .overview-top-stories {
-  padding-top: var(--space-2);
+  padding-top: 0;
 }
 
 .overview-top-stories-head {
@@ -20,7 +214,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
 }
 
 .overview-lead--stories {
@@ -73,22 +267,22 @@
 
 .overview-top-stories-track {
   position: relative;
-  min-height: 16.5rem;
+  min-height: 11rem;
 }
 
 .overview-top-story-card {
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: minmax(5.5rem, 7rem) minmax(0, 1fr);
-  gap: var(--space-5);
-  padding: var(--space-6);
-  border-radius: 1rem;
-  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-subtle);
   background: var(--surface);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(8px);
+  transform: translateY(6px);
   transition:
     opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1),
     transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
@@ -96,15 +290,7 @@
 }
 
 .overview-top-story-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--chooser-accent, var(--raptors)) 14%, transparent) 0%,
-    transparent 55%
-  );
-  pointer-events: none;
+  display: none;
 }
 
 .overview-top-story-card[data-league="nba"] { --chooser-accent: var(--raptors); }
@@ -364,37 +550,17 @@
 }
 
 .overview-chooser-tier--college {
-  padding: var(--space-5);
-  border-radius: 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--ncaa-blue) 28%, var(--border-subtle));
-  background:
-    radial-gradient(
-      ellipse 100% 80% at 0% 0%,
-      color-mix(in srgb, var(--cbb-gold) 12%, transparent),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 90% 70% at 100% 0%,
-      color-mix(in srgb, var(--cfb-bronze) 12%, transparent),
-      transparent 50%
-    ),
-    color-mix(in srgb, var(--surface-raised) 92%, transparent);
+  padding: var(--space-5) 0 0;
+  margin-top: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .overview-chooser-tier--college .overview-chooser-tier-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
   color: var(--text);
 }
 
 .overview-chooser-tier--college .overview-chooser-tier-title::before {
-  content: "";
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: var(--ncaa-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ncaa-blue) 28%, transparent);
+  display: none;
 }
 
 .overview-chooser-tier-hint {
@@ -440,37 +606,13 @@
 }
 
 .overview-catalog-segment--college {
-  padding: var(--space-4);
-  border-radius: 0.65rem;
-  border: 1px solid color-mix(in srgb, var(--ncaa-blue) 24%, var(--border-subtle));
-  background:
-    radial-gradient(
-      ellipse 100% 70% at 0% 0%,
-      color-mix(in srgb, var(--cbb-gold) 10%, transparent),
-      transparent 58%
-    ),
-    radial-gradient(
-      ellipse 90% 60% at 100% 0%,
-      color-mix(in srgb, var(--cfb-bronze) 10%, transparent),
-      transparent 52%
-    ),
-    color-mix(in srgb, var(--surface-raised) 88%, transparent);
-}
-
-.overview-catalog-segment--college .overview-catalog-segment-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  color: var(--text);
+  padding-top: var(--space-4);
+  margin-top: var(--space-2);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .overview-catalog-segment--college .overview-catalog-segment-title::before {
-  content: "";
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 999px;
-  background: var(--ncaa-blue);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ncaa-blue) 26%, transparent);
+  display: none;
 }
 
 .overview-catalog-segment-hint {
@@ -545,37 +687,13 @@
 }
 
 .overview-scorecard-section--college {
-  padding: var(--space-5);
-  border-radius: 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--ncaa-blue) 24%, var(--border-subtle));
-  background:
-    radial-gradient(
-      ellipse 100% 80% at 0% 0%,
-      color-mix(in srgb, var(--cbb-gold) 10%, transparent),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 90% 70% at 100% 0%,
-      color-mix(in srgb, var(--cfb-bronze) 10%, transparent),
-      transparent 50%
-    ),
-    color-mix(in srgb, var(--surface) 55%, transparent);
-}
-
-.overview-scorecard-section--college .overview-scorecard-section-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--text);
+  padding-top: var(--space-5);
+  margin-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .overview-scorecard-section--college .overview-scorecard-section-title::before {
-  content: "";
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: var(--ncaa-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ncaa-blue) 26%, transparent);
+  display: none;
 }
 
 .overview-scorecard-section-hint {
@@ -596,18 +714,18 @@
   grid-template-columns: minmax(5.5rem, 1fr) minmax(0, 1.35fr) minmax(0, 1.35fr) auto;
   align-items: center;
   gap: var(--space-4);
-  padding: 0.85rem 1rem;
-  border-radius: 0.65rem;
-  border: 1px solid color-mix(in srgb, var(--border-subtle) 65%, transparent);
-  background: var(--surface);
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.5rem;
+  border: none;
+  border-bottom: 1px solid var(--border-subtle);
+  background: transparent;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .overview-scorecard-row:hover {
-  border-color: var(--border);
-  background: var(--surface-raised);
+  background: color-mix(in srgb, var(--surface-raised) 70%, transparent);
 }
 
 .overview-scorecard-league {

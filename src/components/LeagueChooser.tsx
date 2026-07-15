@@ -6,6 +6,7 @@ import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
+import { formatLeaguePaceValue } from "@/lib/league-pace-bars";
 import {
   COLLEGE_LIVE_LEAGUE_IDS,
   isCollegeLiveLeague,
@@ -47,7 +48,18 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
             <span className="overview-league-chooser-pending">
               {card.auditPendingLabel ?? "Pending Verification"} — hub locked
             </span>
-          ) : null}
+          ) : (
+            <span className="overview-league-chooser-metrics">
+              <span className="overview-league-chooser-metric">
+                <span className="overview-league-chooser-metric-label">{card.whistleLabel}</span>
+                <strong>{formatLeaguePaceValue(card.whistlePerGame)}</strong>
+              </span>
+              <span className="overview-league-chooser-metric">
+                <span className="overview-league-chooser-metric-label">{card.scoreLabel}</span>
+                <strong>{formatLeaguePaceValue(card.scorePerGame)}</strong>
+              </span>
+            </span>
+          )}
         </span>
       </span>
       <span className="overview-league-chooser-cta">
@@ -82,25 +94,19 @@ export function LeagueChooser({ cards }: LeagueChooserProps) {
 
   return (
     <section
-      className="overview-league-chooser overview-league-chooser--segmented section-block"
+      className="overview-league-chooser overview-league-chooser--segmented section-block overview-league-chooser--primary"
       aria-labelledby="overview-league-chooser-heading"
     >
-      <div className="overview-section-header">
+      <div className="overview-section-header overview-section-header--primary">
         <h2 className="overview-section-title" id="overview-league-chooser-heading">
-          Choose a league
+          League hubs
         </h2>
-        <p className="overview-section-lead">
-          Start with a verified live hub — pro leagues and college basketball and football.
-        </p>
       </div>
 
       {proCards.length > 0 ? (
         <div className="overview-chooser-tier overview-chooser-tier--live">
           <div className="overview-chooser-tier-head">
             <h3 className="overview-chooser-tier-title">Live competitions</h3>
-            <p className="overview-chooser-tier-hint">
-              Verified pro leagues with full hub tooling across five live competitions.
-            </p>
           </div>
           <div className="overview-league-chooser-grid overview-league-chooser-grid--live">
             {proCards.map((card) => (
@@ -114,9 +120,6 @@ export function LeagueChooser({ cards }: LeagueChooserProps) {
         <div className="overview-chooser-tier overview-chooser-tier--college">
           <div className="overview-chooser-tier-head">
             <h3 className="overview-chooser-tier-title">College sports</h3>
-            <p className="overview-chooser-tier-hint">
-              Live NCAA basketball and football hubs with verified key-conference coverage.
-            </p>
           </div>
           <div className="overview-league-chooser-grid overview-league-chooser-grid--college">
             {collegeCards.map((card) => (

@@ -11194,6 +11194,16 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   gap: 0.1rem;
 }
 
+.overview-pace-card--pending .overview-pace-card-head {
+  gap: 0.35rem;
+}
+
+.overview-pace-audit-pill {
+  align-self: flex-start;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
 .overview-pace-label {
   font-size: 1rem;
   font-weight: 750;
