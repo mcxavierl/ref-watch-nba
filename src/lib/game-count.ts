@@ -1,4 +1,4 @@
-import { refSlug } from "@/lib/data";
+import { refSlug } from "@/lib/ref-slug";
 import type { TeamCrewSplit } from "@/lib/types";
 
 /** Hover copy for verified game totals shown in the UI. */

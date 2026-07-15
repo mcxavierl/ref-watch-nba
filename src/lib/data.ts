@@ -234,13 +234,9 @@ export function formatRefStatsRange(meta: RefStatsFile["meta"]): string {
   return meta.seasons.join(", ");
 }
 
-export function refSlug(name: string, number: number): string {
-  const base = name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-  return `${base}-${number}`;
-}
+import { refSlug } from "@/lib/ref-slug";
+
+export { refSlug } from "@/lib/ref-slug";
 
 export function crewKey(refs: { name: string; number: number }[]): string {
   return refs
