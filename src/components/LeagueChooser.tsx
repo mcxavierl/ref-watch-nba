@@ -42,7 +42,7 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
           <span className="overview-league-chooser-label-row">
             <span className="overview-league-chooser-label">{card.label}</span>
           </span>
-          <span className="overview-league-chooser-meta">
+          <span className="overview-league-chooser-meta tabular-nums">
             {formatCount(card.refCount)} refs · {formatCount(card.gameCount)} games
           </span>
           {pending ? (
@@ -50,14 +50,14 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
               {card.auditPendingLabel ?? "Pending Verification"} - hub locked
             </span>
           ) : (
-            <span className="overview-league-chooser-metrics">
+            <span className="overview-league-chooser-metrics tabular-nums">
               <span className="overview-league-chooser-metric">
                 <span className="overview-league-chooser-metric-label">{card.whistleLabel}</span>
-                <strong>{formatLeaguePaceValue(card.whistlePerGame)}</strong>
+                <strong className="tabular-nums">{formatLeaguePaceValue(card.whistlePerGame)}</strong>
               </span>
               <span className="overview-league-chooser-metric">
                 <span className="overview-league-chooser-metric-label">{card.scoreLabel}</span>
-                <strong>{formatLeaguePaceValue(card.scorePerGame)}</strong>
+                <strong className="tabular-nums">{formatLeaguePaceValue(card.scorePerGame)}</strong>
               </span>
             </span>
           )}

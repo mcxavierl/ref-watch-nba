@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useMemo, useState, type ReactNode } from "react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
+import { signedDeltaTone } from "@/lib/metric-delight";
 import { formatPct, formatSigned, bettingAtsRate, bettingOuRate } from "@/lib/stats-utils";
 import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
 import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
@@ -53,6 +55,24 @@ function SortableHeader({
   );
 }
 
+function deltaMetricClass(value: number | undefined): string {
+  if (value === undefined) return "ranking-table-row-secondary-metric";
+  const tone = signedDeltaTone(value);
+  const base = "ranking-table-row-primary-metric";
+  if (tone === "positive") return `${base} ranking-table-row-metric-positive`;
+  if (tone === "negative") return `${base} ranking-table-row-metric-negative`;
+  return base;
+}
+
+function DetailStat({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <div className="ranking-table-details-stat">
+      <span className="ranking-table-details-label">{label}</span>
+      <span className="ranking-table-details-value">{value}</span>
+    </div>
+  );
+}
+
 export function RefRankingsTable({
   refs,
   league,
@@ -74,6 +94,7 @@ export function RefRankingsTable({
 }) {
   const [sort, setSort] = useState<RefRankingSort>("scoring-desc");
   const [showLowSample, setShowLowSample] = useState(false);
+  const [expandedSlugs, setExpandedSlugs] = useState<Set<string>>(() => new Set());
 
   const sorted = useMemo(
     () =>
@@ -119,13 +140,22 @@ export function RefRankingsTable({
     setSort((current) => toggleSort(current, field));
   };
 
+  const toggleExpanded = (slug: string) => {
+    setExpandedSlugs((current) => {
+      const next = new Set(current);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  };
+
   return (
     <div>
       <div className="ranking-toolbar">
         <div className="ranking-toolbar-row">
           <p className="ranking-toolbar-hint">
-            Click column headers to sort. Historical tendencies vs league baseline,
-            descriptive only, not picks.
+            Top three influence metrics shown by default. Expand a row for ATS,
+            O/U, and league-specific splits. Descriptive only, not picks.
           </p>
           <label className="ranking-toggle">
             <input
@@ -150,6 +180,9 @@ export function RefRankingsTable({
           <thead>
             <tr className="data-table-head">
               <th className="data-table-rank">#</th>
+              <th className="ranking-table-row-expand" aria-label="Expand details">
+                <span className="sr-only">Details</span>
+              </th>
               <th>Official</th>
               <SortableHeader label="Games" field="games" sort={sort} onSort={handleSort} />
               <SortableHeader
@@ -170,32 +203,14 @@ export function RefRankingsTable({
                 sort={sort}
                 onSort={handleSort}
               />
-              {atsAvailable ? (
-                <>
-                  <SortableHeader
-                    label="Home ATS"
-                    field="ats"
-                    sort={sort}
-                    onSort={handleSort}
-                  />
-                  <SortableHeader
-                    label="O/U hit %"
-                    field="ouBetting"
-                    sort={sort}
-                    onSort={handleSort}
-                  />
-                </>
-              ) : null}
-              <th>Signals</th>
-              {league === "NHL" && <th className="data-table-num">OT rate</th>}
-              {isNfl && <th className="data-table-num">Yards Δ</th>}
-              {isNfl && <th>Balance</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
-            {sorted.reduce<ReactNode[]>((rows, ref) => {
+            {sorted
+              .filter((ref) => showLowSample || ref.games >= minSampleSize)
+              .flatMap((ref, index) => {
+              const rank = index + 1;
               const belowGate = ref.games < minSampleSize;
-              if (belowGate && !showLowSample) return rows;
 
               const whistleDelta =
                 league === "NHL"
@@ -206,17 +221,38 @@ export function RefRankingsTable({
               const yardsDelta = ref.nflAnalytics?.penaltyYardsDelta;
               const balance = ref.nflAnalytics?.balanceKind;
               const otRate = ref.nhlAnalytics?.overtimeRate;
-              const rank = rows.length + 1;
               const profileHref = `${basePath}/refs/${ref.slug}`;
               const signalCount = signalCounts[ref.slug] ?? 0;
+              const expanded = expandedSlugs.has(ref.slug);
+              const scoringDisplay =
+                leagueAvgTotal && prefersPctScoringDelta(leagueAvgTotal)
+                  ? directoryScoringDisplay(ref, leagueAvgTotal).formatted
+                  : formatSigned(ref.totalPointsDelta);
+              const atsRate = bettingAtsRate(ref.bettingStats);
+              const ouRate = bettingOuRate(ref.bettingStats);
 
-              rows.push(
+              const rows: ReactNode[] = [
                 <tr
                   key={ref.slug}
                   className={`ranking-table-row ${belowGate ? "ranking-table-row-thin" : ""}`}
                 >
                   <td className="data-table-rank px-4 py-3 font-mono tabular-nums text-zinc-400 sm:px-5">
                     {rank}
+                  </td>
+                  <td className="ranking-table-row-expand px-2 py-3">
+                    <button
+                      type="button"
+                      className="ranking-table-expand-btn"
+                      aria-expanded={expanded}
+                      aria-label={`${expanded ? "Hide" : "Show"} details for ${ref.name}`}
+                      onClick={() => toggleExpanded(ref.slug)}
+                    >
+                      <ChevronDown
+                        className="h-4 w-4 transition-transform duration-150"
+                        style={{ transform: expanded ? "rotate(180deg)" : undefined }}
+                        aria-hidden
+                      />
+                    </button>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
@@ -226,82 +262,111 @@ export function RefRankingsTable({
                         sport={sport}
                         size="sm"
                       />
-                      <div className="min-w-0">
+                      <div className="flex min-w-0 flex-1 items-center gap-2">
+                        <div className="min-w-0">
+                          <Link
+                            href={profileHref}
+                            className="ranking-table-row-link font-medium text-zinc-900 hover:text-raptors hover:underline"
+                          >
+                            {ref.name}
+                          </Link>
+                          <RefJerseyNumber
+                            number={ref.number}
+                            className="ml-2 whitespace-nowrap font-mono text-xs text-zinc-500"
+                          />
+                        </div>
                         <Link
                           href={profileHref}
-                          className="ranking-table-row-link font-medium text-zinc-900 hover:text-raptors hover:underline"
+                          className="ranking-table-row-profile-arrow"
+                          aria-label={`Open ${ref.name} profile`}
                         >
-                          {ref.name}
+                          <ArrowRight className="h-4 w-4" aria-hidden />
                         </Link>
-                        <RefJerseyNumber
-                          number={ref.number}
-                          className="ml-2 whitespace-nowrap font-mono text-xs text-zinc-500"
-                        />
                       </div>
                     </div>
                   </td>
-                  <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-700">
+                  <td className="data-table-num px-4 py-3 tabular-nums ranking-table-row-secondary-metric">
                     {ref.games.toLocaleString()}
                     {belowGate && (
                       <span className="ml-1 text-xs text-amber-700">· thin</span>
                     )}
                   </td>
-                  <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
-                    {leagueAvgTotal && prefersPctScoringDelta(leagueAvgTotal)
-                      ? directoryScoringDisplay(ref, leagueAvgTotal).formatted
-                      : formatSigned(ref.totalPointsDelta)}
+                  <td className={`data-table-num px-4 py-3 ${deltaMetricClass(ref.totalPointsDelta)}`}>
+                    {scoringDisplay}
                   </td>
-                  <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
+                  <td className={`data-table-num px-4 py-3 ${deltaMetricClass(whistleDelta)}`}>
                     {whistleDelta !== undefined ? formatSigned(whistleDelta) : "-"}
                   </td>
-                  <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
+                  <td className="data-table-num px-4 py-3 tabular-nums ranking-table-row-primary-metric">
                     {formatPct(ref.overRate)}
                   </td>
-                  {atsAvailable ? (
-                    <>
-                      <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
-                        {(() => {
-                          const rate = bettingAtsRate(ref.bettingStats);
-                          return rate !== null ? formatPct(rate) : "-";
-                        })()}
-                      </td>
-                      <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
-                        {(() => {
-                          const rate = bettingOuRate(ref.bettingStats);
-                          return rate !== null ? formatPct(rate) : "-";
-                        })()}
-                      </td>
-                    </>
-                  ) : null}
-                  <td className="px-4 py-3">
-                    {signalCount > 0 ? (
-                      <Link
-                        href={`${profileHref}#profile-signals`}
-                        className="ranking-signal-badge shrink-0 whitespace-nowrap"
-                      >
-                        {signalCount} notable
-                      </Link>
-                    ) : null}
-                  </td>
-                  {league === "NHL" && (
-                    <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
-                      {otRate !== undefined ? formatPct(otRate) : "-"}
-                    </td>
-                  )}
-                  {isNfl && (
-                    <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
-                      {yardsDelta !== undefined ? formatSigned(yardsDelta) : "-"}
-                    </td>
-                  )}
-                  {isNfl && (
-                    <td className="px-4 py-3 text-sm capitalize text-zinc-700">
-                      {balance ?? "-"}
-                    </td>
-                  )}
                 </tr>,
-              );
+              ];
+
+              if (expanded) {
+                rows.push(
+                  <tr key={`${ref.slug}-details`} className="ranking-table-details-row">
+                    <td colSpan={7}>
+                      <div className="ranking-table-details-grid">
+                        {atsAvailable ? (
+                          <>
+                            <DetailStat
+                              label="Home ATS"
+                              value={atsRate !== null ? formatPct(atsRate) : "-"}
+                            />
+                            <DetailStat
+                              label="O/U hit %"
+                              value={ouRate !== null ? formatPct(ouRate) : "-"}
+                            />
+                          </>
+                        ) : null}
+                        {signalCount > 0 ? (
+                          <div className="ranking-table-details-stat">
+                            <span className="ranking-table-details-label">Signals</span>
+                            <Link
+                              href={`${profileHref}#profile-signals`}
+                              className="ranking-table-details-value ranking-signal-badge"
+                            >
+                              {signalCount} notable
+                            </Link>
+                          </div>
+                        ) : null}
+                        {league === "NHL" && (
+                          <DetailStat
+                            label="OT rate"
+                            value={otRate !== undefined ? formatPct(otRate) : "-"}
+                          />
+                        )}
+                        {isNfl && (
+                          <>
+                            <DetailStat
+                              label="Yards Δ"
+                              value={
+                                yardsDelta !== undefined ? formatSigned(yardsDelta) : "-"
+                              }
+                            />
+                            <DetailStat label="Balance" value={balance ?? "-"} />
+                          </>
+                        )}
+                        <DetailStat
+                          label="Profile"
+                          value={
+                            <Link
+                              href={profileHref}
+                              className="text-raptors hover:underline"
+                            >
+                              Full breakdown →
+                            </Link>
+                          }
+                        />
+                      </div>
+                    </td>
+                  </tr>,
+                );
+              }
+
               return rows;
-            }, [])}
+            })}
           </tbody>
         </table>
       </div>

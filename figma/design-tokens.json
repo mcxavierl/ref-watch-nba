@@ -1,0 +1,32 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "description": "Clinical Modern design tokens for Ref Watch. Source of truth for CSS lives in src/app/globals.css and src/styles/theme-tokens.css.",
+  "clinicalModern": {
+    "card": {
+      "surface": "glass-morphism via .ref-card / .rankings-insight-card",
+      "border": "1px brand-tinted border",
+      "glow": "semantic box-shadow from --insight-card-glow",
+      "radius": "0.85rem"
+    },
+    "logo": {
+      "containerSize": "4rem",
+      "containerSizePx": 64
+    },
+    "typography": {
+      "h1": "var(--text-3xl) page-title",
+      "h2": "var(--text-xl) section-title",
+      "bodyPrimary": "var(--text-base) body stats",
+      "bodySecondary": "var(--text-primary-muted) labels",
+      "numeric": "tabular-nums on all metrics"
+    },
+    "semantic": {
+      "positive": "var(--semantic-positive)",
+      "negative": "var(--semantic-negative)",
+      "muted": "var(--text-primary-muted)"
+    },
+    "interaction": {
+      "default": "subtle semantic glow",
+      "hover": "elevated brighter glow, translateY(-2px) on hub cards"
+    }
+  }
+}

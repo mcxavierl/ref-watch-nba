@@ -5,8 +5,11 @@ import type { ReactNode } from "react";
  *
  * MUST apply to all league hubs (NBA, NFL, NHL, EPL, La Liga, CBB, CFB):
  * - tabular-nums on all primary metrics
- * - Semantic color-coding on comparative deltas, not contextual percentages
+ * - Semantic color-coding on comparative deltas (--semantic-positive / --semantic-negative), not contextual percentages
  * - Glass-morphism card surfaces (.ref-card, .rankings-insight-card)
+ * - Muted comparative copy via --text-primary-muted
+ *
+ * Design tokens: figma/design-tokens.json and src/app/globals.css
  */
 export const REF_CARD_CLASS =
   "ref-card rankings-insight-card highlight-stat-card";

@@ -374,7 +374,7 @@ function collectCandidates(
   const includeHeavy = !options?.hub;
   return [
     buildEplFoulsOutlierFinding(stats),
-    buildLeagueSkewFinding(stats, LALIGA_FINDING_CTX),
+    ...(options?.hub ? [] : [buildLeagueSkewFinding(stats, LALIGA_FINDING_CTX)]),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
     buildYoYTrendFinding(stats, LALIGA_FINDING_CTX),

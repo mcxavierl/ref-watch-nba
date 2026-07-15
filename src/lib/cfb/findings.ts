@@ -391,7 +391,7 @@ function collectCandidates(
   const includeHeavy = !options?.hub;
   return [
     buildNflFlagsOutlierFinding(stats),
-    buildLeagueSkewFinding(stats, CFB_FINDING_CTX),
+    ...(options?.hub ? [] : [buildLeagueSkewFinding(stats, CFB_FINDING_CTX)]),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
     buildYoYTrendFinding(stats, CFB_FINDING_CTX),

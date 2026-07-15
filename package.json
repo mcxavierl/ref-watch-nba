@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "tsx scripts/check-production-env.ts && tsx scripts/check-no-synthetic-imports.ts && tsx scripts/check-no-em-dashes.ts && tsx scripts/copy-data-to-public.ts && tsx scripts/build-overview-insights.ts && tsx scripts/build-overview-drilldowns.ts && tsx scripts/build-overview-snapshot.ts && tsx scripts/verify-data-integrity.ts && tsx scripts/check-deploy-readiness.ts && node scripts/next-build-retry.mjs",
+    "build": "tsx scripts/check-production-env.ts && tsx scripts/check-no-synthetic-imports.ts && tsx scripts/check-no-em-dashes.ts && tsx scripts/copy-data-to-public.ts && tsx scripts/build-overview-insights.ts && tsx scripts/build-overview-drilldowns.ts && tsx scripts/build-overview-snapshot.ts && tsx scripts/verify-data-integrity.ts && tsx scripts/audit-card-consistency.ts && tsx scripts/check-deploy-readiness.ts && node scripts/next-build-retry.mjs",
     "build:next": "node scripts/next-build-retry.mjs",
     "build:opennext": "tsx scripts/copy-data-to-public.ts && node scripts/ensure-standalone.mjs && node -e \"const fs=require('fs');const p='.open-next';if(fs.existsSync(p)){fs.renameSync(p,p+'.bak-'+Date.now());}\" && NODE_OPTIONS='--max-old-space-size=8192' opennextjs-cloudflare build --skipBuild && printf 'export const production = {};\\nexport const development = {};\\nexport const test = {};\\n' > .open-next/cloudflare/next-env.mjs && tsx scripts/verify-open-next-data-assets.ts && node scripts/patch-worker-entry.mjs",
     "check:synthetic": "tsx scripts/check-no-synthetic-imports.ts",

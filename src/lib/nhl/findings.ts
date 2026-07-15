@@ -344,7 +344,7 @@ function collectCandidates(
   const includeHeavy = !options?.hub;
   const refereeStats = { ...stats, refs: filterNhlReferees(stats.refs) };
   return [
-    buildLeagueSkewFinding(refereeStats, NHL_FINDING_CTX),
+    ...(options?.hub ? [] : [buildLeagueSkewFinding(refereeStats, NHL_FINDING_CTX)]),
     buildNhlOtOutlierFinding(refereeStats, NHL_FINDING_CTX),
     buildNhlMinorsOutlierFinding(refereeStats, NHL_FINDING_CTX),
     ouAtsEdgeFinding(refereeStats),

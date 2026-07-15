@@ -186,6 +186,70 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "npm audit:card-consistency script",
       ),
   },
+  {
+    name: "Clinical Modern design tokens file exists",
+    run: () =>
+      auditFileContains(
+        "figma/design-tokens.json",
+        /clinicalModern/,
+        "design-tokens.json clinicalModern block",
+      ),
+  },
+  {
+    name: "globals.css exposes semantic delta tokens",
+    run: () =>
+      auditFileContains(
+        "src/app/globals.css",
+        /--semantic-positive/,
+        "--semantic-positive token",
+      ),
+  },
+  {
+    name: "All league hub findings skip league-trend skew card",
+    run: () => {
+      const leagueFiles = [
+        "src/lib/findings.ts",
+        "src/lib/nhl/findings.ts",
+        "src/lib/nfl/findings.ts",
+        "src/lib/epl/findings.ts",
+        "src/lib/laliga/findings.ts",
+        "src/lib/cbb/findings.ts",
+        "src/lib/cfb/findings.ts",
+      ];
+      const spreadSkip =
+        /\.\.\.\(options\?\.hub\s*\?\s*\[\]\s*:\s*\[(?:leagueUnderFinding|buildLeagueSkewFinding)/;
+      const inlineSkip =
+        /options\?\.hub\s*\?\s*\[\]\s*:\s*\[(?:leagueUnderFinding|buildLeagueSkewFinding)/;
+      for (const file of leagueFiles) {
+        const content = read(file);
+        if (!spreadSkip.test(content) && !inlineSkip.test(content)) {
+          return {
+            ok: false,
+            message: `${file} must skip league skew when options.hub is true`,
+          };
+        }
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "RefRankingsTable uses progressive disclosure",
+    run: () =>
+      auditFileContains(
+        "src/components/RefRankingsTable.tsx",
+        /ranking-table-details-row/,
+        "expandable details row",
+      ),
+  },
+  {
+    name: "RefRankingsTable applies semantic delta coloring",
+    run: () =>
+      auditFileContains(
+        "src/components/RefRankingsTable.tsx",
+        /signedDeltaTone/,
+        "signedDeltaTone for row metrics",
+      ),
+  },
 ];
 
 function main(): void {

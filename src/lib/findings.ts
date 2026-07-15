@@ -763,7 +763,7 @@ function collectCandidates(
   const includeHeavy = !options?.hub;
   const refTeams = includeHeavy ? aggregateRefTeams(stats) : new Map();
   const candidates: (ScoredFindingBase | null)[] = [
-    leagueUnderFinding(stats),
+    ...(options?.hub ? [] : [leagueUnderFinding(stats)]),
     rareOverRefsFinding(stats),
     atsOutlierFinding(stats),
     ouAtsEdgeFinding(stats),

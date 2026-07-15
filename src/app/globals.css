@@ -82,6 +82,11 @@
   --metric-negative-border: color-mix(in srgb, #f43f5e 34%, var(--border));
   --metric-negative-glow: color-mix(in srgb, #f43f5e 28%, transparent);
 
+  /* Clinical Modern semantic deltas — insight cards & comparison tables */
+  --semantic-positive: var(--metric-positive-muted);
+  --semantic-negative: var(--metric-negative-muted);
+  --text-primary-muted: color-mix(in srgb, var(--foreground) 86%, transparent);
+
   --metric-standout-flag-bg: color-mix(in srgb, var(--header-gold) 14%, var(--surface));
   --metric-standout-flag-border: color-mix(in srgb, var(--header-gold) 42%, var(--border));
   --metric-standout-flag-ink: var(--header-gold-bright);
@@ -2383,11 +2388,11 @@ p {
   }
 
   .finding-metric-value--positive {
-    color: var(--metric-positive-ink);
+    color: var(--semantic-positive, var(--metric-positive-ink));
   }
 
   .finding-metric-value--negative {
-    color: var(--metric-negative-ink);
+    color: var(--semantic-negative, var(--metric-negative-ink));
   }
 
   .finding-metric-value--standout-high {
@@ -5045,6 +5050,109 @@ p {
 
   .ranking-table-row-thin {
     opacity: 0.55;
+  }
+
+  .ranking-table-row-primary-metric {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--foreground);
+  }
+
+  .ranking-table-row-secondary-metric {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary-muted, color-mix(in srgb, var(--foreground) 72%, transparent));
+    font-weight: 500;
+  }
+
+  .ranking-table-row-metric-positive {
+    color: var(--semantic-positive, var(--metric-positive-ink));
+  }
+
+  .ranking-table-row-metric-negative {
+    color: var(--semantic-negative, var(--metric-negative-ink));
+  }
+
+  .ranking-table-row-expand {
+    width: 2rem;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .ranking-table-expand-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.375rem;
+    background: color-mix(in srgb, var(--surface-raised) 60%, var(--surface));
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast) var(--ease-out-quart),
+      color var(--duration-fast) var(--ease-out-quart),
+      background var(--duration-fast) var(--ease-out-quart);
+  }
+
+  .ranking-table-expand-btn:hover,
+  .ranking-table-expand-btn[aria-expanded="true"] {
+    border-color: color-mix(in srgb, var(--header-sapphire) 35%, var(--border));
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--header-sapphire) 8%, var(--surface));
+  }
+
+  .ranking-table-row-profile-arrow {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    margin-left: auto;
+    opacity: 0;
+    color: var(--raptors);
+    transition: opacity var(--duration-fast) var(--ease-out-quart);
+  }
+
+  .ranking-table-row:hover .ranking-table-row-profile-arrow,
+  .ranking-table-row:has(.ranking-table-row-link:focus-visible) .ranking-table-row-profile-arrow {
+    opacity: 1;
+  }
+
+  .ranking-table-details-row td {
+    padding: 0 var(--space-4) var(--space-3);
+    background: color-mix(in srgb, var(--header-sapphire) 4%, var(--surface-raised));
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .ranking-table-details-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-6);
+    padding: var(--space-3) 0 var(--space-1);
+  }
+
+  .ranking-table-details-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 5.5rem;
+  }
+
+  .ranking-table-details-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-primary-muted, color-mix(in srgb, var(--foreground) 86%, transparent));
+  }
+
+  .ranking-table-details-value {
+    font-family: var(--font-data);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--foreground);
   }
 
   .ranking-signal-badge {

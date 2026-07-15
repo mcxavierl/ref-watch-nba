@@ -333,7 +333,7 @@ function collectCandidates(
 ): ScoredFindingBase[] {
   const includeHeavy = !options?.hub;
   return [
-    buildLeagueSkewFinding(stats, CBB_FINDING_CTX),
+    ...(options?.hub ? [] : [buildLeagueSkewFinding(stats, CBB_FINDING_CTX)]),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
     buildYoYTrendFinding(stats, CBB_FINDING_CTX),

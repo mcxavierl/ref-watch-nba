@@ -95,3 +95,33 @@ describe("gameCountDeviationPct", () => {
     assert.equal(gameCountDeviationPct(180, 165), 9.090909090909092);
   });
 });
+
+describe("team index integrity", () => {
+  it("prefers DISTINCT game_id counts over summed crew-split games", () => {
+    const scopedSeasons = ["2016-17"];
+    const games = [
+      { gameId: "g1", season: "2016-17", homeTeam: "LAR", awayTeam: "SF" },
+      { gameId: "g2", season: "2016-17", homeTeam: "SEA", awayTeam: "LAR" },
+      { gameId: "g3", season: "2016-17", homeTeam: "LAR", awayTeam: "KC" },
+    ];
+    const logCount = countTeamGamesFromLogs(games, "LAR", scopedSeasons);
+    const splitSum = gameCountFromCrewSplits([
+      {
+        crewKey: "crew-a",
+        crewNames: ["Crew A"],
+        games: 3,
+        wins: 2,
+        losses: 1,
+      } as TeamCrewSplit,
+      {
+        crewKey: "crew-b",
+        crewNames: ["Crew B"],
+        games: 3,
+        wins: 1,
+        losses: 2,
+      } as TeamCrewSplit,
+    ]);
+    assert.equal(logCount, 3);
+    assert.ok(splitSum > logCount, "split sum inflates without DISTINCT game_id");
+  });
+});
