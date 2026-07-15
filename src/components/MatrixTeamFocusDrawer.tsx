@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import { MatrixSplitShareBar } from "@/components/MatrixSplitShareBar";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
+import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import type { LeagueId } from "@/lib/leagues";
 import type { TeamStrengthOfSchedule } from "@/lib/nba-strength-of-schedule";
 import {

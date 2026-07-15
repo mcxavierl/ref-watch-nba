@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
+import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import { getTeamSplits } from "@/lib/epl/data";
+import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
 import { EPL_TEAMS, teamFullName } from "@/lib/epl/teams";
 import { hubPageMetadata } from "@/lib/seo";
 export const metadata = hubPageMetadata("epl", "teams");
@@ -11,6 +13,7 @@ export const dynamic = "force-static";
 
 export default function EplTeamsIndexPage() {
   const teams = [...EPL_TEAMS].sort((a, b) => a.name.localeCompare(b.name));
+  const gameCounts = loadTeamIndexGameCounts("epl");
 
   return (
     <div className="page-shell page-shell-hub">
@@ -27,7 +30,7 @@ export default function EplTeamsIndexPage() {
         <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {teams.map((team) => {
             const splits = getTeamSplits(team.abbr);
-            const games = splits.reduce((s, sp) => s + sp.games, 0);
+            const games = teamIndexGameCount("epl", team.abbr, splits, gameCounts);
             return (
               <li key={team.abbr}>
                 <Link
@@ -41,7 +44,12 @@ export default function EplTeamsIndexPage() {
                     </p>
                     <p className="text-sm text-zinc-600">
                       {splits.length > 0
-                        ? `${splits.length} refs · ${games} matches`
+                        ? (
+                          <>
+                            {splits.length} refs ·{" "}
+                            <VerifiedGamesHint>{games} matches</VerifiedGamesHint>
+                          </>
+                        )
                         : "No data yet"}
                     </p>
                   </div>

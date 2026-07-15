@@ -1,11 +1,26 @@
 import type { RefTeamStat } from "./types";
 
 export interface RefTeamGameRow {
+  gameId?: string;
   foulDifferential: number;
   totalPoints: number;
   overHit: boolean;
   teamWin: boolean;
   teamAtsResult?: "win" | "loss" | "push" | null;
+}
+
+function distinctRefTeamGames(games: RefTeamGameRow[]): RefTeamGameRow[] {
+  const seen = new Set<string>();
+  const distinct: RefTeamGameRow[] = [];
+  for (const row of games) {
+    const id = row.gameId;
+    if (id) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+    }
+    distinct.push(row);
+  }
+  return distinct.length > 0 ? distinct : games;
 }
 
 function round1(n: number): number {
@@ -17,10 +32,11 @@ function round3(n: number): number {
 }
 
 export function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
-  const n = games.length;
-  const wins = games.filter((g) => g.teamWin).length;
+  const rows = distinctRefTeamGames(games);
+  const n = rows.length;
+  const wins = rows.filter((g) => g.teamWin).length;
   const losses = n - wins;
-  const atsGames = games.filter((g) => g.teamAtsResult);
+  const atsGames = rows.filter((g) => g.teamAtsResult);
   const atsWins = atsGames.filter((g) => g.teamAtsResult === "win").length;
   const atsLosses = atsGames.filter((g) => g.teamAtsResult === "loss").length;
   const atsPushes = atsGames.filter((g) => g.teamAtsResult === "push").length;
@@ -30,12 +46,12 @@ export function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
     wins,
     losses,
     avgFoulDifferential: round1(
-      games.reduce((s, g) => s + g.foulDifferential, 0) / n,
+      rows.reduce((s, g) => s + g.foulDifferential, 0) / n,
     ),
     avgTotalPoints: round1(
-      games.reduce((s, g) => s + g.totalPoints, 0) / n,
+      rows.reduce((s, g) => s + g.totalPoints, 0) / n,
     ),
-    overRate: round3(games.filter((g) => g.overHit).length / n),
+    overRate: round3(rows.filter((g) => g.overHit).length / n),
     winRate: round3(wins / n),
     ...(atsDecisions > 0
       ? {

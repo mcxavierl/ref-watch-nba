@@ -1,3 +1,4 @@
+import { gameCountFromCrewSplits } from "@/lib/game-count";
 import { getOfficialTeamRegularSeasonRecord } from "@/lib/team-record-query";
 import { formatPct } from "@/lib/stats-utils";
 import type { TeamCrewSplit } from "@/lib/types";
@@ -9,11 +10,11 @@ export interface TeamSampleRecord {
   winRate: number;
 }
 
-/** Sum W-L across crew splits; each game belongs to exactly one crew bucket. */
+/** Sum W-L across crew splits (DISTINCT games when each game sits in one crew bucket). */
 export function getTeamSampleRecord(splits: TeamCrewSplit[]): TeamSampleRecord {
   const wins = splits.reduce((sum, split) => sum + split.wins, 0);
   const losses = splits.reduce((sum, split) => sum + split.losses, 0);
-  const games = wins + losses;
+  const games = gameCountFromCrewSplits(splits);
   return {
     wins,
     losses,

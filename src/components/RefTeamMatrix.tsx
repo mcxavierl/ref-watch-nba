@@ -46,6 +46,7 @@ import { formatBaselineAtsPct, formatBaselinePct, formatCoverRateVsTeam, formatS
 import { foulEdgeTone } from "@/lib/metricTone";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
+import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import type { TeamStrengthOfSchedule } from "@/lib/nba-strength-of-schedule";
 import "@/components/matrix-hub.css";
 
@@ -233,7 +234,9 @@ function TeamRefRankListItem({
           {winDeltaShort}
         </span>
       </span>
-      <span className="ref-matrix-team-panel-games">{entry.games} gp</span>
+      <span className="ref-matrix-team-panel-games">
+        <VerifiedGamesHint>{entry.games} gp</VerifiedGamesHint>
+      </span>
       <span
         className={`ref-matrix-team-panel-delta ${foulClass}`}
         title={`${whistleDiffLabel}: ${formatSigned(entry.avgFoulDifferential)} per game`}
@@ -964,7 +967,9 @@ export function RefTeamMatrix({
                               className="ref-matrix-delta ref-matrix-delta--thin"
                               title={`${matrixCellMetricGames(cell, viewMode)} games, below ${minGames}-game ranking gate`}
                             >
-                              {matrixCellMetricGames(cell, viewMode)} gp
+                              <VerifiedGamesHint>
+                                {matrixCellMetricGames(cell, viewMode)} gp
+                              </VerifiedGamesHint>
                             </span>
                           ) : (
                             <span
@@ -981,7 +986,9 @@ export function RefTeamMatrix({
                             </span>
                           )}
                           <span className="ref-matrix-games">
-                            {matrixCellMetricGames(cell, viewMode)} gp
+                            <VerifiedGamesHint>
+                              {matrixCellMetricGames(cell, viewMode)} gp
+                            </VerifiedGamesHint>
                           </span>
                         </Link>
                       </td>
@@ -1063,8 +1070,12 @@ export function RefTeamMatrix({
                             selectedTeam.baselineGames,
                             selectedTeam.baselineWinRate,
                           )}{" "}
-                      team baseline · {matrixTeamMetricGames(selectedTeam, viewMode)}{" "}
-                      {viewMode === "ats" ? "lined gp" : "gp"} sample
+                      team baseline ·{" "}
+                      <VerifiedGamesHint>
+                        {matrixTeamMetricGames(selectedTeam, viewMode)}{" "}
+                        {viewMode === "ats" ? "lined gp" : "gp"}
+                      </VerifiedGamesHint>{" "}
+                      sample
                     </span>
                   </div>
                 ) : (

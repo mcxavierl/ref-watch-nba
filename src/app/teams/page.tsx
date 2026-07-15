@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
+import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import { getTeamSplits } from "@/lib/data";
+import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
 import { teamFullName, teamsByConference } from "@/lib/teams";
 import { hubPageMetadata } from "@/lib/seo";
 export const metadata = hubPageMetadata("nba", "teams");
@@ -11,6 +13,7 @@ export const dynamic = "force-static";
 
 export default function TeamsIndexPage() {
   const { East, West } = teamsByConference();
+  const gameCounts = loadTeamIndexGameCounts("nba");
 
   return (
     <div className="page-shell page-shell-hub">
@@ -30,7 +33,7 @@ export default function TeamsIndexPage() {
             <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {teams.map((team) => {
                 const splits = getTeamSplits(team.abbr);
-                const games = splits.reduce((s, sp) => s + sp.games, 0);
+                const games = teamIndexGameCount("nba", team.abbr, splits, gameCounts);
                 return (
                   <li key={team.abbr}>
                     <Link
@@ -44,7 +47,12 @@ export default function TeamsIndexPage() {
                         </p>
                         <p className="text-sm text-zinc-600">
                           {splits.length > 0
-                            ? `${splits.length} crews · ${games} games`
+                            ? (
+                              <>
+                                {splits.length} crews ·{" "}
+                                <VerifiedGamesHint>{games} games</VerifiedGamesHint>
+                              </>
+                            )
                             : "No data yet"}
                         </p>
                       </div>

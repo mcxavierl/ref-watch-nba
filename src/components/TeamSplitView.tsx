@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import { MetricBlock, MetricGrid } from "@/components/MetricBlock";
 import { RefAvatar } from "@/components/RefAvatar";
 import { TermHelp } from "@/components/TermHelp";
+import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
 import {
   filterTeamCrewSplits,
@@ -123,7 +124,10 @@ function TeamSplitCard({
           {split.crewNames.join(" · ")}
         </h2>
         <p className="mt-1 text-sm text-zinc-600">
-          {split.games} games · {split.wins}-{split.losses} with {teamLabel}
+          <VerifiedGamesHint>
+            {split.games} games
+          </VerifiedGamesHint>
+          {" "}· {split.wins}-{split.losses} with {teamLabel}
         </p>
       </div>
 
@@ -243,7 +247,7 @@ function TeamRefSplitCard({
               </Link>
             </h2>
             <p className="mt-1 text-sm text-zinc-600">
-              {entry.games} games with {teamLabel} · ~{wins}-{entry.games - wins}
+              <VerifiedGamesHint>{entry.games} games</VerifiedGamesHint> with {teamLabel} · ~{wins}-{entry.games - wins}
             </p>
           </div>
         </div>

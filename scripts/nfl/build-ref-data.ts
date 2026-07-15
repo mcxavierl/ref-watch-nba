@@ -565,6 +565,7 @@ async function buildFromEspn(
           const row = makeRow(teamAbbr);
           if (!row) continue;
           pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
+            gameId: String(summary.gameId),
             foulDifferential: row.teamFouls - row.opponentFouls,
             totalPoints: row.totalPoints,
             overHit: row.overHit,
@@ -712,6 +713,7 @@ async function buildFromEspn(
         const row = makeRow(teamAbbr);
         if (!row) continue;
         pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
+          gameId: String(game.gameId),
           foulDifferential: row.teamFouls - row.opponentFouls,
           totalPoints: row.totalPoints,
           overHit: row.overHit,
