@@ -1,7 +1,8 @@
 import type { ElementType, ReactNode } from "react";
 
 /**
- * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges, and sample-gate provenance metadata.
+ * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
+ * metrics must display maturity indicators and adjusted projections.
  *
  * Glass-morphism card shell: backdrop-blur-md, thin 1px border, monochromatic frame.
  */

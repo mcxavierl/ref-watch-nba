@@ -1,5 +1,5 @@
 import {
-  dataMaturityScore,
+  dataMaturityPercent,
   displayWinRateDelta,
   formatDeltaPp,
   formatSampleSizeLabel,
@@ -388,11 +388,9 @@ export function insightMetricComparison(
   return null;
 }
 
-/** Map sample depth to a 0-100 data maturity score for insight cards. */
+/** Sample games from card for data maturity bar (percent derived in DataMaturityBar). */
 export function insightDataMaturityScore(card: LeagueInsightCard): number {
-  const games = parseGamesFromCard(card);
-  const delta = Math.abs(parseDeltaPpFromCard(card) ?? parseNumericToken(card.heroValue) ?? 0);
-  return dataMaturityScore(games, delta);
+  return parseGamesFromCard(card);
 }
 
 /** @deprecated Use insightDataMaturityScore */

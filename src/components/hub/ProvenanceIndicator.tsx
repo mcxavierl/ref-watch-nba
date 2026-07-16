@@ -6,8 +6,8 @@ import { buildProvenanceTooltipLines } from "@/lib/provenance-tooltip";
 import { TouchPopover } from "@/components/ui/TouchPopover";
 
 /**
- * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
- * and sample-gate provenance metadata.
+ * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
+ * metrics must display maturity indicators and adjusted projections.
  */
 export interface ProvenanceIndicatorProps {
   sampleSize?: number;

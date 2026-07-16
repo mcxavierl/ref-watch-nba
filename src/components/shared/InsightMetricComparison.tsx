@@ -1,3 +1,4 @@
+import { adjustedDeltaTooltipText } from "@/lib/data-maturity";
 import type { InsightMetricComparison as InsightMetricComparisonData } from "@/lib/insight-editorial";
 import type { KpiDataPillTone } from "@/components/ui/KpiDataPill";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
@@ -87,7 +88,7 @@ export function InsightMetricComparison({
           <div className="insight-metric-comparison-values">
             {isAdjusted ? (
               <MetricInfoHint
-                hint="Calculated projection"
+                hint={adjustedDeltaTooltipText(comparison.deltaPp!)}
                 className="insight-metric-comparison-value insight-metric-comparison-value--delta insight-metric-comparison-value--adjusted"
                 panelClassName="insight-metric-comparison-hint-panel"
               >

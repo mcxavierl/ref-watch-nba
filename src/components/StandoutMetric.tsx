@@ -5,6 +5,11 @@ import {
   formatMatrixHighlightBaseline,
 } from "@/lib/ref-team-matrix";
 import {
+  adjustedDeltaTooltipText,
+  displayWinRateDelta,
+  formatDeltaPp,
+} from "@/lib/data-maturity";
+import {
   isDirectionalTone,
   isStandoutTone,
   metricDelightClass,
@@ -12,6 +17,9 @@ import {
   type MetricDelightSurface,
   type MetricDelightTone,
 } from "@/lib/metric-delight";
+import { DataMaturityBar } from "@/components/shared/DataMaturityBar";
+import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
+import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 
 export function StandoutMetricValue({
@@ -19,11 +27,13 @@ export function StandoutMetricValue({
   tone = "neutral",
   size = "md",
   className = "",
+  title,
 }: {
   children: ReactNode;
   tone?: MetricDelightTone;
   size?: "md" | "lg" | "hero";
   className?: string;
+  title?: string;
 }) {
   const surface: MetricDelightSurface =
     size === "hero" ? "value-hero" : size === "lg" ? "value" : "value";
@@ -37,6 +47,7 @@ export function StandoutMetricValue({
   return (
     <span
       className={`${metricDelightClass(tone, surface)} ${sizeClass} ${className}`.trim()}
+      title={title}
     >
       {children}
     </span>
@@ -113,6 +124,11 @@ export function StandoutDelta({
   );
 }
 
+/**
+ * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
+ * metrics must display maturity indicators and adjusted projections.
+ */
+
 export function MatrixExtremeSplitCards({
   extremes,
   basePath,
@@ -132,6 +148,10 @@ export function MatrixExtremeSplitCards({
         const tone = matrixExtremeTone(item.kind);
         const kicker =
           item.kind === "high" ? "Above baseline" : "Below baseline";
+        const deltaDisplay = displayWinRateDelta(item.deltaPts, item.games);
+        const heroDelta = deltaDisplay.isAdjusted
+          ? formatDeltaPp(deltaDisplay.displayDelta)
+          : formatSigned(item.deltaPts);
 
         return (
           <li
@@ -140,8 +160,20 @@ export function MatrixExtremeSplitCards({
           >
             <div className="metric-delight-card-head">
               <span className={metricDelightClass(tone, "kicker")}>{kicker}</span>
-              <StandoutMetricValue tone={tone} size="hero">
-                {formatSigned(item.deltaPts)}
+              {deltaDisplay.isPreliminary ? (
+                <PreliminaryDataBadge compact className="metric-delight-preliminary-badge" />
+              ) : null}
+              <StandoutMetricValue
+                tone={tone}
+                size="hero"
+                className={deltaDisplay.isAdjusted ? "metric-delight-value--adjusted" : ""}
+                title={
+                  deltaDisplay.isAdjusted
+                    ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
+                    : undefined
+                }
+              >
+                {heroDelta}
               </StandoutMetricValue>
             </div>
             <p className="metric-delight-card-body">
@@ -162,6 +194,10 @@ export function MatrixExtremeSplitCards({
               in {item.games} games vs team sample baseline{" "}
               {formatMatrixHighlightBaseline(item)}.
             </p>
+            <DataMaturityBar sampleSize={item.games} compact className="metric-delight-maturity" />
+            {deltaDisplay.isAdjusted ? (
+              <DataHonestyFootnote className="metric-delight-honesty-footnote" />
+            ) : null}
           </li>
         );
       })}

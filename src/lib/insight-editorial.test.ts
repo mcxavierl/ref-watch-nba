@@ -168,16 +168,16 @@ describe("insight editorial helpers", () => {
     assert.equal(view.isPreliminary, false);
   });
 
-  it("scores data maturity from sample depth", () => {
+  it("returns sample games for data maturity bar input", () => {
     const thin = insightDataMaturityScore(
       sampleCard({ stats: [{ label: "Sample", value: "8 games" }] }),
     );
     const strong = insightDataMaturityScore(
       sampleCard({ stats: [{ label: "Sample", value: "120 games" }] }),
     );
+    assert.equal(thin, 8);
+    assert.equal(strong, 120);
     assert.ok(thin < strong);
-    assert.ok(thin >= 5 && thin <= 100);
-    assert.ok(strong >= 5 && strong <= 100);
     assert.equal(insightConfidenceScore(sampleCard()), insightDataMaturityScore(sampleCard()));
   });
 });

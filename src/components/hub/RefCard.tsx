@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { CLINICAL_CARD_CLASS } from "@/components/hub/ClinicalCard";
 
 /**
- * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges, and sample-gate provenance metadata.
+ * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
+ * metrics must display maturity indicators and adjusted projections.
  *
  * Ref card shell for league hubs (NBA, NFL, NHL, EPL, La Liga, CBB, CFB):
  * - tabular-nums on all primary metrics

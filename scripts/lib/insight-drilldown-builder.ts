@@ -432,6 +432,7 @@ export function buildInsightDrilldownPayload(
     }
   }
   const refStatsForSplits = loadLeagueRefStats(root, leagueId);
+  const leagueAvgFouls = refStatsForSplits?.meta?.leagueAvgFouls;
   const teamSplits = loadLeagueTeamSplits(root, leagueId, refStatsForSplits);
   const recordTotal = wins + losses;
   if (
@@ -507,5 +508,8 @@ export function buildInsightDrilldownPayload(
       allMatchupGames.length > 0
         ? crewPartnersForGames(allMatchupGames, card.refSlug)
         : [],
+    ...(leagueAvgFouls !== undefined && Number.isFinite(leagueAvgFouls)
+      ? { leagueAvgFouls }
+      : {}),
   };
 }

@@ -11185,6 +11185,116 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   white-space: normal;
 }
 
+.insight-drilldown-fouls-cell {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.accessible-header-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.accessible-header-tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.accessible-header-tooltip-trigger:hover,
+.accessible-header-tooltip-trigger[aria-expanded="true"] {
+  color: var(--foreground);
+}
+
+.accessible-header-tooltip-trigger svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.accessible-header-tooltip-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  width: min(16rem, 70vw);
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #27272a;
+  border-radius: 0.5rem;
+  background: #18181b;
+  color: var(--muted-strong);
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+}
+
+.intensity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.58rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  color: #64748b;
+  background: color-mix(in srgb, #94a3b8 12%, #18181b);
+  border: 1px solid color-mix(in srgb, #94a3b8 28%, #27272a);
+}
+
+.intensity-badge--high {
+  color: #475569;
+  background: color-mix(in srgb, #64748b 16%, #18181b);
+  border-color: color-mix(in srgb, #64748b 35%, #27272a);
+}
+
+.intensity-badge--low {
+  color: #94a3b8;
+  background: color-mix(in srgb, #cbd5e1 10%, #18181b);
+  border-color: color-mix(in srgb, #cbd5e1 24%, #27272a);
+}
+
+.intensity-badge--compact {
+  font-size: 0.54rem;
+  padding: 0.08rem 0.35rem;
+}
+
+.intensity-badge-icon {
+  width: 0.65rem;
+  height: 0.65rem;
+  flex-shrink: 0;
+}
+
+.intensity-badge-label {
+  white-space: nowrap;
+}
+
+.metric-delight-maturity,
+.highlight-stat-maturity {
+  margin-top: 0.55rem;
+}
+
+.metric-delight-honesty-footnote {
+  margin-top: 0.35rem;
+}
+
 .insight-drilldown-opponent-label {
   display: block;
   overflow: hidden;

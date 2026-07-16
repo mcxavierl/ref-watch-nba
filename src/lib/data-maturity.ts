@@ -74,6 +74,7 @@ export function adjustedDeltaTooltipText(displayDelta: number): string {
   return `Adjusted for small sample volatility: ${formatDeltaPp(displayDelta)} expected`;
 }
 
+export function formatDeltaPp(delta: number): string {
   const sign = delta > 0 ? "+" : "";
   return `${sign}${delta.toFixed(1)}pp`;
 }

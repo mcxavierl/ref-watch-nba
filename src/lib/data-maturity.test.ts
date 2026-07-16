@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   BAYESIAN_PRIOR_STRENGTH,
+  adjustedDeltaTooltipText,
   bayesianShrinkDelta,
+  dataMaturityPercent,
   dataMaturityScore,
   dataMaturityTier,
   displayWinRateDelta,
@@ -10,6 +12,7 @@ import {
   formatSampleSizeLabel,
   isPreliminarySample,
   RELIABILITY_FLOOR_GAMES,
+  STANDOUT_SPLIT_FOOTNOTE,
 } from "@/lib/data-maturity";
 
 describe("data maturity", () => {
@@ -44,6 +47,30 @@ describe("data maturity", () => {
     assert.equal(display.isPreliminary, true);
     assert.equal(display.isAdjusted, true);
     assert.ok(Math.abs(display.displayDelta) < Math.abs(display.rawDelta));
+  });
+
+  it("computes maturity percent from sample size", () => {
+    assert.equal(dataMaturityPercent(0), 0);
+    assert.equal(dataMaturityPercent(6), 30);
+    assert.equal(dataMaturityPercent(10), 50);
+    assert.equal(dataMaturityPercent(20), 100);
+    assert.equal(dataMaturityPercent(40), 100);
+  });
+
+  it("formats adjusted delta tooltip copy", () => {
+    assert.equal(
+      adjustedDeltaTooltipText(14.2),
+      "Adjusted for small sample volatility: +14.2pp expected",
+    );
+    assert.equal(
+      adjustedDeltaTooltipText(-3.5),
+      "Adjusted for small sample volatility: -3.5pp expected",
+    );
+  });
+
+  it("exposes standout split footnote without em dashes", () => {
+    assert.match(STANDOUT_SPLIT_FOOTNOTE, /sample sizes < 20 games/);
+    assert.doesNotMatch(STANDOUT_SPLIT_FOOTNOTE, /\u2014/);
   });
 
   it("maps maturity scores to tier bands", () => {

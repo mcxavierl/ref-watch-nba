@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-16T00:21:58.088Z",
+    "lastUpdated": "2026-07-16T00:24:46.820Z",
     "seasons": [
       "2016-17",
       "2017-18",
@@ -27,7 +27,7 @@
       "earliest": "2016-08-13",
       "latest": "2026-05-24"
     },
-    "note": "Goals, fouls, and cards from football-data.co.uk match archives (3800 games, 10 seasons). Over/under vs the 2.5-goal line. 0 rows skipped. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs."
+    "note": "Goals, fouls, and cards from football-data.co.uk match archives (3800 games, 10 seasons). Over/under vs the 2.5-goal line. 0 rows skipped. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs."
   },
   "refs": [
     {
@@ -146,12 +146,12 @@
       "teamStats": {
         "CHE": {
           "games": 40,
-          "wins": 26,
-          "losses": 14,
+          "wins": 25,
+          "losses": 15,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.5,
-          "winRate": 0.65
+          "winRate": 0.625
         },
         "WHU": {
           "games": 28,
@@ -164,39 +164,39 @@
         },
         "MUN": {
           "games": 42,
-          "wins": 27,
-          "losses": 15,
+          "wins": 26,
+          "losses": 16,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.619,
-          "winRate": 0.643
+          "winRate": 0.619
         },
         "SOU": {
           "games": 19,
-          "wins": 8,
-          "losses": 11,
+          "wins": 9,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.474,
-          "winRate": 0.421
+          "winRate": 0.474
         },
         "WBA": {
           "games": 8,
-          "wins": 1,
-          "losses": 7,
+          "wins": 2,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.5,
-          "winRate": 0.125
+          "winRate": 0.25
         },
         "MID": {
           "games": 3,
-          "wins": 0,
-          "losses": 3,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.667,
-          "winRate": 0
+          "winRate": 0.333
         },
         "STK": {
           "games": 8,
@@ -218,12 +218,12 @@
         },
         "LEI": {
           "games": 19,
-          "wins": 10,
-          "losses": 9,
+          "wins": 8,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.684,
-          "winRate": 0.526
+          "winRate": 0.421
         },
         "BUR": {
           "games": 19,
@@ -245,12 +245,12 @@
         },
         "CRY": {
           "games": 24,
-          "wins": 6,
-          "losses": 18,
+          "wins": 9,
+          "losses": 15,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.583,
-          "winRate": 0.25
+          "winRate": 0.375
         },
         "HUL": {
           "games": 1,
@@ -263,30 +263,30 @@
         },
         "LIV": {
           "games": 50,
-          "wins": 36,
-          "losses": 14,
+          "wins": 34,
+          "losses": 16,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.64,
-          "winRate": 0.72
+          "winRate": 0.68
         },
         "EVE": {
           "games": 28,
-          "wins": 12,
-          "losses": 16,
+          "wins": 13,
+          "losses": 15,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.5,
-          "winRate": 0.429
+          "winRate": 0.464
         },
         "MCI": {
           "games": 35,
-          "wins": 23,
-          "losses": 12,
+          "wins": 22,
+          "losses": 13,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.657,
-          "winRate": 0.657
+          "winRate": 0.629
         },
         "WAT": {
           "games": 13,
@@ -299,39 +299,39 @@
         },
         "SWA": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 0.75,
-          "winRate": 0.25
+          "winRate": 0.5
         },
         "ARS": {
           "games": 38,
-          "wins": 23,
-          "losses": 15,
+          "wins": 25,
+          "losses": 13,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.5,
-          "winRate": 0.605
+          "winRate": 0.658
         },
         "BOU": {
           "games": 18,
-          "wins": 3,
-          "losses": 15,
+          "wins": 6,
+          "losses": 12,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.611,
-          "winRate": 0.167
+          "winRate": 0.333
         },
         "HUD": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 2,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.6,
           "overRate": 0,
-          "winRate": 0.6
+          "winRate": 0.4
         },
         "NEW": {
           "games": 24,
@@ -353,12 +353,12 @@
         },
         "FUL": {
           "games": 17,
-          "wins": 5,
-          "losses": 12,
+          "wins": 4,
+          "losses": 13,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.471,
-          "winRate": 0.294
+          "winRate": 0.235
         },
         "CAR": {
           "games": 1,
@@ -389,12 +389,12 @@
         },
         "AVL": {
           "games": 16,
-          "wins": 8,
-          "losses": 8,
+          "wins": 9,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.563,
-          "winRate": 0.5
+          "winRate": 0.563
         },
         "NOR": {
           "games": 5,
@@ -425,12 +425,12 @@
         },
         "NFO": {
           "games": 15,
-          "wins": 3,
-          "losses": 12,
+          "wins": 5,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.4,
-          "winRate": 0.2
+          "winRate": 0.333
         },
         "LTN": {
           "games": 2,
@@ -443,12 +443,12 @@
         },
         "IPS": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 0,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 0
         }
       },
       "eplAnalytics": {
@@ -583,30 +583,30 @@
       "teamStats": {
         "ARS": {
           "games": 44,
-          "wins": 28,
-          "losses": 16,
+          "wins": 26,
+          "losses": 18,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.591,
-          "winRate": 0.636
+          "winRate": 0.591
         },
         "LIV": {
           "games": 42,
-          "wins": 25,
-          "losses": 17,
+          "wins": 27,
+          "losses": 15,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.643,
-          "winRate": 0.595
+          "winRate": 0.643
         },
         "TOT": {
           "games": 35,
-          "wins": 22,
-          "losses": 13,
+          "wins": 21,
+          "losses": 14,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.657,
-          "winRate": 0.629
+          "winRate": 0.6
         },
         "CRY": {
           "games": 24,
@@ -619,21 +619,21 @@
         },
         "EVE": {
           "games": 38,
-          "wins": 16,
-          "losses": 22,
+          "wins": 20,
+          "losses": 18,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.526,
-          "winRate": 0.421
+          "winRate": 0.526
         },
         "STK": {
           "games": 8,
-          "wins": 5,
-          "losses": 3,
+          "wins": 4,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.25,
-          "winRate": 0.625
+          "winRate": 0.5
         },
         "WAT": {
           "games": 15,
@@ -646,21 +646,21 @@
         },
         "MUN": {
           "games": 27,
-          "wins": 13,
-          "losses": 14,
+          "wins": 14,
+          "losses": 13,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.519,
-          "winRate": 0.481
+          "winRate": 0.519
         },
         "CHE": {
           "games": 34,
-          "wins": 21,
-          "losses": 13,
+          "wins": 20,
+          "losses": 14,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.412,
-          "winRate": 0.618
+          "winRate": 0.588
         },
         "SWA": {
           "games": 7,
@@ -673,39 +673,39 @@
         },
         "MCI": {
           "games": 43,
-          "wins": 34,
-          "losses": 9,
+          "wins": 32,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.581,
-          "winRate": 0.791
+          "winRate": 0.744
         },
         "LEI": {
           "games": 30,
-          "wins": 18,
-          "losses": 12,
+          "wins": 16,
+          "losses": 14,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 0.733,
-          "winRate": 0.6
+          "winRate": 0.533
         },
         "WBA": {
           "games": 8,
-          "wins": 3,
-          "losses": 5,
+          "wins": 4,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.75,
-          "winRate": 0.375
+          "winRate": 0.5
         },
         "BOU": {
           "games": 14,
-          "wins": 6,
-          "losses": 8,
+          "wins": 8,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.714,
-          "winRate": 0.429
+          "winRate": 0.571
         },
         "SOU": {
           "games": 14,
@@ -727,12 +727,12 @@
         },
         "WHU": {
           "games": 34,
-          "wins": 12,
-          "losses": 22,
+          "wins": 11,
+          "losses": 23,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.588,
-          "winRate": 0.353
+          "winRate": 0.324
         },
         "HUL": {
           "games": 1,
@@ -754,12 +754,12 @@
         },
         "BHA": {
           "games": 20,
-          "wins": 10,
-          "losses": 10,
+          "wins": 9,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.6,
-          "winRate": 0.5
+          "winRate": 0.45
         },
         "HUD": {
           "games": 8,
@@ -772,12 +772,12 @@
         },
         "CAR": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 0,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4,
           "overRate": 0.75,
-          "winRate": 0.25
+          "winRate": 0
         },
         "WOL": {
           "games": 20,
@@ -790,12 +790,12 @@
         },
         "FUL": {
           "games": 11,
-          "wins": 7,
-          "losses": 4,
+          "wins": 8,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 0.727,
-          "winRate": 0.636
+          "winRate": 0.727
         },
         "NOR": {
           "games": 3,
@@ -808,48 +808,48 @@
         },
         "AVL": {
           "games": 22,
-          "wins": 12,
-          "losses": 10,
+          "wins": 10,
+          "losses": 12,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.682,
-          "winRate": 0.545
+          "winRate": 0.455
         },
         "SHU": {
           "games": 6,
-          "wins": 1,
-          "losses": 5,
+          "wins": 2,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.333,
-          "winRate": 0.167
+          "winRate": 0.333
         },
         "LEE": {
+          "games": 13,
+          "wins": 3,
+          "losses": 10,
+          "avgFoulDifferential": 0,
+          "avgTotalPoints": 3.2,
+          "overRate": 0.692,
+          "winRate": 0.231
+        },
+        "BRE": {
+          "games": 11,
+          "wins": 7,
+          "losses": 4,
+          "avgFoulDifferential": 0,
+          "avgTotalPoints": 3.5,
+          "overRate": 0.636,
+          "winRate": 0.636
+        },
+        "NFO": {
           "games": 13,
           "wins": 5,
           "losses": 8,
           "avgFoulDifferential": 0,
-          "avgTotalPoints": 3.2,
-          "overRate": 0.692,
-          "winRate": 0.385
-        },
-        "BRE": {
-          "games": 11,
-          "wins": 6,
-          "losses": 5,
-          "avgFoulDifferential": 0,
-          "avgTotalPoints": 3.5,
-          "overRate": 0.636,
-          "winRate": 0.545
-        },
-        "NFO": {
-          "games": 13,
-          "wins": 6,
-          "losses": 7,
-          "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.538,
-          "winRate": 0.462
+          "winRate": 0.385
         },
         "LTN": {
           "games": 2,
@@ -1011,12 +1011,12 @@
         },
         "WBA": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 4,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.4,
-          "winRate": 0.6
+          "winRate": 0.8
         },
         "WHU": {
           "games": 19,
@@ -1038,39 +1038,39 @@
         },
         "LIV": {
           "games": 29,
-          "wins": 24,
-          "losses": 5,
+          "wins": 21,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.586,
-          "winRate": 0.828
+          "winRate": 0.724
         },
         "LEI": {
           "games": 23,
-          "wins": 8,
-          "losses": 15,
+          "wins": 10,
+          "losses": 13,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.565,
-          "winRate": 0.348
+          "winRate": 0.435
         },
         "STK": {
           "games": 7,
-          "wins": 3,
-          "losses": 4,
+          "wins": 2,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4,
           "overRate": 0.714,
-          "winRate": 0.429
+          "winRate": 0.286
         },
         "BUR": {
           "games": 14,
-          "wins": 7,
-          "losses": 7,
+          "wins": 6,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.429,
-          "winRate": 0.5
+          "winRate": 0.429
         },
         "ARS": {
           "games": 25,
@@ -1083,12 +1083,12 @@
         },
         "TOT": {
           "games": 25,
-          "wins": 15,
-          "losses": 10,
+          "wins": 13,
+          "losses": 12,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.56,
-          "winRate": 0.6
+          "winRate": 0.52
         },
         "SOU": {
           "games": 12,
@@ -1101,39 +1101,39 @@
         },
         "EVE": {
           "games": 27,
-          "wins": 10,
-          "losses": 17,
+          "wins": 6,
+          "losses": 21,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.519,
-          "winRate": 0.37
+          "winRate": 0.222
         },
         "SWA": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.75,
-          "winRate": 0.25
+          "winRate": 0.5
         },
         "SUN": {
           "games": 5,
-          "wins": 1,
-          "losses": 4,
+          "wins": 0,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.8,
-          "winRate": 0.2
+          "winRate": 0
         },
         "MUN": {
           "games": 28,
-          "wins": 13,
-          "losses": 15,
+          "wins": 14,
+          "losses": 14,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.536,
-          "winRate": 0.464
+          "winRate": 0.5
         },
         "MID": {
           "games": 3,
@@ -1146,21 +1146,21 @@
         },
         "MCI": {
           "games": 22,
-          "wins": 19,
-          "losses": 3,
+          "wins": 18,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.9,
           "overRate": 0.727,
-          "winRate": 0.864
+          "winRate": 0.818
         },
         "WAT": {
           "games": 13,
-          "wins": 2,
-          "losses": 11,
+          "wins": 4,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.385,
-          "winRate": 0.154
+          "winRate": 0.308
         },
         "CHE": {
           "games": 22,
@@ -1191,21 +1191,21 @@
         },
         "BHA": {
           "games": 22,
-          "wins": 12,
-          "losses": 10,
+          "wins": 10,
+          "losses": 12,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.5,
-          "winRate": 0.545
+          "winRate": 0.455
         },
         "WOL": {
           "games": 20,
-          "wins": 12,
-          "losses": 8,
+          "wins": 10,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.45,
-          "winRate": 0.6
+          "winRate": 0.5
         },
         "CAR": {
           "games": 2,
@@ -1218,21 +1218,21 @@
         },
         "FUL": {
           "games": 12,
-          "wins": 3,
-          "losses": 9,
+          "wins": 4,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.667,
-          "winRate": 0.25
+          "winRate": 0.333
         },
         "AVL": {
           "games": 21,
-          "wins": 9,
-          "losses": 12,
+          "wins": 8,
+          "losses": 13,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.619,
-          "winRate": 0.429
+          "winRate": 0.381
         },
         "NOR": {
           "games": 2,
@@ -1245,30 +1245,30 @@
         },
         "LEE": {
           "games": 6,
-          "wins": 1,
-          "losses": 5,
+          "wins": 0,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0.167
+          "winRate": 0
         },
         "BRE": {
           "games": 7,
-          "wins": 6,
-          "losses": 1,
+          "wins": 4,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.571,
-          "winRate": 0.857
+          "winRate": 0.571
         },
         "NFO": {
           "games": 10,
-          "wins": 3,
-          "losses": 7,
+          "wins": 2,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.5,
-          "winRate": 0.3
+          "winRate": 0.2
         },
         "LTN": {
           "games": 1,
@@ -1439,48 +1439,48 @@
         },
         "SUN": {
           "games": 8,
-          "wins": 3,
-          "losses": 5,
+          "wins": 4,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0,
-          "winRate": 0.375
+          "winRate": 0.5
         },
         "WBA": {
           "games": 6,
-          "wins": 2,
-          "losses": 4,
+          "wins": 4,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.333,
-          "winRate": 0.333
+          "winRate": 0.667
         },
         "MID": {
           "games": 3,
-          "wins": 1,
-          "losses": 2,
+          "wins": 2,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.7,
           "overRate": 0,
-          "winRate": 0.333
+          "winRate": 0.667
         },
         "BOU": {
           "games": 19,
-          "wins": 9,
-          "losses": 10,
+          "wins": 10,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.526,
-          "winRate": 0.474
+          "winRate": 0.526
         },
         "SOU": {
           "games": 16,
-          "wins": 6,
-          "losses": 10,
+          "wins": 3,
+          "losses": 13,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.625,
-          "winRate": 0.375
+          "winRate": 0.188
         },
         "LEI": {
           "games": 11,
@@ -1511,12 +1511,12 @@
         },
         "TOT": {
           "games": 17,
-          "wins": 11,
-          "losses": 6,
+          "wins": 12,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.706,
-          "winRate": 0.647
+          "winRate": 0.706
         },
         "STK": {
           "games": 2,
@@ -1529,21 +1529,21 @@
         },
         "HUD": {
           "games": 6,
-          "wins": 1,
-          "losses": 5,
+          "wins": 2,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.8,
           "overRate": 0.167,
-          "winRate": 0.167
+          "winRate": 0.333
         },
         "NEW": {
           "games": 25,
-          "wins": 15,
-          "losses": 10,
+          "wins": 16,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.6,
-          "winRate": 0.6
+          "winRate": 0.64
         },
         "WHU": {
           "games": 23,
@@ -1556,48 +1556,48 @@
         },
         "CRY": {
           "games": 14,
-          "wins": 8,
-          "losses": 6,
+          "wins": 7,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.5,
-          "winRate": 0.571
+          "winRate": 0.5
         },
         "BHA": {
           "games": 21,
-          "wins": 13,
-          "losses": 8,
+          "wins": 11,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.667,
-          "winRate": 0.619
+          "winRate": 0.524
         },
         "ARS": {
           "games": 17,
-          "wins": 10,
-          "losses": 7,
+          "wins": 11,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.588,
-          "winRate": 0.588
+          "winRate": 0.647
         },
         "MUN": {
           "games": 19,
-          "wins": 13,
-          "losses": 6,
+          "wins": 15,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.632,
-          "winRate": 0.684
+          "winRate": 0.789
         },
         "LIV": {
           "games": 21,
-          "wins": 16,
-          "losses": 5,
+          "wins": 18,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.476,
-          "winRate": 0.762
+          "winRate": 0.857
         },
         "MCI": {
           "games": 12,
@@ -1619,12 +1619,12 @@
         },
         "WOL": {
           "games": 15,
-          "wins": 7,
-          "losses": 8,
+          "wins": 8,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.4,
-          "winRate": 0.467
+          "winRate": 0.533
         },
         "CAR": {
           "games": 2,
@@ -1637,12 +1637,12 @@
         },
         "CHE": {
           "games": 25,
-          "wins": 13,
-          "losses": 12,
+          "wins": 14,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.64,
-          "winRate": 0.52
+          "winRate": 0.56
         },
         "WAT": {
           "games": 2,
@@ -1664,30 +1664,30 @@
         },
         "SHU": {
           "games": 10,
-          "wins": 2,
-          "losses": 8,
+          "wins": 1,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.5,
-          "winRate": 0.2
+          "winRate": 0.1
         },
         "AVL": {
           "games": 16,
-          "wins": 9,
-          "losses": 7,
+          "wins": 8,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.625,
-          "winRate": 0.563
+          "winRate": 0.5
         },
         "LEE": {
           "games": 8,
-          "wins": 3,
-          "losses": 5,
+          "wins": 4,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.75,
-          "winRate": 0.375
+          "winRate": 0.5
         },
         "BRE": {
           "games": 11,
@@ -1858,21 +1858,21 @@
         },
         "SOU": {
           "games": 8,
-          "wins": 5,
-          "losses": 3,
+          "wins": 6,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.625,
-          "winRate": 0.625
+          "winRate": 0.75
         },
         "BHA": {
           "games": 19,
-          "wins": 6,
-          "losses": 13,
+          "wins": 7,
+          "losses": 12,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.421,
-          "winRate": 0.316
+          "winRate": 0.368
         },
         "BUR": {
           "games": 18,
@@ -1903,12 +1903,12 @@
         },
         "WAT": {
           "games": 6,
-          "wins": 4,
-          "losses": 2,
+          "wins": 3,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.667,
-          "winRate": 0.667
+          "winRate": 0.5
         },
         "EVE": {
           "games": 17,
@@ -1939,57 +1939,57 @@
         },
         "ARS": {
           "games": 28,
-          "wins": 19,
-          "losses": 9,
+          "wins": 18,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.393,
-          "winRate": 0.679
+          "winRate": 0.643
         },
         "CRY": {
           "games": 11,
-          "wins": 6,
-          "losses": 5,
+          "wins": 7,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.455,
-          "winRate": 0.545
+          "winRate": 0.636
         },
         "LIV": {
           "games": 30,
-          "wins": 21,
-          "losses": 9,
+          "wins": 22,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.467,
-          "winRate": 0.7
+          "winRate": 0.733
         },
         "BOU": {
           "games": 14,
-          "wins": 5,
-          "losses": 9,
+          "wins": 7,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.643,
-          "winRate": 0.357
+          "winRate": 0.5
         },
         "WHU": {
           "games": 23,
-          "wins": 10,
-          "losses": 13,
+          "wins": 12,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.391,
-          "winRate": 0.435
+          "winRate": 0.522
         },
         "CHE": {
           "games": 20,
-          "wins": 14,
-          "losses": 6,
+          "wins": 13,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.55,
-          "winRate": 0.7
+          "winRate": 0.65
         },
         "WOL": {
           "games": 14,
@@ -2002,12 +2002,12 @@
         },
         "TOT": {
           "games": 20,
-          "wins": 11,
-          "losses": 9,
+          "wins": 12,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.65,
-          "winRate": 0.55
+          "winRate": 0.6
         },
         "FUL": {
           "games": 11,
@@ -2029,21 +2029,21 @@
         },
         "AVL": {
           "games": 16,
-          "wins": 7,
-          "losses": 9,
+          "wins": 6,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.563,
-          "winRate": 0.438
+          "winRate": 0.375
         },
         "MUN": {
           "games": 19,
-          "wins": 10,
-          "losses": 9,
+          "wins": 12,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.526,
-          "winRate": 0.526
+          "winRate": 0.632
         },
         "MCI": {
           "games": 15,
@@ -2074,21 +2074,21 @@
         },
         "LEE": {
           "games": 12,
-          "wins": 4,
-          "losses": 8,
+          "wins": 5,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.417,
-          "winRate": 0.333
+          "winRate": 0.417
         },
         "BRE": {
           "games": 5,
-          "wins": 1,
-          "losses": 4,
+          "wins": 0,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.8,
-          "winRate": 0.2
+          "winRate": 0
         },
         "NFO": {
           "games": 10,
@@ -2258,12 +2258,12 @@
       "teamStats": {
         "BUR": {
           "games": 18,
-          "wins": 6,
-          "losses": 12,
+          "wins": 7,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.389,
-          "winRate": 0.333
+          "winRate": 0.389
         },
         "HUL": {
           "games": 3,
@@ -2276,30 +2276,30 @@
         },
         "SWA": {
           "games": 3,
-          "wins": 3,
-          "losses": 0,
+          "wins": 2,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.7,
           "overRate": 0.333,
-          "winRate": 1
+          "winRate": 0.667
         },
         "WAT": {
           "games": 13,
-          "wins": 6,
-          "losses": 7,
+          "wins": 5,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.538,
-          "winRate": 0.462
+          "winRate": 0.385
         },
         "WBA": {
           "games": 9,
-          "wins": 3,
-          "losses": 6,
+          "wins": 4,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.9,
           "overRate": 0.222,
-          "winRate": 0.333
+          "winRate": 0.444
         },
         "BOU": {
           "games": 15,
@@ -2312,30 +2312,30 @@
         },
         "LEI": {
           "games": 12,
-          "wins": 4,
-          "losses": 8,
+          "wins": 3,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.417,
-          "winRate": 0.333
+          "winRate": 0.25
         },
         "CRY": {
           "games": 18,
-          "wins": 11,
-          "losses": 7,
+          "wins": 9,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.611,
-          "winRate": 0.611
+          "winRate": 0.5
         },
         "SOU": {
           "games": 13,
-          "wins": 4,
-          "losses": 9,
+          "wins": 2,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.692,
-          "winRate": 0.308
+          "winRate": 0.154
         },
         "SUN": {
           "games": 3,
@@ -2348,30 +2348,30 @@
         },
         "EVE": {
           "games": 16,
-          "wins": 8,
-          "losses": 8,
+          "wins": 7,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.563,
-          "winRate": 0.5
+          "winRate": 0.438
         },
         "STK": {
           "games": 2,
-          "wins": 0,
-          "losses": 2,
+          "wins": 1,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 1,
-          "winRate": 0
+          "winRate": 0.5
         },
         "WHU": {
           "games": 16,
-          "wins": 8,
-          "losses": 8,
+          "wins": 7,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.375,
-          "winRate": 0.5
+          "winRate": 0.438
         },
         "HUD": {
           "games": 4,
@@ -2384,30 +2384,30 @@
         },
         "NEW": {
           "games": 17,
-          "wins": 5,
-          "losses": 12,
+          "wins": 8,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.588,
-          "winRate": 0.294
+          "winRate": 0.471
         },
         "MCI": {
           "games": 25,
-          "wins": 24,
-          "losses": 1,
+          "wins": 23,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.8,
-          "winRate": 0.96
+          "winRate": 0.92
         },
         "LIV": {
           "games": 28,
-          "wins": 19,
-          "losses": 9,
+          "wins": 21,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.571,
-          "winRate": 0.679
+          "winRate": 0.75
         },
         "BHA": {
           "games": 9,
@@ -2438,21 +2438,21 @@
         },
         "FUL": {
           "games": 11,
-          "wins": 3,
-          "losses": 8,
+          "wins": 4,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.545,
-          "winRate": 0.273
+          "winRate": 0.364
         },
         "ARS": {
           "games": 20,
-          "wins": 11,
-          "losses": 9,
+          "wins": 13,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.65,
-          "winRate": 0.55
+          "winRate": 0.65
         },
         "CAR": {
           "games": 1,
@@ -2465,12 +2465,12 @@
         },
         "TOT": {
           "games": 18,
-          "wins": 5,
-          "losses": 13,
+          "wins": 6,
+          "losses": 12,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.556,
-          "winRate": 0.278
+          "winRate": 0.333
         },
         "NOR": {
           "games": 5,
@@ -2483,12 +2483,12 @@
         },
         "WOL": {
           "games": 13,
-          "wins": 7,
-          "losses": 6,
+          "wins": 5,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.231,
-          "winRate": 0.538
+          "winRate": 0.385
         },
         "SHU": {
           "games": 5,
@@ -2501,21 +2501,21 @@
         },
         "AVL": {
           "games": 12,
-          "wins": 3,
-          "losses": 9,
+          "wins": 4,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.583,
-          "winRate": 0.25
+          "winRate": 0.333
         },
         "LEE": {
           "games": 13,
-          "wins": 7,
-          "losses": 6,
+          "wins": 6,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.7,
           "overRate": 0.769,
-          "winRate": 0.538
+          "winRate": 0.462
         },
         "BRE": {
           "games": 7,
@@ -2528,12 +2528,12 @@
         },
         "NFO": {
           "games": 9,
-          "wins": 4,
-          "losses": 5,
+          "wins": 3,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.333,
-          "winRate": 0.444
+          "winRate": 0.333
         },
         "LTN": {
           "games": 2,
@@ -2673,21 +2673,21 @@
       "teamStats": {
         "EVE": {
           "games": 16,
-          "wins": 9,
-          "losses": 7,
+          "wins": 8,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.9,
           "overRate": 0.375,
-          "winRate": 0.563
+          "winRate": 0.5
         },
         "TOT": {
           "games": 17,
-          "wins": 11,
-          "losses": 6,
+          "wins": 12,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.412,
-          "winRate": 0.647
+          "winRate": 0.706
         },
         "SUN": {
           "games": 4,
@@ -2709,48 +2709,48 @@
         },
         "WHU": {
           "games": 23,
-          "wins": 11,
-          "losses": 12,
+          "wins": 12,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.565,
-          "winRate": 0.478
+          "winRate": 0.522
         },
         "WAT": {
           "games": 12,
-          "wins": 2,
-          "losses": 10,
+          "wins": 3,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.583,
-          "winRate": 0.167
+          "winRate": 0.25
         },
         "CHE": {
           "games": 19,
-          "wins": 10,
-          "losses": 9,
+          "wins": 11,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.737,
-          "winRate": 0.526
+          "winRate": 0.579
         },
         "LIV": {
           "games": 23,
-          "wins": 21,
-          "losses": 2,
+          "wins": 19,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.522,
-          "winRate": 0.913
+          "winRate": 0.826
         },
         "STK": {
           "games": 5,
-          "wins": 2,
-          "losses": 3,
+          "wins": 1,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.6,
-          "winRate": 0.4
+          "winRate": 0.2
         },
         "WBA": {
           "games": 6,
@@ -2772,102 +2772,102 @@
         },
         "SOU": {
           "games": 10,
-          "wins": 1,
-          "losses": 9,
+          "wins": 2,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.5,
-          "winRate": 0.1
+          "winRate": 0.2
         },
         "CRY": {
           "games": 20,
-          "wins": 10,
-          "losses": 10,
+          "wins": 11,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.45,
-          "winRate": 0.5
+          "winRate": 0.55
         },
         "MUN": {
           "games": 23,
-          "wins": 15,
-          "losses": 8,
+          "wins": 14,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.609,
-          "winRate": 0.652
+          "winRate": 0.609
         },
         "ARS": {
           "games": 22,
-          "wins": 9,
-          "losses": 13,
+          "wins": 12,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.773,
-          "winRate": 0.409
+          "winRate": 0.545
         },
         "SWA": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 4,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.4,
-          "winRate": 0.6
+          "winRate": 0.8
         },
         "BUR": {
           "games": 17,
-          "wins": 10,
-          "losses": 7,
+          "wins": 12,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.412,
-          "winRate": 0.588
+          "winRate": 0.706
         },
         "BOU": {
           "games": 9,
-          "wins": 1,
-          "losses": 8,
+          "wins": 2,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.667,
-          "winRate": 0.111
+          "winRate": 0.222
         },
         "MCI": {
           "games": 18,
-          "wins": 14,
-          "losses": 4,
+          "wins": 13,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.5,
-          "winRate": 0.778
+          "winRate": 0.722
         },
         "HUL": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.667,
-          "winRate": 0.667
+          "winRate": 0.333
         },
         "BHA": {
           "games": 12,
-          "wins": 4,
-          "losses": 8,
+          "wins": 3,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.5,
-          "winRate": 0.333
+          "winRate": 0.25
         },
         "NEW": {
           "games": 15,
-          "wins": 7,
-          "losses": 8,
+          "wins": 5,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.533,
-          "winRate": 0.467
+          "winRate": 0.333
         },
         "HUD": {
           "games": 1,
@@ -2880,12 +2880,12 @@
         },
         "WOL": {
           "games": 12,
-          "wins": 4,
-          "losses": 8,
+          "wins": 3,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.5,
-          "winRate": 0.333
+          "winRate": 0.25
         },
         "FUL": {
           "games": 5,
@@ -2916,12 +2916,12 @@
         },
         "NOR": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.75,
-          "winRate": 0.25
+          "winRate": 0.5
         },
         "SHU": {
           "games": 3,
@@ -2934,12 +2934,12 @@
         },
         "BRE": {
           "games": 3,
-          "wins": 1,
-          "losses": 2,
+          "wins": 3,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 0.7,
           "overRate": 0,
-          "winRate": 0.333
+          "winRate": 1
         }
       },
       "eplAnalytics": {
@@ -3080,48 +3080,48 @@
         },
         "MUN": {
           "games": 19,
-          "wins": 12,
-          "losses": 7,
+          "wins": 13,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.526,
-          "winRate": 0.632
+          "winRate": 0.684
         },
         "MCI": {
           "games": 25,
-          "wins": 17,
-          "losses": 8,
+          "wins": 18,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.72,
-          "winRate": 0.68
+          "winRate": 0.72
         },
         "WHU": {
           "games": 13,
-          "wins": 6,
-          "losses": 7,
+          "wins": 3,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.615,
-          "winRate": 0.462
+          "winRate": 0.231
         },
         "SWA": {
           "games": 6,
-          "wins": 4,
-          "losses": 2,
+          "wins": 3,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.5,
-          "winRate": 0.667
+          "winRate": 0.5
         },
         "CHE": {
           "games": 20,
-          "wins": 13,
-          "losses": 7,
+          "wins": 12,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.7,
-          "winRate": 0.65
+          "winRate": 0.6
         },
         "LIV": {
           "games": 23,
@@ -3143,30 +3143,30 @@
         },
         "TOT": {
           "games": 22,
-          "wins": 17,
-          "losses": 5,
+          "wins": 18,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.591,
-          "winRate": 0.773
+          "winRate": 0.818
         },
         "LEI": {
           "games": 12,
-          "wins": 5,
-          "losses": 7,
+          "wins": 4,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.667,
-          "winRate": 0.417
+          "winRate": 0.333
         },
         "CRY": {
           "games": 24,
-          "wins": 12,
-          "losses": 12,
+          "wins": 14,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.375,
-          "winRate": 0.5
+          "winRate": 0.583
         },
         "STK": {
           "games": 3,
@@ -3179,48 +3179,48 @@
         },
         "ARS": {
           "games": 20,
-          "wins": 11,
-          "losses": 9,
+          "wins": 13,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.55,
-          "winRate": 0.55
+          "winRate": 0.65
         },
         "BUR": {
           "games": 11,
-          "wins": 1,
-          "losses": 10,
+          "wins": 2,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.545,
-          "winRate": 0.091
+          "winRate": 0.182
         },
         "SUN": {
           "games": 4,
-          "wins": 2,
-          "losses": 2,
+          "wins": 3,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.75,
-          "winRate": 0.5
+          "winRate": 0.75
         },
         "WAT": {
           "games": 10,
-          "wins": 6,
-          "losses": 4,
+          "wins": 5,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0.6
+          "winRate": 0.5
         },
         "SOU": {
           "games": 18,
-          "wins": 7,
-          "losses": 11,
+          "wins": 5,
+          "losses": 13,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.556,
-          "winRate": 0.389
+          "winRate": 0.278
         },
         "NEW": {
           "games": 19,
@@ -3233,21 +3233,21 @@
         },
         "EVE": {
           "games": 14,
-          "wins": 4,
-          "losses": 10,
+          "wins": 5,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.714,
-          "winRate": 0.286
+          "winRate": 0.357
         },
         "BHA": {
           "games": 12,
-          "wins": 8,
-          "losses": 4,
+          "wins": 7,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.25,
-          "winRate": 0.667
+          "winRate": 0.583
         },
         "HUD": {
           "games": 3,
@@ -3260,12 +3260,12 @@
         },
         "WOL": {
           "games": 10,
-          "wins": 6,
-          "losses": 4,
+          "wins": 5,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.3,
-          "winRate": 0.6
+          "winRate": 0.5
         },
         "FUL": {
           "games": 5,
@@ -3323,12 +3323,12 @@
         },
         "NFO": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 1
         }
       },
       "eplAnalytics": {
@@ -3459,39 +3459,39 @@
       "teamStats": {
         "HUL": {
           "games": 4,
-          "wins": 2,
-          "losses": 2,
+          "wins": 1,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 0.25
         },
         "LEI": {
           "games": 20,
-          "wins": 5,
-          "losses": 15,
+          "wins": 6,
+          "losses": 14,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.55,
-          "winRate": 0.25
+          "winRate": 0.3
         },
         "STK": {
           "games": 7,
-          "wins": 2,
-          "losses": 5,
+          "wins": 1,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.7,
           "overRate": 0.857,
-          "winRate": 0.286
+          "winRate": 0.143
         },
         "MCI": {
           "games": 19,
-          "wins": 13,
-          "losses": 6,
+          "wins": 12,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.632,
-          "winRate": 0.684
+          "winRate": 0.632
         },
         "CRY": {
           "games": 10,
@@ -3504,21 +3504,21 @@
         },
         "BOU": {
           "games": 13,
-          "wins": 3,
-          "losses": 10,
+          "wins": 5,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.692,
-          "winRate": 0.231
+          "winRate": 0.385
         },
         "TOT": {
           "games": 17,
-          "wins": 11,
-          "losses": 6,
+          "wins": 10,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.353,
-          "winRate": 0.647
+          "winRate": 0.588
         },
         "SUN": {
           "games": 4,
@@ -3531,39 +3531,39 @@
         },
         "MUN": {
           "games": 26,
-          "wins": 17,
-          "losses": 9,
+          "wins": 19,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.385,
-          "winRate": 0.654
+          "winRate": 0.731
         },
         "WAT": {
           "games": 14,
-          "wins": 6,
-          "losses": 8,
+          "wins": 7,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.714,
-          "winRate": 0.429
+          "winRate": 0.5
         },
         "SOU": {
           "games": 11,
-          "wins": 6,
-          "losses": 5,
+          "wins": 4,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.364,
-          "winRate": 0.545
+          "winRate": 0.364
         },
         "BUR": {
           "games": 21,
-          "wins": 11,
-          "losses": 10,
+          "wins": 12,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.333,
-          "winRate": 0.524
+          "winRate": 0.571
         },
         "ARS": {
           "games": 18,
@@ -3585,21 +3585,21 @@
         },
         "WHU": {
           "games": 15,
-          "wins": 5,
-          "losses": 10,
+          "wins": 6,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.467,
-          "winRate": 0.333
+          "winRate": 0.4
         },
         "CHE": {
           "games": 14,
-          "wins": 11,
-          "losses": 3,
+          "wins": 10,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.571,
-          "winRate": 0.786
+          "winRate": 0.714
         },
         "WBA": {
           "games": 10,
@@ -3612,48 +3612,48 @@
         },
         "EVE": {
           "games": 9,
-          "wins": 4,
-          "losses": 5,
+          "wins": 6,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.444,
-          "winRate": 0.444
+          "winRate": 0.667
         },
         "LIV": {
           "games": 12,
-          "wins": 10,
-          "losses": 2,
+          "wins": 11,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.583,
-          "winRate": 0.833
+          "winRate": 0.917
         },
         "SWA": {
           "games": 7,
-          "wins": 2,
-          "losses": 5,
+          "wins": 3,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.429,
-          "winRate": 0.286
+          "winRate": 0.429
         },
         "NEW": {
           "games": 11,
-          "wins": 7,
-          "losses": 4,
+          "wins": 5,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.273,
-          "winRate": 0.636
+          "winRate": 0.455
         },
         "BHA": {
           "games": 15,
-          "wins": 6,
-          "losses": 9,
+          "wins": 5,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.267,
-          "winRate": 0.4
+          "winRate": 0.333
         },
         "HUD": {
           "games": 5,
@@ -3675,12 +3675,12 @@
         },
         "WOL": {
           "games": 13,
-          "wins": 5,
-          "losses": 8,
+          "wins": 6,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.308,
-          "winRate": 0.385
+          "winRate": 0.462
         },
         "CAR": {
           "games": 3,
@@ -3711,12 +3711,12 @@
         },
         "LEE": {
           "games": 5,
-          "wins": 1,
-          "losses": 4,
+          "wins": 2,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.2,
-          "winRate": 0.2
+          "winRate": 0.4
         },
         "NOR": {
           "games": 2,
@@ -3883,12 +3883,12 @@
         },
         "WAT": {
           "games": 15,
-          "wins": 5,
-          "losses": 10,
+          "wins": 6,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 0.667,
-          "winRate": 0.333
+          "winRate": 0.4
         },
         "CHE": {
           "games": 20,
@@ -3910,30 +3910,30 @@
         },
         "MUN": {
           "games": 29,
-          "wins": 19,
-          "losses": 10,
+          "wins": 22,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.552,
-          "winRate": 0.655
+          "winRate": 0.759
         },
         "MCI": {
           "games": 18,
-          "wins": 16,
-          "losses": 2,
+          "wins": 18,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.556,
-          "winRate": 0.889
+          "winRate": 1
         },
         "BOU": {
           "games": 8,
-          "wins": 2,
-          "losses": 6,
+          "wins": 3,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.5,
-          "winRate": 0.25
+          "winRate": 0.375
         },
         "WHU": {
           "games": 15,
@@ -3946,39 +3946,39 @@
         },
         "SOU": {
           "games": 17,
-          "wins": 7,
-          "losses": 10,
+          "wins": 5,
+          "losses": 12,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.471,
-          "winRate": 0.412
+          "winRate": 0.294
         },
         "EVE": {
           "games": 17,
-          "wins": 7,
-          "losses": 10,
+          "wins": 8,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.412,
-          "winRate": 0.412
+          "winRate": 0.471
         },
         "CRY": {
           "games": 22,
-          "wins": 8,
-          "losses": 14,
+          "wins": 10,
+          "losses": 12,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.455,
-          "winRate": 0.364
+          "winRate": 0.455
         },
         "ARS": {
           "games": 17,
-          "wins": 13,
-          "losses": 4,
+          "wins": 12,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.471,
-          "winRate": 0.765
+          "winRate": 0.706
         },
         "MID": {
           "games": 4,
@@ -3991,66 +3991,66 @@
         },
         "TOT": {
           "games": 18,
-          "wins": 12,
-          "losses": 6,
+          "wins": 10,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.667,
-          "winRate": 0.667
+          "winRate": 0.556
         },
         "LIV": {
           "games": 16,
-          "wins": 15,
-          "losses": 1,
+          "wins": 14,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.6,
           "overRate": 0.75,
-          "winRate": 0.938
+          "winRate": 0.875
         },
         "LEI": {
           "games": 11,
-          "wins": 6,
-          "losses": 5,
+          "wins": 5,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.727,
-          "winRate": 0.545
+          "winRate": 0.455
         },
         "STK": {
           "games": 3,
-          "wins": 1,
-          "losses": 2,
+          "wins": 0,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.333,
-          "winRate": 0.333
+          "winRate": 0
         },
         "WBA": {
           "games": 6,
-          "wins": 2,
-          "losses": 4,
+          "wins": 1,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.5,
-          "winRate": 0.333
+          "winRate": 0.167
         },
         "HUD": {
           "games": 7,
-          "wins": 2,
-          "losses": 5,
+          "wins": 3,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.9,
           "overRate": 0.857,
-          "winRate": 0.286
+          "winRate": 0.429
         },
         "BHA": {
           "games": 13,
-          "wins": 3,
-          "losses": 10,
+          "wins": 4,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.538,
-          "winRate": 0.231
+          "winRate": 0.308
         },
         "CAR": {
           "games": 5,
@@ -4072,12 +4072,12 @@
         },
         "FUL": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 0,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0,
-          "winRate": 0.25
+          "winRate": 0
         },
         "AVL": {
           "games": 7,
@@ -4247,21 +4247,21 @@
       "teamStats": {
         "NEW": {
           "games": 18,
-          "wins": 5,
-          "losses": 13,
+          "wins": 7,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.444,
-          "winRate": 0.278
+          "winRate": 0.389
         },
         "BUR": {
           "games": 7,
-          "wins": 4,
-          "losses": 3,
+          "wins": 3,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.429,
-          "winRate": 0.571
+          "winRate": 0.429
         },
         "LEI": {
           "games": 7,
@@ -4274,12 +4274,12 @@
         },
         "SOU": {
           "games": 9,
-          "wins": 3,
-          "losses": 6,
+          "wins": 4,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.6,
           "overRate": 0.667,
-          "winRate": 0.333
+          "winRate": 0.444
         },
         "WAT": {
           "games": 8,
@@ -4319,30 +4319,30 @@
         },
         "WHU": {
           "games": 11,
-          "wins": 6,
-          "losses": 5,
+          "wins": 5,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.364,
-          "winRate": 0.545
+          "winRate": 0.455
         },
         "BHA": {
           "games": 17,
-          "wins": 8,
-          "losses": 9,
+          "wins": 12,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.588,
-          "winRate": 0.471
+          "winRate": 0.706
         },
         "EVE": {
           "games": 16,
-          "wins": 6,
-          "losses": 10,
+          "wins": 5,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.375,
-          "winRate": 0.375
+          "winRate": 0.313
         },
         "SHU": {
           "games": 7,
@@ -4355,30 +4355,30 @@
         },
         "NOR": {
           "games": 7,
-          "wins": 1,
-          "losses": 6,
+          "wins": 0,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.6,
           "overRate": 0.286,
-          "winRate": 0.143
+          "winRate": 0
         },
         "CRY": {
           "games": 15,
-          "wins": 8,
-          "losses": 7,
+          "wins": 6,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.4,
-          "winRate": 0.533
+          "winRate": 0.4
         },
         "AVL": {
           "games": 13,
-          "wins": 10,
-          "losses": 3,
+          "wins": 9,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.769,
-          "winRate": 0.769
+          "winRate": 0.692
         },
         "FUL": {
           "games": 6,
@@ -4400,30 +4400,30 @@
         },
         "LEE": {
           "games": 8,
-          "wins": 4,
-          "losses": 4,
+          "wins": 3,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.625,
-          "winRate": 0.5
+          "winRate": 0.375
         },
         "BRE": {
           "games": 14,
-          "wins": 9,
-          "losses": 5,
+          "wins": 7,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.357,
-          "winRate": 0.643
+          "winRate": 0.5
         },
         "MCI": {
           "games": 13,
-          "wins": 10,
-          "losses": 3,
+          "wins": 11,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.462,
-          "winRate": 0.769
+          "winRate": 0.846
         },
         "NFO": {
           "games": 11,
@@ -4436,12 +4436,12 @@
         },
         "TOT": {
           "games": 13,
-          "wins": 5,
-          "losses": 8,
+          "wins": 6,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.7,
           "overRate": 0.692,
-          "winRate": 0.385
+          "winRate": 0.462
         },
         "CHE": {
           "games": 9,
@@ -4454,21 +4454,21 @@
         },
         "MUN": {
           "games": 11,
-          "wins": 8,
-          "losses": 3,
+          "wins": 5,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.182,
-          "winRate": 0.727
+          "winRate": 0.455
         },
         "ARS": {
           "games": 12,
-          "wins": 12,
-          "losses": 0,
+          "wins": 11,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 0.667,
-          "winRate": 1
+          "winRate": 0.917
         },
         "LIV": {
           "games": 14,
@@ -4617,57 +4617,57 @@
       "teamStats": {
         "MID": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.333,
-          "winRate": 0.667
+          "winRate": 0.333
         },
         "STK": {
           "games": 5,
-          "wins": 2,
-          "losses": 3,
+          "wins": 1,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.2,
-          "winRate": 0.4
+          "winRate": 0.2
         },
         "WAT": {
           "games": 9,
-          "wins": 1,
-          "losses": 8,
+          "wins": 2,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.444,
-          "winRate": 0.111
+          "winRate": 0.222
         },
         "ARS": {
           "games": 10,
-          "wins": 6,
-          "losses": 4,
+          "wins": 7,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.5,
-          "winRate": 0.6
+          "winRate": 0.7
         },
         "BOU": {
           "games": 12,
-          "wins": 8,
-          "losses": 4,
+          "wins": 7,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.5,
-          "winRate": 0.667
+          "winRate": 0.583
         },
         "WBA": {
           "games": 4,
-          "wins": 2,
-          "losses": 2,
+          "wins": 3,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0,
-          "winRate": 0.5
+          "winRate": 0.75
         },
         "TOT": {
           "games": 16,
@@ -4689,12 +4689,12 @@
         },
         "MCI": {
           "games": 13,
-          "wins": 10,
-          "losses": 3,
+          "wins": 11,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.538,
-          "winRate": 0.769
+          "winRate": 0.846
         },
         "SWA": {
           "games": 6,
@@ -4707,12 +4707,12 @@
         },
         "CRY": {
           "games": 15,
-          "wins": 4,
-          "losses": 11,
+          "wins": 5,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.467,
-          "winRate": 0.267
+          "winRate": 0.333
         },
         "BUR": {
           "games": 16,
@@ -4725,21 +4725,21 @@
         },
         "EVE": {
           "games": 14,
-          "wins": 7,
-          "losses": 7,
+          "wins": 8,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.429,
-          "winRate": 0.5
+          "winRate": 0.571
         },
         "SOU": {
           "games": 16,
-          "wins": 10,
-          "losses": 6,
+          "wins": 8,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.75,
-          "winRate": 0.625
+          "winRate": 0.5
         },
         "LIV": {
           "games": 17,
@@ -4770,12 +4770,12 @@
         },
         "MUN": {
           "games": 9,
-          "wins": 5,
-          "losses": 4,
+          "wins": 7,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.444,
-          "winRate": 0.556
+          "winRate": 0.778
         },
         "HUD": {
           "games": 8,
@@ -4851,21 +4851,21 @@
         },
         "NOR": {
           "games": 8,
-          "wins": 2,
-          "losses": 6,
+          "wins": 1,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.625,
-          "winRate": 0.25
+          "winRate": 0.125
         },
         "LEE": {
           "games": 6,
-          "wins": 2,
-          "losses": 4,
+          "wins": 3,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.5,
-          "winRate": 0.333
+          "winRate": 0.5
         }
       },
       "eplAnalytics": {
@@ -5025,39 +5025,39 @@
         },
         "EVE": {
           "games": 20,
-          "wins": 11,
-          "losses": 9,
+          "wins": 9,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.45,
-          "winRate": 0.55
+          "winRate": 0.45
         },
         "SHU": {
           "games": 9,
-          "wins": 3,
-          "losses": 6,
+          "wins": 2,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.667,
-          "winRate": 0.333
+          "winRate": 0.222
         },
         "LEI": {
           "games": 11,
-          "wins": 7,
-          "losses": 4,
+          "wins": 8,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.545,
-          "winRate": 0.636
+          "winRate": 0.727
         },
         "NOR": {
           "games": 7,
-          "wins": 2,
-          "losses": 5,
+          "wins": 1,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.7,
           "overRate": 0.571,
-          "winRate": 0.286
+          "winRate": 0.143
         },
         "AVL": {
           "games": 18,
@@ -5070,21 +5070,21 @@
         },
         "SOU": {
           "games": 12,
-          "wins": 6,
-          "losses": 6,
+          "wins": 7,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.333,
-          "winRate": 0.5
+          "winRate": 0.583
         },
         "CRY": {
           "games": 19,
-          "wins": 11,
-          "losses": 8,
+          "wins": 8,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.579,
-          "winRate": 0.579
+          "winRate": 0.421
         },
         "WOL": {
           "games": 13,
@@ -5097,30 +5097,30 @@
         },
         "NEW": {
           "games": 13,
-          "wins": 5,
-          "losses": 8,
+          "wins": 7,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.692,
-          "winRate": 0.385
+          "winRate": 0.538
         },
         "BUR": {
           "games": 5,
-          "wins": 1,
-          "losses": 4,
+          "wins": 4,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.2,
-          "winRate": 0.2
+          "winRate": 0.8
         },
         "MCI": {
           "games": 13,
-          "wins": 9,
-          "losses": 4,
+          "wins": 11,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.615,
-          "winRate": 0.692
+          "winRate": 0.846
         },
         "WHU": {
           "games": 10,
@@ -5151,48 +5151,48 @@
         },
         "FUL": {
           "games": 11,
-          "wins": 4,
-          "losses": 7,
+          "wins": 5,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.455,
-          "winRate": 0.364
+          "winRate": 0.455
         },
         "CHE": {
           "games": 13,
-          "wins": 5,
-          "losses": 8,
+          "wins": 6,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.615,
-          "winRate": 0.385
+          "winRate": 0.462
         },
         "LIV": {
           "games": 16,
-          "wins": 11,
-          "losses": 5,
+          "wins": 13,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.7,
           "overRate": 0.75,
-          "winRate": 0.688
+          "winRate": 0.813
         },
         "ARS": {
           "games": 5,
-          "wins": 2,
-          "losses": 3,
+          "wins": 3,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.2,
           "overRate": 0.2,
-          "winRate": 0.4
+          "winRate": 0.6
         },
         "BRE": {
           "games": 11,
-          "wins": 6,
-          "losses": 5,
+          "wins": 7,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.455,
-          "winRate": 0.545
+          "winRate": 0.636
         },
         "MUN": {
           "games": 8,
@@ -5205,12 +5205,12 @@
         },
         "BOU": {
           "games": 8,
-          "wins": 6,
-          "losses": 2,
+          "wins": 5,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.625,
-          "winRate": 0.75
+          "winRate": 0.625
         },
         "NFO": {
           "games": 6,
@@ -5232,12 +5232,12 @@
         },
         "LTN": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.667,
-          "winRate": 0.667
+          "winRate": 0.333
         },
         "SUN": {
           "games": 2,
@@ -5387,48 +5387,48 @@
         },
         "BOU": {
           "games": 10,
-          "wins": 7,
-          "losses": 3,
+          "wins": 6,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.6,
-          "winRate": 0.7
+          "winRate": 0.6
         },
         "WOL": {
           "games": 17,
-          "wins": 10,
-          "losses": 7,
+          "wins": 8,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.529,
-          "winRate": 0.588
+          "winRate": 0.471
         },
         "SOU": {
           "games": 10,
-          "wins": 7,
-          "losses": 3,
+          "wins": 5,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.3,
-          "winRate": 0.7
+          "winRate": 0.5
         },
         "BUR": {
           "games": 7,
-          "wins": 4,
-          "losses": 3,
+          "wins": 2,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.286,
-          "winRate": 0.571
+          "winRate": 0.286
         },
         "CRY": {
           "games": 8,
-          "wins": 5,
-          "losses": 3,
+          "wins": 4,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.6,
           "overRate": 0,
-          "winRate": 0.625
+          "winRate": 0.5
         },
         "SHU": {
           "games": 9,
@@ -5441,30 +5441,30 @@
         },
         "AVL": {
           "games": 13,
-          "wins": 7,
-          "losses": 6,
+          "wins": 8,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.462,
-          "winRate": 0.538
+          "winRate": 0.615
         },
         "NOR": {
           "games": 3,
-          "wins": 0,
-          "losses": 3,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.667,
-          "winRate": 0
+          "winRate": 0.333
         },
         "NEW": {
           "games": 18,
-          "wins": 9,
-          "losses": 9,
+          "wins": 8,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.333,
-          "winRate": 0.5
+          "winRate": 0.444
         },
         "ARS": {
           "games": 10,
@@ -5477,21 +5477,21 @@
         },
         "TOT": {
           "games": 11,
-          "wins": 5,
-          "losses": 6,
+          "wins": 4,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.455,
-          "winRate": 0.455
+          "winRate": 0.364
         },
         "CHE": {
           "games": 12,
-          "wins": 8,
-          "losses": 4,
+          "wins": 7,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.5,
-          "winRate": 0.667
+          "winRate": 0.583
         },
         "WHU": {
           "games": 12,
@@ -5513,21 +5513,21 @@
         },
         "WBA": {
           "games": 2,
-          "wins": 0,
-          "losses": 2,
+          "wins": 1,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.5,
-          "winRate": 0
+          "winRate": 0.5
         },
         "BHA": {
           "games": 12,
-          "wins": 7,
-          "losses": 5,
+          "wins": 5,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.417,
-          "winRate": 0.583
+          "winRate": 0.417
         },
         "FUL": {
           "games": 10,
@@ -5549,21 +5549,21 @@
         },
         "LEE": {
           "games": 11,
-          "wins": 5,
-          "losses": 6,
+          "wins": 4,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.364,
-          "winRate": 0.455
+          "winRate": 0.364
         },
         "BRE": {
           "games": 16,
-          "wins": 6,
-          "losses": 10,
+          "wins": 7,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.688,
-          "winRate": 0.375
+          "winRate": 0.438
         },
         "WAT": {
           "games": 2,
@@ -5759,21 +5759,21 @@
         },
         "FUL": {
           "games": 9,
-          "wins": 3,
-          "losses": 6,
+          "wins": 4,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.556,
-          "winRate": 0.333
+          "winRate": 0.444
         },
         "BUR": {
           "games": 11,
-          "wins": 3,
-          "losses": 8,
+          "wins": 5,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.455,
-          "winRate": 0.273
+          "winRate": 0.455
         },
         "LEI": {
           "games": 12,
@@ -5804,12 +5804,12 @@
         },
         "BHA": {
           "games": 12,
-          "wins": 6,
-          "losses": 6,
+          "wins": 5,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.833,
-          "winRate": 0.5
+          "winRate": 0.417
         },
         "WHU": {
           "games": 13,
@@ -5822,30 +5822,30 @@
         },
         "BOU": {
           "games": 10,
-          "wins": 4,
-          "losses": 6,
+          "wins": 5,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.4,
-          "winRate": 0.4
+          "winRate": 0.5
         },
         "WAT": {
           "games": 3,
-          "wins": 0,
-          "losses": 3,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.7,
           "overRate": 0.667,
-          "winRate": 0
+          "winRate": 0.333
         },
         "WOL": {
           "games": 12,
-          "wins": 6,
-          "losses": 6,
+          "wins": 8,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 0.667
         },
         "SHU": {
           "games": 8,
@@ -5876,12 +5876,12 @@
         },
         "AVL": {
           "games": 14,
-          "wins": 11,
-          "losses": 3,
+          "wins": 9,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.571,
-          "winRate": 0.786
+          "winRate": 0.643
         },
         "SOU": {
           "games": 8,
@@ -5894,21 +5894,21 @@
         },
         "CHE": {
           "games": 12,
-          "wins": 8,
-          "losses": 4,
+          "wins": 7,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.5,
-          "winRate": 0.667
+          "winRate": 0.583
         },
         "LIV": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
+          "wins": 3,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.333,
-          "winRate": 0.667
+          "winRate": 1
         },
         "TOT": {
           "games": 11,
@@ -5921,12 +5921,12 @@
         },
         "LEE": {
           "games": 9,
-          "wins": 3,
-          "losses": 6,
+          "wins": 4,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.556,
-          "winRate": 0.333
+          "winRate": 0.444
         },
         "MUN": {
           "games": 6,
@@ -6103,21 +6103,21 @@
       "teamStats": {
         "BHA": {
           "games": 15,
-          "wins": 6,
-          "losses": 9,
+          "wins": 9,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.533,
-          "winRate": 0.4
+          "winRate": 0.6
         },
         "SHU": {
           "games": 6,
-          "wins": 3,
-          "losses": 3,
+          "wins": 4,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.8,
           "overRate": 0.333,
-          "winRate": 0.5
+          "winRate": 0.667
         },
         "WHU": {
           "games": 8,
@@ -6139,21 +6139,21 @@
         },
         "LEE": {
           "games": 8,
-          "wins": 5,
-          "losses": 3,
+          "wins": 4,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.625,
-          "winRate": 0.625
+          "winRate": 0.5
         },
         "BUR": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 0,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.5,
-          "winRate": 0.25
+          "winRate": 0
         },
         "NEW": {
           "games": 16,
@@ -6166,21 +6166,21 @@
         },
         "LEI": {
           "games": 12,
-          "wins": 7,
-          "losses": 5,
+          "wins": 6,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.667,
-          "winRate": 0.583
+          "winRate": 0.5
         },
         "AVL": {
           "games": 14,
-          "wins": 5,
-          "losses": 9,
+          "wins": 6,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.429,
-          "winRate": 0.357
+          "winRate": 0.429
         },
         "WOL": {
           "games": 13,
@@ -6193,12 +6193,12 @@
         },
         "SOU": {
           "games": 9,
-          "wins": 4,
-          "losses": 5,
+          "wins": 2,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.556,
-          "winRate": 0.444
+          "winRate": 0.222
         },
         "NOR": {
           "games": 3,
@@ -6229,21 +6229,21 @@
         },
         "TOT": {
           "games": 13,
-          "wins": 5,
-          "losses": 8,
+          "wins": 4,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.615,
-          "winRate": 0.385
+          "winRate": 0.308
         },
         "CRY": {
           "games": 13,
-          "wins": 5,
-          "losses": 8,
+          "wins": 3,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.538,
-          "winRate": 0.385
+          "winRate": 0.231
         },
         "NFO": {
           "games": 8,
@@ -6256,21 +6256,21 @@
         },
         "ARS": {
           "games": 7,
-          "wins": 6,
-          "losses": 1,
+          "wins": 5,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.714,
-          "winRate": 0.857
+          "winRate": 0.714
         },
         "CHE": {
           "games": 11,
-          "wins": 7,
-          "losses": 4,
+          "wins": 5,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.545,
-          "winRate": 0.636
+          "winRate": 0.455
         },
         "MCI": {
           "games": 10,
@@ -6283,21 +6283,21 @@
         },
         "MUN": {
           "games": 11,
-          "wins": 9,
-          "losses": 2,
+          "wins": 7,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.364,
-          "winRate": 0.818
+          "winRate": 0.636
         },
         "BOU": {
           "games": 8,
-          "wins": 5,
-          "losses": 3,
+          "wins": 4,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.75,
-          "winRate": 0.625
+          "winRate": 0.5
         },
         "LTN": {
           "games": 2,
@@ -6466,12 +6466,12 @@
         },
         "TOT": {
           "games": 13,
-          "wins": 12,
-          "losses": 1,
+          "wins": 11,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.692,
-          "winRate": 0.923
+          "winRate": 0.846
         },
         "HUL": {
           "games": 1,
@@ -6484,12 +6484,12 @@
         },
         "SOU": {
           "games": 15,
-          "wins": 3,
-          "losses": 12,
+          "wins": 4,
+          "losses": 11,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.667,
-          "winRate": 0.2
+          "winRate": 0.267
         },
         "WBA": {
           "games": 5,
@@ -6502,21 +6502,21 @@
         },
         "WAT": {
           "games": 11,
-          "wins": 3,
-          "losses": 8,
+          "wins": 4,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.545,
-          "winRate": 0.273
+          "winRate": 0.364
         },
         "BUR": {
           "games": 11,
-          "wins": 5,
-          "losses": 6,
+          "wins": 7,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.9,
           "overRate": 0.364,
-          "winRate": 0.455
+          "winRate": 0.636
         },
         "SUN": {
           "games": 2,
@@ -6691,21 +6691,21 @@
         },
         "SHU": {
           "games": 5,
-          "wins": 0,
-          "losses": 5,
+          "wins": 2,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.2,
-          "winRate": 0
+          "winRate": 0.4
         },
         "CRY": {
           "games": 9,
-          "wins": 5,
-          "losses": 4,
+          "wins": 4,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.333,
-          "winRate": 0.556
+          "winRate": 0.444
         },
         "LEE": {
           "games": 3,
@@ -6736,12 +6736,12 @@
         },
         "NFO": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 1
         },
         "LTN": {
           "games": 1,
@@ -6900,30 +6900,30 @@
         },
         "FUL": {
           "games": 8,
-          "wins": 4,
-          "losses": 4,
+          "wins": 3,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 0.375
         },
         "AVL": {
           "games": 9,
-          "wins": 3,
-          "losses": 6,
+          "wins": 4,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4.2,
           "overRate": 0.889,
-          "winRate": 0.333
+          "winRate": 0.444
         },
         "NEW": {
           "games": 11,
-          "wins": 6,
-          "losses": 5,
+          "wins": 7,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.545,
-          "winRate": 0.545
+          "winRate": 0.636
         },
         "WBA": {
           "games": 2,
@@ -6936,12 +6936,12 @@
         },
         "MCI": {
           "games": 12,
-          "wins": 10,
-          "losses": 2,
+          "wins": 11,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.9,
           "overRate": 0.583,
-          "winRate": 0.833
+          "winRate": 0.917
         },
         "BHA": {
           "games": 12,
@@ -6963,12 +6963,12 @@
         },
         "EVE": {
           "games": 12,
-          "wins": 4,
-          "losses": 8,
+          "wins": 6,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.333,
-          "winRate": 0.333
+          "winRate": 0.5
         },
         "BUR": {
           "games": 5,
@@ -7053,30 +7053,30 @@
         },
         "NFO": {
           "games": 9,
-          "wins": 6,
-          "losses": 3,
+          "wins": 4,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.667,
-          "winRate": 0.667
+          "winRate": 0.444
         },
         "LIV": {
           "games": 10,
-          "wins": 6,
-          "losses": 4,
+          "wins": 5,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.5,
-          "winRate": 0.6
+          "winRate": 0.5
         },
         "CHE": {
           "games": 7,
-          "wins": 4,
-          "losses": 3,
+          "wins": 3,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.9,
           "overRate": 0.857,
-          "winRate": 0.571
+          "winRate": 0.429
         },
         "BOU": {
           "games": 4,
@@ -7098,12 +7098,12 @@
         },
         "LTN": {
           "games": 2,
-          "wins": 2,
-          "losses": 0,
+          "wins": 1,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0,
-          "winRate": 1
+          "winRate": 0.5
         },
         "IPS": {
           "games": 3,
@@ -7116,12 +7116,12 @@
         },
         "SUN": {
           "games": 3,
-          "wins": 1,
-          "losses": 2,
+          "wins": 0,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.333,
-          "winRate": 0.333
+          "winRate": 0
         }
       },
       "eplAnalytics": {
@@ -7260,21 +7260,21 @@
         },
         "NEW": {
           "games": 12,
-          "wins": 5,
-          "losses": 7,
+          "wins": 7,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 0.667,
-          "winRate": 0.417
+          "winRate": 0.583
         },
         "BRE": {
           "games": 13,
-          "wins": 6,
-          "losses": 7,
+          "wins": 3,
+          "losses": 10,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.538,
-          "winRate": 0.462
+          "winRate": 0.231
         },
         "NOR": {
           "games": 2,
@@ -7287,12 +7287,12 @@
         },
         "TOT": {
           "games": 15,
-          "wins": 8,
-          "losses": 7,
+          "wins": 7,
+          "losses": 8,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.533,
-          "winRate": 0.533
+          "winRate": 0.467
         },
         "ARS": {
           "games": 10,
@@ -7314,30 +7314,30 @@
         },
         "AVL": {
           "games": 13,
-          "wins": 8,
-          "losses": 5,
+          "wins": 7,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.385,
-          "winRate": 0.615
+          "winRate": 0.538
         },
         "LEE": {
           "games": 6,
-          "wins": 1,
-          "losses": 5,
+          "wins": 0,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.5,
-          "winRate": 0.167
+          "winRate": 0
         },
         "WHU": {
           "games": 10,
-          "wins": 6,
-          "losses": 4,
+          "wins": 7,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.6,
-          "winRate": 0.6
+          "winRate": 0.7
         },
         "LEI": {
           "games": 6,
@@ -7359,12 +7359,12 @@
         },
         "MCI": {
           "games": 10,
-          "wins": 7,
-          "losses": 3,
+          "wins": 8,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.6,
-          "winRate": 0.7
+          "winRate": 0.8
         },
         "FUL": {
           "games": 5,
@@ -7395,12 +7395,12 @@
         },
         "WOL": {
           "games": 9,
-          "wins": 2,
-          "losses": 7,
+          "wins": 3,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.556,
-          "winRate": 0.222
+          "winRate": 0.333
         },
         "BOU": {
           "games": 6,
@@ -7422,12 +7422,12 @@
         },
         "MUN": {
           "games": 8,
-          "wins": 3,
-          "losses": 5,
+          "wins": 2,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 0.5,
-          "winRate": 0.375
+          "winRate": 0.25
         },
         "SHU": {
           "games": 1,
@@ -7458,12 +7458,12 @@
         },
         "SUN": {
           "games": 2,
-          "wins": 0,
-          "losses": 2,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 1
         }
       },
       "eplAnalytics": {
@@ -7593,12 +7593,12 @@
       "teamStats": {
         "BUR": {
           "games": 9,
-          "wins": 4,
-          "losses": 5,
+          "wins": 5,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.667,
-          "winRate": 0.444
+          "winRate": 0.556
         },
         "LIV": {
           "games": 4,
@@ -7611,12 +7611,12 @@
         },
         "SOU": {
           "games": 10,
-          "wins": 4,
-          "losses": 6,
+          "wins": 5,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.6,
-          "winRate": 0.4
+          "winRate": 0.5
         },
         "SUN": {
           "games": 3,
@@ -7629,30 +7629,30 @@
         },
         "EVE": {
           "games": 11,
-          "wins": 6,
-          "losses": 5,
+          "wins": 8,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.455,
-          "winRate": 0.545
+          "winRate": 0.727
         },
         "MID": {
           "games": 3,
-          "wins": 1,
-          "losses": 2,
+          "wins": 0,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.7,
           "overRate": 1,
-          "winRate": 0.333
+          "winRate": 0
         },
         "BOU": {
           "games": 11,
-          "wins": 3,
-          "losses": 8,
+          "wins": 2,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 0.636,
-          "winRate": 0.273
+          "winRate": 0.182
         },
         "HUL": {
           "games": 4,
@@ -7683,12 +7683,12 @@
         },
         "LEI": {
           "games": 10,
-          "wins": 5,
-          "losses": 5,
+          "wins": 4,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 0.4
         },
         "ARS": {
           "games": 7,
@@ -7701,12 +7701,12 @@
         },
         "STK": {
           "games": 3,
-          "wins": 1,
-          "losses": 2,
+          "wins": 0,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.667,
-          "winRate": 0.333
+          "winRate": 0
         },
         "WHU": {
           "games": 7,
@@ -7773,12 +7773,12 @@
         },
         "BHA": {
           "games": 4,
-          "wins": 0,
-          "losses": 4,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.8,
           "overRate": 0.25,
-          "winRate": 0
+          "winRate": 0.5
         },
         "CRY": {
           "games": 5,
@@ -7791,12 +7791,12 @@
         },
         "NEW": {
           "games": 7,
-          "wins": 4,
-          "losses": 3,
+          "wins": 3,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.571,
-          "winRate": 0.571
+          "winRate": 0.429
         },
         "WOL": {
           "games": 4,
@@ -7809,12 +7809,12 @@
         },
         "CAR": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 0,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 1
         },
         "FUL": {
           "games": 2,
@@ -8007,12 +8007,12 @@
         },
         "EVE": {
           "games": 13,
-          "wins": 2,
-          "losses": 11,
+          "wins": 4,
+          "losses": 9,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.538,
-          "winRate": 0.154
+          "winRate": 0.308
         },
         "BHA": {
           "games": 9,
@@ -8025,12 +8025,12 @@
         },
         "AVL": {
           "games": 9,
-          "wins": 7,
-          "losses": 2,
+          "wins": 8,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.444,
-          "winRate": 0.778
+          "winRate": 0.889
         },
         "NOR": {
           "games": 1,
@@ -8043,21 +8043,21 @@
         },
         "FUL": {
           "games": 7,
-          "wins": 3,
-          "losses": 4,
+          "wins": 2,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.429,
-          "winRate": 0.429
+          "winRate": 0.286
         },
         "BRE": {
           "games": 8,
-          "wins": 4,
-          "losses": 4,
+          "wins": 1,
+          "losses": 7,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.25,
-          "winRate": 0.5
+          "winRate": 0.125
         },
         "SOU": {
           "games": 4,
@@ -8079,12 +8079,12 @@
         },
         "BOU": {
           "games": 7,
-          "wins": 2,
-          "losses": 5,
+          "wins": 3,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.571,
-          "winRate": 0.286
+          "winRate": 0.429
         },
         "NFO": {
           "games": 2,
@@ -8097,30 +8097,30 @@
         },
         "CRY": {
           "games": 7,
-          "wins": 4,
-          "losses": 3,
+          "wins": 3,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.7,
           "overRate": 0.143,
-          "winRate": 0.571
+          "winRate": 0.429
         },
         "TOT": {
           "games": 9,
-          "wins": 7,
-          "losses": 2,
+          "wins": 5,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.1,
           "overRate": 0.667,
-          "winRate": 0.778
+          "winRate": 0.556
         },
         "LIV": {
           "games": 6,
-          "wins": 3,
-          "losses": 3,
+          "wins": 4,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.667,
-          "winRate": 0.5
+          "winRate": 0.667
         },
         "MUN": {
           "games": 11,
@@ -8142,12 +8142,12 @@
         },
         "WHU": {
           "games": 6,
-          "wins": 2,
-          "losses": 4,
+          "wins": 3,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.667,
-          "winRate": 0.333
+          "winRate": 0.5
         },
         "CHE": {
           "games": 8,
@@ -8356,30 +8356,30 @@
         },
         "NFO": {
           "games": 10,
-          "wins": 7,
-          "losses": 3,
+          "wins": 5,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.5,
-          "winRate": 0.7
+          "winRate": 0.5
         },
         "LTN": {
           "games": 2,
-          "wins": 0,
-          "losses": 2,
+          "wins": 1,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 5.5,
           "overRate": 1,
-          "winRate": 0
+          "winRate": 0.5
         },
         "BOU": {
           "games": 6,
-          "wins": 4,
-          "losses": 2,
+          "wins": 3,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.5,
-          "winRate": 0.667
+          "winRate": 0.5
         },
         "BUR": {
           "games": 6,
@@ -8392,12 +8392,12 @@
         },
         "CRY": {
           "games": 6,
-          "wins": 3,
-          "losses": 3,
+          "wins": 4,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.833,
-          "winRate": 0.5
+          "winRate": 0.667
         },
         "EVE": {
           "games": 7,
@@ -8410,12 +8410,12 @@
         },
         "WHU": {
           "games": 6,
-          "wins": 2,
-          "losses": 4,
+          "wins": 4,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.8,
           "overRate": 0.5,
-          "winRate": 0.333
+          "winRate": 0.667
         },
         "ARS": {
           "games": 8,
@@ -8437,21 +8437,21 @@
         },
         "NEW": {
           "games": 5,
-          "wins": 4,
-          "losses": 1,
+          "wins": 3,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.6,
-          "winRate": 0.8
+          "winRate": 0.6
         },
         "BHA": {
           "games": 7,
-          "wins": 2,
-          "losses": 5,
+          "wins": 3,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.571,
-          "winRate": 0.286
+          "winRate": 0.429
         },
         "MCI": {
           "games": 4,
@@ -8509,12 +8509,12 @@
         },
         "CHE": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 1,
-          "winRate": 0.25
+          "winRate": 0.5
         },
         "LEI": {
           "games": 3,
@@ -8527,12 +8527,12 @@
         },
         "MUN": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 4,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.8,
-          "winRate": 0.6
+          "winRate": 0.8
         },
         "LIV": {
           "games": 3,
@@ -8680,21 +8680,21 @@
       "teamStats": {
         "CRY": {
           "games": 10,
-          "wins": 5,
-          "losses": 5,
+          "wins": 4,
+          "losses": 6,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 0.4
         },
         "AVL": {
           "games": 6,
-          "wins": 4,
-          "losses": 2,
+          "wins": 5,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.5,
-          "winRate": 0.667
+          "winRate": 0.833
         },
         "WOL": {
           "games": 8,
@@ -8761,12 +8761,12 @@
         },
         "BOU": {
           "games": 11,
-          "wins": 5,
-          "losses": 6,
+          "wins": 6,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.636,
-          "winRate": 0.455
+          "winRate": 0.545
         },
         "TOT": {
           "games": 5,
@@ -8797,12 +8797,12 @@
         },
         "FUL": {
           "games": 6,
-          "wins": 5,
-          "losses": 1,
+          "wins": 4,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.333,
-          "winRate": 0.833
+          "winRate": 0.667
         },
         "LTN": {
           "games": 1,
@@ -8815,21 +8815,21 @@
         },
         "ARS": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4,
           "overRate": 1,
-          "winRate": 0.5
+          "winRate": 1
         },
         "WHU": {
           "games": 7,
-          "wins": 4,
-          "losses": 3,
+          "wins": 5,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.9,
           "overRate": 0.857,
-          "winRate": 0.571
+          "winRate": 0.714
         },
         "NFO": {
           "games": 6,
@@ -9030,12 +9030,12 @@
       "teamStats": {
         "FUL": {
           "games": 6,
-          "wins": 4,
-          "losses": 2,
+          "wins": 5,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.5,
-          "winRate": 0.667
+          "winRate": 0.833
         },
         "BHA": {
           "games": 5,
@@ -9057,30 +9057,30 @@
         },
         "BRE": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 1
         },
         "WOL": {
           "games": 8,
-          "wins": 6,
-          "losses": 2,
+          "wins": 5,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.375,
-          "winRate": 0.75
+          "winRate": 0.625
         },
         "NFO": {
           "games": 6,
-          "wins": 2,
-          "losses": 4,
+          "wins": 3,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.8,
           "overRate": 0.167,
-          "winRate": 0.333
+          "winRate": 0.5
         },
         "SOU": {
           "games": 5,
@@ -9102,12 +9102,12 @@
         },
         "AVL": {
           "games": 4,
-          "wins": 3,
-          "losses": 1,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0.75
+          "winRate": 0.5
         },
         "CRY": {
           "games": 11,
@@ -9129,21 +9129,21 @@
         },
         "NEW": {
           "games": 7,
-          "wins": 2,
-          "losses": 5,
+          "wins": 4,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.7,
           "overRate": 0.714,
-          "winRate": 0.286
+          "winRate": 0.571
         },
         "BUR": {
           "games": 5,
-          "wins": 1,
-          "losses": 4,
+          "wins": 0,
+          "losses": 5,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.2,
-          "winRate": 0.2
+          "winRate": 0
         },
         "WHU": {
           "games": 5,
@@ -9156,21 +9156,21 @@
         },
         "EVE": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 1,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.4,
-          "winRate": 0.6
+          "winRate": 0.2
         },
         "LTN": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 8,
           "overRate": 1,
-          "winRate": 0
+          "winRate": 1
         },
         "CHE": {
           "games": 2,
@@ -9192,12 +9192,12 @@
         },
         "TOT": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4,
           "overRate": 1,
-          "winRate": 0.25
+          "winRate": 0.5
         },
         "MCI": {
           "games": 3,
@@ -9371,30 +9371,30 @@
         },
         "SUN": {
           "games": 4,
-          "wins": 2,
-          "losses": 2,
-          "avgFoulDifferential": 0,
-          "avgTotalPoints": 1.3,
-          "overRate": 0.25,
-          "winRate": 0.5
-        },
-        "TOT": {
-          "games": 6,
-          "wins": 5,
-          "losses": 1,
-          "avgFoulDifferential": 0,
-          "avgTotalPoints": 1.7,
-          "overRate": 0,
-          "winRate": 0.833
-        },
-        "LIV": {
-          "games": 4,
           "wins": 1,
           "losses": 3,
           "avgFoulDifferential": 0,
+          "avgTotalPoints": 1.3,
+          "overRate": 0.25,
+          "winRate": 0.25
+        },
+        "TOT": {
+          "games": 6,
+          "wins": 3,
+          "losses": 3,
+          "avgFoulDifferential": 0,
+          "avgTotalPoints": 1.7,
+          "overRate": 0,
+          "winRate": 0.5
+        },
+        "LIV": {
+          "games": 4,
+          "wins": 2,
+          "losses": 2,
+          "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.5,
-          "winRate": 0.25
+          "winRate": 0.5
         },
         "ARS": {
           "games": 4,
@@ -9407,12 +9407,12 @@
         },
         "SOU": {
           "games": 5,
-          "wins": 1,
-          "losses": 4,
+          "wins": 3,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.6,
           "overRate": 0.2,
-          "winRate": 0.2
+          "winRate": 0.6
         },
         "BOU": {
           "games": 6,
@@ -9443,30 +9443,30 @@
         },
         "STK": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 2,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.4,
-          "winRate": 0.6
+          "winRate": 0.4
         },
         "WHU": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 4,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.8,
           "overRate": 0.6,
-          "winRate": 0.6
+          "winRate": 0.8
         },
         "LEI": {
           "games": 6,
-          "wins": 2,
-          "losses": 4,
+          "wins": 3,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.667,
-          "winRate": 0.333
+          "winRate": 0.5
         },
         "CHE": {
           "games": 5,
@@ -9515,21 +9515,21 @@
         },
         "MID": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
-          "avgFoulDifferential": 0,
-          "avgTotalPoints": 0.3,
-          "overRate": 0,
-          "winRate": 0.667
-        },
-        "SWA": {
-          "games": 3,
           "wins": 1,
           "losses": 2,
           "avgFoulDifferential": 0,
-          "avgTotalPoints": 1.3,
+          "avgTotalPoints": 0.3,
           "overRate": 0,
           "winRate": 0.333
+        },
+        "SWA": {
+          "games": 3,
+          "wins": 0,
+          "losses": 3,
+          "avgFoulDifferential": 0,
+          "avgTotalPoints": 1.3,
+          "overRate": 0,
+          "winRate": 0
         },
         "WBA": {
           "games": 4,
@@ -9722,12 +9722,12 @@
         },
         "WOL": {
           "games": 7,
-          "wins": 3,
-          "losses": 4,
+          "wins": 4,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.571,
-          "winRate": 0.429
+          "winRate": 0.571
         },
         "TOT": {
           "games": 5,
@@ -9758,39 +9758,39 @@
         },
         "BOU": {
           "games": 6,
-          "wins": 3,
-          "losses": 3,
+          "wins": 2,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.667,
-          "winRate": 0.5
+          "winRate": 0.333
         },
         "CHE": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 2,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.2,
-          "winRate": 0.6
+          "winRate": 0.4
         },
         "NFO": {
           "games": 5,
-          "wins": 4,
-          "losses": 1,
+          "wins": 5,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.2,
           "overRate": 0.2,
-          "winRate": 0.8
+          "winRate": 1
         },
         "FUL": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 1,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.6,
           "overRate": 0.4,
-          "winRate": 0.6
+          "winRate": 0.2
         },
         "ARS": {
           "games": 3,
@@ -9803,12 +9803,12 @@
         },
         "SHU": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 0,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 5.5,
           "overRate": 1,
-          "winRate": 0.5
+          "winRate": 0
         },
         "EVE": {
           "games": 5,
@@ -9821,12 +9821,12 @@
         },
         "BHA": {
           "games": 6,
-          "wins": 3,
-          "losses": 3,
+          "wins": 2,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.167,
-          "winRate": 0.5
+          "winRate": 0.333
         },
         "BRE": {
           "games": 4,
@@ -9839,21 +9839,21 @@
         },
         "LTN": {
           "games": 2,
-          "wins": 0,
-          "losses": 2,
+          "wins": 1,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0
+          "winRate": 0.5
         },
         "MCI": {
           "games": 2,
-          "wins": 2,
-          "losses": 0,
+          "wins": 1,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0.5,
-          "winRate": 1
+          "winRate": 0.5
         },
         "MUN": {
           "games": 1,
@@ -9866,12 +9866,12 @@
         },
         "WHU": {
           "games": 5,
-          "wins": 4,
-          "losses": 1,
+          "wins": 2,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.8,
           "overRate": 0.6,
-          "winRate": 0.8
+          "winRate": 0.4
         },
         "LIV": {
           "games": 3,
@@ -9893,21 +9893,21 @@
         },
         "IPS": {
           "games": 4,
-          "wins": 0,
-          "losses": 4,
+          "wins": 1,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.5,
-          "winRate": 0
+          "winRate": 0.25
         },
         "SOU": {
           "games": 2,
-          "wins": 2,
-          "losses": 0,
+          "wins": 0,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 0,
           "overRate": 0,
-          "winRate": 1
+          "winRate": 0
         },
         "LEE": {
           "games": 1,
@@ -10064,12 +10064,12 @@
         },
         "WOL": {
           "games": 7,
-          "wins": 5,
-          "losses": 2,
+          "wins": 4,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.429,
-          "winRate": 0.714
+          "winRate": 0.571
         },
         "NEW": {
           "games": 5,
@@ -10082,21 +10082,21 @@
         },
         "CRY": {
           "games": 6,
-          "wins": 2,
-          "losses": 4,
+          "wins": 3,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.667,
-          "winRate": 0.333
+          "winRate": 0.5
         },
         "NOR": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 1
         },
         "SOU": {
           "games": 6,
@@ -10109,21 +10109,21 @@
         },
         "LEE": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4.3,
           "overRate": 0.667,
-          "winRate": 0.667
+          "winRate": 0.333
         },
         "LEI": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4.8,
           "overRate": 1,
-          "winRate": 0.25
+          "winRate": 0.5
         },
         "AVL": {
           "games": 4,
@@ -10145,39 +10145,39 @@
         },
         "EVE": {
           "games": 8,
-          "wins": 3,
-          "losses": 5,
+          "wins": 4,
+          "losses": 4,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0,
-          "winRate": 0.375
+          "winRate": 0.5
         },
         "BOU": {
-          "games": 3,
-          "wins": 0,
-          "losses": 3,
-          "avgFoulDifferential": 0,
-          "avgTotalPoints": 4.7,
-          "overRate": 1,
-          "winRate": 0
-        },
-        "BUR": {
           "games": 3,
           "wins": 1,
           "losses": 2,
           "avgFoulDifferential": 0,
+          "avgTotalPoints": 4.7,
+          "overRate": 1,
+          "winRate": 0.333
+        },
+        "BUR": {
+          "games": 3,
+          "wins": 2,
+          "losses": 1,
+          "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.333,
-          "winRate": 0.333
+          "winRate": 0.667
         },
         "MUN": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.25,
-          "winRate": 0.25
+          "winRate": 0.5
         },
         "LTN": {
           "games": 1,
@@ -10235,12 +10235,12 @@
         },
         "LIV": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
+          "wins": 3,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 1,
-          "winRate": 0.667
+          "winRate": 1
         },
         "ARS": {
           "games": 2,
@@ -10280,12 +10280,12 @@
         },
         "SUN": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0,
-          "winRate": 0.5
+          "winRate": 1
         }
       },
       "eplAnalytics": {
@@ -10430,12 +10430,12 @@
         },
         "MID": {
           "games": 3,
-          "wins": 1,
-          "losses": 2,
+          "wins": 2,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.667,
-          "winRate": 0.333
+          "winRate": 0.667
         },
         "CRY": {
           "games": 7,
@@ -10457,12 +10457,12 @@
         },
         "MCI": {
           "games": 6,
-          "wins": 6,
-          "losses": 0,
+          "wins": 5,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.667,
-          "winRate": 1
+          "winRate": 0.833
         },
         "WHU": {
           "games": 7,
@@ -10484,12 +10484,12 @@
         },
         "MUN": {
           "games": 6,
-          "wins": 5,
-          "losses": 1,
+          "wins": 4,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3,
           "overRate": 0.5,
-          "winRate": 0.833
+          "winRate": 0.667
         },
         "WAT": {
           "games": 3,
@@ -10511,12 +10511,12 @@
         },
         "SOU": {
           "games": 3,
-          "wins": 0,
-          "losses": 3,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.7,
           "overRate": 0.667,
-          "winRate": 0
+          "winRate": 0.333
         },
         "SUN": {
           "games": 3,
@@ -10547,12 +10547,12 @@
         },
         "STK": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 4,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.2,
           "overRate": 0.4,
-          "winRate": 0.6
+          "winRate": 0.8
         },
         "HUL": {
           "games": 2,
@@ -10601,12 +10601,12 @@
         },
         "BHA": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 0,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0,
-          "winRate": 0.5
+          "winRate": 0
         }
       },
       "eplAnalytics": {
@@ -10734,12 +10734,12 @@
       "teamStats": {
         "SOU": {
           "games": 6,
-          "wins": 2,
-          "losses": 4,
+          "wins": 3,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.5,
-          "winRate": 0.333
+          "winRate": 0.5
         },
         "WAT": {
           "games": 9,
@@ -10761,12 +10761,12 @@
         },
         "SWA": {
           "games": 4,
-          "wins": 1,
-          "losses": 3,
+          "wins": 2,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.5,
-          "winRate": 0.25
+          "winRate": 0.5
         },
         "HUL": {
           "games": 1,
@@ -10806,21 +10806,21 @@
         },
         "BOU": {
           "games": 8,
-          "wins": 3,
-          "losses": 5,
+          "wins": 5,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.4,
           "overRate": 0.625,
-          "winRate": 0.375
+          "winRate": 0.625
         },
         "WHU": {
           "games": 5,
-          "wins": 3,
-          "losses": 2,
+          "wins": 2,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.2,
           "overRate": 0.6,
-          "winRate": 0.6
+          "winRate": 0.4
         },
         "CRY": {
           "games": 3,
@@ -10833,12 +10833,12 @@
         },
         "EVE": {
           "games": 4,
-          "wins": 3,
-          "losses": 1,
+          "wins": 4,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.3,
           "overRate": 0.25,
-          "winRate": 0.75
+          "winRate": 1
         },
         "SUN": {
           "games": 1,
@@ -10851,12 +10851,12 @@
         },
         "LIV": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 1
         },
         "BUR": {
           "games": 6,
@@ -11092,21 +11092,21 @@
         },
         "STK": {
           "games": 3,
-          "wins": 1,
-          "losses": 2,
+          "wins": 2,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.3,
           "overRate": 0.333,
-          "winRate": 0.333
+          "winRate": 0.667
         },
         "WHU": {
           "games": 2,
-          "wins": 0,
-          "losses": 2,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.5,
-          "winRate": 0
+          "winRate": 1
         },
         "BOU": {
           "games": 9,
@@ -11137,21 +11137,21 @@
         },
         "LEI": {
           "games": 7,
-          "wins": 6,
-          "losses": 1,
+          "wins": 5,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.1,
           "overRate": 0.286,
-          "winRate": 0.857
+          "winRate": 0.714
         },
         "BHA": {
           "games": 4,
-          "wins": 0,
-          "losses": 4,
+          "wins": 1,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.8,
           "overRate": 0.75,
-          "winRate": 0
+          "winRate": 0.25
         },
         "HUD": {
           "games": 5,
@@ -11164,30 +11164,30 @@
         },
         "WBA": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 0,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 1,
-          "winRate": 0.5
+          "winRate": 0
         },
         "NEW": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 1,
-          "winRate": 0.667
+          "winRate": 0.333
         },
         "EVE": {
           "games": 5,
-          "wins": 1,
-          "losses": 4,
+          "wins": 2,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.4,
           "overRate": 0.4,
-          "winRate": 0.2
+          "winRate": 0.4
         },
         "CHE": {
           "games": 2,
@@ -11218,21 +11218,21 @@
         },
         "CAR": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 0,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 0.5,
           "overRate": 0,
-          "winRate": 0.5
+          "winRate": 0
         },
         "CRY": {
           "games": 4,
-          "wins": 4,
-          "losses": 0,
+          "wins": 3,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0.25,
-          "winRate": 1
+          "winRate": 0.75
         },
         "MUN": {
           "games": 1,
@@ -11702,21 +11702,21 @@
         },
         "BHA": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
+          "wins": 3,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.3,
           "overRate": 0.667,
-          "winRate": 0.667
+          "winRate": 1
         },
         "BUR": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 3.5,
           "overRate": 1,
-          "winRate": 0.5
+          "winRate": 1
         },
         "WOL": {
           "games": 1,
@@ -11765,12 +11765,12 @@
         },
         "TOT": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 0,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0,
-          "winRate": 0.5
+          "winRate": 0
         },
         "LIV": {
           "games": 1,
@@ -11941,39 +11941,39 @@
       "teamStats": {
         "LEI": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 0.5,
           "overRate": 0,
-          "winRate": 0.5
+          "winRate": 1
         },
         "ARS": {
           "games": 4,
-          "wins": 3,
-          "losses": 1,
+          "wins": 1,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.8,
           "overRate": 0.25,
-          "winRate": 0.75
+          "winRate": 0.25
         },
         "CHE": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 2,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 1
         },
         "BUR": {
           "games": 4,
-          "wins": 0,
-          "losses": 4,
+          "wins": 1,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.3,
           "overRate": 0.5,
-          "winRate": 0
+          "winRate": 0.25
         },
         "MUN": {
           "games": 3,
@@ -12004,12 +12004,12 @@
         },
         "WHU": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 0,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 5,
           "overRate": 1,
-          "winRate": 0.5
+          "winRate": 0
         },
         "SOU": {
           "games": 3,
@@ -12022,12 +12022,12 @@
         },
         "TOT": {
           "games": 2,
-          "wins": 2,
-          "losses": 0,
+          "wins": 1,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.5,
           "overRate": 0,
-          "winRate": 1
+          "winRate": 0.5
         },
         "LIV": {
           "games": 3,
@@ -12067,21 +12067,21 @@
         },
         "WAT": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 1
         },
         "CRY": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 1
         },
         "HUL": {
           "games": 2,
@@ -12254,21 +12254,21 @@
         },
         "BUR": {
           "games": 2,
-          "wins": 1,
-          "losses": 1,
+          "wins": 0,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0.5
+          "winRate": 0
         },
         "IPS": {
           "games": 3,
-          "wins": 2,
-          "losses": 1,
+          "wins": 0,
+          "losses": 3,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4.3,
           "overRate": 0.667,
-          "winRate": 0.667
+          "winRate": 0
         },
         "BRE": {
           "games": 2,
@@ -12308,12 +12308,12 @@
         },
         "EVE": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4,
           "overRate": 1,
-          "winRate": 0
+          "winRate": 1
         },
         "BOU": {
           "games": 1,
@@ -12335,12 +12335,12 @@
         },
         "CHE": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 1
         }
       },
       "eplAnalytics": {
@@ -12486,21 +12486,21 @@
         },
         "LTN": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
-          "avgFoulDifferential": 0,
-          "avgTotalPoints": 2,
-          "overRate": 0,
-          "winRate": 0
-        },
-        "WOL": {
-          "games": 1,
           "wins": 1,
           "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
           "winRate": 1
+        },
+        "WOL": {
+          "games": 1,
+          "wins": 0,
+          "losses": 1,
+          "avgFoulDifferential": 0,
+          "avgTotalPoints": 2,
+          "overRate": 0,
+          "winRate": 0
         },
         "BRE": {
           "games": 2,
@@ -12662,12 +12662,12 @@
         },
         "SOU": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 1
         },
         "LEI": {
           "games": 1,
@@ -12698,12 +12698,12 @@
         },
         "BUR": {
           "games": 2,
-          "wins": 0,
-          "losses": 2,
+          "wins": 1,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2.5,
           "overRate": 0.5,
-          "winRate": 0
+          "winRate": 0.5
         },
         "CHE": {
           "games": 1,
@@ -12846,12 +12846,12 @@
         },
         "WOL": {
           "games": 3,
-          "wins": 0,
-          "losses": 3,
+          "wins": 1,
+          "losses": 2,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 1.7,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 0.333
         },
         "SUN": {
           "games": 1,
@@ -12882,12 +12882,12 @@
         },
         "FUL": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 1
         }
       }
     },
@@ -13293,12 +13293,12 @@
         },
         "IPS": {
           "games": 1,
-          "wins": 1,
-          "losses": 0,
+          "wins": 0,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 1
+          "winRate": 0
         }
       }
     },
@@ -13361,12 +13361,12 @@
         },
         "BOU": {
           "games": 1,
-          "wins": 1,
-          "losses": 0,
+          "wins": 0,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 1
+          "winRate": 0
         },
         "NFO": {
           "games": 1,
@@ -13486,12 +13486,12 @@
       "teamStats": {
         "CHE": {
           "games": 1,
-          "wins": 1,
-          "losses": 0,
+          "wins": 0,
+          "losses": 1,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 1
+          "winRate": 0
         },
         "LEI": {
           "games": 1,
@@ -13534,12 +13534,12 @@
       "teamStats": {
         "MCI": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 4,
           "overRate": 1,
-          "winRate": 0
+          "winRate": 1
         },
         "CRY": {
           "games": 1,
@@ -13630,12 +13630,12 @@
       "teamStats": {
         "CRY": {
           "games": 1,
-          "wins": 0,
-          "losses": 1,
+          "wins": 1,
+          "losses": 0,
           "avgFoulDifferential": 0,
           "avgTotalPoints": 2,
           "overRate": 0,
-          "winRate": 0
+          "winRate": 1
         },
         "LTN": {
           "games": 1,

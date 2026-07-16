@@ -37,7 +37,11 @@ import {
 } from "@/lib/ref-team-matrix";
 import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
 import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
-import { displayWinRateDelta, formatDeltaPp } from "@/lib/data-maturity";
+import {
+  adjustedDeltaTooltipText,
+  displayWinRateDelta,
+  formatDeltaPp,
+} from "@/lib/data-maturity";
 import {
   buildMatrixSplitShareLinkText,
   buildMatrixSplitShareText,
@@ -238,7 +242,11 @@ function TeamRefRankListItem({
           className={`ref-matrix-team-panel-win-delta ${deltaClass}${
             deltaDisplay.isAdjusted ? " ref-matrix-delta--adjusted" : ""
           }`}
-          title={`${recordLabel} vs team baseline: ${winDeltaLabel}`}
+          title={
+            deltaDisplay.isAdjusted
+              ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
+              : `${recordLabel} vs team baseline: ${winDeltaLabel}`
+          }
         >
           {winDeltaShort}
           {deltaDisplay.isAdjusted ? (

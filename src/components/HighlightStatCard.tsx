@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 /**
- * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges, and sample-gate provenance metadata.
+ * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
+ * metrics must display maturity indicators and adjusted projections.
  */
 import {
   REF_CARD_BODY_CLASS,
@@ -16,8 +17,10 @@ import {
 import { RefAvatar } from "@/components/RefAvatar";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
+import { DataMaturityBar } from "@/components/shared/DataMaturityBar";
 import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
 import {
+  adjustedDeltaTooltipText,
   displayWinRateDelta,
   formatDeltaPp,
   formatSampleSizeLabel,
@@ -137,7 +140,15 @@ export function HighlightStatCard({
           {secondaryValue ? (
             <div className="ref-card-metric-block ref-card-metric-block--secondary">
               <div className={`${REF_CARD_METRIC_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
-                <StandoutMetricValue tone={metricTone} size="md">
+                <StandoutMetricValue
+                  tone={metricTone}
+                  size="md"
+                  title={
+                    deltaDisplay?.isAdjusted
+                      ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
+                      : undefined
+                  }
+                >
                   {secondaryValue}
                 </StandoutMetricValue>
               </div>
@@ -147,6 +158,9 @@ export function HighlightStatCard({
             </div>
           ) : null}
         </div>
+      ) : null}
+      {usesSplitHierarchy && sampleGames ? (
+        <DataMaturityBar sampleSize={sampleGames} compact className="highlight-stat-maturity" />
       ) : null}
       <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>{body}</p>
       {deltaDisplay?.isAdjusted ? <DataHonestyFootnote /> : null}

@@ -9,7 +9,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "../src/lib/live-header-leagues.generated";
-import { PRO_ONLY_LIVE_LEAGUE_IDS, PRO_VERIFIED_LIVE_LEAGUE_IDS } from "../src/lib/verified-live-leagues";
+import { PRO_ONLY_LIVE_LEAGUE_IDS, PRO_VERIFIED_LIVE_LEAGUE_IDS, LAUNCHED_NCAA_LEAGUE_IDS } from "../src/lib/verified-live-leagues";
 import {
   MATRIX_MIN_GAMES,
 } from "../src/lib/ref-team-matrix";
@@ -298,12 +298,16 @@ function checkOverviewSnapshot(): void {
   }
 
   const leagueCards = snapshot.leagueCards ?? [];
+  const launchedCollege = new Set<string>(LAUNCHED_NCAA_LEAGUE_IDS);
   const blocked = leagueCards
     .map((card) => card.leagueId)
-    .filter((id): id is string => id === "cbb" || id === "cfb");
+    .filter(
+      (id): id is "cbb" | "cfb" =>
+        (id === "cbb" || id === "cfb") && !launchedCollege.has(id),
+    );
   if (blocked.length > 0) {
     fail(
-      `overview-snapshot.json still exposes college league cards (${blocked.join(", ")}) — rebuild with scripts/build-overview-snapshot.ts`,
+      `overview-snapshot.json still exposes unlaunched college league cards (${blocked.join(", ")}) — rebuild with scripts/build-overview-snapshot.ts`,
     );
   }
 }

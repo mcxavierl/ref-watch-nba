@@ -8,7 +8,8 @@ import { findingStatDelightTone, isDirectionalTone } from "@/lib/metric-delight"
 import { NO_SIGNAL_COPY, SIGNAL_LIMITATION_COPY } from "@/lib/trust-charter";
 
 /**
- * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges, and sample-gate provenance metadata.
+ * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
+ * metrics must display maturity indicators and adjusted projections.
  */
 
 const KEY_SIGNAL_KINDS = new Set<ProfileSignal["kind"]>([

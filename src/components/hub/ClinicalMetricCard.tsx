@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 import { ProvenanceIndicator, type ProvenanceIndicatorProps } from "@/components/hub/ProvenanceIndicator";
 
 /**
- * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
- * and sample-gate provenance metadata.
+ * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
+ * metrics must display maturity indicators and adjusted projections.
  */
 export const CLINICAL_METRIC_CARD_CLASS =
   "clinical-metric-card ref-stat-card backdrop-blur-md";

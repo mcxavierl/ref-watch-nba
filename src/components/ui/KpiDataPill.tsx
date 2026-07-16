@@ -1,6 +1,11 @@
 import type { ReactNode } from "react";
 import { inferSignificantKpiTone } from "@/lib/metric-significance";
 
+/**
+ * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
+ * metrics must display maturity indicators and adjusted projections.
+ */
+
 export type KpiDataPillTone = "positive" | "negative" | "neutral";
 export type KpiDataPillVariant = "block" | "inline" | "compact";
 export type KpiDataPillAccent = "emerald" | "rose" | "amber" | "sky";
