@@ -520,8 +520,7 @@ export function buildScopedRefStats(
   if (
     sortedAll.length > 0 &&
     sortedScoped.length === sortedAll.length &&
-    sortedScoped.every((s, i) => s === sortedAll[i]) &&
-    depth !== "full"
+    sortedScoped.every((s, i) => s === sortedAll[i])
   ) {
     return base;
   }
