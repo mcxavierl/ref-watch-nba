@@ -387,7 +387,7 @@
         "balancedGameRate": 0.482,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 49
     },
     {
       "slug": "ricardo-de-burgos-bengoetxea-0",
@@ -712,7 +712,7 @@
         "balancedGameRate": 0.642,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 53
+      "cached_oii_score": 47
     },
     {
       "slug": "jes-s-gil-manzano-0",
@@ -1064,7 +1064,7 @@
         "balancedGameRate": 0.65,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 58
+      "cached_oii_score": 50
     },
     {
       "slug": "isidro-d-az-de-mera-escuderos-0",
@@ -1425,7 +1425,7 @@
         "balancedGameRate": 0.532,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 58
+      "cached_oii_score": 50
     },
     {
       "slug": "jos-mar-a-s-nchez-mart-nez-0",
@@ -1768,7 +1768,7 @@
         "balancedGameRate": 0.558,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 63
+      "cached_oii_score": 54
     },
     {
       "slug": "jos-luis-munuera-montero-0",
@@ -2102,7 +2102,7 @@
         "balancedGameRate": 0.494,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 50
     },
     {
       "slug": "guillermo-cuadra-fern-ndez-0",
@@ -2454,7 +2454,7 @@
         "balancedGameRate": 0.566,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 59
+      "cached_oii_score": 51
     },
     {
       "slug": "miguel-ngel-ortiz-arias-0",
@@ -2797,7 +2797,7 @@
         "balancedGameRate": 0.613,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 50
+      "cached_oii_score": 46
     },
     {
       "slug": "alejandro-jos-hern-ndez-hern-ndez-0",
@@ -3140,7 +3140,7 @@
         "balancedGameRate": 0.581,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 61
+      "cached_oii_score": 52
     },
     {
       "slug": "alejandro-mu-iz-ruiz-0",
@@ -3492,7 +3492,7 @@
         "balancedGameRate": 0.548,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 59
+      "cached_oii_score": 51
     },
     {
       "slug": "juan-mart-nez-munuera-0",
@@ -3835,7 +3835,7 @@
         "balancedGameRate": 0.534,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 62
+      "cached_oii_score": 53
     },
     {
       "slug": "javier-alberola-rojas-0",
@@ -4187,7 +4187,7 @@
         "balancedGameRate": 0.667,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 49
+      "cached_oii_score": 44
     },
     {
       "slug": "pablo-gonz-lez-fuertes-0",
@@ -4529,7 +4529,7 @@
         "balancedGameRate": 0.656,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 55
+      "cached_oii_score": 48
     },
     {
       "slug": "mario-melero-l-pez-0",
@@ -4835,7 +4835,7 @@
         "balancedGameRate": 0.639,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 70
+      "cached_oii_score": 58
     },
     {
       "slug": "mateo-busquets-ferrer-0",
@@ -5176,7 +5176,7 @@
         "balancedGameRate": 0.518,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 55
+      "cached_oii_score": 48
     },
     {
       "slug": "juan-luis-pulido-santana-0",
@@ -5508,7 +5508,7 @@
         "balancedGameRate": 0.727,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 58
+      "cached_oii_score": 50
     },
     {
       "slug": "francisco-jos-hern-ndez-maeso-0",
@@ -5867,7 +5867,7 @@
         "balancedGameRate": 0.6,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 57
+      "cached_oii_score": 49
     },
     {
       "slug": "victor-garc-a-verdura-0",
@@ -6181,7 +6181,7 @@
         "balancedGameRate": 0.608,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 52
+      "cached_oii_score": 46
     },
     {
       "slug": "jorge-figueroa-v-zquez-0",
@@ -6477,7 +6477,7 @@
         "balancedGameRate": 0.628,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 63
+      "cached_oii_score": 53
     },
     {
       "slug": "adri-n-cordero-vega-0",
@@ -6809,7 +6809,7 @@
         "balancedGameRate": 0.692,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 48
     },
     {
       "slug": "javier-iglesias-villanueva-0",
@@ -7122,7 +7122,7 @@
         "balancedGameRate": 0.641,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 47
     },
     {
       "slug": "alejandro-quintero-gonz-lez-0",
@@ -7417,7 +7417,7 @@
         "balancedGameRate": 0.629,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 62
+      "cached_oii_score": 51
     },
     {
       "slug": "carlos-del-cerro-grande-0",
@@ -7685,7 +7685,7 @@
         "balancedGameRate": 0.615,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 64
+      "cached_oii_score": 52
     },
     {
       "slug": "antonio-miguel-mateu-lahoz-0",
@@ -7962,7 +7962,7 @@
         "balancedGameRate": 0.68,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 68
+      "cached_oii_score": 55
     },
     {
       "slug": "valent-n-pizarro-g-mez-0",
@@ -8248,7 +8248,7 @@
         "balancedGameRate": 0.7,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 52
+      "cached_oii_score": 44
     },
     {
       "slug": "miguel-sesma-espinosa-0",
@@ -8551,7 +8551,7 @@
         "balancedGameRate": 0.667,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 46
     },
     {
       "slug": "iosu-galech-apeztegu-a-0",
@@ -8818,7 +8818,7 @@
         "balancedGameRate": 0.625,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 47
+      "cached_oii_score": 39
     },
     {
       "slug": "jos-luis-guzm-n-mansilla-0",
@@ -9076,7 +9076,7 @@
         "balancedGameRate": 0.429,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 40
+      "cached_oii_score": 34
     },
     {
       "slug": "santiago-jaime-latre-0",

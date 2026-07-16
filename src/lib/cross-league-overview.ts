@@ -20,6 +20,7 @@ import {
   buildOverviewUpcomingSlate,
   type OverviewUpcomingSlate,
 } from "@/lib/overview-upcoming-slate";
+import { buildOiiMoversSnapshot, type OiiMoversSnapshot } from "@/lib/oii-movers";
 import {
   NCAA_INTEGRITY_AUDIT_HREF,
   resolveNcaaAuditStatus,
@@ -61,6 +62,7 @@ export type CrossLeagueOverview = {
   topStoriesStatus: TopStoriesStatus;
   topStoriesGeneratedAt: string | null;
   upcomingSlate: OverviewUpcomingSlate;
+  oiiMovers: OiiMoversSnapshot;
   allRefs: {
     slug: string;
     name: string;
@@ -207,6 +209,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
     topStoriesStatus: topStoriesBundle.status,
     topStoriesGeneratedAt: topStoriesBundle.generatedAt,
     upcomingSlate: buildOverviewUpcomingSlate(),
+    oiiMovers: buildOiiMoversSnapshot(3),
     allRefs: allRefs.sort((a, b) => b.games - a.games),
   };
 }

@@ -10,6 +10,8 @@ export interface GameLogRow {
   season?: string;
   homeTeam: string;
   awayTeam: string;
+  homeScore?: number;
+  awayScore?: number;
 }
 
 export interface RefGameLogRow extends GameLogRow {
@@ -118,6 +120,45 @@ export function buildTeamGameCountMap(
   const counts = new Map<string, number>();
   for (const [team, ids] of byTeam) counts.set(team, ids.size);
   return counts;
+}
+
+/** DISTINCT games plus W-L from scored game logs (preferred over crew-split sums). */
+export function getTeamRecordFromLogs(
+  games: readonly GameLogRow[],
+  teamAbbr: string,
+  seasons?: readonly string[],
+): { wins: number; losses: number; games: number; winRate: number } {
+  const team = teamAbbr.toUpperCase();
+  const seasonSet = seasons ? new Set(seasons) : null;
+  const seen = new Set<string>();
+  let wins = 0;
+  let losses = 0;
+
+  for (const game of games) {
+    if (seasonSet && game.season && !seasonSet.has(game.season)) continue;
+    if (game.homeTeam !== team && game.awayTeam !== team) continue;
+    const id = game.gameId ? String(game.gameId) : "";
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+
+    const homeScore = game.homeScore;
+    const awayScore = game.awayScore;
+    if (homeScore === undefined || awayScore === undefined) continue;
+
+    const isHome = game.homeTeam === team;
+    const teamScore = isHome ? homeScore : awayScore;
+    const oppScore = isHome ? awayScore : homeScore;
+    if (teamScore > oppScore) wins++;
+    else if (teamScore < oppScore) losses++;
+  }
+
+  const gamesPlayed = wins + losses;
+  return {
+    wins,
+    losses,
+    games: gamesPlayed,
+    winRate: gamesPlayed > 0 ? wins / gamesPlayed : 0,
+  };
 }
 
 /**

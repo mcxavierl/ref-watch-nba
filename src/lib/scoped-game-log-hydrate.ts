@@ -1,16 +1,25 @@
 import {
   preloadGameLogsFromAssets,
   preloadNbaGameLogSeasons,
+  type DataLeague,
 } from "@/lib/game-logs-preload";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import type { LeagueId } from "@/lib/leagues";
 import {
-  isEraScopeMode,
   resolveScopedSeasonsForLeague,
-  usesPatriotsEraScope,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
 import type { RefStatsFile } from "@/lib/types";
+
+const LEAGUE_DATA_MAP: Partial<Record<LeagueId, DataLeague>> = {
+  nba: "NBA",
+  nhl: "NHL",
+  nfl: "NFL",
+  epl: "EPL",
+  laliga: "LALIGA",
+  cbb: "CBB",
+  cfb: "CFB",
+};
 
 function seasonsWithGameData(stats: RefStatsFile): string[] {
   const covered = new Set<string>();
@@ -22,12 +31,12 @@ function seasonsWithGameData(stats: RefStatsFile): string[] {
   return filtered.length > 0 ? filtered : pool;
 }
 
-/** Fetch only the game-log seasons needed for scoped rebuilds (Worker-safe). */
+/** Fetch game-log seasons needed for scoped rebuilds (Worker-safe). */
 export async function hydrateScopedGameLogs(
   origin: string,
   leagueId: LeagueId,
   scopeMode: SeasonScopeMode,
-  options?: { teamAbbr?: string },
+  _options?: { teamAbbr?: string },
 ): Promise<void> {
   const { stats } = loadLeagueStats(leagueId);
   const scopedSeasons = resolveScopedSeasonsForLeague(
@@ -41,11 +50,8 @@ export async function hydrateScopedGameLogs(
     return;
   }
 
-  if (
-    leagueId === "nfl" &&
-    usesPatriotsEraScope(leagueId, { teamAbbr: options?.teamAbbr }) &&
-    isEraScopeMode(scopeMode)
-  ) {
-    await preloadGameLogsFromAssets(origin, "NFL");
+  const dataLeague = LEAGUE_DATA_MAP[leagueId];
+  if (dataLeague) {
+    await preloadGameLogsFromAssets(origin, dataLeague);
   }
 }

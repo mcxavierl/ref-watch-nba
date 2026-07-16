@@ -1,7 +1,21 @@
-import { gameCountFromCrewSplits } from "@/lib/game-count";
+import {
+  gameCountFromCrewSplits,
+  getTeamRecordFromLogs,
+} from "@/lib/game-count";
+import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import { getOfficialTeamRegularSeasonRecord } from "@/lib/team-record-query";
 import { formatPct } from "@/lib/stats-utils";
 import type { TeamCrewSplit } from "@/lib/types";
+
+const LEAGUE_DATA_MAP = {
+  nba: "NBA",
+  nhl: "NHL",
+  nfl: "NFL",
+  epl: "EPL",
+  laliga: "LALIGA",
+  cbb: "CBB",
+  cfb: "CFB",
+} as const;
 
 export interface TeamSampleRecord {
   wins: number;
@@ -10,7 +24,7 @@ export interface TeamSampleRecord {
   winRate: number;
 }
 
-/** Sum W-L across crew splits (DISTINCT games when each game sits in one crew bucket). */
+/** Sum W-L across crew splits (ref buckets overlap; prefer getTeamRecordFromLogs). */
 export function getTeamSampleRecord(splits: TeamCrewSplit[]): TeamSampleRecord {
   const wins = splits.reduce((sum, split) => sum + split.wins, 0);
   const losses = splits.reduce((sum, split) => sum + split.losses, 0);
@@ -31,8 +45,8 @@ export interface TeamDisplayRecordOptions {
 }
 
 /**
- * Team W-L for page display. NBA uses official regular-season standings;
- * NHL and playoff-inclusive NBA views use crew-split totals from the sample.
+ * Team W-L for page display. NBA uses official regular-season standings when
+ * available; all leagues prefer DISTINCT game_id totals from logs over crew splits.
  */
 export function getTeamDisplayRecord(
   league: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb",
@@ -44,6 +58,14 @@ export function getTeamDisplayRecord(
   if (league === "nba" && !options.includePlayoffs) {
     return getOfficialTeamRegularSeasonRecord(teamAbbr, seasons, options);
   }
+
+  const dataLeague = LEAGUE_DATA_MAP[league];
+  const logs = loadRuntimeGameLogs(dataLeague);
+  if (logs?.games?.length) {
+    const fromLogs = getTeamRecordFromLogs(logs.games, teamAbbr, seasons);
+    if (fromLogs.games > 0) return fromLogs;
+  }
+
   return getTeamSampleRecord(splits);
 }
 

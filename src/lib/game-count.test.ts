@@ -8,6 +8,7 @@ import {
   dedupeByGameId,
   gameCountDeviationPct,
   gameCountFromCrewSplits,
+  getTeamRecordFromLogs,
 } from "@/lib/game-count";
 import type { TeamCrewSplit } from "@/lib/types";
 
@@ -140,6 +141,33 @@ describe("gameCountFromCrewSplits", () => {
 describe("gameCountDeviationPct", () => {
   it("returns percent deviation", () => {
     assert.equal(gameCountDeviationPct(180, 165), 9.090909090909092);
+  });
+});
+
+describe("getTeamRecordFromLogs", () => {
+  it("counts DISTINCT games and W-L from scored logs", () => {
+    const games = [
+      {
+        gameId: "g1",
+        season: "2016-17",
+        homeTeam: "LAR",
+        awayTeam: "SF",
+        homeScore: 24,
+        awayScore: 10,
+      },
+      {
+        gameId: "g2",
+        season: "2016-17",
+        homeTeam: "SEA",
+        awayTeam: "LAR",
+        homeScore: 14,
+        awayScore: 21,
+      },
+    ];
+    const record = getTeamRecordFromLogs(games, "LAR", ["2016-17"]);
+    assert.equal(record.games, 2);
+    assert.equal(record.wins, 2);
+    assert.equal(record.losses, 0);
   });
 });
 

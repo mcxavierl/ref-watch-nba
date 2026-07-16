@@ -52,7 +52,7 @@ export function OiiRadialGauge({
           </p>
         </MetricInfoHint>
         <span className="text-[0.62rem] font-medium uppercase tracking-wide text-zinc-500">
-          Model
+          Predictability gauge
         </span>
       </div>
 

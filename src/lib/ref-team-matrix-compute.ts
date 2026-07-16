@@ -3,7 +3,7 @@ import {
   atsFieldsFromStat,
   getTeamAtsSampleRecord,
 } from "@/lib/team-ats";
-import { getTeamDisplayRecord, getTeamSampleRecord } from "@/lib/teamRecord";
+import { getTeamDisplayRecord } from "@/lib/teamRecord";
 import { teamWhistleEdge } from "@/lib/stats-utils";
 import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
@@ -45,20 +45,31 @@ export function computeRefTeamMatrix(
   const cached = matrixComputeCache().get(cacheKey) as RefTeamMatrix | undefined;
   if (cached) return cached;
 
-  const nbaRecordSeasons =
-    league === "nba" && stats.meta.seasons.length === 0
-      ? [...dataLeagueTenSeasons("NBA")]
+  const recordSeasons =
+    stats.meta.seasons.length === 0
+      ? [...dataLeagueTenSeasons(
+          league === "nba"
+            ? "NBA"
+            : league === "nhl"
+              ? "NHL"
+              : league === "nfl"
+                ? "NFL"
+                : league === "epl"
+                  ? "EPL"
+                  : league === "laliga"
+                    ? "LALIGA"
+                    : league === "cbb"
+                      ? "CBB"
+                      : "CFB",
+        )]
       : stats.meta.seasons;
 
   const teams: RefTeamMatrixTeam[] = teamList.map((team) => {
     const abbr = team.abbr.toUpperCase();
     const splits = resolveMatrixTeamSplits(stats, team.abbr, getTeamSplits);
-    const record =
-      league === "nba"
-        ? getTeamDisplayRecord(league, abbr, splits, nbaRecordSeasons, {
-            sinceSeason,
-          })
-        : getTeamSampleRecord(splits);
+    const record = getTeamDisplayRecord(league, abbr, splits, recordSeasons, {
+      sinceSeason,
+    });
     const atsRecord =
       stats.teamAtsBaselines?.[abbr] ?? getTeamAtsSampleRecord(splits);
     return {

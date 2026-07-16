@@ -5,8 +5,11 @@ import {
   computeOiiSampleConfidenceScore,
   computeOiiVolatilityScore,
   generateOII,
+  oiiMethodologyTooltip,
+  OII_BAYESIAN_PRIOR_STRENGTH,
   OII_INSUFFICIENT_LABEL,
   OII_MIN_SAMPLE,
+  refOiiEnrichFingerprint,
   scoreFromOiiComponents,
 } from "@/lib/officiating-intelligence-index";
 import type { RefGameRecord } from "@/lib/types";
@@ -54,6 +57,59 @@ describe("Officiating Intelligence Index", () => {
       41,
     );
     assert.ok(volatile > stable);
+  });
+
+  it("winsorizes outlier whistle games before volatility scoring", () => {
+    const nhlLike = foulGames([6, 4, 14, 10, 126, 14, 56, 30]);
+    const score = computeOiiVolatilityScore(nhlLike, 17.1);
+    assert.ok(score < 90);
+    assert.ok(score < 100);
+  });
+
+  it("uses the stronger OII Bayesian prior for sample confidence", () => {
+    assert.equal(OII_BAYESIAN_PRIOR_STRENGTH, 30);
+    assert.ok(
+      computeOiiSampleConfidenceScore(50) >
+        computeOiiSampleConfidenceScore(12),
+    );
+    assert.ok(
+      computeOiiSampleConfidenceScore(20, 30) <
+        computeOiiSampleConfidenceScore(20, 15),
+    );
+  });
+
+  it("methodology tooltip uses humble proprietary framing", () => {
+    const text = oiiMethodologyTooltip();
+    assert.match(text, /proprietary model used to track officiating predictability/i);
+    assert.match(text, /not an absolute measure of quality/i);
+    assert.match(text, /40% foul\/card volatility/i);
+    assert.match(text, /30% high-leverage share/i);
+    assert.match(text, /30% sample confidence/i);
+  });
+
+  it("refOiiEnrichFingerprint changes when recent games change", () => {
+    const base = {
+      slug: "ref-a",
+      name: "Ref A",
+      number: 1,
+      games: 20,
+      avgTotalPoints: 220,
+      overRate: 0.5,
+      avgFouls: 40,
+      homeCoverRate: null,
+      totalPointsDelta: 0,
+      foulsDelta: 0,
+      seasons: ["2025-26"],
+      recentGames: foulGames([40, 41]),
+    };
+    const changed = {
+      ...base,
+      recentGames: foulGames([40, 52]),
+    };
+    assert.notEqual(
+      refOiiEnrichFingerprint(base),
+      refOiiEnrichFingerprint(changed),
+    );
   });
 
   it("uses highLeverageFlagRate when present", () => {

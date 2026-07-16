@@ -28,5 +28,6 @@ export function loadOverviewSnapshot(): CrossLeagueOverview {
     topStoriesStatus: snap.topStoriesStatus ?? "ready",
     topStoriesGeneratedAt:
       snap.topStoriesGeneratedAt ?? file.generatedAt ?? null,
+    oiiMovers: snap.oiiMovers ?? { asOfDate: "", windowDays: 7, movers: [] },
   } as CrossLeagueOverview;
 }

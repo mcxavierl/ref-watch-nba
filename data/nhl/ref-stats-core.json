@@ -664,7 +664,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 80
+      "cached_oii_score": 67
     },
     {
       "slug": "matt-macpherson-83",
@@ -1168,7 +1168,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 63
+      "cached_oii_score": 56
     },
     {
       "slug": "brandon-gawryletz-64",
@@ -1672,7 +1672,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 81
+      "cached_oii_score": 66
     },
     {
       "slug": "ryan-gibbons-58",
@@ -2176,7 +2176,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 75
+      "cached_oii_score": 64
     },
     {
       "slug": "garrett-rank-7",
@@ -2689,7 +2689,7 @@
         "balancedGameRate": 0.558,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 80
+      "cached_oii_score": 67
     },
     {
       "slug": "trent-knorr-74",
@@ -3193,7 +3193,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 76
+      "cached_oii_score": 64
     },
     {
       "slug": "kendrick-nicholson-30",
@@ -3706,7 +3706,7 @@
         "balancedGameRate": 0.601,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 83
+      "cached_oii_score": 69
     },
     {
       "slug": "trevor-hanson-14",
@@ -4219,7 +4219,7 @@
         "balancedGameRate": 0.588,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 76
     },
     {
       "slug": "kiel-murchison-79",
@@ -4723,7 +4723,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 68
     },
     {
       "slug": "wes-mccauley-4",
@@ -5236,7 +5236,7 @@
         "balancedGameRate": 0.607,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 67
     },
     {
       "slug": "graham-skilliter-24",
@@ -5749,7 +5749,7 @@
         "balancedGameRate": 0.641,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 82
+      "cached_oii_score": 68
     },
     {
       "slug": "thomas-john-luxmore-0",
@@ -6262,7 +6262,7 @@
         "balancedGameRate": 0.574,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 71
     },
     {
       "slug": "kyle-rehman-10",
@@ -6775,7 +6775,7 @@
         "balancedGameRate": 0.589,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 82
+      "cached_oii_score": 67
     },
     {
       "slug": "frederick-l-ecuyer-17",
@@ -7288,7 +7288,7 @@
         "balancedGameRate": 0.563,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 78
+      "cached_oii_score": 66
     },
     {
       "slug": "devin-berg-87",
@@ -7792,7 +7792,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 77
     },
     {
       "slug": "mark-shewchyk-92",
@@ -8296,7 +8296,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 72
     },
     {
       "slug": "steve-barton-59",
@@ -8800,7 +8800,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 69
     },
     {
       "slug": "david-brisebois-96",
@@ -9304,7 +9304,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 65
+      "cached_oii_score": 57
     },
     {
       "slug": "kelly-sutherland-11",
@@ -9817,7 +9817,7 @@
         "balancedGameRate": 0.603,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 73
     },
     {
       "slug": "brad-kovachik-71",
@@ -10321,7 +10321,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 65
     },
     {
       "slug": "jon-mcisaac-2",
@@ -10834,7 +10834,7 @@
         "balancedGameRate": 0.6,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 64
+      "cached_oii_score": 57
     },
     {
       "slug": "gord-dwyer-19",
@@ -11347,7 +11347,7 @@
         "balancedGameRate": 0.56,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 81
+      "cached_oii_score": 68
     },
     {
       "slug": "tom-chmielewski-18",
@@ -11860,7 +11860,7 @@
         "balancedGameRate": 0.607,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 73
+      "cached_oii_score": 63
     },
     {
       "slug": "jake-brenk-26",
@@ -12373,7 +12373,7 @@
         "balancedGameRate": 0.59,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 71
     },
     {
       "slug": "scott-cherrey-50",
@@ -12877,7 +12877,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 72
     },
     {
       "slug": "eric-furlatt-27",
@@ -13390,7 +13390,7 @@
         "balancedGameRate": 0.592,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 73
     },
     {
       "slug": "brian-pochmara-16",
@@ -13903,7 +13903,7 @@
         "balancedGameRate": 0.611,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 78
     },
     {
       "slug": "jean-hebert-15",
@@ -14416,7 +14416,7 @@
         "balancedGameRate": 0.613,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 75
     },
     {
       "slug": "ghislain-hebert-22",
@@ -14928,7 +14928,7 @@
         "balancedGameRate": 0.589,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 82
+      "cached_oii_score": 68
     },
     {
       "slug": "andrew-smith-51",
@@ -15431,7 +15431,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 74
     },
     {
       "slug": "dan-o-rourke-9",
@@ -15944,7 +15944,7 @@
         "balancedGameRate": 0.599,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 71
+      "cached_oii_score": 61
     },
     {
       "slug": "jonny-murray-95",
@@ -16448,7 +16448,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 71
     },
     {
       "slug": "ryan-daisy-81",
@@ -16952,7 +16952,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 70
+      "cached_oii_score": 61
     },
     {
       "slug": "chris-lee-28",
@@ -17465,7 +17465,7 @@
         "balancedGameRate": 0.613,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 82
+      "cached_oii_score": 68
     },
     {
       "slug": "francois-st-laurent-0",
@@ -17978,7 +17978,7 @@
         "balancedGameRate": 0.594,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 83
+      "cached_oii_score": 69
     },
     {
       "slug": "libor-suchanek-60",
@@ -18481,7 +18481,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 70
     },
     {
       "slug": "chris-rooney-5",
@@ -18994,7 +18994,7 @@
         "balancedGameRate": 0.602,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 72
     },
     {
       "slug": "michel-cormier-76",
@@ -19498,7 +19498,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 65
+      "cached_oii_score": 57
     },
     {
       "slug": "bevan-mills-53",
@@ -20002,7 +20002,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 85
+      "cached_oii_score": 73
     },
     {
       "slug": "francis-charron-6",
@@ -20515,7 +20515,7 @@
         "balancedGameRate": 0.604,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 74
+      "cached_oii_score": 61
     },
     {
       "slug": "travis-gawryletz-67",
@@ -21018,7 +21018,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 62
+      "cached_oii_score": 56
     },
     {
       "slug": "pierre-lambert-25",
@@ -21531,7 +21531,7 @@
         "balancedGameRate": 0.617,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 75
+      "cached_oii_score": 64
     },
     {
       "slug": "derek-nansen-70",
@@ -22033,7 +22033,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 66
     },
     {
       "slug": "james-tobias-61",
@@ -22536,7 +22536,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 67
     },
     {
       "slug": "steve-kozari-40",
@@ -23048,7 +23048,7 @@
         "balancedGameRate": 0.552,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 65
     },
     {
       "slug": "chris-schlenker-3",
@@ -23561,7 +23561,7 @@
         "balancedGameRate": 0.553,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 68
+      "cached_oii_score": 59
     },
     {
       "slug": "bryan-pancich-94",
@@ -24064,7 +24064,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 72
     },
     {
       "slug": "kevin-pollock-0",
@@ -24575,7 +24575,7 @@
         "balancedGameRate": 0.614,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 66
+      "cached_oii_score": 58
     },
     {
       "slug": "ryan-galloway-0",
@@ -25077,7 +25077,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 66
+      "cached_oii_score": 58
     },
     {
       "slug": "peter-macdougall-38",
@@ -25590,7 +25590,7 @@
         "balancedGameRate": 0.594,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 73
     },
     {
       "slug": "tyson-baker-88",
@@ -26092,7 +26092,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 74
     },
     {
       "slug": "furman-south-13",
@@ -26605,7 +26605,7 @@
         "balancedGameRate": 0.617,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 67
     },
     {
       "slug": "justin-st-pierre-0",
@@ -27115,7 +27115,7 @@
         "balancedGameRate": 0.593,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 70
+      "cached_oii_score": 60
     },
     {
       "slug": "jesse-marquis-86",
@@ -27617,7 +27617,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 67
     },
     {
       "slug": "corey-syvret-23",
@@ -28129,7 +28129,7 @@
         "balancedGameRate": 0.633,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 64
+      "cached_oii_score": 57
     },
     {
       "slug": "julien-fournier-56",
@@ -28630,7 +28630,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 62
+      "cached_oii_score": 55
     },
     {
       "slug": "kyle-flemington-55",
@@ -29131,7 +29131,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 68
     },
     {
       "slug": "marc-joannette-0",
@@ -29641,7 +29641,7 @@
         "balancedGameRate": 0.67,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 68
     },
     {
       "slug": "travis-toomey-90",
@@ -30142,7 +30142,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 69
     },
     {
       "slug": "dean-morton-0",
@@ -30651,7 +30651,7 @@
         "balancedGameRate": 0.57,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 83
+      "cached_oii_score": 69
     },
     {
       "slug": "ian-walsh-0",
@@ -31160,7 +31160,7 @@
         "balancedGameRate": 0.585,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 68
     },
     {
       "slug": "michael-markovic-31",
@@ -31671,7 +31671,7 @@
         "balancedGameRate": 0.555,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 71
     },
     {
       "slug": "brad-meier-0",
@@ -32180,7 +32180,7 @@
         "balancedGameRate": 0.585,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 74
+      "cached_oii_score": 63
     },
     {
       "slug": "brandon-blandina-39",
@@ -32691,7 +32691,7 @@
         "balancedGameRate": 0.592,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 69
     },
     {
       "slug": "jonathan-deschamps-80",
@@ -33190,7 +33190,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 70
     },
     {
       "slug": "dan-kelly-98",
@@ -33690,7 +33690,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 65
+      "cached_oii_score": 57
     },
     {
       "slug": "mitch-dunning-20",
@@ -34201,7 +34201,7 @@
         "balancedGameRate": 0.617,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 74
     },
     {
       "slug": "cj-murray-68",
@@ -34700,7 +34700,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 81
+      "cached_oii_score": 68
     },
     {
       "slug": "caleb-apperson-77",
@@ -35199,7 +35199,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 67
     },
     {
       "slug": "kilian-mcnamara-93",
@@ -35698,7 +35698,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 78
+      "cached_oii_score": 66
     },
     {
       "slug": "ben-o-quinn-91",
@@ -36197,7 +36197,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 83
+      "cached_oii_score": 69
     },
     {
       "slug": "kory-nagy-0",
@@ -36697,7 +36697,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 73
     },
     {
       "slug": "tony-sericolo-0",
@@ -37187,7 +37187,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 66
     },
     {
       "slug": "pierre-racicot-0",
@@ -37677,7 +37677,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 63
     },
     {
       "slug": "brandon-schrader-34",
@@ -38188,7 +38188,7 @@
         "balancedGameRate": 0.568,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 61
+      "cached_oii_score": 55
     },
     {
       "slug": "darren-gibbs-0",
@@ -38677,7 +38677,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 75
+      "cached_oii_score": 64
     },
     {
       "slug": "scott-driscoll-0",
@@ -39166,7 +39166,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 70
+      "cached_oii_score": 60
     },
     {
       "slug": "brian-mach-0",
@@ -39655,7 +39655,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 69
     },
     {
       "slug": "dan-o-halloran-0",
@@ -40153,7 +40153,7 @@
         "balancedGameRate": 0.577,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 73
+      "cached_oii_score": 62
     },
     {
       "slug": "vaughan-rody-0",
@@ -40653,7 +40653,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 71
     },
     {
       "slug": "brian-murphy-0",
@@ -41142,7 +41142,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 73
     },
     {
       "slug": "tim-peel-0",
@@ -41641,7 +41641,7 @@
         "balancedGameRate": 0.578,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 81
+      "cached_oii_score": 67
     },
     {
       "slug": "derek-amell-0",
@@ -42130,7 +42130,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 69
+      "cached_oii_score": 59
     },
     {
       "slug": "greg-devorski-0",
@@ -42620,7 +42620,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 60
+      "cached_oii_score": 53
     },
     {
       "slug": "tommy-hughes-65",
@@ -43118,7 +43118,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 67
+      "cached_oii_score": 58
     },
     {
       "slug": "carter-sandlak-29",
@@ -43626,7 +43626,7 @@
         "balancedGameRate": 0.637,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 62
+      "cached_oii_score": 55
     },
     {
       "slug": "steve-miller-0",
@@ -44115,7 +44115,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 68
     },
     {
       "slug": "tim-nowak-0",
@@ -44603,7 +44603,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 63
+      "cached_oii_score": 55
     },
     {
       "slug": "lonnie-cameron-0",
@@ -45091,7 +45091,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 70
     },
     {
       "slug": "justin-kea-44",
@@ -45599,7 +45599,7 @@
         "balancedGameRate": 0.647,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 69
     },
     {
       "slug": "brad-watson-0",
@@ -46096,7 +46096,7 @@
         "balancedGameRate": 0.642,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 68
     },
     {
       "slug": "cody-beach-12",
@@ -46604,7 +46604,7 @@
         "balancedGameRate": 0.547,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 69
     },
     {
       "slug": "joe-mahon-89",
@@ -47102,7 +47102,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 84
+      "cached_oii_score": 75
     },
     {
       "slug": "beau-halkidis-48",
@@ -47612,7 +47612,7 @@
         "balancedGameRate": 0.612,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 69
+      "cached_oii_score": 59
     },
     {
       "slug": "justin-johnson-57",
@@ -48110,7 +48110,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 79
+      "cached_oii_score": 62
     },
     {
       "slug": "ryan-jackson-84",
@@ -48608,7 +48608,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 58
+      "cached_oii_score": 52
     },
     {
       "slug": "jordan-samuels-thomas-37",
@@ -49116,7 +49116,7 @@
         "balancedGameRate": 0.609,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 76
+      "cached_oii_score": 64
     },
     {
       "slug": "shane-heyer-0",
@@ -49604,7 +49604,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 60
+      "cached_oii_score": 52
     },
     {
       "slug": "mark-wheler-0",
@@ -50091,7 +50091,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 82
+      "cached_oii_score": 67
     },
     {
       "slug": "mitch-hunt-62",
@@ -50589,7 +50589,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 83
+      "cached_oii_score": 68
     },
     {
       "slug": "tom-kowal-0",
@@ -51085,7 +51085,7 @@
         "balancedGameRate": 0.634,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 83
+      "cached_oii_score": 71
     },
     {
       "slug": "reid-anderson-0",
@@ -51594,7 +51594,7 @@
         "balancedGameRate": 0.575,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 76
+      "cached_oii_score": 63
     },
     {
       "slug": "brandon-grillo-75",
@@ -52091,7 +52091,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 76
+      "cached_oii_score": 63
     },
     {
       "slug": "morgan-macphee-43",
@@ -52598,7 +52598,7 @@
         "balancedGameRate": 0.592,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 59
+      "cached_oii_score": 51
     },
     {
       "slug": "conor-o-donnell-0",
@@ -53097,7 +53097,7 @@
         "balancedGameRate": 0.575,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 82
+      "cached_oii_score": 69
     },
     {
       "slug": "stephen-hiff-46",
@@ -53594,7 +53594,7 @@
         "balancedGameRate": 0.701,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 82
+      "cached_oii_score": 65
     },
     {
       "slug": "dave-jackson-0",
@@ -54090,7 +54090,7 @@
         "balancedGameRate": 0.492,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 64
+      "cached_oii_score": 54
     },
     {
       "slug": "mike-leggo-0",
@@ -54576,7 +54576,7 @@
         "balancedGameRate": 0.692,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 82
+      "cached_oii_score": 63
     },
     {
       "slug": "mike-sullivan-0",
@@ -55073,7 +55073,7 @@
         "balancedGameRate": 0.644,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 81
+      "cached_oii_score": 64
     },
     {
       "slug": "graedy-hamilton-41",
@@ -55552,7 +55552,7 @@
         "balancedGameRate": 0.607,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 81
+      "cached_oii_score": 64
     },
     {
       "slug": "jeremy-faucher-97",
@@ -56029,7 +56029,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 71
+      "cached_oii_score": 58
     },
     {
       "slug": "shawn-oliver-66",
@@ -56524,7 +56524,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 81
+      "cached_oii_score": 65
     },
     {
       "slug": "dylan-blujus-57",
@@ -56983,7 +56983,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 81
+      "cached_oii_score": 57
     },
     {
       "slug": "john-grandt-0",
@@ -57442,7 +57442,7 @@
         ],
         "linesAvailable": true
       },
-      "cached_oii_score": 65
+      "cached_oii_score": 54
     },
     {
       "slug": "evgeny-romasko-0",
@@ -57938,7 +57938,7 @@
         "balancedGameRate": 0.444,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 62
+      "cached_oii_score": 52
     },
     {
       "slug": "riley-brace-49",
@@ -58417,7 +58417,7 @@
         "balancedGameRate": 0.514,
         "balanceKind": "asymmetric"
       },
-      "cached_oii_score": 78
+      "cached_oii_score": 59
     },
     {
       "slug": "liam-maaskant-45",
@@ -58868,7 +58868,7 @@
         "balancedGameRate": 0.724,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 79
+      "cached_oii_score": 58
     },
     {
       "slug": "dave-lewis-0",
@@ -59309,7 +59309,7 @@
         "balancedGameRate": 0.72,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 78
+      "cached_oii_score": 56
     },
     {
       "slug": "alex-lepkowski-44",
@@ -59769,7 +59769,7 @@
         "balancedGameRate": 0.708,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 78
+      "cached_oii_score": 58
     },
     {
       "slug": "cameron-voss-0",
