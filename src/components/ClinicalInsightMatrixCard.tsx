@@ -1,18 +1,53 @@
 import Link from "next/link";
 import { RefAvatar } from "@/components/RefAvatar";
 import { PersonnelAvatar } from "@/components/PersonnelAvatar";
+import { TeamLogo } from "@/components/TeamLogo";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import {
   REF_CARD_METRIC_CLASS,
   REF_CARD_METRIC_DETAIL_CLASS,
   RefCard,
 } from "@/components/hub/RefCard";
+import { formatDeltaPp } from "@/lib/data-maturity";
 import type { FrictionGrudgeFinding } from "@/lib/friction-grudge-matrix";
 import type { LeagueId } from "@/lib/leagues";
-import { statValueDelightTone } from "@/lib/metric-delight";
-import { formatSigned } from "@/lib/stats-utils";
+import { statValueDelightTone, type MetricDelightTone } from "@/lib/metric-delight";
+import type { MatrixExtremeHighlight } from "@/lib/ref-team-matrix";
+import { formatBaselinePct, formatSigned } from "@/lib/stats-utils";
 
+type MatrixAvatarSport = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 type FrictionSport = "nba" | "nhl" | "nfl";
+
+export type ClinicalInsightMatrixSubject =
+  | { kind: "personnel"; name: string; sport: FrictionSport }
+  | { kind: "team"; abbr: string; label: string; sport: MatrixAvatarSport };
+
+export type ClinicalInsightMatrixCardModel = {
+  refSlug: string;
+  refName: string;
+  subjectLabel: string;
+  subject: ClinicalInsightMatrixSubject;
+  deltaDisplay: string;
+  baselineLine: string;
+  games: number;
+  insightKind: string;
+  tone: MetricDelightTone;
+};
+
+function matrixAvatarSport(leagueId: LeagueId): MatrixAvatarSport | null {
+  if (
+    leagueId === "nba" ||
+    leagueId === "nhl" ||
+    leagueId === "nfl" ||
+    leagueId === "epl" ||
+    leagueId === "laliga" ||
+    leagueId === "cbb" ||
+    leagueId === "cfb"
+  ) {
+    return leagueId;
+  }
+  return null;
+}
 
 function frictionSport(leagueId: LeagueId): FrictionSport | null {
   if (leagueId === "nba" || leagueId === "nhl" || leagueId === "nfl") return leagueId;
@@ -35,7 +70,7 @@ function metricUnitShort(
   return "calls/game";
 }
 
-function baselineContextLine(finding: FrictionGrudgeFinding): string {
+function frictionBaselineLine(finding: FrictionGrudgeFinding): string {
   const baseline = finding.baselineValue;
   if (finding.personnelType === "coach") {
     return `vs ${baseline} ref baseline`;
@@ -43,7 +78,10 @@ function baselineContextLine(finding: FrictionGrudgeFinding): string {
   return `vs ${baseline} season baseline`;
 }
 
-function deltaTone(finding: FrictionGrudgeFinding, delta: number) {
+function frictionDeltaTone(
+  finding: FrictionGrudgeFinding,
+  delta: number,
+): MetricDelightTone {
   if (finding.personnelType === "player") {
     if (finding.playerPattern === "protection") {
       return delta <= 0 ? "positive" : "negative";
@@ -55,7 +93,133 @@ function deltaTone(finding: FrictionGrudgeFinding, delta: number) {
   return statValueDelightTone(formatSigned(delta));
 }
 
+export function frictionFindingToMatrixCard(
+  finding: FrictionGrudgeFinding,
+  leagueId: LeagueId,
+): ClinicalInsightMatrixCardModel | null {
+  const sport = frictionSport(leagueId);
+  if (!sport) return null;
+
+  const metric = Number.parseFloat(finding.metricValue);
+  const baseline = Number.parseFloat(finding.baselineValue);
+  const delta =
+    Number.isFinite(metric) && Number.isFinite(baseline) ? metric - baseline : 0;
+  const unit = metricUnitShort(finding, leagueId);
+
+  return {
+    refSlug: finding.refSlug,
+    refName: finding.refName,
+    subjectLabel: `vs ${finding.subjectName} (${finding.teamAbbr})`,
+    subject: { kind: "personnel", name: finding.subjectName, sport },
+    deltaDisplay: `${formatSigned(delta)} ${unit}`,
+    baselineLine: frictionBaselineLine(finding),
+    games: finding.games,
+    insightKind: "friction-matrix",
+    tone: frictionDeltaTone(finding, delta),
+  };
+}
+
+export function matrixExtremeToMatrixCard(
+  item: MatrixExtremeHighlight,
+  leagueId: LeagueId,
+): ClinicalInsightMatrixCardModel | null {
+  const sport = matrixAvatarSport(leagueId);
+  if (!sport) return null;
+
+  return {
+    refSlug: item.refSlug,
+    refName: item.refName,
+    subjectLabel: `vs ${item.teamLabel} (${item.teamAbbr})`,
+    subject: {
+      kind: "team",
+      abbr: item.teamAbbr,
+      label: item.teamLabel,
+      sport,
+    },
+    deltaDisplay: `${formatDeltaPp(item.deltaPts)} win rate`,
+    baselineLine: `vs ${formatBaselinePct(item.baselineGames, item.baselineWinRate)} team baseline`,
+    games: item.games,
+    insightKind: `matrix-extreme-${item.kind}`,
+    tone: item.kind === "high" ? "positive" : "negative",
+  };
+}
+
+function MatrixSubjectAvatar({ subject }: { subject: ClinicalInsightMatrixSubject }) {
+  if (subject.kind === "personnel") {
+    return <PersonnelAvatar name={subject.name} sport={subject.sport} size="lg" />;
+  }
+
+  return (
+    <TeamLogo
+      team={{ abbr: subject.abbr, name: subject.label }}
+      sport={subject.sport}
+      size="xl"
+      className="clinical-insight-matrix-team-logo"
+    />
+  );
+}
+
 export function ClinicalInsightMatrixCard({
+  model,
+  leagueId,
+  basePath = "",
+}: {
+  model: ClinicalInsightMatrixCardModel;
+  leagueId: LeagueId;
+  basePath?: string;
+}) {
+  const refSport = matrixAvatarSport(leagueId);
+
+  return (
+    <RefCard
+      data-league={leagueId}
+      data-insight={model.insightKind}
+      className="clinical-insight-matrix-card"
+    >
+      <Link
+        href={`${basePath}/refs/${model.refSlug}`}
+        className="clinical-insight-matrix-ref-name rankings-insight-name"
+      >
+        {model.refName}
+      </Link>
+
+      <div className="clinical-insight-matrix-avatars" aria-hidden>
+        {refSport ? (
+          <>
+            <RefAvatar
+              name={model.refName}
+              slug={model.refSlug}
+              sport={refSport}
+              size="lg"
+              decorative
+            />
+            <span className="clinical-insight-matrix-vs">vs</span>
+            <MatrixSubjectAvatar subject={model.subject} />
+          </>
+        ) : null}
+      </div>
+
+      <p className="clinical-insight-matrix-subject">{model.subjectLabel}</p>
+
+      <div className="clinical-insight-matrix-metric" aria-label="Delta vs baseline">
+        <div className={REF_CARD_METRIC_CLASS}>
+          <StandoutMetricValue tone={model.tone} size="hero" className="tabular-nums">
+            {model.deltaDisplay}
+          </StandoutMetricValue>
+        </div>
+        <p className={`${REF_CARD_METRIC_DETAIL_CLASS} clinical-insight-matrix-baseline`}>
+          {model.baselineLine}
+        </p>
+      </div>
+
+      <p className="clinical-insight-matrix-provenance">
+        *Based on {model.games} shared games. Data adjusted for volatility.*
+      </p>
+    </RefCard>
+  );
+}
+
+export function FrictionInsightMatrixCard({
   finding,
   leagueId,
   basePath = "",
@@ -64,64 +228,10 @@ export function ClinicalInsightMatrixCard({
   leagueId: LeagueId;
   basePath?: string;
 }) {
-  const sport = frictionSport(leagueId);
-  const metric = Number.parseFloat(finding.metricValue);
-  const baseline = Number.parseFloat(finding.baselineValue);
-  const delta = Number.isFinite(metric) && Number.isFinite(baseline) ? metric - baseline : 0;
-  const unit = metricUnitShort(finding, leagueId);
-  const deltaDisplay = `${formatSigned(delta)} ${unit}`;
-  const tone = deltaTone(finding, delta);
-
-  const subjectLabel =
-    finding.personnelType === "coach"
-      ? `vs ${finding.subjectName} (${finding.teamAbbr})`
-      : `vs ${finding.subjectName} (${finding.teamAbbr})`;
+  const model = frictionFindingToMatrixCard(finding, leagueId);
+  if (!model) return null;
 
   return (
-    <RefCard
-      data-league={leagueId}
-      data-insight="friction-matrix"
-      className="clinical-insight-matrix-card"
-    >
-      <Link
-        href={`${basePath}/refs/${finding.refSlug}`}
-        className="clinical-insight-matrix-ref-name rankings-insight-name"
-      >
-        {finding.refName}
-      </Link>
-
-      <div className="clinical-insight-matrix-avatars" aria-hidden>
-        {sport ? (
-          <>
-            <RefAvatar
-              name={finding.refName}
-              slug={finding.refSlug}
-              sport={sport}
-              size="lg"
-              decorative
-            />
-            <span className="clinical-insight-matrix-vs">vs</span>
-            <PersonnelAvatar name={finding.subjectName} sport={sport} size="lg" />
-          </>
-        ) : null}
-      </div>
-
-      <p className="clinical-insight-matrix-subject">{subjectLabel}</p>
-
-      <div className="clinical-insight-matrix-metric" aria-label="Delta vs baseline">
-        <div className={REF_CARD_METRIC_CLASS}>
-          <StandoutMetricValue tone={tone} size="hero" className="tabular-nums">
-            {deltaDisplay}
-          </StandoutMetricValue>
-        </div>
-        <p className={`${REF_CARD_METRIC_DETAIL_CLASS} clinical-insight-matrix-baseline`}>
-          {baselineContextLine(finding)}
-        </p>
-      </div>
-
-      <p className="clinical-insight-matrix-provenance">
-        *Based on {finding.games} shared games. Data adjusted for volatility.*
-      </p>
-    </RefCard>
+    <ClinicalInsightMatrixCard model={model} leagueId={leagueId} basePath={basePath} />
   );
 }

@@ -4759,19 +4759,23 @@ p {
     color: var(--foreground);
   }
 
-  .personnel-avatar-badge--nhl {
+  .personnel-avatar-badge--nhl-logo {
+    padding: 0.1rem;
     border-color: color-mix(in srgb, var(--nhl-blue) 45%, var(--border));
-    color: color-mix(in srgb, var(--nhl-blue) 88%, var(--foreground));
+    background: var(--surface);
   }
 
-  .personnel-avatar-badge--nfl {
-    border-color: color-mix(in srgb, var(--nfl-green) 45%, var(--border));
-    color: color-mix(in srgb, var(--nfl-green) 88%, var(--foreground));
+  .personnel-avatar-nhl-logo {
+    display: block;
+    width: 0.72rem;
+    height: 0.72rem;
+    object-fit: contain;
   }
 
-  .personnel-avatar-badge--nba {
-    border-color: color-mix(in srgb, var(--raptors) 45%, var(--border));
-    color: color-mix(in srgb, var(--raptors) 88%, var(--foreground));
+  .clinical-insight-matrix-team-logo {
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--border) 80%, transparent);
   }
 
   .rankings-insight-grid--hero {

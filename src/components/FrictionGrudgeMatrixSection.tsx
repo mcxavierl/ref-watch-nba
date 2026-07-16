@@ -1,4 +1,4 @@
-import { ClinicalInsightMatrixCard } from "@/components/ClinicalInsightMatrixCard";
+import { FrictionInsightMatrixCard } from "@/components/ClinicalInsightMatrixCard";
 import type { FrictionGrudgeFinding } from "@/lib/friction-grudge-matrix";
 import { FRICTION_MIN_H2H_GAMES } from "@/lib/friction-grudge-matrix";
 import type { LeagueId } from "@/lib/leagues";
@@ -28,7 +28,7 @@ export function FrictionGrudgeMatrixSection({
       </p>
       <ul className="rankings-insight-grid insight-bento-grid">
         {findings.map((finding) => (
-          <ClinicalInsightMatrixCard
+          <FrictionInsightMatrixCard
             key={finding.id}
             finding={finding}
             leagueId={leagueId}

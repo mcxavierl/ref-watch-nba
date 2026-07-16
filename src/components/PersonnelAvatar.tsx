@@ -1,5 +1,8 @@
 "use client";
 
+import { useColorMode } from "@/lib/a11y/useColorMode";
+import { leagueLogoSrc } from "@/lib/league-logo-src";
+
 const sizeClasses = {
   sm: "h-8 w-8 text-[0.55rem]",
   md: "h-10 w-10 text-[0.65rem]",
@@ -13,12 +16,6 @@ function initials(name: string): string {
   return `${parts[0]![0] ?? ""}${parts[parts.length - 1]![0] ?? ""}`.toUpperCase();
 }
 
-function sportBadgeLabel(sport: "nba" | "nhl" | "nfl"): string {
-  if (sport === "nhl") return "NHL";
-  if (sport === "nfl") return "NFL";
-  return "NBA";
-}
-
 export function PersonnelAvatar({
   name,
   sport,
@@ -30,6 +27,10 @@ export function PersonnelAvatar({
   size?: keyof typeof sizeClasses;
   className?: string;
 }) {
+  const colorMode = useColorMode();
+  const nhlLogoSrc =
+    sport === "nhl" ? leagueLogoSrc("nhl", colorMode === "light" ? "light" : "dark") : null;
+
   const ringClass =
     sport === "nfl"
       ? "ring-[color:color-mix(in_srgb,var(--nfl-green)_45%,transparent)]"
@@ -47,12 +48,12 @@ export function PersonnelAvatar({
       >
         {initials(name)}
       </span>
-      <span
-        className={`personnel-avatar-badge personnel-avatar-badge--${sport}`}
-        aria-hidden
-      >
-        {sportBadgeLabel(sport)}
-      </span>
+      {sport === "nhl" && nhlLogoSrc ? (
+        <span className="personnel-avatar-badge personnel-avatar-badge--nhl-logo" aria-hidden>
+          {/* eslint-disable-next-line @next/next/no-img-element -- league mark overlay */}
+          <img src={nhlLogoSrc} alt="" className="personnel-avatar-nhl-logo" />
+        </span>
+      ) : null}
     </span>
   );
 }
