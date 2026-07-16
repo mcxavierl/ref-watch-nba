@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSlateGamesList } from "@/components/LeagueSlateGamesList";
-import type { OverviewLeagueSlateGroup as OverviewLeagueSlateGroupData } from "@/lib/overview-upcoming-slate";
-import { formatLeagueSlateCounts } from "@/lib/overview-upcoming-slate";
+import type { OverviewLeagueSlateGroup as OverviewLeagueSlateGroupData } from "@/lib/overview-slate-shared";
+import { formatLeagueSlateCounts } from "@/lib/overview-slate-shared";
 
 type OverviewLeagueSlateGroupProps = {
   group: OverviewLeagueSlateGroupData;

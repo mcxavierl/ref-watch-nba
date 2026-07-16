@@ -4,7 +4,7 @@ import {
   formatLeagueSlateCounts,
   groupOverviewSlateByLeague,
   type OverviewSlateEntry,
-} from "@/lib/overview-upcoming-slate";
+} from "@/lib/overview-slate-shared";
 
 function slateEntry(
   overrides: Partial<OverviewSlateEntry> & Pick<OverviewSlateEntry, "leagueId" | "gameId" | "status">,

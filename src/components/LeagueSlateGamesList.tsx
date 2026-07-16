@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { OverviewSlateRow } from "@/components/OverviewSlateRow";
-import type { OverviewSlateEntry } from "@/lib/overview-upcoming-slate";
+import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 
 export const SLATE_PREVIEW_COUNT = 5;
 

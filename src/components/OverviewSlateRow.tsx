@@ -4,7 +4,7 @@ import Link from "next/link";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { LeagueId } from "@/lib/leagues";
-import type { OverviewSlateEntry } from "@/lib/overview-upcoming-slate";
+import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { getTeam as getCbbTeam } from "@/lib/cbb/teams";
 import { getTeam as getCfbTeam } from "@/lib/cfb/teams";
 import { getTeam as getEplTeam } from "@/lib/epl/teams";
