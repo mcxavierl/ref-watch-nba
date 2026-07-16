@@ -49,7 +49,7 @@ import {
   buildMatrixTeamShareUrl,
 } from "@/lib/matrix-split-share";
 import type { LeagueId } from "@/lib/leagues";
-import { formatBaselineAtsPct, formatBaselinePct, formatSigned } from "@/lib/stats-utils";
+import { formatBaselineAtsPct, formatBaselinePct, formatTeamWhistleEdgeLabel } from "@/lib/stats-utils";
 import { foulEdgeTone } from "@/lib/metricTone";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
@@ -166,6 +166,7 @@ function TeamRefRankListItem({
   sport,
   leagueId,
   whistleDiffLabel,
+  teamLabel,
   teamBaselineRate,
   teamBaselineGames,
   viewMode,
@@ -177,6 +178,7 @@ function TeamRefRankListItem({
   sport: RefTeamMatrixProps["sport"];
   leagueId: LeagueId;
   whistleDiffLabel: string;
+  teamLabel: string;
   teamBaselineRate: number;
   teamBaselineGames: number;
   viewMode: MatrixViewMode;
@@ -199,6 +201,11 @@ function TeamRefRankListItem({
       : "Baseline n/a";
   const recordLabel = viewMode === "ats" ? "ATS cover rate" : "Win rate";
   const whistleUnit = whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
+  const whistleEdgeLabel = formatTeamWhistleEdgeLabel(
+    entry.avgFoulDifferential,
+    teamLabel,
+    whistleUnit,
+  );
 
   return (
     <li className="ref-matrix-team-panel-item">
@@ -248,9 +255,9 @@ function TeamRefRankListItem({
       </span>
       <span
         className={`ref-matrix-team-panel-delta ${foulClass}`}
-        title={`${whistleDiffLabel}: ${formatSigned(entry.avgFoulDifferential)} per game`}
+        title={`${whistleDiffLabel}: ${whistleEdgeLabel} per game`}
       >
-        {formatSigned(entry.avgFoulDifferential)} {whistleUnit}
+        {whistleEdgeLabel}
       </span>
     </li>
   );
@@ -267,6 +274,7 @@ function TeamRefRankColumn({
   sport,
   leagueId,
   whistleDiffLabel,
+  teamLabel,
   teamBaselineRate,
   teamBaselineGames,
   viewMode,
@@ -281,11 +289,11 @@ function TeamRefRankColumn({
   sport: RefTeamMatrixProps["sport"];
   leagueId: LeagueId;
   whistleDiffLabel: string;
+  teamLabel: string;
   teamBaselineRate: number;
   teamBaselineGames: number;
   viewMode: MatrixViewMode;
 }) {
-  const whistleUnit = whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
   const recordHead = viewMode === "ats" ? "ATS" : "W-L";
 
   return (
@@ -312,7 +320,7 @@ function TeamRefRankColumn({
             </span>
             <span className="ref-matrix-team-panel-list-head-stat">{recordHead}</span>
             <span className="ref-matrix-team-panel-list-head-stat">Gp</span>
-            <span className="ref-matrix-team-panel-list-head-stat">{whistleUnit}</span>
+            <span className="ref-matrix-team-panel-list-head-stat">Whistle</span>
           </div>
           <ul className="ref-matrix-team-panel-list" aria-labelledby={titleId}>
             {entries.slice(0, TEAM_MATRIX_REF_PANEL_LIMIT).map((entry, index) => (
@@ -325,6 +333,7 @@ function TeamRefRankColumn({
                 sport={sport}
                 leagueId={leagueId}
                 whistleDiffLabel={whistleDiffLabel}
+                teamLabel={teamLabel}
                 teamBaselineRate={teamBaselineRate}
                 teamBaselineGames={teamBaselineGames}
                 viewMode={viewMode}
@@ -1097,7 +1106,7 @@ export function RefTeamMatrix({
                     ? viewMode === "ats"
                       ? "ATS cover rate vs baseline"
                       : "win rate vs baseline"
-                    : `${whistleDiffLabel.toLowerCase()} (positive = fewer on your team)`}
+                    : `${whistleDiffLabel.toLowerCase()} (fewer or more on ${selectedTeam.label})`}
                   . Only {minGames}+ game splits qualify for these lists; thin
                   samples are excluded.
                 </p>
@@ -1145,7 +1154,7 @@ export function RefTeamMatrix({
                   ? viewMode === "ats"
                     ? `ATS cover above ${selectedTeam.label} baseline`
                     : `Win rate above ${selectedTeam.label} baseline`
-                  : `Most whistle edge for ${selectedTeam.label} (opponent − team)`
+                  : `Fewest ${whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase()} on ${selectedTeam.label}`
               }
               variant="positive"
               entries={topRefsForTeam}
@@ -1154,6 +1163,7 @@ export function RefTeamMatrix({
               sport={sport}
               leagueId={leagueId}
               whistleDiffLabel={whistleDiffLabel}
+              teamLabel={selectedTeam.label}
               teamBaselineRate={matrixTeamMetricRate(selectedTeam, viewMode)}
               teamBaselineGames={matrixTeamMetricGames(selectedTeam, viewMode)}
               viewMode={viewMode}
@@ -1166,7 +1176,7 @@ export function RefTeamMatrix({
                   ? viewMode === "ats"
                     ? `ATS cover below ${selectedTeam.label} baseline`
                     : `Win rate below ${selectedTeam.label} baseline`
-                  : `Least whistle edge for ${selectedTeam.label} (opponent − team)`
+                  : `Most ${whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase()} on ${selectedTeam.label}`
               }
               variant="negative"
               entries={bottomRefsForTeam}
@@ -1175,6 +1185,7 @@ export function RefTeamMatrix({
               sport={sport}
               leagueId={leagueId}
               whistleDiffLabel={whistleDiffLabel}
+              teamLabel={selectedTeam.label}
               teamBaselineRate={matrixTeamMetricRate(selectedTeam, viewMode)}
               teamBaselineGames={matrixTeamMetricGames(selectedTeam, viewMode)}
               viewMode={viewMode}

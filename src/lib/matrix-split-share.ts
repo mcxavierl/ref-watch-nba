@@ -8,7 +8,7 @@ import {
   DEFAULT_SEASON_SCOPE_MODE,
   type SeasonScopeMode,
 } from "@/lib/season-scope";
-import { formatSigned, formatWinRateVsTeam } from "@/lib/stats-utils";
+import { formatSigned, formatTeamWhistleEdgeLabel, formatWinRateVsTeam } from "@/lib/stats-utils";
 
 export type MatrixSplitShareInput = {
   siteUrl: string;
@@ -86,7 +86,11 @@ export function buildMatrixSplitShareText(input: MatrixSplitShareInput): string 
     ? `${input.cell.games} games (below sample gate)`
     : formatWinRateVsTeam(input.cell.winRate, input.team.baselineWinRate);
   const whistleUnit = input.whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
-  const whistle = formatSigned(input.cell.avgFoulDifferential);
+  const whistle = formatTeamWhistleEdgeLabel(
+    input.cell.avgFoulDifferential,
+    input.team.label,
+    whistleUnit,
+  );
   const toneNote =
     tone === "neutral"
       ? "near team baseline"
@@ -95,7 +99,7 @@ export function buildMatrixSplitShareText(input: MatrixSplitShareInput): string 
 
   return [
     `⚖️ Ref Watch Split: ${input.ref.name} × ${input.team.abbr.toUpperCase()} (${input.scopeLabel})`,
-    `📊 ${record} in ${input.cell.games} games · ${winDelta} · ${whistle} ${whistleUnit}/game (${toneNote})`,
+    `📊 ${record} in ${input.cell.games} games · ${winDelta} · ${whistle}/game (${toneNote})`,
     `🔗 Check out the complete whistle trends and historical game logs: ${url}`,
     "ℹ️ Historical splits only. Descriptive, not picks.",
   ].join("\n");

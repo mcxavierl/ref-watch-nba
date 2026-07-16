@@ -46,6 +46,27 @@ export function teamWhistleEdge(storedTeamMinusOpponent: number): number {
   return Math.round(-storedTeamMinusOpponent * 10) / 10;
 }
 
+/**
+ * Human-readable team whistle edge, e.g. "2.3 fewer flags on Ravens".
+ * Positive edge means fewer whistles on the team; negative means more.
+ */
+export function formatTeamWhistleEdgeLabel(
+  edge: number,
+  teamLabel: string,
+  whistleUnit: string,
+): string {
+  const rounded = Math.round(edge * 10) / 10;
+  const magnitude = Math.abs(rounded);
+  if (magnitude < 0.05) {
+    return `Even ${whistleUnit} on ${teamLabel}`;
+  }
+  const direction = rounded > 0 ? "fewer" : "more";
+  const amount = Number.isInteger(magnitude)
+    ? String(magnitude)
+    : magnitude.toFixed(1);
+  return `${amount} ${direction} ${whistleUnit} on ${teamLabel}`;
+}
+
 /** e.g. "+4.2 pts vs team" */
 export function formatWinRateVsTeam(
   rate: number,
