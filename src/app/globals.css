@@ -1494,9 +1494,20 @@ p {
   }
 
   .season-notify-input {
-    @apply min-w-0 flex-1 rounded-md border border-border bg-surface px-3 py-2 text-zinc-900 outline-offset-2 placeholder:text-zinc-400 focus-visible:border-zinc-400 focus-visible:outline-2 focus-visible:outline-zinc-400 disabled:opacity-60;
+    @apply min-w-0 flex-1 rounded-md border border-border bg-surface px-3 py-2 outline-offset-2 focus-visible:outline-2 disabled:opacity-60;
     font-size: var(--text-sm);
     min-width: 12rem;
+    color: var(--text-primary);
+    border-color: var(--border);
+  }
+
+  .season-notify-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .season-notify-input:focus-visible {
+    border-color: var(--border-strong);
+    outline-color: var(--focus-ring);
   }
 
   .season-notify-submit {
@@ -1931,6 +1942,7 @@ p {
   .share-signal-item {
     line-height: var(--leading-relaxed);
     word-break: break-word;
+    color: var(--text-secondary);
   }
 
   .profile-signal-badge {
@@ -4600,18 +4612,53 @@ p {
     outline-offset: 2px;
   }
 
-  /* ── Buttons ── */
+  /* ── Buttons (semantic tokens — avoid inverted Tailwind white/slate @apply) ── */
   .btn-primary {
-    @apply rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition outline-offset-2 hover:bg-slate-800 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-slate-900 motion-reduce:active:scale-100;
+    @apply rounded-md px-4 py-2 text-sm font-semibold shadow-sm transition outline-offset-2 active:scale-[0.98] focus-visible:outline-2 motion-reduce:active:scale-100;
+    background-color: var(--text-primary);
+    color: var(--text-inverse);
+    border: 1px solid transparent;
+  }
+
+  .btn-primary:hover {
+    background-color: color-mix(in srgb, var(--text-primary) 88%, var(--surface-raised));
+  }
+
+  .btn-primary:focus-visible {
+    outline-color: var(--focus-ring);
   }
 
   .btn-secondary {
-    @apply rounded-md border border-slate-200 bg-white px-3 py-2 font-medium text-slate-900 shadow-sm transition outline-offset-2 hover:border-slate-300 hover:bg-slate-50 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-slate-400 motion-reduce:active:scale-100;
+    @apply rounded-md px-3 py-2 font-medium shadow-sm transition outline-offset-2 active:scale-[0.98] focus-visible:outline-2 motion-reduce:active:scale-100;
     font-size: var(--text-sm);
+    background-color: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--surface-raised);
+    border-color: var(--border-strong);
+  }
+
+  .btn-secondary:focus-visible {
+    outline-color: var(--focus-ring);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .btn-secondary {
+    background-color: var(--bg-surface-1);
+    box-shadow: var(--card-shadow-light, 0 1px 2px rgb(15 23 42 / 0.05));
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .btn-secondary:hover {
+    background-color: var(--bg-surface-2);
+    border-color: var(--card-border-light, var(--border));
   }
 
   .btn-success {
-    @apply border-emerald-200 bg-emerald-50 text-emerald-900;
+    background-color: var(--accent-positive-subtle);
+    color: var(--accent-positive);
+    border-color: color-mix(in srgb, var(--accent-positive) 35%, var(--border));
   }
 
   /* ── Footer ── */
@@ -9439,11 +9486,13 @@ p {
   }
 
   .trust-charter-compact {
-    @apply mt-6 rounded-lg border border-border bg-surface-raised px-4 py-4 text-sm leading-relaxed text-zinc-600 sm:px-5;
+    @apply mt-6 rounded-lg border border-border bg-surface-raised px-4 py-4 text-sm leading-relaxed sm:px-5;
+    color: var(--text-secondary);
   }
 
   .signal-limitations-note {
-    @apply text-xs leading-relaxed text-zinc-500;
+    @apply text-xs leading-relaxed;
+    color: var(--text-muted);
   }
 
   .gambling-disclaimer {
@@ -9549,94 +9598,152 @@ p {
 }
 
 /* Dark-theme remap for legacy light-mode Tailwind zinc utilities */
-.page-shell .text-zinc-900,
-.page-shell .text-zinc-800,
-.page-shell-hub .text-zinc-900,
-.page-shell-hub .text-zinc-800,
-.page-shell-slate .text-zinc-900,
-.page-shell-slate .text-zinc-800 {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .text-zinc-900,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .text-zinc-800,
+html.dark .page-shell .text-zinc-900,
+html.dark .page-shell .text-zinc-800,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .text-zinc-900,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .text-zinc-800,
+html.dark .page-shell-hub .text-zinc-900,
+html.dark .page-shell-hub .text-zinc-800,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .text-zinc-900,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .text-zinc-800,
+html.dark .page-shell-slate .text-zinc-900,
+html.dark .page-shell-slate .text-zinc-800 {
   color: var(--ink-secondary);
 }
 
-.page-shell .text-zinc-700,
-.page-shell .text-zinc-600,
-.page-shell .text-zinc-500,
-.page-shell-hub .text-zinc-700,
-.page-shell-hub .text-zinc-600,
-.page-shell-hub .text-zinc-500,
-.page-shell-slate .text-zinc-700,
-.page-shell-slate .text-zinc-600,
-.page-shell-slate .text-zinc-500 {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .text-zinc-700,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .text-zinc-600,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .text-zinc-500,
+html.dark .page-shell .text-zinc-700,
+html.dark .page-shell .text-zinc-600,
+html.dark .page-shell .text-zinc-500,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .text-zinc-700,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .text-zinc-600,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .text-zinc-500,
+html.dark .page-shell-hub .text-zinc-700,
+html.dark .page-shell-hub .text-zinc-600,
+html.dark .page-shell-hub .text-zinc-500,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .text-zinc-700,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .text-zinc-600,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .text-zinc-500,
+html.dark .page-shell-slate .text-zinc-700,
+html.dark .page-shell-slate .text-zinc-600,
+html.dark .page-shell-slate .text-zinc-500 {
   color: var(--muted);
 }
 
-.page-shell .text-zinc-400,
-.page-shell-hub .text-zinc-400,
-.page-shell-slate .text-zinc-400 {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .text-zinc-400,
+html.dark .page-shell .text-zinc-400,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .text-zinc-400,
+html.dark .page-shell-hub .text-zinc-400,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .text-zinc-400,
+html.dark .page-shell-slate .text-zinc-400 {
   color: color-mix(in srgb, var(--muted) 80%, transparent);
 }
 
-.page-shell .text-amber-800,
-.page-shell .text-amber-900,
-.page-shell-hub .text-amber-800,
-.page-shell-hub .text-amber-900,
-.page-shell-slate .text-amber-800,
-.page-shell-slate .text-amber-900 {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .text-amber-800,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .text-amber-900,
+html.dark .page-shell .text-amber-800,
+html.dark .page-shell .text-amber-900,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .text-amber-800,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .text-amber-900,
+html.dark .page-shell-hub .text-amber-800,
+html.dark .page-shell-hub .text-amber-900,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .text-amber-800,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .text-amber-900,
+html.dark .page-shell-slate .text-amber-800,
+html.dark .page-shell-slate .text-amber-900 {
   color: #fbbf24;
 }
 
-.page-shell .hover\:text-zinc-800:hover,
-.page-shell .hover\:text-zinc-900:hover,
-.page-shell-hub .hover\:text-zinc-800:hover,
-.page-shell-hub .hover\:text-zinc-900:hover,
-.page-shell-slate .hover\:text-zinc-800:hover,
-.page-shell-slate .hover\:text-zinc-900:hover {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .hover\:text-zinc-800:hover,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .hover\:text-zinc-900:hover,
+html.dark .page-shell .hover\:text-zinc-800:hover,
+html.dark .page-shell .hover\:text-zinc-900:hover,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .hover\:text-zinc-800:hover,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .hover\:text-zinc-900:hover,
+html.dark .page-shell-hub .hover\:text-zinc-800:hover,
+html.dark .page-shell-hub .hover\:text-zinc-900:hover,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .hover\:text-zinc-800:hover,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .hover\:text-zinc-900:hover,
+html.dark .page-shell-slate .hover\:text-zinc-800:hover,
+html.dark .page-shell-slate .hover\:text-zinc-900:hover {
   color: var(--ink);
 }
 
-.page-shell-insights .text-zinc-900,
-.page-shell-insights .text-zinc-800,
-.content-main .text-zinc-900,
-.content-main .text-zinc-800 {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .text-zinc-900,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .text-zinc-800,
+html.dark .page-shell-insights .text-zinc-900,
+html.dark .page-shell-insights .text-zinc-800,
+html[data-color="dark"]:not([data-contrast="high"]) .content-main .text-zinc-900,
+html[data-color="dark"]:not([data-contrast="high"]) .content-main .text-zinc-800,
+html.dark .content-main .text-zinc-900,
+html.dark .content-main .text-zinc-800 {
   color: var(--foreground) !important;
 }
 
-.page-shell-insights .text-zinc-700,
-.page-shell-insights .text-zinc-600,
-.page-shell-insights .text-zinc-500,
-.content-main .text-zinc-700,
-.content-main .text-zinc-600,
-.content-main .text-zinc-500 {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .text-zinc-700,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .text-zinc-600,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .text-zinc-500,
+html.dark .page-shell-insights .text-zinc-700,
+html.dark .page-shell-insights .text-zinc-600,
+html.dark .page-shell-insights .text-zinc-500,
+html[data-color="dark"]:not([data-contrast="high"]) .content-main .text-zinc-700,
+html[data-color="dark"]:not([data-contrast="high"]) .content-main .text-zinc-600,
+html[data-color="dark"]:not([data-contrast="high"]) .content-main .text-zinc-500,
+html.dark .content-main .text-zinc-700,
+html.dark .content-main .text-zinc-600,
+html.dark .content-main .text-zinc-500 {
   color: var(--ink-secondary) !important;
 }
 
-.page-shell-insights .text-zinc-400,
-.content-main .text-zinc-400 {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .text-zinc-400,
+html.dark .page-shell-insights .text-zinc-400,
+html[data-color="dark"]:not([data-contrast="high"]) .content-main .text-zinc-400,
+html.dark .content-main .text-zinc-400 {
   color: var(--muted) !important;
 }
 
-.page-shell .bg-white,
-.page-shell-hub .bg-white,
-.page-shell-slate .bg-white,
-.page-shell-insights .bg-white {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .bg-white,
+html.dark .page-shell .bg-white,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .bg-white,
+html.dark .page-shell-hub .bg-white,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .bg-white,
+html.dark .page-shell-slate .bg-white,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .bg-white,
+html.dark .page-shell-insights .bg-white {
   background-color: var(--surface);
 }
 
-.page-shell .bg-zinc-50,
-.page-shell-hub .bg-zinc-50,
-.page-shell-slate .bg-zinc-50,
-.page-shell-insights .bg-zinc-50 {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .bg-zinc-50,
+html.dark .page-shell .bg-zinc-50,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .bg-zinc-50,
+html.dark .page-shell-hub .bg-zinc-50,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .bg-zinc-50,
+html.dark .page-shell-slate .bg-zinc-50,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .bg-zinc-50,
+html.dark .page-shell-insights .bg-zinc-50 {
   background-color: var(--surface-raised);
 }
 
-.page-shell .border-zinc-300,
-.page-shell-hub .border-zinc-300,
-.page-shell-slate .border-zinc-300,
-.page-shell-insights .border-zinc-300,
-.page-shell .hover\:border-zinc-300:hover,
-.page-shell-hub .hover\:border-zinc-300:hover,
-.page-shell-slate .hover\:border-zinc-300:hover,
-.page-shell-insights .hover\:border-zinc-300:hover {
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .border-zinc-300,
+html.dark .page-shell .border-zinc-300,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .border-zinc-300,
+html.dark .page-shell-hub .border-zinc-300,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .border-zinc-300,
+html.dark .page-shell-slate .border-zinc-300,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .border-zinc-300,
+html.dark .page-shell-insights .border-zinc-300,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell .hover\:border-zinc-300:hover,
+html.dark .page-shell .hover\:border-zinc-300:hover,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-hub .hover\:border-zinc-300:hover,
+html.dark .page-shell-hub .hover\:border-zinc-300:hover,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .hover\:border-zinc-300:hover,
+html.dark .page-shell-slate .hover\:border-zinc-300:hover,
+html[data-color="dark"]:not([data-contrast="high"]) .page-shell-insights .hover\:border-zinc-300:hover,
+html.dark .page-shell-insights .hover\:border-zinc-300:hover {
   border-color: var(--border);
 }
 
@@ -13159,9 +13266,14 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
 .matrix-split-share-preview {
   margin-top: 0.25rem;
   font-size: var(--text-sm);
-  color: var(--muted-strong);
+  color: var(--text-muted);
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-inset {
+  border-color: var(--card-border-light, var(--border));
+  box-shadow: var(--card-shadow-light, 0 1px 2px rgb(15 23 42 / 0.05));
 }
 
 .matrix-split-share > .flex {

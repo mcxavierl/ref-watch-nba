@@ -106,7 +106,7 @@ export function MatrixSplitShareBar({
           </button>
         </div>
       </div>
-      <p className="mt-3 text-xs leading-relaxed text-zinc-500">{disclaimer}</p>
+      <p className="mt-3 text-xs leading-relaxed text-muted">{disclaimer}</p>
     </section>
   );
 }

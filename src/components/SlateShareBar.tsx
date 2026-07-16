@@ -110,13 +110,13 @@ export function SlateShareBar({
         </div>
       </div>
 
-      <ul className="mt-4 grid gap-2 text-sm text-zinc-700 sm:grid-cols-2">
+      <ul className="mt-4 grid gap-2 text-sm text-secondary sm:grid-cols-2">
         {topSignals.map((signal) => (
           <li
             key={signal.id}
             className="share-signal-item"
           >
-            <span className="font-semibold text-zinc-900">{signal.matchup}</span>
+            <span className="font-semibold text-primary">{signal.matchup}</span>
             {" · "}
             {signal.headline}
             {signal.provenance !== "computed-from-real" && (
@@ -128,7 +128,7 @@ export function SlateShareBar({
         ))}
       </ul>
 
-      <p className="mt-4 text-xs leading-relaxed text-zinc-500">{disclaimer}</p>
+      <p className="mt-4 text-xs leading-relaxed text-muted">{disclaimer}</p>
     </section>
   );
 }
