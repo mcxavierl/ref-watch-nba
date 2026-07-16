@@ -70,4 +70,11 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /clinical-insight-matrix-provenance/);
     assert.doesNotMatch(source, /Based on .* shared games/);
   });
+
+  it("pill glow tokens are centralized in kpi-data-pill.css", () => {
+    const css = readSrc("src/styles/kpi-data-pill.css");
+    assert.match(css, /--pill-glow-accent/);
+    assert.match(css, /--pill-glow-ring/);
+    assert.match(css, /pill-glow-neutral-surface/);
+  });
 });

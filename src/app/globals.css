@@ -1861,6 +1861,7 @@ p {
     flex-shrink: 0;
     padding: 0.05rem 0.35rem;
     border-radius: 999px;
+    --pill-glow-accent: var(--nhl-blue);
     border: 1px solid color-mix(in srgb, var(--nhl-blue) 35%, var(--border));
     background: color-mix(in srgb, var(--nhl-blue) 8%, var(--surface));
     font-size: 0.625rem;
@@ -1869,6 +1870,7 @@ p {
     line-height: 1.2;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--nhl-blue) 85%, var(--ink-secondary));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .ou-lean-badge {
@@ -1878,14 +1880,20 @@ p {
     align-items: center;
     gap: 0.25rem 0.5rem;
     border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--pill-glow) 38%, var(--border));
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--pill-glow) 10%, transparent),
+        transparent 62%
+      ),
+      var(--surface);
     padding: 0.35rem 0.65rem;
     font-size: var(--text-xs);
     font-weight: 600;
     line-height: var(--leading-snug);
     color: var(--ink-secondary);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.32);
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .ou-lean-badge-label {
@@ -2240,6 +2248,18 @@ p {
     color: var(--pill-ink);
   }
 
+  .finding-meta-pill:not(.finding-meta-pill--league):not(.finding-meta-pill--category):not(.finding-meta-pill-muted) {
+    border-color: color-mix(in srgb, var(--pill-glow) 38%, var(--pill-border));
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--pill-glow) 10%, transparent),
+        transparent 62%
+      ),
+      var(--pill-bg);
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  }
+
   a.finding-meta-pill-link {
     text-decoration: none;
     cursor: pointer;
@@ -2277,53 +2297,80 @@ p {
 
   .finding-meta-pill-muted {
     color: var(--muted);
-    background: var(--pill-bg-muted);
-    border-color: var(--pill-border);
+    border-color: color-mix(in srgb, var(--pill-glow) 28%, var(--pill-border));
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--pill-glow) 6%, transparent),
+        transparent 62%
+      ),
+      var(--pill-bg-muted);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--pill-glow) 10%, transparent),
+      0 0 10px color-mix(in srgb, var(--pill-glow) 10%, transparent);
+  }
+
+  .finding-meta-pill--league {
+    --pill-glow-accent: var(--insight-accent, var(--header-gold));
+    --pill-glow: color-mix(in srgb, var(--pill-glow-accent) 72%, var(--foreground));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .finding-meta-pill--league[data-league="nba"] {
+    --pill-glow-accent: var(--raptors);
     border-color: color-mix(in srgb, var(--raptors) 42%, var(--pill-border));
     background: color-mix(in srgb, var(--raptors) 12%, var(--pill-bg));
     color: color-mix(in srgb, var(--raptors) 88%, var(--pill-ink));
   }
 
   .finding-meta-pill--league[data-league="nhl"] {
+    --pill-glow-accent: var(--nhl-blue);
     border-color: color-mix(in srgb, var(--nhl-blue) 42%, var(--pill-border));
     background: color-mix(in srgb, var(--nhl-blue) 12%, var(--pill-bg));
     color: color-mix(in srgb, var(--nhl-blue) 88%, var(--pill-ink));
   }
 
   .finding-meta-pill--league[data-league="nfl"] {
+    --pill-glow-accent: var(--nfl-green);
     border-color: color-mix(in srgb, var(--nfl-green) 42%, var(--pill-border));
     background: color-mix(in srgb, var(--nfl-green) 12%, var(--pill-bg));
     color: color-mix(in srgb, var(--nfl-green) 88%, var(--pill-ink));
   }
 
   .finding-meta-pill--league[data-league="epl"] {
+    --pill-glow-accent: #8b6bb5;
     border-color: color-mix(in srgb, #8b6bb5 42%, var(--pill-border));
     background: color-mix(in srgb, #8b6bb5 12%, var(--pill-bg));
     color: color-mix(in srgb, #8b6bb5 92%, var(--pill-ink));
   }
 
   .finding-meta-pill--league[data-league="laliga"] {
+    --pill-glow-accent: #c8102e;
     border-color: color-mix(in srgb, #c8102e 42%, var(--pill-border));
     background: color-mix(in srgb, #c8102e 12%, var(--pill-bg));
     color: color-mix(in srgb, #c8102e 92%, var(--pill-ink));
   }
 
   .finding-meta-pill--league[data-league="cbb"] {
+    --pill-glow-accent: var(--cbb-gold);
     border-color: color-mix(in srgb, var(--cbb-gold) 42%, var(--pill-border));
     background: color-mix(in srgb, var(--cbb-gold) 12%, var(--pill-bg));
     color: color-mix(in srgb, var(--cbb-gold) 92%, var(--pill-ink));
   }
 
   .finding-meta-pill--league[data-league="cfb"] {
+    --pill-glow-accent: var(--cfb-bronze);
     border-color: color-mix(in srgb, var(--cfb-bronze) 42%, var(--pill-border));
     background: color-mix(in srgb, var(--cfb-bronze) 12%, var(--pill-bg));
     color: color-mix(in srgb, var(--cfb-bronze) 92%, var(--pill-ink));
   }
 
+  .finding-meta-pill--category {
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  }
+
   .finding-meta-pill--category[data-category="marquee-efficiency"] {
+    --pill-glow-accent: var(--header-gold);
     border-color: color-mix(in srgb, var(--header-gold) 42%, var(--pill-border));
     background: color-mix(in srgb, var(--header-gold) 12%, var(--pill-bg));
     color: color-mix(in srgb, var(--header-gold) 92%, var(--pill-ink));
@@ -2331,6 +2378,7 @@ p {
 
   .finding-meta-pill--category[data-category="whistle-extreme"],
   .finding-meta-pill--category[data-category="ref-outlier"] {
+    --pill-glow-accent: var(--metric-negative-ink);
     border-color: color-mix(in srgb, var(--metric-negative-ink) 35%, var(--pill-border));
     background: color-mix(in srgb, var(--metric-negative-ink) 10%, var(--pill-bg));
     color: color-mix(in srgb, var(--metric-negative-ink) 88%, var(--pill-ink));
@@ -2338,12 +2386,14 @@ p {
 
   .finding-meta-pill--category[data-category="ou-edge"],
   .finding-meta-pill--category[data-category="ats-edge"] {
+    --pill-glow-accent: var(--metric-positive-ink);
     border-color: color-mix(in srgb, var(--metric-positive-ink) 35%, var(--pill-border));
     background: color-mix(in srgb, var(--metric-positive-ink) 10%, var(--pill-bg));
     color: color-mix(in srgb, var(--metric-positive-ink) 88%, var(--pill-ink));
   }
 
   .finding-meta-pill--category[data-category="league-trend"] {
+    --pill-glow-accent: var(--nhl-blue);
     border-color: color-mix(in srgb, var(--nhl-blue) 35%, var(--pill-border));
     background: color-mix(in srgb, var(--nhl-blue) 10%, var(--pill-bg));
     color: color-mix(in srgb, var(--nhl-blue) 88%, var(--pill-ink));
@@ -2362,21 +2412,34 @@ p {
   }
 
   .confidence-tier-strong {
+    --pill-glow-accent: var(--header-gold);
     border: 1px solid color-mix(in srgb, var(--header-gold) 40%, var(--border));
     background: color-mix(in srgb, var(--header-gold) 12%, var(--surface));
     color: var(--ink-secondary);
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .confidence-tier-moderate {
+    --pill-glow-accent: var(--header-sapphire);
     border: 1px solid color-mix(in srgb, var(--header-sapphire) 28%, var(--border));
     background: color-mix(in srgb, var(--header-sapphire) 5%, var(--surface-raised));
     color: color-mix(in srgb, var(--header-sapphire) 75%, var(--muted-strong));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .confidence-tier-thin {
-    border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-    background: color-mix(in srgb, var(--surface-raised) 70%, var(--surface));
     color: var(--muted);
+    border: 1px solid color-mix(in srgb, var(--pill-glow) 28%, var(--border));
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--pill-glow) 6%, transparent),
+        transparent 62%
+      ),
+      color-mix(in srgb, var(--surface-raised) 70%, var(--surface));
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--pill-glow) 10%, transparent),
+      0 0 10px color-mix(in srgb, var(--pill-glow) 10%, transparent);
   }
 
   .finding-sample-confidence {
@@ -4926,21 +4989,27 @@ p {
   }
 
   .status-badge--pass {
+    --pill-glow-accent: var(--semantic-positive);
     border-color: color-mix(in srgb, var(--semantic-positive) 35%, var(--clinical-card-border));
     color: var(--semantic-positive);
     background: color-mix(in srgb, var(--semantic-positive) 8%, var(--surface));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .status-badge--fail {
+    --pill-glow-accent: var(--semantic-negative);
     border-color: color-mix(in srgb, var(--semantic-negative) 35%, var(--clinical-card-border));
     color: var(--semantic-negative);
     background: color-mix(in srgb, var(--semantic-negative) 8%, var(--surface));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .status-badge--caution {
+    --pill-glow-accent: var(--semantic-caution);
     border-color: color-mix(in srgb, var(--semantic-caution) 35%, var(--clinical-card-border));
     color: var(--semantic-caution);
     background: color-mix(in srgb, var(--semantic-caution) 8%, var(--surface));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .touch-popover {
@@ -5205,13 +5274,22 @@ p {
     flex-shrink: 0;
     padding: 0.375rem 1rem;
     border-radius: 999px;
+    --pill-glow-accent: var(--insight-accent, var(--header-gold));
+    --pill-glow: color-mix(in srgb, var(--pill-glow-accent) 72%, var(--foreground));
     border: 1px solid color-mix(in srgb, var(--insight-accent, var(--pill-border)) 35%, var(--pill-border));
-    background: color-mix(in srgb, var(--insight-accent, var(--pill-bg)) 12%, var(--pill-bg));
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--pill-glow) 10%, transparent),
+        transparent 62%
+      ),
+      color-mix(in srgb, var(--insight-accent, var(--pill-bg)) 12%, var(--pill-bg));
     font-size: 0.62rem;
     font-weight: 750;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--insight-accent, var(--pill-ink)) 72%, var(--pill-ink));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .friction-personnel-pill {
@@ -5225,16 +5303,29 @@ p {
     font-weight: 750;
     letter-spacing: 0.04em;
     color: var(--ink-muted);
+    border-color: color-mix(in srgb, var(--pill-glow) 38%, var(--pill-border));
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--pill-glow) 10%, transparent),
+        transparent 62%
+      ),
+      var(--pill-bg);
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .friction-personnel-pill-coach {
+    --pill-glow-accent: var(--raptors);
     border-color: color-mix(in srgb, var(--raptors) 35%, var(--border));
     color: color-mix(in srgb, var(--raptors) 80%, var(--ink));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .friction-personnel-pill-player {
+    --pill-glow-accent: var(--nhl-blue);
     border-color: color-mix(in srgb, var(--nhl-blue) 35%, var(--border));
     color: color-mix(in srgb, var(--nhl-blue) 80%, var(--ink));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
   .rankings-insight-card[data-league="nba"] { --insight-accent: var(--raptors); }
@@ -5244,6 +5335,86 @@ p {
   .rankings-insight-card[data-league="laliga"] { --insight-accent: #c8102e; }
   .rankings-insight-card[data-league="cbb"] { --insight-accent: var(--cbb-gold); }
   .rankings-insight-card[data-league="cfb"] { --insight-accent: var(--cfb-bronze); }
+
+  .ranking-signal-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--pill-border);
+    background: var(--pill-bg);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: var(--pill-ink);
+    text-decoration: none;
+    transition:
+      border-color 150ms ease-out,
+      box-shadow 150ms ease-out,
+      color 150ms ease-out;
+  }
+
+  .ranking-signal-pill--stable {
+    border-color: color-mix(in srgb, var(--pill-glow) 38%, var(--pill-border));
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--pill-glow) 10%, transparent),
+        transparent 62%
+      ),
+      var(--pill-bg);
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  }
+
+  .ranking-signal-pill--asymmetric {
+    --pill-glow-accent: var(--semantic-caution);
+    border-color: color-mix(in srgb, var(--semantic-caution) 35%, var(--pill-border));
+    background: color-mix(in srgb, var(--semantic-caution) 10%, var(--pill-bg));
+    color: color-mix(in srgb, var(--semantic-caution) 88%, var(--pill-ink));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  }
+
+  .ranking-signal-pill--high-variance {
+    --pill-glow-accent: var(--header-gold);
+    border-color: color-mix(in srgb, var(--header-gold) 38%, var(--pill-border));
+    background: color-mix(in srgb, var(--header-gold) 10%, var(--pill-bg));
+    color: color-mix(in srgb, var(--header-gold) 88%, var(--pill-ink));
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  }
+
+  .ranking-signal-pill--link:hover {
+    border-color: color-mix(in srgb, var(--pill-glow-accent, var(--header-gold)) 55%, var(--pill-border));
+    color: var(--foreground);
+  }
+
+  .dynamic-insight-pill {
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  }
+
+  .dynamic-insight-pill--positive {
+    --pill-glow-accent: var(--accent-positive);
+  }
+
+  .dynamic-insight-pill--negative {
+    --pill-glow-accent: var(--accent-negative);
+  }
+
+  .sample-confidence-pill {
+    box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  }
+
+  .sample-confidence-pill--high {
+    --pill-glow-accent: #34d399;
+  }
+
+  .sample-confidence-pill--moderate {
+    --pill-glow-accent: #fbbf24;
+  }
+
+  .sample-confidence-pill--low {
+    --pill-glow-accent: #fb7185;
+  }
 
   .ref-card-icon--badge {
     border-color: color-mix(in srgb, var(--cbb-gold, #d4a017) 45%, var(--border));

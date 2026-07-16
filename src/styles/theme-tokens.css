@@ -490,10 +490,20 @@ html.dark .dashboard-insight-card:hover {
   letter-spacing: 0.03em;
   line-height: 1;
   padding: 0.4rem 0.7rem;
+  border-color: color-mix(in srgb, var(--pill-glow) 38%, var(--pill-border));
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      color-mix(in srgb, var(--pill-glow) 10%, transparent),
+      transparent 62%
+    ),
+    var(--pill-bg);
+  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   transition:
     border-color var(--duration-fast, 150ms) ease,
     background-color var(--duration-fast, 150ms) ease,
-    color var(--duration-fast, 150ms) ease;
+    color var(--duration-fast, 150ms) ease,
+    box-shadow var(--duration-fast, 150ms) ease;
 }
 
 .ref-master-insight-pill--static {
@@ -502,7 +512,9 @@ html.dark .dashboard-insight-card:hover {
 }
 
 .ref-master-insight-pill--high {
+  --pill-glow-accent: var(--accent-brand);
   border-color: color-mix(in srgb, var(--accent-brand) 35%, var(--border-subtle));
+  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
 }
 
 .ref-master-insight-pill--moderate {
@@ -511,9 +523,11 @@ html.dark .dashboard-insight-card:hover {
 
 .ref-master-insight-pill--active,
 .ref-master-insight-pill:not(.ref-master-insight-pill--static):hover {
+  --pill-glow-accent: var(--accent-brand);
   border-color: var(--accent-brand);
   color: var(--text-primary);
   background: color-mix(in srgb, var(--accent-brand) 10%, var(--bg-surface-2));
+  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
 }
 
 .ref-master-insight-panel {

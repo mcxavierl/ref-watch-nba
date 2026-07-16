@@ -501,6 +501,42 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "StatusBadge in WhistlePremiumSection",
       ),
   },
+  {
+    name: "kpi-data-pill.css defines shared pill glow tokens",
+    run: () =>
+      auditFileContains(
+        "src/styles/kpi-data-pill.css",
+        /--pill-glow-accent/,
+        "pill glow accent token",
+      ),
+  },
+  {
+    name: "globals.css applies ranking signal pill styles",
+    run: () =>
+      auditFileContains(
+        "src/app/globals.css",
+        /\.ranking-signal-pill--stable/,
+        "ranking signal pill stable glow",
+      ),
+  },
+  {
+    name: "SampleConfidencePill uses shared sample-confidence-pill class",
+    run: () =>
+      auditFileContains(
+        "src/components/hub/SampleConfidencePill.tsx",
+        /sample-confidence-pill/,
+        "sample confidence pill class",
+      ),
+  },
+  {
+    name: "DynamicInsightPill uses shared dynamic-insight-pill class",
+    run: () =>
+      auditFileContains(
+        "src/components/ui/DynamicInsightPill.tsx",
+        /dynamic-insight-pill/,
+        "dynamic insight pill class",
+      ),
+  },
 ];
 
 function main(): void {

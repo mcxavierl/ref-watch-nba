@@ -5,9 +5,9 @@ import {
 } from "@/lib/data-maturity";
 
 const TIER_CLASS: Record<MatrixSampleConfidenceTier, string> = {
-  high: "bg-emerald-500/10 text-emerald-400",
-  moderate: "bg-amber-500/10 text-amber-400",
-  low: "bg-rose-500/10 text-rose-400",
+  high: "sample-confidence-pill sample-confidence-pill--high bg-emerald-500/10 text-emerald-400",
+  moderate: "sample-confidence-pill sample-confidence-pill--moderate bg-amber-500/10 text-amber-400",
+  low: "sample-confidence-pill sample-confidence-pill--low bg-rose-500/10 text-rose-400",
 };
 
 /**

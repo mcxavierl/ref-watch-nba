@@ -4,12 +4,21 @@
  *
  * Pill padding standard sitewide: py-1.5 (0.375rem) px-4 (1rem) — see
  * SampleConfidencePill, status-badge, confidence-tier-badge, finding-meta-pill.
+ *
+ * Neutral pill glow matches rankings-insight-card (--insight-card-glow) via
+ * --pill-glow-accent / --pill-glow tokens. Semantic pills (pass/fail/caution,
+ * emerald/amber/rose confidence) keep their ink and only pick up accent glow.
  */
 
 :root,
 html[data-theme="dark"],
 html[data-color="dark"],
 html.dark {
+  --pill-glow-accent: var(--header-gold);
+  --pill-glow: color-mix(in srgb, var(--pill-glow-accent) 72%, var(--foreground));
+  --pill-glow-ring: 0 0 0 1px color-mix(in srgb, var(--pill-glow) 14%, transparent);
+  --pill-glow-halo: 0 0 12px color-mix(in srgb, var(--pill-glow) 16%, transparent);
+
   --kpi-pill-value-ink: #fafafa; /* zinc-50 — neutral metric text */
   --kpi-pill-accent-positive: #34d399; /* emerald accent dot only */
   --kpi-pill-accent-negative: #f43f5e; /* rose accent dot only */
@@ -21,6 +30,9 @@ html.dark {
 
 html[data-theme="light"]:not([data-contrast="high"]),
 html[data-color="light"]:not([data-contrast="high"]) {
+  --pill-glow-accent: var(--header-gold-deep, #9a7431);
+  --pill-glow: color-mix(in srgb, var(--pill-glow-accent) 65%, var(--foreground));
+
   --kpi-pill-value-ink: var(--text-primary);
   --kpi-pill-accent-positive: #059669;
   --kpi-pill-accent-negative: #e11d48;
@@ -28,6 +40,89 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --kpi-pill-bg: color-mix(in srgb, var(--bg-surface-2) 72%, #fff);
   --kpi-pill-border: var(--border-subtle);
   --kpi-pill-secondary-ink: var(--text-muted);
+}
+
+/* League accent inheritance for pill glow (parity with rankings-insight-card) */
+[data-league="nba"] {
+  --pill-glow-accent: var(--raptors);
+}
+
+[data-league="nhl"] {
+  --pill-glow-accent: var(--nhl-blue);
+}
+
+[data-league="nfl"] {
+  --pill-glow-accent: var(--nfl-green);
+}
+
+[data-league="epl"] {
+  --pill-glow-accent: #8b6bb5;
+}
+
+[data-league="laliga"] {
+  --pill-glow-accent: #c8102e;
+}
+
+[data-league="cbb"] {
+  --pill-glow-accent: var(--cbb-gold);
+}
+
+[data-league="cfb"] {
+  --pill-glow-accent: var(--cfb-bronze);
+}
+
+[data-league] {
+  --pill-glow: color-mix(in srgb, var(--pill-glow-accent) 72%, var(--foreground));
+  --pill-glow-ring: 0 0 0 1px color-mix(in srgb, var(--pill-glow) 14%, transparent);
+  --pill-glow-halo: 0 0 12px color-mix(in srgb, var(--pill-glow) 16%, transparent);
+}
+
+/* ── Pill glow utilities ──────────────────────────────────────────────── */
+
+.pill-glow-shadow {
+  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+}
+
+.pill-glow-neutral-surface {
+  border-color: color-mix(in srgb, var(--pill-glow) 38%, var(--pill-border));
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      color-mix(in srgb, var(--pill-glow) 10%, transparent),
+      transparent 62%
+    ),
+    var(--pill-bg);
+  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+}
+
+.pill-glow-neutral-surface--muted {
+  border-color: color-mix(in srgb, var(--pill-glow) 28%, var(--pill-border));
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      color-mix(in srgb, var(--pill-glow) 6%, transparent),
+      transparent 62%
+    ),
+    var(--pill-bg-muted, var(--pill-bg));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--pill-glow) 10%, transparent),
+    0 0 10px color-mix(in srgb, var(--pill-glow) 10%, transparent);
+}
+
+html[data-contrast="high"] .pill-glow-neutral-surface,
+html[data-contrast="high"] .pill-glow-neutral-surface--muted,
+html[data-contrast="high"] .pill-glow-shadow,
+html[data-contrast="high"] .finding-meta-pill,
+html[data-contrast="high"] .confidence-tier-badge,
+html[data-contrast="high"] .status-badge,
+html[data-contrast="high"] .rankings-insight-league,
+html[data-contrast="high"] .friction-personnel-pill,
+html[data-contrast="high"] .ranking-signal-pill,
+html[data-contrast="high"] .dynamic-insight-pill,
+html[data-contrast="high"] .sample-confidence-pill,
+html[data-contrast="high"] .ref-master-insight-pill,
+html[data-contrast="high"] .kpi-data-pill--block.kpi-data-pill--neutral {
+  box-shadow: none;
 }
 
 /* ── Shared ─────────────────────────────────────────────────────────────── */
@@ -96,6 +191,18 @@ html[data-color="light"]:not([data-contrast="high"]) {
   border-radius: 0.75rem;
   border: 1px solid var(--kpi-pill-border);
   background: var(--kpi-pill-bg);
+}
+
+.kpi-data-pill--block.kpi-data-pill--neutral {
+  border-color: color-mix(in srgb, var(--pill-glow) 38%, var(--kpi-pill-border));
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      color-mix(in srgb, var(--pill-glow) 10%, transparent),
+      transparent 62%
+    ),
+    var(--kpi-pill-bg);
+  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
 }
 
 .kpi-data-pill--block .kpi-data-pill__value {
