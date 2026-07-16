@@ -30,7 +30,7 @@ function matrixExtremeBody(
   entityLabel: "ref" | "official",
 ): string {
   const withLabel = entityLabel === "official" ? "official" : "ref";
-  return `${withLabel}×team ${item.wins}-${item.losses} (${formatPct(item.winRate)}) in ${item.games} games vs ${item.teamLabel} sample baseline ${formatMatrixHighlightBaseline(item)}.`;
+  return `${withLabel}×team ${item.wins}-${item.losses} (${formatPct(item.winRate)}) in ${item.games} games vs team sample baseline ${formatMatrixHighlightBaseline(item)}.`;
 }
 
 export function MatrixExtremeSection({
@@ -63,7 +63,7 @@ export function MatrixExtremeSection({
             accent="balance"
             tone={item.kind === "high" ? "positive" : "negative"}
             icon={Scale}
-            kicker="Ref×team split"
+            kicker={item.kind === "high" ? "Above baseline" : "Below baseline"}
             refName={item.refName}
             refSlug={item.refSlug}
             basePath={basePath}

@@ -1035,24 +1035,12 @@ p {
     text-decoration: underline;
   }
 
-  .metric-delight-extreme-grid {
-    display: grid;
-    gap: var(--space-3);
-    margin-top: var(--space-4);
-  }
-
   .finding-highlight-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
     margin-top: var(--space-3);
-  }
-
-  @media (min-width: 640px) {
-    .metric-delight-extreme-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
   }
 
   /* ── Ref profile dashboard ── */

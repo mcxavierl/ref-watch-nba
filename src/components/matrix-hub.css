@@ -331,43 +331,6 @@
   color: var(--text-muted);
 }
 
-.matrix-extreme-insight-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-@media (min-width: 40rem) {
-  .matrix-extreme-insight-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 64rem) {
-  .matrix-extreme-insight-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-.matrix-extreme-insight-card .insight-card-hero-value--positive {
-  color: var(--metric-positive-text, var(--text));
-}
-
-.matrix-extreme-insight-card .insight-card-hero-value--negative {
-  color: var(--metric-negative-text, var(--text));
-}
-
-.matrix-extreme-insight-baseline {
-  margin: 0;
-  font-size: 0.78rem;
-  line-height: 1.45;
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
 .insight-card-link {
   color: inherit;
   font-weight: 650;
