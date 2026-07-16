@@ -75,7 +75,16 @@ function toneFromStatValue(statValue?: string): HighlightCardTone {
   return "neutral";
 }
 
+const SEMANTIC_INSIGHT_IDS = new Set([
+  "top-over",
+  "top-ats",
+  "top-ou-betting",
+]);
+
+const SEMANTIC_LEADER_CATEGORIES = new Set(["overRate", "balance"]);
+
 export function rankingsInsightCardTone(insight: RankingsInsight): HighlightCardTone {
+  if (!SEMANTIC_INSIGHT_IDS.has(insight.id)) return "neutral";
   return toneFromStatValue(insight.statValue);
 }
 
@@ -84,7 +93,7 @@ export function leaderHighlightTone(
   value?: string,
   delta?: number,
 ): HighlightCardTone {
-  void category;
+  if (!SEMANTIC_LEADER_CATEGORIES.has(category)) return "neutral";
   if (delta !== undefined) {
     const tone = signedDeltaTone(delta);
     if (tone !== "neutral") return tone;

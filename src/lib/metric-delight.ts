@@ -104,6 +104,42 @@ function parseSignedNumber(value: string): number | null {
 
 const SAMPLE_STAT_LABEL = /^sample$/i;
 
+const LEAGUE_BASELINE_DETAIL =
+  /(?:vs\.?|versus)\s*(?:[\d.]+\s*)?(?:league\s*)?(?:avg|average|baseline)|league\s*(?:avg|average|baseline)/i;
+
+const LEAGUE_BASELINE_LABEL =
+  /\b(whistle|scoring|foul|minor|flag|penalty|card|goal|pace|pim|yards?)\b/i;
+
+/** Comparative lines tied to league average — neutral by default (data honesty). */
+export function isLeagueBaselineComparisonStat(stat: FindingStat): boolean {
+  if (isContextualBenchmarkStat(stat)) return true;
+
+  const detail = stat.detail ?? "";
+  if (LEAGUE_BASELINE_DETAIL.test(detail)) return true;
+
+  const label = stat.label.trim();
+  if (SAMPLE_STAT_LABEL.test(label)) return true;
+
+  if (LEAGUE_BASELINE_LABEL.test(label.toLowerCase())) return true;
+
+  if (/delta vs/i.test(label) && LEAGUE_BASELINE_DETAIL.test(detail)) return true;
+
+  return false;
+}
+
+/** Only betting-market deltas may use semantic red/green on card surfaces. */
+export function allowsSemanticDeltaTone(stat: FindingStat): boolean {
+  if (isLeagueBaselineComparisonStat(stat)) return false;
+  const label = stat.label.toLowerCase();
+  return (
+    label.includes("o/u ats") ||
+    /\bats\b/.test(label) ||
+    label.includes("over benchmark") ||
+    label.includes("under benchmark") ||
+    label.includes("at benchmark")
+  );
+}
+
 /** Contextual over/under rate - muted, not semantically colored. */
 export function isContextualBenchmarkStat(stat: FindingStat): boolean {
   const label = stat.label.toLowerCase();
@@ -119,6 +155,10 @@ export function findingStatDelightTone(stat: FindingStat): MetricDelightTone {
   const label = stat.label.toLowerCase();
 
   if (SAMPLE_STAT_LABEL.test(stat.label.trim())) {
+    return "neutral";
+  }
+
+  if (!allowsSemanticDeltaTone(stat)) {
     return "neutral";
   }
 

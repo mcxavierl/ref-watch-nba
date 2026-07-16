@@ -50,6 +50,7 @@ export function RefStatGrid({
             label={scoreLabel}
             value={String(profile.avgTotalPoints)}
             detail={`${totalDelta} vs league avg`}
+            detailMuted
             provenance={prov?.avgTotalPoints}
           />
           <RefDashboardStatCell
@@ -62,6 +63,7 @@ export function RefStatGrid({
             label={foulLabel}
             value={String(profile.avgFouls)}
             detail={`${foulsDelta} vs league avg`}
+            detailMuted
             provenance={prov?.avgFouls}
           />
           <RefDashboardStatCell
@@ -85,14 +87,7 @@ export function RefListItem({
   overBaseline?: number;
   deltaUnit?: string;
 }) {
-  const deltaThreshold = overBaseline > 50 ? 2 : 0.3;
   const delta = formatSigned(profile.totalPointsDelta);
-  const deltaColor =
-    profile.totalPointsDelta > deltaThreshold
-      ? "text-emerald-700"
-      : profile.totalPointsDelta < -deltaThreshold
-        ? "text-rose-700"
-        : "text-zinc-600";
 
   return (
     <Link
@@ -111,7 +106,7 @@ export function RefListItem({
           {profile.games} games · {formatPct(profile.overRate)} over {overBaseline}
         </p>
       </div>
-      <span className={`font-mono text-base font-semibold tabular-nums ${deltaColor}`}>
+      <span className="font-mono text-base font-semibold tabular-nums text-primary-muted">
         {delta} {deltaUnit}
       </span>
     </Link>

@@ -252,10 +252,7 @@ export function GameSlateCard({
               <div className="game-slate-composite-stat">
                 <span className="game-slate-composite-label">{copy.scoringLabel}</span>
                 <span className="game-slate-composite-value">
-                  <StandoutMetricValue
-                    tone={signedDeltaTone(metrics.totalPointsDelta)}
-                    size="lg"
-                  >
+                  <StandoutMetricValue tone="neutral" size="lg">
                     {totalDelta}
                   </StandoutMetricValue>
                 </span>
@@ -266,10 +263,7 @@ export function GameSlateCard({
               <div className="game-slate-composite-stat">
                 <span className="game-slate-composite-label">{copy.whistleLabel}</span>
                 <span className="game-slate-composite-value">
-                  <StandoutMetricValue
-                    tone={signedDeltaTone(metrics.foulsDelta)}
-                    size="lg"
-                  >
+                  <StandoutMetricValue tone="neutral" size="lg">
                     {foulsDelta}
                   </StandoutMetricValue>
                 </span>

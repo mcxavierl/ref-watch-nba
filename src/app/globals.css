@@ -2490,7 +2490,8 @@ p {
     }
   }
 
-  .finding-metric-detail--muted {
+  .finding-metric-detail--muted,
+  .stat-comparison {
     color: color-mix(in srgb, var(--foreground) 86%, transparent);
     font-variant-numeric: tabular-nums;
   }

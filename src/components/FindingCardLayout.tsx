@@ -26,6 +26,7 @@ import {
   findingStatDelightTone,
   isContextualBenchmarkStat,
   isDirectionalTone,
+  isLeagueBaselineComparisonStat,
   isStandoutTone,
 } from "@/lib/metric-delight";
 import type { ConfidenceTier } from "@/lib/user-language";
@@ -180,7 +181,7 @@ function metricCellClass(stat: FindingStat, index: number): string {
   const tone = findingStatDelightTone(stat);
   const classes = ["finding-metric-cell"];
 
-  if (isContextualBenchmarkStat(stat)) {
+  if (isContextualBenchmarkStat(stat) || isLeagueBaselineComparisonStat(stat)) {
     classes.push("finding-metric-cell--contextual");
   } else if (tone === "positive" || tone === "standout-high") {
     classes.push("finding-metric-cell--positive");
@@ -197,7 +198,8 @@ function metricCellClass(stat: FindingStat, index: number): string {
 
 function metricValueClass(stat: FindingStat, index: number): string {
   const tone = findingStatDelightTone(stat);
-  const contextual = isContextualBenchmarkStat(stat);
+  const contextual =
+    isContextualBenchmarkStat(stat) || isLeagueBaselineComparisonStat(stat);
   let size: "hero" | "lg" | "md";
   if (contextual) {
     size = "md";

@@ -149,13 +149,26 @@ describe("metric delight tones", () => {
     assert.equal(findingStatDelightTone(stat), "neutral");
   });
 
-  it("colors comparative scoring deltas", async () => {
+  it("keeps league baseline comparisons neutral", async () => {
+    const { findingStatDelightTone, isLeagueBaselineComparisonStat } = await import(
+      "@/lib/metric-delight"
+    );
+    const stat = {
+      label: "Whistle delta",
+      value: "-3.7",
+      detail: "vs 25.2 league avg",
+    };
+    assert.equal(isLeagueBaselineComparisonStat(stat), true);
+    assert.equal(findingStatDelightTone(stat), "neutral");
+  });
+
+  it("colors betting-market ATS stats when applicable", async () => {
     const { findingStatDelightTone } = await import("@/lib/metric-delight");
     const stat = {
-      label: "Delta vs baseline",
-      value: "-2.4 goals",
-      detail: "vs 2.8 league avg",
+      label: "O/U ATS",
+      value: "58.2%",
+      detail: "42 decisive games",
     };
-    assert.equal(findingStatDelightTone(stat), "negative");
+    assert.equal(findingStatDelightTone(stat), "positive");
   });
 });

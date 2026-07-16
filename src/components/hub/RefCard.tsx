@@ -7,7 +7,7 @@ import { CLINICAL_CARD_CLASS } from "@/components/hub/ClinicalCard";
  *
  * Ref card shell for league hubs (NBA, NFL, NHL, EPL, La Liga, CBB, CFB):
  * - tabular-nums on all primary metrics
- * - Semantic color-coding on comparative deltas (--semantic-positive / --semantic-negative)
+ * - Semantic red/green reserved for betting-market deltas (O/U, ATS), not league baselines
  * - Glass-morphism card surfaces (.ref-card, .rankings-insight-card, .clinical-card)
  * - Muted comparative copy via --text-primary-muted
  *
@@ -24,6 +24,21 @@ export const REF_CARD_METRIC_LABEL_CLASS = "ref-card-metric-label finding-metric
 export const REF_CARD_METRIC_DETAIL_CLASS =
   "ref-card-metric-detail finding-metric-detail finding-metric-detail--muted tabular-nums";
 export const REF_CARD_BODY_CLASS = "ref-card-body rankings-insight-body";
+export const STAT_COMPARISON_CLASS =
+  "stat-comparison finding-metric-detail finding-metric-detail--muted tabular-nums text-primary-muted";
+
+/** Neutral league-baseline comparison line (never semantic green/red). */
+export function StatComparison({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <span className={`${STAT_COMPARISON_CLASS} ${className}`.trim()}>{children}</span>
+  );
+}
 
 export function RefCard({
   className = "",

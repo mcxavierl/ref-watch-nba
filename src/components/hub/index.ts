@@ -16,7 +16,10 @@ export {
   REF_CARD_METRIC_CLASS,
   REF_CARD_METRIC_DETAIL_CLASS,
   REF_CARD_METRIC_LABEL_CLASS,
+  STAT_COMPARISON_CLASS,
+  StatComparison,
 } from "@/components/hub/RefCard";
+export { FooterLeaders } from "@/components/hub/FooterLeaders";
 export {
   ClinicalMetricCard,
   CLINICAL_METRIC_CARD_CLASS,

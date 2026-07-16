@@ -4,7 +4,7 @@ import { StatusBadge } from "@/components/hub/StatusBadge";
 import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { researchHubHref, type FindingLeague } from "@/lib/findings-shared";
-import { findingStatDelightTone, isDirectionalTone } from "@/lib/metric-delight";
+import { findingStatDelightTone, isLeagueBaselineComparisonStat } from "@/lib/metric-delight";
 import { NO_SIGNAL_COPY, SIGNAL_LIMITATION_COPY } from "@/lib/trust-charter";
 
 /**
@@ -24,7 +24,11 @@ function keyFindingLabel(signal: ProfileSignal): string {
 }
 
 function profileStatToneClass(label: string, value: string, detail?: string) {
-  const tone = findingStatDelightTone({ label, value, detail });
+  const stat = { label, value, detail };
+  if (isLeagueBaselineComparisonStat(stat)) {
+    return "profile-signal-stat profile-signal-stat--neutral";
+  }
+  const tone = findingStatDelightTone(stat);
   if (tone === "positive" || tone === "standout-high") {
     return "profile-signal-stat profile-signal-stat--positive";
   }
@@ -41,6 +45,7 @@ function SignalStats({ stats }: { stats: ProfileSignal["stats"] }) {
     <dl className="mt-3 grid gap-2">
       {stats.map((stat) => {
         const tone = findingStatDelightTone(stat);
+        const neutralBaseline = isLeagueBaselineComparisonStat(stat);
         return (
           <div
             key={stat.label}
@@ -49,8 +54,8 @@ function SignalStats({ stats }: { stats: ProfileSignal["stats"] }) {
             <dt className="text-xs font-medium text-zinc-500">{stat.label}</dt>
             <dd className="mt-0.5">
               <StandoutMetricValue
-                tone={tone}
-                size={isDirectionalTone(tone) ? "lg" : "md"}
+                tone={neutralBaseline ? "neutral" : tone}
+                size="md"
               >
                 {stat.value}
               </StandoutMetricValue>

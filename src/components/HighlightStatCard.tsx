@@ -13,6 +13,7 @@ import {
   REF_CARD_METRIC_DETAIL_CLASS,
   REF_CARD_METRIC_LABEL_CLASS,
   RefCard,
+  StatComparison,
 } from "@/components/hub/RefCard";
 import { RefAvatar } from "@/components/RefAvatar";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
@@ -88,7 +89,12 @@ export function HighlightStatCard({
       : usesSplitHierarchy
         ? "Win rate delta"
         : undefined;
-  const metricTone = primaryValue ? statValueDelightTone(primaryValue) : "neutral";
+  const metricTone =
+    tone === "neutral" || usesSplitHierarchy
+      ? "neutral"
+      : primaryValue
+        ? statValueDelightTone(primaryValue)
+        : "neutral";
 
   const profile =
     refSlug && refName ? (
@@ -162,7 +168,9 @@ export function HighlightStatCard({
       {usesSplitHierarchy && sampleGames ? (
         <DataMaturityBar sampleSize={sampleGames} compact className="highlight-stat-maturity" />
       ) : null}
-      <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>{body}</p>
+      <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
+        <StatComparison>{body}</StatComparison>
+      </p>
       {deltaDisplay?.isAdjusted ? <DataHonestyFootnote /> : null}
     </RefCard>
   );
