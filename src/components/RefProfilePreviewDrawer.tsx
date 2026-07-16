@@ -1,24 +1,42 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useId, useRef, useState, type MouseEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
 import { ArrowRight, X } from "lucide-react";
 import { ModalPortal } from "@/components/ModalPortal";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
+import { RefProfilePreviewSparkline } from "@/components/RefProfilePreviewSparkline";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import {
   OiiInsufficientBadge,
   OiiRadialGauge,
 } from "@/components/OiiRadialGauge";
-import type { LeagueConfig } from "@/lib/leagues";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
+import type { LeagueConfig, LeagueId } from "@/lib/leagues";
 import type { RefProfile } from "@/lib/types";
+import {
+  buildRefPreviewQuickSummary,
+  buildWhistleSparklineSeries,
+  metricHonestyHint,
+  PREVIEW_RECENT_GAME_COUNT,
+} from "@/lib/ref-profile-preview";
 import { resolveOiiForRef } from "@/lib/officiating-intelligence-index";
 import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
+import { signedDeltaTone } from "@/lib/metric-delight";
+import { StandoutMetricValue } from "@/components/StandoutMetric";
 
 const DRAWER_TRANSITION_MS = 220;
-const RECENT_GAME_COUNT = 5;
 
 type RefProfilePreviewDrawerProps = {
   ref: RefProfile | null;
@@ -29,12 +47,53 @@ type RefProfilePreviewDrawerProps = {
   onClose: () => void;
 };
 
+function avatarSportForLeague(
+  leagueId: LeagueId,
+): "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" {
+  if (leagueId === "nhl") return "nhl";
+  if (leagueId === "nfl") return "nfl";
+  if (leagueId === "epl") return "epl";
+  if (leagueId === "laliga") return "laliga";
+  if (leagueId === "cbb") return "cbb";
+  if (leagueId === "cfb") return "cfb";
+  return "nba";
+}
+
 function formatGameDate(date: string): string {
   return new Date(`${date}T12:00:00`).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
+}
+
+function PreviewMetricStat({
+  label,
+  value,
+  hint,
+  valueTone = "neutral",
+}: {
+  label: string;
+  value: ReactNode;
+  hint: string;
+  valueTone?: "neutral" | "positive" | "negative";
+}) {
+  return (
+    <div className="ref-preview-drawer-stat">
+      <dt>
+        <MetricInfoHint hint={hint}>{label}</MetricInfoHint>
+      </dt>
+      <dd className="font-mono tabular-nums">
+        {typeof value === "string" || typeof value === "number" ? (
+          <StandoutMetricValue tone={valueTone} size="md">
+            {value}
+          </StandoutMetricValue>
+        ) : (
+          value
+        )}
+      </dd>
+    </div>
+  );
 }
 
 export function RefProfilePreviewDrawer({
@@ -51,18 +110,69 @@ export function RefProfilePreviewDrawer({
   const [rendered, setRendered] = useState(open);
   const [visible, setVisible] = useState(false);
 
-  const sport =
-    league.id === "nhl" ? "nhl" : league.id === "nfl" ? "nfl" : "nba";
+  const sport = avatarSportForLeague(league.id);
   const profileHref = profile ? `${basePath}/refs/${profile.slug}` : "";
-  const recentGames = profile?.recentGames.slice(0, RECENT_GAME_COUNT) ?? [];
-  const whistleIndex = profile ? whistleIndexFromRefProfile(profile) : null;
-  const leagueAvgFouls =
-    profile && profile.avgFouls > 0
-      ? profile.avgFouls - profile.foulsDelta
-      : undefined;
-  const oii = profile
-    ? resolveOiiForRef(profile, { leagueAvgFouls, preferCache: true })
-    : null;
+
+  const previewModel = useMemo(() => {
+    if (!profile) return null;
+
+    const recentGames = profile.recentGames.slice(0, PREVIEW_RECENT_GAME_COUNT);
+    const leagueAvgFouls =
+      profile.avgFouls > 0 ? profile.avgFouls - profile.foulsDelta : undefined;
+    const leagueAvgTotal =
+      profile.avgTotalPoints > 0
+        ? profile.avgTotalPoints - profile.totalPointsDelta
+        : overBaseline;
+
+    const whistleIndex = whistleIndexFromRefProfile(profile);
+    const oii = resolveOiiForRef(profile, { leagueAvgFouls, preferCache: true });
+    const sparkline = buildWhistleSparklineSeries(recentGames, league);
+    const quickSummary = buildRefPreviewQuickSummary({
+      profile,
+      league,
+      leagueAvgFouls: leagueAvgFouls ?? profile.avgFouls,
+      leagueAvgTotal,
+    });
+
+    const gamesHint = metricHonestyHint({
+      sampleSize: profile.games,
+      effectMagnitude: profile.foulsDelta,
+    });
+    const whistleHint = metricHonestyHint({
+      sampleSize: profile.games,
+      leagueAvg: leagueAvgFouls,
+      leagueAvgLabel: `${league.metrics.whistleShort} league avg`,
+      effectMagnitude: profile.foulsDelta,
+    });
+    const overHint = metricHonestyHint({
+      sampleSize: profile.games,
+      leagueAvg: overBaseline,
+      leagueAvgLabel: "Over benchmark",
+      effectMagnitude: profile.overRate - 0.5,
+    });
+    const scoringHint = metricHonestyHint({
+      sampleSize: profile.games,
+      leagueAvg: leagueAvgTotal,
+      leagueAvgLabel: `${league.metrics.scoreUnit} league avg`,
+      effectMagnitude: profile.totalPointsDelta,
+    });
+    const scoringDeltaTone = signedDeltaTone(profile.totalPointsDelta);
+
+    return {
+      recentGames,
+      leagueAvgFouls,
+      leagueAvgTotal,
+      whistleIndex,
+      oii,
+      sparkline,
+      quickSummary,
+      gamesHint,
+      whistleHint,
+      overHint,
+      scoringHint,
+      scoringDeltaTone,
+    };
+  }, [profile, league, overBaseline]);
 
   useEffect(() => {
     if (open) {
@@ -103,146 +213,191 @@ export function RefProfilePreviewDrawer({
     [onClose],
   );
 
-  if (!rendered || !profile) return null;
+  if (!rendered || !profile || !previewModel) return null;
+
+  const whistleHintCopy = metricHonestyHint({
+    sampleSize: profile.games,
+    leagueAvg: previewModel.leagueAvgFouls,
+    leagueAvgLabel: "Whistle Index baseline",
+    effectMagnitude: profile.foulsDelta,
+  });
 
   return (
     <ModalPortal>
-    <div
-      className={`ref-preview-drawer-backdrop${visible ? " ref-preview-drawer-backdrop--visible" : ""}`}
-      role="presentation"
-      onClick={handleBackdropClick}
-    >
-      <aside
-        ref={panelRef}
-        className={`ref-preview-drawer${visible ? " ref-preview-drawer--visible" : ""}`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        data-league={league.id}
-        onClick={(event) => event.stopPropagation()}
+      <div
+        className={`ref-preview-drawer-backdrop${visible ? " ref-preview-drawer-backdrop--visible" : ""}`}
+        role="presentation"
+        onClick={handleBackdropClick}
       >
-        <header className="ref-preview-drawer-header">
-          <div className="ref-preview-drawer-header-copy">
-            <p className="ref-preview-drawer-kicker">Profile preview</p>
-            <div className="ref-preview-drawer-title-row">
-              <RefAvatar
-                name={profile.name}
-                slug={profile.slug}
-                sport={sport}
-                size="md"
-              />
-              <div>
-                <h2 className="ref-preview-drawer-title" id={titleId}>
-                  {profile.name}
-                </h2>
-                <RefJerseyNumber
-                  number={profile.number}
-                  className="ref-preview-drawer-number font-mono"
+        <aside
+          ref={panelRef}
+          className={`ref-preview-drawer${visible ? " ref-preview-drawer--visible" : ""}`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          data-league={league.id}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <header className="ref-preview-drawer-header">
+            <div className="ref-preview-drawer-header-copy">
+              <p className="ref-preview-drawer-kicker">{league.label} · Profile preview</p>
+              <div className="ref-preview-drawer-title-row">
+                <RefAvatar
+                  name={profile.name}
+                  slug={profile.slug}
+                  sport={sport}
+                  size="md"
                 />
+                <div>
+                  <h2 className="ref-preview-drawer-title" id={titleId}>
+                    {profile.name}
+                  </h2>
+                  <p className="ref-preview-drawer-league m-0 text-xs text-primary-muted">
+                    {league.shortLabel} official
+                  </p>
+                  <RefJerseyNumber
+                    number={profile.number}
+                    className="ref-preview-drawer-number font-mono"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className="ref-preview-drawer-close"
-            onClick={onClose}
-            aria-label="Close profile preview"
-          >
-            <X size={18} aria-hidden />
-          </button>
-        </header>
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="ref-preview-drawer-close"
+              onClick={onClose}
+              aria-label="Close profile preview"
+            >
+              <X size={18} aria-hidden />
+            </button>
+          </header>
 
-        <div className="ref-preview-drawer-body">
-          <div className="mb-4 flex flex-wrap gap-3">
-            {oii?.status === "ok" ? (
-              <OiiRadialGauge result={oii} size="sm" className="min-w-[9rem] flex-1" />
-            ) : oii?.status === "insufficient" ? (
-              <OiiInsufficientBadge sampleSize={oii.sampleSize} className="min-w-[9rem] flex-1" />
-            ) : null}
-            {whistleIndex !== null ? (
-              <WhistleIndexGauge index={whistleIndex} size="sm" className="min-w-[9rem] flex-1" />
-            ) : null}
-          </div>
-          <dl className="ref-preview-drawer-stats">
-            <div>
-              <dt>Games</dt>
-              <dd className="font-mono tabular-nums">{profile.games}</dd>
+          <div className="ref-preview-drawer-body">
+            <div className="ref-preview-drawer-index-row">
+              {previewModel.oii?.status === "ok" ? (
+                <OiiRadialGauge
+                  result={previewModel.oii}
+                  size="sm"
+                  className="ref-preview-drawer-index-card"
+                />
+              ) : previewModel.oii?.status === "insufficient" ? (
+                <OiiInsufficientBadge
+                  sampleSize={previewModel.oii.sampleSize}
+                  className="ref-preview-drawer-index-card"
+                />
+              ) : null}
+              {previewModel.whistleIndex !== null ? (
+                <div className="ref-preview-drawer-index-card">
+                  <MetricInfoHint hint={whistleHintCopy}>
+                    <WhistleIndexGauge
+                      index={previewModel.whistleIndex}
+                      size="sm"
+                      className="h-full"
+                    />
+                  </MetricInfoHint>
+                </div>
+              ) : null}
             </div>
-            <div>
-              <dt>Over rate</dt>
-              <dd className="font-mono tabular-nums">{formatPct(profile.overRate)}</dd>
-            </div>
-            <div>
-              <dt>Avg combined</dt>
-              <dd className="font-mono tabular-nums">{profile.avgTotalPoints}</dd>
-            </div>
-            <div>
-              <dt>Scoring Δ</dt>
-              <dd className="font-mono tabular-nums">
-                {formatSigned(profile.totalPointsDelta)}
-              </dd>
-            </div>
-          </dl>
 
-          <p className="ref-preview-drawer-meta">
-            {profile.seasons.length} season{profile.seasons.length === 1 ? "" : "s"} · Over
-            benchmark {overBaseline} {league.metrics.scoreUnitPlural}
-          </p>
+            <section className="ref-preview-drawer-summary" aria-label="Quick summary">
+              <h3 className="ref-preview-drawer-section-title">Quick summary</h3>
+              <p className="ref-preview-drawer-summary-copy">{previewModel.quickSummary}</p>
+            </section>
 
-          <section className="ref-preview-drawer-section" aria-label="Recent games">
-            <h3 className="ref-preview-drawer-section-title">Last {RECENT_GAME_COUNT} games</h3>
-            {recentGames.length === 0 ? (
-              <p className="ref-preview-drawer-empty">No recent games in this sample.</p>
-            ) : (
-              <div className="ref-preview-drawer-table-wrap">
-                <table className="ref-preview-drawer-table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Date</th>
-                      <th scope="col">Matchup</th>
-                      <th scope="col">Total</th>
-                      <th scope="col">O/U</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentGames.map((game) => (
-                      <tr key={game.gameId}>
-                        <td className="font-mono tabular-nums">
-                          {formatGameDate(game.date)}
-                        </td>
-                        <td>
-                          {game.awayTeam} @ {game.homeTeam}
-                        </td>
-                        <td className="font-mono tabular-nums">{game.totalPoints}</td>
-                        <td>
-                          <span
-                            className={
-                              game.overHit
-                                ? "ref-preview-drawer-result--over"
-                                : "ref-preview-drawer-result--under"
-                            }
-                          >
-                            {game.overHit ? "Over" : "Under"}
-                          </span>
-                        </td>
+            <dl className="ref-preview-drawer-stats">
+              <PreviewMetricStat
+                label="Games"
+                value={profile.games}
+                hint={previewModel.gamesHint}
+              />
+              <PreviewMetricStat
+                label={`${league.metrics.whistleShort}/game`}
+                value={profile.avgFouls}
+                hint={previewModel.whistleHint}
+              />
+              <PreviewMetricStat
+                label="Over rate"
+                value={formatPct(profile.overRate)}
+                hint={previewModel.overHint}
+              />
+              <PreviewMetricStat
+                label="Scoring Δ"
+                value={formatSigned(profile.totalPointsDelta)}
+                hint={previewModel.scoringHint}
+                valueTone={previewModel.scoringDeltaTone}
+              />
+            </dl>
+
+            <section
+              className="ref-preview-drawer-section"
+              aria-label="Whistle volatility sparkline"
+            >
+              <h3 className="ref-preview-drawer-section-title">
+                {league.metrics.whistleShort} volatility · last {PREVIEW_RECENT_GAME_COUNT} games
+              </h3>
+              <RefProfilePreviewSparkline
+                points={previewModel.sparkline}
+                leagueAvg={previewModel.leagueAvgFouls}
+                unitLabel={league.metrics.whistleShort}
+              />
+            </section>
+
+            <section className="ref-preview-drawer-section" aria-label="Recent games">
+              <h3 className="ref-preview-drawer-section-title">
+                Last {PREVIEW_RECENT_GAME_COUNT} games
+              </h3>
+              {previewModel.recentGames.length === 0 ? (
+                <p className="ref-preview-drawer-empty">No recent games in this sample.</p>
+              ) : (
+                <div className="ref-preview-drawer-table-wrap">
+                  <table className="ref-preview-drawer-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Matchup</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">O/U</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
-        </div>
+                    </thead>
+                    <tbody>
+                      {previewModel.recentGames.map((game) => (
+                        <tr key={game.gameId}>
+                          <td className="font-mono tabular-nums">
+                            {formatGameDate(game.date)}
+                          </td>
+                          <td>
+                            {game.awayTeam} @ {game.homeTeam}
+                          </td>
+                          <td className="font-mono tabular-nums">{game.totalPoints}</td>
+                          <td>
+                            <span
+                              className={
+                                game.overHit
+                                  ? "ref-preview-drawer-result--over"
+                                  : "ref-preview-drawer-result--under"
+                              }
+                            >
+                              {game.overHit ? "Over" : "Under"}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+          </div>
 
-        <footer className="ref-preview-drawer-footer">
-          <Link href={profileHref} className="ref-preview-drawer-profile-link">
-            Open full profile
-            <ArrowRight size={16} aria-hidden />
-          </Link>
-        </footer>
-      </aside>
-    </div>
+          <footer className="ref-preview-drawer-footer">
+            <Link href={profileHref} className="ref-preview-drawer-profile-link">
+              Open full profile
+              <ArrowRight size={16} aria-hidden />
+            </Link>
+          </footer>
+        </aside>
+      </div>
     </ModalPortal>
   );
 }

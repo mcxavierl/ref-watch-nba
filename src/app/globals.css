@@ -6677,7 +6677,8 @@ p {
     display: flex;
     justify-content: flex-end;
     background: color-mix(in srgb, #000 55%, transparent);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     opacity: 0;
     transition: opacity 220ms ease-out;
   }
@@ -6692,7 +6693,9 @@ p {
     height: 100%;
     overflow: auto;
     border-left: 1px solid var(--border-subtle);
-    background: var(--surface);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     box-shadow: -12px 0 40px color-mix(in srgb, #000 25%, transparent);
     transform: translateX(100%);
     transition: transform 220ms ease-out;
@@ -6709,7 +6712,72 @@ p {
     gap: var(--space-3);
     padding: var(--space-4) var(--space-5);
     border-bottom: 1px solid var(--border-subtle);
-    background: color-mix(in srgb, var(--surface-raised) 70%, var(--surface));
+    background: color-mix(in srgb, var(--surface-raised) 78%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .ref-preview-drawer-league {
+    margin-top: 0.15rem;
+  }
+
+  .ref-preview-drawer-index-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .ref-preview-drawer-index-card {
+    min-width: 9rem;
+    flex: 1 1 9rem;
+  }
+
+  .ref-preview-drawer-summary {
+    margin-bottom: 1rem;
+    padding: 0.85rem 0.95rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--surface-raised) 55%, transparent);
+  }
+
+  .ref-preview-drawer-summary-copy {
+    margin: 0.45rem 0 0;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--text-primary-muted);
+  }
+
+  .ref-preview-drawer-stat dt {
+    margin: 0;
+  }
+
+  .ref-preview-sparkline {
+    margin-top: 0.35rem;
+  }
+
+  .ref-preview-sparkline-svg {
+    display: block;
+    width: 100%;
+    max-width: 16rem;
+  }
+
+  .ref-preview-sparkline-legend {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.35rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.68rem;
+    color: var(--text-primary-muted);
+  }
+
+  .ref-preview-sparkline-legend-value {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ref-preview-sparkline-empty {
+    font-variant-numeric: tabular-nums;
   }
 
   .ref-preview-drawer-kicker {
