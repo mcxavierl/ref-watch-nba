@@ -36,7 +36,6 @@ import {
   type TeamTopRefEntry,
 } from "@/lib/ref-team-matrix";
 import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
-import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
 import {
   adjustedDeltaTooltipText,
   displayWinRateDelta,
@@ -224,9 +223,6 @@ function TeamRefRankListItem({
             className="ref-matrix-team-panel-ref-avatar"
           />
           <span className="ref-matrix-team-panel-ref-name">{entry.refName}</span>
-          {deltaDisplay.isPreliminary ? (
-            <PreliminaryDataBadge compact className="ref-matrix-preliminary-badge" />
-          ) : null}
         </Link>
         <RefCompareLink
           leagueId={leagueId}
@@ -999,10 +995,6 @@ export function RefTeamMatrix({
                               title={`${matrixCellMetricGames(cell, viewMode)} games, below ${minGames}-game ranking gate`}
                             >
                               Below gate
-                            </span>
-                          ) : deltaDisplay.isPreliminary ? (
-                            <span className="ref-matrix-cell-badges">
-                              <PreliminaryDataBadge compact />
                             </span>
                           ) : null}
                           {!cell.thinSample ? (

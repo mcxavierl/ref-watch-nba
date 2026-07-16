@@ -19,16 +19,13 @@ import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import {
   editorialInsightView,
-  insightDataMaturityScore,
   insightMetricComparison,
 } from "@/lib/insight-editorial";
 import { leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { whistleIndexFromInsightCard } from "@/lib/whistle-index";
 import { InsightCardShell } from "@/components/shared/InsightCardShell";
-import { InsightDataMaturityBar } from "@/components/shared/InsightConfidenceBar";
 import { InsightMetricComparison } from "@/components/shared/InsightMetricComparison";
 import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
-import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
 import "@/components/insight-card.css";
 
 const InsightDrilldownModal = dynamic(
@@ -88,15 +85,9 @@ function InsightCardMeta({
 }) {
   const comparison = insightMetricComparison(card);
   const editorial = editorialInsightView(card);
-  const maturity = insightDataMaturityScore(card);
 
   return (
     <div className="insight-card-meta">
-      {editorial.isPreliminary ? (
-        <div className="insight-card-meta-badges">
-          <PreliminaryDataBadge compact={compact} />
-        </div>
-      ) : null}
       {comparison ? (
         <InsightMetricComparison
           comparison={comparison}
@@ -105,7 +96,6 @@ function InsightCardMeta({
           isAdjusted={editorial.isAdjusted}
         />
       ) : null}
-      <InsightDataMaturityBar score={maturity} compact={compact} />
       <DataHonestyFootnote show={showFootnote || editorial.showHonestyFootnote} />
     </div>
   );

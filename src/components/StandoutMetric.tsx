@@ -160,9 +160,6 @@ export function MatrixExtremeSplitCards({
           >
             <div className="metric-delight-card-head">
               <span className={metricDelightClass(tone, "kicker")}>{kicker}</span>
-              {deltaDisplay.isPreliminary ? (
-                <PreliminaryDataBadge compact className="metric-delight-preliminary-badge" />
-              ) : null}
               <StandoutMetricValue
                 tone={tone}
                 size="hero"
@@ -194,7 +191,6 @@ export function MatrixExtremeSplitCards({
               in {item.games} games vs team sample baseline{" "}
               {formatMatrixHighlightBaseline(item)}.
             </p>
-            <DataMaturityBar sampleSize={item.games} compact className="metric-delight-maturity" />
             {deltaDisplay.isAdjusted ? (
               <DataHonestyFootnote className="metric-delight-honesty-footnote" />
             ) : null}

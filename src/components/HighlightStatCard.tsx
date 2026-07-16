@@ -110,9 +110,6 @@ export function HighlightStatCard({
             </span>
           ) : null}
           {refMeta ? <span className="highlight-stat-profile-meta">{refMeta}</span> : null}
-          {deltaDisplay?.isPreliminary ? (
-            <PreliminaryDataBadge compact className="highlight-stat-preliminary-badge" />
-          ) : null}
         </span>
       </Link>
     ) : refName ? (
@@ -164,9 +161,6 @@ export function HighlightStatCard({
             </div>
           ) : null}
         </div>
-      ) : null}
-      {usesSplitHierarchy && sampleGames ? (
-        <DataMaturityBar sampleSize={sampleGames} compact className="highlight-stat-maturity" />
       ) : null}
       <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
         <StatComparison>{body}</StatComparison>

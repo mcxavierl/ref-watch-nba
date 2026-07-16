@@ -6,8 +6,6 @@ import {
 } from "@/components/hub/RefCard";
 import { StatusBadge } from "@/components/hub/StatusBadge";
 import { RefAvatar } from "@/components/RefAvatar";
-import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
-import { isPreliminarySample } from "@/lib/data-maturity";
 import type { TeamInsight } from "@/lib/team-insights";
 
 /**
@@ -39,9 +37,6 @@ export function TeamInsightCards({
             <div className="flex flex-wrap items-center gap-2">
               <p className={REF_CARD_KICKER_CLASS}>{insight.title}</p>
               <StatusBadge verdict="caution" label="Pattern" compact />
-              {isPreliminarySample(insight.sampleGames) ? (
-                <PreliminaryDataBadge compact />
-              ) : null}
             </div>
             <p className={`mt-3 ${REF_CARD_BODY_CLASS}`}>{insight.body}</p>
             <p className="mt-2 text-xs text-primary-muted tabular-nums">
