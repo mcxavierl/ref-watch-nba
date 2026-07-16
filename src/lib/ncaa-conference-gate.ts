@@ -153,8 +153,6 @@ export function filterNcaaRefStats(stats: RefStatsFile, league: NcaaRouteLeague)
     ),
   );
 
-  const verifiedGames = refs.reduce((sum, ref) => sum + ref.games, 0);
-
   return {
     ...stats,
     refs,
@@ -162,7 +160,8 @@ export function filterNcaaRefStats(stats: RefStatsFile, league: NcaaRouteLeague)
     meta: {
       ...stats.meta,
       refCount: refs.length,
-      totalGamesProcessed: verifiedGames,
+      // Preserve DISTINCT game count from ingest; summing ref.games multi-counts crew slots.
+      totalGamesProcessed: stats.meta.totalGamesProcessed,
     },
   };
 }
