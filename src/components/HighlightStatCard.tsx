@@ -17,9 +17,6 @@ import {
 } from "@/components/hub/RefCard";
 import { RefAvatar } from "@/components/RefAvatar";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
-import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
-import { DataMaturityBar } from "@/components/shared/DataMaturityBar";
-import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
 import {
   adjustedDeltaTooltipText,
   displayWinRateDelta,
@@ -165,7 +162,6 @@ export function HighlightStatCard({
       <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
         <StatComparison>{body}</StatComparison>
       </p>
-      {deltaDisplay?.isAdjusted ? <DataHonestyFootnote /> : null}
     </RefCard>
   );
 }

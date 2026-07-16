@@ -25,7 +25,6 @@ import { leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { whistleIndexFromInsightCard } from "@/lib/whistle-index";
 import { InsightCardShell } from "@/components/shared/InsightCardShell";
 import { InsightMetricComparison } from "@/components/shared/InsightMetricComparison";
-import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
 import "@/components/insight-card.css";
 
 const InsightDrilldownModal = dynamic(
@@ -77,11 +76,9 @@ function comparisonImpactTone(
 function InsightCardMeta({
   card,
   compact = false,
-  showFootnote = false,
 }: {
   card: LeagueInsightCard;
   compact?: boolean;
-  showFootnote?: boolean;
 }) {
   const comparison = insightMetricComparison(card);
   const editorial = editorialInsightView(card);
@@ -96,7 +93,6 @@ function InsightCardMeta({
           isAdjusted={editorial.isAdjusted}
         />
       ) : null}
-      <DataHonestyFootnote show={showFootnote || editorial.showHonestyFootnote} />
     </div>
   );
 }
@@ -160,7 +156,7 @@ function CarouselInsightCard({
               {editorial.whyItMatters}
             </p>
 
-            <InsightCardMeta card={card} showFootnote={editorial.showHonestyFootnote} />
+            <InsightCardMeta card={card} />
 
             <div className="overview-top-story-actions">
               {card.links[0] ? (
@@ -258,7 +254,7 @@ function EditorialInsightCard({
             ) : null}
           </div>
 
-          <InsightCardMeta card={card} compact={metaCompact} showFootnote={editorial.showHonestyFootnote} />
+          <InsightCardMeta card={card} compact={metaCompact} />
 
           <p className="insight-editorial-why">{editorial.whyItMatters}</p>
         </button>
@@ -356,7 +352,7 @@ function InlineInsightCard({
             </div>
           ) : null}
 
-          <InsightCardMeta card={card} compact showFootnote={editorial.showHonestyFootnote} />
+          <InsightCardMeta card={card} compact />
 
           <div className="mt-3">
             <h3 className="insight-card-headline">{editorial.headline}</h3>

@@ -17,9 +17,6 @@ import {
   type MetricDelightSurface,
   type MetricDelightTone,
 } from "@/lib/metric-delight";
-import { DataMaturityBar } from "@/components/shared/DataMaturityBar";
-import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
-import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 
 export function StandoutMetricValue({
@@ -191,9 +188,6 @@ export function MatrixExtremeSplitCards({
               in {item.games} games vs team sample baseline{" "}
               {formatMatrixHighlightBaseline(item)}.
             </p>
-            {deltaDisplay.isAdjusted ? (
-              <DataHonestyFootnote className="metric-delight-honesty-footnote" />
-            ) : null}
           </li>
         );
       })}

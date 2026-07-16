@@ -22,12 +22,6 @@ test("ProvenanceIndicator uses TouchPopover instead of native title tooltips", (
   assert.doesNotMatch(source, /provenance-indicator-tooltip/);
 });
 
-test("PreliminaryDataBadge uses TouchPopover instead of title attribute", () => {
-  const source = readFileSync("src/components/shared/PreliminaryDataBadge.tsx", "utf8");
-  assert.match(source, /TouchPopover/);
-  assert.doesNotMatch(source, /title=/);
-});
-
 test("InsightMetricComparison uses MetricInfoHint for adjusted deltas", () => {
   const source = readFileSync("src/components/shared/InsightMetricComparison.tsx", "utf8");
   assert.match(source, /MetricInfoHint/);

@@ -35,7 +35,6 @@ import {
   type RefTeamMatrix,
   type TeamTopRefEntry,
 } from "@/lib/ref-team-matrix";
-import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
 import {
   adjustedDeltaTooltipText,
   displayWinRateDelta,
@@ -682,7 +681,6 @@ export function RefTeamMatrix({
           </summary>
           <div className="ref-matrix-legend">
             <MatrixLegendBlock minGames={minGames} />
-            <DataHonestyFootnote className="ref-matrix-honesty-footnote" />
           </div>
         </details>
       ) : null}
@@ -1217,7 +1215,6 @@ export function RefTeamMatrix({
             <div className="ref-matrix-legend">
               <MatrixLegendBlock minGames={minGames} />
             </div>
-            <DataHonestyFootnote className="ref-matrix-honesty-footnote" />
             {footerProvenanceNote ? (
               <p className="ref-matrix-footer-provenance">
                 {footerProvenanceNote}{" "}
