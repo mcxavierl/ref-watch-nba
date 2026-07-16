@@ -21,12 +21,14 @@ import {
   collectRefTeamStats,
   pushRefTeamGame,
 } from "./lib/ref-team-stats";
+import { resolveRefTeamFoulDifferential } from "../src/lib/ref-team-foul-diff";
 import { teamWonGame } from "./lib/team-win";
 import { dedupeByGameId } from "../src/lib/game-count";
 import type {
   RefGameRecord,
   RefProfile,
   RefStatsFile,
+  RefTeamStat,
 } from "./lib/types";
 
 function round1(n: number): number {
@@ -45,6 +47,30 @@ function loadNbaGameLogs(root: string): GameLogFile | null {
   } catch {
     return null;
   }
+}
+
+function backfillTeamStatsFoulDiff(
+  teamStats: Record<string, RefTeamStat>,
+  teamSplits: RefStatsFile["teamSplits"],
+  refSlug: string,
+): Record<string, RefTeamStat> {
+  if (!teamSplits) return teamStats;
+
+  const next: Record<string, RefTeamStat> = {};
+  for (const [teamAbbr, stat] of Object.entries(teamStats)) {
+    const splits = teamSplits[teamAbbr.toUpperCase()] ?? [];
+    const avgFoulDifferential = resolveRefTeamFoulDifferential(
+      refSlug,
+      teamAbbr,
+      stat,
+      splits,
+    );
+    next[teamAbbr] =
+      avgFoulDifferential === stat.avgFoulDifferential
+        ? stat
+        : { ...stat, avgFoulDifferential };
+  }
+  return next;
 }
 
 export function rebuildNbaRefStatsFromLogs(
@@ -166,7 +192,11 @@ export function rebuildNbaRefStatsFromLogs(
       recentGames: [...games]
         .sort((a, b) => b.date.localeCompare(a.date))
         .slice(0, 8),
-      teamStats: collectRefTeamStats(refTeamBuckets.get(refKey) ?? new Map()),
+      teamStats: backfillTeamStatsFoulDiff(
+        collectRefTeamStats(refTeamBuckets.get(refKey) ?? new Map()),
+        existing.teamSplits,
+        slug,
+      ),
       bettingStats: preserved?.bettingStats,
       marketExpectation: preserved?.marketExpectation,
       provenance: preserved?.provenance,

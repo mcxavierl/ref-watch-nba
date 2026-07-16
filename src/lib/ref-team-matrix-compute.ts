@@ -4,6 +4,7 @@ import {
   getTeamAtsSampleRecord,
 } from "@/lib/team-ats";
 import { getTeamDisplayRecord } from "@/lib/teamDisplayRecord";
+import { resolveRefTeamFoulDifferential } from "@/lib/ref-team-foul-diff";
 import { teamWhistleEdge } from "@/lib/stats-utils";
 import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
@@ -114,6 +115,17 @@ export function computeRefTeamMatrix(
       const { wins, losses } = teamRecordFromStat(stat);
       const ats = atsFieldsFromStat(stat);
       const thinSample = stat.games < minGames;
+      const teamSplits = resolveMatrixTeamSplits(
+        stats,
+        teamAbbr,
+        getTeamSplits,
+      );
+      const storedFoulDiff = resolveRefTeamFoulDifferential(
+        ref.slug,
+        teamAbbr,
+        stat,
+        teamSplits,
+      );
       cells[matrixCellKey(ref.slug, teamAbbr)] = {
         refSlug: ref.slug,
         teamAbbr: teamAbbr.toUpperCase(),
@@ -126,7 +138,7 @@ export function computeRefTeamMatrix(
         atsPushes: ats.atsPushes,
         atsGames: ats.atsGames,
         atsCoverRate: ats.atsCoverRate,
-        avgFoulDifferential: teamWhistleEdge(stat.avgFoulDifferential),
+        avgFoulDifferential: teamWhistleEdge(storedFoulDiff),
         thinSample,
       };
       if (!thinSample) qualifiedCellCount++;

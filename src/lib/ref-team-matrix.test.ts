@@ -155,6 +155,18 @@ describe("ref-team matrix team panels", () => {
     }
   });
 
+  it("hydrates foul differential from team splits when ref teamStats are zeroed", () => {
+    clearMatrixComputeCache();
+    const matrix = buildMatrix();
+    const nonZero = Object.values(matrix.cells).filter(
+      (cell) => cell.avgFoulDifferential !== 0,
+    );
+    assert.ok(
+      nonZero.length > 0,
+      "expected matrix cells with non-zero foul differential",
+    );
+  });
+
   it("hydrates non-NBA baselines from getTeamSplits when core strips teamSplits", () => {
     clearMatrixComputeCache();
     const { core: eplCore, teamSplits: eplTeamSplits } =

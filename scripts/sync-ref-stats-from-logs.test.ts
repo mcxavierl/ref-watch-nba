@@ -46,6 +46,21 @@ describe("sync-ref-stats-from-logs", () => {
     }
   });
 
+  it("NBA rebuild backfills avgFoulDifferential from team splits", () => {
+    const statsPath = path.join(ROOT, "data/ref-stats.json");
+    const existing = JSON.parse(fs.readFileSync(statsPath, "utf8")) as RefStatsFile;
+    const rebuilt = rebuildNbaRefStatsFromLogs(existing, ROOT);
+    const withFoulDiff = rebuilt.refs.flatMap((ref) =>
+      Object.values(ref.teamStats ?? {}).filter(
+        (stat) => stat.avgFoulDifferential !== 0,
+      ),
+    );
+    assert.ok(
+      withFoulDiff.length > 0,
+      "expected rebuilt ref teamStats with non-zero avgFoulDifferential",
+    );
+  });
+
   it("NBA rebuild is idempotent on refs payload", () => {
     const statsPath = path.join(ROOT, "data/ref-stats.json");
     const existing = JSON.parse(fs.readFileSync(statsPath, "utf8")) as RefStatsFile;
