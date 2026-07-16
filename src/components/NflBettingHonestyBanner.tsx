@@ -18,7 +18,7 @@ export function NflBettingHonestyBanner() {
       <div className="data-source-banner data-source-banner--preview" role="status">
         <AlertTriangle className="data-source-banner-icon" aria-hidden />
         <p className="data-source-banner-text">
-          <strong>Simulated NFL data.</strong> Schedules, crews, penalty splits,
+          <strong>NFL preview dataset.</strong> Schedules, crews, penalty splits,
           and betting stats are not verified against official records.{" "}
           <Link href="/methodology" className="data-source-banner-link">
             Methodology

@@ -71,7 +71,7 @@ export function dataMaturityPercent(sampleSize: number): number {
 }
 
 export function adjustedDeltaTooltipText(displayDelta: number): string {
-  return `Adjusted for small sample volatility: ${formatDeltaPp(displayDelta)} expected`;
+  return `Adjusted for small sample: ${formatDeltaPp(displayDelta)}`;
 }
 
 export function formatDeltaPp(delta: number): string {

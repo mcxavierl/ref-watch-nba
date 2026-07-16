@@ -32,7 +32,7 @@ export function nhlPreviewBannerMessage(
   if (assignmentsSource === "nhl-api") {
     return "Today's slate crews are from NHL API. Historical ref×team stats are still building.";
   }
-  return "Preview dataset with simulated schedules, crews, and lines. Do not treat ref×team or betting stats as verified.";
+  return "Preview dataset with placeholder schedules, crews, and lines. Do not treat ref×team or betting stats as verified.";
 }
 
 export function nhlAssignmentsAreVerified(

@@ -59,7 +59,7 @@ export function leagueDataSourceBannerMessage(
 
   if (league === "nhl") {
     if (isNhlSimulatedData(meta.source)) {
-      return "Preview dataset with simulated schedules, crews, and lines. Do not treat ref×team or betting stats as verified.";
+      return "Preview dataset with placeholder schedules, crews, and lines. Do not treat ref×team or betting stats as verified.";
     }
     if (isNhlVerifiedData(meta.source)) {
       if (meta.atsAvailable) {
@@ -71,7 +71,7 @@ export function leagueDataSourceBannerMessage(
 
   if (league === "nfl") {
     if (isNflSimulatedData(meta.source)) {
-      return "Preview dataset with simulated schedules, crews, and lines. Do not treat ref×team or betting stats as verified.";
+      return "Preview dataset with placeholder schedules, crews, and lines. Do not treat ref×team or betting stats as verified.";
     }
     if (isNflHybridData(meta.source) || isNflVerifiedData(meta.source)) {
       if (meta.atsAvailable) {

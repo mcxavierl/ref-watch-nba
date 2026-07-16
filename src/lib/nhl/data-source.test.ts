@@ -26,10 +26,11 @@ describe("NHL data source honesty", () => {
     assert.equal(isNhlHybridData("nhl-api"), false);
   });
 
-  it("preview banner warns on simulated data", () => {
+  it("preview banner warns on preview data", () => {
     const msg = nhlPreviewBannerMessage("seeded", "seeded");
     assert.match(msg, /Preview dataset/i);
-    assert.match(msg, /simulated/i);
+    assert.match(msg, /placeholder schedules/i);
+    assert.doesNotMatch(msg, /simulated|simulation|projected|projection/i);
   });
 
   it("preview banner notes synthetic lines for verified stats", () => {

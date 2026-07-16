@@ -63,7 +63,7 @@ export default async function EplMatrixPage({ searchParams }: PageProps) {
         </p>
         {seeded && (
           <p className="text-sm text-amber-300/90">
-            Simulated seed dataset; W-L derived from stored win rates and may
+            Preview seed dataset; W-L derived from stored win rates and may
             round slightly.
           </p>
         )}

@@ -195,11 +195,8 @@ function TeamRefRankListItem({
   const deltaDisplay = displayWinRateDelta(entry.deltaPts, entry.games);
   const winDeltaLabel =
     teamBaselineGames > 0
-      ? `${formatDeltaPp(deltaDisplay.displayDelta).replace("pp", " pts vs team")}${
-          deltaDisplay.isAdjusted ? " (proj.)" : ""
-        }`
+      ? formatDeltaPp(deltaDisplay.displayDelta).replace("pp", " pts vs team")
       : "Baseline n/a";
-  const winDeltaShort = winDeltaLabel.replace(/\s+\(proj\.\)$/i, "");
   const recordLabel = viewMode === "ats" ? "ATS cover rate" : "Win rate";
   const whistleUnit = whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
 
@@ -243,7 +240,7 @@ function TeamRefRankListItem({
               : `${recordLabel} vs team baseline: ${winDeltaLabel}`
           }
         >
-          {winDeltaShort}
+          {winDeltaLabel}
         </span>
       </span>
       <span className="ref-matrix-team-panel-games ref-matrix-team-panel-games--primary">
@@ -993,9 +990,10 @@ export function RefTeamMatrix({
                               }`}
                             >
                               {baselineGames > 0
-                                ? `${formatDeltaPp(deltaDisplay.displayDelta).replace("pp", " pts vs team")}${
-                                    deltaDisplay.isAdjusted ? " (proj.)" : ""
-                                  }`
+                                ? formatDeltaPp(deltaDisplay.displayDelta).replace(
+                                    "pp",
+                                    " pts vs team",
+                                  )
                                 : "Baseline n/a"}
                             </span>
                           ) : null}

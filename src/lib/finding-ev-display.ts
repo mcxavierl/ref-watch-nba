@@ -7,7 +7,7 @@ export const EDGE_POSITIVE_THRESHOLD = 2;
 export const EDGE_NEGATIVE_THRESHOLD = -2;
 
 export const EV_DISCLAIMER =
-  "Expected Value is a statistical estimate, not a guaranteed return. Use this to identify market discrepancies, not as a source of truth.";
+  "Edge scores are statistical estimates, not guaranteed returns. Use to identify market discrepancies, not as a source of truth.";
 
 export type EvMarketSide = "over" | "under" | "cover";
 

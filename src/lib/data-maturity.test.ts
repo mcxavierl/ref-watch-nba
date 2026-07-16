@@ -62,11 +62,11 @@ describe("data maturity", () => {
   it("formats adjusted delta tooltip copy", () => {
     assert.equal(
       adjustedDeltaTooltipText(14.2),
-      "Adjusted for small sample volatility: +14.2pp expected",
+      "Adjusted for small sample: +14.2pp",
     );
     assert.equal(
       adjustedDeltaTooltipText(-3.5),
-      "Adjusted for small sample volatility: -3.5pp expected",
+      "Adjusted for small sample: -3.5pp",
     );
   });
 

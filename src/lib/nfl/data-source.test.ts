@@ -22,10 +22,11 @@ describe("NFL data source honesty", () => {
     assert.equal(isNflSimulatedData("hybrid"), false);
   });
 
-  it("preview banner warns on simulated data", () => {
+  it("preview banner warns on preview data", () => {
     const msg = nflPreviewBannerMessage("seeded", "seeded");
     assert.match(msg, /Preview dataset/i);
-    assert.match(msg, /simulated/i);
+    assert.match(msg, /placeholder schedules/i);
+    assert.doesNotMatch(msg, /simulated|simulation|projected|projection/i);
   });
 
   it("preview banner notes missing lines for espn stats", () => {

@@ -37,7 +37,7 @@ export function TeamRecordSosCard({
           : "n/a"}
       </p>
       <p className="team-record-sos-context">
-        vs. opp avg {formatOpponentAvgWinPct(sos.avgOpponentWinPct)} · expected{" "}
+        vs. opp avg {formatOpponentAvgWinPct(sos.avgOpponentWinPct)} · baseline{" "}
         {expected.wins}-{expected.losses} · {deltaLabel} above avg
       </p>
 
