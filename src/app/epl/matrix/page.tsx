@@ -98,6 +98,7 @@ export default async function EplMatrixPage({ searchParams }: PageProps) {
       <MatrixExtremeSection
         extremes={extremes}
         basePath={league.pathPrefix}
+        leagueId="epl"
         title="Standout official×team splits"
         lead="Cells where a team's win rate with that official diverges sharply from their baseline in this sample. Descriptive only, not picks."
         entityLabel="official"

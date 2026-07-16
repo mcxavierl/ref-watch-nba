@@ -721,7 +721,7 @@ export function RefTeamMatrix({
                 ? searchMatchCount > 0
                   ? `${searchMatchCount} match${searchMatchCount === 1 ? "" : "es"}. Thin-sample rows stay visible with a game count`
                   : "No matches in this matrix. Try a shorter name or check rankings"
-                : "Filter rows by name; includes below-gate samples"}
+                : "Filter rows by name; includes thin-sample rows"}
             </p>
           </div>
           <div className="ref-matrix-sort">
@@ -957,7 +957,7 @@ export function RefTeamMatrix({
                     );
                     const record = matrixCellMetricRecord(cell, viewMode);
                     const ariaLabel = cell.thinSample
-                      ? `${ref.name} with ${team.label}: ${record} in ${cell.games} games (below ${minGames}-game sample gate)`
+                      ? `${ref.name} with ${team.label}: ${record} in ${cell.games} games (thin sample)`
                       : matrixCellAriaLabel(
                           ref.name,
                           team,
@@ -987,14 +987,6 @@ export function RefTeamMatrix({
                             </VerifiedGamesHint>
                           </span>
                           <span className="ref-matrix-record">{record}</span>
-                          {cell.thinSample ? (
-                            <span
-                              className="ref-matrix-delta ref-matrix-delta--thin"
-                              title={`${matrixCellMetricGames(cell, viewMode)} games, below ${minGames}-game ranking gate`}
-                            >
-                              Below gate
-                            </span>
-                          ) : null}
                           {!cell.thinSample ? (
                             <span
                               className={`ref-matrix-delta ${deltaClass(tone)}${

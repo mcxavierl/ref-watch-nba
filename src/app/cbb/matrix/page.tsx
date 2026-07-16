@@ -92,6 +92,7 @@ export default async function CbbMatrixPage({ searchParams }: PageProps) {
       <MatrixExtremeSection
         extremes={extremes}
         basePath={league.pathPrefix}
+        leagueId="cbb"
         title="Standout ref×team splits"
         lead="Cells where a team's win rate with that ref diverges sharply from their baseline in this sample. Descriptive only, not picks."
       />

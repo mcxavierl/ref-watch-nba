@@ -1,23 +1,11 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
-import type { MatrixExtremeHighlight } from "@/lib/ref-team-matrix";
-import {
-  formatMatrixHighlightBaseline,
-} from "@/lib/ref-team-matrix";
-import {
-  adjustedDeltaTooltipText,
-  displayWinRateDelta,
-  formatDeltaPp,
-} from "@/lib/data-maturity";
 import {
   isDirectionalTone,
   isStandoutTone,
   metricDelightClass,
-  matrixExtremeTone,
   type MetricDelightSurface,
   type MetricDelightTone,
 } from "@/lib/metric-delight";
-import { formatPct, formatSigned } from "@/lib/stats-utils";
 
 export function StandoutMetricValue({
   children,
@@ -118,80 +106,6 @@ export function StandoutDelta({
   if (tone === "neutral") return <>{children}</>;
   return (
     <span className={metricDelightClass(tone, "delta")}>{children}</span>
-  );
-}
-
-/**
- * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
- * metrics must display maturity indicators and adjusted projections.
- */
-
-export function MatrixExtremeSplitCards({
-  extremes,
-  basePath,
-  entityLabel = "ref",
-}: {
-  extremes: MatrixExtremeHighlight[];
-  basePath: string;
-  entityLabel?: "ref" | "official";
-}) {
-  if (extremes.length === 0) return null;
-
-  const withLabel = entityLabel === "official" ? "official" : "ref";
-
-  return (
-    <ul className="metric-delight-extreme-grid">
-      {extremes.map((item) => {
-        const tone = matrixExtremeTone(item.kind);
-        const kicker =
-          item.kind === "high" ? "Above baseline" : "Below baseline";
-        const deltaDisplay = displayWinRateDelta(item.deltaPts, item.games);
-        const heroDelta = deltaDisplay.isAdjusted
-          ? formatDeltaPp(deltaDisplay.displayDelta)
-          : formatSigned(item.deltaPts);
-
-        return (
-          <li
-            key={`${item.refSlug}-${item.teamAbbr}`}
-            className={metricDelightClass(tone, "card")}
-          >
-            <div className="metric-delight-card-head">
-              <span className={metricDelightClass(tone, "kicker")}>{kicker}</span>
-              <StandoutMetricValue
-                tone={tone}
-                size="hero"
-                className={deltaDisplay.isAdjusted ? "metric-delight-value--adjusted" : ""}
-                title={
-                  deltaDisplay.isAdjusted
-                    ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
-                    : undefined
-                }
-              >
-                {heroDelta}
-              </StandoutMetricValue>
-            </div>
-            <p className="metric-delight-card-body">
-              <Link
-                href={`${basePath}/refs/${item.refSlug}#close-game`}
-                className="metric-delight-card-link"
-              >
-                {item.refName}
-              </Link>{" "}
-              with{" "}
-              <Link
-                href={`${basePath}/teams/${item.teamAbbr}`}
-                className="metric-delight-card-link"
-              >
-                {item.teamLabel}
-              </Link>
-              : {withLabel}×team {item.wins}-{item.losses} ({formatPct(item.winRate)})
-              in {item.games} games vs team sample baseline{" "}
-              {formatMatrixHighlightBaseline(item)}.
-            </p>
-          </li>
-        );
-      })}
-    </ul>
   );
 }
 

@@ -113,6 +113,7 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
       <MatrixExtremeSection
         extremes={extremes}
         basePath={league.pathPrefix}
+        leagueId="nfl"
         title="Standout official×team splits"
         lead="Cells where a team's win rate with that official diverges sharply from their baseline in this sample. Descriptive only, not picks."
         entityLabel="official"
