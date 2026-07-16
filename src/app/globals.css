@@ -320,9 +320,9 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --sport-surface-tint: rgba(186, 230, 253, 0.12);
 
   /* Premium card depth */
-  --card-border-light: rgba(226, 232, 240, 0.6);
-  --card-shadow-light: 0 8px 30px rgb(0 0 0 / 0.02);
-  --card-shadow-light-hover: 0 12px 36px rgb(0 0 0 / 0.04);
+  --card-border-light: #e2e8f0;
+  --card-shadow-light: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --card-shadow-light-hover: 0 4px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
 
   --color-white: #ffffff;
   --color-zinc-50: #fafafa;
@@ -1561,15 +1561,15 @@ p {
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .browse-action-card {
-    border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
+    border-color: #e2e8f0;
     background: #ffffff;
-    box-shadow: var(--card-shadow-light, 0 8px 30px rgb(0 0 0 / 0.02));
+    box-shadow: var(--card-shadow-light);
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .browse-action-card:hover {
     border-color: color-mix(in srgb, var(--header-sapphire) 14%, #e2e8f0);
     background: #ffffff;
-    box-shadow: var(--card-shadow-light-hover, 0 12px 36px rgb(0 0 0 / 0.04));
+    box-shadow: var(--card-shadow-light-hover);
   }
 
   .browse-action-card:focus-visible {
@@ -1655,15 +1655,15 @@ p {
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .browse-action-compact-card {
-    border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
+    border-color: #e2e8f0;
     background: #ffffff;
-    box-shadow: var(--card-shadow-light, 0 8px 30px rgb(0 0 0 / 0.02));
+    box-shadow: var(--card-shadow-light);
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .browse-action-compact-card:hover {
     border-color: color-mix(in srgb, var(--header-sapphire) 14%, #e2e8f0);
     background: #ffffff;
-    box-shadow: var(--card-shadow-light-hover, 0 12px 36px rgb(0 0 0 / 0.04));
+    box-shadow: var(--card-shadow-light-hover);
   }
 
   .browse-action-compact-card:focus-visible {
@@ -3806,86 +3806,57 @@ p {
   .league-nav-mark {
     display: block;
     width: auto;
-    height: 0.95rem;
-    max-width: 1.65rem;
+    height: auto;
+    max-width: 1.35rem;
+    max-height: 1.25rem;
     object-fit: contain;
     object-position: center;
-    opacity: 0.9;
-    filter: brightness(1.08);
+    opacity: 1;
+    filter: drop-shadow(0 1px 1px rgb(15 23 42 / 0.12));
     transition:
-      opacity var(--duration-fast) ease-out,
       transform var(--duration-fast) ease-out,
       filter var(--duration-fast) ease-out;
   }
 
   .league-nav-mark--nfl {
-    height: 1.2rem;
-    width: auto;
-    max-width: 0.9rem;
-    object-fit: contain;
-    filter: brightness(1.35) saturate(1.1);
+    max-width: 0.95rem;
+    max-height: 1.2rem;
   }
 
   .league-nav-mark--nba {
-    height: 1rem;
-    max-width: 1.55rem;
-    filter: brightness(1.2);
+    max-width: 1.3rem;
+    max-height: 1.15rem;
   }
 
   .league-nav-mark--nhl,
   .league-nav-mark[data-league="nhl"],
   .league-nav-mark--epl,
   .league-nav-mark[data-league="epl"] {
-    height: 1.1rem;
-    max-width: 1.95rem;
+    max-width: 1.45rem;
+    max-height: 1.2rem;
   }
 
   .league-nav-mark--epl,
   .league-nav-mark[data-league="epl"] {
-    height: 1.05rem;
-    max-width: 1.15rem;
-    filter: none;
-    opacity: 0.92;
+    max-width: 1.1rem;
   }
 
   .league-nav-mark--laliga,
   .league-nav-mark[data-league="laliga"] {
-    height: 1.1rem;
-    width: auto;
-    max-width: 1.45rem;
-    object-fit: contain;
-    filter: none;
-    opacity: 1;
+    max-width: 1.25rem;
+    max-height: 1.2rem;
   }
 
   .league-nav-mark--cbb,
   .league-nav-mark[data-league="cbb"],
   .league-nav-mark--cfb,
   .league-nav-mark[data-league="cfb"] {
-    height: 1.15rem;
-    width: 1.15rem;
-    max-width: 1.15rem;
-    object-fit: contain;
-    filter: none;
-    opacity: 1;
-  }
-
-  html[data-color="light"] .league-nav-mark--laliga,
-  html[data-color="light"] .league-nav-mark[data-league="laliga"] {
-    opacity: 1;
+    max-width: 1.2rem;
+    max-height: 1.2rem;
   }
 
   .league-nav-link--active .league-nav-mark {
-    opacity: 1;
     transform: scale(1.02);
-  }
-
-  .league-nav-link--active .league-nav-mark--nfl,
-  .league-nav-link--active .league-nav-mark[data-league="nhl"],
-  .league-nav-mark--on-pill.league-nav-mark--nhl,
-  .league-nav-link--active .league-nav-mark--epl,
-  .league-nav-link--active .league-nav-mark[data-league="epl"] {
-    filter: none;
   }
 
   .league-nav-mark-fallback {
@@ -4580,8 +4551,12 @@ p {
   }
 
   /* ── Buttons ── */
+  .btn-primary {
+    @apply rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition outline-offset-2 hover:bg-slate-800 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-slate-900 motion-reduce:active:scale-100;
+  }
+
   .btn-secondary {
-    @apply rounded-md border border-border bg-surface px-3 py-2 font-medium text-zinc-800 transition outline-offset-2 hover:border-zinc-500 hover:bg-surface-raised active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-zinc-400 motion-reduce:active:scale-100;
+    @apply rounded-md border border-slate-200 bg-white px-3 py-2 font-medium text-slate-900 shadow-sm transition outline-offset-2 hover:border-slate-300 hover:bg-slate-50 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-slate-400 motion-reduce:active:scale-100;
     font-size: var(--text-sm);
   }
 
@@ -4960,6 +4935,86 @@ p {
     background: color-mix(in srgb, var(--surface) 88%, transparent);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .clinical-card,
+  html[data-color="light"]:not([data-contrast="high"]) .rankings-insight-card,
+  html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card,
+  html[data-color="light"]:not([data-contrast="high"]) .data-card {
+    border-color: #e2e8f0;
+    background: #ffffff;
+    box-shadow: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) body {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .page-lead,
+  html[data-color="light"]:not([data-contrast="high"]) .section-lead,
+  html[data-color="light"]:not([data-contrast="high"]) .site-footer-body,
+  html[data-color="light"]:not([data-contrast="high"]) .browse-action-card-desc {
+    color: #475569;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .browse-action-card-title,
+  html[data-color="light"]:not([data-contrast="high"]) .section-title,
+  html[data-color="light"]:not([data-contrast="high"]) h1,
+  html[data-color="light"]:not([data-contrast="high"]) h2,
+  html[data-color="light"]:not([data-contrast="high"]) h3 {
+    color: #0f172a;
+  }
+
+  /* Shared league logo plate */
+  html[data-color="dark"]:not([data-contrast="high"]) .logo-container,
+  html.dark .logo-container {
+    border-color: color-mix(in srgb, #64748b 45%, #334155);
+    background: color-mix(in srgb, #1e293b 82%, #0f172a);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, #fff 6%, transparent),
+      0 1px 2px rgb(0 0 0 / 0.35);
+  }
+
+  .logo-container .logo-container__mark,
+  .logo-container .league-nav-mark,
+  .logo-container .league-hero-logo {
+    opacity: 1;
+    width: auto;
+    height: auto;
+    max-width: 1.25rem;
+    max-height: 1.25rem;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 1px rgb(15 23 42 / 0.14));
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .logo-container .logo-container__mark,
+  html[data-color="light"]:not([data-contrast="high"]) .logo-container .league-nav-mark,
+  html[data-color="light"]:not([data-contrast="high"]) .logo-container .league-hero-logo {
+    filter: drop-shadow(0 1px 2px rgb(15 23 42 / 0.12));
+  }
+
+  .logo-container .league-hero-logo {
+    width: auto !important;
+    height: auto !important;
+    max-width: 1.75rem;
+    max-height: 1.75rem;
+    object-fit: contain;
+  }
+
+  .logo-container--lg .league-hero-logo,
+  .logo-container.h-12 .league-hero-logo {
+    max-width: 2rem;
+    max-height: 2rem;
+  }
+
+  .league-hero-logo-fallback,
+  .league-nav-mark-fallback {
+    font-size: 0.5625rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    color: #475569;
   }
 
   .status-badge {
@@ -6265,7 +6320,7 @@ p {
   }
 
   .league-hub-hero-header-block .league-hub-hero-logo,
-  .league-hub-hero-header-block .league-hero-logo-fallback {
+  .league-hub-hero-header-block .logo-container {
     flex-shrink: 0;
     align-self: center;
     margin-top: 0;
@@ -6285,68 +6340,21 @@ p {
     }
 
     .league-hub-hero-header-block .league-hub-hero-logo,
-    .league-hub-hero-header-block .league-hero-logo-fallback {
+    .league-hub-hero-header-block .logo-container {
       align-self: flex-start;
-      height: 2rem;
-      max-width: 3rem;
-    }
-
-    .league-hero-logo.league-nav-mark--nfl,
-    .league-hero-logo[data-league="nfl"],
-    .league-hero-logo.league-nav-mark--cfb,
-    .league-hero-logo[data-league="cfb"] {
-      height: 2.35rem;
-      max-width: 2rem;
-    }
-
-    .league-hero-logo.league-nav-mark--laliga,
-    .league-hero-logo[data-league="laliga"] {
-      max-width: 3.5rem;
     }
   }
 
   .league-hero-logo {
     display: block;
     width: auto;
-    height: 2.35rem;
-    max-width: 3.5rem;
+    height: auto;
     object-fit: contain;
-    object-position: left center;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.22));
+    object-position: center;
   }
 
-  .league-hero-logo.league-nav-mark--nfl,
-  .league-hero-logo[data-league="nfl"],
-  .league-hero-logo.league-nav-mark--cfb,
-  .league-hero-logo[data-league="cfb"] {
-    height: 2.75rem;
-    max-width: 2.35rem;
-  }
-
-  .league-hero-logo.league-nav-mark--nhl,
-  .league-hero-logo[data-league="nhl"] {
-    height: 2.15rem;
-    max-width: 2.85rem;
-  }
-
-  .league-hero-logo.league-nav-mark--epl,
-  .league-hero-logo[data-league="epl"] {
-    height: 2.5rem;
-    max-width: 2.1rem;
-  }
-
-  .league-hero-logo.league-nav-mark--laliga,
-  .league-hero-logo[data-league="laliga"] {
-    height: 2.2rem;
-    max-width: 4.5rem;
-  }
-
-  .league-hero-logo.league-nav-mark--cbb,
-  .league-hero-logo[data-league="cbb"],
-  .league-hero-logo.league-nav-mark--cfb,
-  .league-hero-logo[data-league="cfb"] {
-    height: 2.15rem;
-    max-width: 3.25rem;
+  html[data-color="light"]:not([data-contrast="high"]) .league-hero-logo {
+    filter: drop-shadow(0 1px 2px rgb(15 23 42 / 0.12));
   }
 
   .league-hero-logo-fallback {
@@ -6365,10 +6373,6 @@ p {
     color: color-mix(in srgb, var(--league-accent) 78%, var(--foreground));
   }
 
-  html[data-color="light"]:not([data-contrast="high"]) .league-hero-logo {
-    filter: none;
-  }
-
   @media (min-width: 640px) {
     .league-hub-hero-header-block {
       gap: 1.5rem;
@@ -6378,21 +6382,6 @@ p {
       gap: var(--space-3);
     }
 
-    .league-hero-logo {
-      height: 2.65rem;
-      max-width: 4rem;
-    }
-
-    .league-hero-logo.league-nav-mark--nfl,
-    .league-hero-logo[data-league="nfl"],
-    .league-hero-logo.league-nav-mark--cfb,
-    .league-hero-logo[data-league="cfb"] {
-      height: 3.1rem;
-      max-width: 2.65rem;
-    }
-  }
-
-  @media (min-width: 640px) {
     .league-hub-hero {
       padding: var(--space-8) 0 var(--space-10);
     }
@@ -10114,84 +10103,12 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 }
 
 .overview-league-chooser-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  width: 4rem;
-  height: 4rem;
-  aspect-ratio: 1 / 1;
-  border-radius: 0.9375rem;
-  border: 1px solid var(--chooser-mark-border);
-  background: color-mix(in srgb, var(--chooser-accent) 5%, rgba(0, 0, 0, 0.2));
 }
 
 .overview-league-chooser-mark .league-nav-mark {
-  display: block;
-  width: 85%;
-  height: 85%;
-  max-width: 85%;
-  max-height: 85%;
-  object-fit: contain;
-  object-position: center;
-  opacity: 1;
-}
-
-.overview-league-chooser-mark .league-nav-mark--nba {
-  width: 85%;
-  height: 85%;
-  max-width: 85%;
-  max-height: 85%;
-  filter: brightness(1.12);
-}
-
-.overview-league-chooser-mark .league-nav-mark--nhl,
-.overview-league-chooser-mark .league-nav-mark[data-league="nhl"] {
-  width: 96%;
-  height: 96%;
-  max-width: 96%;
-  max-height: 96%;
-  transform: scale(1.02);
-  transform-origin: center;
-}
-
-.overview-league-chooser-mark .league-nav-mark--nfl,
-.overview-league-chooser-mark .league-nav-mark[data-league="nfl"] {
-  width: 78%;
-  height: 94%;
-  max-width: 78%;
-  max-height: 94%;
-  filter: brightness(1.22) saturate(1.05);
-}
-
-.overview-league-chooser-mark .league-nav-mark--epl,
-.overview-league-chooser-mark .league-nav-mark[data-league="epl"] {
-  width: 96%;
-  height: 96%;
-  max-width: 96%;
-  max-height: 96%;
-  transform: scale(1.04);
-  transform-origin: center;
-  filter: none;
-}
-
-.overview-league-chooser-mark .league-nav-mark--laliga,
-.overview-league-chooser-mark .league-nav-mark[data-league="laliga"] {
-  width: 88%;
-  height: 88%;
-  max-width: 88%;
-  max-height: 88%;
-  filter: none;
-}
-
-.overview-league-chooser-mark .league-nav-mark--cbb,
-.overview-league-chooser-mark .league-nav-mark[data-league="cbb"],
-.overview-league-chooser-mark .league-nav-mark--cfb,
-.overview-league-chooser-mark .league-nav-mark[data-league="cfb"] {
-  width: 85%;
-  height: 85%;
-  max-width: 85%;
-  max-height: 85%;
+  max-width: 1.35rem;
+  max-height: 1.25rem;
 }
 
 .overview-league-chooser-body {
@@ -13608,25 +13525,17 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
 }
 
 .overview-research-hub-card-logo-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  min-width: 3.25rem;
-  height: 2.35rem;
-  padding: 0.3rem 0.45rem;
-  border-radius: 0.55rem;
-  background: #ffffff;
-  border: 1px solid color-mix(in srgb, var(--border-subtle) 85%, #0f172a);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
 }
 
+.overview-research-hub-card-logo-wrap .logo-container,
 .overview-research-hub-card-logo {
+  max-width: 1.25rem;
+  max-height: 1.25rem;
   width: auto;
-  height: 1.25rem;
-  max-width: 2.75rem;
+  height: auto;
   object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgb(15 23 42 / 0.12));
 }
 
 html.dark .overview-research-hub-card {
@@ -13634,9 +13543,9 @@ html.dark .overview-research-hub-card {
   background: color-mix(in srgb, var(--wc-research-accent) 12%, var(--bg-surface-1));
 }
 
-html.dark .overview-research-hub-card-logo-wrap {
-  background: #ffffff;
+html.dark .overview-research-hub-card-logo-wrap .logo-container {
   border-color: color-mix(in srgb, #ffffff 24%, var(--border-subtle));
+  background: #ffffff;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.06),
     0 2px 6px rgba(0, 0, 0, 0.28);

@@ -69,18 +69,18 @@ html[data-theme="light"]:not([data-contrast="high"]),
 html[data-color="light"]:not([data-contrast="high"]) {
   color-scheme: light;
 
-  --bg-surface-0: #f9fafb;
+  --bg-surface-0: #f8fafc;
   --bg-surface-1: #ffffff;
-  --bg-surface-2: #f3f4f6;
-  --bg-surface-3: #e5e7eb;
+  --bg-surface-2: #f1f5f9;
+  --bg-surface-3: #e2e8f0;
 
-  --text-primary: #111827;
-  --text-secondary: #374151;
-  --text-muted: #6b7280;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
   --text-inverse: #f9fafb;
 
-  --border-default: #d1d5db;
-  --border-subtle: #e5e7eb;
+  --border-default: #e2e8f0;
+  --border-subtle: #e2e8f0;
   --border-strong: #9ca3af;
 
   --accent-brand: #2563eb;
@@ -99,10 +99,10 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --metric-positive-surface: color-mix(in srgb, var(--accent-positive) 8%, var(--bg-surface-1));
   --metric-negative-surface: color-mix(in srgb, var(--accent-negative) 8%, var(--bg-surface-1));
 
-  --pill-bg: #f3f4f6;
-  --pill-border: #e5e7eb;
-  --pill-ink: #6b7280;
-  --pill-bg-muted: #f9fafb;
+  --pill-bg: #ffffff;
+  --pill-border: #e2e8f0;
+  --pill-ink: #475569;
+  --pill-bg-muted: #f8fafc;
 
   --background: var(--bg-surface-0);
   --foreground: var(--text-primary);
