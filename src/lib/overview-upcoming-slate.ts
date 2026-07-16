@@ -20,11 +20,93 @@ export {
 
 import {
   groupOverviewSlateByLeague,
+  type OverviewLeagueSlateGroup,
   type OverviewSlateEntry,
   type OverviewLeagueNote,
   type OverviewUpcomingSlate,
   type OverviewSlateStatus,
 } from "@/lib/overview-slate-shared";
+
+export type LeagueUpcomingSlate = {
+  inSeason: boolean;
+  leagueGroup: OverviewLeagueSlateGroup | null;
+  leagueNote: OverviewLeagueNote | null;
+  lastUpdated: string | null;
+};
+
+function collectLeagueSlateEntries(
+  leagueId: LeagueId,
+  file: AssignmentsFile,
+): OverviewSlateEntry[] {
+  const games: OverviewSlateEntry[] = [];
+  const seenIds = new Set<string>();
+
+  for (const game of file.games) {
+    if (seenIds.has(game.id)) continue;
+    seenIds.add(game.id);
+    if (game.crew.length > 0) {
+      pushEntry(games, leagueId, file, game, "live");
+    } else {
+      pushEntry(games, leagueId, file, game, "scheduled");
+    }
+  }
+  for (const game of file.scheduledGames ?? []) {
+    if (seenIds.has(game.id)) continue;
+    seenIds.add(game.id);
+    pushEntry(games, leagueId, file, game, "scheduled");
+  }
+
+  return games;
+}
+
+/** Build upcoming slate rows for a single league hub from assignments data. */
+export function buildLeagueUpcomingSlateFromAssignments(
+  leagueId: LeagueId,
+  file: AssignmentsFile,
+): LeagueUpcomingSlate {
+  const games = collectLeagueSlateEntries(leagueId, file);
+  const groups = groupOverviewSlateByLeague(games);
+  const leagueNote = file.note
+    ? {
+        leagueId,
+        leagueShortLabel: LEAGUES[leagueId].shortLabel,
+        note: file.note,
+        slateDate: file.nextSlateDate ?? file.date,
+      }
+    : null;
+
+  return {
+    inSeason: games.length > 0,
+    leagueGroup: groups.find((group) => group.leagueId === leagueId) ?? groups[0] ?? null,
+    leagueNote,
+    lastUpdated: file.lastUpdated ?? null,
+  };
+}
+
+/** Read assignments from disk and build a single-league upcoming slate. */
+export function buildLeagueUpcomingSlate(leagueId: LeagueId): LeagueUpcomingSlate {
+  const filePath = assignmentsPath(leagueId);
+  if (!fs.existsSync(filePath)) {
+    return {
+      inSeason: false,
+      leagueGroup: null,
+      leagueNote: null,
+      lastUpdated: null,
+    };
+  }
+
+  try {
+    const file = JSON.parse(fs.readFileSync(filePath, "utf8")) as AssignmentsFile;
+    return buildLeagueUpcomingSlateFromAssignments(leagueId, file);
+  } catch {
+    return {
+      inSeason: false,
+      leagueGroup: null,
+      leagueNote: null,
+      lastUpdated: null,
+    };
+  }
+}
 
 function leagueSortOrder(): Map<LeagueId, number> {
   return new Map<LeagueId, number>(
@@ -80,30 +162,11 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
       if (file.lastUpdated && (!lastUpdated || file.lastUpdated > lastUpdated)) {
         lastUpdated = file.lastUpdated;
       }
-      if (file.note) {
-        leagueNotes.push({
-          leagueId,
-          leagueShortLabel: LEAGUES[leagueId].shortLabel,
-          note: file.note,
-          slateDate: file.nextSlateDate ?? file.date,
-        });
+      const leagueSlate = buildLeagueUpcomingSlateFromAssignments(leagueId, file);
+      if (leagueSlate.leagueNote) {
+        leagueNotes.push(leagueSlate.leagueNote);
       }
-
-      const seenIds = new Set<string>();
-      for (const game of file.games) {
-        if (seenIds.has(game.id)) continue;
-        seenIds.add(game.id);
-        if (game.crew.length > 0) {
-          pushEntry(games, leagueId, file, game, "live");
-        } else {
-          pushEntry(games, leagueId, file, game, "scheduled");
-        }
-      }
-      for (const game of file.scheduledGames ?? []) {
-        if (seenIds.has(game.id)) continue;
-        seenIds.add(game.id);
-        pushEntry(games, leagueId, file, game, "scheduled");
-      }
+      games.push(...(leagueSlate.leagueGroup?.games ?? []));
     } catch {
       /* skip malformed assignments */
     }

@@ -4,8 +4,8 @@ import { FindingsSection } from "@/components/FindingsSection";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
+import { LeagueHubUpcomingSlateSection } from "@/components/LeagueHubUpcomingSlateSection";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
-import { UpcomingSlateNotice } from "@/components/UpcomingSlateNotice";
 import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
@@ -33,7 +33,8 @@ import {
   topShareSignals,
 } from "@/lib/syndication";
 import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
-import { isOffseasonSlate, isPendingCrewSlate, upcomingMatchups } from "@/lib/offseason";
+import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
+import { buildLeagueUpcomingSlateFromAssignments } from "@/lib/overview-upcoming-slate";
 import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
@@ -77,7 +78,7 @@ export default async function NflHomePage() {
   const findings = computeFindings(6, undefined, { hub: true });
   const isOffseason = isOffseasonSlate(assignments);
   const isPending = isPendingCrewSlate(assignments);
-  const pendingMatchups = upcomingMatchups(assignments).map((game) => game.matchup);
+  const upcomingSlate = buildLeagueUpcomingSlateFromAssignments("nfl", assignments);
   const { games: slateGames } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
@@ -109,14 +110,7 @@ export default async function NflHomePage() {
         refStats={refStats}
       />
 
-      {isPending && (
-        <UpcomingSlateNotice
-          league="NFL"
-          note={assignments.note}
-          matchups={pendingMatchups}
-          slateDate={assignments.nextSlateDate ?? assignments.date}
-        />
-      )}
+      <LeagueHubUpcomingSlateSection slate={upcomingSlate} leagueLabel="NFL" />
 
       {isOffseason && <OffseasonSlateNotice league="NFL" />}
 

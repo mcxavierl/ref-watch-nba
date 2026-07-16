@@ -9,9 +9,14 @@ export const SLATE_PREVIEW_COUNT = 5;
 type LeagueSlateGamesListProps = {
   games: OverviewSlateEntry[];
   leagueShortLabel: string;
+  showHubLink?: boolean;
 };
 
-export function LeagueSlateGamesList({ games, leagueShortLabel }: LeagueSlateGamesListProps) {
+export function LeagueSlateGamesList({
+  games,
+  leagueShortLabel,
+  showHubLink = true,
+}: LeagueSlateGamesListProps) {
   const [expanded, setExpanded] = useState(false);
 
   const visibleGames = useMemo(
@@ -26,7 +31,11 @@ export function LeagueSlateGamesList({ games, leagueShortLabel }: LeagueSlateGam
   return (
     <>
       {visibleGames.map((game) => (
-        <OverviewSlateRow key={`${game.leagueId}-${game.gameId}`} game={game} />
+        <OverviewSlateRow
+          key={`${game.leagueId}-${game.gameId}`}
+          game={game}
+          showHubLink={showHubLink}
+        />
       ))}
       {hiddenCount > 0 ? (
         <li className="overview-slate-view-more">

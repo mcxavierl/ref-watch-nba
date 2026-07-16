@@ -5,6 +5,8 @@ import {
   groupOverviewSlateByLeague,
   type OverviewSlateEntry,
 } from "@/lib/overview-slate-shared";
+import { buildLeagueUpcomingSlateFromAssignments } from "@/lib/overview-upcoming-slate";
+import type { AssignmentsFile } from "@/lib/types";
 
 function slateEntry(
   overrides: Partial<OverviewSlateEntry> & Pick<OverviewSlateEntry, "leagueId" | "gameId" | "status">,
@@ -51,5 +53,35 @@ describe("overview-upcoming-slate", () => {
     assert.equal(groups[1]?.href, "/nfl");
     assert.equal(groups[0]?.games[0]?.status, "live");
     assert.equal(groups[0]?.games[1]?.status, "scheduled");
+  });
+
+  it("builds a single-league slate from assignments with scheduled games", () => {
+    const file: AssignmentsFile = {
+      lastUpdated: "2026-07-08T04:01:07.016Z",
+      date: "2026-08-06",
+      source: "espn",
+      games: [],
+      scheduledGames: [
+        {
+          id: "401772971",
+          matchup: "LAC @ DET",
+          awayTeam: "LAC",
+          homeTeam: "DET",
+          league: "NFL",
+          crew: [],
+        },
+      ],
+      nextSlateDate: "2026-08-06",
+      note: "Next NFL slate is 2026-08-06 (1 game on ESPN). Crew assignments not published yet.",
+    };
+
+    const slate = buildLeagueUpcomingSlateFromAssignments("nfl", file);
+
+    assert.equal(slate.inSeason, true);
+    assert.equal(slate.leagueGroup?.scheduledCount, 1);
+    assert.equal(slate.leagueGroup?.liveCount, 0);
+    assert.equal(slate.leagueGroup?.games[0]?.matchup, "LAC @ DET");
+    assert.equal(slate.leagueGroup?.games[0]?.status, "scheduled");
+    assert.equal(slate.leagueNote?.note, file.note);
   });
 });

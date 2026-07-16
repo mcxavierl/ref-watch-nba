@@ -42,7 +42,13 @@ function resolveTeam(leagueId: LeagueId, abbr: string): TeamLike {
   return team ?? { abbr: key, name: key };
 }
 
-export function OverviewSlateRow({ game }: { game: OverviewSlateEntry }) {
+export function OverviewSlateRow({
+  game,
+  showHubLink = true,
+}: {
+  game: OverviewSlateEntry;
+  showHubLink?: boolean;
+}) {
   const awayTeam = resolveTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveTeam(game.leagueId, game.homeTeam);
   const dateLabel = game.slateDate
@@ -87,9 +93,11 @@ export function OverviewSlateRow({ game }: { game: OverviewSlateEntry }) {
           `${game.crewCount}-person crew`
         )}
       </p>
-      <Link href={game.href} className="overview-slate-row-link">
-        Open {game.leagueShortLabel} hub
-      </Link>
+      {showHubLink ? (
+        <Link href={game.href} className="overview-slate-row-link">
+          Open {game.leagueShortLabel} hub
+        </Link>
+      ) : null}
     </li>
   );
 }
