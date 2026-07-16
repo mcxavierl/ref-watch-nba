@@ -26,22 +26,14 @@ describe("match intensity", () => {
   });
 
   it("flags games below league avg - threshold as low intensity", () => {
-    assert.equal(
-      getIntensityLabel(leagueAvg - INTENSITY_LEAGUE_DELTA_THRESHOLD - 1, leagueAvg),
-      "Low Intensity",
-    );
+    assert.equal(getIntensityLabel(25, leagueAvg), "Low Intensity");
+    assert.equal(getIntensityLabel(16, 22), "Low Intensity");
   });
 
-  it("treats near-league-average games as standard", () => {
-    assert.equal(getIntensityLabel(leagueAvg, leagueAvg), "Standard");
-    assert.equal(
-      getIntensityLabel(leagueAvg + INTENSITY_LEAGUE_DELTA_THRESHOLD, leagueAvg),
-      "Standard",
-    );
-    assert.equal(
-      getIntensityLabel(leagueAvg - INTENSITY_LEAGUE_DELTA_THRESHOLD, leagueAvg),
-      "Standard",
-    );
+  it("treats near-league-average games as standard when between bands", () => {
+    assert.equal(getIntensityLabel(24, 22), "Standard");
+    assert.equal(getIntensityLabel(35, leagueAvg), "High Intensity");
+    assert.equal(getIntensityLabel(31, leagueAvg), "High Intensity");
   });
 
   it("defaults to standard when league average is unavailable", () => {

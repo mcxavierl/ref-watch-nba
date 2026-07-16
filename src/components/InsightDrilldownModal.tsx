@@ -24,7 +24,7 @@ import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import { AccessibleHeaderTooltip } from "@/components/shared/AccessibleHeaderTooltip";
 import { IntensityBadge } from "@/components/shared/IntensityBadge";
 import { EMPTY_DISPLAY } from "@/lib/finding-copy";
-import { FOULS_COLUMN_TOOLTIP } from "@/lib/match-intensity";
+import { FOULS_COLUMN_TOOLTIP, getIntensityLabel } from "@/lib/match-intensity";
 import { formatPct } from "@/lib/stats-utils";
 
 type VenueFilter = "all" | "home" | "away";
@@ -382,11 +382,14 @@ export function InsightDrilldownModal({
                           <td className="tracking-tight px-2 py-2 sm:px-3 sm:py-2.5">
                             <span className="insight-drilldown-fouls-cell tabular-nums">
                               {game.whistleCount}
-                              <IntensityBadge
-                                foulCount={game.whistleCount}
-                                leagueAvgFouls={payload.leagueAvgFouls}
-                                compact
-                              />
+                              {getIntensityLabel(game.whistleCount, payload.leagueAvgFouls) !==
+                              "Standard" ? (
+                                <IntensityBadge
+                                  foulCount={game.whistleCount}
+                                  leagueAvgFouls={payload.leagueAvgFouls}
+                                  compact
+                                />
+                              ) : null}
                             </span>
                           </td>
                           <td className="insight-drilldown-col--spread hidden tracking-tight px-2 py-2 md:table-cell sm:px-3 sm:py-2.5">
