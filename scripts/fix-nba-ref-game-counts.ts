@@ -205,6 +205,7 @@ export function rebuildNbaRefStatsFromLogs(
 
   refs.sort((a, b) => b.games - a.games);
   dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
+
   const dates = logs.games.map((g) => g.date).sort();
   const rebuildNote = " Ref game counts rebuilt from DISTINCT game_id in game logs.";
   const existingNote = existing.meta.note ?? "";

@@ -4,6 +4,8 @@
 import {
   attachGsniToProfiles,
   buildGsniCorpusFromGameLogs,
+  GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL,
+  type GsniComputeOptions,
   type GsniGameLogLike,
 } from "../../src/lib/gsni";
 import type { RefOfficial, RefProfile } from "../../src/lib/types";
@@ -18,9 +20,20 @@ export function attachGsniFieldsFromGames(
   profiles: RefProfile[],
   games: GsniGameLogLike[],
   refereeIdForOfficial: (official: RefOfficial) => string = officialToRefereeId,
+  options: GsniComputeOptions = {},
 ): RefProfile[] {
   const corpus = buildGsniCorpusFromGameLogs(games, refereeIdForOfficial);
-  return attachGsniToProfiles(profiles, corpus);
+  return attachGsniToProfiles(profiles, corpus, options);
+}
+
+export function attachNflGsniFieldsFromGames(
+  profiles: RefProfile[],
+  games: GsniGameLogLike[],
+  refereeIdForOfficial: (official: RefOfficial) => string = officialToRefereeId,
+): RefProfile[] {
+  return attachGsniFieldsFromGames(profiles, games, refereeIdForOfficial, {
+    minHighLeverageMinutes: GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL,
+  });
 }
 
 export function attachGsniFieldsFromGameLogs(

@@ -27,6 +27,7 @@ export type GlossaryId =
   | "nhl-ref-analytics"
   | "nfl-ref-analytics"
   | "nfl-whistle-premium"
+  | "game-state-index"
   | "home-margin"
   | "pace-alert"
   | "hit-rate"
@@ -155,6 +156,10 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   "nfl-whistle-premium": {
     label: "Whistle premium",
     text: "Crew combined scoring pace vs league baseline, plus flag-rate context for tonight's matchup. Descriptive historical signal only.",
+  },
+  "game-state-index": {
+    label: "Game-State Index",
+    text: "Compares a referee's leverage-weighted flag rate to the league in similar score-and-clock states. 50 is neutral; higher means quieter in key moments; lower means heavier. NFL officials need 25+ high-leverage minutes of play-level penalty data before this appears.",
   },
   "home-margin": {
     label: "Home avg margin",
