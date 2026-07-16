@@ -143,7 +143,7 @@ export default async function EplRefProfilePage({
         }
       >
         <RefProfileMetadataBar
-          seasons={stats.meta.seasons}
+          seasons={profile.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           seeded={isLaligaSimulatedData(stats.meta.source)}

@@ -137,7 +137,7 @@ export default async function RefProfilePage({
           </p>
         )}
         <RefProfileMetadataBar
-          seasons={stats.meta.seasons}
+          seasons={profile.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           seeded={stats.meta.source === "seeded"}

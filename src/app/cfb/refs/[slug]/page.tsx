@@ -152,7 +152,7 @@ export default async function CfbRefProfilePage({
           </p>
         )}
         <RefProfileMetadataBar
-          seasons={stats.meta.seasons}
+          seasons={profile.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           seeded={isCfbSimulatedData(stats.meta.source)}
