@@ -28,6 +28,7 @@ import {
 } from "@/lib/finding-copy";
 import { getBaselinesFile } from "@/lib/baselines";
 import { seasonRowsFromBaselines } from "@/lib/trends";
+import type { RefProfile, RefStatsFile, TeamCrewSplit, WlpRecord } from "@/lib/types";
 
 export type { Finding, FindingCategory } from "@/lib/findings-shared";
 export { FINDING_CATEGORY_LABELS } from "@/lib/findings-shared";

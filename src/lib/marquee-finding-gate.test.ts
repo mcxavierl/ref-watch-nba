@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { buildMarqueeEfficiencyFinding } from "@/lib/findings-builders";
+import { getRefStats, getTeamSplits } from "@/lib/epl/data";
+import { getTeam, teamFullName, EPL_TEAMS } from "@/lib/epl/teams";
+import { buildMarqueeEfficiencyFinding, type LeagueFindingContext } from "@/lib/findings-builders";
 import {
   computeRefMarqueePerformance,
   passesMarqueeComparisonGate,
@@ -11,14 +13,32 @@ import {
   filterDisplayStats,
   isActionableComparisonStat,
 } from "@/lib/findings-shared";
-import { getRefStats } from "@/lib/epl/data";
 
-const EPL_FINDING_CTX = {
-  league: "EPL" as const,
+const EPL_FINDING_CTX: LeagueFindingContext = {
+  league: "EPL",
   paths: {
     idPrefix: "epl-",
-    refPath: (slug: string) => `/epl/refs/${slug}`,
+    refsBrowsePath: "/epl/refs",
+    refPath: (slug) => `/epl/refs/${slug}`,
+    teamPath: (abbr) => `/epl/teams/${abbr}`,
+    matrixPath: "/epl/matrix",
+    crewsPath: "/epl/crews",
+    trendsPath: "/epl/trends",
   },
+  labels: {
+    scoreUnit: "goals",
+    whistleUnit: "fouls",
+    teamName: (abbr) => {
+      const team = getTeam(abbr);
+      return team ? teamFullName(team) : abbr;
+    },
+  },
+  getTeamSplits,
+  teams: EPL_TEAMS.map((team) => ({
+    abbr: team.abbr,
+    label: teamFullName(team),
+    name: team.name,
+  })),
 };
 
 describe("marquee efficiency finding gates", () => {

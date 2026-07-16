@@ -235,7 +235,6 @@ export interface MarqueeLeagueScanResult {
   performance: RefMarqueePerformance;
 }
 
-/** Both marquee and non-marquee arms need sample before a split is actionable. */
 /** Scan all refs for the largest marquee-vs-baseline efficiency split (Research findings). */
 export function scanLeagueMarqueeEfficiency(
   leagueId: LeagueId,
