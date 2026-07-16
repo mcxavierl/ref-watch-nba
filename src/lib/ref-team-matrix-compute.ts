@@ -3,7 +3,7 @@ import {
   atsFieldsFromStat,
   getTeamAtsSampleRecord,
 } from "@/lib/team-ats";
-import { getTeamDisplayRecord } from "@/lib/teamRecord";
+import { getTeamDisplayRecord } from "@/lib/teamDisplayRecord";
 import { teamWhistleEdge } from "@/lib/stats-utils";
 import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";

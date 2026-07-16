@@ -21,7 +21,8 @@ import {
   setCachedRefStats,
   setCachedTeamSplits,
 } from "@/lib/ref-stats-preload";
-import { getTeamDisplayRecord, formatTeamSampleRecord } from "@/lib/teamRecord";
+import { getTeamDisplayRecord } from "@/lib/teamDisplayRecord";
+import { formatTeamSampleRecord } from "@/lib/teamRecord";
 import { resolveTeamCrewSplits } from "@/lib/teamCrewSplits";
 import { loadSplitRefStatsFixture } from "@/lib/test-fixtures/split-ref-stats-fixture";
 

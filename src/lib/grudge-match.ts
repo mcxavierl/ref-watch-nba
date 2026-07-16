@@ -10,10 +10,8 @@ import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
 import { formatWinRateVsTeam } from "@/lib/stats-utils";
 import { getTeam, matchTeamString, teamFullName, teamWithArticle } from "@/lib/teams";
 import { TEAM_REF_MIN_GAMES } from "@/lib/teamRefLeaderboards";
-import {
-  getTeamDisplayRecord,
-  winRateDeltaPoints,
-} from "@/lib/teamRecord";
+import { getTeamDisplayRecord } from "@/lib/teamDisplayRecord";
+import { winRateDeltaPoints } from "@/lib/teamRecord";
 import type {
   AssignmentGame,
   AssignmentsFile,
