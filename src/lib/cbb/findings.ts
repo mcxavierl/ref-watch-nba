@@ -4,7 +4,7 @@ import { formatPctFromWlp } from "@/lib/ref-betting";
 import { getTeam, teamFullName, CBB_TEAMS } from "@/lib/cbb/teams";
 import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
 import { collectRefTeamScoringExtremes, rankScore } from "@/lib/findings-shared";
-import { pickFeaturedFindings, rankScoredFindings } from "@/lib/findings-significance";
+import { pickFeaturedFindings, rankScoredFindings, weightedLeagueOverRate } from "@/lib/findings-significance";
 import { attachRegionalContextToFindings } from "@/lib/regional-context";
 import {
   buildCloseGameLeagueFinding,
@@ -47,6 +47,57 @@ function formatWlpShort(record: WlpRecord): string {
   return `${record.wins}-${record.losses}`;
 }
 
+function rareOverRefsFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const { refs, meta } = stats;
+  const overRefs = refs
+    .filter((r) => r.games >= MIN_REF_GAMES && r.overRate > 0.5)
+    .sort((a, b) => b.overRate - a.overRate);
+  const qualified = refs.filter((r) => r.games >= MIN_REF_GAMES);
+  if (overRefs.length === 0 || qualified.length === 0) return null;
+
+  const overPct = Math.round((overRefs.length / qualified.length) * 100);
+  const headline =
+    overPct === 100
+      ? `Every high-volume CBB ref leans over the benchmark`
+      : `${overPct}% of high-volume CBB refs lean over the benchmark`;
+
+  return {
+    id: "cbb-rare-over-refs",
+    category: "ref-outlier",
+    headline,
+    summary: `Among officials with ${MIN_REF_GAMES}+ games, ${overRefs.length} of ${qualified.length} beat the ${meta.leagueOverBaseline}-point benchmark in a majority of their own games.`,
+    explainer: `Personal over rate counts how often each ref's games clear the benchmark. League-wide, roughly ${formatPct(weightedLeagueOverRate(qualified))} of games in this pool finished over.`,
+    stats: [
+      {
+        label: "Over refs",
+        value: `${overRefs.length}/${qualified.length}`,
+        detail: `${MIN_REF_GAMES}+ games each`,
+      },
+      {
+        label: "Top over ref",
+        value: formatPct(overRefs[0].overRate),
+        detail: `${overRefs[0].name} · ${overRefs[0].games} games`,
+      },
+      {
+        label: "League benchmark",
+        value: String(meta.leagueOverBaseline),
+        detail: "Combined pts proxy",
+      },
+    ],
+    sampleNote: formatFindingSampleMeta(qualified.length, meta.seasons),
+    links: overRefs.slice(0, 3).map((r) => ({
+      label: r.name,
+      href: `/cbb/refs/${r.slug}`,
+    })),
+    score: rankScore(
+      Math.abs(overRefs.length / qualified.length - 0.5),
+      qualified.length,
+      20,
+    ),
+    sampleGames: qualified.length,
+  };
+}
+
 function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
   const baseline = stats.meta.leagueOverBaseline;
   let best:
@@ -84,12 +135,12 @@ function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `${best.split.games} games`,
       },
       {
-        label: "Avg goals",
+        label: "Avg total",
         value: String(best.split.avgTotalPoints),
         detail: `vs ${stats.meta.leagueAvgTotal} league avg`,
       },
       {
-        label: "PIM total",
+        label: "Avg fouls",
         value: String(best.split.avgFouls),
         detail: "Both teams combined",
       },
@@ -229,7 +280,7 @@ function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
   return {
     id: "cbb-scoring-extremes",
     category: "scoring-extreme",
-    headline: `${gap.toFixed(1)}-goal spread between hottest and coldest ref–team pairs`,
+    headline: `${gap.toFixed(1)}-point spread between hottest and coldest ref–team pairs`,
     summary: `Highest: ${hottest.ref.name} on ${hotName} (${hottest.avgTotal} avg). Lowest: ${coldest.ref.name} on ${coldName} (${coldest.avgTotal} avg).`,
     stats: [
       {
@@ -273,8 +324,8 @@ const CBB_FINDING_CTX: LeagueFindingContext = {
     trendsPath: "/cbb/trends",
   },
   labels: {
-    scoreUnit: "goals",
-    whistleUnit: "PIM",
+    scoreUnit: "pts",
+    whistleUnit: "fouls",
     teamName: (abbr) => {
       const team = getTeam(abbr);
       return team ? teamFullName(team) : abbr;
@@ -302,7 +353,7 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
     id: "cbb-scoring-outlier",
     category: "ref-outlier",
     headline: `${ref.name} runs ${formatSigned(ref.totalPointsDelta)} on combined scoring`,
-    summary: `${ref.name}'s ${ref.games} games average ${ref.avgTotalPoints} combined goals (${formatPct(ref.overRate)} over ${stats.meta.leagueOverBaseline}), one of the largest scoring deltas in the pool.`,
+    summary: `${ref.name}'s ${ref.games} games average ${ref.avgTotalPoints} combined points (${formatPct(ref.overRate)} over ${stats.meta.leagueOverBaseline}), one of the largest scoring deltas in the pool.`,
     stats: [
       {
         label: "Scoring delta",
@@ -315,7 +366,7 @@ function scoringOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
         detail: `${ref.games} games`,
       },
       {
-        label: "Avg PIM",
+        label: "Avg fouls",
         value: String(ref.avgFouls),
         detail: `${formatSigned(ref.foulsDelta)} vs league`,
       },
@@ -334,11 +385,13 @@ function collectCandidates(
   const includeHeavy = !options?.hub;
   return [
     ...(options?.hub ? [] : [buildLeagueSkewFinding(stats, CBB_FINDING_CTX)]),
+    rareOverRefsFinding(stats),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
     buildYoYTrendFinding(stats, CBB_FINDING_CTX),
     buildWhistleOutlierFinding(stats, CBB_FINDING_CTX),
     buildOverRateOutlierFinding(stats, CBB_FINDING_CTX, "low"),
+    buildOverRateOutlierFinding(stats, CBB_FINDING_CTX, "high"),
     scoringOutlierFinding(stats),
     ...(includeHeavy
       ? [
@@ -365,9 +418,9 @@ export function computeFindings(
   options?: { hub?: boolean },
 ): Finding[] {
   const stats = resolveStats(scopedSeasons);
-  if (stats.refs.length === 0) return [];
-
   const ranked = rankScoredFindings(collectCandidates(stats, options));
+  if (ranked.length === 0) return [];
+
   return attachRegionalContextToFindings(
     pickFeaturedFindings(ranked, limit),
     stats,
@@ -379,10 +432,11 @@ export function computeAllFindings(
   options?: { hub?: boolean },
 ): Finding[] {
   const stats = resolveStats(scopedSeasons);
-  if (stats.refs.length === 0) return [];
+  const ranked = rankScoredFindings(collectCandidates(stats, options));
+  if (ranked.length === 0) return [];
 
   return attachRegionalContextToFindings(
-    rankScoredFindings(collectCandidates(stats, options))
+    ranked
       .map((item) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
         const { score, sampleGames, ...finding } = item;

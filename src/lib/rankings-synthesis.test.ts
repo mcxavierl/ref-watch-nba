@@ -145,13 +145,14 @@ describe("buildRankingsSynthesis", () => {
           balanceKind: "asymmetric",
         },
       }),
+      makeRef("under-runner", { name: "Under Runner", overRate: 0.42 }),
     ];
 
     const synthesis = buildRankingsSynthesis(makeStats(refs), LEAGUES.nhl);
     assert.equal(synthesis.insights.length, MAX_RANKINGS_HIGHLIGHT_CARDS);
     assert.deepEqual(
       synthesis.insights.map((insight) => insight.refSlug),
-      ["scorer", "over-king", "ats-king", "ou-king"],
+      ["scorer", "over-king", "ats-king", "ou-king", "whistle-king", "under-runner"],
     );
   });
 
@@ -188,16 +189,22 @@ describe("buildRankingsSynthesis", () => {
     assert.ok(slugs.includes("runner-up-over"));
   });
 
-  it("omits cards when fewer than four unique officials meet high-confidence thresholds", () => {
+  it("omits cards when fewer than six unique officials meet high-confidence thresholds", () => {
     const refs = [
       makeRef("only-scorer", { name: "Only Scorer", totalPointsDelta: 0.5 }),
       makeRef("weak-over", { name: "Weak Over", overRate: 0.51 }),
       makeRef("weak-whistle", { name: "Weak Whistle", foulsDelta: 0.2 }),
     ];
 
-    const synthesis = buildRankingsSynthesis(makeStats(refs), LEAGUES.nhl);
-    assert.equal(synthesis.insights.length, 1);
+    const synthesis = buildRankingsSynthesis(makeStats(refs), LEAGUES.nhl, {
+      maxCards: MAX_RANKINGS_HIGHLIGHT_CARDS,
+    });
+    assert.equal(synthesis.insights.length, 3);
     assert.equal(synthesis.insights[0]?.refSlug, "only-scorer");
+    assert.equal(
+      new Set(synthesis.insights.map((insight) => insight.refSlug)).size,
+      3,
+    );
   });
 
   it("respects maxCards without backfilling with repeated officials", () => {

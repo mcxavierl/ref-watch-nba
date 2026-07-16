@@ -380,6 +380,7 @@ function collectCandidates(
     buildYoYTrendFinding(stats, EPL_FINDING_CTX),
     buildWhistleOutlierFinding(stats, EPL_FINDING_CTX),
     buildOverRateOutlierFinding(stats, EPL_FINDING_CTX, "low"),
+    buildOverRateOutlierFinding(stats, EPL_FINDING_CTX, "high"),
     scoringOutlierFinding(stats),
     buildMarqueeEfficiencyFinding(stats, EPL_FINDING_CTX),
     ...buildFrictionGrudgeFindings(stats, EPL_FINDING_CTX, "epl"),

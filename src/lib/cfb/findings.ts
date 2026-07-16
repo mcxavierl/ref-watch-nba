@@ -26,7 +26,8 @@ import {
   teamCrewLeanHeadline,
   whistlePaceHeadline,
 } from "@/lib/finding-copy";
-import type { RefProfile, RefStatsFile, TeamCrewSplit, WlpRecord } from "@/lib/types";
+import { getBaselinesFile } from "@/lib/baselines";
+import { seasonRowsFromBaselines } from "@/lib/trends";
 
 export type { Finding, FindingCategory } from "@/lib/findings-shared";
 export { FINDING_CATEGORY_LABELS } from "@/lib/findings-shared";
@@ -266,6 +267,206 @@ function scoringExtremesFinding(stats: RefStatsFile): ScoredFindingBase | null {
   };
 }
 
+function cfbBaselineSeasonRows() {
+  const block = getBaselinesFile().CFB;
+  if (block.usingFallback || block.aggregate.gameCount === 0) return null;
+  const rows = seasonRowsFromBaselines(block.seasons);
+  return rows.length >= 2 ? rows : null;
+}
+
+function cfbScoringDeclineFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const rows = cfbBaselineSeasonRows();
+  if (!rows) return null;
+  const earliest = rows[0];
+  const latest = rows[rows.length - 1];
+  const delta = latest.leagueAvgTotal - earliest.leagueAvgTotal;
+  if (delta >= -2) return null;
+
+  return {
+    id: "cfb-scoring-decline",
+    category: "league-trend",
+    headline: `CFB combined scoring down ${Math.abs(delta).toFixed(1)} points since ${earliest.season}`,
+    summary: `League average fell from ${earliest.leagueAvgTotal.toFixed(1)} points in ${earliest.season} to ${latest.leagueAvgTotal.toFixed(1)} in ${latest.season} across live-conference games.`,
+    explainer: "Season baselines from verified ESPN game logs. Descriptive league trend, not a forecast.",
+    stats: [
+      {
+        label: `${earliest.season} avg`,
+        value: earliest.leagueAvgTotal.toFixed(1),
+        detail: `${earliest.gameCount.toLocaleString()} games`,
+      },
+      {
+        label: `${latest.season} avg`,
+        value: latest.leagueAvgTotal.toFixed(1),
+        detail: `${latest.gameCount.toLocaleString()} games`,
+      },
+      {
+        label: "Multi-year change",
+        value: formatSigned(delta),
+        detail: "Combined points per game",
+      },
+    ],
+    sampleNote: formatFindingSampleMeta(
+      earliest.gameCount + latest.gameCount,
+      rows.map((row) => row.season),
+    ),
+    links: [{ label: "Full trends", href: "/cfb/trends" }],
+    score: rankScore(Math.abs(delta) / stats.meta.leagueAvgTotal, latest.gameCount, 200),
+    sampleGames: latest.gameCount,
+  };
+}
+
+function cfbFoulPaceDeclineFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const rows = cfbBaselineSeasonRows();
+  if (!rows) return null;
+  const earliest = rows[0];
+  const latest = rows[rows.length - 1];
+  const delta = latest.leagueAvgFouls - earliest.leagueAvgFouls;
+  if (delta >= -0.4) return null;
+
+  return {
+    id: "cfb-foul-pace-decline",
+    category: "league-trend",
+    headline: `Penalty flags per game easing across the CFB sample`,
+    summary: `Flags dropped from ${earliest.leagueAvgFouls.toFixed(1)} per game (${earliest.season}) to ${latest.leagueAvgFouls.toFixed(1)} (${latest.season}), a ${formatSigned(delta)} change.`,
+    explainer: "League-wide whistle pace from game logs. Official-level splits return when crew data is available.",
+    stats: [
+      {
+        label: `${earliest.season} flags`,
+        value: earliest.leagueAvgFouls.toFixed(1),
+        detail: "Per game",
+      },
+      {
+        label: `${latest.season} flags`,
+        value: latest.leagueAvgFouls.toFixed(1),
+        detail: "Per game",
+      },
+      {
+        label: "Change",
+        value: formatSigned(delta),
+        detail: "Flags per game",
+      },
+    ],
+    sampleNote: formatFindingSampleMeta(
+      earliest.gameCount + latest.gameCount,
+      rows.map((row) => row.season),
+    ),
+    links: [{ label: "Full trends", href: "/cfb/trends" }],
+    score: rankScore(Math.abs(delta) / Math.max(stats.meta.leagueAvgFouls, 1), latest.gameCount, 200),
+    sampleGames: latest.gameCount,
+  };
+}
+
+function cfbPeakScoringSeasonFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const rows = cfbBaselineSeasonRows();
+  if (!rows) return null;
+  const peak = [...rows].sort((a, b) => b.leagueAvgTotal - a.leagueAvgTotal)[0];
+  const recent = rows[rows.length - 1];
+  const gap = peak.leagueAvgTotal - recent.leagueAvgTotal;
+  if (gap < 3) return null;
+
+  return {
+    id: "cfb-peak-scoring-season",
+    category: "scoring-extreme",
+    headline: `${peak.season} ran hottest in the CFB baseline sample`,
+    summary: `${peak.leagueAvgTotal.toFixed(1)} combined points per game across ${peak.gameCount.toLocaleString()} live-conference games, ${gap.toFixed(1)} above the latest season.`,
+    stats: [
+      {
+        label: "Peak season avg",
+        value: peak.leagueAvgTotal.toFixed(1),
+        detail: peak.season,
+      },
+      {
+        label: "Latest season avg",
+        value: recent.leagueAvgTotal.toFixed(1),
+        detail: recent.season,
+      },
+      {
+        label: "Gap vs latest",
+        value: gap.toFixed(1),
+        detail: "Combined points",
+      },
+    ],
+    sampleNote: formatFindingSampleMeta(peak.gameCount, [peak.season]),
+    links: [{ label: "Full trends", href: "/cfb/trends" }],
+    score: rankScore(gap / stats.meta.leagueAvgTotal, peak.gameCount, 150),
+    sampleGames: peak.gameCount,
+  };
+}
+
+function cfbLowScoringSeasonFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const rows = cfbBaselineSeasonRows();
+  if (!rows) return null;
+  const low = [...rows].sort((a, b) => a.leagueAvgTotal - b.leagueAvgTotal)[0];
+  const high = [...rows].sort((a, b) => b.leagueAvgTotal - a.leagueAvgTotal)[0];
+  const spread = high.leagueAvgTotal - low.leagueAvgTotal;
+  if (spread < 4) return null;
+
+  return {
+    id: "cfb-low-scoring-season",
+    category: "scoring-extreme",
+    headline: `${low.season} was the coldest scoring season in the pool`,
+    summary: `${low.leagueAvgTotal.toFixed(1)} combined points per game vs ${high.leagueAvgTotal.toFixed(1)} in ${high.season}, a ${spread.toFixed(1)}-point spread across seasons.`,
+    stats: [
+      {
+        label: "Coldest season",
+        value: low.leagueAvgTotal.toFixed(1),
+        detail: low.season,
+      },
+      {
+        label: "Hottest season",
+        value: high.leagueAvgTotal.toFixed(1),
+        detail: high.season,
+      },
+      {
+        label: "Season spread",
+        value: spread.toFixed(1),
+        detail: "Combined points",
+      },
+    ],
+    sampleNote: formatFindingSampleMeta(low.gameCount + high.gameCount, rows.map((row) => row.season)),
+    links: [{ label: "Full trends", href: "/cfb/trends" }],
+    score: rankScore(spread / stats.meta.leagueAvgTotal, low.gameCount + high.gameCount, 200),
+    sampleGames: low.gameCount + high.gameCount,
+  };
+}
+
+function cfbSampleVolumeFinding(stats: RefStatsFile): ScoredFindingBase | null {
+  const rows = cfbBaselineSeasonRows();
+  if (!rows) return null;
+  const totalGames = rows.reduce((sum, row) => sum + row.gameCount, 0);
+  if (totalGames < 500) return null;
+  const latest = rows[rows.length - 1];
+
+  return {
+    id: "cfb-sample-volume",
+    category: "league-trend",
+    headline: `${totalGames.toLocaleString()} live-conference games in the CFB baseline pool`,
+    summary: `${rows.length} seasons tracked through ${latest.season}, spanning power-conference schedules before official crew backfill ships.`,
+    explainer: "Game-level scores and penalties are live. Ref-level findings populate when ESPN crew assignments are available.",
+    stats: [
+      {
+        label: "Total games",
+        value: totalGames.toLocaleString(),
+        detail: `${rows.length} seasons`,
+      },
+      {
+        label: "Latest season",
+        value: latest.leagueAvgTotal.toFixed(1),
+        detail: `${latest.gameCount.toLocaleString()} games`,
+      },
+      {
+        label: "League benchmark",
+        value: String(stats.meta.leagueOverBaseline),
+        detail: "Combined points proxy",
+      },
+    ],
+    sampleNote: formatFindingSampleMeta(totalGames, rows.map((row) => row.season)),
+    links: [{ label: "Full trends", href: "/cfb/trends" }],
+    score: rankScore(totalGames / 5000, totalGames, 400),
+    sampleGames: totalGames,
+  };
+}
+
 const CFB_FINDING_CTX: LeagueFindingContext = {
   league: "CFB",
   paths: {
@@ -391,6 +592,11 @@ function collectCandidates(
   const includeHeavy = !options?.hub;
   return [
     buildNflFlagsOutlierFinding(stats),
+    cfbScoringDeclineFinding(stats),
+    cfbFoulPaceDeclineFinding(stats),
+    cfbPeakScoringSeasonFinding(stats),
+    cfbLowScoringSeasonFinding(stats),
+    cfbSampleVolumeFinding(stats),
     ...(options?.hub ? [] : [buildLeagueSkewFinding(stats, CFB_FINDING_CTX)]),
     ouAtsEdgeFinding(stats),
     atsOutlierFinding(stats),
@@ -423,9 +629,9 @@ export function computeFindings(
   options?: { hub?: boolean },
 ): Finding[] {
   const stats = resolveStats(scopedSeasons);
-  if (stats.refs.length === 0) return [];
-
   const ranked = rankScoredFindings(collectCandidates(stats, options));
+  if (ranked.length === 0) return [];
+
   return attachRegionalContextToFindings(
     pickFeaturedFindings(ranked, limit),
     stats,
@@ -437,10 +643,11 @@ export function computeAllFindings(
   options?: { hub?: boolean },
 ): Finding[] {
   const stats = resolveStats(scopedSeasons);
-  if (stats.refs.length === 0) return [];
+  const ranked = rankScoredFindings(collectCandidates(stats, options));
+  if (ranked.length === 0) return [];
 
   return attachRegionalContextToFindings(
-    rankScoredFindings(collectCandidates(stats, options))
+    ranked
       .map((item) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
         const { score, sampleGames, ...finding } = item;

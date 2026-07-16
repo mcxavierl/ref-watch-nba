@@ -47,10 +47,11 @@ export type RankingsSynthesisOptions = {
 };
 
 /** Maximum highlight cards on Insights Hub / league index hero strips. */
-export const MAX_RANKINGS_HIGHLIGHT_CARDS = 4;
+export const MAX_RANKINGS_HIGHLIGHT_CARDS = 6;
 
 const SCORING_ASSOCIATION_THRESHOLD = 0.3;
 const OVER_RATE_HIGH_CONFIDENCE = 0.54;
+const OVER_RATE_LOW_CONFIDENCE = 0.46;
 const BETTING_RATE_HIGH_CONFIDENCE = 0.54;
 
 const WHISTLE_HIGH_CONFIDENCE: Partial<Record<LeagueId, number>> = {
@@ -242,6 +243,80 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
         };
       },
     },
+    {
+      id: "bottom-scoring",
+      enabled: () => true,
+      pick: (_ctx, usedSlugs) =>
+        pickTopUniqueRef(
+          [...ctx.qualified].sort((a, b) => a.totalPointsDelta - b.totalPointsDelta),
+          usedSlugs,
+          {
+            excludeOfficialKeys: ctx.excludeOfficialKeys,
+            qualifies: (ref) => ref.totalPointsDelta <= -SCORING_ASSOCIATION_THRESHOLD,
+          },
+        ),
+      build: (ref) => {
+        const delta = ref.totalPointsDelta;
+        return {
+          id: "bottom-scoring",
+          title: scoringPaceRankTitle(delta),
+          body: thirdPersonScoringPaceBody(delta, ctx.unit),
+          refSlug: ref.slug,
+          refName: ref.name,
+          statLabel: "Scoring delta vs average",
+          statValue: formatScoringDeltaStat(delta, ctx.league),
+        };
+      },
+    },
+    {
+      id: "top-under",
+      enabled: () => true,
+      pick: (_ctx, usedSlugs) =>
+        pickTopUniqueRef(
+          [...ctx.qualified].sort((a, b) => a.overRate - b.overRate),
+          usedSlugs,
+          {
+            excludeOfficialKeys: ctx.excludeOfficialKeys,
+            qualifies: (ref) => ref.overRate <= OVER_RATE_LOW_CONFIDENCE,
+          },
+        ),
+      build: (ref) => ({
+        id: "top-under",
+        title: "Lowest historical over-rate vs baseline",
+        body: `Line benchmark is ${ctx.baseline} combined ${ctx.unit}; games with this official finish under the benchmark more often than peers.`,
+        refSlug: ref.slug,
+        refName: ref.name,
+        statLabel: "Over rate",
+        statValue: `${(ref.overRate * 100).toFixed(1)}%`,
+      }),
+    },
+    {
+      id: "light-whistle",
+      enabled: () => true,
+      pick: (_ctx, usedSlugs) =>
+        pickTopUniqueRef(
+          [...ctx.qualified].sort(
+            (a, b) => whistleDelta(a, ctx.league) - whistleDelta(b, ctx.league),
+          ),
+          usedSlugs,
+          {
+            excludeOfficialKeys: ctx.excludeOfficialKeys,
+            qualifies: (ref) => whistleQualifies(ref, ctx.league),
+          },
+        ),
+      build: (ref) => {
+        const wd = whistleDelta(ref, ctx.league);
+        return {
+          id: "light-whistle",
+          title: whistlePaceRankTitle(wd, ctx.league.metrics.whistleShort),
+          body: thirdPersonWhistlePaceBody(wd, ctx.league.metrics.whistlePlain),
+          refSlug: ref.slug,
+          refName: ref.name,
+          statLabel: `${ctx.league.metrics.whistleShort} delta vs average`,
+          statValue: formatSigned(wd),
+        };
+      },
+    },
   ];
 }
 
@@ -314,6 +389,70 @@ export function buildRankingsSynthesis(
 
     usedSlugs.add(ref.slug);
     insights.push(slot.build(ref, ctx));
+  }
+
+  if (insights.length < maxCards) {
+    const backfillCandidates = [
+      ...ctx.qualified,
+    ].sort((a, b) => b.games - a.games);
+    for (const ref of backfillCandidates) {
+      if (insights.length >= maxCards) break;
+      if (usedSlugs.has(ref.slug)) continue;
+      if (isAlreadyFeatured(ref, usedSlugs, ctx.excludeOfficialKeys)) continue;
+
+      let insight: RankingsInsight | null = null;
+      if (Math.abs(ref.totalPointsDelta) >= 0.15) {
+        insight = {
+          id: "scoring-depth",
+          title: scoringPaceRankTitle(ref.totalPointsDelta),
+          body: thirdPersonScoringPaceBody(ref.totalPointsDelta, ctx.unit),
+          refSlug: ref.slug,
+          refName: ref.name,
+          statLabel: "Scoring delta vs average",
+          statValue: formatScoringDeltaStat(ref.totalPointsDelta, ctx.league),
+        };
+      } else if (
+        ref.overRate >= 0.52 ||
+        ref.overRate <= 0.48
+      ) {
+        insight = {
+          id: "over-depth",
+          title:
+            ref.overRate >= 0.5
+              ? "Elevated over-rate vs baseline"
+              : "Lower over-rate vs baseline",
+          body: `Line benchmark is ${ctx.baseline} combined ${ctx.unit}; this official clears it ${formatPct(ref.overRate)} of the time in the sample.`,
+          refSlug: ref.slug,
+          refName: ref.name,
+          statLabel: "Over rate",
+          statValue: `${(ref.overRate * 100).toFixed(1)}%`,
+        };
+      } else if (Math.abs(whistleDelta(ref, ctx.league)) >= 1) {
+        const wd = whistleDelta(ref, ctx.league);
+        insight = {
+          id: "whistle-depth",
+          title: whistlePaceRankTitle(wd, ctx.league.metrics.whistleShort),
+          body: thirdPersonWhistlePaceBody(wd, ctx.league.metrics.whistlePlain),
+          refSlug: ref.slug,
+          refName: ref.name,
+          statLabel: `${ctx.league.metrics.whistleShort} delta vs average`,
+          statValue: formatSigned(wd),
+        };
+      } else {
+        insight = {
+          id: "sample-depth",
+          title: "Deep sample official",
+          body: `${ref.games} games in this scope - one of the larger officiating samples on the board.`,
+          refSlug: ref.slug,
+          refName: ref.name,
+          statLabel: "Games",
+          statValue: String(ref.games),
+        };
+      }
+
+      usedSlugs.add(ref.slug);
+      insights.push(insight);
+    }
   }
 
   const leagueSummary =

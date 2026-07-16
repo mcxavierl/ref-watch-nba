@@ -143,5 +143,16 @@ export function pickFeaturedFindings(
     }
   }
 
+  if (picked.length < limit) {
+    const pickedIds = new Set(picked.map((finding) => finding.id));
+    for (const item of eligible) {
+      if (pickedIds.has(item.id)) continue;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- strip scoring fields
+      const { score, sampleGames, ...finding } = item;
+      picked.push(finding);
+      if (picked.length >= limit) break;
+    }
+  }
+
   return picked;
 }
