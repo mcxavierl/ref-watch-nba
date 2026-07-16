@@ -53,7 +53,7 @@ export function RefDashboardStatCell({
         )}
       </div>
       <dd
-        className={`ref-stat-value tabular-nums ${provenanceValueClass(provenance) ?? ""}`.trim()}
+        className={`ref-stat-value font-medium tabular-nums ${provenanceValueClass(provenance) ?? ""}`.trim()}
       >
         {hidden ? "-" : value}
       </dd>

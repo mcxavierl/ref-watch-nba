@@ -87,7 +87,7 @@ export function SuperBowlOfficiatingSection({
                       {game.winnerScore}–{game.loserScore}
                       {game.overtime ? " (OT)" : ""}
                     </td>
-                    <td className="font-mono tabular-nums">
+                    <td className="font-tabular tabular-nums">
                       {game.totalPenalties ?? EMPTY_DISPLAY}
                     </td>
                     <td>

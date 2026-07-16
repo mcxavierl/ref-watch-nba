@@ -41,10 +41,10 @@ export function CloseGameSection({
   return (
     <section id="close-game" className={sectionClass}>
       <div className={embedded ? "mb-3" : "mb-4"}>
-        <h2 className={embedded ? "text-sm font-semibold text-zinc-800" : "section-title"}>
+        <h2 className={embedded ? "font-semibold tracking-tight" : "section-title"}>
           {sectionTitle}
         </h2>
-        <p className={embedded ? "mt-1 text-xs text-zinc-500" : "section-lead"}>
+        <p className={embedded ? "mt-1 text-xs font-normal text-slate-400" : "section-lead"}>
           How {subjectLabel} compares in competitive late-game windows vs full
           games.{" "}
           <TermHelp id="close-game-proxy">
@@ -56,11 +56,11 @@ export function CloseGameSection({
 
       <div className="space-y-6">
         {metrics.map((m) => (
-          <div key={m.window.id} className="data-card">
+          <div key={m.window.id} className="ref-profile-section">
             <div className="ref-table-section-header">
-              <h3 className="text-sm font-semibold text-zinc-900">{m.window.label}</h3>
-              <p className="mt-1 text-sm text-zinc-600">{m.window.description}</p>
-              <p className="mt-1 text-xs text-zinc-500">{m.coverageNote}</p>
+              <h3 className="font-semibold tracking-tight">{m.window.label}</h3>
+              <p className="mt-1 text-sm font-normal text-slate-400">{m.window.description}</p>
+              <p className="mt-1 text-xs font-normal text-slate-400">{m.coverageNote}</p>
             </div>
 
             {m.honestyBanner && (
@@ -93,14 +93,14 @@ export function CloseGameSection({
                       {m.compareRows.map((row) => (
                         <tr key={row.label}>
                           <td className="text-sm text-zinc-700">{row.label}</td>
-                          <td className="font-mono text-sm tabular-nums text-zinc-900">
+                          <td className="font-tabular text-sm tabular-nums text-zinc-900">
                             {row.windowValue}
                           </td>
-                          <td className="font-mono text-sm tabular-nums text-zinc-600">
+                          <td className="font-tabular text-sm tabular-nums text-zinc-600">
                             {row.fullGameValue}
                           </td>
                           <td
-                            className={`font-mono text-sm tabular-nums text-zinc-800 ${deltaClassName(row.delta)}`.trim()}
+                            className={`font-tabular text-sm tabular-nums text-zinc-800 ${deltaClassName(row.delta)}`.trim()}
                           >
                             {row.delta}
                           </td>

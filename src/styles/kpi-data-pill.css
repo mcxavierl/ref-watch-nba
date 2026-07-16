@@ -131,7 +131,7 @@ html[data-contrast="high"] .kpi-data-pill--block.kpi-data-pill--neutral {
   display: inline-flex;
   align-items: baseline;
   gap: 0.28rem;
-  font-family: var(--font-data, ui-monospace, monospace);
+  font-family: var(--font-data);
   font-variant-numeric: tabular-nums;
   font-weight: 800;
   letter-spacing: -0.02em;

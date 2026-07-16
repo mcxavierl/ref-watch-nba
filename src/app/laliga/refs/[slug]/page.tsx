@@ -132,7 +132,7 @@ export default async function EplRefProfilePage({
         numberSlot={
           <RefJerseyNumber
             number={profile.number}
-            className="font-mono text-sm text-zinc-500"
+            className="font-tabular text-sm text-muted"
           />
         }
         sampleGateMessage={

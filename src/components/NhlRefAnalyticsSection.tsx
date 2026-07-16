@@ -29,22 +29,22 @@ export function NhlRefAnalyticsSection({
   const prov = analytics.provenance;
 
   return (
-    <section className="data-card">
+    <section className="ref-profile-section">
       <div className="ref-table-section-header">
-        <h2 className="text-sm font-semibold text-zinc-800">
+        <h2 className="font-semibold tracking-tight">
           <TermHelp id="nhl-ref-analytics">Whistle analytics</TermHelp>
         </h2>
-        <p className="mt-1 text-sm text-zinc-600">
+        <p className="mt-1 text-sm font-normal text-slate-400">
           Referee-only sample; linesmen excluded from minor and balance metrics.
         </p>
       </div>
       {!showMetrics ? (
-        <p className="px-4 py-6 text-sm text-zinc-600 sm:px-5">
+        <p className="ref-table-section-body text-sm font-normal text-slate-400">
           Whistle analytics appear after this official clears the sample gate.
         </p>
       ) : (
         <>
-          <div className="px-4 py-4 sm:px-5">
+          <div className="ref-table-section-body">
             <RefDashboardStatGrid>
               <RefDashboardStatCell
                 label={<TermHelp id="minors-per-game">Minors per game</TermHelp>}

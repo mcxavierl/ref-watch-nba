@@ -41,7 +41,7 @@ function CompareRefHeader({ bundle }: { bundle: CompareRefBundle }) {
           <span className="ref-compare-league-badge">{bundle.config.shortLabel}</span>
           <RefJerseyNumber
             number={bundle.profile.number}
-            className="font-mono text-sm text-zinc-500"
+            className="font-tabular text-sm text-zinc-500"
           />
           <span className="text-zinc-500">· {bundle.scopeLabel}</span>
         </p>
@@ -90,7 +90,7 @@ function CompareGhostTable({
   const rightName = right?.profile.name ?? "Official B";
 
   return (
-    <div className="ref-compare-view ref-compare-view--ghost data-card overflow-hidden p-0">
+    <div className="ref-compare-view ref-compare-view--ghost ref-profile-section overflow-hidden p-0">
       {(left || right) && (
         <div className="ref-compare-columns">
           {left ? <CompareRefHeader bundle={left} /> : <div aria-hidden />}
@@ -174,7 +174,7 @@ export function RefCompareView({
   const rows = buildCompareMetricRows(left, right);
 
   return (
-    <div className="ref-compare-view data-card overflow-hidden p-0">
+    <div className="ref-compare-view ref-profile-section overflow-hidden p-0">
       <div className="ref-compare-columns">
         <CompareRefHeader bundle={left} />
         <CompareRefHeader bundle={right} />

@@ -46,28 +46,28 @@ export function RefGsniSection({
   const sampleDetail = `${metrics.highLeverageMinutes.toFixed(1)} high-leverage min · ${formatSampleSizeLabel(metrics.sampleGames)}`;
 
   return (
-    <section className="data-card">
+    <section className="ref-profile-section">
       <div className="ref-table-section-header flex min-w-0 flex-wrap items-start justify-between gap-x-3 gap-y-2 sm:items-center">
-        <h2 className="min-w-0 text-sm font-semibold leading-snug text-zinc-800">
+        <h2 className="min-w-0 font-semibold tracking-tight leading-snug">
           <TermHelp id="gsni">Game-State Neutralization</TermHelp>
         </h2>
         <GsniSamplePill minutes={metrics.highLeverageMinutes} />
       </div>
 
       {!showMetrics ? (
-        <p className="px-4 py-6 text-sm text-zinc-600">Sample gate not cleared.</p>
+        <p className="ref-table-section-body text-sm font-normal text-slate-400">Sample gate not cleared.</p>
       ) : metrics.honestyBanner ? (
-        <div className="px-4 py-5 sm:px-5">
-          <p className="text-sm leading-relaxed text-zinc-600">{metrics.honestyBanner}</p>
-          <p className="mt-2 text-xs text-zinc-500 tabular-nums">{sampleDetail}</p>
-          <p className="mt-2 text-xs text-zinc-500">
+        <div className="ref-table-section-body">
+          <p className="text-sm font-normal leading-relaxed text-slate-400">{metrics.honestyBanner}</p>
+          <p className="mt-2 text-xs font-normal text-slate-400 tabular-nums">{sampleDetail}</p>
+          <p className="mt-2 text-xs font-normal text-slate-400">
             50 is league-neutral in matched clutch states. Higher means fewer whistles than
             league peers; lower means more.
           </p>
         </div>
       ) : (
-        <div className="px-4 py-4 sm:px-5">
-          <p className="mb-4 text-xs leading-relaxed text-zinc-500">
+        <div className="ref-table-section-body">
+          <p className="mb-4 text-xs font-normal leading-relaxed text-slate-400">
             How {refName} whistles in clutch game states (score gap and clock) vs league
             baselines in the same states. {GSNI_MIN_HIGH_LEVERAGE_MINUTES}+ high-leverage
             minutes required.

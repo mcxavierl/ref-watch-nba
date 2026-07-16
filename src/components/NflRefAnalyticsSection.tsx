@@ -10,24 +10,31 @@ export function NflRefAnalyticsSection({ analytics, leagueAvgFouls, leagueAvgPen
   const ly = leagueAvgPenaltyYards ?? 95;
   const prov = analytics.provenance;
   return (
-    <section className="data-card">
-      <div className="ref-table-section-header"><h2 className="text-sm font-semibold text-zinc-800"><TermHelp id="nfl-ref-analytics">Whistle analytics</TermHelp></h2></div>
-      {!showMetrics ? <p className="px-4 py-6 text-sm text-zinc-600">Sample gate not cleared.</p> : (
-        <div className="px-4 py-4 sm:px-5">
+    <section className="ref-profile-section">
+      <div className="ref-table-section-header">
+        <h2 className="font-semibold tracking-tight">
+          <TermHelp id="nfl-ref-analytics">Whistle analytics</TermHelp>
+        </h2>
+      </div>
+      {!showMetrics ? (
+        <p className="ref-table-section-body text-sm font-normal text-slate-400">Sample gate not cleared.</p>
+      ) : (
+        <div className="ref-table-section-body">
           <RefereeWhistleMetricToggle analytics={analytics} className="mb-4" />
           <RefDashboardStatGrid>
-          <RefDashboardStatCell label="Flags per game" value={String(analytics.avgFlagsPerGame)} detail={`${formatSigned(analytics.flagsDelta)} vs ${lf} avg`} provenance={prov?.avgFlagsPerGame} />
-          <RefDashboardStatCell label="Penalty yards" value={String(analytics.avgPenaltyYardsPerGame)} detail={`${formatSigned(analytics.penaltyYardsDelta)} vs ${ly} avg`} provenance={prov?.penaltyYards} />
-          <RefDashboardStatCell label="Flag imbalance" value={String(analytics.avgFlagImbalance)} detail="Avg |home − away| flags" provenance={prov?.penaltyBalance} />
-          <RefDashboardStatCell label="Balance profile" value={analytics.balanceKind} detail={`${formatPct(analytics.balancedGameRate)} within 1 flag`} provenance={prov?.penaltyBalance} />
-          {analytics.avgHighLeverageImpactPerGame !== undefined ? (
-            <RefDashboardStatCell
-              label="High-leverage impact"
-              value={String(analytics.avgHighLeverageImpactPerGame)}
-              detail={`${formatSigned(analytics.highLeverageImpactDelta ?? 0)} vs 8.2 league avg`}
-            />
-          ) : null}
-        </RefDashboardStatGrid></div>
+            <RefDashboardStatCell label="Flags per game" value={String(analytics.avgFlagsPerGame)} detail={`${formatSigned(analytics.flagsDelta)} vs ${lf} avg`} provenance={prov?.avgFlagsPerGame} />
+            <RefDashboardStatCell label="Penalty yards" value={String(analytics.avgPenaltyYardsPerGame)} detail={`${formatSigned(analytics.penaltyYardsDelta)} vs ${ly} avg`} provenance={prov?.penaltyYards} />
+            <RefDashboardStatCell label="Flag imbalance" value={String(analytics.avgFlagImbalance)} detail="Avg |home − away| flags" provenance={prov?.penaltyBalance} />
+            <RefDashboardStatCell label="Balance profile" value={analytics.balanceKind} detail={`${formatPct(analytics.balancedGameRate)} within 1 flag`} provenance={prov?.penaltyBalance} />
+            {analytics.avgHighLeverageImpactPerGame !== undefined ? (
+              <RefDashboardStatCell
+                label="High-leverage impact"
+                value={String(analytics.avgHighLeverageImpactPerGame)}
+                detail={`${formatSigned(analytics.highLeverageImpactDelta ?? 0)} vs 8.2 league avg`}
+              />
+            ) : null}
+          </RefDashboardStatGrid>
+        </div>
       )}
     </section>
   );

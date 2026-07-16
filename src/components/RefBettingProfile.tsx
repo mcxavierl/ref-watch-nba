@@ -72,8 +72,8 @@ export function RefBettingProfile({
 
   if (!showMetrics) {
     return (
-      <section className="data-card px-4 py-6 sm:px-5">
-        <p className="text-sm text-zinc-600">
+      <section className="ref-profile-section px-6 py-6">
+        <p className="text-sm font-normal text-slate-400">
           Not enough games for reliable metrics yet ({profile.games} logged).
           Betting splits and closing-line context appear after the sample gate clears.
         </p>
@@ -83,15 +83,15 @@ export function RefBettingProfile({
 
   return (
     <>
-      <section className="data-card">
+      <section className="ref-profile-section">
         <div className="ref-table-section-header">
-          <h2 className="text-sm font-semibold text-zinc-800">Historical tendency</h2>
-          <p className="mt-1 text-sm text-primary-muted">
+          <h2 className="font-semibold tracking-tight">Historical tendency</h2>
+          <p className="mt-1 text-sm font-normal text-slate-400">
             Scoring and foul rates from verified game logs. Over rate uses a fixed
             benchmark proxy, not live sportsbook lines.
           </p>
         </div>
-        <div className="px-4 py-4 sm:px-5">
+        <div className="ref-table-section-body">
           <RefDashboardStatGrid>
             <RefDashboardStatCell label="Games" value={String(profile.games)} />
             <WlpStatCell
@@ -142,10 +142,10 @@ export function RefBettingProfile({
         </div>
       </section>
 
-      <section className="data-card">
+      <section className="ref-profile-section">
         <div className="ref-table-section-header">
           <TermHeading id="over-under" />
-          <p className="mt-1 text-sm text-primary-muted">
+          <p className="mt-1 text-sm font-normal text-slate-400">
             Sportsbook closing totals where matched. Estimated lines elsewhere.
           </p>
         </div>
@@ -165,10 +165,10 @@ export function RefBettingProfile({
             <tbody>
               <tr>
                 <td className="text-sm font-medium text-zinc-800">Overall</td>
-                <td className="font-mono tabular-nums text-zinc-800">
+                <td className="font-tabular tabular-nums text-zinc-800">
                   {formatWlp(ou.overall.wins, ou.overall.losses, ou.overall.pushes)}
                 </td>
-                <td className="font-mono tabular-nums text-zinc-600">
+                <td className="font-tabular tabular-nums text-zinc-600">
                   {formatPctFromWlp(
                     ou.overall.wins,
                     ou.overall.losses,
@@ -182,7 +182,7 @@ export function RefBettingProfile({
                 return (
                   <tr key={bucket.label}>
                     <td className="text-sm text-zinc-800">{bucket.label}</td>
-                    <td className="font-mono tabular-nums text-zinc-800">
+                    <td className="font-tabular tabular-nums text-zinc-800">
                       {belowGate
                         ? "-"
                         : formatWlp(
@@ -191,7 +191,7 @@ export function RefBettingProfile({
                             bucket.record.pushes,
                           )}
                     </td>
-                    <td className="font-mono tabular-nums text-zinc-600">
+                    <td className="font-tabular tabular-nums text-zinc-600">
                       {belowGate
                         ? "-"
                         : formatPctFromWlp(
@@ -208,14 +208,14 @@ export function RefBettingProfile({
         </div>
       </section>
 
-      <section className="data-card">
+      <section className="ref-profile-section">
         <div className="ref-table-section-header">
-          <h2 className="flex flex-wrap items-center gap-2 text-sm font-semibold text-zinc-800">
+          <h2 className="flex flex-wrap items-center gap-2 font-semibold tracking-tight">
             <TermHelp id="ats-split">
               Spread: home favorite / underdog
             </TermHelp>
           </h2>
-          <p className="mt-1 text-sm text-primary-muted">
+          <p className="mt-1 text-sm font-normal text-slate-400">
             ATS splits from per-game closing spreads. Historical sportsbook data only.
           </p>
         </div>
@@ -239,7 +239,7 @@ export function RefBettingProfile({
                 return (
                   <tr key={bucket.label}>
                     <td className="text-sm text-zinc-800">{bucket.label}</td>
-                    <td className="font-mono tabular-nums text-zinc-800">
+                    <td className="font-tabular tabular-nums text-zinc-800">
                       {favGames < bucketGate
                         ? "-"
                         : formatWlp(
@@ -248,7 +248,7 @@ export function RefBettingProfile({
                             bucket.homeFavorite.pushes,
                           )}
                     </td>
-                    <td className="font-mono tabular-nums text-zinc-800">
+                    <td className="font-tabular tabular-nums text-zinc-800">
                       {dogGames < bucketGate
                         ? "-"
                         : formatWlp(

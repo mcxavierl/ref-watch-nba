@@ -99,7 +99,7 @@ export function DynamicInsightPill({
         {current.badgeText}
       </span>
       <span
-        className={`shrink-0 font-mono text-[0.78rem] font-semibold tabular-nums ${tone.metric}`}
+        className={`shrink-0 font-tabular text-[0.78rem] font-medium tabular-nums ${tone.metric}`}
       >
         {current.metric}
       </span>

@@ -37,13 +37,13 @@ export function RefWhistleFatigueSection({
   if (!showMetrics) return null;
 
   return (
-    <section className="data-card">
+    <section className="ref-profile-section">
       <div className="ref-table-section-header flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm font-semibold text-zinc-800">
+          <h2 className="font-semibold tracking-tight">
             Late-Game Whistle Drift
           </h2>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm font-normal text-slate-400">
             Second-half melt tracking: how this official&apos;s{" "}
             {profile.metricLabel} volume shifts from early periods to late-game
             windows.
@@ -60,7 +60,7 @@ export function RefWhistleFatigueSection({
       </div>
 
       {expanded && (
-        <div className="px-4 py-4 sm:px-5">
+        <div className="ref-table-section-body">
           <p className="text-sm font-medium text-zinc-800">{profile.driftHeadline}</p>
 
           <RefDashboardStatGrid>
@@ -90,7 +90,7 @@ export function RefWhistleFatigueSection({
             <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
               Period whistle sparkline
             </p>
-            <p className="mt-1 font-mono text-xs text-zinc-700">
+            <p className="mt-1 font-tabular text-xs text-zinc-700">
               {sparkline(profile.periodAverages, profile.periodLabels)}
             </p>
           </div>
