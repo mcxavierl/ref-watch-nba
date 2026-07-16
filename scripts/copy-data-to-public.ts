@@ -438,7 +438,24 @@ function copyInsightsToPublic(root: string): void {
   console.log(`Copied ${source} → ${dest}`);
 }
 
+function copyDrilldownShardsToPublic(root: string): void {
+  const sourceDir = path.join(root, "data", "overview", "drilldown");
+  const destDir = path.join(root, "public", "data", "overview", "drilldown");
+  if (!fs.existsSync(sourceDir)) return;
+  fs.mkdirSync(destDir, { recursive: true });
+  let copied = 0;
+  for (const name of fs.readdirSync(sourceDir)) {
+    if (!name.endsWith(".json")) continue;
+    fs.copyFileSync(path.join(sourceDir, name), path.join(destDir, name));
+    copied += 1;
+  }
+  if (copied > 0) {
+    console.log(`Copied ${copied} overview drill-down shard(s) → ${destDir}`);
+  }
+}
+
 writeLiveHeaderLeagues();
 writeNcaaLiveLeagues();
 writeLeagueHeroStats(root);
 copyInsightsToPublic(root);
+copyDrilldownShardsToPublic(root);
