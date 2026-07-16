@@ -470,12 +470,16 @@ html.dark .dashboard-insight-card:hover {
   flex-direction: column;
   gap: 0.65rem;
   margin-top: 0.65rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .ref-master-insight-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .ref-master-insight-pill {
@@ -512,22 +516,35 @@ html.dark .dashboard-insight-card:hover {
 }
 
 .ref-master-insight-pill--high {
-  --pill-glow-accent: var(--accent-brand);
-  border-color: color-mix(in srgb, var(--accent-brand) 35%, var(--border-subtle));
-  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  border-color: color-mix(in srgb, var(--pill-glow) 44%, var(--pill-border));
+  color: color-mix(in srgb, var(--pill-glow-accent) 78%, var(--text-secondary));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--pill-glow) 18%, transparent),
+    0 0 16px color-mix(in srgb, var(--pill-glow) 24%, transparent);
 }
 
 .ref-master-insight-pill--moderate {
-  border-color: var(--border-default);
+  border-color: color-mix(in srgb, var(--pill-glow) 30%, var(--pill-border));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--pill-glow) 10%, transparent),
+    0 0 10px color-mix(in srgb, var(--pill-glow) 12%, transparent);
 }
 
 .ref-master-insight-pill--active,
 .ref-master-insight-pill:not(.ref-master-insight-pill--static):hover {
   --pill-glow-accent: var(--accent-brand);
-  border-color: var(--accent-brand);
+  border-color: color-mix(in srgb, var(--accent-brand) 55%, var(--pill-border));
   color: var(--text-primary);
-  background: color-mix(in srgb, var(--accent-brand) 10%, var(--bg-surface-2));
-  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      color-mix(in srgb, var(--accent-brand) 14%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--accent-brand) 10%, var(--bg-surface-2));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-brand) 22%, transparent),
+    0 0 18px color-mix(in srgb, var(--pill-glow) 28%, transparent);
 }
 
 .ref-master-insight-panel {
@@ -613,14 +630,41 @@ html.dark .dashboard-insight-card:hover {
 
 .whistle-disposition-dual {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 0.5rem;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
   align-items: stretch;
   margin-top: 0.65rem;
+  min-width: 0;
+}
+
+@media (min-width: 560px) {
+  .whistle-disposition-dual {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0.5rem;
+  }
 }
 
 .whistle-disposition-dual--profile {
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1.1fr);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 560px) {
+  .whistle-disposition-dual--profile {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+}
+
+.whistle-disposition-divider {
+  display: none;
+  width: 1px;
+  background: var(--border-subtle);
+  margin: 0.15rem 0;
+}
+
+@media (min-width: 560px) {
+  .whistle-disposition-divider {
+    display: block;
+  }
 }
 
 .ref-whistle-disposition-strip {
@@ -666,11 +710,6 @@ html.dark .dashboard-insight-card:hover {
   vertical-align: middle;
 }
 
-.whistle-disposition-divider {
-  width: 1px;
-  background: var(--border-subtle);
-  margin: 0.15rem 0;
-}
 
 .whistle-disposition-metric {
   display: flex;
@@ -685,6 +724,8 @@ html.dark .dashboard-insight-card:hover {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-muted);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .whistle-disposition-metric-value {
@@ -697,6 +738,8 @@ html.dark .dashboard-insight-card:hover {
 .whistle-disposition-metric-delta {
   font-size: 0.72rem;
   color: var(--text-secondary);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .whistle-disposition-metric--subjective .whistle-disposition-metric-value {

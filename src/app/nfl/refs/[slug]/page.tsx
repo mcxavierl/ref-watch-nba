@@ -142,7 +142,7 @@ export default async function NflRefProfilePage({
         }
       >
         <RefProfileMetadataBar
-          seasons={stats.meta.seasons}
+          seasons={profile.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           seeded={isNflSimulatedData(stats.meta.source)}
@@ -157,6 +157,7 @@ export default async function NflRefProfilePage({
             <RefBettingProfile
               profile={profile}
               stats={profile.bettingStats}
+              leagueId="nfl"
               showMetrics={qualified}
             />
           ) : (

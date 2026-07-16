@@ -78,7 +78,7 @@ export function RefereeMasterCard({
           </div>
           <DynamicInsightPillRow insights={insights} />
           {(whistleIndex !== null || gameStateIndex !== null) ? (
-            <div className="mt-3 flex w-full min-w-0 max-w-md flex-wrap gap-3">
+            <div className="ref-profile-gauge-row">
               {whistleIndex !== null ? (
                 <WhistleIndexGauge index={whistleIndex} size="sm" className="min-w-[9.5rem] flex-1" />
               ) : null}

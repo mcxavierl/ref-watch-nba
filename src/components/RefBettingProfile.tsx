@@ -1,17 +1,14 @@
-import type { MetricProvenance, RefBettingStats, RefProfile } from "@/lib/types";
-import { formatPct } from "@/lib/data";
-import { formatSigned } from "@/lib/stats-utils";
+import type { RefBettingStats, RefProfile } from "@/lib/types";
 import { formatPctFromWlp, formatWlp } from "@/lib/ref-betting";
+import { buildRefTeamPerformanceTrends } from "@/lib/ref-team-performance-trends";
+import type { LeagueId } from "@/lib/leagues";
 import { TermHeading, TermHelp } from "@/components/TermHelp";
 import {
-  RefDashboardStatCell,
-  RefDashboardStatGrid,
-} from "@/components/RefDashboardStatGrid";
-
-/**
- * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
- * and sample-gate provenance metadata.
- */
+  RefProfileQuickStatsBar,
+  RefProfileSecondaryStats,
+} from "@/components/ref-profile/RefProfileQuickStatsBar";
+import { RefProfileTrendCards } from "@/components/ref-profile/RefProfileTrendCards";
+import { RefProfileTeamTrends } from "@/components/ref-profile/RefProfileTeamTrends";
 
 function bucketGames(record: {
   wins: number;
@@ -21,54 +18,20 @@ function bucketGames(record: {
   return record.wins + record.losses + record.pushes;
 }
 
-function WlpStatCell({
-  label,
-  termId,
-  record,
-  provenance,
-  belowGate,
-}: {
-  label: string;
-  termId?: "ats" | "home-team-wl" | "hit-rate";
-  record: { wins: number; losses: number; pushes: number };
-  provenance?: MetricProvenance;
-  belowGate?: boolean;
-}) {
-  const games = bucketGames(record);
-  const hidden = belowGate || games === 0;
-
-  return (
-    <RefDashboardStatCell
-      label={
-        termId ? (
-          <TermHelp id={termId}>{label}</TermHelp>
-        ) : (
-          label
-        )
-      }
-      value={hidden ? "-" : formatWlp(record.wins, record.losses, record.pushes)}
-      detail={
-        hidden
-          ? undefined
-          : formatPctFromWlp(record.wins, record.losses, record.pushes)
-      }
-      provenance={provenance}
-    />
-  );
-}
-
 export function RefBettingProfile({
   profile,
   stats,
+  leagueId,
   showMetrics = true,
 }: {
   profile: RefProfile;
   stats: RefBettingStats;
+  leagueId: LeagueId;
   showMetrics?: boolean;
 }) {
   const ou = stats.overUnder;
-  const prov = stats.provenance;
-  const bucketGate = prov?.bucketGateThreshold ?? 5;
+  const bucketGate = stats.provenance?.bucketGateThreshold ?? 5;
+  const teamTrends = buildRefTeamPerformanceTrends(profile);
 
   if (!showMetrics) {
     return (
@@ -82,74 +45,21 @@ export function RefBettingProfile({
   }
 
   return (
-    <>
-      <section className="ref-profile-section">
-        <div className="ref-table-section-header">
-          <h2 className="font-semibold tracking-tight">Historical tendency</h2>
-          <p className="mt-1 text-sm font-normal text-slate-400">
-            Scoring and foul rates from verified game logs. Over rate uses a fixed
-            benchmark proxy, not live sportsbook lines.
-          </p>
-        </div>
-        <div className="ref-table-section-body">
-          <RefDashboardStatGrid>
-            <RefDashboardStatCell label="Games" value={String(profile.games)} />
-            <WlpStatCell
-              label="Home team W/L"
-              termId="home-team-wl"
-              record={stats.homeTeamRecord}
-            />
-            <WlpStatCell
-              label="Home team ATS"
-              termId="ats"
-              record={stats.homeTeamAts}
-              provenance={prov?.homeTeamAts}
-            />
-            <RefDashboardStatCell
-              label="Avg home score"
-              value={String(stats.avgHomeScore)}
-            />
-            <RefDashboardStatCell
-              label="Avg road score"
-              value={String(stats.avgRoadScore)}
-            />
-            <RefDashboardStatCell
-              label={<TermHelp id="home-margin">Home avg margin</TermHelp>}
-              value={String(stats.avgHomeMargin)}
-            />
-            <RefDashboardStatCell
-              label="Avg total score"
-              value={String(profile.avgTotalPoints)}
-              detail={`${formatSigned(profile.totalPointsDelta)} vs league`}
-              detailMuted
-              provenance={profile.provenance?.avgTotalPoints}
-            />
-            <RefDashboardStatCell
-              label="Fouls per game"
-              value={String(profile.avgFouls)}
-              detail={`${formatSigned(profile.foulsDelta)} vs league`}
-              detailMuted
-              provenance={profile.provenance?.avgFouls}
-            />
-            <RefDashboardStatCell
-              label={<TermHelp id="over-225">Over rate (225 proxy)</TermHelp>}
-              value={formatPct(profile.overRate)}
-              detail="Historical tendency, not sportsbook O/U"
-              detailMuted
-              provenance={profile.provenance?.overRate}
-            />
-          </RefDashboardStatGrid>
-        </div>
-      </section>
+    <div className="ref-profile-betting-dashboard">
+      <RefProfileQuickStatsBar profile={profile} stats={stats} />
+      <RefProfileTrendCards stats={stats} />
+      <RefProfileSecondaryStats profile={profile} />
+      <RefProfileTeamTrends
+        best={teamTrends.best}
+        worst={teamTrends.worst}
+        leagueId={leagueId}
+      />
 
       <section className="ref-profile-section">
         <div className="ref-table-section-header">
-          <TermHeading id="over-under" />
-          <p className="mt-1 text-sm font-normal text-slate-400">
-            Sportsbook closing totals where matched. Estimated lines elsewhere.
-          </p>
+          <TermHeading id="over-under" as="h2" className="font-semibold tracking-tight" />
         </div>
-        <div className="overflow-x-auto">
+        <div className="ref-table-section-body overflow-x-auto">
           <table className="ref-data-table data-table min-w-[28rem] w-full">
             <thead>
               <tr className="data-table-head">
@@ -211,15 +121,10 @@ export function RefBettingProfile({
       <section className="ref-profile-section">
         <div className="ref-table-section-header">
           <h2 className="flex flex-wrap items-center gap-2 font-semibold tracking-tight">
-            <TermHelp id="ats-split">
-              Spread: home favorite / underdog
-            </TermHelp>
+            <TermHelp id="ats-split">Spread: home favorite / underdog</TermHelp>
           </h2>
-          <p className="mt-1 text-sm font-normal text-slate-400">
-            ATS splits from per-game closing spreads. Historical sportsbook data only.
-          </p>
         </div>
-        <div className="overflow-x-auto">
+        <div className="ref-table-section-body overflow-x-auto">
           <table className="ref-data-table data-table min-w-[28rem] w-full">
             <thead>
               <tr className="data-table-head">
@@ -264,6 +169,6 @@ export function RefBettingProfile({
           </table>
         </div>
       </section>
-    </>
+    </div>
   );
 }

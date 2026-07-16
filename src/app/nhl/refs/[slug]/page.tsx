@@ -131,7 +131,7 @@ export default async function NhlRefProfilePage({
         }
       >
         <RefProfileMetadataBar
-          seasons={stats.meta.seasons}
+          seasons={profile.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           leagueId="nhl"
@@ -145,6 +145,7 @@ export default async function NhlRefProfilePage({
             <RefBettingProfile
               profile={profile}
               stats={profile.bettingStats}
+              leagueId="nhl"
               showMetrics={qualified}
             />
           ) : (

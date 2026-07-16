@@ -143,7 +143,7 @@ export default async function EplRefProfilePage({
         }
       >
         <RefProfileMetadataBar
-          seasons={stats.meta.seasons}
+          seasons={profile.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           seeded={isEplSimulatedData(stats.meta.source)}
@@ -160,6 +160,7 @@ export default async function EplRefProfilePage({
             <RefBettingProfile
               profile={profile}
               stats={profile.bettingStats}
+              leagueId="epl"
               showMetrics={qualified}
             />
           ) : (
