@@ -13,10 +13,12 @@ import {
 import { findingMetricLabels } from "@/lib/finding-labels";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { ScoredFindingBase } from "@/lib/findings-shared";
-import { rankScore } from "@/lib/findings-shared";
+import { isActionableComparisonStat, rankScore } from "@/lib/findings-shared";
 import { isProVerifiedLiveLeague } from "@/lib/league-verification";
 import {
   MARQUEE_CI_MIN_GAMES,
+  MIN_MARQUEE_COMPARISON_GAMES,
+  passesMarqueeComparisonGate,
   scanLeagueMarqueeEfficiency,
 } from "@/lib/marquee-metrics";
 import {
@@ -780,7 +782,7 @@ export function buildMarqueeEfficiencyFinding(
   }
 
   const scan = scanLeagueMarqueeEfficiency(leagueId, stats.refs);
-  if (!scan) return null;
+  if (!scan || !passesMarqueeComparisonGate(scan.performance)) return null;
 
   const { performance, refName, deltaOverPp, deltaAtsPp, marqueeGames } = scan;
   const metricLabels = findingMetricLabels(ctx.league);
@@ -802,7 +804,7 @@ export function buildMarqueeEfficiencyFinding(
     {
       label: "Marquee over rate",
       value: formatPct(performance.marqueeOverRate),
-      detail: `${marqueeGames} marquee games`,
+      detail: `${marqueeGames} marquee games · vs ${formatPct(performance.baselineOverRate)} baseline`,
     },
     {
       label: "Baseline over rate",
@@ -814,7 +816,9 @@ export function buildMarqueeEfficiencyFinding(
       value: performance.marqueeAvgFouls.toFixed(1),
       detail: `${formatSigned(foulDelta)} vs ${performance.baselineAvgFouls.toFixed(1)} baseline`,
     },
-  ];
+  ].filter((stat) => isActionableComparisonStat(stat));
+
+  if (statsCells.length < 2) return null;
 
   if (
     performance.marqueeAtsCoverRate !== null &&

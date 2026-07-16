@@ -2281,6 +2281,74 @@ p {
     border-color: var(--pill-border);
   }
 
+  .finding-meta-pill--league[data-league="nba"] {
+    border-color: color-mix(in srgb, var(--raptors) 42%, var(--pill-border));
+    background: color-mix(in srgb, var(--raptors) 12%, var(--pill-bg));
+    color: color-mix(in srgb, var(--raptors) 88%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--league[data-league="nhl"] {
+    border-color: color-mix(in srgb, var(--nhl-blue) 42%, var(--pill-border));
+    background: color-mix(in srgb, var(--nhl-blue) 12%, var(--pill-bg));
+    color: color-mix(in srgb, var(--nhl-blue) 88%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--league[data-league="nfl"] {
+    border-color: color-mix(in srgb, var(--nfl-green) 42%, var(--pill-border));
+    background: color-mix(in srgb, var(--nfl-green) 12%, var(--pill-bg));
+    color: color-mix(in srgb, var(--nfl-green) 88%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--league[data-league="epl"] {
+    border-color: color-mix(in srgb, #8b6bb5 42%, var(--pill-border));
+    background: color-mix(in srgb, #8b6bb5 12%, var(--pill-bg));
+    color: color-mix(in srgb, #8b6bb5 92%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--league[data-league="laliga"] {
+    border-color: color-mix(in srgb, #c8102e 42%, var(--pill-border));
+    background: color-mix(in srgb, #c8102e 12%, var(--pill-bg));
+    color: color-mix(in srgb, #c8102e 92%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--league[data-league="cbb"] {
+    border-color: color-mix(in srgb, var(--cbb-gold) 42%, var(--pill-border));
+    background: color-mix(in srgb, var(--cbb-gold) 12%, var(--pill-bg));
+    color: color-mix(in srgb, var(--cbb-gold) 92%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--league[data-league="cfb"] {
+    border-color: color-mix(in srgb, var(--cfb-bronze) 42%, var(--pill-border));
+    background: color-mix(in srgb, var(--cfb-bronze) 12%, var(--pill-bg));
+    color: color-mix(in srgb, var(--cfb-bronze) 92%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--category[data-category="marquee-efficiency"] {
+    border-color: color-mix(in srgb, var(--header-gold) 42%, var(--pill-border));
+    background: color-mix(in srgb, var(--header-gold) 12%, var(--pill-bg));
+    color: color-mix(in srgb, var(--header-gold) 92%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--category[data-category="whistle-extreme"],
+  .finding-meta-pill--category[data-category="ref-outlier"] {
+    border-color: color-mix(in srgb, var(--metric-negative-ink) 35%, var(--pill-border));
+    background: color-mix(in srgb, var(--metric-negative-ink) 10%, var(--pill-bg));
+    color: color-mix(in srgb, var(--metric-negative-ink) 88%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--category[data-category="ou-edge"],
+  .finding-meta-pill--category[data-category="ats-edge"] {
+    border-color: color-mix(in srgb, var(--metric-positive-ink) 35%, var(--pill-border));
+    background: color-mix(in srgb, var(--metric-positive-ink) 10%, var(--pill-bg));
+    color: color-mix(in srgb, var(--metric-positive-ink) 88%, var(--pill-ink));
+  }
+
+  .finding-meta-pill--category[data-category="league-trend"] {
+    border-color: color-mix(in srgb, var(--nhl-blue) 35%, var(--pill-border));
+    background: color-mix(in srgb, var(--nhl-blue) 10%, var(--pill-bg));
+    color: color-mix(in srgb, var(--nhl-blue) 88%, var(--pill-ink));
+  }
+
   .confidence-tier-badge {
     display: inline-flex;
     align-items: center;
@@ -8241,16 +8309,6 @@ p {
 
   .ref-matrix-delta--adjusted {
     font-style: italic;
-  }
-
-  .ref-matrix-delta-projection {
-    display: block;
-    margin-top: 0.1rem;
-    font-size: 0.58rem;
-    font-weight: 600;
-    font-style: italic;
-    color: var(--text-muted);
-    line-height: 1.1;
   }
 
   .ref-matrix-preliminary-badge {

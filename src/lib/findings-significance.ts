@@ -2,7 +2,9 @@ import type { Finding, FindingCategory, ScoredFindingBase } from "@/lib/findings
 import {
   CONFIDENCE_TIER_RANK,
   findingConfidenceTier,
+  parseSampleGamesFromStatDetail,
 } from "@/lib/findings-shared";
+import { MIN_MARQUEE_COMPARISON_GAMES } from "@/lib/marquee-metrics.constants";
 import type { ConfidenceTier } from "@/lib/user-language";
 
 const CONFIDENCE_PICK_ORDER: ConfidenceTier[] = ["Strong", "Moderate", "Thin"];
@@ -90,6 +92,25 @@ export function isPromotableFinding(finding: ScoredFindingBase): boolean {
     if (edgeStat) {
       const n = parseFloat(edgeStat.value.replace(/[^0-9.-]/g, ""));
       if (!Number.isNaN(n) && n / 100 < BETTING_EDGE_MIN_PTS) return false;
+    }
+  }
+
+  if (finding.category === "marquee-efficiency") {
+    const baselineGames = parseSampleGamesFromStatDetail(
+      finding.stats.find((stat) =>
+        stat.label.toLowerCase().includes("baseline"),
+      )?.detail,
+    );
+    const marqueeGames = parseSampleGamesFromStatDetail(
+      finding.stats.find((stat) =>
+        stat.label.toLowerCase().includes("marquee over"),
+      )?.detail,
+    );
+    if (
+      (baselineGames ?? 0) < MIN_MARQUEE_COMPARISON_GAMES ||
+      (marqueeGames ?? finding.sampleGames ?? 0) < MIN_MARQUEE_COMPARISON_GAMES
+    ) {
+      return false;
     }
   }
 

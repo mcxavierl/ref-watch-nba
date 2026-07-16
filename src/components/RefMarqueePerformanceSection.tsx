@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { RefMarqueePerformance } from "@/lib/marquee-metrics";
-import { MARQUEE_CI_MIN_GAMES } from "@/lib/marquee-metrics.constants";
+import { MARQUEE_CI_MIN_GAMES, passesMarqueeComparisonGate } from "@/lib/marquee-metrics";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import {
   RefDashboardStatCell,
@@ -25,7 +25,7 @@ export function RefMarqueePerformanceSection({
 }) {
   const [expanded, setExpanded] = useState(true);
 
-  if (!showMetrics || performance.marqueeGames === 0) {
+  if (!showMetrics || !passesMarqueeComparisonGate(performance)) {
     return null;
   }
 

@@ -84,10 +84,35 @@ export function isSampleOnlyStat(stat: FindingStat): boolean {
   return SAMPLE_STAT_LABEL.test(stat.label.trim());
 }
 
+/** Parse game count from stat detail lines like "8 marquee games" or "0 non-marquee games". */
+export function parseSampleGamesFromStatDetail(detail?: string): number | null {
+  if (!detail) return null;
+  const match = detail.match(
+    /(\d+)\s+(?:marquee games|non-marquee games|non-marquee baseline|games)\b/i,
+  );
+  return match ? parseInt(match[1]!, 10) : null;
+}
+
+/** Hide comparison stats when either arm has zero games (no actionable split). */
+export function isActionableComparisonStat(stat: FindingStat): boolean {
+  const games = parseSampleGamesFromStatDetail(stat.detail);
+  if (games === 0) return false;
+
+  const label = stat.label.trim().toLowerCase();
+  if (label.includes("baseline") && games === null) {
+    const zeroValue = /^0(?:\.0+)?%?$/.test(stat.value.trim());
+    if (zeroValue && stat.detail?.includes("0 non-marquee")) return false;
+  }
+
+  return true;
+}
+
 /** Drop sample-only cells so the metrics grid stays at two substantive columns. */
 export function filterDisplayStats(stats: FindingStat[]): FindingStat[] {
-  const filtered = stats.filter((stat) => !isSampleOnlyStat(stat));
-  return filtered.length > 0 ? filtered : stats;
+  const filtered = stats.filter(
+    (stat) => !isSampleOnlyStat(stat) && isActionableComparisonStat(stat),
+  );
+  return filtered.length > 0 ? filtered : stats.filter((stat) => !isSampleOnlyStat(stat));
 }
 
 export interface Finding {

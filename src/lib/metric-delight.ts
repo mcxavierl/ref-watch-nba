@@ -110,8 +110,15 @@ const LEAGUE_BASELINE_DETAIL =
 const LEAGUE_BASELINE_LABEL =
   /\b(whistle|scoring|foul|minor|flag|penalty|card|goal|pace|pim|yards?)\b/i;
 
+/** Marquee-vs-baseline split metrics may use semantic divergence colors. */
+export function isMarqueeComparisonStat(stat: FindingStat): boolean {
+  const label = stat.label.trim().toLowerCase();
+  return label.startsWith("marquee ") && !label.includes("baseline");
+}
+
 /** Comparative lines tied to league average — neutral by default (data honesty). */
 export function isLeagueBaselineComparisonStat(stat: FindingStat): boolean {
+  if (isMarqueeComparisonStat(stat)) return false;
   if (isContextualBenchmarkStat(stat)) return true;
 
   const detail = stat.detail ?? "";
@@ -129,6 +136,7 @@ export function isLeagueBaselineComparisonStat(stat: FindingStat): boolean {
 
 /** Only betting-market deltas may use semantic red/green on card surfaces. */
 export function allowsSemanticDeltaTone(stat: FindingStat): boolean {
+  if (isMarqueeComparisonStat(stat)) return true;
   if (isLeagueBaselineComparisonStat(stat)) return false;
   const label = stat.label.toLowerCase();
   return (
@@ -168,6 +176,22 @@ export function findingStatDelightTone(stat: FindingStat): MetricDelightTone {
 
   if (label.includes("games") && !stat.value.includes("%")) {
     return "neutral";
+  }
+
+  if (isMarqueeComparisonStat(stat)) {
+    const pct = parsePct(stat.value);
+    const baseline = parseBaselineFromDetail(stat.detail);
+    if (pct != null && baseline != null) {
+      if (pct >= baseline + RATE_SIGNIFICANT_PCT) return "positive";
+      if (pct <= baseline - RATE_SIGNIFICANT_PCT) return "negative";
+    }
+    const foulDelta = stat.detail?.match(/([+-]?\d+(?:\.\d+)?)\s+vs/i)?.[1];
+    if (foulDelta) {
+      const n = parseFloat(foulDelta);
+      if (Math.abs(n) >= DELTA_SIGNIFICANT_ABS) {
+        return n > 0 ? "positive" : "negative";
+      }
+    }
   }
 
   const pct = parsePct(stat.value) ?? parsePct(stat.detail ?? "");

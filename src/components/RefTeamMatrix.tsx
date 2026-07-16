@@ -244,9 +244,6 @@ function TeamRefRankListItem({
           }
         >
           {winDeltaShort}
-          {deltaDisplay.isAdjusted ? (
-            <span className="ref-matrix-delta-projection">Calculated projection</span>
-          ) : null}
         </span>
       </span>
       <span className="ref-matrix-team-panel-games ref-matrix-team-panel-games--primary">

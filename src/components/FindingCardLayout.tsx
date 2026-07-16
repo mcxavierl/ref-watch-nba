@@ -82,7 +82,8 @@ export function FindingMetaBadges({
       {resolvedLeague && (
         <AccordionSafeLink
           href={researchHubHref(resolvedLeague)}
-          className="finding-meta-pill finding-meta-pill-link"
+          className="finding-meta-pill finding-meta-pill-link finding-meta-pill--league"
+          data-league={resolvedLeague.toLowerCase()}
         >
           {resolvedLeague}
         </AccordionSafeLink>
@@ -97,7 +98,8 @@ export function FindingMetaBadges({
                 ? researchHubFilterHref(resolvedLeague, { filter: categoryFilter })
                 : detailHref ?? "#"
             }
-            className="finding-meta-pill finding-meta-pill-link"
+            className="finding-meta-pill finding-meta-pill-link finding-meta-pill--category"
+            data-category={item}
           >
             <FindingCategoryPillLabel category={item} />
           </AccordionSafeLink>
