@@ -28,7 +28,7 @@ export interface AssignmentGame {
 export interface AssignmentsFile {
   lastUpdated: string;
   date: string;
-  source: "official.nba.com" | "api-web.nhle.com" | "espn" | "seeded" | "historical";
+  source: "official.nba.com" | "api-web.nhle.com" | "nhl-api" | "espn" | "seeded" | "historical";
   games: AssignmentGame[];
   /** Human-readable status when crews are not published yet (e.g. NFL preseason week). */
   note?: string;

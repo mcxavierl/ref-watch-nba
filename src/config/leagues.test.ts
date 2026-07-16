@@ -70,6 +70,7 @@ test("isLeagueAnalyticsUnlocked keeps NCAA locked until conference data is live"
 test("isLeagueAnalyticsUnlocked keeps NCAA locked without live conference coverage", () => {
   const emptyStats = {
     refs: [],
+    teamSplits: {},
     meta: {
       source: "espn" as const,
       data_verified: true,
@@ -78,6 +79,8 @@ test("isLeagueAnalyticsUnlocked keeps NCAA locked without live conference covera
       totalGamesProcessed: 0,
       minSampleSize: 15,
       leagueOverBaseline: 0.5,
+      leagueAvgTotal: 0,
+      leagueAvgFouls: 0,
       lastUpdated: "2026-01-01",
       atsAvailable: false,
     },

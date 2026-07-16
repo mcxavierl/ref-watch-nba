@@ -46,9 +46,10 @@ describe("refStatsDataTag", () => {
 
   it("builds tooltip lines from profile core provenance", () => {
     const provenance = refProfileCoreProvenance(sampleProfile, hybridMeta);
+    assert.ok(provenance);
     const lines = buildProvenanceTooltipLines({
-      provenance: provenance.avgTotalPoints,
-      gate: provenance.sampleGate,
+      provenance: provenance!.avgTotalPoints,
+      gate: provenance!.sampleGate,
     });
 
     assert.ok(lines.some((line) => line.includes("games")));

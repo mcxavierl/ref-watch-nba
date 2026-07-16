@@ -63,6 +63,7 @@
     "build-nfl-pfr-ref-team-data": "tsx scripts/nfl/build-pfr-ref-team-data.ts",
     "generate-cbb-seed": "tsx scripts/cbb/generate-seed.ts",
     "build-cbb-data": "tsx scripts/cbb/build-ref-data.ts",
+    "rebuild-cbb-ref-stats": "tsx scripts/cbb/rebuild-from-logs.ts",
     "generate-cfb-seed": "tsx scripts/cfb/generate-seed.ts",
     "build-cfb-data": "tsx scripts/cfb/build-ref-data.ts",
     "cfb:pipeline": "tsx scripts/cfb/run-pipeline.ts",
