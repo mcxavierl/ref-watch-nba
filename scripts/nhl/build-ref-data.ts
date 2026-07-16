@@ -1,7 +1,12 @@
 #!/usr/bin/env npx tsx
 /**
- * Optional live NHL backfill: iterate recent regular-season dates,
- * fetch officials + scores + PIM, aggregate ref stats.
+ * NHL verified ingest: fetch officials, scores, and PIM from NHL API,
+ * aggregate ref-stats with DISTINCT game_id dedup, write season NDJSON shards.
+ *
+ * Usage:
+ *   npm run build-nhl-data          - live backfill from NHL API (resumable)
+ *   npm run rebuild-nhl-from-logs   - rebuild ref-stats from game-logs.json
+ *   npm run validate-nhl-ingest     - hard-fail validation gates
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -42,6 +47,13 @@ import {
   NHL_TEN_SEASONS,
   nhlSeasonApiId,
 } from "../lib/ten-season-policy";
+import {
+  formatValidationReport,
+  validateNhlGameLogs,
+} from "./lib/validate-ingest";
+
+const NHL_DATA_DIR = path.join(process.cwd(), "data", "nhl");
+const NHL_SHARD_DIR = path.join(NHL_DATA_DIR, "game-logs");
 
 /** Current 32-team roster keys used for teamSplits / routes. */
 const NHL_TEAM_ABBRS = [
@@ -989,6 +1001,56 @@ async function buildLiveStats(): Promise<RefStatsFile | null> {
   return buildStatsFromLogs(dedupedLogs);
 }
 
+function writeSeasonShards(logs: GameLogEntry[]): void {
+  fs.mkdirSync(NHL_SHARD_DIR, { recursive: true });
+  const bySeason = new Map<string, GameLogEntry[]>();
+  for (const game of logs) {
+    const season = game.season;
+    if (!season) continue;
+    const bucket = bySeason.get(season) ?? [];
+    bucket.push(game);
+    bySeason.set(season, bucket);
+  }
+  for (const [season, games] of bySeason) {
+    const shardPath = path.join(NHL_SHARD_DIR, `${season}.ndjson`);
+    const body = games
+      .sort((a, b) => a.date.localeCompare(b.date) || a.gameId.localeCompare(b.gameId))
+      .map((g) => JSON.stringify(g))
+      .join("\n");
+    fs.writeFileSync(shardPath, body ? `${body}\n` : "");
+  }
+  console.log(`Wrote ${bySeason.size} season shards to data/nhl/game-logs/`);
+}
+
+function writeNhlManifest(stats: RefStatsFile, gameCount: number): void {
+  const manifest = {
+    data_verified: stats.meta.data_verified === true,
+    data_source: stats.meta.data_source ?? "NHL API (api-web.nhle.com)",
+    last_ingested_at: stats.meta.lastUpdated,
+    game_count: gameCount,
+    seasons: stats.meta.seasons,
+    ref_count: stats.meta.refCount ?? stats.refs.length,
+    note: "Officials and scores from NHL API gamecenter endpoints.",
+  };
+  fs.mkdirSync(NHL_DATA_DIR, { recursive: true });
+  fs.writeFileSync(
+    path.join(NHL_DATA_DIR, "manifest.json"),
+    `${JSON.stringify(manifest, null, 2)}\n`,
+  );
+}
+
+function publishNhlArtifacts(stats: RefStatsFile, logs: GameLogEntry[]): void {
+  const validation = validateNhlGameLogs(logs, {
+    minGames: MIN_GAMES_FOR_LIVE_BUILD,
+  });
+  console.log(formatValidationReport(validation));
+  if (!validation.passed) {
+    throw new Error("NHL ingest validation failed - refusing to publish");
+  }
+  writeSeasonShards(logs);
+  writeNhlManifest(stats, logs.length);
+}
+
 function writeNhlStats(stats: RefStatsFile, statsPath: string, label: string): void {
   const dataDir = path.dirname(statsPath);
   fs.mkdirSync(dataDir, { recursive: true });
@@ -1047,6 +1109,7 @@ async function main() {
       ),
     );
     const stats = buildStatsFromLogs(deduped);
+    publishNhlArtifacts(stats, deduped);
     writeNhlStats(stats, statsPath, "Rebuilt from logs");
     console.log("\n--- Regenerating overview insights ---");
     const { runPostIngestInsightGenerator: refreshInsights } = await import(
@@ -1060,6 +1123,9 @@ async function main() {
 
   const live = await buildLiveStats();
   if (live) {
+    const existing = loadGameLogs("NHL");
+    const deduped = dedupeGameLogs(existing?.games ?? []);
+    publishNhlArtifacts(live, deduped);
     writeNhlStats(live, statsPath, "Live ref stats");
     console.log("\n--- Regenerating overview insights ---");
     const { runPostIngestInsightGenerator: refreshInsights } = await import(

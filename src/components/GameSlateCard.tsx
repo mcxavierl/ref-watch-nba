@@ -55,9 +55,13 @@ import { formatSigned } from "@/lib/stats-utils";
 import { formatPremiumLabel } from "@/lib/whistle-premium";
 import { whistleIndexFromCrewMetrics } from "@/lib/whistle-index";
 import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
+import { CLINICAL_CARD_CLASS } from "@/components/hub/ClinicalCard";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { RefAvatar } from "@/components/RefAvatar";
+import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
+import { signedDeltaTone } from "@/lib/metric-delight";
 import { GameGrudgeStorylines } from "./GrudgeMatchSection";
 import { NhlSlateSignalBadges } from "./NhlSlateSignalBadges";
 import { OuLeanBadge } from "./OuLeanBadge";
@@ -174,21 +178,17 @@ export function GameSlateCard({
         : null;
 
   return (
-    <article id={`game-${gameId}`} className="data-card" style={{ "--slate-i": slateIndex } as CSSProperties}>
+    <article
+      id={`game-${gameId}`}
+      className={`data-card ${CLINICAL_CARD_CLASS}`}
+      style={{ "--slate-i": slateIndex } as CSSProperties}
+    >
       <div className="data-card-header">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">
             {paceLabel && (
               <p className="mb-2">
-                <span
-                  className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-bold ${
-                    premium.alert === "high_pace"
-                      ? "border-orange-500/35 bg-orange-500/15 text-orange-200"
-                      : "border-sky-500/35 bg-sky-500/15 text-sky-200"
-                  }`}
-                >
-                  {paceLabel}
-                </span>
+                <StatusBadge verdict="caution" label={paceLabel} compact />
               </p>
             )}
             {teams.length > 0 ? (
@@ -251,24 +251,43 @@ export function GameSlateCard({
             <div className="game-slate-composite" aria-label="Crew composite tendencies">
               <div className="game-slate-composite-stat">
                 <span className="game-slate-composite-label">{copy.scoringLabel}</span>
-                <span className="game-slate-composite-value">{totalDelta}</span>
-                <span className="game-slate-composite-meta">
+                <span className="game-slate-composite-value">
+                  <StandoutMetricValue
+                    tone={signedDeltaTone(metrics.totalPointsDelta)}
+                    size="lg"
+                  >
+                    {totalDelta}
+                  </StandoutMetricValue>
+                </span>
+                <span className="game-slate-composite-meta tabular-nums">
                   {metrics.avgTotalPoints} avg · {formatPct(metrics.overRate)} over
                 </span>
               </div>
               <div className="game-slate-composite-stat">
                 <span className="game-slate-composite-label">{copy.whistleLabel}</span>
-                <span className="game-slate-composite-value">{foulsDelta}</span>
-                <span className="game-slate-composite-meta">
+                <span className="game-slate-composite-value">
+                  <StandoutMetricValue
+                    tone={signedDeltaTone(metrics.foulsDelta)}
+                    size="lg"
+                  >
+                    {foulsDelta}
+                  </StandoutMetricValue>
+                </span>
+                <span className="game-slate-composite-meta tabular-nums">
                   {metrics.avgFouls} {copy.whistleUnit} avg
                 </span>
               </div>
               <div className="game-slate-composite-stat">
                 <span className="game-slate-composite-label">vs {bench}</span>
                 <span className="game-slate-composite-value">
-                  {formatSigned(premium.gapVsBenchmark)}
+                  <StandoutMetricValue
+                    tone={signedDeltaTone(premium.gapVsBenchmark)}
+                    size="lg"
+                  >
+                    {formatSigned(premium.gapVsBenchmark)}
+                  </StandoutMetricValue>
                 </span>
-                <span className="game-slate-composite-meta">
+                <span className="game-slate-composite-meta tabular-nums">
                   {formatPremiumLabel(premium.scoringPremium)} {copy.pointsAboveAverage.toLowerCase()}
                 </span>
               </div>

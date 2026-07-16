@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
-import { NflSlateGamesList } from "@/components/NflSlateGamesList";
-import { OverviewSlateRow } from "@/components/OverviewSlateRow";
+import { OverviewLeagueSlateGroup } from "@/components/OverviewLeagueSlateGroup";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { LEAGUES } from "@/lib/leagues";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
@@ -20,8 +19,7 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
   const { upcomingSlate } = data;
   const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
   const matchupCount = upcomingSlate.totalGames + upcomingSlate.totalScheduled;
-  const nonNflGames = upcomingSlate.games.filter((game) => game.leagueId !== "nfl");
-  const nflGames = upcomingSlate.games.filter((game) => game.leagueId === "nfl");
+  const leagueGroups = upcomingSlate.leagueGroups;
 
   return (
     <section
@@ -54,13 +52,12 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
               ))}
             </ul>
           ) : null}
-          {upcomingSlate.games.length > 0 ? (
-            <ul className="overview-slate-list">
-              {nonNflGames.map((game) => (
-                <OverviewSlateRow key={`${game.leagueId}-${game.gameId}`} game={game} />
+          {leagueGroups.length > 0 ? (
+            <div className="overview-slate-leagues">
+              {leagueGroups.map((group) => (
+                <OverviewLeagueSlateGroup key={group.leagueId} group={group} />
               ))}
-              <NflSlateGamesList games={nflGames} />
-            </ul>
+            </div>
           ) : (
             <p className="overview-slate-empty">No published matchups yet. Check back closer to tip-off.</p>
           )}

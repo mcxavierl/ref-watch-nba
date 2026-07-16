@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, ShieldAlert } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import { NcaaAuditStatusPill } from "@/components/NcaaAuditStatusPill";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import {
@@ -61,8 +62,14 @@ function PaceCardBody({ card }: { card: LeagueOverviewCard }) {
         </span>
         {pending ? (
           <p className="overview-pace-pending">
-            <ShieldAlert aria-hidden className="overview-pace-pending-icon" />
-            {card.auditPendingLabel ?? "Pending Verification"} - detailed analytics locked
+            <StatusBadge
+              verdict="caution"
+              label={card.auditPendingLabel ?? "Pending Verification"}
+              compact
+            />
+            <span className="overview-pace-pending-copy">
+              Detailed analytics locked
+            </span>
           </p>
         ) : null}
       </div>

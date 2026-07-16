@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-15T22:53:48.379Z",
+    "lastUpdated": "2026-07-16T00:21:58.413Z",
     "seasons": [
       "2020-21",
       "2021-22",
@@ -24,7 +24,7 @@
       "earliest": "2020-09-12",
       "latest": "2026-01-20"
     },
-    "note": "Scores and penalties from ESPN (1166 live-conference games, 0 with officials). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Official crews unavailable from ESPN CFB summaries - ref×team matrix pending officials source. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs."
+    "note": "Scores and penalties from ESPN (1166 live-conference games, 0 with officials). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Official crews unavailable from ESPN CFB summaries - ref×team matrix pending officials source. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs."
   },
   "refs": [
     {

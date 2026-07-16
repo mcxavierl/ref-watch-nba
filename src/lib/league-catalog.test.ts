@@ -8,11 +8,11 @@ import {
 import { PRO_ONLY_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 
 describe("league catalog live competitions", () => {
-  it("lists only pro live competitions (college stays coming soon)", () => {
+  it("lists pro live competitions and launched NCAA hubs", () => {
     const live = catalogLiveCompetitionEntries();
     const liveIds = live.map((entry) => entry.leagueId);
 
-    assert.ok(!liveIds.includes("cbb"));
+    assert.ok(liveIds.includes("cbb"));
     assert.ok(!liveIds.includes("cfb"));
     assert.ok(liveIds.includes("nba"));
 
@@ -21,16 +21,14 @@ describe("league catalog live competitions", () => {
     }
   });
 
-  it("shows NCAA entries as coming soon without live stats", () => {
+  it("shows unlaunched NCAA football as coming soon without live stats", () => {
     const soon = catalogComingSoonEntries();
     const cbb = soon.find((entry) => entry.id === "cbb");
     const cfb = soon.find((entry) => entry.id === "cfb");
 
-    assert.ok(cbb);
+    assert.equal(cbb, undefined);
     assert.ok(cfb);
-    assert.equal(cbb.leagueId, undefined);
     assert.equal(cfb.leagueId, undefined);
-    assert.equal(catalogStatusLabel(cbb), "Coming Soon");
     assert.equal(catalogStatusLabel(cfb), "Coming Soon");
   });
 });

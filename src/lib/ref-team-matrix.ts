@@ -1,4 +1,8 @@
 import type { LeagueMetricCopy } from "@/lib/leagues";
+import {
+  displayWinRateDelta,
+  type WinRateDeltaDisplay,
+} from "@/lib/data-maturity";
 import { deltaTone } from "@/lib/metricTone";
 import { winRateDeltaPoints } from "@/lib/teamRecord";
 import { teamWhistleEdge } from "@/lib/stats-utils";
@@ -499,6 +503,19 @@ export interface MatrixCellStyle {
   tone: MatrixCellTone;
   extreme: MatrixCellExtreme | null;
   deltaPts: number;
+}
+
+export function matrixCellDisplayDelta(
+  cell: RefTeamMatrixCell,
+  teamBaseline: number,
+  viewMode: MatrixViewMode = "wl",
+): WinRateDeltaDisplay & { games: number } {
+  const games = matrixCellMetricGames(cell, viewMode);
+  const rawDelta = winRateDeltaPoints(
+    matrixCellMetricRate(cell, viewMode),
+    teamBaseline,
+  );
+  return { ...displayWinRateDelta(rawDelta, games), games };
 }
 
 export function matrixCellStyle(

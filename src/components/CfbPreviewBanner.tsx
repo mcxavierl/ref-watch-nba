@@ -1,4 +1,4 @@
-import { AlertTriangle } from "lucide-react";
+import { CollegePreviewBanner } from "@/components/CollegePreviewBanner";
 import {
   cfbPreviewBannerMessage,
   isCfbVerifiedData,
@@ -12,22 +12,12 @@ export function CfbPreviewBanner({
   statsSource: RefStatsFile["meta"]["source"];
   assignmentsSource?: AssignmentsFile["source"];
 }) {
-  if (isCfbVerifiedData(statsSource) && assignmentsSource === "espn") {
-    return null;
-  }
-
-  const verifiedStats = isCfbVerifiedData(statsSource);
-  const message = cfbPreviewBannerMessage(statsSource, assignmentsSource);
-
   return (
-    <div
-      className={
-        verifiedStats ? "offseason-alert" : "offseason-alert border-amber-300 bg-amber-50"
-      }
-      role="status"
-    >
-      <AlertTriangle className="offseason-alert-icon" aria-hidden />
-      <p className="offseason-alert-text">{message}</p>
-    </div>
+    <CollegePreviewBanner
+      statsSource={statsSource}
+      assignmentsSource={assignmentsSource}
+      isVerifiedData={isCfbVerifiedData}
+      message={cfbPreviewBannerMessage}
+    />
   );
 }

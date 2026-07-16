@@ -6,6 +6,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { loadGameLogs } from "../lib/game-logs";
 import { applyGameLogTeamStats } from "./lib/rebuild-team-stats-from-logs";
+import { finalizeNflVerifiedArtifacts } from "./lib/write-season-shards";
 import type { RefStatsFile } from "../../src/lib/types";
 
 const DATA_DIR = path.join(process.cwd(), "data", "nfl");
@@ -34,6 +35,14 @@ function main() {
   );
   console.log(
     `Matrix coverage: ${rebuilt.qualifiedPairs}/${rebuilt.teamStatsPairs} ref×team pairs with 3+ games`,
+  );
+
+  const { shards } = finalizeNflVerifiedArtifacts(logs.games, process.cwd(), {
+    dataSource: rebuilt.stats.meta.data_source,
+    note: rebuilt.stats.meta.note,
+  });
+  console.log(
+    `Refreshed ${shards.shardCount} season shards (${shards.gameCount} games)`,
   );
 }
 

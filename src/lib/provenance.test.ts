@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { refProfileCoreProvenance, refStatsDataTag } from "@/lib/provenance";
+import { buildProvenanceTooltipLines } from "@/lib/provenance-tooltip";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 const hybridMeta: RefStatsFile["meta"] = {
@@ -41,5 +42,16 @@ describe("refStatsDataTag", () => {
     assert.equal(provenance.avgTotalPoints?.tag, "computed-from-real");
     assert.equal(provenance.overRate?.tag, "computed-from-real");
     assert.equal(provenance.avgFouls?.tag, "computed-from-real");
+  });
+
+  it("builds tooltip lines from profile core provenance", () => {
+    const provenance = refProfileCoreProvenance(sampleProfile, hybridMeta);
+    const lines = buildProvenanceTooltipLines({
+      provenance: provenance.avgTotalPoints,
+      gate: provenance.sampleGate,
+    });
+
+    assert.ok(lines.some((line) => line.includes("games")));
+    assert.ok(lines.some((line) => line.includes("From real games")));
   });
 });

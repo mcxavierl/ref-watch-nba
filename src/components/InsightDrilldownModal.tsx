@@ -1,16 +1,31 @@
 "use client";
 
-import { useCallback, useEffect, useId, useState, type MouseEvent } from "react";
-import { createPortal } from "react-dom";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+  type MouseEvent,
+} from "react";
+import { ModalPortal } from "@/components/ModalPortal";
 import { X } from "lucide-react";
 import { fetchInsightDrilldown } from "@/lib/insight-drilldown-fetch";
+import {
+  hiddenInsightDrilldownGameCount,
+  insightDrilldownExpandLabel,
+  visibleInsightDrilldownGames,
+} from "@/lib/insight-drilldown-preview";
 import type {
   InsightDrilldownPayload,
   InsightVenueSplit,
 } from "@/lib/insight-drilldown-types";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
-import { formatPct } from "@/lib/stats-utils";
+import { AccessibleHeaderTooltip } from "@/components/shared/AccessibleHeaderTooltip";
+import { IntensityBadge } from "@/components/shared/IntensityBadge";
 import { EMPTY_DISPLAY } from "@/lib/finding-copy";
+import { FOULS_COLUMN_TOOLTIP } from "@/lib/match-intensity";
+import { formatPct } from "@/lib/stats-utils";
 
 type VenueFilter = "all" | "home" | "away";
 
@@ -58,6 +73,7 @@ export function InsightDrilldownModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [venue, setVenue] = useState<VenueFilter>("all");
+  const [gamesExpanded, setGamesExpanded] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -80,6 +96,7 @@ export function InsightDrilldownModal({
     setLoading(true);
     setError(null);
     setVenue("all");
+    setGamesExpanded(false);
 
     fetchInsightDrilldown(card.drilldownId)
       .then((data) => {
@@ -134,6 +151,19 @@ export function InsightDrilldownModal({
       if (venue === "away") return !game.isHome;
       return true;
     }) ?? [];
+
+  useEffect(() => {
+    setGamesExpanded(false);
+  }, [venue]);
+
+  const visibleGames = useMemo(
+    () => visibleInsightDrilldownGames(filteredGames, gamesExpanded),
+    [filteredGames, gamesExpanded],
+  );
+  const hiddenGameCount = hiddenInsightDrilldownGameCount(
+    filteredGames,
+    gamesExpanded,
+  );
 
   const handleBackdropClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
@@ -279,7 +309,10 @@ export function InsightDrilldownModal({
                 </p>
               </div>
               <div className="insight-drilldown-table-wrap">
-                <table className="insight-drilldown-table">
+                <table
+                  className="insight-drilldown-table"
+                  id={`${titleId}-games-table`}
+                >
                   <thead>
                     <tr>
                       <th scope="col" className="tracking-tight px-2 py-2 sm:px-3 sm:py-2.5">
@@ -298,7 +331,10 @@ export function InsightDrilldownModal({
                         Score
                       </th>
                       <th scope="col" className="tracking-tight px-2 py-2 sm:px-3 sm:py-2.5">
-                        {payload.games[0]?.whistleLabel ?? "Whistle"}
+                        <AccessibleHeaderTooltip
+                          label={payload.games[0]?.whistleLabel ?? "Fouls"}
+                          tooltip={FOULS_COLUMN_TOOLTIP}
+                        />
                       </th>
                       <th
                         scope="col"
@@ -316,7 +352,7 @@ export function InsightDrilldownModal({
                         </td>
                       </tr>
                     ) : (
-                      filteredGames.map((game) => (
+                      visibleGames.map((game) => (
                         <tr key={game.gameId}>
                           <td className="tracking-tight px-2 py-2 sm:px-3 sm:py-2.5">
                             {formatGameDate(game.date)}
@@ -344,7 +380,14 @@ export function InsightDrilldownModal({
                             </span>
                           </td>
                           <td className="tracking-tight px-2 py-2 sm:px-3 sm:py-2.5">
-                            {game.whistleCount}
+                            <span className="insight-drilldown-fouls-cell tabular-nums">
+                              {game.whistleCount}
+                              <IntensityBadge
+                                foulCount={game.whistleCount}
+                                leagueAvgFouls={payload.leagueAvgFouls}
+                                compact
+                              />
+                            </span>
                           </td>
                           <td className="insight-drilldown-col--spread hidden tracking-tight px-2 py-2 md:table-cell sm:px-3 sm:py-2.5">
                             {formatSpreadResult(game.spreadCovered)}
@@ -355,6 +398,19 @@ export function InsightDrilldownModal({
                   </tbody>
                 </table>
               </div>
+              {hiddenGameCount > 0 ? (
+                <div className="insight-drilldown-view-more">
+                  <button
+                    type="button"
+                    className="insight-drilldown-view-more-btn rw-focus-ring"
+                    aria-expanded={gamesExpanded}
+                    aria-controls={`${titleId}-games-table`}
+                    onClick={() => setGamesExpanded((value) => !value)}
+                  >
+                    {insightDrilldownExpandLabel(hiddenGameCount, gamesExpanded)}
+                  </button>
+                </div>
+              ) : null}
             </section>
 
             {payload.crewPartners.length > 0 ? (
@@ -376,6 +432,5 @@ export function InsightDrilldownModal({
     </div>
   );
 
-  if (typeof document === "undefined") return null;
-  return createPortal(modal, document.body);
+  return <ModalPortal>{modal}</ModalPortal>;
 }

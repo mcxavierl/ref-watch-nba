@@ -1,7 +1,21 @@
 import Link from "next/link";
+import { ClinicalCard } from "@/components/hub/ClinicalCard";
+import { ClinicalMetricCard } from "@/components/hub/ClinicalMetricCard";
+import {
+  REF_CARD_BODY_CLASS,
+  REF_CARD_KICKER_CLASS,
+  REF_CARD_METRIC_DETAIL_CLASS,
+} from "@/components/hub/RefCard";
+import { StatusBadge } from "@/components/hub/StatusBadge";
+import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { signedDeltaTone } from "@/lib/metric-delight";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import type { TeamEdgeSummary } from "@/lib/team-insight-hub";
 
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
+ * and sample-gate provenance metadata.
+ */
 export function TeamEdgeSummaryCard({
   summary,
   teamLabel,
@@ -15,14 +29,20 @@ export function TeamEdgeSummaryCard({
     summary;
 
   return (
-    <section className="team-hub-edge-card" aria-label="Team edge summary">
-      <div className="team-hub-edge-card-grid">
+    <ClinicalCard
+      as="section"
+      className="team-hub-edge-card data-card"
+      aria-label="Team edge summary"
+    >
+      <div className="team-hub-edge-card-grid px-4 py-5 sm:px-5">
         <div className="team-hub-edge-primary">
-          <p className="team-hub-eyebrow">Top finding</p>
+          <p className={REF_CARD_KICKER_CLASS}>Top finding</p>
           {topFinding ? (
             <>
               <h2 className="team-hub-edge-headline">{topFinding.headline}</h2>
-              <p className="team-hub-edge-body">{topFinding.body}</p>
+              <p className={`${REF_CARD_BODY_CLASS} team-hub-edge-body`}>
+                {topFinding.body}
+              </p>
               {topFinding.refSlug && topFinding.refName && (
                 <Link
                   href={`${basePath}/refs/${topFinding.refSlug}`}
@@ -33,7 +53,7 @@ export function TeamEdgeSummaryCard({
               )}
             </>
           ) : (
-            <p className="team-hub-edge-body">
+            <p className={`${REF_CARD_BODY_CLASS} team-hub-edge-body`}>
               No statistically significant ref patterns for {teamLabel} in the
               current sample.
             </p>
@@ -41,35 +61,50 @@ export function TeamEdgeSummaryCard({
         </div>
 
         <div className="team-hub-edge-metrics">
-          <div className="team-hub-metric">
-            <p className="team-hub-metric-label">Referee reliability</p>
-            <p className="team-hub-metric-value">{reliabilityScore}%</p>
-            <p className="team-hub-metric-detail">{reliabilityLabel}</p>
-          </div>
+          <ClinicalMetricCard
+            label="Referee reliability"
+            value={<span className="tabular-nums">{reliabilityScore}%</span>}
+            detail={reliabilityLabel}
+            detailMuted
+          />
 
           {bestRef && (
-            <div className="team-hub-badge team-hub-badge--positive">
-              <p className="team-hub-badge-label">Best ref</p>
+            <div className="team-hub-ref-badge">
+              <StatusBadge verdict="pass" label="Best ref" compact />
               <p className="team-hub-badge-name">{bestRef.name}</p>
-              <p className="team-hub-badge-stat">
-                {formatPct(bestRef.winRate)} · {formatSigned(bestRef.deltaPts)}{" "}
+              <p className={`${REF_CARD_METRIC_DETAIL_CLASS} team-hub-badge-stat`}>
+                <span className="tabular-nums">{formatPct(bestRef.winRate)}</span>
+                {" · "}
+                <StandoutMetricValue
+                  tone={signedDeltaTone(bestRef.deltaPts)}
+                  size="md"
+                >
+                  {formatSigned(bestRef.deltaPts)}
+                </StandoutMetricValue>{" "}
                 pts
               </p>
             </div>
           )}
 
           {worstRef && (
-            <div className="team-hub-badge team-hub-badge--negative">
-              <p className="team-hub-badge-label">Worst ref</p>
+            <div className="team-hub-ref-badge">
+              <StatusBadge verdict="fail" label="Worst ref" compact />
               <p className="team-hub-badge-name">{worstRef.name}</p>
-              <p className="team-hub-badge-stat">
-                {formatPct(worstRef.winRate)} · {formatSigned(worstRef.deltaPts)}{" "}
+              <p className={`${REF_CARD_METRIC_DETAIL_CLASS} team-hub-badge-stat`}>
+                <span className="tabular-nums">{formatPct(worstRef.winRate)}</span>
+                {" · "}
+                <StandoutMetricValue
+                  tone={signedDeltaTone(worstRef.deltaPts)}
+                  size="md"
+                >
+                  {formatSigned(worstRef.deltaPts)}
+                </StandoutMetricValue>{" "}
                 pts
               </p>
             </div>
           )}
         </div>
       </div>
-    </section>
+    </ClinicalCard>
   );
 }

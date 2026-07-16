@@ -233,18 +233,18 @@ export function closeGameLeanHeadline(
   return `Competitive games lean ${lean} the ${benchmark}-${scoreUnit} benchmark`;
 }
 
-const CONFIDENCE_DISPLAY: Record<ConfidenceTier, string> = {
+const MATURITY_DISPLAY: Record<ConfidenceTier, string> = {
   Strong: "High",
   Moderate: "Moderate",
   Thin: "Low",
 };
 
-/** Compact card metadata: sample size + confidence tier. */
+/** Compact card metadata: sample size + data maturity tier. */
 export function formatFindingCardMeta(
   sampleNote: string,
   tier: ConfidenceTier,
 ): string {
   const gamesMatch = sampleNote.match(/Sample:\s*([\d,]+)\s*games?/i);
   const games = gamesMatch?.[1] ?? EMPTY_DISPLAY;
-  return `Sample: ${games} games • Confidence: ${CONFIDENCE_DISPLAY[tier]}`;
+  return `Sample: ${games} games • Data maturity: ${MATURITY_DISPLAY[tier]}`;
 }

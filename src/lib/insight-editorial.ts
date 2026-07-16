@@ -1,3 +1,10 @@
+import {
+  dataMaturityScore,
+  displayWinRateDelta,
+  formatDeltaPp,
+  formatSampleSizeLabel,
+  isPreliminarySample,
+} from "@/lib/data-maturity";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 
 export type EditorialMetric = {
@@ -10,6 +17,10 @@ export type EditorialInsightView = {
   primaryMetric: EditorialMetric;
   secondaryMetric: EditorialMetric | null;
   whyItMatters: string;
+  sampleGames: number;
+  isPreliminary: boolean;
+  isAdjusted: boolean;
+  showHonestyFootnote: boolean;
 };
 
 export type InsightMetricComparison = {
@@ -95,18 +106,68 @@ function metricFromStats(
   return { value: stat.value, label: stat.label };
 }
 
-/** Standard editorial stack: headline, two metrics, and a short why-it-matters blurb. */
-export function editorialInsightView(card: LeagueInsightCard): EditorialInsightView {
+function parseDeltaPpFromCard(card: LeagueInsightCard): number | null {
+  const heroDelta = parseNumericToken(card.heroValue);
+  if (heroDelta !== null && /pp|baseline|win rate|delta/i.test(card.heroLabel)) {
+    return heroDelta;
+  }
+
+  if (card.kind === "matrix-edge") {
+    const baselineStat = card.stats.find((stat) => /baseline/i.test(stat.label));
+    const recordStat = card.stats.find((stat) => /record/i.test(stat.label));
+    const baselinePct = baselineStat ? parsePctToken(baselineStat.value) : null;
+    const recordWinRate = recordStat ? winRateFromRecord(recordStat.value) : null;
+    if (baselinePct !== null && recordWinRate !== null) {
+      return recordWinRate - baselinePct;
+    }
+    return heroDelta;
+  }
+
+  return null;
+}
+
+function splitDisplayMetrics(card: LeagueInsightCard): {
+  primaryMetric: EditorialMetric;
+  secondaryMetric: EditorialMetric | null;
+  sampleGames: number;
+  isPreliminary: boolean;
+  isAdjusted: boolean;
+  showHonestyFootnote: boolean;
+} {
+  const sampleGames = parseGamesFromCard(card);
+  const rawDelta = parseDeltaPpFromCard(card);
+  const usesSplitHierarchy =
+    card.kind === "matrix-edge" || (rawDelta !== null && isPreliminarySample(sampleGames));
+
+  if (usesSplitHierarchy && rawDelta !== null && sampleGames > 0) {
+    const { displayDelta, isPreliminary, isAdjusted } = displayWinRateDelta(
+      rawDelta,
+      sampleGames,
+    );
+    return {
+      primaryMetric: {
+        value: formatSampleSizeLabel(sampleGames),
+        label: "Sample size",
+      },
+      secondaryMetric: {
+        value: formatDeltaPp(displayDelta),
+        label: isAdjusted ? "Calculated projection" : "Win rate delta",
+      },
+      sampleGames,
+      isPreliminary,
+      isAdjusted,
+      showHonestyFootnote: isAdjusted,
+    };
+  }
+
   const primaryMetric: EditorialMetric = {
     value: card.heroValue,
     label: card.heroLabel,
   };
-
   const secondaryMetric =
     metricFromStats(card, 0) ??
     metricFromStats(card, 1) ??
     null;
-
   const secondaryDistinct =
     secondaryMetric &&
     secondaryMetric.value !== primaryMetric.value &&
@@ -114,10 +175,7 @@ export function editorialInsightView(card: LeagueInsightCard): EditorialInsightV
       ? secondaryMetric
       : metricFromStats(card, 1);
 
-  const whyItMatters = normalizeCopy(card.story.trim());
-
   return {
-    headline: humanCentricHeadline(card),
     primaryMetric,
     secondaryMetric:
       secondaryDistinct &&
@@ -125,7 +183,27 @@ export function editorialInsightView(card: LeagueInsightCard): EditorialInsightV
       secondaryDistinct.label !== primaryMetric.label
         ? secondaryDistinct
         : null,
+    sampleGames,
+    isPreliminary: isPreliminarySample(sampleGames),
+    isAdjusted: false,
+    showHonestyFootnote: false,
+  };
+}
+
+/** Standard editorial stack: headline, two metrics, and a short why-it-matters blurb. */
+export function editorialInsightView(card: LeagueInsightCard): EditorialInsightView {
+  const metrics = splitDisplayMetrics(card);
+  const whyItMatters = normalizeCopy(card.story.trim());
+
+  return {
+    headline: humanCentricHeadline(card),
+    primaryMetric: metrics.primaryMetric,
+    secondaryMetric: metrics.secondaryMetric,
     whyItMatters,
+    sampleGames: metrics.sampleGames,
+    isPreliminary: metrics.isPreliminary,
+    isAdjusted: metrics.isAdjusted,
+    showHonestyFootnote: metrics.showHonestyFootnote,
   };
 }
 
@@ -200,7 +278,7 @@ function parsePctToken(value: string): number | null {
   return parseNumericToken(value);
 }
 
-function parseGamesFromCard(card: LeagueInsightCard): number {
+export function parseGamesFromCard(card: LeagueInsightCard): number {
   for (const stat of card.stats) {
     if (!/games|sample/i.test(stat.label)) continue;
     const parsed = parseNumericToken(stat.value);
@@ -242,9 +320,14 @@ export function insightMetricComparison(
     if (baselinePct !== null) {
       const recordWinRate = recordStat ? winRateFromRecord(recordStat.value) : null;
       const heroDelta = parseNumericToken(card.heroValue);
-      const deltaPp =
+      const rawDeltaPp =
         heroDelta ??
         (recordWinRate !== null ? recordWinRate - baselinePct : null);
+      const sampleGames = parseGamesFromCard(card);
+      const deltaPp =
+        rawDeltaPp !== null
+          ? displayWinRateDelta(rawDeltaPp, sampleGames).displayDelta
+          : null;
 
       if (deltaPp !== null && recordWinRate !== null) {
         return {
@@ -305,17 +388,14 @@ export function insightMetricComparison(
   return null;
 }
 
-/** Map sample depth to a 0-100 confidence score for insight cards. */
-export function insightConfidenceScore(card: LeagueInsightCard): number {
+/** Map sample depth to a 0-100 data maturity score for insight cards. */
+export function insightDataMaturityScore(card: LeagueInsightCard): number {
   const games = parseGamesFromCard(card);
-  const delta = Math.abs(parseNumericToken(card.heroValue) ?? 0);
+  const delta = Math.abs(parseDeltaPpFromCard(card) ?? parseNumericToken(card.heroValue) ?? 0);
+  return dataMaturityScore(games, delta);
+}
 
-  let sampleScore: number;
-  if (games >= 100) sampleScore = 72 + Math.min(28, (games - 100) * 0.12);
-  else if (games >= 30) sampleScore = 42 + ((games - 30) / 70) * 30;
-  else if (games >= 8) sampleScore = 18 + ((games - 8) / 22) * 24;
-  else sampleScore = Math.max(8, games * 2.5);
-
-  const effectBoost = Math.min(12, delta * 0.15);
-  return Math.round(Math.min(100, Math.max(5, sampleScore + effectBoost)));
+/** @deprecated Use insightDataMaturityScore */
+export function insightConfidenceScore(card: LeagueInsightCard): number {
+  return insightDataMaturityScore(card);
 }

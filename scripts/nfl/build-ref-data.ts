@@ -50,6 +50,8 @@ import {
 } from "./lib/nflverse-historical";
 import { homeCoverRate, NflBettingAccumulator } from "./lib/nfl-betting";
 import { enrichGameLogsWithPenaltyEvents } from "./lib/attach-penalty-events";
+import { assertNflIngestValid } from "./lib/validate-ingest";
+import { finalizeNflVerifiedArtifacts } from "./lib/write-season-shards";
 
 const NFL_TEAM_ABBRS = [
   "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN",
@@ -817,9 +819,9 @@ async function buildFromEspn(
       leagueOverBaseline: LEAGUE_OVER_BASELINE,
       leagueAvgPenaltyYards,
       minSampleSize: MIN_SAMPLE,
-      source: "espn",
+      source: "hybrid",
       data_verified: true,
-      data_source: "ESPN + nflverse (2000–present)",
+      data_source: "ESPN + nflverse (2000-present)",
       atsAvailable,
       refCount: refs.length,
       totalGamesProcessed: processedTotal,
@@ -887,6 +889,19 @@ async function main() {
       0,
     );
     console.log(`Matrix coverage: ${qualified}/${pairs} ref×team pairs with 3+ games`);
+
+    const logsForShards = loadGameLogs("NFL");
+    if (logsForShards?.games.length) {
+      console.log("\n--- Finalizing verified ingest artifacts ---");
+      assertNflIngestValid(logsForShards.games, { minGames: 5000 });
+      const { shards } = finalizeNflVerifiedArtifacts(logsForShards.games, process.cwd(), {
+        dataSource: output.meta.data_source,
+        note: output.meta.note,
+      });
+      console.log(
+        `Wrote ${shards.shardCount} season shards (${shards.gameCount} games) → data/nfl/game-logs/`,
+      );
+    }
   } else {
     const honest: RefStatsFile = {
       ...base,

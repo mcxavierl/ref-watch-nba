@@ -37,6 +37,7 @@ import {
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
 import { CfbPreviewBanner } from "@/components/CfbPreviewBanner";
+import { ConferenceCoverage } from "@/components/ConferenceCoverage";
 import { CfbAnalyticsLeaders } from "@/components/CfbAnalyticsLeaders";
 import { buildCfbAnalyticsLeaders } from "@/lib/cfb/analytics-leaders";
 import { TonightEdgeSummary } from "@/components/TonightEdgeSummary";
@@ -107,6 +108,8 @@ export default function CfbHomePage() {
         statsSource={refStats.meta.source}
         assignmentsSource={assignments.source}
       />
+
+      <ConferenceCoverage leagueId="cfb" />
 
       {isOffseason && <OffseasonSlateNotice league="CFB" />}
 

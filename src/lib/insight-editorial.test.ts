@@ -4,6 +4,7 @@ import {
   editorialInsightView,
   humanCentricHeadline,
   insightConfidenceScore,
+  insightDataMaturityScore,
   insightMetricComparison,
   pickTopInsightCard,
   quickInsightCards,
@@ -102,10 +103,10 @@ describe("insight editorial helpers", () => {
     );
     assert.ok(comparison);
     assert.equal(comparison?.format, "pct");
-    assert.equal(comparison?.deltaPp, 51.5);
+    assert.ok((comparison?.deltaPp ?? 0) < 51.5);
     assert.equal(comparison?.refWinRate, 100);
     assert.equal(comparison?.teamBaseline, 48.5);
-    assert.equal(comparison?.crewValue, 51.5);
+    assert.equal(comparison?.crewValue, comparison?.deltaPp);
     assert.equal(comparison?.leagueValue, 48.5);
   });
 
@@ -117,7 +118,7 @@ describe("insight editorial helpers", () => {
         heroLabel: "Win rate vs team baseline",
         stats: [
           { label: "Ref×team record", value: "2-6" },
-          { label: "Games", value: "8" },
+          { label: "Games", value: "18" },
           { label: "Team baseline", value: "37.0%" },
         ],
       }),
@@ -128,15 +129,55 @@ describe("insight editorial helpers", () => {
     assert.equal(comparison?.teamBaseline, 37);
   });
 
-  it("scores confidence from sample depth", () => {
-    const thin = insightConfidenceScore(
+  it("prioritizes sample size and shrunk delta for thin matrix-edge cards", () => {
+    const view = editorialInsightView(
+      sampleCard({
+        kind: "matrix-edge",
+        heroValue: "+51.5pp",
+        heroLabel: "Win rate vs team baseline",
+        stats: [
+          { label: "Ref×team record", value: "8-0" },
+          { label: "Games", value: "8" },
+          { label: "Team baseline", value: "48.5%" },
+        ],
+      }),
+    );
+    assert.equal(view.primaryMetric.value, "8 games");
+    assert.equal(view.primaryMetric.label, "Sample size");
+    assert.equal(view.secondaryMetric?.label, "Calculated projection");
+    assert.ok(view.isPreliminary);
+    assert.ok(view.showHonestyFootnote);
+  });
+
+  it("keeps raw delta for mature matrix-edge samples", () => {
+    const view = editorialInsightView(
+      sampleCard({
+        kind: "matrix-edge",
+        heroValue: "+18.0pp",
+        heroLabel: "Win rate vs team baseline",
+        stats: [
+          { label: "Ref×team record", value: "12-6" },
+          { label: "Games", value: "18" },
+          { label: "Team baseline", value: "48.5%" },
+        ],
+      }),
+    );
+    assert.equal(view.primaryMetric.value, "18 games");
+    assert.equal(view.secondaryMetric?.value, "+18.0pp");
+    assert.equal(view.secondaryMetric?.label, "Win rate delta");
+    assert.equal(view.isPreliminary, false);
+  });
+
+  it("scores data maturity from sample depth", () => {
+    const thin = insightDataMaturityScore(
       sampleCard({ stats: [{ label: "Sample", value: "8 games" }] }),
     );
-    const strong = insightConfidenceScore(
+    const strong = insightDataMaturityScore(
       sampleCard({ stats: [{ label: "Sample", value: "120 games" }] }),
     );
     assert.ok(thin < strong);
     assert.ok(thin >= 5 && thin <= 100);
     assert.ok(strong >= 5 && strong <= 100);
+    assert.equal(insightConfidenceScore(sampleCard()), insightDataMaturityScore(sampleCard()));
   });
 });

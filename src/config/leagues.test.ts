@@ -52,10 +52,38 @@ test("isDashboardLeagueExposed shows verified pro leagues only", () => {
   assert.equal(isDashboardLeagueExposed("cbb"), false);
 });
 
-test("isLeagueAnalyticsUnlocked keeps NCAA locked until conference data is live", () => {
+test("isCollegeLiveLeague reflects launched NCAA hubs from Priority #9 gate", async () => {
+  const { isCollegeLiveLeague, LAUNCHED_NCAA_LEAGUE_IDS } = await import(
+    "@/lib/verified-live-leagues"
+  );
+  assert.deepEqual([...LAUNCHED_NCAA_LEAGUE_IDS], ["cbb"]);
+  assert.equal(isCollegeLiveLeague("cbb"), true);
+  assert.equal(isCollegeLiveLeague("cfb"), false);
+});
+
+test("isLeagueAnalyticsUnlocked unlocks NCAA when conference data is live", () => {
   assert.equal(isLeagueAnalyticsUnlocked("nba"), true);
-  assert.equal(isLeagueAnalyticsUnlocked("cfb", getCfbRefStats()), false);
-  assert.equal(isLeagueAnalyticsUnlocked("cbb", getCbbRefStats()), false);
+  assert.equal(isLeagueAnalyticsUnlocked("cfb", getCfbRefStats()), true);
+  assert.equal(isLeagueAnalyticsUnlocked("cbb", getCbbRefStats()), true);
+});
+
+test("isLeagueAnalyticsUnlocked keeps NCAA locked without live conference coverage", () => {
+  const emptyStats = {
+    refs: [],
+    meta: {
+      source: "espn" as const,
+      data_verified: true,
+      seasons: [],
+      refCount: 0,
+      totalGamesProcessed: 0,
+      minSampleSize: 15,
+      leagueOverBaseline: 0.5,
+      lastUpdated: "2026-01-01",
+      atsAvailable: false,
+    },
+  };
+  assert.equal(isLeagueAnalyticsUnlocked("cfb", emptyStats), false);
+  assert.equal(isLeagueAnalyticsUnlocked("cbb", emptyStats), false);
 });
 
 test("isLeagueCardVisible hides college leagues on the overview hub", () => {

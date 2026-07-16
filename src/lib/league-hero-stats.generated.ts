@@ -7,12 +7,12 @@ export type LeagueHeroStatsSnapshot = {
 
 export const LEAGUE_HERO_STATS: Record<string, LeagueHeroStatsSnapshot> = {
   "nba": {
-    "officials": 109,
-    "games": 11979,
+    "officials": 53,
+    "games": 12301,
     "seasonSpan": "Last 10 seasons"
   },
   "nfl": {
-    "officials": 264,
+    "officials": 259,
     "games": 6825,
     "seasonSpan": "Last 26 seasons"
   },

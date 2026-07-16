@@ -1,5 +1,6 @@
 import type { NcaaRouteLeague } from "@/lib/ncaa-conference-gate";
 import { LIVE_NCAA_CONFERENCES, type LiveNcaaConferenceId } from "@/lib/ncaa-conference-gate";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import { LEAGUES } from "@/lib/leagues";
 
 /** Internal allowlist IDs → user-facing conference names (never rendered in the DOM). */
@@ -55,7 +56,7 @@ export function ConferenceCoverage({ leagueId }: ConferenceCoverageProps) {
           <li key={row.name} className="ncaa-coverage-live-item">
             <span className="ncaa-coverage-live-item-dot" aria-hidden />
             <span className="ncaa-coverage-live-item-label">{row.name}</span>
-            <span className="ncaa-coverage-live-item-badge">Live</span>
+            <StatusBadge verdict="pass" label="Live" compact />
           </li>
         ))}
       </ul>

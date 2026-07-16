@@ -19,14 +19,16 @@ import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import {
   editorialInsightView,
-  insightConfidenceScore,
+  insightDataMaturityScore,
   insightMetricComparison,
 } from "@/lib/insight-editorial";
 import { leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { whistleIndexFromInsightCard } from "@/lib/whistle-index";
 import { InsightCardShell } from "@/components/shared/InsightCardShell";
-import { InsightConfidenceBar } from "@/components/shared/InsightConfidenceBar";
+import { InsightDataMaturityBar } from "@/components/shared/InsightConfidenceBar";
 import { InsightMetricComparison } from "@/components/shared/InsightMetricComparison";
+import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
+import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
 import "@/components/insight-card.css";
 
 const InsightDrilldownModal = dynamic(
@@ -78,23 +80,33 @@ function comparisonImpactTone(
 function InsightCardMeta({
   card,
   compact = false,
+  showFootnote = false,
 }: {
   card: LeagueInsightCard;
   compact?: boolean;
+  showFootnote?: boolean;
 }) {
   const comparison = insightMetricComparison(card);
-  const confidence = insightConfidenceScore(card);
+  const editorial = editorialInsightView(card);
+  const maturity = insightDataMaturityScore(card);
 
   return (
     <div className="insight-card-meta">
+      {editorial.isPreliminary ? (
+        <div className="insight-card-meta-badges">
+          <PreliminaryDataBadge compact={compact} />
+        </div>
+      ) : null}
       {comparison ? (
         <InsightMetricComparison
           comparison={comparison}
           compact={compact}
           crewImpactTone={comparisonImpactTone(comparison)}
+          isAdjusted={editorial.isAdjusted}
         />
       ) : null}
-      <InsightConfidenceBar score={confidence} compact={compact} />
+      <InsightDataMaturityBar score={maturity} compact={compact} />
+      <DataHonestyFootnote show={showFootnote || editorial.showHonestyFootnote} />
     </div>
   );
 }
@@ -135,11 +147,21 @@ function CarouselInsightCard({
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-6">
           <div className="shrink-0 md:max-w-[11rem]">
             <p className="overview-top-story-hero m-0 flex flex-col gap-1 md:gap-0.5">
-              <span className="overview-top-story-value">{card.heroValue}</span>
+              <span className="overview-top-story-value">{editorial.primaryMetric.value}</span>
               <span className="overview-top-story-value-label">
-                {normalizeCarouselCopy(card.heroLabel)}
+                {normalizeCarouselCopy(editorial.primaryMetric.label)}
               </span>
             </p>
+            {editorial.secondaryMetric ? (
+              <p className="overview-top-story-secondary m-0 mt-2 flex flex-col gap-0.5">
+                <span className="overview-top-story-secondary-value">
+                  {editorial.secondaryMetric.value}
+                </span>
+                <span className="overview-top-story-secondary-label">
+                  {normalizeCarouselCopy(editorial.secondaryMetric.label)}
+                </span>
+              </p>
+            ) : null}
           </div>
 
           <div className="min-w-0 flex-1">
@@ -148,7 +170,7 @@ function CarouselInsightCard({
               {editorial.whyItMatters}
             </p>
 
-            <InsightCardMeta card={card} />
+            <InsightCardMeta card={card} showFootnote={editorial.showHonestyFootnote} />
 
             <div className="overview-top-story-actions">
               {card.links[0] ? (
@@ -246,7 +268,7 @@ function EditorialInsightCard({
             ) : null}
           </div>
 
-          <InsightCardMeta card={card} compact={metaCompact} />
+          <InsightCardMeta card={card} compact={metaCompact} showFootnote={editorial.showHonestyFootnote} />
 
           <p className="insight-editorial-why">{editorial.whyItMatters}</p>
         </button>
@@ -328,12 +350,23 @@ function InlineInsightCard({
         >
           <KpiDataPill
             variant="block"
-            value={card.heroValue}
+            value={editorial.primaryMetric.value}
             tone={card.heroTone}
-            label={card.heroLabel}
+            label={editorial.primaryMetric.label}
           />
+          {editorial.secondaryMetric ? (
+            <div className="insight-inline-secondary-metric mt-2">
+              <KpiDataPill
+                variant="block"
+                value={editorial.secondaryMetric.value}
+                tone={card.heroTone}
+                label={editorial.secondaryMetric.label}
+                metricPriority="secondary"
+              />
+            </div>
+          ) : null}
 
-          <InsightCardMeta card={card} compact />
+          <InsightCardMeta card={card} compact showFootnote={editorial.showHonestyFootnote} />
 
           <div className="mt-3">
             <h3 className="insight-card-headline">{editorial.headline}</h3>

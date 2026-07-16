@@ -113,12 +113,12 @@ describe("finding-copy", () => {
     assert.equal(overBenchmarkStatLabel(0.5), "At benchmark");
   });
 
-  it("formats compact card metadata with confidence tier", () => {
+  it("formats compact card metadata with data maturity tier", () => {
     const meta = formatFindingCardMeta(
       "Sample: 65 games over 3 seasons (2023–2026)",
       "Strong",
     );
-    assert.equal(meta, "Sample: 65 games • Confidence: High");
+    assert.equal(meta, "Sample: 65 games • Data maturity: High");
   });
 
   it("keeps paradox language when scoring is clearly under neutral", () => {

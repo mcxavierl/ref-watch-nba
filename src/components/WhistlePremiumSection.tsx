@@ -1,45 +1,36 @@
 import Link from "next/link";
-import {
-  AlertTriangle,
-  Flame,
-  Home,
-  MapPin,
-  Snowflake,
-  TrendingUp,
-} from "lucide-react";
-import { formatSigned } from "@/lib/data";
+import { TrendingUp } from "lucide-react";
+import { ClinicalCard } from "@/components/hub/ClinicalCard";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import { TermHelp } from "@/components/TermHelp";
-import { homeBiasTone } from "@/lib/home-bias";
-import type { CrewHomeBias, CrewWhistlePremium } from "@/lib/types";
-import { formatPremiumLabel } from "@/lib/whistle-premium";
 import { ProvenanceMarker } from "@/components/ProvenanceMarker";
 import { SampleGateBadge } from "@/components/SampleGateBadge";
+import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { formatSigned } from "@/lib/data";
+import { signedDeltaTone } from "@/lib/metric-delight";
+import type { CrewHomeBias, CrewWhistlePremium } from "@/lib/types";
+import { formatPremiumLabel } from "@/lib/whistle-premium";
+
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
+ * and sample-gate provenance metadata.
+ */
 
 function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
   const isHigh = premium.alert === "high_pace";
-  const Icon = isHigh ? Flame : Snowflake;
-  const tone = isHigh
-    ? "border-orange-200 bg-orange-50/80"
-    : "border-sky-200 bg-sky-50/80";
-  const badge = isHigh
-    ? "text-orange-900 bg-orange-100 border-orange-200"
-    : "text-sky-900 bg-sky-100 border-sky-200";
+  const paceLabel = isHigh ? "High pace crew alert" : "Low pace crew alert";
 
   return (
-    <article className={`overflow-hidden rounded-lg border ${tone}`}>
+    <ClinicalCard as="article" className="overflow-hidden">
       <div className="px-4 py-4 sm:px-5">
         <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${badge}`}
-          >
-            <Icon className="size-3.5" aria-hidden />
-            {isHigh ? "High pace crew alert" : "Low pace crew alert"}
-          </span>
+          <StatusBadge verdict="caution" label={paceLabel} />
           {premium.sampleQuality !== "strong" && (
-            <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/35 bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-200">
-              <AlertTriangle className="size-3" aria-hidden />
-              {premium.sampleQuality} sample
-            </span>
+            <StatusBadge
+              verdict="caution"
+              label={`${premium.sampleQuality} sample`}
+              compact
+            />
           )}
           {premium.provenance && (
             <>
@@ -53,26 +44,36 @@ function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-zinc-700">
           Crew adds{" "}
-          <span className="font-mono font-semibold tabular-nums">
+          <StandoutMetricValue
+            tone={signedDeltaTone(premium.scoringPremium)}
+            size="md"
+          >
             {formatPremiumLabel(premium.scoringPremium)}
-          </span>
+          </StandoutMetricValue>
           {premium.provenance && (
             <span className="ml-1">
               <ProvenanceMarker provenance={premium.provenance.scoringPremium} compact />
             </span>
           )}{" "}
-          on scoring ({premium.avgTotalPoints} avg) and{" "}
-          <span className="font-mono font-semibold tabular-nums">
+          on scoring (
+          <span className="tabular-nums">{premium.avgTotalPoints}</span> avg) and{" "}
+          <StandoutMetricValue
+            tone={signedDeltaTone(premium.foulPremium)}
+            size="md"
+          >
             {formatSigned(premium.foulPremium)}
-          </span>{" "}
+          </StandoutMetricValue>{" "}
           on fouls vs league. Gap vs{" "}
           {premium.benchmarkSource === "sportsbook"
             ? "sportsbook total"
             : `${premium.benchmarkTotal} league proxy`}
           :{" "}
-          <span className="font-mono font-semibold tabular-nums">
+          <StandoutMetricValue
+            tone={signedDeltaTone(premium.gapVsBenchmark)}
+            size="md"
+          >
             {formatSigned(premium.gapVsBenchmark)}
-          </span>
+          </StandoutMetricValue>
           {premium.provenance && (
             <span className="ml-1">
               <ProvenanceMarker provenance={premium.provenance.gapVsBenchmark} compact />
@@ -81,18 +82,18 @@ function PaceAlertCard({ premium }: { premium: CrewWhistlePremium }) {
           .
         </p>
         {premium.reunionPremium !== null && premium.reunionGames >= 2 && (
-          <p className="mt-2 text-sm text-zinc-600">
+          <p className="mt-2 text-sm text-primary-muted tabular-nums">
             Exact crew reunion: {formatSigned(premium.reunionPremium)} premium
             over {premium.reunionGames} prior games with these teams.
           </p>
         )}
         {premium.alertReason && (
-          <p className="mt-3 border-t border-black/5 pt-3 text-sm leading-relaxed text-zinc-600">
+          <p className="mt-3 border-t border-border-subtle pt-3 text-sm leading-relaxed text-primary-muted">
             {premium.alertReason}
           </p>
         )}
       </div>
-    </article>
+    </ClinicalCard>
   );
 }
 
@@ -103,20 +104,16 @@ function HomeBiasCard({
   bias: CrewHomeBias;
   basePath?: string;
 }) {
-  const Icon = bias.kind === "home_protector" ? Home : MapPin;
+  const isHomeProtector = bias.kind === "home_protector";
 
   return (
-    <article className="rounded-lg border border-border bg-white px-4 py-3 sm:px-5">
-      <span
-        className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${homeBiasTone(bias.kind)}`}
-      >
-        <Icon className="size-3.5" aria-hidden />
-        {bias.kind === "home_protector"
-          ? "Home protector"
-          : "Road warrior"}
-      </span>
+    <ClinicalCard as="article" className="px-4 py-3 sm:px-5">
+      <StatusBadge
+        verdict={isHomeProtector ? "pass" : "caution"}
+        label={isHomeProtector ? "Home protector" : "Road warrior"}
+      />
       <p className="mt-2 text-sm font-medium text-zinc-900">{bias.headline}</p>
-      <p className="mt-1 text-sm leading-relaxed text-zinc-600">
+      <p className="mt-1 text-sm leading-relaxed text-primary-muted">
         {bias.summary}
       </p>
       <Link
@@ -125,7 +122,7 @@ function HomeBiasCard({
       >
         {bias.homeLabel} crew history →
       </Link>
-    </article>
+    </ClinicalCard>
   );
 }
 
@@ -154,12 +151,10 @@ export function WhistlePremiumSection({
           Whistle premium alerts
         </h2>
         {isPreview && (
-          <span className="rounded-full border border-amber-500/35 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-200">
-            Offseason preview
-          </span>
+          <StatusBadge verdict="caution" label="Offseason preview" compact />
         )}
       </div>
-      <p className="mt-2 text-sm text-zinc-600">
+      <p className="mt-2 text-sm text-primary-muted">
         Crew scoring premium vs league baseline, compared to{" "}
         {oddsSource === "sportsbook"
           ? "sportsbook totals"
@@ -214,36 +209,57 @@ export function GamePremiumStrip({
     sport === "nhl" ? "Goals above average" : "Points above average";
 
   return (
-    <div className="border-t border-border-subtle bg-white px-4 py-3 sm:px-5">
+    <div className="border-t border-border-subtle bg-surface px-4 py-3 sm:px-5">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm text-zinc-700">
         <span className="font-medium">
           <TermHelp id={premiumTerm}>{premiumLabel}</TermHelp>
         </span>
-        <span className="font-mono tabular-nums text-zinc-900">
-          {formatPremiumLabel(premium.scoringPremium)} ·{" "}
-          {formatSigned(premium.foulPremium)} {foulLabel}
+        <span className="tabular-nums text-zinc-900">
+          <StandoutMetricValue
+            tone={signedDeltaTone(premium.scoringPremium)}
+            size="md"
+          >
+            {formatPremiumLabel(premium.scoringPremium)}
+          </StandoutMetricValue>
+          {" · "}
+          <StandoutMetricValue
+            tone={signedDeltaTone(premium.foulPremium)}
+            size="md"
+          >
+            {formatSigned(premium.foulPremium)}
+          </StandoutMetricValue>{" "}
+          {foulLabel}
         </span>
         {premium.provenance && (
           <ProvenanceMarker provenance={premium.provenance.scoringPremium} compact />
         )}
         <span className="text-zinc-400">·</span>
-        <span className="font-mono tabular-nums">
-          {formatSigned(premium.gapVsBenchmark)} vs {benchmarkLabel}
+        <span className="tabular-nums">
+          <StandoutMetricValue
+            tone={signedDeltaTone(premium.gapVsBenchmark)}
+            size="md"
+          >
+            {formatSigned(premium.gapVsBenchmark)}
+          </StandoutMetricValue>{" "}
+          vs {benchmarkLabel}
         </span>
         {premium.provenance && (
           <ProvenanceMarker provenance={premium.provenance.gapVsBenchmark} compact />
         )}
         {premium.alert && (
-          <span className="text-zinc-600">
-            ·{" "}
-            <TermHelp id="pace-alert">
-              {premium.alert === "high_pace" ? "High scoring" : "Low scoring"} signal
-            </TermHelp>
-          </span>
+          <StatusBadge
+            verdict="caution"
+            label={
+              <TermHelp id="pace-alert">
+                {premium.alert === "high_pace" ? "High scoring" : "Low scoring"} signal
+              </TermHelp>
+            }
+            compact
+          />
         )}
       </div>
       {homeBias && homeBias.kind !== "neutral" && (
-        <p className="mt-2 text-sm text-zinc-600">
+        <p className="mt-2 text-sm text-primary-muted">
           <TermHelp id="home-bias">{homeBias.headline}</TermHelp>
           {homeBias.provenance && (
             <span className="ml-1">

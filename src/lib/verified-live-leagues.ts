@@ -25,15 +25,16 @@ export const PRIMARY_LIVE_LEAGUE_IDS = [
   ...PRO_ONLY_LIVE_LEAGUE_IDS,
 ] as const satisfies readonly LeagueId[];
 
-/** NCAA hubs on the overview dashboard — hidden until ingest is production-ready. */
-export const LAUNCHED_NCAA_LEAGUE_IDS = [] as const satisfies readonly LeagueId[];
+/** NCAA hubs on the overview dashboard — phased launch (CBB Big Ten gate first). */
+export const LAUNCHED_NCAA_LEAGUE_IDS = ["cbb"] as const satisfies readonly LeagueId[];
 
 /** @deprecated Alias for LAUNCHED_NCAA_LEAGUE_IDS — college sports live on the overview. */
 export const COLLEGE_LIVE_LEAGUE_IDS = LAUNCHED_NCAA_LEAGUE_IDS;
 
-/** Product catalog includes all verified live leagues. */
+/** Product catalog includes pro leagues plus launched NCAA hubs. */
 export const VERIFIED_LIVE_LEAGUE_IDS = [
   ...PRO_VERIFIED_LIVE_LEAGUE_IDS,
+  ...LAUNCHED_NCAA_LEAGUE_IDS,
 ] as const satisfies readonly LeagueId[];
 
 export function isProVerifiedLiveLeague(leagueId: LeagueId): boolean {
@@ -54,9 +55,9 @@ export function isNcaaConferenceGatedLive(leagueId: LeagueId): boolean {
   return (NCAA_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
 }
 
-/** League is visible in production surfaces. */
+/** League is visible in production surfaces (pro leagues + launched NCAA hubs). */
 export function isVerifiedLiveLeague(leagueId: LeagueId): boolean {
-  return isProVerifiedLiveLeague(leagueId);
+  return isProVerifiedLiveLeague(leagueId) || isCollegeLiveLeague(leagueId);
 }
 
 /** Leagues currently exposed in overview grids, chooser, and sidebar. */

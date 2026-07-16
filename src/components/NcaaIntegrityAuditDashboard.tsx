@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { Clock, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { CBB_LEAGUE_ENTRY, CFB_LEAGUE_ENTRY } from "@/config/leagues";
+import { ClinicalMetricCard } from "@/components/hub/ClinicalMetricCard";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import { NcaaAuditStatusPill } from "@/components/NcaaAuditStatusPill";
 import {
   formatNcaaAuditPillLabel,
@@ -39,42 +41,57 @@ function AuditLeaguePanel({ audit }: { audit: NcaaAuditStatus }) {
             coveragePct={audit.coveragePct}
             auditHref={`${NCAA_INTEGRITY_AUDIT_HREF}#${audit.leagueId}`}
             pendingLabel={hasIngestedData ? audit.pendingLabel : "Awaiting ingest"}
+            verified={audit.verified}
           />
         </div>
         <p className="ncaa-integrity-audit-panel-lead">
-          Registry gate: <strong>{registryEntry.dataVerified === true ? "Released" : "Locked"}</strong>
+          Registry gate:{" "}
+          <StatusBadge
+            verdict={registryEntry.dataVerified === true ? "pass" : "caution"}
+            label={registryEntry.dataVerified === true ? "Released" : "Locked"}
+            compact
+          />
           {" · "}
-          Pipeline: <strong>{audit.verified ? "Verified" : "In review"}</strong>
+          Pipeline:{" "}
+          <StatusBadge
+            verdict={audit.verified ? "pass" : "caution"}
+            label={audit.verified ? "Verified" : "In review"}
+            compact
+          />
         </p>
       </header>
 
       <div className="ncaa-integrity-audit-metrics">
         {hasIngestedData ? (
           <>
-            <div className="ncaa-integrity-audit-metric">
-              <span className="ncaa-integrity-audit-metric-label">Coverage</span>
-              <strong className="ncaa-integrity-audit-metric-value">
-                {formatNcaaAuditPillLabel(audit.coveragePct).replace("Audit: ", "")}
-              </strong>
-            </div>
-            <div className="ncaa-integrity-audit-metric">
-              <span className="ncaa-integrity-audit-metric-label">Games verified</span>
-              <strong className="ncaa-integrity-audit-metric-value">
-                {formatCount(audit.verifiedGames)} / {formatCount(audit.totalGames)}
-              </strong>
-            </div>
-            <div className="ncaa-integrity-audit-metric">
-              <span className="ncaa-integrity-audit-metric-label">Officials verified</span>
-              <strong className="ncaa-integrity-audit-metric-value">
-                {formatCount(audit.verifiedRefs)} / {formatCount(audit.totalRefs)}
-              </strong>
-            </div>
-            <div className="ncaa-integrity-audit-metric">
-              <span className="ncaa-integrity-audit-metric-label">Open failures</span>
-              <strong className="ncaa-integrity-audit-metric-value">
-                {formatCount(audit.failureCount)}
-              </strong>
-            </div>
+            <ClinicalMetricCard
+              label="Coverage"
+              value={formatNcaaAuditPillLabel(audit.coveragePct).replace("Audit: ", "")}
+              provenance={{ source: "NCAA pipeline audit" }}
+            />
+            <ClinicalMetricCard
+              label="Games verified"
+              value={
+                <span className="tabular-nums">
+                  {formatCount(audit.verifiedGames)} / {formatCount(audit.totalGames)}
+                </span>
+              }
+              provenance={{ source: "Game log reconciliation" }}
+            />
+            <ClinicalMetricCard
+              label="Officials verified"
+              value={
+                <span className="tabular-nums">
+                  {formatCount(audit.verifiedRefs)} / {formatCount(audit.totalRefs)}
+                </span>
+              }
+              provenance={{ source: "Official roster reconciliation" }}
+            />
+            <ClinicalMetricCard
+              label="Open failures"
+              value={<span className="tabular-nums">{formatCount(audit.failureCount)}</span>}
+              provenance={{ source: "Automated integrity checks" }}
+            />
           </>
         ) : (
           <p className="ncaa-integrity-audit-awaiting">
@@ -94,8 +111,10 @@ function AuditLeaguePanel({ audit }: { audit: NcaaAuditStatus }) {
       ) : null}
 
       {!hasIngestedData ? null : failures.length > 0 ? (
-        <div className="ncaa-integrity-audit-failures">
-          <h3 className="ncaa-integrity-audit-failures-title">Sample integrity failures</h3>
+        <details className="ncaa-integrity-audit-failures">
+          <summary className="ncaa-integrity-audit-failures-title">
+            Sample integrity failures ({formatCount(audit.failureCount)})
+          </summary>
           <ul className="ncaa-integrity-audit-failure-list">
             {failures.map((failure) => (
               <li key={`${failure.scope}-${failure.id}`} className="ncaa-integrity-audit-failure-item">
@@ -110,7 +129,7 @@ function AuditLeaguePanel({ audit }: { audit: NcaaAuditStatus }) {
               +{formatCount(audit.failureCount - failures.length)} additional checks queued
             </p>
           ) : null}
-        </div>
+        </details>
       ) : (
         <p className="ncaa-integrity-audit-clear">
           <ShieldCheck aria-hidden className="ncaa-integrity-audit-clear-icon" />
@@ -152,10 +171,9 @@ export function NcaaIntegrityAuditDashboard() {
       </section>
 
       <div className="data-source-banner data-source-banner--audit-pending" role="status">
-        <Clock aria-hidden className="data-source-banner-icon" />
+        <StatusBadge verdict="caution" label="College data in review" compact />
         <p className="data-source-banner-text">
-          <strong>College data in review.</strong> NCAA hubs are locked until ingest completes and
-          passes automated verification.
+          NCAA hubs are locked until ingest completes and passes automated verification.
         </p>
       </div>
 

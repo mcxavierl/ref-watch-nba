@@ -5,6 +5,10 @@ import { isCfbSimulatedData, isCfbVerifiedData } from "@/lib/cfb/data-source";
 import { isEplSimulatedData, isEplVerifiedData } from "@/lib/epl/data-source";
 import { isLaligaSimulatedData, isLaligaVerifiedData } from "@/lib/laliga/data-source";
 import {
+  isNhlSimulatedData,
+  isNhlVerifiedData,
+} from "@/lib/nhl/data-source";
+import {
   isNflHybridData,
   isNflSimulatedData,
   isNflVerifiedData,
@@ -68,7 +72,10 @@ function inferNbaVerification(meta: RefStatsFile["meta"]): LeagueVerification {
 }
 
 function inferNhlVerification(meta: RefStatsFile["meta"]): LeagueVerification {
-  const verified = meta.data_verified === true && meta.source === "nhl-api";
+  const verified =
+    meta.data_verified === true &&
+    isNhlVerifiedData(meta.source) &&
+    !isNhlSimulatedData(meta.source);
   return {
     data_verified: verified,
     data_source:
@@ -87,7 +94,7 @@ function inferNflVerification(meta: RefStatsFile["meta"]): LeagueVerification {
     data_verified: verified,
     data_source:
       meta.data_source ??
-      (verified ? "ESPN + nflverse" : "synthetic"),
+      (verified ? "ESPN + nflverse (2000-present)" : "synthetic"),
     canRenderStats: verified,
     verifiedSeasons: verified ? [...meta.seasons] : [],
   };

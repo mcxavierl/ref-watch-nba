@@ -9,23 +9,25 @@ import {
 } from "@/lib/ncaa-conference-gate";
 import type { RefStatsFile } from "@/lib/types";
 
-test("LIVE_NCAA_CONFERENCES includes ACC, SEC, and Big Ten", () => {
-  assert.deepEqual([...LIVE_NCAA_CONFERENCES], ["ACC", "SEC", "Big Ten"]);
+test("LIVE_NCAA_CONFERENCES is Big Ten only for phased CBB launch", () => {
+  assert.deepEqual([...LIVE_NCAA_CONFERENCES], ["Big Ten"]);
 });
 
-test("shouldIngestNcaaGame accepts live-conference matchups", () => {
-  assert.equal(shouldIngestNcaaGame("cbb", "DUKE", "UNC"), true);
-  assert.equal(shouldIngestNcaaGame("cbb", "ALA", "UGA"), true);
+test("shouldIngestNcaaGame accepts Big Ten matchups", () => {
   assert.equal(shouldIngestNcaaGame("cbb", "MICH", "OSU"), true);
+  assert.equal(shouldIngestNcaaGame("cbb", "IND", "PUR"), true);
 });
 
-test("shouldIngestNcaaGame rejects games outside live conferences", () => {
+test("shouldIngestNcaaGame rejects games outside the live conference gate", () => {
+  assert.equal(shouldIngestNcaaGame("cbb", "DUKE", "UNC"), false);
+  assert.equal(shouldIngestNcaaGame("cbb", "ALA", "UGA"), false);
   assert.equal(shouldIngestNcaaGame("cbb", "GONZ", "BYU"), false);
   assert.equal(shouldIngestNcaaGame("cbb", "KU", "BAY"), false);
 });
 
 test("teamInLiveNcaaConference maps registry conferences", () => {
-  assert.equal(teamInLiveNcaaConference("cbb", "DUKE"), true);
+  assert.equal(teamInLiveNcaaConference("cbb", "MICH"), true);
+  assert.equal(teamInLiveNcaaConference("cbb", "DUKE"), false);
   assert.equal(teamInLiveNcaaConference("cbb", "GONZ"), false);
 });
 
@@ -45,8 +47,8 @@ test("filterNcaaRefStats drops refs without live-conference team stats", () => {
     },
     refs: [
       {
-        slug: "acc-ref",
-        name: "ACC Ref",
+        slug: "big-ten-ref",
+        name: "Big Ten Ref",
         number: 1,
         games: 4,
         avgTotalPoints: 140,
@@ -61,8 +63,8 @@ test("filterNcaaRefStats drops refs without live-conference team stats", () => {
             gameId: "1",
             date: "2026-01-01",
             season: "2025-26",
-            homeTeam: "DUKE",
-            awayTeam: "UNC",
+            homeTeam: "MICH",
+            awayTeam: "OSU",
             totalPoints: 140,
             totalFouls: 35,
             overHit: true,
@@ -72,7 +74,7 @@ test("filterNcaaRefStats drops refs without live-conference team stats", () => {
           },
         ],
         teamStats: {
-          DUKE: {
+          MICH: {
             games: 4,
             avgFoulDifferential: 0,
             avgTotalPoints: 140,
@@ -124,6 +126,6 @@ test("filterNcaaRefStats drops refs without live-conference team stats", () => {
 
   const filtered = filterNcaaRefStats(stats, "cbb");
   assert.equal(filtered.refs.length, 1);
-  assert.equal(filtered.refs[0]?.slug, "acc-ref");
-  assert.equal(gameTouchesLiveNcaaConference("cbb", "DUKE", "UNC"), true);
+  assert.equal(filtered.refs[0]?.slug, "big-ten-ref");
+  assert.equal(gameTouchesLiveNcaaConference("cbb", "MICH", "OSU"), true);
 });

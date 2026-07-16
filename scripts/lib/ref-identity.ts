@@ -30,11 +30,21 @@ export interface RefAlias {
  * the same official (shared jersey number, complementary date ranges, or a
  * single unambiguous full-name match for an abbreviated form).
  */
+/**
+ * Audit log (2026-07-15, Priority #5):
+ * - NFL: Pete/Peter Morelli, Ron/Ronald Torbert (#62), Gerry/Gerald Austin merged.
+ * - NOT merged (distinct officials): Jerry Bergman vs Jeff Bergman; Joe vs Justin Larrew.
+ * - EPL: one-game abbreviated fragments (A Moss, S Scott, K Kavanagh, O Oliver) left unmerged.
+ */
 export const REF_NAME_ALIASES: RefAlias[] = [
   // NBA — first-name / spelling differences between NBA Stats and BBR feeds.
   { canonical: "Jacyn Goble", variants: ["John Goble"] },
   // NBA — married-name change; BBR uses the hyphenated form, logs the short one.
   { canonical: "Lauren Holtkamp", variants: ["Lauren Holtkamp-Sterling"] },
+  // NFL — nickname / formal-name splits in ESPN historical feeds (complementary seasons).
+  { canonical: "Peter Morelli", variants: ["Pete Morelli"] },
+  { canonical: "Ronald Torbert", variants: ["Ron Torbert"] },
+  { canonical: "Gerald Austin", variants: ["Gerry Austin"] },
   // EPL — ESPN emits abbreviated "I. Surname" forms alongside full names.
   { canonical: "Anthony Taylor", variants: ["A Taylor"] },
   { canonical: "Craig Pawson", variants: ["C Pawson"] },

@@ -15,3 +15,9 @@ test("ConferenceCoverage DOM markup avoids internal league slugs in ids", () => 
   assert.doesNotMatch(source, /ncaa-coverage-heading-\$\{/);
   assert.doesNotMatch(source, /data-league/);
 });
+
+test("ConferenceCoverage uses Clinical Modern StatusBadge for live rows", () => {
+  const source = readFileSync("src/components/ConferenceCoverage.tsx", "utf8");
+  assert.match(source, /StatusBadge/);
+  assert.match(source, /verdict="pass"/);
+});

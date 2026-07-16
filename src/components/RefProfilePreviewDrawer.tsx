@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState, type MouseEvent } from "react";
 import { ArrowRight, X } from "lucide-react";
+import { ModalPortal } from "@/components/ModalPortal";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
@@ -93,6 +94,7 @@ export function RefProfilePreviewDrawer({
   if (!rendered || !profile) return null;
 
   return (
+    <ModalPortal>
     <div
       className={`ref-preview-drawer-backdrop${visible ? " ref-preview-drawer-backdrop--visible" : ""}`}
       role="presentation"
@@ -222,5 +224,6 @@ export function RefProfilePreviewDrawer({
         </footer>
       </aside>
     </div>
+    </ModalPortal>
   );
 }

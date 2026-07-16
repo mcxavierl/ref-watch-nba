@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
 
@@ -26,9 +27,10 @@ export function CoverageComingSoon({
       </section>
 
       <div className="data-source-banner data-source-banner--preview" role="status">
+        <StatusBadge verdict="caution" label="Coverage coming soon" compact />
         <p className="data-source-banner-text">
-          <strong>Coverage coming soon.</strong> Ref Watch NCAA launches conference by
-          conference. Live hubs currently track key conferences only.
+          Ref Watch NCAA launches conference by conference. Live hubs currently track key
+          conferences only.
         </p>
       </div>
 

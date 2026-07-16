@@ -1,8 +1,19 @@
 import Link from "next/link";
+import { ClinicalCard } from "@/components/hub/ClinicalCard";
+import {
+  REF_CARD_BODY_CLASS,
+  REF_CARD_KICKER_CLASS,
+} from "@/components/hub/RefCard";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import { RefAvatar } from "@/components/RefAvatar";
-import { StandoutFlag } from "@/components/StandoutMetric";
+import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
+import { isPreliminarySample } from "@/lib/data-maturity";
 import type { TeamInsight } from "@/lib/team-insights";
 
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
+ * and sample-gate provenance metadata.
+ */
 export function TeamInsightCards({
   insights,
   basePath = "",
@@ -19,20 +30,21 @@ export function TeamInsightCards({
       <h2 className="section-title">Notable patterns</h2>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {insights.map((insight) => (
-          <li
+          <ClinicalCard
+            as="li"
             key={insight.id}
             className="team-insight-card data-card px-4 py-4"
+            data-insight={insight.category}
           >
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                {insight.title}
-              </p>
-              <StandoutFlag>Pattern</StandoutFlag>
+              <p className={REF_CARD_KICKER_CLASS}>{insight.title}</p>
+              <StatusBadge verdict="caution" label="Pattern" compact />
+              {isPreliminarySample(insight.sampleGames) ? (
+                <PreliminaryDataBadge compact />
+              ) : null}
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-700">
-              {insight.body}
-            </p>
-            <p className="mt-2 text-xs text-zinc-500">
+            <p className={`mt-3 ${REF_CARD_BODY_CLASS}`}>{insight.body}</p>
+            <p className="mt-2 text-xs text-primary-muted tabular-nums">
               {insight.sampleGames} games in sample
             </p>
             {insight.refSlug && insight.refName && (
@@ -49,7 +61,7 @@ export function TeamInsightCards({
                 {insight.refName} profile →
               </Link>
             )}
-          </li>
+          </ClinicalCard>
         ))}
       </ul>
     </section>

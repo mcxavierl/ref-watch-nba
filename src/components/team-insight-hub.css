@@ -1,15 +1,10 @@
-/* Team Insight Hub — clinical modern terminal aesthetic */
+/* Team Insight Hub - Clinical Modern surfaces */
 .team-insight-hub {
   margin-top: var(--space-6);
 }
 
 .team-hub-edge-card {
   margin-bottom: var(--space-6);
-  padding: var(--space-5) var(--space-6);
-  border-radius: 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--border-subtle) 80%, transparent);
-  background: color-mix(in srgb, #1c1c1e 92%, var(--surface) 8%);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--border-subtle) 35%, transparent);
 }
 
 .team-hub-edge-card-grid {
@@ -24,29 +19,17 @@
   }
 }
 
-.team-hub-eyebrow {
-  margin: 0 0 0.5rem;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--text-muted) 85%, #94a3b8);
-}
-
 .team-hub-edge-headline {
   margin: 0;
   font-size: 1.15rem;
   font-weight: 650;
   letter-spacing: -0.02em;
   line-height: 1.35;
-  color: var(--text);
+  color: var(--foreground);
 }
 
 .team-hub-edge-body {
-  margin: 0.65rem 0 0;
-  font-size: 0.88rem;
-  line-height: 1.55;
-  color: color-mix(in srgb, var(--text-muted) 90%, #cbd5e1);
+  margin-top: 0.65rem;
 }
 
 .team-hub-edge-link {
@@ -54,7 +37,7 @@
   margin-top: 0.85rem;
   font-size: 0.84rem;
   font-weight: 600;
-  color: color-mix(in srgb, var(--text) 88%, #e2e8f0);
+  color: var(--ink-secondary);
   text-decoration: none;
 }
 
@@ -73,73 +56,25 @@
   }
 }
 
-.team-hub-metric {
+.team-hub-ref-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
   padding: 0.85rem 1rem;
   border-radius: 0.5rem;
-  border: 1px solid color-mix(in srgb, var(--border-subtle) 65%, transparent);
-  background: color-mix(in srgb, var(--surface) 40%, transparent);
-}
-
-.team-hub-metric-label {
-  margin: 0;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.team-hub-metric-value {
-  margin: 0.35rem 0 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
-  color: var(--text);
-}
-
-.team-hub-metric-detail {
-  margin: 0.2rem 0 0;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.team-hub-badge {
-  padding: 0.85rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid color-mix(in srgb, var(--border-subtle) 65%, transparent);
-  background: color-mix(in srgb, var(--surface) 40%, transparent);
-}
-
-.team-hub-badge--positive {
-  border-color: color-mix(in srgb, #22c55e 30%, var(--border-subtle));
-}
-
-.team-hub-badge--negative {
-  border-color: color-mix(in srgb, #ef4444 30%, var(--border-subtle));
-}
-
-.team-hub-badge-label {
-  margin: 0;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  border: 1px solid var(--clinical-card-border, var(--border-subtle));
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
 }
 
 .team-hub-badge-name {
-  margin: 0.35rem 0 0;
+  margin: 0;
   font-size: 0.92rem;
   font-weight: 650;
-  color: var(--text);
+  color: var(--foreground);
 }
 
 .team-hub-badge-stat {
-  margin: 0.2rem 0 0;
-  font-size: 0.78rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-muted);
+  margin: 0;
 }
 
 .team-hub-layout {
@@ -167,15 +102,12 @@
 @media (min-width: 64rem) {
   .team-hub-aside {
     position: sticky;
-    top: 5.5rem;
+    top: var(--site-scroll-offset, 5.5rem);
   }
 }
 
 .team-hub-aside-card {
   padding: var(--space-4) var(--space-5);
-  border-radius: 0.65rem;
-  border: 1px solid color-mix(in srgb, var(--border-subtle) 75%, transparent);
-  background: color-mix(in srgb, #1c1c1e 88%, var(--surface) 12%);
 }
 
 .team-hub-aside-title {
@@ -183,26 +115,26 @@
   font-size: 1rem;
   font-weight: 650;
   letter-spacing: -0.02em;
-  color: var(--text);
+  color: var(--foreground);
 }
 
 .team-hub-aside-meta {
   margin: 0.35rem 0 0;
   font-size: 0.76rem;
-  color: var(--text-muted);
+  color: var(--muted);
 }
 
 .team-hub-watch-ref {
   margin-top: var(--space-4);
   padding-top: var(--space-4);
-  border-top: 1px solid color-mix(in srgb, var(--border-subtle) 55%, transparent);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .team-hub-watch-ref-name {
   margin: 0;
   font-size: 0.92rem;
   font-weight: 650;
-  color: var(--text);
+  color: var(--foreground);
   text-decoration: none;
 }
 
@@ -215,7 +147,7 @@ a.team-hub-watch-ref-name:hover {
   margin: 0.35rem 0 0;
   font-size: 0.8rem;
   line-height: 1.45;
-  color: var(--text-muted);
+  color: var(--muted);
 }
 
 .team-hub-watch-sparkline {
@@ -228,20 +160,20 @@ a.team-hub-watch-ref-name:hover {
   font-size: 1.05rem;
   font-weight: 650;
   letter-spacing: -0.02em;
-  color: var(--text);
+  color: var(--foreground);
 }
 
 .team-hub-section-lead {
   margin: 0.45rem 0 var(--space-4);
   font-size: 0.84rem;
   line-height: 1.5;
-  color: var(--text-muted);
+  color: var(--muted);
 }
 
 .team-hub-empty {
   margin: 0;
   font-size: 0.88rem;
-  color: var(--text-muted);
+  color: var(--muted);
 }
 
 .team-hub-matrix-group + .team-hub-matrix-group {
@@ -254,7 +186,7 @@ a.team-hub-watch-ref-name:hover {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--text-muted) 80%, #94a3b8);
+  color: var(--muted);
 }
 
 .team-hub-matrix-list {
@@ -262,12 +194,12 @@ a.team-hub-watch-ref-name:hover {
   padding: 0;
   list-style: none;
   border-radius: 0.65rem;
-  border: 1px solid color-mix(in srgb, var(--border-subtle) 70%, transparent);
+  border: 1px solid var(--clinical-card-border, var(--border-subtle));
   overflow: hidden;
 }
 
 .team-hub-matrix-row + .team-hub-matrix-row {
-  border-top: 1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .team-hub-matrix-row-link {
@@ -276,12 +208,12 @@ a.team-hub-watch-ref-name:hover {
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   text-decoration: none;
-  background: color-mix(in srgb, var(--surface) 35%, transparent);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
   transition: background 0.15s ease;
 }
 
 .team-hub-matrix-row-link:hover {
-  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  background: color-mix(in srgb, var(--surface-raised) 70%, var(--surface));
 }
 
 .team-hub-matrix-row-copy {
@@ -293,14 +225,14 @@ a.team-hub-watch-ref-name:hover {
   margin: 0;
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--text);
+  color: var(--foreground);
 }
 
 .team-hub-matrix-ref-meta {
   margin: 0.15rem 0 0;
   font-size: 0.76rem;
   font-variant-numeric: tabular-nums;
-  color: var(--text-muted);
+  color: var(--muted);
 }
 
 .team-hub-sparkline {
@@ -319,27 +251,27 @@ a.team-hub-watch-ref-name:hover {
 }
 
 .team-hub-sparkline--positive .team-hub-sparkline-line {
-  stroke: #22c55e;
+  stroke: var(--semantic-positive);
 }
 
 .team-hub-sparkline--positive .team-hub-sparkline-dot {
-  fill: #22c55e;
+  fill: var(--semantic-positive);
 }
 
 .team-hub-sparkline--negative .team-hub-sparkline-line {
-  stroke: #ef4444;
+  stroke: var(--semantic-negative);
 }
 
 .team-hub-sparkline--negative .team-hub-sparkline-dot {
-  fill: #ef4444;
+  fill: var(--semantic-negative);
 }
 
 .team-hub-sparkline--neutral .team-hub-sparkline-line {
-  stroke: color-mix(in srgb, var(--text-muted) 70%, #94a3b8);
+  stroke: var(--muted);
 }
 
 .team-hub-sparkline--neutral .team-hub-sparkline-dot {
-  fill: color-mix(in srgb, var(--text-muted) 70%, #94a3b8);
+  fill: var(--muted);
 }
 
 .team-hub-alert-list {
@@ -354,16 +286,16 @@ a.team-hub-watch-ref-name:hover {
 .team-hub-alert {
   padding: 0.7rem 0.85rem;
   border-radius: 0.45rem;
-  border: 1px solid color-mix(in srgb, var(--border-subtle) 60%, transparent);
-  background: color-mix(in srgb, var(--surface) 30%, transparent);
+  border: 1px solid var(--clinical-card-border, var(--border-subtle));
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
 }
 
 .team-hub-alert--high {
-  border-color: color-mix(in srgb, #ef4444 35%, var(--border-subtle));
+  border-color: color-mix(in srgb, var(--semantic-negative) 35%, var(--border-subtle));
 }
 
 .team-hub-alert--medium {
-  border-color: color-mix(in srgb, #f59e0b 30%, var(--border-subtle));
+  border-color: color-mix(in srgb, var(--semantic-caution, #b45309) 30%, var(--border-subtle));
 }
 
 .team-hub-alert-title {
@@ -372,14 +304,14 @@ a.team-hub-watch-ref-name:hover {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--text);
+  color: var(--foreground);
 }
 
 .team-hub-alert-body {
   margin: 0.3rem 0 0;
   font-size: 0.8rem;
   line-height: 1.45;
-  color: var(--text-muted);
+  color: var(--muted);
 }
 
 .team-hub-alert-link {
@@ -387,7 +319,7 @@ a.team-hub-watch-ref-name:hover {
   margin-top: 0.45rem;
   font-size: 0.76rem;
   font-weight: 600;
-  color: var(--text);
+  color: var(--foreground);
   text-decoration: none;
 }
 
@@ -399,14 +331,11 @@ a.team-hub-watch-ref-name:hover {
   margin-top: var(--space-8);
 }
 
-html[data-color="dark"]:not([data-contrast="high"]) .team-hub-edge-card,
-html.dark .team-hub-edge-card,
-html[data-color="dark"]:not([data-contrast="high"]) .team-hub-aside-card,
-html.dark .team-hub-aside-card {
-  background: color-mix(in srgb, #141416 92%, var(--surface) 8%);
+.ncaa-audit-status-pill-state {
+  color: var(--muted);
+  font-weight: 500;
 }
 
-html[data-color="dark"]:not([data-contrast="high"]) .team-hub-matrix-row-link,
-html.dark .team-hub-matrix-row-link {
-  background: color-mix(in srgb, #141416 70%, var(--surface) 30%);
+.team-insight-card {
+  border-color: color-mix(in srgb, var(--clinical-card-border) 80%, var(--border));
 }

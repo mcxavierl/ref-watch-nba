@@ -116,10 +116,8 @@ describe("BBR ref×team records", () => {
   });
 
   it("BBR fixture has ref×team pair coverage", () => {
-    if (bbrFixture.stats.pagesFetched > 0) {
-      assert.ok(bbrFixture.stats.refTeamPairs > 1000);
-      assert.equal(bbrFixture.entries.length, 150);
-    }
-    assert.ok(countBbrRefTeamPairs(bbrFixture) >= 1);
+    assert.equal(bbrFixture.entries.length, 150);
+    assert.ok(bbrFixture.stats.refTeamPairs > 1000);
+    assert.equal(countBbrRefTeamPairs(bbrFixture), bbrFixture.stats.refTeamPairs);
   });
 });

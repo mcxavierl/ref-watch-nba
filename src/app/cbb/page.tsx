@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { CbbPreviewBanner } from "@/components/CbbPreviewBanner";
+import { ConferenceCoverage } from "@/components/ConferenceCoverage";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
@@ -110,6 +111,8 @@ export default function HomePage() {
         statsSource={refStats.meta.source}
         assignmentsSource={assignments.source}
       />
+
+      <ConferenceCoverage leagueId="cbb" />
 
       {isOffseason && <OffseasonSlateNotice league="CBB" />}
 

@@ -11,6 +11,7 @@ import { TeamLogo } from "@/components/TeamLogo";
 import {
   formatMatrixTeamBaseline,
   matrixCellAriaLabel,
+  matrixCellDisplayDelta,
   matrixCellKey,
   matrixCellMetricRecord,
   matrixCellMetricGames,
@@ -34,6 +35,9 @@ import {
   type RefTeamMatrix,
   type TeamTopRefEntry,
 } from "@/lib/ref-team-matrix";
+import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
+import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
+import { displayWinRateDelta, formatDeltaPp } from "@/lib/data-maturity";
 import {
   buildMatrixSplitShareLinkText,
   buildMatrixSplitShareText,
@@ -43,7 +47,7 @@ import {
   buildMatrixTeamShareUrl,
 } from "@/lib/matrix-split-share";
 import type { LeagueId } from "@/lib/leagues";
-import { formatBaselineAtsPct, formatBaselinePct, formatCoverRateVsTeam, formatSigned, formatWinRateVsTeam } from "@/lib/stats-utils";
+import { formatBaselineAtsPct, formatBaselinePct, formatSigned } from "@/lib/stats-utils";
 import { foulEdgeTone } from "@/lib/metricTone";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
@@ -186,15 +190,14 @@ function TeamRefRankListItem({
       : foulTone === "negative"
         ? "ref-matrix-delta--negative"
         : "ref-matrix-delta--neutral";
-  const metricRate =
-    viewMode === "ats" ? (entry.atsCoverRate ?? 0) : entry.winRate;
-  const deltaLabelFn =
-    viewMode === "ats" ? formatCoverRateVsTeam : formatWinRateVsTeam;
+  const deltaDisplay = displayWinRateDelta(entry.deltaPts, entry.games);
   const winDeltaLabel =
     teamBaselineGames > 0
-      ? deltaLabelFn(metricRate, teamBaselineRate)
+      ? `${formatDeltaPp(deltaDisplay.displayDelta).replace("pp", " pts vs team")}${
+          deltaDisplay.isAdjusted ? " (proj.)" : ""
+        }`
       : "Baseline n/a";
-  const winDeltaShort = winDeltaLabel.replace(/\s+vs team$/i, "");
+  const winDeltaShort = winDeltaLabel.replace(/\s+\(proj\.\)$/i, "");
   const recordLabel = viewMode === "ats" ? "ATS cover rate" : "Win rate";
   const whistleUnit = whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
 
@@ -217,6 +220,9 @@ function TeamRefRankListItem({
             className="ref-matrix-team-panel-ref-avatar"
           />
           <span className="ref-matrix-team-panel-ref-name">{entry.refName}</span>
+          {deltaDisplay.isPreliminary ? (
+            <PreliminaryDataBadge compact className="ref-matrix-preliminary-badge" />
+          ) : null}
         </Link>
         <RefCompareLink
           leagueId={leagueId}
@@ -229,13 +235,18 @@ function TeamRefRankListItem({
           {teamPanelEntryRecord(entry, viewMode)}
         </span>
         <span
-          className={`ref-matrix-team-panel-win-delta ${deltaClass}`}
+          className={`ref-matrix-team-panel-win-delta ${deltaClass}${
+            deltaDisplay.isAdjusted ? " ref-matrix-delta--adjusted" : ""
+          }`}
           title={`${recordLabel} vs team baseline: ${winDeltaLabel}`}
         >
           {winDeltaShort}
+          {deltaDisplay.isAdjusted ? (
+            <span className="ref-matrix-delta-projection">Calculated projection</span>
+          ) : null}
         </span>
       </span>
-      <span className="ref-matrix-team-panel-games">
+      <span className="ref-matrix-team-panel-games ref-matrix-team-panel-games--primary">
         <VerifiedGamesHint>{entry.games} gp</VerifiedGamesHint>
       </span>
       <span
@@ -667,6 +678,7 @@ export function RefTeamMatrix({
           </summary>
           <div className="ref-matrix-legend">
             <MatrixLegendBlock minGames={minGames} />
+            <DataHonestyFootnote className="ref-matrix-honesty-footnote" />
           </div>
         </details>
       ) : null}
@@ -936,6 +948,11 @@ export function RefTeamMatrix({
                       baselineGames,
                       viewMode,
                     );
+                    const deltaDisplay = matrixCellDisplayDelta(
+                      cell,
+                      baselineRate,
+                      viewMode,
+                    );
                     const record = matrixCellMetricRecord(cell, viewMode);
                     const ariaLabel = cell.thinSample
                       ? `${ref.name} with ${team.label}: ${record} in ${cell.games} games (below ${minGames}-game sample gate)`
@@ -962,35 +979,39 @@ export function RefTeamMatrix({
                           title={ariaLabel}
                           aria-label={ariaLabel}
                         >
+                          <span className="ref-matrix-games ref-matrix-games--primary">
+                            <VerifiedGamesHint>
+                              {matrixCellMetricGames(cell, viewMode)} gp
+                            </VerifiedGamesHint>
+                          </span>
                           <span className="ref-matrix-record">{record}</span>
                           {cell.thinSample ? (
                             <span
                               className="ref-matrix-delta ref-matrix-delta--thin"
                               title={`${matrixCellMetricGames(cell, viewMode)} games, below ${minGames}-game ranking gate`}
                             >
-                              <VerifiedGamesHint>
-                                {matrixCellMetricGames(cell, viewMode)} gp
-                              </VerifiedGamesHint>
+                              Below gate
                             </span>
-                          ) : (
+                          ) : deltaDisplay.isPreliminary ? (
+                            <span className="ref-matrix-cell-badges">
+                              <PreliminaryDataBadge compact />
+                            </span>
+                          ) : null}
+                          {!cell.thinSample ? (
                             <span
-                              className={`ref-matrix-delta ${deltaClass(tone)}`}
+                              className={`ref-matrix-delta ${deltaClass(tone)}${
+                                deltaDisplay.isAdjusted
+                                  ? " ref-matrix-delta--adjusted"
+                                  : ""
+                              }`}
                             >
                               {baselineGames > 0
-                                ? viewMode === "ats"
-                                  ? formatCoverRateVsTeam(
-                                      cell.atsCoverRate ?? 0,
-                                      baselineRate,
-                                    )
-                                  : formatWinRateVsTeam(cell.winRate, baselineRate)
+                                ? `${formatDeltaPp(deltaDisplay.displayDelta).replace("pp", " pts vs team")}${
+                                    deltaDisplay.isAdjusted ? " (proj.)" : ""
+                                  }`
                                 : "Baseline n/a"}
                             </span>
-                          )}
-                          <span className="ref-matrix-games">
-                            <VerifiedGamesHint>
-                              {matrixCellMetricGames(cell, viewMode)} gp
-                            </VerifiedGamesHint>
-                          </span>
+                          ) : null}
                         </Link>
                       </td>
                     );
@@ -1196,6 +1217,7 @@ export function RefTeamMatrix({
             <div className="ref-matrix-legend">
               <MatrixLegendBlock minGames={minGames} />
             </div>
+            <DataHonestyFootnote className="ref-matrix-honesty-footnote" />
             {footerProvenanceNote ? (
               <p className="ref-matrix-footer-provenance">
                 {footerProvenanceNote}{" "}

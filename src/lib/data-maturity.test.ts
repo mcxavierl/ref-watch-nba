@@ -1,0 +1,73 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
+import {
+  BAYESIAN_PRIOR_STRENGTH,
+  bayesianShrinkDelta,
+  dataMaturityScore,
+  dataMaturityTier,
+  displayWinRateDelta,
+  formatDeltaPp,
+  formatSampleSizeLabel,
+  isPreliminarySample,
+  RELIABILITY_FLOOR_GAMES,
+} from "@/lib/data-maturity";
+
+describe("data maturity", () => {
+  it("flags samples below the reliability floor as preliminary", () => {
+    assert.equal(isPreliminarySample(0), false);
+    assert.equal(isPreliminarySample(8), true);
+    assert.equal(isPreliminarySample(14), true);
+    assert.equal(isPreliminarySample(15), false);
+    assert.equal(isPreliminarySample(30), false);
+  });
+
+  it("shrinks large raw deltas toward zero for thin samples", () => {
+    const shrunk = bayesianShrinkDelta(40, 8, BAYESIAN_PRIOR_STRENGTH);
+    assert.ok(shrunk > 0);
+    assert.ok(shrunk < 40);
+    assert.equal(
+      shrunk,
+      40 * (8 / (8 + BAYESIAN_PRIOR_STRENGTH)),
+    );
+  });
+
+  it("returns raw delta once the reliability floor is met", () => {
+    const display = displayWinRateDelta(24.5, RELIABILITY_FLOOR_GAMES);
+    assert.equal(display.rawDelta, 24.5);
+    assert.equal(display.displayDelta, 24.5);
+    assert.equal(display.isPreliminary, false);
+    assert.equal(display.isAdjusted, false);
+  });
+
+  it("returns shrunk delta for preliminary samples", () => {
+    const display = displayWinRateDelta(30, 10);
+    assert.equal(display.isPreliminary, true);
+    assert.equal(display.isAdjusted, true);
+    assert.ok(Math.abs(display.displayDelta) < Math.abs(display.rawDelta));
+  });
+
+  it("maps maturity scores to tier bands", () => {
+    assert.equal(dataMaturityTier(10), "Low Maturity");
+    assert.equal(dataMaturityTier(29), "Low Maturity");
+    assert.equal(dataMaturityTier(30), "Moderate Maturity");
+    assert.equal(dataMaturityTier(59), "Moderate Maturity");
+    assert.equal(dataMaturityTier(60), "High Maturity");
+    assert.equal(dataMaturityTier(95), "High Maturity");
+  });
+
+  it("increases maturity score with sample depth", () => {
+    const thin = dataMaturityScore(8, 20);
+    const moderate = dataMaturityScore(40, 20);
+    const strong = dataMaturityScore(120, 20);
+    assert.ok(thin < moderate);
+    assert.ok(moderate < strong);
+    assert.ok(thin >= 5 && strong <= 100);
+  });
+
+  it("formats sample size and delta labels", () => {
+    assert.equal(formatSampleSizeLabel(1), "1 game");
+    assert.equal(formatSampleSizeLabel(8), "8 games");
+    assert.equal(formatDeltaPp(12.3), "+12.3pp");
+    assert.equal(formatDeltaPp(-4.5), "-4.5pp");
+  });
+});

@@ -345,8 +345,8 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
     run: () =>
       auditFileContains(
         "src/components/hub/ProvenanceIndicator.tsx",
-        /provenance-indicator-tooltip/,
-        "hover tooltip markup",
+        /provenance-indicator-panel|provenance-indicator-tooltip/,
+        "provenance tooltip markup",
       ),
   },
   {
@@ -374,6 +374,122 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "src/app/globals.css",
         /\.status-badge--pass/,
         "status badge pass variant",
+      ),
+  },
+  {
+    name: "NcaaAuditStatusPill delegates to StatusBadge",
+    run: () =>
+      auditFileContains(
+        "src/components/NcaaAuditStatusPill.tsx",
+        /from "@\/components\/hub\/StatusBadge"/,
+        "StatusBadge import in NcaaAuditStatusPill",
+      ),
+  },
+  {
+    name: "College preview banners use StatusBadge",
+    run: () =>
+      auditFileContains(
+        "src/components/CollegePreviewBanner.tsx",
+        /StatusBadge/,
+        "StatusBadge in college preview banner",
+      ),
+  },
+  {
+    name: "NcaaIntegrityAuditDashboard uses ClinicalMetricCard",
+    run: () =>
+      auditFileContains(
+        "src/components/NcaaIntegrityAuditDashboard.tsx",
+        /ClinicalMetricCard/,
+        "ClinicalMetricCard in NCAA audit dashboard",
+      ),
+  },
+  {
+    name: "College hub pages include ConferenceCoverage",
+    run: () => {
+      for (const page of ["src/app/cbb/page.tsx", "src/app/cfb/page.tsx"]) {
+        const content = read(page);
+        if (!content.includes("ConferenceCoverage")) {
+          return {
+            ok: false,
+            message: `ConferenceCoverage missing in ${page}`,
+          };
+        }
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "NcaaIntegrityAuditDashboard uses progressive disclosure for failures",
+    run: () =>
+      auditFileContains(
+        "src/components/NcaaIntegrityAuditDashboard.tsx",
+        /<details className="ncaa-integrity-audit-failures"/,
+        "details accordion for audit failures",
+      ),
+  },
+  {
+    name: "GameSlateCard uses Clinical Modern shell",
+    run: () =>
+      auditFileContains(
+        "src/components/GameSlateCard.tsx",
+        /CLINICAL_CARD_CLASS/,
+        "clinical card on slate cards",
+      ),
+  },
+  {
+    name: "GameSlateCard uses StatusBadge for pace alerts",
+    run: () =>
+      auditFileContains(
+        "src/components/GameSlateCard.tsx",
+        /StatusBadge/,
+        "StatusBadge in GameSlateCard",
+      ),
+  },
+  {
+    name: "GameSlateCard applies semantic delta coloring",
+    run: () =>
+      auditFileContains(
+        "src/components/GameSlateCard.tsx",
+        /signedDeltaTone/,
+        "signedDeltaTone in GameSlateCard",
+      ),
+  },
+  {
+    name: "TeamInsightCards uses StatusBadge instead of StandoutFlag",
+    run: () => {
+      const content = read("src/components/TeamInsightCards.tsx");
+      if (!content.includes("StatusBadge")) {
+        return { ok: false, message: "TeamInsightCards must use StatusBadge" };
+      }
+      if (content.includes("StandoutFlag")) {
+        return {
+          ok: false,
+          message: "TeamInsightCards still imports StandoutFlag",
+        };
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "TeamEdgeSummaryCard uses Clinical Modern hub components",
+    run: () => {
+      const content = read("src/components/team-hub/TeamEdgeSummaryCard.tsx");
+      if (!content.includes("ClinicalCard") || !content.includes("StatusBadge")) {
+        return {
+          ok: false,
+          message: "TeamEdgeSummaryCard must use ClinicalCard and StatusBadge",
+        };
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "WhistlePremiumSection uses StatusBadge",
+    run: () =>
+      auditFileContains(
+        "src/components/WhistlePremiumSection.tsx",
+        /StatusBadge/,
+        "StatusBadge in WhistlePremiumSection",
       ),
   },
 ];

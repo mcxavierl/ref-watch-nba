@@ -1,10 +1,12 @@
 import type { InsightMetricComparison as InsightMetricComparisonData } from "@/lib/insight-editorial";
 import type { KpiDataPillTone } from "@/components/ui/KpiDataPill";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 
 type InsightMetricComparisonProps = {
   comparison: InsightMetricComparisonData;
   compact?: boolean;
   crewImpactTone?: KpiDataPillTone;
+  isAdjusted?: boolean;
 };
 
 const DELTA_BAR_SCALE_PP = 60;
@@ -47,6 +49,7 @@ export function InsightMetricComparison({
   comparison,
   compact = false,
   crewImpactTone = "neutral",
+  isAdjusted = false,
 }: InsightMetricComparisonProps) {
   const isDeltaComparison =
     comparison.deltaPp !== undefined &&
@@ -82,12 +85,22 @@ export function InsightMetricComparison({
         </div>
         {isDeltaComparison ? (
           <div className="insight-metric-comparison-values">
-            <span
-              className="insight-metric-comparison-value insight-metric-comparison-value--delta"
-              data-tone={crewBarTone}
-            >
-              {formatDeltaPp(comparison.deltaPp!)}
-            </span>
+            {isAdjusted ? (
+              <MetricInfoHint
+                hint="Calculated projection"
+                className="insight-metric-comparison-value insight-metric-comparison-value--delta insight-metric-comparison-value--adjusted"
+                panelClassName="insight-metric-comparison-hint-panel"
+              >
+                <span data-tone={crewBarTone}>{formatDeltaPp(comparison.deltaPp!)}</span>
+              </MetricInfoHint>
+            ) : (
+              <span
+                className="insight-metric-comparison-value insight-metric-comparison-value--delta"
+                data-tone={crewBarTone}
+              >
+                {formatDeltaPp(comparison.deltaPp!)}
+              </span>
+            )}
             <span className="insight-metric-comparison-value insight-metric-comparison-value--rate">
               {formatPct(comparison.refWinRate!)}
             </span>

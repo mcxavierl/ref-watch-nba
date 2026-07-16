@@ -15,6 +15,14 @@ import {
 } from "@/components/hub/RefCard";
 import { RefAvatar } from "@/components/RefAvatar";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { DataHonestyFootnote } from "@/components/shared/DataHonestyFootnote";
+import { PreliminaryDataBadge } from "@/components/shared/PreliminaryDataBadge";
+import {
+  displayWinRateDelta,
+  formatDeltaPp,
+  formatSampleSizeLabel,
+  isPreliminarySample,
+} from "@/lib/data-maturity";
 import type { HighlightCardAccent, HighlightCardTone } from "@/lib/highlight-card-visuals";
 import type { LeagueId } from "@/lib/leagues";
 import { statValueDelightTone } from "@/lib/metric-delight";
@@ -34,6 +42,8 @@ export function HighlightStatCard({
   body,
   avatarSport,
   refMeta,
+  sampleGames,
+  rawDeltaPp,
 }: {
   leagueId: LeagueId;
   insightKind: string;
@@ -49,8 +59,33 @@ export function HighlightStatCard({
   body: string;
   avatarSport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   refMeta?: string;
+  sampleGames?: number;
+  rawDeltaPp?: number;
 }) {
-  const metricTone = statValue ? statValueDelightTone(statValue) : "neutral";
+  const usesSplitHierarchy =
+    sampleGames !== undefined &&
+    sampleGames > 0 &&
+    rawDeltaPp !== undefined &&
+    (isPreliminarySample(sampleGames) || statLabel?.toLowerCase().includes("baseline"));
+  const deltaDisplay =
+    usesSplitHierarchy && rawDeltaPp !== undefined
+      ? displayWinRateDelta(rawDeltaPp, sampleGames!)
+      : null;
+  const primaryValue = usesSplitHierarchy
+    ? formatSampleSizeLabel(sampleGames!)
+    : statValue;
+  const primaryLabel = usesSplitHierarchy ? "Sample size" : statLabel;
+  const secondaryValue =
+    usesSplitHierarchy && deltaDisplay
+      ? formatDeltaPp(deltaDisplay.displayDelta)
+      : undefined;
+  const secondaryLabel =
+    usesSplitHierarchy && deltaDisplay?.isAdjusted
+      ? "Calculated projection"
+      : usesSplitHierarchy
+        ? "Win rate delta"
+        : undefined;
+  const metricTone = primaryValue ? statValueDelightTone(primaryValue) : "neutral";
 
   const profile =
     refSlug && refName ? (
@@ -60,7 +95,15 @@ export function HighlightStatCard({
         ) : null}
         <span className="highlight-stat-profile-copy">
           <span className="rankings-insight-name">{refName}</span>
+          {usesSplitHierarchy ? (
+            <span className="highlight-stat-profile-meta highlight-stat-profile-meta--primary">
+              {formatSampleSizeLabel(sampleGames!)}
+            </span>
+          ) : null}
           {refMeta ? <span className="highlight-stat-profile-meta">{refMeta}</span> : null}
+          {deltaDisplay?.isPreliminary ? (
+            <PreliminaryDataBadge compact className="highlight-stat-preliminary-badge" />
+          ) : null}
         </span>
       </Link>
     ) : refName ? (
@@ -81,19 +124,32 @@ export function HighlightStatCard({
         <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
       </div>
       {profile}
-      {statValue ? (
-        <div className="ref-card-metric-block" aria-label={statLabel}>
+      {primaryValue ? (
+        <div className="ref-card-metric-block" aria-label={primaryLabel}>
           <div className={REF_CARD_METRIC_CLASS}>
             <StandoutMetricValue tone={metricTone} size="lg">
-              {statValue}
+              {primaryValue}
             </StandoutMetricValue>
           </div>
-          {statLabel ? (
-            <p className={REF_CARD_METRIC_LABEL_CLASS}>{statLabel}</p>
+          {primaryLabel ? (
+            <p className={REF_CARD_METRIC_LABEL_CLASS}>{primaryLabel}</p>
+          ) : null}
+          {secondaryValue ? (
+            <div className="ref-card-metric-block ref-card-metric-block--secondary">
+              <div className={`${REF_CARD_METRIC_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
+                <StandoutMetricValue tone={metricTone} size="md">
+                  {secondaryValue}
+                </StandoutMetricValue>
+              </div>
+              {secondaryLabel ? (
+                <p className={REF_CARD_METRIC_LABEL_CLASS}>{secondaryLabel}</p>
+              ) : null}
+            </div>
           ) : null}
         </div>
       ) : null}
       <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>{body}</p>
+      {deltaDisplay?.isAdjusted ? <DataHonestyFootnote /> : null}
     </RefCard>
   );
 }

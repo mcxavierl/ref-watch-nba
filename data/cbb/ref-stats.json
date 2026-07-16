@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-15T22:53:47.307Z",
+    "lastUpdated": "2026-07-16T00:21:58.382Z",
     "seasons": [
       "2020-21",
       "2021-22",
@@ -23,7 +23,7 @@
       "earliest": "2020-11-25",
       "latest": "2026-04-07"
     },
-    "note": "Scores, fouls, and referee crews from ESPN (2610 games across 24 tracked programs, 1632 with sportsbook totals). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Matrix: 719/1614 ref×team pairs with 3+ games. 31 games skipped (no officials listed). 1643 games skipped (outside live conference gate). Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs."
+    "note": "Scores, fouls, and referee crews from ESPN (2610 games across 24 tracked programs, 1632 with sportsbook totals). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Matrix: 719/1614 ref×team pairs with 3+ games. 31 games skipped (no officials listed). 1643 games skipped (outside live conference gate). Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs."
   },
   "refs": [
     {

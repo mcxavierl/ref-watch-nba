@@ -35,10 +35,12 @@ export type NcaaConferenceTerritory =
   | "Pac-12"
   | "Other";
 
-/** Audited D-I conferences verified for phased NCAA launch (ACC, SEC, Big Ten). */
+/**
+ * Phased NCAA launch gate — one conference at a time.
+ * Big Ten chosen for CBB launch: 1,039 game logs (most complete power-conference
+ * coverage), 103 refs, and 100% pipeline integrity after conference scoping.
+ */
 export const LIVE_NCAA_CONFERENCES = [
-  "ACC",
-  "SEC",
   "Big Ten",
 ] as const satisfies readonly NcaaConferenceTerritory[];
 

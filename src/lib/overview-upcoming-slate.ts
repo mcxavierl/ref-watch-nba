@@ -30,6 +30,16 @@ export type OverviewLeagueNote = {
   slateDate?: string;
 };
 
+export type OverviewLeagueSlateGroup = {
+  leagueId: LeagueId;
+  leagueLabel: string;
+  leagueShortLabel: string;
+  href: string;
+  liveCount: number;
+  scheduledCount: number;
+  games: OverviewSlateEntry[];
+};
+
 export type OverviewUpcomingSlate = {
   inSeason: boolean;
   hasLiveCrews: boolean;
@@ -37,8 +47,61 @@ export type OverviewUpcomingSlate = {
   totalScheduled: number;
   lastUpdated: string | null;
   games: OverviewSlateEntry[];
+  leagueGroups: OverviewLeagueSlateGroup[];
   leagueNotes: OverviewLeagueNote[];
 };
+
+export function formatLeagueSlateCounts(liveCount: number, scheduledCount: number): string {
+  const parts: string[] = [];
+  if (liveCount > 0) {
+    parts.push(`${liveCount} live`);
+  }
+  if (scheduledCount > 0) {
+    parts.push(`${scheduledCount} scheduled`);
+  }
+  return parts.join(" · ");
+}
+
+function leagueSortOrder(): Map<LeagueId, number> {
+  return new Map<LeagueId, number>(
+    activeLiveLeagueIds().map((id, index) => [id, index]),
+  );
+}
+
+/** Group slate entries by league, preserving live-first ordering within each group. */
+export function groupOverviewSlateByLeague(games: OverviewSlateEntry[]): OverviewLeagueSlateGroup[] {
+  const order = leagueSortOrder();
+  const byLeague = new Map<LeagueId, OverviewSlateEntry[]>();
+
+  for (const game of games) {
+    const list = byLeague.get(game.leagueId) ?? [];
+    list.push(game);
+    byLeague.set(game.leagueId, list);
+  }
+
+  return [...byLeague.entries()]
+    .sort(([a], [b]) => (order.get(a) ?? 0) - (order.get(b) ?? 0))
+    .map(([leagueId, leagueGames]) => {
+      const league = LEAGUES[leagueId];
+      const liveCount = leagueGames.filter((game) => game.status === "live").length;
+      const scheduledCount = leagueGames.filter((game) => game.status === "scheduled").length;
+      const sortedGames = [...leagueGames].sort(
+        (a, b) =>
+          (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1) ||
+          a.matchup.localeCompare(b.matchup),
+      );
+
+      return {
+        leagueId,
+        leagueLabel: league.label,
+        leagueShortLabel: league.shortLabel,
+        href: leagueHubHref(leagueId),
+        liveCount,
+        scheduledCount,
+        games: sortedGames,
+      };
+    });
+}
 
 function assignmentsPath(leagueId: LeagueId): string {
   const root = process.cwd();
@@ -117,9 +180,7 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
     }
   }
 
-  const order = new Map<LeagueId, number>(
-    activeLiveLeagueIds().map((id, index) => [id, index]),
-  );
+  const order = leagueSortOrder();
   games.sort(
     (a, b) =>
       (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1) ||
@@ -129,6 +190,7 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
 
   const liveGames = games.filter((game) => game.status === "live");
   const scheduledGames = games.filter((game) => game.status === "scheduled");
+  const leagueGroups = groupOverviewSlateByLeague(games);
 
   return {
     inSeason: games.length > 0,
@@ -136,7 +198,8 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
     totalGames: liveGames.length,
     totalScheduled: scheduledGames.length,
     lastUpdated,
-    games: games.slice(0, 12),
+    games,
+    leagueGroups,
     leagueNotes,
   };
 }

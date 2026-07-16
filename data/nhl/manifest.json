@@ -1,0 +1,20 @@
+{
+  "data_verified": true,
+  "data_source": "NHL API (api-web.nhle.com)",
+  "last_ingested_at": "2026-07-16T00:20:41.489Z",
+  "game_count": 12282,
+  "seasons": [
+    "2016-17",
+    "2017-18",
+    "2018-19",
+    "2019-20",
+    "2020-21",
+    "2021-22",
+    "2022-23",
+    "2023-24",
+    "2024-25",
+    "2025-26"
+  ],
+  "ref_count": 123,
+  "note": "Officials and scores from NHL API gamecenter endpoints."
+}

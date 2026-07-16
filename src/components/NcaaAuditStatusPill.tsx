@@ -1,7 +1,9 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
-import { Clock } from "lucide-react";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import {
   formatNcaaAuditPillLabel,
+  ncaaAuditVerdict,
   type NcaaAuditPendingLabel,
 } from "@/lib/ncaa-audit-status-display";
 
@@ -12,34 +14,52 @@ type NcaaAuditStatusPillProps = {
   className?: string;
   /** When true, render a non-interactive label (parent card supplies the link). */
   asLabel?: boolean;
+  /** When true, pipeline checks passed at 100% coverage. */
+  verified?: boolean;
 };
 
+function auditBadgeLabel(
+  coveragePct: number,
+  pendingLabel?: NcaaAuditPendingLabel,
+): ReactNode {
+  return (
+    <>
+      <span className="tabular-nums">{formatNcaaAuditPillLabel(coveragePct)}</span>
+      {pendingLabel ? (
+        <span className="ncaa-audit-status-pill-state">{pendingLabel}</span>
+      ) : null}
+    </>
+  );
+}
+
+/**
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
+ * and sample-gate provenance metadata.
+ */
 export function NcaaAuditStatusPill({
   coveragePct,
   auditHref,
   pendingLabel,
   className = "",
   asLabel = false,
+  verified = false,
 }: NcaaAuditStatusPillProps) {
-  const content = (
-    <>
-      <Clock aria-hidden className="ncaa-audit-status-pill-icon" />
-      <span className="ncaa-audit-status-pill-label">
-        {formatNcaaAuditPillLabel(coveragePct)}
-      </span>
-      {pendingLabel ? (
-        <span className="ncaa-audit-status-pill-state">{pendingLabel}</span>
-      ) : null}
-    </>
+  const awaitingIngest = pendingLabel === "Awaiting ingest";
+  const verdict = ncaaAuditVerdict(coveragePct, { verified, awaitingIngest });
+  const pillLabel = formatNcaaAuditPillLabel(coveragePct);
+  const badge = (
+    <StatusBadge
+      verdict={verdict}
+      label={auditBadgeLabel(coveragePct, pendingLabel)}
+      compact
+      className={className}
+    />
   );
 
   if (asLabel) {
     return (
-      <span
-        className={`ncaa-audit-status-pill ncaa-audit-status-pill--static ${className}`.trim()}
-        aria-label={formatNcaaAuditPillLabel(coveragePct)}
-      >
-        {content}
+      <span aria-label={pillLabel} className="inline-flex">
+        {badge}
       </span>
     );
   }
@@ -47,10 +67,10 @@ export function NcaaAuditStatusPill({
   return (
     <Link
       href={auditHref}
-      className={`ncaa-audit-status-pill rw-focus-ring ${className}`.trim()}
-      aria-label={`${formatNcaaAuditPillLabel(coveragePct)}. Open NCAA data integrity audit.`}
+      className="rw-focus-ring inline-flex"
+      aria-label={`${pillLabel}. Open NCAA data integrity audit.`}
     >
-      {content}
+      {badge}
     </Link>
   );
 }

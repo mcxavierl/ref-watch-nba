@@ -3,6 +3,10 @@ import { isCbbSimulatedData } from "@/lib/cbb/data-source";
 import { isCfbSimulatedData } from "@/lib/cfb/data-source";
 import { isEplSimulatedData } from "@/lib/epl/data-source";
 import {
+  isNhlSimulatedData,
+  isNhlVerifiedData,
+} from "@/lib/nhl/data-source";
+import {
   isNflHybridData,
   isNflSimulatedData,
   isNflVerifiedData,
@@ -51,6 +55,18 @@ export function leagueDataSourceBannerMessage(
 
   if (league === "epl" && isEplSimulatedData(meta.source)) {
     return "Historical seeded or partial ESPN sample. Treat foul and goal splits as exploratory until the full match log is verified.";
+  }
+
+  if (league === "nhl") {
+    if (isNhlSimulatedData(meta.source)) {
+      return "Preview dataset with simulated schedules, crews, and lines. Do not treat ref×team or betting stats as verified.";
+    }
+    if (isNhlVerifiedData(meta.source)) {
+      if (meta.atsAvailable) {
+        return "Scores, PIM, and crews from NHL API game logs. ATS/O-U splits use synthetic closing lines derived from final scores. Descriptive only, not market odds.";
+      }
+      return "Scores, PIM, and ref×team W-L from NHL API game logs.";
+    }
   }
 
   if (league === "nfl") {

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { X } from "lucide-react";
+import { ModalPortal } from "@/components/ModalPortal";
 import { MatrixSplitShareBar } from "@/components/MatrixSplitShareBar";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
@@ -126,6 +127,7 @@ export function MatrixTeamFocusDrawer({
   if (!rendered) return null;
 
   return (
+    <ModalPortal>
     <div
       className={`matrix-team-drawer-root${visible ? " matrix-team-drawer-root--open" : ""}`}
       onClick={handleBackdropClick}
@@ -270,5 +272,6 @@ export function MatrixTeamFocusDrawer({
         />
       </aside>
     </div>
+    </ModalPortal>
   );
 }

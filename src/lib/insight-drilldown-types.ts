@@ -47,6 +47,8 @@ export type InsightDrilldownPayload = {
   homeSplit: InsightVenueSplit;
   awaySplit: InsightVenueSplit;
   crewPartners: InsightCrewPartner[];
+  /** League-average total fouls/whistles per game from ref-stats meta when available. */
+  leagueAvgFouls?: number;
 };
 
 export function insightDrilldownId(

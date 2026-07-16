@@ -16,11 +16,13 @@ import {
 } from "../src/lib/game-count";
 import {
   leagueTenSeasons,
-  NFL_TEN_SEASONS,
 } from "../src/lib/league-seasons";
 import type { LeagueId } from "../src/lib/leagues";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "../src/lib/types";
+import { auditRefIdentity } from "./lib/audit-ref-identity";
+import { REF_GAME_COUNT_LEAGUES } from "./fix-ref-game-counts";
 import { canonicalRefKey } from "./lib/ref-identity";
+import { verifyBbrCoverage } from "./lib/verify-bbr-coverage";
 
 const ROOT = process.cwd();
 
@@ -37,7 +39,7 @@ const TEAM_CHECKS: TeamIntegrityCheck[] = [
   {
     league: "nfl",
     team: "LAR",
-    seasons: NFL_TEN_SEASONS,
+    seasons: leagueTenSeasons("nfl"),
     minGames: 150,
     maxGames: 200,
     label: "Rams (LAR) last 10 seasons",
@@ -45,7 +47,7 @@ const TEAM_CHECKS: TeamIntegrityCheck[] = [
   {
     league: "nfl",
     team: "KC",
-    seasons: NFL_TEN_SEASONS,
+    seasons: leagueTenSeasons("nfl"),
     minGames: 150,
     maxGames: 200,
     label: "Chiefs (KC) last 10 seasons",
@@ -144,13 +146,9 @@ const TEAM_SPLITS_PATHS: Partial<Record<LeagueId, string>> = {
   cfb: "data/cfb/team-splits.json",
 };
 
-const REF_STATS_PATHS: Partial<Record<LeagueId, string>> = {
-  nba: "data/ref-stats-core.json",
-  nfl: "data/nfl/ref-stats-core.json",
-};
-
-const NBA_REF_MAX_DRIFT_PCT = 1;
-const NFL_REF_MAX_DRIFT_PCT = 3;
+const REF_STATS_PATHS: Partial<Record<LeagueId, string>> = Object.fromEntries(
+  REF_GAME_COUNT_LEAGUES.map((league) => [league.id, league.corePath]),
+) as Partial<Record<LeagueId, string>>;
 
 const warnings: string[] = [];
 const failures: string[] = [];
@@ -241,6 +239,7 @@ function checkTeamSample(check: TeamIntegrityCheck): void {
 function checkRefGameCounts(
   league: LeagueId,
   maxDriftPct: number,
+  useCanonicalKey: boolean,
 ): void {
   const logs = loadRefGameRows(league);
   const refs = loadRefStats(league);
@@ -252,26 +251,23 @@ function checkRefGameCounts(
   const statsFile = readJson<RefStatsFile>(REF_STATS_PATHS[league]!);
   const seasons = statsFile?.meta.seasons?.length
     ? statsFile.meta.seasons
-    : league === "nba"
-      ? leagueTenSeasons("nba")
-      : league === "nfl"
-        ? NFL_TEN_SEASONS
-        : undefined;
+    : leagueTenSeasons(league);
 
   let mismatches = 0;
   let checked = 0;
+  let refsWithGames = 0;
   const samples: string[] = [];
 
   for (const ref of refs) {
-    const expected =
-      league === "nba"
-        ? countRefGamesFromLogsMatching(
-            logs,
-            (official) =>
-              canonicalRefKey(official.name) === canonicalRefKey(ref.name),
-            seasons,
-          )
-        : countRefGamesFromLogs(logs, ref.slug, seasons);
+    if (ref.games > 0) refsWithGames++;
+    const expected = useCanonicalKey
+      ? countRefGamesFromLogsMatching(
+          logs,
+          (official) =>
+            canonicalRefKey(official.name) === canonicalRefKey(ref.name),
+          seasons,
+        )
+      : countRefGamesFromLogs(logs, ref.slug, seasons);
     if (expected === 0) continue;
     checked++;
     const drift = gameCountDeviationPct(ref.games, expected);
@@ -289,21 +285,56 @@ function checkRefGameCounts(
   console.log(
     `${league.toUpperCase()} ref game counts: checked ${checked}, mismatches ${mismatches} (max ${maxDriftPct}% drift)`,
   );
+  if (refsWithGames > 0 && checked === 0) {
+    warn(
+      `${league}: ${refsWithGames} refs have stored games but none match DISTINCT game_id rows in logs - ref-stats may be stale or from another league`,
+    );
+  }
   if (samples.length > 0) {
     console.log(`  samples: ${samples.join("; ")}`);
   }
 }
 
+function checkBbrFixtureCoverage(): void {
+  const result = verifyBbrCoverage(ROOT);
+  console.log(
+    `BBR ref×team fixture: ${result.entryCount}/150 team-seasons, ${result.refTeamPairs} ref×team pairs` +
+      (result.refTeamWinLossSource
+        ? `, ref-stats overlay=${result.refTeamWinLossSource}`
+        : ""),
+  );
+  for (const msg of result.warnings) warn(msg);
+  for (const msg of result.errors) fail(msg);
+}
+
 function main(): void {
   console.log("Data integrity verification\n");
+
+  checkBbrFixtureCoverage();
+  console.log("");
 
   for (const check of TEAM_CHECKS) {
     checkTeamSample(check);
   }
 
   console.log("");
-  checkRefGameCounts("nba", NBA_REF_MAX_DRIFT_PCT);
-  checkRefGameCounts("nfl", NFL_REF_MAX_DRIFT_PCT);
+  for (const league of REF_GAME_COUNT_LEAGUES) {
+    checkRefGameCounts(
+      league.id as LeagueId,
+      league.maxDriftPct,
+      league.useCanonicalKey,
+    );
+  }
+
+  console.log("");
+  const identityAudit = auditRefIdentity(ROOT);
+  if (identityAudit.findings.length === 0) {
+    console.log("Ref identity audit: no duplicate profiles or reverse-name ghosts");
+  } else {
+    for (const msg of identityAudit.failures) {
+      fail(msg);
+    }
+  }
 
   console.log("");
   if (warnings.length > 0) {
