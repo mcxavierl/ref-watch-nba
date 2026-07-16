@@ -49,8 +49,8 @@ import {
   type NflHistoricalGameLogEntry,
 } from "./lib/nflverse-historical";
 import { homeCoverRate, NflBettingAccumulator } from "./lib/nfl-betting";
-import { enrichGameLogsWithPenaltyEvents } from "./lib/attach-penalty-events";
-import { attachGsniFieldsFromGames } from "../lib/attach-gsni";
+import { enrichGameLogsWithPenaltyEvents, compactGameLogPenaltyPayload } from "./lib/attach-penalty-events";
+import { attachNflGsniFieldsFromGames } from "../lib/attach-gsni";
 import { assertNflIngestValid } from "./lib/validate-ingest";
 import { finalizeNflVerifiedArtifacts } from "./lib/write-season-shards";
 
@@ -616,7 +616,8 @@ async function buildFromEspn(
   );
 
   const enriched = enrichGameLogsWithPenaltyEvents(mergedLogs, DATA_DIR);
-  mergedLogs = enriched.games;
+  const logsForGsni = enriched.games;
+  mergedLogs = compactGameLogPenaltyPayload(enriched.games);
   if (enriched.applied > 0) {
     console.log(
       `Attached play-level penalty events to ${enriched.applied}/${mergedLogs.length} games`,
@@ -773,7 +774,7 @@ async function buildFromEspn(
   }
   refs.sort((a, b) => b.games - a.games);
   dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
-  const refsWithGsni = attachGsniFieldsFromGames(refs, mergedLogs);
+  const refsWithGsni = attachNflGsniFieldsFromGames(refs, logsForGsni);
 
   const teamSplits: Record<string, TeamCrewSplit[]> = {};
   for (const abbr of NFL_TEAM_ABBRS) {
