@@ -37,8 +37,14 @@ export function computeRefTeamMatrix(
     sinceSeason,
     minGames,
     matrixOptions.filterEmptyRows ? 1 : 0,
-    stats.refs.length,
-    teamList.length,
+    stats.refs
+      .map((ref) => ref.slug)
+      .sort()
+      .join(","),
+    teamList
+      .map((team) => team.abbr.toUpperCase())
+      .sort()
+      .join(","),
     stats.meta.lastUpdated,
     stats.refs.reduce((sum, ref) => sum + ref.games, 0),
   ].join("|");

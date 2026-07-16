@@ -21,9 +21,18 @@ import { getTeamSplits } from "@/lib/data";
 import { loadSplitRefStatsFixture } from "@/lib/test-fixtures/split-ref-stats-fixture";
 import { NBA_TEAMS, teamFullName } from "@/lib/teams";
 import type { RefStatsFile } from "@/lib/types";
+import {
+  beginWorkerIsolateRequest,
+  endWorkerIsolateRequest,
+} from "@/lib/worker-isolate-store";
 import statsJson from "../../data/ref-stats.json" with { type: "json" };
 
 const stats = statsJson as RefStatsFile;
+
+function clearMatrixComputeCache(): void {
+  endWorkerIsolateRequest();
+  beginWorkerIsolateRequest();
+}
 
 function buildMatrix() {
   return computeRefTeamMatrix(
@@ -147,6 +156,7 @@ describe("ref-team matrix team panels", () => {
   });
 
   it("hydrates non-NBA baselines from getTeamSplits when core strips teamSplits", () => {
+    clearMatrixComputeCache();
     const { core: eplCore, teamSplits: eplTeamSplits } =
       loadSplitRefStatsFixture("epl");
     const getEplTeamSplits = (abbr: string) =>
