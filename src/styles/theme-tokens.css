@@ -630,14 +630,41 @@ html.dark .dashboard-insight-card:hover {
 
 .whistle-disposition-dual {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 0.5rem;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
   align-items: stretch;
   margin-top: 0.65rem;
+  min-width: 0;
+}
+
+@media (min-width: 560px) {
+  .whistle-disposition-dual {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0.5rem;
+  }
 }
 
 .whistle-disposition-dual--profile {
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1.1fr);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 560px) {
+  .whistle-disposition-dual--profile {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+}
+
+.whistle-disposition-divider {
+  display: none;
+  width: 1px;
+  background: var(--border-subtle);
+  margin: 0.15rem 0;
+}
+
+@media (min-width: 560px) {
+  .whistle-disposition-divider {
+    display: block;
+  }
 }
 
 .ref-whistle-disposition-strip {
@@ -683,11 +710,6 @@ html.dark .dashboard-insight-card:hover {
   vertical-align: middle;
 }
 
-.whistle-disposition-divider {
-  width: 1px;
-  background: var(--border-subtle);
-  margin: 0.15rem 0;
-}
 
 .whistle-disposition-metric {
   display: flex;
@@ -702,6 +724,8 @@ html.dark .dashboard-insight-card:hover {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-muted);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .whistle-disposition-metric-value {
@@ -714,6 +738,8 @@ html.dark .dashboard-insight-card:hover {
 .whistle-disposition-metric-delta {
   font-size: 0.72rem;
   color: var(--text-secondary);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .whistle-disposition-metric--subjective .whistle-disposition-metric-value {

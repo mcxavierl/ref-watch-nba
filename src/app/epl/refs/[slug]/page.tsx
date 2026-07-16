@@ -160,6 +160,7 @@ export default async function EplRefProfilePage({
             <RefBettingProfile
               profile={profile}
               stats={profile.bettingStats}
+              leagueId="epl"
               showMetrics={qualified}
             />
           ) : (

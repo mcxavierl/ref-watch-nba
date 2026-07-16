@@ -155,6 +155,7 @@ export default async function RefProfilePage({
             <RefBettingProfile
               profile={profile}
               stats={profile.bettingStats}
+              leagueId="cbb"
               showMetrics={qualified}
             />
           ) : (
