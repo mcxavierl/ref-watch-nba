@@ -34,6 +34,13 @@ export function formatFindingSampleMeta(
   return `Sample: ${games.toLocaleString()} games over ${seasonCount} season${seasonCount === 1 ? "" : "s"} (${span})`;
 }
 
+/** Compact season count for stat cells (no season list). */
+export function formatRefProfileSeasonCount(seasons: string[]): string {
+  const seasonCount = seasons.length;
+  if (seasonCount === 0) return EMPTY_DISPLAY;
+  return `${seasonCount} season${seasonCount === 1 ? "" : "s"}`;
+}
+
 /** Compact ref profile metadata: games plus season count (no season list). */
 export function formatRefProfileSampleMeta(
   games: number,

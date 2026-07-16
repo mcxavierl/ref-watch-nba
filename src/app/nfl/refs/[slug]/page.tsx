@@ -157,6 +157,7 @@ export default async function NflRefProfilePage({
             <RefBettingProfile
               profile={profile}
               stats={profile.bettingStats}
+              leagueId="nfl"
               showMetrics={qualified}
             />
           ) : (

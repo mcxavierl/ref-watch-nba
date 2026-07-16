@@ -169,6 +169,7 @@ export default async function CfbRefProfilePage({
             <RefBettingProfile
               profile={profile}
               stats={profile.bettingStats}
+              leagueId="cfb"
               showMetrics={qualified}
             />
           ) : (

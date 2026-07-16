@@ -2,6 +2,7 @@ import Link from "next/link";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import type { RefProfile } from "@/lib/types";
 import { formatPct } from "@/lib/data";
+import { formatRefProfileSeasonCount } from "@/lib/finding-copy";
 import { formatSigned } from "@/lib/stats-utils";
 import {
   RefDashboardStatCell,
@@ -68,7 +69,7 @@ export function RefStatGrid({
           />
           <RefDashboardStatCell
             label="Seasons"
-            value={profile.seasons.join(", ")}
+            value={formatRefProfileSeasonCount(profile.seasons)}
           />
         </RefDashboardStatGrid>
       </div>
