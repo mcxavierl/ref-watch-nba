@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-14T00:21:37.982Z",
+  "lastUpdated": "2026-07-16T19:36:10.856Z",
   "league": "NFL",
   "coaches": [
     {
@@ -885,7 +885,7 @@
     {
       "playerId": "cousiki01",
       "name": "Kirk Cousins",
-      "team": "ATL",
+      "team": "MIN",
       "season": "2023-24",
       "usageRank": 1,
       "seasonAvgFoulsDrawn": 0.3,
@@ -905,17 +905,17 @@
     {
       "playerId": "henryde01",
       "name": "Derrick Henry",
-      "team": "BAL",
+      "team": "TEN",
       "season": "2023-24",
       "usageRank": 2,
       "seasonAvgFoulsDrawn": 0.7,
       "starTierPercentile": 96,
-      "gamesSampled": 19
+      "gamesSampled": 17
     },
     {
       "playerId": "taylosa01",
       "name": "Saquon Barkley",
-      "team": "PHI",
+      "team": "NYG",
       "season": "2023-24",
       "usageRank": 2,
       "seasonAvgFoulsDrawn": 0.6,
@@ -965,7 +965,7 @@
     {
       "playerId": "adamada01",
       "name": "Davante Adams",
-      "team": "NYJ",
+      "team": "LV",
       "season": "2023-24",
       "usageRank": 2,
       "seasonAvgFoulsDrawn": 0.3,
@@ -1355,12 +1355,12 @@
     {
       "playerId": "rodgeaa01",
       "name": "Aaron Rodgers",
-      "team": "NYJ",
+      "team": "PIT",
       "season": "2025-26",
       "usageRank": 1,
       "seasonAvgFoulsDrawn": 0.2,
       "starTierPercentile": 99,
-      "gamesSampled": 17
+      "gamesSampled": 18
     },
     {
       "playerId": "purdybr01",
@@ -1465,12 +1465,12 @@
     {
       "playerId": "adamada01",
       "name": "Davante Adams",
-      "team": "NYJ",
+      "team": "PIT",
       "season": "2025-26",
       "usageRank": 2,
       "seasonAvgFoulsDrawn": 0.3,
       "starTierPercentile": 96,
-      "gamesSampled": 17
+      "gamesSampled": 18
     },
     {
       "playerId": "kelcetr01",
@@ -1520,6 +1520,16 @@
       "usageRank": 3,
       "seasonAvgFoulsDrawn": 0.3,
       "starTierPercentile": 93,
+      "gamesSampled": 17
+    },
+    {
+      "playerId": "fieldju01",
+      "name": "Justin Fields",
+      "team": "NYJ",
+      "season": "2025-26",
+      "usageRank": 1,
+      "seasonAvgFoulsDrawn": 0.4,
+      "starTierPercentile": 99,
       "gamesSampled": 17
     }
   ]

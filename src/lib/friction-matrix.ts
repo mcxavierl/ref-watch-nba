@@ -194,6 +194,11 @@ interface Bucket {
   atsWins: number;
   atsLosses: number;
   atsPushes: number;
+  /** Team abbreviations seen in shared games (for display after trades). */
+  teamGameCounts: Record<string, number>;
+  /** Team from the most recent shared game (preferred for display). */
+  latestGameDate?: string;
+  latestTeam?: string;
 }
 
 function emptyBucket(): Bucket {
@@ -205,7 +210,93 @@ function emptyBucket(): Bucket {
     atsWins: 0,
     atsLosses: 0,
     atsPushes: 0,
+    teamGameCounts: {},
   };
+}
+
+function recordTeamGame(bucket: Bucket, team: string, gameDate?: string): void {
+  const abbr = team.toUpperCase();
+  bucket.teamGameCounts[abbr] = (bucket.teamGameCounts[abbr] ?? 0) + 1;
+  if (gameDate && (!bucket.latestGameDate || gameDate >= bucket.latestGameDate)) {
+    bucket.latestGameDate = gameDate;
+    bucket.latestTeam = abbr;
+  }
+}
+
+/** Prefer the most recent team; fall back to the team with the most shared games. */
+export function resolveFrictionSubjectTeam(
+  bucket: Pick<Bucket, "teamGameCounts" | "latestTeam">,
+  fallbackTeam: string,
+): string {
+  if (bucket.latestTeam) return bucket.latestTeam;
+
+  let best = fallbackTeam.toUpperCase();
+  let max = 0;
+  for (const [team, count] of Object.entries(bucket.teamGameCounts)) {
+    if (count > max) {
+      max = count;
+      best = team;
+    }
+  }
+  return best;
+}
+
+export const FRICTION_MATRIX_MAX_FINDINGS = 12;
+export const FRICTION_MAX_FINDINGS_PER_SUBJECT = 2;
+export const FRICTION_MIN_COACH_FINDINGS = 2;
+
+/** Surface a varied mix of coach and player pairings instead of one dominant subject. */
+export function diversifyFrictionFindings(
+  findings: FrictionGrudgeFinding[],
+  options?: {
+    maxTotal?: number;
+    maxPerSubject?: number;
+    minCoaches?: number;
+  },
+): FrictionGrudgeFinding[] {
+  const maxTotal = options?.maxTotal ?? FRICTION_MATRIX_MAX_FINDINGS;
+  const maxPerSubject =
+    options?.maxPerSubject ?? FRICTION_MAX_FINDINGS_PER_SUBJECT;
+  const minCoaches = options?.minCoaches ?? FRICTION_MIN_COACH_FINDINGS;
+
+  const sorted = [...findings].sort((a, b) => b.severity - a.severity);
+  const selected: FrictionGrudgeFinding[] = [];
+  const selectedIds = new Set<string>();
+  const subjectCounts = new Map<string, number>();
+
+  function canAdd(finding: FrictionGrudgeFinding): boolean {
+    return (subjectCounts.get(finding.subjectId) ?? 0) < maxPerSubject;
+  }
+
+  function add(finding: FrictionGrudgeFinding): void {
+    if (selectedIds.has(finding.id)) return;
+    selected.push(finding);
+    selectedIds.add(finding.id);
+    subjectCounts.set(
+      finding.subjectId,
+      (subjectCounts.get(finding.subjectId) ?? 0) + 1,
+    );
+  }
+
+  for (const finding of sorted.filter((row) => row.personnelType === "coach")) {
+    if (selected.length >= maxTotal) break;
+    if (!canAdd(finding)) continue;
+    add(finding);
+    if (
+      selected.filter((row) => row.personnelType === "coach").length >= minCoaches
+    ) {
+      break;
+    }
+  }
+
+  for (const finding of sorted) {
+    if (selected.length >= maxTotal) break;
+    if (selectedIds.has(finding.id)) continue;
+    if (!canAdd(finding)) continue;
+    add(finding);
+  }
+
+  return selected.sort((a, b) => b.severity - a.severity);
 }
 
 function addCoachGame(
@@ -215,6 +306,7 @@ function addCoachGame(
   dataLeague: DataLeague,
 ): void {
   const isHome = game.homeTeam.toUpperCase() === coachTeam.toUpperCase();
+  recordTeamGame(bucket, coachTeam, game.date);
   bucket.games += 1;
   bucket.whistleSum += coachWhistleProxy(game, isHome, dataLeague);
   bucket.teamFoulSum += teamFouls(game, isHome);
@@ -240,6 +332,7 @@ function addPlayerGame(
   dataLeague: DataLeague,
 ): void {
   const isHome = game.homeTeam.toUpperCase() === playerTeam.toUpperCase();
+  recordTeamGame(bucket, playerTeam, game.date);
   bucket.games += 1;
   bucket.teamFoulSum += teamFouls(game, isHome);
   bucket.opponentFoulSum += playerFoulDrawnProxy(game, playerTeam, dataLeague);
@@ -271,7 +364,6 @@ function scanCoachFriction(
   refs: RefProfile[],
   coachBuckets: Map<string, Bucket & { coach: CoachRef; refSlug: string }>,
   refBaselines: Map<string, { whistle: number; fouls: number; ats: number | null }>,
-  leagueBaselineWhistle: number,
   dataLeague: DataLeague,
   leagueId: LeagueId,
 ): FrictionGrudgeFinding[] {
@@ -312,8 +404,10 @@ function scanCoachFriction(
 
     const comparativeLine =
       atsRate !== null && baseline.ats !== null
-        ? `Official averages ${avgWhistle.toFixed(1)} ${metricLabel} and ${formatPct(atsRate)} ATS cover with ${bucket.coach.name}'s team (${bucket.games} games), compared to ${baseline.whistle.toFixed(1)} ${metricLabel} and ${formatPct(baseline.ats)} ref baseline.`
-        : `Official averages ${avgWhistle.toFixed(1)} ${metricLabel} per game with ${bucket.coach.name} on the sideline (${bucket.games} games), compared to a ${leagueBaselineWhistle.toFixed(1)} league baseline and ${baseline.whistle.toFixed(1)} career ref average.`;
+        ? `In ${bucket.games} shared games, this official averages ${avgWhistle.toFixed(1)} ${metricLabel} and ${formatPct(atsRate)} ATS cover with ${bucket.coach.name}'s team. Career baseline with other teams: ${baseline.whistle.toFixed(1)} ${metricLabel} and ${formatPct(baseline.ats)} ATS.`
+        : `In ${bucket.games} shared games, this official averages ${avgWhistle.toFixed(1)} ${metricLabel} with ${bucket.coach.name}'s team. Career baseline: ${baseline.whistle.toFixed(1)} ${metricLabel} per game.`;
+
+    const subjectTeam = resolveFrictionSubjectTeam(bucket, bucket.coach.team);
 
     findings.push({
       id: `coach-friction-${bucket.refSlug}-${bucket.coach.coachId}`,
@@ -322,12 +416,12 @@ function scanCoachFriction(
       refName: ref.name,
       subjectId: bucket.coach.coachId,
       subjectName: bucket.coach.name,
-      teamAbbr: bucket.coach.team,
+      teamAbbr: subjectTeam,
       games: bucket.games,
-      headline: `${ref.name} × ${bucket.coach.name}: elevated whistle pressure on bench unit`,
-      summary: `Across ${bucket.games} head-to-head games, this pairing departs from the official's career baseline on ${metricLabel}, team fouls, and cover rate.`,
+      headline: `${ref.name} with ${bucket.coach.name}: ${whistleDelta >= 0 ? "more" : "fewer"} ${metricLabel} than ref average`,
+      summary: `Coach pairing over ${bucket.games} shared games. Compares whistle volume with this coach's team to the official's career average. Descriptive only, not a prediction.`,
       comparativeLine,
-      pillLabel: "Coach Friction",
+      pillLabel: "Coach pairing",
       metricValue: avgWhistle.toFixed(1),
       baselineValue: baseline.whistle.toFixed(1),
       deltaLabel: `${formatSigned(whistleDelta)} ${metricLabel} vs ref baseline`,
@@ -373,12 +467,14 @@ function scanPlayerFriction(
 
     const pillLabel =
       pattern === "protection"
-        ? "Player Friction · Protection"
-        : "Player Friction · Tightness";
+        ? "Star player · fewer flags"
+        : "Star player · more flags";
     const headline =
       pattern === "protection"
-        ? `${ref.name} × ${bucket.player.name}: fewer whistle benefits than seasonal norm`
-        : `${ref.name} × ${bucket.player.name}: tighter whistle profile than seasonal norm`;
+        ? `${ref.name} with ${bucket.player.name}: fewer opponent flags than season norm`
+        : `${ref.name} with ${bucket.player.name}: more opponent flags than season norm`;
+
+    const subjectTeam = resolveFrictionSubjectTeam(bucket, bucket.player.team);
 
     findings.push({
       id: `player-friction-${bucket.refSlug}-${bucket.player.playerId}`,
@@ -388,11 +484,11 @@ function scanPlayerFriction(
       refName: ref.name,
       subjectId: bucket.player.playerId,
       subjectName: bucket.player.name,
-      teamAbbr: bucket.player.team,
+      teamAbbr: subjectTeam,
       games: bucket.games,
       headline,
-      summary: `Star-player proxy uses ${drawLabel} as a drawn-foul stand-in until full boxscore player splits are ingested.`,
-      comparativeLine: `With ${bucket.player.name} active, this official's games average ${avgDrawnProxy.toFixed(1)} ${drawLabel} (${bucket.games} games) vs ${seasonAvg.toFixed(1)} seasonal baseline, a ${formatSigned(deltaPct)}% shift.`,
+      summary: `Team-level proxy over ${bucket.games} shared games: ${drawLabel} when ${bucket.player.name}'s team plays. Compared to ${bucket.player.name}'s seasonal average until full player box scores are ingested.`,
+      comparativeLine: `${bucket.games} shared games average ${avgDrawnProxy.toFixed(1)} ${drawLabel} vs ${seasonAvg.toFixed(1)} seasonal norm (${formatSigned(deltaPct)}%).`,
       pillLabel,
       metricValue: avgDrawnProxy.toFixed(1),
       baselineValue: seasonAvg.toFixed(1),
@@ -521,23 +617,16 @@ function aggregateFrictionFindings(
     });
   }
 
-  const leagueBaselineWhistle =
-    [...refBaselines.values()].reduce((sum, row) => sum + row.whistle, 0) /
-    Math.max(refBaselines.size, 1);
-
-  return [
+  return diversifyFrictionFindings([
     ...scanCoachFriction(
       stats.refs,
       coachBuckets,
       refBaselines,
-      leagueBaselineWhistle,
       dataLeague,
       leagueId,
     ),
     ...scanPlayerFriction(stats.refs, playerBuckets, dataLeague, leagueId),
-  ]
-    .sort((a, b) => b.severity - a.severity)
-    .slice(0, 12);
+  ]);
 }
 
 /**

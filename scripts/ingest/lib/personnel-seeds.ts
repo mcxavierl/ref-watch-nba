@@ -273,6 +273,26 @@ function coachesFromSeasonMap(
   return Object.entries(map).map(([team, name]) => coach(name, team, season));
 }
 
+/** Season-specific team overrides for traded/moved star players. */
+const NFL_STAR_TEAM_BY_SEASON: Record<
+  string,
+  Partial<Record<(typeof FRICTION_SEASONS)[number], string>>
+> = {
+  rodgeaa01: { "2023-24": "NYJ", "2024-25": "NYJ", "2025-26": "PIT" },
+  adamada01: { "2023-24": "LV", "2024-25": "NYJ", "2025-26": "PIT" },
+  cousiki01: { "2023-24": "MIN", "2024-25": "ATL", "2025-26": "ATL" },
+  henryde01: { "2023-24": "TEN", "2024-25": "BAL", "2025-26": "BAL" },
+  taylosa01: { "2023-24": "NYG", "2024-25": "PHI", "2025-26": "PHI" },
+};
+
+function nflStarTeam(
+  playerId: string,
+  defaultTeam: string,
+  season: (typeof FRICTION_SEASONS)[number],
+): string {
+  return NFL_STAR_TEAM_BY_SEASON[playerId]?.[season] ?? defaultTeam;
+}
+
 export function nflPersonnelSeeds(): { coaches: SeedCoach[]; starPlayers: SeedStar[] } {
   const coaches = FRICTION_SEASONS.flatMap((season) =>
     coachesFromSeasonMap(NFL_COACHES_BY_SEASON[season], season),
@@ -289,24 +309,62 @@ export function nflPersonnelSeeds(): { coaches: SeedCoach[]; starPlayers: SeedSt
       star("hurtsja01", "Jalen Hurts", "PHI", season, 1, 0.5),
       star("stroucj01", "C.J. Stroud", "HOU", season, 1, 0.3),
       star("lawretr01", "Trevor Lawrence", "JAX", season, 1, 0.4),
-      star("rodgeaa01", "Aaron Rodgers", "NYJ", season, 1, 0.2),
+      star(
+        "rodgeaa01",
+        "Aaron Rodgers",
+        nflStarTeam("rodgeaa01", "NYJ", season),
+        season,
+        1,
+        0.2,
+      ),
       star("purdybr01", "Brock Purdy", "SF", season, 1, 0.3),
       star("goffja01", "Jared Goff", "DET", season, 1, 0.2),
-      star("cousiki01", "Kirk Cousins", "ATL", season, 1, 0.3),
+      star(
+        "cousiki01",
+        "Kirk Cousins",
+        nflStarTeam("cousiki01", "ATL", season),
+        season,
+        1,
+        0.3,
+      ),
       star("mccafcm01", "Christian McCaffrey", "SF", season, 2, 0.8),
-      star("henryde01", "Derrick Henry", "BAL", season, 2, 0.7),
-      star("taylosa01", "Saquon Barkley", "PHI", season, 2, 0.6),
+      star(
+        "henryde01",
+        "Derrick Henry",
+        nflStarTeam("henryde01", "BAL", season),
+        season,
+        2,
+        0.7,
+      ),
+      star(
+        "taylosa01",
+        "Saquon Barkley",
+        nflStarTeam("taylosa01", "PHI", season),
+        season,
+        2,
+        0.6,
+      ),
       star("jeffeju01", "Justin Jefferson", "MIN", season, 2, 0.5),
       star("chaseja01", "Ja'Marr Chase", "CIN", season, 2, 0.4),
       star("lambce01", "CeeDee Lamb", "DAL", season, 2, 0.4),
       star("hillty01", "Tyreek Hill", "MIA", season, 2, 0.3),
-      star("adamada01", "Davante Adams", "NYJ", season, 2, 0.3),
+      star(
+        "adamada01",
+        "Davante Adams",
+        nflStarTeam("adamada01", "NYJ", season),
+        season,
+        2,
+        0.3,
+      ),
       star("kelcetr01", "Travis Kelce", "KC", season, 3, 0.5),
       star("andrewa01", "Mark Andrews", "BAL", season, 3, 0.4),
       star("kittlge01", "George Kittle", "SF", season, 3, 0.4),
       star("waddleja01", "Jaylen Waddle", "MIA", season, 3, 0.3),
       star("olavech01", "Chris Olave", "NO", season, 3, 0.3),
     );
+    if (season === "2025-26") {
+      starPlayers.push(star("fieldju01", "Justin Fields", "NYJ", season, 1, 0.4));
+    }
   }
 
   return { coaches, starPlayers };

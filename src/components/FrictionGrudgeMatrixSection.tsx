@@ -1,6 +1,9 @@
 import { FrictionInsightMatrixCard } from "@/components/ClinicalInsightMatrixCard";
 import type { FrictionGrudgeFinding } from "@/lib/friction-grudge-matrix";
-import { FRICTION_MIN_H2H_GAMES } from "@/lib/friction-grudge-matrix";
+import {
+  FRICTION_MAX_FINDINGS_PER_SUBJECT,
+  FRICTION_MIN_H2H_GAMES,
+} from "@/lib/friction-grudge-matrix";
 import type { LeagueId } from "@/lib/leagues";
 
 export function FrictionGrudgeMatrixSection({
@@ -17,14 +20,24 @@ export function FrictionGrudgeMatrixSection({
   if (findings.length === 0) return null;
 
   const minGames = minHeadToHeadGames ?? FRICTION_MIN_H2H_GAMES;
+  const coachCount = findings.filter((row) => row.personnelType === "coach").length;
+  const playerCount = findings.filter(
+    (row) => row.personnelType === "player",
+  ).length;
 
   return (
     <section className="section-block">
-      <h2 className="section-title">Friction &amp; Grudge Matrix</h2>
+      <h2 className="section-title">Official × personnel pairings</h2>
       <p className="section-lead">
-        Referee × head-coach and referee × star-player intersections with at
-        least {minGames} head-to-head games. Descriptive
-        deviations from career baselines only.
+        Shared-game splits where an official&apos;s whistle stats with a specific
+        coach or star player differ from that official&apos;s or player&apos;s
+        usual baseline. Only pairings with at least {minGames} shared games are
+        shown. Descriptive patterns only, not picks.
+      </p>
+      <p className="text-xs text-slate-500">
+        {findings.length} pairing{findings.length === 1 ? "" : "s"} · up to{" "}
+        {FRICTION_MAX_FINDINGS_PER_SUBJECT} cards per person · {coachCount}{" "}
+        coach, {playerCount} star player
       </p>
       <ul className="rankings-insight-grid insight-bento-grid">
         {findings.map((finding) => (

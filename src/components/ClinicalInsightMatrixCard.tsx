@@ -33,6 +33,8 @@ export type ClinicalInsightMatrixCardModel = {
   games: number;
   insightKind: string;
   tone: MetricDelightTone;
+  /** Short category label shown above the subject line. */
+  categoryLabel?: string;
 };
 
 function matrixAvatarSport(leagueId: LeagueId): MatrixAvatarSport | null {
@@ -71,12 +73,25 @@ function metricUnitShort(
   return "calls/game";
 }
 
-function frictionBaselineLine(finding: FrictionGrudgeFinding): string {
+function frictionBaselineLine(
+  finding: FrictionGrudgeFinding,
+  games: number,
+): string {
   const baseline = finding.baselineValue;
+  const sharedGames = `${games} shared game${games === 1 ? "" : "s"}`;
   if (finding.personnelType === "coach") {
-    return `vs ${baseline} ref baseline`;
+    return `vs ${baseline} ref baseline · ${sharedGames}`;
   }
-  return `vs ${baseline} season baseline`;
+  return `vs ${baseline} season baseline · ${sharedGames}`;
+}
+
+function frictionCategoryLabel(finding: FrictionGrudgeFinding): string {
+  return finding.pillLabel;
+}
+
+function frictionSubjectLabel(finding: FrictionGrudgeFinding): string {
+  const role = finding.personnelType === "coach" ? "Coach" : "Star player";
+  return `${role}: ${finding.subjectName} (${finding.teamAbbr})`;
 }
 
 function frictionDeltaTone(
@@ -110,13 +125,14 @@ export function frictionFindingToMatrixCard(
   return {
     refSlug: finding.refSlug,
     refName: finding.refName,
-    subjectLabel: `vs ${finding.subjectName} (${finding.teamAbbr})`,
+    subjectLabel: frictionSubjectLabel(finding),
     subject: { kind: "personnel", name: finding.subjectName, sport },
     deltaDisplay: `${formatSigned(delta)} ${unit}`,
-    baselineLine: frictionBaselineLine(finding),
+    baselineLine: frictionBaselineLine(finding, finding.games),
     games: finding.games,
     insightKind: "friction-matrix",
     tone: frictionDeltaTone(finding, delta),
+    categoryLabel: frictionCategoryLabel(finding),
   };
 }
 
@@ -187,6 +203,12 @@ export function ClinicalInsightMatrixCard({
         </Link>
         <SampleConfidencePill games={model.games} />
       </div>
+
+      {model.categoryLabel ? (
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          {model.categoryLabel}
+        </p>
+      ) : null}
 
       <div className="clinical-insight-matrix-avatars" aria-hidden>
         {refSport ? (
