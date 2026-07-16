@@ -1796,26 +1796,39 @@ p {
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    padding: 0.125rem;
     border-radius: 0.375rem;
     background: var(--logo-plate);
     border: 1px solid var(--logo-plate-border);
     box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 5%, transparent);
+    overflow: hidden;
   }
 
   .team-logo-plate__img {
     display: block;
-    height: 100%;
     width: 100%;
+    height: 100%;
+    padding: 0;
     object-fit: contain;
-    padding: 0.125rem;
+    object-position: center;
+    transform: scale(1.08);
+    transform-origin: center;
   }
 
   .team-logo-plate__fallback {
     font-family: var(--font-data);
-    font-size: 0.625rem;
-    font-weight: 600;
+    font-size: 0.6875rem;
+    font-weight: 700;
     line-height: 1;
     color: var(--ink-secondary);
+  }
+
+  /* Optical boost for marks that read small inside the square plate */
+  .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
+  .team-logo-plate[data-sport="epl"] .team-logo-plate__img,
+  .team-logo-plate[data-sport="laliga"] .team-logo-plate__img {
+    transform: scale(1.14);
   }
 
   /* ── Game card crew chips & O/U badge ── */
@@ -7598,7 +7611,7 @@ p {
     border: 1px solid color-mix(in srgb, var(--border-subtle) 55%, #000);
     border-radius: 0.625rem;
     background: #000;
-    padding: 0.35rem;
+    padding: 0.2rem;
     color: inherit;
     cursor: pointer;
     box-shadow: 0 1px 3px color-mix(in srgb, #000 35%, transparent);
@@ -7673,9 +7686,9 @@ p {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 3.5rem !important;
-    height: 3.5rem !important;
-    padding: 0.55rem;
+    width: 4rem !important;
+    height: 4rem !important;
+    padding: 0.2rem;
     border-radius: 0.625rem;
     background: #ececf0;
     border: 1px solid color-mix(in srgb, var(--border-subtle) 55%, #fff);
@@ -7688,7 +7701,13 @@ p {
   }
 
   .ref-matrix-team-panel-logo .team-logo-plate__img {
-    padding: 0.2rem;
+    transform: scale(1.08);
+  }
+
+  .ref-matrix-team-panel-logo.team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
+  .ref-matrix-team-panel-logo.team-logo-plate[data-sport="epl"] .team-logo-plate__img,
+  .ref-matrix-team-panel-logo.team-logo-plate[data-sport="laliga"] .team-logo-plate__img {
+    transform: scale(1.14);
   }
 
   .ref-matrix-team-panel-copy {
@@ -8325,7 +8344,7 @@ p {
   .ref-matrix-logo-row .ref-matrix-team-head {
     top: 0;
     z-index: var(--z-raised);
-    min-width: 4rem;
+    min-width: 4.5rem;
     padding: var(--space-2) 0.45rem;
     text-align: center;
     vertical-align: middle;
@@ -8419,12 +8438,18 @@ p {
   .ref-matrix-logo-row .team-logo-plate {
     background: #ececf0;
     border-color: color-mix(in srgb, var(--border-subtle) 60%, #fff);
-    padding: 0.3rem;
+    padding: 0.15rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
   }
 
   .ref-matrix-logo-row .team-logo-plate__img {
-    padding: 0.12rem;
+    transform: scale(1.08);
+  }
+
+  .ref-matrix-logo-row .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
+  .ref-matrix-logo-row .team-logo-plate[data-sport="epl"] .team-logo-plate__img,
+  .ref-matrix-logo-row .team-logo-plate[data-sport="laliga"] .team-logo-plate__img {
+    transform: scale(1.14);
   }
 
   .ref-matrix-ref-link {

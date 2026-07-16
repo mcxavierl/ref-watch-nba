@@ -493,8 +493,7 @@
 }
 
 .ref-matrix--matrix-first .ref-matrix-logo-row .team-logo-plate {
-  transform: scale(0.92);
-  transform-origin: center;
+  transform: none;
 }
 
 .ref-matrix-info-footer {

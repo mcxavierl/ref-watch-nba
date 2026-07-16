@@ -16,10 +16,10 @@ type TeamLike = Pick<NbaTeam | NhlTeam, "abbr" | "name"> & {
 };
 
 const sizeClasses = {
-  sm: "h-5 w-5",
-  md: "h-7 w-7",
-  lg: "h-10 w-10",
-  xl: "h-12 w-12",
+  sm: "h-6 w-6",
+  md: "h-8 w-8",
+  lg: "h-11 w-11",
+  xl: "h-14 w-14",
 } as const;
 
 export function TeamLogo({
@@ -56,6 +56,8 @@ export function TeamLogo({
     return (
       <span
         className={plateClass}
+        data-sport={sport}
+        data-size={size}
         aria-label={`${team.abbr} logo`}
       >
         <span className="team-logo-plate__fallback">{team.abbr}</span>
@@ -64,7 +66,7 @@ export function TeamLogo({
   }
 
   return (
-    <span className={plateClass}>
+    <span className={plateClass} data-sport={sport} data-size={size}>
       {/* eslint-disable-next-line @next/next/no-img-element -- onError fallback to abbr badge */}
       <img
         src={logoSrc}
