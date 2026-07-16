@@ -2,24 +2,29 @@ import Link from "next/link";
 import { ClinicalCard } from "@/components/hub/ClinicalCard";
 import {
   REF_CARD_BODY_CLASS,
+  REF_CARD_CLASS,
   REF_CARD_KICKER_CLASS,
 } from "@/components/hub/RefCard";
-import { StatusBadge } from "@/components/hub/StatusBadge";
 import { RefAvatar } from "@/components/RefAvatar";
+import { TeamLogo } from "@/components/TeamLogo";
 import type { TeamInsight } from "@/lib/team-insights";
 
 /**
- * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
- * and sample-gate provenance metadata.
+ * CLINICAL MODERN STANDARD: Must use tabular-nums, dual-avatar headers when a ref
+ * is linked, and sample-gate provenance metadata.
  */
 export function TeamInsightCards({
   insights,
   basePath = "",
   sport = "nba",
+  teamAbbr,
+  teamLabel,
 }: {
   insights: TeamInsight[];
   basePath?: string;
   sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  teamAbbr: string;
+  teamLabel: string;
 }) {
   if (insights.length === 0) return null;
 
@@ -31,28 +36,39 @@ export function TeamInsightCards({
           <ClinicalCard
             as="li"
             key={insight.id}
-            className="team-insight-card data-card px-4 py-4"
+            className={`team-insight-card ${REF_CARD_CLASS} border-slate-800 px-4 py-4`}
             data-insight={insight.category}
           >
-            <div className="flex flex-wrap items-center gap-2">
-              <p className={REF_CARD_KICKER_CLASS}>{insight.title}</p>
-              <StatusBadge verdict="caution" label="Pattern" compact />
-            </div>
+            <p className={REF_CARD_KICKER_CLASS}>{insight.title}</p>
+
+            {insight.refSlug && insight.refName ? (
+              <div className="clinical-insight-matrix-avatars mt-3" aria-hidden>
+                <RefAvatar
+                  name={insight.refName}
+                  slug={insight.refSlug}
+                  sport={sport}
+                  size="lg"
+                  decorative
+                />
+                <span className="clinical-insight-matrix-vs">vs</span>
+                <TeamLogo
+                  team={{ abbr: teamAbbr, name: teamLabel }}
+                  sport={sport}
+                  size="xl"
+                  className="clinical-insight-matrix-team-logo"
+                />
+              </div>
+            ) : null}
+
             <p className={`mt-3 ${REF_CARD_BODY_CLASS}`}>{insight.body}</p>
-            <p className="mt-2 text-xs text-primary-muted tabular-nums">
+            <p className="mt-2 text-sm text-slate-500 tabular-nums">
               {insight.sampleGames} games in sample
             </p>
             {insight.refSlug && insight.refName && (
               <Link
                 href={`${basePath}/refs/${insight.refSlug}`}
-                className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-zinc-900 hover:text-raptors hover:underline"
+                className="clinical-insight-matrix-ref-name rankings-insight-name mt-3 inline-block transition hover:text-raptors"
               >
-                <RefAvatar
-                  name={insight.refName}
-                  slug={insight.refSlug}
-                  sport={sport}
-                  size="sm"
-                />
                 {insight.refName} profile →
               </Link>
             )}

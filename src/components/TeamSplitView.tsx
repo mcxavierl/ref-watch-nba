@@ -1,17 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ChevronDown,
-  Target,
-  TrendingDown,
-  TrendingUp,
-  Trophy,
-  Volume2,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
-import { MetricBlock, MetricGrid } from "@/components/MetricBlock";
+import { ClinicalCard } from "@/components/hub/ClinicalCard";
+import {
+  REF_CARD_CLASS,
+  REF_CARD_METRIC_CLASS,
+  StatComparison,
+} from "@/components/hub/RefCard";
 import { RefAvatar } from "@/components/RefAvatar";
+import {
+  NeutralDivergenceBar,
+  StandoutMetricValue,
+} from "@/components/StandoutMetric";
+import { TeamLogo } from "@/components/TeamLogo";
 import { TermHelp } from "@/components/TermHelp";
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
@@ -38,6 +42,50 @@ import type { TeamSampleRecord } from "@/lib/teamRecord";
 import type { RefProfile, TeamCrewSplit } from "@/lib/types";
 
 type SplitView = "crew" | "ref";
+
+function TeamSplitMetricGrid({ children }: { children: ReactNode }) {
+  return (
+    <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+      {children}
+    </div>
+  );
+}
+
+function TeamSplitMetricColumn({
+  label,
+  value,
+  tone,
+  comparison,
+  detail,
+  showNeutralBar = false,
+}: {
+  label: ReactNode;
+  value: string;
+  tone: "positive" | "negative" | "neutral";
+  comparison?: string;
+  detail?: string;
+  showNeutralBar?: boolean;
+}) {
+  return (
+    <div className="team-split-metric clinical-metric-card flex flex-col gap-1.5 px-4 py-4 sm:px-5">
+      <span className="ref-card-metric-label text-sm font-medium text-zinc-600">
+        {label}
+      </span>
+      <div className={REF_CARD_METRIC_CLASS}>
+        <StandoutMetricValue tone={tone} size="lg" className="tabular-nums">
+          {value}
+        </StandoutMetricValue>
+      </div>
+      {comparison ? (
+        <StatComparison className="text-sm text-slate-500">{comparison}</StatComparison>
+      ) : null}
+      {detail ? (
+        <p className="text-sm text-slate-500 tabular-nums">{detail}</p>
+      ) : null}
+      {showNeutralBar && tone === "neutral" ? <NeutralDivergenceBar /> : null}
+    </div>
+  );
+}
 
 function TeamCrewSortBar({
   value,
@@ -118,12 +166,15 @@ function TeamSplitCard({
   const scoreTone = scoringDeltaTone(split.totalDelta);
 
   return (
-    <article className="data-card overflow-hidden">
-      <div className="border-b border-border bg-gradient-to-r from-zinc-50 to-white px-4 py-4 sm:px-5">
+    <ClinicalCard
+      as="article"
+      className={`team-crew-split-card ${REF_CARD_CLASS} overflow-hidden border-slate-800`}
+    >
+      <div className="border-b border-border px-4 py-4 sm:px-5">
         <h2 className="text-base font-semibold leading-snug text-zinc-900">
           {split.crewNames.join(" · ")}
         </h2>
-        <p className="mt-1 text-sm text-zinc-600">
+        <p className="mt-1 text-sm text-slate-500 tabular-nums">
           <VerifiedGamesHint>
             {split.games} games
           </VerifiedGamesHint>
@@ -131,35 +182,30 @@ function TeamSplitCard({
         </p>
       </div>
 
-      <MetricGrid>
-        <MetricBlock
-          icon={split.totalDelta >= 0 ? TrendingUp : TrendingDown}
-          iconClassName={scoreTone === "positive" ? "text-emerald-600" : scoreTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+      <TeamSplitMetricGrid>
+        <TeamSplitMetricColumn
           label="Scoring"
           value={`${split.avgTotalPoints} avg`}
-          hint={`${formatPct(split.overRate)} over ${overBaseline} pts`}
-          badge={`${formatSigned(split.totalDelta)} vs league`}
-          badgeTone={scoreTone}
+          tone={scoreTone}
+          comparison={`${formatSigned(split.totalDelta)} vs league`}
+          detail={`${formatPct(split.overRate)} over ${overBaseline} pts`}
         />
-        <MetricBlock
-          icon={Trophy}
-          iconClassName={winTone === "positive" ? "text-emerald-600" : winTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+        <TeamSplitMetricColumn
           label="Record"
           value={`${split.wins}-${split.losses}`}
-          hint={`${formatPct(crewWinRate)} win rate`}
-          badge={formatWinRateVsTeam(crewWinRate, teamRecord.winRate)}
-          badgeTone={winTone}
+          tone={winTone}
+          comparison={formatWinRateVsTeam(crewWinRate, teamRecord.winRate)}
+          detail={`${formatPct(crewWinRate)} win rate`}
         />
-        <MetricBlock
-          icon={Volume2}
-          iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+        <TeamSplitMetricColumn
           label={<TermHelp id="foul-edge">Whistle differential</TermHelp>}
           value={`${formatSigned(split.foulDifferential)} vs avg`}
-          hint={`${split.avgFouls} fouls/game (${formatSigned(foulsDelta)} vs league)`}
-          badge={`${teamAbbr} ${split.avgTeamFouls} · opp ${split.avgOpponentFouls}`}
-          badgeTone={foulTone}
+          tone={foulTone}
+          comparison={`${split.avgFouls} fouls/game (${formatSigned(foulsDelta)} vs league)`}
+          detail={`${teamAbbr} ${split.avgTeamFouls} · opp ${split.avgOpponentFouls}`}
+          showNeutralBar
         />
-      </MetricGrid>
+      </TeamSplitMetricGrid>
 
       <details className="group border-t border-border-subtle">
         <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium text-zinc-700 hover:bg-zinc-50 sm:px-5">
@@ -198,7 +244,7 @@ function TeamSplitCard({
           );
         })}
       </div>
-    </article>
+    </ClinicalCard>
   );
 }
 
@@ -226,63 +272,67 @@ function TeamRefSplitCard({
   const winTone = winRateTone(entry.winRate, teamRecord.winRate);
   const foulTone = foulEdgeTone(entry.avgFoulDifferential);
   const scoreTone = scoringDeltaTone(totalDelta);
+  const teamBaselinePct =
+    teamRecord.games > 0 ? formatPct(teamRecord.winRate) : "n/a";
 
   return (
-    <article className="data-card overflow-hidden">
-      <div className="border-b border-border bg-gradient-to-r from-zinc-50 to-white px-4 py-4 sm:px-5">
-        <div className="flex items-center gap-3">
-          <RefAvatar
-            name={entry.name}
-            slug={entry.slug}
-            sport={sport}
-            size="md"
-          />
-          <div>
-            <h2 className="text-base font-semibold leading-snug text-zinc-900">
-              <Link
-                href={`${basePath}/refs/${entry.slug}`}
-                className="transition hover:text-raptors"
-              >
-                {entry.name}
-              </Link>
-            </h2>
-            <p className="mt-1 text-sm text-zinc-600">
-              <VerifiedGamesHint>{entry.games} games</VerifiedGamesHint> with {teamLabel} · ~{wins}-{entry.games - wins}
-            </p>
-          </div>
-        </div>
+    <ClinicalCard
+      as="article"
+      className={`team-ref-split-card ${REF_CARD_CLASS} overflow-hidden border-slate-800`}
+    >
+      <Link
+        href={`${basePath}/refs/${entry.slug}`}
+        className="clinical-insight-matrix-ref-name rankings-insight-name px-4 pt-4 sm:px-5"
+      >
+        {entry.name}
+      </Link>
+
+      <div className="clinical-insight-matrix-avatars px-4 sm:px-5" aria-hidden>
+        <RefAvatar
+          name={entry.name}
+          slug={entry.slug}
+          sport={sport}
+          size="lg"
+          decorative
+        />
+        <span className="clinical-insight-matrix-vs">vs</span>
+        <TeamLogo
+          team={{ abbr: teamAbbr, name: teamLabel }}
+          sport={sport}
+          size="xl"
+          className="clinical-insight-matrix-team-logo"
+        />
       </div>
 
-      <MetricGrid>
-        <MetricBlock
-          icon={Trophy}
-          iconClassName={winTone === "positive" ? "text-emerald-600" : winTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+      <p className="clinical-insight-matrix-subject px-4 sm:px-5">
+        <VerifiedGamesHint>{entry.games} games</VerifiedGamesHint> with {teamLabel} · ~{wins}-
+        {entry.games - wins}
+      </p>
+
+      <TeamSplitMetricGrid>
+        <TeamSplitMetricColumn
           label="Win rate"
           value={formatPct(entry.winRate)}
-          hint={`Team baseline ${teamRecord.games > 0 ? formatPct(teamRecord.winRate) : "n/a"}`}
-          badge={formatWinRateVsTeam(entry.winRate, teamRecord.winRate)}
-          badgeTone={winTone}
+          tone={winTone}
+          comparison={formatWinRateVsTeam(entry.winRate, teamRecord.winRate)}
+          detail={`vs team baseline ${teamBaselinePct}`}
         />
-        <MetricBlock
-          icon={Target}
-          iconClassName={scoreTone === "positive" ? "text-emerald-600" : scoreTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+        <TeamSplitMetricColumn
           label="Totals"
           value={`${entry.avgTotalPoints} avg`}
-          hint={`${formatPct(entry.overRate)} over ${overBaseline}`}
-          badge={`${formatSigned(totalDelta)} vs league`}
-          badgeTone={scoreTone}
+          tone={scoreTone}
+          comparison={`${formatSigned(totalDelta)} vs league`}
+          detail={`${formatPct(entry.overRate)} over ${overBaseline}`}
         />
-        <MetricBlock
-          icon={Volume2}
-          iconClassName={foulTone === "positive" ? "text-emerald-600" : foulTone === "negative" ? "text-rose-600" : "text-zinc-500"}
+        <TeamSplitMetricColumn
           label={<TermHelp id="foul-edge">Whistle differential</TermHelp>}
           value={formatSigned(entry.avgFoulDifferential)}
-          hint={`More fouls on ${teamLabel}'s opponents when positive`}
-          badge={foulTone === "positive" ? `${teamAbbr} tendency` : foulTone === "negative" ? "Opponent tendency" : "Balanced"}
-          badgeTone={foulTone}
+          tone={foulTone}
+          detail={`More fouls on ${teamLabel}'s opponents when positive`}
+          showNeutralBar
         />
-      </MetricGrid>
-    </article>
+      </TeamSplitMetricGrid>
+    </ClinicalCard>
   );
 }
 

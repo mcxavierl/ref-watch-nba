@@ -455,16 +455,25 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "TeamInsightCards uses StatusBadge instead of StandoutFlag",
+    name: "TeamInsightCards uses Clinical Modern hub components",
     run: () => {
       const content = read("src/components/TeamInsightCards.tsx");
-      if (!content.includes("StatusBadge")) {
-        return { ok: false, message: "TeamInsightCards must use StatusBadge" };
+      if (!content.includes("ClinicalCard") || !content.includes("REF_CARD_CLASS")) {
+        return {
+          ok: false,
+          message: "TeamInsightCards must use ClinicalCard and REF_CARD_CLASS",
+        };
       }
       if (content.includes("StandoutFlag")) {
         return {
           ok: false,
           message: "TeamInsightCards still imports StandoutFlag",
+        };
+      }
+      if (/Balanced/.test(content)) {
+        return {
+          ok: false,
+          message: "TeamInsightCards must not render Balanced labels",
         };
       }
       return { ok: true };

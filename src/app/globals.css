@@ -4778,6 +4778,33 @@ p {
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--border) 80%, transparent);
   }
 
+  .team-ref-split-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1rem 1.05rem 0.95rem;
+  }
+
+  .team-ref-split-card .team-split-metric {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .team-crew-split-card .team-split-metric {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .metric-delight-neutral-bar {
+    margin-top: 0.15rem;
+  }
+
   .rankings-insight-grid--hero {
     margin-top: 0;
     display: grid;

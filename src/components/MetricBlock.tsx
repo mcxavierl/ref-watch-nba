@@ -9,6 +9,7 @@ import {
   StatusBadge,
   badgeToneToVerdict,
 } from "@/components/hub";
+import { NeutralDivergenceBar } from "@/components/StandoutMetric";
 
 /**
  * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
@@ -82,7 +83,10 @@ export function MetricBlock({
         <p className="text-sm leading-snug text-primary-muted">{hint}</p>
       )}
       {badge &&
-        (useStatusBadge && typeof badge === "string" ? (
+        (typeof badge === "string" &&
+        /^balanced$/i.test(badge.trim()) ? (
+          <NeutralDivergenceBar className="max-w-[8rem]" />
+        ) : useStatusBadge && typeof badge === "string" ? (
           <StatusBadge
             verdict={badgeToneToVerdict(badgeTone)}
             label={badge}

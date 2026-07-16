@@ -181,7 +181,13 @@ export function TeamCrewPage({
         )}
       </section>
 
-      <TeamInsightCards insights={teamInsights} basePath={basePath} sport={league} />
+      <TeamInsightCards
+        insights={teamInsights}
+        basePath={basePath}
+        sport={league}
+        teamAbbr={team.abbr}
+        teamLabel={teamLabel}
+      />
 
       {splits.length === 0 && refSplits.length === 0 ? (
         <div className="panel-inset px-6 py-8 text-center">

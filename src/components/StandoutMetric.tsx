@@ -61,17 +61,21 @@ export function StandoutMetricBar({
   magnitude,
   maxMagnitude,
   tone = "neutral",
+  hideLabel = false,
 }: {
   label: ReactNode;
   magnitude: number;
   maxMagnitude: number;
   tone?: MetricDelightTone;
+  hideLabel?: boolean;
 }) {
   const widthPct = Math.min(100, Math.round((magnitude / maxMagnitude) * 100));
 
   return (
     <div className={metricDelightClass(tone, "bar")}>
-      <span className="metric-delight-bar-label">{label}</span>
+      {!hideLabel ? (
+        <span className="metric-delight-bar-label">{label}</span>
+      ) : null}
       <span className="metric-delight-bar-track" aria-hidden>
         <span
           className={metricDelightClass(tone, "bar-fill")}
@@ -79,6 +83,16 @@ export function StandoutMetricBar({
         />
       </span>
     </div>
+  );
+}
+
+/** Neutral divergence indicator - no label, slate track only. */
+export function NeutralDivergenceBar({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`metric-delight-neutral-bar h-1.5 w-full max-w-[10rem] rounded-full bg-slate-800 ${className}`.trim()}
+      aria-hidden
+    />
   );
 }
 

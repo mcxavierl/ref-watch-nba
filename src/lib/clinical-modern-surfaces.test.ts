@@ -18,11 +18,24 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /StandoutMetricValue/);
   });
 
-  it("TeamInsightCards replaces StandoutFlag with StatusBadge", () => {
+  it("TeamSplitView uses Clinical Modern metrics without Balanced pills", () => {
+    const source = readSrc("src/components/TeamSplitView.tsx");
+    assert.match(source, /REF_CARD_CLASS/);
+    assert.match(source, /StandoutMetricValue/);
+    assert.match(source, /NeutralDivergenceBar/);
+    assert.match(source, /clinical-insight-matrix-avatars/);
+    assert.doesNotMatch(source, /Balanced/);
+    assert.doesNotMatch(source, /MetricBlock/);
+  });
+
+  it("TeamInsightCards uses Clinical Modern card shell", () => {
     const source = readSrc("src/components/TeamInsightCards.tsx");
-    assert.match(source, /StatusBadge/);
     assert.match(source, /ClinicalCard/);
+    assert.match(source, /REF_CARD_CLASS/);
+    assert.match(source, /clinical-insight-matrix-avatars/);
     assert.doesNotMatch(source, /StandoutFlag/);
+    assert.doesNotMatch(source, /StatusBadge/);
+    assert.doesNotMatch(source, /Balanced/);
   });
 
   it("NcaaAuditStatusPill delegates to shared StatusBadge", () => {
