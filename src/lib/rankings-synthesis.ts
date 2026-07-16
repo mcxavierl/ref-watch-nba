@@ -458,7 +458,7 @@ export function buildRankingsSynthesis(
   const leagueSummary =
     qualified.length > 0
       ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} trend toward higher scoring. ${lowScoring.length} trend lower. Past match tendencies - not predictions.`
-      : `Not enough matches in the sample yet. Turn on “Show thin samples” below to browse everyone.`;
+      : `Not enough qualified officials in this scope yet. Use the rankings table toggle to include refs below the ${min}-game gate.`;
 
   return {
     headline: "Top highlights",

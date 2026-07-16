@@ -41,6 +41,7 @@ import {
 } from "@/lib/syndication";
 import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
 import {
+  FINDINGS_SORT_EXPLAINER,
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
@@ -119,7 +120,7 @@ export default function HomePage() {
         initialVisibleCount={4}
         title={isOffseason ? "Season highlights" : "Officiating intelligence"}
         league="CBB"
-        sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
+        sortExplainer={FINDINGS_SORT_EXPLAINER}
       />
 
       <section className="slate-quick-links">

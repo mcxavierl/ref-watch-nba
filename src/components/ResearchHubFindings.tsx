@@ -130,7 +130,8 @@ export function ResearchHubFindings({
               <p className="section-lead">
                 {countFeedCards(feed)} official insight card
                 {countFeedCards(feed) === 1 ? "" : "s"} from {refCount} officials.
-                Strong-confidence patterns appear first; thin samples at the bottom.
+                Strong- and moderate-confidence patterns only, ranked by effect
+                size.
               </p>
             </div>
             <ResearchProViewToggle />

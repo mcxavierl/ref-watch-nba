@@ -127,7 +127,7 @@ export type MatrixRefSort = "name-asc" | "standout-desc" | "total-delta-desc";
 
 export const MATRIX_DEFAULT_REF_SORT: MatrixRefSort = "standout-desc";
 
-export const MATRIX_STANDOUT_SORT_EXPLAINER = `Most standout ranks refs by qualified splits (≥${MATRIX_MIN_GAMES} games per cell) that diverge from that team's sample baseline by ±${MATRIX_EXTREME_DELTA_PTS} percentage points or more. Thicker samples break ties; thin-only rows sink to the bottom.`;
+export const MATRIX_STANDOUT_SORT_EXPLAINER = `Most standout ranks refs by qualified splits (≥${MATRIX_MIN_GAMES} games per cell) that diverge from that team's sample baseline by ±${MATRIX_EXTREME_DELTA_PTS} percentage points or more. Thicker samples break ties; refs with only thin cells rank after qualified rows.`;
 
 export const MATRIX_REF_SORT_OPTIONS: {
   value: MatrixRefSort;

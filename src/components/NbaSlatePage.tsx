@@ -43,6 +43,7 @@ import {
 } from "@/lib/syndication";
 import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
 import {
+  FINDINGS_SORT_EXPLAINER,
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
@@ -139,7 +140,7 @@ export async function NbaSlatePage({
         showScopeToggle
         scopeLeagueId="nba"
         scopeLabel={`${scoped.scopeLabel} · ${scoped.formatRange(scoped.stats.meta)}`}
-        sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
+        sortExplainer={FINDINGS_SORT_EXPLAINER}
       />
 
       {!isOffseason && (

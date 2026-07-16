@@ -36,6 +36,7 @@ import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
 import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
 import { buildLeagueUpcomingSlateFromAssignments } from "@/lib/overview-upcoming-slate";
 import {
+  FINDINGS_SORT_EXPLAINER,
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
@@ -121,7 +122,7 @@ export default async function NflHomePage() {
         initialVisibleCount={4}
         title={isOffseason ? "Season highlights" : "Officiating intelligence"}
         league="NFL"
-        sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
+        sortExplainer={FINDINGS_SORT_EXPLAINER}
       />
 
       <SuperBowlOfficiatingSection variant="home" limit={4} />

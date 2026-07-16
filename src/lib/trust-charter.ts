@@ -38,4 +38,12 @@ export const NHL_LINESMAN_METHODOLOGY_NOTE =
 
 export const FINDINGS_HUB_TITLE = "Dataset findings";
 
+/** Default lead on league home findings sections (non-slate hero). */
+export const FINDINGS_SECTION_LEAD =
+  "Strong- and moderate-confidence patterns only. Ranked by effect size within each tier.";
+
+/** Sorting note under featured findings on league hubs and slate pages. */
+export const FINDINGS_SORT_EXPLAINER =
+  "Strong-confidence patterns first, then moderate. Within each tier, ranked by effect size and sample depth.";
+
 export const TONIGHT_SIGNALS_TITLE = "Tonight's officiating signals";

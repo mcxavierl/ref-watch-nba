@@ -121,7 +121,7 @@ export function DynamicInsightPill({
   if (!hasMultiple) {
     return (
       <div
-        className={`inline-flex max-w-full items-center gap-1.5 rounded-full border bg-[var(--bg-surface-2)] px-2.5 py-1.5 ${tone.border} ${className}`}
+        className={`inline-flex max-w-full items-center gap-1.5 rounded-full border bg-[var(--bg-surface-2)] px-4 py-1.5 ${tone.border} ${className}`}
         title={`${current.badgeText}: ${current.metric} - ${current.description}`}
       >
         {pillBody}
@@ -133,7 +133,7 @@ export function DynamicInsightPill({
     <>
       <button
         type="button"
-        className={`rw-focus-visible inline-flex max-w-full items-center gap-1.5 rounded-full border bg-[var(--bg-surface-2)] px-2.5 py-1.5 text-left transition-[border-color,background-color,box-shadow] duration-200 ease-out hover:border-[var(--accent-brand)] hover:bg-[color-mix(in_srgb,var(--accent-brand)_10%,var(--bg-surface-2))] ${tone.border} ${className}`}
+        className={`rw-focus-visible inline-flex max-w-full items-center gap-1.5 rounded-full border bg-[var(--bg-surface-2)] px-4 py-1.5 text-left transition-[border-color,background-color,box-shadow] duration-200 ease-out hover:border-[var(--accent-brand)] hover:bg-[color-mix(in_srgb,var(--accent-brand)_10%,var(--bg-surface-2))] ${tone.border} ${className}`}
         onClick={cycle}
         aria-label={`${current.badgeText}: ${current.metric}. ${current.description}${positionLabel}${actionHint}`}
         aria-controls={liveRegionId}

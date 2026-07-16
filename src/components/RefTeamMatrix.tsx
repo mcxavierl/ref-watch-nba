@@ -1100,8 +1100,8 @@ export function RefTeamMatrix({
                       ? "ATS cover rate vs baseline"
                       : "win rate vs baseline"
                     : `${whistleDiffLabel.toLowerCase()} (positive = fewer on your team)`}
-                  . {minGames}+ games required for top/bottom lists; thinner
-                  samples appear below.
+                  . Only {minGames}+ game splits qualify for these lists; thin
+                  samples are excluded.
                 </p>
               </div>
             </div>

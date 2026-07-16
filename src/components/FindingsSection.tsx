@@ -17,6 +17,7 @@ import {
   researchHubHref,
   sortFindingsByStrength,
 } from "@/lib/findings-shared";
+import { FINDINGS_SECTION_LEAD } from "@/lib/trust-charter";
 
 export function FindingCard({
   finding,
@@ -116,10 +117,7 @@ export function FindingsSection({
             <p className="slate-findings-hero-lead">{sectionLead}</p>
           )}
           {!slateHero && (
-            <p className="section-lead">
-              Strong-confidence patterns first, then moderate and thin samples.
-              Ranked by effect size within each tier.
-            </p>
+            <p className="section-lead">{FINDINGS_SECTION_LEAD}</p>
           )}
           {sortExplainer && (
             <p className={slateHero ? "slate-findings-hero-note" : "mt-2 text-sm text-zinc-500"}>
