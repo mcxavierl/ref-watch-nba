@@ -8,41 +8,46 @@ export interface LaligaTeam {
 /** Clubs appearing in La Liga match logs (2016–2026). */
 export const LALIGA_TEAMS: LaligaTeam[] = [
   { abbr: "ALA", name: "Alavés", city: "Alavés", espnId: 96 },
-  { abbr: "ALM", name: "Almería", city: "Almería", espnId: 3752 },
+  { abbr: "ALM", name: "Almería", city: "Almería", espnId: 6832 },
   { abbr: "ATH", name: "Athletic Club", city: "Athletic", espnId: 93 },
   { abbr: "ATM", name: "Atlético Madrid", city: "Atlético", espnId: 1068 },
   { abbr: "BAR", name: "Barcelona", city: "Barcelona", espnId: 83 },
   { abbr: "BET", name: "Real Betis", city: "Betis", espnId: 244 },
-  { abbr: "CAD", name: "Cádiz", city: "Cádiz", espnId: 3750 },
+  { abbr: "CAD", name: "Cádiz", city: "Cádiz", espnId: 3842 },
   { abbr: "CEL", name: "Celta Vigo", city: "Celta", espnId: 85 },
   { abbr: "DEP", name: "Deportivo La Coruña", city: "Deportivo", espnId: 90 },
-  { abbr: "EIB", name: "Eibar", city: "Eibar", espnId: 3753 },
+  { abbr: "EIB", name: "Eibar", city: "Eibar", espnId: 3752 },
   { abbr: "ELC", name: "Elche", city: "Elche", espnId: 3751 },
   { abbr: "ESP", name: "Espanyol", city: "Espanyol", espnId: 88 },
   { abbr: "GET", name: "Getafe", city: "Getafe", espnId: 2922 },
-  { abbr: "GIR", name: "Girona", city: "Girona", espnId: 3754 },
-  { abbr: "GRN", name: "Granada", city: "Granada", espnId: 3755 },
-  { abbr: "HUE", name: "Huesca", city: "Huesca", espnId: 3756 },
-  { abbr: "LEG", name: "Leganés", city: "Leganés", espnId: 3757 },
+  { abbr: "GIR", name: "Girona", city: "Girona", espnId: 9812 },
+  { abbr: "GRN", name: "Granada", city: "Granada", espnId: 3747 },
+  { abbr: "HUE", name: "Huesca", city: "Huesca", espnId: 5413 },
+  { abbr: "LEG", name: "Leganés", city: "Leganés", espnId: 17534 },
   { abbr: "LEV", name: "Levante", city: "Levante", espnId: 1538 },
-  { abbr: "LPA", name: "Las Palmas", city: "Las Palmas", espnId: 3758 },
+  { abbr: "LPA", name: "Las Palmas", city: "Las Palmas", espnId: 98 },
   { abbr: "MCF", name: "Málaga", city: "Málaga", espnId: 99 },
-  { abbr: "MLL", name: "Mallorca", city: "Mallorca", espnId: 3759 },
+  { abbr: "MLL", name: "Mallorca", city: "Mallorca", espnId: 84 },
   { abbr: "OSA", name: "Osasuna", city: "Osasuna", espnId: 97 },
-  { abbr: "OVI", name: "Real Oviedo", city: "Oviedo", espnId: 3760 },
+  { abbr: "OVI", name: "Real Oviedo", city: "Oviedo", espnId: 92 },
   { abbr: "RAY", name: "Rayo Vallecano", city: "Rayo", espnId: 101 },
   { abbr: "RMA", name: "Real Madrid", city: "Real Madrid", espnId: 86 },
   { abbr: "RSO", name: "Real Sociedad", city: "Real Sociedad", espnId: 89 },
   { abbr: "SEV", name: "Sevilla", city: "Sevilla", espnId: 243 },
-  { abbr: "SPO", name: "Sporting Gijón", city: "Sporting", espnId: 3761 },
+  { abbr: "SPO", name: "Sporting Gijón", city: "Sporting", espnId: 3788 },
   { abbr: "VAL", name: "Valencia", city: "Valencia", espnId: 94 },
   { abbr: "VIL", name: "Villarreal", city: "Villarreal", espnId: 102 },
-  { abbr: "VLL", name: "Real Valladolid", city: "Valladolid", espnId: 3762 },
+  { abbr: "VLL", name: "Real Valladolid", city: "Valladolid", espnId: 95 },
 ];
 
 export const LALIGA_TEAM_ABBRS = LALIGA_TEAMS.map((t) => t.abbr);
 
 const teamByAbbr = new Map(LALIGA_TEAMS.map((t) => [t.abbr, t]));
+
+/** Game-log abbreviations that differ from the canonical registry key. */
+const ABBR_ALIASES: Record<string, string> = {
+  GRA: "GRN",
+};
 
 const FOOTBALL_DATA_ALIASES: Record<string, string> = {
   alaves: "ALA",
@@ -79,7 +84,8 @@ const FOOTBALL_DATA_ALIASES: Record<string, string> = {
 };
 
 export function getTeam(abbr: string): LaligaTeam | undefined {
-  return teamByAbbr.get(abbr.toUpperCase());
+  const key = ABBR_ALIASES[abbr.toUpperCase()] ?? abbr.toUpperCase();
+  return teamByAbbr.get(key);
 }
 
 export function getTeamOrThrow(abbr: string): LaligaTeam {
