@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { setCachedGameLogs } from "@/lib/game-logs-preload";
 import {
   buildNcaaConferenceCoverageRows,
   countDistinctGamesByConference,
+  getConferenceCoverageRows,
   ncaaConferenceMaturityLabel,
   ncaaConferenceMaturityTier,
 } from "@/lib/ncaa-conference-coverage";
+import { beginWorkerIsolateRequest } from "@/lib/worker-isolate-store";
 
 describe("ncaa conference coverage maturity", () => {
   it("maps game counts to partial, building, and live tiers", () => {
@@ -43,5 +46,34 @@ describe("ncaa conference coverage maturity", () => {
     );
     assert.equal(rows.find((r) => r.conferenceId === "Big 12")?.label, "Partial");
     assert.equal(rows.find((r) => r.conferenceId === "ACC")?.label, "Live");
+  });
+
+  it("reads hydrated CBB game logs when data/ is unavailable on Workers", () => {
+    beginWorkerIsolateRequest();
+    setCachedGameLogs("CBB", {
+      lastUpdated: "2026-07-16T00:00:00.000Z",
+      league: "CBB",
+      source: "ESPN",
+      games: Array.from({ length: 600 }, (_, index) => ({
+        gameId: `acc-${index}`,
+        date: "2025-01-01",
+        season: "2024-25",
+        league: "CBB",
+        homeTeam: "DUKE",
+        awayTeam: "UNC",
+        homeScore: 70,
+        awayScore: 68,
+        totalPoints: 138,
+        totalFouls: 36,
+        closingTotal: 140,
+        homeSpread: -3,
+        lineSource: "synthetic",
+        officials: [],
+      })),
+    });
+
+    const rows = getConferenceCoverageRows("cbb");
+    assert.equal(rows.find((row) => row.conferenceId === "ACC")?.maturity, "Live");
+    assert.equal(rows.find((row) => row.conferenceId === "ACC")?.distinctGames, 600);
   });
 });
