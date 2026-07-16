@@ -53,7 +53,7 @@ test("CBB opengraph uses hub renderer with ref-focused copy", () => {
   assert.match(ogPage, /renderHubOgImage/);
   assert.match(ogPage, /cbbHubOgContent/);
   const heroCopy = readFileSync("src/lib/league-hero-copy.ts", "utf8");
-  assert.match(heroCopy, /College basketball refs, season opens soon/);
+  assert.match(heroCopy, /College basketball officiating analytics/);
 });
 
 test("CBB clinical offseason landing uses dedicated components", () => {

@@ -101,7 +101,7 @@ export const LEAGUE_HERO_COPY: Record<
   cbb: {
     kicker: "Men's college hoops",
     liveTitle: "Who's calling fouls on campus tonight.",
-    offseasonTitle: "College basketball refs, season opens soon.",
+    offseasonTitle: "College basketball officiating analytics.",
     liveLead:
       "Referee assignments and whistle tendencies across D-I, with conference context on every team page.",
     offseasonLead:
