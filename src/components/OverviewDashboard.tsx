@@ -5,7 +5,6 @@ import { LeagueChooser } from "@/components/LeagueChooser";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewHistoricalLeaders } from "@/components/OverviewHistoricalLeaders";
-import { OverviewOiiMovers } from "@/components/OverviewOiiMovers";
 import { OverviewUpcomingSlateSection } from "@/components/OverviewUpcomingSlateSection";
 import {
   DashboardBodyLayout,
@@ -119,7 +118,6 @@ export function OverviewDashboard({
       </div>
 
       <div className="overview-dashboard-breathe overview-dashboard-breathe--tight">
-        <OverviewOiiMovers snapshot={data.oiiMovers} />
         <OverviewHistoricalLeaders refs={data.allRefs} />
       </div>
 

@@ -12,7 +12,6 @@ import {
   syncRefGameCountsFromLogs,
   type SyncRefGameCountsResult,
 } from "./fix-ref-game-counts";
-import { enrichAllLeagueCachedOii } from "./lib/enrich-oii-scores";
 
 export interface SyncRefStatsFromLogsResult {
   nba: SyncNbaRefStatsResult;
@@ -23,7 +22,6 @@ export function syncRefStatsFromLogs(root?: string): SyncRefStatsFromLogsResult 
   const r = root ?? process.cwd();
   const nba = syncNbaRefStatsFromLogs(r);
   const otherLeagues = syncRefGameCountsFromLogs(r, { skipLeagues: ["nba"] });
-  enrichAllLeagueCachedOii(r);
   return { nba, otherLeagues };
 }
 

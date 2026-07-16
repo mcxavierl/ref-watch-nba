@@ -5,12 +5,7 @@ import { RefAvatar } from "@/components/RefAvatar";
 import { RefereeWhistleDispositionStrip } from "@/components/RefereeWhistleDispositionStrip";
 import { RefereeWhistleMetricToggle } from "@/components/RefereeWhistleMetricToggle";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
-import {
-  OiiInsufficientBadge,
-  OiiRadialGauge,
-} from "@/components/OiiRadialGauge";
 import { buildRefMasterInsights } from "@/lib/ref-master-insights";
-import { resolveOiiForRef } from "@/lib/officiating-intelligence-index";
 import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
 import { isWhistleTaxonomyLeague } from "@/config/penalty-types";
 import type { LeagueId } from "@/lib/leagues";
@@ -50,12 +45,6 @@ export function RefereeMasterCard({
 }: RefereeMasterCardProps) {
   const insights = buildRefMasterInsights(leagueId, profile, stats, qualified);
   const whistleIndex = qualified ? whistleIndexFromRefProfile(profile) : null;
-  const oii = qualified
-    ? resolveOiiForRef(profile, {
-        leagueAvgFouls: stats.meta.leagueAvgFouls,
-        preferCache: true,
-      })
-    : null;
 
   return (
     <header className="page-profile-header">
@@ -82,16 +71,11 @@ export function RefereeMasterCard({
             />
           </div>
           <DynamicInsightPillRow insights={insights} />
-          <div className="mt-3 flex max-w-md flex-wrap gap-3">
-            {oii?.status === "ok" ? (
-              <OiiRadialGauge result={oii} size="sm" className="min-w-[9.5rem] flex-1" />
-            ) : oii?.status === "insufficient" ? (
-              <OiiInsufficientBadge sampleSize={oii.sampleSize} className="min-w-[9.5rem] flex-1" />
-            ) : null}
-            {whistleIndex !== null ? (
+          {whistleIndex !== null ? (
+            <div className="mt-3 flex max-w-md flex-wrap gap-3">
               <WhistleIndexGauge index={whistleIndex} size="sm" className="min-w-[9.5rem] flex-1" />
-            ) : null}
-          </div>
+            </div>
+          ) : null}
           {isWhistleTaxonomyLeague(leagueId) ? (
             <RefereeWhistleDispositionStrip
               profile={profile}

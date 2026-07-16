@@ -17,10 +17,6 @@ import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { RefProfilePreviewSparkline } from "@/components/RefProfilePreviewSparkline";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
-import {
-  OiiInsufficientBadge,
-  OiiRadialGauge,
-} from "@/components/OiiRadialGauge";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import type { LeagueConfig, LeagueId } from "@/lib/leagues";
 import type { RefProfile } from "@/lib/types";
@@ -30,7 +26,6 @@ import {
   metricHonestyHint,
   PREVIEW_RECENT_GAME_COUNT,
 } from "@/lib/ref-profile-preview";
-import { resolveOiiForRef } from "@/lib/officiating-intelligence-index";
 import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { signedDeltaTone } from "@/lib/metric-delight";
@@ -125,7 +120,6 @@ export function RefProfilePreviewDrawer({
         : overBaseline;
 
     const whistleIndex = whistleIndexFromRefProfile(profile);
-    const oii = resolveOiiForRef(profile, { leagueAvgFouls, preferCache: true });
     const sparkline = buildWhistleSparklineSeries(recentGames, league);
     const quickSummary = buildRefPreviewQuickSummary({
       profile,
@@ -163,7 +157,6 @@ export function RefProfilePreviewDrawer({
       leagueAvgFouls,
       leagueAvgTotal,
       whistleIndex,
-      oii,
       sparkline,
       quickSummary,
       gamesHint,
@@ -274,20 +267,8 @@ export function RefProfilePreviewDrawer({
           </header>
 
           <div className="ref-preview-drawer-body">
-            <div className="ref-preview-drawer-index-row">
-              {previewModel.oii?.status === "ok" ? (
-                <OiiRadialGauge
-                  result={previewModel.oii}
-                  size="sm"
-                  className="ref-preview-drawer-index-card"
-                />
-              ) : previewModel.oii?.status === "insufficient" ? (
-                <OiiInsufficientBadge
-                  sampleSize={previewModel.oii.sampleSize}
-                  className="ref-preview-drawer-index-card"
-                />
-              ) : null}
-              {previewModel.whistleIndex !== null ? (
+            {previewModel.whistleIndex !== null ? (
+              <div className="ref-preview-drawer-index-row">
                 <div className="ref-preview-drawer-index-card">
                   <MetricInfoHint hint={whistleHintCopy}>
                     <WhistleIndexGauge
@@ -297,8 +278,8 @@ export function RefProfilePreviewDrawer({
                     />
                   </MetricInfoHint>
                 </div>
-              ) : null}
-            </div>
+              </div>
+            ) : null}
 
             <section className="ref-preview-drawer-summary" aria-label="Quick summary">
               <h3 className="ref-preview-drawer-section-title">Quick summary</h3>
