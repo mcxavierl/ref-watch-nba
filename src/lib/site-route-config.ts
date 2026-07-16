@@ -18,6 +18,7 @@ export const ROUTED_LEAGUE_IDS = [
   "nfl",
   "epl",
   "laliga",
+  "cbb",
 ] as const satisfies readonly LeagueId[];
 
 export type RoutedLeagueId = (typeof ROUTED_LEAGUE_IDS)[number];
@@ -26,7 +27,6 @@ export type RoutedLeagueId = (typeof ROUTED_LEAGUE_IDS)[number];
 export const COMING_SOON_LEAGUE_IDS = [
   "wnba",
   "mlb",
-  "cbb",
   "cfb",
 ] as const satisfies readonly LeagueId[];
 
