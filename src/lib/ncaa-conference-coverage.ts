@@ -1,4 +1,5 @@
 import type { StatusBadgeVerdict } from "@/components/hub/StatusBadge";
+import { getCachedGameLogs, type DataLeague } from "@/lib/game-logs-preload";
 import {
   LIVE_NCAA_CONFERENCES,
   resolveTeamConference,
@@ -7,6 +8,17 @@ import {
 } from "@/lib/ncaa-conference-gate";
 import * as fs from "node:fs";
 import * as path from "node:path";
+
+const ROUTE_TO_DATA_LEAGUE: Record<NcaaRouteLeague, DataLeague> = {
+  cbb: "CBB",
+  cfb: "CFB",
+};
+
+type GameLogCoverageRow = {
+  gameId: string;
+  homeTeam: string;
+  awayTeam: string;
+};
 
 export type NcaaConferenceMaturityTier = "partial" | "building" | "live";
 
@@ -108,39 +120,51 @@ export function buildNcaaConferenceCoverageRows(
   });
 }
 
-function readCbbGameLogs(): { gameId: string; homeTeam: string; awayTeam: string }[] {
-  const filePath = path.join(process.cwd(), "data", "cbb", "game-logs.json");
-  if (!fs.existsSync(filePath)) return [];
-  const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as {
-    games?: { gameId: string; homeTeam: string; awayTeam: string }[];
-  };
-  return parsed.games ?? [];
+function readNcaaGameLogsFromDisk(leagueId: NcaaRouteLeague): GameLogCoverageRow[] {
+  try {
+    const filePath = path.join(process.cwd(), "data", leagueId, "game-logs.json");
+    if (!fs.existsSync(filePath)) return [];
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as {
+      games?: GameLogCoverageRow[];
+    };
+    return parsed.games ?? [];
+  } catch {
+    return [];
+  }
 }
 
-/** Server-side rows for ConferenceCoverage (CBB only today). */
+/** Prefer SSR-hydrated game logs on Workers; fall back to data/ on Node. */
+function readNcaaGameLogs(leagueId: NcaaRouteLeague): GameLogCoverageRow[] {
+  const cached = getCachedGameLogs(ROUTE_TO_DATA_LEAGUE[leagueId]);
+  if (cached?.games?.length) {
+    return cached.games.map((game) => ({
+      gameId: game.gameId,
+      homeTeam: game.homeTeam,
+      awayTeam: game.awayTeam,
+    }));
+  }
+  return readNcaaGameLogsFromDisk(leagueId);
+}
+
+function resolveLiveConference(
+  leagueId: NcaaRouteLeague,
+  teamAbbr: string,
+): LiveNcaaConferenceId | null {
+  const territory = resolveTeamConference(leagueId, teamAbbr);
+  if (!territory || !LIVE_NCAA_CONFERENCES.includes(territory as LiveNcaaConferenceId)) {
+    return null;
+  }
+  return territory as LiveNcaaConferenceId;
+}
+
+/** Server-side rows for ConferenceCoverage from hydrated or on-disk game logs. */
 export function getConferenceCoverageRows(
   leagueId: NcaaRouteLeague,
 ): ConferenceCoverageDisplayRow[] {
-  if (leagueId !== "cbb") {
-    return LIVE_NCAA_CONFERENCES.map((conferenceId) => ({
-      conferenceId,
-      name: CONFERENCE_DISPLAY_RECORD[conferenceId],
-      maturity: "Partial",
-      verdict: "caution" as const,
-      distinctGames: 0,
-    }));
-  }
-
-  const games = readCbbGameLogs();
+  const games = readNcaaGameLogs(leagueId);
   const distinctByConference = countDistinctGamesByConference(
     games,
-    (teamAbbr) => {
-      const territory = resolveTeamConference("cbb", teamAbbr);
-      if (!territory || !LIVE_NCAA_CONFERENCES.includes(territory as LiveNcaaConferenceId)) {
-        return null;
-      }
-      return territory as LiveNcaaConferenceId;
-    },
+    (teamAbbr) => resolveLiveConference(leagueId, teamAbbr),
     LIVE_NCAA_CONFERENCES,
   );
 
