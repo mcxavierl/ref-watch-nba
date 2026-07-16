@@ -65,7 +65,11 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const source = readSrc("src/components/ClinicalInsightMatrixCard.tsx");
     assert.match(source, /SampleConfidencePill/);
     assert.match(source, /clinical-insight-matrix-header/);
-    assert.match(source, /text-sm text-slate-500/);
+    assert.match(source, /clinical-insight-matrix-record/);
+    assert.match(source, /text-sm text-slate-300/);
+    assert.match(source, /text-sm text-slate-400/);
+    assert.match(source, /recordLine/);
+    assert.match(source, /text-3xl/);
     assert.match(source, /tabular-nums/);
     assert.doesNotMatch(source, /clinical-insight-matrix-provenance/);
     assert.doesNotMatch(source, /Based on .* shared games/);

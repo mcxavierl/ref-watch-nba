@@ -6,7 +6,6 @@ import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { SampleConfidencePill } from "@/components/hub/SampleConfidencePill";
 import {
   REF_CARD_METRIC_CLASS,
-  REF_CARD_METRIC_DETAIL_CLASS,
   RefCard,
 } from "@/components/hub/RefCard";
 import { formatDeltaPp } from "@/lib/data-maturity";
@@ -28,6 +27,8 @@ export type ClinicalInsightMatrixCardModel = {
   refName: string;
   subjectLabel: string;
   subject: ClinicalInsightMatrixSubject;
+  /** W-L verification line shown above the KPI (matrix splits only). */
+  recordLine?: string;
   deltaDisplay: string;
   baselineLine: string;
   games: number;
@@ -153,6 +154,7 @@ export function matrixExtremeToMatrixCard(
       label: item.teamLabel,
       sport,
     },
+    recordLine: `Record: ${item.wins}-${item.losses}`,
     deltaDisplay: `${formatDeltaPp(item.deltaPts)} win rate`,
     baselineLine: `vs ${formatBaselinePct(item.baselineGames, item.baselineWinRate)} team baseline`,
     games: item.games,
@@ -226,19 +228,27 @@ export function ClinicalInsightMatrixCard({
         ) : null}
       </div>
 
-      <p className="clinical-insight-matrix-subject text-sm text-slate-500">
+      <p className="clinical-insight-matrix-subject text-sm text-slate-300">
         {model.subjectLabel}
       </p>
 
+      {model.recordLine ? (
+        <p className="clinical-insight-matrix-record text-sm font-semibold text-slate-200 tabular-nums">
+          {model.recordLine}
+        </p>
+      ) : null}
+
       <div className="clinical-insight-matrix-metric" aria-label="Delta vs baseline">
         <div className={REF_CARD_METRIC_CLASS}>
-          <StandoutMetricValue tone={model.tone} size="hero" className="tabular-nums">
+          <StandoutMetricValue
+            tone={model.tone}
+            size="lg"
+            className="clinical-insight-matrix-kpi text-3xl tabular-nums"
+          >
             {model.deltaDisplay}
           </StandoutMetricValue>
         </div>
-        <p
-          className={`${REF_CARD_METRIC_DETAIL_CLASS} clinical-insight-matrix-baseline tabular-nums`}
-        >
+        <p className="clinical-insight-matrix-baseline text-sm text-slate-400 tabular-nums">
           {model.baselineLine}
         </p>
       </div>

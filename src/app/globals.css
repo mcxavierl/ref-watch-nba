@@ -4817,6 +4817,7 @@ p {
   .clinical-insight-matrix-card {
     position: relative;
     gap: var(--space-3);
+    background-color: rgb(2 6 23);
   }
 
   .clinical-insight-matrix-header {
@@ -4858,18 +4859,40 @@ p {
     line-height: 1.35;
   }
 
+  .clinical-insight-matrix-record {
+    margin: 0;
+    text-align: center;
+    line-height: 1.35;
+  }
+
   .clinical-insight-matrix-metric {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.2rem;
+    gap: 0.25rem;
     margin-top: 0.15rem;
     text-align: center;
   }
 
+  .clinical-insight-matrix-kpi {
+    font-size: 1.875rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .clinical-insight-matrix-card[data-tone="positive"] .clinical-insight-matrix-kpi.metric-delight-value--positive {
+    color: rgb(52 211 153);
+  }
+
+  .clinical-insight-matrix-card[data-tone="negative"] .clinical-insight-matrix-kpi.metric-delight-value--negative {
+    color: rgb(251 113 133);
+  }
+
   .clinical-insight-matrix-baseline {
     margin: 0;
-    font-size: 0.78rem;
+    font-size: 0.875rem;
+    line-height: 1.35;
   }
 
   .personnel-avatar-badge {
