@@ -7,6 +7,7 @@ import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefBettingProfile } from "@/components/RefBettingProfile";
 import { JsonLd } from "@/components/JsonLd";
 import { NflRefAnalyticsSection } from "@/components/NflRefAnalyticsSection";
+import { RefGsniSection } from "@/components/RefGsniSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { TermHelp } from "@/components/TermHelp";
 import { RefStatGrid } from "@/components/RefStatGrid";
@@ -27,6 +28,7 @@ import { userFacingDataNote } from "@/lib/user-language";
 import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
+import { computeRefGsniMetrics } from "@/lib/ref-gsni";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
@@ -91,6 +93,12 @@ export default async function NflRefProfilePage({
     profile.slug,
     stats.meta,
     "NFL",
+  );
+  const gsniMetrics = computeRefGsniMetrics(
+    profile.slug,
+    stats.meta,
+    "NFL",
+    profile,
   );
 
   return (
@@ -170,6 +178,12 @@ export default async function NflRefProfilePage({
               showMetrics={qualified}
             />
           )}
+
+          <RefGsniSection
+            metrics={gsniMetrics}
+            refName={profile.name}
+            showMetrics={qualified}
+          />
 
           <CloseGameSection
             metrics={closeGameMetrics}

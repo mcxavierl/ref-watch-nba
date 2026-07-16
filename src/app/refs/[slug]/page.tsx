@@ -6,6 +6,7 @@ import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefBettingProfile } from "@/components/RefBettingProfile";
 import { JsonLd } from "@/components/JsonLd";
+import { RefGsniSection } from "@/components/RefGsniSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { TermHelp } from "@/components/TermHelp";
 import { RefStatGrid } from "@/components/RefStatGrid";
@@ -24,6 +25,7 @@ import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata 
 import { userFacingDataNote, refTeamDataNote } from "@/lib/user-language";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
+import { computeRefGsniMetrics } from "@/lib/ref-gsni";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
@@ -79,6 +81,12 @@ export default async function RefProfilePage({
     profile.slug,
     stats.meta,
     "NBA",
+  );
+  const gsniMetrics = computeRefGsniMetrics(
+    profile.slug,
+    stats.meta,
+    "NBA",
+    profile,
   );
 
   return (
@@ -147,6 +155,12 @@ export default async function RefProfilePage({
               showMetrics={qualified}
             />
           )}
+
+          <RefGsniSection
+            metrics={gsniMetrics}
+            refName={profile.name}
+            showMetrics={qualified}
+          />
 
           <CloseGameSection
             metrics={closeGameMetrics}

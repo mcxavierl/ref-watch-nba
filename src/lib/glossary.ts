@@ -33,7 +33,8 @@ export type GlossaryId =
   | "provenance-estimated"
   | "sample-gate"
   | "close-game-proxy"
-  | "profile-signals";
+  | "profile-signals"
+  | "gsni";
 
 export interface GlossaryEntry {
   /** Visible label when none passed as children. */
@@ -182,5 +183,9 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   "profile-signals": {
     label: "Profile signals",
     text: "Research-style patterns on a ref profile: scoring delta, whistle rate vs baseline, over frequency, and home/road splits when available. Informational only; always shows sample size and data provenance.",
+  },
+  gsni: {
+    label: "Game-State Neutralization Index",
+    text: "GSNI compares a referee's leverage-weighted whistle rate to league peers in the same game states (score gap and clock). 50 is neutral. Higher means fewer whistles than league in clutch states; lower means more. Requires 50+ high-leverage minutes before we publish a score.",
   },
 };
