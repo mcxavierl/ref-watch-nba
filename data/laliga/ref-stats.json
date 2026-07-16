@@ -386,7 +386,8 @@
         "avgCardImbalance": 1.7,
         "balancedGameRate": 0.482,
         "balanceKind": "asymmetric"
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "ricardo-de-burgos-bengoetxea-0",
@@ -710,7 +711,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.642,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "jes-s-gil-manzano-0",
@@ -1061,7 +1063,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.65,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 58
     },
     {
       "slug": "isidro-d-az-de-mera-escuderos-0",
@@ -1421,7 +1424,8 @@
         "avgCardImbalance": 1.6,
         "balancedGameRate": 0.532,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 58
     },
     {
       "slug": "jos-mar-a-s-nchez-mart-nez-0",
@@ -1763,7 +1767,8 @@
         "avgCardImbalance": 1.6,
         "balancedGameRate": 0.558,
         "balanceKind": "asymmetric"
-      }
+      },
+      "cached_oii_score": 63
     },
     {
       "slug": "jos-luis-munuera-montero-0",
@@ -2096,7 +2101,8 @@
         "avgCardImbalance": 1.6,
         "balancedGameRate": 0.494,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "guillermo-cuadra-fern-ndez-0",
@@ -2447,7 +2453,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.566,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 59
     },
     {
       "slug": "miguel-ngel-ortiz-arias-0",
@@ -2789,7 +2796,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.613,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 50
     },
     {
       "slug": "alejandro-jos-hern-ndez-hern-ndez-0",
@@ -3131,7 +3139,8 @@
         "avgCardImbalance": 1.5,
         "balancedGameRate": 0.581,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 61
     },
     {
       "slug": "alejandro-mu-iz-ruiz-0",
@@ -3482,7 +3491,8 @@
         "avgCardImbalance": 1.5,
         "balancedGameRate": 0.548,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 59
     },
     {
       "slug": "juan-mart-nez-munuera-0",
@@ -3824,7 +3834,8 @@
         "avgCardImbalance": 1.5,
         "balancedGameRate": 0.534,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 62
     },
     {
       "slug": "javier-alberola-rojas-0",
@@ -4175,7 +4186,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.667,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 49
     },
     {
       "slug": "pablo-gonz-lez-fuertes-0",
@@ -4516,7 +4528,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.656,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "mario-melero-l-pez-0",
@@ -4821,7 +4834,8 @@
         "avgCardImbalance": 1.3,
         "balancedGameRate": 0.639,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 70
     },
     {
       "slug": "mateo-busquets-ferrer-0",
@@ -5161,7 +5175,8 @@
         "avgCardImbalance": 1.7,
         "balancedGameRate": 0.518,
         "balanceKind": "asymmetric"
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "juan-luis-pulido-santana-0",
@@ -5492,7 +5507,8 @@
         "avgCardImbalance": 1.1,
         "balancedGameRate": 0.727,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 58
     },
     {
       "slug": "francisco-jos-hern-ndez-maeso-0",
@@ -5850,7 +5866,8 @@
         "avgCardImbalance": 1.5,
         "balancedGameRate": 0.6,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 57
     },
     {
       "slug": "victor-garc-a-verdura-0",
@@ -6163,7 +6180,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.608,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "jorge-figueroa-v-zquez-0",
@@ -6458,7 +6476,8 @@
         "avgCardImbalance": 1.6,
         "balancedGameRate": 0.628,
         "balanceKind": "asymmetric"
-      }
+      },
+      "cached_oii_score": 63
     },
     {
       "slug": "adri-n-cordero-vega-0",
@@ -6789,7 +6808,8 @@
         "avgCardImbalance": 1,
         "balancedGameRate": 0.692,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "javier-iglesias-villanueva-0",
@@ -7101,7 +7121,8 @@
         "avgCardImbalance": 1.5,
         "balancedGameRate": 0.641,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "alejandro-quintero-gonz-lez-0",
@@ -7395,7 +7416,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.629,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 62
     },
     {
       "slug": "carlos-del-cerro-grande-0",
@@ -7662,7 +7684,8 @@
         "avgCardImbalance": 1.5,
         "balancedGameRate": 0.615,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 64
     },
     {
       "slug": "antonio-miguel-mateu-lahoz-0",
@@ -7938,7 +7961,8 @@
         "avgCardImbalance": 1.3,
         "balancedGameRate": 0.68,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 68
     },
     {
       "slug": "valent-n-pizarro-g-mez-0",
@@ -8223,7 +8247,8 @@
         "avgCardImbalance": 1,
         "balancedGameRate": 0.7,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "miguel-sesma-espinosa-0",
@@ -8525,7 +8550,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.667,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "iosu-galech-apeztegu-a-0",
@@ -8791,7 +8817,8 @@
         "avgCardImbalance": 1.8,
         "balancedGameRate": 0.625,
         "balanceKind": "asymmetric"
-      }
+      },
+      "cached_oii_score": 47
     },
     {
       "slug": "jos-luis-guzm-n-mansilla-0",
@@ -9048,7 +9075,8 @@
         "avgCardImbalance": 1.9,
         "balancedGameRate": 0.429,
         "balanceKind": "asymmetric"
-      }
+      },
+      "cached_oii_score": 40
     },
     {
       "slug": "santiago-jaime-latre-0",
@@ -9203,7 +9231,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "v-ctor-garc-a-acosta-0",
@@ -9280,7 +9309,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "juan-antonio-campos-salinas-0",
@@ -9328,7 +9358,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "jos-hern-ndez-garc-a-0",
@@ -9376,7 +9407,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "jos-mar-a-s-nchez-santos-0",
@@ -9424,7 +9456,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     }
   ],
   "teamSplits": {

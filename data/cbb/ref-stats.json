@@ -901,7 +901,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "paul-szelc-142",
@@ -1661,7 +1662,8 @@
           "overRate": 0.5,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "d-j-carstensen-139",
@@ -2376,7 +2378,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "keith-kimble-24",
@@ -3253,7 +3256,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 58
     },
     {
       "slug": "ron-groover-10",
@@ -4013,7 +4017,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "don-daily-52",
@@ -4755,7 +4760,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 59
     },
     {
       "slug": "terry-oglesby-50",
@@ -5397,7 +5403,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "courtney-green-43",
@@ -6130,7 +6137,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "roger-ayers-2",
@@ -6800,7 +6808,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "doug-shows-22",
@@ -7497,7 +7506,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "lee-cassell-28",
@@ -8230,7 +8240,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "joe-lindsay-59",
@@ -8873,7 +8884,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "owen-shortt-60",
@@ -9543,7 +9555,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "bert-smith-34",
@@ -10204,7 +10217,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 50
     },
     {
       "slug": "larry-scirotto-41",
@@ -10756,7 +10770,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 58
     },
     {
       "slug": "pat-adams-15",
@@ -11309,7 +11324,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "bart-lenox-157",
@@ -11961,7 +11977,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "kelly-pfeifer-89",
@@ -12460,7 +12477,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 61
     },
     {
       "slug": "byron-jarrett-55",
@@ -13058,7 +13076,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "steven-anderson-66",
@@ -13665,7 +13684,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "earl-walton-29",
@@ -14254,7 +14274,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "clarence-armstrong-9",
@@ -14825,7 +14846,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "jeffrey-anderson-26",
@@ -15477,7 +15499,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "ted-valentine-11",
@@ -16011,7 +16034,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "a-j-desai-25",
@@ -16609,7 +16633,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "robert-riley-131",
@@ -17098,7 +17123,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "vladimir-voyard-tadal-53",
@@ -17615,7 +17641,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "bill-covington-jr-33",
@@ -18060,7 +18087,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 58
     },
     {
       "slug": "chuck-jones-58",
@@ -18523,7 +18551,8 @@
           "overRate": 1,
           "winRate": 0.5
         }
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "tommy-morrissey-16",
@@ -19094,7 +19123,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "jeb-hartness-47",
@@ -19737,7 +19767,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "patrick-evans-39",
@@ -20236,7 +20267,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 58
     },
     {
       "slug": "doug-sirmons-56",
@@ -20834,7 +20866,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "john-gaffney-13",
@@ -21405,7 +21438,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "michael-irving-86",
@@ -21949,7 +21983,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 49
     },
     {
       "slug": "james-breeding-5",
@@ -22511,7 +22546,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "tony-henderson-32",
@@ -23019,7 +23055,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 57
     },
     {
       "slug": "bo-boroski-42",
@@ -23442,7 +23479,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "olandis-poole-64",
@@ -23869,7 +23907,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "kipp-kissinger-23",
@@ -24431,7 +24470,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "tim-comer-191",
@@ -24885,7 +24925,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "todd-austin-166",
@@ -25384,7 +25425,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "randy-richardson-119",
@@ -25864,7 +25906,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 57
     },
     {
       "slug": "mike-reed-51",
@@ -26363,7 +26406,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 49
     },
     {
       "slug": "pat-driscoll-4",
@@ -26853,7 +26897,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "edwin-young-137",
@@ -27397,7 +27442,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 50
     },
     {
       "slug": "brian-o-connell-30",
@@ -27887,7 +27933,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "verne-harris-104",
@@ -28404,7 +28451,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "tony-greene-57",
@@ -28847,7 +28895,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "tony-padilla-79",
@@ -29364,7 +29413,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "jamie-luckie-17",
@@ -29798,7 +29848,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "rob-kueneman-140",
@@ -30170,7 +30221,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "brooks-wells-85",
@@ -30651,7 +30703,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "mark-schnur-1",
@@ -31051,7 +31104,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 57
     },
     {
       "slug": "jeff-clark-14",
@@ -31523,7 +31577,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 65
     },
     {
       "slug": "k-b-burdett-jr-206",
@@ -31913,7 +31968,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "brent-hampton-21",
@@ -32402,7 +32458,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "jason-baker-67",
@@ -32811,7 +32868,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 61
     },
     {
       "slug": "bill-ek-135",
@@ -33219,7 +33277,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 60
     },
     {
       "slug": "steve-mcjunkins-144",
@@ -33682,7 +33741,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 49
     },
     {
       "slug": "justin-porterfield-49",
@@ -34154,7 +34214,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "lewis-garrison-145",
@@ -34543,7 +34604,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "nate-harris-94",
@@ -34952,7 +35014,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 58
     },
     {
       "slug": "raymie-styons-8",
@@ -35341,7 +35404,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "jerry-heater-7",
@@ -35750,7 +35814,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "jason-phillips-344",
@@ -36110,7 +36175,8 @@
           "overRate": 0,
           "winRate": 0.667
         }
-      }
+      },
+      "cached_oii_score": 59
     },
     {
       "slug": "john-floyd-225",
@@ -36545,7 +36611,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 60
     },
     {
       "slug": "lamar-simpson-46",
@@ -36999,7 +37066,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "matt-potter-31",
@@ -37390,7 +37458,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "tony-chiazza-163",
@@ -37844,7 +37913,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "eric-curry-40",
@@ -38207,7 +38277,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "mike-roberts-27",
@@ -38652,7 +38723,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 48
     },
     {
       "slug": "anthony-jordan-63",
@@ -39007,7 +39079,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 50
     },
     {
       "slug": "donnie-eppley-138",
@@ -39286,7 +39359,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "jemel-spearman-197",
@@ -39649,7 +39723,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 46
     },
     {
       "slug": "jeff-anderson-20",
@@ -40067,7 +40142,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "kevin-brill-129",
@@ -40413,7 +40489,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 50
     },
     {
       "slug": "terry-wymer-45",
@@ -40773,7 +40850,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 48
     },
     {
       "slug": "chris-beaver-141",
@@ -41108,7 +41186,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "deldre-carr-95",
@@ -41490,7 +41569,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "tim-clougherty-18",
@@ -41827,7 +41907,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 59
     },
     {
       "slug": "michael-greenstein-68",
@@ -42200,7 +42281,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 63
     },
     {
       "slug": "mike-littlewood-268",
@@ -42544,7 +42626,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "andy-o-brien-316",
@@ -42896,7 +42979,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "lucas-santos-242",
@@ -43222,7 +43306,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "gregory-nixon-92",
@@ -43550,7 +43635,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 48
     },
     {
       "slug": "john-higgins-48",
@@ -43911,7 +43997,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "amy-bonner-74",
@@ -44265,7 +44352,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "eric-lewis-340",
@@ -44571,7 +44659,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "chad-barlow-132",
@@ -44917,7 +45006,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "gerry-pollard-82",
@@ -45279,7 +45369,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "randy-mccall-87",
@@ -45542,7 +45633,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 59
     },
     {
       "slug": "jeff-pon-35",
@@ -45843,7 +45935,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 48
     },
     {
       "slug": "michael-kitts-159",
@@ -46179,7 +46272,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "bharat-ramnanan-278",
@@ -46487,7 +46581,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 47
     },
     {
       "slug": "lamont-simpson-217",
@@ -46740,7 +46835,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 48
     },
     {
       "slug": "brian-mcnutt-218",
@@ -47031,7 +47127,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 54
     },
     {
       "slug": "isaac-barnett-298",
@@ -47357,7 +47454,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 45
     },
     {
       "slug": "scott-brown-97",
@@ -47604,7 +47702,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 43
     },
     {
       "slug": "bret-smith-78",
@@ -47922,7 +48021,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 46
     },
     {
       "slug": "marques-pettigrew-81",
@@ -48240,7 +48340,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 42
     },
     {
       "slug": "greg-evans-164",
@@ -48549,7 +48650,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 46
     },
     {
       "slug": "brandon-cruz-152",
@@ -48802,7 +48904,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 37
     },
     {
       "slug": "tommy-nunez-106",
@@ -49040,7 +49143,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 43
     },
     {
       "slug": "anthony-burris-315",
@@ -49311,7 +49415,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 47
     },
     {
       "slug": "david-hall-118",
@@ -49520,7 +49625,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 40
     },
     {
       "slug": "alfred-smith-219",
@@ -49765,7 +49871,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 45
     },
     {
       "slug": "doug-simmons-88",
@@ -50047,7 +50154,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 42
     },
     {
       "slug": "ryan-sassano-195",
@@ -50284,7 +50392,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 44
     },
     {
       "slug": "glen-mayberry-124",
@@ -50448,7 +50557,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 42
     },
     {
       "slug": "mike-scyphers-127",
@@ -50648,7 +50758,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 43
     },
     {
       "slug": "chris-rastatter-84",
@@ -50891,7 +51002,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": 44
     },
     {
       "slug": "larry-spaulding-77",
@@ -51118,7 +51230,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 36
     },
     {
       "slug": "d-g-nelson-122",
@@ -51345,7 +51458,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 37
     },
     {
       "slug": "mason-siler-279",
@@ -51572,7 +51686,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "luke-schumer-352",
@@ -51788,7 +51903,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "tommy-johnson-306",
@@ -52013,7 +52129,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "gary-maxwell-75",
@@ -52249,7 +52366,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "keith-patterson-204",
@@ -52484,7 +52602,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "jourdan-love-153",
@@ -52682,7 +52801,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "darron-george-73",
@@ -52871,7 +52991,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "rick-crawford-70",
@@ -53069,7 +53190,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "william-covington-189",
@@ -53284,7 +53406,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "frank-harvey-112",
@@ -53434,7 +53557,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "king-whetstone-220",
@@ -53611,7 +53735,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "chance-moore-72",
@@ -53797,7 +53922,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "jim-schipper-130",
@@ -53927,7 +54053,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "tariq-lucas-276",
@@ -54066,7 +54193,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "steve-honacki-136",
@@ -54213,7 +54341,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "tyler-kumpf-246",
@@ -54360,7 +54489,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "antinio-petty-71",
@@ -54517,7 +54647,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "robert-felder-156",
@@ -54674,7 +54805,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "chris-pacsi-158",
@@ -54822,7 +54954,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "evon-burroughs-161",
@@ -54989,7 +55122,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "ray-natili-76",
@@ -55155,7 +55289,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "earl-watson-154",
@@ -55274,7 +55409,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "mike-pearson-317",
@@ -55400,7 +55536,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "shane-staggs-245",
@@ -55527,7 +55664,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "gerald-williams-184",
@@ -55664,7 +55802,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "doug-simons-69",
@@ -55801,7 +55940,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "shawn-lehigh-114",
@@ -55891,7 +56031,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "bill-vinovich-126",
@@ -55981,7 +56122,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "michael-griffith-148",
@@ -56079,7 +56221,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "ryan-holmes-113",
@@ -56168,7 +56311,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "tony-meeks-275",
@@ -56266,7 +56410,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "matthew-rukasin-311",
@@ -56354,7 +56499,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "alex-landis-355",
@@ -56452,7 +56598,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "marc-a-beasley-111",
@@ -56521,7 +56668,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "kurt-walker-213",
@@ -56590,7 +56738,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "james-ford-272",
@@ -56668,7 +56817,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "rick-batsell-115",
@@ -56736,7 +56886,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "larry-scoritto-273",
@@ -56813,7 +56964,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "don-dally-280",
@@ -56891,7 +57043,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "chris-merlo-266",
@@ -56959,7 +57112,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "michael-redd-372",
@@ -57036,7 +57190,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "randy-heimerman-181",
@@ -57114,7 +57269,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "justin-shamion-96",
@@ -57192,7 +57348,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "kevin-raher-248",
@@ -57270,7 +57427,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "casey-mclellan-128",
@@ -57318,7 +57476,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "bob-staffen-105",
@@ -57366,7 +57525,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "matt-morales-133",
@@ -57414,7 +57574,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "tim-stewart-134",
@@ -57462,7 +57623,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "steve-hornacki-143",
@@ -57510,7 +57672,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "bret-wegenke-146",
@@ -57558,7 +57721,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "chet-walker-147",
@@ -57606,7 +57770,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "kenneth-clark-149",
@@ -57654,7 +57819,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "jeff-spedoske-150",
@@ -57702,7 +57868,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "rob-keuneman-151",
@@ -57750,7 +57917,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "scott-siville-155",
@@ -57798,7 +57966,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "daryl-gelinas-117",
@@ -57846,7 +58015,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "tom-nally-214",
@@ -57894,7 +58064,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "ryan-mcdaniel-215",
@@ -57942,7 +58113,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "chad-harlow-216",
@@ -57990,7 +58162,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "ed-phillips-221",
@@ -58038,7 +58211,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "brian-shore-222",
@@ -58086,7 +58260,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "whetstone-king-223",
@@ -58134,7 +58309,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "robert-riley-jr-224",
@@ -58182,7 +58358,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "wally-rutecki-160",
@@ -58230,7 +58407,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "eric-dalon-226",
@@ -58278,7 +58456,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "jeff-wooten-232",
@@ -58326,7 +58505,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "johnny-harrington-208",
@@ -58374,7 +58554,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "casey-mcclellan-125",
@@ -58422,7 +58603,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "keith-lewis-274",
@@ -58470,7 +58652,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "josh-white-277",
@@ -58518,7 +58701,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "karl-walfon-281",
@@ -58566,7 +58750,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "luke-chittum-282",
@@ -58614,7 +58799,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "todd-von-sossan-283",
@@ -58662,7 +58848,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "courtney-holmes-108",
@@ -58710,7 +58897,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "gregory-nelson-312",
@@ -58758,7 +58946,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "mark-fulton-313",
@@ -58806,7 +58995,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "martin-cichocki-314",
@@ -58854,7 +59044,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "michael-mojica-308",
@@ -58902,7 +59093,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "bill-jacobson-239",
@@ -58950,7 +59142,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "ray-natali-257",
@@ -58998,7 +59191,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "jim-bruno-318",
@@ -59046,7 +59240,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "dj-christensen-319",
@@ -59094,7 +59289,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "john-lloyd-320",
@@ -59142,7 +59338,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "aran-hart-351",
@@ -59190,7 +59387,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "janetta-graham-289",
@@ -59238,7 +59436,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "michael-reese-353",
@@ -59286,7 +59485,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "donald-carstensen-294",
@@ -59334,7 +59534,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "galen-durant-354",
@@ -59382,7 +59583,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "crystal-hogan-170",
@@ -59430,7 +59632,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "mike-reid-370",
@@ -59478,7 +59681,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "christopher-melo-371",
@@ -59526,7 +59730,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "tom-comer-373",
@@ -59574,7 +59779,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "mike-underwood-374",
@@ -59622,7 +59828,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     }
   ],
   "teamSplits": {

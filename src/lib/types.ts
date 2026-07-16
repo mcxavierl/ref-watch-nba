@@ -344,6 +344,11 @@ export interface RefProfile {
   bettingStats?: RefBettingStats;
   /** Performance vs closing-line expectation (ATS-first, independent of straight-up W-L). */
   marketExpectation?: RefMarketExpectationStats;
+  /**
+   * Cached Officiating Intelligence Index (0-100) for instant hub/dashboard reads.
+   * Rebuilt during ref-stats sync; see generateOII().
+   */
+  cached_oii_score?: number | null;
   /** NHL referee-only analytics when available. */
   nhlAnalytics?: NhlRefAnalytics;
   nflAnalytics?: NflRefAnalytics;

@@ -7,8 +7,13 @@ import { ModalPortal } from "@/components/ModalPortal";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
+import {
+  OiiInsufficientBadge,
+  OiiRadialGauge,
+} from "@/components/OiiRadialGauge";
 import type { LeagueConfig } from "@/lib/leagues";
 import type { RefProfile } from "@/lib/types";
+import { resolveOiiForRef } from "@/lib/officiating-intelligence-index";
 import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 
@@ -51,6 +56,13 @@ export function RefProfilePreviewDrawer({
   const profileHref = profile ? `${basePath}/refs/${profile.slug}` : "";
   const recentGames = profile?.recentGames.slice(0, RECENT_GAME_COUNT) ?? [];
   const whistleIndex = profile ? whistleIndexFromRefProfile(profile) : null;
+  const leagueAvgFouls =
+    profile && profile.avgFouls > 0
+      ? profile.avgFouls - profile.foulsDelta
+      : undefined;
+  const oii = profile
+    ? resolveOiiForRef(profile, { leagueAvgFouls, preferCache: true })
+    : null;
 
   useEffect(() => {
     if (open) {
@@ -142,9 +154,16 @@ export function RefProfilePreviewDrawer({
         </header>
 
         <div className="ref-preview-drawer-body">
-          {whistleIndex !== null ? (
-            <WhistleIndexGauge index={whistleIndex} size="sm" className="mb-4" />
-          ) : null}
+          <div className="mb-4 flex flex-wrap gap-3">
+            {oii?.status === "ok" ? (
+              <OiiRadialGauge result={oii} size="sm" className="min-w-[9rem] flex-1" />
+            ) : oii?.status === "insufficient" ? (
+              <OiiInsufficientBadge sampleSize={oii.sampleSize} className="min-w-[9rem] flex-1" />
+            ) : null}
+            {whistleIndex !== null ? (
+              <WhistleIndexGauge index={whistleIndex} size="sm" className="min-w-[9rem] flex-1" />
+            ) : null}
+          </div>
           <dl className="ref-preview-drawer-stats">
             <div>
               <dt>Games</dt>

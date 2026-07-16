@@ -465,7 +465,8 @@
         "avgCardImbalance": 1.3,
         "balancedGameRate": 0.651,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 60
     },
     {
       "slug": "michael-oliver-0",
@@ -884,7 +885,8 @@
         "avgCardImbalance": 1.3,
         "balancedGameRate": 0.648,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 61
     },
     {
       "slug": "craig-pawson-0",
@@ -1303,7 +1305,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.611,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 67
     },
     {
       "slug": "stuart-attwell-0",
@@ -1731,7 +1734,8 @@
         "avgCardImbalance": 1.3,
         "balancedGameRate": 0.615,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 64
     },
     {
       "slug": "chris-kavanagh-0",
@@ -2141,7 +2145,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.627,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 64
     },
     {
       "slug": "paul-tierney-0",
@@ -2559,7 +2564,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.695,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 65
     },
     {
       "slug": "martin-atkinson-0",
@@ -2956,7 +2962,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.637,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 72
     },
     {
       "slug": "andre-marriner-0",
@@ -3345,7 +3352,8 @@
         "avgCardImbalance": 1.1,
         "balancedGameRate": 0.689,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 60
     },
     {
       "slug": "mike-dean-0",
@@ -3751,7 +3759,8 @@
         "avgCardImbalance": 1.1,
         "balancedGameRate": 0.722,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 58
     },
     {
       "slug": "jonathan-moss-0",
@@ -4130,7 +4139,8 @@
         "avgCardImbalance": 1.1,
         "balancedGameRate": 0.725,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 57
     },
     {
       "slug": "simon-hooper-0",
@@ -4503,7 +4513,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.64,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 62
     },
     {
       "slug": "kevin-friend-0",
@@ -4882,7 +4893,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.654,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 62
     },
     {
       "slug": "andy-madley-0",
@@ -5263,7 +5275,8 @@
         "avgCardImbalance": 1.3,
         "balancedGameRate": 0.632,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 66
     },
     {
       "slug": "peter-bankes-0",
@@ -5625,7 +5638,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.635,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 63
     },
     {
       "slug": "david-coote-0",
@@ -5988,7 +6002,8 @@
         "avgCardImbalance": 1.5,
         "balancedGameRate": 0.554,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 65
     },
     {
       "slug": "robert-jones-0",
@@ -6341,7 +6356,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.609,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 61
     },
     {
       "slug": "graham-scott-0",
@@ -6767,7 +6783,8 @@
         "avgCardImbalance": 1.1,
         "balancedGameRate": 0.75,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 63
     },
     {
       "slug": "darren-england-0",
@@ -7138,7 +7155,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.636,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 57
     },
     {
       "slug": "jarred-gillett-0",
@@ -7480,7 +7498,8 @@
         "avgCardImbalance": 1.3,
         "balancedGameRate": 0.553,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "lee-mason-0",
@@ -7876,7 +7895,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.667,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "john-brooks-0",
@@ -8227,7 +8247,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.622,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 53
     },
     {
       "slug": "sam-barrott-0",
@@ -8567,7 +8588,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.597,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 57
     },
     {
       "slug": "michael-salisbury-0",
@@ -8918,7 +8940,8 @@
         "avgCardImbalance": 1,
         "balancedGameRate": 0.738,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 60
     },
     {
       "slug": "tom-bramall-0",
@@ -9250,7 +9273,8 @@
         "avgCardImbalance": 1.3,
         "balancedGameRate": 0.596,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "robert-madley-0",
@@ -9591,7 +9615,8 @@
         "avgCardImbalance": 1.3,
         "balancedGameRate": 0.6,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "tim-robinson-0",
@@ -9942,7 +9967,8 @@
         "avgCardImbalance": 1.6,
         "balancedGameRate": 0.49,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 55
     },
     {
       "slug": "tony-harrington-0",
@@ -10302,7 +10328,8 @@
         "avgCardImbalance": 1.6,
         "balancedGameRate": 0.521,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "neil-swarbrick-0",
@@ -10623,7 +10650,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.5,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 57
     },
     {
       "slug": "roger-east-0",
@@ -10963,7 +10991,8 @@
         "avgCardImbalance": 1.6,
         "balancedGameRate": 0.564,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 62
     },
     {
       "slug": "lee-probert-0",
@@ -11258,7 +11287,8 @@
         "avgCardImbalance": 0.9,
         "balancedGameRate": 0.778,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 61
     },
     {
       "slug": "mike-jones-0",
@@ -11546,7 +11576,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": 52
     },
     {
       "slug": "darren-bond-0",
@@ -11832,7 +11863,8 @@
         "avgCardImbalance": 1.4,
         "balancedGameRate": 0.565,
         "balanceKind": "neutral"
-      }
+      },
+      "cached_oii_score": 56
     },
     {
       "slug": "mark-clattenburg-0",
@@ -12116,7 +12148,8 @@
         "avgCardImbalance": 1.2,
         "balancedGameRate": 0.591,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 51
     },
     {
       "slug": "lee-smith-0",
@@ -12357,7 +12390,8 @@
         "avgCardImbalance": 1.1,
         "balancedGameRate": 0.7,
         "balanceKind": "balancer"
-      }
+      },
+      "cached_oii_score": 48
     },
     {
       "slug": "josh-smith-0",
@@ -12565,7 +12599,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "a-kitchen-0",
@@ -12732,7 +12767,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "t-kirk-0",
@@ -12889,7 +12925,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "m-donohue-0",
@@ -13027,7 +13064,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "f-hallam-0",
@@ -13173,7 +13211,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "sam-allison-0",
@@ -13300,7 +13339,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "rebecca-welch-0",
@@ -13377,7 +13417,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "david-webb-0",
@@ -13454,7 +13495,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "oliver-langford-0",
@@ -13502,7 +13544,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "s-scott-0",
@@ -13550,7 +13593,8 @@
           "overRate": 1,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "a-moss-0",
@@ -13598,7 +13642,8 @@
           "overRate": 0,
           "winRate": 1
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "s-singh-0",
@@ -13646,7 +13691,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "k-kavanagh-0",
@@ -13694,7 +13740,8 @@
           "overRate": 1,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     },
     {
       "slug": "o-oliver-0",
@@ -13742,7 +13789,8 @@
           "overRate": 0,
           "winRate": 0
         }
-      }
+      },
+      "cached_oii_score": null
     }
   ],
   "teamSplits": {
