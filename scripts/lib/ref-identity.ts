@@ -132,6 +132,26 @@ export function displayNameForKey(canonicalKey: string, fallbackName: string): s
   return ALIAS_DISPLAY.get(canonicalKey) ?? fallbackName;
 }
 
+const SLUG_LIKE_NAME = /^[a-z0-9]+(?:-[a-z0-9]+)+$/;
+
+function titleCaseWords(value: string): string {
+  return value.replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+/**
+ * Recover a proper display name when profile.name was incorrectly stored as a slug
+ * (e.g. "mike-jones-0" instead of "Michael Jones").
+ */
+export function repairRefDisplayName(name: string, slug: string): string {
+  if (name !== slug && !SLUG_LIKE_NAME.test(name)) {
+    return resolveCanonicalName(name);
+  }
+
+  const base = slug.replace(/-\d+$/, "").replace(/-/g, " ");
+  const titled = titleCaseWords(base);
+  return displayNameForKey(canonicalRefKey(titled), titled);
+}
+
 /** One jersey-number/name variant seen for a canonical referee identity. */
 export interface RefVariant {
   name: string;

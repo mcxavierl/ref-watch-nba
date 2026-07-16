@@ -18,6 +18,7 @@ import {
   canonicalRefKey,
   chooseRefIdentity,
   displayNameForKey,
+  repairRefDisplayName,
 } from "./ref-identity";
 import { refSlug } from "./slug";
 
@@ -201,6 +202,14 @@ export function dedupeRefsInPlace(
   leagueAvgTotal: number,
   leagueAvgFouls: number,
 ): void {
+  for (const ref of refs) {
+    const repairedName = repairRefDisplayName(ref.name, ref.slug);
+    if (repairedName !== ref.name) {
+      ref.name = repairedName;
+      ref.slug = refSlug(repairedName, ref.number);
+    }
+  }
+
   const { refs: merged, mergedGroups } = mergeDuplicateRefProfiles(refs, {
     leagueAvgTotal,
     leagueAvgFouls,
