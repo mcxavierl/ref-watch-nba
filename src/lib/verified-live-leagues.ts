@@ -25,7 +25,7 @@ export const PRIMARY_LIVE_LEAGUE_IDS = [
   ...PRO_ONLY_LIVE_LEAGUE_IDS,
 ] as const satisfies readonly LeagueId[];
 
-/** NCAA hubs on the overview dashboard — phased launch (CBB Big Ten gate first). */
+/** NCAA hubs on the overview dashboard — CBB live with power-conference gate. */
 export const LAUNCHED_NCAA_LEAGUE_IDS = ["cbb"] as const satisfies readonly LeagueId[];
 
 /** @deprecated Alias for LAUNCHED_NCAA_LEAGUE_IDS — college sports live on the overview. */

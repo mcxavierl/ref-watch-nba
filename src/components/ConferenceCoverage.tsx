@@ -5,7 +5,11 @@ import { LEAGUES } from "@/lib/leagues";
 
 /** Internal allowlist IDs → user-facing conference names (never rendered in the DOM). */
 const CONFERENCE_DISPLAY_RECORD: Record<LiveNcaaConferenceId, string> = {
+  ACC: "Atlantic Coast Conference",
   "Big Ten": "Big Ten Conference",
+  "Big 12": "Big 12 Conference",
+  SEC: "Southeastern Conference",
+  "Big East": "Big East Conference",
 };
 
 type LiveConferenceRow = {

@@ -9,6 +9,7 @@ import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { getRefStats as getCbbRefStats } from "@/lib/cbb/data";
 import { getRefStats as getCfbRefStats } from "@/lib/cfb/data";
 import { hasNcaaLiveConferenceCoverage } from "@/lib/ncaa-conference-gate";
+import { isCollegeLiveLeague } from "@/lib/verified-live-leagues";
 import { isVerifiedLiveLeague } from "@/lib/league-verification";
 import type { RefStatsFile } from "@/lib/types";
 
@@ -82,6 +83,7 @@ function ncaaAnalyticsUnlocked(
   leagueId: NcaaLeagueSlug,
   stats?: RefStatsFile | null,
 ): boolean {
+  if (!isCollegeLiveLeague(leagueId)) return false;
   const entry = NCAA_LEAGUE_REGISTRY[leagueId];
   if (entry.dataVerified !== true) return false;
   const resolved = stats ?? NCAA_REF_LOADERS[leagueId]();

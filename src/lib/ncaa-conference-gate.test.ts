@@ -9,25 +9,33 @@ import {
 } from "@/lib/ncaa-conference-gate";
 import type { RefStatsFile } from "@/lib/types";
 
-test("LIVE_NCAA_CONFERENCES is Big Ten only for phased CBB launch", () => {
-  assert.deepEqual([...LIVE_NCAA_CONFERENCES], ["Big Ten"]);
+test("LIVE_NCAA_CONFERENCES includes all power conferences for CBB launch", () => {
+  assert.deepEqual([...LIVE_NCAA_CONFERENCES], [
+    "ACC",
+    "Big Ten",
+    "Big 12",
+    "SEC",
+    "Big East",
+  ]);
 });
 
-test("shouldIngestNcaaGame accepts Big Ten matchups", () => {
+test("shouldIngestNcaaGame accepts power-conference matchups", () => {
   assert.equal(shouldIngestNcaaGame("cbb", "MICH", "OSU"), true);
-  assert.equal(shouldIngestNcaaGame("cbb", "IND", "PUR"), true);
+  assert.equal(shouldIngestNcaaGame("cbb", "IU", "PUR"), true);
+  assert.equal(shouldIngestNcaaGame("cbb", "DUKE", "UNC"), true);
+  assert.equal(shouldIngestNcaaGame("cbb", "ALA", "UGA"), true);
+  assert.equal(shouldIngestNcaaGame("cbb", "KU", "BAY"), true);
+  assert.equal(shouldIngestNcaaGame("cbb", "UCONN", "VILL"), true);
 });
 
 test("shouldIngestNcaaGame rejects games outside the live conference gate", () => {
-  assert.equal(shouldIngestNcaaGame("cbb", "DUKE", "UNC"), false);
-  assert.equal(shouldIngestNcaaGame("cbb", "ALA", "UGA"), false);
   assert.equal(shouldIngestNcaaGame("cbb", "GONZ", "BYU"), false);
-  assert.equal(shouldIngestNcaaGame("cbb", "KU", "BAY"), false);
+  assert.equal(shouldIngestNcaaGame("cbb", "GONZ", "SFPA"), false);
 });
 
 test("teamInLiveNcaaConference maps registry conferences", () => {
   assert.equal(teamInLiveNcaaConference("cbb", "MICH"), true);
-  assert.equal(teamInLiveNcaaConference("cbb", "DUKE"), false);
+  assert.equal(teamInLiveNcaaConference("cbb", "DUKE"), true);
   assert.equal(teamInLiveNcaaConference("cbb", "GONZ"), false);
 });
 
@@ -101,7 +109,7 @@ test("filterNcaaRefStats drops refs without live-conference team stats", () => {
             date: "2026-01-02",
             season: "2025-26",
             homeTeam: "GONZ",
-            awayTeam: "BYU",
+            awayTeam: "SFPA",
             totalPoints: 140,
             totalFouls: 35,
             overHit: true,

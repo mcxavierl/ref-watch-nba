@@ -36,12 +36,14 @@ export type NcaaConferenceTerritory =
   | "Other";
 
 /**
- * Phased NCAA launch gate — one conference at a time.
- * Big Ten chosen for CBB launch: 1,039 game logs (most complete power-conference
- * coverage), 103 refs, and 100% pipeline integrity after conference scoping.
+ * Phased NCAA launch gate — power conferences with verified ESPN crew coverage.
  */
 export const LIVE_NCAA_CONFERENCES = [
+  "ACC",
   "Big Ten",
+  "Big 12",
+  "SEC",
+  "Big East",
 ] as const satisfies readonly NcaaConferenceTerritory[];
 
 export type LiveNcaaConferenceId = (typeof LIVE_NCAA_CONFERENCES)[number];

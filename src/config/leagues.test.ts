@@ -61,7 +61,7 @@ test("isCollegeLiveLeague reflects launched NCAA hubs from Priority #9 gate", as
   assert.equal(isCollegeLiveLeague("cfb"), false);
 });
 
-test("isLeagueAnalyticsUnlocked unlocks CBB when Big Ten ref-stats are live", () => {
+test("isLeagueAnalyticsUnlocked unlocks CBB when power-conference ref-stats are live", () => {
   assert.equal(isLeagueAnalyticsUnlocked("nba"), true);
   assert.equal(isLeagueAnalyticsUnlocked("cfb", getCfbRefStats()), false);
   assert.equal(isLeagueAnalyticsUnlocked("cbb", getCbbRefStats()), true);
