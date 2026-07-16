@@ -17,7 +17,7 @@ export function ConferenceCoverage({
   const league = LEAGUES[leagueId];
   const coverageRows = getConferenceCoverageRows(leagueId);
   const headingId = "ncaa-live-coverage-heading";
-  const isClinical = variant === "clinical" || leagueId === "cbb";
+  const isClinical = variant === "clinical";
 
   if (isClinical) {
     return (
