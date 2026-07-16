@@ -144,7 +144,7 @@ describe("insight editorial helpers", () => {
     );
     assert.equal(view.primaryMetric.value, "8 games");
     assert.equal(view.primaryMetric.label, "Sample size");
-    assert.equal(view.secondaryMetric?.label, "Calculated projection");
+    assert.equal(view.secondaryMetric?.label, "Win rate delta");
     assert.ok(view.isPreliminary);
     assert.ok(view.showHonestyFootnote);
   });

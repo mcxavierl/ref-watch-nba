@@ -4748,10 +4748,15 @@ p {
   }
 
   .clinical-insight-matrix-card {
+    position: relative;
+    gap: var(--space-3);
+  }
+
+  .clinical-insight-matrix-header {
     display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    padding: 1rem 1.05rem 0.95rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
   }
 
   .clinical-insight-matrix-ref-name {
@@ -4759,6 +4764,7 @@ p {
     font-weight: 700;
     line-height: 1.25;
     letter-spacing: -0.01em;
+    min-width: 0;
   }
 
   .clinical-insight-matrix-avatars {
@@ -4766,6 +4772,7 @@ p {
     align-items: center;
     justify-content: center;
     gap: 0.65rem;
+    margin-top: 0.35rem;
     padding: 0.15rem 0;
   }
 
@@ -4780,10 +4787,8 @@ p {
   .clinical-insight-matrix-subject {
     margin: 0;
     text-align: center;
-    font-size: 0.82rem;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.35;
-    color: var(--text-primary-muted, var(--ink-secondary));
   }
 
   .clinical-insight-matrix-metric {
@@ -4798,13 +4803,6 @@ p {
   .clinical-insight-matrix-baseline {
     margin: 0;
     font-size: 0.78rem;
-  }
-
-  .clinical-insight-matrix-provenance {
-    margin: 0.15rem 0 0;
-    font-size: 0.68rem;
-    line-height: 1.45;
-    color: var(--text-primary-muted, var(--ink-muted));
   }
 
   .personnel-avatar-badge {

@@ -3,6 +3,7 @@ import { RefAvatar } from "@/components/RefAvatar";
 import { PersonnelAvatar } from "@/components/PersonnelAvatar";
 import { TeamLogo } from "@/components/TeamLogo";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { SampleConfidencePill } from "@/components/hub/SampleConfidencePill";
 import {
   REF_CARD_METRIC_CLASS,
   REF_CARD_METRIC_DETAIL_CLASS,
@@ -174,14 +175,18 @@ export function ClinicalInsightMatrixCard({
     <RefCard
       data-league={leagueId}
       data-insight={model.insightKind}
+      data-tone={model.tone}
       className="clinical-insight-matrix-card"
     >
-      <Link
-        href={`${basePath}/refs/${model.refSlug}`}
-        className="clinical-insight-matrix-ref-name rankings-insight-name"
-      >
-        {model.refName}
-      </Link>
+      <div className="clinical-insight-matrix-header">
+        <Link
+          href={`${basePath}/refs/${model.refSlug}`}
+          className="clinical-insight-matrix-ref-name rankings-insight-name"
+        >
+          {model.refName}
+        </Link>
+        <SampleConfidencePill games={model.games} />
+      </div>
 
       <div className="clinical-insight-matrix-avatars" aria-hidden>
         {refSport ? (
@@ -199,7 +204,9 @@ export function ClinicalInsightMatrixCard({
         ) : null}
       </div>
 
-      <p className="clinical-insight-matrix-subject">{model.subjectLabel}</p>
+      <p className="clinical-insight-matrix-subject text-sm text-slate-500">
+        {model.subjectLabel}
+      </p>
 
       <div className="clinical-insight-matrix-metric" aria-label="Delta vs baseline">
         <div className={REF_CARD_METRIC_CLASS}>
@@ -207,14 +214,12 @@ export function ClinicalInsightMatrixCard({
             {model.deltaDisplay}
           </StandoutMetricValue>
         </div>
-        <p className={`${REF_CARD_METRIC_DETAIL_CLASS} clinical-insight-matrix-baseline`}>
+        <p
+          className={`${REF_CARD_METRIC_DETAIL_CLASS} clinical-insight-matrix-baseline tabular-nums`}
+        >
           {model.baselineLine}
         </p>
       </div>
-
-      <p className="clinical-insight-matrix-provenance">
-        *Based on {model.games} shared games. Data adjusted for volatility.*
-      </p>
     </RefCard>
   );
 }

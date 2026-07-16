@@ -84,6 +84,30 @@ export function formatSampleSizeLabel(games: number): string {
   return `${games.toLocaleString()} game${games === 1 ? "" : "s"}`;
 }
 
+/** Sample-confidence tiers for matrix standout split cards. */
+export type MatrixSampleConfidenceTier = "high" | "moderate" | "low";
+
+export function matrixSampleConfidenceTier(
+  games: number,
+): MatrixSampleConfidenceTier {
+  if (games >= 10) return "high";
+  if (games >= 5) return "moderate";
+  return "low";
+}
+
+export function matrixSampleConfidenceLabel(
+  tier: MatrixSampleConfidenceTier,
+): string {
+  switch (tier) {
+    case "high":
+      return "10+ games";
+    case "moderate":
+      return "5-9 games";
+    case "low":
+      return "<5 games";
+  }
+}
+
 /** 0-100 maturity score from sample depth and optional effect magnitude. */
 export function dataMaturityScore(
   sampleSize: number,

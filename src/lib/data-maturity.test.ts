@@ -11,6 +11,8 @@ import {
   formatDeltaPp,
   formatSampleSizeLabel,
   isPreliminarySample,
+  matrixSampleConfidenceLabel,
+  matrixSampleConfidenceTier,
   RELIABILITY_FLOOR_GAMES,
   STANDOUT_SPLIT_FOOTNOTE,
 } from "@/lib/data-maturity";
@@ -66,6 +68,15 @@ describe("data maturity", () => {
       adjustedDeltaTooltipText(-3.5),
       "Adjusted for small sample volatility: -3.5pp expected",
     );
+  });
+
+  it("maps matrix sample counts to confidence pill tiers", () => {
+    assert.equal(matrixSampleConfidenceTier(12), "high");
+    assert.equal(matrixSampleConfidenceLabel("high"), "10+ games");
+    assert.equal(matrixSampleConfidenceTier(7), "moderate");
+    assert.equal(matrixSampleConfidenceLabel("moderate"), "5-9 games");
+    assert.equal(matrixSampleConfidenceTier(3), "low");
+    assert.equal(matrixSampleConfidenceLabel("low"), "<5 games");
   });
 
   it("exposes standout split footnote without em dashes", () => {

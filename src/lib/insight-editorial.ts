@@ -151,7 +151,7 @@ function splitDisplayMetrics(card: LeagueInsightCard): {
       },
       secondaryMetric: {
         value: formatDeltaPp(displayDelta),
-        label: isAdjusted ? "Calculated projection" : "Win rate delta",
+        label: "Win rate delta",
       },
       sampleGames,
       isPreliminary,

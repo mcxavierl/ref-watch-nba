@@ -60,4 +60,14 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /StatusBadge/);
     assert.match(source, /signedDeltaTone/);
   });
+
+  it("ClinicalInsightMatrixCard uses sample confidence pills without provenance footer", () => {
+    const source = readSrc("src/components/ClinicalInsightMatrixCard.tsx");
+    assert.match(source, /SampleConfidencePill/);
+    assert.match(source, /clinical-insight-matrix-header/);
+    assert.match(source, /text-sm text-slate-500/);
+    assert.match(source, /tabular-nums/);
+    assert.doesNotMatch(source, /clinical-insight-matrix-provenance/);
+    assert.doesNotMatch(source, /Based on .* shared games/);
+  });
 });

@@ -80,12 +80,7 @@ export function HighlightStatCard({
     usesSplitHierarchy && deltaDisplay
       ? formatDeltaPp(deltaDisplay.displayDelta)
       : undefined;
-  const secondaryLabel =
-    usesSplitHierarchy && deltaDisplay?.isAdjusted
-      ? "Calculated projection"
-      : usesSplitHierarchy
-        ? "Win rate delta"
-        : undefined;
+  const secondaryLabel = usesSplitHierarchy ? "Win rate delta" : undefined;
   const metricTone =
     tone === "neutral" || usesSplitHierarchy
       ? "neutral"
