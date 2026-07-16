@@ -62,7 +62,7 @@ export function OverviewSlateRow({
     <li className="overview-slate-row" data-league={game.leagueId} data-status={game.status}>
       <div className="overview-slate-row-main">
         <span className="overview-slate-league-mark" aria-hidden>
-          <LeagueNavMark league={game.leagueId} active={false} contained={false} />
+          <LeagueNavMark league={game.leagueId} active={false} />
         </span>
         <span
           className="overview-slate-matchup-logos"

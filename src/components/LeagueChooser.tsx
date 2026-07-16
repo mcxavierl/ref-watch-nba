@@ -30,11 +30,9 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
       data-league={card.leagueId}
     >
       <span className="overview-league-chooser-top">
-        <LeagueNavMark
-          league={card.leagueId as LeagueId}
-          active={false}
-          containerClassName="overview-league-chooser-mark"
-        />
+        <span className="overview-league-chooser-mark" aria-hidden>
+          <LeagueNavMark league={card.leagueId as LeagueId} active={false} />
+        </span>
         <span className="overview-league-chooser-body">
           <span className="overview-league-chooser-label-row">
             <span className="overview-league-chooser-label">{card.label}</span>

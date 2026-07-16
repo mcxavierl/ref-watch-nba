@@ -2,7 +2,6 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 import { LeagueChooser } from "@/components/LeagueChooser";
-import { LogoContainer } from "@/components/LogoContainer";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewHistoricalLeaders } from "@/components/OverviewHistoricalLeaders";
@@ -53,9 +52,11 @@ function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
     <>
       <span className="overview-catalog-row-main">
         {entry.leagueId ? (
-          <LeagueNavMark league={entry.leagueId} active={false} containerClassName="overview-catalog-mark" />
+          <span className="overview-catalog-mark" aria-hidden>
+            <LeagueNavMark league={entry.leagueId} active={false} />
+          </span>
         ) : (
-          <LogoContainer className="overview-catalog-mark overview-catalog-mark--soon" />
+          <span className="overview-catalog-mark overview-catalog-mark--soon" aria-hidden />
         )}
         <span className="overview-catalog-name">{entry.label}</span>
       </span>

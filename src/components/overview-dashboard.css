@@ -1119,13 +1119,35 @@
 }
 
 .overview-catalog-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--catalog-accent, var(--line)) 28%, var(--line));
+  background: color-mix(in srgb, var(--catalog-accent, var(--raptors)) 10%, rgba(0, 0, 0, 0.12));
+}
+
+.overview-catalog-mark .league-nav-mark {
+  height: 0.95rem;
+  max-width: 1.35rem;
+}
+
+.overview-catalog-mark .league-nav-mark--cbb,
+.overview-catalog-mark .league-nav-mark[data-league="cbb"],
+.overview-catalog-mark .league-nav-mark--cfb,
+.overview-catalog-mark .league-nav-mark[data-league="cfb"] {
+  height: 1.15rem;
+  width: 1.15rem;
+  max-width: 1.15rem;
 }
 
 .overview-catalog-mark--soon {
   border-style: dashed;
-  border-color: #cbd5e1;
-  background: #f8fafc;
+  border-color: color-mix(in srgb, #8b6bb5 35%, var(--line));
+  background: color-mix(in srgb, #8b6bb5 8%, transparent);
 }
 
 .overview-catalog-row[data-league="nba"] { --catalog-accent: var(--raptors); }

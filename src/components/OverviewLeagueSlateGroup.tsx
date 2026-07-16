@@ -26,7 +26,7 @@ export function OverviewLeagueSlateGroup({ group }: OverviewLeagueSlateGroupProp
           className="overview-slate-league-heading rw-focus-ring"
         >
           <span className="overview-slate-league-heading-mark" aria-hidden>
-            <LeagueNavMark league={group.leagueId} active={false} contained={false} />
+            <LeagueNavMark league={group.leagueId} active={false} />
           </span>
           <span className="overview-slate-league-heading-copy">
             <span className="overview-slate-league-heading-label">{group.leagueLabel}</span>

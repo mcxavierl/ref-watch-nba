@@ -1,6 +1,5 @@
 "use client";
 
-import { LogoContainer, type LogoContainerSize } from "@/components/LogoContainer";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { leagueLogoNavClass, leagueLogoSrc } from "@/lib/league-logo-src";
 import { useColorMode } from "@/lib/a11y/useColorMode";
@@ -50,59 +49,34 @@ const PRO_LEAGUE_LOGOS: Record<Exclude<LeagueNavId, "cbb" | "cfb">, LeagueLogoSe
 type LeagueNavMarkProps = {
   league: LeagueId;
   active?: boolean;
-  /** Wrap mark in the shared 32px logo plate (default on). */
-  contained?: boolean;
-  containerSize?: LogoContainerSize;
-  containerClassName?: string;
 };
 
-export function LeagueNavMark({
-  league,
-  active = false,
-  contained = true,
-  containerSize = "sm",
-  containerClassName = "",
-}: LeagueNavMarkProps) {
+export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
   const colorMode = useColorMode();
   const src = leagueLogoSrc(league, colorMode);
   const proLogos = PRO_LEAGUE_LOGOS[league as Exclude<LeagueNavId, "cbb" | "cfb">];
   if (!src) {
-    const fallback = (
+    return (
       <span className="league-nav-mark-fallback" aria-hidden>
         {LEAGUES[league].shortLabel}
       </span>
-    );
-    return contained ? (
-      <LogoContainer size={containerSize} className={containerClassName}>
-        {fallback}
-      </LogoContainer>
-    ) : (
-      fallback
     );
   }
 
   const className = leagueLogoNavClass(league) || proLogos?.className || `league-nav-mark--${league}`;
 
-  const mark = (
+  return (
     <img
       src={src}
       alt=""
       aria-hidden
-      className={`league-nav-mark logo-container__mark${className ? ` ${className}` : ""}${active ? " league-nav-mark--on-pill" : ""}`}
+      className={`league-nav-mark${className ? ` ${className}` : ""}${active ? " league-nav-mark--on-pill" : ""}`}
       data-league={league}
-      width={20}
-      height={20}
+      width={league === "nfl" ? 13 : league === "cbb" || league === "cfb" ? 18 : 28}
+      height={league === "nfl" ? 18 : league === "cbb" || league === "cfb" ? 18 : 18}
       decoding="async"
       referrerPolicy="no-referrer"
     />
-  );
-
-  if (!contained) return mark;
-
-  return (
-    <LogoContainer size={containerSize} className={containerClassName}>
-      {mark}
-    </LogoContainer>
   );
 }
 

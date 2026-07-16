@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { LogoContainer } from "@/components/LogoContainer";
 import { useColorMode } from "@/lib/a11y/useColorMode";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { leagueLogoNavClass, leagueLogoSrc } from "@/lib/league-logo-src";
@@ -27,27 +26,29 @@ export function LeagueHeroLogo({
 
   if (!src) {
     return (
-      <LogoContainer size="lg" className={className}>
-        <span className="league-hero-logo-fallback" aria-hidden>
-          {LEAGUES[leagueId].shortLabel}
-        </span>
-      </LogoContainer>
+      <span
+        className={`league-hero-logo-fallback ${className}`.trim()}
+        aria-hidden
+      >
+        {LEAGUES[leagueId].shortLabel}
+      </span>
     );
   }
 
+  const width = leagueId === "nfl" || leagueId === "cfb" ? 36 : 52;
+  const height = leagueId === "nfl" || leagueId === "cfb" ? 48 : 40;
+
   return (
-    <LogoContainer size="lg" className={className}>
-      <Image
-        src={src}
-        alt={`${label} logo`}
-        width={28}
-        height={28}
-        className={`league-hero-logo logo-container__mark ${leagueLogoNavClass(leagueId)}`.trim()}
-        data-league={leagueId}
-        priority={priority}
-        decoding="async"
-        referrerPolicy="no-referrer"
-      />
-    </LogoContainer>
+    <Image
+      src={src}
+      alt={`${label} logo`}
+      width={width}
+      height={height}
+      className={`league-hero-logo ${leagueLogoNavClass(leagueId)} ${className}`.trim()}
+      data-league={leagueId}
+      priority={priority}
+      decoding="async"
+      referrerPolicy="no-referrer"
+    />
   );
 }
