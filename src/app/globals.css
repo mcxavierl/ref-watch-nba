@@ -3888,6 +3888,14 @@ p {
     opacity: 1;
   }
 
+  html[data-color="light"] .league-nav-mark--nba,
+  html[data-color="light"] .league-nav-mark[data-league="nba"],
+  html[data-color="light"] .league-hero-logo.league-nav-mark--nba,
+  html[data-color="light"] .league-hero-logo[data-league="nba"] {
+    filter: none;
+    opacity: 1;
+  }
+
   .league-nav-link--active .league-nav-mark {
     opacity: 1;
     transform: scale(1.02);
@@ -10222,6 +10230,11 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   max-width: 85%;
   max-height: 85%;
   filter: brightness(1.12);
+}
+
+html[data-color="light"] .overview-league-chooser-mark .league-nav-mark--nba,
+html[data-color="light"] .overview-league-chooser-mark .league-nav-mark[data-league="nba"] {
+  filter: none;
 }
 
 .overview-league-chooser-mark .league-nav-mark--nhl,

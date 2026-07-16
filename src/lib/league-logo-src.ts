@@ -10,8 +10,8 @@ type LeagueLogoSet = {
 
 const PRO_LEAGUE_LOGOS: Record<Exclude<LeagueNavId, "cbb" | "cfb">, LeagueLogoSet> = {
   nba: {
-    onDark: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
-    onLight: "https://cdn.nba.com/logos/leagues/logo-nba.svg",
+    onDark: "/logos/nba-logo.svg",
+    onLight: "/logos/nba-logo-light.svg",
   },
   nhl: {
     onDark: "https://assets.nhle.com/logos/nhl/svg/NHL_light.svg",
