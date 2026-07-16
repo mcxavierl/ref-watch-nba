@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T06:39:47.720Z",
+  "generatedAt": "2026-07-16T06:51:28.764Z",
   "conference": "SEC",
   "conferenceSlug": "sec",
   "dryRun": false,
@@ -5494,6 +5494,6 @@
       "officials": []
     }
   ],
-  "ingestedCount": 1166,
+  "ingestedCount": 1426,
   "expectedGames": 150
 }
