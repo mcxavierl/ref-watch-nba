@@ -386,7 +386,7 @@ export const NCAA_LIVE_LEAGUE_IDS = ${JSON.stringify(live, null, 2).replace(/\n/
 }
 
 function writeLeagueHeroStats(root: string): void {
-  const { formatSeasonScope } = require("../src/lib/season-scope") as typeof import("../src/lib/season-scope");
+  const { hubDisplaySeasonScope } = require("../src/lib/season-scope") as typeof import("../src/lib/season-scope");
 
   const entries: Record<
     string,
@@ -410,10 +410,14 @@ function writeLeagueHeroStats(root: string): void {
       data = filterNcaaRefStats(data, id);
     }
     const seasons = data.meta?.seasons ?? [];
+    const { seasonSpan } = hubDisplaySeasonScope(
+      id as import("../src/lib/leagues").LeagueId,
+      seasons,
+    );
     entries[id] = {
       officials: data.refs?.length ?? 0,
       games: data.meta?.totalGamesProcessed ?? 0,
-      seasonSpan: formatSeasonScope(seasons.length),
+      seasonSpan,
     };
   }
 

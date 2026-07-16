@@ -14,7 +14,7 @@ describe("slate-hero-links", () => {
     assert.equal(slateHeroStatHref("laliga", "officials"), "/laliga/refs");
     assert.equal(slateHeroStatHref("laliga", "games"), "/laliga/matrix");
     assert.equal(slateHeroStatHref("laliga", "seasons", 5), "/laliga/trends?scope=last5");
-    assert.equal(slateHeroStatHref("nfl", "seasons", 26), "/nfl/trends");
+    assert.equal(slateHeroStatHref("nfl", "seasons", 10), "/nfl/trends?scope=last10");
   });
 
   it("builds league-scoped hero action chips", () => {
