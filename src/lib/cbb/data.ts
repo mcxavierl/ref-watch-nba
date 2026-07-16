@@ -21,6 +21,7 @@ import { resolveLeagueBaseline } from "@/lib/baselines";
 import { filterNcaaRefStats } from "@/lib/ncaa-conference-gate";
 import { cbbCrewMetricsProvenance } from "@/lib/provenance";
 import {
+  loadRefStatsRawCachedFirst,
   resolveRefStatsFromFsOrCache,
   resolveTeamSplitsForLeague,
   attachTeamSplits,
@@ -51,10 +52,12 @@ function tryReadJson<T>(filename: string): T | null {
 }
 
 function loadRefStatsRaw(): RefStatsFile | null {
-  const fromFs =
-    tryReadJson<RefStatsFile>("ref-stats-core.json") ??
-    tryReadJson<RefStatsFile>("ref-stats.json");
-  return resolveRefStatsFromFsOrCache("cbb", fromFs);
+  return loadRefStatsRawCachedFirst("cbb", () => {
+    const fromFs =
+      tryReadJson<RefStatsFile>("ref-stats-core.json") ??
+      tryReadJson<RefStatsFile>("ref-stats.json");
+    return fromFs;
+  });
 }
 
 export function getAssignments(): AssignmentsFile {

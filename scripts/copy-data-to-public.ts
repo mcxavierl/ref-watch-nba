@@ -393,20 +393,22 @@ function writeLeagueHeroStats(root: string): void {
     { officials: number; games: number; seasonSpan: string }
   > = {};
 
-  const sources: { id: string; path: string }[] = [
+  const sources: { id: string; path: string; ncaa?: boolean }[] = [
     { id: "nba", path: path.join(root, "data", "ref-stats-core.json") },
     { id: "nfl", path: path.join(root, "data", "nfl", "ref-stats-core.json") },
     { id: "nhl", path: path.join(root, "data", "nhl", "ref-stats-core.json") },
     { id: "epl", path: path.join(root, "data", "epl", "ref-stats-core.json") },
     { id: "laliga", path: path.join(root, "data", "laliga", "ref-stats-core.json") },
+    { id: "cbb", path: path.join(root, "data", "cbb", "ref-stats-core.json"), ncaa: true },
+    { id: "cfb", path: path.join(root, "data", "cfb", "ref-stats-core.json"), ncaa: true },
   ];
 
-  for (const { id, path: statsPath } of sources) {
+  for (const { id, path: statsPath, ncaa } of sources) {
     if (!fs.existsSync(statsPath)) continue;
-    const data = JSON.parse(fs.readFileSync(statsPath, "utf8")) as {
-      refs?: unknown[];
-      meta?: { totalGamesProcessed?: number; seasons?: string[] };
-    };
+    let data = JSON.parse(fs.readFileSync(statsPath, "utf8")) as RefStatsFile;
+    if (ncaa && (id === "cbb" || id === "cfb")) {
+      data = filterNcaaRefStats(data, id);
+    }
     const seasons = data.meta?.seasons ?? [];
     entries[id] = {
       officials: data.refs?.length ?? 0,
