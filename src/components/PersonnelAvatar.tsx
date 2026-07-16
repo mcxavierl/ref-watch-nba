@@ -1,0 +1,58 @@
+"use client";
+
+const sizeClasses = {
+  sm: "h-8 w-8 text-[0.55rem]",
+  md: "h-10 w-10 text-[0.65rem]",
+  lg: "h-14 w-14 text-[0.75rem]",
+} as const;
+
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase();
+  return `${parts[0]![0] ?? ""}${parts[parts.length - 1]![0] ?? ""}`.toUpperCase();
+}
+
+function sportBadgeLabel(sport: "nba" | "nhl" | "nfl"): string {
+  if (sport === "nhl") return "NHL";
+  if (sport === "nfl") return "NFL";
+  return "NBA";
+}
+
+export function PersonnelAvatar({
+  name,
+  sport,
+  size = "lg",
+  className = "",
+}: {
+  name: string;
+  sport: "nba" | "nhl" | "nfl";
+  size?: keyof typeof sizeClasses;
+  className?: string;
+}) {
+  const ringClass =
+    sport === "nfl"
+      ? "ring-[color:color-mix(in_srgb,var(--nfl-green)_45%,transparent)]"
+      : sport === "nhl"
+        ? "ring-[color:color-mix(in_srgb,var(--nhl-blue)_45%,transparent)]"
+        : "ring-zinc-200/80";
+
+  return (
+    <span
+      className={`personnel-avatar relative inline-flex shrink-0 ${className}`.trim()}
+      aria-hidden
+    >
+      <span
+        className={`inline-flex items-center justify-center rounded-full bg-surface-raised font-semibold tracking-tight text-secondary ring-2 ${ringClass} ${sizeClasses[size]}`}
+      >
+        {initials(name)}
+      </span>
+      <span
+        className={`personnel-avatar-badge personnel-avatar-badge--${sport}`}
+        aria-hidden
+      >
+        {sportBadgeLabel(sport)}
+      </span>
+    </span>
+  );
+}

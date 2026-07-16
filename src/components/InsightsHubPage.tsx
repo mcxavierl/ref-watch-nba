@@ -295,6 +295,7 @@ export function InsightsHubPage({
         ) : null}
         <FrictionGrudgeMatrixSection
           findings={frictionDataset.findings}
+          leagueId={leagueId}
           basePath={league.pathPrefix}
           minHeadToHeadGames={frictionDataset.minHeadToHeadGames}
         />

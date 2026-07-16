@@ -4668,6 +4668,112 @@ p {
     }
   }
 
+  /* Clinical Modern insight bento grid (3-up matrix cards) */
+  .insight-bento-grid {
+    gap: 0.85rem;
+  }
+
+  @media (min-width: 900px) {
+    .insight-bento-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .clinical-insight-matrix-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1rem 1.05rem 0.95rem;
+  }
+
+  .clinical-insight-matrix-ref-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .clinical-insight-matrix-avatars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.15rem 0;
+  }
+
+  .clinical-insight-matrix-vs {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-primary-muted, var(--ink-muted));
+  }
+
+  .clinical-insight-matrix-subject {
+    margin: 0;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text-primary-muted, var(--ink-secondary));
+  }
+
+  .clinical-insight-matrix-metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    margin-top: 0.15rem;
+    text-align: center;
+  }
+
+  .clinical-insight-matrix-baseline {
+    margin: 0;
+    font-size: 0.78rem;
+  }
+
+  .clinical-insight-matrix-provenance {
+    margin: 0.15rem 0 0;
+    font-size: 0.68rem;
+    line-height: 1.45;
+    color: var(--text-primary-muted, var(--ink-muted));
+  }
+
+  .personnel-avatar-badge {
+    position: absolute;
+    right: -0.15rem;
+    bottom: -0.15rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 0.2rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.45rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--foreground);
+  }
+
+  .personnel-avatar-badge--nhl {
+    border-color: color-mix(in srgb, var(--nhl-blue) 45%, var(--border));
+    color: color-mix(in srgb, var(--nhl-blue) 88%, var(--foreground));
+  }
+
+  .personnel-avatar-badge--nfl {
+    border-color: color-mix(in srgb, var(--nfl-green) 45%, var(--border));
+    color: color-mix(in srgb, var(--nfl-green) 88%, var(--foreground));
+  }
+
+  .personnel-avatar-badge--nba {
+    border-color: color-mix(in srgb, var(--raptors) 45%, var(--border));
+    color: color-mix(in srgb, var(--raptors) 88%, var(--foreground));
+  }
+
   .rankings-insight-grid--hero {
     margin-top: 0;
     display: grid;
