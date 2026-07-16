@@ -160,6 +160,8 @@ export function computeRefGsniMetrics(
     | "gsniSampleGames"
   >,
 ): RefGsniMetrics | null {
+  if (league !== "NFL") return null;
+
   if (profile) {
     const fromProfile = metricsFromProfile(profile, meta);
     if (fromProfile) return fromProfile;

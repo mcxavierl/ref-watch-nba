@@ -132,7 +132,7 @@ export function enrichGameLogsWithPenaltyEvents<T extends GameLogEntry>(
   games: T[],
   dataDir: string,
 ): { games: T[]; applied: number } {
-  const events = loadCachedPenaltyEventIndex(dataDir);
+  const events = loadCachedPenaltyEventIndex(dataDir, { writeCache: true });
   if (!events) return { games, applied: 0 };
 
   const gamesCsvPath = path.join(dataDir, "nflverse-games.csv");
@@ -168,19 +168,34 @@ export function enrichGameLogsWithPenaltyEvents<T extends GameLogEntry>(
   return { games: enriched, applied };
 }
 
+/** Drop play-level penalty arrays after leverage summaries are computed. */
+export function compactGameLogPenaltyPayload<T extends GameLogEntry>(
+  games: T[],
+): T[] {
+  return games.map((game) => {
+    if (!game.penaltyEvents?.length) return game;
+    const { penaltyEvents: _removed, ...rest } = game;
+    return rest as T;
+  });
+}
+
 /** Attach play-level penalty events and leverage summaries to NFL game logs. */
 export function attachPenaltyEventsToGameLogs(
   dataDir: string,
+  options: { compact?: boolean } = {},
 ): { applied: number; total: number } {
   const logPath = path.join(dataDir, "game-logs.json");
   if (!fs.existsSync(logPath)) return { applied: 0, total: 0 };
 
   const file = JSON.parse(fs.readFileSync(logPath, "utf8")) as GameLogFile;
   const { games, applied } = enrichGameLogsWithPenaltyEvents(file.games, dataDir);
+  const outputGames = options.compact
+    ? compactGameLogPenaltyPayload(games)
+    : games;
 
   fs.writeFileSync(
     logPath,
-    `${JSON.stringify({ ...file, lastUpdated: new Date().toISOString(), games }, null, 2)}\n`,
+    `${JSON.stringify({ ...file, lastUpdated: new Date().toISOString(), games: outputGames }, null, 2)}\n`,
   );
 
   return { applied, total: games.length };

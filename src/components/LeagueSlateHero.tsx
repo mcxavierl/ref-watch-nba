@@ -8,7 +8,7 @@ import { LEAGUES } from "@/lib/leagues";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
 import { nbaSeasonScopeAuditNote } from "@/lib/nba-team-season-records";
 import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
-import { formatSeasonScope } from "@/lib/season-scope";
+import { hubDisplaySeasonScope } from "@/lib/season-scope";
 import {
   slateHeroActions,
   slateHeroStatHref,
@@ -58,16 +58,16 @@ export function LeagueSlateHero({
     refStats.refs?.length || snapshot?.officials || 0;
   const gamesProcessed =
     refStats.meta.totalGamesProcessed || snapshot?.games || 0;
-  const seasonSpan =
+  const hubSeasonScope =
     refStats.meta.seasons.length > 0
-      ? formatSeasonScope(refStats.meta.seasons.length)
-      : snapshot?.seasonSpan ?? "-";
+      ? hubDisplaySeasonScope(leagueId, refStats.meta.seasons)
+      : null;
+  const seasonSpan = hubSeasonScope?.seasonSpan ?? snapshot?.seasonSpan ?? "-";
   const seasonAuditNote =
     leagueId === "nba" ? nbaSeasonScopeAuditNote(refStats.meta.seasons) : null;
   const seasonCount =
-    refStats.meta.seasons.length > 0
-      ? refStats.meta.seasons.length
-      : seasonCountFromSnapshot(snapshot?.seasonSpan);
+    hubSeasonScope?.seasonCount ??
+    seasonCountFromSnapshot(snapshot?.seasonSpan);
   const useInteractiveStats = isOffseason;
   const heroActions = slateHeroActions(leagueId);
 

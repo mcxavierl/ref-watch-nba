@@ -5,7 +5,10 @@ import { RefAvatar } from "@/components/RefAvatar";
 import { RefereeWhistleDispositionStrip } from "@/components/RefereeWhistleDispositionStrip";
 import { RefereeWhistleMetricToggle } from "@/components/RefereeWhistleMetricToggle";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
+import { GsniGauge } from "@/components/GsniGauge";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { buildRefMasterInsights } from "@/lib/ref-master-insights";
+import { gsniFromRefProfile, gsniSampleLabel } from "@/lib/gsni-display";
 import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
 import { isWhistleTaxonomyLeague } from "@/config/penalty-types";
 import type { LeagueId } from "@/lib/leagues";
@@ -45,6 +48,9 @@ export function RefereeMasterCard({
 }: RefereeMasterCardProps) {
   const insights = buildRefMasterInsights(leagueId, profile, stats, qualified);
   const whistleIndex = qualified ? whistleIndexFromRefProfile(profile) : null;
+  const gameStateIndex =
+    qualified && leagueId === "nfl" ? gsniFromRefProfile(profile) : null;
+  const gsniSample = gameStateIndex !== null ? gsniSampleLabel(profile) : null;
 
   return (
     <header className="page-profile-header">
@@ -71,10 +77,20 @@ export function RefereeMasterCard({
             />
           </div>
           <DynamicInsightPillRow insights={insights} />
-          {whistleIndex !== null ? (
+          {(whistleIndex !== null || gameStateIndex !== null) ? (
             <div className="ref-profile-gauge-row">
-              <WhistleIndexGauge index={whistleIndex} size="sm" className="min-w-[9.5rem] flex-1" />
+              {whistleIndex !== null ? (
+                <WhistleIndexGauge index={whistleIndex} size="sm" className="min-w-[9.5rem] flex-1" />
+              ) : null}
+              {gameStateIndex !== null ? (
+                <MetricInfoHint hint="Game-State Index compares leverage-weighted flag rate to the league in similar score-and-clock situations. 50 is neutral; higher is quieter in key moments.">
+                  <GsniGauge index={gameStateIndex} size="sm" className="min-w-[9.5rem] flex-1" />
+                </MetricInfoHint>
+              ) : null}
             </div>
+          ) : null}
+          {gsniSample ? (
+            <p className="mt-1 text-xs text-muted">{gsniSample}</p>
           ) : null}
           {isWhistleTaxonomyLeague(leagueId) ? (
             <RefereeWhistleDispositionStrip

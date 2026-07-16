@@ -8,8 +8,14 @@ import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
  * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
  * and sample-gate provenance metadata.
  */
-export function RefDashboardStatGrid({ children }: { children: ReactNode }) {
-  return <dl className="ref-stat-grid">{children}</dl>;
+export function RefDashboardStatGrid({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <dl className={className ?? "ref-stat-grid"}>{children}</dl>;
 }
 
 export function RefDashboardStatCell({

@@ -212,6 +212,19 @@ export function formatSeasonScope(seasonCount: number): string {
   return `Last ${seasonCount} seasons`;
 }
 
+/** Default-scope season span for hub hero cards (not raw meta.seasons length). */
+export function hubDisplaySeasonScope(
+  leagueId: LeagueId,
+  availableSeasons: string[],
+): { seasonSpan: string; seasonCount: number } {
+  const mode = defaultSeasonScopeForLeague(leagueId);
+  const scoped = resolveScopedSeasonsForLeague(leagueId, mode, availableSeasons);
+  return {
+    seasonCount: scoped.length,
+    seasonSpan: formatSeasonScope(scoped.length),
+  };
+}
+
 /** Lowercase season span for matrix page-lead parentheticals, e.g. "last 10 seasons". */
 export function matrixLeadSeasonPhrase(seasonCount: number): string {
   return formatSeasonScope(seasonCount).toLowerCase();

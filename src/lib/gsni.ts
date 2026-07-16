@@ -12,6 +12,9 @@ import type { NflPenaltyEvent, RefOfficial } from "@/lib/types";
 /** Minimum high-leverage minutes before GSNI is surfaced (data honesty gate). */
 export const GSNI_MIN_HIGH_LEVERAGE_MINUTES = 50;
 
+/** NFL play-level penalties use shorter per-flag windows; lower gate keeps honest samples. */
+export const GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL = 25;
+
 /** Leverage weight at or above this threshold counts toward high-leverage minutes. */
 export const GSNI_HIGH_LEVERAGE_WEIGHT_FLOOR = 0.7;
 
@@ -48,6 +51,10 @@ export type GsniGameData = {
 
 export type GsniGamesCorpus = {
   games: GsniGameData[];
+};
+
+export type GsniComputeOptions = {
+  minHighLeverageMinutes?: number;
 };
 
 export type GsniComputeResult = {
@@ -344,7 +351,10 @@ function divergenceToGsni(divergence: number): number {
 export function computeGSNI(
   refereeId: string,
   gamesData: GsniGamesCorpus,
+  options: GsniComputeOptions = {},
 ): GsniComputeResult {
+  const minHighLeverageMinutes =
+    options.minHighLeverageMinutes ?? GSNI_MIN_HIGH_LEVERAGE_MINUTES;
   const refGames = gamesData.games.filter((game) =>
     game.refereeIds.includes(refereeId),
   );
@@ -371,7 +381,7 @@ export function computeGSNI(
   const refWeightedFoulRate = aggregateWeightedFoulRate(refGames);
 
   if (
-    highLeverageMinutes < GSNI_MIN_HIGH_LEVERAGE_MINUTES ||
+    highLeverageMinutes < minHighLeverageMinutes ||
     divergence === undefined
   ) {
     return {
@@ -510,9 +520,9 @@ export function attachGsniToProfiles<
     gsniHighLeverageMinutes?: number;
     gsniSampleGames?: number;
   },
->(profiles: T[], corpus: GsniGamesCorpus): T[] {
+>(profiles: T[], corpus: GsniGamesCorpus, options: GsniComputeOptions = {}): T[] {
   return profiles.map((profile) => {
-    const result = computeGSNI(profile.slug, corpus);
+    const result = computeGSNI(profile.slug, corpus, options);
     return {
       ...profile,
       referee_gsni: result.referee_gsni,

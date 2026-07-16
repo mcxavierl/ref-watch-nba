@@ -27,6 +27,7 @@ export type GlossaryId =
   | "nhl-ref-analytics"
   | "nfl-ref-analytics"
   | "nfl-whistle-premium"
+  | "game-state-index"
   | "home-margin"
   | "pace-alert"
   | "hit-rate"
@@ -156,6 +157,10 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
     label: "Whistle premium",
     text: "Crew combined scoring pace vs league baseline, plus flag-rate context for tonight's matchup. Descriptive historical signal only.",
   },
+  "game-state-index": {
+    label: "Game-State Index",
+    text: "Compares a referee's leverage-weighted flag rate to the league in similar score-and-clock states. 50 is neutral; higher means quieter in key moments; lower means heavier. NFL officials need 25+ high-leverage minutes of play-level penalty data before this appears.",
+  },
   "home-margin": {
     label: "Home avg margin",
     text: "Average home score minus away score in this ref’s games; positive means home teams outscored visitors on average.",
@@ -185,7 +190,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
     text: "Research-style patterns on a ref profile: scoring delta, whistle rate vs baseline, over frequency, and home/road splits when available. Informational only; always shows sample size and data provenance.",
   },
   gsni: {
-    label: "Game-State Neutralization Index",
-    text: "GSNI compares a referee's leverage-weighted whistle rate to league peers in the same game states (score gap and clock). 50 is neutral. Higher means fewer whistles than league in clutch states; lower means more. Requires 50+ high-leverage minutes before we publish a score.",
+    label: "Game-State Neutralization Index (NFL)",
+    text: "NFL-only metric. GSNI compares a referee's leverage-weighted whistle rate to league peers in the same game states (score gap and clock). 50 is neutral. Higher means fewer whistles than league in clutch states; lower means more. Requires 50+ high-leverage minutes before we publish a score.",
   },
 };
