@@ -131,7 +131,7 @@ export default async function NhlRefProfilePage({
         }
       >
         <RefProfileMetadataBar
-          seasons={stats.meta.seasons}
+          seasons={profile.seasons}
           games={profile.games}
           lastUpdated={stats.meta.lastUpdated}
           leagueId="nhl"

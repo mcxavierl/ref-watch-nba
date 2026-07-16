@@ -470,12 +470,16 @@ html.dark .dashboard-insight-card:hover {
   flex-direction: column;
   gap: 0.65rem;
   margin-top: 0.65rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .ref-master-insight-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .ref-master-insight-pill {
@@ -512,22 +516,35 @@ html.dark .dashboard-insight-card:hover {
 }
 
 .ref-master-insight-pill--high {
-  --pill-glow-accent: var(--accent-brand);
-  border-color: color-mix(in srgb, var(--accent-brand) 35%, var(--border-subtle));
-  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  border-color: color-mix(in srgb, var(--pill-glow) 44%, var(--pill-border));
+  color: color-mix(in srgb, var(--pill-glow-accent) 78%, var(--text-secondary));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--pill-glow) 18%, transparent),
+    0 0 16px color-mix(in srgb, var(--pill-glow) 24%, transparent);
 }
 
 .ref-master-insight-pill--moderate {
-  border-color: var(--border-default);
+  border-color: color-mix(in srgb, var(--pill-glow) 30%, var(--pill-border));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--pill-glow) 10%, transparent),
+    0 0 10px color-mix(in srgb, var(--pill-glow) 12%, transparent);
 }
 
 .ref-master-insight-pill--active,
 .ref-master-insight-pill:not(.ref-master-insight-pill--static):hover {
   --pill-glow-accent: var(--accent-brand);
-  border-color: var(--accent-brand);
+  border-color: color-mix(in srgb, var(--accent-brand) 55%, var(--pill-border));
   color: var(--text-primary);
-  background: color-mix(in srgb, var(--accent-brand) 10%, var(--bg-surface-2));
-  box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      color-mix(in srgb, var(--accent-brand) 14%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--accent-brand) 10%, var(--bg-surface-2));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-brand) 22%, transparent),
+    0 0 18px color-mix(in srgb, var(--pill-glow) 28%, transparent);
 }
 
 .ref-master-insight-panel {

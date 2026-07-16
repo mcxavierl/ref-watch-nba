@@ -6,6 +6,7 @@ import {
   deltaVsLeagueHeadline,
   formatFindingCardMeta,
   formatFindingSampleMeta,
+  formatRefProfileSampleMeta,
   formatSeasonSpan,
   isNeutralRate,
   minorsPaceHeadline,
@@ -38,6 +39,11 @@ describe("finding-copy", () => {
       formatFindingSampleMeta(11979, ["2016-17", "2017-18", "2025-26"]),
       "Sample: 11,979 games over 3 seasons (2016–2026)",
     );
+    assert.equal(
+      formatRefProfileSampleMeta(414, Array.from({ length: 26 }, (_, i) => `20${String(99 + i).slice(-2)}-${String(i).padStart(2, "0")}`)),
+      "414 games analyzed over 26 seasons",
+    );
+    assert.equal(formatRefProfileSampleMeta(12, []), "12 games analyzed");
   });
 
   it("uses balanced language for neutral over/under headlines", () => {

@@ -34,6 +34,17 @@ export function formatFindingSampleMeta(
   return `Sample: ${games.toLocaleString()} games over ${seasonCount} season${seasonCount === 1 ? "" : "s"} (${span})`;
 }
 
+/** Compact ref profile metadata: games plus season count (no season list). */
+export function formatRefProfileSampleMeta(
+  games: number,
+  seasons: string[],
+): string {
+  const seasonCount = seasons.length;
+  const gamesLabel = `${games.toLocaleString()} games analyzed`;
+  if (seasonCount === 0) return gamesLabel;
+  return `${gamesLabel} over ${seasonCount} season${seasonCount === 1 ? "" : "s"}`;
+}
+
 function neutralOutcomePhrase(subject: string): string {
   const phrases = [
     `${subject} balances perfectly neutral`,

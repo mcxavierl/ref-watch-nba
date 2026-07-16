@@ -72,7 +72,7 @@ export function RefereeMasterCard({
           </div>
           <DynamicInsightPillRow insights={insights} />
           {whistleIndex !== null ? (
-            <div className="mt-3 flex max-w-md flex-wrap gap-3">
+            <div className="ref-profile-gauge-row">
               <WhistleIndexGauge index={whistleIndex} size="sm" className="min-w-[9.5rem] flex-1" />
             </div>
           ) : null}
