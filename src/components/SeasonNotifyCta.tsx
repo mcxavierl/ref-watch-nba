@@ -6,11 +6,13 @@ import { useState } from "react";
 type SeasonNotifyCtaProps = {
   league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   variant?: "button" | "link";
+  triggerLabel?: string;
 };
 
 export function SeasonNotifyCta({
   league,
   variant = "button",
+  triggerLabel,
 }: SeasonNotifyCtaProps) {
   const [expanded, setExpanded] = useState(false);
   const [email, setEmail] = useState("");
@@ -80,7 +82,7 @@ export function SeasonNotifyCta({
         onClick={() => setExpanded(true)}
       >
         <Bell className="size-4 shrink-0" aria-hidden />
-        Notify me when the season starts
+        {triggerLabel ?? "Notify me when the season starts"}
       </button>
     );
   }

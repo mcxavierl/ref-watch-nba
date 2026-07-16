@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { BrowseActionCards } from "@/components/BrowseActionCards";
+import { CbbClinicalActionTiles } from "@/components/cbb/CbbClinicalActionTiles";
+import { CbbClinicalConferenceHubs } from "@/components/cbb/CbbClinicalConferenceHubs";
+import { CbbClinicalHero } from "@/components/cbb/CbbClinicalHero";
+import { CbbClinicalNotifyCallout } from "@/components/cbb/CbbClinicalNotifyCallout";
+import { CbbClinicalProvenanceBanner } from "@/components/cbb/CbbClinicalProvenanceBanner";
 import { CbbPreviewBanner } from "@/components/CbbPreviewBanner";
 import { ConferenceCoverage } from "@/components/ConferenceCoverage";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
-import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
-import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
@@ -93,7 +96,9 @@ export default function HomePage() {
       });
 
   return (
-    <div className="page-shell page-shell-slate">
+    <div
+      className={`page-shell page-shell-slate${isOffseason ? " cbb-clinical-shell" : ""}`}
+    >
       <JsonLd
         data={buildLeagueSlateJsonLd(
           leagueSlatePageTitle("cbb", { isOffseason }),
@@ -101,20 +106,30 @@ export default function HomePage() {
           assignments.lastUpdated,
         )}
       />
-      <LeagueSlateHero
-        leagueId="cbb"
-        assignments={assignments}
-        refStats={refStats}
-      />
 
-      <CbbPreviewBanner
-        statsSource={refStats.meta.source}
-        assignmentsSource={assignments.source}
-      />
+      {isOffseason ? (
+        <>
+          <CbbClinicalHero assignments={assignments} refStats={refStats} />
+          <CbbClinicalActionTiles />
+          <CbbClinicalProvenanceBanner />
+          <CbbClinicalConferenceHubs />
+        </>
+      ) : (
+        <>
+          <LeagueSlateHero
+            leagueId="cbb"
+            assignments={assignments}
+            refStats={refStats}
+          />
 
-      <ConferenceCoverage leagueId="cbb" />
+          <CbbPreviewBanner
+            statsSource={refStats.meta.source}
+            assignmentsSource={assignments.source}
+          />
 
-      {isOffseason && <OffseasonSlateNotice league="CBB" />}
+          <ConferenceCoverage leagueId="cbb" />
+        </>
+      )}
 
       <FindingsSection
         findings={findings}
@@ -126,9 +141,13 @@ export default function HomePage() {
         sortExplainer="Strong-confidence patterns first; thin samples sink to the bottom. Within each tier, ranked by effect size and sample depth."
       />
 
-      <section className="slate-quick-links">
-        <BrowseActionCards league="CBB" compact />
-      </section>
+      {isOffseason ? (
+        <CbbClinicalNotifyCallout />
+      ) : (
+        <section className="slate-quick-links">
+          <BrowseActionCards league="CBB" compact />
+        </section>
+      )}
 
       {!isOffseason && (
         <>
@@ -173,11 +192,11 @@ export default function HomePage() {
         </>
       )}
 
-      <TrustCharterSummary />
+      <div className={isOffseason ? "cbb-clinical-footnote" : undefined}>
+        <TrustCharterSummary />
+      </div>
 
       <RelatedInsightsFooter league="CBB" />
-
-      <ProComingSoonTease league="CBB" />
     </div>
   );
 }

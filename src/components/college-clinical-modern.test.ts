@@ -46,3 +46,45 @@ test("ConferenceCoverage uses StatusBadge for live conference labels", () => {
   assert.match(source, /StatusBadge/);
   assert.doesNotMatch(source, /ncaa-coverage-live-item-badge/);
 });
+
+test("CBB clinical offseason landing uses dedicated components", () => {
+  const page = readFileSync("src/app/cbb/page.tsx", "utf8");
+  assert.match(page, /CbbClinicalHero/);
+  assert.match(page, /CbbClinicalActionTiles/);
+  assert.match(page, /CbbClinicalProvenanceBanner/);
+  assert.match(page, /CbbClinicalConferenceHubs/);
+  assert.match(page, /CbbClinicalNotifyCallout/);
+  assert.match(page, /isOffseason \?/);
+  assert.doesNotMatch(page, /ProComingSoonTease/);
+
+  const hero = readFileSync("src/components/cbb/CbbClinicalHero.tsx", "utf8");
+  assert.match(hero, /offseasonTitle/);
+  assert.match(hero, /LEAGUE_HERO_STATS/);
+  assert.match(hero, /slateHeroStatHref/);
+  assert.match(hero, /tabular-nums/);
+  assert.doesNotMatch(hero, /slateHeroActions/);
+
+  const tiles = readFileSync("src/components/cbb/CbbClinicalActionTiles.tsx", "utf8");
+  assert.match(tiles, /Tendency index/);
+  assert.match(tiles, /Crew matrix/);
+  assert.match(tiles, /Team histories/);
+  assert.match(tiles, /Season highlights/);
+  assert.match(tiles, /cbb-clinical-action-grid/);
+
+  const provenance = readFileSync(
+    "src/components/cbb/CbbClinicalProvenanceBanner.tsx",
+    "utf8",
+  );
+  assert.match(provenance, /off-season seed data only/);
+  assert.match(provenance, /approx\. Nov 4/);
+
+  const hubs = readFileSync("src/components/cbb/CbbClinicalConferenceHubs.tsx", "utf8");
+  assert.match(hubs, /getConferenceCoverageRows/);
+  assert.match(hubs, /Conference Hubs: Pre-Season Status/);
+  assert.match(hubs, /row\.conferenceId/);
+
+  const notify = readFileSync("src/components/cbb/CbbClinicalNotifyCallout.tsx", "utf8");
+  assert.match(notify, /SeasonNotifyCta/);
+  assert.match(notify, /triggerLabel/);
+  assert.match(notify, /Notify me when live data backfills/);
+});
