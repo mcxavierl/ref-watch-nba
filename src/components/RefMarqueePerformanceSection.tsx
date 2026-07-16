@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import type { RefMarqueePerformance } from "@/lib/marquee-metrics";
-import { MARQUEE_CI_MIN_GAMES } from "@/lib/marquee-metrics";
-import { formatPct } from "@/lib/data";
-import { formatSigned } from "@/lib/stats-utils";
+import { MARQUEE_CI_MIN_GAMES } from "@/lib/marquee-metrics.constants";
+import { formatPct, formatSigned } from "@/lib/stats-utils";
 import {
   RefDashboardStatCell,
   RefDashboardStatGrid,

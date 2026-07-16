@@ -1,6 +1,7 @@
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { DataLeague, RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import { classifyMarqueeGame, isMarqueeGame } from "@/lib/marquee-games";
+import { MARQUEE_CI_MIN_GAMES } from "@/lib/marquee-metrics.constants";
 import type { LeagueId } from "@/lib/leagues";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import {
@@ -18,7 +19,7 @@ import {
   releaseParsedPayload,
 } from "@/lib/worker-isolate-store";
 
-export const MARQUEE_CI_MIN_GAMES = 20;
+export { MARQUEE_CI_MIN_GAMES } from "@/lib/marquee-metrics.constants";
 
 export interface RefMarqueePerformance {
   refSlug: string;

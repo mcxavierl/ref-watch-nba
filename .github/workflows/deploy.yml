@@ -33,6 +33,9 @@ jobs:
       - name: Refactor safety checks
         run: npm run check:refactor-safety
 
+      - name: Client import boundary check
+        run: npm run check:client-imports
+
       - name: Typecheck
         run: npm run typecheck
 
