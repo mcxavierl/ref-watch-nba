@@ -833,8 +833,8 @@ export function buildMarqueeEfficiencyFinding(
 
   const explainer =
     performance.marqueeGames >= MARQUEE_CI_MIN_GAMES && performance.overRateCi
-      ? `Marquee games flagged by objective metadata: national windows, derbies, top-table clashes, and max-capacity venues. Marquee over-rate 95% CI: ${performance.overRateCi.label}. Descriptive split only.`
-      : "Marquee games flagged by objective metadata: national windows, derbies, top-table clashes, and max-capacity venues. Descriptive split only, not a betting signal.";
+      ? `Marquee games flagged by objective metadata. Marquee over-rate 95% CI: ${performance.overRateCi.label}. Descriptive split only.`
+      : "Marquee games flagged by objective metadata. Descriptive split only, not a betting signal.";
 
   return {
     id: `${ctx.paths.idPrefix}marquee-efficiency`,

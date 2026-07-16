@@ -48,8 +48,7 @@ export function RefMarqueePerformanceSection({
             Prime-Time / Marquee Performance
           </h2>
           <p className="mt-1 text-sm text-zinc-600">
-            High-profile games only: national windows, derbies, top-table clashes,
-            and max-capacity venues versus this official&apos;s general baseline.
+            High-profile games compared to this official&apos;s general baseline.
           </p>
         </div>
         <button

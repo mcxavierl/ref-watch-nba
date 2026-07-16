@@ -149,7 +149,7 @@ function insightFromMarquee(
     shortLine: `Marquee O/U ${formatSigned(overDeltaPp)} pts vs baseline`,
     headline: "Prime-time and marquee slate efficiency split",
     summary:
-      "High-profile games - national windows, derbies, and capacity venues - compared to this official's general baseline.",
+      "High-profile games compared to this official's general baseline.",
     confidence: highConfidence ? "high" : "moderate",
     interactive: true,
     stats: [
