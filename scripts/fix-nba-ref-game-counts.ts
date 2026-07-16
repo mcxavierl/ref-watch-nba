@@ -5,7 +5,6 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { attachGsniFieldsFromGameLogs } from "./lib/attach-gsni";
 import { applyBbrRefTeamStats } from "./lib/apply-bbr-ref-team-stats";
 import { loadBbrRefTeamRecords } from "./lib/bbr-ref-team-records";
 import type { GameLogFile } from "./lib/game-logs";
@@ -206,8 +205,6 @@ export function rebuildNbaRefStatsFromLogs(
 
   refs.sort((a, b) => b.games - a.games);
   dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
-  const refsWithGsni = attachGsniFieldsFromGameLogs(refs, logs.games);
-
   const dates = logs.games.map((g) => g.date).sort();
   const rebuildNote = " Ref game counts rebuilt from DISTINCT game_id in game logs.";
   const existingNote = existing.meta.note ?? "";
@@ -230,7 +227,7 @@ export function rebuildNbaRefStatsFromLogs(
       },
       note,
     },
-    refs: refsWithGsni,
+    refs: refs,
     teamSplits: existing.teamSplits,
   };
 }

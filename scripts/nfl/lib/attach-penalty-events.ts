@@ -132,7 +132,7 @@ export function enrichGameLogsWithPenaltyEvents<T extends GameLogEntry>(
   games: T[],
   dataDir: string,
 ): { games: T[]; applied: number } {
-  const events = loadCachedPenaltyEventIndex(dataDir);
+  const events = loadCachedPenaltyEventIndex(dataDir, { writeCache: true });
   if (!events) return { games, applied: 0 };
 
   const gamesCsvPath = path.join(dataDir, "nflverse-games.csv");

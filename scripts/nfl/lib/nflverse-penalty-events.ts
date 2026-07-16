@@ -39,7 +39,7 @@ function parseNum(value: string | undefined): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
-function parsePenaltyEventsCsv(csv: string): NflPenaltyEventIndex {
+export function parsePenaltyEventsCsv(csv: string): NflPenaltyEventIndex {
   const rows = csv.trim().split("\n");
   const header = parseCsvRow(rows[0] ?? "");
   const idx = (name: string) => header.indexOf(name);
@@ -166,14 +166,54 @@ export async function loadNflversePenaltyEventIndex(
   return merged;
 }
 
-export function loadCachedPenaltyEventIndex(
+/** Build penalty event index from local pbp-cache CSVs (no network). */
+export function buildPenaltyEventIndexFromPbpCache(
   dataDir: string,
 ): NflPenaltyEventIndex | null {
-  const cachePath = path.join(dataDir, "penalty-events-by-game.json");
-  if (!fs.existsSync(cachePath)) return null;
-  try {
-    return JSON.parse(fs.readFileSync(cachePath, "utf8")) as NflPenaltyEventIndex;
-  } catch {
-    return null;
+  const pbpCacheDir = path.join(dataDir, "pbp-cache");
+  if (!fs.existsSync(pbpCacheDir)) return null;
+
+  const merged: NflPenaltyEventIndex = {};
+  for (const fileName of fs.readdirSync(pbpCacheDir)) {
+    if (!fileName.startsWith("play_by_play_") || !fileName.endsWith(".csv")) {
+      continue;
+    }
+    const csv = fs.readFileSync(path.join(pbpCacheDir, fileName), "utf8");
+    Object.assign(merged, parsePenaltyEventsCsv(csv));
   }
+
+  return Object.keys(merged).length > 0 ? merged : null;
+}
+
+export function loadCachedPenaltyEventIndex(
+  dataDir: string,
+  options: { writeCache?: boolean } = {},
+): NflPenaltyEventIndex | null {
+  const cachePath = path.join(dataDir, "penalty-events-by-game.json");
+  if (fs.existsSync(cachePath)) {
+    try {
+      const cached = JSON.parse(
+        fs.readFileSync(cachePath, "utf8"),
+      ) as NflPenaltyEventIndex;
+      if (Object.keys(cached).length > 0) return cached;
+    } catch {
+      // fall through to pbp-cache rebuild
+    }
+  }
+
+  const fromPbp = buildPenaltyEventIndexFromPbpCache(dataDir);
+  if (!fromPbp) return null;
+
+  if (options.writeCache) {
+    fs.writeFileSync(cachePath, `${JSON.stringify(fromPbp)}\n`);
+    console.log(
+      `Wrote ${cachePath} from pbp-cache (${Object.keys(fromPbp).length} games)`,
+    );
+  } else {
+    console.log(
+      `Using pbp-cache penalty events (${Object.keys(fromPbp).length} games, in-memory)`,
+    );
+  }
+
+  return fromPbp;
 }

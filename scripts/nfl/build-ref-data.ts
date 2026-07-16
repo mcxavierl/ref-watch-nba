@@ -784,6 +784,8 @@ async function buildFromEspn(
       .sort((a, b) => b.games - a.games);
   }
 
+  const logsForDisk = mergedLogs.map(({ penaltyEvents: _pe, ...game }) => game);
+
   fs.writeFileSync(
     path.join(DATA_DIR, "game-logs.json"),
     `${JSON.stringify(
@@ -791,7 +793,7 @@ async function buildFromEspn(
         lastUpdated: new Date().toISOString(),
         league: "NFL",
         source: "espn",
-        games: mergedLogs,
+        games: logsForDisk,
       },
       null,
       2,

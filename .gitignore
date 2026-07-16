@@ -51,3 +51,7 @@ next-env.d.ts
 
 # BBR ingest HTML cache (fetched locally; not shipped)
 /data/nba/cache/
+
+# nflverse PBP penalty index (built from pbp-cache or npm run build-nfl-penalty-events)
+/data/nfl/penalty-events-by-game.json
+/data/nfl/pbp-cache/

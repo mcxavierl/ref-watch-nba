@@ -1116,9 +1116,15 @@ p {
     .ref-stat-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .ref-stat-grid--gsni {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   .ref-stat-card {
+    min-width: 0;
+    overflow-wrap: anywhere;
     padding: var(--space-4);
     border-radius: 0.625rem;
     border: 1px solid var(--clinical-card-border, #e5e7eb);

@@ -47,8 +47,8 @@ export function RefGsniSection({
 
   return (
     <section className="data-card">
-      <div className="ref-table-section-header flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold text-zinc-800">
+      <div className="ref-table-section-header flex min-w-0 flex-wrap items-start justify-between gap-x-3 gap-y-2 sm:items-center">
+        <h2 className="min-w-0 text-sm font-semibold leading-snug text-zinc-800">
           <TermHelp id="gsni">Game-State Neutralization</TermHelp>
         </h2>
         <GsniSamplePill minutes={metrics.highLeverageMinutes} />
@@ -72,7 +72,7 @@ export function RefGsniSection({
             baselines in the same states. {GSNI_MIN_HIGH_LEVERAGE_MINUTES}+ high-leverage
             minutes required.
           </p>
-          <RefDashboardStatGrid>
+          <RefDashboardStatGrid className="ref-stat-grid--gsni">
             <RefDashboardStatCell
               label="GSNI score"
               value={
