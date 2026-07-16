@@ -67,7 +67,7 @@ export function RefereeMasterCard({
           <div className="page-hero-head-title-row">
             <h1 className="page-title">{profile.name}</h1>
             {numberSlot ?? (
-              <span className="font-mono text-sm text-muted">#{profile.number}</span>
+              <span className="font-tabular text-sm text-muted">#{profile.number}</span>
             )}
             <FavoritesStar
               id={profile.slug}

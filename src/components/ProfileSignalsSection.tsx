@@ -51,7 +51,7 @@ function SignalStats({ stats }: { stats: ProfileSignal["stats"] }) {
             key={stat.label}
             className={profileStatToneClass(stat.label, stat.value, stat.detail)}
           >
-            <dt className="text-xs font-medium text-zinc-500">{stat.label}</dt>
+            <dt className="text-xs font-normal text-slate-400">{stat.label}</dt>
             <dd className="mt-0.5">
               <StandoutMetricValue
                 tone={neutralBaseline ? "neutral" : tone}
@@ -247,7 +247,7 @@ export function ProfileSignalsSection({
         </Link>
       </div>
 
-      <div className="clinical-card data-card">
+      <div className="ref-profile-section clinical-card">
         {isEmpty ? (
           <div className="px-4 py-8 text-center sm:px-5">
             <p className="text-sm font-medium text-zinc-800">

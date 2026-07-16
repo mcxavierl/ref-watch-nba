@@ -618,7 +618,7 @@ html.dark .dashboard-insight-card:hover {
 }
 
 .ref-whistle-metric-toggle__value {
-  font-family: var(--font-mono, ui-monospace, monospace);
+  font-family: var(--font-data);
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -729,7 +729,7 @@ html.dark .dashboard-insight-card:hover {
 }
 
 .whistle-disposition-metric-value {
-  font-family: var(--font-mono, ui-monospace, monospace);
+  font-family: var(--font-data);
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-primary);

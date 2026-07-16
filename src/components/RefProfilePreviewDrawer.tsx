@@ -78,7 +78,7 @@ function PreviewMetricStat({
       <dt>
         <MetricInfoHint hint={hint}>{label}</MetricInfoHint>
       </dt>
-      <dd className="font-mono tabular-nums">
+      <dd className="font-tabular tabular-nums">
         {typeof value === "string" || typeof value === "number" ? (
           <StandoutMetricValue tone={valueTone} size="md">
             {value}
@@ -250,7 +250,7 @@ export function RefProfilePreviewDrawer({
                   </p>
                   <RefJerseyNumber
                     number={profile.number}
-                    className="ref-preview-drawer-number font-mono"
+                    className="ref-preview-drawer-number font-tabular"
                   />
                 </div>
               </div>
@@ -344,13 +344,13 @@ export function RefProfilePreviewDrawer({
                     <tbody>
                       {previewModel.recentGames.map((game) => (
                         <tr key={game.gameId}>
-                          <td className="font-mono tabular-nums">
+                          <td className="font-tabular tabular-nums">
                             {formatGameDate(game.date)}
                           </td>
                           <td>
                             {game.awayTeam} @ {game.homeTeam}
                           </td>
-                          <td className="font-mono tabular-nums">{game.totalPoints}</td>
+                          <td className="font-tabular tabular-nums">{game.totalPoints}</td>
                           <td>
                             <span
                               className={

@@ -41,13 +41,13 @@ export function RefMarqueePerformanceSection({
       : null;
 
   return (
-    <section className="data-card">
+    <section className="ref-profile-section">
       <div className="ref-table-section-header flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm font-semibold text-zinc-800">
+          <h2 className="font-semibold tracking-tight">
             Prime-Time / Marquee Performance
           </h2>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm font-normal text-slate-400">
             High-profile games compared to this official&apos;s general baseline.
           </p>
         </div>
@@ -62,7 +62,7 @@ export function RefMarqueePerformanceSection({
       </div>
 
       {expanded && (
-        <div className="px-4 py-4 sm:px-5">
+        <div className="ref-table-section-body">
           <RefDashboardStatGrid>
             <RefDashboardStatCell
               label="Marquee games"

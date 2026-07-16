@@ -30,8 +30,8 @@ export function RefStatGrid({
 
   if (!showMetrics) {
     return (
-      <section className="data-card px-4 py-6 sm:px-5">
-        <p className="text-sm text-zinc-600">
+      <section className="ref-profile-section px-6 py-6">
+        <p className="text-sm font-normal text-slate-400">
           Not enough games for reliable metrics yet ({profile.games} logged).
           Check back after this official clears the sample gate.
         </p>
@@ -40,11 +40,11 @@ export function RefStatGrid({
   }
 
   return (
-    <section className="data-card">
+    <section className="ref-profile-section">
       <div className="ref-table-section-header">
-        <h2 className="text-sm font-semibold text-zinc-800">General stats</h2>
+        <h2 className="font-semibold tracking-tight">General stats</h2>
       </div>
-      <div className="px-4 py-4 sm:px-5">
+      <div className="ref-table-section-body">
         <RefDashboardStatGrid>
           <RefDashboardStatCell label="Games" value={String(profile.games)} />
           <RefDashboardStatCell
@@ -100,14 +100,14 @@ export function RefListItem({
           {profile.name}{" "}
           <RefJerseyNumber
             number={profile.number}
-            className="font-mono text-sm text-zinc-500"
+            className="font-tabular text-sm text-zinc-500"
           />
         </p>
         <p className="mt-1 text-sm text-zinc-600">
           {profile.games} games · {formatPct(profile.overRate)} over {overBaseline}
         </p>
       </div>
-      <span className="font-mono text-base font-semibold tabular-nums text-primary-muted">
+      <span className="font-tabular text-base font-medium tabular-nums text-primary-muted">
         {delta} {deltaUnit}
       </span>
     </Link>

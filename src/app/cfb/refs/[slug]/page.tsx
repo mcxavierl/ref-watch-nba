@@ -133,7 +133,7 @@ export default async function CfbRefProfilePage({
           <div className="page-hero-head-copy">
             <div className="page-hero-head-title-row">
               <h1 className="page-title">{profile.name}</h1>
-              <span className="font-mono text-sm text-zinc-500">
+              <span className="font-tabular text-sm text-muted">
                 #{profile.number}
               </span>
               <FavoritesStar

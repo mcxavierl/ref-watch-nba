@@ -19,16 +19,16 @@ export function CfbRefAnalyticsSection({
   const ly = leagueAvgPenaltyYards ?? 60;
   const prov = analytics.provenance;
   return (
-    <section className="data-card">
+    <section className="ref-profile-section">
       <div className="ref-table-section-header">
-        <h2 className="text-sm font-semibold text-zinc-800">
+        <h2 className="font-semibold tracking-tight">
           <TermHelp id="nfl-ref-analytics">Whistle analytics</TermHelp>
         </h2>
       </div>
       {!showMetrics ? (
-        <p className="px-4 py-6 text-sm text-zinc-600">Sample gate not cleared.</p>
+        <p className="ref-table-section-body text-sm font-normal text-slate-400">Sample gate not cleared.</p>
       ) : (
-        <div className="px-4 py-4 sm:px-5">
+        <div className="ref-table-section-body">
           <RefDashboardStatGrid>
             <RefDashboardStatCell
               label="Flags per game"

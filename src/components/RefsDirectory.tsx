@@ -45,17 +45,12 @@ function DeltaCell({
   usePct?: boolean;
 }) {
   const tone = directoryDeltaTone(delta, overBaseline, heatMap, usePct);
-  const className = heatMap
-    ? tone === "positive"
-      ? "ref-delta-positive"
+  const className =
+    tone === "positive"
+      ? "refs-directory-delta ref-delta-positive"
       : tone === "negative"
-        ? "ref-delta-negative"
-        : "refs-directory-delta-neutral"
-    : tone === "positive"
-      ? "refs-directory-delta-positive"
-      : tone === "negative"
-        ? "refs-directory-delta-negative"
-        : "refs-directory-delta-neutral";
+        ? "refs-directory-delta ref-delta-negative"
+        : "refs-directory-delta refs-directory-delta-neutral";
 
   const formattedValue =
     formatted ??
@@ -77,7 +72,7 @@ function OverGauge({ overRate }: { overRate: number }) {
       style={{ "--over-fill": `${fill}%` } as CSSProperties}
     >
       <span className="refs-directory-over-gauge-fill" aria-hidden />
-      <span className="refs-directory-over-gauge-value font-mono tabular-nums">
+      <span className="refs-directory-over-gauge-value font-tabular">
         {formatPct(overRate)}
       </span>
     </div>
@@ -226,7 +221,7 @@ export function RefsDirectory({
     <div className="refs-directory-hub">
       <RefsTrendSpotlight cards={spotlightCards} tabLabel={activeTab.label} />
 
-      <div className="data-card refs-directory">
+      <div className="ref-profile-section refs-directory">
         <div className="refs-directory-toolbar">
           <div className="refs-directory-discovery-head">
             <p className="refs-directory-discovery-title">Performance Discovery</p>
@@ -348,7 +343,7 @@ export function RefsDirectory({
                   className={`refs-directory-row ${isReveal ? "refs-directory-row-reveal" : ""}`}
                 >
                   <div className="refs-directory-row-link">
-                    <span className="refs-directory-col-rank font-mono tabular-nums">
+                    <span className="refs-directory-col-rank font-tabular">
                       {index + 1}
                     </span>
                     <span className="refs-directory-col-official">
@@ -368,11 +363,11 @@ export function RefsDirectory({
                         </button>
                         <RefJerseyNumber
                           number={ref.number}
-                          className="refs-directory-number font-mono"
+                          className="refs-directory-number font-tabular"
                         />
                       </span>
                     </span>
-                    <span className="refs-directory-col-games font-mono tabular-nums">
+                    <span className="refs-directory-col-games font-tabular">
                       {ref.games}
                     </span>
                     <span className="refs-directory-col-over">

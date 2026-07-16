@@ -35,8 +35,8 @@ export function RefBettingProfile({
 
   if (!showMetrics) {
     return (
-      <section className="data-card px-4 py-6 sm:px-5">
-        <p className="text-sm text-zinc-600">
+      <section className="ref-profile-section px-6 py-6">
+        <p className="text-sm font-normal text-slate-400">
           Not enough games for reliable metrics yet ({profile.games} logged).
           Betting splits and closing-line context appear after the sample gate clears.
         </p>
@@ -55,12 +55,12 @@ export function RefBettingProfile({
         leagueId={leagueId}
       />
 
-      <section className="ref-profile-data-card">
-        <header className="ref-profile-data-card-head">
-          <TermHeading id="over-under" as="h2" className="ref-profile-section-title" />
-        </header>
-        <div className="ref-profile-table-wrap">
-          <table className="ref-data-table data-table ref-profile-compact-table">
+      <section className="ref-profile-section">
+        <div className="ref-table-section-header">
+          <TermHeading id="over-under" as="h2" className="font-semibold tracking-tight" />
+        </div>
+        <div className="ref-table-section-body overflow-x-auto">
+          <table className="ref-data-table data-table min-w-[28rem] w-full">
             <thead>
               <tr className="data-table-head">
                 <th>
@@ -74,11 +74,11 @@ export function RefBettingProfile({
             </thead>
             <tbody>
               <tr>
-                <td className="font-medium">Overall</td>
-                <td className="font-mono tabular-nums">
+                <td className="text-sm font-medium text-zinc-800">Overall</td>
+                <td className="font-tabular tabular-nums text-zinc-800">
                   {formatWlp(ou.overall.wins, ou.overall.losses, ou.overall.pushes)}
                 </td>
-                <td className="font-mono tabular-nums">
+                <td className="font-tabular tabular-nums text-zinc-600">
                   {formatPctFromWlp(
                     ou.overall.wins,
                     ou.overall.losses,
@@ -91,8 +91,8 @@ export function RefBettingProfile({
                 const belowGate = games < bucketGate;
                 return (
                   <tr key={bucket.label}>
-                    <td>{bucket.label}</td>
-                    <td className="font-mono tabular-nums">
+                    <td className="text-sm text-zinc-800">{bucket.label}</td>
+                    <td className="font-tabular tabular-nums text-zinc-800">
                       {belowGate
                         ? "-"
                         : formatWlp(
@@ -101,7 +101,7 @@ export function RefBettingProfile({
                             bucket.record.pushes,
                           )}
                     </td>
-                    <td className="font-mono tabular-nums">
+                    <td className="font-tabular tabular-nums text-zinc-600">
                       {belowGate
                         ? "-"
                         : formatPctFromWlp(
@@ -118,14 +118,14 @@ export function RefBettingProfile({
         </div>
       </section>
 
-      <section className="ref-profile-data-card">
-        <header className="ref-profile-data-card-head">
-          <h2 className="ref-profile-section-title">
+      <section className="ref-profile-section">
+        <div className="ref-table-section-header">
+          <h2 className="flex flex-wrap items-center gap-2 font-semibold tracking-tight">
             <TermHelp id="ats-split">Spread: home favorite / underdog</TermHelp>
           </h2>
-        </header>
-        <div className="ref-profile-table-wrap">
-          <table className="ref-data-table data-table ref-profile-compact-table">
+        </div>
+        <div className="ref-table-section-body overflow-x-auto">
+          <table className="ref-data-table data-table min-w-[28rem] w-full">
             <thead>
               <tr className="data-table-head">
                 <th>Spread</th>
@@ -143,8 +143,8 @@ export function RefBettingProfile({
                 const dogGames = bucketGames(bucket.homeUnderdog);
                 return (
                   <tr key={bucket.label}>
-                    <td>{bucket.label}</td>
-                    <td className="font-mono tabular-nums">
+                    <td className="text-sm text-zinc-800">{bucket.label}</td>
+                    <td className="font-tabular tabular-nums text-zinc-800">
                       {favGames < bucketGate
                         ? "-"
                         : formatWlp(
@@ -153,7 +153,7 @@ export function RefBettingProfile({
                             bucket.homeFavorite.pushes,
                           )}
                     </td>
-                    <td className="font-mono tabular-nums">
+                    <td className="font-tabular tabular-nums text-zinc-800">
                       {dogGames < bucketGate
                         ? "-"
                         : formatWlp(

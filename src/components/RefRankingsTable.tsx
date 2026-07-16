@@ -236,10 +236,10 @@ export function RefRankingsTable({
                   key={ref.slug}
                   className={`ranking-table-row ${belowGate ? "ranking-table-row-thin" : ""}`}
                 >
-                  <td className="data-table-rank px-4 py-3 font-mono tabular-nums text-zinc-400 sm:px-5">
+                  <td className="data-table-rank px-4 py-4 font-tabular tabular-nums text-zinc-400 sm:px-5">
                     {rank}
                   </td>
-                  <td className="ranking-table-row-expand px-2 py-3">
+                  <td className="ranking-table-row-expand px-2 py-4">
                     <button
                       type="button"
                       className="ranking-table-expand-btn"
@@ -254,7 +254,7 @@ export function RefRankingsTable({
                       />
                     </button>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-4">
                     <div className="flex items-center gap-2.5">
                       <RefAvatar
                         name={ref.name}
@@ -272,7 +272,7 @@ export function RefRankingsTable({
                           </Link>
                           <RefJerseyNumber
                             number={ref.number}
-                            className="ml-2 whitespace-nowrap font-mono text-xs text-zinc-500"
+                            className="ml-2 whitespace-nowrap font-tabular text-xs text-zinc-500"
                           />
                         </div>
                         <Link
@@ -285,19 +285,19 @@ export function RefRankingsTable({
                       </div>
                     </div>
                   </td>
-                  <td className="data-table-num px-4 py-3 tabular-nums ranking-table-row-secondary-metric">
+                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-secondary-metric">
                     {ref.games.toLocaleString()}
                     {belowGate && (
                       <span className="ml-1 text-xs text-amber-700">· thin</span>
                     )}
                   </td>
-                  <td className={`data-table-num px-4 py-3 ${deltaMetricClass(ref.totalPointsDelta)}`}>
+                  <td className={`data-table-num px-4 py-4 ${deltaMetricClass(ref.totalPointsDelta)}`}>
                     {scoringDisplay}
                   </td>
-                  <td className={`data-table-num px-4 py-3 ${deltaMetricClass(whistleDelta)}`}>
+                  <td className={`data-table-num px-4 py-4 ${deltaMetricClass(whistleDelta)}`}>
                     {whistleDelta !== undefined ? formatSigned(whistleDelta) : "-"}
                   </td>
-                  <td className="data-table-num px-4 py-3 tabular-nums ranking-table-row-primary-metric">
+                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-primary-metric">
                     {formatPct(ref.overRate)}
                   </td>
                 </tr>,
