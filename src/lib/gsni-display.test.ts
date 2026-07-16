@@ -7,6 +7,25 @@ import {
   gsniFromRefProfile,
   isExtremeGsni,
 } from "@/lib/gsni-display";
+import type { RefProfile } from "@/lib/types";
+
+function makeRef(overrides: Partial<RefProfile> = {}): RefProfile {
+  return {
+    slug: "test",
+    name: "Test",
+    number: 1,
+    games: 100,
+    avgTotalPoints: 45,
+    overRate: 0.5,
+    avgFouls: 12,
+    homeCoverRate: null,
+    totalPointsDelta: 0,
+    foulsDelta: 0,
+    seasons: ["2024"],
+    recentGames: [],
+    ...overrides,
+  };
+}
 
 describe("gsni display", () => {
   it("maps index bands and captions", () => {
@@ -22,29 +41,9 @@ describe("gsni display", () => {
 
   it("reads GSNI from ref profiles when present", () => {
     assert.equal(
-      gsniFromRefProfile({
-        slug: "test",
-        name: "Test",
-        number: 1,
-        games: 100,
-        avgTotalPoints: 45,
-        overRate: 0.5,
-        avgFouls: 12,
-        referee_gsni: 71.2,
-      }),
+      gsniFromRefProfile(makeRef({ referee_gsni: 71.2 })),
       71.2,
     );
-    assert.equal(
-      gsniFromRefProfile({
-        slug: "test",
-        name: "Test",
-        number: 1,
-        games: 100,
-        avgTotalPoints: 45,
-        overRate: 0.5,
-        avgFouls: 12,
-      }),
-      null,
-    );
+    assert.equal(gsniFromRefProfile(makeRef()), null);
   });
 });
