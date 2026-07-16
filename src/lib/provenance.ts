@@ -23,6 +23,7 @@ export {
 } from "@/lib/provenance-utils";
 const NHL_ANALYTICS_MIN_GAMES = 10;
 const NFL_ANALYTICS_MIN_GAMES = 10;
+export const GSNI_MIN_HIGH_LEVERAGE_MINUTES = 50;
 const PP_PREMIUM_MIN_REF_GAMES = 25;
 const HOME_BIAS_MIN_GAMES = 4;
 

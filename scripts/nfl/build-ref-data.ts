@@ -50,6 +50,7 @@ import {
 } from "./lib/nflverse-historical";
 import { homeCoverRate, NflBettingAccumulator } from "./lib/nfl-betting";
 import { enrichGameLogsWithPenaltyEvents } from "./lib/attach-penalty-events";
+import { attachGsniFieldsFromGames } from "../lib/attach-gsni";
 import { assertNflIngestValid } from "./lib/validate-ingest";
 import { finalizeNflVerifiedArtifacts } from "./lib/write-season-shards";
 
@@ -772,6 +773,7 @@ async function buildFromEspn(
   }
   refs.sort((a, b) => b.games - a.games);
   dedupeRefsInPlace(refs, leagueAvgTotal, leagueAvgFouls);
+  const refsWithGsni = attachGsniFieldsFromGames(refs, mergedLogs);
 
   const teamSplits: Record<string, TeamCrewSplit[]> = {};
   for (const abbr of NFL_TEAM_ABBRS) {
@@ -823,7 +825,7 @@ async function buildFromEspn(
       data_verified: true,
       data_source: "ESPN + nflverse (2000-present)",
       atsAvailable,
-      refCount: refs.length,
+      refCount: refsWithGsni.length,
       totalGamesProcessed: processedTotal,
       dateRange: {
         earliest: allDates[0],
@@ -833,7 +835,7 @@ async function buildFromEspn(
         ? `Scores, penalties, and crews from ESPN (2016+) plus nflverse history (2000–2015). ATS/O-U from nflverse closing lines (${linedGames}/${processedTotal} games matched).`
         : "Scores, penalties, and crews from ESPN (2016+) plus nflverse history (2000–2015). Ref×team W-L from stored game logs.",
     },
-    refs,
+    refs: refsWithGsni,
     teamSplits,
   };
 }
