@@ -75,6 +75,7 @@ export function TeamCrewPage({
 
   const isNhl = league === "nhl";
   const isNfl = league === "nfl" || league === "cfb";
+  const isRefsOnly = league === "cbb";
   const showPatriotsEra = usesPatriotsEraScope(league, { teamAbbr: team.abbr });
   const analyticsRefs = isNhl ? filterNhlReferees(stats.refs) : stats.refs;
   const splits = sortSplitsByGames(
@@ -121,16 +122,27 @@ export function TeamCrewPage({
           <div className="page-hero-head-copy">
             <p className="section-kicker">{teamName}</p>
             <h1 className="page-title">
-              How {teamLabel} play under each ref or ref crew
+              {isRefsOnly
+                ? `How ${teamLabel} play under each referee`
+                : `How ${teamLabel} play under each ref or ref crew`}
             </h1>
           </div>
         </div>
         <p className="page-lead">
-          Every {team.name} game grouped by individual official, or by the same{" "}
-          {crewSize} officials on the {playingSurface}. Over this sample {teamLabel}{" "}
-          are{" "}
-          {formatTeamSampleRecord(teamRecord)}; each ref and crew win rate below
-          is compared to that team average.
+          {isRefsOnly ? (
+            <>
+              Every {team.name} game grouped by individual referee. Over this sample{" "}
+              {teamLabel} are {formatTeamSampleRecord(teamRecord)}; each ref win rate
+              below is compared to that team average.
+            </>
+          ) : (
+            <>
+              Every {team.name} game grouped by individual official, or by the same{" "}
+              {crewSize} officials on the {playingSurface}. Over this sample {teamLabel}{" "}
+              are {formatTeamSampleRecord(teamRecord)}; each ref and crew win rate below
+              is compared to that team average.
+            </>
+          )}
         </p>
         <p className="page-meta">
           <span className="page-meta-updated">
@@ -177,9 +189,9 @@ export function TeamCrewPage({
             No ref history for {teamName} yet
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-zinc-600">
-            We don&apos;t have enough crew-level games for {teamLabel} in the
-            current dataset. Check back after the next data refresh, or browse
-            other teams with fuller samples.
+            {isRefsOnly
+              ? `We don't have enough referee history for ${teamLabel} in the current dataset. Check back after the next data refresh, or browse other teams with fuller samples.`
+              : `We don't have enough crew-level games for ${teamLabel} in the current dataset. Check back after the next data refresh, or browse other teams with fuller samples.`}
           </p>
           <Link
             href={`${basePath || ""}/teams`}
@@ -218,15 +230,17 @@ export function TeamCrewPage({
             stats for one official across all {team.name} games they worked, even
             with different partners.
           </li>
-          <li>
-            <span className="font-medium text-zinc-800">Ref crews</span>: stats
-            when the same {crewSize} officials worked together on {teamLabel}{" "}
-            games ({TEAM_CREW_MIN_GAMES}+ games shown by default).
-          </li>
+          {!isRefsOnly ? (
+            <li>
+              <span className="font-medium text-zinc-800">Ref crews</span>: stats
+              when the same {crewSize} officials worked together on {teamLabel}{" "}
+              games ({TEAM_CREW_MIN_GAMES}+ games shown by default).
+            </li>
+          ) : null}
           <li>
             <span className="font-medium text-zinc-800">Team baseline</span>:{" "}
             {teamLabel} went {formatTeamSampleRecord(teamRecord)} across this
-            sample. Ref and crew win
+            sample. Ref{isRefsOnly ? "" : " and crew"} win
             rates show how they compare to that team average.
           </li>
           <li>

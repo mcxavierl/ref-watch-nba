@@ -13,10 +13,10 @@ export function cbbPreviewBannerMessage(
   assignmentsSource?: AssignmentsFile["source"],
 ): string {
   if (isCbbVerifiedData(statsSource) && assignmentsSource === "espn") {
-    return "Scores, foul counts, and tonight's crews are from ESPN. ATS/O-U splits are unavailable without verified closing lines.";
+    return "Scores, foul counts, and tonight's referee assignments are from ESPN. ATS/O-U splits are unavailable without verified closing lines.";
   }
   if (isCbbVerifiedData(statsSource)) {
-    return "Historical scores and foul stats are from ESPN game data. Tonight's crew assignments may still be pending official release.";
+    return "Historical scores and foul stats are from ESPN game data. Tonight's referee assignments may still be pending official release.";
   }
-  return "NCAA men's basketball preview dataset, offseason seed data only. Crews and tendencies populate when the season opens and game data backfills.";
+  return "NCAA men's basketball preview dataset, off-season seed data only. Ref profiles and tendencies populate when the season opens and game data backfills (approx. Nov 4).";
 }

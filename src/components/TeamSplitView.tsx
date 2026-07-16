@@ -336,9 +336,11 @@ export function TeamSplitView({
   );
   const crewTabCount =
     qualifiedCrewCount > 0 ? qualifiedCrewCount : crewSplits.length;
+  const showCrewTab = sport !== "cbb";
 
   return (
     <div>
+      {showCrewTab ? (
       <div
         className="mb-4 flex gap-1 rounded-lg border border-border bg-surface-raised/40 p-1"
         role="tablist"
@@ -371,8 +373,9 @@ export function TeamSplitView({
           Crews ({crewTabCount})
         </button>
       </div>
+      ) : null}
 
-      {view === "ref" ? (
+      {(showCrewTab ? view === "ref" : true) ? (
         refSplits.length === 0 ? (
           <p className="text-sm text-zinc-600">
             No refs with enough games involving {teamLabel} yet.

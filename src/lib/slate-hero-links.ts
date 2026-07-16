@@ -42,6 +42,8 @@ export function slateHeroStatHref(
 }
 
 export function slateHeroActions(leagueId: SlateHeroLeagueId): SlateHeroAction[] {
+  const matrixLabel = leagueId === "cbb" || leagueId === "cfb" ? "Ref matrix" : "Crew matrix";
+
   return [
     {
       href: insightsViewHref(leagueId as HubHeroLeagueId, "tendencies"),
@@ -49,7 +51,7 @@ export function slateHeroActions(leagueId: SlateHeroLeagueId): SlateHeroAction[]
     },
     {
       href: leagueHref(leagueId, "/matrix"),
-      label: "Crew matrix",
+      label: matrixLabel,
     },
     {
       href: leagueHref(leagueId, "/teams"),

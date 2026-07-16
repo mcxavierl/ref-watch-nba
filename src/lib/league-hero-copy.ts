@@ -101,11 +101,11 @@ export const LEAGUE_HERO_COPY: Record<
   cbb: {
     kicker: "Men's college hoops",
     liveTitle: "Who's calling fouls on campus tonight.",
-    offseasonTitle: "College basketball crews, season opens soon.",
+    offseasonTitle: "College basketball refs, season opens soon.",
     liveLead:
-      "Crew assignments and whistle tendencies across D-I, with conference context on every team page.",
+      "Referee assignments and whistle tendencies across D-I, with conference context on every team page.",
     offseasonLead:
-      "Season opens soon. Crews and tendencies load from game data. Team directory spans ACC, Big Ten, SEC, Big 12, and Big East.",
+      "Season opens soon. Ref profiles and tendencies load from game data. Team directory spans ACC, Big Ten, SEC, Big 12, and Big East.",
     statLabels: {
       officials: "Refs indexed",
       games: "Games logged",

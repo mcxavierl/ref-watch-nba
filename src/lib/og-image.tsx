@@ -16,18 +16,18 @@ import {
   OG_DELTA_POSITIVE,
   leagueAccentFromOgTitle,
 } from "@/lib/og-brand";
-import type { nbaOgContent } from "@/lib/og-slate";
+import type { HubOgContent } from "@/lib/og-hub";
 
 export const ogImageSize = { width: 1200, height: 630 };
 export const ogImageContentType = "image/png";
 
-const BG_DEEP = "#0b0f19";
-const BG_SURFACE = "#131820";
-const BG_ELEVATED = "#1a2230";
-const TEXT_PRIMARY = "#f9fafb";
-const TEXT_SECONDARY = "#d1d5db";
-const TEXT_MUTED = "#9ca3af";
-const BORDER_SUBTLE = "rgba(45, 55, 72, 0.9)";
+const BG_DEEP = "#020617";
+const BG_SURFACE = "#0f172a";
+const BG_ELEVATED = "#1e293b";
+const TEXT_PRIMARY = "#e2e8f0";
+const TEXT_SECONDARY = "#94a3b8";
+const TEXT_MUTED = "#64748b";
+const BORDER_SUBTLE = "#1e293b";
 const LEAGUE_LABEL_WIDTH = 34;
 
 function ogDeltaColor(tone: "positive" | "negative" | "neutral"): string {
@@ -154,7 +154,7 @@ function OgCanvas({
         height: "100%",
         position: "relative",
         overflow: "hidden",
-        background: `linear-gradient(145deg, ${BG_DEEP} 0%, ${BG_SURFACE} 48%, #101725 100%)`,
+        background: `linear-gradient(145deg, ${BG_DEEP} 0%, ${BG_SURFACE} 52%, ${BG_DEEP} 100%)`,
         fontFamily: "system-ui, sans-serif",
       }}
     >
@@ -164,9 +164,9 @@ function OgCanvas({
           display: "flex",
           position: "absolute",
           inset: 0,
-          opacity: 0.22,
+          opacity: 0.12,
           backgroundImage:
-            "linear-gradient(rgba(148, 163, 184, 0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.14) 1px, transparent 1px)",
+            "linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
         }}
       />
@@ -202,9 +202,10 @@ function OgHeaderBand({
         display: "flex",
         flexDirection: "column",
         position: "relative",
-        background: HEADER_GRADIENT,
-        padding: "28px 48px 24px",
-        boxShadow: "0 10px 32px rgba(0, 12, 30, 0.45)",
+        background: `linear-gradient(180deg, ${BG_SURFACE} 0%, ${BG_DEEP} 100%)`,
+        padding: "26px 48px 22px",
+        borderBottom: `1px solid ${BORDER_SUBTLE}`,
+        boxShadow: "none",
       }}
     >
       <div
@@ -227,7 +228,7 @@ function OgHeaderBand({
                 fontSize: 42,
                 fontWeight: 900,
                 letterSpacing: "0.08em",
-                color: HEADER_GOLD,
+                color: HEADER_GOLD_BRIGHT,
                 textShadow:
                   "0 1px 0 rgba(255, 244, 185, 0.28), 0 4px 18px rgba(0, 24, 51, 0.42)",
               }}
@@ -256,9 +257,9 @@ function OgHeaderBand({
           <div
             style={{
               display: "flex",
-              fontSize: 21,
+              fontSize: 19,
               fontWeight: 500,
-              color: HEADER_INK,
+              color: TEXT_SECONDARY,
               letterSpacing: "-0.01em",
             }}
           >
@@ -337,9 +338,9 @@ export function renderBrandOgImage(content: BrandOgContent) {
                   gap: 4,
                   padding: "14px 16px",
                   borderRadius: 14,
-                  background: `linear-gradient(160deg, rgba(255, 255, 255, 0.06) 0%, ${BG_ELEVATED} 100%)`,
+                  background: BG_SURFACE,
                   border: `1px solid ${BORDER_SUBTLE}`,
-                  boxShadow: "0 10px 24px rgba(0, 0, 0, 0.22)",
+                  boxShadow: "none",
                 }}
               >
                 <div
@@ -499,7 +500,20 @@ export function renderBrandOgImage(content: BrandOgContent) {
   );
 }
 
-export function renderSlateOgImage(content: ReturnType<typeof nbaOgContent>) {
+export function renderSlateOgImage(content: {
+  title: string;
+  subtitle: string;
+  signals: Array<{
+    id: string;
+    matchup: string;
+    headline: string;
+    provenance: string;
+    provenanceLabel: string;
+  }>;
+  emptyMessage: string | null;
+  footer: string;
+  dataNote?: string;
+}) {
   const league = content.title.replace(/^Ref Watch\s+/i, "");
   const accent = leagueAccentFromOgTitle(content.title);
 
@@ -604,6 +618,135 @@ export function renderSlateOgImage(content: ReturnType<typeof nbaOgContent>) {
         <OgFooter
           line={[content.dataNote, content.footer].filter(Boolean).join(" · ")}
         />
+      </OgCanvas>
+    ),
+    ogImageSize,
+  );
+}
+
+export function renderHubOgImage(content: HubOgContent) {
+  return new ImageResponse(
+    (
+      <OgCanvas accent={content.accent}>
+        <OgHeaderBand
+          leagueLabel={content.leagueLabel}
+          subtitle="Referee analytics hub"
+          accent={content.accent}
+        />
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            padding: "22px 48px 12px",
+            gap: 16,
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div
+              style={{
+                display: "flex",
+                fontSize: 30,
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.12,
+                color: TEXT_PRIMARY,
+                maxWidth: 920,
+              }}
+            >
+              {content.title}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                fontSize: 16,
+                fontWeight: 500,
+                lineHeight: 1.45,
+                color: TEXT_SECONDARY,
+                maxWidth: 880,
+              }}
+            >
+              {content.lead}
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 0,
+              borderRadius: 16,
+              border: `1px solid ${BORDER_SUBTLE}`,
+              background: BG_SURFACE,
+              overflow: "hidden",
+            }}
+          >
+            {content.metrics.map((metric, index) => (
+              <div
+                key={metric.label}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  flex: 1,
+                  gap: 4,
+                  padding: "16px 18px",
+                  borderRight:
+                    index < content.metrics.length - 1
+                      ? `1px solid ${BORDER_SUBTLE}`
+                      : "none",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    fontSize: 26,
+                    fontWeight: 800,
+                    color: TEXT_PRIMARY,
+                    letterSpacing: "-0.02em",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {metric.value}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: TEXT_MUTED,
+                  }}
+                >
+                  {metric.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {content.tags.map((tag) => (
+              <div
+                key={tag}
+                style={{
+                  display: "flex",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
+                  color: TEXT_PRIMARY,
+                  padding: "6px 12px",
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER_SUBTLE}`,
+                  background: BG_ELEVATED,
+                }}
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <OgFooter line={content.footer} />
       </OgCanvas>
     ),
     ogImageSize,

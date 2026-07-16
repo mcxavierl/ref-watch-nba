@@ -176,3 +176,168 @@ html[data-color="dark"]:not([data-contrast="high"]) .ncaa-coverage-live-item,
 html.dark .ncaa-coverage-live-item {
   background: color-mix(in srgb, var(--surface) 55%, transparent);
 }
+
+/* Clinical modern (CBB hub) */
+.ncaa-coverage-status--clinical {
+  border-radius: 1rem;
+  border: 1px solid #1e293b;
+  background: #020617;
+  box-shadow: 0 1px 0 rgba(148, 163, 184, 0.06);
+}
+
+.ncaa-coverage-status-head--clinical {
+  margin-bottom: var(--space-4);
+}
+
+.ncaa-coverage-title--clinical {
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: #e2e8f0;
+}
+
+.ncaa-coverage-lead--clinical {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.ncaa-coverage-clinical-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .ncaa-coverage-clinical-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 56rem) {
+  .ncaa-coverage-clinical-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.ncaa-coverage-clinical-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid #1e293b;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.ncaa-coverage-clinical-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.ncaa-coverage-clinical-tag {
+  flex-shrink: 0;
+  border: 1px solid #334155;
+  border-radius: 0.375rem;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.ncaa-conference-logo {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: #cbd5e1;
+}
+
+.ncaa-conference-logo-frame {
+  fill: rgba(15, 23, 42, 0.85);
+  stroke: #334155;
+  stroke-width: 1;
+}
+
+.ncaa-conference-logo-label {
+  fill: currentColor;
+  font-family: system-ui, sans-serif;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-coverage-status--clinical {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-coverage-title--clinical {
+  color: #0f172a;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-coverage-lead--clinical {
+  color: #64748b;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-coverage-clinical-item {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-coverage-clinical-name {
+  color: #0f172a;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-coverage-clinical-tag {
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo {
+  color: #334155;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo-frame {
+  fill: #ffffff;
+  stroke: #cbd5e1;
+}
+
+.ncaa-conference-logo[data-conference="ACC"] {
+  color: #60a5fa;
+}
+
+.ncaa-conference-logo[data-conference="Big Ten"] {
+  color: #38bdf8;
+}
+
+.ncaa-conference-logo[data-conference="Big 12"] {
+  color: #f87171;
+}
+
+.ncaa-conference-logo[data-conference="SEC"] {
+  color: #93c5fd;
+}
+
+.ncaa-conference-logo[data-conference="Big East"] {
+  color: #818cf8;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo[data-conference="ACC"] {
+  color: #1d4ed8;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo[data-conference="Big Ten"] {
+  color: #0369a1;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo[data-conference="Big 12"] {
+  color: #b91c1c;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo[data-conference="SEC"] {
+  color: #1e3a8a;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo[data-conference="Big East"] {
+  color: #4338ca;
+}

@@ -4,7 +4,7 @@ import { leagueHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const DEFAULT_SITE_DESCRIPTION =
-  "Referee and official analytics for the NBA, NHL, NFL, and Premier League: nightly crews, historical scoring and whistle tendencies, ref profiles, and transparent methodology.";
+  "Referee and official analytics for the NBA, NHL, NFL, Premier League, and college hoops: historical scoring and whistle tendencies, ref profiles, and transparent methodology.";
 
 export type HubPage =
   | "refs"
@@ -143,9 +143,14 @@ function hubTitle(leagueId: LeagueId, hub: HubPage): string {
 export function hubPageMetadata(leagueId: LeagueId, hub: HubPage): Metadata {
   const league = LEAGUES[leagueId];
   const path = leagueHref(leagueId, hub === "research" ? "/research" : `/${hub}`);
+  const description =
+    leagueId === "cbb" && hub === "teams"
+      ? `Browse referee history for ${league.label} teams: ${league.metrics.scoringColumn.toLowerCase()}, ${league.metrics.whistlePlain}, and home/away records.`
+      : HUB_DESCRIPTIONS[hub](league);
+
   return buildPageMetadata({
     title: hubTitle(leagueId, hub),
-    description: HUB_DESCRIPTIONS[hub](league),
+    description,
     path,
     keywords: HUB_KEYWORDS[hub](league),
   });
@@ -290,11 +295,20 @@ export function teamProfileMetadata({
 }): Metadata {
   const league = LEAGUES[leagueId];
   const path = leagueHref(leagueId, `/teams/${abbr}`);
+  const title =
+    leagueId === "cbb"
+      ? `${teamName} referee splits`
+      : `${teamName} ${league.officialNoun} crew splits`;
+  const description =
+    leagueId === "cbb"
+      ? `How ${teamName} performs under different ${league.label} referees: scoring, ${league.metrics.whistlePlain}, and home/away records in the Ref Watch dataset.`
+      : `How ${teamName} performs under different ${league.label} ${league.officialNoun} crews: scoring, ${league.metrics.whistlePlain}, and home/away records in the Ref Watch dataset.`;
+
   return buildPageMetadata({
-    title: `${teamName} ${league.officialNoun} crew splits`,
-    description: `How ${teamName} performs under different ${league.label} ${league.officialNoun} crews: scoring, ${league.metrics.whistlePlain}, and home/away records in the Ref Watch dataset.`,
+    title,
+    description,
     path,
-    keywords: [teamName, league.shortLabel, "team crew splits", abbr],
+    keywords: [teamName, league.shortLabel, leagueId === "cbb" ? "team referee splits" : "team crew splits", abbr],
   });
 }
 

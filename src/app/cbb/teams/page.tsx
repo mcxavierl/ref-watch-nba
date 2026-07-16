@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
-import { getTeamSplits } from "@/lib/cbb/data";
+import { getRefStats, getTeamSplits } from "@/lib/cbb/data";
 import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
 import { teamFullName, teamsByConference, type CbbTeam } from "@/lib/cbb/teams";
 import { hubPageMetadata } from "@/lib/seo";
@@ -11,18 +11,24 @@ export const metadata = hubPageMetadata("cbb", "teams");
 
 export const dynamic = "force-static";
 
+function refCountForTeam(abbr: string, refs: ReturnType<typeof getRefStats>["refs"]): number {
+  const key = abbr.toUpperCase();
+  return refs.filter((ref) => (ref.teamStats?.[key]?.games ?? 0) > 0).length;
+}
+
 export default function CbbTeamsIndexPage() {
   const byConference = teamsByConference();
   const conferences = Object.keys(byConference) as CbbTeam["conference"][];
   const gameCounts = loadTeamIndexGameCounts("cbb");
+  const refs = getRefStats().refs;
 
   return (
     <div className="page-shell page-shell-hub">
       <LeagueHubHero leagueId="cbb">
         <h1 className="page-title">All CBB teams</h1>
         <p className="page-lead">
-          Pick a team to see how they&apos;ve performed under different referee
-          crews: scoring, fouls, and home/away splits.
+          Pick a team to see how they&apos;ve performed under different referees:
+          scoring, fouls, and home/away splits.
         </p>
       </LeagueHubHero>
 
@@ -35,6 +41,7 @@ export default function CbbTeamsIndexPage() {
               {teams.map((team) => {
                 const splits = getTeamSplits(team.abbr);
                 const games = teamIndexGameCount("cbb", team.abbr, splits, gameCounts);
+                const refCount = refCountForTeam(team.abbr, refs);
                 return (
                   <li key={team.abbr}>
                     <Link
@@ -47,10 +54,10 @@ export default function CbbTeamsIndexPage() {
                           {teamFullName(team)}
                         </p>
                         <p className="text-sm text-zinc-600">
-                          {splits.length > 0
+                          {refCount > 0
                             ? (
                               <>
-                                {splits.length} crews ·{" "}
+                                {refCount} refs ·{" "}
                                 <VerifiedGamesHint>{games} games</VerifiedGamesHint>
                               </>
                             )

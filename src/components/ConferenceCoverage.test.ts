@@ -17,10 +17,11 @@ test("ConferenceCoverage DOM markup avoids internal league slugs in ids", () => 
   assert.doesNotMatch(source, /data-league/);
 });
 
-test("ConferenceCoverage uses maturity-based StatusBadge verdicts", () => {
+test("ConferenceCoverage uses maturity-based StatusBadge verdicts for default variant", () => {
   const source = readFileSync("src/components/ConferenceCoverage.tsx", "utf8");
   assert.match(source, /StatusBadge/);
   assert.match(source, /getConferenceCoverageRows/);
   assert.match(source, /row\.verdict/);
   assert.match(source, /row\.maturity/);
+  assert.match(source, /NcaaConferenceLogo/);
 });

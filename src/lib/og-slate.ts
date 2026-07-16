@@ -14,7 +14,7 @@ export function ogSlateContent(feed: NightlyFeed) {
     signals,
     emptyMessage:
       signals.length === 0
-        ? "No signals cleared minimum game thresholds; check crew cards for context."
+        ? "No signals cleared minimum game thresholds; check ref profiles for context."
         : null,
     footer: feed.disclaimer,
     dataNote:

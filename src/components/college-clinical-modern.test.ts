@@ -44,7 +44,16 @@ test("NcaaIntegrityAuditDashboard uses Clinical Modern metric cards", () => {
 test("ConferenceCoverage uses StatusBadge for live conference labels", () => {
   const source = readFileSync("src/components/ConferenceCoverage.tsx", "utf8");
   assert.match(source, /StatusBadge/);
+  assert.match(source, /NcaaConferenceLogo/);
   assert.doesNotMatch(source, /ncaa-coverage-live-item-badge/);
+});
+
+test("CBB opengraph uses hub renderer with ref-focused copy", () => {
+  const ogPage = readFileSync("src/app/cbb/opengraph-image.tsx", "utf8");
+  assert.match(ogPage, /renderHubOgImage/);
+  assert.match(ogPage, /cbbHubOgContent/);
+  const heroCopy = readFileSync("src/lib/league-hero-copy.ts", "utf8");
+  assert.match(heroCopy, /College basketball refs, season opens soon/);
 });
 
 test("CBB clinical offseason landing uses dedicated components", () => {

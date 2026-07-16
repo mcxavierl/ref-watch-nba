@@ -70,13 +70,13 @@ function teamCrewAnomalyFinding(stats: RefStatsFile): ScoredFindingBase | null {
     ? teamFullName(getTeam(best.team)!)
     : best.team;
   const lean = best.split.overRate >= 0.5 ? "over" : "under";
-  const crewLabel = best.split.crewNames.slice(0, 2).join(", ");
+  const refLabel = best.split.crewNames[0] ?? "Ref";
 
   return {
-    id: "cbb-team-crew-anomaly",
+    id: "cbb-team-ref-anomaly",
     category: "team-crew",
     headline: teamCrewLeanHeadline(teamName, best.split.overRate, best.delta),
-    summary: `${crewLabel}${best.split.crewNames.length > 2 ? "…" : ""} on ${teamName}: ${formatPct(best.split.overRate)} over ${baseline} goals (${best.split.games} games).`,
+    summary: `${refLabel} on ${teamName}: ${formatPct(best.split.overRate)} over ${baseline} pts (${best.split.games} games).`,
     stats: [
       {
         label: "Over benchmark",

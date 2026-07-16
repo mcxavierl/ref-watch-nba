@@ -25,7 +25,7 @@ const OFFSEASON_COPY: Record<OffseasonLeague, { status: string; detail?: string 
       "Ref profiles and card/foul tendencies cover ESPN-verified matches from 2021-22 onward.",
   },
   CBB: {
-    status: "Season opens soon. Crews and tendencies load from game data.",
+    status: "Season opens Nov 4. Ref profiles and tendencies load from verified game data.",
     detail:
       "Team directory covers ACC, Big Ten, SEC, Big 12, and Big East. Ref profiles populate as games log.",
   },

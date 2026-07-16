@@ -103,7 +103,7 @@ export function brandOgContent(): BrandOgContent {
 
   return {
     title: "REF WATCH",
-    subtitle: "Referee analytics & crew history",
+    subtitle: "Referee analytics and historical tendencies",
     tagline: "Whistle tendencies, ref×team splits, and cross-league officiating intelligence.",
     metrics: [
       { label: "Officials", value: formatMetric(snapshot.totalRefs) },
