@@ -7,6 +7,7 @@ import {
   isNcaaConferenceGatedLive,
   isVerifiedLiveLeague,
   LAUNCHED_NCAA_LEAGUE_IDS,
+  OVERVIEW_HUB_LEAGUE_IDS,
   PRO_ONLY_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
@@ -24,6 +25,17 @@ describe("verified live leagues", () => {
     assert.ok(!(VERIFIED_LIVE_LEAGUE_IDS as readonly string[]).includes("cfb"));
     assert.equal(isVerifiedLiveLeague("cbb"), true);
     assert.equal(isVerifiedLiveLeague("cfb"), false);
+  });
+
+  it("orders overview hub leagues with CBB beside La Liga", () => {
+    assert.deepEqual([...OVERVIEW_HUB_LEAGUE_IDS], [
+      "nba",
+      "nhl",
+      "nfl",
+      "epl",
+      "laliga",
+      "cbb",
+    ]);
   });
 
   it("keeps pro-only leagues separate from college launch list", () => {

@@ -20,15 +20,19 @@ export const PRO_ONLY_LIVE_LEAGUE_IDS = [
   "laliga",
 ] as const satisfies readonly LeagueId[];
 
-/** Overview chooser, pace grid, and quick-list order (pro leagues only). */
-export const PRIMARY_LIVE_LEAGUE_IDS = [
-  ...PRO_ONLY_LIVE_LEAGUE_IDS,
-] as const satisfies readonly LeagueId[];
-
-/** NCAA hubs on the overview dashboard — CBB live with power-conference gate. */
+/** NCAA hubs on the overview dashboard - CBB live with power-conference gate. */
 export const LAUNCHED_NCAA_LEAGUE_IDS = ["cbb"] as const satisfies readonly LeagueId[];
 
-/** @deprecated Alias for LAUNCHED_NCAA_LEAGUE_IDS — college sports live on the overview. */
+/** Overview hub chooser, pace grid, and quick-list order (pro leagues + launched NCAA). */
+export const OVERVIEW_HUB_LEAGUE_IDS = [
+  ...PRO_ONLY_LIVE_LEAGUE_IDS,
+  ...LAUNCHED_NCAA_LEAGUE_IDS,
+] as const satisfies readonly LeagueId[];
+
+/** @deprecated Alias for OVERVIEW_HUB_LEAGUE_IDS - overview surfaces use all six leagues. */
+export const PRIMARY_LIVE_LEAGUE_IDS = OVERVIEW_HUB_LEAGUE_IDS;
+
+/** @deprecated Alias for LAUNCHED_NCAA_LEAGUE_IDS - college sports live on the overview. */
 export const COLLEGE_LIVE_LEAGUE_IDS = LAUNCHED_NCAA_LEAGUE_IDS;
 
 /** Product catalog includes pro leagues plus launched NCAA hubs. */

@@ -887,59 +887,8 @@
   margin-bottom: var(--space-6);
 }
 
-.overview-chooser-tier + .overview-chooser-tier {
-  margin-top: var(--space-8);
-}
-
-.overview-chooser-tier-head {
-  margin-bottom: var(--space-4);
-}
-
-.overview-chooser-tier-title {
-  margin: 0;
-  font-size: 0.78rem;
-  font-weight: 750;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.overview-chooser-tier--live .overview-chooser-tier-title {
-  color: var(--text);
-}
-
-.overview-chooser-tier--college {
-  padding: var(--space-5) 0 0;
-  margin-top: var(--space-6);
-  border-top: 1px solid var(--border-subtle);
-}
-
-.overview-chooser-tier--college .overview-chooser-tier-title {
-  color: var(--text);
-}
-
-.overview-chooser-tier--college .overview-chooser-tier-title::before {
-  display: none;
-}
-
-.overview-chooser-tier-hint {
-  margin: 0.35rem 0 0;
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: var(--text-muted);
-}
-
 .overview-league-chooser-card--live-tier {
   box-shadow: 0 1px 0 color-mix(in srgb, var(--chooser-accent, var(--border)) 25%, transparent);
-}
-
-.overview-league-chooser-grid--college {
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-}
-
-@media (min-width: 40rem) {
-  .overview-league-chooser-grid--college {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 /* —— Segmented sidebar catalog —— */
@@ -1745,8 +1694,6 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-slate-row[data-st
   background: color-mix(in srgb, var(--surface) 92%, transparent);
 }
 
-html[data-color="dark"]:not([data-contrast="high"]) .overview-chooser-tier--college,
-html.dark .overview-chooser-tier--college,
 html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-segment--college,
 html.dark .overview-catalog-segment--college,
 html[data-color="dark"]:not([data-contrast="high"]) .overview-scorecard-section--college,

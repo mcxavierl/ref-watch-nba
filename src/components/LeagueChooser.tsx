@@ -7,12 +7,7 @@ import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
 import { formatLeaguePaceValue } from "@/lib/league-pace-bars";
-import {
-  COLLEGE_LIVE_LEAGUE_IDS,
-  isCollegeLiveLeague,
-  isProOnlyLiveLeague,
-  PRO_ONLY_LIVE_LEAGUE_IDS,
-} from "@/lib/verified-live-leagues";
+import { OVERVIEW_HUB_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 
 type LeagueChooserProps = {
   cards: LeagueOverviewCard[];
@@ -72,26 +67,15 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
 }
 
 export function LeagueChooser({ cards, placement = "default" }: LeagueChooserProps) {
-  const proOrder = new Map<LeagueId, number>(
-    PRO_ONLY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
-  );
-  const collegeOrder = new Map<LeagueId, number>(
-    COLLEGE_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+  const hubOrder = new Map<LeagueId, number>(
+    OVERVIEW_HUB_LEAGUE_IDS.map((id, index) => [id, index]),
   );
 
-  const visibleCards = cards.filter((card) => isDashboardLeagueExposed(card.leagueId));
+  const sortedCards = cards
+    .filter((card) => isDashboardLeagueExposed(card.leagueId))
+    .sort((a, b) => (hubOrder.get(a.leagueId) ?? 99) - (hubOrder.get(b.leagueId) ?? 99));
 
-  const proCards = visibleCards
-    .filter((card) => isProOnlyLiveLeague(card.leagueId))
-    .sort((a, b) => (proOrder.get(a.leagueId) ?? 99) - (proOrder.get(b.leagueId) ?? 99));
-
-  const collegeCards = visibleCards
-    .filter((card) => isCollegeLiveLeague(card.leagueId))
-    .sort(
-      (a, b) => (collegeOrder.get(a.leagueId) ?? 99) - (collegeOrder.get(b.leagueId) ?? 99),
-    );
-
-  if (proCards.length === 0 && collegeCards.length === 0) return null;
+  if (sortedCards.length === 0) return null;
 
   const sectionClass = [
     "overview-league-chooser overview-league-chooser--segmented section-block",
@@ -111,28 +95,11 @@ export function LeagueChooser({ cards, placement = "default" }: LeagueChooserPro
         </h2>
       </div>
 
-      {proCards.length > 0 ? (
-        <div className="overview-chooser-tier overview-chooser-tier--live">
-          <div className="overview-league-chooser-grid overview-league-chooser-grid--live">
-            {proCards.map((card) => (
-              <ChooserCard key={card.leagueId} card={card} />
-            ))}
-          </div>
-        </div>
-      ) : null}
-
-      {collegeCards.length > 0 ? (
-        <div className="overview-chooser-tier overview-chooser-tier--college">
-          <div className="overview-chooser-tier-head">
-            <h3 className="overview-chooser-tier-title">College sports</h3>
-          </div>
-          <div className="overview-league-chooser-grid overview-league-chooser-grid--college">
-            {collegeCards.map((card) => (
-              <ChooserCard key={card.leagueId} card={card} />
-            ))}
-          </div>
-        </div>
-      ) : null}
+      <div className="overview-league-chooser-grid">
+        {sortedCards.map((card) => (
+          <ChooserCard key={card.leagueId} card={card} />
+        ))}
+      </div>
     </section>
   );
 }

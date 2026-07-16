@@ -11646,13 +11646,19 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 
 .overview-quicklists-segmented {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.25rem;
   margin-bottom: 0.65rem;
   padding: 0.25rem;
   border-radius: 0.5rem;
   border: 1px solid var(--border);
   background: color-mix(in srgb, var(--surface-raised) 55%, transparent);
+}
+
+@media (min-width: 640px) {
+  .overview-quicklists-segmented {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
 }
 
 .overview-quicklists-segment {

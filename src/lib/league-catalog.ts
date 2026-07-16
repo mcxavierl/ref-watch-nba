@@ -105,7 +105,7 @@ export function catalogComingSoonEntries(): CatalogLeagueEntry[] {
   );
 }
 
-/** Verified live competitions in overview hub order (all seven leagues). */
+/** Verified live competitions in overview hub order (all six leagues). */
 export function catalogLiveCompetitionEntries(): CatalogLeagueEntry[] {
   const order = new Map<LeagueId, number>(
     PRIMARY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
