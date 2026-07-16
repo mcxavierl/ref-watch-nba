@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-16T06:45:10.677Z",
+    "lastUpdated": "2026-07-16T14:34:14.239Z",
     "seasons": [
       "2020-21",
       "2021-22",
@@ -23,7 +23,7 @@
       "earliest": "2020-11-25",
       "latest": "2026-04-07"
     },
-    "note": "Scores, fouls, and referee crews from ESPN (9701 games across 80 tracked programs, 5928 with sportsbook totals). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Matrix: 4009/8221 ref×team pairs with 3+ games. 73 games skipped (no officials listed). 180 games skipped (outside live conference gate)."
+    "note": "Rebuilt from game logs (9701 live-conference games, 5928 with sportsbook totals). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Matrix: 4009/8221 ref×team pairs with 3+ games. 0 games skipped (no officials listed). 0 games skipped (outside live conference gate)."
   },
   "refs": [
     {
