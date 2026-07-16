@@ -141,6 +141,7 @@ describe("buildRefsSpotlightCards", () => {
     assert.equal(cards.length, 3);
     assert.equal(cards[0].entityName, "Alpha");
     assert.equal(cards[0].kind, "ref-outlier");
+    assert.equal(cards[0].heroLabel, "Over rate");
     assert.match(cards[0].kicker, /^#1 · Highest over rate$/);
   });
 });

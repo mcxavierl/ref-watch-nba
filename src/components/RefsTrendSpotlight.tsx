@@ -1,6 +1,6 @@
 "use client";
 
-import { InsightCard } from "@/components/shared/InsightCard";
+import { RefsTrendSpotlightCard } from "@/components/RefsTrendSpotlightCard";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 
 type RefsTrendSpotlightProps = {
@@ -21,12 +21,10 @@ export function RefsTrendSpotlight({ cards, tabLabel }: RefsTrendSpotlightProps)
       </header>
       <div className="refs-trend-spotlight-track">
         {cards.map((card, index) => (
-          <InsightCard
+          <RefsTrendSpotlightCard
             key={`${card.refSlug ?? card.entityName}-${index}`}
             card={card}
-            variant="inline"
             index={index}
-            className="refs-trend-spotlight-card"
           />
         ))}
       </div>

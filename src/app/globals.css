@@ -5684,6 +5684,29 @@ p {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .refs-trend-spotlight-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.65rem 1.15rem;
+  }
+
+  .refs-trend-spotlight-metric.kpi-data-pill--compact {
+    align-items: flex-start;
+    min-width: 4.5rem;
+    text-align: left;
+  }
+
+  .refs-trend-spotlight-metric--primary .kpi-data-pill__value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .refs-trend-spotlight-metric .kpi-data-pill__caption {
+    margin-top: 0.2rem;
+  }
+
   @media (max-width: 1023px) {
     .refs-trend-spotlight-track {
       display: flex;

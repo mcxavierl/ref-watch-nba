@@ -44,7 +44,9 @@ export function KpiDataPill({
 }: KpiDataPillProps) {
   const resolvedTone = tone ?? (accent ? accentToTone(accent) : inferKpiTone(value));
   const isSecondaryInline = variant === "inline" && metricPriority === "secondary";
-  const showAccent = resolvedTone !== "neutral" && !isSecondaryInline;
+  // Accent dots belong in inline hero sentences only — block/compact pills use tone color.
+  const showAccent =
+    variant === "inline" && resolvedTone !== "neutral" && !isSecondaryInline;
 
   const rootClass = [
     "kpi-data-pill",

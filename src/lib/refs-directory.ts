@@ -309,7 +309,7 @@ function spotlightHeroForTab(
       return {
         kicker: "Highest over rate",
         heroValue: overPct,
-        heroLabel: "Games over benchmark",
+        heroLabel: "Over rate",
         heroTone: rateTone === "negative" ? "neutral" : rateTone,
         story: `${ref.games} games logged · ${formatSigned(ref.totalPointsDelta)} ${scoreUnit} vs league avg.`,
       };
@@ -317,7 +317,7 @@ function spotlightHeroForTab(
       return {
         kicker: "Highest under rate",
         heroValue: underPct,
-        heroLabel: "Games under benchmark",
+        heroLabel: "Under rate",
         heroTone: rateTone === "positive" ? "neutral" : rateTone,
         story: `${overPct} over rate across ${ref.games} games · ${formatSigned(ref.totalPointsDelta)} ${scoreUnit} vs avg.`,
       };
@@ -325,7 +325,7 @@ function spotlightHeroForTab(
       return {
         kicker: "Most experienced",
         heroValue: String(ref.games),
-        heroLabel: "Games in sample",
+        heroLabel: "Games",
         heroTone: "neutral",
         story: `${overPct} over rate · ${ref.seasons.length} season${ref.seasons.length === 1 ? "" : "s"} tracked (${ref.seasons.slice(-2).join(", ")}).`,
       };
