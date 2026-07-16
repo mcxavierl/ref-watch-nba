@@ -3854,7 +3854,6 @@ p {
   .league-nav-mark--nba {
     height: 1rem;
     max-width: 1.55rem;
-    filter: brightness(1.2);
   }
 
   .league-nav-mark--nhl,
@@ -10337,7 +10336,10 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   height: 85%;
   max-width: 85%;
   max-height: 85%;
-  filter: brightness(1.12);
+}
+
+html[data-color="light"] .overview-league-chooser-mark {
+  background: color-mix(in srgb, var(--chooser-accent) 8%, #f8fafc);
 }
 
 html[data-color="light"] .overview-league-chooser-mark .league-nav-mark--nba,
