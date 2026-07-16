@@ -126,4 +126,15 @@ describe("scanLeagueMarqueeEfficiency", () => {
     assert.equal(scan.refSlug, PROFILE.slug);
     assert.ok(Math.abs(scan.deltaOverPp) >= 6);
   });
+
+  it("skips refs with no non-marquee baseline sample", () => {
+    getWorkerIsolateStore().matrixCompute.clear();
+
+    const games = Array.from({ length: 12 }, (_, i) =>
+      nflGame(`thu-${i}`, "2024-09-12", 55, 44),
+    );
+
+    const scan = scanLeagueMarqueeEfficiency("nfl", [PROFILE], games);
+    assert.equal(scan, null);
+  });
 });

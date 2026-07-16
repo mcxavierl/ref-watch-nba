@@ -1,7 +1,7 @@
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { DataLeague, RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import { classifyMarqueeGame, isMarqueeGame } from "@/lib/marquee-games";
-import { MARQUEE_CI_MIN_GAMES } from "@/lib/marquee-metrics.constants";
+import { MARQUEE_CI_MIN_GAMES, MIN_MARQUEE_COMPARISON_GAMES } from "@/lib/marquee-metrics.constants";
 import type { LeagueId } from "@/lib/leagues";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import {
@@ -19,7 +19,7 @@ import {
   releaseParsedPayload,
 } from "@/lib/worker-isolate-store";
 
-export { MARQUEE_CI_MIN_GAMES } from "@/lib/marquee-metrics.constants";
+export { MARQUEE_CI_MIN_GAMES, MIN_MARQUEE_COMPARISON_GAMES } from "@/lib/marquee-metrics.constants";
 
 export interface RefMarqueePerformance {
   refSlug: string;
@@ -241,6 +241,16 @@ export interface MarqueeLeagueScanResult {
   performance: RefMarqueePerformance;
 }
 
+/** Both marquee and non-marquee arms need sample before a split is actionable. */
+export function passesMarqueeComparisonGate(
+  performance: RefMarqueePerformance,
+): boolean {
+  return (
+    performance.marqueeGames >= MIN_MARQUEE_COMPARISON_GAMES &&
+    performance.baselineGames >= MIN_MARQUEE_COMPARISON_GAMES
+  );
+}
+
 /** Scan all refs for the largest marquee-vs-baseline efficiency split (Research findings). */
 export function scanLeagueMarqueeEfficiency(
   leagueId: LeagueId,
@@ -251,7 +261,7 @@ export function scanLeagueMarqueeEfficiency(
 
   for (const ref of refs) {
     const performance = computeRefMarqueePerformance(leagueId, ref, gameLogs);
-    if (!performance || performance.marqueeGames < 8) continue;
+    if (!performance || !passesMarqueeComparisonGate(performance)) continue;
 
     const deltaOverPp =
       (performance.marqueeOverRate - performance.baselineOverRate) * 100;

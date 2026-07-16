@@ -2,7 +2,7 @@ import {
   computeRefGeoCorrelations,
   type GeoCorrelationFinding,
 } from "@/lib/geo-correlations";
-import { computeRefMarqueePerformance, MARQUEE_CI_MIN_GAMES } from "@/lib/marquee-metrics";
+import { computeRefMarqueePerformance, MARQUEE_CI_MIN_GAMES, passesMarqueeComparisonGate } from "@/lib/marquee-metrics";
 import {
   computeRefWhistleFatigue,
   WHISTLE_DRIFT_EXTREME_PCT,
@@ -46,7 +46,6 @@ export type RefMasterInsight = {
   footnote?: string;
 };
 
-const MARQUEE_MIN_GAMES = 8;
 const MARQUEE_MIN_DELTA_PP = 6;
 const HIGH_LEVERAGE_MIN_DELTA = 1.8;
 
@@ -113,7 +112,7 @@ function insightFromGeo(finding: GeoCorrelationFinding): RefMasterInsight {
 }
 
 function passesMarqueeGate(performance: RefMarqueePerformance): boolean {
-  if (performance.marqueeGames < MARQUEE_MIN_GAMES) return false;
+  if (!passesMarqueeComparisonGate(performance)) return false;
   const overDeltaPp =
     (performance.marqueeOverRate - performance.baselineOverRate) * 100;
   const atsDeltaPp =
