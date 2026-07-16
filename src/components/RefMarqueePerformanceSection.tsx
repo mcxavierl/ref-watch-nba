@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { RefMarqueePerformance } from "@/lib/marquee-metrics";
-import { MARQUEE_CI_MIN_GAMES, passesMarqueeComparisonGate } from "@/lib/marquee-metrics";
+import {
+  MARQUEE_CI_MIN_GAMES,
+  passesMarqueeComparisonGate,
+  type RefMarqueePerformance,
+} from "@/lib/marquee-metrics.shared";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import {
   RefDashboardStatCell,

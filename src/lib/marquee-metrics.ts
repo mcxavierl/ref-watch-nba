@@ -1,8 +1,13 @@
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { DataLeague, RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import { classifyMarqueeGame, isMarqueeGame } from "@/lib/marquee-games";
-import { MARQUEE_CI_MIN_GAMES, MIN_MARQUEE_COMPARISON_GAMES } from "@/lib/marquee-metrics.constants";
 import type { LeagueId } from "@/lib/leagues";
+import {
+  MARQUEE_CI_MIN_GAMES,
+  MIN_MARQUEE_COMPARISON_GAMES,
+} from "@/lib/marquee-metrics.constants";
+import type { RefMarqueePerformance } from "@/lib/marquee-metrics.shared";
+import { passesMarqueeComparisonGate } from "@/lib/marquee-metrics.shared";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import {
   formatWilsonPct,
@@ -19,23 +24,12 @@ import {
   releaseParsedPayload,
 } from "@/lib/worker-isolate-store";
 
-export { MARQUEE_CI_MIN_GAMES, MIN_MARQUEE_COMPARISON_GAMES } from "@/lib/marquee-metrics.constants";
-
-export interface RefMarqueePerformance {
-  refSlug: string;
-  leagueId: LeagueId;
-  marqueeGames: number;
-  baselineGames: number;
-  marqueeOverRate: number;
-  baselineOverRate: number;
-  marqueeAtsCoverRate: number | null;
-  baselineAtsCoverRate: number | null;
-  marqueeAvgFouls: number;
-  baselineAvgFouls: number;
-  overRateCi: { low: number; high: number; label: string } | null;
-  atsCoverCi: { low: number; high: number; label: string } | null;
-  sampleTags: string[];
-}
+export {
+  MARQUEE_CI_MIN_GAMES,
+  MIN_MARQUEE_COMPARISON_GAMES,
+  passesMarqueeComparisonGate,
+  type RefMarqueePerformance,
+} from "@/lib/marquee-metrics.shared";
 
 const LEAGUE_TO_DATA: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], DataLeague> = {
   nba: "NBA",
@@ -242,15 +236,6 @@ export interface MarqueeLeagueScanResult {
 }
 
 /** Both marquee and non-marquee arms need sample before a split is actionable. */
-export function passesMarqueeComparisonGate(
-  performance: RefMarqueePerformance,
-): boolean {
-  return (
-    performance.marqueeGames >= MIN_MARQUEE_COMPARISON_GAMES &&
-    performance.baselineGames >= MIN_MARQUEE_COMPARISON_GAMES
-  );
-}
-
 /** Scan all refs for the largest marquee-vs-baseline efficiency split (Research findings). */
 export function scanLeagueMarqueeEfficiency(
   leagueId: LeagueId,
