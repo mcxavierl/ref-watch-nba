@@ -33,13 +33,13 @@
       "countryCode": "SVN"
     },
     "assistantReferees": [
-      { "name": "Tomaž Klančnik", "country": "Slovenia", "role": "assistant 1" },
-      { "name": "Andraž Kovačič", "country": "Slovenia", "role": "assistant 2" }
+      { "name": "Tomaž Klančnik", "country": "Slovenia", "countryCode": "SVN", "role": "assistant 1" },
+      { "name": "Andraž Kovačič", "country": "Slovenia", "countryCode": "SVN", "role": "assistant 2" }
     ],
-    "fourthOfficial": { "name": "Adham Makhadmeh", "country": "Jordan" },
-    "reserveAssistant": { "name": "Mohammad Al-Kalaf", "country": "Jordan" },
-    "videoAssistantReferee": { "name": "Bastian Dankert", "country": "Germany" },
-    "assistantVar": { "name": "Nicolás Gallo", "country": "Colombia" }
+    "fourthOfficial": { "name": "Adham Makhadmeh", "country": "Jordan", "countryCode": "JOR" },
+    "reserveAssistant": { "name": "Mohammad Al-Kalaf", "country": "Jordan", "countryCode": "JOR" },
+    "videoAssistantReferee": { "name": "Bastian Dankert", "country": "Germany", "countryCode": "GER" },
+    "assistantVar": { "name": "Nicolás Gallo", "country": "Colombia", "countryCode": "COL" }
   },
   "refereeProfile": {
     "fifaListedSince": 2010,

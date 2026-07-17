@@ -79,9 +79,9 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /MatchStatusPill/);
     assert.match(source, /tone="prestige"/);
     assert.match(source, /WorldCupFindingCard/);
-    assert.match(source, /bg-slate-950/);
-    assert.match(source, /border-slate-800/);
-    assert.match(source, /#BFA86A/);
+    assert.match(source, /wc-match-title/);
+    assert.match(source, /OfficialName/);
+    assert.match(source, /worldCupCountryFlag/);
     assert.doesNotMatch(source, /overview-research-hub-card/);
     assert.doesNotMatch(source, /from "@\/components\/FindingsSection"/);
   });
