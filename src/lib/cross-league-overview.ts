@@ -50,6 +50,8 @@ export type LeagueOverviewCard = {
   /** Home ATS cover rate delta vs a neutral 50% split (from lined game logs). */
   homeBiasCoverDelta: string | null;
 };
+
+export type CrossLeagueOverview = {
   totalRefs: number;
   totalGames: number;
   liveLeagueCount: number;
