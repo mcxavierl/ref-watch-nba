@@ -50,7 +50,6 @@ import {
 } from "@/lib/matrix-split-share";
 import type { LeagueId } from "@/lib/leagues";
 import { formatBaselineAtsPct, formatBaselinePct, formatTeamWhistleEdgeLabel } from "@/lib/stats-utils";
-import { foulEdgeTone } from "@/lib/metricTone";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
@@ -187,13 +186,6 @@ function TeamRefRankListItem({
     variant === "positive"
       ? "ref-matrix-delta--positive"
       : "ref-matrix-delta--negative";
-  const foulTone = foulEdgeTone(entry.avgFoulDifferential);
-  const foulClass =
-    foulTone === "positive"
-      ? "ref-matrix-delta--positive"
-      : foulTone === "negative"
-        ? "ref-matrix-delta--negative"
-        : "ref-matrix-delta--neutral";
   const deltaDisplay = displayWinRateDelta(entry.deltaPts, entry.games);
   const winDeltaLabel =
     teamBaselineGames > 0
@@ -215,8 +207,8 @@ function TeamRefRankListItem({
       <div className="ref-matrix-team-panel-ref-wrap">
         <Link
           href={`${basePath}/refs/${entry.refSlug}#close-game`}
-          className="ref-matrix-team-panel-ref"
-          title={entry.refName}
+          className="ref-matrix-team-panel-ref-avatar-link"
+          aria-label={`${entry.refName} profile`}
         >
           <RefAvatar
             name={entry.refName}
@@ -225,13 +217,20 @@ function TeamRefRankListItem({
             size="md"
             className="ref-matrix-team-panel-ref-avatar"
           />
-          <span className="ref-matrix-team-panel-ref-name">{entry.refName}</span>
         </Link>
-        <RefCompareLink
-          leagueId={leagueId}
-          slug={entry.refSlug}
-          className="ref-matrix-team-panel-compare"
-        />
+        <div className="ref-matrix-team-panel-name-row">
+          <Link
+            href={`${basePath}/refs/${entry.refSlug}#close-game`}
+            className="ref-matrix-team-panel-ref-name"
+          >
+            {entry.refName}
+          </Link>
+          <RefCompareLink
+            leagueId={leagueId}
+            slug={entry.refSlug}
+            className="ref-matrix-team-panel-compare"
+          />
+        </div>
       </div>
       <span className="ref-matrix-team-panel-record">
         <span className="ref-matrix-team-panel-record-line">
@@ -254,7 +253,7 @@ function TeamRefRankListItem({
         <VerifiedGamesHint>{entry.games} gp</VerifiedGamesHint>
       </span>
       <span
-        className={`ref-matrix-team-panel-delta ${foulClass}`}
+        className="ref-matrix-team-panel-delta"
         title={`${whistleDiffLabel}: ${whistleEdgeLabel} per game`}
       >
         {whistleEdgeLabel}
