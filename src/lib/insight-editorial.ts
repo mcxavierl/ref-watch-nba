@@ -71,15 +71,13 @@ export function humanCentricHeadline(card: LeagueInsightCard): string {
   if (card.kind === "ref-outlier" && name) {
     const label = card.heroLabel.toLowerCase();
     if (label.includes("flag") || label.includes("foul") || label.includes("minor")) {
-      const intensity =
-        card.heroTone === "positive"
-          ? "highest"
-          : card.heroTone === "negative"
-            ? "lowest"
-            : "most unusual";
-      return `${name} calls one of the ${league}'s ${intensity} whistle rates`;
+      return applyClinicalTone(
+        `${name}: ${card.heroValue} whistle-rate variance vs ${league} league average`,
+      );
     }
-    return `${name} leads ${league} ${card.heroLabel.toLowerCase()} this season`;
+    return applyClinicalTone(
+      `${name}: ${card.heroValue} ${card.heroLabel.toLowerCase()} vs ${league} baseline`,
+    );
   }
 
   if (card.kind === "matrix-edge" && name && team) {
@@ -94,11 +92,15 @@ export function humanCentricHeadline(card: LeagueInsightCard): string {
   }
 
   if (name && team) {
-    return `${name} and ${team} show the clearest ${league} split on record`;
+    return applyClinicalTone(
+      `${team} games with ${name} show the clearest ${league} ref×team variance in the current sample`,
+    );
   }
 
   if (name) {
-    return `${name} anchors the top ${league} story this week`;
+    return applyClinicalTone(
+      `${name}: largest ${league} officiating variance in the current homepage sample`,
+    );
   }
 
   return normalizeCopy(card.headline);

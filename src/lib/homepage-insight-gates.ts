@@ -119,3 +119,7 @@ export function homepageInsightKicker(card: LeagueInsightCard): string {
 
   return card.kicker;
 }
+
+/** Shared homepage transparency copy for editorial sections. */
+export const HOMEPAGE_METHODOLOGY_BLURB =
+  "Only ref×team splits that clear published sample gates appear here (15+ games for homepage cards). See Methodology for full thresholds and confidence tiers.";

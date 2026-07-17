@@ -35,9 +35,12 @@ export type GsniHomeFinding = {
   href: string;
 };
 
-function plainTitle(refName: string, band: GsniBand): string {
-  if (band === "quiet") return `${refName} goes quiet when it matters`;
-  return `${refName} whistles more when it matters`;
+function plainTitle(refName: string, band: GsniBand, gsni: number): string {
+  const rounded = Math.round(gsni);
+  if (band === "quiet") {
+    return `${refName}: GSNI ${rounded} - below-baseline whistle rate in high-leverage states`;
+  }
+  return `${refName}: GSNI ${rounded} - above-baseline whistle rate in high-leverage states`;
 }
 
 function plainSummary(band: GsniBand): string {
@@ -100,7 +103,7 @@ function toFinding(
     highLeverageMinutes,
     vsNeutralDelta: gsni - GSNI_NEUTRAL_SCORE,
     vsNeutralLabel: vsNeutralLabel(gsni),
-    plainTitle: plainTitle(ref.name, band),
+    plainTitle: plainTitle(ref.name, band, gsni),
     plainSummary: plainSummary(band),
     stats: buildStats(sampleGames, highLeverageMinutes, maxGames, maxMinutes),
     href: `/nfl/refs/${ref.slug}`,

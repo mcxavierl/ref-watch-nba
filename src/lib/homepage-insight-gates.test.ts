@@ -93,6 +93,11 @@ describe("homepage insight gates", () => {
     assert.equal(passesHomepageSampleGate(crew), false);
   });
 
+  it("exports homepage methodology transparency blurb", () => {
+    assert.match(HOMEPAGE_METHODOLOGY_BLURB, /15\+ games/i);
+    assert.match(HOMEPAGE_METHODOLOGY_BLURB, /Methodology/i);
+  });
+
   it("filters bundled overview insight pools", () => {
     const cards = [
       matrixCard(19, { entityName: "Scott Twardoski", refSlug: "a" }),

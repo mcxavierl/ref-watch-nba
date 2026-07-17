@@ -1,6 +1,8 @@
-# Ref Watch NBA
+# Ref Watch
 
-See how NBA referee crews affect scoring and fouls — for all 30 teams, with tonight's slate at a glance.
+Cross-league officiating intelligence for research, media, and league-adjacent products. Sample-gated referee analytics across the NBA, NHL, NFL, Premier League, La Liga, and NCAA.
+
+See [About](/about), [Methodology](/methodology), and [Closing-line validation](/research/validation) for transparency, sample gates, and empirical validation status.
 
 ## Deploy (Cloudflare Workers)
 

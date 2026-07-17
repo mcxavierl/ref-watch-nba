@@ -7,6 +7,7 @@ import {
   insightCardKey,
   overviewStandoutSplitCards,
 } from "@/lib/insight-editorial";
+import { HOMEPAGE_METHODOLOGY_BLURB } from "@/lib/homepage-insight-gates";
 
 type OverviewEditorialNarrativeProps = {
   insightCards: CrossLeagueOverview["insightCards"];
@@ -35,7 +36,7 @@ export function OverviewEditorialNarrative({
             Standout splits by league
           </h2>
           <p className="overview-section-lead">
-            One verified ref×team split per live league, plus deeper NBA, NFL, and EPL samples.
+            {HOMEPAGE_METHODOLOGY_BLURB}
           </p>
         </div>
         <div className="overview-editorial-trends-grid">

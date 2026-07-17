@@ -155,18 +155,6 @@ export function scanLeagueOutliersFromSlim(
   return candidates;
 }
 
-function winRateHeadline(
-  candidate: InsightOutlierCandidate,
-  leagueLabel: string,
-): string {
-  const highlight = candidate.matrix!;
-  const pct = Math.abs(highlight.deltaPts).toFixed(1);
-  const direction = highlight.deltaPts > 0 ? "above" : "below";
-  return applyClinicalTone(
-    `${highlight.refName} is showing a ${pct}% win-rate outlier ${direction} the ${highlight.teamLabel} baseline in ${leagueLabel} games`,
-  );
-}
-
 function whistleHeadline(
   candidate: InsightOutlierCandidate,
   leagueLabel: string,
@@ -176,7 +164,7 @@ function whistleHeadline(
   const variance = candidate.whistleVariancePct!.toFixed(1);
   const direction = ref.foulsDelta > 0 ? "above" : "below";
   return applyClinicalTone(
-    `${ref.name} is pacing ${variance}% ${direction} league average for ${whistleUnit} in ${leagueLabel}`,
+    `${ref.name}: ${variance}% ${whistleUnit} variance ${direction} ${leagueLabel} league average (N=${ref.games})`,
   );
 }
 

@@ -133,7 +133,7 @@ export function GrudgeMatchSection({
       <div className="flex flex-wrap items-center gap-2">
         <Swords className="size-5 text-raptors" aria-hidden />
         <h2 className="text-base font-semibold text-zinc-800">
-          Grudge match radar
+          Crew history spotlight
         </h2>
         {isPreview && (
           <span className="rounded-full border border-amber-500/35 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-200">
@@ -166,7 +166,7 @@ export function GameGrudgeStorylines({
     <div className="border-t border-border-subtle bg-zinc-50/60 px-4 py-4 sm:px-5">
       <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-800">
         <Swords className="size-4 text-raptors" aria-hidden />
-        <TermHelp id="grudge-match">Grudge match flags</TermHelp>
+        <TermHelp id="grudge-match">Crew history spotlight</TermHelp>
       </p>
       <ul className="space-y-3">
         {storylines.map((story) => (

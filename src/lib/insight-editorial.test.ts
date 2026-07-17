@@ -53,7 +53,10 @@ describe("insight editorial helpers", () => {
 
   it("builds whistle outlier headlines from entity names", () => {
     const headline = humanCentricHeadline(sampleCard());
-    assert.equal(headline, "Dale Shaw calls one of the NFL's highest whistle rates");
+    assert.equal(
+      headline,
+      "Dale Shaw: +51.5pp whistle-rate variance vs NFL league average.",
+    );
     assert.ok(!headline.includes("—"));
   });
 
@@ -78,7 +81,10 @@ describe("insight editorial helpers", () => {
 
   it("maps cards to headline, metrics, and why-it-matters", () => {
     const view = editorialInsightView(sampleCard());
-    assert.equal(view.headline, "Dale Shaw calls one of the NFL's highest whistle rates");
+    assert.equal(
+      view.headline,
+      "Dale Shaw: +51.5pp whistle-rate variance vs NFL league average.",
+    );
     assert.equal(view.primaryMetric.value, "+51.5pp");
     assert.equal(view.secondaryMetric?.label, "Flags per game");
     assert.ok(view.whyItMatters.length > 20);

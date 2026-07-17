@@ -1,0 +1,113 @@
+.validation-signal-section {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(30 41 59);
+}
+
+.validation-signal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: rgb(241 245 249);
+  margin: 0 0 0.75rem;
+}
+
+.validation-signal-summary {
+  color: rgb(203 213 225);
+  margin: 0 0 0.5rem;
+}
+
+.validation-signal-methodology {
+  color: rgb(148 163 184);
+  font-size: 0.875rem;
+  margin: 0 0 1rem;
+}
+
+.validation-exclusion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 1rem;
+  margin: 0 0 1.25rem;
+}
+
+.validation-exclusion-grid dt {
+  font-size: 0.75rem;
+  color: rgb(148 163 184);
+  margin-bottom: 0.25rem;
+}
+
+.validation-exclusion-grid dd {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: rgb(241 245 249);
+  margin: 0;
+}
+
+.validation-table-wrap {
+  overflow-x: auto;
+}
+
+.validation-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.validation-table th,
+.validation-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgb(30 41 59);
+  text-align: left;
+}
+
+.validation-table th {
+  color: rgb(148 163 184);
+  font-weight: 500;
+}
+
+.validation-table td {
+  color: rgb(226 232 240);
+}
+
+.validation-empty-state {
+  color: rgb(148 163 184);
+  font-size: 0.875rem;
+  padding: 1rem;
+  border: 1px dashed rgb(51 65 85);
+  border-radius: 0.75rem;
+}
+
+.validation-meta {
+  color: rgb(148 163 184);
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+}
+
+.validation-coverage-warning {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgb(30 41 59 / 0.6);
+  color: rgb(251 191 36);
+  font-size: 0.875rem;
+}
+
+.validation-caveats {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgb(30 41 59);
+  color: rgb(148 163 184);
+  font-size: 0.875rem;
+}
+
+.validation-caveats ul {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.validation-caveats li + li {
+  margin-top: 0.35rem;
+}
+
+.insight-editorial-footnote {
+  line-height: 1.4;
+}
