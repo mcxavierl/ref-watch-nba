@@ -1470,6 +1470,28 @@ html.dark .overview-quick-lists {
   margin-top: 0;
 }
 
+.overview-upcoming-header {
+  text-align: center;
+}
+
+.overview-upcoming-lead {
+  margin-inline: auto;
+  max-width: 28rem;
+  text-align: center;
+}
+
+.upcoming-games-grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 960px) {
+  .upcoming-games-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
 .overview-section-title--with-icon {
   display: inline-flex;
   align-items: center;

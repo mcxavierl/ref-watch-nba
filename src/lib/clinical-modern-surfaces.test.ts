@@ -126,25 +126,22 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /h-\[2\.35rem\]/);
   });
 
-  it("homepage Clinical Modern shell and slate capsules are defined", () => {
+  it("homepage Clinical Modern shell and upcoming game cards are defined", () => {
     const css = readSrc("src/components/overview-clinical-modern.css");
     const page = readSrc("src/app/page.tsx");
-    const slate = readSrc("src/components/OverviewLeagueSlateGroup.tsx");
+    const section = readSrc("src/components/OverviewUpcomingSlateSection.tsx");
+    const card = readSrc("src/components/UpcomingGameCard.tsx");
     const row = readSrc("src/components/OverviewSlateRow.tsx");
     assert.match(page, /overview-shell--clinical/);
-    assert.match(css, /overview-slate-capsule/);
-    assert.match(css, /overview-slate-row-inner/);
-    assert.match(slate, /overview-slate-capsule-header/);
-    assert.match(slate, /showHubLink=\{false\}/);
-    assert.match(row, /size="lg"/);
+    assert.match(section, /UpcomingGameCard/);
+    assert.match(section, /upcoming-games-grid/);
+    assert.doesNotMatch(section, /overview-slate-notes/);
+    assert.doesNotMatch(section, /overview-slate-updated/);
+    assert.match(card, /upcoming-game-card__metadata/);
+    assert.match(card, /size="xl"/);
+    assert.match(card, /game\.metadataLine/);
+    assert.match(css, /upcoming-game-card/);
     assert.match(row, /overview-slate-row-last-meeting/);
-    assert.match(row, /overview-slate-row-season-stage/);
-    assert.match(row, /game\.lastMeetingLine/);
-    assert.match(row, /game\.seasonStageNote/);
-    assert.match(row, /overview-slate-row-team-context/);
-    assert.match(row, /overview-slate-row-officials/);
-    assert.match(row, /game\.teamContextLine/);
-    assert.match(row, /game\.officialsLine/);
   });
 
   it("editorial insight cards pair league badge with season start", () => {

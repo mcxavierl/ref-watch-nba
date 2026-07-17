@@ -178,6 +178,60 @@ export function buildOverviewTeamRecentContextLine(
   return `Recent form: ${awayLine} · ${homeLine}`;
 }
 
+function compactTeamRecentSnippet(leagueId: LeagueId, teamAbbr: string): string {
+  const key = teamAbbr.toUpperCase();
+  const latest = latestTeamGame(leagueId, teamAbbr);
+  if (!latest) {
+    const leagueLabel = leagueId === "epl" ? "EPL" : "La Liga";
+    return `${key} (no recent ${leagueLabel} log)`;
+  }
+
+  const isHome = latest.homeTeam.toUpperCase() === key;
+  const teamScore = isHome ? latest.homeScore : latest.awayScore;
+  const oppScore = isHome ? latest.awayScore : latest.homeScore;
+  const opponent = isHome ? latest.awayTeam : latest.homeTeam;
+
+  if (teamScore > oppScore) {
+    const venue = isHome ? "" : " away";
+    return `${key} (beat ${opponent} ${teamScore}-${oppScore}${venue})`;
+  }
+  if (teamScore < oppScore) {
+    return `${key} (lost to ${opponent} ${oppScore}-${teamScore})`;
+  }
+  return `${key} (drew ${opponent} ${teamScore}-${oppScore})`;
+}
+
+/** Compact recent-form snippet for homepage slate metadata rows. */
+export function buildOverviewCompactRecentFormLine(
+  leagueId: LeagueId,
+  awayTeam: string,
+  homeTeam: string,
+): string {
+  return `Recent form: ${compactTeamRecentSnippet(leagueId, awayTeam)}, ${compactTeamRecentSnippet(leagueId, homeTeam)}`;
+}
+
+/** Single confidential metadata row: match type plus H2H or recent form. No official names. */
+export function buildOverviewSlateMetadataLine(
+  leagueId: LeagueId,
+  awayTeam: string,
+  homeTeam: string,
+  seasonStageNote?: string,
+  lastMeetingLine?: string,
+): string {
+  const segments: string[] = [];
+  if (seasonStageNote) {
+    segments.push(seasonStageNote);
+  }
+
+  if (lastMeetingLine) {
+    segments.push(lastMeetingLine.replace(/^Last met /, "Last met: "));
+  } else if (leagueId === "epl" || leagueId === "laliga") {
+    segments.push(buildOverviewCompactRecentFormLine(leagueId, awayTeam, homeTeam));
+  }
+
+  return segments.join(" · ");
+}
+
 function teamCityForLeague(leagueId: LeagueId, abbr: string): string | undefined {
   const key = abbr.toUpperCase();
   const team =

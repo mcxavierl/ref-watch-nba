@@ -87,6 +87,10 @@ describe("overview-upcoming-slate", () => {
       /Last met Nov 12, 2023 in Los Angeles · DET 41, LAC 38/,
     );
     assert.equal(slate.leagueGroup?.games[0]?.seasonStageNote, "Pre-season game");
+    assert.match(
+      slate.leagueGroup?.games[0]?.metadataLine ?? "",
+      /Pre-season game · Last met: Nov 12, 2023 in Los Angeles · DET 41, LAC 38/,
+    );
     assert.equal(slate.leagueNote?.note, file.note);
   });
 
@@ -121,6 +125,10 @@ describe("overview-upcoming-slate", () => {
       slate.leagueGroup?.games[0]?.teamContextLine ?? "",
       /Recent form: COV: no recent EPL log on file · ARS beat CRY 2-1 away/,
     );
+    assert.match(
+      slate.leagueGroup?.games[0]?.metadataLine ?? "",
+      /Exhibition match · Recent form: COV \(no recent EPL log\), ARS \(beat CRY 2-1 away\)/,
+    );
   });
 
   it("builds La Liga slate with named referee and recent form", () => {
@@ -154,6 +162,10 @@ describe("overview-upcoming-slate", () => {
     assert.match(
       slate.leagueGroup?.games[0]?.teamContextLine ?? "",
       /Recent form: OVI lost to MLL 3-0 away/,
+    );
+    assert.match(
+      slate.leagueGroup?.games[0]?.metadataLine ?? "",
+      /Recent form: OVI \(lost to MLL 3-0\), VIL \(beat ATM 5-1\)/,
     );
   });
 });
