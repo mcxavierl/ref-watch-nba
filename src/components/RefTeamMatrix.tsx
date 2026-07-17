@@ -430,13 +430,6 @@ export function RefTeamMatrix({
     () => sortMatrixRefs(refs, matrix, refSort),
     [refs, matrix, refSort],
   );
-  const visibleRefs = useMemo(() => {
-    if (!searchQuery) return sortedRefs;
-    return sortedRefs.filter((ref) =>
-      ref.name.toLowerCase().includes(searchQuery),
-    );
-  }, [sortedRefs, searchQuery]);
-  const searchMatchCount = visibleRefs.length;
   const selectedTeam = useMemo(
     () =>
       selectedTeamAbbr
@@ -470,6 +463,24 @@ export function RefTeamMatrix({
         : [],
     [matrix, selectedTeamAbbr, teamPanelSort, viewMode],
   );
+  const teamPanelRefSlugs = useMemo(() => {
+    if (!selectedTeamAbbr) return null;
+    const slugs = new Set<string>();
+    for (const entry of topRefsForTeam) slugs.add(entry.refSlug);
+    for (const entry of bottomRefsForTeam) slugs.add(entry.refSlug);
+    return slugs;
+  }, [bottomRefsForTeam, selectedTeamAbbr, topRefsForTeam]);
+  const visibleRefs = useMemo(() => {
+    let pool = sortedRefs;
+    if (teamPanelRefSlugs) {
+      pool = pool.filter((ref) => teamPanelRefSlugs.has(ref.slug));
+    }
+    if (!searchQuery) return pool;
+    return pool.filter((ref) =>
+      ref.name.toLowerCase().includes(searchQuery),
+    );
+  }, [searchQuery, sortedRefs, teamPanelRefSlugs]);
+  const searchMatchCount = visibleRefs.length;
   const officialLabel =
     officialNounPlural.charAt(0).toUpperCase() + officialNounPlural.slice(1);
   const splitNoun =
@@ -721,9 +732,13 @@ export function RefTeamMatrix({
             >
               {searchQuery
                 ? searchMatchCount > 0
-                  ? `${searchMatchCount} match${searchMatchCount === 1 ? "" : "es"}. Thin-sample rows stay visible with a game count`
-                  : "No matches in this matrix. Try a shorter name or check rankings"
-                : "Filter rows by name; includes thin-sample rows"}
+                  ? `${searchMatchCount} match${searchMatchCount === 1 ? "" : "es"}${selectedTeam ? ` in top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} for ${selectedTeam.label}` : ". Thin-sample rows stay visible with a game count"}`
+                  : selectedTeam
+                    ? `No matches in top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} for ${selectedTeam.label}. Clear search or team filter`
+                    : "No matches in this matrix. Try a shorter name or check rankings"
+                : selectedTeam
+                  ? `Showing top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} ${officialNounPlural} for ${selectedTeam.label} only`
+                  : "Filter rows by name; includes thin-sample rows"}
             </p>
           </div>
           <div className="ref-matrix-sort">
@@ -1147,7 +1162,7 @@ export function RefTeamMatrix({
           <div className="ref-matrix-team-panel-columns">
             <TeamRefRankColumn
               titleId="ref-matrix-team-panel-top-title"
-              title="Favorable"
+              title={`Top ${TEAM_MATRIX_REF_PANEL_LIMIT}`}
               subtitle={
                 teamPanelSort === "record"
                   ? viewMode === "ats"
@@ -1169,7 +1184,7 @@ export function RefTeamMatrix({
             />
             <TeamRefRankColumn
               titleId="ref-matrix-team-panel-bottom-title"
-              title="Unfavorable"
+              title={`Bottom ${TEAM_MATRIX_REF_PANEL_LIMIT}`}
               subtitle={
                 teamPanelSort === "record"
                   ? viewMode === "ats"
