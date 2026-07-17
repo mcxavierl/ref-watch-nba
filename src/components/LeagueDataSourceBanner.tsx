@@ -20,6 +20,8 @@ export function LeagueDataSourceBanner({
   meta: RefStatsFile["meta"];
   className?: string;
 }) {
+  if (league === "cbb") return null;
+
   const verification = resolveLeagueVerification(league as LeagueId, meta);
 
   if (isVerifiedLiveLeague(league as LeagueId) && verification.data_verified) {

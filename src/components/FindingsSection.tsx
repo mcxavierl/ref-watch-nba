@@ -137,7 +137,9 @@ export function FindingsSection({
             >
               View all {league ? `${league} ` : ""}findings →
             </Link>
-            <MethodologyLink className="text-sm font-semibold" />
+            {league !== "CBB" ? (
+              <MethodologyLink className="text-sm font-semibold" />
+            ) : null}
           </p>
         </div>
       )}

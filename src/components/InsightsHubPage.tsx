@@ -1,5 +1,6 @@
 import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { CbbConferenceTrendsToggle } from "@/components/CbbConferenceTrendsToggle";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
@@ -40,6 +41,7 @@ import { computeFindings as computeLaligaFindings } from "@/lib/laliga/findings"
 import { computeFindings as computeNflFindings } from "@/lib/nfl/findings";
 import { computeFindings as computeNhlFindings } from "@/lib/nhl/findings";
 import { ContextualLinkerText } from "@/lib/contextual-linker";
+import { insightsViewHref } from "@/lib/insights-routes";
 import {
   researchHubArticleJsonLd,
   researchHubDatasetJsonLd,
@@ -153,9 +155,21 @@ export function InsightsHubPage({
 
   const verification = resolveLeagueVerification(leagueId, stats.meta, stats);
   const showDataSourceBanner =
-    !verification.data_verified &&
-    (leagueId === "cbb" || leagueId === "cfb");
+    !verification.data_verified && leagueId === "cfb";
   const range = formatRange(stats.meta);
+
+  const hubFindings =
+    leagueId === "cbb"
+      ? HUB_FINDINGS_COMPUTERS.cbb(12, scopedSeasons).map((finding) => ({
+          ...finding,
+          league: dataLeague,
+        }))
+      : [];
+  const cbbHasFindings = leagueId !== "cbb" || hubFindings.length > 0;
+
+  if (leagueId === "cbb" && activeView === "findings" && !cbbHasFindings) {
+    redirect(insightsViewHref("cbb", "tendencies"));
+  }
 
   const baselines = getBaselinesFile();
   const baselineKey = dataLeague === "LALIGA" ? "EPL" : dataLeague;
@@ -280,12 +294,13 @@ export function InsightsHubPage({
 
   let findingsPanel: ReactNode = null;
   if (activeView === "findings") {
-    const findings = HUB_FINDINGS_COMPUTERS[leagueId](12, scopedSeasons).map(
-      (finding) => ({
-        ...finding,
-        league: dataLeague,
-      }),
-    );
+    const findings =
+      leagueId === "cbb"
+        ? hubFindings
+        : HUB_FINDINGS_COMPUTERS[leagueId](12, scopedSeasons).map((finding) => ({
+            ...finding,
+            league: dataLeague,
+          }));
     const evByFindingId = buildResearchFindingEvMap(
       findings,
       stats,
@@ -406,18 +421,22 @@ export function InsightsHubPage({
               ) : null,
             panel: trendsPanel,
           },
-          {
-            id: "findings",
-            label: "Findings",
-            note:
-              activeView === "findings" ? (
-                <>
-                  Ranked by effect size and sample size across {range}.
-                  Descriptive historical tendencies, not betting advice.
-                </>
-              ) : null,
-            panel: findingsPanel,
-          },
+          ...(cbbHasFindings
+            ? [
+                {
+                  id: "findings" as const,
+                  label: "Findings",
+                  note:
+                    activeView === "findings" ? (
+                      <>
+                        Ranked by effect size and sample size across {range}.
+                        Descriptive historical tendencies, not betting advice.
+                      </>
+                    ) : null,
+                  panel: findingsPanel,
+                },
+              ]
+            : []),
         ]}
       />
     </div>

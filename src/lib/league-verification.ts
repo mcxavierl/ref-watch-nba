@@ -211,6 +211,7 @@ export function unverifiedBannerMessage(
 ): string {
   const v = resolveLeagueVerification(leagueId, meta);
   if (v.data_verified) return "";
+  if (leagueId === "cbb") return "";
   if (leagueId === "nhl" || leagueId === "nfl") {
     const label = leagueId.toUpperCase();
     return `We're still building verified ${label} data.`;
