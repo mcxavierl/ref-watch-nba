@@ -183,7 +183,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "close-game-proxy": {
     label: "Close-game proxy",
-    text: "A competitive late-game window derived from final margins, pregame spreads, or overtime, not official NBA Last Two Minute (L2M) play-by-play reports. Useful for spotting whistle/scoring shifts in tight games, with honest partial-coverage labels.",
+    text: "Competitive late-game windows derived from final margins, pregame spreads, or overtime in official box scores. Compares window averages to full-game season averages.",
   },
   "profile-signals": {
     label: "Profile signals",

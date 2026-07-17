@@ -1158,6 +1158,34 @@ p {
     min-width: 0;
   }
 
+  .pressure-matrix-bento {
+    display: grid;
+    gap: 1.5rem;
+    min-width: 0;
+  }
+
+  @media (min-width: 768px) {
+    .pressure-matrix-bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .pressure-matrix-card {
+    min-width: 0;
+  }
+
+  .pressure-matrix-table th {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .pressure-matrix-table td:first-child {
+    color: color-mix(in srgb, var(--text-primary) 78%, var(--text-muted));
+  }
+
   .ref-profile-quick-stats {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
