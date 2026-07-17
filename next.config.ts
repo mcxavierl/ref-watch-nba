@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
       "./data/epl/team-splits.json",
       "./data/laliga/ref-stats-core.json",
       "./data/laliga/team-splits.json",
+      "./data/worldcup/final-2026.json",
       "./data/cbb/ref-stats-core.json",
       "./data/cbb/team-splits.json",
       "./data/cbb/game-logs.json",
