@@ -9,7 +9,7 @@ import {
   DashboardBodyLayout,
   DashboardShell,
 } from "@/components/dashboard/DashboardShell";
-import { ResearchHighlightPill } from "@/components/ResearchHighlightPill";
+import { ResearchHighlightBanner } from "@/components/ResearchHighlightBanner";
 import {
   catalogComingSoonEntries,
   catalogCompetitionCount,
@@ -85,6 +85,8 @@ export function OverviewDashboard({
 
   return (
     <DashboardShell>
+      <ResearchHighlightBanner />
+
       {hero}
 
       <OverviewUpcomingSlateSection data={data} />
@@ -158,14 +160,7 @@ export function OverviewDashboard({
                 </details>
               </>
             }
-            main={
-              <>
-                <div className="overview-main-research-slot">
-                  <ResearchHighlightPill />
-                </div>
-                {exploreTabs}
-              </>
-            }
+            main={exploreTabs}
           />
         </div>
       </section>

@@ -157,19 +157,18 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /WorldCupFinalSection/);
   });
 
-  it("homepage surfaces a research highlight pill above dashboard tabs", () => {
+  it("homepage surfaces a research highlight banner at the top of the dashboard", () => {
     const dashboard = readSrc("src/components/OverviewDashboard.tsx");
-    const pill = readSrc("src/components/ResearchHighlightPill.tsx");
+    const banner = readSrc("src/components/ResearchHighlightBanner.tsx");
     const config = readSrc("src/config/research-highlight.ts");
-    const css = readSrc("src/components/overview-dashboard.css");
-    assert.match(dashboard, /ResearchHighlightPill/);
-    assert.match(dashboard, /overview-main-research-slot/);
-    assert.match(pill, /overview-research-highlight/);
-    assert.match(pill, /Activity/);
-    assert.match(pill, /target="_blank"/);
+    assert.match(dashboard, /ResearchHighlightBanner/);
+    assert.doesNotMatch(dashboard, /ResearchHighlightPill/);
+    assert.match(banner, /research-highlight-banner/);
+    assert.match(banner, /BookOpen/);
+    assert.match(banner, /target="_blank"/);
+    assert.match(banner, /text-champagne-400/);
+    assert.match(banner, /rounded-2xl/);
     assert.match(config, /Leverage-Spike Anomaly/);
-    assert.match(css, /overview-research-highlight__gradient/);
-    assert.match(css, /#8b6bb5 80%/);
   });
 
   it("live league date badges use high-contrast blue tokens", () => {
