@@ -46,13 +46,13 @@ export function worldCupKpiTone(stat: FindingStat): WcKpiTone {
 function toneClass(tone: WcKpiTone): string {
   switch (tone) {
     case "negative":
-      return "text-rose-400";
+      return "wc-kpi-negative";
     case "positive":
-      return "text-emerald-400";
+      return "wc-kpi-positive";
     case "name":
-      return "text-slate-100";
+      return "wc-authority-value text-lg font-medium";
     default:
-      return "text-white";
+      return "wc-authority-value";
   }
 }
 
@@ -62,15 +62,15 @@ export function WorldCupKpiValue({ stat, tone }: { stat: FindingStat; tone: WcKp
   const value = stat.value.trim();
 
   if (tone === "name") {
-    return <span className="text-lg font-medium text-slate-100">{value}</span>;
+    return <span className="wc-authority-value text-lg font-medium">{value}</span>;
   }
 
   if (label.includes("record")) {
     const match = value.match(/^(\d+W)(.*)$/);
     if (match) {
       return (
-        <span className={`${KPI_CLASS} text-white`}>
-          <span className="text-emerald-400">{match[1]}</span>
+        <span className={`${KPI_CLASS} wc-authority-value`}>
+          <span className="wc-kpi-positive">{match[1]}</span>
           {match[2]}
         </span>
       );
@@ -82,8 +82,8 @@ export function WorldCupKpiValue({ stat, tone }: { stat: FindingStat; tone: WcKp
     const forGoals = value.slice(0, dashIndex);
     const againstGoals = value.slice(dashIndex);
     return (
-      <span className={`${KPI_CLASS} text-white`}>
-        <span className="text-emerald-400">{forGoals}</span>
+      <span className={`${KPI_CLASS} wc-authority-value`}>
+        <span className="wc-kpi-positive">{forGoals}</span>
         {againstGoals}
       </span>
     );

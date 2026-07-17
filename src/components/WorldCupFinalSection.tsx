@@ -29,8 +29,8 @@ function OfficialName({ official }: { official: WorldCupOfficial }) {
   return (
     <span className="inline-flex items-center gap-2">
       <FlagAvatar flag={flag} label={official.country} />
-      <span className="text-sm font-medium text-white">{official.name}</span>
-      <span className="text-slate-500">({official.country})</span>
+      <span className="wc-authority-value text-sm font-medium">{official.name}</span>
+      <span className="wc-authority-label">({official.country})</span>
     </span>
   );
 }
@@ -58,7 +58,7 @@ export function WorldCupFinalSection() {
             <div className="min-w-0 flex-1">
               <div className="mb-3 flex items-center gap-2">
                 <Trophy className="h-4 w-4 text-[#BFA86A]" aria-hidden />
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#BFA86A]">
+                <p className="wc-authority-kicker text-xs font-semibold uppercase tracking-wider">
                   FIFA World Cup 2026
                 </p>
               </div>
@@ -70,28 +70,28 @@ export function WorldCupFinalSection() {
                   <FlagAvatar flag={awayFlag} label={match.awayTeam.name} />
                   <span>{match.awayTeam.name}</span>
                 </span>
-                <span className="text-3xl font-bold tracking-tight text-slate-500">vs</span>
+                <span className="wc-authority-label text-3xl font-bold tracking-tight">vs</span>
                 <span className="inline-flex items-center gap-2">
                   <FlagAvatar flag={homeFlag} label={match.homeTeam.name} />
                   <span>{match.homeTeam.name}</span>
                 </span>
               </h2>
-              <p className="mt-3 max-w-prose text-sm leading-relaxed text-slate-400">{narrative}</p>
+              <p className="wc-authority-body mt-3 max-w-prose text-sm leading-relaxed">{narrative}</p>
             </div>
             <MatchStatusPill label={match.stage} tone="prestige" />
           </div>
 
           <dl className="flex flex-col gap-4 border-t border-slate-800 pt-5 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
             <div className="min-w-0 flex-1">
-              <dt className="text-xs uppercase tracking-wider text-slate-500">Kickoff</dt>
-              <dd className="mt-1 text-sm font-medium tabular-nums text-white">{final.kickoffLabel}</dd>
+              <dt className="wc-authority-label text-xs uppercase tracking-wider">Kickoff</dt>
+              <dd className="wc-authority-value mt-1 text-sm font-medium tabular-nums">{final.kickoffLabel}</dd>
             </div>
             <div className="min-w-0 flex-1">
-              <dt className="text-xs uppercase tracking-wider text-slate-500">Venue</dt>
-              <dd className="mt-1 text-sm font-medium text-white">{match.venue}</dd>
+              <dt className="wc-authority-label text-xs uppercase tracking-wider">Venue</dt>
+              <dd className="wc-authority-value mt-1 text-sm font-medium">{match.venue}</dd>
             </div>
             <div className="min-w-0 flex-1">
-              <dt className="text-xs uppercase tracking-wider text-slate-500">Referee</dt>
+              <dt className="wc-authority-label text-xs uppercase tracking-wider">Referee</dt>
               <dd className="mt-1">
                 <OfficialName official={officials.referee} />
               </dd>
@@ -99,14 +99,14 @@ export function WorldCupFinalSection() {
           </dl>
 
           <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-            <h3 className="text-sm font-semibold text-white">Match officials</h3>
+            <h3 className="wc-authority-value text-sm font-semibold">Match officials</h3>
             <ul className="mt-3 space-y-2 text-sm">
               <li className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="font-medium text-slate-500">Referee:</span>
+                <span className="wc-authority-label font-medium">Referee:</span>
                 <OfficialName official={officials.referee} />
               </li>
               <li className="flex flex-wrap items-start gap-x-2 gap-y-2">
-                <span className="font-medium text-slate-500">Assistants:</span>
+                <span className="wc-authority-label font-medium">Assistants:</span>
                 <span className="inline-flex flex-wrap items-center gap-x-4 gap-y-2">
                   {officials.assistantReferees.map((official, index) => (
                     <OfficialName key={`${official.name}-${index}`} official={official} />
@@ -114,15 +114,15 @@ export function WorldCupFinalSection() {
                 </span>
               </li>
               <li className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="font-medium text-slate-500">Fourth official:</span>
+                <span className="wc-authority-label font-medium">Fourth official:</span>
                 <OfficialName official={officials.fourthOfficial} />
               </li>
               <li className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="font-medium text-slate-500">VAR:</span>
+                <span className="wc-authority-label font-medium">VAR:</span>
                 <OfficialName official={officials.videoAssistantReferee} />
               </li>
               <li className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="font-medium text-slate-500">AVAR:</span>
+                <span className="wc-authority-label font-medium">AVAR:</span>
                 <OfficialName official={officials.assistantVar} />
               </li>
             </ul>
@@ -131,13 +131,13 @@ export function WorldCupFinalSection() {
           <div className="flex flex-col gap-2 border-t border-slate-800 pt-4 sm:flex-row sm:items-center sm:justify-between">
             <Link
               href={match.fifaMatchUrl}
-              className="text-xs text-slate-600 hover:text-[#BFA86A] hover:underline"
+              className="wc-authority-link text-xs"
               target="_blank"
               rel="noopener noreferrer"
             >
               FIFA match centre
             </Link>
-            <span className="text-xs tabular-nums text-slate-600">
+            <span className="wc-authority-meta text-xs tabular-nums">
               Match {match.matchNumber} · Source: {meta.source}
             </span>
           </div>

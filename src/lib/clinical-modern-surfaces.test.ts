@@ -81,7 +81,9 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /WorldCupFindingCard/);
     assert.match(source, /text-5xl font-extrabold tracking-tighter/);
     assert.match(source, /wc-flag-avatar/);
-    assert.match(source, /text-xs text-slate-600/);
+    assert.match(source, /wc-authority-link/);
+    assert.match(source, /wc-authority-meta/);
+    assert.doesNotMatch(source, /text-slate-600/);
     assert.doesNotMatch(source, /overview-research-hub-card/);
     assert.doesNotMatch(source, /from "@\/components\/FindingsSection"/);
   });
@@ -91,8 +93,9 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const kpi = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
     assert.match(card, /WorldCupKpiValue/);
     assert.match(kpi, /text-7xl font-black/);
-    assert.match(card, /bg-slate-800/);
-    assert.match(card, /text-slate-300/);
+    assert.match(card, /wc-authority-pill/);
+    assert.match(card, /border-slate-800/);
+    assert.doesNotMatch(card, /text-slate-600/);
     assert.match(card, /border-slate-800/);
     assert.match(card, /wc-authority-capsule--referee/);
   });
@@ -100,7 +103,10 @@ describe("Clinical Modern priority #11 surfaces", () => {
   it("World Cup editorial delight surfaces are defined", () => {
     const css = readSrc("src/components/worldcup/worldcup-delight.css");
     assert.match(css, /wc-authority-capsule/);
-    assert.match(css, /wc-flag-avatar/);
+    assert.match(css, /wc-authority-capsule--kpi h3/);
+    assert.match(css, /wc-authority-link/);
+    assert.match(css, /wc-kpi-positive/);
+    assert.match(css, /--wc-prestige-ink/);
     assert.match(css, /match-status-pill--prestige/);
   });
 
@@ -110,7 +116,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /text-slate-50/);
     assert.match(source, /match-status-pill--prestige/);
     assert.match(source, /bg-\[#BFA86A\]/);
-    assert.match(source, /text-white/);
+    assert.doesNotMatch(source, /text-white/);
     assert.match(source, /font-semibold/);
     assert.match(source, /tracking-wider/);
     assert.match(source, /h-\[2\.35rem\]/);

@@ -15,7 +15,7 @@ const WC_CAPSULE =
   "wc-authority-capsule rounded-2xl border border-slate-800 bg-slate-950 p-6 font-[family-name:var(--font-inter)]";
 
 const CONFIDENCE_PILL =
-  "inline-flex items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-800 px-4 py-1.5 text-xs font-medium tabular-nums text-slate-300";
+  "wc-authority-pill inline-flex items-center whitespace-nowrap rounded-full border px-4 py-1.5 text-xs font-medium tabular-nums";
 
 function isRefereeCapsule(finding: Finding): boolean {
   return finding.id === "wc-final-referee";
@@ -33,15 +33,15 @@ export function WorldCupFindingCard({ finding }: { finding: Finding }) {
         <h3
           className={
             refereeCapsule
-              ? "min-w-0 flex-1 text-lg font-semibold leading-snug text-white"
-              : "min-w-0 flex-1 text-sm font-medium leading-snug text-slate-500"
+              ? "wc-authority-value min-w-0 flex-1 text-lg font-semibold leading-snug"
+              : "wc-authority-label min-w-0 flex-1 text-sm font-medium leading-snug"
           }
         >
           {refereeCapsule ? finding.headline : finding.headline}
         </h3>
         <div className="flex max-w-full shrink-0 flex-wrap items-center gap-2">
           <span
-            className="inline-flex max-w-full items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-800 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-200"
+            className={`${CONFIDENCE_PILL} font-semibold uppercase tracking-wide`}
             data-category={finding.category}
           >
             <FindingCategoryPillLabel category={finding.category} />
@@ -65,12 +65,12 @@ export function WorldCupFindingCard({ finding }: { finding: Finding }) {
 
             return (
               <div key={stat.label} className="wc-authority-metric-cell min-w-0">
-                <dt className="text-sm font-medium text-slate-500">{stat.label}</dt>
+                <dt className="wc-authority-label text-sm font-medium">{stat.label}</dt>
                 <dd className="mt-2">
                   <WorldCupKpiValue stat={stat} tone={tone} />
                 </dd>
                 {stat.detail ? (
-                  <dd className="mt-2 text-base font-normal text-slate-300">{stat.detail}</dd>
+                  <dd className="wc-authority-body mt-2 text-base font-normal">{stat.detail}</dd>
                 ) : null}
               </div>
             );
@@ -78,8 +78,8 @@ export function WorldCupFindingCard({ finding }: { finding: Finding }) {
         </dl>
       ) : null}
 
-      <p className="wc-authority-narrative mt-5 border-t border-slate-800 pt-4 text-sm font-normal text-slate-400">
-        <span className="font-medium text-slate-500">Why it matters: </span>
+      <p className="wc-authority-narrative mt-5 border-t border-slate-800 pt-4 text-sm font-normal">
+        <span className="wc-authority-label font-medium">Why it matters: </span>
         <FindingExplainer text={resolveFindingExplainer(finding.explainer)} />
       </p>
 
@@ -89,7 +89,7 @@ export function WorldCupFindingCard({ finding }: { finding: Finding }) {
             <Link
               key={link.href}
               href={link.href}
-              className="text-xs text-slate-600 hover:text-[#BFA86A] hover:underline"
+              className="wc-authority-link text-xs"
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -10,7 +10,7 @@ const TONE_CLASS: Record<MatchStatusPillTone, string> = {
   clinical:
     "bg-slate-700 text-slate-50",
   prestige:
-    "match-status-pill--prestige bg-[#BFA86A] text-white",
+    "match-status-pill--prestige bg-[#BFA86A]",
 };
 
 /**
