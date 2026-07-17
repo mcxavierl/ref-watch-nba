@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "../../src/lib/league-verification";
 import { slimLeagueStatsToRefStatsFile } from "../../src/lib/insights/insight-input-slim";
-import { buildLeagueInsightCardForLeague } from "../../src/lib/insights/league-card-from-stats";
+import { buildLeagueStandoutCardsForLeague } from "../../src/lib/insights/league-card-from-stats";
 import {
   generateTopStoriesFromCandidates,
   hydrateOutlierCandidates,
@@ -51,7 +51,7 @@ export type InsightsBuildOptions = {
 type LeagueInsightCacheEntry = {
   sourceMtime: number;
   generatedAt: string;
-  leagueCard: LeagueInsightCard | null;
+  leagueCards: LeagueInsightCard[];
   outlierCandidates: CachedOutlierCandidate[];
 };
 
@@ -104,7 +104,7 @@ function readExistingGeneratedAt(): string | null {
 
 type LeagueBuildResult = {
   leagueId: ProInsightLeagueId;
-  leagueCard: LeagueInsightCard | null;
+  leagueCards: LeagueInsightCard[];
   outlierCandidates: InsightOutlierCandidate[];
   regenerated: boolean;
   generatedAt: string;
@@ -120,9 +120,12 @@ async function buildLeagueInsights(
 
   if (cached && cached.sourceMtime === sourceMtime) {
     console.log(`Insights: ${leagueId} cache hit`);
+    const leagueCards =
+      cached.leagueCards ??
+      ("leagueCard" in cached && cached.leagueCard ? [cached.leagueCard] : []);
     return {
       leagueId,
-      leagueCard: cached.leagueCard,
+      leagueCards,
       outlierCandidates: hydrateOutlierCandidates(cached.outlierCandidates),
       regenerated: false,
       generatedAt: cached.generatedAt,
@@ -146,13 +149,13 @@ async function buildLeagueInsights(
     const empty: LeagueInsightCacheEntry = {
       sourceMtime,
       generatedAt,
-      leagueCard: null,
+      leagueCards: [],
       outlierCandidates: [],
     };
     writeLeagueCache(leagueId, empty);
     return {
       leagueId,
-      leagueCard: null,
+      leagueCards: [],
       outlierCandidates: [],
       regenerated: true,
       generatedAt,
@@ -163,14 +166,14 @@ async function buildLeagueInsights(
   const setup = await loadLeagueGeneratorSetup(leagueId, slimBundle.getTeamSplits);
 
   const stats = slimLeagueStatsToRefStatsFile(slimBundle);
-  const leagueCard = buildLeagueInsightCardForLeague(leagueId, stats, setup);
+  const leagueCards = buildLeagueStandoutCardsForLeague(leagueId, stats, setup);
   const outlierCandidates = scanLeagueOutliersFromSlim(slimBundle, setup);
 
   const generatedAt = new Date().toISOString();
   writeLeagueCache(leagueId, {
     sourceMtime,
     generatedAt,
-    leagueCard,
+    leagueCards,
     outlierCandidates: serializeOutlierCandidates(outlierCandidates),
   });
 
@@ -180,7 +183,7 @@ async function buildLeagueInsights(
 
   return {
     leagueId,
-    leagueCard,
+    leagueCards,
     outlierCandidates,
     regenerated: true,
     generatedAt,
@@ -200,7 +203,7 @@ export async function buildOverviewInsightsPayload(
 
   for (const leagueId of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
     const result = await buildLeagueInsights(leagueId, force);
-    if (result.leagueCard) cards.push(result.leagueCard);
+    if (result.leagueCards.length > 0) cards.push(...result.leagueCards);
     allCandidates.push(...result.outlierCandidates);
     if (result.regenerated) {
       anyRegenerated = true;

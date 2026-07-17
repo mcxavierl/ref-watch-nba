@@ -24,6 +24,7 @@ import {
   computeMatrixExtremes,
   formatMatrixHighlightBaseline,
   type MatrixExtremeHighlight,
+  type RefTeamMatrix,
 } from "@/lib/ref-team-matrix";
 import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import {
@@ -268,6 +269,40 @@ function pickInsight(
   return null;
 }
 
+const MULTI_STANDOUT_LEAGUE_IDS = new Set<VerifiedLiveLeagueId>(["nba", "nfl", "epl"]);
+const MULTI_STANDOUT_MATRIX_LIMIT = 4;
+
+function sortMatrixHighlightsBySample(
+  highlights: MatrixExtremeHighlight[],
+): MatrixExtremeHighlight[] {
+  return [...highlights].sort((a, b) => {
+    if (b.games !== a.games) return b.games - a.games;
+    return Math.abs(b.deltaPts) - Math.abs(a.deltaPts);
+  });
+}
+
+function matrixStandoutCardsForLeague(
+  leagueId: VerifiedLiveLeagueId,
+  matrix: RefTeamMatrix,
+  limit: number,
+): LeagueInsightCard[] {
+  const highlights = sortMatrixHighlightsBySample(
+    computeMatrixExtremes(matrix, Math.max(limit * 4, 16)),
+  );
+  const cards: LeagueInsightCard[] = [];
+  const seen = new Set<string>();
+
+  for (const highlight of highlights) {
+    const key = `${highlight.refSlug}|${highlight.teamAbbr.toUpperCase()}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    cards.push(cardFromMatrix(leagueId, highlight));
+    if (cards.length >= limit) break;
+  }
+
+  return cards;
+}
+
 export function buildLeagueInsightCards(): LeagueInsightCard[] {
   const cards: LeagueInsightCard[] = [];
 
@@ -289,6 +324,18 @@ export function buildLeagueInsightCards(): LeagueInsightCard[] {
       8,
       { league: setup.matrixLeague },
     );
+    if (MULTI_STANDOUT_LEAGUE_IDS.has(leagueId)) {
+      const matrixCards = matrixStandoutCardsForLeague(
+        leagueId,
+        matrix,
+        MULTI_STANDOUT_MATRIX_LIMIT,
+      );
+      if (matrixCards.length > 0) {
+        cards.push(...matrixCards);
+        continue;
+      }
+    }
+
     const extreme = computeMatrixExtremes(matrix, 1)[0];
     const finding = setup.computeFindings(1)[0];
     const card = pickInsight(leagueId, extreme, finding);

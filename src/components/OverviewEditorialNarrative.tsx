@@ -3,7 +3,11 @@
 import { useMemo } from "react";
 import { InsightCard } from "@/components/shared/InsightCard";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
-import { pickTopInsightCard, trendInsightCards } from "@/lib/insight-editorial";
+import {
+  insightCardKey,
+  overviewStandoutSplitCards,
+  pickTopInsightCard,
+} from "@/lib/insight-editorial";
 
 type OverviewEditorialNarrativeProps = {
   insightCards: CrossLeagueOverview["insightCards"];
@@ -34,7 +38,10 @@ export function OverviewEditorialNarrative({
   );
 
   const topInsightCard = useMemo(() => pickTopInsightCard(pool), [pool]);
-  const trendCards = useMemo(() => trendInsightCards(insightCards), [insightCards]);
+  const trendCards = useMemo(
+    () => overviewStandoutSplitCards(insightCards, topInsightCard),
+    [insightCards, topInsightCard],
+  );
 
   if (!topInsightCard && trendCards.length === 0) {
     return null;
@@ -55,7 +62,7 @@ export function OverviewEditorialNarrative({
               The strongest verified whistle edge across live leagues right now.
             </p>
           </div>
-          <InsightCard card={topInsightCard} variant="featured" />
+          <InsightCard card={topInsightCard} variant="featured" showHubLink={false} />
         </section>
       ) : null}
 
@@ -69,12 +76,18 @@ export function OverviewEditorialNarrative({
               Standout splits by league
             </h2>
             <p className="overview-section-lead">
-              One verified ref×team or whistle edge per live league.
+              One verified ref×team split per live league, plus deeper NBA, NFL, and EPL samples.
             </p>
           </div>
           <div className="overview-editorial-trends-grid">
             {trendCards.map((card, index) => (
-              <InsightCard key={`${card.leagueId}-trend`} card={card} variant="trend" index={index} />
+              <InsightCard
+                key={insightCardKey(card)}
+                card={card}
+                variant="trend"
+                index={index}
+                showHubLink={false}
+              />
             ))}
           </div>
         </section>

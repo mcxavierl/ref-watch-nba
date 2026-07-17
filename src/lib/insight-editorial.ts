@@ -221,7 +221,78 @@ export function pickTopInsightCard(cards: LeagueInsightCard[]): LeagueInsightCar
   )[0]!;
 }
 
-/** One trend card per league for the medium grid. */
+/** Stable dedupe key for ref×team insight cards. */
+export function insightCardKey(card: LeagueInsightCard): string {
+  return `${card.leagueId}:${card.refSlug ?? card.headline}:${card.teamAbbr ?? ""}`;
+}
+
+const OVERVIEW_STANDOUT_LEAGUE_ORDER: LeagueInsightCard["leagueId"][] = [
+  "nba",
+  "nhl",
+  "nfl",
+  "epl",
+  "laliga",
+];
+
+const OVERVIEW_EXTRA_STANDOUT_LEAGUES = new Set<LeagueInsightCard["leagueId"]>([
+  "nba",
+  "nfl",
+  "epl",
+]);
+
+/** Homepage grid: one split per league plus a second NBA, NFL, and EPL sample. */
+export function overviewStandoutSplitCards(
+  cards: LeagueInsightCard[],
+  featured: LeagueInsightCard | null,
+): LeagueInsightCard[] {
+  const used = new Set<string>();
+  if (featured) used.add(insightCardKey(featured));
+
+  const matrixCards = cards.filter((card) => card.kind === "matrix-edge");
+  const byLeague = new Map<string, LeagueInsightCard[]>();
+
+  for (const card of matrixCards) {
+    const list = byLeague.get(card.leagueId) ?? [];
+    list.push(card);
+    byLeague.set(card.leagueId, list);
+  }
+
+  for (const list of byLeague.values()) {
+    list.sort((a, b) => {
+      const gamesA = parseGamesFromCard(a);
+      const gamesB = parseGamesFromCard(b);
+      if (gamesB !== gamesA) return gamesB - gamesA;
+      return heroValueMagnitude(b.heroValue) - heroValueMagnitude(a.heroValue);
+    });
+  }
+
+  const result: LeagueInsightCard[] = [];
+
+  function takeNext(leagueId: LeagueInsightCard["leagueId"]): LeagueInsightCard | null {
+    const list = byLeague.get(leagueId) ?? [];
+    for (const card of list) {
+      const key = insightCardKey(card);
+      if (used.has(key)) continue;
+      used.add(key);
+      return card;
+    }
+    return null;
+  }
+
+  for (const leagueId of OVERVIEW_STANDOUT_LEAGUE_ORDER) {
+    const card = takeNext(leagueId);
+    if (card) result.push(card);
+  }
+
+  for (const leagueId of OVERVIEW_EXTRA_STANDOUT_LEAGUES) {
+    const card = takeNext(leagueId);
+    if (card) result.push(card);
+  }
+
+  return result;
+}
+
+/** One trend card per league for compact surfaces. */
 export function trendInsightCards(cards: LeagueInsightCard[]): LeagueInsightCard[] {
   const byLeague = new Map<string, LeagueInsightCard>();
   for (const card of cards) {
