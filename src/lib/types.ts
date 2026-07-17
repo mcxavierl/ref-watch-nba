@@ -23,6 +23,8 @@ export interface AssignmentGame {
   homeTeam: string;
   league: "NBA" | "WNBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   crew: RefOfficial[];
+  /** Pre-season or exhibition/friendly; omitted for regular-season games. */
+  seasonStage?: "preseason" | "exhibition";
 }
 
 export interface AssignmentsFile {

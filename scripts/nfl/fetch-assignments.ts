@@ -2,6 +2,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { AssignmentGame, AssignmentsFile, RefStatsFile } from "../../src/lib/types";
+import { seasonStageFromEspnSeason } from "../../src/lib/assignment-season-stage";
 import {
   fetchEspnScoreboard,
   fetchEspnSummary,
@@ -56,7 +57,13 @@ function addDays(isoDate: string, days: number): string {
 
 async function findSlateDate(startDate: string): Promise<{
   date: string;
-  eventIds: { id: string; awayAbbr: string; homeAbbr: string }[];
+  eventIds: {
+    id: string;
+    awayAbbr: string;
+    homeAbbr: string;
+    seasonType?: number;
+    seasonSlug?: string;
+  }[];
 }> {
   for (let i = 0; i <= SCAN_DAYS; i++) {
     const date = addDays(startDate, i);
@@ -69,6 +76,8 @@ async function findSlateDate(startDate: string): Promise<{
           id: event.id,
           awayAbbr: event.awayAbbr,
           homeAbbr: event.homeAbbr,
+          seasonType: event.seasonType,
+          seasonSlug: event.seasonSlug,
         })),
       };
     }
@@ -92,14 +101,22 @@ async function main() {
   for (const event of eventIds) {
     await sleep(100);
     const summary = await fetchEspnSummary(event.id);
+    const seasonStage = seasonStageFromEspnSeason({
+      type: event.seasonType,
+      slug: event.seasonSlug,
+    });
+    const baseGame = {
+      id: event.id,
+      matchup: `${event.awayAbbr} @ ${event.homeAbbr}`,
+      awayTeam: event.awayAbbr,
+      homeTeam: event.homeAbbr,
+      league: "NFL" as const,
+      ...(seasonStage ? { seasonStage } : {}),
+    };
     if (!summary || summary.officials.length === 0) {
       crewsPending = true;
       scheduledGames.push({
-        id: event.id,
-        matchup: `${event.awayAbbr} @ ${event.homeAbbr}`,
-        awayTeam: event.awayAbbr,
-        homeTeam: event.homeAbbr,
-        league: "NFL",
+        ...baseGame,
         crew: [],
       });
       continue;
@@ -107,11 +124,7 @@ async function main() {
 
     const crew = toRefOfficials(summary.officials, roster);
     games.push({
-      id: event.id,
-      matchup: `${event.awayAbbr} @ ${event.homeAbbr}`,
-      awayTeam: event.awayAbbr,
-      homeTeam: event.homeAbbr,
-      league: "NFL",
+      ...baseGame,
       crew,
     });
   }
