@@ -93,13 +93,16 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
     const kpi = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
     assert.match(card, /WorldCupKpiValue/);
-    assert.match(kpi, /text-3xl font-bold/);
-    assert.match(kpi, /text-2xl font-bold/);
+    assert.match(kpi, /text-6xl font-black/);
     assert.match(card, /wc-data-capsule/);
-    assert.match(card, /wc-data-capsule-pill/);
+    assert.match(card, /wc-data-capsule__pills/);
+    assert.match(card, /justify-around/);
+    assert.match(card, /wc-data-capsule--glow-/);
+    assert.match(card, /text-base font-normal text-slate-400/);
     assert.match(card, /border-slate-800/);
     assert.match(card, /wc-data-capsule--referee/);
     assert.match(card, /wc-data-capsule__footnote/);
+    assert.doesNotMatch(card, /refereeCapsule \? \(\s*<>\s*<span className=\{CAPSULE_PILL\}/);
   });
 
   it("World Cup DataCapsule surfaces are defined", () => {
@@ -110,7 +113,9 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /--wc-capsule-ink/);
     assert.match(css, /html\[data-color="light"\] .wc-data-capsule h3/);
     assert.match(css, /html\[data-color="dark"\] .wc-data-capsule h3/);
-    assert.match(css, /wc-data-capsule--referee h3/);
+    assert.match(css, /wc-data-capsule--glow-rose/);
+    assert.match(css, /wc-data-capsule--glow-emerald/);
+    assert.match(css, /wc-data-capsule__pills/);
     assert.doesNotMatch(css, /bfa86a/i);
     assert.doesNotMatch(css, /prestige/i);
   });

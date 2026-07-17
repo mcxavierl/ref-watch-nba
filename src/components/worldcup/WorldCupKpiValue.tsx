@@ -2,8 +2,8 @@ import type { FindingStat } from "@/lib/findings-shared";
 
 export type WcKpiTone = "negative" | "positive" | "neutral" | "name";
 
-const KPI_CLASS = "text-3xl font-bold tabular-nums leading-none tracking-tight";
-const RECORD_CLASS = "text-2xl font-bold tabular-nums leading-none tracking-tight";
+const KPI_CLASS = "text-6xl font-black tabular-nums leading-none tracking-tight text-slate-50";
+const RECORD_CLASS = "text-6xl font-black tabular-nums leading-none tracking-tight";
 
 export function worldCupKpiTone(stat: FindingStat): WcKpiTone {
   const label = stat.label.toLowerCase();
@@ -44,19 +44,6 @@ export function worldCupKpiTone(stat: FindingStat): WcKpiTone {
   return "neutral";
 }
 
-function toneClass(tone: WcKpiTone): string {
-  switch (tone) {
-    case "negative":
-      return "text-rose-400";
-    case "positive":
-      return "text-emerald-400";
-    case "name":
-      return "text-slate-50";
-    default:
-      return "text-slate-100";
-  }
-}
-
 /** Semantic KPI rendering with partial highlights for record and goals splits. */
 export function WorldCupKpiValue({ stat, tone }: { stat: FindingStat; tone: WcKpiTone }) {
   const label = stat.label.toLowerCase();
@@ -72,7 +59,7 @@ export function WorldCupKpiValue({ stat, tone }: { stat: FindingStat; tone: WcKp
       return (
         <span className={RECORD_CLASS}>
           <span className="text-emerald-400">{match[1]}</span>
-          <span className="text-slate-100">{match[2]}</span>
+          <span className="text-slate-50">{match[2]}</span>
         </span>
       );
     }
@@ -85,10 +72,10 @@ export function WorldCupKpiValue({ stat, tone }: { stat: FindingStat; tone: WcKp
     return (
       <span className={KPI_CLASS}>
         <span className="text-emerald-400">{forGoals}</span>
-        <span className="text-slate-100">{againstGoals}</span>
+        <span className="text-slate-50">{againstGoals}</span>
       </span>
     );
   }
 
-  return <span className={`${KPI_CLASS} ${toneClass(tone)}`}>{value}</span>;
+  return <span className={KPI_CLASS}>{value}</span>;
 }

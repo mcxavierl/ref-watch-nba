@@ -40,15 +40,42 @@
   margin-top: auto;
   padding-top: 0.75rem;
   border-top: 1px solid rgb(30 41 59);
-  font-size: 0.875rem;
-  line-height: 1.55;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
   color: rgb(148 163 184);
+  text-align: justify;
   text-wrap: pretty;
+  hyphens: auto;
 }
 
 .wc-data-capsule__footnote-label {
   font-weight: 500;
   color: rgb(100 116 139);
+}
+
+.wc-data-capsule__pills {
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(30 41 59);
+  background: rgb(2 6 23);
+}
+
+.wc-data-capsule--glow-rose .wc-data-capsule__pills {
+  box-shadow:
+    0 0 0 1px rgb(251 113 133 / 0.12),
+    0 8px 28px rgb(251 113 133 / 0.14);
+}
+
+.wc-data-capsule--glow-emerald .wc-data-capsule__pills {
+  box-shadow:
+    0 0 0 1px rgb(52 211 153 / 0.12),
+    0 8px 28px rgb(52 211 153 / 0.14);
+}
+
+.wc-data-capsule--referee header {
+  padding-bottom: 0.25rem;
 }
 
 /* Theme-safe ink on always-dark capsules */
@@ -129,16 +156,17 @@ html[data-color="dark"] .wc-data-capsule .text-slate-50 {
   display: inline-flex;
   max-width: 100%;
   align-items: center;
+  justify-content: center;
   white-space: nowrap;
   border-radius: 9999px;
   border: 1px solid rgb(51 65 85);
   background: rgb(30 41 59);
-  padding: 0.3rem 0.75rem;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgb(226 232 240);
+  color: rgb(203 213 225);
 }
 
 .wc-metric-grid {

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { describe, it } from "node:test";
+import { worldCupCardGlow } from "@/components/worldcup/worldcup-card-glow";
 import { worldCupKpiTone } from "@/components/worldcup/WorldCupKpiValue";
 
 function readSrc(rel: string): string {
@@ -39,17 +40,38 @@ describe("worldCupKpiTone", () => {
     );
   });
 
-  it("uses toned-down KPI scale for Clinical Modern scannability", () => {
+  it("uses authoritative text-6xl KPI scale", () => {
     const source = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
-    assert.match(source, /KPI_CLASS = "text-3xl font-bold/);
-    assert.match(source, /RECORD_CLASS = "text-2xl font-bold/);
-    assert.match(source, /text-slate-100/);
+    assert.match(source, /KPI_CLASS = "text-6xl font-black/);
+    assert.match(source, /RECORD_CLASS = "text-6xl font-black/);
+    assert.match(source, /text-slate-50/);
   });
 
   it("marks referee names as name tone", () => {
     assert.equal(
       worldCupKpiTone({ label: "Referee", value: "Slavko Vinčić" }),
       "name",
+    );
+  });
+});
+
+describe("worldCupCardGlow", () => {
+  it("maps analytics cards to rose or emerald glow tiers", () => {
+    assert.equal(
+      worldCupCardGlow({ id: "wc-final-ref-cards" } as never),
+      "rose",
+    );
+    assert.equal(
+      worldCupCardGlow({ id: "wc-final-spain-defense" } as never),
+      "rose",
+    );
+    assert.equal(
+      worldCupCardGlow({ id: "wc-final-argentina-comebacks" } as never),
+      "emerald",
+    );
+    assert.equal(
+      worldCupCardGlow({ id: "wc-final-referee" } as never),
+      "neutral",
     );
   });
 });

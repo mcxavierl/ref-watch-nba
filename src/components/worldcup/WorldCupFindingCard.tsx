@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { FindingExplainer } from "@/components/FindingNameWall";
+import { worldCupCardGlow } from "@/components/worldcup/worldcup-card-glow";
 import { WorldCupKpiValue, worldCupKpiTone } from "@/components/worldcup/WorldCupKpiValue";
 import { dedupeFindingStats } from "@/lib/finding-grouping";
 import { findingCardMetaParts } from "@/lib/finding-copy";
@@ -15,7 +16,7 @@ const WC_CAPSULE =
   "wc-data-capsule rounded-2xl border border-slate-800 bg-slate-950 p-5 font-[family-name:var(--font-inter)]";
 
 const CAPSULE_PILL =
-  "wc-data-capsule-pill inline-flex max-w-full items-center whitespace-nowrap";
+  "wc-data-capsule-pill inline-flex items-center whitespace-nowrap border border-slate-700 bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300";
 
 function isRefereeCapsule(finding: Finding): boolean {
   return finding.id === "wc-final-referee";
@@ -26,32 +27,32 @@ export function WorldCupFindingCard({ finding }: { finding: Finding }) {
   const tier = findingConfidenceTier(finding);
   const metaParts = findingCardMetaParts(finding.sampleNote, tier);
   const refereeCapsule = isRefereeCapsule(finding);
+  const glow = worldCupCardGlow(finding);
 
   return (
     <article
-      className={`${WC_CAPSULE}${refereeCapsule ? " wc-data-capsule--referee wc-data-capsule--span-full" : ""}`}
+      className={`${WC_CAPSULE}${refereeCapsule ? " wc-data-capsule--referee wc-data-capsule--span-full" : ""}${!refereeCapsule ? ` wc-data-capsule--glow-${glow}` : ""}`}
     >
-      <header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+      {!refereeCapsule ? (
+        <div className="wc-data-capsule__pills flex w-full justify-around gap-2">
+          <span className={CAPSULE_PILL} data-category={finding.category}>
+            <FindingCategoryPillLabel category={finding.category} />
+          </span>
+          <span className={CAPSULE_PILL}>{metaParts.sample}</span>
+          <span className={CAPSULE_PILL}>{metaParts.maturity}</span>
+        </div>
+      ) : null}
+
+      <header className={refereeCapsule ? "text-center" : undefined}>
         <h3
           className={
             refereeCapsule
-              ? "min-w-0 flex-1 text-base font-semibold leading-snug text-slate-50"
-              : "min-w-0 flex-1 text-sm font-medium leading-snug text-slate-400"
+              ? "mx-auto max-w-2xl text-base font-semibold leading-snug text-slate-50"
+              : "text-sm font-medium leading-snug text-slate-400"
           }
         >
           {finding.headline}
         </h3>
-        <div className="flex max-w-full shrink-0 flex-wrap items-center gap-1.5">
-          <span className={CAPSULE_PILL} data-category={finding.category}>
-            <FindingCategoryPillLabel category={finding.category} />
-          </span>
-          {!refereeCapsule ? (
-            <>
-              <span className={CAPSULE_PILL}>{metaParts.sample}</span>
-              <span className={CAPSULE_PILL}>{metaParts.maturity}</span>
-            </>
-          ) : null}
-        </div>
       </header>
 
       {displayStats.length > 0 ? (
@@ -79,13 +80,13 @@ export function WorldCupFindingCard({ finding }: { finding: Finding }) {
         <div className="wc-data-capsule__body" />
       )}
 
-      <p className="wc-data-capsule__footnote text-sm text-slate-400">
+      <p className="wc-data-capsule__footnote text-base font-normal text-slate-400">
         <span className="wc-data-capsule__footnote-label">Why it matters: </span>
         <FindingExplainer text={resolveFindingExplainer(finding.explainer)} />
       </p>
 
       {finding.links.length > 0 ? (
-        <footer className="flex flex-wrap gap-3">
+        <footer className="flex flex-wrap justify-center gap-3">
           {finding.links.map((link) => (
             <Link
               key={link.href}
