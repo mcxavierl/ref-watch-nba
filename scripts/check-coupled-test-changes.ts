@@ -48,7 +48,8 @@ function gitLines(args: string): string[] {
 }
 
 function changedFiles(): Set<string> {
-  const fromMergeBase = gitLines("diff --name-only origin/main...HEAD");
+  const base = process.env.GITHUB_BASE_SHA ?? "origin/main";
+  const fromMergeBase = gitLines(`diff --name-only ${base}...HEAD`);
   if (fromMergeBase.length > 0) return new Set(fromMergeBase);
 
   const staged = gitLines("diff --name-only --cached");
