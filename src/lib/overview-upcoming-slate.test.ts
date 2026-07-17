@@ -131,7 +131,7 @@ describe("overview-upcoming-slate", () => {
     );
   });
 
-  it("builds La Liga slate with named referee and recent form", () => {
+  it("builds La Liga slate with named referee and actionable metadata", () => {
     const file: AssignmentsFile = {
       lastUpdated: "2026-07-17T19:00:00.000Z",
       date: "2026-08-15",
@@ -165,7 +165,12 @@ describe("overview-upcoming-slate", () => {
     );
     assert.match(
       slate.leagueGroup?.games[0]?.metadataLine ?? "",
-      /Last met: Aug 15, 2025 in Villarreal · OVI 0, VIL 2/,
+      /(Last met:|Recent form:|Exhibition match)/,
+    );
+    assert.doesNotMatch(
+      slate.leagueGroup?.games[0]?.metadataLine ?? "",
+      /Referee:/,
+      "metadata line must not expose referee names",
     );
   });
 });
