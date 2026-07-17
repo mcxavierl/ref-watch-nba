@@ -207,13 +207,14 @@ describe("Clinical Modern priority #11 surfaces", () => {
 
   it("homepage contrast fixes keep muted copy readable", () => {
     const overviewCss = readSrc("src/components/overview-dashboard.css");
+    const quicklistsCss = readSrc("src/components/overview-quicklists.css");
     const insightCss = readSrc("src/components/insight-card.css");
     assert.match(overviewCss, /Homepage contrast/);
     assert.match(overviewCss, /overview-slate-row/);
     assert.match(overviewCss, /overview-league-chooser-card\[data-league="nfl"\]/);
     assert.match(overviewCss, /overview-section--secondary .overview-section-lead/);
-    assert.match(overviewCss, /overview-quicklists-step-label/);
-    assert.match(overviewCss, /overview-quicklists-context/);
+    assert.match(quicklistsCss, /overview-quicklists-step-label/);
+    assert.match(quicklistsCss, /overview-quicklists-context/);
     assert.match(overviewCss, /Explore bento: equal-height catalog \+ analytics columns/);
     assert.match(overviewCss, /overview-secondary-tabs/);
     assert.match(insightCss, /insight-editorial-kicker/);

@@ -21,6 +21,42 @@ describe("design audit guardrails", () => {
     assert.doesNotMatch(about, /text-slate-/);
     assert.doesNotMatch(about, /\bmt-\d+/);
     assert.match(about, /clinical-doc-section/);
+    assert.match(about, /clinical-doc-shell/);
+  });
+
+  it("doc pages use unified clinical-doc-shell", () => {
+    for (const file of [
+      "src/app/about/page.tsx",
+      "src/app/methodology/page.tsx",
+      "src/app/research/validation/page.tsx",
+    ]) {
+      const page = readSrc(file);
+      assert.match(page, /clinical-doc-shell/);
+      assert.doesNotMatch(page, /methodology-shell overview-shell--clinical/);
+    }
+  });
+
+  it("quicklists styles live in overview-quicklists.css", () => {
+    const quicklists = readSrc("src/components/overview-quicklists.css");
+    const dashboard = readSrc("src/components/overview-dashboard.css");
+    const globals = readSrc("src/app/globals.css");
+    assert.match(quicklists, /\.overview-quicklists-segmented/);
+    assert.match(dashboard, /overview-quicklists\.css/);
+    assert.doesNotMatch(globals, /\.overview-quicklists-segmented/);
+  });
+
+  it("validation table rows expose mobile data-label attributes", () => {
+    const content = readSrc("src/components/ValidationReportContent.tsx");
+    assert.match(content, /data-label="Bucket"/);
+    const css = readSrc("src/components/validation-report.css");
+    assert.match(css, /attr\(data-label\)/);
+  });
+
+  it("league hub upcoming slate uses UpcomingGameCard grid", () => {
+    const hub = readSrc("src/components/LeagueHubUpcomingSlateSection.tsx");
+    assert.match(hub, /UpcomingGameCard/);
+    assert.match(hub, /upcoming-games-grid/);
+    assert.doesNotMatch(hub, /LeagueSlateGamesList/);
   });
 
   it("uses theme-aware tokens on validation and CCI surfaces", () => {
