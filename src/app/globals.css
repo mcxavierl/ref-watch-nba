@@ -7458,8 +7458,10 @@ p {
   }
 
   .refs-directory-row--top .refs-directory-row-link {
-    background: rgb(16 185 129 / 0.1);
-    box-shadow: inset 0 0 0 1px rgb(16 185 129 / 0.12);
+    background: color-mix(in srgb, rgb(16 185 129) 16%, #0f172a);
+    box-shadow:
+      inset 3px 0 0 rgb(16 185 129 / 0.82),
+      inset 0 0 0 1px rgb(16 185 129 / 0.24);
   }
 
   .refs-directory-row--middle .refs-directory-row-link {
@@ -7467,8 +7469,20 @@ p {
   }
 
   .refs-directory-row--bottom .refs-directory-row-link {
-    background: rgb(244 63 94 / 0.1);
-    box-shadow: inset 0 0 0 1px rgb(244 63 94 / 0.12);
+    background: color-mix(in srgb, rgb(244 63 94) 16%, #0f172a);
+    box-shadow:
+      inset 3px 0 0 rgb(244 63 94 / 0.82),
+      inset 0 0 0 1px rgb(244 63 94 / 0.24);
+  }
+
+  .refs-directory-row--bottom-resume {
+    margin-top: 0.35rem;
+    border-top: 1px dashed color-mix(in srgb, #64748b 45%, #1e293b);
+  }
+
+  .refs-directory-row--bottom-resume .refs-directory-row-link {
+    border-top-left-radius: 0.35rem;
+    border-top-right-radius: 0.35rem;
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .refs-directory-row:nth-child(even) .refs-directory-row-link {
@@ -7480,11 +7494,21 @@ p {
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .refs-directory-row--top .refs-directory-row-link {
-    background: rgb(16 185 129 / 0.08);
+    background: color-mix(in srgb, rgb(16 185 129) 12%, #ffffff);
+    box-shadow:
+      inset 3px 0 0 rgb(5 150 105 / 0.72),
+      inset 0 0 0 1px rgb(16 185 129 / 0.2);
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .refs-directory-row--bottom .refs-directory-row-link {
-    background: rgb(244 63 94 / 0.08);
+    background: color-mix(in srgb, rgb(244 63 94) 12%, #ffffff);
+    box-shadow:
+      inset 3px 0 0 rgb(225 29 72 / 0.72),
+      inset 0 0 0 1px rgb(244 63 94 / 0.2);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .refs-directory-row--bottom-resume {
+    border-top-color: color-mix(in srgb, #94a3b8 55%, #e2e8f0);
   }
 
   .refs-directory-row:last-child {
@@ -7497,6 +7521,14 @@ p {
 
   .refs-directory-row-link:hover {
     background: color-mix(in srgb, var(--header-sapphire) 5%, var(--surface-raised));
+  }
+
+  .refs-directory-row--top .refs-directory-row-link:hover {
+    background: color-mix(in srgb, rgb(16 185 129) 22%, #0f172a);
+  }
+
+  .refs-directory-row--bottom .refs-directory-row-link:hover {
+    background: color-mix(in srgb, rgb(244 63 94) 22%, #0f172a);
   }
 
   .refs-directory-over-gauge {
