@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   buildGsniHomeFindings,
+  formatGsniHomeDelta,
   GSNI_HOME_MIN_SAMPLE_GAMES,
 } from "./gsni-home-findings";
 import type { RefStatsFile } from "@/lib/types";
@@ -67,5 +68,20 @@ describe("buildGsniHomeFindings", () => {
     const findings = buildGsniHomeFindings(stats);
     assert.equal(findings[0]?.refSlug, "quiet-large");
     assert.equal(findings[1]?.refSlug, "heavy-large");
+  });
+
+  it("includes plain-language copy and stat graphics metadata", () => {
+    const finding = buildGsniHomeFindings(stats)[0];
+    assert.ok(finding?.plainTitle.includes("Quiet Large"));
+    assert.match(finding?.plainSummary ?? "", /close, late-game/i);
+    assert.equal(finding?.stats.length, 2);
+    assert.equal(finding?.vsNeutralLabel, "50 pts quieter than league avg");
+  });
+});
+
+describe("formatGsniHomeDelta", () => {
+  it("formats delta from neutral", () => {
+    assert.equal(formatGsniHomeDelta(50), "+50 vs 50 avg");
+    assert.equal(formatGsniHomeDelta(-50), "-50 vs 50 avg");
   });
 });
