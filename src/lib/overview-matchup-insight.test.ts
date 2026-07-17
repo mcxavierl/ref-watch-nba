@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { clearRuntimeGameLogsModuleCache } from "@/lib/game-logs";
-import { buildOverviewLastMeetingLine, buildOverviewMatchupInsight } from "@/lib/overview-matchup-insight";
+import {
+  buildOverviewLastMeetingLine,
+  buildOverviewMatchupInsight,
+  buildOverviewTeamRecentContextLine,
+} from "@/lib/overview-matchup-insight";
 import type { RuntimeGameLogEntry, RuntimeGameLogFile } from "@/lib/game-logs-preload";
 import { setCachedGameLogs } from "@/lib/game-logs-preload";
 import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
@@ -107,5 +111,17 @@ describe("overview-matchup-insight", () => {
 
     const line = buildOverviewLastMeetingLine("nfl", "LAC", "DET");
     assert.equal(line, "Last met Nov 1, 2024 in Detroit · SD 26, DET 24");
+  });
+
+  it("builds recent-form context for soccer teams without head-to-head history", () => {
+    const line = buildOverviewTeamRecentContextLine("epl", "COV", "ARS");
+    assert.match(line ?? "", /^Recent form: COV: no recent EPL log on file · ARS beat CRY 2-1 away/);
+    assert.match(line ?? "", /May 24, 2026/);
+  });
+
+  it("builds recent-form context for La Liga openers", () => {
+    const line = buildOverviewTeamRecentContextLine("laliga", "OVI", "VIL");
+    assert.match(line ?? "", /^Recent form: OVI lost to MLL 3-0 away/);
+    assert.match(line ?? "", /VIL beat ATM 5-1 at home/);
   });
 });

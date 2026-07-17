@@ -3,8 +3,12 @@ import * as path from "node:path";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import { buildSeasonStageNote } from "@/lib/assignment-season-stage";
-import { buildOverviewLastMeetingLine, buildOverviewMatchupInsight } from "@/lib/overview-matchup-insight";
-import type { AssignmentsFile } from "@/lib/types";
+import {
+  buildOverviewLastMeetingLine,
+  buildOverviewMatchupInsight,
+  buildOverviewTeamRecentContextLine,
+} from "@/lib/overview-matchup-insight";
+import type { AssignmentsFile, RefOfficial } from "@/lib/types";
 
 export type {
   OverviewLeagueNote,
@@ -121,6 +125,35 @@ function assignmentsPath(leagueId: LeagueId): string {
   return path.join(root, "data", leagueId, "assignments.json");
 }
 
+function buildOverviewOfficialsLine(
+  leagueId: LeagueId,
+  crew: RefOfficial[],
+  status: OverviewSlateStatus,
+): string {
+  const soccerLeague = leagueId === "epl" || leagueId === "laliga";
+  if (crew.length === 0) {
+    return soccerLeague ? "Officials TBD" : "Crews TBD";
+  }
+
+  const headRef =
+    crew.find((official) => official.role === "referee")?.name ?? crew[0]?.name;
+  if (soccerLeague) {
+    return headRef ? `Referee: ${headRef}` : "Officials assigned";
+  }
+
+  if (status === "scheduled") {
+    return "Crews TBD";
+  }
+
+  if (headRef) {
+    return crew.length > 1
+      ? `Head ref ${headRef} · ${crew.length}-person crew`
+      : `Head ref ${headRef}`;
+  }
+
+  return `${crew.length}-person crew`;
+}
+
 function pushEntry(
   games: OverviewSlateEntry[],
   leagueId: LeagueId,
@@ -131,6 +164,11 @@ function pushEntry(
   const league = LEAGUES[leagueId];
   const headRef =
     game.crew.find((o) => o.role === "referee")?.name ?? game.crew[0]?.name;
+  const teamContextLine = buildOverviewTeamRecentContextLine(
+    leagueId,
+    game.awayTeam,
+    game.homeTeam,
+  );
   games.push({
     leagueId,
     leagueLabel: league.label,
@@ -146,6 +184,8 @@ function pushEntry(
     slateDate: file.date,
     matchupInsight: buildOverviewMatchupInsight(leagueId, game.awayTeam, game.homeTeam),
     lastMeetingLine: buildOverviewLastMeetingLine(leagueId, game.awayTeam, game.homeTeam),
+    teamContextLine,
+    officialsLine: buildOverviewOfficialsLine(leagueId, game.crew, status),
     seasonStageNote: buildSeasonStageNote(leagueId, game, file.date),
   });
 }
