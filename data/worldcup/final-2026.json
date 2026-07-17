@@ -1,0 +1,115 @@
+{
+  "generatedAt": "2026-07-17T00:00:00.000Z",
+  "source": "FIFA match officials announcement (July 16, 2026) and tournament match reports",
+  "note": "Curated World Cup 2026 final preview. Referee card counts from FIFA full-time reports where available.",
+  "match": {
+    "id": "wc2026-final",
+    "date": "2026-07-19",
+    "kickoffLocal": "15:00",
+    "timezoneLabel": "ET",
+    "venue": "MetLife Stadium",
+    "venueDisplay": "New York/New Jersey Stadium",
+    "venueCity": "East Rutherford, New Jersey",
+    "awayTeam": {
+      "code": "ARG",
+      "name": "Argentina",
+      "confederation": "CONMEBOL",
+      "rank": 1
+    },
+    "homeTeam": {
+      "code": "ESP",
+      "name": "Spain",
+      "confederation": "UEFA",
+      "rank": 2
+    },
+    "stage": "Final",
+    "matchNumber": 104,
+    "fifaMatchUrl": "https://www.fifa.com/en/match-centre/match/17/285023/289292/400021543"
+  },
+  "officials": {
+    "referee": {
+      "name": "Slavko Vinčić",
+      "country": "Slovenia",
+      "countryCode": "SVN"
+    },
+    "assistantReferees": [
+      { "name": "Tomaž Klančnik", "country": "Slovenia", "role": "assistant 1" },
+      { "name": "Andraž Kovačič", "country": "Slovenia", "role": "assistant 2" }
+    ],
+    "fourthOfficial": { "name": "Adham Makhadmeh", "country": "Jordan" },
+    "reserveAssistant": { "name": "Mohammad Al-Kalaf", "country": "Jordan" },
+    "videoAssistantReferee": { "name": "Bastian Dankert", "country": "Germany" },
+    "assistantVar": { "name": "Nicolás Gallo", "country": "Colombia" }
+  },
+  "refereeProfile": {
+    "fifaListedSince": 2010,
+    "majorFinals": [
+      "2022 UEFA Europa League final",
+      "2024 UEFA Champions League final"
+    ],
+    "tournamentAssignments": [
+      {
+        "stage": "Group",
+        "matchup": "Brazil vs Morocco",
+        "date": "2026-06-13",
+        "yellowCards": 2,
+        "redCards": 0,
+        "fouls": 30
+      },
+      {
+        "stage": "Group",
+        "matchup": "Jordan vs Algeria",
+        "date": "2026-06-18"
+      },
+      {
+        "stage": "Round of 32",
+        "matchup": "Mexico vs Ecuador",
+        "date": "2026-07-01",
+        "yellowCards": 4,
+        "redCards": 1,
+        "fouls": 28,
+        "note": "Straight red to Piero Hincapie after VAR review"
+      }
+    ],
+    "priorWorldCupWithArgentina": {
+      "matchup": "Argentina vs Saudi Arabia",
+      "tournament": "2022",
+      "result": "Argentina 1-2 Saudi Arabia",
+      "yellowCards": 6
+    }
+  },
+  "teamPaths": {
+    "ARG": {
+      "played": 7,
+      "wins": 7,
+      "draws": 0,
+      "losses": 0,
+      "goalsFor": 22,
+      "goalsAgainst": 9,
+      "comebackWins": 3,
+      "extraTimeWins": 2,
+      "note": "Defending champion; three knockout comebacks"
+    },
+    "ESP": {
+      "played": 7,
+      "wins": 6,
+      "draws": 1,
+      "losses": 0,
+      "goalsFor": 14,
+      "goalsAgainst": 2,
+      "cleanSheets": 5,
+      "note": "First World Cup final since 2010; five clean sheets"
+    }
+  },
+  "headToHead": {
+    "meetings": 14,
+    "argentinaWins": 6,
+    "spainWins": 6,
+    "draws": 2,
+    "lastMeeting": "Spain 6-1 Argentina (friendly, March 2018)"
+  },
+  "tournamentContext": {
+    "headline": "Reigning continental champions meet in the final",
+    "detail": "Argentina (#1) and Spain (#2) are the top two teams in the June FIFA rankings. Spain seeks a second title; Argentina aims to repeat as champion for the first time since Brazil in 1962."
+  }
+}
