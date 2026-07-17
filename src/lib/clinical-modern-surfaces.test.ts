@@ -130,10 +130,13 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const css = readSrc("src/components/overview-clinical-modern.css");
     const page = readSrc("src/app/page.tsx");
     const slate = readSrc("src/components/OverviewLeagueSlateGroup.tsx");
+    const row = readSrc("src/components/OverviewSlateRow.tsx");
     assert.match(page, /overview-shell--clinical/);
     assert.match(css, /overview-slate-capsule/);
     assert.match(css, /overview-slate-row-inner/);
     assert.match(slate, /overview-slate-capsule-header/);
+    assert.match(slate, /showHubLink=\{false\}/);
+    assert.match(row, /size="lg"/);
   });
 
   it("editorial insight cards pair league badge with season start", () => {

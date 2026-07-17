@@ -36,7 +36,11 @@ export function OverviewLeagueSlateGroup({ group }: OverviewLeagueSlateGroupProp
         </Link>
       </header>
       <ul className="overview-slate-list">
-        <LeagueSlateGamesList games={group.games} leagueShortLabel={group.leagueShortLabel} />
+        <LeagueSlateGamesList
+          games={group.games}
+          leagueShortLabel={group.leagueShortLabel}
+          showHubLink={false}
+        />
       </ul>
     </section>
   );

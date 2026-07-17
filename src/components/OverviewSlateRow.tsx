@@ -64,11 +64,11 @@ export function OverviewSlateRow({
           className="overview-slate-row-matchup"
           aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
         >
-          <TeamLogo team={awayTeam} sport={teamLogoSport(game.leagueId)} size="sm" />
+          <TeamLogo team={awayTeam} sport={teamLogoSport(game.leagueId)} size="lg" />
           <span className="overview-slate-row-at" aria-hidden>
             @
           </span>
-          <TeamLogo team={homeTeam} sport={teamLogoSport(game.leagueId)} size="sm" />
+          <TeamLogo team={homeTeam} sport={teamLogoSport(game.leagueId)} size="lg" />
           <span className="overview-slate-row-names">
             {awayTeam.abbr} @ {homeTeam.abbr}
           </span>
