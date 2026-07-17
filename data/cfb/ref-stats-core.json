@@ -1,1 +1,31 @@
-{"meta":{"lastUpdated":"2026-07-16T23:51:43.306Z","seasons":["2020-21","2021-22","2022-23","2023-24","2024-25","2025-26"],"leagueAvgTotal":52,"leagueAvgFouls":10,"leagueOverBaseline":52,"leagueAvgPenaltyYards":60,"minSampleSize":30,"source":"espn","data_verified":true,"data_source":"ESPN","atsAvailable":false,"refCount":0,"totalGamesProcessed":1426,"dateRange":{"earliest":"2020-09-08","latest":"2026-01-20"},"note":"Scores and penalties from ESPN (1426 live-conference games, 0 with officials). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Official crews unavailable from ESPN CFB summaries - ref×team matrix pending officials source. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs. Ref game counts rebuilt from DISTINCT game_id in game logs."},"refs":[],"teamSplits":{}}
+{
+  "meta": {
+    "lastUpdated": "2026-07-17T07:37:07.014Z",
+    "seasons": [
+      "2020-21",
+      "2021-22",
+      "2022-23",
+      "2023-24",
+      "2024-25",
+      "2025-26"
+    ],
+    "leagueAvgTotal": 52,
+    "leagueAvgFouls": 10,
+    "leagueOverBaseline": 52,
+    "leagueAvgPenaltyYards": 60,
+    "minSampleSize": 30,
+    "source": "espn",
+    "data_verified": true,
+    "data_source": "ESPN",
+    "atsAvailable": false,
+    "refCount": 0,
+    "totalGamesProcessed": 1426,
+    "dateRange": {
+      "earliest": "2020-09-08",
+      "latest": "2026-01-20"
+    },
+    "note": "Scores and penalties from ESPN (1426 live-conference games, 0 with officials). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Official crews unavailable from ESPN CFB summaries - ref×team matrix pending officials source."
+  },
+  "refs": [],
+  "teamSplits": {}
+}
