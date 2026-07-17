@@ -33,6 +33,10 @@ export function computeRefTeamMatrix(
 ): RefTeamMatrix {
   const league = matrixOptions.league ?? "nba";
   const sinceSeason = matrixOptions.sinceSeason ?? DEFAULT_SINCE_SEASON;
+  const atsBaselineGames = Object.values(stats.teamAtsBaselines ?? {}).reduce(
+    (sum, record) => sum + (record.atsGames ?? 0),
+    0,
+  );
   const cacheKey = [
     league,
     sinceSeason,
@@ -48,6 +52,7 @@ export function computeRefTeamMatrix(
       .join(","),
     stats.meta.lastUpdated,
     stats.refs.reduce((sum, ref) => sum + ref.games, 0),
+    atsBaselineGames,
   ].join("|");
   const cached = matrixComputeCache().get(cacheKey) as RefTeamMatrix | undefined;
   if (cached) return cached;
