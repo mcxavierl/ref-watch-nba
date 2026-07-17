@@ -11,6 +11,13 @@ import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 export const GSNI_HOME_FINDING_LIMIT = 3;
 export const GSNI_HOME_MIN_SAMPLE_GAMES = 200;
+export const GSNI_NEUTRAL_SCORE = 50;
+
+export type GsniHomeFindingStat = {
+  label: string;
+  value: string;
+  barPct: number;
+};
 
 export type GsniHomeFinding = {
   refSlug: string;
@@ -20,20 +27,64 @@ export type GsniHomeFinding = {
   caption: string;
   sampleGames: number;
   highLeverageMinutes: number;
-  headline: string;
-  detail: string;
+  vsNeutralDelta: number;
+  vsNeutralLabel: string;
+  plainTitle: string;
+  plainSummary: string;
+  stats: GsniHomeFindingStat[];
   href: string;
 };
 
-function findingHeadline(refName: string, gsni: number, band: GsniBand): string {
-  const score = formatGsni(gsni);
-  if (band === "quiet") {
-    return `${refName} runs state-quiet in clutch minutes (GSNI ${score})`;
-  }
-  return `${refName} runs state-heavy in clutch minutes (GSNI ${score})`;
+function plainTitle(refName: string, band: GsniBand): string {
+  if (band === "quiet") return `${refName} goes quiet when it matters`;
+  return `${refName} whistles more when it matters`;
 }
 
-function toFinding(ref: RefProfile): GsniHomeFinding {
+function plainSummary(band: GsniBand): string {
+  if (band === "quiet") {
+    return "In close, late-game moments, this crew calls fewer fouls than peers in the same situation.";
+  }
+  return "In close, late-game moments, this crew calls more fouls than peers in the same situation.";
+}
+
+function vsNeutralLabel(gsni: number): string {
+  const delta = gsni - GSNI_NEUTRAL_SCORE;
+  const magnitude = Math.abs(Math.round(delta));
+  if (delta > 0) return `${magnitude} pts quieter than league avg`;
+  if (delta < 0) return `${magnitude} pts heavier than league avg`;
+  return "Matches league average";
+}
+
+function sampleBarPct(value: number, max: number): number {
+  if (max <= 0) return 0;
+  return Math.max(8, Math.min(100, Math.round((value / max) * 100)));
+}
+
+function buildStats(
+  sampleGames: number,
+  highLeverageMinutes: number,
+  maxGames: number,
+  maxMinutes: number,
+): GsniHomeFindingStat[] {
+  return [
+    {
+      label: "Games tracked",
+      value: String(sampleGames),
+      barPct: sampleBarPct(sampleGames, maxGames),
+    },
+    {
+      label: "Clutch minutes",
+      value: `${Math.round(highLeverageMinutes)} min`,
+      barPct: sampleBarPct(highLeverageMinutes, maxMinutes),
+    },
+  ];
+}
+
+function toFinding(
+  ref: RefProfile,
+  maxGames: number,
+  maxMinutes: number,
+): GsniHomeFinding {
   const gsni = ref.referee_gsni!;
   const band = gsniBand(gsni);
   const sampleGames = ref.gsniSampleGames ?? ref.games;
@@ -47,8 +98,11 @@ function toFinding(ref: RefProfile): GsniHomeFinding {
     caption: gsniCaption(gsni),
     sampleGames,
     highLeverageMinutes,
-    headline: findingHeadline(ref.name, gsni, band),
-    detail: `${sampleGames}-game sample · ${highLeverageMinutes.toFixed(0)} high-leverage min`,
+    vsNeutralDelta: gsni - GSNI_NEUTRAL_SCORE,
+    vsNeutralLabel: vsNeutralLabel(gsni),
+    plainTitle: plainTitle(ref.name, band),
+    plainSummary: plainSummary(band),
+    stats: buildStats(sampleGames, highLeverageMinutes, maxGames, maxMinutes),
     href: `/nfl/refs/${ref.slug}`,
   };
 }
@@ -89,7 +143,17 @@ export function buildGsniHomeFindings(
     if (!picked.some((row) => row.slug === ref.slug)) picked.push(ref);
   }
 
-  return picked.slice(0, limit).map(toFinding);
+  const selected = picked.slice(0, limit);
+  const maxGames = Math.max(
+    ...selected.map((ref) => ref.gsniSampleGames ?? ref.games),
+    1,
+  );
+  const maxMinutes = Math.max(
+    ...selected.map((ref) => ref.gsniHighLeverageMinutes ?? 0),
+    1,
+  );
+
+  return selected.map((ref) => toFinding(ref, maxGames, maxMinutes));
 }
 
 export function loadGsniHomeFindings(
@@ -97,4 +161,11 @@ export function loadGsniHomeFindings(
 ): GsniHomeFinding[] {
   const { stats } = loadLeagueStats("nfl");
   return buildGsniHomeFindings(stats, limit);
+}
+
+export function formatGsniHomeDelta(delta: number): string {
+  const rounded = Math.round(delta);
+  const sign = rounded > 0 ? "+" : rounded < 0 ? "-" : "";
+  const magnitude = Math.abs(rounded);
+  return `${sign}${magnitude} vs 50 avg`;
 }

@@ -184,11 +184,17 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const dashboard = readSrc("src/components/OverviewDashboard.tsx");
     const css = readSrc("src/components/overview-clinical-modern.css");
     const findings = readSrc("src/lib/gsni-home-findings.ts");
+    const component = readSrc("src/components/GameStateIndexFindings.tsx");
     assert.match(dashboard, /GameStateIndexFindings/);
     assert.match(dashboard, /ResearchHighlightBanner[\s\S]*GameStateIndexFindings/);
     assert.match(findings, /buildGsniHomeFindings/);
     assert.match(findings, /GSNI_HOME_MIN_SAMPLE_GAMES = 200/);
+    assert.match(findings, /plainSummary/);
+    assert.match(component, /GsniGauge/);
+    assert.match(component, /RESEARCH_HIGHLIGHT\.href/);
+    assert.match(component, /gsni-home-finding__scale/);
     assert.match(css, /\.gsni-home-findings/);
+    assert.match(css, /\.gsni-home-finding__stat-bar/);
   });
 
   it("live league date badges use high-contrast blue tokens", () => {
