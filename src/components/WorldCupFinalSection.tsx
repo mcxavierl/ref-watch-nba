@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Trophy } from "lucide-react";
 import { FindingCard } from "@/components/FindingsSection";
+import { MatchStatusPill } from "@/components/hub/MatchStatusPill";
 import {
   computeWorldCupFinalFindings,
   resolveWorldCupFinal,
@@ -44,7 +45,7 @@ export function WorldCupFinalSection() {
               </h2>
             </div>
           </div>
-          <span className="overview-research-hub-card-badge">{match.stage}</span>
+          <MatchStatusPill label={match.stage} />
         </div>
 
         <p className="overview-research-hub-card-story">

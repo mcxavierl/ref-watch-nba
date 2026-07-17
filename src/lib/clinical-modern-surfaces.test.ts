@@ -74,6 +74,21 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /Based on .* shared games/);
   });
 
+  it("WorldCupFinalSection uses Clinical Modern MatchStatusPill", () => {
+    const source = readSrc("src/components/WorldCupFinalSection.tsx");
+    assert.match(source, /MatchStatusPill/);
+    assert.doesNotMatch(source, /overview-research-hub-card-badge/);
+  });
+
+  it("MatchStatusPill uses cool slate clinical styling", () => {
+    const source = readSrc("src/components/hub/MatchStatusPill.tsx");
+    assert.match(source, /bg-slate-700/);
+    assert.match(source, /text-slate-50/);
+    assert.match(source, /font-semibold/);
+    assert.match(source, /tracking-wider/);
+    assert.match(source, /h-\[2\.35rem\]/);
+  });
+
   it("pill glow tokens are centralized in kpi-data-pill.css", () => {
     const css = readSrc("src/styles/kpi-data-pill.css");
     assert.match(css, /--pill-glow-accent/);
