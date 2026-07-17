@@ -12,11 +12,11 @@ type OverviewSecondaryTabsProps = {
 };
 
 export function OverviewSecondaryTabs({ data }: OverviewSecondaryTabsProps) {
-  const [activeTab, setActiveTab] = useState<TabId>("pace");
+  const [activeTab, setActiveTab] = useState<TabId>("lists");
 
   const tabs: { id: TabId; label: string }[] = [
-    { id: "pace", label: "Pace scorecard" },
     { id: "lists", label: "Quick lists" },
+    { id: "pace", label: "Pace scorecard" },
   ];
 
   return (
@@ -29,7 +29,7 @@ export function OverviewSecondaryTabs({ data }: OverviewSecondaryTabsProps) {
           More from the dashboard
         </h2>
         <p className="overview-section-lead">
-          Cross-league pace and ranked shortcuts - open when you need them.
+          Ranked shortcuts and cross-league pace - open when you need them.
         </p>
       </div>
 
