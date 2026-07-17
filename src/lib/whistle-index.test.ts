@@ -7,6 +7,7 @@ import {
   whistleIndexBand,
   whistleIndexFromCrewMetrics,
   whistleIndexFromInsightCard,
+  whistleIndexVisualTone,
 } from "@/lib/whistle-index";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 
@@ -54,5 +55,13 @@ describe("whistle index", () => {
       links: [],
     };
     assert.ok((whistleIndexFromInsightCard(card) ?? 0) > 70);
+  });
+
+  it("maps visual tone around the league-average band", () => {
+    assert.equal(whistleIndexVisualTone(54), "neutral");
+    assert.equal(whistleIndexVisualTone(45), "neutral");
+    assert.equal(whistleIndexVisualTone(55), "neutral");
+    assert.equal(whistleIndexVisualTone(30), "low");
+    assert.equal(whistleIndexVisualTone(72), "high");
   });
 });

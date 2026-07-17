@@ -16,6 +16,15 @@ export const WHISTLE_INDEX_LOW_THRESHOLD = 20;
 
 export type WhistleIndexBand = "low" | "neutral" | "high";
 
+/** Visual band for gauge coloring: 45–55 stays neutral (near league average). */
+export type WhistleIndexVisualTone = "neutral" | "low" | "high";
+
+export function whistleIndexVisualTone(index: number): WhistleIndexVisualTone {
+  const clamped = Math.max(0, Math.min(100, Math.round(index)));
+  if (clamped >= 45 && clamped <= 55) return "neutral";
+  return clamped < 50 ? "low" : "high";
+}
+
 export function isExtremeWhistleIndex(index: number): boolean {
   return index >= WHISTLE_INDEX_HIGH_THRESHOLD || index <= WHISTLE_INDEX_LOW_THRESHOLD;
 }
