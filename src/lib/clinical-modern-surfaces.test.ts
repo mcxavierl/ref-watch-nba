@@ -74,38 +74,33 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /Based on .* shared games/);
   });
 
-  it("WorldCupFinalSection uses Clinical Modern shell and prestige pill", () => {
+  it("WorldCupFinalSection uses authority match capsule", () => {
     const source = readSrc("src/components/WorldCupFinalSection.tsx");
     assert.match(source, /MatchStatusPill/);
     assert.match(source, /tone="prestige"/);
     assert.match(source, /WorldCupFindingCard/);
-    assert.match(source, /wc-match-title/);
-    assert.match(source, /OfficialName/);
-    assert.match(source, /worldCupCountryFlag/);
+    assert.match(source, /text-5xl font-extrabold tracking-tighter/);
+    assert.match(source, /wc-flag-avatar/);
+    assert.match(source, /text-xs text-slate-600/);
     assert.doesNotMatch(source, /overview-research-hub-card/);
     assert.doesNotMatch(source, /from "@\/components\/FindingsSection"/);
   });
 
-  it("WorldCupFindingCard uses clinical KPI semantics", () => {
-    const source = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
-    assert.match(source, /bg-slate-950/);
-    assert.match(source, /border-slate-800/);
-    assert.match(source, /rounded-2xl/);
-    assert.match(source, /StandoutMetricValue/);
-    assert.match(source, /wc-finding-card/);
-    assert.match(source, /wc-metric-cell/);
-    assert.match(source, /text-slate-100/);
-    assert.match(source, /font-normal text-slate-400/);
-    assert.match(source, /tabular-nums/);
-    assert.match(source, /findingCardMetaParts/);
-    assert.match(source, /whitespace-nowrap/);
+  it("WorldCupFindingCard uses authority KPI scale and semantic tones", () => {
+    const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
+    const kpi = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
+    assert.match(card, /WorldCupKpiValue/);
+    assert.match(kpi, /text-7xl font-black/);
+    assert.match(card, /bg-slate-800/);
+    assert.match(card, /text-slate-300/);
+    assert.match(card, /border-slate-800/);
+    assert.match(card, /wc-authority-capsule--referee/);
   });
 
   it("World Cup editorial delight surfaces are defined", () => {
     const css = readSrc("src/components/worldcup/worldcup-delight.css");
-    assert.match(css, /wc-editorial-header-card/);
-    assert.match(css, /wc-finding-card/);
-    assert.match(css, /wc-metric-cell--positive/);
+    assert.match(css, /wc-authority-capsule/);
+    assert.match(css, /wc-flag-avatar/);
     assert.match(css, /match-status-pill--prestige/);
   });
 
