@@ -181,17 +181,13 @@ describe("ref-team matrix team panels", () => {
       MATRIX_MIN_GAMES,
       { league: "epl" },
     );
-    const baselineWinRate = baselineProbe.teams[0]!.baselineWinRate;
+    const bottomProbe = bottomRefsBelowBaselineForTeam(baselineProbe, "ARS");
+    assert.ok(bottomProbe.length > 0, "fixture needs ARS refs below baseline");
 
-    const refWithArs = eplCore.refs.find((r) => {
-      const stat = r.teamStats?.ARS;
-      return (
-        stat &&
-        stat.games >= MATRIX_MIN_GAMES &&
-        stat.winRate < baselineWinRate
-      );
-    });
-    assert.ok(refWithArs, "fixture needs a ref below ARS baseline");
+    const refWithArs = eplCore.refs.find(
+      (ref) => ref.slug === bottomProbe[0]!.refSlug,
+    );
+    assert.ok(refWithArs, "bottom panel ref missing from EPL fixture");
 
     const slimStats: RefStatsFile = {
       ...eplCore,
@@ -211,6 +207,7 @@ describe("ref-team matrix team panels", () => {
     assert.ok(matrix.teams[0]!.baselineGames > 0);
     const bottom = bottomRefsBelowBaselineForTeam(matrix, "ARS");
     assert.ok(bottom.length > 0);
+    assert.equal(bottom[0]!.refSlug, refWithArs.slug);
   });
 
   it("falls back to audited NBA seasons when meta.seasons is empty", () => {
