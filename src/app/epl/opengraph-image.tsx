@@ -5,6 +5,6 @@ export const alt = "Ref Watch EPL matchday signals";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
   return renderSlateOgImage(eplOgContent());
 }
