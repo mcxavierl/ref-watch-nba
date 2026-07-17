@@ -1,5 +1,4 @@
 import type { RefStatsFile } from "@/lib/types";
-import { isCbbSimulatedData } from "@/lib/cbb/data-source";
 import { isCfbSimulatedData } from "@/lib/cfb/data-source";
 import { isEplSimulatedData } from "@/lib/epl/data-source";
 import {
@@ -46,10 +45,6 @@ export function leagueDataSourceBannerMessage(
   }
 
   const source = meta.data_source ?? meta.source;
-
-  if (league === "cbb" && isCbbSimulatedData(meta.source)) {
-    return "Preview dataset only. No verified college basketball officiating sample is loaded.";
-  }
 
   if (league === "cfb" && isCfbSimulatedData(meta.source)) {
     return "Preview dataset only. No verified college football officiating sample is loaded.";
