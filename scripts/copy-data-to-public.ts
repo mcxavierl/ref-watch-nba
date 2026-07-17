@@ -2,6 +2,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { mergeMarketLinesForActiveLeagues } from "./lib/game-logs";
+import { writeCbbConferenceCoverageSnapshot } from "./lib/build-cbb-conference-coverage";
 import { syncRefStatsFromLogs } from "./sync-ref-stats-from-logs";
 import { NBA_TEN_SEASONS, NHL_TEN_SEASONS } from "./lib/ten-season-policy";
 import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
@@ -299,6 +300,7 @@ if (fs.existsSync(ncaaPersonnel)) {
 }
 copyLeagueRefStatsSplit(root, "cfb");
 copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "game-logs");
+writeCbbConferenceCoverageSnapshot(root);
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "game-logs");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "ref-photos");
 copyPair(path.join(root, "data/laliga"), path.join(root, "public/data/laliga"), "game-logs");

@@ -1,8 +1,13 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  setCachedCbbConferenceCoverage,
+  getCachedCbbConferenceCoverage,
+} from "@/lib/cbb/conference-coverage-preload";
+import {
   buildNcaaConferenceCoverageRows,
   countDistinctGamesByConference,
+  getConferenceCoverageRows,
   ncaaConferenceMaturityLabel,
   ncaaConferenceMaturityTier,
 } from "@/lib/ncaa-conference-coverage";
@@ -43,5 +48,33 @@ describe("ncaa conference coverage maturity", () => {
     );
     assert.equal(rows.find((r) => r.conferenceId === "Big 12")?.label, "Partial");
     assert.equal(rows.find((r) => r.conferenceId === "ACC")?.label, "Live");
+  });
+
+  it("uses preloaded CBB conference snapshot on Workers", () => {
+    setCachedCbbConferenceCoverage({
+      generatedAt: new Date().toISOString(),
+      distinctByConference: {
+        ACC: 802,
+        "Big Ten": 1102,
+        "Big 12": 520,
+        SEC: 930,
+        "Big East": 610,
+      },
+    });
+
+    const rows = getConferenceCoverageRows("cbb");
+    assert.equal(rows.every((row) => row.maturity === "Live"), true);
+    assert.equal(getCachedCbbConferenceCoverage()?.distinctByConference.ACC, 802);
+
+    setCachedCbbConferenceCoverage({
+      generatedAt: new Date().toISOString(),
+      distinctByConference: {
+        ACC: 0,
+        "Big Ten": 0,
+        "Big 12": 0,
+        SEC: 0,
+        "Big East": 0,
+      },
+    });
   });
 });
