@@ -4,17 +4,64 @@
   font-family: var(--font-inter), system-ui, sans-serif;
 }
 
-/* Theme-safe ink on always-dark capsules */
+/* Always-dark capsules: fixed ink tokens (independent of site color mode) */
+.wc-authority-capsule {
+  --wc-capsule-ink: rgb(255 255 255);
+  --wc-capsule-ink-muted: rgb(148 163 184);
+  --wc-capsule-ink-label: rgb(100 116 139);
+  --wc-capsule-ink-link: rgb(148 163 184);
+  --wc-capsule-ink-link-hover: rgb(191 168 106);
+
+  position: relative;
+  background: rgb(2 6 23);
+  color: var(--wc-capsule-ink-muted);
+}
+
+/* Beat global heading ink overrides in light and dark site themes */
+.wc-authority-capsule .wc-match-headline,
+.wc-authority-capsule h2,
+.wc-authority-capsule h3,
+.wc-authority-capsule .text-white {
+  color: var(--wc-capsule-ink);
+}
+
 html[data-color="light"] .wc-authority-capsule .wc-match-headline,
 html[data-color="light"] .wc-authority-capsule h2,
 html[data-color="light"] .wc-authority-capsule h3,
-html[data-color="light"] .wc-authority-capsule .text-white {
-  color: rgb(255 255 255);
+html[data-color="light"] .wc-authority-capsule .text-white,
+html[data-color="dark"] .wc-authority-capsule .wc-match-headline,
+html[data-color="dark"] .wc-authority-capsule h2,
+html[data-color="dark"] .wc-authority-capsule h3,
+html[data-color="dark"] .wc-authority-capsule .text-white {
+  color: var(--wc-capsule-ink);
 }
 
-.wc-authority-capsule {
-  position: relative;
-  background: rgb(2 6 23);
+.wc-authority-capsule--referee h3 {
+  color: var(--wc-capsule-ink);
+}
+
+.wc-authority-capsule .text-slate-300 {
+  color: rgb(203 213 225);
+}
+
+.wc-authority-capsule .text-slate-400 {
+  color: var(--wc-capsule-ink-muted);
+}
+
+.wc-authority-capsule .text-slate-500 {
+  color: var(--wc-capsule-ink-label);
+}
+
+.wc-authority-capsule .text-slate-600 {
+  color: var(--wc-capsule-ink-link);
+}
+
+.wc-authority-capsule .text-slate-600:hover {
+  color: var(--wc-capsule-ink-link-hover);
+}
+
+.wc-authority-capsule .text-slate-100 {
+  color: rgb(241 245 249);
 }
 
 .wc-authority-capsule--match {
@@ -43,7 +90,7 @@ html[data-color="light"] .wc-authority-capsule .text-white {
 }
 
 .wc-match-headline {
-  color: rgb(255 255 255);
+  color: var(--wc-capsule-ink);
 }
 
 .wc-authority-metric-cell {
@@ -55,7 +102,7 @@ html[data-color="light"] .wc-authority-capsule .text-white {
 }
 
 .wc-authority-narrative {
-  color: rgb(148 163 184);
+  color: var(--wc-capsule-ink-muted);
 }
 
 .match-status-pill--prestige {

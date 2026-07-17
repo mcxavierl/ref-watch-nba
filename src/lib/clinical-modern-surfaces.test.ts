@@ -102,6 +102,10 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /wc-authority-capsule/);
     assert.match(css, /wc-flag-avatar/);
     assert.match(css, /match-status-pill--prestige/);
+    assert.match(css, /--wc-capsule-ink/);
+    assert.match(css, /html\[data-color="light"\] .wc-authority-capsule h3/);
+    assert.match(css, /html\[data-color="dark"\] .wc-authority-capsule h3/);
+    assert.match(css, /wc-authority-capsule--referee h3/);
   });
 
   it("MatchStatusPill supports clinical and prestige tones", () => {
