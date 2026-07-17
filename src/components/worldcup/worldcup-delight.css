@@ -8,7 +8,7 @@
 .wc-authority-capsule {
   --wc-capsule-ink: rgb(255 255 255);
   --wc-capsule-ink-muted: rgb(148 163 184);
-  --wc-capsule-ink-label: rgb(100 116 139);
+  --wc-capsule-ink-label: rgb(148 163 184);
   --wc-capsule-ink-link: rgb(148 163 184);
   --wc-capsule-ink-link-hover: rgb(191 168 106);
 
