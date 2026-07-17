@@ -63,12 +63,12 @@ export function loadValidationReport(): ValidationReport {
 }
 
 export function formatHitRate(rate: number | null): string {
-  if (rate === null) return "—";
+  if (rate === null) return "--";
   return `${(rate * 100).toFixed(1)}%`;
 }
 
 export function formatRoiPct(roi: number | null): string {
-  if (roi === null) return "—";
+  if (roi === null) return "--";
   const sign = roi > 0 ? "+" : "";
   return `${sign}${roi.toFixed(1)}%`;
 }
