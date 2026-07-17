@@ -110,6 +110,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /--wc-capsule-ink/);
     assert.match(css, /html\[data-color="light"\] .wc-data-capsule h3/);
     assert.match(css, /html\[data-color="dark"\] .wc-data-capsule h3/);
+    assert.match(css, /wc-data-capsule--referee h3/);
     assert.doesNotMatch(css, /bfa86a/i);
     assert.doesNotMatch(css, /prestige/i);
   });
@@ -152,6 +153,16 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /--live-league-date-ink/);
     assert.match(css, /--live-league-date-bg/);
     assert.match(css, /--live-league-date-border/);
+  });
+
+  it("homepage contrast fixes keep muted copy readable", () => {
+    const overviewCss = readSrc("src/components/overview-dashboard.css");
+    const insightCss = readSrc("src/components/insight-card.css");
+    assert.match(overviewCss, /Homepage contrast/);
+    assert.match(overviewCss, /overview-slate-row/);
+    assert.match(overviewCss, /overview-league-chooser-card\[data-league="nfl"\]/);
+    assert.match(overviewCss, /overview-section--secondary .overview-section-lead/);
+    assert.match(insightCss, /insight-editorial-kicker/);
   });
 
   it("pill glow tokens are centralized in kpi-data-pill.css", () => {

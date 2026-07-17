@@ -741,3 +741,13 @@ html.dark .insight-card--inline {
 .insight-metric-comparison-value--adjusted {
   font-style: italic;
 }
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-editorial-kicker,
+html[data-color="light"]:not([data-contrast="high"]) .insight-editorial-league,
+html[data-color="light"]:not([data-contrast="high"]) .insight-editorial-metric-label,
+html[data-color="light"]:not([data-contrast="high"]) .data-honesty-footnote,
+html[data-color="light"]:not([data-contrast="high"]) .insight-metric-comparison-label,
+html[data-color="light"]:not([data-contrast="high"]) .overview-top-story-secondary-label,
+html[data-color="light"]:not([data-contrast="high"]) .insight-editorial-link--muted {
+  color: var(--text-secondary);
+}

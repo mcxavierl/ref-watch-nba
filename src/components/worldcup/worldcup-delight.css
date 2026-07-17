@@ -18,7 +18,7 @@
 .wc-data-capsule {
   --wc-capsule-ink: rgb(248 250 252);
   --wc-capsule-ink-muted: rgb(148 163 184);
-  --wc-capsule-ink-label: rgb(100 116 139);
+  --wc-capsule-ink-label: rgb(148 163 184);
 
   display: flex;
   flex-direction: column;
@@ -67,6 +67,10 @@ html[data-color="dark"] .wc-data-capsule .wc-match-headline,
 html[data-color="dark"] .wc-data-capsule h2,
 html[data-color="dark"] .wc-data-capsule h3,
 html[data-color="dark"] .wc-data-capsule .text-slate-50 {
+  color: var(--wc-capsule-ink);
+}
+
+.wc-data-capsule--referee h3 {
   color: var(--wc-capsule-ink);
 }
 
