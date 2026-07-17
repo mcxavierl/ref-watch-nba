@@ -89,6 +89,14 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /from "@\/components\/FindingsSection"/);
   });
 
+  it("referee World Cup card never renders category pills", () => {
+    const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
+    const css = readSrc("src/components/worldcup/worldcup-delight.css");
+    assert.match(card, /!refereeCapsule \?/);
+    assert.match(card, /isRefereeCapsule\(finding\)/);
+    assert.match(css, /\.wc-data-capsule--referee \.wc-data-capsule__pills/);
+  });
+
   it("WorldCupFindingCard uses DataCapsule KPI scale and semantic tones", () => {
     const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
     const kpi = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");

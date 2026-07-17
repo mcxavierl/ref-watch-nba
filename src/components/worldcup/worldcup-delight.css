@@ -78,6 +78,11 @@
   padding-bottom: 0.25rem;
 }
 
+.wc-data-capsule--referee .wc-data-capsule-pill,
+.wc-data-capsule--referee .wc-data-capsule__pills {
+  display: none;
+}
+
 /* Theme-safe ink on always-dark capsules */
 .wc-data-capsule .wc-match-headline,
 .wc-data-capsule h2,
