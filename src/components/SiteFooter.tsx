@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 import { footerConfigForLeague } from "@/lib/footer-config";
 import {
@@ -83,6 +84,7 @@ export function SiteFooter({ league }: { league?: FooterLeague }) {
           </div>
         </div>
       </div>
+      <GamblingDisclaimer />
     </footer>
   );
 }

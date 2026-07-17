@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Atkinson_Hyperlegible, Inter, Space_Grotesk } from "next/font/google";
 import { AnchorScrollManager } from "@/components/AnchorScrollManager";
-import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { JsonLd } from "@/components/JsonLd";
 import { RoutedSiteFooter } from "@/components/RoutedSiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -106,7 +105,6 @@ export default async function RootLayout({
           {children}
         </main>
         <RoutedSiteFooter />
-        <GamblingDisclaimer />
       </body>
     </html>
   );

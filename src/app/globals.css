@@ -10087,8 +10087,8 @@ p {
   }
 
   .gambling-disclaimer {
-    border-top: 2px solid color-mix(in srgb, var(--color-amber-200) 80%, transparent);
-    background: var(--color-amber-50);
+    border-top: 2px solid color-mix(in srgb, var(--color-amber-800) 55%, transparent);
+    background: color-mix(in srgb, var(--color-amber-50) 92%, #000);
   }
 
   .gambling-disclaimer-icon {

@@ -128,6 +128,14 @@ describe("deploy readiness regressions", () => {
     assert.ok(layout.includes("RoutedSiteFooter"));
   });
 
+  it("site footer includes responsible gambling support notice", () => {
+    const footer = readFileSync("src/components/SiteFooter.tsx", "utf8");
+    assert.ok(footer.includes("GamblingDisclaimer"));
+    const disclaimer = readFileSync("src/components/GamblingDisclaimer.tsx", "utf8");
+    assert.match(disclaimer, /ConnexOntario/);
+    assert.match(disclaimer, /1-866-531-2600/);
+  });
+
   it("mergeCachedLeagueRefStats patches slim core in ref-stats cache", () => {
     clearLeagueCaches();
 
