@@ -122,6 +122,44 @@
 
 .overview-slate-icon {
   color: var(--header-gold);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--header-gold) 35%, transparent));
+}
+
+.overview-hero-minimal {
+  position: relative;
+  background:
+    radial-gradient(
+      ellipse 100% 70% at 0% 0%,
+      color-mix(in srgb, var(--header-gold) 9%, transparent),
+      transparent 55%
+    ),
+    transparent;
+}
+
+.overview-editorial-section--slate {
+  position: relative;
+}
+
+.overview-editorial-section--slate::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--header-gold) 28%, transparent),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.league-season-start-badge,
+.overview-catalog-status--live,
+.overview-catalog-status--season-start {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--live-league-date-border) 45%, transparent),
+    0 0 12px color-mix(in srgb, var(--live-league-date-ink) 16%, transparent);
 }
 
 .overview-slate-league-badge[data-league="nba"] {

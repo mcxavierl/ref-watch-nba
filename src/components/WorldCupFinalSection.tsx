@@ -2,21 +2,35 @@ import Link from "next/link";
 import { Trophy } from "lucide-react";
 import { MatchStatusPill } from "@/components/hub/MatchStatusPill";
 import { WorldCupFindingCard } from "@/components/worldcup/WorldCupFindingCard";
+import { worldCupCountryFlag, worldCupTeamFlag } from "@/lib/worldcup/country-flags";
+import type { WorldCupOfficial } from "@/lib/worldcup/final-2026";
 import {
   computeWorldCupFinalFindings,
   resolveWorldCupFinal,
   worldCupFinalMeta,
 } from "@/lib/worldcup/final-2026";
+import "@/components/worldcup/worldcup-delight.css";
 
 const WC_CHAMPAGNE = "#BFA86A";
 
-const TEAM_FLAGS: Record<string, string> = {
-  ARG: "🇦🇷",
-  ESP: "🇪🇸",
-};
-
 const WC_HEADER_CARD =
-  "rounded-2xl border border-slate-800 bg-slate-950 p-5 font-[family-name:var(--font-inter)]";
+  "wc-editorial-header-card rounded-2xl border border-slate-800 bg-slate-950 p-5 font-[family-name:var(--font-inter)]";
+
+function OfficialName({ official }: { official: WorldCupOfficial }) {
+  const flag = worldCupCountryFlag(official.country, official.countryCode);
+
+  return (
+    <span className="wc-official-name inline-flex items-center gap-1.5">
+      {flag ? (
+        <span className="wc-official-flag" aria-hidden>
+          {flag}
+        </span>
+      ) : null}
+      <span className="text-slate-100">{official.name}</span>
+      <span className="text-slate-400">({official.country})</span>
+    </span>
+  );
+}
 
 export function WorldCupFinalSection() {
   const final = resolveWorldCupFinal();
@@ -25,8 +39,8 @@ export function WorldCupFinalSection() {
   const findings = computeWorldCupFinalFindings(4);
   const meta = worldCupFinalMeta();
   const { match, officials } = final;
-  const awayFlag = TEAM_FLAGS[match.awayTeam.code] ?? match.awayTeam.code;
-  const homeFlag = TEAM_FLAGS[match.homeTeam.code] ?? match.homeTeam.code;
+  const awayFlag = worldCupTeamFlag(match.awayTeam.code);
+  const homeFlag = worldCupTeamFlag(match.homeTeam.code);
 
   const narrative = `${final.isUpcoming ? "Upcoming" : "Final"} at ${match.venueDisplay}, ${match.venueCity}. ${final.tournamentContext.headline}.`;
 
@@ -37,110 +51,108 @@ export function WorldCupFinalSection() {
     >
       <article className={WC_HEADER_CARD}>
         <div className="grid gap-5">
-          {/* Header row: brand + status pill */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex min-w-0 items-start gap-3">
               <span
-                className="inline-flex h-[2.35rem] shrink-0 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 px-2.5"
+                className="wc-editorial-trophy-wrap inline-flex h-[2.35rem] shrink-0 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 px-2.5"
                 aria-hidden
               >
                 <Trophy className="h-5 w-5" style={{ color: WC_CHAMPAGNE }} />
               </span>
               <div className="min-w-0">
-                <p
-                  className="text-xs font-semibold uppercase tracking-wider"
-                  style={{ color: WC_CHAMPAGNE }}
-                >
+                <p className="wc-editorial-kicker text-xs font-semibold uppercase tracking-wider">
                   FIFA World Cup 2026
                 </p>
                 <h2
-                  className="mt-0.5 text-lg font-bold leading-snug text-white sm:text-xl"
+                  className="wc-match-title mt-0.5 text-lg font-bold leading-snug sm:text-xl"
                   id="world-cup-final-heading"
                 >
-                  <span className="mr-1 inline-block w-6 text-center text-xl leading-none">
-                    {awayFlag}
-                  </span>
-                  {match.awayTeam.name} vs {match.homeTeam.name}
-                  <span className="ml-1 inline-block w-6 text-center text-xl leading-none">
-                    {homeFlag}
-                  </span>
+                  {awayFlag ? (
+                    <span className="wc-team-flag mr-1" aria-hidden>
+                      {awayFlag}
+                    </span>
+                  ) : null}
+                  <span className="wc-team-name">{match.awayTeam.name}</span>
+                  <span className="wc-match-vs"> vs </span>
+                  <span className="wc-team-name">{match.homeTeam.name}</span>
+                  {homeFlag ? (
+                    <span className="wc-team-flag ml-1" aria-hidden>
+                      {homeFlag}
+                    </span>
+                  ) : null}
                 </h2>
               </div>
             </div>
             <MatchStatusPill label={match.stage} tone="prestige" />
           </div>
 
-          {/* Narrative block */}
-          <p className="max-w-prose text-sm leading-relaxed text-slate-300">{narrative}</p>
+          <p className="wc-body-copy max-w-prose text-sm leading-relaxed">{narrative}</p>
 
-          {/* Kickoff / Venue / Referee data row */}
           <dl className="grid grid-cols-1 gap-4 border-t border-slate-800 pt-4 sm:grid-cols-3">
             <div>
-              <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <dt className="wc-data-label text-xs font-semibold uppercase tracking-wider">
                 Kickoff
               </dt>
-              <dd className="mt-1 text-sm font-medium tabular-nums text-slate-200">
+              <dd className="wc-data-value mt-1 text-sm font-medium tabular-nums">
                 {final.kickoffLabel}
               </dd>
             </div>
             <div>
-              <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <dt className="wc-data-label text-xs font-semibold uppercase tracking-wider">
                 Venue
               </dt>
-              <dd className="mt-1 text-sm font-medium text-slate-200">{match.venue}</dd>
+              <dd className="wc-data-value mt-1 text-sm font-medium">{match.venue}</dd>
             </div>
             <div>
-              <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <dt className="wc-data-label text-xs font-semibold uppercase tracking-wider">
                 Referee
               </dt>
-              <dd className="mt-1 text-sm font-medium text-slate-200">
-                {officials.referee.name}{" "}
-                <span className="text-slate-500">({officials.referee.country})</span>
+              <dd className="wc-data-value mt-1 text-sm font-medium">
+                <OfficialName official={officials.referee} />
               </dd>
             </div>
           </dl>
 
-          {/* Match officials detail */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
-            <h3 className="text-sm font-semibold text-slate-200">Match officials</h3>
-            <ul className="mt-2 space-y-1 text-sm text-slate-400">
-              <li>
+          <div className="wc-editorial-officials-panel rounded-xl border border-slate-800 p-4">
+            <h3 className="wc-panel-title text-sm font-semibold">Match officials</h3>
+            <ul className="mt-2 space-y-2 text-sm">
+              <li className="wc-official-line">
                 <span className="font-medium text-slate-300">Referee:</span>{" "}
-                {officials.referee.name} ({officials.referee.country})
+                <OfficialName official={officials.referee} />
               </li>
-              <li>
+              <li className="wc-official-line">
                 <span className="font-medium text-slate-300">Assistants:</span>{" "}
-                {officials.assistantReferees
-                  .map((official) => `${official.name} (${official.country})`)
-                  .join(", ")}
+                <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {officials.assistantReferees.map((official, index) => (
+                    <OfficialName key={`${official.name}-${index}`} official={official} />
+                  ))}
+                </span>
               </li>
-              <li>
+              <li className="wc-official-line">
                 <span className="font-medium text-slate-300">Fourth official:</span>{" "}
-                {officials.fourthOfficial.name} ({officials.fourthOfficial.country})
+                <OfficialName official={officials.fourthOfficial} />
               </li>
-              <li>
+              <li className="wc-official-line">
                 <span className="font-medium text-slate-300">VAR:</span>{" "}
-                {officials.videoAssistantReferee.name} ({officials.videoAssistantReferee.country})
+                <OfficialName official={officials.videoAssistantReferee} />
               </li>
-              <li>
+              <li className="wc-official-line">
                 <span className="font-medium text-slate-300">AVAR:</span>{" "}
-                {officials.assistantVar.name} ({officials.assistantVar.country})
+                <OfficialName official={officials.assistantVar} />
               </li>
             </ul>
           </div>
 
-          {/* Footer links */}
           <div className="flex flex-col gap-2 border-t border-slate-800 pt-4 sm:flex-row sm:items-center sm:justify-between">
             <Link
               href={match.fifaMatchUrl}
-              className="text-sm font-medium hover:underline"
-              style={{ color: WC_CHAMPAGNE }}
+              className="wc-editorial-fifa-link text-sm font-medium hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
               FIFA match centre
             </Link>
-            <span className="text-xs tabular-nums text-slate-500">
+            <span className="wc-meta-copy text-xs tabular-nums">
               Match {match.matchNumber} · Source: {meta.source}
             </span>
           </div>

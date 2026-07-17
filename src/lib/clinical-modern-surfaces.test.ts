@@ -79,9 +79,9 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /MatchStatusPill/);
     assert.match(source, /tone="prestige"/);
     assert.match(source, /WorldCupFindingCard/);
-    assert.match(source, /bg-slate-950/);
-    assert.match(source, /border-slate-800/);
-    assert.match(source, /#BFA86A/);
+    assert.match(source, /wc-match-title/);
+    assert.match(source, /OfficialName/);
+    assert.match(source, /worldCupCountryFlag/);
     assert.doesNotMatch(source, /overview-research-hub-card/);
     assert.doesNotMatch(source, /from "@\/components\/FindingsSection"/);
   });
@@ -91,8 +91,9 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /bg-slate-950/);
     assert.match(source, /border-slate-800/);
     assert.match(source, /rounded-2xl/);
-    assert.match(source, /text-emerald-400/);
-    assert.match(source, /text-rose-400/);
+    assert.match(source, /StandoutMetricValue/);
+    assert.match(source, /wc-finding-card/);
+    assert.match(source, /wc-metric-cell/);
     assert.match(source, /text-slate-100/);
     assert.match(source, /font-normal text-slate-400/);
     assert.match(source, /tabular-nums/);
@@ -100,15 +101,30 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /whitespace-nowrap/);
   });
 
+  it("World Cup editorial delight surfaces are defined", () => {
+    const css = readSrc("src/components/worldcup/worldcup-delight.css");
+    assert.match(css, /wc-editorial-header-card/);
+    assert.match(css, /wc-finding-card/);
+    assert.match(css, /wc-metric-cell--positive/);
+    assert.match(css, /match-status-pill--prestige/);
+  });
+
   it("MatchStatusPill supports clinical and prestige tones", () => {
     const source = readSrc("src/components/hub/MatchStatusPill.tsx");
     assert.match(source, /bg-slate-700/);
     assert.match(source, /text-slate-50/);
+    assert.match(source, /match-status-pill--prestige/);
     assert.match(source, /bg-\[#BFA86A\]/);
     assert.match(source, /text-white/);
     assert.match(source, /font-semibold/);
     assert.match(source, /tracking-wider/);
     assert.match(source, /h-\[2\.35rem\]/);
+  });
+
+  it("editorial insight cards pair league badge with season start", () => {
+    const source = readSrc("src/components/shared/InsightCard.tsx");
+    assert.match(source, /insight-editorial-head-row/);
+    assert.match(source, /LeagueSeasonStartBadge leagueId=\{card\.leagueId\}/);
   });
 
   it("OverviewDashboard drops redundant homepage sections", () => {

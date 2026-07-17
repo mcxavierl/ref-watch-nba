@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { FindingExplainer } from "@/components/FindingNameWall";
+import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { dedupeFindingStats } from "@/lib/finding-grouping";
 import { findingCardMetaParts } from "@/lib/finding-copy";
 import type { Finding, FindingStat } from "@/lib/findings-shared";
@@ -9,9 +10,10 @@ import {
   findingConfidenceTier,
   resolveFindingExplainer,
 } from "@/lib/findings-shared";
+import type { MetricDelightTone } from "@/lib/metric-delight";
 
 const WC_CARD_CLASS =
-  "rounded-2xl border border-slate-800 bg-slate-950 p-5 font-[family-name:var(--font-inter)]";
+  "wc-finding-card rounded-2xl border border-slate-800 bg-slate-950 p-5 font-[family-name:var(--font-inter)]";
 
 type WcStatPresentation = "name" | "kpi-positive" | "kpi-negative" | "kpi-neutral";
 
@@ -64,18 +66,17 @@ function worldCupStatPresentation(stat: FindingStat): WcStatPresentation {
   return "kpi-neutral";
 }
 
-function statValueClass(presentation: WcStatPresentation): string {
-  const base = "font-bold tabular-nums";
-  switch (presentation) {
-    case "name":
-      return "text-lg font-semibold text-slate-100";
-    case "kpi-positive":
-      return `${base} text-3xl text-emerald-400`;
-    case "kpi-negative":
-      return `${base} text-3xl text-rose-400`;
-    default:
-      return `${base} text-3xl text-slate-100`;
-  }
+function presentationToTone(presentation: WcStatPresentation): MetricDelightTone {
+  if (presentation === "kpi-positive") return "positive";
+  if (presentation === "kpi-negative") return "negative";
+  return "neutral";
+}
+
+function metricCellClass(presentation: WcStatPresentation): string {
+  const base = "wc-metric-cell";
+  if (presentation === "kpi-positive") return `${base} wc-metric-cell--positive`;
+  if (presentation === "kpi-negative") return `${base} wc-metric-cell--negative`;
+  return base;
 }
 
 function metricsGridClass(count: number): string {
@@ -96,15 +97,15 @@ export function WorldCupFindingCard({ finding }: { finding: Finding }) {
         </h3>
         <div className="flex max-w-full shrink-0 flex-wrap items-center gap-2">
           <span
-            className="inline-flex max-w-full items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-300"
+            className="wc-category-pill inline-flex max-w-full items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-300"
             data-category={finding.category}
           >
             <FindingCategoryPillLabel category={finding.category} />
           </span>
-          <span className="inline-flex items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-medium tabular-nums text-slate-400">
+          <span className="wc-confidence-pill inline-flex items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-medium tabular-nums text-slate-400">
             {metaParts.sample}
           </span>
-          <span className="inline-flex items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-medium text-slate-400">
+          <span className="wc-confidence-pill inline-flex items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-medium text-slate-400">
             {metaParts.maturity}
           </span>
         </div>
@@ -116,11 +117,23 @@ export function WorldCupFindingCard({ finding }: { finding: Finding }) {
             const presentation = worldCupStatPresentation(stat);
 
             return (
-              <div key={stat.label} className="min-w-0">
+              <div key={stat.label} className={`min-w-0 ${metricCellClass(presentation)}`}>
                 <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                   {stat.label}
                 </dt>
-                <dd className={`mt-1 ${statValueClass(presentation)}`}>{stat.value}</dd>
+                <dd className="mt-1">
+                  {presentation === "name" ? (
+                    <span className="text-lg font-semibold text-slate-100">{stat.value}</span>
+                  ) : (
+                    <StandoutMetricValue
+                      tone={presentationToTone(presentation)}
+                      size="hero"
+                      className="text-3xl tabular-nums"
+                    >
+                      {stat.value}
+                    </StandoutMetricValue>
+                  )}
+                </dd>
                 {stat.detail ? (
                   <dd className="mt-0.5 text-sm text-slate-400">{stat.detail}</dd>
                 ) : null}
@@ -141,7 +154,7 @@ export function WorldCupFindingCard({ finding }: { finding: Finding }) {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-[#BFA86A] hover:underline"
+              className="wc-editorial-fifa-link text-sm font-medium text-[#BFA86A] hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
