@@ -168,6 +168,7 @@ html[data-contrast="high"] .kpi-data-pill--block.kpi-data-pill--neutral {
   text-transform: uppercase;
   color: var(--text-muted);
   line-height: 1.2;
+  white-space: nowrap;
 }
 
 .kpi-data-pill__caption {

@@ -5,24 +5,19 @@ import { LeagueChooser } from "@/components/LeagueChooser";
 import { OverviewEditorialNarrative } from "@/components/OverviewEditorialNarrative";
 import { OverviewQuickInsights } from "@/components/OverviewQuickInsights";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
-import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
-import { OverviewHistoricalLeaders } from "@/components/OverviewHistoricalLeaders";
 import { OverviewUpcomingSlateSection } from "@/components/OverviewUpcomingSlateSection";
 import {
   DashboardBodyLayout,
-  DashboardSection,
   DashboardShell,
 } from "@/components/dashboard/DashboardShell";
 import {
   catalogComingSoonEntries,
   catalogCompetitionCount,
-  catalogLiveCompetitionEntries,
   catalogProLiveEntries,
   catalogStatusLabel,
   type CatalogLeagueEntry,
 } from "@/lib/league-catalog";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
-import { leagueHubHref } from "@/lib/leagues";
 import "@/components/overview-dashboard.css";
 
 function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
@@ -85,7 +80,6 @@ export function OverviewDashboard({
   exploreTabs,
 }: OverviewDashboardProps) {
   const proCatalog = catalogProLiveEntries();
-  const liveCatalog = catalogLiveCompetitionEntries();
   const comingSoonCatalog = catalogComingSoonEntries().slice(0, 8);
 
   return (
@@ -103,10 +97,6 @@ export function OverviewDashboard({
           insightCards={data.insightCards}
           topStories={data.topStories}
         />
-      </div>
-
-      <div className="overview-dashboard-breathe overview-dashboard-breathe--tight">
-        <OverviewHistoricalLeaders refs={data.allRefs} />
       </div>
 
       <section
@@ -169,39 +159,7 @@ export function OverviewDashboard({
                 </details>
               </>
             }
-            main={
-              <>
-                {exploreTabs}
-
-                <DashboardSection
-                  className="overview-expansion overview-section--secondary"
-                  title="Expanding coverage"
-                  titleId="overview-expansion-heading"
-                  lead="More soccer leagues and college sports on the roadmap."
-                >
-                  <div className="overview-expansion-grid">
-                    {liveCatalog.map((entry) =>
-                      entry.leagueId ? (
-                        <Link
-                          key={entry.id}
-                          href={leagueHubHref(entry.leagueId)}
-                          className="overview-expansion-live rw-focus-ring"
-                        >
-                          <span className="overview-expansion-live-label">{entry.label}</span>
-                          <LeagueSeasonStartBadge leagueId={entry.leagueId} />
-                        </Link>
-                      ) : null,
-                    )}
-                    {comingSoonCatalog.map((entry) => (
-                      <div key={entry.id} className="overview-expansion-soon">
-                        <span className="overview-expansion-soon-label">{entry.label}</span>
-                        <span className="overview-expansion-soon-badge">Soon</span>
-                      </div>
-                    ))}
-                  </div>
-                </DashboardSection>
-              </>
-            }
+            main={exploreTabs}
           />
         </div>
       </section>

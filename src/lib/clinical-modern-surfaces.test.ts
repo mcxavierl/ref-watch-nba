@@ -83,7 +83,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /border-slate-800/);
     assert.match(source, /#BFA86A/);
     assert.doesNotMatch(source, /overview-research-hub-card/);
-    assert.doesNotMatch(source, /FindingCard/);
+    assert.doesNotMatch(source, /from "@\/components\/FindingsSection"/);
   });
 
   it("WorldCupFindingCard uses clinical KPI semantics", () => {
@@ -96,7 +96,8 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /text-slate-100/);
     assert.match(source, /font-normal text-slate-400/);
     assert.match(source, /tabular-nums/);
-    assert.match(source, /formatFindingCardMeta/);
+    assert.match(source, /findingCardMetaParts/);
+    assert.match(source, /whitespace-nowrap/);
   });
 
   it("MatchStatusPill supports clinical and prestige tones", () => {
@@ -108,6 +109,20 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /font-semibold/);
     assert.match(source, /tracking-wider/);
     assert.match(source, /h-\[2\.35rem\]/);
+  });
+
+  it("OverviewDashboard drops redundant homepage sections", () => {
+    const source = readSrc("src/components/OverviewDashboard.tsx");
+    assert.doesNotMatch(source, /OverviewHistoricalLeaders/);
+    assert.doesNotMatch(source, /Expanding coverage/);
+    assert.doesNotMatch(source, /overview-expansion/);
+  });
+
+  it("live league date badges use high-contrast blue tokens", () => {
+    const css = readSrc("src/app/globals.css");
+    assert.match(css, /--live-league-date-ink/);
+    assert.match(css, /--live-league-date-bg/);
+    assert.match(css, /--live-league-date-border/);
   });
 
   it("pill glow tokens are centralized in kpi-data-pill.css", () => {

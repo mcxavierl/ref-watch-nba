@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { FindingExplainer } from "@/components/FindingNameWall";
 import { dedupeFindingStats } from "@/lib/finding-grouping";
-import { formatFindingCardMeta } from "@/lib/finding-copy";
+import { findingCardMetaParts } from "@/lib/finding-copy";
 import type { Finding, FindingStat } from "@/lib/findings-shared";
 import {
   filterDisplayStats,
@@ -86,21 +86,26 @@ function metricsGridClass(count: number): string {
 export function WorldCupFindingCard({ finding }: { finding: Finding }) {
   const displayStats = filterDisplayStats(dedupeFindingStats(finding.stats));
   const tier = findingConfidenceTier(finding);
-  const confidenceLabel = formatFindingCardMeta(finding.sampleNote, tier);
+  const metaParts = findingCardMetaParts(finding.sampleNote, tier);
 
   return (
     <article className={WC_CARD_CLASS}>
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <h3 className="text-base font-bold leading-snug text-white">{finding.headline}</h3>
-        <div className="flex shrink-0 flex-wrap items-center gap-2">
+        <h3 className="min-w-0 flex-1 text-base font-bold leading-snug text-white">
+          {finding.headline}
+        </h3>
+        <div className="flex max-w-full shrink-0 flex-wrap items-center gap-2">
           <span
-            className="inline-flex items-center rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-300"
+            className="inline-flex max-w-full items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-300"
             data-category={finding.category}
           >
             <FindingCategoryPillLabel category={finding.category} />
           </span>
-          <span className="inline-flex items-center rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-medium tabular-nums text-slate-400">
-            {confidenceLabel}
+          <span className="inline-flex items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-medium tabular-nums text-slate-400">
+            {metaParts.sample}
+          </span>
+          <span className="inline-flex items-center whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-medium text-slate-400">
+            {metaParts.maturity}
           </span>
         </div>
       </header>

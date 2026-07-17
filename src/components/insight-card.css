@@ -43,19 +43,28 @@
 
 .insight-card--inline .insight-card-head {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.insight-card--inline .insight-card-head-row {
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.45rem 0.65rem;
+  gap: 0.5rem;
+  max-width: 100%;
 }
 
 .insight-card--inline .insight-card-kicker {
   margin: 0;
+  width: 100%;
   font-size: 0.72rem;
   font-weight: 650;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-muted);
+  line-height: 1.35;
 }
 
 .insight-card--inline .insight-card-league {
@@ -252,10 +261,9 @@ html.dark .insight-card--inline {
 
 .insight-editorial-head {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
 }
 
 .insight-editorial-league {
@@ -267,15 +275,18 @@ html.dark .insight-card--inline {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .insight-editorial-kicker {
   margin: 0;
+  width: 100%;
   font-size: 0.68rem;
   font-weight: 650;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-muted);
+  line-height: 1.35;
 }
 
 .insight-editorial-body-trigger {
