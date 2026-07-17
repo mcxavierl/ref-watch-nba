@@ -33,7 +33,8 @@ import {
   topShareSignals,
 } from "@/lib/syndication";
 import { generateLeagueSlateMetadata, leagueSlatePageTitle } from "@/lib/seo";
-import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
+import { isOffseasonSlate, isPendingCrewSlate, upcomingMatchups } from "@/lib/offseason";
+import { UpcomingSlateNotice } from "@/components/UpcomingSlateNotice";
 import { buildLeagueUpcomingSlateFromAssignments } from "@/lib/overview-upcoming-slate";
 import {
   FINDINGS_SORT_EXPLAINER,
@@ -79,8 +80,9 @@ export default async function NflHomePage() {
   const findings = computeFindings(6, undefined, { hub: true });
   const isOffseason = isOffseasonSlate(assignments);
   const isPending = isPendingCrewSlate(assignments);
+  const pendingMatchups = upcomingMatchups(assignments).map((game) => game.matchup);
   const upcomingSlate = buildLeagueUpcomingSlateFromAssignments("nfl", assignments);
-  const { games: slateGames } = resolveSlateGames(assignments);
+  const { games: slateGames, isPreview: slateIsPreview } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
   const homeBiasSignals = computeSlateHomeBias(sortedGames, refStats);
@@ -112,6 +114,15 @@ export default async function NflHomePage() {
       />
 
       <LeagueHubUpcomingSlateSection slate={upcomingSlate} leagueLabel="NFL" />
+
+      {isPending && (
+        <UpcomingSlateNotice
+          league="NFL"
+          note={assignments.note}
+          matchups={pendingMatchups}
+          slateDate={assignments.nextSlateDate ?? assignments.date}
+        />
+      )}
 
       {isOffseason && <OffseasonSlateNotice league="NFL" />}
 
@@ -151,12 +162,20 @@ export default async function NflHomePage() {
 
           <section className="section-block">
             <h2 className="section-title">
-              {slateGames.length === 1 ? "Tonight's game" : "Tonight's games"}
+              {slateIsPreview
+                ? slateGames.length === 1
+                  ? "Upcoming game"
+                  : "Upcoming games"
+                : slateGames.length === 1
+                  ? "Tonight's game"
+                  : "Tonight's games"}
             </h2>
             <p className="mt-1 text-sm text-zinc-600">
-              {assignments.source === "espn"
-                ? "Crew assignments from ESPN game summaries."
-                : "No verified crew assignments published for this date yet."}
+              {slateIsPreview
+                ? `Matchups on the ${new Date(`${assignments.nextSlateDate ?? assignments.date}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} slate. Crew assignments publish closer to kickoff.`
+                : assignments.source === "espn"
+                  ? "Crew assignments from ESPN game summaries."
+                  : "No verified crew assignments published for this date yet."}
             </p>
             <div className="slate-stack mt-4">
               {sortedGames.map((game, index) => (

@@ -21,6 +21,7 @@ import type {
   RefTeamStat,
   TeamCrewSplit,
 } from "@/lib/types";
+import { upcomingMatchups } from "@/lib/offseason";
 
 export type GrudgeStorylineKind =
   | "win-rate-curse"
@@ -615,6 +616,10 @@ export function resolveSlateGames(
   const withCrew = assignments.games.filter((game) => game.crew.length > 0);
   if (withCrew.length > 0) {
     return { games: withCrew, isPreview: false };
+  }
+  const scheduled = upcomingMatchups(assignments);
+  if (scheduled.length > 0) {
+    return { games: scheduled, isPreview: true };
   }
   return { games: [], isPreview: false };
 }
