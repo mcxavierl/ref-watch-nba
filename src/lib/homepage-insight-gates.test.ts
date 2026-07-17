@@ -7,6 +7,7 @@ import {
 } from "@/config/methodology";
 import {
   filterHomepageInsightCards,
+  HOMEPAGE_METHODOLOGY_BLURB,
   homepageInsightCategory,
   homepageInsightKicker,
   isStatisticallySignificantInsight,
