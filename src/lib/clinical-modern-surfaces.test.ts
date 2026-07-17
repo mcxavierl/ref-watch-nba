@@ -175,7 +175,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(overviewCss, /overview-slate-row/);
     assert.match(overviewCss, /overview-league-chooser-card\[data-league="nfl"\]/);
     assert.match(overviewCss, /overview-section--secondary .overview-section-lead/);
-    assert.match(overviewCss, /--dashboard-crimson: #9f1239/);
+    assert.match(overviewCss, /overview-quicklists-step-label/);
     assert.match(overviewCss, /overview-quicklists-context/);
     assert.match(overviewCss, /Explore bento: equal-height catalog \+ analytics columns/);
     assert.match(overviewCss, /overview-secondary-tabs/);
