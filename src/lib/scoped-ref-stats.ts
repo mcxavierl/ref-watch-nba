@@ -384,6 +384,25 @@ function rebuildFromGameLogs(
   };
 }
 
+/** Rebuild ref profiles from an explicit game subset (conference or team filters). */
+export function rebuildScopedRefStatsFromGames(
+  leagueId: LeagueId,
+  base: RefStatsFile,
+  games: RuntimeGameLogEntry[],
+  scopedSeasons: string[],
+  options?: { includeTeamSplits?: boolean },
+): RefStatsFile {
+  const result = rebuildFromGameLogs(base, games, scopedSeasons, leagueId, {
+    includeTeamSplits: options?.includeTeamSplits ?? false,
+  });
+  if (isNcaaMetricsLeague(leagueId)) {
+    const seasonSet = new Set(scopedSeasons);
+    const scopedGames = games.filter((game) => seasonSet.has(game.season));
+    return applyConferenceAdjustedMeta(result, scopedGames, leagueId);
+  }
+  return result;
+}
+
 function baselineLeagueForData(
   dataLeague: DataLeague,
 ): "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" {

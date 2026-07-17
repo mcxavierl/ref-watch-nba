@@ -57,6 +57,7 @@ import {
   buildCbbConferenceTrendRows,
   cbbTrendsConferenceLabel,
 } from "@/lib/cbb/conference-trends";
+import { buildCbbConferenceTendenciesStats } from "@/lib/cbb/conference-tendencies";
 import type { CbbTrendsConferenceScope } from "@/lib/cbb/conference-trends-shared";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import { RANKINGS_PAGE_LEAD } from "@/lib/trust-charter";
@@ -206,7 +207,8 @@ export function InsightsHubPage({
       <p className="insights-hero-meta-copy">
         Showing <span className="insights-hero-meta-strong">{scopeLabel}</span>{" "}
         ({range})
-        {leagueId === "cbb" && activeView === "trends" ? (
+        {leagueId === "cbb" &&
+        (activeView === "trends" || activeView === "tendencies") ? (
           <>
             {" "}
             for{" "}
@@ -223,7 +225,8 @@ export function InsightsHubPage({
             availableSeasons={availableSeasons}
           />
         </Suspense>
-        {leagueId === "cbb" && activeView === "trends" ? (
+        {leagueId === "cbb" &&
+        (activeView === "trends" || activeView === "tendencies") ? (
           <Suspense fallback={<SeasonScopeToggleSkeleton />}>
             <CbbConferenceTrendsToggle />
           </Suspense>
@@ -235,11 +238,19 @@ export function InsightsHubPage({
   let tendenciesPanel: ReactNode = null;
   let tendenciesHeroHighlights: ReactNode = null;
   if (activeView === "tendencies") {
-    const synthesis = buildRankingsSynthesis(stats, league);
+    const tendencyStats =
+      leagueId === "cbb"
+        ? buildCbbConferenceTendenciesStats(
+            stats,
+            scopedSeasons,
+            cbbTrendsConference,
+          )
+        : stats;
+    const synthesis = buildRankingsSynthesis(tendencyStats, league);
     const signalCounts = Object.fromEntries(
-      stats.refs.map((ref) => [
+      tendencyStats.refs.map((ref) => [
         ref.slug,
-        countNotableSignals(ref, stats.meta, leagueId),
+        countNotableSignals(ref, tendencyStats.meta, leagueId),
       ]),
     );
     tendenciesHeroHighlights = (
@@ -254,12 +265,12 @@ export function InsightsHubPage({
       <section className="section-block">
         <div className="data-card">
           <RefRankingsTable
-            refs={stats.refs}
+            refs={tendencyStats.refs}
             league={dataLeague}
-            minSampleSize={stats.meta.minSampleSize}
-            overBaseline={stats.meta.leagueOverBaseline}
-            leagueAvgTotal={stats.meta.leagueAvgTotal}
-            atsAvailable={stats.meta.atsAvailable === true}
+            minSampleSize={tendencyStats.meta.minSampleSize}
+            overBaseline={tendencyStats.meta.leagueOverBaseline}
+            leagueAvgTotal={tendencyStats.meta.leagueAvgTotal}
+            atsAvailable={tendencyStats.meta.atsAvailable === true}
             signalCounts={signalCounts}
             basePath={league.pathPrefix}
           />
