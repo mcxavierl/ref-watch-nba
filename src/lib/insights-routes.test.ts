@@ -114,7 +114,7 @@ test("every league insights hub route matches NFL scope wiring", () => {
     );
     assert.match(
       source,
-      /searchParams: Promise<\{ scope\?: string \}>/,
+      /searchParams: Promise<\{ scope\?: string(?:; conference\?: string)? \}>/,
       `${rel} must declare scope searchParams`,
     );
   }
