@@ -1,6 +1,7 @@
 #!/usr/bin/env npx tsx
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { refreshBaselinesFromGameLogs } from "./lib/baselines";
 import { mergeMarketLinesForActiveLeagues } from "./lib/game-logs";
 import { writeCbbConferenceCoverageSnapshot } from "./lib/build-cbb-conference-coverage";
 import { syncRefStatsFromLogs } from "./sync-ref-stats-from-logs";
@@ -263,6 +264,7 @@ copyLeagueRefStatsSplit(root, "nfl");
 copyLeagueRefStatsSplit(root, "epl");
 copyLeagueRefStatsSplit(root, "laliga");
 copyLeagueRefStatsSplit(root, "cbb");
+refreshBaselinesFromGameLogs("Refreshed during copy-data-to-public");
 copyPair(path.join(root, "data"), path.join(root, "public/data"), "baselines");
 const usedVerifiedNhl = copyNhlVerifiedIngest(root);
 if (!usedVerifiedNhl) {

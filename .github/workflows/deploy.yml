@@ -39,6 +39,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Volume regression gate
+        run: npm run check:volume
+
       - name: Generate deploy data artifacts
         run: npm run check:deploy
 
