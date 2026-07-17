@@ -146,6 +146,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /\[data-league="nfl"\][\s\S]*--upcoming-matchup-glow-accent: #1e4fd4/);
     assert.match(css, /\[data-league="epl"\][\s\S]*--upcoming-matchup-glow-accent: #6b3fa8/);
     assert.match(css, /\[data-league="laliga"\][\s\S]*--upcoming-matchup-glow-accent: #c9a227/);
+    assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*background: transparent/);
     assert.match(row, /overview-slate-row-last-meeting/);
   });
 
