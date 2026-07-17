@@ -1,5 +1,12 @@
 /* Overview dashboard redesign — whitespace-first, segmented live/NCAA tiers */
 
+.overview-explore-stack,
+.overview-layout {
+  --dashboard-crimson: #e11d48;
+  --dashboard-crimson-hover: #dc2626;
+  --dashboard-crimson-ink: #f8fafc;
+}
+
 .overview-dashboard-breathe {
   margin-top: var(--space-10);
 }
@@ -375,9 +382,16 @@
 }
 
 .overview-secondary-tab--active {
-  color: var(--text);
-  background: var(--surface);
-  box-shadow: 0 0 0 1px var(--border-subtle);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
+  border: 1px solid var(--dashboard-crimson, #e11d48);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--dashboard-crimson, #e11d48) 28%, transparent);
+}
+
+.overview-secondary-tab--active:hover {
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson-hover, #dc2626);
+  border-color: var(--dashboard-crimson-hover, #dc2626);
 }
 
 .overview-secondary-tab:focus-visible {
@@ -1217,16 +1231,22 @@
 .overview-quicklists[data-league="laliga"] { --quicklist-accent: #c8102e; }
 
 .overview-quicklists-step-label {
-  border-color: color-mix(in srgb, var(--quicklist-accent) 30%, var(--pill-border));
-  background: color-mix(in srgb, var(--quicklist-accent) 12%, var(--pill-bg));
-  color: color-mix(in srgb, var(--quicklist-accent) 72%, var(--pill-ink));
+  border-color: var(--dashboard-crimson, #e11d48);
+  background: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
 }
 
 .overview-quicklists-segment[data-league="nba"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--raptors) 45%, var(--line));
-  color: var(--raptors);
-  background: color-mix(in srgb, var(--raptors) 12%, rgba(0, 0, 0, 0.12));
-  box-shadow: 0 1px 4px color-mix(in srgb, var(--raptors) 18%, transparent);
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--dashboard-crimson, #e11d48) 28%, transparent);
+}
+
+.overview-quicklists-segment[data-league="nba"][aria-selected="true"]:hover {
+  border-color: var(--dashboard-crimson-hover, #dc2626);
+  background: var(--dashboard-crimson-hover, #dc2626);
+  color: var(--dashboard-crimson-ink, #f8fafc);
 }
 
 .overview-quicklists-segment[data-league="cbb"][aria-selected="true"] {
@@ -1302,7 +1322,86 @@
 }
 
 .overview-quicklists-open-btn:hover .overview-quick-list-arrow {
-  color: color-mix(in srgb, var(--quicklist-accent) 85%, var(--ink));
+  color: var(--dashboard-crimson-ink, #f8fafc);
+}
+
+/* —— Explore bento: equal-height catalog + analytics columns —— */
+@media (min-width: 1024px) {
+  .overview-sidebar {
+    min-height: 100%;
+  }
+
+  .overview-sidebar-block.overview-catalog-collapsible {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100%;
+  }
+
+  .overview-catalog-collapsible .overview-catalog-segments {
+    flex: 1;
+  }
+
+  .overview-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  .overview-secondary-tabs {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100%;
+    margin-bottom: 0;
+    padding: var(--space-4);
+    border-radius: 1rem;
+    border: 1px solid var(--line);
+    background: var(--surface-raised);
+  }
+
+  .overview-secondary-tabpanel:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .overview-quicklists {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .overview-quicklists-open-row {
+    margin-top: auto;
+  }
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-secondary-tabs {
+  box-shadow: var(--card-shadow-light, 0 1px 3px rgba(15, 23, 42, 0.08));
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-secondary-tabs,
+html.dark .overview-secondary-tabs {
+  background: var(--bg-surface-1);
+  border-color: var(--border-subtle);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nba"][aria-selected="true"],
+html.dark .overview-quicklists-segment[data-league="nba"][aria-selected="true"] {
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--dashboard-crimson, #e11d48) 28%, transparent);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-secondary-tab--active,
+html.dark .overview-secondary-tab--active {
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
+  border-color: var(--dashboard-crimson, #e11d48);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog--coverage {
@@ -1330,6 +1429,12 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-panel 
       transparent 55%
     ),
     var(--surface-raised);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nba"][aria-selected="true"] {
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="epl"][aria-selected="true"] {

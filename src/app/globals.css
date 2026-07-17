@@ -11329,7 +11329,7 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
 @media (min-width: 1024px) {
   .overview-layout {
     grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
   }
 
   .overview-sidebar > .overview-sidebar-block:first-child {
@@ -11459,6 +11459,8 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
 .overview-catalog-status {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  align-self: center;
   flex-shrink: 0;
   font-size: 0.75rem;
   font-weight: 600;
@@ -11468,6 +11470,7 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   white-space: nowrap;
   padding: 0.125rem 0.5rem;
   border-radius: 0.25rem;
+  min-height: 1.375rem;
 }
 
 .league-season-start-badge {
@@ -11958,10 +11961,10 @@ html.dark .overview-quicklists-segment[aria-selected="true"] {
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nba"][aria-selected="true"],
 html.dark .overview-quicklists-segment[data-league="nba"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--raptors) 45%, var(--border-subtle));
-  color: var(--raptors);
-  background: color-mix(in srgb, var(--raptors) 14%, var(--bg-surface-1));
-  box-shadow: 0 1px 4px color-mix(in srgb, var(--raptors) 20%, transparent);
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--dashboard-crimson, #e11d48) 28%, transparent);
 }
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="cbb"][aria-selected="true"],
@@ -12032,9 +12035,16 @@ html.dark .overview-quick-list[aria-pressed="true"] {
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-open-btn,
 html.dark .overview-quicklists-open-btn {
-  background: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 14%, var(--bg-surface-2));
-  border-color: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 35%, var(--border-subtle));
-  color: var(--text-primary);
+  background: var(--dashboard-crimson, #e11d48);
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-open-btn:hover,
+html.dark .overview-quicklists-open-btn:hover {
+  background: var(--dashboard-crimson-hover, #dc2626);
+  border-color: var(--dashboard-crimson-hover, #dc2626);
+  color: var(--dashboard-crimson-ink, #f8fafc);
 }
 
 html[data-color="dark"]:not([data-contrast="high"]) .league-season-start-badge,
@@ -12965,11 +12975,11 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   gap: 0.35rem;
   padding: 0.45rem 0.75rem;
   border-radius: 0.55rem;
-  border: 1px solid color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 35%, var(--line));
-  background: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 12%, rgba(0, 0, 0, 0.15));
+  border: 1px solid var(--dashboard-crimson, #e11d48);
+  background: var(--dashboard-crimson, #e11d48);
   font-size: 0.74rem;
   font-weight: 650;
-  color: var(--ink);
+  color: var(--dashboard-crimson-ink, #f8fafc);
   text-decoration: none;
   transition:
     border-color 140ms ease,
@@ -12979,10 +12989,15 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 }
 
 .overview-quicklists-open-btn:hover {
-  border-color: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 50%, var(--line));
-  background: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 18%, rgba(0, 0, 0, 0.15));
+  border-color: var(--dashboard-crimson-hover, #dc2626);
+  background: var(--dashboard-crimson-hover, #dc2626);
+  color: var(--dashboard-crimson-ink, #f8fafc);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 22%, transparent);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--dashboard-crimson, #e11d48) 35%, transparent);
+}
+
+.overview-quicklists-open-btn .overview-quick-list-arrow {
+  color: var(--dashboard-crimson-ink, #f8fafc);
 }
 
 .overview-quicklists-step {
@@ -13000,13 +13015,13 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   align-items: center;
   padding: 0.12rem 0.45rem;
   border-radius: 999px;
-  border: 1px solid var(--pill-border);
-  background: var(--pill-bg);
+  border: 1px solid var(--dashboard-crimson, #e11d48);
+  background: var(--dashboard-crimson, #e11d48);
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--pill-ink);
+  color: var(--dashboard-crimson-ink, #f8fafc);
 }
 
 .overview-quicklists-tab {
@@ -13028,9 +13043,9 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 }
 
 .overview-quicklists-tab[data-league="nba"].overview-quicklists-tab--active {
-  border-color: color-mix(in srgb, var(--raptors) 45%, var(--line));
-  color: var(--raptors);
-  background: color-mix(in srgb, var(--raptors) 10%, rgba(0, 0, 0, 0.12));
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
 }
 
 .overview-quicklists-tab[data-league="nhl"].overview-quicklists-tab--active {
@@ -13965,9 +13980,9 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segmen
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nba"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--raptors) 40%, var(--border));
-  color: var(--raptors);
-  background: color-mix(in srgb, var(--raptors) 8%, var(--surface));
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="cbb"][aria-selected="true"] {
@@ -13999,7 +14014,15 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segmen
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-open-btn {
-  background: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 8%, var(--surface));
+  background: var(--dashboard-crimson, #e11d48);
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-open-btn:hover {
+  background: var(--dashboard-crimson-hover, #dc2626);
+  border-color: var(--dashboard-crimson-hover, #dc2626);
+  color: var(--dashboard-crimson-ink, #f8fafc);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--coming-soon,
@@ -14019,10 +14042,15 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card {
   box-shadow: var(--card-shadow-light);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-count,
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-step-label {
+html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-count {
   background: var(--surface-raised);
   border: 1px solid var(--border);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-step-label {
+  background: var(--dashboard-crimson, #e11d48);
+  border: 1px solid var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-hint {
