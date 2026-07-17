@@ -1,8 +1,8 @@
 import {
-  gameCountFromCrewSplits,
   getTeamRecordFromLogs,
 } from "@/lib/game-count";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
+import { resolveRecordSeasonsForDisplay } from "@/lib/record-seasons";
 import { getOfficialTeamRegularSeasonRecord } from "@/lib/team-record-query";
 import type { TeamSampleRecord } from "@/lib/teamRecord";
 import { getTeamSampleRecord } from "@/lib/teamRecord";
@@ -41,9 +41,18 @@ export function getTeamDisplayRecord(
   }
 
   const dataLeague = LEAGUE_DATA_MAP[league];
+  const recordSeasons = resolveRecordSeasonsForDisplay(
+    dataLeague,
+    seasons,
+    options.sinceSeason,
+  );
   const logs = loadRuntimeGameLogs(dataLeague);
   if (logs?.games?.length) {
-    const fromLogs = getTeamRecordFromLogs(logs.games, teamAbbr, seasons);
+    const fromLogs = getTeamRecordFromLogs(
+      logs.games,
+      teamAbbr,
+      recordSeasons,
+    );
     if (fromLogs.games > 0) return fromLogs;
   }
 

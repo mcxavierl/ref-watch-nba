@@ -6,6 +6,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { GameLogFile } from "./lib/game-logs";
 import { rebuildRefGamesFromLogs } from "./lib/rebuild-ref-games-from-logs";
+import { rebuildTeamSplitsFromGameLogs } from "./lib/rebuild-team-splits-from-logs";
 import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
 import type { RefStatsFile } from "./lib/types";
 
@@ -134,7 +135,10 @@ export function syncRefGameCountsFromLogs(
 
     writeJson(r, league.statsPath, rebuilt);
 
-    const { core, teamSplits } = splitRefStatsForDeploy(rebuilt);
+    const { core } = splitRefStatsForDeploy(rebuilt);
+    const teamSplits =
+      rebuildTeamSplitsFromGameLogs(league.id, rebuilt, logs) ??
+      splitRefStatsForDeploy(rebuilt).teamSplits;
     const corePath =
       league.id === "nba"
         ? "data/ref-stats-core.json"

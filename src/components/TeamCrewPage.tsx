@@ -70,6 +70,7 @@ export function TeamCrewPage({
 
   const {
     stats,
+    scopedSeasons,
     sinceSeason,
     scopeLabel,
     formatRange,
@@ -89,7 +90,7 @@ export function TeamCrewPage({
     league,
     team.abbr,
     splits,
-    stats.meta.seasons,
+    scopedSeasons,
     { sinceSeason },
   );
   const teamName = teamFullName(team as never);
