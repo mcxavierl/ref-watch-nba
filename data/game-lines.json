@@ -1,5 +1,5 @@
 {
   "lastUpdated": "2026-07-07T00:00:00.000Z",
-  "note": "Optional historical closing lines keyed by NBA gameId. Populated by imports or future backfill.",
+  "note": "Optional historical closing lines keyed by NBA gameId. Run npm run fetch-nba-historical-lines with ODDS_API_KEY, then npm run merge-market-lines.",
   "lines": []
 }
