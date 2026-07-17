@@ -16,7 +16,7 @@ describe("overviewQuickListsForLeague", () => {
         whistlePerGame: 34.9,
         whistleLabel: "Fouls per game",
         scorePerGame: 152.9,
-        scoreLabel: "points per game",
+        scoreLabel: "Points per game",
         whistleBar: 0.78,
         scoreBar: 0.85,
         analyticsUnlocked: true,

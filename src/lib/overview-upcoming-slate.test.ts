@@ -165,7 +165,7 @@ describe("overview-upcoming-slate", () => {
     );
     assert.match(
       slate.leagueGroup?.games[0]?.metadataLine ?? "",
-      /Recent form: OVI \(lost to MLL 3-0\), VIL \(beat ATM 5-1\)/,
+      /Last met: Aug 15, 2025 in Villarreal · OVI 0, VIL 2/,
     );
   });
 });
