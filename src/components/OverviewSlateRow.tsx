@@ -60,6 +60,7 @@ export function OverviewSlateRow({
   return (
     <li className="overview-slate-row" data-league={game.leagueId} data-status={game.status}>
       <div className="overview-slate-row-inner">
+      <div className="overview-slate-row-matchup-block">
         <span
           className="overview-slate-row-matchup"
           aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
@@ -73,6 +74,10 @@ export function OverviewSlateRow({
             {awayTeam.abbr} @ {homeTeam.abbr}
           </span>
         </span>
+        {game.lastMeetingLine ? (
+          <span className="overview-slate-row-last-meeting">{game.lastMeetingLine}</span>
+        ) : null}
+      </div>
         {game.status === "scheduled" && dateLabel ? (
           <span className="overview-slate-date">{dateLabel}</span>
         ) : null}

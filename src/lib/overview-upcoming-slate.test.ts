@@ -82,6 +82,10 @@ describe("overview-upcoming-slate", () => {
     assert.equal(slate.leagueGroup?.liveCount, 0);
     assert.equal(slate.leagueGroup?.games[0]?.matchup, "LAC @ DET");
     assert.equal(slate.leagueGroup?.games[0]?.status, "scheduled");
+    assert.match(
+      slate.leagueGroup?.games[0]?.lastMeetingLine ?? "",
+      /Last met Nov 12, 2023 in Los Angeles · DET 41, LAC 38/,
+    );
     assert.equal(slate.leagueNote?.note, file.note);
   });
 });

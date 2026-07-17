@@ -1,6 +1,13 @@
+import { getTeam as getCbbTeam } from "@/lib/cbb/teams";
+import { getTeam as getCfbTeam } from "@/lib/cfb/teams";
+import { getTeam as getEplTeam } from "@/lib/epl/teams";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { DataLeague, RuntimeGameLogEntry } from "@/lib/game-logs-preload";
+import { getTeam as getLaligaTeam } from "@/lib/laliga/teams";
 import type { LeagueId } from "@/lib/leagues";
+import { getTeam as getNflTeam } from "@/lib/nfl/teams";
+import { getTeam as getNhlTeam } from "@/lib/nhl/teams";
+import { getTeam as getNbaTeam } from "@/lib/teams";
 
 const LEAGUE_TO_DATA: Partial<Record<LeagueId, DataLeague>> = {
   nba: "NBA",
@@ -79,6 +86,55 @@ function formatMeetingResult(
   return `${prefix}: ${scoreLine} (${winner} won).`;
 }
 
+function formatShortDate(date: string): string {
+  return new Date(`${date}T12:00:00`).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function teamCityForLeague(leagueId: LeagueId, abbr: string): string | undefined {
+  const key = abbr.toUpperCase();
+  const team =
+    leagueId === "nba"
+      ? getNbaTeam(key)
+      : leagueId === "nhl"
+        ? getNhlTeam(key)
+        : leagueId === "nfl"
+          ? getNflTeam(key === "SD" ? "LAC" : key)
+          : leagueId === "epl"
+            ? getEplTeam(key)
+            : leagueId === "laliga"
+              ? getLaligaTeam(key)
+              : leagueId === "cbb"
+                ? getCbbTeam(key)
+                : leagueId === "cfb"
+                  ? getCfbTeam(key)
+                  : undefined;
+  return team?.city;
+}
+
+function latestHeadToHeadMeeting(
+  leagueId: LeagueId,
+  awayTeam: string,
+  homeTeam: string,
+): RuntimeGameLogEntry | undefined {
+  const dataLeague = LEAGUE_TO_DATA[leagueId];
+  if (!dataLeague) return undefined;
+  const logs = loadRuntimeGameLogs(dataLeague);
+  if (!logs?.games?.length) return undefined;
+
+  const meetings = logs.games.filter((game) =>
+    isHeadToHead(game, awayTeam, homeTeam, leagueId),
+  );
+  if (meetings.length === 0) return undefined;
+
+  return [...meetings].sort(
+    (a, b) => b.date.localeCompare(a.date) || b.gameId.localeCompare(a.gameId),
+  )[0];
+}
+
 function formatInsightLine(
   scopeLabel: string,
   meetings: RuntimeGameLogEntry[],
@@ -120,4 +176,23 @@ export function buildOverviewMatchupInsight(
   }
 
   return formatInsightLine("All-time sample", allMeetings, leagueId);
+}
+
+/** Compact last-meeting note for inline slate rows (date, site, score). */
+export function buildOverviewLastMeetingLine(
+  leagueId: LeagueId,
+  awayTeam: string,
+  homeTeam: string,
+): string | undefined {
+  const latest = latestHeadToHeadMeeting(leagueId, awayTeam, homeTeam);
+  if (!latest) return undefined;
+
+  const homeAbbr = latest.homeTeam.toUpperCase();
+  const awayAbbr = latest.awayTeam.toUpperCase();
+  const city = teamCityForLeague(leagueId, homeAbbr);
+  const location = city ? `in ${city}` : `at ${homeAbbr}`;
+  const dateLabel = formatShortDate(latest.date);
+  const score = `${awayAbbr} ${latest.awayScore}, ${homeAbbr} ${latest.homeScore}`;
+
+  return `Last met ${dateLabel} ${location} · ${score}`;
 }

@@ -136,6 +136,14 @@
   padding-top: 0;
 }
 
+.overview-slate-row-matchup-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
 .overview-slate-row-matchup {
   display: inline-flex;
   align-items: center;
@@ -157,6 +165,13 @@
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--clinical-ink-label);
+}
+
+.overview-slate-row-last-meeting {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--clinical-ink-muted);
 }
 
 .overview-shell--clinical .overview-slate-date {

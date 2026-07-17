@@ -137,6 +137,8 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(slate, /overview-slate-capsule-header/);
     assert.match(slate, /showHubLink=\{false\}/);
     assert.match(row, /size="lg"/);
+    assert.match(row, /overview-slate-row-last-meeting/);
+    assert.match(row, /game\.lastMeetingLine/);
   });
 
   it("editorial insight cards pair league badge with season start", () => {

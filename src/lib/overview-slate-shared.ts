@@ -17,6 +17,7 @@ export type OverviewSlateEntry = {
   status: OverviewSlateStatus;
   slateDate?: string;
   matchupInsight?: string;
+  lastMeetingLine?: string;
 };
 
 export type OverviewLeagueNote = {
