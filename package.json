@@ -93,6 +93,7 @@
     "sync:nba-officials-bbr": "tsx scripts/nba/sync-officials-from-bbr.ts"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
     "cheerio": "^1.2.0",
     "framer-motion": "^11.18.2",
     "lucide-react": "^1.23.0",
