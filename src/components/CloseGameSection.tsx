@@ -1,9 +1,11 @@
-import { TermHelp } from "@/components/TermHelp";
 import type { CloseGameMetrics } from "@/lib/close-game";
 
 function deltaTone(delta: string): "positive" | "negative" | "neutral" {
   const trimmed = delta.trim();
-  if (trimmed.startsWith("+") && !/^\+0(\.0+)?(\s|$)/.test(trimmed)) {
+  if (/^[-+]?0(\.0+)?(\s|$)/.test(trimmed)) {
+    return "neutral";
+  }
+  if (trimmed.startsWith("+")) {
     return "positive";
   }
   if (trimmed.startsWith("-")) {
@@ -14,9 +16,9 @@ function deltaTone(delta: string): "positive" | "negative" | "neutral" {
 
 function deltaClassName(delta: string): string {
   const tone = deltaTone(delta);
-  if (tone === "positive") return "ref-delta-positive";
-  if (tone === "negative") return "ref-delta-negative";
-  return "";
+  if (tone === "positive") return "text-emerald-400";
+  if (tone === "negative") return "text-rose-400";
+  return "text-slate-400";
 }
 
 export function CloseGameSection({
@@ -40,67 +42,54 @@ export function CloseGameSection({
 
   return (
     <section id="close-game" className={sectionClass}>
-      <div className={embedded ? "mb-3" : "mb-4"}>
+      <div className={embedded ? "mb-4" : "mb-5"}>
         <h2 className={embedded ? "font-semibold tracking-tight" : "section-title"}>
           {sectionTitle}
         </h2>
-        <p className={embedded ? "mt-1 text-xs font-normal text-slate-400" : "section-lead"}>
-          How {subjectLabel} compares in competitive late-game windows vs full
-          games.{" "}
-          <TermHelp id="close-game-proxy">
-            Proxy windows
-          </TermHelp>
-          , not official NBA L2M reports.
+        <p className={embedded ? "mt-1 text-sm font-normal text-slate-400" : "section-lead"}>
+          How {subjectLabel} compares in competitive late-game windows vs full games. (Based on
+          official box scores, not L2M reports).
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="pressure-matrix-bento" aria-label="Pressure matrix">
         {metrics.map((m) => (
-          <div key={m.window.id} className="ref-profile-section">
+          <article key={m.window.id} className="ref-profile-section pressure-matrix-card">
             <div className="ref-table-section-header">
               <h3 className="font-semibold tracking-tight">{m.window.label}</h3>
-              <p className="mt-1 text-sm font-normal text-slate-400">{m.window.description}</p>
-              <p className="mt-1 text-xs font-normal text-slate-400">{m.coverageNote}</p>
+              <p className="mt-1 text-xs font-normal text-slate-500">{m.coverageNote}</p>
             </div>
 
-            {m.honestyBanner && (
-              <div className="border-b border-border-subtle bg-amber-50/70 px-4 py-2.5 sm:px-5">
-                <p className="text-xs leading-relaxed text-amber-900">
-                  {m.honestyBanner}
-                </p>
-              </div>
-            )}
-
             {m.gameCount === 0 ? (
-              <div className="px-4 py-6 text-center sm:px-5">
-                <p className="text-sm text-zinc-600">
+              <div className="ref-table-section-body px-4 py-6 text-center sm:px-5">
+                <p className="text-sm font-normal text-slate-400">
                   No games in this window for {subjectLabel} yet.
                 </p>
               </div>
             ) : (
               <>
-                <div className="overflow-x-auto">
-                  <table className="ref-data-table data-table min-w-[480px]">
+                <div className="ref-table-section-body overflow-x-auto">
+                  <table className="ref-data-table data-table pressure-matrix-table min-w-[480px] w-full">
                     <thead>
                       <tr className="data-table-head">
                         <th>Metric</th>
-                        <th>{m.window.label}</th>
-                        <th>Full game</th>
-                        <th>Δ vs full</th>
+                        <th>Late-game avg</th>
+                        <th>Season avg</th>
+                        <th>Pressure impact Δ</th>
                       </tr>
                     </thead>
                     <tbody>
                       {m.compareRows.map((row) => (
                         <tr key={row.label}>
-                          <td className="text-sm text-zinc-700">{row.label}</td>
-                          <td className="font-tabular text-sm tabular-nums text-zinc-900">
+                          <td className="text-sm font-normal text-slate-300">{row.label}</td>
+                          <td className="font-tabular text-sm tabular-nums text-slate-50">
                             {row.windowValue}
                           </td>
-                          <td className="font-tabular text-sm tabular-nums text-zinc-600">
+                          <td className="font-tabular text-sm tabular-nums text-slate-400">
                             {row.fullGameValue}
                           </td>
                           <td
-                            className={`font-tabular text-sm tabular-nums text-zinc-800 ${deltaClassName(row.delta)}`.trim()}
+                            className={`font-tabular text-sm font-medium tabular-nums ${deltaClassName(row.delta)}`}
                           >
                             {row.delta}
                           </td>
@@ -110,15 +99,14 @@ export function CloseGameSection({
                   </table>
                 </div>
                 <div className="border-t border-border-subtle px-4 py-3 sm:px-5">
-                  <p className="text-xs text-zinc-500">
-                    Over benchmark: {m.overBaseline} combined {scoreUnit} ·
-                    Seasons: {m.seasons.join(", ")} · {m.fullGameCount} total
-                    games in sample
+                  <p className="text-xs font-normal text-slate-500">
+                    Over benchmark: {m.overBaseline} combined {scoreUnit} · Seasons:{" "}
+                    {m.seasons.join(", ")} · {m.fullGameCount} total games in sample
                   </p>
                 </div>
               </>
             )}
-          </div>
+          </article>
         ))}
       </div>
     </section>

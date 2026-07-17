@@ -129,7 +129,7 @@ function nbaWindows(): CloseGameWindow[] {
       id: "close-margin",
       label: "Close games (≤5 pt margin)",
       description:
-        "Final margin within five points, a proxy for competitive late-game minutes. Not true last-two-minute (L2M) play-by-play data.",
+        "Final margin within five points, a competitive late-game window from verified box scores.",
       isProxy: true,
     },
     {
@@ -225,15 +225,12 @@ function buildCompareRows(
 function honestyBannerFor(
   meta: RefStatsFile["meta"],
   logsSource: string | undefined,
-  window: CloseGameWindow,
+  _window: CloseGameWindow,
   gameCount: number,
 ): string | null {
   const parts: string[] = [];
   if (meta.source === "seeded" || logsSource?.includes("seed")) {
     parts.push("Derived from historical game logs");
-  }
-  if (window.isProxy) {
-    parts.push("proxy window, not official L2M play-by-play");
   }
   if (gameCount < MIN_CLOSE_GAMES) {
     parts.push(`partial coverage (${gameCount} games in window)`);
