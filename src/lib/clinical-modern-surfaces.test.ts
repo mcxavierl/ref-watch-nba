@@ -74,43 +74,51 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /Based on .* shared games/);
   });
 
-  it("WorldCupFinalSection uses authority match capsule", () => {
+  it("WorldCupFinalSection uses Clinical Modern DataCapsule match header", () => {
     const source = readSrc("src/components/WorldCupFinalSection.tsx");
     assert.match(source, /MatchStatusPill/);
-    assert.match(source, /tone="prestige"/);
+    assert.match(source, /tone="clinical"/);
     assert.match(source, /WorldCupFindingCard/);
+    assert.match(source, /wc-data-grid--bento/);
     assert.match(source, /text-5xl font-extrabold tracking-tighter/);
     assert.match(source, /wc-flag-avatar/);
-    assert.match(source, /text-xs text-slate-600/);
+    assert.match(source, /text-slate-400/);
+    assert.doesNotMatch(source, /#BFA86A/);
+    assert.doesNotMatch(source, /tone="prestige"/);
     assert.doesNotMatch(source, /overview-research-hub-card/);
     assert.doesNotMatch(source, /from "@\/components\/FindingsSection"/);
   });
 
-  it("WorldCupFindingCard uses authority KPI scale and semantic tones", () => {
+  it("WorldCupFindingCard uses DataCapsule KPI scale and semantic tones", () => {
     const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
     const kpi = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
     assert.match(card, /WorldCupKpiValue/);
     assert.match(kpi, /text-7xl font-black/);
-    assert.match(card, /bg-slate-800/);
-    assert.match(card, /text-slate-300/);
+    assert.match(kpi, /text-6xl font-black/);
+    assert.match(card, /wc-data-capsule/);
+    assert.match(card, /wc-data-capsule-pill/);
     assert.match(card, /border-slate-800/);
-    assert.match(card, /wc-authority-capsule--referee/);
+    assert.match(card, /wc-data-capsule--referee/);
+    assert.match(card, /wc-data-capsule__footnote/);
   });
 
-  it("World Cup editorial delight surfaces are defined", () => {
+  it("World Cup DataCapsule surfaces are defined", () => {
     const css = readSrc("src/components/worldcup/worldcup-delight.css");
-    assert.match(css, /wc-authority-capsule/);
+    assert.match(css, /wc-data-capsule/);
+    assert.match(css, /wc-data-grid--bento/);
     assert.match(css, /wc-flag-avatar/);
-    assert.match(css, /match-status-pill--prestige/);
+    assert.match(css, /--wc-capsule-ink/);
+    assert.match(css, /html\[data-color="light"\] .wc-data-capsule h3/);
+    assert.match(css, /html\[data-color="dark"\] .wc-data-capsule h3/);
+    assert.doesNotMatch(css, /bfa86a/i);
+    assert.doesNotMatch(css, /prestige/i);
   });
 
-  it("MatchStatusPill supports clinical and prestige tones", () => {
+  it("MatchStatusPill supports clinical slate capsule styling", () => {
     const source = readSrc("src/components/hub/MatchStatusPill.tsx");
-    assert.match(source, /bg-slate-700/);
-    assert.match(source, /text-slate-50/);
-    assert.match(source, /match-status-pill--prestige/);
-    assert.match(source, /bg-\[#BFA86A\]/);
-    assert.match(source, /text-white/);
+    assert.match(source, /bg-slate-800/);
+    assert.match(source, /text-slate-300/);
+    assert.match(source, /border-slate-700/);
     assert.match(source, /font-semibold/);
     assert.match(source, /tracking-wider/);
     assert.match(source, /h-\[2\.35rem\]/);

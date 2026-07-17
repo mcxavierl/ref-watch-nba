@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import { describe, it } from "node:test";
 import { worldCupKpiTone } from "@/components/worldcup/WorldCupKpiValue";
+
+function readSrc(rel: string): string {
+  return fs.readFileSync(path.join(process.cwd(), rel), "utf8");
+}
 
 describe("worldCupKpiTone", () => {
   it("marks card and goals-against stats as negative", () => {
@@ -31,6 +37,13 @@ describe("worldCupKpiTone", () => {
       worldCupKpiTone({ label: "Goals", value: "22-9" }),
       "neutral",
     );
+  });
+
+  it("uses text-6xl record scale and text-7xl dominant KPI scale", () => {
+    const source = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
+    assert.match(source, /RECORD_CLASS = "text-6xl font-black/);
+    assert.match(source, /KPI_CLASS = "text-7xl font-black/);
+    assert.match(source, /text-slate-100/);
   });
 
   it("marks referee names as name tone", () => {
