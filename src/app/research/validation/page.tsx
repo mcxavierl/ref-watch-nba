@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ValidationReportContent } from "@/components/ValidationReportContent";
 import { buildPageMetadata } from "@/lib/seo";
+import "@/components/methodology-page.css";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Closing-line validation",
@@ -18,7 +19,7 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function ValidationPage() {
   return (
-    <div className="page-shell methodology-shell overview-shell--clinical">
+    <div className="page-shell clinical-doc-shell">
       <Link href="/" className="back-link">
         ← Home
       </Link>

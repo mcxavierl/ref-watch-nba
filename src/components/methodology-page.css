@@ -1,14 +1,17 @@
 /* Clinical Modern methodology page */
 
-.methodology-shell {
+.methodology-shell,
+.clinical-doc-shell {
   /* Ink + capsule tokens: src/styles/clinical-doc-tokens.css */
 }
 
-.methodology-shell .page-title {
+.methodology-shell .page-title,
+.clinical-doc-shell .page-title {
   color: var(--methodology-ink);
 }
 
-.methodology-shell .page-lead {
+.methodology-shell .page-lead,
+.clinical-doc-shell .page-lead {
   color: var(--methodology-muted);
   max-width: 42rem;
 }

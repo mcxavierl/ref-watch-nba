@@ -3,6 +3,7 @@
  * Import after theme-tokens.css.
  */
 
+.clinical-doc-shell,
 .overview-shell--clinical,
 .methodology-shell {
   --clinical-ink: var(--text-primary);
@@ -17,6 +18,7 @@
   --methodology-capsule-border: var(--clinical-capsule-border);
 }
 
+html[data-color="dark"] .clinical-doc-shell,
 html[data-color="dark"] .overview-shell--clinical,
 html[data-color="dark"] .methodology-shell {
   --clinical-capsule-bg: rgb(2 6 23);

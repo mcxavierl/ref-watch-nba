@@ -25,7 +25,7 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function AboutPage() {
   return (
-    <div className="page-shell methodology-shell overview-shell--clinical">
+    <div className="page-shell clinical-doc-shell">
       <Link href="/" className="back-link">
         ← Home
       </Link>

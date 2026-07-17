@@ -115,9 +115,59 @@
 }
 
 @media (max-width: 639px) {
-  .validation-table th,
+  .validation-table-wrap {
+    overflow-x: visible;
+  }
+
+  .validation-table {
+    min-width: 0;
+  }
+
+  .validation-table thead {
+    display: none;
+  }
+
+  .validation-table tbody {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .validation-table tr {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px solid var(--methodology-capsule-border);
+    border-radius: 0.75rem;
+    background: var(--methodology-capsule-bg);
+  }
+
   .validation-table td {
-    padding: var(--space-3);
-    font-size: 0.8125rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 0;
+    border-bottom: none;
+    font-size: 0.875rem;
+  }
+
+  .validation-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--methodology-label);
+  }
+
+  .validation-table td:first-child {
+    font-weight: 600;
+    color: var(--methodology-ink);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-1);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .validation-table td:first-child::before {
+    content: none;
   }
 }
