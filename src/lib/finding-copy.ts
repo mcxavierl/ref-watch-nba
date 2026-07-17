@@ -257,12 +257,28 @@ const MATURITY_DISPLAY: Record<ConfidenceTier, string> = {
   Thin: "Low",
 };
 
+function parseFindingSampleGames(sampleNote: string): string {
+  const gamesMatch = sampleNote.match(/Sample:\s*([\d,]+)\s*games?/i);
+  return gamesMatch?.[1] ?? EMPTY_DISPLAY;
+}
+
+/** Split card metadata for separate confidence pills. */
+export function findingCardMetaParts(
+  sampleNote: string,
+  tier: ConfidenceTier,
+): { sample: string; maturity: string } {
+  const games = parseFindingSampleGames(sampleNote);
+  return {
+    sample: `Sample: ${games} games`,
+    maturity: `Data maturity: ${MATURITY_DISPLAY[tier]}`,
+  };
+}
+
 /** Compact card metadata: sample size + data maturity tier. */
 export function formatFindingCardMeta(
   sampleNote: string,
   tier: ConfidenceTier,
 ): string {
-  const gamesMatch = sampleNote.match(/Sample:\s*([\d,]+)\s*games?/i);
-  const games = gamesMatch?.[1] ?? EMPTY_DISPLAY;
-  return `Sample: ${games} games • Data maturity: ${MATURITY_DISPLAY[tier]}`;
+  const { sample, maturity } = findingCardMetaParts(sampleNote, tier);
+  return `${sample} • ${maturity}`;
 }

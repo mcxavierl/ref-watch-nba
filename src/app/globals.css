@@ -69,6 +69,11 @@
   --wc-research-accent: #bfa86a;
   --wc-research-accent-muted: color-mix(in srgb, var(--wc-research-accent) 22%, transparent);
   --wc-research-surface: color-mix(in srgb, var(--wc-research-accent) 8%, var(--bg-surface-1));
+
+  /* Live league season-start dates — high-contrast blue in light and dark */
+  --live-league-date-ink: #1d4ed8;
+  --live-league-date-bg: #dbeafe;
+  --live-league-date-border: #93c5fd;
   --header-wordmark: #ffffff;
 
   /* Standout metric delight surfaces — ink tokens in theme-tokens.css */
@@ -2697,6 +2702,7 @@ p {
     line-height: 1.2;
     letter-spacing: 0.01em;
     color: var(--pill-ink);
+    white-space: nowrap;
   }
 
   .finding-meta-pill:not(.finding-meta-pill--league):not(.finding-meta-pill--category):not(.finding-meta-pill-muted) {
@@ -5630,6 +5636,7 @@ p {
     line-height: 1.25;
     letter-spacing: 0.02em;
     color: var(--foreground);
+    white-space: nowrap;
   }
 
   .status-badge--compact {
@@ -11437,8 +11444,6 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   border-radius: 0.25rem;
 }
 
-.overview-catalog-status--season-start,
-.overview-catalog-status--live,
 .league-season-start-badge {
   display: inline-flex;
   align-items: center;
@@ -11452,16 +11457,37 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   letter-spacing: 0.01em;
   text-transform: none;
   white-space: nowrap;
-  padding: 0.125rem 0.5rem;
+  padding: 0.125rem 0.625rem;
   border-radius: 0.25rem;
-  color: var(--pill-ink);
-  background: var(--pill-bg);
-  border: 1px solid var(--pill-border);
+  color: var(--live-league-date-ink);
+  background: var(--live-league-date-bg);
+  border: 1px solid var(--live-league-date-border);
+}
+
+.overview-catalog-status--season-start,
+.overview-catalog-status--live {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 2.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  white-space: nowrap;
+  padding: 0.125rem 0.625rem;
+  border-radius: 0.25rem;
+  color: var(--live-league-date-ink);
+  background: var(--live-league-date-bg);
+  border: 1px solid var(--live-league-date-border);
 }
 
 .overview-catalog-status--live {
-  color: var(--pill-ink);
-  background: var(--pill-bg);
+  color: var(--live-league-date-ink);
+  background: var(--live-league-date-bg);
 }
 
 .overview-catalog-status--preview,
@@ -11993,9 +12019,12 @@ html.dark .overview-catalog-status--season-start,
 html.dark .overview-catalog-status--live,
 html[data-color="dark"]:not([data-contrast="high"]) .overview-expansion-live-status,
 html.dark .overview-expansion-live-status {
-  color: var(--pill-ink);
-  background: var(--pill-bg);
-  border: 1px solid var(--pill-border);
+  --live-league-date-ink: #bfdbfe;
+  --live-league-date-bg: color-mix(in srgb, #1e40af 38%, var(--bg-surface-1));
+  --live-league-date-border: color-mix(in srgb, #60a5fa 52%, var(--border-subtle));
+  color: var(--live-league-date-ink);
+  background: var(--live-league-date-bg);
+  border: 1px solid var(--live-league-date-border);
 }
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-status--coming-soon,
@@ -12068,9 +12097,12 @@ html.dark .rankings-insight-card {
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--season-start,
 html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge {
-  color: var(--text-muted);
-  background: var(--bg-surface-2);
-  border: 1px solid var(--border-subtle);
+  --live-league-date-ink: #1d4ed8;
+  --live-league-date-bg: #dbeafe;
+  --live-league-date-border: #93c5fd;
+  color: var(--live-league-date-ink);
+  background: var(--live-league-date-bg);
+  border: 1px solid var(--live-league-date-border);
 }
 
 .overview-insight-league {
@@ -13826,15 +13858,21 @@ html[data-color="light"]:not([data-contrast="high"]) .slate-quick-lookup-chip-ba
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--live {
-  color: #52525b;
-  background: #f4f4f5;
-  border: 1px solid #e4e4e7;
+  --live-league-date-ink: #1d4ed8;
+  --live-league-date-bg: #dbeafe;
+  --live-league-date-border: #93c5fd;
+  color: var(--live-league-date-ink);
+  background: var(--live-league-date-bg);
+  border: 1px solid var(--live-league-date-border);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-live-status {
-  color: #52525b;
-  background: #f4f4f5;
-  border: 1px solid #e4e4e7;
+  --live-league-date-ink: #1d4ed8;
+  --live-league-date-bg: #dbeafe;
+  --live-league-date-border: #93c5fd;
+  color: var(--live-league-date-ink);
+  background: var(--live-league-date-bg);
+  border: 1px solid var(--live-league-date-border);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-insight-card {

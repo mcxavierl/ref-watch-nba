@@ -314,11 +314,11 @@ function InlineInsightCard({
         style={{ "--insight-index": index } as CSSProperties}
       >
         <header className="insight-card-head">
-          <span className="insight-card-league">{card.shortLabel}</span>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="insight-card-head-row">
+            <span className="insight-card-league">{card.shortLabel}</span>
             <LeagueSeasonStartBadge leagueId={card.leagueId} />
-            <p className="insight-card-kicker">{card.kicker}</p>
           </div>
+          <p className="insight-card-kicker">{card.kicker}</p>
         </header>
 
         <button
