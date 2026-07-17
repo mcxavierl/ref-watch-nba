@@ -27,6 +27,7 @@ npm run dev              # http://localhost:3000
 |--------|--------|--------|
 | `npm run fetch-assignments` | `data/assignments.json` | [official.nba.com/referee-assignments](https://official.nba.com/referee-assignments/) (HTML parse) |
 | `npm run fetch-odds` | `data/odds.json` | The Odds API totals + spreads (optional `ODDS_API_KEY`) |
+| `npm run fetch-nba-historical-lines` | `data/game-lines.json` | Historical NBA closing totals + spreads (paid `ODDS_API_KEY`) |
 | `npm run morning-slate` | assignments + odds + `data/alerts.json` | Morning refresh (~9:05 AM ET cron) |
 | `npm run build-ref-data` | `data/assignments.json` + `data/ref-stats.json` | Assignments (live) + NBA Stats API backfill |
 
@@ -52,6 +53,15 @@ npm run build-ref-data
 ```
 
 Set `ODDS_API_KEY` for sportsbook total comparison ([The Odds API](https://the-odds-api.com/)). Without it, pace alerts compare crew history to a **225-point proxy**.
+
+Copy `.env.example` to `.env.local` and set your key locally. For historical NBA closing totals (mid-2020 onward), run:
+
+```bash
+npm run fetch-nba-historical-lines -- --full
+npm run merge-market-lines
+```
+
+Historical odds require a paid Odds API usage plan. Use `--from`, `--to`, or `--max-days` to limit quota during testing.
 
 Regenerate comprehensive seed data (75 refs, 3 seasons, all teams):
 
