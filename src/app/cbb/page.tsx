@@ -5,7 +5,6 @@ import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
-import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
 import { TrustCharterSummary } from "@/components/TrustCharterSummary";
@@ -174,7 +173,6 @@ export default function HomePage() {
 
       <RelatedInsightsFooter league="CBB" />
 
-      <ProComingSoonTease league="CBB" />
     </div>
   );
 }

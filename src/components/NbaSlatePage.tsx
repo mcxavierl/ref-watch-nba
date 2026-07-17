@@ -3,7 +3,6 @@ import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
-import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateFeatureShowcase } from "@/components/SlateFeatureShowcase";
 import { SlateQuickLookupSection } from "@/components/SlateQuickLookupSection";
@@ -194,7 +193,6 @@ export async function NbaSlatePage({
 
       <RelatedInsightsFooter league="NBA" />
 
-      <ProComingSoonTease league="NBA" compact={isOffseason} />
     </div>
   );
 }

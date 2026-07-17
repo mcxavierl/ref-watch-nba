@@ -61,7 +61,7 @@ test("CBB hub page uses standard league slate layout", () => {
   assert.match(page, /LeagueSlateHero/);
   assert.match(page, /OffseasonSlateNotice/);
   assert.match(page, /BrowseActionCards/);
-  assert.match(page, /ProComingSoonTease/);
+  assert.doesNotMatch(page, /ProComingSoonTease/);
   assert.match(page, /page-shell-slate/);
   assert.doesNotMatch(page, /CbbClinicalHero/);
   assert.doesNotMatch(page, /CbbClinicalActionTiles/);

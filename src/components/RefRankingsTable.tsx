@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useMemo, useState, type ReactNode } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
-import { ProComingSoonTease } from "@/components/ProComingSoonTease";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { signedDeltaTone } from "@/lib/metric-delight";
@@ -369,10 +368,6 @@ export function RefRankingsTable({
             })}
           </tbody>
         </table>
-      </div>
-
-      <div className="border-t border-border-subtle px-4 py-4 sm:px-5">
-        <ProComingSoonTease league={league} compact />
       </div>
     </div>
   );

@@ -2,7 +2,9 @@
 // <InsightsHubRoute>, not InsightsHubPage. See insights-routes.test.ts.
 import { InsightsHubPage } from "@/components/InsightsHubPage";
 import { hydrateLeagueAnalyticsData } from "@/lib/league-analytics-hydrate";
+import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import type { CbbTrendsConferenceScope } from "@/lib/cbb/conference-trends-shared";
+import { SITE_URL } from "@/lib/site";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 
 type InsightsLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
@@ -20,6 +22,7 @@ export async function InsightsHubRoute({
   scopeMode,
   cbbTrendsConference,
 }: InsightsHubRouteProps) {
+  await preloadLeagueRefStats(SITE_URL, leagueId, { includeTeamSplits: false });
   await hydrateLeagueAnalyticsData(leagueId);
 
   return (

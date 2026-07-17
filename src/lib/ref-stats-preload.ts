@@ -71,6 +71,9 @@ export function getCachedRefStats(league: League): RefStatsFile | null {
 export function getPreferHydratedRefStats(league: League): RefStatsFile | null {
   const cached = getCachedRefStats(league);
   if (!cached?.refs?.length) return null;
+  if (hasGameLogOnlyIngest(cached)) {
+    return cached;
+  }
   const leagueId = league as LeagueId;
   if (
     isVerifiedLiveLeague(leagueId) &&
