@@ -47,8 +47,8 @@ const stats: RefStatsFile = {
     totalGamesProcessed: 1000,
   },
   refs: [
-    ref("quiet-large", "Quiet Large", 100, 350, 40),
-    ref("heavy-large", "Heavy Large", 0, 320, 42),
+    ref("quiet-large", "Barry Anderson", 100, 350, 40),
+    ref("heavy-large", "Tony Corrente", 0, 320, 42),
     ref("quiet-small", "Quiet Small", 100, 120, 30),
     ref("neutral-large", "Neutral Large", 55, 400, 50),
   ],
@@ -56,12 +56,12 @@ const stats: RefStatsFile = {
 };
 
 describe("buildGsniHomeFindings", () => {
-  it("returns extreme GSNI refs with large samples only", () => {
+  it("returns extreme clutch profiles with large samples only", () => {
     const findings = buildGsniHomeFindings(stats);
     assert.equal(findings.length, 2);
     assert.ok(findings.every((row) => row.sampleGames >= GSNI_HOME_MIN_SAMPLE_GAMES));
-    assert.ok(findings.some((row) => row.band === "quiet"));
-    assert.ok(findings.some((row) => row.band === "heavy"));
+    assert.ok(findings.some((row) => row.consistencyProfile === "high-consistency"));
+    assert.ok(findings.some((row) => row.consistencyProfile === "high-variance"));
   });
 
   it("prefers the largest eligible samples", () => {
@@ -70,12 +70,16 @@ describe("buildGsniHomeFindings", () => {
     assert.equal(findings[1]?.refSlug, "heavy-large");
   });
 
-  it("includes plain-language copy and stat graphics metadata", () => {
+  it("uses descriptive clutch consistency copy and sample transparency", () => {
     const finding = buildGsniHomeFindings(stats)[0];
-    assert.ok(finding?.plainTitle.includes("Quiet Large"));
-    assert.match(finding?.plainSummary ?? "", /close, late-game/i);
+    assert.equal(
+      finding?.headline,
+      "Barry Anderson shows high consistency in clutch situations.",
+    );
+    assert.match(finding?.minutesLine ?? "", /Based on N=40 high-leverage minutes/);
+    assert.equal(finding?.confidenceTag, "Preliminary");
     assert.equal(finding?.stats.length, 2);
-    assert.equal(finding?.vsNeutralLabel, "50 pts quieter than league avg");
+    assert.equal(finding?.stats[1]?.label, "High-leverage minutes");
   });
 });
 
