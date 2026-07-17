@@ -75,12 +75,12 @@ describe("refactor safety static checks", () => {
     );
   });
 
-  it("scanAllProLeagueOutliers excludes international-origin candidates", () => {
-    const source = readSrc("src/lib/insights/generator.ts");
+  it("insight-drilldown-builder tests must not pin specific generated insight cards", () => {
+    const source = readSrc("scripts/lib/insight-drilldown-builder.test.ts");
     assert.doesNotMatch(
       source,
-      /scanInternationalMatchupOutliers\(\)/,
-      "top-story scan must not surface international-origin cards until the product is ready",
+      /\.find\([^)]*refSlug\s*===\s*["'][a-z0-9-]+["']/,
+      "select matrix cards by league/kind — overview-insights.json changes when standout splits rebuild",
     );
   });
 });
