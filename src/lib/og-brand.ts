@@ -16,15 +16,6 @@ export const OG_LEAGUE_ACCENTS: Partial<Record<LeagueId, string>> = {
   cfb: "#009CDE",
 };
 
-export const OG_NHL_CARD_BG = "rgba(10, 76, 122, 0.2)";
-
-export const OG_LEAGUE_CARD_BACKGROUNDS: Partial<Record<LeagueId, string>> = {
-  nhl: OG_NHL_CARD_BG,
-};
-
-export const OG_DELTA_POSITIVE = "#34d399";
-export const OG_DELTA_NEGATIVE = "#ef4444";
-
 export const OG_FOOTER_LINE = "Verified officiating analytics | Ref Watch";
 
 export type BrandOgHighlight = {
@@ -33,7 +24,6 @@ export type BrandOgHighlight = {
   heroValue: string;
   accent: string;
   heroTone: LeagueInsightTone;
-  cardBackground?: string;
 };
 
 export type BrandOgContent = {
@@ -69,7 +59,6 @@ function matrixEdgeOgHeadline(card: LeagueInsightCard): string {
 /** Normalize matrix-edge highlights so OG hero values and headlines stay consistent. */
 export function formatOgHighlight(card: LeagueInsightCard): BrandOgHighlight {
   const accent = OG_LEAGUE_ACCENTS[card.leagueId] ?? "#d8b85d";
-  const cardBackground = OG_LEAGUE_CARD_BACKGROUNDS[card.leagueId];
 
   if (card.kind === "matrix-edge") {
     return {
@@ -78,7 +67,6 @@ export function formatOgHighlight(card: LeagueInsightCard): BrandOgHighlight {
       heroValue: formatAbsoluteDeltaPp(card.heroValue),
       accent,
       heroTone: "positive",
-      cardBackground,
     };
   }
 
@@ -88,7 +76,6 @@ export function formatOgHighlight(card: LeagueInsightCard): BrandOgHighlight {
     heroValue: card.heroValue,
     accent,
     heroTone: card.heroTone,
-    cardBackground,
   };
 }
 

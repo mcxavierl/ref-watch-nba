@@ -11,7 +11,7 @@
     "check:client-imports": "tsx scripts/check-client-node-imports.ts",
     "check:no-em-dashes": "tsx scripts/check-no-em-dashes.ts",
     "check:deploy": "tsx scripts/copy-data-to-public.ts && tsx scripts/check-deploy-readiness.ts",
-    "check:refactor-safety": "tsx --test src/lib/refactor-safety.test.ts src/lib/insights-routes.test.ts",
+    "check:refactor-safety": "tsx --test src/lib/refactor-safety.test.ts src/lib/insights-routes.test.ts src/lib/og-image.test.ts",
     "audit:links": "tsx scripts/audit-links.ts",
     "audit:card-consistency": "tsx scripts/audit-card-consistency.ts",
     "check:volume": "tsx scripts/check-volume-regression.ts",

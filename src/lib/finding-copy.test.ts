@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, it } from "node:test";
 import {
   BANNED_NEGATIVE_DELTA_HEADLINE,
@@ -82,11 +84,11 @@ describe("finding-copy", () => {
   it("third-person ranking copy matches signed whistle delta direction", () => {
     assert.equal(
       thirdPersonWhistlePaceBody(-2, "fouls called"),
-      "He runs 2.0 fouls called below average per match.",
+      "Runs 2.0 fouls called below average per match.",
     );
     assert.equal(
       thirdPersonWhistlePaceBody(2, "fouls called"),
-      "He runs 2.0 fouls called above average per match.",
+      "Runs 2.0 fouls called above average per match.",
     );
     assert.equal(whistlePaceRankTitle(-2, "Whistle"), "Lightest whistle ref");
     assert.equal(whistlePaceRankTitle(2, "Whistle"), "Heaviest whistle ref");
@@ -96,7 +98,7 @@ describe("finding-copy", () => {
   it("third-person scoring copy matches signed delta direction", () => {
     assert.equal(
       thirdPersonScoringPaceBody(-1.4, "points"),
-      "He averages 1.4 fewer combined points than the league baseline in his matches.",
+      "Averages 1.4 fewer combined points than the league baseline per match.",
     );
     assert.equal(scoringPaceRankTitle(-1.4), "Biggest scoring dip");
     assert.equal(scoringPaceRankTitle(1.4), "Biggest scoring bump");
@@ -130,6 +132,17 @@ describe("finding-copy", () => {
   it("keeps paradox language when scoring is clearly under neutral", () => {
     const headline = whistleParadoxHeadline("Scott Foster", 0.44);
     assert.match(headline, /scores stay low/i);
+  });
+
+  it("official-facing copy avoids gendered pronouns", () => {
+    for (const rel of [
+      "src/lib/finding-copy.ts",
+      "src/lib/grudge-match.ts",
+      "src/lib/rankings-synthesis.ts",
+    ]) {
+      const source = readFileSync(join(process.cwd(), rel), "utf8");
+      assert.doesNotMatch(source, /\b(He|His|he|his|him)\b/, rel);
+    }
   });
 });
 

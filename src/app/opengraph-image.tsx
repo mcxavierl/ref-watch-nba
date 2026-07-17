@@ -5,6 +5,6 @@ export const alt = "Ref Watch - multi-league referee analytics and historical te
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
   return renderBrandOgImage(brandOgContent());
 }

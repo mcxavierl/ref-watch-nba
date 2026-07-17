@@ -1,22 +1,11 @@
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { ImageResponse } from "next/og";
-import {
-  HEADER_GOLD,
-  HEADER_GOLD_BRIGHT,
-  HEADER_GOLD_INK,
-  HEADER_GRADIENT,
-  HEADER_INK,
-  HEADER_SAPPHIRE_CENTER,
-  MARK_GRADIENT,
-  WHISTLE_PATHS,
-} from "@/lib/brand-colors";
+import { WHISTLE_PATHS } from "@/lib/brand-colors";
+import { loadOgFonts } from "@/lib/og-fonts";
 import type { BrandOgContent } from "@/lib/og-brand";
-import {
-  OG_DELTA_NEGATIVE,
-  OG_DELTA_POSITIVE,
-  leagueAccentFromOgTitle,
-} from "@/lib/og-brand";
+import { leagueAccentFromOgTitle } from "@/lib/og-brand";
 import type { HubOgContent } from "@/lib/og-hub";
+import type { LeagueInsightTone } from "@/lib/league-overview-insights";
 
 export const ogImageSize = { width: 1200, height: 630 };
 export const ogImageContentType = "image/png";
@@ -24,17 +13,17 @@ export const ogImageContentType = "image/png";
 const BG_DEEP = "#020617";
 const BG_SURFACE = "#0f172a";
 const BG_ELEVATED = "#1e293b";
+const CHAMPAGNE_GOLD = "#C5A059";
+const TEXT_HEADLINE = "#f8fafc";
+const TEXT_HERO = "#f1f5f9";
 const TEXT_PRIMARY = "#e2e8f0";
-const TEXT_SECONDARY = "#94a3b8";
+const TEXT_NARRATIVE = "#cbd5e1";
+const TEXT_LABEL = "#94a3b8";
 const TEXT_MUTED = "#64748b";
+const BORDER_SLATE_700 = "#334155";
 const BORDER_SUBTLE = "#1e293b";
 const LEAGUE_LABEL_WIDTH = 34;
-
-function ogDeltaColor(tone: "positive" | "negative" | "neutral"): string {
-  if (tone === "positive") return OG_DELTA_POSITIVE;
-  if (tone === "negative") return OG_DELTA_NEGATIVE;
-  return HEADER_GOLD_BRIGHT;
-}
+const OG_FONT_FAMILY = "Inter, system-ui, sans-serif";
 
 function hexAlpha(hex: string, alpha: number): string {
   const normalized = hex.replace("#", "");
@@ -42,6 +31,28 @@ function hexAlpha(hex: string, alpha: number): string {
   const g = Number.parseInt(normalized.slice(2, 4), 16);
   const b = Number.parseInt(normalized.slice(4, 6), 16);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function ogHighlightSurface(tone: LeagueInsightTone): {
+  background: string;
+  border: string;
+} {
+  if (tone === "positive") {
+    return {
+      background: "rgba(2, 44, 34, 0.3)",
+      border: "#065f46",
+    };
+  }
+  if (tone === "negative") {
+    return {
+      background: "rgba(76, 5, 25, 0.3)",
+      border: "#9f1239",
+    };
+  }
+  return {
+    background: BG_SURFACE,
+    border: BORDER_SLATE_700,
+  };
 }
 
 function OgWhistleMark({ size }: { size: number }) {
@@ -67,10 +78,9 @@ function OgWhistleMark({ size }: { size: number }) {
           position: "absolute",
           inset: 0,
           borderRadius: radius,
-          border: "1px solid rgba(96, 169, 229, 0.42)",
-          background: MARK_GRADIENT,
-          boxShadow:
-            "inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 14px 28px rgba(0, 10, 28, 0.55)",
+          border: `1px solid ${BORDER_SLATE_700}`,
+          background: `linear-gradient(155deg, ${BG_SURFACE} 0%, ${BG_DEEP} 100%)`,
+          boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.06)",
         }}
       />
       <svg
@@ -78,7 +88,7 @@ function OgWhistleMark({ size }: { size: number }) {
         height={iconSize}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={HEADER_GOLD}
+        stroke={CHAMPAGNE_GOLD}
         strokeWidth={2.35}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -92,59 +102,25 @@ function OgWhistleMark({ size }: { size: number }) {
   );
 }
 
-function OgAtmosphere({ accent }: { accent?: string }) {
-  const glow = accent ?? HEADER_SAPPHIRE_CENTER;
-
+function OgAtmosphere() {
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          top: -120,
-          left: -80,
-          width: 520,
-          height: 520,
-          borderRadius: 999,
-          background: `radial-gradient(circle, rgba(216, 184, 93, 0.16) 0%, transparent 68%)`,
-        }}
-      />
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          top: 40,
-          right: -120,
-          width: 460,
-          height: 460,
-          borderRadius: 999,
-          background: `radial-gradient(circle, ${hexAlpha(glow, 0.22)} 0%, transparent 70%)`,
-        }}
-      />
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          bottom: -180,
-          left: 280,
-          width: 640,
-          height: 640,
-          borderRadius: 999,
-          background:
-            "radial-gradient(circle, rgba(10, 95, 167, 0.18) 0%, transparent 72%)",
-        }}
-      />
-    </>
+    <div
+      style={{
+        display: "flex",
+        position: "absolute",
+        top: -140,
+        left: -60,
+        width: 520,
+        height: 520,
+        borderRadius: 999,
+        background:
+          "radial-gradient(circle, rgba(197, 160, 89, 0.08) 0%, transparent 68%)",
+      }}
+    />
   );
 }
 
-function OgCanvas({
-  accent,
-  children,
-}: {
-  accent?: string;
-  children: ReactNode;
-}) {
+function OgCanvas({ children }: { children: ReactNode }) {
   return (
     <div
       style={{
@@ -154,19 +130,19 @@ function OgCanvas({
         height: "100%",
         position: "relative",
         overflow: "hidden",
-        background: `linear-gradient(145deg, ${BG_DEEP} 0%, ${BG_SURFACE} 52%, ${BG_DEEP} 100%)`,
-        fontFamily: "system-ui, sans-serif",
+        background: BG_DEEP,
+        fontFamily: OG_FONT_FAMILY,
       }}
     >
-      <OgAtmosphere accent={accent} />
+      <OgAtmosphere />
       <div
         style={{
           display: "flex",
           position: "absolute",
           inset: 0,
-          opacity: 0.12,
+          opacity: 0.08,
           backgroundImage:
-            "linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px)",
+            "linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
         }}
       />
@@ -194,7 +170,7 @@ function OgHeaderBand({
   subtitle: string;
   accent?: string;
 }) {
-  const pillAccent = accent ?? HEADER_SAPPHIRE_CENTER;
+  const pillAccent = accent ?? CHAMPAGNE_GOLD;
 
   return (
     <div
@@ -202,22 +178,11 @@ function OgHeaderBand({
         display: "flex",
         flexDirection: "column",
         position: "relative",
-        background: `linear-gradient(180deg, ${BG_SURFACE} 0%, ${BG_DEEP} 100%)`,
+        background: BG_DEEP,
         padding: "26px 48px 22px",
         borderBottom: `1px solid ${BORDER_SUBTLE}`,
-        boxShadow: "none",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          inset: "auto 0 0",
-          height: 1,
-          background:
-            "linear-gradient(90deg, transparent 6%, rgba(151, 205, 255, 0.28) 30%, rgba(217, 238, 255, 0.62) 50%, rgba(151, 205, 255, 0.28) 70%, transparent 94%)",
-        }}
-      />
       <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
         <OgWhistleMark size={76} />
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -228,9 +193,7 @@ function OgHeaderBand({
                 fontSize: 42,
                 fontWeight: 900,
                 letterSpacing: "0.08em",
-                color: HEADER_GOLD_BRIGHT,
-                textShadow:
-                  "0 1px 0 rgba(255, 244, 185, 0.28), 0 4px 18px rgba(0, 24, 51, 0.42)",
+                color: CHAMPAGNE_GOLD,
               }}
             >
               REF WATCH
@@ -242,12 +205,12 @@ function OgHeaderBand({
                   fontSize: 15,
                   fontWeight: 700,
                   letterSpacing: "0.1em",
-                  color: HEADER_GOLD_INK,
-                  background: `linear-gradient(180deg, ${HEADER_GOLD_BRIGHT} 0%, ${HEADER_GOLD} 58%, #b98d3e 100%)`,
+                  color: TEXT_HEADLINE,
+                  background: BG_SURFACE,
                   padding: "7px 14px",
                   borderRadius: 999,
-                  border: `1px solid ${hexAlpha(pillAccent, 0.35)}`,
-                  boxShadow: `0 0 0 1px ${hexAlpha(pillAccent, 0.18)}, 0 6px 16px rgba(0, 0, 0, 0.28)`,
+                  border: `1px solid ${hexAlpha(pillAccent, 0.45)}`,
+                  boxShadow: `0 0 0 1px ${hexAlpha(pillAccent, 0.12)}`,
                 }}
               >
                 {leagueLabel}
@@ -257,9 +220,9 @@ function OgHeaderBand({
           <div
             style={{
               display: "flex",
-              fontSize: 19,
-              fontWeight: 500,
-              color: TEXT_SECONDARY,
+              fontSize: 20,
+              fontWeight: 600,
+              color: CHAMPAGNE_GOLD,
               letterSpacing: "-0.01em",
             }}
           >
@@ -267,6 +230,204 @@ function OgHeaderBand({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function OgMetricsBento({
+  metrics,
+}: {
+  metrics: Array<{ label: string; value: string }>;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: 0,
+        borderRadius: 16,
+        border: `1px solid ${BORDER_SLATE_700}`,
+        background: BG_SURFACE,
+        overflow: "hidden",
+      }}
+    >
+      {metrics.map((metric, index) => (
+        <div
+          key={metric.label}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            gap: 4,
+            padding: "16px 18px",
+            borderRight:
+              index < metrics.length - 1
+                ? `1px solid ${BORDER_SLATE_700}`
+                : "none",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              fontSize: 28,
+              fontWeight: 800,
+              color: TEXT_HEADLINE,
+              letterSpacing: "-0.02em",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {metric.value}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: TEXT_LABEL,
+            }}
+          >
+            {metric.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function OgLeaguePills({
+  leagues,
+}: {
+  leagues: Array<{ label: string; accent: string }>;
+}) {
+  return (
+    <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+      {leagues.map((league) => (
+        <div
+          key={league.label}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "8px 14px",
+            borderRadius: 999,
+            background: BG_SURFACE,
+            border: `1px solid ${hexAlpha(league.accent, 0.35)}`,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              width: 8,
+              height: 8,
+              borderRadius: 999,
+              background: league.accent,
+              flexShrink: 0,
+            }}
+          />
+          <div
+            style={{
+              display: "flex",
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              color: TEXT_PRIMARY,
+              width: LEAGUE_LABEL_WIDTH,
+            }}
+          >
+            {league.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function OgHighlightCards({
+  highlights,
+}: {
+  highlights: BrandOgContent["highlights"];
+}) {
+  return (
+    <div style={{ display: "flex", gap: 12 }}>
+      {highlights.map((highlight) => {
+        const surface = ogHighlightSurface(highlight.heroTone);
+
+        return (
+          <div
+            key={`${highlight.league}-${highlight.headline}`}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flex: 1,
+              gap: 8,
+              padding: "14px 16px",
+              borderRadius: 16,
+              background: surface.background,
+              border: `1px solid ${surface.border}`,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  flexShrink: 0,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    width: 8,
+                    height: 8,
+                    borderRadius: 999,
+                    background: highlight.accent,
+                    flexShrink: 0,
+                  }}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: highlight.accent,
+                    width: LEAGUE_LABEL_WIDTH,
+                  }}
+                >
+                  {highlight.league}
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: 18,
+                  fontWeight: 800,
+                  fontVariantNumeric: "tabular-nums",
+                  letterSpacing: "-0.02em",
+                  color: TEXT_HERO,
+                }}
+              >
+                {highlight.heroValue}
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                fontSize: 14,
+                fontWeight: 600,
+                lineHeight: 1.35,
+                letterSpacing: "-0.01em",
+                color: TEXT_NARRATIVE,
+              }}
+            >
+              {highlight.headline}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -296,8 +457,16 @@ function OgFooter({ line }: { line: string }) {
   );
 }
 
-export function renderBrandOgImage(content: BrandOgContent) {
-  return new ImageResponse(
+async function renderOgImage(jsx: ReactElement) {
+  const fonts = await loadOgFonts();
+  return new ImageResponse(jsx, {
+    ...ogImageSize,
+    fonts,
+  });
+}
+
+export async function renderBrandOgImage(content: BrandOgContent) {
+  return renderOgImage(
     (
       <OgCanvas>
         <OgHeaderBand subtitle={content.subtitle} />
@@ -319,7 +488,7 @@ export function renderBrandOgImage(content: BrandOgContent) {
                 fontWeight: 800,
                 letterSpacing: "-0.03em",
                 lineHeight: 1.1,
-                color: TEXT_PRIMARY,
+                color: TEXT_HEADLINE,
                 maxWidth: 920,
               }}
             >
@@ -327,180 +496,18 @@ export function renderBrandOgImage(content: BrandOgContent) {
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 14 }}>
-            {content.metrics.map((metric) => (
-              <div
-                key={metric.label}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  flex: 1,
-                  gap: 4,
-                  padding: "14px 16px",
-                  borderRadius: 14,
-                  background: BG_SURFACE,
-                  border: `1px solid ${BORDER_SUBTLE}`,
-                  boxShadow: "none",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    fontSize: 28,
-                    fontWeight: 800,
-                    color: HEADER_GOLD_BRIGHT,
-                    letterSpacing: "-0.02em",
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  {metric.value}
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: TEXT_MUTED,
-                  }}
-                >
-                  {metric.label}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            {content.leagues.map((league) => (
-              <div
-                key={league.label}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "8px 14px",
-                  borderRadius: 999,
-                  background: "rgba(255, 255, 255, 0.04)",
-                  border: `1px solid ${hexAlpha(league.accent, 0.28)}`,
-                  boxShadow: `0 0 18px ${hexAlpha(league.accent, 0.12)}`,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    width: 8,
-                    height: 8,
-                    borderRadius: 999,
-                    background: league.accent,
-                    flexShrink: 0,
-                  }}
-                />
-                <div
-                  style={{
-                    display: "flex",
-                    fontSize: 13,
-                    fontWeight: 700,
-                    letterSpacing: "0.06em",
-                    color: TEXT_PRIMARY,
-                    width: LEAGUE_LABEL_WIDTH,
-                  }}
-                >
-                  {league.label}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: "flex", gap: 12 }}>
-            {content.highlights.map((highlight) => (
-              <div
-                key={`${highlight.league}-${highlight.headline}`}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  flex: 1,
-                  gap: 8,
-                  padding: "14px 16px",
-                  borderRadius: 14,
-                  background:
-                    highlight.cardBackground ??
-                    `linear-gradient(155deg, ${hexAlpha(highlight.accent, 0.1)} 0%, ${BG_SURFACE} 100%)`,
-                  border: `1px solid ${hexAlpha(highlight.accent, 0.24)}`,
-                  boxShadow: "0 8px 20px rgba(0, 0, 0, 0.24)",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      flexShrink: 0,
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        width: 8,
-                        height: 8,
-                        borderRadius: 999,
-                        background: highlight.accent,
-                        flexShrink: 0,
-                      }}
-                    />
-                    <div
-                      style={{
-                        display: "flex",
-                        fontSize: 11,
-                        fontWeight: 700,
-                        letterSpacing: "0.1em",
-                        textTransform: "uppercase",
-                        color: highlight.accent,
-                        width: LEAGUE_LABEL_WIDTH,
-                      }}
-                    >
-                      {highlight.league}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      fontSize: 18,
-                      fontWeight: 800,
-                      fontVariantNumeric: "tabular-nums",
-                      letterSpacing: "-0.02em",
-                      color: ogDeltaColor(highlight.heroTone),
-                    }}
-                  >
-                    {highlight.heroValue}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    lineHeight: 1.35,
-                    letterSpacing: "-0.01em",
-                    color: TEXT_SECONDARY,
-                  }}
-                >
-                  {highlight.headline}
-                </div>
-              </div>
-            ))}
-          </div>
+          <OgMetricsBento metrics={content.metrics} />
+          <OgLeaguePills leagues={content.leagues} />
+          <OgHighlightCards highlights={content.highlights} />
         </div>
 
         <OgFooter line={content.footer} />
       </OgCanvas>
     ),
-    ogImageSize,
   );
 }
 
-export function renderSlateOgImage(content: {
+export async function renderSlateOgImage(content: {
   title: string;
   subtitle: string;
   signals: Array<{
@@ -517,9 +524,9 @@ export function renderSlateOgImage(content: {
   const league = content.title.replace(/^Ref Watch\s+/i, "");
   const accent = leagueAccentFromOgTitle(content.title);
 
-  return new ImageResponse(
+  return renderOgImage(
     (
-      <OgCanvas accent={accent}>
+      <OgCanvas>
         <OgHeaderBand leagueLabel={league} subtitle={content.subtitle} accent={accent} />
 
         <div
@@ -537,13 +544,13 @@ export function renderSlateOgImage(content: {
                 display: "flex",
                 fontSize: 24,
                 fontWeight: 600,
-                color: TEXT_SECONDARY,
+                color: TEXT_NARRATIVE,
                 flex: 1,
                 alignItems: "center",
                 padding: "18px 20px",
-                borderRadius: 14,
-                background: BG_ELEVATED,
-                border: `1px solid ${BORDER_SUBTLE}`,
+                borderRadius: 16,
+                background: BG_SURFACE,
+                border: `1px solid ${BORDER_SLATE_700}`,
               }}
             >
               {content.emptyMessage}
@@ -557,16 +564,9 @@ export function renderSlateOgImage(content: {
                   flexDirection: "column",
                   gap: 6,
                   padding: "14px 18px",
-                  borderRadius: 14,
-                  background:
-                    index === 0
-                      ? `linear-gradient(155deg, ${hexAlpha(accent, 0.12)} 0%, ${BG_SURFACE} 100%)`
-                      : `linear-gradient(160deg, rgba(255, 255, 255, 0.04) 0%, ${BG_ELEVATED} 100%)`,
-                  border: `1px solid ${hexAlpha(accent, index === 0 ? 0.28 : 0.14)}`,
-                  boxShadow:
-                    index === 0
-                      ? `0 10px 24px rgba(0, 0, 0, 0.28), 0 0 24px ${hexAlpha(accent, 0.1)}`
-                      : "0 6px 16px rgba(0, 0, 0, 0.18)",
+                  borderRadius: 16,
+                  background: index === 0 ? hexAlpha(accent, 0.08) : BG_SURFACE,
+                  border: `1px solid ${index === 0 ? hexAlpha(accent, 0.35) : BORDER_SLATE_700}`,
                 }}
               >
                 <div
@@ -591,7 +591,7 @@ export function renderSlateOgImage(content: {
                       display: "flex",
                       fontSize: 22,
                       fontWeight: 700,
-                      color: TEXT_PRIMARY,
+                      color: TEXT_HEADLINE,
                       letterSpacing: "-0.01em",
                     }}
                   >
@@ -603,7 +603,7 @@ export function renderSlateOgImage(content: {
                     display: "flex",
                     fontSize: 17,
                     fontWeight: 500,
-                    color: TEXT_SECONDARY,
+                    color: TEXT_NARRATIVE,
                     paddingLeft: 16,
                     lineHeight: 1.35,
                   }}
@@ -620,14 +620,13 @@ export function renderSlateOgImage(content: {
         />
       </OgCanvas>
     ),
-    ogImageSize,
   );
 }
 
-export function renderHubOgImage(content: HubOgContent) {
-  return new ImageResponse(
+export async function renderHubOgImage(content: HubOgContent) {
+  return renderOgImage(
     (
-      <OgCanvas accent={content.accent}>
+      <OgCanvas>
         <OgHeaderBand
           leagueLabel={content.leagueLabel}
           subtitle="Referee analytics hub"
@@ -651,7 +650,7 @@ export function renderHubOgImage(content: HubOgContent) {
                 fontWeight: 800,
                 letterSpacing: "-0.03em",
                 lineHeight: 1.12,
-                color: TEXT_PRIMARY,
+                color: TEXT_HEADLINE,
                 maxWidth: 920,
               }}
             >
@@ -663,7 +662,7 @@ export function renderHubOgImage(content: HubOgContent) {
                 fontSize: 16,
                 fontWeight: 500,
                 lineHeight: 1.45,
-                color: TEXT_SECONDARY,
+                color: TEXT_NARRATIVE,
                 maxWidth: 880,
               }}
             >
@@ -671,58 +670,7 @@ export function renderHubOgImage(content: HubOgContent) {
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: 0,
-              borderRadius: 16,
-              border: `1px solid ${BORDER_SUBTLE}`,
-              background: BG_SURFACE,
-              overflow: "hidden",
-            }}
-          >
-            {content.metrics.map((metric, index) => (
-              <div
-                key={metric.label}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  flex: 1,
-                  gap: 4,
-                  padding: "16px 18px",
-                  borderRight:
-                    index < content.metrics.length - 1
-                      ? `1px solid ${BORDER_SUBTLE}`
-                      : "none",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    fontSize: 26,
-                    fontWeight: 800,
-                    color: TEXT_PRIMARY,
-                    letterSpacing: "-0.02em",
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  {metric.value}
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: TEXT_MUTED,
-                  }}
-                >
-                  {metric.label}
-                </div>
-              </div>
-            ))}
-          </div>
+          <OgMetricsBento metrics={content.metrics} />
 
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {content.tags.map((tag) => (
@@ -736,7 +684,7 @@ export function renderHubOgImage(content: HubOgContent) {
                   color: TEXT_PRIMARY,
                   padding: "6px 12px",
                   borderRadius: 8,
-                  border: `1px solid ${BORDER_SUBTLE}`,
+                  border: `1px solid ${BORDER_SLATE_700}`,
                   background: BG_ELEVATED,
                 }}
               >
@@ -749,6 +697,5 @@ export function renderHubOgImage(content: HubOgContent) {
         <OgFooter line={content.footer} />
       </OgCanvas>
     ),
-    ogImageSize,
   );
 }
