@@ -1,11 +1,13 @@
-import { GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL } from "@/lib/gsni";
 import {
-  formatGsni,
-  gsniBand,
-  gsniCaption,
-  isExtremeGsni,
-  type GsniBand,
-} from "@/lib/gsni-display";
+  clutchSituationHeadline,
+  clutchSituationSummary,
+  confidenceTagForMinutes,
+  consistencyProfileFromIndex,
+  highLeverageMinutesLine,
+  type ConsistencyProfile,
+} from "@/lib/clutch-consistency-index";
+import { GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL } from "@/lib/gsni";
+import { gsniBand, isExtremeGsni, type GsniBand } from "@/lib/gsni-display";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
@@ -22,41 +24,31 @@ export type GsniHomeFindingStat = {
 export type GsniHomeFinding = {
   refSlug: string;
   refName: string;
-  gsni: number;
+  /** 0-100 Clutch Consistency Index (same underlying score as GSNI). */
+  consistencyIndex: number;
+  consistencyProfile: ConsistencyProfile;
   band: GsniBand;
-  caption: string;
   sampleGames: number;
   highLeverageMinutes: number;
-  vsNeutralDelta: number;
-  vsNeutralLabel: string;
-  plainTitle: string;
-  plainSummary: string;
+  headline: string;
+  summary: string;
+  minutesLine: string;
+  confidenceTag: string | null;
   stats: GsniHomeFindingStat[];
   href: string;
+  /** @deprecated Use consistencyIndex */
+  gsni: number;
+  /** @deprecated Use headline */
+  plainTitle: string;
+  /** @deprecated Use summary */
+  plainSummary: string;
+  /** @deprecated Removed from UI */
+  vsNeutralDelta: number;
+  /** @deprecated Removed from UI */
+  vsNeutralLabel: string;
+  /** @deprecated Removed from UI */
+  caption: string;
 };
-
-function plainTitle(refName: string, band: GsniBand, gsni: number): string {
-  const rounded = Math.round(gsni);
-  if (band === "quiet") {
-    return `${refName}: GSNI ${rounded} - below-baseline whistle rate in high-leverage states`;
-  }
-  return `${refName}: GSNI ${rounded} - above-baseline whistle rate in high-leverage states`;
-}
-
-function plainSummary(band: GsniBand): string {
-  if (band === "quiet") {
-    return "In close, late-game moments, this crew calls fewer fouls than peers in the same situation.";
-  }
-  return "In close, late-game moments, this crew calls more fouls than peers in the same situation.";
-}
-
-function vsNeutralLabel(gsni: number): string {
-  const delta = gsni - GSNI_NEUTRAL_SCORE;
-  const magnitude = Math.abs(Math.round(delta));
-  if (delta > 0) return `${magnitude} pts quieter than league avg`;
-  if (delta < 0) return `${magnitude} pts heavier than league avg`;
-  return "Matches league average";
-}
 
 function sampleBarPct(value: number, max: number): number {
   if (max <= 0) return 0;
@@ -71,12 +63,12 @@ function buildStats(
 ): GsniHomeFindingStat[] {
   return [
     {
-      label: "Games tracked",
+      label: "Career games tracked",
       value: String(sampleGames),
       barPct: sampleBarPct(sampleGames, maxGames),
     },
     {
-      label: "Clutch minutes",
+      label: "High-leverage minutes",
       value: `${Math.round(highLeverageMinutes)} min`,
       barPct: sampleBarPct(highLeverageMinutes, maxMinutes),
     },
@@ -88,25 +80,33 @@ function toFinding(
   maxGames: number,
   maxMinutes: number,
 ): GsniHomeFinding {
-  const gsni = ref.referee_gsni!;
-  const band = gsniBand(gsni);
+  const consistencyIndex = ref.referee_gsni!;
+  const band = gsniBand(consistencyIndex);
   const sampleGames = ref.gsniSampleGames ?? ref.games;
   const highLeverageMinutes = ref.gsniHighLeverageMinutes ?? 0;
+  const headline = clutchSituationHeadline(ref.name, consistencyIndex);
+  const summary = clutchSituationSummary(consistencyIndex);
 
   return {
     refSlug: ref.slug,
     refName: ref.name,
-    gsni,
+    consistencyIndex,
+    consistencyProfile: consistencyProfileFromIndex(consistencyIndex),
     band,
-    caption: gsniCaption(gsni),
     sampleGames,
     highLeverageMinutes,
-    vsNeutralDelta: gsni - GSNI_NEUTRAL_SCORE,
-    vsNeutralLabel: vsNeutralLabel(gsni),
-    plainTitle: plainTitle(ref.name, band, gsni),
-    plainSummary: plainSummary(band),
+    headline,
+    summary,
+    minutesLine: highLeverageMinutesLine(highLeverageMinutes),
+    confidenceTag: confidenceTagForMinutes(highLeverageMinutes),
     stats: buildStats(sampleGames, highLeverageMinutes, maxGames, maxMinutes),
     href: `/nfl/refs/${ref.slug}`,
+    gsni: consistencyIndex,
+    plainTitle: headline,
+    plainSummary: summary,
+    vsNeutralDelta: consistencyIndex - GSNI_NEUTRAL_SCORE,
+    vsNeutralLabel: "",
+    caption: "",
   };
 }
 
@@ -119,7 +119,7 @@ function isEligible(ref: RefProfile): boolean {
   );
 }
 
-/** Top Game-State Index findings for the homepage research strip. */
+/** Top clutch consistency findings for the homepage research strip. */
 export function buildGsniHomeFindings(
   stats: RefStatsFile,
   limit = GSNI_HOME_FINDING_LIMIT,
@@ -166,6 +166,7 @@ export function loadGsniHomeFindings(
   return buildGsniHomeFindings(stats, limit);
 }
 
+/** @deprecated Score chip removed from homepage clutch cards. */
 export function formatGsniHomeDelta(delta: number): string {
   const rounded = Math.round(delta);
   const sign = rounded > 0 ? "+" : rounded < 0 ? "-" : "";

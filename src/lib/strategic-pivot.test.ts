@@ -47,7 +47,7 @@ describe("strategic pivot surfaces", () => {
       "src/components/OverviewHero.tsx",
       "src/lib/about-content.ts",
       "src/components/ValidationReportContent.tsx",
-      "src/lib/gsni-home-findings.ts",
+      "src/lib/clutch-consistency-index.ts",
     ];
     for (const file of files) {
       assert.doesNotMatch(readSrc(file), new RegExp(EM_DASH), file);

@@ -181,21 +181,21 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(config, /\/research\/leverage-spike-anomaly/);
   });
 
-  it("homepage surfaces Game-State Index findings under the research banner", () => {
+  it("homepage surfaces clutch consistency findings under the research banner", () => {
     const dashboard = readSrc("src/components/OverviewDashboard.tsx");
     const css = readSrc("src/components/overview-clinical-modern.css");
     const findings = readSrc("src/lib/gsni-home-findings.ts");
-    const component = readSrc("src/components/GameStateIndexFindings.tsx");
+    const component = readSrc("src/components/clutch-consistency/GameStateIndexFindingsView.tsx");
     assert.match(dashboard, /GameStateIndexFindings/);
     assert.match(dashboard, /ResearchHighlightBanner[\s\S]*GameStateIndexFindings/);
     assert.match(findings, /buildGsniHomeFindings/);
     assert.match(findings, /GSNI_HOME_MIN_SAMPLE_GAMES = 200/);
-    assert.match(findings, /plainSummary/);
-    assert.match(component, /GsniGauge/);
-    assert.match(component, /RESEARCH_HIGHLIGHT\.href/);
-    assert.match(component, /gsni-home-finding__scale/);
-    assert.match(css, /\.gsni-home-findings/);
-    assert.match(css, /\.gsni-home-finding__stat-bar/);
+    assert.match(findings, /clutchSituationHeadline/);
+    assert.match(component, /ClutchConsistencyRing/);
+    assert.match(component, /ClutchConsistencyMetricLabel/);
+    assert.match(component, /finding\.minutesLine/);
+    assert.match(css, /\.cci-findings/);
+    assert.match(css, /\.cci-finding__stat-bar/);
   });
 
   it("live league date badges use high-contrast blue tokens", () => {
