@@ -1,7 +1,7 @@
+import type { DataLeague } from "@/lib/game-logs-preload";
 import {
   dataLeagueTenSeasons,
   DEFAULT_SINCE_SEASON,
-  type DataLeague,
 } from "@/lib/league-seasons";
 
 /** Season labels used for team W-L baselines (matrix, crew pages, findings). */
