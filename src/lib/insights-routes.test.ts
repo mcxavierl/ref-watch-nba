@@ -154,3 +154,15 @@ test("every league insights sub-route matches NFL defaultTab wiring", () => {
     }
   }
 });
+
+test("InsightsHubRoute preloads ref stats before rendering hub analytics", () => {
+  const source = readFileSync(
+    join(process.cwd(), "src/components/InsightsHubRoute.tsx"),
+    "utf8",
+  );
+  assert.match(source, /await preloadLeagueRefStats\(/);
+  assert.match(source, /await hydrateLeagueAnalyticsData\(/);
+  const preloadIdx = source.indexOf("await preloadLeagueRefStats(");
+  const hydrateIdx = source.indexOf("await hydrateLeagueAnalyticsData(");
+  assert.ok(preloadIdx >= 0 && hydrateIdx >= 0 && preloadIdx < hydrateIdx);
+});
