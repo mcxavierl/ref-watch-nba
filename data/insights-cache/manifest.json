@@ -1,0 +1,28 @@
+{
+  "leagues": {
+    "nba": {
+      "sourceMtime": 1784306545557.859,
+      "cachePath": "data/insights-cache/nba.json"
+    },
+    "nhl": {
+      "sourceMtime": 1784306545773.8584,
+      "cachePath": "data/insights-cache/nhl.json"
+    },
+    "nfl": {
+      "sourceMtime": 1784307976102.193,
+      "cachePath": "data/insights-cache/nfl.json"
+    },
+    "epl": {
+      "sourceMtime": 1784307443855.6091,
+      "cachePath": "data/insights-cache/epl.json"
+    },
+    "laliga": {
+      "sourceMtime": 1784307717378.8845,
+      "cachePath": "data/insights-cache/laliga.json"
+    },
+    "cbb": {
+      "sourceMtime": 1784307717350.8845,
+      "cachePath": "data/insights-cache/cbb.json"
+    }
+  }
+}

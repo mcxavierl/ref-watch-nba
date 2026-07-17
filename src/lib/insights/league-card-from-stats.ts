@@ -8,12 +8,12 @@ import { insightDrilldownId } from "@/lib/insight-drilldown-types";
 import { formatBaselinePct, formatPct } from "@/lib/stats-utils";
 import { insightsViewHref } from "@/lib/insights-routes";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { OVERVIEW_INSIGHT_LEAGUE_IDS } from "@/lib/league-verification";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 import type { LeagueInsightCard, LeagueInsightTone } from "@/lib/league-overview-insights";
 import { heroToneFromWinRateDelta } from "@/lib/metric-significance";
 
-type VerifiedLiveLeagueId = (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
+type OverviewInsightLeagueId = (typeof OVERVIEW_INSIGHT_LEAGUE_IDS)[number];
 
 export type LeagueCardBuildSetup = {
   teams: { abbr: string; label: string; name: string; nbaId?: number }[];
@@ -33,7 +33,7 @@ function matrixHref(leagueId: LeagueId): string {
   return `${leaguePrefix(leagueId)}/matrix`;
 }
 
-function trendsHref(leagueId: VerifiedLiveLeagueId): string {
+function trendsHref(leagueId: OverviewInsightLeagueId): string {
   return insightsViewHref(leagueId, "trends");
 }
 
@@ -47,7 +47,7 @@ function heroToneFromDelta(delta: number): LeagueInsightTone {
 }
 
 function cardFromMatrix(
-  leagueId: VerifiedLiveLeagueId,
+  leagueId: OverviewInsightLeagueId,
   highlight: MatrixExtremeHighlight,
 ): LeagueInsightCard {
   const config = LEAGUES[leagueId];
@@ -95,7 +95,7 @@ function cardFromMatrix(
 }
 
 /** Matrix-only league cards for memory-efficient build pipelines. */
-const MULTI_STANDOUT_LEAGUE_IDS = new Set<VerifiedLiveLeagueId>(["nba", "nfl", "epl"]);
+const MULTI_STANDOUT_LEAGUE_IDS = new Set<OverviewInsightLeagueId>(["nba", "nfl", "epl"]);
 const MULTI_STANDOUT_MATRIX_LIMIT = 4;
 
 function sortMatrixHighlightsBySample(
@@ -108,7 +108,7 @@ function sortMatrixHighlightsBySample(
 }
 
 export function buildLeagueStandoutCardsForLeague(
-  leagueId: VerifiedLiveLeagueId,
+  leagueId: OverviewInsightLeagueId,
   stats: RefStatsFile,
   setup: LeagueCardBuildSetup,
 ): LeagueInsightCard[] {
@@ -140,7 +140,7 @@ export function buildLeagueStandoutCardsForLeague(
 }
 
 export function buildLeagueInsightCardForLeague(
-  leagueId: VerifiedLiveLeagueId,
+  leagueId: OverviewInsightLeagueId,
   stats: RefStatsFile,
   setup: LeagueCardBuildSetup,
 ): LeagueInsightCard | null {

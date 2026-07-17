@@ -12,7 +12,7 @@ import {
   type SlimRefProfile,
 } from "../../src/lib/insights/insight-input-slim";
 import type { LeagueGeneratorSetup } from "../../src/lib/insights/generator-core";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "../../src/lib/league-verification";
+import { OVERVIEW_INSIGHT_LEAGUE_IDS } from "../../src/lib/league-verification";
 
 function dataRoot(): string {
   return process.env.INSIGHTS_BUILD_ROOT ?? process.cwd();
@@ -20,7 +20,7 @@ function dataRoot(): string {
 
 const REF_BATCH_SIZE = 40;
 
-export type ProInsightLeagueId = (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
+export type OverviewInsightLeagueId = (typeof OVERVIEW_INSIGHT_LEAGUE_IDS)[number];
 
 export type SlimLeagueStatsForInsights = SlimLeagueStats & {
   getTeamSplits: (abbr: string) => TeamCrewSplit[];
@@ -32,7 +32,7 @@ type LeagueDataPaths = {
   teamSplits: string;
 };
 
-function leagueDataPaths(leagueId: ProInsightLeagueId): LeagueDataPaths {
+function leagueDataPaths(leagueId: OverviewInsightLeagueId): LeagueDataPaths {
   const root = dataRoot();
   if (leagueId === "nba") {
     return {
@@ -56,7 +56,7 @@ function resolveRefStatsPath(paths: LeagueDataPaths): string | null {
 }
 
 /** Max mtime across ref-stats-core, team-splits, and ref-stats when present. */
-export function getLeagueInsightSourceMtime(leagueId: ProInsightLeagueId): number {
+export function getLeagueInsightSourceMtime(leagueId: OverviewInsightLeagueId): number {
   const paths = leagueDataPaths(leagueId);
   const candidates = [paths.refStatsCore, paths.teamSplits, paths.refStatsFull];
   let maxMtime = 0;
@@ -163,7 +163,7 @@ function loadTeamSplitsMap(teamSplitsPath: string): Record<string, TeamCrewSplit
  * Build-only loader: streams ref-stats-core (or full ref-stats) without runtime jsonCache.
  */
 export async function loadSlimLeagueStatsForInsights(
-  leagueId: ProInsightLeagueId,
+  leagueId: OverviewInsightLeagueId,
 ): Promise<SlimLeagueStatsForInsights | null> {
   const paths = leagueDataPaths(leagueId);
   const refStatsPath = resolveRefStatsPath(paths);
@@ -196,7 +196,7 @@ export async function loadSlimLeagueStatsForInsights(
 }
 
 export async function loadLeagueGeneratorSetup(
-  leagueId: ProInsightLeagueId,
+  leagueId: OverviewInsightLeagueId,
   getTeamSplits: (abbr: string) => TeamCrewSplit[],
 ): Promise<LeagueGeneratorSetup> {
   switch (leagueId) {

@@ -20,6 +20,7 @@ import {
   buildOverviewUpcomingSlate,
   type OverviewUpcomingSlate,
 } from "@/lib/overview-upcoming-slate";
+import { computeLeagueHomeCoverDelta } from "@/lib/league-home-bias-index";
 import {
   NCAA_INTEGRITY_AUDIT_HREF,
   resolveNcaaAuditStatus,
@@ -46,9 +47,9 @@ export type LeagueOverviewCard = {
   auditCoveragePct?: number;
   auditHref?: string;
   auditPendingLabel?: NcaaAuditPendingLabel;
+  /** Home ATS cover rate delta vs a neutral 50% split (from lined game logs). */
+  homeBiasCoverDelta: string | null;
 };
-
-export type CrossLeagueOverview = {
   totalRefs: number;
   totalGames: number;
   liveLeagueCount: number;
@@ -180,6 +181,9 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       auditCoveragePct,
       auditHref,
       auditPendingLabel,
+      homeBiasCoverDelta: analyticsUnlocked
+        ? computeLeagueHomeCoverDelta(leagueId)?.value ?? null
+        : null,
     });
   }
 
