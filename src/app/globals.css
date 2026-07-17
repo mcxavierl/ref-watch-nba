@@ -4293,9 +4293,9 @@ p {
   .league-nav-mark--epl,
   .league-nav-mark[data-league="epl"] {
     height: 1.05rem;
-    max-width: 1.15rem;
+    max-width: 1.35rem;
     filter: none;
-    opacity: 0.92;
+    opacity: 1;
   }
 
   .league-nav-mark--laliga,
@@ -10969,9 +10969,9 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 }
 
 .overview-league-chooser-card[data-league="epl"] {
-  --chooser-accent: #37003c;
-  --chooser-glow: rgba(55, 0, 60, 0.1);
-  --chooser-mark-border: rgba(55, 0, 60, 0.15);
+  --chooser-accent: #3d195b;
+  --chooser-glow: rgba(61, 25, 91, 0.12);
+  --chooser-mark-border: rgba(61, 25, 91, 0.22);
 }
 
 .overview-league-chooser-card[data-league="laliga"] {
@@ -11068,13 +11068,24 @@ html[data-color="light"] .overview-league-chooser-mark .league-nav-mark[data-lea
 
 .overview-league-chooser-mark .league-nav-mark--epl,
 .overview-league-chooser-mark .league-nav-mark[data-league="epl"] {
-  width: 96%;
-  height: 96%;
-  max-width: 96%;
-  max-height: 96%;
-  transform: scale(1.04);
+  width: 92%;
+  height: 92%;
+  max-width: 92%;
+  max-height: 92%;
+  transform: none;
   transform-origin: center;
   filter: none;
+}
+
+html[data-color="light"] .overview-league-chooser-card[data-league="epl"] .overview-league-chooser-mark {
+  background: color-mix(in srgb, #3d195b 7%, #f8fafc);
+  border-color: color-mix(in srgb, #3d195b 24%, var(--chooser-mark-border));
+}
+
+html[data-color="dark"] .overview-league-chooser-card[data-league="epl"] .overview-league-chooser-mark,
+html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-chooser-mark {
+  background: color-mix(in srgb, #3d195b 28%, rgba(0, 0, 0, 0.35));
+  border-color: color-mix(in srgb, #3d195b 38%, var(--chooser-mark-border));
 }
 
 .overview-league-chooser-mark .league-nav-mark--laliga,
