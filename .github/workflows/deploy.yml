@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -38,6 +40,12 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Generated artifact freshness
+        run: npm run check:artifact-freshness
+
+      - name: Coupled test change gate
+        run: npm run check:coupled-tests
 
       - name: Volume regression gate
         run: npm run check:volume

@@ -1,0 +1,58 @@
+---
+description: Ship guardrails — run before push, PR, or merge
+alwaysApply: true
+---
+
+# Ship guardrails
+
+When moving fast on dashboard or slate work, **never skip validation**.
+
+## Before push or merge
+
+Run the full CI mirror locally:
+
+```bash
+npm run check:ci
+```
+
+`check:ci` runs artifact freshness **before** `check:volume`, because volume refresh rewrites `data/baselines.json` and would falsely fail a later snapshot check.
+
+Remove untracked local dev artifacts before shipping if freshness fails unexpectedly:
+
+```bash
+git clean -fd data/insights-cache data/stats-query-log.jsonl 2>/dev/null || true
+git checkout -- data/
+```
+
+Install the pre-push hook once per clone:
+
+```bash
+npm run setup:hooks
+```
+
+## Merge policy
+
+1. **Do not merge** a PR until GitHub **validate** is green.
+2. **Do not merge** if `npm run check:ci` fails locally.
+3. After changing overview/slate logic, update related tests in the same PR.
+4. After changing `cross-league-overview.ts`, rebuild `data/overview-snapshot.json`:
+
+```bash
+npx tsx scripts/build-overview-snapshot.ts
+git add data/overview-snapshot.json
+```
+
+## Common failure modes
+
+| Symptom | Fix |
+|--------|-----|
+| Stale `overview-snapshot.json` | Run `build-overview-snapshot.ts` and commit |
+| Slate metadata test mismatch | Update `overview-upcoming-slate.test.ts` or use flexible assertions |
+| Merged PR but nothing on production | Deploy validate failed — fix tests and merge a green PR |
+| Pre-push hook blocks push | Fix failures or `SKIP_SHIP_CHECK=1` only in emergencies |
+
+## Avoid
+
+- Merging with red CI because "we'll fix it in the next PR"
+- Hardcoding exact metadata strings tied to live game logs when H2H data can change priority
+- Using `git commit --no-verify` to skip checks (hook errors excepted)
