@@ -80,7 +80,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /tone="clinical"/);
     assert.match(source, /WorldCupFindingCard/);
     assert.match(source, /wc-data-grid--bento/);
-    assert.match(source, /text-5xl font-extrabold tracking-tighter/);
+    assert.match(source, /text-3xl font-bold tracking-tight/);
     assert.match(source, /wc-flag-avatar/);
     assert.match(source, /text-slate-400/);
     assert.doesNotMatch(source, /#BFA86A/);
@@ -93,8 +93,8 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
     const kpi = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
     assert.match(card, /WorldCupKpiValue/);
-    assert.match(kpi, /text-7xl font-black/);
-    assert.match(kpi, /text-6xl font-black/);
+    assert.match(kpi, /text-3xl font-bold/);
+    assert.match(kpi, /text-2xl font-bold/);
     assert.match(card, /wc-data-capsule/);
     assert.match(card, /wc-data-capsule-pill/);
     assert.match(card, /border-slate-800/);
@@ -117,11 +117,21 @@ describe("Clinical Modern priority #11 surfaces", () => {
   it("MatchStatusPill supports clinical slate capsule styling", () => {
     const source = readSrc("src/components/hub/MatchStatusPill.tsx");
     assert.match(source, /bg-slate-800/);
-    assert.match(source, /text-slate-300/);
+    assert.match(source, /text-slate-200/);
     assert.match(source, /border-slate-700/);
     assert.match(source, /font-semibold/);
     assert.match(source, /tracking-wider/);
     assert.match(source, /h-\[2\.35rem\]/);
+  });
+
+  it("homepage Clinical Modern shell and slate capsules are defined", () => {
+    const css = readSrc("src/components/overview-clinical-modern.css");
+    const page = readSrc("src/app/page.tsx");
+    const slate = readSrc("src/components/OverviewLeagueSlateGroup.tsx");
+    assert.match(page, /overview-shell--clinical/);
+    assert.match(css, /overview-slate-capsule/);
+    assert.match(css, /overview-slate-row-inner/);
+    assert.match(slate, /overview-slate-capsule-header/);
   });
 
   it("editorial insight cards pair league badge with season start", () => {

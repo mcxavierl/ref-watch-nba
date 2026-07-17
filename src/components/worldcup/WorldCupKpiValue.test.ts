@@ -39,10 +39,10 @@ describe("worldCupKpiTone", () => {
     );
   });
 
-  it("uses text-6xl record scale and text-7xl dominant KPI scale", () => {
+  it("uses toned-down KPI scale for Clinical Modern scannability", () => {
     const source = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
-    assert.match(source, /RECORD_CLASS = "text-6xl font-black/);
-    assert.match(source, /KPI_CLASS = "text-7xl font-black/);
+    assert.match(source, /KPI_CLASS = "text-3xl font-bold/);
+    assert.match(source, /RECORD_CLASS = "text-2xl font-bold/);
     assert.match(source, /text-slate-100/);
   });
 

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { LeagueId } from "@/lib/leagues";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
@@ -60,22 +59,27 @@ export function OverviewSlateRow({
 
   return (
     <li className="overview-slate-row" data-league={game.leagueId} data-status={game.status}>
-      <div className="overview-slate-row-main">
-        <span className="overview-slate-league-mark" aria-hidden>
-          <LeagueNavMark league={game.leagueId} active={false} />
-        </span>
+      <div className="overview-slate-row-inner">
         <span
-          className="overview-slate-matchup-logos"
+          className="overview-slate-row-matchup"
           aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
         >
           <TeamLogo team={awayTeam} sport={teamLogoSport(game.leagueId)} size="sm" />
-          <span className="overview-slate-matchup-at" aria-hidden>
+          <span className="overview-slate-row-at" aria-hidden>
             @
           </span>
           <TeamLogo team={homeTeam} sport={teamLogoSport(game.leagueId)} size="sm" />
+          <span className="overview-slate-row-names">
+            {awayTeam.abbr} @ {homeTeam.abbr}
+          </span>
         </span>
         {game.status === "scheduled" && dateLabel ? (
           <span className="overview-slate-date">{dateLabel}</span>
+        ) : null}
+        {showHubLink ? (
+          <Link href={game.href} className="overview-slate-row-link">
+            Open slate
+          </Link>
         ) : null}
       </div>
       {game.matchupInsight ? (
@@ -93,11 +97,6 @@ export function OverviewSlateRow({
           `${game.crewCount}-person crew`
         )}
       </p>
-      {showHubLink ? (
-        <Link href={game.href} className="overview-slate-row-link">
-          Open {game.leagueShortLabel} hub
-        </Link>
-      ) : null}
     </li>
   );
 }

@@ -8,9 +8,9 @@ type MatchStatusPillProps = {
 
 const TONE_CLASS: Record<MatchStatusPillTone, string> = {
   clinical:
-    "border border-slate-700 bg-slate-800 text-slate-300",
+    "border border-slate-700 bg-slate-800 text-slate-200",
   prestige:
-    "match-status-pill--prestige border border-slate-700 bg-slate-800 text-slate-300",
+    "match-status-pill--prestige border border-slate-700 bg-slate-800 text-slate-200",
 };
 
 /**

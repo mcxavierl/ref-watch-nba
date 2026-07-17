@@ -1,0 +1,226 @@
+/* Clinical Modern — Verified Officiating Analytics homepage */
+
+.overview-shell--clinical {
+  --clinical-ink: rgb(248 250 252);
+  --clinical-ink-muted: rgb(148 163 184);
+  --clinical-ink-label: rgb(100 116 139);
+  --clinical-capsule-bg: rgb(2 6 23);
+  --clinical-capsule-border: rgb(30 41 59);
+}
+
+.overview-shell--clinical .overview-title {
+  color: var(--clinical-ink);
+  font-size: clamp(1.65rem, 3.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.overview-shell--clinical .overview-hero-minimal-bridge {
+  color: var(--clinical-ink-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-width: 40rem;
+}
+
+.overview-shell--clinical .overview-section-title {
+  color: var(--clinical-ink);
+}
+
+.overview-shell--clinical .overview-section-lead {
+  color: var(--clinical-ink-muted);
+  font-size: 0.875rem;
+}
+
+.overview-shell--clinical .overview-slate-icon {
+  color: var(--clinical-ink-muted);
+}
+
+/* Upcoming games capsules — match DataCapsule rhythm */
+.overview-slate-capsule {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--clinical-capsule-border);
+  background: var(--clinical-capsule-bg);
+}
+
+.overview-slate-capsule-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.overview-slate-capsule-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  border: 1px solid rgb(51 65 85);
+  background: rgb(15 23 42);
+}
+
+.overview-slate-capsule-mark .league-nav-mark {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.overview-slate-capsule-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.overview-slate-capsule-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--clinical-ink);
+  line-height: 1.25;
+}
+
+.overview-slate-capsule-meta {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--clinical-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-slate-capsule-cta {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--clinical-ink-muted);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.overview-slate-capsule-cta:hover {
+  color: var(--clinical-ink);
+  text-decoration: underline;
+}
+
+.overview-shell--clinical .overview-slate-list {
+  gap: 0.5rem;
+}
+
+.overview-shell--clinical .overview-slate-row {
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.overview-slate-row-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.5rem 0;
+  border-top: 1px solid rgb(30 41 59);
+}
+
+.overview-slate-capsule .overview-slate-list > li:first-child .overview-slate-row-inner {
+  border-top: none;
+  padding-top: 0;
+}
+
+.overview-slate-row-matchup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.overview-slate-row-names {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--clinical-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overview-slate-row-at {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--clinical-ink-label);
+}
+
+.overview-shell--clinical .overview-slate-date {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--clinical-ink-muted);
+}
+
+.overview-shell--clinical .overview-slate-row-link {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--clinical-ink-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.overview-shell--clinical .overview-slate-row-link:hover {
+  color: var(--clinical-ink);
+  text-decoration: underline;
+}
+
+.overview-shell--clinical .overview-slate-insight,
+.overview-shell--clinical .overview-slate-crew {
+  display: none;
+}
+
+.overview-shell--clinical .overview-slate-leagues {
+  gap: 1rem;
+}
+
+.overview-shell--clinical .overview-slate-notes {
+  margin-bottom: 0.75rem;
+}
+
+.overview-shell--clinical .overview-slate-note {
+  font-size: 0.8125rem;
+  color: var(--clinical-ink-muted);
+}
+
+.overview-shell--clinical .overview-slate-updated {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--clinical-ink-label);
+}
+
+.overview-shell--clinical .overview-slate-view-more-btn {
+  font-size: 0.75rem;
+  color: var(--clinical-ink-muted);
+}
+
+html[data-color="light"] .overview-shell--clinical .overview-slate-capsule,
+html[data-color="dark"] .overview-shell--clinical .overview-slate-capsule {
+  background: var(--clinical-capsule-bg);
+  border-color: var(--clinical-capsule-border);
+}
+
+html[data-color="light"] .overview-shell--clinical .overview-slate-capsule-label,
+html[data-color="light"] .overview-shell--clinical .overview-slate-row-names,
+html[data-color="dark"] .overview-shell--clinical .overview-slate-capsule-label,
+html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
+  color: var(--clinical-ink);
+}

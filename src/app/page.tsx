@@ -26,7 +26,7 @@ export default function HomePage() {
   return (
     <>
       <HomeHeroPreload />
-      <div className="page-shell overview-shell">
+      <div className="page-shell overview-shell overview-shell--clinical">
         <OverviewDashboard
           data={data}
           hero={<OverviewHero />}

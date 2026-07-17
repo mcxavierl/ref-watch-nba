@@ -19,6 +19,7 @@ import {
 } from "@/lib/league-catalog";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import "@/components/overview-dashboard.css";
+import "@/components/overview-clinical-modern.css";
 
 function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
   const rowClass = [

@@ -2,8 +2,8 @@ import type { FindingStat } from "@/lib/findings-shared";
 
 export type WcKpiTone = "negative" | "positive" | "neutral" | "name";
 
-const KPI_CLASS = "text-7xl font-black tabular-nums leading-none tracking-tight";
-const RECORD_CLASS = "text-6xl font-black tabular-nums leading-none tracking-tight";
+const KPI_CLASS = "text-3xl font-bold tabular-nums leading-none tracking-tight";
+const RECORD_CLASS = "text-2xl font-bold tabular-nums leading-none tracking-tight";
 
 export function worldCupKpiTone(stat: FindingStat): WcKpiTone {
   const label = stat.label.toLowerCase();
@@ -63,7 +63,7 @@ export function WorldCupKpiValue({ stat, tone }: { stat: FindingStat; tone: WcKp
   const value = stat.value.trim();
 
   if (tone === "name") {
-    return <span className="text-lg font-bold text-slate-50">{value}</span>;
+    return <span className="text-base font-semibold text-slate-50">{value}</span>;
   }
 
   if (label.includes("record")) {

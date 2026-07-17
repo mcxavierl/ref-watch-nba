@@ -15,26 +15,24 @@ export function OverviewLeagueSlateGroup({ group }: OverviewLeagueSlateGroupProp
 
   return (
     <section
-      className="overview-slate-league-group"
+      className="overview-slate-capsule"
       data-league={group.leagueId}
       aria-labelledby={`overview-slate-${group.leagueId}-heading`}
     >
-      <header className="overview-slate-league-header">
-        <Link
-          href={group.href}
-          id={`overview-slate-${group.leagueId}-heading`}
-          className="overview-slate-league-heading rw-focus-ring"
-        >
-          <span className="overview-slate-league-heading-mark" aria-hidden>
-            <LeagueNavMark league={group.leagueId} active={false} />
+      <header className="overview-slate-capsule-header">
+        <span className="overview-slate-capsule-mark" aria-hidden>
+          <LeagueNavMark league={group.leagueId} active={false} />
+        </span>
+        <div className="overview-slate-capsule-copy">
+          <span className="overview-slate-capsule-label" id={`overview-slate-${group.leagueId}-heading`}>
+            {group.leagueLabel}
           </span>
-          <span className="overview-slate-league-heading-copy">
-            <span className="overview-slate-league-heading-label">{group.leagueLabel}</span>
-            {countLabel ? (
-              <span className="overview-slate-league-heading-counts">{countLabel}</span>
-            ) : null}
-          </span>
-          <span className="overview-slate-league-heading-cta">Open slate</span>
+          {countLabel ? (
+            <span className="overview-slate-capsule-meta">{countLabel}</span>
+          ) : null}
+        </div>
+        <Link href={group.href} className="overview-slate-capsule-cta rw-focus-ring">
+          Open slate
         </Link>
       </header>
       <ul className="overview-slate-list">
