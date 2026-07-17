@@ -54,17 +54,19 @@ export function formatTeamWhistleEdgeLabel(
   edge: number,
   teamLabel: string,
   whistleUnit: string,
+  options?: { compact?: boolean },
 ): string {
   const rounded = Math.round(edge * 10) / 10;
   const magnitude = Math.abs(rounded);
+  const teamSuffix = options?.compact ? "" : ` on ${teamLabel}`;
   if (magnitude < 0.05) {
-    return `Even ${whistleUnit} on ${teamLabel}`;
+    return `Even ${whistleUnit}${teamSuffix}`;
   }
   const direction = rounded > 0 ? "fewer" : "more";
   const amount = Number.isInteger(magnitude)
     ? String(magnitude)
     : magnitude.toFixed(1);
-  return `${amount} ${direction} ${whistleUnit} on ${teamLabel}`;
+  return `${amount} ${direction} ${whistleUnit}${teamSuffix}`;
 }
 
 /** e.g. "+4.2 pts vs team" */

@@ -6,7 +6,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MatrixSplitShareBar } from "@/components/MatrixSplitShareBar";
 import { RefAvatar } from "@/components/RefAvatar";
-import { RefCompareLink } from "@/components/RefCompareLink";
 import { TeamLogo } from "@/components/TeamLogo";
 import {
   formatMatrixTeamBaseline,
@@ -163,7 +162,6 @@ function TeamRefRankListItem({
   variant,
   basePath,
   sport,
-  leagueId,
   whistleDiffLabel,
   teamLabel,
   teamBaselineRate,
@@ -175,7 +173,6 @@ function TeamRefRankListItem({
   variant: "positive" | "negative";
   basePath: string;
   sport: RefTeamMatrixProps["sport"];
-  leagueId: LeagueId;
   whistleDiffLabel: string;
   teamLabel: string;
   teamBaselineRate: number;
@@ -187,13 +184,23 @@ function TeamRefRankListItem({
       ? "ref-matrix-delta--positive"
       : "ref-matrix-delta--negative";
   const deltaDisplay = displayWinRateDelta(entry.deltaPts, entry.games);
-  const winDeltaLabel =
+  const winDeltaFullLabel =
     teamBaselineGames > 0
       ? formatDeltaPp(deltaDisplay.displayDelta).replace("pp", " pts vs team")
+      : "Baseline n/a";
+  const winDeltaLabel =
+    teamBaselineGames > 0
+      ? formatDeltaPp(deltaDisplay.displayDelta).replace("pp", " pts")
       : "Baseline n/a";
   const recordLabel = viewMode === "ats" ? "ATS cover rate" : "Win rate";
   const whistleUnit = whistleDiffLabel.replace(/\s+diff$/i, "").toLowerCase();
   const whistleEdgeLabel = formatTeamWhistleEdgeLabel(
+    entry.avgFoulDifferential,
+    teamLabel,
+    whistleUnit,
+    { compact: true },
+  );
+  const whistleEdgeFullLabel = formatTeamWhistleEdgeLabel(
     entry.avgFoulDifferential,
     teamLabel,
     whistleUnit,
@@ -218,19 +225,13 @@ function TeamRefRankListItem({
             className="ref-matrix-team-panel-ref-avatar"
           />
         </Link>
-        <div className="ref-matrix-team-panel-name-row">
-          <Link
-            href={`${basePath}/refs/${entry.refSlug}#close-game`}
-            className="ref-matrix-team-panel-ref-name"
-          >
-            {entry.refName}
-          </Link>
-          <RefCompareLink
-            leagueId={leagueId}
-            slug={entry.refSlug}
-            className="ref-matrix-team-panel-compare"
-          />
-        </div>
+        <Link
+          href={`${basePath}/refs/${entry.refSlug}#close-game`}
+          className="ref-matrix-team-panel-ref-name"
+          title={entry.refName}
+        >
+          {entry.refName}
+        </Link>
       </div>
       <span className="ref-matrix-team-panel-record">
         <span className="ref-matrix-team-panel-record-line">
@@ -243,7 +244,7 @@ function TeamRefRankListItem({
           title={
             deltaDisplay.isAdjusted
               ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
-              : `${recordLabel} vs team baseline: ${winDeltaLabel}`
+              : `${recordLabel} vs team baseline: ${winDeltaFullLabel}`
           }
         >
           {winDeltaLabel}
@@ -254,7 +255,7 @@ function TeamRefRankListItem({
       </span>
       <span
         className="ref-matrix-team-panel-delta"
-        title={`${whistleDiffLabel}: ${whistleEdgeLabel} per game`}
+        title={`${whistleDiffLabel}: ${whistleEdgeFullLabel} per game`}
       >
         {whistleEdgeLabel}
       </span>
@@ -330,7 +331,6 @@ function TeamRefRankColumn({
                 variant={variant}
                 basePath={basePath}
                 sport={sport}
-                leagueId={leagueId}
                 whistleDiffLabel={whistleDiffLabel}
                 teamLabel={teamLabel}
                 teamBaselineRate={teamBaselineRate}
