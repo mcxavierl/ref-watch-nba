@@ -478,6 +478,8 @@ export interface RefStatsFile {
         foulDifferentialVariance: number;
       }
     >;
+    /** NCAA CBB: distinct verified games per live conference (conference hub badges). */
+    conferenceCoverageDistinctGames?: Record<string, number>;
   };
   refs: RefProfile[];
   /** Optional geography index keyed by ref slug (merged at ingest). */

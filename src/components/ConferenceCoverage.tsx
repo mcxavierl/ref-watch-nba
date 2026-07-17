@@ -1,8 +1,10 @@
 import type { NcaaRouteLeague } from "@/lib/ncaa-conference-gate";
+import { preloadCbbConferenceCoverageFromAssets } from "@/lib/cbb/conference-coverage-preload";
 import { getConferenceCoverageRows } from "@/lib/ncaa-conference-coverage";
 import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";
 import { StatusBadge } from "@/components/hub/StatusBadge";
 import { LEAGUES } from "@/lib/leagues";
+import { SITE_URL } from "@/lib/site";
 import "@/components/conference-coverage.css";
 
 type ConferenceCoverageProps = {
@@ -10,10 +12,13 @@ type ConferenceCoverageProps = {
   variant?: "default" | "clinical";
 };
 
-export function ConferenceCoverage({
+export async function ConferenceCoverage({
   leagueId,
   variant = "default",
 }: ConferenceCoverageProps) {
+  if (leagueId === "cbb") {
+    await preloadCbbConferenceCoverageFromAssets(SITE_URL);
+  }
   const league = LEAGUES[leagueId];
   const coverageRows = getConferenceCoverageRows(leagueId);
   const headingId = "ncaa-live-coverage-heading";
