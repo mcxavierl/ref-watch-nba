@@ -2,6 +2,7 @@ import type { StatusBadgeVerdict } from "@/components/hub/StatusBadge";
 import {
   getCachedCbbConferenceCoverage,
 } from "@/lib/cbb/conference-coverage-preload";
+import { getRefStats } from "@/lib/cbb/data";
 import { getCachedGameLogs } from "@/lib/game-logs-preload";
 import {
   LIVE_NCAA_CONFERENCES,
@@ -138,6 +139,30 @@ function readCbbGameLogsFromDisk(): {
   return parsed.games ?? [];
 }
 
+function readCbbCoverageFromRefStatsMeta(): Record<
+  LiveNcaaConferenceId,
+  number
+> | null {
+  try {
+    const meta = getRefStats().meta;
+    const distinct = meta.conferenceCoverageDistinctGames;
+    if (!distinct) return null;
+    const totalGames = LIVE_NCAA_CONFERENCES.reduce(
+      (sum, conferenceId) => sum + (distinct[conferenceId] ?? 0),
+      0,
+    );
+    if (totalGames <= 0) return null;
+    return Object.fromEntries(
+      LIVE_NCAA_CONFERENCES.map((conferenceId) => [
+        conferenceId,
+        distinct[conferenceId] ?? 0,
+      ]),
+    ) as Record<LiveNcaaConferenceId, number>;
+  } catch {
+    return null;
+  }
+}
+
 function readCbbConferenceSnapshotFromDisk(): Record<
   LiveNcaaConferenceId,
   number
@@ -180,6 +205,11 @@ function resolveCbbDistinctGamesByConference(): Record<
   const fromDisk = readCbbConferenceSnapshotFromDisk();
   if (fromDisk) {
     return fromDisk;
+  }
+
+  const fromRefStats = readCbbCoverageFromRefStatsMeta();
+  if (fromRefStats) {
+    return fromRefStats;
   }
 
   const cachedLogs = getCachedGameLogs("CBB");

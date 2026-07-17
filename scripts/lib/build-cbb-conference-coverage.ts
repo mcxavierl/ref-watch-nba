@@ -56,5 +56,23 @@ export function writeCbbConferenceCoverageSnapshot(root: string): boolean {
   console.log(
     `Wrote CBB conference coverage snapshot (${Object.values(snapshot.distinctByConference).join(", ")} games per conf)`,
   );
+
+  for (const rel of [
+    "data/cbb/ref-stats.json",
+    "data/cbb/ref-stats-core.json",
+    "public/data/cbb/ref-stats.json",
+  ]) {
+    const statsPath = path.join(root, rel);
+    if (!fs.existsSync(statsPath)) continue;
+    const stats = JSON.parse(fs.readFileSync(statsPath, "utf8")) as {
+      meta?: Record<string, unknown>;
+    };
+    stats.meta = {
+      ...stats.meta,
+      conferenceCoverageDistinctGames: snapshot.distinctByConference,
+    };
+    fs.writeFileSync(statsPath, `${JSON.stringify(stats)}\n`);
+  }
+
   return true;
 }
