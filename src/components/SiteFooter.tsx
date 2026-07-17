@@ -45,7 +45,7 @@ export function SiteFooter({ league }: { league?: FooterLeague }) {
             </p>
           </div>
           <div>
-            <p className="site-footer-heading">Explore</p>
+            <p className="site-footer-heading site-footer-heading--explore">Explore</p>
             <ul className="site-footer-explore space-y-1.5">
               {config.exploreLinks.map((item) => {
                 const className = "site-footer-link";

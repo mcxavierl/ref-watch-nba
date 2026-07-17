@@ -38,7 +38,8 @@ export default function TeamsIndexPage() {
                   <li key={team.abbr}>
                     <Link
                       href={`/teams/${team.abbr}`}
-                      className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2.5 transition hover:border-zinc-300 hover:bg-zinc-50"
+                      className="team-index-link flex items-center gap-3 rounded-lg border px-3 py-2.5"
+                      data-league="nba"
                     >
                       <TeamLogo team={team} size="md" />
                       <div className="min-w-0 flex-1">
@@ -56,7 +57,7 @@ export default function TeamsIndexPage() {
                             : "No data yet"}
                         </p>
                       </div>
-                      <span className="font-mono text-sm text-zinc-500">
+                      <span className="team-index-abbr">
                         {team.abbr}
                       </span>
                     </Link>

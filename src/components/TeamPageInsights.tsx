@@ -15,7 +15,7 @@ export function TeamPageInsights({ cards, teamLabel }: TeamPageInsightsProps) {
   const [featured, ...supporting] = cards;
 
   return (
-    <div className="overview-editorial-narrative">
+    <div className="overview-editorial-narrative team-page-insights">
       {featured ? (
         <section
           className="overview-editorial-section overview-editorial-section--featured section-block"
