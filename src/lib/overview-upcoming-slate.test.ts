@@ -89,4 +89,71 @@ describe("overview-upcoming-slate", () => {
     assert.equal(slate.leagueGroup?.games[0]?.seasonStageNote, "Pre-season game");
     assert.equal(slate.leagueNote?.note, file.note);
   });
+
+  it("builds EPL slate with team context and officials status", () => {
+    const file: AssignmentsFile = {
+      lastUpdated: "2026-07-17T19:00:00.000Z",
+      date: "2026-08-09",
+      source: "seeded",
+      games: [],
+      scheduledGames: [
+        {
+          id: "epl-fa-cov-ars-2026",
+          matchup: "COV @ ARS",
+          awayTeam: "COV",
+          homeTeam: "ARS",
+          league: "EPL",
+          seasonStage: "exhibition",
+          crew: [],
+        },
+      ],
+      nextSlateDate: "2026-08-09",
+      note: "Next EPL slate is 2026-08-09 (FA Cup fixture). Match officials not published yet.",
+    };
+
+    const slate = buildLeagueUpcomingSlateFromAssignments("epl", file);
+
+    assert.equal(slate.inSeason, true);
+    assert.equal(slate.leagueGroup?.games[0]?.matchup, "COV @ ARS");
+    assert.equal(slate.leagueGroup?.games[0]?.seasonStageNote, "Exhibition match");
+    assert.equal(slate.leagueGroup?.games[0]?.officialsLine, "Officials TBD");
+    assert.match(
+      slate.leagueGroup?.games[0]?.teamContextLine ?? "",
+      /Recent form: COV: no recent EPL log on file · ARS beat CRY 2-1 away/,
+    );
+  });
+
+  it("builds La Liga slate with named referee and recent form", () => {
+    const file: AssignmentsFile = {
+      lastUpdated: "2026-07-17T19:00:00.000Z",
+      date: "2026-08-15",
+      source: "seeded",
+      games: [],
+      scheduledGames: [
+        {
+          id: "laliga-748151-2026",
+          matchup: "OVI @ VIL",
+          awayTeam: "OVI",
+          homeTeam: "VIL",
+          league: "LALIGA",
+          crew: [{ name: "Alejandro Muñiz Ruiz", number: 0, role: "referee" }],
+        },
+      ],
+      nextSlateDate: "2026-08-15",
+      note: "2026-27 La Liga opener at Villarreal. Referee named from prior season slate.",
+    };
+
+    const slate = buildLeagueUpcomingSlateFromAssignments("laliga", file);
+
+    assert.equal(slate.inSeason, true);
+    assert.equal(slate.leagueGroup?.games[0]?.matchup, "OVI @ VIL");
+    assert.equal(
+      slate.leagueGroup?.games[0]?.officialsLine,
+      "Referee: Alejandro Muñiz Ruiz",
+    );
+    assert.match(
+      slate.leagueGroup?.games[0]?.teamContextLine ?? "",
+      /Recent form: OVI lost to MLL 3-0 away/,
+    );
+  });
 });

@@ -18,6 +18,8 @@ export type OverviewSlateEntry = {
   slateDate?: string;
   matchupInsight?: string;
   lastMeetingLine?: string;
+  teamContextLine?: string;
+  officialsLine?: string;
   seasonStageNote?: string;
 };
 

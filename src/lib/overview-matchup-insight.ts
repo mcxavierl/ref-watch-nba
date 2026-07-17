@@ -94,6 +94,90 @@ function formatShortDate(date: string): string {
   });
 }
 
+function teamDisplayName(leagueId: LeagueId, abbr: string): string {
+  const key = abbr.toUpperCase();
+  const team =
+    leagueId === "epl"
+      ? getEplTeam(key)
+      : leagueId === "laliga"
+        ? getLaligaTeam(key)
+        : undefined;
+  return team?.abbr ?? key;
+}
+
+function teamInvolvesGame(game: RuntimeGameLogEntry, abbr: string): boolean {
+  const key = abbr.toUpperCase();
+  return game.awayTeam.toUpperCase() === key || game.homeTeam.toUpperCase() === key;
+}
+
+function latestTeamGame(
+  leagueId: LeagueId,
+  teamAbbr: string,
+): RuntimeGameLogEntry | undefined {
+  const dataLeague = LEAGUE_TO_DATA[leagueId];
+  if (!dataLeague) return undefined;
+  const logs = loadRuntimeGameLogs(dataLeague);
+  if (!logs?.games?.length) return undefined;
+
+  const teamGames = logs.games.filter((game) => teamInvolvesGame(game, teamAbbr));
+  if (teamGames.length === 0) return undefined;
+
+  return [...teamGames].sort(
+    (a, b) => b.date.localeCompare(a.date) || b.gameId.localeCompare(a.gameId),
+  )[0];
+}
+
+function formatTeamRecentResult(
+  leagueId: LeagueId,
+  teamAbbr: string,
+  game: RuntimeGameLogEntry,
+): string {
+  const team = teamAbbr.toUpperCase();
+  const label = teamDisplayName(leagueId, team);
+  const isHome = game.homeTeam.toUpperCase() === team;
+  const teamScore = isHome ? game.homeScore : game.awayScore;
+  const oppScore = isHome ? game.awayScore : game.homeScore;
+  const opponent = isHome ? game.awayTeam : game.homeTeam;
+  const dateLabel = formatShortDate(game.date);
+
+  let outcome: string;
+  if (teamScore > oppScore) {
+    outcome = `beat ${opponent} ${teamScore}-${oppScore}`;
+  } else if (teamScore < oppScore) {
+    outcome = `lost to ${opponent} ${oppScore}-${teamScore}`;
+  } else {
+    outcome = `drew ${opponent} ${teamScore}-${oppScore}`;
+  }
+
+  const venue = isHome ? "at home" : "away";
+  return `${label} ${outcome} ${venue} (${dateLabel})`;
+}
+
+function formatTeamRecentOrMissing(leagueId: LeagueId, teamAbbr: string): string {
+  const latest = latestTeamGame(leagueId, teamAbbr);
+  if (latest) {
+    return formatTeamRecentResult(leagueId, teamAbbr, latest);
+  }
+
+  const label = teamDisplayName(leagueId, teamAbbr);
+  const leagueLabel =
+    leagueId === "epl" ? "EPL" : leagueId === "laliga" ? "La Liga" : "league";
+  return `${label}: no recent ${leagueLabel} log on file`;
+}
+
+/** Plain-language recent-result note for each side when head-to-head history is thin. */
+export function buildOverviewTeamRecentContextLine(
+  leagueId: LeagueId,
+  awayTeam: string,
+  homeTeam: string,
+): string | undefined {
+  if (leagueId !== "epl" && leagueId !== "laliga") return undefined;
+
+  const awayLine = formatTeamRecentOrMissing(leagueId, awayTeam);
+  const homeLine = formatTeamRecentOrMissing(leagueId, homeTeam);
+  return `Recent form: ${awayLine} · ${homeLine}`;
+}
+
 function teamCityForLeague(leagueId: LeagueId, abbr: string): string | undefined {
   const key = abbr.toUpperCase();
   const team =

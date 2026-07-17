@@ -168,7 +168,9 @@
 }
 
 .overview-slate-row-last-meeting,
-.overview-slate-row-season-stage {
+.overview-slate-row-season-stage,
+.overview-slate-row-team-context,
+.overview-slate-row-officials {
   font-size: 0.6875rem;
   font-weight: 500;
   line-height: 1.35;
@@ -176,6 +178,11 @@
 }
 
 .overview-slate-row-season-stage {
+  font-weight: 600;
+  color: var(--clinical-ink-label);
+}
+
+.overview-slate-row-officials {
   font-weight: 600;
   color: var(--clinical-ink-label);
 }
