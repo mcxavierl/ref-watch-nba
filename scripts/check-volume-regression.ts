@@ -13,7 +13,9 @@ import {
   formatVolumeSummaryTable,
   runVolumeRegressionChecks,
 } from "./lib/volume-regression";
+import { refreshBaselinesFromGameLogs } from "./lib/baselines";
 
+refreshBaselinesFromGameLogs("Refreshed before volume regression check");
 console.log("Volume regression check…");
 const { failures, summaries } = runVolumeRegressionChecks();
 

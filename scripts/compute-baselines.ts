@@ -1,25 +1,10 @@
 #!/usr/bin/env npx tsx
-import {
-  buildBaselinesFile,
-  saveBaselines,
-} from "./lib/baselines";
-import { loadGameLogs } from "./lib/game-logs";
+import { refreshBaselinesFromGameLogs } from "./lib/baselines";
 
 function main() {
-  const nba = loadGameLogs("NBA");
-  const nhl = loadGameLogs("NHL");
-  const nfl = loadGameLogs("NFL");
-  const epl = loadGameLogs("EPL");
-  const laliga = loadGameLogs("LALIGA");
-  const file = buildBaselinesFile(
-    nba?.games ?? [],
-    nhl?.games ?? [],
+  const file = refreshBaselinesFromGameLogs(
     "Computed from NBA/NHL/NFL/EPL/La Liga game logs",
-    nfl?.games ?? [],
-    epl?.games ?? [],
-    laliga?.games ?? [],
   );
-  saveBaselines(file);
   console.log(
     `Baselines written: ` +
       `NBA ${file.NBA.aggregate.gameCount} (${file.NBA.usingFallback ? "fallback" : "computed"}), ` +

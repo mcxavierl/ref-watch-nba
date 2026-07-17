@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { GameLogEntry } from "./game-logs";
+import { loadGameLogs } from "./game-logs";
 
 export interface SeasonBaseline {
   season: string;
@@ -246,6 +247,25 @@ export function saveBaselines(file: BaselinesFile): void {
   const outPath = path.join(process.cwd(), "data", "baselines.json");
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, `${JSON.stringify(file, null, 2)}\n`);
+}
+
+/** Recompute baselines from committed game logs and persist data/baselines.json. */
+export function refreshBaselinesFromGameLogs(note?: string): BaselinesFile {
+  const nba = loadGameLogs("NBA");
+  const nhl = loadGameLogs("NHL");
+  const nfl = loadGameLogs("NFL");
+  const epl = loadGameLogs("EPL");
+  const laliga = loadGameLogs("LALIGA");
+  const file = buildBaselinesFile(
+    nba?.games ?? [],
+    nhl?.games ?? [],
+    note ?? "Refreshed from game logs",
+    nfl?.games ?? [],
+    epl?.games ?? [],
+    laliga?.games ?? [],
+  );
+  saveBaselines(file);
+  return file;
 }
 
 export function loadBaselines(): BaselinesFile | null {
