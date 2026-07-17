@@ -59,6 +59,26 @@ function average(values: number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
+function formatMeetingResult(
+  game: RuntimeGameLogEntry,
+  leagueId: LeagueId,
+  meetingCount: number,
+): string {
+  const away = game.awayTeam.toUpperCase();
+  const home = game.homeTeam.toUpperCase();
+  const prefix = meetingCount === 1 ? "Score" : "Most recent score";
+  const scoreLine = `${away} ${game.awayScore}, ${home} ${game.homeScore}`;
+
+  if (game.awayScore === game.homeScore) {
+    const tieLabel =
+      leagueId === "epl" || leagueId === "laliga" ? "draw" : "tie";
+    return `${prefix}: ${scoreLine} (${tieLabel}).`;
+  }
+
+  const winner = game.awayScore > game.homeScore ? away : home;
+  return `${prefix}: ${scoreLine} (${winner} won).`;
+}
+
 function formatInsightLine(
   scopeLabel: string,
   meetings: RuntimeGameLogEntry[],
@@ -68,7 +88,11 @@ function formatInsightLine(
   const meetingLabel = count === 1 ? "meeting" : "meetings";
   const avgPoints = average(meetings.map((game) => game.totalPoints));
   const avgWhistle = average(meetings.map((game) => game.totalFouls));
-  return `${scopeLabel} (${count} ${meetingLabel}): avg ${avgPoints.toFixed(1)} ${scorePhraseForLeague(leagueId)} and ${avgWhistle.toFixed(1)} ${whistleNounForLeague(leagueId)} per game.`;
+  const latest = [...meetings].sort(
+    (a, b) => b.date.localeCompare(a.date) || b.gameId.localeCompare(a.gameId),
+  )[0]!;
+  const averages = `${scopeLabel} (${count} ${meetingLabel}): avg ${avgPoints.toFixed(1)} ${scorePhraseForLeague(leagueId)} and ${avgWhistle.toFixed(1)} ${whistleNounForLeague(leagueId)} per game.`;
+  return `${averages} ${formatMeetingResult(latest, leagueId, count)}`;
 }
 
 /** Build-time head-to-head pace note for overview slate rows. */
