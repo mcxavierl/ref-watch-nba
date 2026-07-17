@@ -1,10 +1,9 @@
 import {
   formatWhistleIndex,
-  isExtremeWhistleIndex,
-  whistleIndexBand,
   whistleIndexCaption,
-  type WhistleIndexBand,
+  whistleIndexVisualTone,
 } from "@/lib/whistle-index";
+import "@/components/whistle-index-gauge.css";
 
 type WhistleIndexGaugeProps = {
   index: number;
@@ -13,20 +12,6 @@ type WhistleIndexGaugeProps = {
   className?: string;
 };
 
-function glowClass(band: WhistleIndexBand, extreme: boolean): string {
-  if (!extreme) return "";
-  if (band === "high") {
-    return "shadow-[0_0_22px_rgba(251,146,60,0.42)] ring-1 ring-orange-400/35";
-  }
-  return "shadow-[0_0_22px_rgba(56,189,248,0.38)] ring-1 ring-sky-400/35";
-}
-
-function barToneClass(band: WhistleIndexBand): string {
-  if (band === "high") return "from-orange-400 to-amber-300";
-  if (band === "low") return "from-sky-400 to-cyan-300";
-  return "from-slate-400 to-slate-300";
-}
-
 export function WhistleIndexGauge({
   index,
   size = "md",
@@ -34,55 +19,45 @@ export function WhistleIndexGauge({
   className = "",
 }: WhistleIndexGaugeProps) {
   const clamped = Math.max(0, Math.min(100, Math.round(index)));
-  const band = whistleIndexBand(clamped);
-  const extreme = isExtremeWhistleIndex(clamped);
-
-  const shellClass =
-    size === "lg"
-      ? "gap-3 p-3.5"
-      : size === "sm"
-        ? "gap-2 p-2"
-        : "gap-2.5 p-3";
-
-  const valueClass =
-    size === "lg" ? "text-3xl" : size === "sm" ? "text-lg" : "text-2xl";
+  const visualTone = whistleIndexVisualTone(clamped);
+  const caption = whistleIndexCaption(clamped);
 
   return (
     <div
-      className={`whistle-index-gauge rounded-xl border border-border/70 bg-surface/90 ${shellClass} ${glowClass(band, extreme)} ${className}`}
+      className={`whistle-index-gauge whistle-index-gauge--${size} ${className}`.trim()}
       data-whistle-index={clamped}
-      data-whistle-band={band}
-      aria-label={`Whistle Index ${formatWhistleIndex(clamped)} out of 100. ${whistleIndexCaption(clamped)}.`}
+      data-whistle-visual-tone={visualTone}
+      aria-label={`Whistle Index ${formatWhistleIndex(clamped)} out of 100. ${caption}.`}
     >
-      <div className="flex items-end justify-between gap-3">
-        <div className="min-w-0">
-          <p className="whistle-index-gauge-label m-0 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-zinc-500">
-            Whistle Index<span aria-hidden>™</span>
-          </p>
-          <p className={`whistle-index-gauge-value m-0 font-bold tabular-nums leading-none text-zinc-100 ${valueClass}`}>
-            {formatWhistleIndex(clamped)}
-          </p>
-        </div>
-        <p className="m-0 text-[0.68rem] font-medium text-zinc-500">0–100</p>
-      </div>
+      <p className="whistle-index-gauge__label">
+        Whistle Index<span aria-hidden>™</span>
+      </p>
 
-      <div
-        className="relative h-2.5 overflow-hidden rounded-full bg-zinc-800/80"
-        aria-hidden
-      >
-        <div
-          className={`absolute inset-y-0 left-0 rounded-full bg-gradient-to-r ${barToneClass(band)} transition-[width] duration-500 ease-out`}
-          style={{ width: `${clamped}%` }}
-        />
-        <div
-          className="absolute inset-y-0 w-px bg-zinc-950/70"
-          style={{ left: "50%" }}
-        />
-      </div>
+      <p className="whistle-index-gauge__value">{formatWhistleIndex(clamped)}</p>
 
       {showCaption ? (
-        <p className="m-0 text-xs font-medium text-zinc-400">{whistleIndexCaption(clamped)}</p>
+        <p className="whistle-index-gauge__caption">{caption}</p>
       ) : null}
+
+      <div className="whistle-index-gauge__scale" aria-hidden>
+        <span className="whistle-index-gauge__scale-label">0</span>
+        <div className="whistle-index-gauge__track">
+          <div className="whistle-index-gauge__track-gradient" />
+          <div className="whistle-index-gauge__track-neutral" />
+          <div
+            className={`whistle-index-gauge__fill whistle-index-gauge__fill--${visualTone}`}
+            style={{ width: `${clamped}%` }}
+          />
+          <div className="whistle-index-gauge__center-line" />
+          <div
+            className={`whistle-index-gauge__marker whistle-index-gauge__marker--${visualTone}`}
+            style={{ left: `${clamped}%` }}
+          />
+        </div>
+        <span className="whistle-index-gauge__scale-label whistle-index-gauge__scale-label--max">
+          100
+        </span>
+      </div>
     </div>
   );
 }
