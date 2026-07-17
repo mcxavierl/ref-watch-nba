@@ -59,14 +59,14 @@
   --header-gold-deep: #9a7431;
   --header-gold-ink: #18324b;
 
-  /* FIFA World Cup 2026 research accent */
+  /* FIFA World Cup 2026 research accent — cool champagne gold */
   --wc-gold-gradient: linear-gradient(
     135deg,
-    #c9a227 0%,
-    #f4e4a6 42%,
-    #9a7431 100%
+    #bfa86a 0%,
+    #d4c48a 42%,
+    #9a8a55 100%
   );
-  --wc-research-accent: #c9a227;
+  --wc-research-accent: #bfa86a;
   --wc-research-accent-muted: color-mix(in srgb, var(--wc-research-accent) 22%, transparent);
   --wc-research-surface: color-mix(in srgb, var(--wc-research-accent) 8%, var(--bg-surface-1));
   --header-wordmark: #ffffff;
