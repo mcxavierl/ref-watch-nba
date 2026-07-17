@@ -8,20 +8,13 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { buildCrossLeagueOverview } from "../src/lib/cross-league-overview";
 import { catalogCompetitionCount } from "../src/lib/league-catalog";
+import {
+  isOverviewSnapshotSource,
+  OVERVIEW_SNAPSHOT_REL,
+  OVERVIEW_SNAPSHOT_SOURCES,
+} from "./overview-snapshot-sources";
 
 const ROOT = process.cwd();
-const SNAPSHOT_REL = "data/overview-snapshot.json";
-
-const RELEVANT_PATHS = [
-  "src/lib/cross-league-overview.ts",
-  "src/lib/overview-upcoming-slate.ts",
-  "src/lib/overview-matchup-insight.ts",
-  "src/lib/overview-slate-shared.ts",
-  "src/lib/league-pace-bars.ts",
-  "src/lib/league-quick-lists.ts",
-  SNAPSHOT_REL,
-  "data/overview-insights.json",
-];
 
 function gitLines(args: string): string[] {
   try {
@@ -46,7 +39,7 @@ function changedFiles(): Set<string> {
 
 function isRelevantChange(changed: Set<string>): boolean {
   if (changed.size === 0) return true;
-  return [...changed].some((file) => RELEVANT_PATHS.some((rel) => file === rel || file.endsWith(rel)));
+  return [...changed].some((file) => isOverviewSnapshotSource(file) || file.endsWith(OVERVIEW_SNAPSHOT_REL));
 }
 
 function readJson<T>(rel: string): T {
@@ -60,11 +53,21 @@ if (!isRelevantChange(changed)) {
 }
 
 const failures: string[] = [];
+const touchedSources = [...changed].filter((file) => isOverviewSnapshotSource(file));
+const snapshotTouched = [...changed].some((file) => file.endsWith(OVERVIEW_SNAPSHOT_REL));
 
-if (!fs.existsSync(path.join(ROOT, SNAPSHOT_REL))) {
-  failures.push(`${SNAPSHOT_REL} missing — run: npx tsx scripts/build-overview-snapshot.ts`);
-} else {
-  const onDisk = readJson<{ snapshot: ReturnType<typeof buildCrossLeagueOverview> }>(SNAPSHOT_REL);
+if (process.env.GITHUB_BASE_SHA && touchedSources.length > 0 && !snapshotTouched) {
+  failures.push(
+    `overview snapshot sources changed (${touchedSources.join(", ")}) but ${OVERVIEW_SNAPSHOT_REL} was not updated — run: npx tsx scripts/build-overview-snapshot.ts && git add ${OVERVIEW_SNAPSHOT_REL}`,
+  );
+}
+
+if (!fs.existsSync(path.join(ROOT, OVERVIEW_SNAPSHOT_REL))) {
+  failures.push(`${OVERVIEW_SNAPSHOT_REL} missing — run: npx tsx scripts/build-overview-snapshot.ts`);
+} else if (failures.length === 0) {
+  const onDisk = readJson<{ snapshot: ReturnType<typeof buildCrossLeagueOverview> }>(
+    OVERVIEW_SNAPSHOT_REL,
+  );
   const fresh = buildCrossLeagueOverview(catalogCompetitionCount());
 
   if (JSON.stringify(onDisk.snapshot) !== JSON.stringify(fresh)) {
@@ -78,7 +81,7 @@ if (!fs.existsSync(path.join(ROOT, SNAPSHOT_REL))) {
       }
     }
     failures.push(
-      `${SNAPSHOT_REL} is stale (${reason}) — run: npx tsx scripts/build-overview-snapshot.ts && git add ${SNAPSHOT_REL}`,
+      `${OVERVIEW_SNAPSHOT_REL} is stale (${reason}) — run: npx tsx scripts/build-overview-snapshot.ts && git add ${OVERVIEW_SNAPSHOT_REL}`,
     );
   }
 }
@@ -88,6 +91,9 @@ if (failures.length > 0) {
   for (const msg of failures) {
     console.error(`  ✗ ${msg}`);
   }
+  console.error(
+    `\nTracked overview snapshot sources:\n${OVERVIEW_SNAPSHOT_SOURCES.map((file) => `  - ${file}`).join("\n")}`,
+  );
   process.exit(1);
 }
 

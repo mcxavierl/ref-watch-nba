@@ -34,19 +34,23 @@ npm run setup:hooks
 
 1. **Do not merge** a PR until GitHub **validate** is green.
 2. **Do not merge** if `npm run check:ci` fails locally.
-3. After changing overview/slate logic, update related tests in the same PR.
-4. After changing `cross-league-overview.ts`, rebuild `data/overview-snapshot.json`:
+3. PR CI can **skip** snapshot freshness when a diff touches no overview sources, but **deploy on main always runs it**. If you change insight gates, methodology, or overview builders, refresh the snapshot in the same PR.
+4. After changing any file listed in `scripts/overview-snapshot-sources.ts`, rebuild `data/overview-snapshot.json`:
 
 ```bash
 npx tsx scripts/build-overview-snapshot.ts
 git add data/overview-snapshot.json
 ```
 
+5. After changing overview/slate logic, update related tests in the same PR.
+
 ## Common failure modes
 
 | Symptom | Fix |
 |--------|-----|
 | Stale `overview-snapshot.json` | Run `build-overview-snapshot.ts` and commit |
+| PR green but deploy on main fails freshness | Overview sources changed without snapshot refresh — CI skipped on PR because paths were not tracked; fix paths in `overview-snapshot-sources.ts` if needed, rebuild snapshot, merge |
+| Snapshot sources changed but snapshot file not in PR | `check-artifact-freshness` fails — rebuild and commit snapshot in the same PR |
 | Slate metadata test mismatch | Update `overview-upcoming-slate.test.ts` or use flexible assertions |
 | Merged PR but nothing on production | Deploy validate failed — fix tests and merge a green PR |
 | Pre-push hook blocks push | Fix failures or `SKIP_SHIP_CHECK=1` only in emergencies |
