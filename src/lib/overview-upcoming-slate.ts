@@ -2,6 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
+import { buildSeasonStageNote } from "@/lib/assignment-season-stage";
 import { buildOverviewLastMeetingLine, buildOverviewMatchupInsight } from "@/lib/overview-matchup-insight";
 import type { AssignmentsFile } from "@/lib/types";
 
@@ -145,6 +146,7 @@ function pushEntry(
     slateDate: file.date,
     matchupInsight: buildOverviewMatchupInsight(leagueId, game.awayTeam, game.homeTeam),
     lastMeetingLine: buildOverviewLastMeetingLine(leagueId, game.awayTeam, game.homeTeam),
+    seasonStageNote: buildSeasonStageNote(leagueId, game, file.date),
   });
 }
 

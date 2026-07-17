@@ -18,6 +18,7 @@ export type OverviewSlateEntry = {
   slateDate?: string;
   matchupInsight?: string;
   lastMeetingLine?: string;
+  seasonStageNote?: string;
 };
 
 export type OverviewLeagueNote = {

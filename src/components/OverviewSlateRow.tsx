@@ -74,6 +74,9 @@ export function OverviewSlateRow({
             {awayTeam.abbr} @ {homeTeam.abbr}
           </span>
         </span>
+        {game.seasonStageNote ? (
+          <span className="overview-slate-row-season-stage">{game.seasonStageNote}</span>
+        ) : null}
         {game.lastMeetingLine ? (
           <span className="overview-slate-row-last-meeting">{game.lastMeetingLine}</span>
         ) : null}

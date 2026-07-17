@@ -49,6 +49,8 @@ export interface EspnScoreboardEvent {
   homeAbbr: string;
   awayScore?: number;
   homeScore?: number;
+  seasonType?: number;
+  seasonSlug?: string;
 }
 
 export interface EspnOfficial {
@@ -93,6 +95,7 @@ export async function fetchEspnScoreboard(
       id: string;
       date: string;
       name: string;
+      season?: { type?: number; slug?: string };
       status?: { type?: { name?: string; completed?: boolean } };
       competitions?: {
         competitors?: {
@@ -133,6 +136,8 @@ export async function fetchEspnScoreboard(
       homeAbbr,
       awayScore,
       homeScore,
+      seasonType: event.season?.type,
+      seasonSlug: event.season?.slug,
     });
   }
   return events;
