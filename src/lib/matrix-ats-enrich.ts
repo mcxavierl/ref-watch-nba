@@ -12,6 +12,7 @@ import type {
   RefTeamStat,
   TeamCrewSplit,
 } from "@/lib/types";
+import type { RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import type { TeamAtsSampleRecord } from "@/lib/team-ats";
 
 const LEAGUE_ID_TO_DATA: Record<LeagueId, DataLeague> = {
@@ -85,6 +86,18 @@ function enrichCacheKey(
   ].join("|");
 }
 
+/** Matrix ATS uses verified external lines; synthetic lines when league meta marks ATS available. */
+function hasMatrixSpreadLine(
+  game: RuntimeGameLogEntry,
+  stats: RefStatsFile,
+): boolean {
+  if (hasClosingSpreadLine(game)) return true;
+  if (!stats.meta.atsAvailable) return false;
+  return (
+    game.lineSource === "synthetic" && Number.isFinite(game.homeSpread)
+  );
+}
+
 /** Attach ref×team and team-baseline ATS from stored game logs when lines exist. */
 export function enrichRefStatsForMatrixAts(
   leagueId: LeagueId,
@@ -109,7 +122,7 @@ export function enrichRefStatsForMatrixAts(
   const teamAtsTotals = new Map<string, AtsCounter>();
 
   for (const game of games) {
-    const hasLine = hasClosingSpreadLine(game);
+    const hasLine = hasMatrixSpreadLine(game, stats);
     if (!hasLine) continue;
     const key = crewKey(game.officials);
     const homeWin = game.homeScore > game.awayScore;
