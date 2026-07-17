@@ -26,8 +26,8 @@ import { getTeamDisplayRecord } from "@/lib/teamDisplayRecord";
 import { resolveTeamCrewSplits } from "@/lib/teamCrewSplits";
 import { userFacingDataNote } from "@/lib/user-language";
 import { computeTeamCloseGameMetrics } from "@/lib/close-game";
-import { computeTeamInsights } from "@/lib/team-insights";
-import { TeamInsightCards } from "@/components/TeamInsightCards";
+import { TeamPageInsights } from "@/components/TeamPageInsights";
+import { loadTeamPageInsightCards } from "@/lib/team-page-insights";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import { getCachedTeamStrengthOfSchedule } from "@/lib/nba-team-sos-cache";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
@@ -101,18 +101,7 @@ export function TeamCrewPage({
   );
   const teamSos =
     league === "nba" ? getCachedTeamStrengthOfSchedule(team.abbr) : null;
-  const teamInsights = computeTeamInsights({
-    teamAbbr: team.abbr,
-    teamLabel,
-    teamRecord,
-    crewSplits: splits,
-    refSplits,
-    refs: analyticsRefs,
-    leagueAvgTotal: stats.meta.leagueAvgTotal,
-    leagueOverBaseline: stats.meta.leagueOverBaseline,
-    leagueAvgFouls: stats.meta.leagueAvgFouls,
-    league,
-  });
+  const teamInsightCards = loadTeamPageInsightCards(league, team.abbr);
 
   return (
     <div className="page-shell">
@@ -181,13 +170,7 @@ export function TeamCrewPage({
         )}
       </section>
 
-      <TeamInsightCards
-        insights={teamInsights}
-        basePath={basePath}
-        sport={league}
-        teamAbbr={team.abbr}
-        teamLabel={teamLabel}
-      />
+      <TeamPageInsights cards={teamInsightCards} teamLabel={teamLabel} />
 
       {splits.length === 0 && refSplits.length === 0 ? (
         <div className="panel-inset px-6 py-8 text-center">

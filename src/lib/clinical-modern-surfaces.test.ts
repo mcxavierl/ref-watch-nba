@@ -28,14 +28,13 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /MetricBlock/);
   });
 
-  it("TeamInsightCards uses Clinical Modern card shell", () => {
-    const source = readSrc("src/components/TeamInsightCards.tsx");
-    assert.match(source, /ClinicalCard/);
-    assert.match(source, /REF_CARD_CLASS/);
-    assert.match(source, /clinical-insight-matrix-avatars/);
+  it("TeamPageInsights uses shared InsightCard editorial shell", () => {
+    const source = readSrc("src/components/TeamPageInsights.tsx");
+    assert.match(source, /InsightCard/);
+    assert.match(source, /overview-editorial-narrative/);
+    assert.match(source, /variant="featured"/);
+    assert.doesNotMatch(source, /ClinicalCard/);
     assert.doesNotMatch(source, /StandoutFlag/);
-    assert.doesNotMatch(source, /StatusBadge/);
-    assert.doesNotMatch(source, /Balanced/);
   });
 
   it("NcaaAuditStatusPill delegates to shared StatusBadge", () => {

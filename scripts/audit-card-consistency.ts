@@ -455,25 +455,19 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "TeamInsightCards uses Clinical Modern hub components",
+    name: "TeamPageInsights uses shared InsightCard editorial shell",
     run: () => {
-      const content = read("src/components/TeamInsightCards.tsx");
-      if (!content.includes("ClinicalCard") || !content.includes("REF_CARD_CLASS")) {
+      const content = read("src/components/TeamPageInsights.tsx");
+      if (!content.includes("InsightCard") || !content.includes("overview-editorial-narrative")) {
         return {
           ok: false,
-          message: "TeamInsightCards must use ClinicalCard and REF_CARD_CLASS",
+          message: "TeamPageInsights must use InsightCard and overview editorial layout",
         };
       }
-      if (content.includes("StandoutFlag")) {
+      if (content.includes("ClinicalCard")) {
         return {
           ok: false,
-          message: "TeamInsightCards still imports StandoutFlag",
-        };
-      }
-      if (/Balanced/.test(content)) {
-        return {
-          ok: false,
-          message: "TeamInsightCards must not render Balanced labels",
+          message: "TeamPageInsights must not use legacy ClinicalCard insight shell",
         };
       }
       return { ok: true };
