@@ -13043,9 +13043,9 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 }
 
 .overview-quicklists-tab[data-league="nba"].overview-quicklists-tab--active {
-  border-color: color-mix(in srgb, var(--raptors) 45%, var(--line));
-  color: var(--raptors);
-  background: color-mix(in srgb, var(--raptors) 10%, rgba(0, 0, 0, 0.12));
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
 }
 
 .overview-quicklists-tab[data-league="nhl"].overview-quicklists-tab--active {
@@ -13980,9 +13980,9 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segmen
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nba"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--raptors) 40%, var(--border));
-  color: var(--raptors);
-  background: color-mix(in srgb, var(--raptors) 8%, var(--surface));
+  border-color: var(--dashboard-crimson, #e11d48);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #e11d48);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="cbb"][aria-selected="true"] {
