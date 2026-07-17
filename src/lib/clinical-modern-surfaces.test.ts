@@ -180,6 +180,17 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(config, /\/research\/leverage-spike-anomaly/);
   });
 
+  it("homepage surfaces Game-State Index findings under the research banner", () => {
+    const dashboard = readSrc("src/components/OverviewDashboard.tsx");
+    const css = readSrc("src/components/overview-clinical-modern.css");
+    const findings = readSrc("src/lib/gsni-home-findings.ts");
+    assert.match(dashboard, /GameStateIndexFindings/);
+    assert.match(dashboard, /ResearchHighlightBanner[\s\S]*GameStateIndexFindings/);
+    assert.match(findings, /buildGsniHomeFindings/);
+    assert.match(findings, /GSNI_HOME_MIN_SAMPLE_GAMES = 200/);
+    assert.match(css, /\.gsni-home-findings/);
+  });
+
   it("live league date badges use high-contrast blue tokens", () => {
     const css = readSrc("src/app/globals.css");
     assert.match(css, /--live-league-date-ink/);

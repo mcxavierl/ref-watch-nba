@@ -450,3 +450,98 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-capsule-label,
 html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   color: var(--clinical-ink);
 }
+
+.gsni-home-findings {
+  margin-bottom: 2rem;
+}
+
+.gsni-home-findings__header {
+  margin-bottom: 0.85rem;
+}
+
+.gsni-home-findings__title {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(148 163 184);
+}
+
+.gsni-home-findings__lead {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgb(100 116 139);
+}
+
+.gsni-home-findings__grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 960px) {
+  .gsni-home-findings__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.gsni-home-finding {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.95rem;
+  border: 1px solid rgb(30 41 59);
+  background: rgb(2 6 23);
+  text-decoration: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background 150ms ease;
+}
+
+.gsni-home-finding:hover {
+  background: rgb(15 23 42);
+}
+
+.gsni-home-finding--quiet {
+  box-shadow: 0 0 22px color-mix(in srgb, rgb(56 189 248) 14%, transparent);
+  border-color: color-mix(in srgb, rgb(56 189 248) 28%, rgb(30 41 59));
+}
+
+.gsni-home-finding--heavy {
+  box-shadow: 0 0 22px color-mix(in srgb, rgb(251 146 60) 14%, transparent);
+  border-color: color-mix(in srgb, rgb(251 146 60) 28%, rgb(30 41 59));
+}
+
+.gsni-home-finding__score {
+  flex-shrink: 0;
+  min-width: 2.35rem;
+  font-family: var(--font-data);
+  font-size: 1.125rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: rgb(248 250 252);
+}
+
+.gsni-home-finding__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.gsni-home-finding__headline {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgb(248 250 252);
+}
+
+.gsni-home-finding__meta {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: rgb(148 163 184);
+}
