@@ -80,6 +80,12 @@ export function OverviewSlateRow({
         {game.lastMeetingLine ? (
           <span className="overview-slate-row-last-meeting">{game.lastMeetingLine}</span>
         ) : null}
+        {game.teamContextLine ? (
+          <span className="overview-slate-row-team-context">{game.teamContextLine}</span>
+        ) : null}
+        {game.officialsLine ? (
+          <span className="overview-slate-row-officials">{game.officialsLine}</span>
+        ) : null}
       </div>
         {game.status === "scheduled" && dateLabel ? (
           <span className="overview-slate-date">{dateLabel}</span>

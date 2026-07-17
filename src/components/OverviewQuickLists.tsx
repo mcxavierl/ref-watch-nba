@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import {
   overviewQuickListsForLeague,
   type OverviewQuickList,
 } from "@/lib/league-quick-lists";
+import { CBB_TEAMS } from "@/lib/cbb/teams";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
 import { OVERVIEW_HUB_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
@@ -30,6 +31,7 @@ export function OverviewQuickLists({
   const router = useRouter();
   const [activeLeague, setActiveLeague] = useState<LeagueId>(defaultLeagueId);
   const [selectedListId, setSelectedListId] = useState<string>(DEFAULT_LIST_ID);
+  const [teamFilter, setTeamFilter] = useState("all");
 
   const leagueCard = leagueCards.find((card) => card.leagueId === activeLeague);
   const insightCard = insightCards.find((card) => card.leagueId === activeLeague);
@@ -39,9 +41,22 @@ export function OverviewQuickLists({
   });
   const league = LEAGUES[activeLeague];
   const selectedList = lists.find((list) => list.id === selectedListId) ?? lists[0];
+  const teamFilterOptions = useMemo(() => {
+    if (activeLeague !== "cbb") {
+      return [{ value: "all", label: "All Teams" }];
+    }
+    return [
+      { value: "all", label: "All Teams" },
+      ...CBB_TEAMS.map((team) => ({
+        value: team.abbr,
+        label: `${team.city} ${team.name}`,
+      })),
+    ];
+  }, [activeLeague]);
 
   useEffect(() => {
     setSelectedListId(DEFAULT_LIST_ID);
+    setTeamFilter("all");
   }, [activeLeague]);
 
   const handleListSelect = (list: OverviewQuickList) => {
@@ -125,9 +140,26 @@ export function OverviewQuickLists({
 
       {selectedList ? (
         <div className="overview-quicklists-open-row">
-          <p className="overview-quicklists-open-hint">
-            {selectedList.label} selected. Open the live {league.shortLabel} view.
-          </p>
+          <div className="overview-quicklists-context">
+            <p className="overview-quicklists-context-line overview-quicklists-context-line--primary">
+              {selectedList.label} selected for {league.shortLabel} ({league.label}).
+            </p>
+            <p className="overview-quicklists-context-refine">
+              <span className="overview-quicklists-context-refine-label">Refine by Team:</span>
+              <select
+                className="overview-quicklists-team-filter"
+                value={teamFilter}
+                onChange={(event) => setTeamFilter(event.target.value)}
+                aria-label={`Filter ${selectedList.label} by team`}
+              >
+                {teamFilterOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </p>
+          </div>
           <Link
             href={selectedList.href}
             className="overview-quicklists-open-btn"

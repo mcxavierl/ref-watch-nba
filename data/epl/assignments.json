@@ -1,6 +1,19 @@
 {
-  "lastUpdated": "2026-07-08T16:49:52.148Z",
-  "date": "2026-07-08",
+  "lastUpdated": "2026-07-17T19:00:00.000Z",
+  "date": "2026-08-09",
   "source": "seeded",
-  "games": []
+  "games": [],
+  "scheduledGames": [
+    {
+      "id": "epl-fa-cov-ars-2026",
+      "matchup": "COV @ ARS",
+      "awayTeam": "COV",
+      "homeTeam": "ARS",
+      "league": "EPL",
+      "seasonStage": "exhibition",
+      "crew": []
+    }
+  ],
+  "nextSlateDate": "2026-08-09",
+  "note": "Next EPL slate is 2026-08-09 (FA Cup fixture). Match officials not published yet."
 }

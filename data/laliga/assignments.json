@@ -1,0 +1,24 @@
+{
+  "lastUpdated": "2026-07-17T19:00:00.000Z",
+  "date": "2026-08-15",
+  "source": "seeded",
+  "games": [],
+  "scheduledGames": [
+    {
+      "id": "laliga-748151-2026",
+      "matchup": "OVI @ VIL",
+      "awayTeam": "OVI",
+      "homeTeam": "VIL",
+      "league": "LALIGA",
+      "crew": [
+        {
+          "name": "Alejandro Muñiz Ruiz",
+          "number": 0,
+          "role": "referee"
+        }
+      ]
+    }
+  ],
+  "nextSlateDate": "2026-08-15",
+  "note": "2026-27 La Liga opener at Villarreal. Referee named from prior season slate."
+}

@@ -29,6 +29,12 @@ export const OVERVIEW_HUB_LEAGUE_IDS = [
   ...LAUNCHED_NCAA_LEAGUE_IDS,
 ] as const satisfies readonly LeagueId[];
 
+/** Leagues with matrix insight cards on the overview dashboard. */
+export const OVERVIEW_INSIGHT_LEAGUE_IDS = [
+  ...PRO_VERIFIED_LIVE_LEAGUE_IDS,
+  ...LAUNCHED_NCAA_LEAGUE_IDS,
+] as const satisfies readonly LeagueId[];
+
 /** @deprecated Alias for OVERVIEW_HUB_LEAGUE_IDS - overview surfaces use all six leagues. */
 export const PRIMARY_LIVE_LEAGUE_IDS = OVERVIEW_HUB_LEAGUE_IDS;
 

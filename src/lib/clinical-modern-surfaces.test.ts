@@ -141,6 +141,10 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(row, /overview-slate-row-season-stage/);
     assert.match(row, /game\.lastMeetingLine/);
     assert.match(row, /game\.seasonStageNote/);
+    assert.match(row, /overview-slate-row-team-context/);
+    assert.match(row, /overview-slate-row-officials/);
+    assert.match(row, /game\.teamContextLine/);
+    assert.match(row, /game\.officialsLine/);
   });
 
   it("editorial insight cards pair league badge with season start", () => {
@@ -185,7 +189,8 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(overviewCss, /overview-slate-row/);
     assert.match(overviewCss, /overview-league-chooser-card\[data-league="nfl"\]/);
     assert.match(overviewCss, /overview-section--secondary .overview-section-lead/);
-    assert.match(overviewCss, /--dashboard-crimson/);
+    assert.match(overviewCss, /overview-quicklists-step-label/);
+    assert.match(overviewCss, /overview-quicklists-context/);
     assert.match(overviewCss, /Explore bento: equal-height catalog \+ analytics columns/);
     assert.match(overviewCss, /overview-secondary-tabs/);
     assert.match(insightCss, /insight-editorial-kicker/);

@@ -57,6 +57,9 @@ function previewForList(
           }
         : { value: EMPTY_DISPLAY, caption: "Scoring avg" };
     case "home-bias":
+      if (card?.homeBiasCoverDelta) {
+        return { value: card.homeBiasCoverDelta, caption: "Cover Δ" };
+      }
       if (insight?.heroValue) {
         return { value: insight.heroValue, caption: "vs baseline" };
       }

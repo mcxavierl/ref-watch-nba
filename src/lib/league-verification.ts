@@ -45,6 +45,7 @@ export {
   PRO_ONLY_LIVE_LEAGUE_IDS,
   PRO_VERIFIED_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
+  OVERVIEW_INSIGHT_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
 
 const INGEST_TICKET_URLS: Partial<Record<LeagueId, string>> = {
