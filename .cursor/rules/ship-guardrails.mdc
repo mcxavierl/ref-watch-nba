@@ -15,6 +15,15 @@ Run the full CI mirror locally:
 npm run check:ci
 ```
 
+`check:ci` runs artifact freshness **before** `check:volume`, because volume refresh rewrites `data/baselines.json` and would falsely fail a later snapshot check.
+
+Remove untracked local dev artifacts before shipping if freshness fails unexpectedly:
+
+```bash
+git clean -fd data/insights-cache data/stats-query-log.jsonl 2>/dev/null || true
+git checkout -- data/
+```
+
 Install the pre-push hook once per clone:
 
 ```bash

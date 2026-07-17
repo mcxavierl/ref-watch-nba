@@ -28,9 +28,21 @@ function assertSnapshotFresh(): void {
   const onDiskJson = JSON.stringify(onDisk.snapshot);
   const freshJson = JSON.stringify(fresh);
   if (onDiskJson !== freshJson) {
-    failures.push(
-      `${rel} is stale — run: npx tsx scripts/build-overview-snapshot.ts && git add ${rel}`,
-    );
+    const onDiskParsed = onDisk.snapshot as Record<string, unknown>;
+    const freshParsed = fresh as Record<string, unknown>;
+    for (const key of Object.keys({ ...onDiskParsed, ...freshParsed })) {
+      if (JSON.stringify(onDiskParsed[key]) !== JSON.stringify(freshParsed[key])) {
+        failures.push(
+          `${rel} is stale (${key} differs) — run: npx tsx scripts/build-overview-snapshot.ts && git add ${rel}`,
+        );
+        break;
+      }
+    }
+    if (failures.length === 0) {
+      failures.push(
+        `${rel} is stale — run: npx tsx scripts/build-overview-snapshot.ts && git add ${rel}`,
+      );
+    }
   }
 }
 

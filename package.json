@@ -90,7 +90,7 @@
     "backtest": "tsx scripts/backtest.ts",
     "honesty-audit": "tsx scripts/honesty-audit.ts",
     "validate-nfl": "node scripts/validate-nfl-accuracy.js",
-    "check:ci": "npm run check:refactor-safety && npm run check:client-imports && npm run typecheck && npm run check:volume && npm run check:artifact-freshness && npm run check:coupled-tests && npm run check:deploy && npm run test && npm run honesty-audit",
+    "check:ci": "npm run check:refactor-safety && npm run check:client-imports && npm run typecheck && npm run check:artifact-freshness && npm run check:coupled-tests && npm run check:volume && npm run check:deploy && npm run test && npm run honesty-audit",
     "setup:hooks": "bash scripts/setup-git-hooks.sh",
     "prepare": "bash scripts/setup-git-hooks.sh",
     "validate": "npm run check:ci && npm run verify:data-integrity && npm run validate-nfl",
