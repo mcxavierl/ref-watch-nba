@@ -44,6 +44,9 @@ describe("Clinical Modern OG image surfaces", () => {
     const fonts = readSrc("src/lib/og-fonts.ts");
     const og = readSrc("src/lib/og-image.tsx");
     assert.match(fonts, /name: "Inter"/);
+    assert.match(fonts, /@fontsource\/inter\/files/);
+    assert.match(fonts, /readFileSync/);
+    assert.doesNotMatch(fonts, /fonts\.gstatic\.com/);
     assert.match(og, /loadOgFonts/);
     assert.match(og, /export async function renderBrandOgImage/);
   });

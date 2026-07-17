@@ -1,24 +1,14 @@
-const INTER_SOURCES: Array<{ weight: 500 | 600 | 700 | 800 | 900; url: string }> = [
-  {
-    weight: 500,
-    url: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fAZ9hiA.woff",
-  },
-  {
-    weight: 600,
-    url: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYAZ9hiA.woff",
-  },
-  {
-    weight: 700,
-    url: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYAZ9hiA.woff",
-  },
-  {
-    weight: 800,
-    url: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyYAZ9hiA.woff",
-  },
-  {
-    weight: 900,
-    url: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuBWYAZ9hiA.woff",
-  },
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+const FONT_DIR = join(process.cwd(), "node_modules/@fontsource/inter/files");
+
+const INTER_SOURCES: Array<{ weight: 500 | 600 | 700 | 800 | 900; file: string }> = [
+  { weight: 500, file: "inter-latin-500-normal.woff" },
+  { weight: 600, file: "inter-latin-600-normal.woff" },
+  { weight: 700, file: "inter-latin-700-normal.woff" },
+  { weight: 800, file: "inter-latin-800-normal.woff" },
+  { weight: 900, file: "inter-latin-900-normal.woff" },
 ];
 
 type OgFont = {
@@ -33,21 +23,12 @@ let cachedFonts: OgFont[] | null = null;
 export async function loadOgFonts(): Promise<OgFont[]> {
   if (cachedFonts) return cachedFonts;
 
-  const fonts = await Promise.all(
-    INTER_SOURCES.map(async ({ weight, url }) => {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Failed to load Inter ${weight} for OG image: ${response.status}`);
-      }
-      return {
-        name: "Inter",
-        data: await response.arrayBuffer(),
-        style: "normal" as const,
-        weight,
-      };
-    }),
-  );
+  cachedFonts = INTER_SOURCES.map(({ weight, file }) => ({
+    name: "Inter",
+    data: readFileSync(join(FONT_DIR, file)).buffer as ArrayBuffer,
+    style: "normal" as const,
+    weight,
+  }));
 
-  cachedFonts = fonts;
-  return fonts;
+  return cachedFonts;
 }
