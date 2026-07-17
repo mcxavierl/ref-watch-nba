@@ -137,7 +137,7 @@ function winRateStoryline(
     gameId,
     kind,
     severity,
-    headline: `${ref.name} tonight; ${team.label} are ${wins}-${losses} in his games`,
+    headline: `${ref.name} tonight; ${team.label} are ${wins}-${losses} with this ref`,
     summary: `In this dataset, ${team.article} win ${formatPct(stat.winRate)} of games with ${ref.name} officiating (${stat.games} games). That is ${formatWinRateVsTeam(stat.winRate, team.baseline.winRate).replace(" pts vs team", " percentage points")} than their ${formatPct(team.baseline.winRate)} baseline across all crews.`,
     stats: [
       {

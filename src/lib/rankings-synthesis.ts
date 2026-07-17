@@ -164,7 +164,7 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
       build: (ref) => ({
         id: "top-over",
         title: "Highest historical over-rate vs baseline",
-        body: `Line benchmark is ${ctx.baseline} combined ${ctx.unit}; he clears it more often than peers in this sample.`,
+        body: `Line benchmark is ${ctx.baseline} combined ${ctx.unit}; clears it more often than peers in this sample.`,
         refSlug: ref.slug,
         refName: ref.name,
         statLabel: "Over rate",
@@ -184,7 +184,7 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
       build: (ref) => ({
         id: "top-ats",
         title: "Strongest home ATS track record",
-        body: `Home teams cover the spread most often in his matches. Descriptive history only, not a pick signal.`,
+        body: `Home teams cover the spread most often in this sample. Descriptive history only, not a pick signal.`,
         refSlug: ref.slug,
         refName: ref.name,
         statLabel: "Home ATS",
