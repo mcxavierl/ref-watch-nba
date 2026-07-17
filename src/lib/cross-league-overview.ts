@@ -40,6 +40,8 @@ export type LeagueOverviewCard = {
   whistleLabel: string;
   scorePerGame: number;
   scoreLabel: string;
+  /** League scoring pace uses a proxy average when closing lines are unavailable. */
+  scoreEstimated: boolean;
   whistleBar: number;
   scoreBar: number;
   /** False for NCAA hubs still awaiting ingest or conference coverage. */
@@ -148,6 +150,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       : 0;
 
     const scorePerGame = analyticsUnlocked ? scorePerGameForLeague(leagueId, stats) : 0;
+    const scoreEstimated = analyticsUnlocked && stats.meta.atsAvailable !== true;
 
     if (analyticsUnlocked) {
       totalRefs += refCount;
@@ -178,6 +181,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       whistleLabel: whistleLabelForLeague(leagueId),
       scorePerGame,
       scoreLabel: scoreLabelForLeague(leagueId),
+      scoreEstimated,
       whistleBar: 0,
       scoreBar: 0,
       analyticsUnlocked,

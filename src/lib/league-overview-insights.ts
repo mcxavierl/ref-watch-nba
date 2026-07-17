@@ -36,6 +36,7 @@ import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
 
 import { heroToneFromWinRateDelta } from "@/lib/metric-significance";
+import { applyClinicalTone } from "@/lib/insights/tone-filter";
 
 export type LeagueInsightTone = "positive" | "negative" | "neutral";
 
@@ -173,8 +174,6 @@ function cardFromMatrix(
     highlight.baselineWinRate,
   );
   const deltaLabel = formatDeltaPts(highlight.deltaPts);
-  const direction =
-    highlight.deltaPts > 0 ? "beats" : highlight.deltaPts < 0 ? "trails" : "matches";
 
   return {
     leagueId,
@@ -182,7 +181,9 @@ function cardFromMatrix(
     shortLabel: config.shortLabel,
     kind: "matrix-edge",
     kicker: "Standout ref×team split",
-    headline: `${highlight.refName} ${direction === "beats" ? "boosts" : direction === "trails" ? "drags" : "shifts"} ${highlight.teamLabel} results in ${config.shortLabel} games`,
+    headline: applyClinicalTone(
+      `${highlight.teamLabel} games officiated by ${highlight.refName} have historically shown a ${deltaLabel} win-rate delta vs the team baseline in ${config.shortLabel}.`,
+    ),
     story: `${highlight.wins}-${highlight.losses} (${splitPct}) across ${highlight.games} games. Team sample without this ref: ${baselinePct} (${formatMatrixHighlightBaseline(highlight)}).`,
     heroValue: deltaLabel,
     heroLabel: "Win rate vs team baseline",

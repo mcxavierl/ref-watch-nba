@@ -1,3 +1,4 @@
+import { filterHomepageInsightCards } from "@/lib/homepage-insight-gates";
 import overviewInsightsJson from "../../../data/overview-insights.json";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import { EVERGREEN_TOP_STORIES } from "@/lib/insights/evergreen";
@@ -56,10 +57,12 @@ function isInternationalOriginCard(card: LeagueInsightCard): boolean {
 }
 
 function filterOverviewInsightCards(cards: LeagueInsightCard[]): LeagueInsightCard[] {
-  return cards.filter(
-    (card) =>
-      (isProOnlyLiveLeague(card.leagueId) || isCollegeLiveLeague(card.leagueId)) &&
-      !isInternationalOriginCard(card),
+  return filterHomepageInsightCards(
+    cards.filter(
+      (card) =>
+        (isProOnlyLiveLeague(card.leagueId) || isCollegeLiveLeague(card.leagueId)) &&
+        !isInternationalOriginCard(card),
+    ),
   );
 }
 

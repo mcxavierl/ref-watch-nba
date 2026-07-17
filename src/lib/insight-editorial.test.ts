@@ -57,6 +57,25 @@ describe("insight editorial helpers", () => {
     assert.ok(!headline.includes("—"));
   });
 
+  it("builds descriptive matrix-edge headlines without causal verbs", () => {
+    const headline = humanCentricHeadline(
+      sampleCard({
+        kind: "matrix-edge",
+        entityName: "Evan Scott",
+        teamLabel: "Minnesota Timberwolves",
+        heroValue: "+51.5pp",
+        heroLabel: "Win rate vs team baseline",
+        stats: [
+          { label: "Ref×team record", value: "12-0" },
+          { label: "Games", value: "12" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+    );
+    assert.match(headline, /Minnesota Timberwolves games with Evan Scott have historically shown/);
+    assert.doesNotMatch(headline, /boosts|favors|hurts|impacts/i);
+  });
+
   it("maps cards to headline, metrics, and why-it-matters", () => {
     const view = editorialInsightView(sampleCard());
     assert.equal(view.headline, "Dale Shaw calls one of the NFL's highest whistle rates");
@@ -181,6 +200,20 @@ describe("insight editorial helpers", () => {
         ],
       }),
       sampleCard({
+        leagueId: "nba",
+        shortLabel: "NBA",
+        kind: "matrix-edge",
+        entityName: "Evan Scott",
+        refSlug: "evan-scott",
+        teamAbbr: "MIN",
+        heroValue: "+51.5pp",
+        stats: [
+          { label: "Ref×team record", value: "12-0" },
+          { label: "Games", value: "12" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+      sampleCard({
         leagueId: "laliga",
         shortLabel: "La Liga",
         kind: "matrix-edge",
@@ -197,13 +230,10 @@ describe("insight editorial helpers", () => {
     ];
 
     const grid = overviewStandoutSplitCards(cards, featured);
-    assert.equal(grid.length, 8);
-    assert.equal(grid.filter((card) => card.leagueId === "nba").length, 2);
-    assert.equal(grid.filter((card) => card.leagueId === "nfl").length, 2);
-    assert.equal(grid.filter((card) => card.leagueId === "epl").length, 2);
-    assert.ok(grid.every((card) => card.entityName !== "Brandon Schwab"));
-    assert.equal(grid[0]?.entityName, "Scott Twardoski");
-    assert.equal(grid[grid.length - 1]?.entityName, "Paul Tierney");
+    assert.ok(grid.length < cards.length);
+    assert.ok(grid.every((card) => Number(card.stats.find((s) => s.label === "Games")?.value) >= 15));
+    assert.ok(grid.every((card) => card.entityName !== "Evan Scott"));
+    assert.ok(grid.every((card) => card.entityName !== "John Grandt"));
   });
 
   it("picks top insight and trend sets", () => {
@@ -238,18 +268,33 @@ describe("insight editorial helpers", () => {
         heroLabel: "Win rate vs team baseline",
         stats: [
           { label: "Ref×team record", value: "8-0" },
-          { label: "Games", value: "8" },
+          { label: "Games", value: "18" },
           { label: "Team baseline", value: "48.5%" },
         ],
       }),
     );
     assert.ok(comparison);
     assert.equal(comparison?.format, "pct");
-    assert.ok((comparison?.deltaPp ?? 0) < 51.5);
-    assert.equal(comparison?.refWinRate, 100);
+    assert.equal(comparison?.deltaPp, 51.5);
     assert.equal(comparison?.teamBaseline, 48.5);
     assert.equal(comparison?.crewValue, comparison?.deltaPp);
     assert.equal(comparison?.leagueValue, 48.5);
+  });
+
+  it("withholds comparison bars when sample is below homepage gate", () => {
+    const comparison = insightMetricComparison(
+      sampleCard({
+        kind: "matrix-edge",
+        heroValue: "+51.5pp",
+        heroLabel: "Win rate vs team baseline",
+        stats: [
+          { label: "Ref×team record", value: "8-0" },
+          { label: "Games", value: "8" },
+          { label: "Team baseline", value: "48.5%" },
+        ],
+      }),
+    );
+    assert.equal(comparison, null);
   });
 
   it("derives negative delta from ref win rate and team baseline", () => {
@@ -267,28 +312,26 @@ describe("insight editorial helpers", () => {
     );
     assert.ok(comparison);
     assert.equal(comparison?.deltaPp, -12);
-    assert.equal(comparison?.refWinRate, 25);
     assert.equal(comparison?.teamBaseline, 37);
   });
 
-  it("prioritizes sample size and shrunk delta for thin matrix-edge cards", () => {
+  it("prioritizes sample size for gate-qualified matrix-edge cards", () => {
     const view = editorialInsightView(
       sampleCard({
         kind: "matrix-edge",
-        heroValue: "+51.5pp",
+        heroValue: "+18.0pp",
         heroLabel: "Win rate vs team baseline",
         stats: [
-          { label: "Ref×team record", value: "8-0" },
-          { label: "Games", value: "8" },
+          { label: "Ref×team record", value: "12-6" },
+          { label: "Games", value: "18" },
           { label: "Team baseline", value: "48.5%" },
         ],
       }),
     );
-    assert.equal(view.primaryMetric.value, "8 games");
-    assert.equal(view.primaryMetric.label, "Sample size");
-    assert.equal(view.secondaryMetric?.label, "Win rate delta");
-    assert.ok(view.isPreliminary);
-    assert.ok(view.showHonestyFootnote);
+    assert.equal(view.primaryMetric.value, "18 games");
+    assert.equal(view.primaryMetric.label, "Sample size (N)");
+    assert.equal(view.secondaryMetric?.value, "+18.0pp");
+    assert.equal(view.isPreliminary, false);
   });
 
   it("keeps raw delta for mature matrix-edge samples", () => {
@@ -306,7 +349,7 @@ describe("insight editorial helpers", () => {
     );
     assert.equal(view.primaryMetric.value, "18 games");
     assert.equal(view.secondaryMetric?.value, "+18.0pp");
-    assert.equal(view.secondaryMetric?.label, "Win rate delta");
+    assert.equal(view.secondaryMetric?.label, "Win rate delta vs baseline");
     assert.equal(view.isPreliminary, false);
   });
 

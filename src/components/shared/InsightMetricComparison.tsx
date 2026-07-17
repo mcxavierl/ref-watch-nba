@@ -8,6 +8,7 @@ type InsightMetricComparisonProps = {
   compact?: boolean;
   crewImpactTone?: KpiDataPillTone;
   isAdjusted?: boolean;
+  sampleGames?: number;
 };
 
 const DELTA_BAR_SCALE_PP = 60;
@@ -51,6 +52,7 @@ export function InsightMetricComparison({
   compact = false,
   crewImpactTone = "neutral",
   isAdjusted = false,
+  sampleGames = 0,
 }: InsightMetricComparisonProps) {
   const isDeltaComparison =
     comparison.deltaPp !== undefined &&
@@ -86,9 +88,9 @@ export function InsightMetricComparison({
         </div>
         {isDeltaComparison ? (
           <div className="insight-metric-comparison-values">
-            {isAdjusted ? (
+            {isAdjusted && sampleGames > 0 ? (
               <MetricInfoHint
-                hint={adjustedDeltaTooltipText(comparison.deltaPp!)}
+                hint={adjustedDeltaTooltipText(comparison.deltaPp!, sampleGames)}
                 className="insight-metric-comparison-value insight-metric-comparison-value--delta insight-metric-comparison-value--adjusted"
                 panelClassName="insight-metric-comparison-hint-panel"
               >
@@ -102,9 +104,6 @@ export function InsightMetricComparison({
                 {formatDeltaPp(comparison.deltaPp!)}
               </span>
             )}
-            <span className="insight-metric-comparison-value insight-metric-comparison-value--rate">
-              {formatPct(comparison.refWinRate!)}
-            </span>
           </div>
         ) : (
           <span className="insight-metric-comparison-value">

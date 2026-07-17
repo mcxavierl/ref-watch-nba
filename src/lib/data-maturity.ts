@@ -70,7 +70,18 @@ export function dataMaturityPercent(sampleSize: number): number {
   return Math.min(100, Math.round((sampleSize / MATURITY_TARGET_GAMES) * 100));
 }
 
-export function adjustedDeltaTooltipText(displayDelta: number): string {
+export function adjustedDeltaTooltipText(
+  displayDelta: number,
+  sampleSize?: number,
+): string {
+  if (sampleSize === undefined) {
+    return adjustedDeltaFootnote(displayDelta);
+  }
+  return `Adjusted (N=${sampleSize}). Empirical Bayes shrinkage toward league mean. Displayed delta: ${formatDeltaPp(displayDelta)}.`;
+}
+
+/** @deprecated Prefer adjustedDeltaTooltipText with sample size. */
+export function adjustedDeltaFootnote(displayDelta: number): string {
   return `Adjusted for small sample: ${formatDeltaPp(displayDelta)}`;
 }
 
