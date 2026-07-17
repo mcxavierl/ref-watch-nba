@@ -32,6 +32,8 @@ import { loadTeamPageInsightCards } from "@/lib/team-page-insights";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import { getCachedTeamStrengthOfSchedule } from "@/lib/nba-team-sos-cache";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
+import { signedDeltaTone } from "@/lib/metric-delight";
+import { StandoutMetricValue } from "@/components/StandoutMetric";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import { DEFAULT_SEASON_SCOPE_MODE, usesPatriotsEraScope } from "@/lib/season-scope";
 
@@ -105,12 +107,12 @@ export function TeamCrewPage({
   const teamInsightCards = loadTeamPageInsightCards(league, team.abbr);
 
   return (
-    <div className="page-shell">
-      <section className="page-hero">
+    <div className="page-shell" data-league={league}>
+      <section className="page-hero page-hero-team" data-league={league}>
         <div className="page-hero-head">
           <TeamLogo team={team} size="lg" sport={league} />
           <div className="page-hero-head-copy">
-            <p className="section-kicker">{teamName}</p>
+            <p className="section-kicker team-page-kicker">{teamName}</p>
             <h1 className="page-title">
               {isRefsOnly
                 ? `How ${teamLabel} play under each referee`
@@ -174,18 +176,19 @@ export function TeamCrewPage({
       <TeamPageInsights cards={teamInsightCards} teamLabel={teamLabel} />
 
       {splits.length === 0 && refSplits.length === 0 ? (
-        <div className="panel-inset px-6 py-8 text-center">
-          <p className="text-base font-medium text-zinc-800">
+        <div className="team-empty-callout panel-inset px-6 py-8" data-league={league}>
+          <p className="team-empty-callout-badge">Sample building</p>
+          <p className="text-base font-medium text-zinc-800 dark:text-zinc-100">
             No ref history for {teamName} yet
           </p>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-zinc-600">
+          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
             {isRefsOnly
               ? `We don't have enough referee history for ${teamLabel} in the current dataset. Check back after the next data refresh, or browse other teams with fuller samples.`
               : `We don't have enough crew-level games for ${teamLabel} in the current dataset. Check back after the next data refresh, or browse other teams with fuller samples.`}
           </p>
           <Link
             href={`${basePath || ""}/teams`}
-            className="mt-4 inline-block text-sm font-semibold text-zinc-800 hover:text-raptors hover:underline"
+            className="team-empty-callout-link mt-4 inline-block text-sm"
           >
             Browse all teams →
           </Link>
@@ -212,7 +215,7 @@ export function TeamCrewPage({
         league={dataLeague}
       />
 
-      <details className="methodology-details panel-inset mt-10 px-5 py-4">
+      <details className="methodology-details methodology-details--accent panel-inset mt-10 px-5 py-4">
         <summary>What am I looking at?</summary>
         <ul className="space-y-2.5 text-sm leading-relaxed text-zinc-600">
           <li>
@@ -250,26 +253,32 @@ export function TeamCrewPage({
         )}
       </details>
 
-      <section className="section-block">
+      <section className="section-block team-ref-profiles-section" data-league={league}>
         <h2 className="section-title">League-wide ref profiles</h2>
         <div className="data-card divide-y divide-border-subtle">
           {analyticsRefs
             .filter((r) => r.games >= stats.meta.minSampleSize)
             .slice(0, 12)
-            .map((ref) => (
+            .map((ref) => {
+              const overDeltaPp = (ref.overRate - 0.5) * 100;
+              return (
               <Link
                 key={ref.slug}
                 href={`${basePath}/refs/${ref.slug}`}
-                className="flex items-center gap-4 px-5 py-3 text-sm transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
+                className="team-ref-profile-row flex items-center gap-4 px-5 py-3 text-sm transition"
               >
                 <span className="min-w-0 flex-1 font-medium text-zinc-800 dark:text-zinc-100">
                   {ref.name}
                 </span>
                 <span className="shrink-0 text-right font-mono text-xs leading-snug tabular-nums text-zinc-600 dark:text-zinc-400">
-                  {formatPct(ref.overRate)} over {stats.meta.leagueOverBaseline}
+                  <StandoutMetricValue tone={signedDeltaTone(overDeltaPp)} size="md">
+                    {formatPct(ref.overRate)}
+                  </StandoutMetricValue>{" "}
+                  over {stats.meta.leagueOverBaseline}
                 </span>
               </Link>
-            ))}
+              );
+            })}
         </div>
       </section>
     </div>

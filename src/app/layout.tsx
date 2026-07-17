@@ -12,6 +12,7 @@ import { hydrateLeagueDataForPath } from "@/lib/server-data-hydrate";
 import { assertProductionLeagueVerification } from "@/lib/production-verification-assert";
 import { normalizeAppPathname } from "@/lib/json-asset-guards";
 import "./globals.css";
+import "@/components/site-delight.css";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",

@@ -192,6 +192,7 @@ export function OverviewDashboard({
                     {comingSoonCatalog.map((entry) => (
                       <div key={entry.id} className="overview-expansion-soon">
                         <span className="overview-expansion-soon-label">{entry.label}</span>
+                        <span className="overview-expansion-soon-badge">Soon</span>
                       </div>
                     ))}
                   </div>

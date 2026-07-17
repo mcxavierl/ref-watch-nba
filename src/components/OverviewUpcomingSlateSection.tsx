@@ -46,7 +46,9 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
             <ul className="overview-slate-notes">
               {upcomingSlate.leagueNotes.map((entry) => (
                 <li key={entry.leagueId} className="overview-slate-note" data-league={entry.leagueId}>
-                  <span className="overview-slate-league-badge">{entry.leagueShortLabel}</span>
+                  <span className="overview-slate-league-badge" data-league={entry.leagueId}>
+                    {entry.leagueShortLabel}
+                  </span>
                   {entry.note}
                 </li>
               ))}
@@ -59,7 +61,9 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
               ))}
             </div>
           ) : (
-            <p className="overview-slate-empty">No published matchups yet. Check back closer to tip-off.</p>
+            <p className="overview-slate-empty overview-slate-empty-panel">
+              No published matchups yet. Check back closer to tip-off.
+            </p>
           )}
           {upcomingSlate.lastUpdated ? (
             <p className="overview-slate-updated">
