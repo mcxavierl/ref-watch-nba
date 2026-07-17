@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
+import { RefTeamMatrixSkeleton } from "@/components/LayoutShiftSkeletons";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { getRefStats, getTeamSplits } from "@/lib/cbb/data";
@@ -70,7 +71,7 @@ export default async function CbbMatrixPage({ searchParams }: PageProps) {
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">
-          <Suspense fallback={null}>
+          <Suspense fallback={<RefTeamMatrixSkeleton refCount={matrix.refs.length} />}>
             <RefTeamMatrix
               matrix={matrix}
               basePath={league.pathPrefix}

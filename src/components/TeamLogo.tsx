@@ -22,6 +22,13 @@ const sizeClasses = {
   xl: "h-14 w-14",
 } as const;
 
+const sizePixels = {
+  sm: 24,
+  md: 32,
+  lg: 44,
+  xl: 56,
+} as const;
+
 export function TeamLogo({
   team,
   size = "md",
@@ -71,6 +78,8 @@ export function TeamLogo({
       <img
         src={logoSrc}
         alt={`${team.abbr} logo`}
+        width={sizePixels[size]}
+        height={sizePixels[size]}
         className="team-logo-plate__img"
         onError={() => setFailed(true)}
       />

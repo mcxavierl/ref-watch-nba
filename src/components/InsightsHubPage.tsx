@@ -15,6 +15,7 @@ import {
 import { WhistleDispositionResearchSection } from "@/components/WhistleDispositionResearchSection";
 import { ResearchHubFindings } from "@/components/ResearchHubFindings";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
+import { SeasonScopeToggleSkeleton } from "@/components/LayoutShiftSkeletons";
 import { getBaselinesFile } from "@/lib/baselines";
 import { leagueGamesHubBackLabel, leagueHubHref, LEAGUES } from "@/lib/leagues";
 import {
@@ -172,7 +173,7 @@ export function InsightsHubPage({
         Showing <span className="insights-hero-meta-strong">{scopeLabel}</span>{" "}
         ({range})
       </p>
-      <Suspense fallback={null}>
+      <Suspense fallback={<SeasonScopeToggleSkeleton />}>
         <SeasonScopeToggle
           leagueId={leagueId}
           availableSeasons={availableSeasons}

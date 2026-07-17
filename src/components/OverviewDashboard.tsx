@@ -1,7 +1,8 @@
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 import { LeagueChooser } from "@/components/LeagueChooser";
+import { OverviewEditorialNarrative } from "@/components/OverviewEditorialNarrative";
+import { OverviewQuickInsights } from "@/components/OverviewQuickInsights";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { OverviewHistoricalLeaders } from "@/components/OverviewHistoricalLeaders";
@@ -22,22 +23,6 @@ import {
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { leagueHubHref } from "@/lib/leagues";
 import "@/components/overview-dashboard.css";
-
-const OverviewEditorialNarrative = dynamic(
-  () =>
-    import("@/components/OverviewEditorialNarrative").then(
-      (mod) => mod.OverviewEditorialNarrative,
-    ),
-  { loading: () => null },
-);
-
-const OverviewQuickInsights = dynamic(
-  () =>
-    import("@/components/OverviewQuickInsights").then(
-      (mod) => mod.OverviewQuickInsights,
-    ),
-  { loading: () => null },
-);
 
 function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
   const rowClass = [

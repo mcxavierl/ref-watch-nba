@@ -234,3 +234,15 @@ export function RefCompareView({
     </div>
   );
 }
+
+export function ComparePageSkeleton() {
+  return (
+    <div className="ref-compare-page" aria-busy="true" aria-label="Loading compare controls">
+      <div className="ref-compare-controls cls-skeleton-compare-controls" aria-hidden>
+        <div className="cls-skeleton-panel cls-skeleton-compare-picker" />
+        <div className="cls-skeleton-panel cls-skeleton-compare-picker" />
+      </div>
+      <CompareGhostTable crossLeague={false} />
+    </div>
+  );
+}

@@ -10,6 +10,13 @@ const sizeClasses = {
   xl: "h-24 w-24",
 } as const;
 
+const sizePixels = {
+  sm: 32,
+  md: 40,
+  lg: 64,
+  xl: 96,
+} as const;
+
 function RefStripesBadge({
   name,
   size,
@@ -81,7 +88,16 @@ export function RefAvatar({
 }) {
   const [failed, setFailed] = useState(false);
 
-  if (sport === "cbb" || sport === "cfb") return null;
+  if (sport === "cbb" || sport === "cfb") {
+    return (
+      <RefStripesBadge
+        name={name}
+        size={size}
+        className={className}
+        decorative={decorative}
+      />
+    );
+  }
 
   const photoSrc =
     sport === "nba" || sport === "nhl" || sport === "nfl" || sport === "epl" || sport === "laliga"
@@ -114,6 +130,8 @@ export function RefAvatar({
     <img
       src={photoSrc}
       alt={decorative ? "" : `Photo of ${name}`}
+      width={sizePixels[size]}
+      height={sizePixels[size]}
       aria-hidden={decorative || undefined}
       className={`shrink-0 rounded-full object-cover object-top ${ringClass} ${sizeClasses[size]} ${className}`}
       onError={() => setFailed(true)}

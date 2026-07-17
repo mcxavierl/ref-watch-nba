@@ -7,6 +7,7 @@ import {
 import { RefsDirectory } from "@/components/RefsDirectory";
 import { RefsMacroInsight } from "@/components/RefsMacroInsight";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
+import { SeasonScopeToggleSkeleton } from "@/components/LayoutShiftSkeletons";
 import { leagueGamesHubBackLabel, leagueHubHref, LEAGUES } from "@/lib/leagues";
 import { loadHubLeagueStats } from "@/lib/load-league-stats";
 import { buildRefsDirectoryContext } from "@/lib/refs-directory";
@@ -40,7 +41,7 @@ export function RefsHubPage({
       <p className="text-sm text-zinc-600">
         {scopeLabel} ({range})
       </p>
-      <Suspense fallback={null}>
+      <Suspense fallback={<SeasonScopeToggleSkeleton />}>
         <SeasonScopeToggle leagueId={leagueId} availableSeasons={availableSeasons} />
       </Suspense>
     </div>
