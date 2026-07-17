@@ -20,6 +20,7 @@ export type OverviewSlateEntry = {
   lastMeetingLine?: string;
   teamContextLine?: string;
   officialsLine?: string;
+  metadataLine?: string;
   seasonStageNote?: string;
 };
 

@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarDays } from "lucide-react";
-import { OverviewLeagueSlateGroup } from "@/components/OverviewLeagueSlateGroup";
+import { UpcomingGameCard } from "@/components/UpcomingGameCard";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { LEAGUES } from "@/lib/leagues";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
@@ -19,63 +18,38 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
   const { upcomingSlate } = data;
   const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
   const matchupCount = upcomingSlate.totalGames + upcomingSlate.totalScheduled;
-  const leagueGroups = upcomingSlate.leagueGroups;
+  const slateGames = upcomingSlate.games;
 
   return (
     <section
       className="overview-editorial-section overview-editorial-section--slate section-block"
       aria-labelledby="overview-upcoming-heading"
     >
-      <div className="overview-section-header overview-section-header--primary">
-        <h2 className="overview-section-title overview-section-title--with-icon" id="overview-upcoming-heading">
-          <CalendarDays aria-hidden className="overview-slate-icon" />
+      <div className="overview-section-header overview-section-header--primary overview-upcoming-header">
+        <h2 className="overview-section-title" id="overview-upcoming-heading">
           Upcoming games
         </h2>
-        <p className="overview-section-lead">
+        <p className="overview-section-lead overview-upcoming-lead">
           {upcomingSlate.inSeason
             ? matchupCount > 0
-              ? `${formatCount(matchupCount)} matchup${matchupCount === 1 ? "" : "s"} on the live slate.`
-              : "Live slate updates as assignments publish."
+              ? `${formatCount(matchupCount)} matchup${matchupCount === 1 ? "" : "s"} on the live slate`
+              : "Live slate updates as assignments publish"
             : "Offseason - historical data stays available in each hub."}
         </p>
       </div>
 
       {upcomingSlate.inSeason ? (
-        <>
-          {upcomingSlate.leagueNotes.length > 0 ? (
-            <ul className="overview-slate-notes">
-              {upcomingSlate.leagueNotes.map((entry) => (
-                <li key={entry.leagueId} className="overview-slate-note" data-league={entry.leagueId}>
-                  <span className="overview-slate-league-badge" data-league={entry.leagueId}>
-                    {entry.leagueShortLabel}
-                  </span>
-                  {entry.note}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          {leagueGroups.length > 0 ? (
-            <div className="overview-slate-leagues">
-              {leagueGroups.map((group) => (
-                <OverviewLeagueSlateGroup key={group.leagueId} group={group} />
-              ))}
-            </div>
-          ) : (
-            <p className="overview-slate-empty overview-slate-empty-panel">
-              No published matchups yet. Check back closer to tip-off.
-            </p>
-          )}
-          {upcomingSlate.lastUpdated ? (
-            <p className="overview-slate-updated">
-              Assignments last checked{" "}
-              {new Date(upcomingSlate.lastUpdated).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </p>
-          ) : null}
-        </>
+        slateGames.length > 0 ? (
+          <div className="upcoming-games-grid">
+            {slateGames.map((game) => (
+              <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} />
+            ))}
+          </div>
+        ) : (
+          <p className="overview-slate-empty overview-slate-empty-panel">
+            No published matchups yet. Check back closer to tip-off.
+          </p>
+        )
       ) : (
         <div className="overview-slate-offseason">
           <div className="overview-slate-offseason-grid">
