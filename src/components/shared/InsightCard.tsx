@@ -232,7 +232,9 @@ function EditorialInsightCard({
               <LeagueNavMark league={card.leagueId} />
               <span>{card.shortLabel}</span>
             </span>
-            <LeagueSeasonStartBadge leagueId={card.leagueId} />
+            {variant !== "trend" ? (
+              <LeagueSeasonStartBadge leagueId={card.leagueId} />
+            ) : null}
           </div>
           <p className="insight-editorial-kicker">
             {normalizeCarouselCopy(homepageInsightKicker(card))}

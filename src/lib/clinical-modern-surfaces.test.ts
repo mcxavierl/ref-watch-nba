@@ -150,9 +150,10 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(row, /overview-slate-row-last-meeting/);
   });
 
-  it("editorial insight cards pair league badge with season start", () => {
+  it("editorial insight cards show season start except homepage trend splits", () => {
     const source = readSrc("src/components/shared/InsightCard.tsx");
     assert.match(source, /insight-editorial-head-row/);
+    assert.match(source, /variant !== "trend"/);
     assert.match(source, /LeagueSeasonStartBadge leagueId=\{card\.leagueId\}/);
   });
 
