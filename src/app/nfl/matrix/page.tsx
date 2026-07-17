@@ -1,5 +1,9 @@
 import { Suspense } from "react";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
+import {
+  RefTeamMatrixSkeleton,
+  SeasonScopeToggleSkeleton,
+} from "@/components/LayoutShiftSkeletons";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
@@ -79,7 +83,7 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
           NFL official × team matrix
         </h1>
         <div className="league-matrix-hero-scope">
-          <Suspense fallback={null}>
+          <Suspense fallback={<SeasonScopeToggleSkeleton />}>
             <SeasonScopeToggle availableSeasons={availableSeasons} />
           </Suspense>
         </div>
@@ -87,7 +91,7 @@ export default async function NflMatrixPage({ searchParams }: PageProps) {
 
       <section className="section-block section-block--matrix-first">
         <div className="data-card overflow-hidden p-0">
-          <Suspense fallback={null}>
+          <Suspense fallback={<RefTeamMatrixSkeleton refCount={matrix.refs.length} />}>
             <RefTeamMatrix
               matrix={matrix}
               basePath={league.pathPrefix}

@@ -522,6 +522,8 @@ p {
 
   .page-hero-head > :first-child {
     flex-shrink: 0;
+    min-width: 4rem;
+    min-height: 4rem;
   }
 
   .page-hero-head-copy,
@@ -5125,6 +5127,112 @@ p {
     outline: 2px solid var(--header-gold-bright);
     outline-offset: 2px;
     border-radius: 2px;
+  }
+
+  /* ── CLS skeleton placeholders (reserve space before client hydration) ── */
+  .cls-skeleton-panel,
+  .cls-skeleton-line,
+  .cls-skeleton-pill {
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--surface-elevated) 92%, transparent) 0%,
+      color-mix(in srgb, var(--border-subtle) 60%, transparent) 50%,
+      color-mix(in srgb, var(--surface-elevated) 92%, transparent) 100%
+    );
+    background-size: 200% 100%;
+    animation: cls-skeleton-shimmer 1.4s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+  }
+
+  @keyframes cls-skeleton-shimmer {
+    0% {
+      background-position: 100% 0;
+    }
+    100% {
+      background-position: -100% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cls-skeleton-panel,
+    .cls-skeleton-line,
+    .cls-skeleton-pill {
+      animation: none;
+    }
+  }
+
+  .cls-skeleton-toggle {
+    pointer-events: none;
+  }
+
+  .cls-skeleton-pill {
+    display: inline-block;
+    min-width: 4.5rem;
+    min-height: 1.75rem;
+    border-radius: 9999px;
+  }
+
+  .cls-skeleton-pill--active {
+    opacity: 0.85;
+  }
+
+  .cls-skeleton-pill--wide {
+    min-width: 7.5rem;
+  }
+
+  .cls-skeleton-line {
+    display: block;
+    height: 0.85rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .cls-skeleton-line--kicker {
+    width: 28%;
+    height: 0.7rem;
+  }
+
+  .cls-skeleton-line--title {
+    width: 55%;
+    height: 1.5rem;
+  }
+
+  .cls-skeleton-line--lead {
+    width: 85%;
+    height: 2.5rem;
+  }
+
+  .ref-matrix-skeleton {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .overview-insight-skeleton-card {
+    min-height: 11rem;
+  }
+
+  .overview-insight-skeleton-card--compact {
+    min-height: 9rem;
+  }
+
+  .overview-secondary-tabs-skeleton-panel {
+    min-height: 14rem;
+    margin-top: var(--space-4);
+  }
+
+  .cls-skeleton-compare-controls {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  @media (min-width: 768px) {
+    .cls-skeleton-compare-controls {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .cls-skeleton-compare-picker {
+    min-height: 3rem;
   }
 
   /* ── Pro tease ── */
@@ -14070,6 +14178,7 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 
 .ref-compare-loading {
   margin: 0;
+  min-height: 18rem;
 }
 
 .ref-compare-scope-btn {

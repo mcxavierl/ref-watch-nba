@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
+import { SeasonScopeToggleSkeleton } from "@/components/LayoutShiftSkeletons";
 import { LEAGUE_HERO_STATS } from "@/lib/league-hero-stats.generated";
 import { LEAGUES } from "@/lib/leagues";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
@@ -153,7 +154,7 @@ export function LeagueSlateHero({
           ) : (
             <span />
           )}
-          <Suspense fallback={null}>
+          <Suspense fallback={<SeasonScopeToggleSkeleton />}>
             <SeasonScopeToggle leagueId={leagueId} />
           </Suspense>
         </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
+import { SeasonScopeToggleSkeleton } from "@/components/LayoutShiftSkeletons";
 import { FindingsFeedList } from "@/components/FindingsFeedList";
 import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { MethodologyLink } from "@/components/MethodologyLink";
@@ -103,7 +104,7 @@ export function FindingsSection({
               {title}
             </h2>
             {showScopeToggle && (
-              <Suspense fallback={null}>
+              <Suspense fallback={<SeasonScopeToggleSkeleton />}>
                 <SeasonScopeToggle leagueId={scopeLeagueId ?? "nba"} />
               </Suspense>
             )}

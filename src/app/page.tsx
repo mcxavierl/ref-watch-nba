@@ -1,19 +1,11 @@
-import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 import { HomeHeroPreload } from "@/components/HomeHeroPreload";
 import { OverviewDashboard } from "@/components/OverviewDashboard";
 import { OverviewHero } from "@/components/OverviewHero";
+import { OverviewSecondaryTabs } from "@/components/OverviewSecondaryTabs";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
 import { buildPageMetadata } from "@/lib/seo";
 import { SITE_HOME_PATH } from "@/lib/leagues";
-
-const OverviewSecondaryTabs = dynamic(
-  () =>
-    import("@/components/OverviewSecondaryTabs").then(
-      (mod) => mod.OverviewSecondaryTabs,
-    ),
-  { loading: () => null },
-);
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Verified officiating analytics",

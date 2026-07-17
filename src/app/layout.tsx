@@ -18,6 +18,7 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  adjustFontFallback: true,
 });
 
 const inter = Inter({
@@ -25,6 +26,7 @@ const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  adjustFontFallback: true,
 });
 
 const atkinson = Atkinson_Hyperlegible({
@@ -32,7 +34,8 @@ const atkinson = Atkinson_Hyperlegible({
   weight: ["400", "700"],
   style: ["normal", "italic"],
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {

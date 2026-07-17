@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
+import {
+  RefTeamMatrixSkeleton,
+  SeasonScopeToggleSkeleton,
+} from "@/components/LayoutShiftSkeletons";
 import { MatrixExtremeSection } from "@/components/MatrixExtremeSection";
 import { RefTeamMatrix } from "@/components/RefTeamMatrix";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
@@ -74,7 +78,7 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
         </p>
         <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-zinc-400">{scopeLabel}</p>
-          <Suspense fallback={null}>
+          <Suspense fallback={<SeasonScopeToggleSkeleton />}>
             <SeasonScopeToggle />
           </Suspense>
         </div>
@@ -85,7 +89,7 @@ export default async function NbaMatrixPage({ searchParams }: PageProps) {
 
       <section className="section-block">
         <div className="data-card overflow-hidden p-0">
-          <Suspense fallback={null}>
+          <Suspense fallback={<RefTeamMatrixSkeleton refCount={matrix.refs.length} />}>
             <RefTeamMatrix
               matrix={matrix}
               basePath={league.pathPrefix}

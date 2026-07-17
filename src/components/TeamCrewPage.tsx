@@ -4,6 +4,7 @@ import { TeamLogo } from "@/components/TeamLogo";
 import { CloseGameSection } from "@/components/CloseGameSection";
 import { TeamSplitView } from "@/components/TeamSplitView";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
+import { SeasonScopeToggleSkeleton } from "@/components/LayoutShiftSkeletons";
 import * as nbaData from "@/lib/data";
 import * as nhlData from "@/lib/nhl/data";
 import { filterNhlReferees } from "@/lib/nhl/officials";
@@ -146,7 +147,7 @@ export function TeamCrewPage({
           ) : (
             <span />
           )}
-          <Suspense fallback={null}>
+          <Suspense fallback={<SeasonScopeToggleSkeleton />}>
             <SeasonScopeToggle
               leagueId={showPatriotsEra ? league : undefined}
               teamAbbr={showPatriotsEra ? team.abbr : undefined}

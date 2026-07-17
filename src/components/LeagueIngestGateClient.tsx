@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { LeagueIngestGateSkeleton } from "@/components/LayoutShiftSkeletons";
 import { isPreviewQuery, isShowUnverifiedEnv } from "@/lib/show-unverified";
 
 function LeagueIngestGateInner({
@@ -84,8 +85,12 @@ export function LeagueIngestGateClient({
   ticketNumber: number;
   children: React.ReactNode;
 }) {
+  if (dataVerified) {
+    return <>{children}</>;
+  }
+
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<LeagueIngestGateSkeleton leagueLabel={leagueLabel} />}>
       <LeagueIngestGateInner
         dataVerified={dataVerified}
         leagueLabel={leagueLabel}
