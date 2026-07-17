@@ -7,8 +7,8 @@ export const INGEST_GATED_LEAGUE_IDS = [] as const satisfies readonly LeagueId[]
 
 export type IngestGatedLeagueId = (typeof INGEST_GATED_LEAGUE_IDS)[number];
 
-/** College leagues never appear in the site header sport switcher. */
-const HEADER_HIDDEN_LEAGUE_IDS: readonly LeagueId[] = ["cbb", "cfb"];
+/** College leagues kept out of the header sport switcher until launched. */
+const HEADER_HIDDEN_LEAGUE_IDS: readonly LeagueId[] = ["cfb"];
 
 /** Leagues with verified ingest shown in the header sport switcher. */
 export function getHeaderLeagueIds(): LeagueId[] {

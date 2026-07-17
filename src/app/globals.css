@@ -3823,27 +3823,36 @@ p {
 
   @media (max-width: 767px) {
     .site-header-league {
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .site-header-league .league-nav {
       width: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .site-header-league .league-nav-scroll {
-      width: auto;
+      width: 100%;
       max-width: 100%;
-      margin-inline: auto;
+      margin-inline: 0;
+      -webkit-overflow-scrolling: touch;
+      scroll-padding-inline: 0.35rem;
+      mask-image: linear-gradient(
+        to right,
+        #000 0%,
+        #000 calc(100% - 1.5rem),
+        transparent 100%
+      );
     }
 
-    .site-header-league::after {
-      display: none;
-    }
-
-    .league-nav-scroll {
-      mask-image: none;
+    .site-chrome--scrolled .site-header-league .league-nav-scroll {
+      mask-image: linear-gradient(
+        to right,
+        #000 0%,
+        #000 calc(100% - 1.5rem),
+        transparent 100%
+      );
     }
   }
 
@@ -3861,8 +3870,12 @@ p {
       display: none;
     }
 
+    .league-nav-links {
+      gap: 0.08rem;
+    }
+
     .league-nav-link {
-      padding-inline: 0.45rem;
+      padding-inline: 0.4rem;
       min-height: 2.15rem;
     }
   }

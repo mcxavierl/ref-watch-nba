@@ -2,7 +2,7 @@ export const LEAGUE_IDS = ["nba", "nhl", "wnba", "mlb", "nfl", "epl", "laliga", 
 export type LeagueId = (typeof LEAGUE_IDS)[number];
 
 /** Candidate leagues for the header sport switcher (filtered by verification in production). */
-export const HEADER_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl", "laliga"] as const satisfies readonly LeagueId[];
+export const HEADER_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl", "laliga", "cbb"] as const satisfies readonly LeagueId[];
 
 export type LeagueMetricCopy = {
   /** Combined score unit: points, goals, runs */
