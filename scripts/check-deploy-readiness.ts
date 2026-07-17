@@ -350,6 +350,11 @@ function checkSingleFooterLayout(): void {
   if (!layout.includes("RoutedSiteFooter")) {
     fail("root layout must render RoutedSiteFooter for path-scoped footer data");
   }
+  const footerPath = path.join(ROOT, "src/components/SiteFooter.tsx");
+  const footer = fs.readFileSync(footerPath, "utf8");
+  if (!footer.includes("GamblingDisclaimer")) {
+    fail("SiteFooter must render GamblingDisclaimer on every page");
+  }
 }
 
 function checkRankingsRefLinks(): void {
