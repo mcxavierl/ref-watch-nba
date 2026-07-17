@@ -1,5 +1,9 @@
 import type { StatusBadgeVerdict } from "@/components/hub/StatusBadge";
 import {
+  getCachedCbbConferenceCoverage,
+} from "@/lib/cbb/conference-coverage-preload";
+import { getCachedGameLogs } from "@/lib/game-logs-preload";
+import {
   LIVE_NCAA_CONFERENCES,
   resolveTeamConference,
   type LiveNcaaConferenceId,
@@ -108,13 +112,55 @@ export function buildNcaaConferenceCoverageRows(
   });
 }
 
-function readCbbGameLogs(): { gameId: string; homeTeam: string; awayTeam: string }[] {
+function resolveTeamConferenceForCoverage(
+  teamAbbr: string,
+): LiveNcaaConferenceId | null {
+  const territory = resolveTeamConference("cbb", teamAbbr);
+  if (
+    !territory ||
+    !LIVE_NCAA_CONFERENCES.includes(territory as LiveNcaaConferenceId)
+  ) {
+    return null;
+  }
+  return territory as LiveNcaaConferenceId;
+}
+
+function readCbbGameLogsFromDisk(): {
+  gameId: string;
+  homeTeam: string;
+  awayTeam: string;
+}[] {
   const filePath = path.join(process.cwd(), "data", "cbb", "game-logs.json");
   if (!fs.existsSync(filePath)) return [];
   const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as {
     games?: { gameId: string; homeTeam: string; awayTeam: string }[];
   };
   return parsed.games ?? [];
+}
+
+function resolveCbbDistinctGamesByConference(): Record<
+  LiveNcaaConferenceId,
+  number
+> {
+  const snapshot = getCachedCbbConferenceCoverage();
+  if (snapshot?.distinctByConference) {
+    return snapshot.distinctByConference;
+  }
+
+  const cachedLogs = getCachedGameLogs("CBB");
+  if (cachedLogs?.games?.length) {
+    return countDistinctGamesByConference(
+      cachedLogs.games,
+      resolveTeamConferenceForCoverage,
+      LIVE_NCAA_CONFERENCES,
+    );
+  }
+
+  return countDistinctGamesByConference(
+    readCbbGameLogsFromDisk(),
+    resolveTeamConferenceForCoverage,
+    LIVE_NCAA_CONFERENCES,
+  );
 }
 
 /** Server-side rows for ConferenceCoverage (CBB only today). */
@@ -131,18 +177,7 @@ export function getConferenceCoverageRows(
     }));
   }
 
-  const games = readCbbGameLogs();
-  const distinctByConference = countDistinctGamesByConference(
-    games,
-    (teamAbbr) => {
-      const territory = resolveTeamConference("cbb", teamAbbr);
-      if (!territory || !LIVE_NCAA_CONFERENCES.includes(territory as LiveNcaaConferenceId)) {
-        return null;
-      }
-      return territory as LiveNcaaConferenceId;
-    },
-    LIVE_NCAA_CONFERENCES,
-  );
+  const distinctByConference = resolveCbbDistinctGamesByConference();
 
   return buildNcaaConferenceCoverageRows(distinctByConference, LIVE_NCAA_CONFERENCES).map(
     (row) => ({

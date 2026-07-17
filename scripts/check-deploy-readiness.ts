@@ -210,6 +210,33 @@ function checkWorkerPreloadContract(): void {
   }
 }
 
+function checkCbbConferenceCoverageArtifact(): void {
+  for (const rel of [
+    "data/cbb/conference-coverage.json",
+    "public/data/cbb/conference-coverage.json",
+  ]) {
+    if (!fileExists(rel)) {
+      fail(`cbb: missing ${rel} (run copy-data-to-public)`);
+      return;
+    }
+  }
+
+  const snapshot = readJson<{
+    distinctByConference?: Record<string, number>;
+  }>("public/data/cbb/conference-coverage.json");
+  if (!snapshot?.distinctByConference) {
+    fail("cbb: conference-coverage.json missing distinctByConference");
+    return;
+  }
+
+  for (const conf of ["ACC", "Big Ten", "Big 12", "SEC", "Big East"]) {
+    const count = snapshot.distinctByConference[conf] ?? 0;
+    if (count < 500) {
+      fail(`cbb: ${conf} has ${count} distinct games in conference snapshot (need >= 500 for Live tier)`);
+    }
+  }
+}
+
 function checkTrendsBaselines(): void {
   if (!fileExists("data/baselines.json")) {
     fail("missing data/baselines.json");
@@ -348,6 +375,7 @@ checkOverviewSnapshot();
 for (const league of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
   checkDeployArtifacts(league);
 }
+checkCbbConferenceCoverageArtifact();
 const volume = runVolumeRegressionChecks(ROOT);
 for (const f of volume.failures) {
   fail(f);
