@@ -91,6 +91,7 @@ export function seasonRowsFromBaselines(
 export function buildYoYNarrative(
   rows: TrendRow[],
   league: TrendLeague,
+  subjectLabel?: string,
 ): YoYNarrative | null {
   if (rows.length < 2) return null;
 
@@ -140,7 +141,9 @@ export function buildYoYNarrative(
   }
 
   return {
-    headline: `${latest.season} vs ${prior.season}: league scoring and whistle context`,
+    headline: subjectLabel
+      ? `${subjectLabel}: ${latest.season} vs ${prior.season} scoring and whistle context`
+      : `${latest.season} vs ${prior.season}: league scoring and whistle context`,
     body,
   };
 }

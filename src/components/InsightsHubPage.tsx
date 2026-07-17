@@ -1,6 +1,7 @@
 import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/JsonLd";
+import { CbbConferenceTrendsToggle } from "@/components/CbbConferenceTrendsToggle";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { LeagueHubTabs } from "@/components/LeagueHubTabs";
@@ -50,6 +51,12 @@ import {
   resolveScopedSeasonsForLeague,
 } from "@/lib/season-scope";
 import { buildYoYNarrative, seasonRowsFromBaselines } from "@/lib/trends";
+import {
+  buildCbbConferenceTrendRows,
+  cbbTrendsConferenceLabel,
+} from "@/lib/cbb/conference-trends";
+import type { CbbTrendsConferenceScope } from "@/lib/cbb/conference-trends-shared";
+import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import { RANKINGS_PAGE_LEAD } from "@/lib/trust-charter";
 import type { Finding, FindingLeague } from "@/lib/findings-shared";
 import type { SeasonBaseline } from "../../scripts/lib/baselines";
@@ -80,6 +87,7 @@ type InsightsHubPageProps = {
   leagueId: InsightsLeagueId;
   defaultTab?: "tendencies" | "trends" | "findings";
   scopeMode?: SeasonScopeMode;
+  cbbTrendsConference?: CbbTrendsConferenceScope;
 };
 
 function insightsDataLeague(leagueId: InsightsLeagueId): FindingLeague {
@@ -123,6 +131,7 @@ export function InsightsHubPage({
   leagueId,
   defaultTab = "tendencies",
   scopeMode = DEFAULT_SEASON_SCOPE_MODE,
+  cbbTrendsConference = "all",
 }: InsightsHubPageProps) {
   const league = LEAGUES[leagueId];
   const homeHref = leagueHubHref(leagueId);
@@ -164,21 +173,48 @@ export function InsightsHubPage({
       SeasonBaseline
     >;
   }
-  const rows = seasonRowsFromBaselines(scopedBaselineSeasons);
-  const narrative = buildYoYNarrative(rows, dataLeague);
+  const rows =
+    leagueId === "cbb" && activeView === "trends"
+      ? buildCbbConferenceTrendRows(
+          loadRuntimeGameLogs("CBB")?.games ?? [],
+          scopedSeasons,
+          cbbTrendsConference,
+        )
+      : seasonRowsFromBaselines(scopedBaselineSeasons);
+  const trendsSubjectLabel =
+    leagueId === "cbb" && activeView === "trends"
+      ? cbbTrendsConferenceLabel(cbbTrendsConference)
+      : undefined;
+  const narrative = buildYoYNarrative(rows, dataLeague, trendsSubjectLabel);
 
   const scopeMeta = (
     <div className="insights-hero-meta">
       <p className="insights-hero-meta-copy">
         Showing <span className="insights-hero-meta-strong">{scopeLabel}</span>{" "}
         ({range})
+        {leagueId === "cbb" && activeView === "trends" ? (
+          <>
+            {" "}
+            for{" "}
+            <span className="insights-hero-meta-strong">
+              {cbbTrendsConferenceLabel(cbbTrendsConference)}
+            </span>
+          </>
+        ) : null}
       </p>
-      <Suspense fallback={<SeasonScopeToggleSkeleton />}>
-        <SeasonScopeToggle
-          leagueId={leagueId}
-          availableSeasons={availableSeasons}
-        />
-      </Suspense>
+      <div className="insights-hero-meta-controls">
+        <Suspense fallback={<SeasonScopeToggleSkeleton />}>
+          <SeasonScopeToggle
+            leagueId={leagueId}
+            availableSeasons={availableSeasons}
+          />
+        </Suspense>
+        {leagueId === "cbb" && activeView === "trends" ? (
+          <Suspense fallback={<SeasonScopeToggleSkeleton />}>
+            <CbbConferenceTrendsToggle />
+          </Suspense>
+        ) : null}
+      </div>
     </div>
   );
 
@@ -361,8 +397,11 @@ export function InsightsHubPage({
             note:
               activeView === "trends" ? (
                 <>
-                  {scopeLabel} scoring and whistle baselines from game logs (
-                  {range}). Historical context only.
+                  {scopeLabel}{" "}
+                  {leagueId === "cbb"
+                    ? "scoring and whistle baselines by conference from game logs"
+                    : "scoring and whistle baselines from game logs"}{" "}
+                  ({range}). Historical context only.
                 </>
               ) : null,
             panel: trendsPanel,

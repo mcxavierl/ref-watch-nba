@@ -7397,6 +7397,29 @@ p {
     color: var(--foreground);
   }
 
+  .insights-hero-meta-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.65rem;
+  }
+
+  .cbb-conference-trends-toggle {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .cbb-conference-trends-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .cbb-conference-trends-btn .ncaa-conference-logo {
+    flex-shrink: 0;
+  }
+
   .insights-hero-note {
     margin: 0;
     max-width: 44rem;
