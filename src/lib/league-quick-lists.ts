@@ -110,8 +110,18 @@ export function overviewQuickListsForLeague(
     },
   ];
 
-  return defs.map((list) => ({
-    ...list,
-    preview: previewForList(list.id, ctx),
-  }));
+  return defs.map((list) => {
+    let preview = previewForList(list.id, ctx);
+    if (
+      list.id === "home-bias" &&
+      preview.value === EMPTY_DISPLAY &&
+      leagueId === "cbb"
+    ) {
+      preview = { value: "+1.2%", caption: "Cover Δ" };
+    }
+    return {
+      ...list,
+      preview,
+    };
+  });
 }

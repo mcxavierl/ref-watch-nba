@@ -2,8 +2,8 @@
 
 .overview-explore-stack,
 .overview-layout {
-  --dashboard-crimson: #e11d48;
-  --dashboard-crimson-hover: #dc2626;
+  --dashboard-crimson: #9f1239;
+  --dashboard-crimson-hover: #881337;
   --dashboard-crimson-ink: #f8fafc;
 }
 
@@ -1250,10 +1250,16 @@
 }
 
 .overview-quicklists-segment[data-league="cbb"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--cbb-gold) 45%, var(--line));
-  color: var(--cbb-gold);
-  background: color-mix(in srgb, var(--cbb-gold) 12%, rgba(0, 0, 0, 0.12));
-  box-shadow: 0 1px 4px color-mix(in srgb, var(--cbb-gold) 18%, transparent);
+  border-color: var(--dashboard-crimson, #9f1239);
+  color: var(--dashboard-crimson-ink, #f8fafc);
+  background: var(--dashboard-crimson, #9f1239);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--dashboard-crimson, #9f1239) 28%, transparent);
+}
+
+.overview-quicklists-segment[data-league="cbb"][aria-selected="true"]:hover {
+  border-color: var(--dashboard-crimson-hover, #881337);
+  background: var(--dashboard-crimson-hover, #881337);
+  color: var(--dashboard-crimson-ink, #f8fafc);
 }
 
 .overview-quicklists-segment[data-league="cfb"][aria-selected="true"] {
@@ -1312,9 +1318,8 @@
   border-top-color: color-mix(in srgb, var(--quicklist-accent) 18%, var(--line));
 }
 
-.overview-quicklists-open-hint strong,
-.overview-quicklists-open-hint {
-  color: color-mix(in srgb, var(--quicklist-accent) 35%, var(--muted));
+.overview-quicklists-context {
+  padding-inline-start: 0.45rem;
 }
 
 .overview-quick-list-arrow {
@@ -1376,6 +1381,12 @@
 
   .overview-quicklists-open-row {
     margin-top: auto;
+    align-items: flex-end;
+  }
+
+  .overview-quicklists-open-btn {
+    flex-shrink: 0;
+    align-self: flex-end;
   }
 }
 
