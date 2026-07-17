@@ -23,6 +23,8 @@ export interface RuntimeGameLogEntry {
   awayScore: number;
   totalPoints: number;
   totalFouls: number;
+  homeFouls?: number;
+  awayFouls?: number;
   homeMinors?: number;
   awayMinors?: number;
   wentToOvertime?: boolean;

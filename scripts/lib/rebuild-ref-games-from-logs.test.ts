@@ -108,4 +108,40 @@ describe("rebuildRefGamesFromLogs", () => {
     });
     assert.equal(rebuilt.refs[0]?.games, 2);
   });
+
+  it("uses homeFouls and awayFouls for soccer game logs", () => {
+    const stats = makeStats({
+      slug: "anthony-taylor-0",
+      name: "Anthony Taylor",
+      number: 0,
+      games: 1,
+    });
+    const logs: GameLogFile = {
+      meta: { lastUpdated: "2020-01-01" },
+      games: [
+        {
+          gameId: "epl-1",
+          date: "2024-01-01",
+          season: "2023-24",
+          homeTeam: "MCI",
+          awayTeam: "LIV",
+          homeScore: 2,
+          awayScore: 1,
+          totalPoints: 3,
+          totalFouls: 20,
+          homeFouls: 8,
+          awayFouls: 12,
+          closingTotal: 2.5,
+          officials: [{ name: "Anthony Taylor", number: 0 }],
+        },
+      ],
+    };
+
+    const rebuilt = rebuildRefGamesFromLogs(stats, logs, {
+      useCanonicalKey: true,
+      seasons: ["2023-24"],
+    });
+    assert.equal(rebuilt.refs[0]?.teamStats?.MCI?.avgFoulDifferential, -4);
+    assert.equal(rebuilt.refs[0]?.teamStats?.LIV?.avgFoulDifferential, 4);
+  });
 });

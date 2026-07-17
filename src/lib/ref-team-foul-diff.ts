@@ -4,18 +4,30 @@ function round1(n: number): number {
   return Math.round(n * 10) / 10;
 }
 
+/** Match slug-based crew keys (NBA) and name-based keys (EPL football-data). */
+export function refMatchesCrewKey(refSlug: string, crewKey: string): boolean {
+  const normalizedSlug = refSlug.toLowerCase().trim();
+  const looseKey = normalizedSlug.replace(/-\d+$/, "").replace(/-/g, " ");
+  return crewKey
+    .toLowerCase()
+    .split("|")
+    .some((segment) => {
+      const key = segment.trim();
+      return key === normalizedSlug || key === looseKey;
+    });
+}
+
 /** Games-weighted crew foul edge for one ref×team from team crew splits. */
 export function avgFoulDifferentialFromTeamSplits(
   refSlug: string,
   teamAbbr: string,
   splits: TeamCrewSplit[],
 ): number | null {
-  const key = refSlug.toLowerCase();
   let games = 0;
   let weightedSum = 0;
 
   for (const split of splits) {
-    if (!split.crewKey.split("|").includes(key)) continue;
+    if (!refMatchesCrewKey(refSlug, split.crewKey)) continue;
     games += split.games;
     weightedSum += split.foulDifferential * split.games;
   }
