@@ -249,6 +249,12 @@
   border: 1px solid rgb(30 41 59);
   background: rgb(2 6 23);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+  --upcoming-matchup-glow-accent: rgb(148 163 184);
+  --upcoming-matchup-glow: color-mix(
+    in srgb,
+    var(--upcoming-matchup-glow-accent) 72%,
+    rgb(248 250 252)
+  );
 }
 
 .upcoming-game-card__header {
@@ -316,6 +322,35 @@
   align-items: center;
   justify-content: center;
   min-height: 5.5rem;
+  isolation: isolate;
+}
+
+.upcoming-game-card[data-league="nfl"] {
+  --upcoming-matchup-glow-accent: #1e4fd4;
+}
+
+.upcoming-game-card[data-league="epl"] {
+  --upcoming-matchup-glow-accent: #6b3fa8;
+}
+
+.upcoming-game-card[data-league="laliga"] {
+  --upcoming-matchup-glow-accent: #c9a227;
+}
+
+.upcoming-game-card[data-league="nba"] {
+  --upcoming-matchup-glow-accent: var(--raptors);
+}
+
+.upcoming-game-card[data-league="nhl"] {
+  --upcoming-matchup-glow-accent: var(--nhl-blue);
+}
+
+.upcoming-game-card[data-league="cbb"] {
+  --upcoming-matchup-glow-accent: var(--cbb-gold);
+}
+
+.upcoming-game-card[data-league="cfb"] {
+  --upcoming-matchup-glow-accent: var(--cfb-bronze);
 }
 
 .upcoming-game-card__matchup {
@@ -325,6 +360,25 @@
   flex-wrap: wrap;
   gap: 0.65rem 0.75rem;
   min-width: 0;
+  padding: 0.85rem 1.15rem 0.95rem;
+  border-radius: 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--upcoming-matchup-glow) 32%, rgb(30 41 59));
+  background:
+    radial-gradient(
+      ellipse 120% 90% at 50% 0%,
+      color-mix(in srgb, var(--upcoming-matchup-glow) 9%, transparent),
+      transparent 68%
+    ),
+    color-mix(in srgb, rgb(15 23 42) 88%, rgb(2 6 23));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow) 12%, transparent),
+    0 0 26px color-mix(in srgb, var(--upcoming-matchup-glow) 18%, transparent);
+}
+
+html[data-contrast="high"] .upcoming-game-card__matchup {
+  box-shadow: none;
+  border-color: rgb(51 65 85);
+  background: rgb(15 23 42);
 }
 
 .upcoming-game-card__at {
