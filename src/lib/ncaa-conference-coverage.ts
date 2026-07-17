@@ -138,13 +138,48 @@ function readCbbGameLogsFromDisk(): {
   return parsed.games ?? [];
 }
 
+function readCbbConferenceSnapshotFromDisk(): Record<
+  LiveNcaaConferenceId,
+  number
+> | null {
+  for (const rel of [
+    "public/data/cbb/conference-coverage.json",
+    "data/cbb/conference-coverage.json",
+  ]) {
+    const filePath = path.join(process.cwd(), rel);
+    if (!fs.existsSync(filePath)) continue;
+    try {
+      const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as {
+        distinctByConference?: Record<LiveNcaaConferenceId, number>;
+      };
+      if (parsed.distinctByConference) {
+        return parsed.distinctByConference;
+      }
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
 function resolveCbbDistinctGamesByConference(): Record<
   LiveNcaaConferenceId,
   number
 > {
   const snapshot = getCachedCbbConferenceCoverage();
   if (snapshot?.distinctByConference) {
-    return snapshot.distinctByConference;
+    const totalGames = Object.values(snapshot.distinctByConference).reduce(
+      (sum, count) => sum + count,
+      0,
+    );
+    if (totalGames > 0) {
+      return snapshot.distinctByConference;
+    }
+  }
+
+  const fromDisk = readCbbConferenceSnapshotFromDisk();
+  if (fromDisk) {
+    return fromDisk;
   }
 
   const cachedLogs = getCachedGameLogs("CBB");

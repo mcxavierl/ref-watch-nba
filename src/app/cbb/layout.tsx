@@ -4,6 +4,9 @@ import { preloadLeagueRefStatsForPath } from "@/lib/edge-preload";
 import { SITE_URL } from "@/lib/site";
 import { headers } from "next/headers";
 
+/** Conference badges depend on runtime asset preload — avoid stale SSG HTML. */
+export const dynamic = "force-dynamic";
+
 export default async function CbbLayout({
   children,
 }: {

@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import {
   setCachedCbbConferenceCoverage,
   getCachedCbbConferenceCoverage,
+  clearCachedCbbConferenceCoverage,
 } from "@/lib/cbb/conference-coverage-preload";
 import {
   buildNcaaConferenceCoverageRows,
@@ -76,5 +77,12 @@ describe("ncaa conference coverage maturity", () => {
         "Big East": 0,
       },
     });
+    clearCachedCbbConferenceCoverage();
+  });
+
+  it("reads CBB conference snapshot from disk when cache is empty", () => {
+    const rows = getConferenceCoverageRows("cbb");
+    assert.ok(rows.some((row) => row.maturity === "Live"));
+    assert.ok(rows.every((row) => row.distinctGames >= 500));
   });
 });

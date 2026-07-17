@@ -21,6 +21,12 @@ export function getCachedCbbConferenceCoverage(): CbbConferenceCoverageSnapshot 
   return readSnapshotGlobal();
 }
 
+export function clearCachedCbbConferenceCoverage(): void {
+  delete (globalThis as unknown as Record<string, CbbConferenceCoverageSnapshot | undefined>)[
+    SNAPSHOT_GLOBAL_KEY
+  ];
+}
+
 export function setCachedCbbConferenceCoverage(
   snapshot: CbbConferenceCoverageSnapshot,
 ): void {
