@@ -40,4 +40,15 @@ describe("formatTeamWhistleEdgeLabel", () => {
       "Even flags on Ravens",
     );
   });
+
+  it("omits team name in compact mode", () => {
+    assert.equal(
+      formatTeamWhistleEdgeLabel(2.3, "Ravens", "flags", { compact: true }),
+      "2.3 fewer flags",
+    );
+    assert.equal(
+      formatTeamWhistleEdgeLabel(0, "Ravens", "flags", { compact: true }),
+      "Even flags",
+    );
+  });
 });

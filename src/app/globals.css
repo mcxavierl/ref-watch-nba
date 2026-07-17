@@ -8536,7 +8536,7 @@ p {
   }
 
   .ref-matrix-team-panel-column {
-    --ref-matrix-panel-grid: 1.25rem minmax(13rem, 2.35fr) 3.1rem 2.35rem minmax(11.5rem, 2.25fr);
+    --ref-matrix-panel-grid: 1.25rem minmax(8rem, 2fr) minmax(5.5rem, 1.15fr) 2.5rem minmax(6.5rem, 1.35fr);
     container-type: inline-size;
     container-name: matrix-panel-col;
     display: flex;
@@ -8578,7 +8578,7 @@ p {
   .ref-matrix-team-panel-column-subtitle {
     font-size: var(--text-xs);
     line-height: 1.35;
-    color: var(--muted-strong);
+    color: var(--ink-secondary);
   }
 
   .ref-matrix-team-panel-list-head {
@@ -8591,7 +8591,7 @@ p {
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--ink-secondary);
     border-bottom: 1px solid var(--border-subtle);
   }
 
@@ -8664,7 +8664,13 @@ p {
     background: var(--surface);
     border: 1px solid var(--border-subtle);
     font-size: var(--text-sm);
-    min-height: 3.35rem;
+    min-height: 4.125rem;
+  }
+
+  @container matrix-panel-col (min-width: 30.01rem) {
+    .ref-matrix-team-panel-item {
+      height: 4.125rem;
+    }
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .ref-matrix-team-panel-item {
@@ -8695,12 +8701,8 @@ p {
 
     .ref-matrix-team-panel-ref-wrap {
       grid-area: ref;
-      flex-wrap: wrap;
-      align-items: flex-start;
-    }
-
-    .ref-matrix-team-panel-compare {
-      margin-left: 0;
+      flex-wrap: nowrap;
+      align-items: center;
     }
 
     .ref-matrix-team-panel-record {
@@ -8758,7 +8760,7 @@ p {
     font-size: var(--text-xs);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
-    color: var(--muted-strong);
+    color: var(--ink-secondary);
     text-align: center;
   }
 
@@ -8791,24 +8793,17 @@ p {
     height: 2.5rem !important;
   }
 
-  .ref-matrix-team-panel-name-row {
-    display: inline-flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0.35rem 0.5rem;
-    min-width: 0;
-  }
-
   .ref-matrix-team-panel-ref-name {
+    flex: 1 1 auto;
+    min-width: 0;
     font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.35;
-    color: #f8fafc;
+    color: var(--foreground);
     text-decoration: none;
-    overflow: visible;
-    text-overflow: clip;
-    white-space: normal;
-    overflow-wrap: anywhere;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     transition: color 0.15s ease;
   }
 
@@ -8825,23 +8820,7 @@ p {
     align-items: center;
     gap: 0.55rem;
     min-width: 0;
-    overflow: visible;
-  }
-
-  .ref-matrix-team-panel-compare {
-    flex-shrink: 0;
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0;
-    text-transform: none;
-    color: #64748b;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .ref-matrix-team-panel-compare:hover {
-    color: var(--league-accent, var(--raptors));
-    text-decoration: underline;
+    overflow: hidden;
   }
 
   .ref-matrix-compare-link {
@@ -8884,6 +8863,10 @@ p {
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   .ref-matrix-team-panel-win-delta.ref-matrix-delta--positive,
@@ -8902,19 +8885,21 @@ p {
   }
 
   .ref-matrix-team-panel-games {
-    color: var(--muted-strong);
+    color: var(--ink-secondary);
+    white-space: nowrap;
   }
 
   .ref-matrix-team-panel-delta {
-    font-weight: 400;
-    color: #64748b;
-    white-space: normal;
+    font-weight: 500;
+    color: var(--ink-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     line-height: 1.35;
-    overflow-wrap: anywhere;
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .ref-matrix-team-panel-delta {
-    color: #64748b;
+    color: var(--ink-secondary);
   }
 
   .ref-matrix-team-panel-empty {
