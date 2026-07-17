@@ -27,6 +27,13 @@ import type { LeagueConfig } from "@/lib/leagues";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import type { RefProfile } from "@/lib/types";
 
+function performanceRankTier(rank: number): "top" | "middle" | "bottom" | null {
+  if (rank >= 1 && rank <= 10) return "top";
+  if (rank >= 11 && rank <= 15) return "middle";
+  if (rank >= 16 && rank <= 25) return "bottom";
+  return null;
+}
+
 function DeltaCell({
   delta,
   unit,
@@ -35,6 +42,7 @@ function DeltaCell({
   heatMap = false,
   formatted,
   usePct = false,
+  rankTier = null,
 }: {
   delta: number;
   unit: string;
@@ -43,7 +51,37 @@ function DeltaCell({
   heatMap?: boolean;
   formatted?: string;
   usePct?: boolean;
+  rankTier?: "top" | "middle" | "bottom" | null;
 }) {
+  const formattedValue =
+    formatted ??
+    (showUnit ? formatSigned(delta) : formatDirectoryDelta(delta));
+
+  if (rankTier === "top") {
+    return (
+      <span className="refs-directory-delta refs-directory-delta-rank-top tabular-nums">
+        {formattedValue}
+        {showUnit ? ` ${unit}` : ""}
+      </span>
+    );
+  }
+  if (rankTier === "middle") {
+    return (
+      <span className="refs-directory-delta refs-directory-delta-rank-middle tabular-nums">
+        {formattedValue}
+        {showUnit ? ` ${unit}` : ""}
+      </span>
+    );
+  }
+  if (rankTier === "bottom") {
+    return (
+      <span className="refs-directory-delta refs-directory-delta-rank-bottom tabular-nums">
+        {formattedValue}
+        {showUnit ? ` ${unit}` : ""}
+      </span>
+    );
+  }
+
   const tone = directoryDeltaTone(delta, overBaseline, heatMap, usePct);
   const className =
     tone === "positive"
@@ -52,12 +90,8 @@ function DeltaCell({
         ? "refs-directory-delta ref-delta-negative"
         : "refs-directory-delta refs-directory-delta-neutral";
 
-  const formattedValue =
-    formatted ??
-    (showUnit ? formatSigned(delta) : formatDirectoryDelta(delta));
-
   return (
-    <span className={`refs-directory-delta ${className}`}>
+    <span className={`refs-directory-delta ${className} tabular-nums`}>
       {formattedValue}
       {showUnit ? ` ${unit}` : ""}
     </span>
@@ -224,7 +258,7 @@ export function RefsDirectory({
       <div className="ref-profile-section refs-directory">
         <div className="refs-directory-toolbar">
           <div className="refs-directory-discovery-head">
-            <p className="refs-directory-discovery-title">Performance Discovery</p>
+            <p className="refs-directory-discovery-title">Officials performance</p>
             <div
               className="refs-directory-tabs"
               role="tablist"
@@ -309,7 +343,7 @@ export function RefsDirectory({
           <span className="refs-directory-col-rank">#</span>
           <span className="refs-directory-col-official">Official</span>
           <span className="refs-directory-col-games">Games</span>
-          <span className="refs-directory-col-over">Over</span>
+          <span className="refs-directory-col-over">O/U%</span>
           <span className="refs-directory-col-delta">{deltaHeader}</span>
         </div>
 
@@ -320,6 +354,8 @@ export function RefsDirectory({
         ) : (
           <ol className="refs-directory-list">
             {visible.map((ref, index) => {
+              const rank = index + 1;
+              const rankTier = performanceRankTier(rank);
               const isReveal = expanded && index >= REFS_DIRECTORY_INITIAL_COUNT;
               const nhlDisplay = isNhl
                 ? nhlDirectoryMetricDisplay(
@@ -340,11 +376,11 @@ export function RefsDirectory({
               return (
                 <li
                   key={ref.slug}
-                  className={`refs-directory-row ${isReveal ? "refs-directory-row-reveal" : ""}`}
+                  className={`refs-directory-row${rankTier ? ` refs-directory-row--${rankTier}` : ""}${isReveal ? " refs-directory-row-reveal" : ""}`}
                 >
                   <div className="refs-directory-row-link">
-                    <span className="refs-directory-col-rank font-tabular">
-                      {index + 1}
+                    <span className="refs-directory-col-rank font-tabular tabular-nums">
+                      {rank}
                     </span>
                     <span className="refs-directory-col-official">
                       <RefAvatar
@@ -352,6 +388,7 @@ export function RefsDirectory({
                         slug={ref.slug}
                         sport={sport}
                         size="sm"
+                        className="refs-directory-avatar"
                       />
                       <span className="refs-directory-name-wrap">
                         <button
@@ -367,7 +404,7 @@ export function RefsDirectory({
                         />
                       </span>
                     </span>
-                    <span className="refs-directory-col-games font-tabular">
+                    <span className="refs-directory-col-games font-tabular tabular-nums">
                       {ref.games}
                     </span>
                     <span className="refs-directory-col-over">
@@ -376,7 +413,7 @@ export function RefsDirectory({
                     <span className="refs-directory-col-delta">
                       {(isNhl && nhlDisplay === null) ||
                       (isNfl && nflDelta === null) ? (
-                        <span className="refs-directory-delta refs-directory-delta-neutral">
+                        <span className="refs-directory-delta refs-directory-delta-neutral tabular-nums">
                           -
                         </span>
                       ) : (
@@ -388,6 +425,7 @@ export function RefsDirectory({
                           heatMap={isNhl || isNfl}
                           formatted={displayFormatted}
                           usePct={usePct}
+                          rankTier={rankTier}
                         />
                       )}
                     </span>
