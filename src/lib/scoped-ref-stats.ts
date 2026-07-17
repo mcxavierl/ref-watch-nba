@@ -27,6 +27,7 @@ import type {
   RefTeamStat,
   TeamCrewSplit,
 } from "@/lib/types";
+import { teamFoulsFromGameLog } from "@/lib/team-foul-split";
 
 type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
@@ -88,18 +89,7 @@ function teamFoulSplit(
   game: RuntimeGameLogEntry,
   isHome: boolean,
 ): { teamFouls: number; opponentFouls: number } {
-  if (game.homeFlags !== undefined && game.awayFlags !== undefined) {
-    return isHome
-      ? { teamFouls: game.homeFlags, opponentFouls: game.awayFlags }
-      : { teamFouls: game.awayFlags, opponentFouls: game.homeFlags };
-  }
-  if (game.homeMinors !== undefined && game.awayMinors !== undefined) {
-    return isHome
-      ? { teamFouls: game.homeMinors, opponentFouls: game.awayMinors }
-      : { teamFouls: game.awayMinors, opponentFouls: game.homeMinors };
-  }
-  const half = game.totalFouls / 2;
-  return { teamFouls: half, opponentFouls: half };
+  return teamFoulsFromGameLog(game, isHome);
 }
 
 function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {

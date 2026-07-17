@@ -18,6 +18,7 @@ import {
 } from "./ref-team-stats";
 import { refSlug } from "./slug";
 import { teamWonGame } from "./team-win";
+import { teamFoulsFromGameLog } from "../../src/lib/team-foul-split";
 import type { RefGameRecord, RefProfile, RefStatsFile } from "./types";
 
 function round1(n: number): number {
@@ -126,16 +127,11 @@ export function rebuildRefGamesFromLogs(
           game.awayTeam,
           teamAbbr,
         );
-        const teamFouls = isHome
-          ? (game.homeFlags ?? game.homeMinors ?? game.totalFouls / 2)
-          : (game.awayFlags ?? game.awayMinors ?? game.totalFouls / 2);
-        const opponentFouls = isHome
-          ? (game.awayFlags ?? game.awayMinors ?? game.totalFouls / 2)
-          : (game.homeFlags ?? game.homeMinors ?? game.totalFouls / 2);
+        const fouls = teamFoulsFromGameLog(game, isHome);
 
         pushRefTeamGame(refTeamBuckets, refKey, teamAbbr, {
           gameId: game.gameId,
-          foulDifferential: teamFouls - opponentFouls,
+          foulDifferential: fouls.teamFouls - fouls.opponentFouls,
           totalPoints: game.totalPoints,
           overHit,
           teamWin,
