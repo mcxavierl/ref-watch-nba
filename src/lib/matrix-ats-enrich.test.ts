@@ -13,7 +13,7 @@ describe("enrichRefStatsForMatrixAts", () => {
     ) as { games: unknown[] };
     setCachedGameLogs("NHL", logs as never);
 
-    const { stats, scopedSeasons } = loadScopedLeagueStats("nhl", "ten");
+    const { stats, scopedSeasons } = loadScopedLeagueStats("nhl", "last10");
     assert.equal(stats.meta.atsAvailable, true);
 
     const enriched = enrichRefStatsForMatrixAts("nhl", stats, scopedSeasons);
@@ -34,7 +34,7 @@ describe("enrichRefStatsForMatrixAts", () => {
     ) as { games: unknown[] };
     setCachedGameLogs("NHL", logs as never);
 
-    const { stats, scopedSeasons } = loadScopedLeagueStats("nhl", "ten");
+    const { stats, scopedSeasons } = loadScopedLeagueStats("nhl", "last10");
     const withoutAts: RefStatsFile = {
       ...stats,
       meta: { ...stats.meta, atsAvailable: false },
