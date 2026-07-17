@@ -150,6 +150,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /OverviewHistoricalLeaders/);
     assert.doesNotMatch(source, /Expanding coverage/);
     assert.doesNotMatch(source, /overview-expansion/);
+    assert.doesNotMatch(source, /WorldCupFinalSection/);
   });
 
   it("live league date badges use high-contrast blue tokens", () => {

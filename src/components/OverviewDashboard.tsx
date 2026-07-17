@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { WorldCupFinalSection } from "@/components/WorldCupFinalSection";
 import type { ReactNode } from "react";
 import { LeagueChooser } from "@/components/LeagueChooser";
 import { OverviewEditorialNarrative } from "@/components/OverviewEditorialNarrative";
@@ -86,8 +85,6 @@ export function OverviewDashboard({
   return (
     <DashboardShell>
       {hero}
-
-      <WorldCupFinalSection />
 
       <OverviewUpcomingSlateSection data={data} />
 
