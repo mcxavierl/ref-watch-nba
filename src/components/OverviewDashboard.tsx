@@ -9,6 +9,7 @@ import {
   DashboardBodyLayout,
   DashboardShell,
 } from "@/components/dashboard/DashboardShell";
+import { ResearchHighlightBanner } from "@/components/ResearchHighlightBanner";
 import {
   catalogComingSoonEntries,
   catalogCompetitionCount,
@@ -84,6 +85,8 @@ export function OverviewDashboard({
 
   return (
     <DashboardShell>
+      <ResearchHighlightBanner />
+
       {hero}
 
       <OverviewUpcomingSlateSection data={data} />

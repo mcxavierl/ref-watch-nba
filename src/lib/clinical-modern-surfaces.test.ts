@@ -161,6 +161,20 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /WorldCupFinalSection/);
   });
 
+  it("homepage surfaces a research highlight banner at the top of the dashboard", () => {
+    const dashboard = readSrc("src/components/OverviewDashboard.tsx");
+    const banner = readSrc("src/components/ResearchHighlightBanner.tsx");
+    const config = readSrc("src/config/research-highlight.ts");
+    assert.match(dashboard, /ResearchHighlightBanner/);
+    assert.doesNotMatch(dashboard, /ResearchHighlightPill/);
+    assert.match(banner, /research-highlight-banner/);
+    assert.match(banner, /BookOpen/);
+    assert.match(banner, /target="_blank"/);
+    assert.match(banner, /text-champagne-400/);
+    assert.match(banner, /rounded-2xl/);
+    assert.match(config, /Leverage-Spike Anomaly/);
+  });
+
   it("live league date badges use high-contrast blue tokens", () => {
     const css = readSrc("src/app/globals.css");
     assert.match(css, /--live-league-date-ink/);
