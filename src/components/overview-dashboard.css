@@ -195,7 +195,11 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--space-4) var(--space-6);
-  padding-bottom: var(--space-2);
+  padding-bottom: 0;
+}
+
+.overview-hero-minimal.section-block {
+  margin-bottom: 0;
 }
 
 .overview-hero-minimal-copy {
@@ -1348,7 +1352,7 @@ html.dark .overview-quick-lists {
 
 /* —— Upcoming games (homepage) —— */
 .overview-editorial-section--slate {
-  margin-top: var(--space-6);
+  margin-top: 0;
 }
 
 .overview-section-title--with-icon {
