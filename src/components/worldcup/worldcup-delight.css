@@ -1,0 +1,146 @@
+/* World Cup editorial delight — champagne prestige on Clinical Modern slate */
+
+.wc-editorial-header-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 0% 0%,
+      color-mix(in srgb, var(--wc-research-accent) 14%, transparent),
+      transparent 58%
+    ),
+    rgb(2 6 23);
+  transition:
+    border-color 180ms var(--ease-out-quint, ease),
+    box-shadow 180ms var(--ease-out-quint, ease);
+}
+
+.wc-editorial-header-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--wc-gold-gradient);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wc-editorial-header-card:hover {
+    border-color: color-mix(in srgb, var(--wc-research-accent) 30%, rgb(30 41 59));
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--wc-research-accent) 14%, transparent),
+      0 20px 52px color-mix(in srgb, var(--wc-research-accent) 10%, transparent);
+  }
+}
+
+.wc-editorial-trophy-wrap {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--wc-research-accent) 18%, rgb(30 41 59)),
+    0 0 16px color-mix(in srgb, var(--wc-research-accent) 16%, transparent);
+}
+
+.wc-editorial-officials-panel {
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 100% 0%,
+      color-mix(in srgb, var(--wc-research-accent) 7%, transparent),
+      transparent 62%
+    ),
+    rgb(15 23 42 / 0.4);
+}
+
+.wc-editorial-fifa-link {
+  text-underline-offset: 3px;
+  transition: color 150ms ease, opacity 150ms ease;
+}
+
+.wc-editorial-fifa-link:hover {
+  opacity: 0.92;
+}
+
+.wc-finding-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 180ms var(--ease-out-quint, ease),
+    box-shadow 180ms var(--ease-out-quint, ease);
+}
+
+.wc-finding-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: color-mix(in srgb, var(--wc-research-accent) 55%, transparent);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wc-finding-card:hover {
+    border-color: color-mix(in srgb, var(--wc-research-accent) 22%, rgb(30 41 59));
+    box-shadow: 0 14px 36px rgb(0 0 0 / 0.22);
+  }
+}
+
+.wc-confidence-pill {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, rgb(148 163 184) 12%, transparent),
+    0 0 10px color-mix(in srgb, rgb(148 163 184) 8%, transparent);
+}
+
+.wc-category-pill {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--wc-research-accent) 16%, transparent),
+    0 0 12px color-mix(in srgb, var(--wc-research-accent) 10%, transparent);
+}
+
+.wc-metric-cell {
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(30 41 59);
+  background: rgb(15 23 42 / 0.35);
+}
+
+.wc-metric-cell--positive {
+  border-color: color-mix(in srgb, #34d399 24%, rgb(30 41 59));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 0% 0%,
+      color-mix(in srgb, #34d399 10%, transparent),
+      transparent 62%
+    ),
+    rgb(15 23 42 / 0.45);
+}
+
+.wc-metric-cell--negative {
+  border-color: color-mix(in srgb, #fb7185 24%, rgb(30 41 59));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 0% 0%,
+      color-mix(in srgb, #fb7185 10%, transparent),
+      transparent 62%
+    ),
+    rgb(15 23 42 / 0.45);
+}
+
+.wc-metric-cell .metric-delight-value-hero--positive,
+.wc-metric-cell .metric-delight-value--positive {
+  color: #34d399;
+}
+
+.wc-metric-cell .metric-delight-value-hero--negative,
+.wc-metric-cell .metric-delight-value--negative {
+  color: #fb7185;
+}
+
+.wc-metric-cell .metric-delight-value-hero--neutral,
+.wc-metric-cell .metric-delight-value--neutral {
+  color: rgb(241 245 249);
+}
+
+.match-status-pill--prestige {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #bfa86a 35%, transparent),
+    0 0 14px color-mix(in srgb, #bfa86a 22%, transparent);
+}

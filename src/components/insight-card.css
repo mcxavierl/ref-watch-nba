@@ -266,6 +266,14 @@ html.dark .insight-card--inline {
   gap: 0.35rem;
 }
 
+.insight-editorial-head-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+}
+
 .insight-editorial-league {
   display: inline-flex;
   align-items: center;
@@ -342,6 +350,38 @@ html.dark .insight-card--inline {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--insight-accent) 16%, var(--insight-border));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 0% 0%,
+      color-mix(in srgb, var(--insight-accent) 8%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--insight-surface) 92%, transparent);
+}
+
+.insight-card[data-tone="positive"] .insight-editorial-metric--primary {
+  border-color: color-mix(in srgb, var(--accent-positive) 28%, var(--insight-border));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 0% 0%,
+      color-mix(in srgb, var(--accent-positive) 10%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--insight-surface) 92%, transparent);
+}
+
+.insight-card[data-tone="negative"] .insight-editorial-metric--primary {
+  border-color: color-mix(in srgb, var(--accent-negative) 28%, var(--insight-border));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 0% 0%,
+      color-mix(in srgb, var(--accent-negative) 10%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--insight-surface) 92%, transparent);
 }
 
 .insight-editorial-metric-value {

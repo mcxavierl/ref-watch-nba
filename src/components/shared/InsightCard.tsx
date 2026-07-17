@@ -214,10 +214,13 @@ function EditorialInsightCard({
         style={{ "--insight-index": index } as CSSProperties}
       >
         <header className="insight-editorial-head">
-          <span className="insight-editorial-league">
-            <LeagueNavMark league={card.leagueId} />
-            <span>{card.shortLabel}</span>
-          </span>
+          <div className="insight-editorial-head-row">
+            <span className="insight-editorial-league">
+              <LeagueNavMark league={card.leagueId} />
+              <span>{card.shortLabel}</span>
+            </span>
+            <LeagueSeasonStartBadge leagueId={card.leagueId} />
+          </div>
           <p className="insight-editorial-kicker">{normalizeCarouselCopy(card.kicker)}</p>
         </header>
 
