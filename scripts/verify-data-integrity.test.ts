@@ -63,4 +63,26 @@ describe("verify-data-integrity ref game counts", () => {
       );
     });
   }
+
+  it("soccer and CBB ref-stats have non-trivial foul-edge coverage", () => {
+    for (const league of ["epl", "laliga", "cbb"] as const) {
+      const statsPath = path.join(ROOT, `data/${league}/ref-stats-core.json`);
+      if (!fs.existsSync(statsPath)) continue;
+      const stats = loadJson<RefStatsFile>(`data/${league}/ref-stats-core.json`);
+      let total = 0;
+      let zero = 0;
+      for (const ref of stats.refs) {
+        for (const cell of Object.values(ref.teamStats ?? {})) {
+          total++;
+          if (cell.avgFoulDifferential === 0) zero++;
+        }
+      }
+      if (total === 0) continue;
+      const zeroPct = (zero / total) * 100;
+      assert.ok(
+        zeroPct < 90,
+        `${league}: ${zeroPct.toFixed(1)}% zero foul edges (expected <90%)`,
+      );
+    }
+  });
 });
