@@ -90,12 +90,12 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
     text: "Opponent whistle volume minus team volume per game. Positive means your team is whistled less (or the opponent more), a favorable minors/flags edge.",
   },
   "grudge-match": {
-    label: "Grudge match",
-    text: "An auto-flag when a ref on tonight’s crew has an unusual history with one of the teams playing: win rate, fouls, or a prior result with this exact crew.",
+    label: "Crew history spotlight",
+    text: "When a ref on tonight's crew has an unusual historical pattern with one of the teams: win rate, fouls, or a prior result with this exact crew.",
   },
   "home-bias": {
-    label: "Home / road bias",
-    text: "Whether this crew’s games skew toward home or away teams winning, a win-rate pattern, not ATS.",
+    label: "Home / road venue split",
+    text: "Whether this crew's games skew toward home or away teams winning. A descriptive win-rate pattern, not ATS edge.",
   },
   "crew-reunion": {
     label: "Crew reunion",

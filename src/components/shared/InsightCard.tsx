@@ -28,6 +28,7 @@ import {
 } from "@/lib/homepage-insight-gates";
 import { leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { whistleIndexFromInsightCard } from "@/lib/whistle-index";
+import { STANDOUT_SPLIT_FOOTNOTE } from "@/lib/data-maturity";
 import { InsightCardShell } from "@/components/shared/InsightCardShell";
 import { InsightMetricComparison } from "@/components/shared/InsightMetricComparison";
 import "@/components/insight-card.css";
@@ -77,6 +78,20 @@ function comparisonImpactTone(
   if (comparison.crewValue > comparison.leagueValue) return "positive";
   if (comparison.crewValue < comparison.leagueValue) return "negative";
   return "neutral";
+}
+
+function InsightHonestyFootnote({
+  editorial,
+}: {
+  editorial: ReturnType<typeof editorialInsightView>;
+}) {
+  if (!editorial.showHonestyFootnote && !editorial.isPreliminary) return null;
+
+  return (
+    <p className="insight-editorial-footnote mt-2 text-xs text-slate-500">
+      {STANDOUT_SPLIT_FOOTNOTE}
+    </p>
+  );
 }
 
 function InsightCardMeta({
@@ -166,6 +181,8 @@ function CarouselInsightCard({
             </p>
 
             <InsightCardMeta card={card} />
+
+            <InsightHonestyFootnote editorial={editorial} />
 
             <div className="overview-top-story-actions">
               {card.links[0] ? (
@@ -276,6 +293,8 @@ function EditorialInsightCard({
 
           <InsightCardMeta card={card} compact={metaCompact} />
 
+          <InsightHonestyFootnote editorial={editorial} />
+
           <p className="insight-editorial-why">{editorial.whyItMatters}</p>
         </button>
 
@@ -375,6 +394,8 @@ function InlineInsightCard({
           ) : null}
 
           <InsightCardMeta card={card} compact />
+
+          <InsightHonestyFootnote editorial={editorial} />
 
           <div className="mt-3">
             <h3 className="insight-card-headline">{editorial.headline}</h3>

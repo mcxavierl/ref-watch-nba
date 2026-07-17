@@ -7,6 +7,7 @@ import {
 } from "@/config/methodology";
 import {
   filterHomepageInsightCards,
+  HOMEPAGE_METHODOLOGY_BLURB,
   homepageInsightCategory,
   homepageInsightKicker,
   isStatisticallySignificantInsight,
@@ -91,6 +92,11 @@ describe("homepage insight gates", () => {
     });
     assert.equal(homepageInsightCategory(crew), "crew-anomaly");
     assert.equal(passesHomepageSampleGate(crew), false);
+  });
+
+  it("exports homepage methodology transparency blurb", () => {
+    assert.match(HOMEPAGE_METHODOLOGY_BLURB, /15\+ games/i);
+    assert.match(HOMEPAGE_METHODOLOGY_BLURB, /Methodology/i);
   });
 
   it("filters bundled overview insight pools", () => {

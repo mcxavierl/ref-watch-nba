@@ -76,7 +76,9 @@ const OVERVIEW_EXPLORE: FooterExploreLink[] = [
   { key: "nhl", label: "NHL hub", href: "/nhl" },
   { key: "epl", label: "Premier League hub", href: "/epl" },
   { key: "laliga", label: "La Liga hub", href: "/laliga" },
+  { key: "about", label: "About", href: "/about" },
   { key: "methodology", label: "Methodology", href: "/methodology" },
+  { key: "validation", label: "Closing-line validation", href: "/research/validation" },
   {
     key: "contact",
     label: "Contact Me",
