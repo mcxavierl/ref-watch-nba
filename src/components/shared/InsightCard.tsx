@@ -49,6 +49,7 @@ type InsightCardProps = {
   index?: number;
   active?: boolean;
   className?: string;
+  showHubLink?: boolean;
 };
 
 /** Enforce spaced hyphens instead of em/en dashes in carousel copy. */
@@ -101,10 +102,12 @@ function CarouselInsightCard({
   card,
   active,
   className,
+  showHubLink = true,
 }: {
   card: LeagueInsightCard;
   active: boolean;
   className?: string;
+  showHubLink?: boolean;
 }) {
   const Icon = STORY_ICONS[card.leagueId] ?? Flame;
   const editorial = editorialInsightView(card);
@@ -165,12 +168,14 @@ function CarouselInsightCard({
                   <ArrowRight aria-hidden />
                 </Link>
               ) : null}
-              <Link
-                href={leagueHubHref(card.leagueId)}
-                className="overview-top-story-link overview-top-story-link--muted"
-              >
-                Open {card.shortLabel} hub
-              </Link>
+              {showHubLink ? (
+                <Link
+                  href={leagueHubHref(card.leagueId)}
+                  className="overview-top-story-link overview-top-story-link--muted"
+                >
+                  Open {card.shortLabel} hub
+                </Link>
+              ) : null}
             </div>
           </div>
         </div>
@@ -184,11 +189,13 @@ function EditorialInsightCard({
   variant,
   index = 0,
   className,
+  showHubLink = true,
 }: {
   card: LeagueInsightCard;
   variant: "featured" | "trend" | "quick";
   index?: number;
   className?: string;
+  showHubLink?: boolean;
 }) {
   const [drilldownOpen, setDrilldownOpen] = useState(false);
   const drilldownEnabled = Boolean(card.drilldownId);
@@ -269,12 +276,14 @@ function EditorialInsightCard({
               <ArrowRight aria-hidden />
             </Link>
           ) : null}
-          <Link
-            href={leagueHubHref(card.leagueId)}
-            className="insight-editorial-link insight-editorial-link--muted"
-          >
-            Open {card.shortLabel} hub
-          </Link>
+          {showHubLink ? (
+            <Link
+              href={leagueHubHref(card.leagueId)}
+              className="insight-editorial-link insight-editorial-link--muted"
+            >
+              Open {card.shortLabel} hub
+            </Link>
+          ) : null}
         </footer>
       </InsightCardShell>
 
@@ -412,6 +421,7 @@ export const InsightCard = memo(function InsightCard({
   index,
   active = true,
   className,
+  showHubLink = true,
 }: InsightCardProps) {
   if (variant === "featured" || variant === "trend" || variant === "quick") {
     return (
@@ -420,13 +430,19 @@ export const InsightCard = memo(function InsightCard({
         variant={variant}
         index={index}
         className={className}
+        showHubLink={showHubLink}
       />
     );
   }
 
   if (variant === "carousel") {
     return (
-      <CarouselInsightCard card={card} active={active} className={className} />
+      <CarouselInsightCard
+        card={card}
+        active={active}
+        className={className}
+        showHubLink={showHubLink}
+      />
     );
   }
 

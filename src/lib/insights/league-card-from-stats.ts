@@ -94,13 +94,25 @@ function cardFromMatrix(
   };
 }
 
-/** Matrix-only league card for memory-efficient build pipelines. */
-export function buildLeagueInsightCardForLeague(
+/** Matrix-only league cards for memory-efficient build pipelines. */
+const MULTI_STANDOUT_LEAGUE_IDS = new Set<VerifiedLiveLeagueId>(["nba", "nfl", "epl"]);
+const MULTI_STANDOUT_MATRIX_LIMIT = 4;
+
+function sortMatrixHighlightsBySample(
+  highlights: MatrixExtremeHighlight[],
+): MatrixExtremeHighlight[] {
+  return [...highlights].sort((a, b) => {
+    if (b.games !== a.games) return b.games - a.games;
+    return Math.abs(b.deltaPts) - Math.abs(a.deltaPts);
+  });
+}
+
+export function buildLeagueStandoutCardsForLeague(
   leagueId: VerifiedLiveLeagueId,
   stats: RefStatsFile,
   setup: LeagueCardBuildSetup,
-): LeagueInsightCard | null {
-  if (stats.refs.length === 0) return null;
+): LeagueInsightCard[] {
+  if (stats.refs.length === 0) return [];
 
   const matrix = computeRefTeamMatrix(
     stats,
@@ -109,7 +121,28 @@ export function buildLeagueInsightCardForLeague(
     8,
     { league: setup.matrixLeague },
   );
-  const extreme = computeMatrixExtremes(matrix, 1)[0];
-  if (!extreme) return null;
-  return cardFromMatrix(leagueId, extreme);
+  const limit = MULTI_STANDOUT_LEAGUE_IDS.has(leagueId) ? MULTI_STANDOUT_MATRIX_LIMIT : 1;
+  const highlights = sortMatrixHighlightsBySample(
+    computeMatrixExtremes(matrix, Math.max(limit * 4, 16)),
+  );
+  const cards: LeagueInsightCard[] = [];
+  const seen = new Set<string>();
+
+  for (const highlight of highlights) {
+    const key = `${highlight.refSlug}|${highlight.teamAbbr.toUpperCase()}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    cards.push(cardFromMatrix(leagueId, highlight));
+    if (cards.length >= limit) break;
+  }
+
+  return cards;
+}
+
+export function buildLeagueInsightCardForLeague(
+  leagueId: VerifiedLiveLeagueId,
+  stats: RefStatsFile,
+  setup: LeagueCardBuildSetup,
+): LeagueInsightCard | null {
+  return buildLeagueStandoutCardsForLeague(leagueId, stats, setup)[0] ?? null;
 }

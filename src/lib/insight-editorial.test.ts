@@ -6,6 +6,7 @@ import {
   insightConfidenceScore,
   insightDataMaturityScore,
   insightMetricComparison,
+  overviewStandoutSplitCards,
   pickTopInsightCard,
   quickInsightCards,
   trendInsightCards,
@@ -62,6 +63,147 @@ describe("insight editorial helpers", () => {
     assert.equal(view.primaryMetric.value, "+51.5pp");
     assert.equal(view.secondaryMetric?.label, "Flags per game");
     assert.ok(view.whyItMatters.length > 20);
+  });
+
+  it("builds homepage standout grid with extra NBA, NFL, and EPL samples", () => {
+    const featured = sampleCard({
+      leagueId: "nba",
+      shortLabel: "NBA",
+      kind: "matrix-edge",
+      entityName: "Brandon Schwab",
+      refSlug: "brandon-schwab",
+      teamAbbr: "SAC",
+      heroValue: "+20.1pp",
+      stats: [
+        { label: "Ref×team record", value: "8-0" },
+        { label: "Games", value: "8" },
+        { label: "Team baseline", value: "42.2%" },
+      ],
+    });
+    const cards = [
+      featured,
+      sampleCard({
+        leagueId: "nba",
+        shortLabel: "NBA",
+        kind: "matrix-edge",
+        entityName: "Scott Twardoski",
+        refSlug: "scott-twardoski",
+        teamAbbr: "NYK",
+        heroValue: "+45.2pp",
+        stats: [
+          { label: "Ref×team record", value: "17-2" },
+          { label: "Games", value: "19" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+      sampleCard({
+        leagueId: "nba",
+        shortLabel: "NBA",
+        kind: "matrix-edge",
+        entityName: "Natalie Sago",
+        refSlug: "natalie-sago",
+        teamAbbr: "MIN",
+        heroValue: "+41.0pp",
+        stats: [
+          { label: "Ref×team record", value: "17-2" },
+          { label: "Games", value: "19" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+      sampleCard({
+        leagueId: "nfl",
+        shortLabel: "NFL",
+        kind: "matrix-edge",
+        entityName: "Ryan Dickson",
+        refSlug: "ryan-dickson",
+        teamAbbr: "MIA",
+        heroValue: "+42.4pp",
+        stats: [
+          { label: "Ref×team record", value: "10-1" },
+          { label: "Games", value: "11" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+      sampleCard({
+        leagueId: "nfl",
+        shortLabel: "NFL",
+        kind: "matrix-edge",
+        entityName: "Scott Green",
+        refSlug: "scott-green",
+        teamAbbr: "CHI",
+        heroValue: "+47.7pp",
+        stats: [
+          { label: "Ref×team record", value: "8-1" },
+          { label: "Games", value: "9" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+      sampleCard({
+        leagueId: "epl",
+        shortLabel: "EPL",
+        kind: "matrix-edge",
+        entityName: "Martin Atkinson",
+        refSlug: "martin-atkinson",
+        teamAbbr: "ARS",
+        heroValue: "-30.2pp",
+        stats: [
+          { label: "Ref×team record", value: "9-13" },
+          { label: "Games", value: "22" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+      sampleCard({
+        leagueId: "epl",
+        shortLabel: "EPL",
+        kind: "matrix-edge",
+        entityName: "Paul Tierney",
+        refSlug: "paul-tierney",
+        teamAbbr: "TOT",
+        heroValue: "-32.5pp",
+        stats: [
+          { label: "Ref×team record", value: "5-13" },
+          { label: "Games", value: "18" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+      sampleCard({
+        leagueId: "nhl",
+        shortLabel: "NHL",
+        kind: "matrix-edge",
+        entityName: "John Grandt",
+        refSlug: "john-grandt",
+        teamAbbr: "COL",
+        heroValue: "+12.0pp",
+        stats: [
+          { label: "Ref×team record", value: "6-3" },
+          { label: "Games", value: "9" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+      sampleCard({
+        leagueId: "laliga",
+        shortLabel: "La Liga",
+        kind: "matrix-edge",
+        entityName: "Guillermo Cuadra",
+        refSlug: "guillermo-cuadra-fernandez",
+        teamAbbr: "VIL",
+        heroValue: "+18.0pp",
+        stats: [
+          { label: "Ref×team record", value: "6-2" },
+          { label: "Games", value: "8" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+    ];
+
+    const grid = overviewStandoutSplitCards(cards, featured);
+    assert.equal(grid.length, 8);
+    assert.equal(grid.filter((card) => card.leagueId === "nba").length, 2);
+    assert.equal(grid.filter((card) => card.leagueId === "nfl").length, 2);
+    assert.equal(grid.filter((card) => card.leagueId === "epl").length, 2);
+    assert.ok(grid.every((card) => card.entityName !== "Brandon Schwab"));
+    assert.equal(grid[0]?.entityName, "Scott Twardoski");
+    assert.equal(grid[grid.length - 1]?.entityName, "Paul Tierney");
   });
 
   it("picks top insight and trend sets", () => {
