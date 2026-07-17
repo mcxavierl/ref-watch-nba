@@ -30,7 +30,13 @@ import {
   pushRefTeamGame,
   type RefTeamGameRow,
 } from "../lib/ref-team-stats";
-import { computeEplRefAnalytics, type EplGameCardStats } from "./lib/ref-analytics";
+import {
+  computeEplRefAnalytics,
+  computeLeagueAvgYellow,
+  computeLeagueAvgRed,
+  computeLeagueAvgPenalties,
+  type EplGameCardStats,
+} from "./lib/ref-analytics";
 
 const DATA_DIR = path.join(process.cwd(), "data", "epl");
 const CSV_DIR = path.join(DATA_DIR, "football-data");
@@ -224,9 +230,6 @@ async function main() {
           totalPoints,
           overHit,
           teamWin: isHome ? homeWin : awayWin,
-          technicalFoulDifferential: isHome
-            ? homeYellow - awayYellow
-            : awayYellow - homeYellow,
         });
         const teamRows = teamByRef.get(teamAbbr) ?? new Map<string, TeamGameRow[]>();
         const crewRows = teamRows.get(refKey) ?? [];
@@ -266,6 +269,9 @@ async function main() {
     allRecords.reduce((s, g) => s + g.totalPoints, 0) / allRecords.length;
   const leagueAvgFouls =
     allRecords.reduce((s, g) => s + g.totalFouls, 0) / allRecords.length;
+  const leagueAvgYellow = computeLeagueAvgYellow(allRecords);
+  const leagueAvgRed = computeLeagueAvgRed(allRecords);
+  const leagueAvgPenalties = computeLeagueAvgPenalties(allRecords);
 
   const refs: RefProfile[] = [];
   for (const [refKey, games] of refGames) {
@@ -292,7 +298,14 @@ async function main() {
       seasons: [...new Set(games.map((g) => g.season))].sort(),
       recentGames,
       teamStats: collectRefTeamStats(refTeamBuckets.get(refKey) ?? new Map()),
-      eplAnalytics: computeEplRefAnalytics(games, leagueAvgTotal, leagueAvgFouls),
+      eplAnalytics: computeEplRefAnalytics(
+        games,
+        leagueAvgTotal,
+        leagueAvgFouls,
+        leagueAvgYellow,
+        leagueAvgRed,
+        leagueAvgPenalties,
+      ),
     });
   }
   refs.sort((a, b) => b.games - a.games);
