@@ -34,6 +34,15 @@ const RULES: CouplingRule[] = [
       "src/lib/clinical-modern-surfaces.test.ts",
     ],
   },
+  {
+    label: "homepage insight methodology gates",
+    sources: [
+      "src/lib/homepage-insight-gates.ts",
+      "src/config/methodology.ts",
+      "src/lib/insight-editorial.ts",
+    ],
+    tests: ["src/lib/homepage-insight-gates.test.ts"],
+  },
 ];
 
 function gitLines(args: string): string[] {
