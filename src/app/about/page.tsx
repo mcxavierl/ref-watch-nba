@@ -30,13 +30,13 @@ export default function AboutPage() {
         ← Home
       </Link>
 
-      <section className="page-hero">
+      <section className="page-hero section-block">
         <h1 className="page-title">About RefWatch</h1>
         <p className="page-lead">{ABOUT_PAGE_LEAD}</p>
-        <p className="page-lead mt-3 text-slate-300">{REFWATCH_MISSION}</p>
+        <p className="page-lead">{REFWATCH_MISSION}</p>
       </section>
 
-      <section className="methodology-grid mt-8">
+      <section className="methodology-grid clinical-doc-section">
         {ABOUT_PILLARS.map((pillar) => (
           <article key={pillar.id} className="methodology-capsule">
             <h2 className="methodology-capsule-title">{pillar.title}</h2>
@@ -45,7 +45,7 @@ export default function AboutPage() {
         ))}
       </section>
 
-      <section className="methodology-capsule methodology-capsule--wide mt-6">
+      <section className="methodology-capsule methodology-capsule--wide clinical-doc-section--tight">
         <h2 className="methodology-capsule-title">Trust charter</h2>
         <ul className="methodology-capsule-list">
           {TRUST_CHARTER_PRINCIPLES.map((principle) => (
@@ -54,7 +54,7 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section className="methodology-capsule methodology-capsule--wide mt-4">
+      <section className="methodology-capsule methodology-capsule--wide clinical-doc-section--tight">
         <h2 className="methodology-capsule-title">What RefWatch is not</h2>
         <ul className="methodology-capsule-list">
           {ABOUT_NOT_LIST.map((item) => (
@@ -63,20 +63,18 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section className="mt-8">
-        <p className="text-sm text-slate-400">
-          <Link href="/methodology" className="trust-charter-link">
-            Full methodology
-          </Link>
-          {" · "}
-          <Link href="/research/validation" className="trust-charter-link">
-            Closing-line validation
-          </Link>
-          {" · "}
-          <Link href="/research/leverage-spike-anomaly" className="trust-charter-link">
-            Leverage-spike research
-          </Link>
-        </p>
+      <section className="clinical-doc-footer-links">
+        <Link href="/methodology" className="trust-charter-link">
+          Full methodology
+        </Link>
+        {" · "}
+        <Link href="/research/validation" className="trust-charter-link">
+          Closing-line validation
+        </Link>
+        {" · "}
+        <Link href="/research/leverage-spike-anomaly" className="trust-charter-link">
+          Leverage-spike research
+        </Link>
       </section>
     </div>
   );

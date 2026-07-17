@@ -1495,10 +1495,16 @@ html.dark .overview-quick-lists {
   gap: var(--space-4);
 }
 
+@media (min-width: 640px) {
+  .upcoming-games-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
 @media (min-width: 960px) {
   .upcoming-games-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: stretch;
   }
 }
 
@@ -1723,7 +1729,9 @@ html.dark .overview-scorecard-section--college {
 
 /* —— Homepage contrast: readable muted copy on theme surfaces —— */
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-hero-minimal-bridge {
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero-minimal-bridge,
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero-minimal-bridge--supporting,
+html[data-color="light"]:not([data-contrast="high"]) .overview-hero-minimal-bridge--meta {
   color: var(--text-secondary);
 }
 

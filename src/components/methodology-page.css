@@ -1,11 +1,7 @@
 /* Clinical Modern methodology page */
 
 .methodology-shell {
-  --methodology-ink: rgb(248 250 252);
-  --methodology-muted: rgb(148 163 184);
-  --methodology-label: rgb(100 116 139);
-  --methodology-capsule-bg: rgb(2 6 23);
-  --methodology-capsule-border: rgb(51 65 85);
+  /* Ink + capsule tokens: src/styles/clinical-doc-tokens.css */
 }
 
 .methodology-shell .page-title {
@@ -31,7 +27,7 @@
   padding: 0.75rem 1rem;
   border-radius: 0.85rem;
   border: 1px solid var(--methodology-capsule-border);
-  background: rgb(15 23 42);
+  background: var(--methodology-capsule-bg);
   min-width: 7.5rem;
 }
 

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "../styles/theme-tokens.css";
+@import "../styles/a11y-utilities.css";
+@import "../styles/clinical-doc-tokens.css";
 @import "../styles/kpi-data-pill.css";
 
 @custom-variant dark (&:where([data-color="dark"], [data-color="dark"] *));
@@ -115,14 +117,11 @@
 
   --measure-prose: 65ch;
   --measure-narrow: 42ch;
+  --page-max: 72rem;
 
   --font-heading: var(--font-inter), system-ui, sans-serif;
   --font-body: var(--font-inter), system-ui, sans-serif;
   --font-data: var(--font-inter), system-ui, sans-serif;
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-fast: 150ms;
-
-  /* Spacing — 4pt base */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;

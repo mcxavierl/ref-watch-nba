@@ -88,7 +88,7 @@ function InsightHonestyFootnote({
   if (!editorial.showHonestyFootnote && !editorial.isPreliminary) return null;
 
   return (
-    <p className="insight-editorial-footnote mt-2 text-xs text-slate-500">
+    <p className="data-honesty-footnote insight-editorial-footnote">
       {STANDOUT_SPLIT_FOOTNOTE}
     </p>
   );
