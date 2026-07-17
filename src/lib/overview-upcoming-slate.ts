@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
-import { buildOverviewMatchupInsight } from "@/lib/overview-matchup-insight";
+import { buildOverviewLastMeetingLine, buildOverviewMatchupInsight } from "@/lib/overview-matchup-insight";
 import type { AssignmentsFile } from "@/lib/types";
 
 export type {
@@ -144,6 +144,7 @@ function pushEntry(
     status,
     slateDate: file.date,
     matchupInsight: buildOverviewMatchupInsight(leagueId, game.awayTeam, game.homeTeam),
+    lastMeetingLine: buildOverviewLastMeetingLine(leagueId, game.awayTeam, game.homeTeam),
   });
 }
 

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { clearRuntimeGameLogsModuleCache } from "@/lib/game-logs";
-import { buildOverviewMatchupInsight } from "@/lib/overview-matchup-insight";
+import { buildOverviewLastMeetingLine, buildOverviewMatchupInsight } from "@/lib/overview-matchup-insight";
 import type { RuntimeGameLogEntry, RuntimeGameLogFile } from "@/lib/game-logs-preload";
 import { setCachedGameLogs } from "@/lib/game-logs-preload";
 import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
@@ -86,5 +86,26 @@ describe("overview-matchup-insight", () => {
     resetNflLogs();
     seedNflLogs([nflGame(1, "LAC", "KC", "2023-24", 44, 10)]);
     assert.equal(buildOverviewMatchupInsight("nfl", "LAC", "DET"), undefined);
+  });
+
+  it("builds a compact last-meeting line with site and score", () => {
+    resetNflLogs();
+    seedNflLogs([
+      nflGame(1, "DET", "LAC", "2023-24", 79, 7, { awayScore: 41, homeScore: 38 }),
+      nflGame(2, "LAC", "KC", "2023-24", 44, 10),
+    ]);
+
+    const line = buildOverviewLastMeetingLine("nfl", "LAC", "DET");
+    assert.equal(line, "Last met Nov 1, 2024 in Los Angeles · DET 41, LAC 38");
+  });
+
+  it("uses LAC/SD alias for last-meeting history", () => {
+    resetNflLogs();
+    seedNflLogs([
+      nflGame(1, "SD", "DET", "2003-04", 48, 11, { awayScore: 26, homeScore: 24 }),
+    ]);
+
+    const line = buildOverviewLastMeetingLine("nfl", "LAC", "DET");
+    assert.equal(line, "Last met Nov 1, 2024 in Detroit · SD 26, DET 24");
   });
 });
