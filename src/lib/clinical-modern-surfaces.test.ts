@@ -89,28 +89,18 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /from "@\/components\/FindingsSection"/);
   });
 
-  it("referee World Cup card never renders category pills", () => {
-    const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
-    const css = readSrc("src/components/worldcup/worldcup-delight.css");
-    assert.match(card, /!refereeCapsule \?/);
-    assert.match(card, /isRefereeCapsule\(finding\)/);
-    assert.match(css, /\.wc-data-capsule--referee \.wc-data-capsule__pills/);
-  });
-
-  it("WorldCupFindingCard uses DataCapsule KPI scale and semantic tones", () => {
+  it("WorldCupFindingCard uses DataCapsule KPI scale without top pills", () => {
     const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
     const kpi = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
     assert.match(card, /WorldCupKpiValue/);
     assert.match(kpi, /text-6xl font-black/);
     assert.match(card, /wc-data-capsule/);
-    assert.match(card, /wc-data-capsule__pills/);
-    assert.match(card, /justify-around/);
-    assert.match(card, /wc-data-capsule--glow-/);
     assert.match(card, /text-base font-normal text-slate-400/);
     assert.match(card, /border-slate-800/);
     assert.match(card, /wc-data-capsule--referee/);
     assert.match(card, /wc-data-capsule__footnote/);
-    assert.doesNotMatch(card, /refereeCapsule \? \(\s*<>\s*<span className=\{CAPSULE_PILL\}/);
+    assert.doesNotMatch(card, /wc-data-capsule__pills/);
+    assert.doesNotMatch(card, /FindingCategoryPillLabel/);
   });
 
   it("World Cup DataCapsule surfaces are defined", () => {
@@ -121,9 +111,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /--wc-capsule-ink/);
     assert.match(css, /html\[data-color="light"\] .wc-data-capsule h3/);
     assert.match(css, /html\[data-color="dark"\] .wc-data-capsule h3/);
-    assert.match(css, /wc-data-capsule--glow-rose/);
-    assert.match(css, /wc-data-capsule--glow-emerald/);
-    assert.match(css, /wc-data-capsule__pills/);
+    assert.doesNotMatch(css, /wc-data-capsule__pills/);
     assert.doesNotMatch(css, /bfa86a/i);
     assert.doesNotMatch(css, /prestige/i);
   });

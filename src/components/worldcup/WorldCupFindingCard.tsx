@@ -1,22 +1,15 @@
 import Link from "next/link";
-import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { FindingExplainer } from "@/components/FindingNameWall";
-import { worldCupCardGlow } from "@/components/worldcup/worldcup-card-glow";
 import { WorldCupKpiValue, worldCupKpiTone } from "@/components/worldcup/WorldCupKpiValue";
 import { dedupeFindingStats } from "@/lib/finding-grouping";
-import { findingCardMetaParts } from "@/lib/finding-copy";
 import type { Finding } from "@/lib/findings-shared";
 import {
   filterDisplayStats,
-  findingConfidenceTier,
   resolveFindingExplainer,
 } from "@/lib/findings-shared";
 
 const WC_CAPSULE =
   "wc-data-capsule rounded-2xl border border-slate-800 bg-slate-950 p-5 font-[family-name:var(--font-inter)]";
-
-const CAPSULE_PILL =
-  "wc-data-capsule-pill inline-flex items-center whitespace-nowrap border border-slate-700 bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300";
 
 function isRefereeCapsule(finding: Finding): boolean {
   return finding.id === "wc-final-referee";
@@ -24,25 +17,12 @@ function isRefereeCapsule(finding: Finding): boolean {
 
 export function WorldCupFindingCard({ finding }: { finding: Finding }) {
   const displayStats = filterDisplayStats(dedupeFindingStats(finding.stats));
-  const tier = findingConfidenceTier(finding);
-  const metaParts = findingCardMetaParts(finding.sampleNote, tier);
   const refereeCapsule = isRefereeCapsule(finding);
-  const glow = worldCupCardGlow(finding);
 
   return (
     <article
-      className={`${WC_CAPSULE}${refereeCapsule ? " wc-data-capsule--referee wc-data-capsule--span-full" : ""}${!refereeCapsule ? ` wc-data-capsule--glow-${glow}` : ""}`}
+      className={`${WC_CAPSULE}${refereeCapsule ? " wc-data-capsule--referee wc-data-capsule--span-full" : ""}`}
     >
-      {!refereeCapsule ? (
-        <div className="wc-data-capsule__pills flex w-full justify-around gap-2">
-          <span className={CAPSULE_PILL} data-category={finding.category}>
-            <FindingCategoryPillLabel category={finding.category} />
-          </span>
-          <span className={CAPSULE_PILL}>{metaParts.sample}</span>
-          <span className={CAPSULE_PILL}>{metaParts.maturity}</span>
-        </div>
-      ) : null}
-
       <header className={refereeCapsule ? "text-center" : undefined}>
         <h3
           className={

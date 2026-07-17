@@ -54,33 +54,8 @@
   color: rgb(100 116 139);
 }
 
-.wc-data-capsule__pills {
-  align-items: center;
-  padding: 0.65rem 0.75rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgb(30 41 59);
-  background: rgb(2 6 23);
-}
-
-.wc-data-capsule--glow-rose .wc-data-capsule__pills {
-  box-shadow:
-    0 0 0 1px rgb(251 113 133 / 0.12),
-    0 8px 28px rgb(251 113 133 / 0.14);
-}
-
-.wc-data-capsule--glow-emerald .wc-data-capsule__pills {
-  box-shadow:
-    0 0 0 1px rgb(52 211 153 / 0.12),
-    0 8px 28px rgb(52 211 153 / 0.14);
-}
-
 .wc-data-capsule--referee header {
   padding-bottom: 0.25rem;
-}
-
-.wc-data-capsule--referee .wc-data-capsule-pill,
-.wc-data-capsule--referee .wc-data-capsule__pills {
-  display: none;
 }
 
 /* Theme-safe ink on always-dark capsules */
@@ -155,23 +130,6 @@ html[data-color="dark"] .wc-data-capsule .text-slate-50 {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: rgb(100 116 139);
-}
-
-.wc-data-capsule-pill {
-  display: inline-flex;
-  max-width: 100%;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  border-radius: 9999px;
-  border: 1px solid rgb(51 65 85);
-  background: rgb(30 41 59);
-  padding: 0.35rem 0.85rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: rgb(203 213 225);
 }
 
 .wc-metric-grid {

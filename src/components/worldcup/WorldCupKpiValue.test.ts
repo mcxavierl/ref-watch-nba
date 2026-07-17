@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { describe, it } from "node:test";
-import { worldCupCardGlow } from "@/components/worldcup/worldcup-card-glow";
 import { worldCupKpiTone } from "@/components/worldcup/WorldCupKpiValue";
 
 function readSrc(rel: string): string {
@@ -55,23 +54,12 @@ describe("worldCupKpiTone", () => {
   });
 });
 
-describe("worldCupCardGlow", () => {
-  it("maps analytics cards to rose or emerald glow tiers", () => {
-    assert.equal(
-      worldCupCardGlow({ id: "wc-final-ref-cards" } as never),
-      "rose",
-    );
-    assert.equal(
-      worldCupCardGlow({ id: "wc-final-spain-defense" } as never),
-      "rose",
-    );
-    assert.equal(
-      worldCupCardGlow({ id: "wc-final-argentina-comebacks" } as never),
-      "emerald",
-    );
-    assert.equal(
-      worldCupCardGlow({ id: "wc-final-referee" } as never),
-      "neutral",
-    );
+describe("WorldCupFindingCard", () => {
+  it("omits top metric pills on analytics capsules", () => {
+    const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
+    assert.doesNotMatch(card, /wc-data-capsule__pills/);
+    assert.doesNotMatch(card, /FindingCategoryPillLabel/);
+    assert.doesNotMatch(card, /wc-data-capsule-pill/);
+    assert.doesNotMatch(card, /worldCupCardGlow/);
   });
 });
