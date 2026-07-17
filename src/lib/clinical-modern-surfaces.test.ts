@@ -74,16 +74,37 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /Based on .* shared games/);
   });
 
-  it("WorldCupFinalSection uses Clinical Modern MatchStatusPill", () => {
+  it("WorldCupFinalSection uses Clinical Modern shell and prestige pill", () => {
     const source = readSrc("src/components/WorldCupFinalSection.tsx");
     assert.match(source, /MatchStatusPill/);
-    assert.doesNotMatch(source, /overview-research-hub-card-badge/);
+    assert.match(source, /tone="prestige"/);
+    assert.match(source, /WorldCupFindingCard/);
+    assert.match(source, /bg-slate-950/);
+    assert.match(source, /border-slate-800/);
+    assert.match(source, /#BFA86A/);
+    assert.doesNotMatch(source, /overview-research-hub-card/);
+    assert.doesNotMatch(source, /FindingCard/);
   });
 
-  it("MatchStatusPill uses cool slate clinical styling", () => {
+  it("WorldCupFindingCard uses clinical KPI semantics", () => {
+    const source = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
+    assert.match(source, /bg-slate-950/);
+    assert.match(source, /border-slate-800/);
+    assert.match(source, /rounded-2xl/);
+    assert.match(source, /text-emerald-400/);
+    assert.match(source, /text-rose-400/);
+    assert.match(source, /text-slate-100/);
+    assert.match(source, /font-normal text-slate-400/);
+    assert.match(source, /tabular-nums/);
+    assert.match(source, /formatFindingCardMeta/);
+  });
+
+  it("MatchStatusPill supports clinical and prestige tones", () => {
     const source = readSrc("src/components/hub/MatchStatusPill.tsx");
     assert.match(source, /bg-slate-700/);
     assert.match(source, /text-slate-50/);
+    assert.match(source, /bg-\[#BFA86A\]/);
+    assert.match(source, /text-white/);
     assert.match(source, /font-semibold/);
     assert.match(source, /tracking-wider/);
     assert.match(source, /h-\[2\.35rem\]/);

@@ -804,14 +804,14 @@
   gap: 0.2rem;
   padding: 0.75rem 0.85rem;
   border-radius: 0.65rem;
-  border: 1px solid color-mix(in srgb, var(--wc-gold, #c9a227) 28%, var(--border-subtle));
-  background: color-mix(in srgb, var(--wc-gold, #c9a227) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--wc-gold, #bfa86a) 28%, var(--border-subtle));
+  background: color-mix(in srgb, var(--wc-gold, #bfa86a) 6%, transparent);
   text-decoration: none;
   color: inherit;
 }
 
 .overview-sidebar-research-link:hover {
-  border-color: color-mix(in srgb, var(--wc-gold, #c9a227) 42%, var(--border-subtle));
+  border-color: color-mix(in srgb, var(--wc-gold, #bfa86a) 42%, var(--border-subtle));
 }
 
 .overview-sidebar-research-label {
