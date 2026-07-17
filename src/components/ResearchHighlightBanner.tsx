@@ -1,13 +1,12 @@
+import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { RESEARCH_HIGHLIGHT } from "@/config/research-highlight";
 
 export function ResearchHighlightBanner() {
   return (
-    <a
+    <Link
       href={RESEARCH_HIGHLIGHT.href}
       className="research-highlight-banner group mb-8 flex w-full items-center justify-center rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/80 px-4 py-3 shadow-inner transition-colors duration-200 hover:from-slate-800/90 hover:via-slate-800/85 hover:to-slate-800/75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne-400 sm:px-5 sm:py-3.5"
-      target="_blank"
-      rel="noopener noreferrer"
       aria-label={`${RESEARCH_HIGHLIGHT.label} ${RESEARCH_HIGHLIGHT.headline}. ${RESEARCH_HIGHLIGHT.cta}`}
     >
       <span className="flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center sm:gap-x-2.5">
@@ -24,6 +23,6 @@ export function ResearchHighlightBanner() {
           {RESEARCH_HIGHLIGHT.cta}
         </span>
       </span>
-    </a>
+    </Link>
   );
 }
