@@ -101,7 +101,8 @@ function scorePerGameForLeague(
 
 function scoreLabelForLeague(leagueId: LeagueId): string {
   const unit = LEAGUES[leagueId].metrics.scoreUnitPlural;
-  return `${unit} per game`;
+  const labelUnit = unit.charAt(0).toUpperCase() + unit.slice(1);
+  return `${labelUnit} per game`;
 }
 
 function refHref(leagueId: LeagueId, slug: string): string {
