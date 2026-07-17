@@ -1,3 +1,5 @@
+import { CBB_ESPN_TEAM_IDS } from "@/lib/cbb/team-ids";
+
 export interface CbbTeam {
   abbr: string;
   name: string;
@@ -112,8 +114,10 @@ export function teamWithArticle(team: CbbTeam): string {
   return `the ${team.name}`;
 }
 
-export function teamLogoUrl(_abbr: string): string {
-  return "";
+export function teamLogoUrl(abbr: string): string {
+  const id = CBB_ESPN_TEAM_IDS[abbr.toUpperCase()];
+  if (!id) return "";
+  return `https://a.espncdn.com/i/teamlogos/ncaa/500/${id}.png`;
 }
 
 export function matchTeamString(team: string): CbbTeam | undefined {

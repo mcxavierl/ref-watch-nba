@@ -2269,7 +2269,8 @@ p {
   /* Optical boost for marks that read small inside the square plate */
   .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
   .team-logo-plate[data-sport="epl"] .team-logo-plate__img,
-  .team-logo-plate[data-sport="laliga"] .team-logo-plate__img {
+  .team-logo-plate[data-sport="laliga"] .team-logo-plate__img,
+  .team-logo-plate[data-sport="cbb"] .team-logo-plate__img {
     transform: scale(1.14);
   }
 
@@ -8426,14 +8427,14 @@ p {
     height: 4rem !important;
     padding: 0.2rem;
     border-radius: 0.625rem;
-    background: #ececf0;
-    border: 1px solid color-mix(in srgb, var(--border-subtle) 55%, #fff);
+    background: var(--logo-plate-matrix);
+    border: 1px solid var(--logo-plate-matrix-border);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.32);
   }
 
   .ref-matrix-team-panel-logo.team-logo-plate {
-    background: #ececf0;
-    border-color: color-mix(in srgb, var(--border-subtle) 55%, #fff);
+    background: var(--logo-plate-matrix);
+    border-color: var(--logo-plate-matrix-border);
   }
 
   .ref-matrix-team-panel-logo .team-logo-plate__img {
@@ -8442,7 +8443,8 @@ p {
 
   .ref-matrix-team-panel-logo.team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
   .ref-matrix-team-panel-logo.team-logo-plate[data-sport="epl"] .team-logo-plate__img,
-  .ref-matrix-team-panel-logo.team-logo-plate[data-sport="laliga"] .team-logo-plate__img {
+  .ref-matrix-team-panel-logo.team-logo-plate[data-sport="laliga"] .team-logo-plate__img,
+  .ref-matrix-team-panel-logo.team-logo-plate[data-sport="cbb"] .team-logo-plate__img {
     transform: scale(1.14);
   }
 
@@ -9198,8 +9200,8 @@ p {
   }
 
   .ref-matrix-logo-row .team-logo-plate {
-    background: #ececf0;
-    border-color: color-mix(in srgb, var(--border-subtle) 60%, #fff);
+    background: var(--logo-plate-matrix);
+    border-color: var(--logo-plate-matrix-border);
     padding: 0.15rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
   }
@@ -9210,7 +9212,8 @@ p {
 
   .ref-matrix-logo-row .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
   .ref-matrix-logo-row .team-logo-plate[data-sport="epl"] .team-logo-plate__img,
-  .ref-matrix-logo-row .team-logo-plate[data-sport="laliga"] .team-logo-plate__img {
+  .ref-matrix-logo-row .team-logo-plate[data-sport="laliga"] .team-logo-plate__img,
+  .ref-matrix-logo-row .team-logo-plate[data-sport="cbb"] .team-logo-plate__img {
     transform: scale(1.14);
   }
 
