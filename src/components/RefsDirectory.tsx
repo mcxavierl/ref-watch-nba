@@ -6,6 +6,7 @@ import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { RefProfilePreviewDrawer } from "@/components/RefProfilePreviewDrawer";
 import { RefsTrendSpotlight } from "@/components/RefsTrendSpotlight";
 import {
+  buildRefsDirectoryPreviewRows,
   buildRefsSpotlightCards,
   directoryDeltaTone,
   filterRefsDiscovery,
@@ -14,7 +15,6 @@ import {
   NHL_DIRECTORY_METRICS,
   nflDirectoryMetricDelta,
   nhlDirectoryMetricDisplay,
-  REFS_DIRECTORY_INITIAL_COUNT,
   REFS_DIRECTORY_TABS,
   sortRefsByOutlierDeviation,
   sortRefsDirectory,
@@ -233,11 +233,11 @@ export function RefsDirectory({
     [refs, tab, meta, league, basePath],
   );
 
-  const visibleCount = expanded
-    ? discovered.length
-    : Math.min(REFS_DIRECTORY_INITIAL_COUNT, discovered.length);
-  const visible = discovered.slice(0, visibleCount);
-  const hasMore = discovered.length > REFS_DIRECTORY_INITIAL_COUNT;
+  const visible = useMemo(
+    () => buildRefsDirectoryPreviewRows(discovered, expanded),
+    [discovered, expanded],
+  );
+  const hasMore = !expanded && visible.length < discovered.length;
   const unit = league.metrics.scoreUnit;
   const isNhl = league.id === "nhl";
   const isNfl = league.id === "nfl";
@@ -353,10 +353,10 @@ export function RefsDirectory({
           </p>
         ) : (
           <ol className="refs-directory-list">
-            {visible.map((ref, index) => {
-              const rank = index + 1;
+            {visible.map(({ ref, rank }, index) => {
               const rankTier = performanceRankTier(rank);
-              const isReveal = expanded && index >= REFS_DIRECTORY_INITIAL_COUNT;
+              const resumesBottomTier =
+                !expanded && rank === 16 && index > 0;
               const nhlDisplay = isNhl
                 ? nhlDirectoryMetricDisplay(
                     ref,
@@ -376,7 +376,7 @@ export function RefsDirectory({
               return (
                 <li
                   key={ref.slug}
-                  className={`refs-directory-row${rankTier ? ` refs-directory-row--${rankTier}` : ""}${isReveal ? " refs-directory-row-reveal" : ""}`}
+                  className={`refs-directory-row${rankTier ? ` refs-directory-row--${rankTier}` : ""}${resumesBottomTier ? " refs-directory-row--bottom-resume" : ""}${expanded && index >= 20 ? " refs-directory-row-reveal" : ""}`}
                 >
                   <div className="refs-directory-row-link">
                     <span className="refs-directory-col-rank font-tabular tabular-nums">

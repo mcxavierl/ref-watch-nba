@@ -68,6 +68,45 @@ export const REFS_DIRECTORY_TABS: {
 ];
 
 export const REFS_DIRECTORY_INITIAL_COUNT = 25;
+export const REFS_DIRECTORY_TOP_COUNT = 10;
+export const REFS_DIRECTORY_BOTTOM_COUNT = 10;
+/** 0-based slice start for bottom tier (ranks 16–25). */
+export const REFS_DIRECTORY_BOTTOM_START = 15;
+
+export type RefsDirectoryPreviewRow = {
+  ref: RefProfile;
+  rank: number;
+};
+
+/** Default list: top 10 and bottom 10 by current sort; middle ranks hidden until expanded. */
+export function buildRefsDirectoryPreviewRows(
+  discovered: RefProfile[],
+  expanded: boolean,
+): RefsDirectoryPreviewRow[] {
+  if (expanded) {
+    return discovered.map((ref, index) => ({ ref, rank: index + 1 }));
+  }
+
+  const top = discovered
+    .slice(0, REFS_DIRECTORY_TOP_COUNT)
+    .map((ref, index) => ({ ref, rank: index + 1 }));
+
+  if (discovered.length <= REFS_DIRECTORY_BOTTOM_START) {
+    return top;
+  }
+
+  const bottom = discovered
+    .slice(
+      REFS_DIRECTORY_BOTTOM_START,
+      REFS_DIRECTORY_BOTTOM_START + REFS_DIRECTORY_BOTTOM_COUNT,
+    )
+    .map((ref, index) => ({
+      ref,
+      rank: REFS_DIRECTORY_BOTTOM_START + index + 1,
+    }));
+
+  return [...top, ...bottom];
+}
 export const REFS_DIRECTORY_SPOTLIGHT_COUNT = 3;
 
 export type RefsDiscoveryFilter = {
