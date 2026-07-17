@@ -14,7 +14,7 @@ export function OverviewHero() {
           Live league hubs with matrix, rankings, and ref profiles. We decompose variance in
           high-leverage game states with published sample gates.
         </p>
-        <p className="overview-hero-minimal-bridge mt-2 text-sm text-slate-400">
+        <p className="overview-hero-minimal-bridge overview-hero-minimal-bridge--supporting">
           {HOMEPAGE_METHODOLOGY_BLURB}{" "}
           <Link href="/methodology" className="trust-charter-link">
             Methodology
@@ -24,7 +24,9 @@ export function OverviewHero() {
             Closing-line validation
           </Link>
         </p>
-        <p className="mt-3 text-sm text-slate-500">{REFWATCH_AUDIENCE}</p>
+        <p className="overview-hero-minimal-bridge overview-hero-minimal-bridge--meta">
+          {REFWATCH_AUDIENCE}
+        </p>
         <TrustCharterSummary />
       </div>
     </section>

@@ -1,0 +1,136 @@
+/**
+ * Clinical doc + homepage shells — semantic tokens that respect light/dark theme.
+ * Import after theme-tokens.css.
+ */
+
+.overview-shell--clinical,
+.methodology-shell {
+  --clinical-ink: var(--text-primary);
+  --clinical-ink-muted: var(--text-secondary);
+  --clinical-ink-label: var(--text-muted);
+  --clinical-capsule-bg: var(--bg-surface-2);
+  --clinical-capsule-border: var(--border-subtle);
+  --methodology-ink: var(--clinical-ink);
+  --methodology-muted: var(--clinical-ink-muted);
+  --methodology-label: var(--clinical-ink-label);
+  --methodology-capsule-bg: var(--clinical-capsule-bg);
+  --methodology-capsule-border: var(--clinical-capsule-border);
+}
+
+html[data-color="dark"] .overview-shell--clinical,
+html[data-color="dark"] .methodology-shell {
+  --clinical-capsule-bg: rgb(2 6 23);
+  --clinical-capsule-border: rgb(30 41 59);
+  --methodology-capsule-bg: var(--clinical-capsule-bg);
+  --methodology-capsule-border: var(--clinical-capsule-border);
+}
+
+.clinical-doc-section {
+  margin-top: var(--space-8);
+}
+
+.clinical-doc-section--tight {
+  margin-top: var(--space-6);
+}
+
+.clinical-doc-footer-links {
+  margin-top: var(--space-8);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.overview-hero-minimal-bridge--supporting {
+  margin-top: var(--space-2);
+  font-size: 0.8125rem;
+}
+
+.overview-hero-minimal-bridge--meta {
+  margin-top: var(--space-3);
+  font-size: 0.8125rem;
+}
+
+.research-highlight-banner {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-8);
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border-subtle);
+  background: linear-gradient(
+    90deg,
+    var(--bg-surface-2),
+    color-mix(in srgb, var(--bg-surface-2) 92%, var(--bg-surface-1))
+  );
+  text-decoration: none;
+  transition:
+    border-color var(--duration-fast) ease,
+    background var(--duration-fast) ease;
+}
+
+@media (min-width: 640px) {
+  .research-highlight-banner {
+    padding: 0.9rem 1.25rem;
+  }
+}
+
+.research-highlight-banner:hover {
+  border-color: color-mix(in srgb, var(--accent-brand) 35%, var(--border-subtle));
+  background: var(--bg-surface-2);
+}
+
+.research-highlight-banner:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.research-highlight-banner__inner {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .research-highlight-banner__inner {
+    gap: 0.35rem 0.65rem;
+  }
+}
+
+.research-highlight-banner__icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: rgb(212 175 106);
+}
+
+.research-highlight-banner__label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.research-highlight-banner__headline {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.research-highlight-banner__cta {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(212 175 106);
+}
+
+@media (min-width: 640px) {
+  .research-highlight-banner__cta {
+    margin-left: var(--space-3);
+  }
+}
+
+.research-highlight-banner:hover .research-highlight-banner__cta {
+  color: rgb(232 201 146);
+}

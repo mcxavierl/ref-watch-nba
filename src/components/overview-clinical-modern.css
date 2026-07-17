@@ -1,13 +1,5 @@
 /* Clinical Modern — Verified Officiating Analytics homepage */
 
-.overview-shell--clinical {
-  --clinical-ink: rgb(248 250 252);
-  --clinical-ink-muted: rgb(148 163 184);
-  --clinical-ink-label: rgb(100 116 139);
-  --clinical-capsule-bg: rgb(2 6 23);
-  --clinical-capsule-border: rgb(30 41 59);
-}
-
 .overview-shell--clinical .overview-title {
   color: var(--clinical-ink);
   font-size: clamp(1.65rem, 3.5vw, 2rem);
@@ -453,7 +445,7 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
 
 /* Clutch Consistency Index homepage strip */
 .cci-findings {
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-8);
 }
 
 .cci-findings__header {
@@ -477,7 +469,7 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: rgb(248 250 252);
+  color: var(--clinical-ink);
 }
 
 .cci-findings__lead {
@@ -485,7 +477,7 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   max-width: 42rem;
   font-size: 0.8125rem;
   line-height: 1.55;
-  color: rgb(148 163 184);
+  color: var(--clinical-ink-muted);
 }
 
 .cci-findings__research-link {
@@ -516,19 +508,16 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
 .cci-finding {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  padding: 1rem 1.05rem 1.05rem;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
   border-radius: 1rem;
-  border: 1px solid rgb(30 41 59);
-  background: rgb(2 6 23);
+  border: 1px solid var(--clinical-capsule-border);
+  background: var(--clinical-capsule-bg);
 }
 
-.cci-finding--high-consistency {
-  border-color: color-mix(in srgb, rgb(100 116 139) 35%, rgb(30 41 59));
-}
-
+.cci-finding--high-consistency,
 .cci-finding--high-variance {
-  border-color: color-mix(in srgb, rgb(100 116 139) 35%, rgb(30 41 59));
+  border-color: color-mix(in srgb, var(--clinical-capsule-border) 85%, var(--text-muted));
 }
 
 .cci-finding__kicker {
@@ -537,7 +526,7 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgb(100 116 139);
+  color: var(--clinical-ink-label);
 }
 
 .cci-finding__title {
@@ -545,24 +534,24 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   font-size: 0.9375rem;
   font-weight: 700;
   line-height: 1.35;
-  color: rgb(248 250 252);
+  color: var(--clinical-ink);
 }
 
 .cci-finding__summary {
   margin: 0.4rem 0 0;
   font-size: 0.75rem;
   line-height: 1.45;
-  color: rgb(148 163 184);
+  color: var(--clinical-ink-muted);
 }
 
 .cci-finding__metric {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.85rem;
+  gap: var(--space-3);
   align-items: center;
-  padding: 0.65rem 0.75rem;
+  padding: var(--space-3);
   border-radius: 0.85rem;
-  background: rgb(15 23 42 / 0.72);
+  background: color-mix(in srgb, var(--bg-surface-2) 88%, transparent);
 }
 
 .cci-finding__metric-copy {
@@ -574,18 +563,18 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgb(148 163 184);
+  color: var(--clinical-ink-muted);
 }
 
 .cci-metric-label .accessible-header-tooltip-trigger {
-  color: rgb(148 163 184);
+  color: var(--clinical-ink-muted);
 }
 
 .cci-finding__minutes {
   margin: 0.35rem 0 0;
   font-size: 0.6875rem;
   line-height: 1.4;
-  color: rgb(100 116 139);
+  color: var(--clinical-ink-label);
 }
 
 .cci-finding__confidence {
@@ -593,13 +582,13 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   margin-top: 0.35rem;
   padding: 0.15rem 0.45rem;
   border-radius: 9999px;
-  border: 1px solid rgb(51 65 85);
-  background: rgb(15 23 42);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-2);
   font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgb(148 163 184);
+  color: var(--clinical-ink-muted);
 }
 
 .cci-ring {
@@ -677,19 +666,19 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
 
 .cci-finding__stat {
   margin: 0;
-  padding: 0.55rem 0.6rem;
+  padding: var(--space-3);
   border-radius: 0.65rem;
-  background: rgb(15 23 42 / 0.85);
-  border: 1px solid rgb(30 41 59);
+  background: color-mix(in srgb, var(--bg-surface-2) 88%, transparent);
+  border: 1px solid var(--border-subtle);
 }
 
 .cci-finding__stat-label {
   margin: 0;
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: rgb(100 116 139);
+  color: var(--clinical-ink-label);
 }
 
 .cci-finding__stat-value {
@@ -698,7 +687,7 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   font-size: 0.9375rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  color: rgb(248 250 252);
+  color: var(--clinical-ink);
 }
 
 .cci-finding__stat-bar {
@@ -713,6 +702,21 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   height: 100%;
   border-radius: 9999px;
   background: rgb(100 116 139 / 0.85);
+}
+
+@media (max-width: 639px) {
+  .cci-finding__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .cci-finding__stat {
+    padding: var(--space-4);
+  }
+
+  .cci-finding__metric {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
 }
 
 .cci-finding__footer {

@@ -1,106 +1,108 @@
 .validation-signal-section {
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgb(30 41 59);
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .validation-signal-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: rgb(241 245 249);
-  margin: 0 0 0.75rem;
+  color: var(--methodology-ink);
+  margin: 0 0 var(--space-3);
 }
 
 .validation-signal-summary {
-  color: rgb(203 213 225);
-  margin: 0 0 0.5rem;
+  color: var(--methodology-muted);
+  margin: 0 0 var(--space-2);
 }
 
 .validation-signal-methodology {
-  color: rgb(148 163 184);
+  color: var(--methodology-label);
   font-size: 0.875rem;
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-4);
 }
 
 .validation-exclusion-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  gap: 1rem;
-  margin: 0 0 1.25rem;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-5);
 }
 
 .validation-exclusion-grid dt {
   font-size: 0.75rem;
-  color: rgb(148 163 184);
-  margin-bottom: 0.25rem;
+  color: var(--methodology-label);
+  margin-bottom: var(--space-1);
 }
 
 .validation-exclusion-grid dd {
   font-size: 1.125rem;
   font-weight: 600;
-  color: rgb(241 245 249);
+  color: var(--methodology-ink);
   margin: 0;
 }
 
 .validation-table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .validation-table {
   width: 100%;
+  min-width: 36rem;
   border-collapse: collapse;
   font-size: 0.875rem;
 }
 
 .validation-table th,
 .validation-table td {
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid rgb(30 41 59);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
   text-align: left;
 }
 
 .validation-table th {
-  color: rgb(148 163 184);
+  color: var(--methodology-label);
   font-weight: 500;
 }
 
 .validation-table td {
-  color: rgb(226 232 240);
+  color: var(--methodology-muted);
 }
 
 .validation-empty-state {
-  color: rgb(148 163 184);
+  color: var(--methodology-label);
   font-size: 0.875rem;
-  padding: 1rem;
-  border: 1px dashed rgb(51 65 85);
+  padding: var(--space-4);
+  border: 1px dashed var(--border-subtle);
   border-radius: 0.75rem;
 }
 
 .validation-meta {
-  color: rgb(148 163 184);
+  color: var(--methodology-label);
   font-size: 0.875rem;
-  margin-top: 0.75rem;
+  margin-top: var(--space-3);
 }
 
 .validation-coverage-warning {
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
   border-radius: 0.75rem;
-  background: rgb(30 41 59 / 0.6);
-  color: rgb(251 191 36);
+  background: color-mix(in srgb, var(--accent-negative) 8%, var(--bg-surface-2));
+  color: var(--accent-negative);
   font-size: 0.875rem;
 }
 
 .validation-caveats {
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgb(30 41 59);
-  color: rgb(148 163 184);
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--methodology-label);
   font-size: 0.875rem;
 }
 
 .validation-caveats ul {
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-4);
   padding-left: 1.25rem;
 }
 
@@ -110,4 +112,12 @@
 
 .insight-editorial-footnote {
   line-height: 1.4;
+}
+
+@media (max-width: 639px) {
+  .validation-table th,
+  .validation-table td {
+    padding: var(--space-3);
+    font-size: 0.8125rem;
+  }
 }

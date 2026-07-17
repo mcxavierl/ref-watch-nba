@@ -175,8 +175,8 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(banner, /BookOpen/);
     assert.match(banner, /from "next\/link"/);
     assert.match(banner, /href=\{RESEARCH_HIGHLIGHT\.href\}/);
-    assert.match(banner, /text-champagne-400/);
-    assert.match(banner, /rounded-2xl/);
+    assert.match(banner, /research-highlight-banner__cta/);
+    assert.doesNotMatch(banner, /text-slate-/);
     assert.match(config, /Leverage-Spike Anomaly/);
     assert.match(config, /\/research\/leverage-spike-anomaly/);
   });
