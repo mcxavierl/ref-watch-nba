@@ -15,12 +15,17 @@ import {
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import {
   editorialInsightView,
   insightMetricComparison,
+  parseGamesFromCard,
 } from "@/lib/insight-editorial";
+import {
+  homepageInsightKicker,
+} from "@/lib/homepage-insight-gates";
 import { leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { whistleIndexFromInsightCard } from "@/lib/whistle-index";
 import { InsightCardShell } from "@/components/shared/InsightCardShell";
@@ -92,6 +97,7 @@ function InsightCardMeta({
           compact={compact}
           crewImpactTone={comparisonImpactTone(comparison)}
           isAdjusted={editorial.isAdjusted}
+          sampleGames={parseGamesFromCard(card)}
         />
       ) : null}
     </div>
@@ -228,7 +234,9 @@ function EditorialInsightCard({
             </span>
             <LeagueSeasonStartBadge leagueId={card.leagueId} />
           </div>
-          <p className="insight-editorial-kicker">{normalizeCarouselCopy(card.kicker)}</p>
+          <p className="insight-editorial-kicker">
+            {normalizeCarouselCopy(homepageInsightKicker(card))}
+          </p>
         </header>
 
         <button

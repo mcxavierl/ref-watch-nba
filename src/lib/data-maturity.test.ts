@@ -60,14 +60,9 @@ describe("data maturity", () => {
   });
 
   it("formats adjusted delta tooltip copy", () => {
-    assert.equal(
-      adjustedDeltaTooltipText(14.2),
-      "Adjusted for small sample: +14.2pp",
-    );
-    assert.equal(
-      adjustedDeltaTooltipText(-3.5),
-      "Adjusted for small sample: -3.5pp",
-    );
+    assert.match(adjustedDeltaTooltipText(14.2, 35), /Adjusted \(N=35\)/);
+    assert.match(adjustedDeltaTooltipText(14.2, 35), /\+14\.2pp/);
+    assert.match(adjustedDeltaTooltipText(-3.5, 18), /Adjusted \(N=18\)/);
   });
 
   it("maps matrix sample counts to confidence pill tiers", () => {

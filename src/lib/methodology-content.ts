@@ -1,16 +1,16 @@
 import {
+  ATS_OU_CLOSING_LINE_MIN_GAMES,
+  CREW_ANOMALY_MIN_GAMES,
+  REF_TEAM_SPLIT_MIN_GAMES,
+} from "@/config/methodology";
+import {
   BAYESIAN_PRIOR_STRENGTH,
   DELTA_HONESTY_FOOTNOTE,
   MATURITY_TARGET_GAMES,
   RELIABILITY_FLOOR_GAMES,
 } from "@/lib/data-maturity";
-import { CREW_DOMINANCE_MIN_GAMES } from "@/lib/crew-dominance";
-import {
-  FOUL_RATE_VARIANCE_PCT,
-  MIN_MATRIX_GAMES,
-  MIN_WHISTLE_REF_GAMES,
-  WIN_RATE_OUTLIER_PP,
-} from "@/lib/insights/generator-core";
+import { FOUL_RATE_VARIANCE_PCT, MIN_WHISTLE_REF_GAMES } from "@/lib/insights/generator-core";
+import { WIN_RATE_OUTLIER_PP } from "@/lib/metric-significance";
 import {
   MATRIX_EXTREME_DELTA_PTS,
   MATRIX_MIN_GAMES,
@@ -40,9 +40,9 @@ export const METHODOLOGY_SECTIONS: MethodologySection[] = [
     lead: "Officials and splits must clear minimum game counts before they surface in rankings, matrices, or insight cards.",
     bullets: [
       `Ref profiles and rankings default to officials with ${MIN_WHISTLE_REF_GAMES}+ games in the current dataset window. Below-gate refs stay hidden or muted.`,
-      `Ref×team matrix cells require ${MATRIX_MIN_GAMES}+ shared games. Standout splits highlight cells at least ±${MATRIX_EXTREME_DELTA_PTS} percentage points from the team baseline, with thicker samples breaking ties.`,
-      `Crew dominance and pairing notes need ${CREW_DOMINANCE_MIN_GAMES}+ shared games. Whistle drift scans use a 12+ game floor.`,
-      `ATS and O/U splits need 30+ decisive games with closing lines before they appear in betting-adjacent views.`,
+      `Ref×team matrix cells require ${REF_TEAM_SPLIT_MIN_GAMES}+ shared games. Standout splits highlight cells at least ±${MATRIX_EXTREME_DELTA_PTS} percentage points from the team baseline, with thicker samples breaking ties.`,
+      `Crew dominance and pairing notes need ${CREW_ANOMALY_MIN_GAMES}+ shared games. Whistle drift scans use a 12+ game floor.`,
+      `ATS and O/U splits need ${ATS_OU_CLOSING_LINE_MIN_GAMES}+ decisive games with closing lines before they appear in betting-adjacent views.`,
       `Insight cards below ${RELIABILITY_FLOOR_GAMES} shared games show a shrunk win-rate delta (empirical Bayes with a ${BAYESIAN_PRIOR_STRENGTH}-game prior). ${DELTA_HONESTY_FOOTNOTE}`,
       `Data maturity bars reach 100% at ${MATURITY_TARGET_GAMES} games for ref×team splits.`,
     ],
