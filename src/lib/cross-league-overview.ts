@@ -150,7 +150,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       : 0;
 
     const scorePerGame = analyticsUnlocked ? scorePerGameForLeague(leagueId, stats) : 0;
-    const scoreEstimated = analyticsUnlocked && stats.meta.atsAvailable !== true;
+    const scoreEstimated = false;
 
     if (analyticsUnlocked) {
       totalRefs += refCount;

@@ -33,4 +33,15 @@ describe("soccer card metrics", () => {
     assert.ok(epl, "EPL overview card");
     assert.ok(epl.whistlePerGame > 3, `EPL whistlePerGame ${epl.whistlePerGame}`);
   });
+
+  it("reports exact score metrics without estimated flags on all league cards", () => {
+    const overview = buildCrossLeagueOverview(20);
+    for (const card of overview.leagueCards) {
+      assert.equal(
+        card.scoreEstimated,
+        false,
+        `${card.leagueId} scoreEstimated should be false`,
+      );
+    }
+  });
 });

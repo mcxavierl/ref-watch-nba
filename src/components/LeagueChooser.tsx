@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
-import { ESTIMATED_LEAGUE_AVERAGE_TOOLTIP } from "@/config/methodology";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
-import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
 import { formatLeaguePaceValue } from "@/lib/league-pace-bars";
@@ -63,17 +61,7 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
                 <strong className="tabular-nums">{formatLeaguePaceValue(card.whistlePerGame)}</strong>
               </span>
               <span className="overview-league-chooser-metric">
-                <span className="overview-league-chooser-metric-label">
-                  {card.scoreLabel}
-                  {card.scoreEstimated ? (
-                    <MetricInfoHint
-                      hint={ESTIMATED_LEAGUE_AVERAGE_TOOLTIP}
-                      className="overview-league-chooser-estimated"
-                    >
-                      <span className="overview-league-chooser-estimated-mark">(est.)</span>
-                    </MetricInfoHint>
-                  ) : null}
-                </span>
+                <span className="overview-league-chooser-metric-label">{card.scoreLabel}</span>
                 <strong className="tabular-nums">{formatLeaguePaceValue(card.scorePerGame)}</strong>
               </span>
             </span>
