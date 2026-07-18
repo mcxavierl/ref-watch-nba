@@ -7,12 +7,13 @@ import {
 } from "@/lib/league-manifest";
 import { normalizeAppPathname } from "@/lib/json-asset-guards";
 
-export type InsightsHubView = "tendencies" | "trends" | "findings";
+export type InsightsHubView = "tendencies" | "trends" | "findings" | "game-state";
 
 const VIEW_TO_RESEARCH: Record<InsightsHubView, ResearchView> = {
   tendencies: "tendencies",
   trends: "trends",
   findings: "findings",
+  "game-state": "game-state",
 };
 
 /** Canonical route for an insights sub-view under /{league}/research/{view}. */
@@ -30,6 +31,7 @@ const HASH_ALIASES: Record<string, InsightsHubView> = {
   trends: "trends",
   findings: "findings",
   research: "findings",
+  "game-state": "game-state",
 };
 
 export function insightsViewFromHash(hash: string): InsightsHubView | null {
@@ -47,6 +49,7 @@ export function insightsViewFromPathname(pathname: string): InsightsHubView | nu
     if (path === `${prefix}/research/findings` || path.startsWith(`${prefix}/research/findings/`)) {
       return "findings";
     }
+    if (path === `${prefix}/research/game-state`) return "game-state";
     // Legacy paths during redirect window
     if (path === `${prefix}/rankings`) return "tendencies";
     if (path === `${prefix}/trends`) return "trends";

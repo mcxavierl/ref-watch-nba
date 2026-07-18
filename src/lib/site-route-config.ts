@@ -86,6 +86,9 @@ export function canonicalSiteRoutePaths(): string[] {
     paths.push(`${prefix}/research/tendencies`);
     paths.push(`${prefix}/research/trends`);
     paths.push(`${prefix}/research/findings`);
+    if (leagueId === "nfl") {
+      paths.push(`${prefix}/research/game-state`);
+    }
   }
 
   return paths;

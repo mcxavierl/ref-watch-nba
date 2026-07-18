@@ -28,6 +28,7 @@ test("insightsViewHref maps tabs to unified research routes", () => {
   assert.equal(insightsViewHref("nfl", "trends"), "/nfl/research/trends");
   assert.equal(insightsViewHref("nfl", "tendencies"), "/nfl/research/tendencies");
   assert.equal(insightsViewHref("nfl", "findings"), "/nfl/research/findings");
+  assert.equal(insightsViewHref("nfl", "game-state"), "/nfl/research/game-state");
 });
 
 test("insightsViewFromPathname resolves active tab from URL", () => {
@@ -35,12 +36,22 @@ test("insightsViewFromPathname resolves active tab from URL", () => {
   assert.equal(insightsViewFromPathname("/nba/research/trends"), "trends");
   assert.equal(insightsViewFromPathname("/nfl/research/tendencies"), "tendencies");
   assert.equal(insightsViewFromPathname("/nfl/research/findings"), "findings");
+  assert.equal(insightsViewFromPathname("/nfl/research/game-state"), "game-state");
   assert.equal(insightsViewFromPathname("/nfl/rankings"), "tendencies");
 });
 
 test("insightsViewFromHash supports legacy rankings alias", () => {
   assert.equal(insightsViewFromHash("rankings"), "tendencies");
   assert.equal(insightsViewFromHash("trends"), "trends");
+});
+
+test("NFL game-state research route matches InsightsHubRoute wiring", () => {
+  const rel = "src/app/[league]/research/game-state/page.tsx";
+  const source = readFileSync(join(process.cwd(), rel), "utf8");
+  assert.match(source, INSIGHTS_HUB_ROUTE_IMPORT);
+  assert.match(source, /defaultTab="game-state"/);
+  assert.match(source, /readSeasonScopeParam\(scope\)/);
+  assert.match(source, /league !== "nfl"/);
 });
 
 test("insights hub route pages import InsightsHubRoute and render <InsightsHubRoute>", () => {

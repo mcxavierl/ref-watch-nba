@@ -6137,6 +6137,70 @@ p {
     color: var(--muted);
   }
 
+  .gsni-research-highlight {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .gsni-research-highlight--quiet {
+    box-shadow: 0 0 22px color-mix(in srgb, rgb(56 189 248) 14%, transparent);
+    border-color: color-mix(in srgb, rgb(56 189 248) 28%, var(--border-subtle));
+  }
+
+  .gsni-research-highlight--heavy {
+    box-shadow: 0 0 22px color-mix(in srgb, rgb(251 146 60) 14%, transparent);
+    border-color: color-mix(in srgb, rgb(251 146 60) 28%, var(--border-subtle));
+  }
+
+  .gsni-research-highlight-score {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-data);
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: var(--leading-tight);
+    color: var(--text-primary);
+  }
+
+  .rankings-insight-copy {
+    margin: 0.35rem 0 0;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--muted);
+  }
+
+  .gsni-research-band {
+    display: inline-flex;
+    min-width: 2rem;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0.1rem 0.45rem;
+    font-family: var(--font-data);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gsni-research-band--quiet {
+    color: rgb(56 189 248);
+    background: color-mix(in srgb, rgb(56 189 248) 12%, transparent);
+  }
+
+  .gsni-research-band--heavy {
+    color: rgb(251 146 60);
+    background: color-mix(in srgb, rgb(251 146 60) 12%, transparent);
+  }
+
+  .gsni-research-band--neutral {
+    color: var(--muted);
+    background: color-mix(in srgb, var(--muted) 12%, transparent);
+  }
+
+  .gsni-research-band--withheld {
+    color: var(--muted);
+    background: transparent;
+  }
+
   /* ── Rankings table toolbar ── */
   .ranking-toolbar {
     padding: var(--space-4) var(--space-5) var(--space-3);
