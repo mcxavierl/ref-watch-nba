@@ -141,6 +141,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(card, /size="xl"/);
     assert.match(card, /game\.metadataLine/);
     assert.match(css, /upcoming-game-card/);
+    assert.match(readSrc("src/components/overview-slate-shared.css"), /upcoming-games-grid/);
     assert.match(css, /upcoming-game-card__matchup/);
     assert.match(css, /--upcoming-matchup-glow-accent/);
     assert.match(css, /\[data-league="nfl"\][\s\S]*--upcoming-matchup-glow-accent: #1e4fd4/);

@@ -59,6 +59,26 @@ describe("design audit guardrails", () => {
     assert.doesNotMatch(hub, /LeagueSlateGamesList/);
   });
 
+  it("slate team display helpers are shared across card and row", () => {
+    const shared = readSrc("src/lib/slate-team-display.ts");
+    const card = readSrc("src/components/UpcomingGameCard.tsx");
+    const row = readSrc("src/components/OverviewSlateRow.tsx");
+    assert.match(shared, /resolveSlateTeam/);
+    assert.match(card, /slate-team-display/);
+    assert.match(row, /slate-team-display/);
+    assert.doesNotMatch(card, /function resolveTeam/);
+  });
+
+  it("upcoming slate layout CSS lives in overview-slate-shared.css", () => {
+    const shared = readSrc("src/components/overview-slate-shared.css");
+    const dashboard = readSrc("src/components/overview-dashboard.css");
+    const clinical = readSrc("src/components/overview-clinical-modern.css");
+    assert.match(shared, /upcoming-games-grid/);
+    assert.match(dashboard, /overview-slate-shared\.css/);
+    assert.match(clinical, /overview-slate-shared\.css/);
+    assert.doesNotMatch(dashboard, /\.upcoming-games-grid/);
+  });
+
   it("live league hubs wire upcoming slate cards below the hero", () => {
     for (const [file, label] of [
       ["src/app/nfl/page.tsx", "NFL"],

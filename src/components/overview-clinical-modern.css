@@ -1,5 +1,7 @@
 /* Clinical Modern — Verified Officiating Analytics homepage */
 
+@import "./overview-slate-shared.css";
+
 .overview-shell--clinical .overview-title {
   color: var(--clinical-ink);
   font-size: clamp(1.65rem, 3.5vw, 2rem);
@@ -209,35 +211,6 @@
 }
 
 /* Upcoming games — premium match cards */
-.overview-upcoming-header {
-  text-align: center;
-}
-
-.overview-upcoming-lead {
-  margin-inline: auto;
-  max-width: 28rem;
-  text-align: center;
-}
-
-.upcoming-games-grid {
-  display: grid;
-  gap: 1rem;
-}
-
-@media (min-width: 640px) {
-  .upcoming-games-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch;
-  }
-}
-
-@media (min-width: 960px) {
-  .upcoming-games-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: stretch;
-  }
-}
-
 .upcoming-game-card {
   display: flex;
   flex-direction: column;

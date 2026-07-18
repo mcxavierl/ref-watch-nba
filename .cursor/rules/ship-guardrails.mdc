@@ -28,6 +28,8 @@ git clean -fd data/insights-cache data/stats-query-log.jsonl 2>/dev/null || true
 git checkout -- data/
 ```
 
+`data/stats-query-log.jsonl` and `data/insights-cache/` are gitignored local caches. Do not commit background ingest drift in `data/*` unless you intentionally refreshed shipped datasets.
+
 Install the pre-push hook once per clone:
 
 ```bash
