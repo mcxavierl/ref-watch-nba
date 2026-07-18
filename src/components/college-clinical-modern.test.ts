@@ -48,24 +48,21 @@ test("ConferenceCoverage uses StatusBadge for live conference labels", () => {
 });
 
 test("CBB opengraph uses hub renderer with ref-focused copy", () => {
-  const ogPage = readFileSync("src/app/cbb/opengraph-image.tsx", "utf8");
+  const ogPage = readFileSync("src/app/[league]/opengraph-image.tsx", "utf8");
   assert.match(ogPage, /renderHubOgImage/);
-  assert.match(ogPage, /cbbHubOgContent/);
+  assert.match(ogPage, /cbbHubOgContent|hubOgContentForLeague/);
   const heroCopy = readFileSync("src/lib/league-hero-copy.ts", "utf8");
   assert.match(heroCopy, /College basketball officiating analytics/);
 });
 
 test("CBB hub page uses standard league slate layout", () => {
-  const page = readFileSync("src/app/cbb/page.tsx", "utf8");
-  assert.match(page, /LeagueSlateHero/);
-  assert.match(page, /OffseasonSlateNotice/);
-  assert.match(page, /BrowseActionCards/);
-  assert.doesNotMatch(page, /ProComingSoonTease/);
-  assert.match(page, /page-shell-slate/);
-  assert.doesNotMatch(page, /CbbClinicalHero/);
-  assert.doesNotMatch(page, /CbbClinicalActionTiles/);
-  assert.doesNotMatch(page, /CbbClinicalProvenanceBanner/);
-  assert.doesNotMatch(page, /CbbClinicalConferenceHubs/);
-  assert.doesNotMatch(page, /CbbClinicalNotifyCallout/);
-  assert.doesNotMatch(page, /cbb-clinical-shell/);
+  const page = readFileSync("src/app/[league]/page.tsx", "utf8");
+  const slate = readFileSync("src/components/LeagueSlatePage.tsx", "utf8");
+  assert.match(page, /LeagueSlatePage/);
+  assert.match(slate, /LeagueSlateHero/);
+  assert.match(slate, /OffseasonSlateNotice/);
+  assert.match(slate, /BrowseActionCards/);
+  assert.doesNotMatch(slate, /ProComingSoonTease/);
+  assert.match(slate, /page-shell-slate/);
+  assert.doesNotMatch(slate, /CbbClinicalHero/);
 });

@@ -10928,7 +10928,14 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   --chooser-accent: var(--muted);
   --chooser-glow: rgba(15, 23, 42, 0.1);
   --chooser-mark-border: color-mix(in srgb, var(--chooser-accent) 15%, transparent);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    color-mix(in srgb, var(--muted) 70%, var(--ink)) 50%,
+    var(--muted) 100%
+  );
   position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -10957,40 +10964,97 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
     box-shadow 200ms ease;
 }
 
+.overview-league-chooser-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--chooser-rainbow);
+  border-radius: 1rem 1rem 0 0;
+  pointer-events: none;
+}
+
 .overview-league-chooser-card[data-league="nba"] {
   --chooser-accent: #006bb6;
   --chooser-glow: rgba(0, 107, 182, 0.1);
   --chooser-mark-border: rgba(0, 107, 182, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #004a7c 0%,
+    #006bb6 22%,
+    #4d9fff 48%,
+    #fdb927 72%,
+    #ef3b55 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="cbb"] {
   --chooser-accent: var(--cbb-gold);
   --chooser-glow: rgba(0, 156, 222, 0.1);
   --chooser-mark-border: rgba(0, 156, 222, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #004e89 0%,
+    var(--cbb-gold) 28%,
+    #7dd3fc 52%,
+    #fdb927 76%,
+    var(--cbb-gold) 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="nhl"] {
   --chooser-accent: #0a4c7a;
   --chooser-glow: rgba(10, 76, 122, 0.1);
   --chooser-mark-border: rgba(10, 76, 122, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #0a4c7a 0%,
+    var(--nhl-blue) 38%,
+    #b8d4e8 58%,
+    var(--nhl-red) 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="nfl"] {
   --chooser-accent: #012348;
   --chooser-glow: rgba(1, 35, 72, 0.1);
   --chooser-mark-border: rgba(1, 35, 72, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #012348 0%,
+    #1e4d7b 32%,
+    var(--nfl-green) 62%,
+    #94a3b8 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="epl"] {
   --chooser-accent: #3d195b;
   --chooser-glow: rgba(61, 25, 91, 0.12);
   --chooser-mark-border: rgba(61, 25, 91, 0.22);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #3d195b 0%,
+    #6b3d8f 30%,
+    #8b6bb5 55%,
+    #c4a8e0 78%,
+    #3d195b 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="laliga"] {
   --chooser-accent: #c8102e;
   --chooser-glow: rgba(169, 136, 46, 0.1);
   --chooser-mark-border: rgba(169, 136, 46, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #7a0819 0%,
+    #c8102e 32%,
+    #a9882e 62%,
+    #f4c430 100%
+  );
 }
 
 .overview-league-chooser-card:hover {
@@ -11159,6 +11223,13 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
 
 .overview-league-chooser-card[data-league="cfb"] {
   --chooser-accent: var(--cfb-bronze);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #7c3d12 0%,
+    var(--cfb-bronze) 35%,
+    #fdb927 65%,
+    #d97706 100%
+  );
 }
 
 .overview-league-chooser-label-row,
