@@ -1,9 +1,10 @@
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { InsightBadge } from "@/components/hub/InsightBadge";
 
-/** Insights-page capsule pill for GSNI context metadata. */
+/** GSNI context metadata pill using the shared insight badge shell. */
 export function GsniInsightPill({
-  icon: Icon,
+  icon,
   children,
   className = "",
 }: {
@@ -11,12 +12,5 @@ export function GsniInsightPill({
   children: ReactNode;
   className?: string;
 }) {
-  return (
-    <span
-      className={`gsni-insight-pill inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs font-medium text-slate-300 tabular-nums ${className}`.trim()}
-    >
-      <Icon className="h-3 w-3 shrink-0 opacity-80" strokeWidth={2.1} aria-hidden />
-      <span>{children}</span>
-    </span>
-  );
+  return <InsightBadge label={children} icon={icon} className={className} />;
 }

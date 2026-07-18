@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { GsniDeltaValue } from "@/components/GsniDeltaValue";
+import { GsniSampleCount } from "@/components/GsniSampleCount";
+import { GsniSharedTrack } from "@/components/GsniSharedTrack";
+import { gsniDeltaFromNeutral } from "@/lib/gsni-ui";
 import type { GsniResearchRow } from "@/lib/nfl/gsni-research";
 
 type SortField = "gsni" | "volatility" | "highLeverageMinutes" | "sampleGames";
@@ -62,13 +66,6 @@ function SortableHeader({
   );
 }
 
-function bandClass(band: GsniResearchRow["band"]): string {
-  if (band === "quiet") return "gsni-research-band gsni-research-band--quiet";
-  if (band === "heavy") return "gsni-research-band gsni-research-band--heavy";
-  if (band === "neutral") return "gsni-research-band gsni-research-band--neutral";
-  return "gsni-research-band gsni-research-band--withheld";
-}
-
 export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
   const [sort, setSort] = useState<SortState>("gsni-desc");
 
@@ -86,13 +83,13 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
   if (rows.length === 0) return null;
 
   return (
-    <div className="data-card overflow-x-auto">
+    <div className="gsni-card overflow-x-auto p-0">
       <table className="data-table ref-data-table w-full">
         <thead className="data-table-head">
           <tr>
             <th>Official</th>
             <SortableHeader
-              label="Game-State Index"
+              label="GSNI"
               field="gsni"
               sort={sort}
               onSort={(field) => setSort(toggleSort(sort, field))}
@@ -128,21 +125,41 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
               </td>
               <td className="data-table-num">
                 {row.gsni !== null ? (
-                  <span className={bandClass(row.band)}>{row.gsni}</span>
+                  <div className="gsni-table-score-cell min-w-[8.5rem]">
+                    <GsniSharedTrack
+                      mode="score"
+                      value={row.gsni}
+                      showValue={false}
+                      showDelta={false}
+                      className="gsni-shared-track--compact"
+                    />
+                    <div className="mt-1 flex items-center justify-end gap-2">
+                      <GsniSampleCount>{row.gsni}</GsniSampleCount>
+                      <GsniDeltaValue delta={gsniDeltaFromNeutral(row.gsni)} />
+                    </div>
+                  </div>
                 ) : (
-                  <span className="text-muted">Below gate</span>
+                  <span className="gsni-sub-text">Below gate</span>
                 )}
               </td>
               <td className="data-table-num">
-                {row.volatility !== null ? row.volatility.toFixed(1) : "-"}
-              </td>
-              <td className="data-table-num">{row.highLeverageMinutes.toFixed(1)}</td>
-              <td className="data-table-num">{row.sampleGames}</td>
-              <td className="data-table-num">
-                {row.caption ? (
-                  <span className="text-sm text-muted">{row.caption}</span>
+                {row.volatility !== null ? (
+                  <GsniSampleCount>{row.volatility.toFixed(1)}</GsniSampleCount>
                 ) : (
-                  <span className="text-sm text-muted">Building sample</span>
+                  "-"
+                )}
+              </td>
+              <td className="data-table-num">
+                <GsniSampleCount>{row.highLeverageMinutes.toFixed(1)}</GsniSampleCount>
+              </td>
+              <td className="data-table-num">
+                <GsniSampleCount>{row.sampleGames}</GsniSampleCount>
+              </td>
+              <td>
+                {row.caption ? (
+                  <span className="gsni-sub-text">{row.caption}</span>
+                ) : (
+                  <span className="gsni-sub-text">Building sample</span>
                 )}
               </td>
             </tr>

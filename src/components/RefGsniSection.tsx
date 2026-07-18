@@ -1,7 +1,9 @@
 import { Activity, Sparkles, Target, Users } from "lucide-react";
 import { TermHelp } from "@/components/TermHelp";
+import { GsniCard } from "@/components/GsniCard";
 import { GsniInsightPill } from "@/components/GsniInsightPill";
 import { GsniRelativeGauge } from "@/components/GsniRelativeGauge";
+import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSoftLockCard } from "@/components/GsniSoftLockCard";
 import {
   gsniConfidenceLabel,
@@ -39,22 +41,27 @@ export function RefGsniSection({
 
       <div className="ref-table-section-body">
         {!showMetrics ? (
-          <p className="text-sm font-normal text-slate-400">Sample gate not cleared.</p>
+          <p className="gsni-sub-text">Sample gate not cleared.</p>
         ) : gateCleared ? (
-          <div className="gsni-profile-active">
-            <GsniRelativeGauge gsni={metrics.referee_gsni!} />
-            <div className="gsni-profile-pills">
-              <GsniInsightPill icon={Activity}>
-                Confidence: {gsniConfidenceLabel(metrics.highLeverageMinutes)}
-              </GsniInsightPill>
-              <GsniInsightPill icon={Users}>
-                {Math.round(metrics.highLeverageMinutes)} high-leverage minutes
-              </GsniInsightPill>
-              <GsniInsightPill icon={Target}>
-                Benchmark: {GSNI_MIN_HIGH_LEVERAGE_MINUTES} min
-              </GsniInsightPill>
+          <GsniCard>
+            <div className="gsni-profile-active">
+              <GsniRelativeGauge gsni={metrics.referee_gsni!} />
+              <div className="gsni-profile-pills">
+                <GsniInsightPill icon={Activity}>
+                  Confidence: {gsniConfidenceLabel(metrics.highLeverageMinutes)}
+                </GsniInsightPill>
+                <GsniInsightPill icon={Users}>
+                  <GsniSampleCount>
+                    {Math.round(metrics.highLeverageMinutes)}
+                  </GsniSampleCount>{" "}
+                  HL min
+                </GsniInsightPill>
+                <GsniInsightPill icon={Target}>
+                  Benchmark: {GSNI_MIN_HIGH_LEVERAGE_MINUTES} min
+                </GsniInsightPill>
+              </div>
             </div>
-          </div>
+          </GsniCard>
         ) : (
           <GsniSoftLockCard
             minutes={metrics.highLeverageMinutes}
