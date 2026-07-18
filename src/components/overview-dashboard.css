@@ -330,8 +330,9 @@
 
 .overview-league-chooser--primary .overview-league-chooser-card {
   min-height: 8.75rem;
-  border: 1px solid color-mix(in srgb, var(--chooser-accent) 22%, var(--border-subtle));
-  background: var(--surface);
+  height: 100%;
+  border: 1px solid rgb(30 41 59);
+  background: rgb(15 23 42);
   box-shadow:
     0 1px 0 color-mix(in srgb, var(--chooser-accent) 8%, transparent),
     0 16px 44px var(--chooser-glow, rgba(15, 23, 42, 0.1)),
