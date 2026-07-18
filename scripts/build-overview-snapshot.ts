@@ -14,7 +14,13 @@ const payload = {
 };
 
 fs.mkdirSync(path.dirname(dest), { recursive: true });
-fs.writeFileSync(dest, `${JSON.stringify(payload)}\n`);
+const json = `${JSON.stringify(payload)}\n`;
+fs.writeFileSync(dest, json);
+
+const publicSnapshot = path.join(root, "public", "data", "overview", "snapshot.json");
+fs.mkdirSync(path.dirname(publicSnapshot), { recursive: true });
+fs.writeFileSync(publicSnapshot, json);
+console.log(`Wrote ${publicSnapshot}`);
 
 const refCount = snapshot.allRefs.length;
 const insightCount = snapshot.insightCards.length;

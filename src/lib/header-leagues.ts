@@ -39,7 +39,12 @@ export function isNhlNavHidden(leagueId: LeagueId): boolean {
   return !getHeaderLeagueIds().includes("nhl");
 }
 
-/** Hidden league routes redirect to home in production when ingest is not verified. */
-export function shouldRedirectHiddenLeague(_pathname: string): boolean {
-  return false;
+/** Leagues with nav stubs but no shipped routes yet. */
+const UNROUTED_LEAGUE_PREFIXES = ["/wnba", "/mlb"] as const;
+
+/** Hidden league routes redirect to home when ingest is not verified. */
+export function shouldRedirectHiddenLeague(pathname: string): boolean {
+  return UNROUTED_LEAGUE_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
 }
