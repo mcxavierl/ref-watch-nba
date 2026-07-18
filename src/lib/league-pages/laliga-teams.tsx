@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
+import { leagueGamesUnit } from "@/lib/leagues";
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import { getTeamSplits } from "@/lib/laliga/data";
 import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
@@ -47,7 +48,7 @@ export default function LaligaTeamsIndexPage() {
                         ? (
                           <>
                             {splits.length} refs ·{" "}
-                            <VerifiedGamesHint>{games} matches</VerifiedGamesHint>
+                            <VerifiedGamesHint>{games} {leagueGamesUnit("laliga")}</VerifiedGamesHint>
                           </>
                         )
                         : "No data yet"}

@@ -87,15 +87,16 @@ function formatDeltaMagnitude(delta: number): string {
 export function thirdPersonWhistlePaceBody(
   delta: number,
   whistlePlain: string,
+  perGamePhrase = "per game",
 ): string {
   const magnitude = formatDeltaMagnitude(delta);
   if (delta > 0) {
-    return `Runs ${magnitude} ${whistlePlain} above average per match.`;
+    return `Runs ${magnitude} ${whistlePlain} above average ${perGamePhrase}.`;
   }
   if (delta < 0) {
-    return `Runs ${magnitude} ${whistlePlain} below average per match.`;
+    return `Runs ${magnitude} ${whistlePlain} below average ${perGamePhrase}.`;
   }
-  return `Matches league average ${whistlePlain} pace per match.`;
+  return `Matches league average ${whistlePlain} pace ${perGamePhrase}.`;
 }
 
 /** Ranking card title for whistle outliers; never "heaviest" on negative deltas. */
@@ -106,15 +107,19 @@ export function whistlePaceRankTitle(delta: number, whistleShort: string): strin
 }
 
 /** Ranking card copy for combined scoring vs league baseline (gender-neutral). */
-export function thirdPersonScoringPaceBody(delta: number, unit: string): string {
+export function thirdPersonScoringPaceBody(
+  delta: number,
+  unit: string,
+  perGamePhrase = "per game",
+): string {
   const magnitude = formatDeltaMagnitude(delta);
   if (delta > 0) {
-    return `Averages ${magnitude} more combined ${unit} than the league baseline per match.`;
+    return `Averages ${magnitude} more combined ${unit} than the league baseline ${perGamePhrase}.`;
   }
   if (delta < 0) {
-    return `Averages ${magnitude} fewer combined ${unit} than the league baseline per match.`;
+    return `Averages ${magnitude} fewer combined ${unit} than the league baseline ${perGamePhrase}.`;
   }
-  return `Matches the league baseline for combined ${unit} per match.`;
+  return `Matches the league baseline for combined ${unit} ${perGamePhrase}.`;
 }
 
 /** Ranking card title for scoring outliers; never "bump" on negative deltas. */

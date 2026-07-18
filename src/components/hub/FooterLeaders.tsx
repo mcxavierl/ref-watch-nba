@@ -1,6 +1,7 @@
 import { HighlightStatCard } from "@/components/HighlightStatCard";
 import type { AnalyticsLeaderItem } from "@/components/AnalyticsLeadersSection";
 import type { LeagueId } from "@/lib/leagues";
+import { leagueGamesUnit } from "@/lib/leagues";
 import {
   highlightCardAccentForLeaderCategory,
   highlightCardIconForLeaderCategory,
@@ -51,7 +52,7 @@ export function FooterLeaders({
             statLabel={item.title}
             body={item.detail}
             avatarSport={sport}
-            refMeta={formatRefGamesMeta(item.ref.number, item.ref.games, "matches")}
+            refMeta={formatRefGamesMeta(item.ref.number, item.ref.games, leagueGamesUnit(leagueId))}
           />
         ))}
       </ul>

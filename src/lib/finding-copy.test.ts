@@ -84,10 +84,14 @@ describe("finding-copy", () => {
   it("third-person ranking copy matches signed whistle delta direction", () => {
     assert.equal(
       thirdPersonWhistlePaceBody(-2, "fouls called"),
-      "Runs 2.0 fouls called below average per match.",
+      "Runs 2.0 fouls called below average per game.",
     );
     assert.equal(
       thirdPersonWhistlePaceBody(2, "fouls called"),
+      "Runs 2.0 fouls called above average per game.",
+    );
+    assert.equal(
+      thirdPersonWhistlePaceBody(2, "fouls called", "per match"),
       "Runs 2.0 fouls called above average per match.",
     );
     assert.equal(whistlePaceRankTitle(-2, "Whistle"), "Lightest whistle ref");
@@ -98,6 +102,10 @@ describe("finding-copy", () => {
   it("third-person scoring copy matches signed delta direction", () => {
     assert.equal(
       thirdPersonScoringPaceBody(-1.4, "points"),
+      "Averages 1.4 fewer combined points than the league baseline per game.",
+    );
+    assert.equal(
+      thirdPersonScoringPaceBody(-1.4, "points", "per match"),
       "Averages 1.4 fewer combined points than the league baseline per match.",
     );
     assert.equal(scoringPaceRankTitle(-1.4), "Biggest scoring dip");
