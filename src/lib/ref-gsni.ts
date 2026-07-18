@@ -1,4 +1,9 @@
 import {
+  shrinkGsni,
+  shrunkMetricTooltip,
+  type ShrunkMetric,
+} from "@/lib/bayesian-shrinkage";
+import {
   buildGsniCorpusFromGameLogs,
   computeGSNI,
   GSNI_MIN_HIGH_LEVERAGE_MINUTES,
@@ -22,8 +27,13 @@ import type {
 export type GsniHighLeverageSampleTier = "high" | "moderate" | "withheld";
 
 export type RefGsniMetrics = {
+  /** Shrunk GSNI shown in the UI. */
   referee_gsni: number | undefined;
+  /** Raw observed GSNI before empirical-Bayes shrinkage. */
+  referee_gsni_observed: number | undefined;
   referee_gsni_volatility: number | undefined;
+  gsniShrinkage: ShrunkMetric | undefined;
+  gsniShrinkageTooltip: string | null;
   highLeverageMinutes: number;
   sampleGames: number;
   gateCleared: boolean;
@@ -87,9 +97,16 @@ function metricsFromCompute(
     result.highLeverageMinutes >= GSNI_MIN_HIGH_LEVERAGE_MINUTES &&
     result.referee_gsni !== undefined;
 
+  const observedGsni = result.referee_gsni;
+  const gsniShrinkage =
+    observedGsni !== undefined
+      ? shrinkGsni(observedGsni, result.highLeverageMinutes)
+      : undefined;
+  const displayGsni = gsniShrinkage?.shrunk ?? observedGsni;
+
   const vsNeutralDetail =
-    result.referee_gsni !== undefined
-      ? `${formatSigned(result.referee_gsni - 50)} vs 50 neutral`
+    displayGsni !== undefined
+      ? `${formatSigned(displayGsni - 50)} vs 50 neutral`
       : null;
 
   const volatilityDetail =
@@ -97,13 +114,21 @@ function metricsFromCompute(
       ? `Per-game spread ${result.referee_gsni_volatility}`
       : null;
 
+  const gsniShrinkageTooltip =
+    gsniShrinkage !== undefined
+      ? shrunkMetricTooltip(gsniShrinkage, { label: "GSNI", unit: "GSNI" })
+      : null;
+
   const honestyBanner = gateCleared
     ? null
     : `GSNI needs ${GSNI_GATE}+ high-leverage minutes before we publish a score. This ref has ${result.highLeverageMinutes.toFixed(1)} min across ${result.sampleGames} games.`;
 
   return {
-    referee_gsni: result.referee_gsni,
+    referee_gsni: displayGsni,
+    referee_gsni_observed: observedGsni,
     referee_gsni_volatility: result.referee_gsni_volatility,
+    gsniShrinkage,
+    gsniShrinkageTooltip,
     highLeverageMinutes: result.highLeverageMinutes,
     sampleGames: result.sampleGames,
     gateCleared,

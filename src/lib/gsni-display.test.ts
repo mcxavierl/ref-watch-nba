@@ -5,6 +5,8 @@ import {
   gsniBand,
   gsniCaption,
   gsniFromRefProfile,
+  gsniObservedFromRefProfile,
+  gsniShrinkageFromProfile,
   isExtremeGsni,
 } from "@/lib/gsni-display";
 import type { RefProfile } from "@/lib/types";
@@ -39,11 +41,18 @@ describe("gsni display", () => {
     assert.equal(isExtremeGsni(55), false);
   });
 
-  it("reads GSNI from ref profiles when present", () => {
-    assert.equal(
-      gsniFromRefProfile(makeRef({ referee_gsni: 71.2 })),
-      71.2,
-    );
+  it("reads shrunk GSNI from ref profiles when present", () => {
+    const profile = makeRef({ referee_gsni: 82, gsniHighLeverageMinutes: 20 });
+    const shrinkage = gsniShrinkageFromProfile(profile);
+    assert.ok(shrinkage);
+    assert.equal(shrinkage!.observed, 82);
+    assert.ok(shrinkage!.display < shrinkage!.observed);
+    assert.equal(gsniFromRefProfile(profile), shrinkage!.display);
+    assert.equal(gsniObservedFromRefProfile(profile), 82);
+  });
+
+  it("returns null when GSNI is missing", () => {
     assert.equal(gsniFromRefProfile(makeRef()), null);
+    assert.equal(gsniShrinkageFromProfile(makeRef()), null);
   });
 });

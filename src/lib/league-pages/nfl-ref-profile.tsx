@@ -177,6 +177,7 @@ export default async function NflRefProfilePage({
               leagueAvgFouls={stats.meta.leagueAvgFouls}
               leagueAvgPenaltyYards={stats.meta.leagueAvgPenaltyYards}
               showMetrics={qualified}
+              profile={profile}
             />
           )}
 
