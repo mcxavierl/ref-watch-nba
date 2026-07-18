@@ -228,6 +228,7 @@ function EditorialInsightCard({
   const whistleIndex =
     variant === "featured" ? whistleIndexFromInsightCard(card) : null;
   const metaCompact = variant === "quick";
+  const isCompactEditorial = variant === "quick" || variant === "trend";
 
   function openDrilldown() {
     if (!drilldownEnabled) return;
@@ -267,47 +268,57 @@ function EditorialInsightCard({
           aria-haspopup={drilldownEnabled ? "dialog" : undefined}
           aria-expanded={drilldownEnabled ? drilldownOpen : undefined}
         >
-          <h2 className="insight-editorial-headline">{editorial.headline}</h2>
+          <div className="insight-editorial-body-main">
+            <h2 className="insight-editorial-headline">{editorial.headline}</h2>
 
-          {whistleIndex !== null ? (
-            <WhistleIndexGauge index={whistleIndex} size="lg" className="insight-editorial-whistle-index" />
-          ) : null}
+            {isCompactEditorial && editorial.whyItMatters ? (
+              <p className="insight-editorial-subheadline">
+                {editorial.whyItMatters}
+              </p>
+            ) : null}
 
-          {card.kind === "matrix-edge" ? (
-            <InsightSplitMetrics
-              sampleMetric={{
-                value: formatSampleSizeLabel(editorial.sampleGames),
-                label: "Sample size (N)",
-              }}
-              deltaMetric={editorial.primaryMetric}
-              compact={metaCompact}
-            />
-          ) : (
-            <div className="insight-editorial-metrics">
-              <div className="insight-editorial-metric insight-editorial-metric--primary">
-                <span className="insight-editorial-metric-value">{editorial.primaryMetric.value}</span>
-                <span className="insight-editorial-metric-label">
-                  {normalizeCarouselCopy(editorial.primaryMetric.label)}
-                </span>
-              </div>
-              {editorial.secondaryMetric ? (
-                <div className="insight-editorial-metric insight-editorial-metric--secondary">
-                  <span className="insight-editorial-metric-value">
-                    {editorial.secondaryMetric.value}
-                  </span>
+            {whistleIndex !== null ? (
+              <WhistleIndexGauge index={whistleIndex} size="lg" className="insight-editorial-whistle-index" />
+            ) : null}
+
+            {card.kind === "matrix-edge" ? (
+              <InsightSplitMetrics
+                sampleMetric={{
+                  value: formatSampleSizeLabel(editorial.sampleGames),
+                  label: "Sample size (N)",
+                }}
+                deltaMetric={editorial.primaryMetric}
+                compact={isCompactEditorial}
+              />
+            ) : (
+              <div className="insight-editorial-metrics">
+                <div className="insight-editorial-metric insight-editorial-metric--primary">
+                  <span className="insight-editorial-metric-value">{editorial.primaryMetric.value}</span>
                   <span className="insight-editorial-metric-label">
-                    {normalizeCarouselCopy(editorial.secondaryMetric.label)}
+                    {normalizeCarouselCopy(editorial.primaryMetric.label)}
                   </span>
                 </div>
-              ) : null}
-            </div>
-          )}
+                {editorial.secondaryMetric ? (
+                  <div className="insight-editorial-metric insight-editorial-metric--secondary">
+                    <span className="insight-editorial-metric-value">
+                      {editorial.secondaryMetric.value}
+                    </span>
+                    <span className="insight-editorial-metric-label">
+                      {normalizeCarouselCopy(editorial.secondaryMetric.label)}
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+            )}
 
-          <InsightCardMeta card={card} compact={metaCompact} />
+            <InsightCardMeta card={card} compact={metaCompact} />
 
-          <InsightHonestyFootnote editorial={editorial} />
+            <InsightHonestyFootnote editorial={editorial} />
 
-          <p className="insight-editorial-why">{editorial.whyItMatters}</p>
+            {!isCompactEditorial ? (
+              <p className="insight-editorial-why">{editorial.whyItMatters}</p>
+            ) : null}
+          </div>
         </button>
 
         <footer className="insight-editorial-footer">

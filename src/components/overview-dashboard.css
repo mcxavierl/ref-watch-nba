@@ -92,6 +92,22 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
   gap: var(--space-4);
+  align-items: stretch;
+}
+
+.overview-editorial-trends-grid > * {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.overview-editorial-trends-grid .insight-card-shell {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
 }
 
 .overview-editorial-spotlight-grid {
@@ -104,6 +120,22 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-3);
+  align-items: stretch;
+}
+
+.overview-editorial-quick-grid > * {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.overview-editorial-quick-grid .insight-card-shell {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
 }
 
 @media (max-width: 900px) {
