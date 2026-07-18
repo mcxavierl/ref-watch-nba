@@ -388,6 +388,7 @@
 }
 
 /* —— Bento column stretch —— */
+@media (min-width: 1024px) {
   .overview-quicklists {
     flex: 1;
     display: flex;
@@ -512,6 +513,7 @@ html.dark .overview-quicklists-open-btn:hover {
   background: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 20%, var(--bg-surface-2));
   border-color: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 45%, var(--border-subtle));
   color: var(--text-primary);
+}
 
 /* —— Light theme —— */
 html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segmented {

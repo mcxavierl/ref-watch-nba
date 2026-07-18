@@ -50,6 +50,7 @@ git add data/overview-snapshot.json
 |--------|-----|
 | Stale `overview-snapshot.json` | Run `build-overview-snapshot.ts` and commit |
 | PR green but deploy on main fails freshness | Overview sources changed without snapshot refresh — CI skipped on PR because paths were not tracked; fix paths in `overview-snapshot-sources.ts` if needed, rebuild snapshot, merge |
+| PR green but deploy fails on CSS/webpack | Run `npm run check:css-syntax` and `npm run build:next` locally — CI now runs both before merge |
 | Snapshot sources changed but snapshot file not in PR | `check-artifact-freshness` fails — rebuild and commit snapshot in the same PR |
 | Slate metadata test mismatch | Update `overview-upcoming-slate.test.ts` or use flexible assertions |
 | Merged PR but nothing on production | Deploy validate failed — fix tests and merge a green PR |

@@ -51,6 +51,12 @@ jobs:
       - name: Generate deploy data artifacts
         run: npm run check:deploy
 
+      - name: CSS syntax check
+        run: npm run check:css-syntax
+
+      - name: Next.js production build
+        run: npm run build:next
+
       - name: Unit tests
         run: npm run test
 

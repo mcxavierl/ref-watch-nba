@@ -11981,8 +11981,6 @@ html.dark .overview-quick-list[aria-pressed="true"] {
   box-shadow: 0 1px 3px color-mix(in srgb, var(--bg-surface-0) 65%, transparent);
 }
 
-}
-
 html[data-color="dark"]:not([data-contrast="high"]) .league-season-start-badge,
 html.dark .league-season-start-badge,
 html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-status--season-start,
