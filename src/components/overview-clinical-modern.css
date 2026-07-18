@@ -238,9 +238,8 @@
 }
 
 .upcoming-game-card__league-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
   width: 2.35rem;
   height: 2.35rem;
@@ -250,9 +249,35 @@
   background: rgb(15 23 42);
 }
 
-.upcoming-game-card__league-mark .league-nav-mark {
-  width: 1.35rem;
-  height: 1.35rem;
+.upcoming-game-card__league-mark .league-nav-mark,
+.upcoming-game-card__league-mark .league-nav-mark-fallback {
+  grid-area: 1 / 1;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 1.35rem;
+  max-height: 1.35rem;
+  margin: 0;
+  object-fit: contain;
+  object-position: center;
+}
+
+.upcoming-game-card__league-mark .league-nav-mark--nfl,
+.upcoming-game-card__league-mark .league-nav-mark[data-league="nfl"] {
+  max-width: 1rem;
+  max-height: 1.25rem;
+}
+
+.upcoming-game-card__league-mark .league-nav-mark--epl,
+.upcoming-game-card__league-mark .league-nav-mark[data-league="epl"] {
+  max-width: 1.15rem;
+  max-height: 1.15rem;
+}
+
+.upcoming-game-card__league-mark .league-nav-mark--laliga,
+.upcoming-game-card__league-mark .league-nav-mark[data-league="laliga"] {
+  max-width: 1.2rem;
+  max-height: 1.2rem;
 }
 
 .upcoming-game-card__header-actions {

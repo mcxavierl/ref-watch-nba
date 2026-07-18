@@ -43,6 +43,8 @@ jobs:
 
       - name: Generated artifact freshness
         run: npm run check:artifact-freshness
+        env:
+          ARTIFACT_FRESHNESS_FORCE: "1"
 
       - name: Validation artifact freshness
         run: npm run check:validation-freshness
