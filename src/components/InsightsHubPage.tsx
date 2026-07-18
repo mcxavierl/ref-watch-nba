@@ -15,6 +15,7 @@ import {
   CfbPenaltyEngineSection,
 } from "@/components/NcaaAnalyticsResearchSection";
 import { WhistleDispositionResearchSection } from "@/components/WhistleDispositionResearchSection";
+import { GameStateIndexResearchSection } from "@/components/GameStateIndexResearchSection";
 import { ResearchHubFindings } from "@/components/ResearchHubFindings";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { SeasonScopeToggleSkeleton } from "@/components/LayoutShiftSkeletons";
@@ -86,7 +87,7 @@ const HUB_FINDINGS_COMPUTERS: Record<
 
 type InsightsHubPageProps = {
   leagueId: InsightsLeagueId;
-  defaultTab?: "tendencies" | "trends" | "findings";
+  defaultTab?: "tendencies" | "trends" | "findings" | "game-state";
   scopeMode?: SeasonScopeMode;
   cbbTrendsConference?: CbbTrendsConferenceScope;
 };
@@ -168,6 +169,10 @@ export function InsightsHubPage({
 
   if (leagueId === "cbb" && activeView === "findings" && !cbbHasFindings) {
     redirect(insightsViewHref("cbb", "tendencies"));
+  }
+
+  if (leagueId !== "nfl" && activeView === "game-state") {
+    redirect(insightsViewHref(leagueId, "tendencies"));
   }
 
   const baselines = getBaselinesFile();
@@ -301,6 +306,13 @@ export function InsightsHubPage({
     );
   }
 
+  let gameStatePanel: ReactNode = null;
+  if (activeView === "game-state" && leagueId === "nfl") {
+    gameStatePanel = (
+      <GameStateIndexResearchSection stats={stats} basePath={league.pathPrefix} />
+    );
+  }
+
   let findingsPanel: ReactNode = null;
   if (activeView === "findings") {
     const findings =
@@ -422,6 +434,22 @@ export function InsightsHubPage({
               ) : null,
             panel: trendsPanel,
           },
+          ...(leagueId === "nfl"
+            ? [
+                {
+                  id: "game-state" as const,
+                  label: "Game State",
+                  note:
+                    activeView === "game-state" ? (
+                      <>
+                        Leverage-weighted flag rate in matched clutch states. 50 is
+                        league-neutral across {range}.
+                      </>
+                    ) : null,
+                  panel: gameStatePanel,
+                },
+              ]
+            : []),
           ...(cbbHasFindings
             ? [
                 {

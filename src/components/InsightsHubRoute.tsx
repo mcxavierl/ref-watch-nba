@@ -11,7 +11,7 @@ type InsightsLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb"
 
 type InsightsHubRouteProps = {
   leagueId: InsightsLeagueId;
-  defaultTab?: "tendencies" | "trends" | "findings";
+  defaultTab?: "tendencies" | "trends" | "findings" | "game-state";
   scopeMode?: SeasonScopeMode;
   cbbTrendsConference?: CbbTrendsConferenceScope;
 };

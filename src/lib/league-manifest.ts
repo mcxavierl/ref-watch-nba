@@ -18,7 +18,7 @@ export const LEAGUE_MANIFEST_IDS = [
 
 export type LeagueManifestId = (typeof LEAGUE_MANIFEST_IDS)[number];
 
-export type ResearchView = "tendencies" | "trends" | "findings";
+export type ResearchView = "tendencies" | "trends" | "findings" | "game-state";
 
 export type LeagueSlateFeatures = {
   /** Upcoming games grid above tonight's slate */
@@ -230,7 +230,7 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
     },
     routed: true,
     sectionNav: ["slate", "teams", "matrix", "refs", "research"],
-    researchViews: ["tendencies", "trends", "findings"],
+    researchViews: ["tendencies", "trends", "findings", "game-state"],
     slate: {
       upcomingSlateSection: true,
       analyticsLeaders: "nfl",
