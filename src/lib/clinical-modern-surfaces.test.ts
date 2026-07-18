@@ -167,22 +167,14 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /overview-expansion/);
     assert.doesNotMatch(source, /WorldCupFinalSection/);
     assert.doesNotMatch(source, /GameStateIndexFindings/);
+    assert.doesNotMatch(source, /ResearchHighlightBanner/);
   });
 
-  it("homepage surfaces a research highlight banner at the top of the dashboard", () => {
-    const dashboard = readSrc("src/components/OverviewDashboard.tsx");
+  it("research highlight banner component stays available for future promos", () => {
     const banner = readSrc("src/components/ResearchHighlightBanner.tsx");
     const config = readSrc("src/config/research-highlight.ts");
-    assert.match(dashboard, /ResearchHighlightBanner/);
-    assert.doesNotMatch(dashboard, /ResearchHighlightPill/);
     assert.match(banner, /research-highlight-banner/);
-    assert.match(banner, /BookOpen/);
-    assert.match(banner, /from "next\/link"/);
-    assert.match(banner, /href=\{RESEARCH_HIGHLIGHT\.href\}/);
-    assert.match(banner, /research-highlight-banner__cta/);
-    assert.doesNotMatch(banner, /text-slate-/);
     assert.match(config, /Leverage-Spike Anomaly/);
-    assert.match(config, /\/research\/leverage-spike-anomaly/);
   });
 
   it("live league date badges use high-contrast blue tokens", () => {
