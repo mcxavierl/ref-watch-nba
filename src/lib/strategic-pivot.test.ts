@@ -21,12 +21,12 @@ describe("strategic pivot surfaces", () => {
     assert.match(REFWATCH_AUDIENCE, /not unvalidated trader alpha/i);
   });
 
-  it("homepage hero links methodology and validation", () => {
+  it("homepage hero stays minimal with title only", () => {
     const hero = readSrc("src/components/OverviewHero.tsx");
-    assert.match(hero, /HOMEPAGE_METHODOLOGY_BLURB/);
-    assert.match(hero, /href="\/methodology"/);
-    assert.match(hero, /href="\/research\/validation"/);
-    assert.match(hero, /TrustCharterSummary/);
+    assert.match(hero, /Verified Officiating Analytics/);
+    assert.doesNotMatch(hero, /HOMEPAGE_METHODOLOGY_BLURB/);
+    assert.doesNotMatch(hero, /TrustCharterSummary/);
+    assert.doesNotMatch(hero, /REFWATCH_AUDIENCE/);
   });
 
   it("insight cards render honesty footnotes when adjusted", () => {
