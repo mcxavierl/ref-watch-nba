@@ -1,6 +1,5 @@
 import { GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL } from "@/lib/gsni";
 import {
-  formatGsni,
   gsniBand,
   gsniCaption,
   isExtremeGsni,
@@ -55,23 +54,17 @@ function toRow(ref: RefProfile, basePath: string): GsniResearchRow {
   };
 }
 
-function highlightHeadline(refName: string, gsni: number, band: GsniBand): string {
-  const score = formatGsni(gsni);
-  if (band === "quiet") {
-    return `${refName} runs state-quiet in clutch minutes (GSNI ${score})`;
-  }
-  if (band === "heavy") {
-    return `${refName} runs state-heavy in clutch minutes (GSNI ${score})`;
-  }
-  return `${refName} tracks league-neutral in clutch minutes (GSNI ${score})`;
+function highlightHeadline(band: GsniBand): string {
+  if (band === "quiet") return "State-quiet in clutch";
+  if (band === "heavy") return "State-heavy in clutch";
+  return "League-neutral in clutch";
 }
 
 function toHighlight(row: GsniResearchRow): GsniResearchHighlight {
-  const gsni = row.gsni!;
   const band = row.band!;
   return {
     ...row,
-    headline: highlightHeadline(row.refName, gsni, band),
+    headline: highlightHeadline(band),
     detail: `${row.sampleGames}-game sample · ${row.highLeverageMinutes.toFixed(0)} high-leverage min`,
   };
 }

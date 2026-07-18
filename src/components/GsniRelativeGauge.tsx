@@ -1,6 +1,6 @@
-import { formatGsni } from "@/lib/gsni-display";
+import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 
-/** Horizontal league-baseline gauge: low GSNI (heavy whistle) left, high GSNI (quiet) right. */
+/** Horizontal league-baseline gauge using the shared GSNI track. */
 export function GsniRelativeGauge({
   gsni,
   className = "",
@@ -8,35 +8,20 @@ export function GsniRelativeGauge({
   gsni: number;
   className?: string;
 }) {
-  const clamped = Math.max(0, Math.min(100, gsni));
-  const markerLeft = `${clamped}%`;
-
   return (
-    <div
-      className={`gsni-relative-gauge ${className}`.trim()}
-      role="img"
-      aria-label={`GSNI ${formatGsni(clamped)} on a 0 to 100 scale where 50 is league neutral.`}
-    >
-      <div className="gsni-relative-gauge-track" aria-hidden>
-        <div className="gsni-relative-gauge-baseline" />
-        <div
-          className="gsni-relative-gauge-marker"
-          style={{ left: markerLeft }}
-        >
-          <span className="gsni-relative-gauge-marker-value">{formatGsni(clamped)}</span>
-        </div>
-      </div>
+    <div className={`gsni-relative-gauge ${className}`.trim()}>
+      <GsniSharedTrack mode="score" value={gsni} />
       <div className="gsni-relative-gauge-labels" aria-hidden>
-        <span className="gsni-relative-gauge-label">High Whistle Frequency</span>
+        <span className="gsni-relative-gauge-label">High whistle</span>
         <span className="gsni-relative-gauge-label gsni-relative-gauge-label--center">
-          League Baseline
+          League baseline
         </span>
         <span className="gsni-relative-gauge-label gsni-relative-gauge-label--end">
-          Low Whistle Frequency
+          Low whistle
         </span>
       </div>
-      <p className="gsni-relative-gauge-hint">
-        Low GSNI left, high GSNI right. 50 is league-neutral in matched clutch states.
+      <p className="gsni-sub-text">
+        Clutch-state variance vs league peers in matched score-and-clock situations.
       </p>
     </div>
   );

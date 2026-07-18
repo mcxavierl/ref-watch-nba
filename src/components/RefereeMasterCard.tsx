@@ -8,7 +8,7 @@ import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import { GsniGauge } from "@/components/GsniGauge";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { buildRefMasterInsights } from "@/lib/ref-master-insights";
-import { gsniFromRefProfile, gsniSampleLabel } from "@/lib/gsni-display";
+import { gsniFromRefProfile } from "@/lib/gsni-display";
 import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
 import { isWhistleTaxonomyLeague } from "@/config/penalty-types";
 import type { LeagueId } from "@/lib/leagues";
@@ -50,7 +50,8 @@ export function RefereeMasterCard({
   const whistleIndex = qualified ? whistleIndexFromRefProfile(profile) : null;
   const gameStateIndex =
     qualified && leagueId === "nfl" ? gsniFromRefProfile(profile) : null;
-  const gsniSample = gameStateIndex !== null ? gsniSampleLabel(profile) : null;
+  const gsniSample =
+    gameStateIndex !== null && profile.gsniHighLeverageMinutes !== undefined;
 
   return (
     <header className="page-profile-header">
@@ -90,7 +91,16 @@ export function RefereeMasterCard({
             </div>
           ) : null}
           {gsniSample ? (
-            <p className="mt-1 text-xs text-muted">{gsniSample}</p>
+            <p className="gsni-sub-text mt-1">
+              <span className="gsni-sample-count font-semibold tabular-nums text-white">
+                {profile.gsniHighLeverageMinutes?.toFixed(0)}
+              </span>{" "}
+              HL min across{" "}
+              <span className="gsni-sample-count font-semibold tabular-nums text-white">
+                {profile.gsniSampleGames ?? 0}
+              </span>{" "}
+              games
+            </p>
           ) : null}
           {isWhistleTaxonomyLeague(leagueId) ? (
             <RefereeWhistleDispositionStrip

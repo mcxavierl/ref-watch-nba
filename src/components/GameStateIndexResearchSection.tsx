@@ -1,7 +1,13 @@
 import Link from "next/link";
+import { Sparkles } from "lucide-react";
+import { GsniCard } from "@/components/GsniCard";
+import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 import { GsniResearchTable } from "@/components/GsniResearchTable";
+import { GsniSampleCount } from "@/components/GsniSampleCount";
+import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 import { TermHelp } from "@/components/TermHelp";
 import { GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL } from "@/lib/gsni";
+import { gsniDeltaFromNeutral } from "@/lib/gsni-ui";
 import {
   buildGsniResearchHighlights,
   buildGsniResearchRows,
@@ -10,18 +16,27 @@ import {
 import type { RefStatsFile } from "@/lib/types";
 
 function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
+  const delta = gsniDeltaFromNeutral(finding.gsni!);
+
   return (
-    <Link
-      href={finding.href}
-      className={`rankings-insight-card gsni-research-highlight gsni-research-highlight--${finding.band}`}
-    >
-      <p className="rankings-insight-kicker">Game-State Index</p>
-      <p className="rankings-insight-name">{finding.refName}</p>
-      <p className="gsni-research-highlight-score" aria-hidden>
-        {finding.gsni}
-      </p>
-      <p className="rankings-insight-copy">{finding.headline}</p>
-      <p className="mt-2 text-xs text-muted">{finding.detail}</p>
+    <Link href={finding.href} className="block min-w-0">
+      <GsniCard className="gsni-research-highlight gsni-research-highlight--card h-full transition-[border-color,box-shadow] hover:border-slate-700">
+        <div className="flex min-w-0 items-center gap-2">
+          <Sparkles className="h-3.5 w-3.5 shrink-0 text-indigo-400" aria-hidden />
+          <p className="gsni-gauge-label m-0">Game-State Index</p>
+        </div>
+        <p className="mt-2 truncate text-base font-semibold text-white">{finding.refName}</p>
+        <GsniSharedTrack mode="score" value={finding.gsni!} className="mt-3" />
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <p className="m-0 text-sm font-semibold text-slate-200">{finding.headline}</p>
+          <GsniDeltaValue delta={delta} />
+        </div>
+        <p className="gsni-sub-text mt-2">
+          <GsniSampleCount>{finding.sampleGames}</GsniSampleCount>-game sample ·{" "}
+          <GsniSampleCount>{Math.round(finding.highLeverageMinutes)}</GsniSampleCount>{" "}
+          HL min
+        </p>
+      </GsniCard>
     </Link>
   );
 }
@@ -42,10 +57,10 @@ export function GameStateIndexResearchSection({
       {highlights.length > 0 ? (
         <section className="section-block">
           <h2 className="section-title">
-            <TermHelp id="game-state-index">Game-State Index</TermHelp> highlights
+            <TermHelp id="game-state-index">GSNI highlights</TermHelp>
           </h2>
-          <p className="section-lead">
-            Officials with the strongest clutch-state whistle profiles after clearing the{" "}
+          <p className="gsni-sub-text section-lead">
+            Strongest clutch-state whistle profiles after the{" "}
             {GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL}+ high-leverage minute gate.
           </p>
           <div className="rankings-insight-grid">
@@ -57,13 +72,11 @@ export function GameStateIndexResearchSection({
       ) : null}
 
       <section className="section-block">
-        <h2 className="section-title">Official Game-State Index table</h2>
-        <p className="section-lead">
-          Leverage-weighted flag rate vs league baselines in matched score-and-clock states.
-          50 is league-neutral. Higher is quieter in key moments; lower is heavier. Scores
-          publish after {GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL}+ high-leverage minutes.{" "}
+        <h2 className="section-title">GSNI official table</h2>
+        <p className="gsni-sub-text section-lead">
+          Leverage-weighted flag rate vs league baselines. 50 is neutral.{" "}
           <Link href="/research/leverage-spike-anomaly" className="font-medium hover:underline">
-            Read the methodology
+            Methodology
           </Link>
           .
         </p>
