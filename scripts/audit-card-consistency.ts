@@ -514,15 +514,6 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "SampleConfidencePill uses shared sample-confidence-pill class",
-    run: () =>
-      auditFileContains(
-        "src/components/hub/SampleConfidencePill.tsx",
-        /sample-confidence-pill/,
-        "sample confidence pill class",
-      ),
-  },
-  {
     name: "DynamicInsightPill uses shared dynamic-insight-pill class",
     run: () =>
       auditFileContains(

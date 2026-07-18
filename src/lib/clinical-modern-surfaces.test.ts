@@ -61,11 +61,11 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /signedDeltaTone/);
   });
 
-  it("ClinicalInsightMatrixCard uses sample confidence pills without provenance footer", () => {
+  it("ClinicalInsightMatrixCard uses directional delta without sample pills", () => {
     const source = readSrc("src/components/ClinicalInsightMatrixCard.tsx");
-    assert.match(source, /SampleConfidencePill/);
     assert.match(source, /DirectionalDeltaValue/);
     assert.match(source, /resolveRefProfileTeam/);
+    assert.doesNotMatch(source, /SampleConfidencePill/);
     assert.match(source, /clinical-insight-matrix-header/);
     assert.match(source, /clinical-insight-matrix-record/);
     assert.match(source, /text-sm text-slate-300/);
@@ -80,14 +80,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
   it("InsightCard editorial variants use split metric hierarchy for matrix splits", () => {
     const source = readSrc("src/components/shared/InsightCard.tsx");
     assert.match(source, /InsightSplitMetrics/);
-    assert.match(source, /Sample size \(N\)/);
-  });
-
-  it("SampleConfidencePill shows exact game count in white semibold", () => {
-    const source = readSrc("src/components/hub/SampleConfidencePill.tsx");
-    assert.match(source, /formatSampleSizeLabel/);
-    assert.match(source, /text-white/);
-    assert.match(source, /font-semibold/);
+    assert.match(source, /matrix-edge/);
   });
 
   it("WorldCupFinalSection uses Clinical Modern DataCapsule match header", () => {

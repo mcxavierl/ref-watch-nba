@@ -334,9 +334,9 @@ describe("insight editorial helpers", () => {
         ],
       }),
     );
-    assert.equal(view.primaryMetric.value, "18 games");
-    assert.equal(view.primaryMetric.label, "Sample size (N)");
-    assert.equal(view.secondaryMetric?.value, "+18.0pp");
+    assert.equal(view.primaryMetric.value, "+18.0pp");
+    assert.equal(view.primaryMetric.label, "Win rate delta vs baseline");
+    assert.equal(view.secondaryMetric, null);
     assert.equal(view.isPreliminary, false);
   });
 
@@ -353,9 +353,9 @@ describe("insight editorial helpers", () => {
         ],
       }),
     );
-    assert.equal(view.primaryMetric.value, "18 games");
-    assert.equal(view.secondaryMetric?.value, "+18.0pp");
-    assert.equal(view.secondaryMetric?.label, "Win rate delta vs baseline");
+    assert.equal(view.primaryMetric.value, "+18.0pp");
+    assert.equal(view.primaryMetric.label, "Win rate delta vs baseline");
+    assert.equal(view.secondaryMetric, null);
     assert.equal(view.isPreliminary, false);
   });
 

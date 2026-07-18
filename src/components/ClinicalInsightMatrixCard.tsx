@@ -3,7 +3,6 @@ import { RefAvatar } from "@/components/RefAvatar";
 import { PersonnelAvatar } from "@/components/PersonnelAvatar";
 import { TeamLogo } from "@/components/TeamLogo";
 import { DirectionalDeltaValue } from "@/components/shared/DirectionalDeltaValue";
-import { SampleConfidencePill } from "@/components/hub/SampleConfidencePill";
 import {
   REF_CARD_CLASS,
   RefCard,
@@ -213,7 +212,6 @@ export function ClinicalInsightMatrixCard({
         >
           {model.refName}
         </Link>
-        <SampleConfidencePill games={model.games} />
       </div>
 
       {model.categoryLabel ? (

@@ -14,6 +14,7 @@ import {
   passesHomepageSampleGate,
 } from "@/lib/homepage-insight-gates";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
+import { editorialInsightView } from "@/lib/insight-editorial";
 
 function matrixCard(games: number, overrides: Partial<LeagueInsightCard> = {}): LeagueInsightCard {
   return {
