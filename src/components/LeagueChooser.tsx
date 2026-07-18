@@ -9,7 +9,6 @@ import type { LeagueId } from "@/lib/leagues";
 import { formatLeaguePaceValue } from "@/lib/league-pace-bars";
 import {
   isCollegeLiveLeague,
-  isProOnlyLiveLeague,
   OVERVIEW_HUB_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
 
@@ -84,8 +83,6 @@ export function LeagueChooser({ cards, placement = "default" }: LeagueChooserPro
   const sortedCards = cards
     .filter((card) => isDashboardLeagueExposed(card.leagueId))
     .sort((a, b) => (hubOrder.get(a.leagueId) ?? 99) - (hubOrder.get(b.leagueId) ?? 99));
-  const proCards = sortedCards.filter((card) => isProOnlyLiveLeague(card.leagueId));
-  const collegeCards = sortedCards.filter((card) => isCollegeLiveLeague(card.leagueId));
 
   if (sortedCards.length === 0) return null;
 
@@ -107,23 +104,11 @@ export function LeagueChooser({ cards, placement = "default" }: LeagueChooserPro
         </h2>
       </div>
 
-      {proCards.length > 0 ? (
-        <div className="overview-league-chooser-grid">
-          {proCards.map((card) => (
-            <ChooserCard key={card.leagueId} card={card} />
-          ))}
-        </div>
-      ) : null}
-
-      {collegeCards.length > 0 ? (
-        <div className="overview-league-chooser-tier overview-league-chooser-tier--college">
-          <div className="overview-league-chooser-grid">
-            {collegeCards.map((card) => (
-              <ChooserCard key={card.leagueId} card={card} />
-            ))}
-          </div>
-        </div>
-      ) : null}
+      <div className="overview-league-chooser-grid">
+        {sortedCards.map((card) => (
+          <ChooserCard key={card.leagueId} card={card} />
+        ))}
+      </div>
     </section>
   );
 }
