@@ -75,11 +75,36 @@ function fail(msg: string): void {
   failures.push(msg);
 }
 
-async function fetchText(url: string): Promise<{ status: number; body: string }> {
+async function fetchText(url: string): Promise<{ status: number; body: string; url: string }> {
   const res = await fetch(url, {
     headers: { "User-Agent": "refwatch-deploy-verify/1.0" },
   });
-  return { status: res.status, body: await res.text() };
+  return { status: res.status, body: await res.text(), url: res.url };
+}
+
+async function fetchRouteWithRetry(
+  route: RouteCheck,
+  url: string,
+  attempts = 4,
+  delayMs = 3000,
+): Promise<{ status: number; body: string; url: string }> {
+  let last: { status: number; body: string; url: string } | null = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    last = await fetchText(url);
+    const okStatus =
+      (route.minStatus == null || last.status >= route.minStatus) &&
+      (route.maxStatus == null || last.status <= route.maxStatus);
+    const needles = route.mustIncludeOne ?? [];
+    const okBody =
+      needles.length === 0 || needles.some((needle) => last!.body.includes(needle));
+    if (okStatus && okBody) return last;
+    if (attempt < attempts && last.status === 404) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      continue;
+    }
+    return last;
+  }
+  return last!;
 }
 
 console.log(`Production deploy verify → ${ORIGIN}`);
@@ -88,7 +113,7 @@ async function main(): Promise<void> {
   for (const route of ROUTES) {
     const url = `${ORIGIN}${route.path}`;
     try {
-      const { status, body } = await fetchText(url);
+      const { status, body } = await fetchRouteWithRetry(route, url);
       if (route.minStatus != null && status < route.minStatus) {
         fail(`${route.path}: HTTP ${status} (need >= ${route.minStatus})`);
       }
