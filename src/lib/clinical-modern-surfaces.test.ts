@@ -21,6 +21,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
   it("TeamSplitView uses Clinical Modern metrics without Balanced pills", () => {
     const source = readSrc("src/components/TeamSplitView.tsx");
     assert.match(source, /REF_CARD_CLASS/);
+    assert.match(source, /resolveRefProfileTeam/);
     assert.match(source, /StandoutMetricValue/);
     assert.match(source, /NeutralDivergenceBar/);
     assert.match(source, /clinical-insight-matrix-avatars/);
@@ -63,6 +64,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
   it("ClinicalInsightMatrixCard uses sample confidence pills without provenance footer", () => {
     const source = readSrc("src/components/ClinicalInsightMatrixCard.tsx");
     assert.match(source, /SampleConfidencePill/);
+    assert.match(source, /resolveRefProfileTeam/);
     assert.match(source, /clinical-insight-matrix-header/);
     assert.match(source, /clinical-insight-matrix-record/);
     assert.match(source, /text-sm text-slate-300/);

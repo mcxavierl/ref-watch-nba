@@ -13,6 +13,7 @@ import type { FrictionGrudgeFinding } from "@/lib/friction-grudge-matrix";
 import type { LeagueId } from "@/lib/leagues";
 import { statValueDelightTone, type MetricDelightTone } from "@/lib/metric-delight";
 import type { MatrixExtremeHighlight } from "@/lib/ref-team-matrix";
+import { resolveRefProfileTeam, refProfileTeamLogoSport } from "@/lib/ref-profile-team-utils";
 import { formatBaselinePct, formatSigned } from "@/lib/stats-utils";
 
 type MatrixAvatarSport = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
@@ -163,15 +164,24 @@ export function matrixExtremeToMatrixCard(
   };
 }
 
-function MatrixSubjectAvatar({ subject }: { subject: ClinicalInsightMatrixSubject }) {
+function MatrixSubjectAvatar({
+  subject,
+  leagueId,
+}: {
+  subject: ClinicalInsightMatrixSubject;
+  leagueId: LeagueId;
+}) {
   if (subject.kind === "personnel") {
     return <PersonnelAvatar name={subject.name} sport={subject.sport} size="lg" />;
   }
 
+  const team = resolveRefProfileTeam(leagueId, subject.abbr);
+  const logoSport = refProfileTeamLogoSport(leagueId);
+
   return (
     <TeamLogo
-      team={{ abbr: subject.abbr, name: subject.label }}
-      sport={subject.sport}
+      team={team}
+      sport={logoSport}
       size="xl"
       className="clinical-insight-matrix-team-logo"
     />
@@ -223,7 +233,7 @@ export function ClinicalInsightMatrixCard({
               decorative
             />
             <span className="clinical-insight-matrix-vs">vs</span>
-            <MatrixSubjectAvatar subject={model.subject} />
+            <MatrixSubjectAvatar subject={model.subject} leagueId={leagueId} />
           </>
         ) : null}
       </div>
