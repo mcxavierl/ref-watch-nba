@@ -71,8 +71,11 @@
 .overview-slate-capsule-mark .league-nav-mark--epl,
 .overview-slate-capsule-mark .league-nav-mark[data-league="epl"] {
   width: auto;
-  height: 1.2rem;
-  max-width: 1.15rem;
+  height: 1.35rem;
+  max-width: 1.35rem;
+  object-fit: contain;
+  object-position: center;
+  margin-inline: auto;
 }
 
 .overview-slate-capsule-copy {
@@ -280,9 +283,12 @@
 .upcoming-game-card__league-mark .league-nav-mark--epl,
 .upcoming-game-card__league-mark .league-nav-mark[data-league="epl"] {
   width: auto;
-  height: 1.25rem;
-  max-width: 1.15rem;
-  max-height: 1.35rem;
+  height: 1.4rem;
+  max-width: 1.35rem;
+  max-height: 1.45rem;
+  object-fit: contain;
+  object-position: center;
+  margin-inline: auto;
 }
 
 .upcoming-game-card__league-mark .league-nav-mark--laliga,

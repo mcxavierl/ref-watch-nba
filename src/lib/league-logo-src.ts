@@ -68,7 +68,7 @@ export function leagueNavMarkDimensions(league: LeagueId): { width: number; heig
     case "cfb":
       return { width: 18, height: 18 };
     case "epl":
-      return { width: 18, height: 20 };
+      return { width: 20, height: 24 };
     case "laliga":
       return { width: 22, height: 18 };
     case "nhl":
@@ -85,7 +85,7 @@ export function leagueHeroLogoDimensions(league: LeagueId): { width: number; hei
     case "cfb":
       return { width: 36, height: 48 };
     case "epl":
-      return { width: 44, height: 48 };
+      return { width: 48, height: 56 };
     case "laliga":
       return { width: 56, height: 40 };
     case "nhl":
