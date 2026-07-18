@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import {
   isOverviewSnapshotSource,
@@ -26,6 +27,24 @@ describe("ship guardrail scripts", () => {
       }
       if (!isOverviewSnapshotSource(file)) {
         throw new Error(`isOverviewSnapshotSource should match ${file}`);
+      }
+    }
+  });
+
+  it("pre-push hook runs css-syntax before full check:ci", () => {
+    const hook = readFileSync(".githooks/pre-push", "utf8");
+    const cssIndex = hook.indexOf("check:css-syntax");
+    const ciIndex = hook.indexOf("check:ci");
+    if (cssIndex < 0 || ciIndex < 0 || cssIndex > ciIndex) {
+      throw new Error("pre-push hook must run check:css-syntax before check:ci");
+    }
+  });
+
+  it("validate workflows allow 20 minutes for build steps", () => {
+    for (const file of [".github/workflows/ci.yml", ".github/workflows/deploy.yml"]) {
+      const source = readFileSync(file, "utf8");
+      if (!source.includes("timeout-minutes: 20")) {
+        throw new Error(`${file} must set validate timeout-minutes: 20`);
       }
     }
   });

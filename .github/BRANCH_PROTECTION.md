@@ -18,9 +18,12 @@ Deploy (`.github/workflows/deploy.yml`) already re-runs the same validate steps 
 
 ```bash
 npm run check:ci          # full pre-push / pre-merge gate (mirrors CI)
-npm run setup:hooks       # install pre-push hook (runs check:ci)
+npm run check:css-syntax  # fast CSS parse (~1s); also runs first in pre-push hook
+npm run setup:hooks       # install pre-push hook (css-syntax, then check:ci)
 SKIP_SHIP_CHECK=1 git push   # emergency bypass only
 ```
+
+Validate jobs in CI and deploy use a **20-minute** timeout (includes `build:next`).
 
 ## Agent / cloud workflow
 
