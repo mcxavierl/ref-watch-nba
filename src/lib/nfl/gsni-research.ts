@@ -64,9 +64,9 @@ function toRow(ref: RefProfile, basePath: string): GsniResearchRow {
 }
 
 function highlightHeadline(band: GsniBand): string {
-  if (band === "quiet") return "State-quiet in clutch";
-  if (band === "heavy") return "State-heavy in clutch";
-  return "League-neutral in clutch";
+  if (band === "quiet") return "Quiet in clutch states";
+  if (band === "heavy") return "Heavy in clutch states";
+  return "League-average in clutch states";
 }
 
 function toHighlight(row: GsniResearchRow): GsniResearchHighlight {

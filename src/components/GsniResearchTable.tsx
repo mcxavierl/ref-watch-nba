@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { GsniBandBadge } from "@/components/GsniBandBadge";
 import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
+import { explainGsni } from "@/lib/gsni-display";
 import { gsniDeltaFromNeutral } from "@/lib/gsni-ui";
 import type { GsniResearchRow } from "@/lib/nfl/gsni-research";
 
@@ -146,8 +148,8 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
                         className="gsni-shared-track--compact"
                       />
                     )}
-                    <div className="mt-1 flex items-center justify-end gap-2">
-                      <GsniSampleCount>{row.gsni}</GsniSampleCount>
+                    <div className="mt-1 flex flex-wrap items-center justify-end gap-2">
+                      <GsniBandBadge band={explainGsni(row.gsni).band} />
                       <GsniDeltaValue delta={gsniDeltaFromNeutral(row.gsni)} />
                     </div>
                   </div>

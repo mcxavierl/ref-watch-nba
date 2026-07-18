@@ -159,7 +159,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "game-state-index": {
     label: "Game-State Index",
-    text: "Compares a referee's leverage-weighted flag rate to the league in similar score-and-clock states. 50 is neutral; higher means quieter in key moments; lower means heavier. NFL officials need 25+ high-leverage minutes of play-level penalty data before this appears.",
+    text: "Clutch whistle tendency vs the league in matched score-and-clock situations. Labeled Quiet when flags run below league average in those spots, Heavy when above, Neutral when near average. The index uses 50 as league average: higher is quieter, lower is heavier (0 = heaviest, 100 = quietest). NFL officials need 25+ high-leverage minutes before this appears on profiles.",
   },
   "home-margin": {
     label: "Home avg margin",
@@ -191,6 +191,6 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   gsni: {
     label: "Game-State Neutralization (GSNI)",
-    text: "NFL-only metric. GSNI compares a referee's leverage-weighted whistle rate to league peers in the same game states (score gap and clock). 50 is neutral. Higher means fewer whistles than league in clutch states; lower means more. Requires 50+ high-leverage minutes before we publish a score.",
+    text: "NFL-only clutch whistle metric. We group plays by score gap and clock, weight close late-game minutes higher, and compare this official's flag rate to the league in those same buckets. The result is labeled Quiet (fewer flags than league), Heavy (more flags), or Neutral. The index runs 0 to 100 where 50 is league average: higher is quieter, lower is heavier. Requires 50+ high-leverage minutes before we publish a score.",
   },
 };

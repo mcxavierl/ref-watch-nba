@@ -87,7 +87,7 @@ export function RefereeMasterCard({
                 <MetricInfoHint
                   hint={
                     gsniDisplay?.tooltip ??
-                    "Game-State Index compares leverage-weighted flag rate to the league in similar score-and-clock situations. 50 is neutral; higher is quieter in key moments."
+                    "Clutch whistle tendency vs league in matched score-and-clock situations. Quiet = fewer flags than league; Heavy = more. Index 50 is league average (0 = heaviest, 100 = quietest)."
                   }
                 >
                   <GsniGauge index={gameStateIndex} size="sm" className="min-w-[9.5rem] flex-1" />
