@@ -88,4 +88,30 @@ describe("ship guardrail scripts", () => {
       throw new Error("CBB ref-stats-core must invalidate overview snapshot freshness");
     }
   });
+
+  it("git push workflows declare contents: write and checkout token", () => {
+    for (const file of [
+      ".github/workflows/nightly-slate.yml",
+      ".github/workflows/refresh-sports-data.yml",
+    ]) {
+      const source = readFileSync(file, "utf8");
+      if (!/^permissions:\s*\n\s*contents: write/m.test(source)) {
+        throw new Error(`${file} must declare permissions: contents: write for git push`);
+      }
+      if (!source.includes("token: ${{ secrets.GITHUB_TOKEN }}")) {
+        throw new Error(`${file} checkout must pass secrets.GITHUB_TOKEN for git push`);
+      }
+    }
+  });
+
+  it("audit-ci-artifact-contract passes on current tree", () => {
+    execSync("git restore data/overview-snapshot.json 2>/dev/null || true", {
+      cwd: process.cwd(),
+      stdio: "ignore",
+    });
+    execSync("npx tsx scripts/audit-ci-artifact-contract.ts", {
+      cwd: process.cwd(),
+      stdio: "pipe",
+    });
+  });
 });
