@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ProfileSignal, ProfileSignalsBundle } from "@/lib/profile-signals";
-import { StatusBadge } from "@/components/hub/StatusBadge";
+import { NotableInsightBadge } from "@/components/hub/NotableInsightBadge";
 import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { researchHubHref, type FindingLeague } from "@/lib/findings-shared";
@@ -92,18 +92,11 @@ function SignalCard({
 
   return (
     <div>
-      <div className="flex flex-wrap items-start gap-x-2 gap-y-1">
+      <div className="flex flex-wrap items-center gap-2">
         <h3 className={titleClass}>
           {showKeyLabel ? keyFindingLabel(signal) : signal.headline}
         </h3>
-        {signal.notable && (
-          <StatusBadge
-            verdict="caution"
-            label="Notable"
-            compact
-            className="profile-signal-badge"
-          />
-        )}
+        {signal.notable && <NotableInsightBadge />}
       </div>
       <p className={bodyClass}>{signal.body}</p>
       <SignalStats stats={signal.stats} />

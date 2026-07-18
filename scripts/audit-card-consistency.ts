@@ -241,12 +241,12 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "ProfileSignalsSection uses StatusBadge",
+    name: "ProfileSignalsSection uses NotableInsightBadge for notable signals",
     run: () =>
       auditFileContains(
         "src/components/ProfileSignalsSection.tsx",
-        /StatusBadge/,
-        "StatusBadge in profile signals",
+        /NotableInsightBadge/,
+        "NotableInsightBadge in profile signals",
       ),
   },
   {
@@ -359,12 +359,12 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "ProfileSignalsSection uses StatusBadge",
+    name: "ProfileSignalsSection uses NotableInsightBadge for notable signals",
     run: () =>
       auditFileContains(
         "src/components/ProfileSignalsSection.tsx",
-        /StatusBadge/,
-        "StatusBadge in profile signals",
+        /NotableInsightBadge/,
+        "NotableInsightBadge in profile signals",
       ),
   },
   {

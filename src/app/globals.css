@@ -2380,10 +2380,6 @@ p {
     color: var(--text-secondary);
   }
 
-  .profile-signal-badge {
-    align-self: flex-start;
-  }
-
   .profile-signal-stat {
     border-radius: 0.375rem;
     border: 1px solid var(--border-subtle);
