@@ -190,7 +190,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
     text: "Research-style patterns on a ref profile: scoring delta, whistle rate vs baseline, over frequency, and home/road splits when available. Informational only; always shows sample size and data provenance.",
   },
   gsni: {
-    label: "Game-State Neutralization Index (NFL)",
+    label: "Game-State Neutralization (GSNI)",
     text: "NFL-only metric. GSNI compares a referee's leverage-weighted whistle rate to league peers in the same game states (score gap and clock). 50 is neutral. Higher means fewer whistles than league in clutch states; lower means more. Requires 50+ high-leverage minutes before we publish a score.",
   },
 };

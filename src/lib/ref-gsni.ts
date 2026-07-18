@@ -55,6 +55,14 @@ export function gsniHighLeverageSampleLabel(tier: GsniHighLeverageSampleTier): s
   }
 }
 
+/** Maps high-leverage sample depth to a confidence tier for GSNI context pills. */
+export function gsniConfidenceLabel(minutes: number): "Low" | "Med" | "High" {
+  const tier = gsniHighLeverageSampleTier(minutes);
+  if (tier === "high") return "High";
+  if (tier === "moderate") return "Med";
+  return "Low";
+}
+
 function gsniProvenance(
   meta: RefStatsFile["meta"],
   sampleGames: number,
