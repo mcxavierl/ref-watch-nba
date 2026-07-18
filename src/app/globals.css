@@ -2498,7 +2498,6 @@ p {
     transition: background-color 150ms ease-out;
   }
 
-  .finding-accordion-stack--pro .finding-accordion-trigger-inner,
   .official-findings-single-body {
     display: flex;
     align-items: flex-start;
@@ -2517,35 +2516,6 @@ p {
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-3) var(--space-4);
-  }
-
-  .research-pro-toggle {
-    display: inline-flex;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    background: var(--surface);
-  }
-
-  .research-pro-toggle-btn {
-    padding: 0.35rem 0.75rem;
-    font-size: var(--text-xs);
-    font-weight: 600;
-    color: var(--muted-foreground);
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-  }
-
-  .research-pro-toggle-btn-active {
-    color: var(--foreground);
-    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-  }
-
-  .research-pro-lead {
-    margin-top: var(--space-2);
-    font-size: var(--text-sm);
-    color: var(--muted-foreground);
   }
 
   .edge-finder-cell {

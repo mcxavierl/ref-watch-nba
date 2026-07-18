@@ -28,8 +28,6 @@ import { resolveLeagueVerification } from "@/lib/league-verification";
 import { scopedBaselinesSeasons } from "@/lib/scoped-ref-stats";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
-import { buildResearchFindingEvMap } from "@/lib/ev-calculator";
-import { loadLeagueAssignments } from "@/lib/league-odds";
 import { getFrictionMatrixDataset } from "@/lib/friction-matrix";
 import { getCbbWhistleMatrixDataset } from "@/lib/cbb-whistle-matrix";
 import { getCfbPenaltyEngineDataset } from "@/lib/cfb-penalty-engine";
@@ -312,13 +310,6 @@ export function InsightsHubPage({
             ...finding,
             league: dataLeague,
           }));
-    const evByFindingId = buildResearchFindingEvMap(
-      findings,
-      stats,
-      leagueId,
-      scopedSeasons,
-      loadLeagueAssignments(leagueId),
-    );
     const frictionDataset = getFrictionMatrixDataset(leagueId, stats);
     const cbbWhistleDataset =
       leagueId === "cbb"
@@ -373,7 +364,6 @@ export function InsightsHubPage({
             findings={findings}
             league={dataLeague}
             refCount={stats.refs.length}
-            evByFindingId={evByFindingId}
           />
         </Suspense>
       </>
