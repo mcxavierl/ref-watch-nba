@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
-import { leagueLogoSrc } from "@/lib/league-logo-src";
+import { leagueHeroLogoDimensions, leagueLogoSrc, leagueNavMarkDimensions } from "@/lib/league-logo-src";
 
 const LOGO_DIR = join(process.cwd(), "public", "logos");
 
@@ -26,5 +26,13 @@ describe("league logos", () => {
   it("resolves themed EPL logo src for nav and chooser marks", () => {
     assert.equal(leagueLogoSrc("epl", "dark"), "/logos/epl-lion.svg");
     assert.equal(leagueLogoSrc("epl", "light"), "/logos/epl-lion-dark.svg");
+  });
+
+  it("uses square-ish intrinsic dimensions for the EPL lion mark", () => {
+    const epl = leagueNavMarkDimensions("epl");
+    const nba = leagueNavMarkDimensions("nba");
+    assert.ok(epl.height >= epl.width, "EPL lion mark should be portrait or square");
+    assert.ok(nba.width > nba.height, "NBA mark remains landscape");
+    assert.equal(leagueHeroLogoDimensions("epl").height, 48);
   });
 });

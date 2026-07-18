@@ -1,7 +1,7 @@
 "use client";
 
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
-import { leagueLogoNavClass, leagueLogoSrc } from "@/lib/league-logo-src";
+import { leagueLogoNavClass, leagueLogoSrc, leagueNavMarkDimensions } from "@/lib/league-logo-src";
 import { useColorMode } from "@/lib/a11y/useColorMode";
 
 type LeagueNavId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
@@ -64,6 +64,7 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
   }
 
   const className = leagueLogoNavClass(league) || proLogos?.className || `league-nav-mark--${league}`;
+  const { width, height } = leagueNavMarkDimensions(league);
 
   return (
     <img
@@ -72,8 +73,8 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
       aria-hidden
       className={`league-nav-mark${className ? ` ${className}` : ""}${active ? " league-nav-mark--on-pill" : ""}`}
       data-league={league}
-      width={league === "nfl" ? 13 : league === "cbb" || league === "cfb" ? 18 : 28}
-      height={league === "nfl" ? 18 : league === "cbb" || league === "cfb" ? 18 : 18}
+      width={width}
+      height={height}
       decoding="async"
       referrerPolicy="no-referrer"
     />

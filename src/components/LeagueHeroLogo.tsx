@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useColorMode } from "@/lib/a11y/useColorMode";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
-import { leagueLogoNavClass, leagueLogoSrc } from "@/lib/league-logo-src";
+import { leagueLogoNavClass, leagueLogoSrc, leagueHeroLogoDimensions } from "@/lib/league-logo-src";
 
 type LeagueHeroLogoProps = {
   leagueId: LeagueId;
@@ -35,8 +35,7 @@ export function LeagueHeroLogo({
     );
   }
 
-  const width = leagueId === "nfl" || leagueId === "cfb" ? 36 : 52;
-  const height = leagueId === "nfl" || leagueId === "cfb" ? 48 : 40;
+  const { width, height } = leagueHeroLogoDimensions(leagueId);
 
   return (
     <Image
