@@ -56,9 +56,10 @@ function SignalReportSection({ report }: { report: ValidationSignalReport }) {
         </div>
       ) : (
         <p className="validation-empty-state">
-          Backtest not scored yet. Run historical closing-line ingest (
-          <code>npm run fetch-nba-historical-lines</code> +{" "}
-          <code>npm run merge-market-lines</code>) to populate external-line coverage.
+          Backtest not scored yet. Populate external closing lines, then refresh validation (
+          <code>npm run validation:refresh</code>). Requires{" "}
+          <code>ODDS_API_KEY</code> for{" "}
+          <code>npm run fetch-nba-historical-lines</code>.
         </p>
       )}
     </section>
@@ -88,7 +89,7 @@ export function ValidationReportContent() {
         {!report.hasExternalLineCoverage ? (
           <p className="validation-coverage-warning" role="status">
             Current build has zero external-line games scored. Validation infrastructure is
-            live; historical line backfill is pending.
+            live; run <code>npm run validation:refresh</code> after historical line backfill.
           </p>
         ) : null}
       </section>

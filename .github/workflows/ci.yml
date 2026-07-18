@@ -40,6 +40,11 @@ jobs:
         env:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
 
+      - name: Validation artifact freshness
+        run: npm run check:validation-freshness
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+
       - name: Coupled test change gate
         run: npm run check:coupled-tests
         env:

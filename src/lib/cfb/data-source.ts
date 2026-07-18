@@ -26,10 +26,19 @@ export function cfbUsesSimulatedStats(meta: RefStatsFile["meta"]): boolean {
   return isCfbSimulatedData(meta.source) || !meta.atsAvailable;
 }
 
+export function cfbOfficialsPendingMessage(meta: RefStatsFile["meta"]): string {
+  const games = meta.totalGamesProcessed ?? 0;
+  return `ESPN provides ${games.toLocaleString("en-US")} scored games with penalty data, but official crews are not published in ESPN summaries. Ref profiles and ref×team matrix stay unavailable until a secondary officials source is linked.`;
+}
+
 export function cfbPreviewBannerMessage(
   statsSource: RefStatsFile["meta"]["source"],
   assignmentsSource?: AssignmentsFile["source"],
+  stats?: Pick<RefStatsFile, "meta" | "refs"> | null,
 ): string {
+  if (isCfbOfficialsPending(stats)) {
+    return cfbOfficialsPendingMessage(stats!.meta);
+  }
   if (isCfbVerifiedData(statsSource) && assignmentsSource === "espn") {
     return "Scores, penalty counts, and tonight's crews are from ESPN. ATS/O-U splits are unavailable without verified closing lines.";
   }
