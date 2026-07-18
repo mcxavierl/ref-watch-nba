@@ -3,6 +3,7 @@ import type { MetricProvenance } from "@/lib/types";
 import { isFallbackMetric } from "@/lib/provenance-utils";
 import { provenanceValueClass } from "@/components/ProvenanceMarker";
 import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 
 /**
  * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
@@ -27,6 +28,7 @@ export function RefDashboardStatCell({
   sampleSize,
   source,
   lastUpdated,
+  valueTooltip,
 }: {
   label: ReactNode;
   value: string;
@@ -36,8 +38,18 @@ export function RefDashboardStatCell({
   sampleSize?: number;
   source?: string;
   lastUpdated?: string;
+  /** Tooltip explaining the shrunk estimate and raw observed value. */
+  valueTooltip?: string;
 }) {
   const hidden = isFallbackMetric(provenance);
+
+  const valueNode = (
+    <dd
+      className={`ref-stat-value font-medium tabular-nums ${provenanceValueClass(provenance) ?? ""}`.trim()}
+    >
+      {hidden ? "-" : value}
+    </dd>
+  );
 
   return (
     <div className="ref-stat-card clinical-metric-card backdrop-blur-md">
@@ -52,11 +64,11 @@ export function RefDashboardStatCell({
           />
         )}
       </div>
-      <dd
-        className={`ref-stat-value font-medium tabular-nums ${provenanceValueClass(provenance) ?? ""}`.trim()}
-      >
-        {hidden ? "-" : value}
-      </dd>
+      {valueTooltip && !hidden ? (
+        <MetricInfoHint hint={valueTooltip}>{valueNode}</MetricInfoHint>
+      ) : (
+        valueNode
+      )}
       {detail && !hidden && (
         <dd
           className={

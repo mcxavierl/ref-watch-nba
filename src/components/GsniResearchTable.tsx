@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { gsniDeltaFromNeutral } from "@/lib/gsni-ui";
 import type { GsniResearchRow } from "@/lib/nfl/gsni-research";
 
@@ -126,13 +127,25 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
               <td className="data-table-num">
                 {row.gsni !== null ? (
                   <div className="gsni-table-score-cell min-w-[8.5rem]">
-                    <GsniSharedTrack
-                      mode="score"
-                      value={row.gsni}
-                      showValue={false}
-                      showDelta={false}
-                      className="gsni-shared-track--compact"
-                    />
+                    {row.gsniShrinkageTooltip ? (
+                      <MetricInfoHint hint={row.gsniShrinkageTooltip}>
+                        <GsniSharedTrack
+                          mode="score"
+                          value={row.gsni}
+                          showValue={false}
+                          showDelta={false}
+                          className="gsni-shared-track--compact"
+                        />
+                      </MetricInfoHint>
+                    ) : (
+                      <GsniSharedTrack
+                        mode="score"
+                        value={row.gsni}
+                        showValue={false}
+                        showDelta={false}
+                        className="gsni-shared-track--compact"
+                      />
+                    )}
                     <div className="mt-1 flex items-center justify-end gap-2">
                       <GsniSampleCount>{row.gsni}</GsniSampleCount>
                       <GsniDeltaValue delta={gsniDeltaFromNeutral(row.gsni)} />

@@ -3,6 +3,7 @@ import { TermHelp } from "@/components/TermHelp";
 import { GsniCard } from "@/components/GsniCard";
 import { GsniInsightPill } from "@/components/GsniInsightPill";
 import { GsniRelativeGauge } from "@/components/GsniRelativeGauge";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSoftLockCard } from "@/components/GsniSoftLockCard";
 import {
@@ -45,7 +46,13 @@ export function RefGsniSection({
         ) : gateCleared ? (
           <GsniCard>
             <div className="gsni-profile-active">
-              <GsniRelativeGauge gsni={metrics.referee_gsni!} />
+              {metrics.gsniShrinkageTooltip ? (
+                <MetricInfoHint hint={metrics.gsniShrinkageTooltip}>
+                  <GsniRelativeGauge gsni={metrics.referee_gsni!} />
+                </MetricInfoHint>
+              ) : (
+                <GsniRelativeGauge gsni={metrics.referee_gsni!} />
+              )}
               <div className="gsni-profile-pills">
                 <GsniInsightPill icon={Activity}>
                   Confidence: {gsniConfidenceLabel(metrics.highLeverageMinutes)}

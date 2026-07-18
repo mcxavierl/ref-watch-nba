@@ -2,6 +2,7 @@ import { GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL } from "@/lib/gsni";
 import {
   gsniBand,
   gsniCaption,
+  gsniShrinkageFromProfile,
   isExtremeGsni,
   type GsniBand,
 } from "@/lib/gsni-display";
@@ -13,7 +14,10 @@ export const GSNI_RESEARCH_MIN_SAMPLE_GAMES = 100;
 export type GsniResearchRow = {
   refSlug: string;
   refName: string;
+  /** Shrunk GSNI shown in the UI. */
   gsni: number | null;
+  gsniObserved: number | null;
+  gsniShrinkageTooltip: string | null;
   volatility: number | null;
   band: GsniBand | null;
   caption: string | null;
@@ -36,17 +40,22 @@ function gateCleared(ref: RefProfile): boolean {
 }
 
 function toRow(ref: RefProfile, basePath: string): GsniResearchRow {
-  const gsni = ref.referee_gsni ?? null;
   const cleared = gateCleared(ref);
-  const band = gsni !== null && cleared ? gsniBand(gsni) : null;
+  const shrinkage = cleared ? gsniShrinkageFromProfile(ref) : null;
+  const displayGsni = shrinkage?.display ?? null;
+  const observedGsni = shrinkage?.observed ?? ref.referee_gsni ?? null;
+  const band =
+    displayGsni !== null && cleared ? gsniBand(displayGsni) : null;
 
   return {
     refSlug: ref.slug,
     refName: ref.name,
-    gsni: cleared ? gsni : null,
+    gsni: displayGsni,
+    gsniObserved: observedGsni,
+    gsniShrinkageTooltip: shrinkage?.tooltip ?? null,
     volatility: cleared ? (ref.referee_gsni_volatility ?? null) : null,
     band,
-    caption: gsni !== null && cleared ? gsniCaption(gsni) : null,
+    caption: displayGsni !== null && cleared ? gsniCaption(displayGsni) : null,
     sampleGames: ref.gsniSampleGames ?? ref.games,
     highLeverageMinutes: ref.gsniHighLeverageMinutes ?? 0,
     gateCleared: cleared,
@@ -70,10 +79,11 @@ function toHighlight(row: GsniResearchRow): GsniResearchHighlight {
 }
 
 function isHighlightEligible(ref: RefProfile): boolean {
+  const shrinkage = gsniShrinkageFromProfile(ref);
   return (
     gateCleared(ref) &&
-    ref.referee_gsni !== undefined &&
-    isExtremeGsni(ref.referee_gsni) &&
+    shrinkage !== null &&
+    isExtremeGsni(shrinkage.display) &&
     (ref.gsniSampleGames ?? ref.games) >= GSNI_RESEARCH_MIN_SAMPLE_GAMES
   );
 }
@@ -110,11 +120,19 @@ export function buildGsniResearchHighlights(
     const sampleDiff =
       (b.gsniSampleGames ?? b.games) - (a.gsniSampleGames ?? a.games);
     if (sampleDiff !== 0) return sampleDiff;
-    return Math.abs(b.referee_gsni! - 50) - Math.abs(a.referee_gsni! - 50);
+    const aDisplay = gsniShrinkageFromProfile(a)?.display ?? 50;
+    const bDisplay = gsniShrinkageFromProfile(b)?.display ?? 50;
+    return Math.abs(bDisplay - 50) - Math.abs(aDisplay - 50);
   });
 
-  const quiet = eligible.filter((ref) => gsniBand(ref.referee_gsni!) === "quiet");
-  const heavy = eligible.filter((ref) => gsniBand(ref.referee_gsni!) === "heavy");
+  const quiet = eligible.filter((ref) => {
+    const display = gsniShrinkageFromProfile(ref)?.display;
+    return display !== undefined && gsniBand(display) === "quiet";
+  });
+  const heavy = eligible.filter((ref) => {
+    const display = gsniShrinkageFromProfile(ref)?.display;
+    return display !== undefined && gsniBand(display) === "heavy";
+  });
 
   const picked: RefProfile[] = [];
   if (quiet[0]) picked.push(quiet[0]);
