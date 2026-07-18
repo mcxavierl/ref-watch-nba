@@ -96,6 +96,18 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /insight-split-delta-value--positive/);
   });
 
+  it("InsightMetricComparison uses dual-marker win-rate track for baseline splits", () => {
+    const source = readSrc("src/components/shared/InsightMetricComparison.tsx");
+    assert.match(source, /insight-metric-comparison-dual-axis/);
+    assert.match(source, /insight-metric-comparison-marker--baseline/);
+    assert.match(source, /insight-metric-comparison-marker--outcome/);
+    assert.match(source, /insight-metric-comparison-gap/);
+    const css = readSrc("src/components/insight-card.css");
+    assert.match(css, /insight-metric-comparison-dual-axis/);
+    assert.match(css, /height: 0\.25rem/);
+    assert.match(css, /border-radius: 999px/);
+  });
+
   it("WorldCupFinalSection uses Clinical Modern DataCapsule match header", () => {
     const source = readSrc("src/components/WorldCupFinalSection.tsx");
     assert.match(source, /MatchStatusPill/);

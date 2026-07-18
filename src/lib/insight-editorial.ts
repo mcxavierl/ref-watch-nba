@@ -429,6 +429,11 @@ export function insightMetricComparison(
           : null;
 
       if (deltaPp !== null) {
+        const refWinRate =
+          recordWinRate !== null
+            ? recordWinRate
+            : Math.max(0, Math.min(100, baselinePct + deltaPp));
+
         return {
           crewValue: Math.abs(deltaPp),
           leagueValue: baselinePct,
@@ -436,6 +441,7 @@ export function insightMetricComparison(
           leagueLabel: "Team baseline",
           format: "pct",
           deltaPp,
+          refWinRate,
           teamBaseline: baselinePct,
         };
       }

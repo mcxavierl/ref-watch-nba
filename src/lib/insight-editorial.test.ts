@@ -283,6 +283,7 @@ describe("insight editorial helpers", () => {
     assert.equal(comparison?.format, "pct");
     assert.equal(comparison?.deltaPp, 51.5);
     assert.equal(comparison?.teamBaseline, 48.5);
+    assert.equal(comparison?.refWinRate, 100);
     assert.equal(comparison?.crewValue, comparison?.deltaPp);
     assert.equal(comparison?.leagueValue, 48.5);
   });

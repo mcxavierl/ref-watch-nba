@@ -633,6 +633,91 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box-
   margin-bottom: 0;
 }
 
+.insight-metric-comparison-grid {
+  display: grid;
+  grid-template-columns: minmax(5.75rem, 7.75rem) minmax(0, 1fr) minmax(3.25rem, 4.75rem);
+  grid-template-rows: auto auto;
+  column-gap: 0.45rem;
+  row-gap: 0.4rem;
+  align-items: center;
+}
+
+.insight-metric-comparison--compact .insight-metric-comparison-grid {
+  grid-template-columns: minmax(5rem, 7rem) minmax(0, 1fr) minmax(3rem, 4.25rem);
+  column-gap: 0.35rem;
+  row-gap: 0.35rem;
+}
+
+.insight-metric-comparison-dual-track {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0.15rem 0;
+}
+
+.insight-metric-comparison-dual-axis {
+  position: relative;
+  width: 100%;
+  height: 0.25rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border) 55%, transparent);
+}
+
+.insight-metric-comparison-gap {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 999px;
+  min-width: 2px;
+}
+
+.insight-metric-comparison-gap--positive {
+  background: rgb(74 222 128 / 0.45);
+}
+
+.insight-metric-comparison-gap--negative {
+  background: rgb(248 113 113 / 0.45);
+}
+
+.insight-metric-comparison-gap--neutral {
+  background: rgba(var(--text-secondary-rgb), 0.35);
+}
+
+.insight-metric-comparison-marker {
+  position: absolute;
+  top: 50%;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px rgb(15 23 42 / 0.55);
+}
+
+.insight-metric-comparison-marker--baseline {
+  width: 0.45rem;
+  height: 0.45rem;
+  background: rgb(148 163 184);
+}
+
+.insight-metric-comparison-marker--outcome {
+  width: 0.62rem;
+  height: 0.62rem;
+}
+
+.insight-metric-comparison-marker--outcome.insight-metric-comparison-marker--positive {
+  background: rgb(74 222 128);
+  box-shadow: 0 0 0 1px rgb(74 222 128 / 0.35);
+}
+
+.insight-metric-comparison-marker--outcome.insight-metric-comparison-marker--negative {
+  background: rgb(248 113 113);
+  box-shadow: 0 0 0 1px rgb(248 113 113 / 0.35);
+}
+
+.insight-metric-comparison-marker--outcome.insight-metric-comparison-marker--neutral {
+  background: rgb(226 232 240);
+}
+
 .insight-metric-comparison-row {
   display: flex;
   align-items: center;
@@ -648,11 +733,16 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box-
   line-height: 1.2;
 }
 
+.insight-metric-comparison--win-rate .insight-metric-comparison-label {
+  flex: unset;
+  width: auto;
+}
+
 .insight-metric-comparison-track {
   position: relative;
   flex: 1 1 auto;
   min-width: 0;
-  height: 0.38rem;
+  height: 0.25rem;
   border-radius: 999px;
   background: color-mix(in srgb, var(--border) 55%, transparent);
   overflow: hidden;
@@ -691,10 +781,19 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box-
   text-align: right;
 }
 
+.insight-metric-comparison--win-rate .insight-metric-comparison-values,
+.insight-metric-comparison--win-rate .insight-metric-comparison-value {
+  justify-self: end;
+  width: 100%;
+  min-width: 0;
+  text-align: right;
+}
+
 .insight-metric-comparison-values {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  justify-content: center;
   gap: 0.1rem;
   flex: 0 0 auto;
   min-width: 4.5rem;
@@ -708,9 +807,9 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box-
 }
 
 .insight-metric-comparison-value--rate {
-  font-size: 0.66rem;
-  font-weight: 600;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: #fff;
   line-height: 1.1;
 }
 
