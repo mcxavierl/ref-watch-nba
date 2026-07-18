@@ -3,6 +3,7 @@ import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
+import { LeagueHubUpcomingSlateSection } from "@/components/LeagueHubUpcomingSlateSection";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
@@ -41,6 +42,7 @@ import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
+import { buildLeagueUpcomingSlateFromAssignments } from "@/lib/overview-upcoming-slate";
 
 export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
@@ -72,6 +74,7 @@ export default async function NhlHomePage() {
   const odds = getOdds();
   const findings = computeFindings(6, undefined, { hub: true });
   const isOffseason = assignments.games.length === 0;
+  const upcomingSlate = buildLeagueUpcomingSlateFromAssignments("nhl", assignments);
   const { games: slateGames } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
@@ -107,6 +110,8 @@ export default async function NhlHomePage() {
         assignments={assignments}
         refStats={refStats}
       />
+
+      <LeagueHubUpcomingSlateSection slate={upcomingSlate} leagueLabel="NHL" />
 
       {isOffseason && <OffseasonSlateNotice league="NHL" />}
 

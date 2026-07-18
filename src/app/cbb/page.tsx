@@ -4,6 +4,7 @@ import { ConferenceCoverage } from "@/components/ConferenceCoverage";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
+import { LeagueHubUpcomingSlateSection } from "@/components/LeagueHubUpcomingSlateSection";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
 import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateShareBar } from "@/components/SlateShareBar";
@@ -44,6 +45,7 @@ import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
+import { buildLeagueUpcomingSlateFromAssignments } from "@/lib/overview-upcoming-slate";
 
 export async function generateMetadata(): Promise<Metadata> {
   const assignments = getAssignments();
@@ -75,6 +77,7 @@ export default function HomePage() {
   const odds = getOdds();
   const findings = computeFindings(6, undefined, { hub: true });
   const isOffseason = assignments.games.length === 0;
+  const upcomingSlate = buildLeagueUpcomingSlateFromAssignments("cbb", assignments);
   const { games: slateGames } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
@@ -107,6 +110,8 @@ export default function HomePage() {
         refStats={refStats}
         productHome={isOffseason}
       />
+
+      <LeagueHubUpcomingSlateSection slate={upcomingSlate} leagueLabel="CBB" />
 
       {isOffseason && <OffseasonSlateNotice league="CBB" />}
 

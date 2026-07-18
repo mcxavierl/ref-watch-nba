@@ -59,6 +59,20 @@ describe("design audit guardrails", () => {
     assert.doesNotMatch(hub, /LeagueSlateGamesList/);
   });
 
+  it("live league hubs wire upcoming slate cards below the hero", () => {
+    for (const [file, label] of [
+      ["src/app/nfl/page.tsx", "NFL"],
+      ["src/components/NbaSlatePage.tsx", "NBA"],
+      ["src/app/nhl/page.tsx", "NHL"],
+      ["src/app/cbb/page.tsx", "CBB"],
+    ] as const) {
+      const page = readSrc(file);
+      assert.match(page, /LeagueHubUpcomingSlateSection/);
+      assert.match(page, /buildLeagueUpcomingSlateFromAssignments/);
+      assert.match(page, new RegExp(`leagueLabel="${label}"`));
+    }
+  });
+
   it("uses theme-aware tokens on validation and CCI surfaces", () => {
     const validation = readSrc("src/components/validation-report.css");
     const clinical = readSrc("src/styles/clinical-doc-tokens.css");
