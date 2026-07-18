@@ -58,3 +58,40 @@ export function leagueLogoNavClass(league: LeagueId): string {
   if (league === "cfb") return "league-nav-mark--cfb";
   return `league-nav-mark--${league}`;
 }
+
+/** Intrinsic mark dimensions — must match each league logo's viewBox aspect ratio. */
+export function leagueNavMarkDimensions(league: LeagueId): { width: number; height: number } {
+  switch (league) {
+    case "nfl":
+      return { width: 13, height: 18 };
+    case "cbb":
+    case "cfb":
+      return { width: 18, height: 18 };
+    case "epl":
+      return { width: 18, height: 20 };
+    case "laliga":
+      return { width: 22, height: 18 };
+    case "nhl":
+      return { width: 28, height: 18 };
+    case "nba":
+    default:
+      return { width: 28, height: 18 };
+  }
+}
+
+export function leagueHeroLogoDimensions(league: LeagueId): { width: number; height: number } {
+  switch (league) {
+    case "nfl":
+    case "cfb":
+      return { width: 36, height: 48 };
+    case "epl":
+      return { width: 44, height: 48 };
+    case "laliga":
+      return { width: 56, height: 40 };
+    case "nhl":
+      return { width: 52, height: 40 };
+    case "nba":
+    default:
+      return { width: 52, height: 40 };
+  }
+}

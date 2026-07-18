@@ -7002,7 +7002,10 @@ p {
   .league-hero-logo.league-nav-mark--epl,
   .league-hero-logo[data-league="epl"] {
     height: 2.5rem;
-    max-width: 2.1rem;
+    width: auto;
+    max-width: 2.35rem;
+    object-fit: contain;
+    object-position: center;
   }
 
   .league-hero-logo.league-nav-mark--laliga,
@@ -11108,12 +11111,13 @@ html[data-color="light"] .overview-league-chooser-mark .league-nav-mark[data-lea
 
 .overview-league-chooser-mark .league-nav-mark--epl,
 .overview-league-chooser-mark .league-nav-mark[data-league="epl"] {
-  width: 92%;
-  height: 92%;
-  max-width: 92%;
-  max-height: 92%;
+  width: auto;
+  height: 84%;
+  max-width: 76%;
+  max-height: 84%;
+  object-fit: contain;
+  object-position: center;
   transform: none;
-  transform-origin: center;
   filter: none;
 }
 
