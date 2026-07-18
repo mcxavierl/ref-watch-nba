@@ -1203,6 +1203,16 @@
   max-width: 1.35rem;
 }
 
+.overview-catalog-mark .league-nav-mark--epl,
+.overview-catalog-mark .league-nav-mark[data-league="epl"] {
+  height: 1.15rem;
+  width: auto;
+  max-width: 1.25rem;
+  object-fit: contain;
+  object-position: center;
+  margin-inline: auto;
+}
+
 .overview-catalog-mark .league-nav-mark--cbb,
 .overview-catalog-mark .league-nav-mark[data-league="cbb"],
 .overview-catalog-mark .league-nav-mark--cfb,

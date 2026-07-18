@@ -54,7 +54,8 @@ describe("matrixWhistleDiffShortLabel", () => {
     assert.equal(matrixWhistleDiffShortLabel(LEAGUES.nba.metrics), "Fouls diff");
     assert.equal(matrixWhistleDiffShortLabel(LEAGUES.nhl.metrics), "Minors diff");
     assert.equal(matrixWhistleDiffShortLabel(LEAGUES.nfl.metrics), "Flags diff");
-    assert.equal(matrixWhistleDiffShortLabel(LEAGUES.epl.metrics), "Fouls diff");
+    assert.equal(matrixWhistleDiffShortLabel(LEAGUES.epl.metrics), "Cards diff");
+    assert.equal(matrixWhistleDiffShortLabel(LEAGUES.laliga.metrics), "Cards diff");
   });
 });
 

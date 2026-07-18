@@ -33,6 +33,6 @@ describe("league logos", () => {
     const nba = leagueNavMarkDimensions("nba");
     assert.ok(epl.height >= epl.width, "EPL lion mark should be portrait or square");
     assert.ok(nba.width > nba.height, "NBA mark remains landscape");
-    assert.equal(leagueHeroLogoDimensions("epl").height, 48);
+    assert.equal(leagueHeroLogoDimensions("epl").height, 56);
   });
 });

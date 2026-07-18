@@ -4276,17 +4276,19 @@ p {
   }
 
   .league-nav-mark--nhl,
-  .league-nav-mark[data-league="nhl"],
-  .league-nav-mark--epl,
-  .league-nav-mark[data-league="epl"] {
+  .league-nav-mark[data-league="nhl"] {
     height: 1.1rem;
     max-width: 1.95rem;
   }
 
   .league-nav-mark--epl,
   .league-nav-mark[data-league="epl"] {
-    height: 1.05rem;
-    max-width: 1.35rem;
+    height: 1.25rem;
+    width: auto;
+    max-width: 1.6rem;
+    object-fit: contain;
+    object-position: center;
+    margin-inline: auto;
     filter: none;
     opacity: 1;
   }
@@ -6971,11 +6973,12 @@ p {
 
   .league-hero-logo.league-nav-mark--epl,
   .league-hero-logo[data-league="epl"] {
-    height: 2.5rem;
+    height: 3rem;
     width: auto;
-    max-width: 2.35rem;
+    max-width: 2.85rem;
     object-fit: contain;
     object-position: center;
+    margin-inline: auto;
   }
 
   .league-hero-logo.league-nav-mark--laliga,
@@ -11146,11 +11149,12 @@ html[data-color="light"] .overview-league-chooser-mark .league-nav-mark[data-lea
 .overview-league-chooser-mark .league-nav-mark--epl,
 .overview-league-chooser-mark .league-nav-mark[data-league="epl"] {
   width: auto;
-  height: 84%;
-  max-width: 76%;
-  max-height: 84%;
+  height: 92%;
+  max-width: 88%;
+  max-height: 92%;
   object-fit: contain;
   object-position: center;
+  margin-inline: auto;
   transform: none;
   filter: none;
 }
