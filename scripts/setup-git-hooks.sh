@@ -14,4 +14,4 @@ for hook in pre-push; do
   fi
 done
 
-echo "git hooks installed (pre-push -> npm run check:ci)"
+echo "git hooks installed (pre-push -> check:css-syntax + check:ci)"

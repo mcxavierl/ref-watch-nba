@@ -17,6 +17,10 @@ npm run check:ci
 
 `check:ci` runs artifact freshness **before** `check:volume`, because volume refresh rewrites `data/baselines.json` and would falsely fail a later snapshot check.
 
+The pre-push hook runs `check:css-syntax` first (~1s) so broken CSS fails before the full CI mirror. `check:ci` also runs CSS syntax + `build:next` before tests.
+
+GitHub validate jobs use a **20-minute** timeout to accommodate the production build step.
+
 Remove untracked local dev artifacts before shipping if freshness fails unexpectedly:
 
 ```bash
