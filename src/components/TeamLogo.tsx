@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useColorMode } from "@/lib/a11y/useColorMode";
-import { teamLogoUrl as nbaTeamLogoUrl } from "@/lib/teams";
-import { teamLogoUrl as nhlTeamLogoUrl } from "@/lib/nhl/teams";
-import { teamLogoUrl as nflTeamLogoUrl } from "@/lib/nfl/teams";
-import { teamLogoUrl as laligaTeamLogoUrl } from "@/lib/laliga/teams";
 import { teamLogoUrl as cbbTeamLogoUrl } from "@/lib/cbb/teams";
+import { teamLogoUrl as cfbTeamLogoUrl } from "@/lib/cfb/teams";
 import { teamLogoUrl as eplTeamLogoUrl } from "@/lib/epl/teams";
+import { teamLogoUrl as laligaTeamLogoUrl } from "@/lib/laliga/teams";
+import { teamLogoUrl as nflTeamLogoUrl } from "@/lib/nfl/teams";
+import { teamLogoUrl as nhlTeamLogoUrl } from "@/lib/nhl/teams";
+import { getTeam as getNbaTeam, teamLogoUrl as nbaTeamLogoUrl } from "@/lib/teams";
 import type { NbaTeam } from "@/lib/teams";
 import type { NhlTeam } from "@/lib/nhl/teams";
 
@@ -44,6 +45,7 @@ export function TeamLogo({
   const [failed, setFailed] = useState(false);
   const colorMode = useColorMode();
   const nhlUiSurface = colorMode === "light" ? "light" : "dark";
+  const nbaId = team.nbaId ?? (sport === "nba" ? getNbaTeam(team.abbr)?.nbaId : undefined);
   const logoSrc =
     team.logoUrl ??
     (sport === "laliga"
@@ -54,10 +56,12 @@ export function TeamLogo({
         ? nflTeamLogoUrl(team.abbr)
         : sport === "cbb"
           ? cbbTeamLogoUrl(team.abbr)
+          : sport === "cfb"
+            ? cfbTeamLogoUrl(team.abbr)
           : sport === "nhl"
           ? nhlTeamLogoUrl(team.abbr, nhlUiSurface)
-          : team.nbaId
-            ? nbaTeamLogoUrl(team.nbaId)
+          : nbaId
+            ? nbaTeamLogoUrl(nbaId)
             : null);
 
   const plateClass = `team-logo-plate ${sizeClasses[size]} ${className}`.trim();

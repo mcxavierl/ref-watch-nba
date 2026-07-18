@@ -17,6 +17,8 @@ import {
 } from "@/components/StandoutMetric";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TermHelp } from "@/components/TermHelp";
+import type { LeagueId } from "@/lib/leagues";
+import { resolveRefProfileTeam, refProfileTeamLogoSport } from "@/lib/ref-profile-team-utils";
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
 import {
@@ -274,6 +276,8 @@ function TeamRefSplitCard({
   const scoreTone = scoringDeltaTone(totalDelta);
   const teamBaselinePct =
     teamRecord.games > 0 ? formatPct(teamRecord.winRate) : "n/a";
+  const team = resolveRefProfileTeam(sport as LeagueId, teamAbbr);
+  const logoSport = refProfileTeamLogoSport(sport as LeagueId);
 
   return (
     <ClinicalCard
@@ -297,8 +301,8 @@ function TeamRefSplitCard({
         />
         <span className="clinical-insight-matrix-vs">vs</span>
         <TeamLogo
-          team={{ abbr: teamAbbr, name: teamLabel }}
-          sport={sport}
+          team={team}
+          sport={logoSport}
           size="xl"
           className="clinical-insight-matrix-team-logo"
         />
