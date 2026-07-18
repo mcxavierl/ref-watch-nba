@@ -273,10 +273,9 @@ function EditorialInsightCard({
             <WhistleIndexGauge index={whistleIndex} size="lg" className="insight-editorial-whistle-index" />
           ) : null}
 
-          {editorial.primaryMetric.label === "Sample size (N)" && editorial.secondaryMetric ? (
+          {card.kind === "matrix-edge" ? (
             <InsightSplitMetrics
-              sampleMetric={editorial.primaryMetric}
-              deltaMetric={editorial.secondaryMetric}
+              deltaMetric={editorial.primaryMetric}
               compact={metaCompact}
             />
           ) : (

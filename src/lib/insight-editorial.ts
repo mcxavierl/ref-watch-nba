@@ -2,7 +2,6 @@ import {
   dataMaturityPercent,
   displayWinRateDelta,
   formatDeltaPp,
-  formatSampleSizeLabel,
   isPreliminarySample,
 } from "@/lib/data-maturity";
 import {
@@ -159,15 +158,12 @@ function splitDisplayMetrics(card: LeagueInsightCard): {
     );
     return {
       primaryMetric: {
-        value: formatSampleSizeLabel(sampleGames),
-        label: "Sample size (N)",
-      },
-      secondaryMetric: {
         value: formatDeltaPp(displayDelta),
         label: isAdjusted
           ? `Adjusted win-rate delta (N=${sampleGames})`
           : "Win rate delta vs baseline",
       },
+      secondaryMetric: null,
       sampleGames,
       isPreliminary,
       isAdjusted,
