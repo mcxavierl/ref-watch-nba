@@ -76,6 +76,16 @@ describe("ship guardrail scripts", () => {
     }
   });
 
+  it("deploy script retries transient Cloudflare asset upload failures", () => {
+    const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
+      scripts?: { deploy?: string };
+    };
+    const deployScript = pkg.scripts?.deploy ?? "";
+    if (!deployScript.includes("cloudflare-deploy-retry.mjs")) {
+      throw new Error("package.json deploy must use scripts/cloudflare-deploy-retry.mjs");
+    }
+  });
+
   it("daily sports data refresh rebuilds overview snapshot", () => {
     const refresh = readFileSync(".github/workflows/refresh-sports-data.yml", "utf8");
     if (!refresh.includes("build-overview-snapshot")) {
