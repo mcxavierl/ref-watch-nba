@@ -1192,7 +1192,6 @@
   border-color: color-mix(in srgb, var(--catalog-accent, var(--pill-border)) 35%, var(--pill-border));
   background: color-mix(in srgb, var(--catalog-accent, var(--pill-bg)) 14%, var(--pill-bg));
 }
-}
 
 /* —— Explore bento: equal-height catalog + analytics columns —— */
 @media (min-width: 1024px) {
@@ -1246,7 +1245,6 @@ html.dark .overview-secondary-tabs {
   background: var(--bg-surface-1);
   border-color: var(--border-subtle);
 }
-}
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-secondary-tab--active,
 html.dark .overview-secondary-tab--active {
@@ -1270,13 +1268,10 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog--coverage
     ),
     var(--surface-raised);
 }
-}
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-mark,
 html.dark .overview-catalog-mark {
   background: color-mix(in srgb, var(--catalog-accent, var(--raptors)) 12%, var(--bg-surface-2));
-}
-}
 }
 
 .overview-section-title--with-icon {
