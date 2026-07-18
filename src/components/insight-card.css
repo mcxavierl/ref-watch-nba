@@ -423,33 +423,46 @@ html.dark .insight-card--inline {
 
 /* Standout split + quick insight metric stack */
 .insight-split-metrics {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
   margin-bottom: 0.75rem;
 }
 
 .insight-split-metrics--compact {
-  gap: 0.65rem;
   margin-bottom: 0.65rem;
 }
 
-.insight-split-metrics-block {
+.insight-split-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem 0.75rem;
+}
+
+.insight-split-metrics--compact .insight-split-metrics-grid {
+  gap: 0.55rem 0.65rem;
+}
+
+.insight-split-metrics-box {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--insight-accent) 16%, var(--insight-border));
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 0% 0%,
+      color-mix(in srgb, var(--insight-accent) 8%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--insight-surface) 92%, transparent);
 }
 
-.insight-split-metrics-block--delta {
-  order: 1;
-}
-
-.insight-split-metrics-block--sample {
-  order: 2;
+.insight-split-metrics-box--sample .insight-split-sample-value,
+.insight-split-metrics-box--sample {
+  color: #fff;
 }
 
 .insight-split-sample-value {
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: #fff;
@@ -457,7 +470,7 @@ html.dark .insight-card--inline {
 }
 
 .insight-split-metrics--compact .insight-split-sample-value {
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 
 .insight-split-metrics-label {
@@ -471,11 +484,13 @@ html.dark .insight-card--inline {
   line-height: 1.1;
 }
 
-.insight-card--editorial .insight-split-delta-value--positive {
+.insight-card--editorial .insight-split-delta-value--positive,
+.insight-card--editorial .insight-split-metrics-box--delta .insight-split-delta-value--positive {
   color: rgb(74 222 128);
 }
 
-.insight-card--editorial .insight-split-delta-value--negative {
+.insight-card--editorial .insight-split-delta-value--negative,
+.insight-card--editorial .insight-split-metrics-box--delta .insight-split-delta-value--negative {
   color: rgb(248 113 113);
 }
 
@@ -485,6 +500,11 @@ html.dark .insight-card--inline {
 
 .overview-page .insight-card--editorial .insight-split-delta-value--negative {
   color: rgb(248 113 113);
+}
+
+.insight-card[data-tone="positive"] .insight-split-metrics-box--sample .insight-split-sample-value,
+.insight-card[data-tone="negative"] .insight-split-metrics-box--sample .insight-split-sample-value {
+  color: #fff;
 }
 
 .clinical-insight-matrix-card .insight-split-delta-value--positive {
@@ -603,7 +623,7 @@ html.dark .insight-card--inline {
   font-size: 0.72rem;
   font-weight: 650;
   font-variant-numeric: tabular-nums;
-  color: var(--text);
+  color: #fff;
   min-width: 2.75rem;
   text-align: right;
 }
@@ -622,14 +642,6 @@ html.dark .insight-card--inline {
   font-size: 0.76rem;
   font-weight: 700;
   line-height: 1.1;
-}
-
-.insight-metric-comparison-value--delta[data-tone="positive"] {
-  color: rgb(74 222 128);
-}
-
-.insight-metric-comparison-value--delta[data-tone="negative"] {
-  color: rgb(248 113 113);
 }
 
 .insight-metric-comparison-value--rate {

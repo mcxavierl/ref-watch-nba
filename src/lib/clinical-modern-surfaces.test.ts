@@ -80,7 +80,18 @@ describe("Clinical Modern priority #11 surfaces", () => {
   it("InsightCard editorial variants use split metric hierarchy for matrix splits", () => {
     const source = readSrc("src/components/shared/InsightCard.tsx");
     assert.match(source, /InsightSplitMetrics/);
-    assert.match(source, /matrix-edge/);
+    assert.match(source, /formatSampleSizeLabel/);
+    assert.match(source, /Sample size \(N\)/);
+  });
+
+  it("InsightSplitMetrics keeps sample size white and delta directional", () => {
+    const source = readSrc("src/components/shared/InsightSplitMetrics.tsx");
+    assert.match(source, /insight-split-sample-value/);
+    assert.match(source, /DirectionalDeltaValue/);
+    const css = readSrc("src/components/insight-card.css");
+    assert.match(css, /insight-split-metrics-box--sample/);
+    assert.match(css, /insight-split-sample-value[\s\S]*color: #fff/);
+    assert.match(css, /insight-split-delta-value--positive/);
   });
 
   it("WorldCupFinalSection uses Clinical Modern DataCapsule match header", () => {
