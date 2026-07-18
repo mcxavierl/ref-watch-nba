@@ -78,13 +78,14 @@ export function GsniSharedTrack({
       role="img"
       aria-label={
         ariaLabel ??
-        `GSNI ${formatGsni(clamped)} on a 0 to 100 scale where ${baseline} is league neutral.`
+        `${formatGsni(clamped)} on GSNI scale. 50 is league average; higher is quieter, lower is heavier.`
       }
     >
       <div className="gsni-shared-track-meta">
         {showValue ? (
           <span className="gsni-shared-track-score tabular-nums text-white font-semibold">
             {formatGsni(clamped)}
+            <span className="gsni-shared-track-score-suffix"> index</span>
           </span>
         ) : null}
         {showDelta && delta !== 0 ? <GsniDeltaValue delta={delta} /> : null}
