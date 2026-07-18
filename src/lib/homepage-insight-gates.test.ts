@@ -110,4 +110,16 @@ describe("homepage insight gates", () => {
     assert.equal(filtered.length, 1);
     assert.equal(filtered[0]?.entityName, "Scott Twardoski");
   });
+
+  it("uses punchy matrix-edge headlines in editorial view", () => {
+    const view = editorialInsightView(
+      matrixCard(19, {
+        entityName: "Scott Twardoski",
+        teamLabel: "New York Knicks",
+        heroValue: "+45.2pp",
+      }),
+    );
+    assert.equal(view.headline, "Knicks & Scott Twardoski: +45.2pp Delta.");
+    assert.ok(view.whyItMatters.length > 0);
+  });
 });
