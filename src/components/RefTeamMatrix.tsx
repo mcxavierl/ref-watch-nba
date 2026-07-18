@@ -733,7 +733,7 @@ export function RefTeamMatrix({
             >
               {searchQuery
                 ? searchMatchCount > 0
-                  ? `${searchMatchCount} result${searchMatchCount === 1 ? "" : "s"}${selectedTeam ? ` in top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} for ${selectedTeam.label}` : `. Thin-sample rows stay visible with a ${leagueGameUnit(leagueId)} count"}`
+                  ? `${searchMatchCount} result${searchMatchCount === 1 ? "" : "s"}${selectedTeam ? ` in top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} for ${selectedTeam.label}` : `. Thin-sample rows stay visible with a ${leagueGameUnit(leagueId)} count`}`
                   : selectedTeam
                     ? `No results in top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} for ${selectedTeam.label}. Clear search or team filter`
                     : "No results in this matrix. Try a shorter name or check rankings"
