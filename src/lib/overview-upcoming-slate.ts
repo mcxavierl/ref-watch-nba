@@ -6,7 +6,6 @@ import { buildSeasonStageNote } from "@/lib/assignment-season-stage";
 import {
   buildOverviewLastMeetingLine,
   buildOverviewMatchupInsight,
-  buildOverviewSlateMetadataLine,
   buildOverviewTeamRecentContextLine,
 } from "@/lib/overview-matchup-insight";
 import type { AssignmentsFile, RefOfficial } from "@/lib/types";
@@ -189,13 +188,6 @@ function pushEntry(
     lastMeetingLine,
     teamContextLine,
     officialsLine: buildOverviewOfficialsLine(leagueId, game.crew, status),
-    metadataLine: buildOverviewSlateMetadataLine(
-      leagueId,
-      game.awayTeam,
-      game.homeTeam,
-      seasonStageNote,
-      lastMeetingLine,
-    ),
     seasonStageNote,
   });
 }

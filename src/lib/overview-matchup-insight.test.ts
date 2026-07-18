@@ -4,7 +4,6 @@ import { clearRuntimeGameLogsModuleCache } from "@/lib/game-logs";
 import {
   buildOverviewLastMeetingLine,
   buildOverviewMatchupInsight,
-  buildOverviewSlateMetadataLine,
   buildOverviewTeamRecentContextLine,
 } from "@/lib/overview-matchup-insight";
 import type { RuntimeGameLogEntry, RuntimeGameLogFile } from "@/lib/game-logs-preload";
@@ -124,30 +123,5 @@ describe("overview-matchup-insight", () => {
     const line = buildOverviewTeamRecentContextLine("laliga", "OVI", "VIL");
     assert.match(line ?? "", /^Recent form: OVI lost to MLL 3-0 away/);
     assert.match(line ?? "", /VIL beat ATM 5-1 at home/);
-  });
-
-  it("builds compact homepage metadata without official names", () => {
-    const nfl = buildOverviewSlateMetadataLine(
-      "nfl",
-      "LAC",
-      "DET",
-      "Pre-season game",
-      "Last met Nov 12, 2023 in Los Angeles · DET 41, LAC 38",
-    );
-    assert.equal(
-      nfl,
-      "Pre-season game · Last met: Nov 12, 2023 in Los Angeles · DET 41, LAC 38",
-    );
-
-    const epl = buildOverviewSlateMetadataLine(
-      "epl",
-      "COV",
-      "ARS",
-      "Exhibition match",
-    );
-    assert.match(
-      epl,
-      /^Exhibition match · Recent form: COV \(no recent EPL log\), ARS \(beat CRY 2-1 away\)/,
-    );
   });
 });
