@@ -22,19 +22,19 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
       data-status={game.status}
     >
       <header className="upcoming-game-card__header">
-        <span className="upcoming-game-card__league-mark" aria-hidden>
-          <LeagueNavMark league={game.leagueId} active={false} />
-        </span>
-        <div className="upcoming-game-card__header-actions">
-          <Link href={game.href} className="upcoming-game-card__cta rw-focus-ring">
-            Open slate
-          </Link>
+        <div className="upcoming-game-card__header-start">
           {dateLabel ? (
-            <time className="upcoming-game-card__date" dateTime={game.slateDate}>
+            <time className="upcoming-game-card__date-pill" dateTime={game.slateDate}>
               {dateLabel}
             </time>
           ) : null}
+          <span className="upcoming-game-card__league-mark" aria-hidden>
+            <LeagueNavMark league={game.leagueId} active={false} />
+          </span>
         </div>
+        <Link href={game.href} className="upcoming-game-card__cta rw-focus-ring">
+          Open slate
+        </Link>
       </header>
 
       <div className="upcoming-game-card__body">
@@ -42,17 +42,19 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
           className="upcoming-game-card__matchup"
           aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
         >
-          <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
+          <div className="upcoming-game-card__team">
+            <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
+            <span className="upcoming-game-card__team-abbr">{awayTeam.abbr}</span>
+          </div>
           <span className="upcoming-game-card__at" aria-hidden>
             @
           </span>
-          <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
-          <span className="upcoming-game-card__matchup-label">
-            {awayTeam.abbr} @ {homeTeam.abbr}
-          </span>
+          <div className="upcoming-game-card__team">
+            <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
+            <span className="upcoming-game-card__team-abbr">{homeTeam.abbr}</span>
+          </div>
         </div>
       </div>
-
     </article>
   );
 }
