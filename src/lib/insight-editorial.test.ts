@@ -60,7 +60,7 @@ describe("insight editorial helpers", () => {
     assert.ok(!headline.includes("—"));
   });
 
-  it("builds descriptive matrix-edge headlines without causal verbs", () => {
+  it("builds punchy matrix-edge headlines with team and delta", () => {
     const headline = humanCentricHeadline(
       sampleCard({
         kind: "matrix-edge",
@@ -75,8 +75,8 @@ describe("insight editorial helpers", () => {
         ],
       }),
     );
-    assert.match(headline, /Minnesota Timberwolves games with Evan Scott have historically shown/);
-    assert.doesNotMatch(headline, /boosts|favors|hurts|impacts/i);
+    assert.equal(headline, "Timberwolves & Evan Scott: +51.5pp Delta.");
+    assert.doesNotMatch(headline, /boosts|favors|hurts|impacts|historically shown/i);
   });
 
   it("maps cards to headline, metrics, and why-it-matters", () => {

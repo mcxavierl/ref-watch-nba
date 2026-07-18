@@ -88,9 +88,11 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const source = readSrc("src/components/shared/InsightSplitMetrics.tsx");
     assert.match(source, /insight-split-sample-value/);
     assert.match(source, /DirectionalDeltaValue/);
+    assert.match(source, /insight-split-metrics-row/);
     const css = readSrc("src/components/insight-card.css");
     assert.match(css, /insight-split-metrics-box--sample/);
     assert.match(css, /insight-split-sample-value[\s\S]*color: #fff/);
+    assert.match(css, /insight-split-metrics-box--delta/);
     assert.match(css, /insight-split-delta-value--positive/);
   });
 

@@ -243,6 +243,8 @@ html.dark .insight-card--inline {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  height: 100%;
+  min-height: 0;
   border-radius: 0.9rem;
   border: 1px solid var(--insight-border);
   background: var(--insight-surface);
@@ -298,14 +300,26 @@ html.dark .insight-card--inline {
 }
 
 .insight-editorial-body-trigger {
-  display: block;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   width: 100%;
+  min-height: 0;
+  min-width: 0;
   padding: 0;
   border: none;
   background: transparent;
   text-align: left;
   cursor: pointer;
   color: inherit;
+}
+
+.insight-editorial-body-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
 }
 
 .insight-card--drilldown .insight-editorial-body-trigger:disabled {
@@ -337,6 +351,17 @@ html.dark .insight-card--inline {
 
 .insight-card--quick .insight-editorial-headline {
   font-size: 0.95rem;
+}
+
+.insight-editorial-subheadline {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin: -0.35rem 0 0.65rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgb(148 163 184);
 }
 
 .insight-editorial-metrics {
@@ -424,28 +449,33 @@ html.dark .insight-card--inline {
 /* Standout split + quick insight metric stack */
 .insight-split-metrics {
   margin-bottom: 0.75rem;
+  min-width: 0;
 }
 
 .insight-split-metrics--compact {
   margin-bottom: 0.65rem;
 }
 
-.insight-split-metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem 0.75rem;
+.insight-split-metrics-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.65rem;
+  min-width: 0;
 }
 
-.insight-split-metrics--compact .insight-split-metrics-grid {
-  gap: 0.55rem 0.65rem;
+.insight-split-metrics--compact .insight-split-metrics-row {
+  gap: 0.55rem;
 }
 
 .insight-split-metrics-box {
   display: flex;
+  flex: 1 1 0;
   flex-direction: column;
+  justify-content: center;
   gap: 0.2rem;
+  min-width: 0;
   padding: 0.65rem 0.75rem;
-  border-radius: 0.65rem;
+  border-radius: 0.5rem;
   border: 1px solid color-mix(in srgb, var(--insight-accent) 16%, var(--insight-border));
   background:
     radial-gradient(
@@ -461,9 +491,41 @@ html.dark .insight-card--inline {
   color: #fff;
 }
 
+.insight-split-metrics-box--delta {
+  border-color: rgb(30 41 59);
+  background: rgb(15 23 42);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box--delta {
+  background: rgb(2 6 23);
+  border-color: rgb(51 65 85);
+}
+
+.insight-split-delta-inner {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.1rem 0.15rem;
+  overflow: hidden;
+}
+
+.insight-split-delta-inner .insight-split-delta-value {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(1rem, 3.5vw, 1.5rem);
+  line-height: 1.15;
+}
+
+.insight-split-metrics--compact .insight-split-delta-inner .insight-split-delta-value {
+  font-size: clamp(0.95rem, 3vw, 1.25rem);
+}
+
 .insight-split-sample-value {
   font-size: 1.15rem;
-  font-weight: 600;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: #fff;
   letter-spacing: -0.01em;
@@ -529,7 +591,8 @@ html.dark .insight-card--inline {
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem 1rem;
-  margin-top: 0.15rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
 }
 
 .insight-editorial-link {
@@ -559,15 +622,15 @@ html.dark .insight-card--inline {
 .insight-card-meta {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  margin: 0.65rem 0 0.5rem;
+  gap: 0.35rem;
+  margin: 0.5rem 0 0;
 }
 
 .insight-metric-comparison {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 8px;
+  gap: 0.5rem;
+  margin-bottom: 0;
 }
 
 .insight-metric-comparison-row {

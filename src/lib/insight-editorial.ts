@@ -57,6 +57,13 @@ function headlineLooksNarrative(headline: string): boolean {
   );
 }
 
+/** Last token of a multi-word team label (e.g. "New York Knicks" -> "Knicks"). */
+function shortTeamLabel(teamLabel: string): string {
+  const parts = teamLabel.trim().split(/\s+/);
+  if (parts.length <= 1) return teamLabel.trim();
+  return parts[parts.length - 1]!;
+}
+
 /** Human-first headline for insight surfaces (featured, trends, quick lists). */
 export function humanCentricHeadline(card: LeagueInsightCard): string {
   if (headlineLooksNarrative(card.headline)) {
@@ -81,13 +88,12 @@ export function humanCentricHeadline(card: LeagueInsightCard): string {
 
   if (card.kind === "matrix-edge" && name && team) {
     const delta = parseDeltaPpFromCard(card);
-    const signed =
+    const deltaLabel =
       delta === null
-        ? "a historical outcome delta"
-        : `${formatDeltaPp(delta)} outcome delta vs baseline`;
-    return applyClinicalTone(
-      `${team} games with ${name} have historically shown ${signed}.`,
-    );
+        ? card.heroValue
+        : formatDeltaPp(delta);
+    const teamShort = shortTeamLabel(team);
+    return applyClinicalTone(`${teamShort} & ${name}: ${deltaLabel} Delta`);
   }
 
   if (name && team) {
