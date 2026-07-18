@@ -10,7 +10,6 @@ import {
   DashboardShell,
 } from "@/components/dashboard/DashboardShell";
 import { ResearchHighlightBanner } from "@/components/ResearchHighlightBanner";
-import { GameStateIndexFindings } from "@/components/GameStateIndexFindings";
 import {
   catalogComingSoonEntries,
   catalogCompetitionCount,
@@ -87,7 +86,6 @@ export function OverviewDashboard({
   return (
     <DashboardShell>
       <ResearchHighlightBanner />
-      <GameStateIndexFindings />
 
       {hero}
 
