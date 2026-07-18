@@ -43,6 +43,11 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
+        source: "/nba/insights",
+        destination: "/rankings",
+        permanent: false,
+      },
+      {
         source: "/nhl/insights",
         destination: "/nhl/rankings",
         permanent: false,
@@ -206,6 +211,10 @@ const nextConfig: NextConfig = {
       { source: "/feed/nba.xml", destination: "/feed/nba/rss" },
       { source: "/feed/nhl.json", destination: "/feed/nhl/json" },
       { source: "/feed/nhl.xml", destination: "/feed/nhl/rss" },
+      // Legacy NBA data paths (pre-league-prefix layout); static copies also ship in public/data/
+      { source: "/data/ref-stats.json", destination: "/data/nba/ref-stats.json" },
+      { source: "/data/team-splits.json", destination: "/data/nba/team-splits.json" },
+      { source: "/data/game-logs.json", destination: "/data/nba/game-logs.json" },
     ];
   },
 };
