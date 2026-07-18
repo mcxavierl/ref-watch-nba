@@ -11,13 +11,12 @@ test("NcaaAuditStatusPill delegates to shared StatusBadge", () => {
 });
 
 test("College preview banners use shared Clinical Modern banner", () => {
-  for (const file of [
-    "src/components/CbbPreviewBanner.tsx",
-    "src/components/CfbPreviewBanner.tsx",
-  ]) {
-    const source = readFileSync(file, "utf8");
-    assert.match(source, /CollegePreviewBanner/);
-  }
+  const cbb = readFileSync("src/components/CbbPreviewBanner.tsx", "utf8");
+  assert.match(cbb, /CollegePreviewBanner/);
+
+  const cfb = readFileSync("src/components/CfbPreviewBanner.tsx", "utf8");
+  assert.match(cfb, /StatusBadge/);
+  assert.match(cfb, /isCfbOfficialsPending/);
 
   const shared = readFileSync("src/components/CollegePreviewBanner.tsx", "utf8");
   assert.match(shared, /StatusBadge/);

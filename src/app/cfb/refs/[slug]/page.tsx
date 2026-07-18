@@ -161,7 +161,7 @@ export default async function CfbRefProfilePage({
         />
       </header>
 
-      <CfbPreviewBanner statsSource={stats.meta.source} />
+      <CfbPreviewBanner statsSource={stats.meta.source} refStats={stats} />
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">

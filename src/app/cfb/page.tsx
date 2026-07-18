@@ -107,6 +107,7 @@ export default function CfbHomePage() {
       <CfbPreviewBanner
         statsSource={refStats.meta.source}
         assignmentsSource={assignments.source}
+        refStats={refStats}
       />
 
       <ConferenceCoverage leagueId="cfb" />
