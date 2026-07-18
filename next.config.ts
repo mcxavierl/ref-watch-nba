@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { unifiedIALegacyRedirects } from "./src/lib/unified-ia-redirects";
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -36,117 +37,13 @@ const nextConfig: NextConfig = {
     cpus: 1,
   },
   async redirects() {
+    const legacy = unifiedIALegacyRedirects().map((entry) => ({
+      source: entry.source,
+      destination: entry.destination,
+      permanent: entry.permanent,
+    }));
     return [
-      {
-        source: "/insights",
-        destination: "/rankings",
-        permanent: false,
-      },
-      {
-        source: "/nba/insights",
-        destination: "/rankings",
-        permanent: false,
-      },
-      {
-        source: "/nhl/insights",
-        destination: "/nhl/rankings",
-        permanent: false,
-      },
-      {
-        source: "/nfl/insights",
-        destination: "/nfl/rankings",
-        permanent: false,
-      },
-      {
-        source: "/epl/insights",
-        destination: "/epl/rankings",
-        permanent: false,
-      },
-      {
-        source: "/laliga/insights",
-        destination: "/laliga/rankings",
-        permanent: false,
-      },
-      {
-        source: "/cbb/insights",
-        destination: "/cbb/rankings",
-        permanent: false,
-      },
-      {
-        source: "/cfb/insights",
-        destination: "/cfb/rankings",
-        permanent: false,
-      },
-      {
-        source: "/crews",
-        destination: "/refs",
-        permanent: false,
-      },
-      {
-        source: "/nhl/crews",
-        destination: "/nhl/refs",
-        permanent: false,
-      },
-      {
-        source: "/nfl/crews",
-        destination: "/nfl/refs",
-        permanent: false,
-      },
-      {
-        source: "/epl/crews",
-        destination: "/epl/refs",
-        permanent: false,
-      },
-      {
-        source: "/laliga/crews",
-        destination: "/laliga/refs",
-        permanent: false,
-      },
-      {
-        source: "/cbb/crews",
-        destination: "/cbb/refs",
-        permanent: false,
-      },
-      {
-        source: "/cfb/crews",
-        destination: "/cfb/refs",
-        permanent: false,
-      },
-      {
-        source: "/nba/compare",
-        destination: "/compare",
-        permanent: false,
-      },
-      {
-        source: "/nhl/compare",
-        destination: "/compare",
-        permanent: false,
-      },
-      {
-        source: "/nfl/compare",
-        destination: "/compare",
-        permanent: false,
-      },
-      {
-        source: "/epl/compare",
-        destination: "/compare",
-        permanent: false,
-      },
-      {
-        source: "/laliga/compare",
-        destination: "/compare",
-        permanent: false,
-      },
-      {
-        source: "/cbb/compare",
-        destination: "/compare",
-        permanent: false,
-      },
-      {
-        source: "/cfb/compare",
-        destination: "/compare",
-        permanent: false,
-      },
+      ...legacy,
       {
         source: "/wnba",
         destination: "/",
@@ -166,16 +63,6 @@ const nextConfig: NextConfig = {
         source: "/mlb/:path*",
         destination: "/",
         permanent: false,
-      },
-      {
-        source: "/raptors",
-        destination: "/teams/TOR",
-        permanent: true,
-      },
-      {
-        source: "/lakers",
-        destination: "/teams/LAL",
-        permanent: true,
       },
       {
         source: "/feed/nba.json",
@@ -200,7 +87,7 @@ const nextConfig: NextConfig = {
       {
         source: "/research",
         has: [{ type: "query", key: "league", value: "nhl" }],
-        destination: "/nhl/research",
+        destination: "/nhl/research/tendencies",
         permanent: false,
       },
     ];

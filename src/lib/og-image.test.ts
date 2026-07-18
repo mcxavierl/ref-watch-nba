@@ -54,12 +54,11 @@ describe("Clinical Modern OG image surfaces", () => {
   it("opengraph routes await async OG renderers", () => {
     const routes = [
       "src/app/opengraph-image.tsx",
-      "src/app/epl/opengraph-image.tsx",
-      "src/app/cbb/opengraph-image.tsx",
+      "src/app/[league]/opengraph-image.tsx",
     ];
     for (const route of routes) {
       const source = readSrc(route);
-      assert.match(source, /export default async function OpenGraphImage/);
+      assert.match(source, /export default async function/);
     }
   });
 

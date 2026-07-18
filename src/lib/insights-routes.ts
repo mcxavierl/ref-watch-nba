@@ -1,23 +1,26 @@
 import type { HubHeroLeagueId } from "@/components/LeagueHubHero";
-import { LEAGUES } from "@/lib/leagues";
+import {
+  LEAGUE_MANIFEST,
+  researchViewHref,
+  type LeagueManifestId,
+  type ResearchView,
+} from "@/lib/league-manifest";
 import { normalizeAppPathname } from "@/lib/json-asset-guards";
 
 export type InsightsHubView = "tendencies" | "trends" | "findings";
 
-const TAB_SEGMENTS: Record<InsightsHubView, string> = {
-  tendencies: "rankings",
+const VIEW_TO_RESEARCH: Record<InsightsHubView, ResearchView> = {
+  tendencies: "tendencies",
   trends: "trends",
-  findings: "research",
+  findings: "findings",
 };
 
-/** Canonical route for an insights sub-view (NBA uses unprefixed paths). */
+/** Canonical route for an insights sub-view under /{league}/research/{view}. */
 export function insightsViewHref(
   leagueId: HubHeroLeagueId,
   view: InsightsHubView,
 ): string {
-  const prefix = LEAGUES[leagueId].pathPrefix;
-  const segment = TAB_SEGMENTS[view];
-  return prefix ? `${prefix}/${segment}` : `/${segment}`;
+  return researchViewHref(leagueId as LeagueManifestId, VIEW_TO_RESEARCH[view]);
 }
 
 /** Legacy hash aliases still linked from older cards. */
@@ -37,14 +40,26 @@ export function insightsViewFromHash(hash: string): InsightsHubView | null {
 
 export function insightsViewFromPathname(pathname: string): InsightsHubView | null {
   const path = normalizeAppPathname(pathname);
-  for (const [view, segment] of Object.entries(TAB_SEGMENTS) as [
-    InsightsHubView,
-    string,
-  ][]) {
-    const leaguePath = new RegExp(`/[^/]+/${segment}$`);
-    if (path === `/${segment}` || leaguePath.test(path)) {
-      return view;
+  for (const leagueId of Object.keys(LEAGUE_MANIFEST) as LeagueManifestId[]) {
+    const prefix = LEAGUE_MANIFEST[leagueId].pathPrefix;
+    if (path === `${prefix}/research/tendencies`) return "tendencies";
+    if (path === `${prefix}/research/trends`) return "trends";
+    if (path === `${prefix}/research/findings` || path.startsWith(`${prefix}/research/findings/`)) {
+      return "findings";
+    }
+    // Legacy paths during redirect window
+    if (path === `${prefix}/rankings`) return "tendencies";
+    if (path === `${prefix}/trends`) return "trends";
+    if (path === `${prefix}/research` || path.startsWith(`${prefix}/research/`)) {
+      if (path.includes("/findings/")) return "findings";
+      if (path.endsWith("/trends")) return "trends";
+      if (path.endsWith("/tendencies")) return "tendencies";
+      return "findings";
     }
   }
+  // Legacy NBA root paths
+  if (path === "/rankings") return "tendencies";
+  if (path === "/trends") return "trends";
+  if (path === "/research" || path.startsWith("/research/")) return "findings";
   return null;
 }

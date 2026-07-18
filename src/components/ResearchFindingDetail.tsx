@@ -117,7 +117,13 @@ export function ResearchFindingDetail({
 export function researchFindingCanonicalPath(
   finding: ResearchFinding,
 ): string {
-  return finding.league === "NHL"
-    ? `/nhl/research/${finding.id}`
-    : `/research/${finding.id}`;
+  const leagueId = finding.league.toLowerCase() as
+    | "nba"
+    | "nhl"
+    | "nfl"
+    | "epl"
+    | "laliga"
+    | "cbb"
+    | "cfb";
+  return `/${leagueId}/research/findings/${finding.id}`;
 }
