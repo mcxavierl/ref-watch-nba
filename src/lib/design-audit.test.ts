@@ -80,17 +80,13 @@ describe("design audit guardrails", () => {
   });
 
   it("live league hubs wire upcoming slate cards below the hero", () => {
-    for (const [file, label] of [
-      ["src/app/nfl/page.tsx", "NFL"],
-      ["src/components/NbaSlatePage.tsx", "NBA"],
-      ["src/app/nhl/page.tsx", "NHL"],
-      ["src/app/cbb/page.tsx", "CBB"],
-    ] as const) {
-      const page = readSrc(file);
-      assert.match(page, /LeagueHubUpcomingSlateSection/);
-      assert.match(page, /buildLeagueUpcomingSlateFromAssignments/);
-      assert.match(page, new RegExp(`leagueLabel="${label}"`));
-    }
+    const slate = readSrc("src/components/LeagueSlatePage.tsx");
+    assert.match(slate, /LeagueHubUpcomingSlateSection/);
+    assert.match(slate, /buildLeagueUpcomingSlateFromAssignments/);
+    assert.match(slate, /leagueLabel=\{entry\.shortLabel\}/);
+
+    const route = readSrc("src/app/[league]/page.tsx");
+    assert.match(route, /LeagueSlatePage/);
   });
 
   it("uses theme-aware tokens on validation and CCI surfaces", () => {

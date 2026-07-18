@@ -406,14 +406,18 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
   {
     name: "College hub pages include ConferenceCoverage",
     run: () => {
-      for (const page of ["src/app/cbb/page.tsx", "src/app/cfb/page.tsx"]) {
-        const content = read(page);
-        if (!content.includes("ConferenceCoverage")) {
-          return {
-            ok: false,
-            message: `ConferenceCoverage missing in ${page}`,
-          };
-        }
+      const content = read("src/components/LeagueSlatePage.tsx");
+      if (!content.includes("ConferenceCoverage")) {
+        return {
+          ok: false,
+          message: "ConferenceCoverage missing in src/components/LeagueSlatePage.tsx",
+        };
+      }
+      if (!content.includes('leagueId === "cbb"') || !content.includes('leagueId === "cfb"')) {
+        return {
+          ok: false,
+          message: "LeagueSlatePage must gate ConferenceCoverage to CBB and CFB",
+        };
       }
       return { ok: true };
     },
