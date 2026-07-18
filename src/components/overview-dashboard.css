@@ -1,5 +1,6 @@
 /* Overview dashboard redesign — whitespace-first, segmented live/NCAA tiers */
 @import "./overview-quicklists.css";
+@import "./overview-slate-shared.css";
 
 .overview-dashboard-breathe {
   margin-top: var(--space-10);
@@ -1272,18 +1273,6 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog--coverage
 html[data-color="dark"]:not([data-contrast="high"]) .overview-catalog-mark,
 html.dark .overview-catalog-mark {
   background: color-mix(in srgb, var(--catalog-accent, var(--raptors)) 12%, var(--bg-surface-2));
-}
-
-.overview-section-title--with-icon {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.overview-slate-empty {
-  margin: 0;
-  font-size: 0.88rem;
-  color: var(--text-muted);
 }
 
 .overview-slate-leagues {
