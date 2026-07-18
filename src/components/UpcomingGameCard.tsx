@@ -53,9 +53,6 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
         </div>
       </div>
 
-      {game.metadataLine ? (
-        <p className="upcoming-game-card__metadata">{game.metadataLine}</p>
-      ) : null}
     </article>
   );
 }
