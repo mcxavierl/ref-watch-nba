@@ -1,0 +1,565 @@
+{
+  "generatedAt": "2026-07-18T23:51:07.655Z",
+  "alphaThreshold": 0.05,
+  "note": "Market total delta = actual combined score minus closing total. Efficient market (Yes) means the ref signal does not significantly predict that delta at p < 0.05. Inefficient (No) suggests possible unpriced alpha.",
+  "corpus": [
+    {
+      "league": "NBA",
+      "totalGames": 12301,
+      "externalLineGames": 0,
+      "joinedGames": 0,
+      "lineSource": "The Odds API historical (data/game-lines.json) or merge-market-lines"
+    },
+    {
+      "league": "NFL",
+      "totalGames": 6825,
+      "externalLineGames": 6822,
+      "joinedGames": 4725,
+      "lineSource": "nflverse closing lines (data/nfl/game-lines.json)"
+    },
+    {
+      "league": "NHL",
+      "totalGames": 12282,
+      "externalLineGames": 0,
+      "joinedGames": 0,
+      "lineSource": "The Odds API / sportsbook shards via merge-market-lines"
+    },
+    {
+      "league": "EPL",
+      "totalGames": 3800,
+      "externalLineGames": 3800,
+      "joinedGames": 3800,
+      "lineSource": "football-data ingest closing totals"
+    },
+    {
+      "league": "LALIGA",
+      "totalGames": 1546,
+      "externalLineGames": 183,
+      "joinedGames": 183,
+      "lineSource": "ESPN pickcenter at ingest"
+    },
+    {
+      "league": "CBB",
+      "totalGames": 9688,
+      "externalLineGames": 5917,
+      "joinedGames": 5917,
+      "lineSource": "ESPN pickcenter at ingest (data/cbb/game-logs.json)"
+    }
+  ],
+  "rows": [
+    {
+      "league": "NBA",
+      "signal": "whistle_delta",
+      "signalLabel": "Crew whistle delta",
+      "sampleSize": 0,
+      "correlationWithMarketDelta": null,
+      "regressionSlope": null,
+      "pValue": null,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "The Odds API historical (data/game-lines.json) or merge-market-lines",
+      "buckets": []
+    },
+    {
+      "league": "NBA",
+      "signal": "scoring_delta",
+      "signalLabel": "Crew scoring delta",
+      "sampleSize": 0,
+      "correlationWithMarketDelta": null,
+      "regressionSlope": null,
+      "pValue": null,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "The Odds API historical (data/game-lines.json) or merge-market-lines",
+      "buckets": []
+    },
+    {
+      "league": "NBA",
+      "signal": "over_lean",
+      "signalLabel": "Crew over lean",
+      "sampleSize": 0,
+      "correlationWithMarketDelta": null,
+      "regressionSlope": null,
+      "pValue": null,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "The Odds API historical (data/game-lines.json) or merge-market-lines",
+      "buckets": []
+    },
+    {
+      "league": "NFL",
+      "signal": "whistle_delta",
+      "signalLabel": "Crew whistle delta",
+      "sampleSize": 4630,
+      "correlationWithMarketDelta": -0.0105,
+      "regressionSlope": -0.1974,
+      "pValue": 0.4741,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "nflverse closing lines (data/nfl/game-lines.json)",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 1543,
+          "avgSignal": -0.62,
+          "avgMarketTotalDelta": 0.27,
+          "overRateVsClosing": 0.4763
+        },
+        {
+          "label": "Mid signal",
+          "games": 1543,
+          "avgSignal": 0.06,
+          "avgMarketTotalDelta": 0.25,
+          "overRateVsClosing": 0.4783
+        },
+        {
+          "label": "High signal",
+          "games": 1544,
+          "avgSignal": 0.81,
+          "avgMarketTotalDelta": -1.1,
+          "overRateVsClosing": 0.4585
+        }
+      ]
+    },
+    {
+      "league": "NFL",
+      "signal": "scoring_delta",
+      "signalLabel": "Crew scoring delta",
+      "sampleSize": 4630,
+      "correlationWithMarketDelta": 0.133,
+      "regressionSlope": 1.0896,
+      "pValue": 0,
+      "isMarketEfficient": false,
+      "lineCoverageNote": "nflverse closing lines (data/nfl/game-lines.json)",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 1543,
+          "avgSignal": -2.38,
+          "avgMarketTotalDelta": -1.93,
+          "overRateVsClosing": 0.4251
+        },
+        {
+          "label": "Mid signal",
+          "games": 1543,
+          "avgSignal": -0.39,
+          "avgMarketTotalDelta": -0.62,
+          "overRateVsClosing": 0.4621
+        },
+        {
+          "label": "High signal",
+          "games": 1544,
+          "avgSignal": 0.88,
+          "avgMarketTotalDelta": 1.97,
+          "overRateVsClosing": 0.5259
+        }
+      ]
+    },
+    {
+      "league": "NFL",
+      "signal": "over_lean",
+      "signalLabel": "Crew over lean",
+      "sampleSize": 4630,
+      "correlationWithMarketDelta": 0.0411,
+      "regressionSlope": 8.8886,
+      "pValue": 0.0052,
+      "isMarketEfficient": false,
+      "lineCoverageNote": "nflverse closing lines (data/nfl/game-lines.json)",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 1543,
+          "avgSignal": 0.06,
+          "avgMarketTotalDelta": -0.14,
+          "overRateVsClosing": 0.4517
+        },
+        {
+          "label": "Mid signal",
+          "games": 1543,
+          "avgSignal": 0.12,
+          "avgMarketTotalDelta": -0.14,
+          "overRateVsClosing": 0.4738
+        },
+        {
+          "label": "High signal",
+          "games": 1544,
+          "avgSignal": 0.18,
+          "avgMarketTotalDelta": -0.29,
+          "overRateVsClosing": 0.4877
+        }
+      ]
+    },
+    {
+      "league": "NFL",
+      "signal": "gsni_score",
+      "signalLabel": "Crew GSNI (shrunk)",
+      "sampleSize": 2172,
+      "correlationWithMarketDelta": 0.0463,
+      "regressionSlope": 0.0363,
+      "pValue": 0.0308,
+      "isMarketEfficient": false,
+      "lineCoverageNote": "nflverse closing lines (data/nfl/game-lines.json)",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 724,
+          "avgSignal": -21.16,
+          "avgMarketTotalDelta": -1.62,
+          "overRateVsClosing": 0.4489
+        },
+        {
+          "label": "Mid signal",
+          "games": 724,
+          "avgSignal": -11.94,
+          "avgMarketTotalDelta": -0.96,
+          "overRateVsClosing": 0.4475
+        },
+        {
+          "label": "High signal",
+          "games": 724,
+          "avgSignal": 18.44,
+          "avgMarketTotalDelta": 0.34,
+          "overRateVsClosing": 0.4917
+        }
+      ]
+    },
+    {
+      "league": "NHL",
+      "signal": "whistle_delta",
+      "signalLabel": "Crew whistle delta",
+      "sampleSize": 0,
+      "correlationWithMarketDelta": null,
+      "regressionSlope": null,
+      "pValue": null,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "The Odds API / sportsbook shards via merge-market-lines",
+      "buckets": []
+    },
+    {
+      "league": "NHL",
+      "signal": "scoring_delta",
+      "signalLabel": "Crew scoring delta",
+      "sampleSize": 0,
+      "correlationWithMarketDelta": null,
+      "regressionSlope": null,
+      "pValue": null,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "The Odds API / sportsbook shards via merge-market-lines",
+      "buckets": []
+    },
+    {
+      "league": "NHL",
+      "signal": "over_lean",
+      "signalLabel": "Crew over lean",
+      "sampleSize": 0,
+      "correlationWithMarketDelta": null,
+      "regressionSlope": null,
+      "pValue": null,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "The Odds API / sportsbook shards via merge-market-lines",
+      "buckets": []
+    },
+    {
+      "league": "EPL",
+      "signal": "whistle_delta",
+      "signalLabel": "Crew whistle delta",
+      "sampleSize": 3770,
+      "correlationWithMarketDelta": -0.0117,
+      "regressionSlope": -0.0164,
+      "pValue": 0.4723,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "football-data ingest closing totals",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 1256,
+          "avgSignal": -1.27,
+          "avgMarketTotalDelta": 0.31,
+          "overRateVsClosing": 0.551
+        },
+        {
+          "label": "Mid signal",
+          "games": 1256,
+          "avgSignal": -0.02,
+          "avgMarketTotalDelta": 0.39,
+          "overRateVsClosing": 0.5422
+        },
+        {
+          "label": "High signal",
+          "games": 1258,
+          "avgSignal": 1.14,
+          "avgMarketTotalDelta": 0.31,
+          "overRateVsClosing": 0.5382
+        }
+      ]
+    },
+    {
+      "league": "EPL",
+      "signal": "scoring_delta",
+      "signalLabel": "Crew scoring delta",
+      "sampleSize": 3770,
+      "correlationWithMarketDelta": 0.1199,
+      "regressionSlope": 0.9836,
+      "pValue": 0,
+      "isMarketEfficient": false,
+      "lineCoverageNote": "football-data ingest closing totals",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 1256,
+          "avgSignal": -0.18,
+          "avgMarketTotalDelta": 0.12,
+          "overRateVsClosing": 0.4936
+        },
+        {
+          "label": "Mid signal",
+          "games": 1256,
+          "avgSignal": 0.06,
+          "avgMarketTotalDelta": 0.37,
+          "overRateVsClosing": 0.5573
+        },
+        {
+          "label": "High signal",
+          "games": 1258,
+          "avgSignal": 0.24,
+          "avgMarketTotalDelta": 0.52,
+          "overRateVsClosing": 0.5803
+        }
+      ]
+    },
+    {
+      "league": "EPL",
+      "signal": "over_lean",
+      "signalLabel": "Crew over lean",
+      "sampleSize": 3770,
+      "correlationWithMarketDelta": 0.101,
+      "regressionSlope": 2.8495,
+      "pValue": 0,
+      "isMarketEfficient": false,
+      "lineCoverageNote": "football-data ingest closing totals",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 1256,
+          "avgSignal": -0.01,
+          "avgMarketTotalDelta": 0.14,
+          "overRateVsClosing": 0.4841
+        },
+        {
+          "label": "Mid signal",
+          "games": 1256,
+          "avgSignal": 0.05,
+          "avgMarketTotalDelta": 0.35,
+          "overRateVsClosing": 0.5565
+        },
+        {
+          "label": "High signal",
+          "games": 1258,
+          "avgSignal": 0.1,
+          "avgMarketTotalDelta": 0.51,
+          "overRateVsClosing": 0.5906
+        }
+      ]
+    },
+    {
+      "league": "LALIGA",
+      "signal": "whistle_delta",
+      "signalLabel": "Crew whistle delta",
+      "sampleSize": 183,
+      "correlationWithMarketDelta": 0.0694,
+      "regressionSlope": 0.0621,
+      "pValue": 0.3505,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "ESPN pickcenter at ingest",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 61,
+          "avgSignal": -1.5,
+          "avgMarketTotalDelta": 0.25,
+          "overRateVsClosing": 0.5574
+        },
+        {
+          "label": "Mid signal",
+          "games": 61,
+          "avgSignal": 0.35,
+          "avgMarketTotalDelta": -0.04,
+          "overRateVsClosing": 0.4426
+        },
+        {
+          "label": "High signal",
+          "games": 61,
+          "avgSignal": 1.93,
+          "avgMarketTotalDelta": 0.35,
+          "overRateVsClosing": 0.4918
+        }
+      ]
+    },
+    {
+      "league": "LALIGA",
+      "signal": "scoring_delta",
+      "signalLabel": "Crew scoring delta",
+      "sampleSize": 183,
+      "correlationWithMarketDelta": -0.0018,
+      "regressionSlope": -0.011,
+      "pValue": 0.4323,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "ESPN pickcenter at ingest",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 61,
+          "avgSignal": -0.3,
+          "avgMarketTotalDelta": 0.16,
+          "overRateVsClosing": 0.5082
+        },
+        {
+          "label": "Mid signal",
+          "games": 61,
+          "avgSignal": 0.06,
+          "avgMarketTotalDelta": 0.4,
+          "overRateVsClosing": 0.5246
+        },
+        {
+          "label": "High signal",
+          "games": 61,
+          "avgSignal": 0.21,
+          "avgMarketTotalDelta": 0.01,
+          "overRateVsClosing": 0.459
+        }
+      ]
+    },
+    {
+      "league": "LALIGA",
+      "signal": "over_lean",
+      "signalLabel": "Crew over lean",
+      "sampleSize": 183,
+      "correlationWithMarketDelta": 0.048,
+      "regressionSlope": 0.69,
+      "pValue": 0.5187,
+      "isMarketEfficient": true,
+      "lineCoverageNote": "ESPN pickcenter at ingest",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 61,
+          "avgSignal": -0.13,
+          "avgMarketTotalDelta": 0.16,
+          "overRateVsClosing": 0.4754
+        },
+        {
+          "label": "Mid signal",
+          "games": 61,
+          "avgSignal": -0.01,
+          "avgMarketTotalDelta": 0.09,
+          "overRateVsClosing": 0.4754
+        },
+        {
+          "label": "High signal",
+          "games": 61,
+          "avgSignal": 0.07,
+          "avgMarketTotalDelta": 0.32,
+          "overRateVsClosing": 0.541
+        }
+      ]
+    },
+    {
+      "league": "CBB",
+      "signal": "whistle_delta",
+      "signalLabel": "Crew whistle delta",
+      "sampleSize": 5917,
+      "correlationWithMarketDelta": 0.0559,
+      "regressionSlope": 0.8449,
+      "pValue": 0,
+      "isMarketEfficient": false,
+      "lineCoverageNote": "ESPN pickcenter at ingest (data/cbb/game-logs.json)",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 1972,
+          "avgSignal": -1.11,
+          "avgMarketTotalDelta": 0.01,
+          "overRateVsClosing": 0.4817
+        },
+        {
+          "label": "Mid signal",
+          "games": 1972,
+          "avgSignal": 0.12,
+          "avgMarketTotalDelta": 0.28,
+          "overRateVsClosing": 0.4965
+        },
+        {
+          "label": "High signal",
+          "games": 1973,
+          "avgSignal": 1.21,
+          "avgMarketTotalDelta": 1.71,
+          "overRateVsClosing": 0.5256
+        }
+      ]
+    },
+    {
+      "league": "CBB",
+      "signal": "scoring_delta",
+      "signalLabel": "Crew scoring delta",
+      "sampleSize": 5917,
+      "correlationWithMarketDelta": 0.1451,
+      "regressionSlope": 1.0664,
+      "pValue": 0,
+      "isMarketEfficient": false,
+      "lineCoverageNote": "ESPN pickcenter at ingest (data/cbb/game-logs.json)",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 1972,
+          "avgSignal": -2.52,
+          "avgMarketTotalDelta": -1.65,
+          "overRateVsClosing": 0.4457
+        },
+        {
+          "label": "Mid signal",
+          "games": 1972,
+          "avgSignal": -0.16,
+          "avgMarketTotalDelta": 1.27,
+          "overRateVsClosing": 0.5162
+        },
+        {
+          "label": "High signal",
+          "games": 1973,
+          "avgSignal": 1.85,
+          "avgMarketTotalDelta": 2.38,
+          "overRateVsClosing": 0.5418
+        }
+      ]
+    },
+    {
+      "league": "CBB",
+      "signal": "over_lean",
+      "signalLabel": "Crew over lean",
+      "sampleSize": 5917,
+      "correlationWithMarketDelta": 0.1765,
+      "regressionSlope": 64.0527,
+      "pValue": 0,
+      "isMarketEfficient": false,
+      "lineCoverageNote": "ESPN pickcenter at ingest (data/cbb/game-logs.json)",
+      "buckets": [
+        {
+          "label": "Low signal",
+          "games": 1972,
+          "avgSignal": -0.03,
+          "avgMarketTotalDelta": -2.33,
+          "overRateVsClosing": 0.3955
+        },
+        {
+          "label": "Mid signal",
+          "games": 1972,
+          "avgSignal": 0.02,
+          "avgMarketTotalDelta": 0.96,
+          "overRateVsClosing": 0.5066
+        },
+        {
+          "label": "High signal",
+          "games": 1973,
+          "avgSignal": 0.05,
+          "avgMarketTotalDelta": 3.37,
+          "overRateVsClosing": 0.6016
+        }
+      ]
+    }
+  ]
+}
