@@ -14,7 +14,7 @@ import {
   passesHomepageSampleGate,
 } from "@/lib/homepage-insight-gates";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
-import { editorialInsightView } from "@/lib/insight-editorial";
+import { editorialInsightView, insightMetricComparison } from "@/lib/insight-editorial";
 
 function matrixCard(games: number, overrides: Partial<LeagueInsightCard> = {}): LeagueInsightCard {
   return {
@@ -121,5 +121,24 @@ describe("homepage insight gates", () => {
     );
     assert.equal(view.headline, "Knicks & Scott Twardoski: +45.2pp Delta.");
     assert.ok(view.whyItMatters.length > 0);
+  });
+
+  it("includes ref win rate for baseline comparison markers", () => {
+    const comparison = insightMetricComparison(
+      matrixCard(19, {
+        entityName: "Scott Twardoski",
+        teamLabel: "New York Knicks",
+        heroValue: "+45.2pp",
+        stats: [
+          { label: "Ref×team record", value: "17-2" },
+          { label: "Games", value: "19" },
+          { label: "Team baseline", value: "48.0%" },
+        ],
+      }),
+    );
+    assert.ok(comparison);
+    assert.equal(comparison?.teamBaseline, 48);
+    assert.equal(comparison?.deltaPp, 45.2);
+    assert.ok((comparison?.refWinRate ?? 0) > comparison!.teamBaseline!);
   });
 });
