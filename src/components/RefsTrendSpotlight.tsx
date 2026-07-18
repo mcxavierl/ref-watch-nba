@@ -19,15 +19,14 @@ export function RefsTrendSpotlight({ cards, tabLabel }: RefsTrendSpotlightProps)
           Top {cards.length} officials by {tabLabel.toLowerCase()}
         </p>
       </header>
-      <div className="refs-trend-spotlight-track">
+      <ul className="rankings-insight-grid refs-trend-spotlight-track">
         {cards.map((card, index) => (
           <RefsTrendSpotlightCard
             key={`${card.refSlug ?? card.entityName}-${index}`}
             card={card}
-            index={index}
           />
         ))}
-      </div>
+      </ul>
     </section>
   );
 }

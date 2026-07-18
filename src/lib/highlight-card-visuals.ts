@@ -118,3 +118,37 @@ export function highlightCardIconForInsight(insightId: string): LucideIcon {
 export function highlightCardIconForLeaderCategory(category: string): LucideIcon {
   return LEADER_CATEGORY_ICONS[category] ?? Activity;
 }
+
+export function spotlightAccentForCard(card: {
+  kicker: string;
+  heroLabel: string;
+}): HighlightCardAccent {
+  if (/over rate|under rate/i.test(`${card.kicker} ${card.heroLabel}`)) {
+    return "over";
+  }
+  if (/games/i.test(card.heroLabel)) {
+    return "scoring";
+  }
+  return "default";
+}
+
+export function spotlightIconForCard(card: {
+  kicker: string;
+  heroLabel: string;
+}): LucideIcon {
+  if (/over rate|under rate/i.test(`${card.kicker} ${card.heroLabel}`)) {
+    return Percent;
+  }
+  if (/games/i.test(card.heroLabel)) {
+    return TrendingUp;
+  }
+  return Activity;
+}
+
+export function spotlightCardTone(
+  heroTone: "positive" | "negative" | "neutral",
+): HighlightCardTone {
+  if (heroTone === "positive") return "positive";
+  if (heroTone === "negative") return "negative";
+  return "neutral";
+}
