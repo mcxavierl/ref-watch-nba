@@ -40,8 +40,8 @@ npm run setup:hooks
 
 1. **Do not merge** a PR until GitHub **validate** is green.
 2. **Do not merge** if `npm run check:ci` fails locally.
-3. PR CI can **skip** snapshot freshness when a diff touches no overview sources, but **deploy on main always runs it**. If you change insight gates, methodology, or overview builders, refresh the snapshot in the same PR.
-4. After changing any file listed in `scripts/overview-snapshot-sources.ts`, rebuild `data/overview-snapshot.json`:
+3. PR CI can **skip** snapshot freshness when a diff touches no overview sources or league data inputs, but **deploy on main always forces it**. If you change insight gates, methodology, overview builders, or committed `data/**` stats/logs/assignments, refresh the snapshot in the same PR.
+4. After changing any file listed in `scripts/overview-snapshot-sources.ts` or league stats under `data/`, rebuild `data/overview-snapshot.json`:
 
 ```bash
 npx tsx scripts/build-overview-snapshot.ts
@@ -55,7 +55,7 @@ git add data/overview-snapshot.json
 | Symptom | Fix |
 |--------|-----|
 | Stale `overview-snapshot.json` | Run `build-overview-snapshot.ts` and commit |
-| PR green but deploy on main fails freshness | Overview sources changed without snapshot refresh — CI skipped on PR because paths were not tracked; fix paths in `overview-snapshot-sources.ts` if needed, rebuild snapshot, merge |
+| PR green but deploy on main fails freshness | League stats or overview inputs changed without snapshot refresh — PR CI skipped because only UI changed; rebuild snapshot and merge, or ensure automated data workflows refresh it |
 | PR green but deploy fails on CSS/webpack | Run `npm run check:css-syntax` and `npm run build:next` locally — CI now runs both before merge |
 | Validation backtest stale after game-log edits | Run `npm run validation:refresh` and commit `data/backtest-results.json` + `BACKTEST.md` |
 | Snapshot sources changed but snapshot file not in PR | `check-artifact-freshness` fails — rebuild and commit snapshot in the same PR |

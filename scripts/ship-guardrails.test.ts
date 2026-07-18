@@ -2,9 +2,19 @@ import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import {
+  isOverviewDataDependency,
   isOverviewSnapshotSource,
   OVERVIEW_SNAPSHOT_SOURCES,
 } from "./overview-snapshot-sources";
+
+function validateJobSteps(workflowPath: string): string[] {
+  const source = readFileSync(workflowPath, "utf8");
+  const validateBlock = source.match(/jobs:\s*\n\s*validate:[\s\S]*?(?=\n\s*\w+:|\Z)/);
+  if (!validateBlock) {
+    throw new Error(`${workflowPath} missing validate job`);
+  }
+  return [...validateBlock[0].matchAll(/^\s*- name: (.+)$/gm)].map((match) => match[1]);
+}
 
 describe("ship guardrail scripts", () => {
   it("check-coupled-test-changes passes on current branch", () => {
@@ -46,6 +56,36 @@ describe("ship guardrail scripts", () => {
       if (!source.includes("timeout-minutes: 20")) {
         throw new Error(`${file} must set validate timeout-minutes: 20`);
       }
+    }
+  });
+
+  it("ci and deploy validate jobs run the same gate sequence", () => {
+    const ciSteps = validateJobSteps(".github/workflows/ci.yml");
+    const deploySteps = validateJobSteps(".github/workflows/deploy.yml");
+    if (JSON.stringify(ciSteps) !== JSON.stringify(deploySteps)) {
+      throw new Error(
+        `CI/deploy validate steps diverged.\nCI: ${ciSteps.join(" -> ")}\nDeploy: ${deploySteps.join(" -> ")}`,
+      );
+    }
+  });
+
+  it("deploy workflow forces full overview snapshot freshness", () => {
+    const deploy = readFileSync(".github/workflows/deploy.yml", "utf8");
+    if (!deploy.includes("ARTIFACT_FRESHNESS_FORCE")) {
+      throw new Error("deploy.yml must set ARTIFACT_FRESHNESS_FORCE for artifact freshness");
+    }
+  });
+
+  it("daily sports data refresh rebuilds overview snapshot", () => {
+    const refresh = readFileSync(".github/workflows/refresh-sports-data.yml", "utf8");
+    if (!refresh.includes("build-overview-snapshot")) {
+      throw new Error("refresh-sports-data.yml must rebuild overview snapshot after data refresh");
+    }
+  });
+
+  it("tracks league stats JSON as overview snapshot data dependencies", () => {
+    if (!isOverviewDataDependency("data/cbb/ref-stats-core.json")) {
+      throw new Error("CBB ref-stats-core must invalidate overview snapshot freshness");
     }
   });
 });

@@ -32,3 +32,25 @@ export const OVERVIEW_SNAPSHOT_SOURCES = [
 export function isOverviewSnapshotSource(file: string): boolean {
   return OVERVIEW_SNAPSHOT_SOURCES.some((rel) => file === rel || file.endsWith(`/${rel}`));
 }
+
+/** Committed league stats and slate inputs that invalidate the overview snapshot. */
+const OVERVIEW_DATA_DEPENDENCY_PATTERNS = [
+  /^data\/baselines\.json$/,
+  /^data\/overview-insights\.json$/,
+  /^data\/assignments\.json$/,
+  /^data\/(?:ref-stats(?:-core)?|game-logs|team-splits)\.json$/,
+  /^data\/[^/]+\/(?:ref-stats(?:-core)?|game-logs|team-splits|assignments)\.json$/,
+] as const;
+
+export function isOverviewDataDependency(file: string): boolean {
+  const normalized = file.replace(/\\/g, "/");
+  return OVERVIEW_DATA_DEPENDENCY_PATTERNS.some((pattern) => pattern.test(normalized));
+}
+
+export function isOverviewSnapshotInvalidatingChange(file: string): boolean {
+  return (
+    isOverviewSnapshotSource(file) ||
+    isOverviewDataDependency(file) ||
+    file.endsWith(OVERVIEW_SNAPSHOT_REL)
+  );
+}

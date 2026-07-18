@@ -9,6 +9,8 @@ import * as path from "node:path";
 import { buildCrossLeagueOverview } from "../src/lib/cross-league-overview";
 import { catalogCompetitionCount } from "../src/lib/league-catalog";
 import {
+  isOverviewDataDependency,
+  isOverviewSnapshotInvalidatingChange,
   isOverviewSnapshotSource,
   OVERVIEW_SNAPSHOT_REL,
   OVERVIEW_SNAPSHOT_SOURCES,
@@ -38,8 +40,9 @@ function changedFiles(): Set<string> {
 }
 
 function isRelevantChange(changed: Set<string>): boolean {
+  if (process.env.ARTIFACT_FRESHNESS_FORCE === "1") return true;
   if (changed.size === 0) return true;
-  return [...changed].some((file) => isOverviewSnapshotSource(file) || file.endsWith(OVERVIEW_SNAPSHOT_REL));
+  return [...changed].some((file) => isOverviewSnapshotInvalidatingChange(file));
 }
 
 function readJson<T>(rel: string): T {
@@ -53,7 +56,9 @@ if (!isRelevantChange(changed)) {
 }
 
 const failures: string[] = [];
-const touchedSources = [...changed].filter((file) => isOverviewSnapshotSource(file));
+const touchedSources = [...changed].filter(
+  (file) => isOverviewSnapshotSource(file) || isOverviewDataDependency(file),
+);
 const snapshotTouched = [...changed].some((file) => file.endsWith(OVERVIEW_SNAPSHOT_REL));
 
 if (process.env.GITHUB_BASE_SHA && touchedSources.length > 0 && !snapshotTouched) {
