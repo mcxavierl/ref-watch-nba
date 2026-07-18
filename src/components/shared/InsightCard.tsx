@@ -29,7 +29,7 @@ import {
 } from "@/lib/homepage-insight-gates";
 import { leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { whistleIndexFromInsightCard } from "@/lib/whistle-index";
-import { STANDOUT_SPLIT_FOOTNOTE } from "@/lib/data-maturity";
+import { STANDOUT_SPLIT_FOOTNOTE, formatSampleSizeLabel } from "@/lib/data-maturity";
 import { InsightCardShell } from "@/components/shared/InsightCardShell";
 import { InsightMetricComparison } from "@/components/shared/InsightMetricComparison";
 import "@/components/insight-card.css";
@@ -275,6 +275,10 @@ function EditorialInsightCard({
 
           {card.kind === "matrix-edge" ? (
             <InsightSplitMetrics
+              sampleMetric={{
+                value: formatSampleSizeLabel(editorial.sampleGames),
+                label: "Sample size (N)",
+              }}
               deltaMetric={editorial.primaryMetric}
               compact={metaCompact}
             />
