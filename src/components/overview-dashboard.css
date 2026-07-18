@@ -805,6 +805,12 @@
   margin-bottom: var(--space-6);
 }
 
+.overview-league-chooser-tier--college {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+}
+
 .overview-league-chooser-card--live-tier {
   box-shadow: 0 1px 0 color-mix(in srgb, var(--chooser-accent, var(--border)) 25%, transparent);
 }
@@ -919,6 +925,7 @@
 }
 
 .overview-scorecard-section--college {
+  padding-inline: 0.85rem;
   padding-top: var(--space-5);
   margin-top: var(--space-5);
   border-top: 1px solid var(--border-subtle);
