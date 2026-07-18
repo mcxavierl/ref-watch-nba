@@ -11,7 +11,7 @@ type CouplingRule = {
   tests: string[];
 };
 
-const RULES: CouplingRule[] = [
+export const COUPLED_TEST_RULES: CouplingRule[] = [
   {
     label: "upcoming slate metadata",
     sources: [
@@ -70,7 +70,7 @@ function changedFiles(): Set<string> {
 const changed = changedFiles();
 const failures: string[] = [];
 
-for (const rule of RULES) {
+for (const rule of COUPLED_TEST_RULES) {
   const touchedSources = rule.sources.filter((file) => changed.has(file));
   if (touchedSources.length === 0) continue;
 
