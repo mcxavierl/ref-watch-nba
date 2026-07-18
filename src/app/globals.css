@@ -5498,17 +5498,8 @@ p {
 
   .clinical-insight-matrix-kpi {
     font-size: 1.875rem;
-    font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.15;
-  }
-
-  .clinical-insight-matrix-card[data-tone="positive"] .clinical-insight-matrix-kpi.metric-delight-value--positive {
-    color: rgb(52 211 153);
-  }
-
-  .clinical-insight-matrix-card[data-tone="negative"] .clinical-insight-matrix-kpi.metric-delight-value--negative {
-    color: rgb(251 113 133);
   }
 
   .clinical-insight-matrix-baseline {

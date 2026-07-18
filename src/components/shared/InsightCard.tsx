@@ -15,6 +15,7 @@ import {
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
+import { InsightSplitMetrics } from "@/components/shared/InsightSplitMetrics";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
@@ -272,24 +273,32 @@ function EditorialInsightCard({
             <WhistleIndexGauge index={whistleIndex} size="lg" className="insight-editorial-whistle-index" />
           ) : null}
 
-          <div className="insight-editorial-metrics">
-            <div className="insight-editorial-metric insight-editorial-metric--primary">
-              <span className="insight-editorial-metric-value">{editorial.primaryMetric.value}</span>
-              <span className="insight-editorial-metric-label">
-                {normalizeCarouselCopy(editorial.primaryMetric.label)}
-              </span>
-            </div>
-            {editorial.secondaryMetric ? (
-              <div className="insight-editorial-metric insight-editorial-metric--secondary">
-                <span className="insight-editorial-metric-value">
-                  {editorial.secondaryMetric.value}
-                </span>
+          {editorial.primaryMetric.label === "Sample size (N)" && editorial.secondaryMetric ? (
+            <InsightSplitMetrics
+              sampleMetric={editorial.primaryMetric}
+              deltaMetric={editorial.secondaryMetric}
+              compact={metaCompact}
+            />
+          ) : (
+            <div className="insight-editorial-metrics">
+              <div className="insight-editorial-metric insight-editorial-metric--primary">
+                <span className="insight-editorial-metric-value">{editorial.primaryMetric.value}</span>
                 <span className="insight-editorial-metric-label">
-                  {normalizeCarouselCopy(editorial.secondaryMetric.label)}
+                  {normalizeCarouselCopy(editorial.primaryMetric.label)}
                 </span>
               </div>
-            ) : null}
-          </div>
+              {editorial.secondaryMetric ? (
+                <div className="insight-editorial-metric insight-editorial-metric--secondary">
+                  <span className="insight-editorial-metric-value">
+                    {editorial.secondaryMetric.value}
+                  </span>
+                  <span className="insight-editorial-metric-label">
+                    {normalizeCarouselCopy(editorial.secondaryMetric.label)}
+                  </span>
+                </div>
+              ) : null}
+            </div>
+          )}
 
           <InsightCardMeta card={card} compact={metaCompact} />
 

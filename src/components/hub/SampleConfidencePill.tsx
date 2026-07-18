@@ -1,13 +1,13 @@
 import {
-  matrixSampleConfidenceLabel,
+  formatSampleSizeLabel,
   matrixSampleConfidenceTier,
   type MatrixSampleConfidenceTier,
 } from "@/lib/data-maturity";
 
 const TIER_CLASS: Record<MatrixSampleConfidenceTier, string> = {
-  high: "sample-confidence-pill sample-confidence-pill--high bg-emerald-500/10 text-emerald-400",
-  moderate: "sample-confidence-pill sample-confidence-pill--moderate bg-amber-500/10 text-amber-400",
-  low: "sample-confidence-pill sample-confidence-pill--low bg-rose-500/10 text-rose-400",
+  high: "sample-confidence-pill sample-confidence-pill--high border-slate-700/80 bg-slate-900/70",
+  moderate: "sample-confidence-pill sample-confidence-pill--moderate border-slate-700/80 bg-slate-900/70",
+  low: "sample-confidence-pill sample-confidence-pill--low border-slate-700/80 bg-slate-900/70",
 };
 
 /**
@@ -22,12 +22,12 @@ export function SampleConfidencePill({
   className?: string;
 }) {
   const tier = matrixSampleConfidenceTier(games);
-  const label = matrixSampleConfidenceLabel(tier);
+  const label = formatSampleSizeLabel(games);
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center rounded-full px-4 py-1.5 text-xs font-semibold tabular-nums ${TIER_CLASS[tier]} ${className}`.trim()}
-      aria-label={`Sample size: ${label}`}
+      className={`inline-flex shrink-0 items-center rounded-full border px-4 py-1.5 text-xs font-semibold tabular-nums text-white ${TIER_CLASS[tier]} ${className}`.trim()}
+      aria-label={`Sample size: ${label} (${tier} confidence tier)`}
     >
       {label}
     </span>

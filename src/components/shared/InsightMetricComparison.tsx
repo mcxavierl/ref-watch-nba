@@ -1,4 +1,5 @@
 import { adjustedDeltaTooltipText } from "@/lib/data-maturity";
+import { DirectionalDeltaValue, deltaToneFromValue } from "@/components/shared/DirectionalDeltaValue";
 import type { InsightMetricComparison as InsightMetricComparisonData } from "@/lib/insight-editorial";
 import type { KpiDataPillTone } from "@/components/ui/KpiDataPill";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
@@ -94,15 +95,19 @@ export function InsightMetricComparison({
                 className="insight-metric-comparison-value insight-metric-comparison-value--delta insight-metric-comparison-value--adjusted"
                 panelClassName="insight-metric-comparison-hint-panel"
               >
-                <span data-tone={crewBarTone}>{formatDeltaPp(comparison.deltaPp!)}</span>
+                <DirectionalDeltaValue
+                  value={formatDeltaPp(comparison.deltaPp!)}
+                  tone={deltaToneFromValue(formatDeltaPp(comparison.deltaPp!))}
+                  size="sm"
+                />
               </MetricInfoHint>
             ) : (
-              <span
+              <DirectionalDeltaValue
+                value={formatDeltaPp(comparison.deltaPp!)}
+                tone={deltaToneFromValue(formatDeltaPp(comparison.deltaPp!))}
+                size="sm"
                 className="insight-metric-comparison-value insight-metric-comparison-value--delta"
-                data-tone={crewBarTone}
-              >
-                {formatDeltaPp(comparison.deltaPp!)}
-              </span>
+              />
             )}
           </div>
         ) : (

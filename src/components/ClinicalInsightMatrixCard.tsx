@@ -2,10 +2,10 @@ import Link from "next/link";
 import { RefAvatar } from "@/components/RefAvatar";
 import { PersonnelAvatar } from "@/components/PersonnelAvatar";
 import { TeamLogo } from "@/components/TeamLogo";
-import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { DirectionalDeltaValue } from "@/components/shared/DirectionalDeltaValue";
 import { SampleConfidencePill } from "@/components/hub/SampleConfidencePill";
 import {
-  REF_CARD_METRIC_CLASS,
+  REF_CARD_CLASS,
   RefCard,
 } from "@/components/hub/RefCard";
 import { formatDeltaPp } from "@/lib/data-maturity";
@@ -249,16 +249,13 @@ export function ClinicalInsightMatrixCard({
       ) : null}
 
       <div className="clinical-insight-matrix-metric" aria-label="Delta vs baseline">
-        <div className={REF_CARD_METRIC_CLASS}>
-          <StandoutMetricValue
-            tone={model.tone}
-            size="lg"
-            className="clinical-insight-matrix-kpi text-3xl tabular-nums"
-          >
-            {model.deltaDisplay}
-          </StandoutMetricValue>
-        </div>
-        <p className="clinical-insight-matrix-baseline text-sm text-slate-400 tabular-nums">
+        <DirectionalDeltaValue
+          value={model.deltaDisplay}
+          tone={model.tone === "positive" || model.tone === "standout-high" ? "positive" : model.tone === "negative" || model.tone === "standout-low" ? "negative" : "neutral"}
+          size="lg"
+          className="clinical-insight-matrix-kpi"
+        />
+        <p className="clinical-insight-matrix-baseline text-sm font-normal text-slate-400 tabular-nums">
           {model.baselineLine}
         </p>
       </div>
