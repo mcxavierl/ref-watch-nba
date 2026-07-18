@@ -48,6 +48,7 @@ import {
   buildMatrixTeamShareUrl,
 } from "@/lib/matrix-split-share";
 import type { LeagueId } from "@/lib/leagues";
+import { leagueGameUnit } from "@/lib/leagues";
 import { formatBaselineAtsPct, formatBaselinePct, formatTeamWhistleEdgeLabel } from "@/lib/stats-utils";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
@@ -732,10 +733,10 @@ export function RefTeamMatrix({
             >
               {searchQuery
                 ? searchMatchCount > 0
-                  ? `${searchMatchCount} match${searchMatchCount === 1 ? "" : "es"}${selectedTeam ? ` in top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} for ${selectedTeam.label}` : ". Thin-sample rows stay visible with a game count"}`
+                  ? `${searchMatchCount} result${searchMatchCount === 1 ? "" : "s"}${selectedTeam ? ` in top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} for ${selectedTeam.label}` : `. Thin-sample rows stay visible with a ${leagueGameUnit(leagueId)} count`}`
                   : selectedTeam
-                    ? `No matches in top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} for ${selectedTeam.label}. Clear search or team filter`
-                    : "No matches in this matrix. Try a shorter name or check rankings"
+                    ? `No results in top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} for ${selectedTeam.label}. Clear search or team filter`
+                    : "No results in this matrix. Try a shorter name or check rankings"
                 : selectedTeam
                   ? `Showing top and bottom ${TEAM_MATRIX_REF_PANEL_LIMIT} ${officialNounPlural} for ${selectedTeam.label} only`
                   : "Filter rows by name; includes thin-sample rows"}
@@ -889,7 +890,7 @@ export function RefTeamMatrix({
                   colSpan={teams.length + 1}
                   className="ref-matrix-empty-search"
                 >
-                  No {officialNounPlural} match &ldquo;{refSearch.trim()}&rdquo;.
+                  No {officialNounPlural} found for &ldquo;{refSearch.trim()}&rdquo;.
                   Clear search or browse rankings.
                 </td>
               </tr>

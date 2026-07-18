@@ -1,5 +1,5 @@
 import type { LeagueConfig, LeagueId } from "@/lib/leagues";
-import { LEAGUES } from "@/lib/leagues";
+import { LEAGUES, leagueGameUnit, leagueGamesLabel, leagueGamesUnit, leaguePerGamePhrase } from "@/lib/leagues";
 import { normalizeRefName } from "@/lib/bbr-ref-team-records";
 import { formatScoringDeltaStat } from "@/lib/scoring-metrics";
 import { filterNhlReferees } from "@/lib/nhl/officials";
@@ -145,7 +145,11 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
         return {
           id: "top-scoring",
           title: scoringPaceRankTitle(delta),
-          body: thirdPersonScoringPaceBody(delta, ctx.unit),
+          body: thirdPersonScoringPaceBody(
+            delta,
+            ctx.unit,
+            leaguePerGamePhrase(ctx.league.id),
+          ),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: "Scoring delta vs average",
@@ -201,10 +205,12 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           qualifies: (ref) =>
             (bettingOuRate(ref.bettingStats) ?? 0) >= BETTING_RATE_HIGH_CONFIDENCE,
         }),
-      build: (ref) => ({
+      build: (ref, ctx) => ({
         id: "top-ou-betting",
         title: "Highest O/U hit rate vs closing total",
-        body: `Matches with this official most often finish over the listed total. Past tendency, not a forecast.`,
+        body: `${
+          leagueGameUnit(ctx.league.id) === "match" ? "Matches" : "Games"
+        } with this official most often finish over the listed total. Past tendency, not a forecast.`,
         refSlug: ref.slug,
         refName: ref.name,
         statLabel: "O/U hit %",
@@ -221,10 +227,11 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
         }),
       build: (ref) => {
         if (ctx.league.id === "nfl" && ref.nflAnalytics) {
+          const perGame = leaguePerGamePhrase(ctx.league.id);
           return {
             id: "top-whistle",
-            title: "Most flags per match",
-            body: `${ref.nflAnalytics.avgFlagsPerGame} flags/match, ${formatSigned(ref.nflAnalytics.flagsDelta)} vs league average.`,
+            title: `Most flags ${perGame}`,
+            body: `${ref.nflAnalytics.avgFlagsPerGame} flags/${leagueGameUnit(ctx.league.id)}, ${formatSigned(ref.nflAnalytics.flagsDelta)} vs league average.`,
             refSlug: ref.slug,
             refName: ref.name,
             statLabel: "Flags delta",
@@ -235,7 +242,11 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
         return {
           id: "top-whistle",
           title: whistlePaceRankTitle(wd, ctx.league.metrics.whistleShort),
-          body: thirdPersonWhistlePaceBody(wd, ctx.league.metrics.whistlePlain),
+          body: thirdPersonWhistlePaceBody(
+            wd,
+            ctx.league.metrics.whistlePlain,
+            leaguePerGamePhrase(ctx.league.id),
+          ),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: `${ctx.league.metrics.whistleShort} delta vs average`,
@@ -260,7 +271,11 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
         return {
           id: "bottom-scoring",
           title: scoringPaceRankTitle(delta),
-          body: thirdPersonScoringPaceBody(delta, ctx.unit),
+          body: thirdPersonScoringPaceBody(
+            delta,
+            ctx.unit,
+            leaguePerGamePhrase(ctx.league.id),
+          ),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: "Scoring delta vs average",
@@ -309,7 +324,11 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
         return {
           id: "light-whistle",
           title: whistlePaceRankTitle(wd, ctx.league.metrics.whistleShort),
-          body: thirdPersonWhistlePaceBody(wd, ctx.league.metrics.whistlePlain),
+          body: thirdPersonWhistlePaceBody(
+            wd,
+            ctx.league.metrics.whistlePlain,
+            leaguePerGamePhrase(ctx.league.id),
+          ),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: `${ctx.league.metrics.whistleShort} delta vs average`,
@@ -405,7 +424,11 @@ export function buildRankingsSynthesis(
         insight = {
           id: "scoring-depth",
           title: scoringPaceRankTitle(ref.totalPointsDelta),
-          body: thirdPersonScoringPaceBody(ref.totalPointsDelta, ctx.unit),
+          body: thirdPersonScoringPaceBody(
+            ref.totalPointsDelta,
+            ctx.unit,
+            leaguePerGamePhrase(ctx.league.id),
+          ),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: "Scoring delta vs average",
@@ -432,7 +455,11 @@ export function buildRankingsSynthesis(
         insight = {
           id: "whistle-depth",
           title: whistlePaceRankTitle(wd, ctx.league.metrics.whistleShort),
-          body: thirdPersonWhistlePaceBody(wd, ctx.league.metrics.whistlePlain),
+          body: thirdPersonWhistlePaceBody(
+            wd,
+            ctx.league.metrics.whistlePlain,
+            leaguePerGamePhrase(ctx.league.id),
+          ),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: `${ctx.league.metrics.whistleShort} delta vs average`,
@@ -442,10 +469,10 @@ export function buildRankingsSynthesis(
         insight = {
           id: "sample-depth",
           title: "Deep sample official",
-          body: `${ref.games} games in this scope - one of the larger officiating samples on the board.`,
+          body: `${ref.games} ${leagueGamesUnit(ctx.league.id)} in this scope - one of the larger officiating samples on the board.`,
           refSlug: ref.slug,
           refName: ref.name,
-          statLabel: "Games",
+          statLabel: leagueGamesLabel(ctx.league.id),
           statValue: String(ref.games),
         };
       }
@@ -455,14 +482,16 @@ export function buildRankingsSynthesis(
     }
   }
 
+  const contestUnit = leagueGameUnit(league.id);
+  const contestUnitPlural = leagueGamesUnit(league.id);
   const leagueSummary =
     qualified.length > 0
-      ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} trend toward higher scoring. ${lowScoring.length} trend lower. Past match tendencies - not predictions.`
-      : `Not enough qualified officials in this scope yet. Use the rankings table toggle to include refs below the ${min}-game gate.`;
+      ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} trend toward higher scoring. ${lowScoring.length} trend lower. Past ${contestUnit} tendencies - not predictions.`
+      : `Not enough qualified officials in this scope yet. Use the rankings table toggle to include refs below the ${min}-${contestUnit} gate.`;
 
   return {
     headline: "Top highlights",
-    subhead: `High-confidence patterns from officials with ${min}+ matches in the sample.`,
+    subhead: `High-confidence patterns from officials with ${min}+ ${contestUnitPlural} in the sample.`,
     insights,
     leagueSummary,
     qualifiedCount: qualified.length,

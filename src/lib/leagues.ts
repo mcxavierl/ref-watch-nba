@@ -120,6 +120,26 @@ export function leagueHref(leagueId: LeagueId, segment: string): string {
   return leagueManifestPath(leagueId, segment);
 }
 
+/** Singular contest noun: "game" for US sports, "match" for soccer hubs. */
+export function leagueGameUnit(leagueId: LeagueId): "game" | "match" {
+  return LEAGUES[leagueId].metrics.gamesColumn === "Matches" ? "match" : "game";
+}
+
+/** Plural contest noun derived from league manifest gamesColumn. */
+export function leagueGamesUnit(leagueId: LeagueId): string {
+  return LEAGUES[leagueId].metrics.gamesColumn.toLowerCase();
+}
+
+/** Phrase for per-contest rates, e.g. "per game" or "per match". */
+export function leaguePerGamePhrase(leagueId: LeagueId): string {
+  return `per ${leagueGameUnit(leagueId)}`;
+}
+
+/** Capitalized contest noun for table headers and labels. */
+export function leagueGamesLabel(leagueId: LeagueId): string {
+  return LEAGUES[leagueId].metrics.gamesColumn;
+}
+
 /** Canonical ref profile path for a league (rankings, matrix, directory links). */
 export function refProfileHref(leagueId: LeagueId, slug: string): string {
   return leagueHref(leagueId, `/refs/${slug}`);
