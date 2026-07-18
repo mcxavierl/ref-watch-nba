@@ -2,12 +2,7 @@
 
 import { useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { EdgeFinderCell } from "@/components/EdgeFinderCell";
 import { FindingsFeedList } from "@/components/FindingsFeedList";
-import {
-  ResearchProViewToggle,
-  useResearchProView,
-} from "@/components/ResearchProViewToggle";
 import { countFeedCards, groupFindingsForFeed } from "@/lib/finding-grouping";
 import {
   FINDING_FILTER_GROUPS,
@@ -17,7 +12,6 @@ import {
   sortFindingsByStrength,
   type FindingFilterGroup,
 } from "@/lib/findings-shared";
-import type { FindingEvSnapshot } from "@/lib/finding-ev-display";
 import type { ConfidenceTier } from "@/lib/user-language";
 import { FilterResultsAnnouncer } from "@/lib/a11y/LiveRegion";
 import type { ResearchFinding } from "@/lib/research";
@@ -38,16 +32,13 @@ export function ResearchHubFindings({
   findings,
   league,
   refCount,
-  evByFindingId = {},
 }: {
   findings: ResearchFinding[];
   league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   refCount: number;
-  evByFindingId?: Record<string, FindingEvSnapshot | null>;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isProView = useResearchProView();
   const categoryFilter = parseFilter(searchParams.get("filter"));
   const confidenceFilter = parseConfidence(searchParams.get("confidence"));
 
@@ -55,6 +46,7 @@ export function ResearchHubFindings({
     const params = new URLSearchParams(searchParams.toString());
     if (group === "all") params.delete("filter");
     else params.set("filter", group);
+    params.delete("pro");
     const qs = params.toString();
     router.replace(qs ? `?${qs}` : "?", { scroll: false });
   };
@@ -109,6 +101,7 @@ export function ResearchHubFindings({
             onClick={() => {
               const params = new URLSearchParams(searchParams.toString());
               params.delete("confidence");
+              params.delete("pro");
               const qs = params.toString();
               router.replace(qs ? `?${qs}` : "?", { scroll: false });
             }}
@@ -134,22 +127,9 @@ export function ResearchHubFindings({
                 size.
               </p>
             </div>
-            <ResearchProViewToggle />
           </div>
-          {isProView ? (
-            <p className="research-pro-lead">
-              Pro view adds an Edge Finder column - model probability vs market
-              implied odds, adjusted for LWIS high-impact officials.
-            </p>
-          ) : null}
-          <div
-            className={`finding-accordion-stack mt-4${isProView ? " finding-accordion-stack--pro" : ""}`}
-          >
-            <FindingsFeedList
-              feed={feed}
-              league={league}
-              evByFindingId={isProView ? evByFindingId : undefined}
-            />
+          <div className="finding-accordion-stack mt-4">
+            <FindingsFeedList feed={feed} league={league} />
           </div>
         </section>
       )}
