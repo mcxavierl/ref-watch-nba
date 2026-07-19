@@ -1,4 +1,5 @@
 import {
+  classifyFoulName,
   FoulCategory,
   type FoulClassificationLeague,
 } from "../../../src/lib/types/foul-categories";
@@ -11,6 +12,7 @@ import {
 } from "../../lib/process-foul-data";
 
 export type { IngestFoulRecord, TaggedIngestFoul };
+export { classifyFoulName, FoulCategory };
 
 const NBA_LEAGUE: FoulClassificationLeague = "nba";
 
@@ -26,7 +28,10 @@ export function classifyFoul(foulName: string): FoulCategory {
   return classifyFoulForLeague(NBA_LEAGUE, foulName);
 }
 
-/** Tag each foul with category before shard writes. */
+/**
+ * Tag each foul with category during ingest parsing.
+ * Unknown labels default to SUBJECTIVE (via classifyFoulName) with a console.warn.
+ */
 export function processFoulData<T extends IngestFoulRecord>(
   fouls: readonly T[],
 ): Array<T | TaggedIngestFoul<T>> {

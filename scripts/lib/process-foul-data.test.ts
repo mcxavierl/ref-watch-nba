@@ -32,7 +32,10 @@ describe("process-foul-data", () => {
     captureConsole();
     const tagged = tagIngestFoul("nba", { foulName: "Delay of Game" });
     assert.equal((tagged as { category: FoulCategory }).category, FoulCategory.ADMIN);
-    assert.equal(logs.some((line) => line.includes("Tagging foul: Delay of Game as ADMIN")), true);
+    assert.equal(
+      logs.some((line) => line.includes("Enriching Foul:") && line.includes("Delay of Game") && line.includes("ADMIN")),
+      true,
+    );
     assert.equal(warnings.length, 0);
   });
 

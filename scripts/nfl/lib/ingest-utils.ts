@@ -1,5 +1,6 @@
 import type { NflPenaltyEvent } from "../../../src/lib/types";
 import {
+  classifyFoulName,
   FoulCategory,
   type FoulClassificationLeague,
 } from "../../../src/lib/types/foul-categories";
@@ -12,6 +13,7 @@ import {
 } from "../../lib/process-foul-data";
 
 export type { IngestFoulRecord, TaggedIngestFoul };
+export { classifyFoulName, FoulCategory };
 
 const NFL_LEAGUE: FoulClassificationLeague = "nfl";
 

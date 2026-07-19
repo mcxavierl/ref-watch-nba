@@ -40,7 +40,7 @@ export function tagIngestFoul<T extends IngestFoulRecord>(
   }
 
   const mapped = getFoulCategory(league, foulName);
-  const category = mapped ?? FoulCategory.SUBJECTIVE;
+  const category = mapped ?? classifyFoulName(league, foulName);
 
   if (mapped === undefined) {
     console.warn(
@@ -48,7 +48,7 @@ export function tagIngestFoul<T extends IngestFoulRecord>(
     );
   }
 
-  console.log(`Tagging foul: ${foulName} as ${category}`);
+  console.log("Enriching Foul:", foulName, "-> Category:", category);
 
   return {
     ...foul,
