@@ -1,3 +1,4 @@
+import { MIN_NFL_GAMES } from "../../lib/constants/ingest-thresholds";
 import type { NflHistoricalGameLogEntry } from "./nflverse-historical";
 
 export type NflValidationResult = {
@@ -23,7 +24,7 @@ export function validateNflGameLogs(
   games: NflHistoricalGameLogEntry[],
   options: NflIngestValidationOptions = {},
 ): NflValidationResult[] {
-  const minGames = options.minGames ?? 2500;
+  const minGames = options.minGames ?? MIN_NFL_GAMES;
   const minOfficialCoveragePct = options.minOfficialCoveragePct ?? 95;
   const maxDuplicateGameIds = options.maxDuplicateGameIds ?? 0;
 
