@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { GsniBandBadge } from "@/components/GsniBandBadge";
-import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
-import { explainGsni } from "@/lib/gsni-display";
+import { explainGsni, GSNI_INSUFFICIENT_DATA_LABEL } from "@/lib/gsni-display";
+import { formatGsniIndexScore } from "@/lib/gsni-ui";
 import type { GsniResearchRow } from "@/lib/gsni-research";
 
 type SortField = "gsni" | "volatility" | "highLeverageMinutes" | "sampleGames";
@@ -91,30 +91,30 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
           <tr>
             <th>Official</th>
             <SortableHeader
-              label="Game-State Index"
+              label="Index Score"
               field="gsni"
               sort={sort}
               onSort={(field) => setSort(toggleSort(sort, field))}
             />
             <SortableHeader
-              label="Volatility"
+              label="Data Consistency"
               field="volatility"
               sort={sort}
               onSort={(field) => setSort(toggleSort(sort, field))}
             />
             <SortableHeader
-              label="HL min"
+              label="High-Leverage Minutes"
               field="highLeverageMinutes"
               sort={sort}
               onSort={(field) => setSort(toggleSort(sort, field))}
             />
             <SortableHeader
-              label="Games"
+              label="Sample Size (Games)"
               field="sampleGames"
               sort={sort}
               onSort={(field) => setSort(toggleSort(sort, field))}
             />
-            <th>Profile</th>
+            <th>Frequency Profile</th>
           </tr>
         </thead>
         <tbody>
@@ -130,33 +130,27 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
                   <div className="gsni-table-score-cell min-w-[8.5rem]">
                     {row.gsniShrinkageTooltip ? (
                       <MetricInfoHint hint={row.gsniShrinkageTooltip}>
-                        <GsniSharedTrack
-                          mode="score"
-                          value={row.gsni}
-                          showValue={false}
-                          showDelta={false}
-                          className="gsni-shared-track--compact"
-                        />
+                        <span className="gsni-sub-text font-medium text-white">
+                          {formatGsniIndexScore(row.gsni)}
+                        </span>
                       </MetricInfoHint>
                     ) : (
-                      <GsniSharedTrack
-                        mode="score"
-                        value={row.gsni}
-                        showValue={false}
-                        showDelta={false}
-                        className="gsni-shared-track--compact"
-                      />
+                      <span className="gsni-sub-text font-medium text-white">
+                        {formatGsniIndexScore(row.gsni)}
+                      </span>
                     )}
                     <div className="mt-1 flex flex-wrap items-center justify-end gap-2">
-                      <GsniBandBadge
-                        band={explainGsni(row.gsni).band}
-                        extreme={explainGsni(row.gsni).qualitativeLabel.startsWith("Extreme")}
-                      />
-                      <GsniDeltaValue delta={row.gsni} />
+                      <GsniBandBadge band={explainGsni(row.gsni).band} zScore={row.gsni} />
                     </div>
+                    <GsniSharedTrack
+                      mode="score"
+                      value={row.gsni}
+        showValue={false}
+        className="gsni-shared-track--compact mt-2"
+                    />
                   </div>
                 ) : (
-                  <span className="gsni-sub-text">Below gate</span>
+                  <span className="gsni-sub-text">{GSNI_INSUFFICIENT_DATA_LABEL}</span>
                 )}
               </td>
               <td className="data-table-num">
@@ -176,7 +170,7 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
                 {row.caption ? (
                   <span className="gsni-sub-text">{row.caption}</span>
                 ) : (
-                  <span className="gsni-sub-text">Building sample</span>
+                  <span className="gsni-sub-text">{GSNI_INSUFFICIENT_DATA_LABEL}</span>
                 )}
               </td>
             </tr>

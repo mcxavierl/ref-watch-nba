@@ -149,12 +149,12 @@ export function heroSynthesisForView(
       subhead: "",
       insights: gsniRefs.map((ref) => ({
         id: "gsni-highlight",
-        title: "Clutch whistle tendency",
-        body: `${ref.name} shows ${ref.referee_gsni!.toFixed(1)}σ Game-State Index in matched clutch states.`,
+        title: "High-Leverage Penalty Frequency",
+        body: `${ref.name} shows ${ref.referee_gsni!.toFixed(1)} Index Score for penalty frequency in high-leverage situations.`,
         refSlug: ref.slug,
         refName: ref.name,
         statLabel: "Game-State Index",
-        statValue: `${ref.referee_gsni!.toFixed(1)}σ`,
+        statValue: `Index Score: ${ref.referee_gsni!.toFixed(1)}`,
       })),
       leagueSummary: "",
     };

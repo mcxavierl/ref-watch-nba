@@ -1,4 +1,4 @@
-/** Shared GSNI UI helpers for Z-score display, tones, and sample formatting. */
+/** Shared Game-State Index UI helpers for index-score display and sample formatting. */
 
 import {
   GSNI_Z_EXTREME_THRESHOLD,
@@ -6,19 +6,26 @@ import {
   GSNI_Z_TRACK_SPAN,
 } from "@/lib/gsni";
 
-/** League mean on the GSNI Z-scale (0σ). */
+/** League mean on the Game-State Index scale. */
 export const GSNI_NEUTRAL_BASELINE = 0;
 
-/** Half-width of the shared Z-track visualization in σ units. */
+/** Half-width of the shared index track visualization. */
 export const GSNI_Z_TRACK_MAX = GSNI_Z_TRACK_SPAN;
 
-export function formatGsniZ(z: number): string {
-  const rounded = Math.round(z * 10) / 10;
-  const sign = rounded > 0 ? "+" : rounded < 0 ? "-" : "";
-  return `${sign}${Math.abs(rounded).toFixed(1)}σ`;
+export const GSNI_INSUFFICIENT_DATA_LABEL = "Insufficient Data to Rate";
+
+export function formatGsniIndexScore(value: number): string {
+  const rounded = Math.round(value * 10) / 10;
+  const sign = rounded > 0 ? "+" : "";
+  return `Index Score: ${sign}${rounded.toFixed(1)}`;
 }
 
-/** Z-score relative to league mean (same as input on the Z-scale). */
+/** @deprecated Prefer formatGsniIndexScore. Kept for internal callers. */
+export function formatGsniZ(z: number): string {
+  return formatGsniIndexScore(z);
+}
+
+/** Index score relative to league average. */
 export function gsniDeltaFromNeutral(z: number): number {
   return Math.round(z * 10) / 10;
 }
@@ -38,7 +45,7 @@ export function gsniDeltaArrow(delta: number): string {
 }
 
 export function formatGsniDelta(delta: number): string {
-  return formatGsniZ(delta);
+  return formatGsniIndexScore(delta);
 }
 
 export { GSNI_Z_NEUTRAL_THRESHOLD, GSNI_Z_EXTREME_THRESHOLD };

@@ -87,7 +87,7 @@ export function RefereeMasterCard({
                 <MetricInfoHint
                   hint={
                     gsniDisplay?.tooltip ??
-                    "Clutch whistle tendency vs league in matched score-and-clock situations. Quiet = fewer flags than league; Heavy = more. Reported as a Z-score (σ): 0σ is league average; positive is quieter, negative is heavier."
+                    "High-leverage penalty frequency vs league average in matched score-and-clock situations. Index Score compares this official to the league average: positive scores indicate below-average penalty frequency; negative scores indicate above-average frequency."
                   }
                 >
                   <GsniGauge index={gameStateIndex} size="sm" className="min-w-[9.5rem] flex-1" />

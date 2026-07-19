@@ -101,9 +101,13 @@ function toRow(
 }
 
 function highlightHeadline(band: GsniBand): string {
-  if (band === "quiet") return "Quiet in clutch states";
-  if (band === "heavy") return "Heavy in clutch states";
-  return "League-average in clutch states";
+  if (band === "quiet") {
+    return "Historical tendency toward lower-than-average penalty frequency in high-leverage situations";
+  }
+  if (band === "heavy") {
+    return "Historical tendency toward higher-than-average penalty frequency in high-leverage situations";
+  }
+  return "Historical tendency near league-average penalty frequency in high-leverage situations";
 }
 
 function toHighlight(row: GsniResearchRow): GsniResearchHighlight {

@@ -55,7 +55,7 @@ describe("NFL GSNI research", () => {
     for (const card of highlights) {
       assert.ok(card.gsni !== null);
       assert.ok(card.band === "quiet" || card.band === "heavy");
-      assert.match(card.headline, /clutch/i);
+      assert.match(card.headline, /historical tendency/i);
       assert.ok(card.gsniShrinkageTooltip);
     }
   });

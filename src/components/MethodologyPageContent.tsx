@@ -108,7 +108,7 @@ export function MethodologyPageContent({ snapshot }: MethodologyPageContentProps
               available in the ingest.
             </li>
             <li>
-              <TermHelp id="game-state-index" />: clutch whistle tendency vs league in matched game states (NFL and NBA).
+              <TermHelp id="game-state-index" />: high-leverage penalty frequency vs league average in matched game states (NFL and NBA).
             </li>
             <li>
               LWIS (Leverage-Weighted Impact Score): subjective whistle leverage from win-probability proxies; withheld until the high-leverage event gate clears.

@@ -2,6 +2,7 @@ import { Radar } from "lucide-react";
 import { GsniCard } from "@/components/GsniCard";
 import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
+import { GSNI_INSUFFICIENT_DATA_LABEL } from "@/lib/gsni-display";
 
 export function GsniSoftLockCard({
   minutes,
@@ -21,10 +22,10 @@ export function GsniSoftLockCard({
           aria-hidden
         />
         <div className="min-w-0">
-          <p className="gsni-soft-lock-card-headline">Building Game-State Index profile</p>
+          <p className="gsni-soft-lock-card-headline">{GSNI_INSUFFICIENT_DATA_LABEL}</p>
           <p className="gsni-soft-lock-card-copy">
             <GsniSampleCount>{collected}</GsniSampleCount> / {gate} high-leverage
-            minutes collected.
+            minutes collected before we publish an index score.
           </p>
         </div>
       </div>

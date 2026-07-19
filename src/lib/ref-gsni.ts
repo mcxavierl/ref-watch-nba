@@ -1,6 +1,5 @@
 import {
   shrinkGsni,
-  shrunkMetricTooltip,
   type ShrunkMetric,
 } from "@/lib/bayesian-shrinkage";
 import {
@@ -11,13 +10,14 @@ import {
 } from "@/lib/gsni";
 import { gameLogsAvailable, loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { DataLeague } from "@/lib/game-logs-preload";
+import { GSNI_INSUFFICIENT_DATA_LABEL } from "@/lib/gsni-display";
 import {
   GSNI_MIN_HIGH_LEVERAGE_MINUTES as GSNI_GATE,
   refStatsDataTag,
   sampleGateStatus,
 } from "@/lib/provenance";
 import { refSlug } from "@/lib/ref-slug";
-import { formatGsniZ } from "@/lib/gsni-ui";
+import { formatGsniIndexScore } from "@/lib/gsni-ui";
 import type {
   MetricProvenance,
   RefProfile,
@@ -65,11 +65,11 @@ export function gsniHighLeverageSampleTier(
 export function gsniHighLeverageSampleLabel(tier: GsniHighLeverageSampleTier): string {
   switch (tier) {
     case "high":
-      return "100+ high-leverage min";
+      return "100+ high-leverage minutes";
     case "moderate":
-      return "50-99 high-leverage min";
+      return "50-99 high-leverage minutes";
     case "withheld":
-      return "Below sample gate";
+      return GSNI_INSUFFICIENT_DATA_LABEL;
   }
 }
 
@@ -93,8 +93,8 @@ function gsniProvenance(
     sampleSize: sampleGames,
     gateThreshold,
     note: gateCleared
-      ? "Leverage-weighted foul rate vs league in matched game states."
-      : `Game-State Index withheld until ${gateThreshold}+ high-leverage minutes.`,
+      ? "Historical penalty frequency vs league average in matched high-leverage situations."
+      : `${GSNI_INSUFFICIENT_DATA_LABEL} until ${gateThreshold}+ high-leverage minutes.`,
   };
 }
 
@@ -115,21 +115,26 @@ function metricsFromCompute(
   const displayGsni = gsniShrinkage?.shrunk ?? observedGsni;
 
   const vsNeutralDetail =
-    displayGsni !== undefined ? `${formatGsniZ(displayGsni)} from league mean` : null;
+    displayGsni !== undefined ? `${formatGsniIndexScore(displayGsni)} vs league average` : null;
 
   const volatilityDetail =
     result.referee_gsni_volatility !== undefined
-      ? `Per-game spread ${result.referee_gsni_volatility}`
+      ? `Data consistency spread ${result.referee_gsni_volatility}`
       : null;
 
   const gsniShrinkageTooltip =
     gsniShrinkage !== undefined
-      ? shrunkMetricTooltip(gsniShrinkage, { label: "Game-State Index", unit: "σ" })
+      ? [
+          `Game-State Index: ${formatGsniIndexScore(gsniShrinkage.shrunk)} (adjusted estimate).`,
+          `Observed index score: ${formatGsniIndexScore(gsniShrinkage.observed)}.`,
+          `League average baseline: ${formatGsniIndexScore(gsniShrinkage.prior)}.`,
+          `Sample weight ${gsniShrinkage.lambda.toFixed(2)} from ${gsniShrinkage.sampleN} high-leverage minutes.`,
+        ].join(" ")
       : null;
 
   const honestyBanner = gateCleared
     ? null
-    : `Game-State Index needs ${gateThreshold}+ high-leverage minutes before we publish a score. This ref has ${result.highLeverageMinutes.toFixed(1)} min across ${result.sampleGames} games.`;
+    : `${GSNI_INSUFFICIENT_DATA_LABEL}. This official has ${result.highLeverageMinutes.toFixed(1)} high-leverage minutes across ${result.sampleGames} games; ${gateThreshold}+ minutes are required before we publish an index score.`;
 
   return {
     referee_gsni: displayGsni,

@@ -1,20 +1,18 @@
 import {
-  formatGsniZ,
+  formatGsniIndexScore,
   GSNI_NEUTRAL_BASELINE,
   GSNI_Z_TRACK_MAX,
   gsniDeltaFromNeutral,
 } from "@/lib/gsni-ui";
-import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 
 type GsniSharedTrackProps = {
   mode: "score" | "progress";
-  /** GSNI Z-score for score mode, or collected minutes for progress mode. */
+  /** Game-State Index score for score mode, or collected minutes for progress mode. */
   value: number;
   /** Gate maximum for progress mode. */
   gate?: number;
   baseline?: number;
   max?: number;
-  showDelta?: boolean;
   showValue?: boolean;
   className?: string;
   ariaLabel?: string;
@@ -30,7 +28,6 @@ export function GsniSharedTrack({
   gate = 50,
   baseline = GSNI_NEUTRAL_BASELINE,
   max = GSNI_Z_TRACK_MAX,
-  showDelta = true,
   showValue = true,
   className = "",
   ariaLabel,
@@ -80,16 +77,15 @@ export function GsniSharedTrack({
       role="img"
       aria-label={
         ariaLabel ??
-        `${formatGsniZ(clamped)} from league mean. 0σ is league average; positive is quieter, negative is heavier.`
+        `${formatGsniIndexScore(clamped)} vs league average. Positive scores indicate below-average penalty frequency; negative scores indicate above-average frequency.`
       }
     >
       <div className="gsni-shared-track-meta">
         {showValue ? (
           <span className="gsni-shared-track-score tabular-nums text-white font-semibold">
-            {formatGsniZ(clamped)}
+            {formatGsniIndexScore(clamped)}
           </span>
         ) : null}
-        {showDelta && Math.abs(delta) >= 0.05 ? <GsniDeltaValue delta={delta} /> : null}
       </div>
       <div className="gsni-shared-track-rail" aria-hidden>
         {spanWidth > 0 ? (

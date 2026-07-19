@@ -1,10 +1,9 @@
 import { GsniBandBadge } from "@/components/GsniBandBadge";
-import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 import { explainGsni } from "@/lib/gsni-display";
-import { formatGsniZ } from "@/lib/gsni-ui";
+import { formatGsniIndexScore } from "@/lib/gsni-ui";
 
-/** Horizontal league-baseline gauge using the shared GSNI track. */
+/** Horizontal league-baseline gauge using the shared Game-State Index track. */
 export function GsniRelativeGauge({
   gsni,
   className = "",
@@ -17,24 +16,23 @@ export function GsniRelativeGauge({
   return (
     <div className={`gsni-relative-gauge ${className}`.trim()}>
       <div className="gsni-relative-gauge-head">
-        <GsniBandBadge
-          band={explanation.band}
-          extreme={explanation.qualitativeLabel.startsWith("Extreme")}
-        />
+        <GsniBandBadge band={explanation.band} zScore={gsni} />
         <p className="gsni-relative-gauge-headline">{explanation.headline}</p>
         <div className="gsni-relative-gauge-compare">
-          <GsniDeltaValue delta={explanation.zScore} />
-          <span className="gsni-sub-text">vs league mean (0σ)</span>
+          <span className="gsni-sub-text font-medium text-white">
+            {formatGsniIndexScore(explanation.zScore)}
+          </span>
+          <span className="gsni-sub-text">vs league average</span>
         </div>
       </div>
       <GsniSharedTrack mode="score" value={gsni} showValue={false} />
       <div className="gsni-relative-gauge-labels" aria-hidden>
-        <span className="gsni-relative-gauge-label">Heavy (more flags)</span>
+        <span className="gsni-relative-gauge-label">Above-Average Frequency</span>
         <span className="gsni-relative-gauge-label gsni-relative-gauge-label--center">
-          League avg · 0σ
+          League Average
         </span>
         <span className="gsni-relative-gauge-label gsni-relative-gauge-label--end">
-          Quiet (fewer flags)
+          Below-Average Frequency
         </span>
       </div>
       <p className="gsni-sub-text">{explanation.comparisonLine}</p>
@@ -44,4 +42,4 @@ export function GsniRelativeGauge({
   );
 }
 
-export { formatGsniZ };
+export { formatGsniIndexScore as formatGsniZ };
