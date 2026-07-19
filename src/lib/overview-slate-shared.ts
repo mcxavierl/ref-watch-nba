@@ -18,6 +18,8 @@ export type OverviewSlateEntry = {
   slateDate?: string;
   matchupInsight?: string;
   lastMeetingLine?: string;
+  /** Narrative H2H note for upcoming cards (recent meetings only). */
+  gameContextLine?: string;
   teamContextLine?: string;
   officialsLine?: string;
   metadataLine?: string;

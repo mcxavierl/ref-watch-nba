@@ -4,6 +4,7 @@ import { clearRuntimeGameLogsModuleCache } from "@/lib/game-logs";
 import {
   buildOverviewLastMeetingLine,
   buildOverviewMatchupInsight,
+  buildOverviewRecentGameContextLine,
   buildOverviewTeamRecentContextLine,
 } from "@/lib/overview-matchup-insight";
 import type { RuntimeGameLogEntry, RuntimeGameLogFile } from "@/lib/game-logs-preload";
@@ -111,6 +112,38 @@ describe("overview-matchup-insight", () => {
 
     const line = buildOverviewLastMeetingLine("nfl", "LAC", "DET");
     assert.equal(line, "Last met Nov 1, 2024 in Detroit · SD 26, DET 24");
+  });
+
+  it("builds narrative recent game context for meetings in the last 5 seasons", () => {
+    resetNflLogs();
+    seedNflLogs([
+      nflGame(1, "DET", "LAC", "2023-24", 79, 7, { awayScore: 41, homeScore: 38 }),
+      nflGame(2, "LAC", "KC", "2023-24", 44, 10),
+    ]);
+
+    const line = buildOverviewRecentGameContextLine("nfl", "LAC", "DET");
+    assert.equal(line, "Detroit beat the Chargers in 2024, 41-38.");
+  });
+
+  it("returns undefined for game context when last meeting is outside recent seasons", () => {
+    resetNflLogs();
+    seedNflLogs([
+      nflGame(1, "SD", "DET", "2001-02", 48, 11, { awayScore: 26, homeScore: 24 }),
+      nflGame(2, "LAC", "KC", "2003-04", 44, 10),
+      nflGame(3, "LAC", "KC", "2005-06", 44, 10),
+      nflGame(4, "LAC", "KC", "2007-08", 44, 10),
+      nflGame(5, "LAC", "KC", "2009-10", 44, 10),
+      nflGame(6, "LAC", "KC", "2011-12", 44, 10),
+      nflGame(7, "LAC", "KC", "2023-24", 44, 10),
+    ]);
+
+    assert.equal(buildOverviewRecentGameContextLine("nfl", "LAC", "DET"), undefined);
+  });
+
+  it("returns undefined for game context when teams have never met", () => {
+    resetNflLogs();
+    seedNflLogs([nflGame(1, "LAC", "KC", "2023-24", 44, 10)]);
+    assert.equal(buildOverviewRecentGameContextLine("nfl", "LAC", "DET"), undefined);
   });
 
   it("builds recent-form context for soccer teams without head-to-head history", () => {

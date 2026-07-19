@@ -6,6 +6,7 @@ import { buildSeasonStageNote } from "@/lib/assignment-season-stage";
 import {
   buildOverviewLastMeetingLine,
   buildOverviewMatchupInsight,
+  buildOverviewRecentGameContextLine,
   buildOverviewTeamRecentContextLine,
 } from "@/lib/overview-matchup-insight";
 import type { AssignmentsFile, RefOfficial } from "@/lib/types";
@@ -170,6 +171,11 @@ function pushEntry(
     game.homeTeam,
   );
   const lastMeetingLine = buildOverviewLastMeetingLine(leagueId, game.awayTeam, game.homeTeam);
+  const gameContextLine = buildOverviewRecentGameContextLine(
+    leagueId,
+    game.awayTeam,
+    game.homeTeam,
+  );
   const seasonStageNote = buildSeasonStageNote(leagueId, game, file.date);
   games.push({
     leagueId,
@@ -186,6 +192,7 @@ function pushEntry(
     slateDate: file.date,
     matchupInsight: buildOverviewMatchupInsight(leagueId, game.awayTeam, game.homeTeam),
     lastMeetingLine,
+    gameContextLine,
     teamContextLine,
     officialsLine: buildOverviewOfficialsLine(leagueId, game.crew, status),
     seasonStageNote,

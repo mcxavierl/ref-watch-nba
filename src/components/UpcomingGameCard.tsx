@@ -54,6 +54,9 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
             <span className="upcoming-game-card__team-abbr">{homeTeam.abbr}</span>
           </div>
         </div>
+        {game.gameContextLine ? (
+          <p className="upcoming-game-card__context">{game.gameContextLine}</p>
+        ) : null}
       </div>
     </article>
   );

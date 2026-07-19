@@ -435,6 +435,15 @@ html[data-contrast="high"] .upcoming-game-card__matchup {
   color: rgb(255 255 255);
 }
 
+.upcoming-game-card__context {
+  margin: 0.625rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgb(203 213 225);
+  text-align: center;
+}
+
 .upcoming-game-card__metadata {
   margin: 0;
   font-size: 0.6875rem;
