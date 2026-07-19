@@ -179,7 +179,16 @@ export function userFacingDataNote(note: string | undefined): string | undefined
   if (/npm run/i.test(note)) {
     return "Historical stats are still loading for some teams; check back after the next data refresh.";
   }
-  return sanitizeUserFacingCopy(note);
+  const deduped = dedupeNoteSentences(sanitizeUserFacingCopy(note));
+  return deduped.length > 0 ? deduped : undefined;
+}
+
+function dedupeNoteSentences(note: string): string {
+  const sentences = note
+    .split(/(?<=[.!?])\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return [...new Set(sentences)].join(" ");
 }
 
 export function ouLeanDisplay(lean: "over" | "under" | "neutral"): string {

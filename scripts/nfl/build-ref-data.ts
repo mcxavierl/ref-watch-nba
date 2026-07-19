@@ -517,9 +517,12 @@ async function buildFromEspn(
         const isHome = homeTeam === teamAbbr;
         const isAway = awayTeam === teamAbbr;
         if (!isHome && !isAway) return null;
-        const teamWin = isHome
-          ? summary.homeScore > summary.awayScore
-          : summary.awayScore > summary.homeScore;
+        const isTie = summary.homeScore === summary.awayScore;
+        const teamWin = isTie
+          ? false
+          : isHome
+            ? summary.homeScore > summary.awayScore
+            : summary.awayScore > summary.homeScore;
         return {
           totalPoints,
           totalFouls,
@@ -527,6 +530,7 @@ async function buildFromEspn(
           teamFouls: isHome ? summary.homeFlags : summary.awayFlags,
           opponentFouls: isHome ? summary.awayFlags : summary.homeFlags,
           teamWin,
+          teamTie: isTie,
           isHome,
         };
       };

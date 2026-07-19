@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import {
   isNflSimulatedData,
   isNflVerifiedData,
+  nflBettingHonestyCopy,
   nflPreviewBannerMessage,
 } from "./data-source";
 
@@ -37,5 +38,14 @@ describe("NFL data source honesty", () => {
   it("preview banner notes verified hybrid stats", () => {
     const msg = nflPreviewBannerMessage("hybrid", "espn", true);
     assert.match(msg, /ESPN game data/i);
+  });
+
+  it("exposes betting honesty copy for verified hybrid stats", () => {
+    const copy = nflBettingHonestyCopy({
+      source: "hybrid",
+      atsAvailable: true,
+    } as import("@/lib/types").RefStatsFile["meta"]);
+    assert.match(copy, /nflverse/i);
+    assert.doesNotMatch(copy, /rebuilt from DISTINCT/i);
   });
 });

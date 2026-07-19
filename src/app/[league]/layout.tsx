@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { CollegeLeagueGate } from "@/components/CollegeLeagueGate";
 import { LeagueSectionNav } from "@/components/LeagueSectionNav";
+import { NflBettingHonestyBanner } from "@/components/NflBettingHonestyBanner";
 import { preloadLeagueRefStatsForPath } from "@/lib/edge-preload";
 import {
   isLeagueManifestId,
@@ -29,6 +30,7 @@ export default async function LeagueHubLayout({ children, params }: LayoutProps)
 
   const content = (
     <>
+      {league === "nfl" ? <NflBettingHonestyBanner /> : null}
       <LeagueSectionNav leagueId={league} />
       {children}
     </>

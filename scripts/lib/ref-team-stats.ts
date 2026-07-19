@@ -6,6 +6,8 @@ export interface RefTeamGameRow {
   totalPoints: number;
   overHit: boolean;
   teamWin: boolean;
+  /** Regulation or final tie — excluded from straight-up W-L loss totals. */
+  teamTie?: boolean;
   teamAtsResult?: "win" | "loss" | "push" | null;
 }
 
@@ -35,7 +37,8 @@ export function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
   const rows = distinctRefTeamGames(games);
   const n = rows.length;
   const wins = rows.filter((g) => g.teamWin).length;
-  const losses = n - wins;
+  const ties = rows.filter((g) => g.teamTie).length;
+  const losses = rows.filter((g) => !g.teamWin && !g.teamTie).length;
   const atsGames = rows.filter((g) => g.teamAtsResult);
   const atsWins = atsGames.filter((g) => g.teamAtsResult === "win").length;
   const atsLosses = atsGames.filter((g) => g.teamAtsResult === "loss").length;
@@ -45,6 +48,7 @@ export function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
     games: n,
     wins,
     losses,
+    ...(ties > 0 ? { ties } : {}),
     avgFoulDifferential: round1(
       rows.reduce((s, g) => s + g.foulDifferential, 0) / n,
     ),

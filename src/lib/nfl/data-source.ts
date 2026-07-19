@@ -32,8 +32,24 @@ export function nflPreviewBannerMessage(
   return "Preview dataset with placeholder schedules, crews, penalty splits, and lines. Do not treat ref×team or betting stats as verified against official records.";
 }
 
-export function nflAssignmentsAreVerified(
-  assignments: Pick<AssignmentsFile, "source" | "games">,
-): boolean {
-  return assignments.source === "espn" && assignments.games.length > 0;
+export function nflBettingHonestyCopy(meta: RefStatsFile["meta"]): string {
+  if (isNflSimulatedData(meta.source)) {
+    return "NFL preview dataset. Schedules, crews, penalty splits, and betting stats are not verified against official records.";
+  }
+  if (!meta.atsAvailable) {
+    return "NFL scores and ref×team W-L are from ESPN game logs. ATS/O-U splits are not shown because verified closing lines are unavailable for this sample.";
+  }
+  return "ATS/O-U uses nflverse historical closing lines on matched games only, not live sportsbook prices. Treat as exploratory historical context, not picks.";
+}
+
+export function nflVerifiedDatasetNote(
+  gameCount?: number,
+  qualifiedPairs?: number,
+  teamStatsPairs?: number,
+): string {
+  const games = gameCount ?? 6825;
+  if (qualifiedPairs !== undefined && teamStatsPairs !== undefined) {
+    return `Ref×team W-L rebuilt from ${games} ESPN game logs. ${qualifiedPairs}/${teamStatsPairs} ref×team pairs meet the 3+ game matrix gate. Ties are excluded from straight-up W-L.`;
+  }
+  return "Scores, penalty counts, and ref×team W-L from ESPN game logs (2000-present). ATS/O-U from nflverse closing lines where matched.";
 }
