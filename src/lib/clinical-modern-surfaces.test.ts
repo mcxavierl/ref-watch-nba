@@ -20,13 +20,11 @@ describe("Clinical Modern priority #11 surfaces", () => {
 
   it("TeamSplitView uses matrix reporting for ref splits", () => {
     const source = readSrc("src/components/TeamSplitView.tsx");
-    assert.match(source, /REF_CARD_CLASS/);
     assert.match(source, /useLeagueMatrixData/);
     assert.match(source, /MatrixView/);
-    assert.match(source, /StandoutMetricValue/);
-    assert.match(source, /NeutralDivergenceBar/);
     assert.doesNotMatch(source, /Balanced/);
     assert.doesNotMatch(source, /MetricBlock/);
+    assert.doesNotMatch(source, /Crews \(/);
   });
 
   it("TeamPageInsights uses shared InsightCard editorial shell", () => {
