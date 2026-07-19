@@ -81,9 +81,9 @@ test("GsniScoreBlock uses diagnostic header and gauge", () => {
   assert.match(source, /GSNI_SCALE_LEGEND/);
 });
 
-test("GameStateIndexDashboard defaults High Variance Only filter to active", () => {
+test("GameStateIndexDashboard keeps High Variance Only filter available", () => {
   const source = readFileSync("src/components/GameStateIndexDashboard.tsx", "utf8");
-  assert.match(source, /useState\(true\)/);
+  assert.match(source, /useState\(false\)/);
   assert.match(source, /High Variance Only/);
 });
 

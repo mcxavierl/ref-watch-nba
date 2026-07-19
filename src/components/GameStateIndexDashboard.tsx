@@ -53,7 +53,7 @@ export function GameStateIndexDashboard({
   leagueId: InsightsLeagueId;
   compactHub?: boolean;
 }) {
-  const [highVarianceOnly, setHighVarianceOnly] = useState(true);
+  const [highVarianceOnly, setHighVarianceOnly] = useState(false);
 
   const filteredHighlights = useMemo(() => {
     if (!highVarianceOnly) return highlights;

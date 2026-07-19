@@ -178,11 +178,7 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
         league={findingLeague}
         showScopeToggle={features.seasonScopeOnFindings}
         scopeLeagueId={features.seasonScopeOnFindings ? leagueId : undefined}
-        scopeLabel={
-          scoped
-            ? `${scoped.scopeLabel} · ${scoped.formatRange(scoped.stats.meta)}`
-            : undefined
-        }
+        scopeLabel={scoped ? scoped.scopeLabel : undefined}
         sortExplainer={FINDINGS_SORT_EXPLAINER}
       />
 

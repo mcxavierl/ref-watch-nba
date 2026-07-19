@@ -28,18 +28,15 @@ export function RefsHubPage({
   scopeMode = defaultSeasonScopeForLeague(leagueId),
 }: RefsHubPageProps) {
   const league = LEAGUES[leagueId];
-  const { stats, formatRange, scopeLabel, availableSeasons } = loadHubLeagueStats(
-    leagueId,
-    scopeMode,
-  );
-  const range = formatRange(stats.meta);
+  const { stats, scopeLabel, availableSeasons, scopedSeasons } =
+    loadHubLeagueStats(leagueId, scopeMode);
   const ctx = buildRefsDirectoryContext(stats, league);
   const homeHref = leagueHubHref(leagueId);
 
   const scopeToolbar = (
     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
       <p className="text-sm text-zinc-600">
-        {scopeLabel} ({range})
+        {scopeLabel}
       </p>
       <Suspense fallback={<SeasonScopeToggleSkeleton />}>
         <SeasonScopeToggle leagueId={leagueId} availableSeasons={availableSeasons} />
@@ -47,7 +44,7 @@ export function RefsHubPage({
     </div>
   );
 
-  const historyPhrase = formatDatingBackPhrase(ctx.meta.seasons);
+  const historyPhrase = formatDatingBackPhrase(scopedSeasons);
   const refsLead =
     leagueId === "nhl"
       ? `${ctx.meta.qualifiedCount} referees with game history ${historyPhrase}. ${NHL_LINESMAN_METHODOLOGY_NOTE}`
