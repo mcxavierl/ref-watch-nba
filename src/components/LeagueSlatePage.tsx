@@ -1,8 +1,8 @@
 import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { ConferenceCoverage } from "@/components/ConferenceCoverage";
-import { FindingsSection } from "@/components/FindingsSection";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { JsonLd } from "@/components/JsonLd";
+import { LeagueHomeInsightSections } from "@/components/LeagueHomeInsightSections";
 import { LeagueHubUpcomingSlateSection } from "@/components/LeagueHubUpcomingSlateSection";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
 import { OffseasonSlateNotice } from "@/components/OffseasonSlateNotice";
@@ -40,8 +40,8 @@ import {
   topShareSignals,
 } from "@/lib/syndication";
 import { leagueSlatePageTitle } from "@/lib/seo";
+import { buildLeagueHomeInsights } from "@/lib/league-home-insights";
 import {
-  FINDINGS_SORT_EXPLAINER,
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
@@ -83,7 +83,12 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
       : null;
   const bundle = loadLeagueSlateBundle(leagueId);
   const { assignments, refStats, odds, nightlyFeed, isOffseason, isPending } = bundle;
-  const findings = bundle.findings(6, scoped?.scopedSeasons);
+  const activeRefStats = scoped?.stats ?? refStats;
+  const homeInsights = buildLeagueHomeInsights({
+    leagueId,
+    refStats: activeRefStats,
+    assignments,
+  });
   const upcomingSlate = buildLeagueUpcomingSlateFromAssignments(leagueId, assignments);
   const { games: slateGames, isPreview: slateIsPreview } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
@@ -160,26 +165,13 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
         <ConferenceCoverage leagueId={leagueId} />
       )}
 
-      <FindingsSection
-        findings={findings}
-        featured
-        slateHero
-        initialVisibleCount={4}
-        title={
-          isOffseason
-            ? "Season highlights"
-            : features.findingsInSeasonTitle ?? "Officiating intelligence"
-        }
-        sectionLead={
-          isOffseason && features.seasonScopeOnFindings
-            ? "Ranked historical edges with over/under signals, ordered by effect size and sample depth."
-            : undefined
-        }
-        league={findingLeague}
-        showScopeToggle={features.seasonScopeOnFindings}
-        scopeLeagueId={features.seasonScopeOnFindings ? leagueId : undefined}
-        scopeLabel={scoped ? scoped.scopeLabel : undefined}
-        sortExplainer={FINDINGS_SORT_EXPLAINER}
+      <LeagueHomeInsightSections
+        pulse={homeInsights.pulse}
+        matchups={homeInsights.matchups}
+        spotlights={homeInsights.spotlights}
+        leagueId={leagueId}
+        basePath={pathPrefix}
+        sport={sport}
       />
 
       {features.superBowlSection && (
@@ -243,21 +235,22 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
             )}
             <div className="slate-stack mt-4">
               {sortedGames.map((game, index) => (
-                <GameSlateCard
-                  key={game.id}
-                  slateIndex={index}
-                  gameId={game.id}
-                  matchup={game.matchup}
-                  awayTeam={game.awayTeam}
-                  homeTeam={game.homeTeam}
-                  metrics={computeCrewMetrics(game.crew, refStats)}
-                  premium={computeCrewWhistlePremium(game, refStats, odds)}
-                  homeBias={computeCrewHomeBias(game, refStats)}
-                  sport={sport}
-                  basePath={pathPrefix}
-                  storylines={computeGameStorylines(game, refStats, 1)}
-                  overBenchmark={refStats.meta.leagueOverBaseline}
-                />
+                <div key={game.id} id={`slate-game-${game.id}`}>
+                  <GameSlateCard
+                    slateIndex={index}
+                    gameId={game.id}
+                    matchup={game.matchup}
+                    awayTeam={game.awayTeam}
+                    homeTeam={game.homeTeam}
+                    metrics={computeCrewMetrics(game.crew, refStats)}
+                    premium={computeCrewWhistlePremium(game, refStats, odds)}
+                    homeBias={computeCrewHomeBias(game, refStats)}
+                    sport={sport}
+                    basePath={pathPrefix}
+                    storylines={computeGameStorylines(game, refStats, 1)}
+                    overBenchmark={refStats.meta.leagueOverBaseline}
+                  />
+                </div>
               ))}
             </div>
           </section>

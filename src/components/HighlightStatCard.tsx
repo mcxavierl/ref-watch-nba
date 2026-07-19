@@ -16,6 +16,7 @@ import {
   StatComparison,
 } from "@/components/hub/RefCard";
 import { RefAvatar } from "@/components/RefAvatar";
+import { NotableInsightBadge } from "@/components/hub/NotableInsightBadge";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { DirectionalDeltaValue, deltaToneFromValue } from "@/components/shared/DirectionalDeltaValue";
 import { Pill } from "@/components/ui/Pill";
@@ -50,6 +51,7 @@ export function HighlightStatCard({
   rawDeltaPp,
   heroPills = false,
   categoryHref,
+  notable = false,
 }: {
   leagueId: LeagueId;
   insightKind: string;
@@ -69,6 +71,7 @@ export function HighlightStatCard({
   rawDeltaPp?: number;
   heroPills?: boolean;
   categoryHref?: string;
+  notable?: boolean;
 }) {
   const usesSplitHierarchy =
     sampleGames !== undefined &&
@@ -172,13 +175,16 @@ export function HighlightStatCard({
         </span>
         {heroPills ? (
           <div className="highlight-stat-card-head-copy">
-            {categoryHref ? (
-              <Link href={categoryHref} className="highlight-stat-category-link">
-                {categoryPill}
-              </Link>
-            ) : (
-              categoryPill
-            )}
+            <div className="highlight-stat-card-head-badges">
+              {notable ? <NotableInsightBadge className="highlight-stat-notable-badge" /> : null}
+              {categoryHref ? (
+                <Link href={categoryHref} className="highlight-stat-category-link">
+                  {categoryPill}
+                </Link>
+              ) : (
+                categoryPill
+              )}
+            </div>
             <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
           </div>
         ) : (
