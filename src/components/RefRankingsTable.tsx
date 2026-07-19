@@ -2,18 +2,17 @@
 
 import { PrefetchLink } from "@/components/PrefetchLink";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { RankingSignalPill } from "@/components/RankingSignalPill";
-import { StandoutMetricBar } from "@/components/StandoutMetric";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { Pill } from "@/components/ui/Pill";
 import {
   NO_ANOMALIES_DETECTED_COPY,
   qualifiesRefAnomaly,
   sortRefsByInterestingness,
 } from "@/lib/anomaly-surface";
-import { rankingInsightHeadline } from "@/lib/insight-headlines";
 import type { LeagueId } from "@/lib/leagues";
 import { signedDeltaTone } from "@/lib/metric-delight";
 import { formatPct, formatSigned, bettingAtsRate, bettingOuRate } from "@/lib/stats-utils";
@@ -49,18 +48,20 @@ function SortableHeader({
   field,
   sort,
   onSort,
+  className,
 }: {
   label: string;
   field: SortField;
   sort: RefRankingSort;
   onSort: (field: SortField) => void;
+  className?: string;
 }) {
   const [activeField, direction] = sort.split("-") as [string, "asc" | "desc"];
   const isActive = activeField === field;
 
   return (
     <th
-      className="data-table-num"
+      className={`data-table-num${className ? ` ${className}` : ""}`}
       aria-sort={isActive ? (direction === "asc" ? "ascending" : "descending") : "none"}
     >
       <button
@@ -196,6 +197,14 @@ export function RefRankingsTable({
     setSort((current) => toggleSort(current, field));
   };
 
+  const resetView = () => {
+    setSort(defaultSort);
+    setShowLowSample(false);
+    setAnomaliesOnly(false);
+    setShowAllRows(false);
+    setExpandedSlugs(new Set());
+  };
+
   const toggleExpanded = (slug: string) => {
     setExpandedSlugs((current) => {
       const next = new Set(current);
@@ -231,64 +240,17 @@ export function RefRankingsTable({
       </div>
 
       {sorted.length === 0 ? (
-        <p className="overview-slate-empty overview-slate-empty-panel">{NO_ANOMALIES_DETECTED_COPY}</p>
+        <EmptyState
+          message={
+            anomaliesOnly
+              ? NO_ANOMALIES_DETECTED_COPY
+              : "No data available for this range"
+          }
+          onReset={resetView}
+        />
       ) : (
         <>
-      <div className="ranking-mobile-list md:hidden">
-        {visibleRows.map((ref) => {
-          const profileHref = `${basePath}/refs/${ref.slug}`;
-          const signalCount = signalCounts[ref.slug] ?? 0;
-          const whistleDelta =
-            league === "NHL"
-              ? ref.nhlAnalytics?.minorsDelta
-              : league === "NFL"
-                ? ref.nflAnalytics?.flagsDelta ?? ref.foulsDelta
-                : ref.foulsDelta;
-          const scoringDisplay =
-            leagueAvgTotal && prefersPctScoringDelta(leagueAvgTotal)
-              ? directoryScoringDisplay(ref, leagueAvgTotal).formatted
-              : formatSigned(ref.totalPointsDelta);
-          const headline = rankingInsightHeadline(ref, leagueId, whistleDelta);
-          const barMagnitude = Math.max(
-            Math.abs(ref.totalPointsDelta),
-            Math.abs(whistleDelta ?? 0),
-          );
-
-          return (
-            <article
-              key={ref.slug}
-              className="ranking-mobile-card overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-4"
-            >
-              <div className="flex min-w-0 items-start gap-3">
-                <RefAvatar name={ref.name} slug={ref.slug} sport={sport} size="sm" />
-                <div className="min-w-0 flex-1">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <PrefetchLink href={profileHref} prefetch={true} className="truncate font-medium text-white">
-                      {ref.name}
-                    </PrefetchLink>
-                    <RankingSignalPill
-                      officialRef={ref}
-                      leagueId={leagueId}
-                      signalCount={signalCount}
-                      profileHref={profileHref}
-                    />
-                  </div>
-                  <p className="mt-1 truncate text-sm font-medium text-slate-200">{headline}</p>
-                  <StandoutMetricBar
-                    label={scoringDisplay}
-                    magnitude={barMagnitude}
-                    maxMagnitude={5}
-                    hideLabel
-                  />
-                  <p className="mt-2 text-xs text-slate-400">N={ref.games.toLocaleString()} games</p>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-
-      <div className="ranking-table-wrap hidden overflow-x-auto md:block">
+      <div className="ranking-table-wrap stat-data-container">
         <table className="data-table ranking-table min-w-[640px]">
           <thead>
             <tr className="data-table-head">
@@ -297,7 +259,13 @@ export function RefRankingsTable({
                 <span className="sr-only">Details</span>
               </th>
               <th>Official</th>
-              <SortableHeader label="Games" field="games" sort={sort} onSort={handleSort} />
+              <SortableHeader
+                label="Games"
+                field="games"
+                sort={sort}
+                onSort={handleSort}
+                className="master-table-head-secondary"
+              />
               <SortableHeader
                 label={scoringLabel}
                 field="scoring"
@@ -309,12 +277,14 @@ export function RefRankingsTable({
                 field="whistle"
                 sort={sort}
                 onSort={handleSort}
+                className="master-table-head-secondary"
               />
               <SortableHeader
                 label="Over rate"
                 field="overRate"
                 sort={sort}
                 onSort={handleSort}
+                className="master-table-head-secondary"
               />
             </tr>
           </thead>
@@ -360,9 +330,8 @@ export function RefRankingsTable({
                       aria-label={`${expanded ? "Hide" : "Show"} details for ${ref.name}`}
                       onClick={() => toggleExpanded(ref.slug)}
                     >
-                      <ChevronDown
-                        className="h-4 w-4 transition-transform duration-150"
-                        style={{ transform: expanded ? "rotate(180deg)" : undefined }}
+                      <Plus
+                        className={`h-3.5 w-3.5 ranking-table-row-toggle-icon transition-transform duration-150${expanded ? " ranking-table-row-toggle-icon--expanded" : ""}`}
                         aria-hidden
                       />
                     </button>
@@ -400,7 +369,7 @@ export function RefRankingsTable({
                       </div>
                     </div>
                   </td>
-                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-secondary-metric">
+                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-secondary-metric master-table-metric-secondary">
                     {ref.games.toLocaleString()}
                     {belowGate && (
                       <span className="ml-1 text-xs text-amber-700">· thin</span>
@@ -409,10 +378,10 @@ export function RefRankingsTable({
                   <td className={`data-table-num px-4 py-4 ${deltaMetricClass(ref.totalPointsDelta)}`}>
                     {scoringDisplay}
                   </td>
-                  <td className={`data-table-num px-4 py-4 ${deltaMetricClass(whistleDelta)}`}>
+                  <td className={`data-table-num px-4 py-4 master-table-metric-secondary ${deltaMetricClass(whistleDelta)}`}>
                     {whistleDelta !== undefined ? formatSigned(whistleDelta) : "-"}
                   </td>
-                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-primary-metric">
+                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-primary-metric master-table-metric-secondary">
                     {formatPct(ref.overRate)}
                   </td>
                 </tr>,
@@ -423,6 +392,27 @@ export function RefRankingsTable({
                   <tr key={`${ref.slug}-details`} className="ranking-table-details-row">
                     <td colSpan={7}>
                       <div className="ranking-table-details-grid">
+                        <DetailStat
+                          label="Games"
+                          value={
+                            <>
+                              {ref.games.toLocaleString()}
+                              {belowGate ? " · thin" : ""}
+                            </>
+                          }
+                        />
+                        <DetailStat
+                          label={whistleLabel}
+                          value={
+                            whistleDelta !== undefined
+                              ? formatSigned(whistleDelta)
+                              : "-"
+                          }
+                        />
+                        <DetailStat
+                          label="Over rate"
+                          value={formatPct(ref.overRate)}
+                        />
                         {atsAvailable ? (
                           <>
                             <DetailStat

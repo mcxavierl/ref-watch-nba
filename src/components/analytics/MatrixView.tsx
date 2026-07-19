@@ -2,6 +2,7 @@
 
 import { TermHelp } from "@/components/TermHelp";
 import { MatrixRow } from "@/components/analytics/MatrixRow";
+import { EmptyState } from "@/components/shared/EmptyState";
 import {
   leagueMatrixFilterLabel,
   type LeagueMatrixFilter,
@@ -45,30 +46,36 @@ export function MatrixView({
   teamLabel,
   teamBaselineLabel,
   emptyMessage,
+  onReset,
 }: {
   rows: MatrixRowData[];
   sport: LeagueMatrixSport;
   teamLabel: string;
   teamBaselineLabel?: string;
   emptyMessage?: string;
+  onReset?: () => void;
 }) {
   if (rows.length === 0) {
     return (
-      <p className="text-sm text-zinc-600">
-        {emptyMessage ?? `No qualified refs in this view for ${teamLabel} yet.`}
-      </p>
+      <EmptyState
+        message={
+          emptyMessage ?? "No data available for this range"
+        }
+        onReset={onReset}
+      />
     );
   }
 
   return (
-    <div className="team-ref-matrix-table analytics-matrix-view">
+    <div className="team-ref-matrix-table analytics-matrix-view stat-data-container master-table-scroll">
       <div className="team-ref-matrix-head analytics-matrix-head" aria-hidden>
         <span className="team-ref-matrix-head-rank">#</span>
+        <span className="team-ref-matrix-head-expand master-table-head-expand" aria-hidden />
         <span className="team-ref-matrix-head-ref">Ref</span>
         <span className="team-ref-matrix-head-stat">Win rate</span>
-        <span className="team-ref-matrix-head-stat">vs baseline</span>
-        <span className="team-ref-matrix-head-stat">Close games</span>
-        <span className="team-ref-matrix-head-stat">
+        <span className="team-ref-matrix-head-stat master-table-head-secondary">vs baseline</span>
+        <span className="team-ref-matrix-head-stat master-table-head-secondary">Close games</span>
+        <span className="team-ref-matrix-head-stat master-table-head-secondary">
           <TermHelp id="foul-edge">Whistle diff</TermHelp>
         </span>
       </div>
