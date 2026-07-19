@@ -1,4 +1,6 @@
 import { TermHelp } from "@/components/TermHelp";
+import { StatCardShareButton } from "@/components/StatCardShareButton";
+import { statCardHashId } from "@/lib/stat-card-id";
 import type { RefBettingStats } from "@/lib/types";
 import { formatPctFromWlp, formatWlp } from "@/lib/ref-betting";
 import { formatPct } from "@/lib/data";
@@ -42,6 +44,7 @@ function TrendCard({
   rateLabel,
   rate,
   tone,
+  shareId,
 }: {
   title: string;
   termId: "home-team-wl" | "ats";
@@ -49,13 +52,19 @@ function TrendCard({
   rateLabel: string;
   rate: number;
   tone: "brand" | "gold";
+  shareId: string;
 }) {
   const games = record.wins + record.losses + record.pushes;
 
   return (
-    <article className="ref-profile-trend-card">
+    <article
+      id={shareId}
+      data-stat-card="true"
+      className="ref-profile-trend-card stat-card"
+    >
       <header className="ref-profile-trend-card-head">
         <TermHelp id={termId}>{title}</TermHelp>
+        <StatCardShareButton hashId={shareId} label={title} />
       </header>
       <p className="ref-profile-trend-record tabular-nums">
         {games === 0 ? "-" : formatWlp(record.wins, record.losses, record.pushes)}
@@ -77,6 +86,7 @@ export function RefProfileTrendCards({ stats }: { stats: RefBettingStats }) {
       <TrendCard
         title="Home team W/L"
         termId="home-team-wl"
+        shareId={statCardHashId("home-team-wl")}
         record={stats.homeTeamRecord}
         rateLabel={`${(homeWlRate * 100).toFixed(1)}% home win rate`}
         rate={homeWlRate}
@@ -85,6 +95,7 @@ export function RefProfileTrendCards({ stats }: { stats: RefBettingStats }) {
       <TrendCard
         title="Home team ATS"
         termId="ats"
+        shareId={statCardHashId("home-team-ats")}
         record={stats.homeTeamAts}
         rateLabel={`${(atsRate * 100).toFixed(1)}% ATS`}
         rate={atsRate}

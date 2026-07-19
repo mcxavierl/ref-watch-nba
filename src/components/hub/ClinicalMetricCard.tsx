@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { ProvenanceIndicator, type ProvenanceIndicatorProps } from "@/components/hub/ProvenanceIndicator";
+import { StatCardShareButton } from "@/components/StatCardShareButton";
+import { statCardHashId } from "@/lib/stat-card-id";
 
 /**
  * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
@@ -16,6 +18,8 @@ export function ClinicalMetricCard({
   provenance,
   className = "",
   children,
+  id,
+  shareId,
 }: {
   label: ReactNode;
   value: ReactNode;
@@ -24,12 +28,31 @@ export function ClinicalMetricCard({
   provenance?: ProvenanceIndicatorProps;
   className?: string;
   children?: ReactNode;
+  id?: string;
+  shareId?: string;
 }) {
+  const hashId =
+    id ??
+    shareId ??
+    (typeof label === "string" ? statCardHashId(label) : undefined);
+
   return (
-    <div className={`${CLINICAL_METRIC_CARD_CLASS} ${className}`.trim()}>
+    <div
+      id={hashId}
+      data-stat-card={hashId ? "true" : undefined}
+      className={`${CLINICAL_METRIC_CARD_CLASS} stat-card ${className}`.trim()}
+    >
       <div className="clinical-metric-card-head">
         <span className="ref-stat-label">{label}</span>
-        {provenance ? <ProvenanceIndicator {...provenance} /> : null}
+        <div className="clinical-metric-card-head-actions">
+          {provenance ? <ProvenanceIndicator {...provenance} /> : null}
+          {hashId ? (
+            <StatCardShareButton
+              hashId={hashId}
+              label={typeof label === "string" ? label : undefined}
+            />
+          ) : null}
+        </div>
       </div>
       <p className="ref-stat-value tabular-nums">{value}</p>
       {detail ? (

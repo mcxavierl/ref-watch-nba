@@ -265,7 +265,13 @@ body {
   [data-matrix-cell],
   .ref-matrix-team-panel,
   .methodology-details,
-  #main-content
+  #main-content,
+  .stat-card,
+  .highlight-stat-card,
+  .clinical-metric-card,
+  .ref-profile-trend-card,
+  .profile-signal-card,
+  [data-stat-card="true"]
 ) {
   scroll-margin-top: var(--site-scroll-offset);
 }
@@ -1339,6 +1345,10 @@ p {
   }
 
   .ref-profile-trend-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
     min-width: 0;
   }
 
@@ -1654,6 +1664,86 @@ p {
     align-items: center;
     justify-content: space-between;
     gap: 0.35rem;
+  }
+
+  .clinical-metric-card-head-actions {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+  }
+
+  .stat-card-share-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.65rem;
+    height: 1.65rem;
+    border: none;
+    border-radius: 0.45rem;
+    background: transparent;
+    color: rgb(100 116 139);
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .stat-card-share-btn:hover,
+  .stat-card-share-btn:focus-visible {
+    color: rgb(129 140 248);
+    background: rgb(238 242 255 / 0.65);
+    outline: none;
+  }
+
+  .stat-card-share-btn-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+
+  .stat-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .stat-card-header-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+    min-width: 0;
+  }
+
+  .profile-signal-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .ref-card-head .stat-card-share-btn,
+  .ref-profile-trend-card-head .stat-card-share-btn {
+    margin-left: auto;
+    align-self: flex-start;
+  }
+
+  .stat-card--hash-focus {
+    animation: stat-card-hash-focus 1.5s ease-out;
+  }
+
+  @keyframes stat-card-hash-focus {
+    0%,
+    18% {
+      box-shadow:
+        0 0 0 2px rgb(129 140 248 / 0.75),
+        0 0 24px rgb(129 140 248 / 0.28);
+    }
+
+    100% {
+      box-shadow: none;
+    }
   }
 
   .ref-table-section-header {
@@ -6045,6 +6135,11 @@ p {
     display: flex;
     align-items: flex-start;
     gap: 0.65rem;
+  }
+
+  .rankings-insight-card-head .stat-card-share-btn {
+    margin-left: auto;
+    align-self: flex-start;
   }
 
   .rankings-insight-icon {

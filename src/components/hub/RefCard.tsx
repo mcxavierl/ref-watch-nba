@@ -41,10 +41,12 @@ export function StatComparison({
 }
 
 export function RefCard({
+  id,
   className = "",
   children,
   ...dataAttrs
 }: {
+  id?: string;
   className?: string;
   children: ReactNode;
   "data-league"?: string;
@@ -53,7 +55,12 @@ export function RefCard({
   "data-tone"?: string;
 }) {
   return (
-    <li className={`${REF_CARD_CLASS} ${className}`.trim()} {...dataAttrs}>
+    <li
+      id={id}
+      data-stat-card={id ? "true" : undefined}
+      className={`${REF_CARD_CLASS} stat-card ${className}`.trim()}
+      {...dataAttrs}
+    >
       {children}
     </li>
   );
