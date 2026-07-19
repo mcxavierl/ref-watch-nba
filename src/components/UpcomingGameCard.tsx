@@ -23,14 +23,14 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
     >
       <header className="upcoming-game-card__header">
         <div className="upcoming-game-card__header-start">
+          <span className="upcoming-game-card__league-mark" aria-hidden>
+            <LeagueNavMark league={game.leagueId} active={false} />
+          </span>
           {dateLabel ? (
             <time className="upcoming-game-card__date-pill" dateTime={game.slateDate}>
               {dateLabel}
             </time>
           ) : null}
-          <span className="upcoming-game-card__league-mark" aria-hidden>
-            <LeagueNavMark league={game.leagueId} active={false} />
-          </span>
         </div>
         <Link href={game.href} className="upcoming-game-card__cta rw-focus-ring">
           Open slate
@@ -54,9 +54,11 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
             <span className="upcoming-game-card__team-abbr">{homeTeam.abbr}</span>
           </div>
         </div>
-        {game.gameContextLine ? (
-          <p className="upcoming-game-card__context">{game.gameContextLine}</p>
-        ) : null}
+        <div className="upcoming-game-card__context-slot">
+          {game.gameContextLine ? (
+            <p className="upcoming-game-card__context">{game.gameContextLine}</p>
+          ) : null}
+        </div>
       </div>
     </article>
   );
