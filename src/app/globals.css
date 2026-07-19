@@ -4282,14 +4282,26 @@ p {
 
   .league-nav-mark--epl,
   .league-nav-mark[data-league="epl"] {
-    height: 1.25rem;
+    height: 1.35rem;
     width: auto;
-    max-width: 1.6rem;
+    max-width: 1.75rem;
     object-fit: contain;
     object-position: center;
     margin-inline: auto;
     filter: none;
     opacity: 1;
+  }
+
+  .league-nav-link .league-nav-mark--epl,
+  .league-nav-link .league-nav-mark[data-league="epl"] {
+    height: 1.4rem;
+    max-width: 1.85rem;
+    transform: translateX(1px);
+  }
+
+  .league-nav-link--active .league-nav-mark--epl,
+  .league-nav-link--active .league-nav-mark[data-league="epl"] {
+    transform: translateX(1px) scale(1.02);
   }
 
   .league-nav-mark--laliga,
