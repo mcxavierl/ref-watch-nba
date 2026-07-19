@@ -1254,6 +1254,55 @@ p {
     color: var(--text-secondary);
   }
 
+  .ref-narrative-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .ref-narrative-outcome-grid {
+    display: grid;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .ref-narrative-outcome-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+
+  .ref-officiating-gauge-row {
+    display: grid;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  @media (min-width: 768px) {
+    .ref-officiating-gauge-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .ref-officiating-bias-grid {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    min-width: 0;
+  }
+
+  @media (min-width: 768px) {
+    .ref-officiating-bias-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .ref-officiating-bias-lead {
+    margin: 0;
+  }
+
   .ref-profile-trend-grid {
     display: grid;
     gap: var(--space-3);
@@ -1264,6 +1313,11 @@ p {
     .ref-profile-trend-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
+
+  .ref-profile-trend-grid--single,
+  .ref-profile-trend-grid--single.ref-profile-trend-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .ref-profile-trend-card {
@@ -6699,6 +6753,16 @@ p {
 
   .ranking-table-wrap {
     padding-top: var(--space-1);
+  }
+
+  .ranking-mobile-list {
+    display: grid;
+    gap: 0.75rem;
+    padding-top: var(--space-1);
+  }
+
+  .ranking-mobile-card {
+    min-width: 0;
   }
 
   .ranking-sort-btn {

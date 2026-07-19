@@ -154,7 +154,7 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           ),
           refSlug: ref.slug,
           refName: ref.name,
-          statLabel: "Scoring delta vs average",
+          statLabel: "Scoring delta vs avg",
           statValue: formatScoringDeltaStat(delta, ctx.league),
         };
       },
@@ -251,7 +251,7 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           ),
           refSlug: ref.slug,
           refName: ref.name,
-          statLabel: `${ctx.league.metrics.whistleShort} delta vs average`,
+          statLabel: "Whistle delta vs avg",
           statValue: formatSigned(wd),
         };
       },
@@ -280,7 +280,7 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           ),
           refSlug: ref.slug,
           refName: ref.name,
-          statLabel: "Scoring delta vs average",
+          statLabel: "Scoring delta vs avg",
           statValue: formatScoringDeltaStat(delta, ctx.league),
         };
       },
@@ -333,7 +333,7 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           ),
           refSlug: ref.slug,
           refName: ref.name,
-          statLabel: `${ctx.league.metrics.whistleShort} delta vs average`,
+          statLabel: "Whistle delta vs avg",
           statValue: formatSigned(wd),
         };
       },
@@ -433,7 +433,7 @@ export function buildRankingsSynthesis(
           ),
           refSlug: ref.slug,
           refName: ref.name,
-          statLabel: "Scoring delta vs average",
+          statLabel: "Scoring delta vs avg",
           statValue: formatScoringDeltaStat(ref.totalPointsDelta, ctx.league),
         };
       } else if (
@@ -464,7 +464,7 @@ export function buildRankingsSynthesis(
           ),
           refSlug: ref.slug,
           refName: ref.name,
-          statLabel: `${ctx.league.metrics.whistleShort} delta vs average`,
+          statLabel: "Whistle delta vs avg",
           statValue: formatSigned(wd),
         };
       } else {

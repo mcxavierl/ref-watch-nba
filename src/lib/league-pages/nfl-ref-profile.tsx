@@ -1,16 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CloseGameSection } from "@/components/CloseGameSection";
 import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { RefBettingProfile } from "@/components/RefBettingProfile";
 import { JsonLd } from "@/components/JsonLd";
 import { NflRefAnalyticsSection } from "@/components/NflRefAnalyticsSection";
-import { RefGsniSection } from "@/components/RefGsniSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
+import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
-import { RefStatGrid } from "@/components/RefStatGrid";
 import {
   formatPct,
   getAllRefSlugs,
@@ -153,47 +150,33 @@ export default async function NflRefProfilePage({
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">
-          {profile.bettingStats && stats.meta.atsAvailable ? (
-            <RefBettingProfile
-              profile={profile}
-              stats={profile.bettingStats}
-              leagueId="nfl"
-              showMetrics={qualified}
-            />
-          ) : (
-            <RefStatGrid
-              profile={profile}
-              overBaseline={stats.meta.leagueOverBaseline}
-              foulLabel="Flags per game"
-              scoreLabel="Avg combined points"
-              overLabel={`Games over ${stats.meta.leagueOverBaseline} pts`}
-              showMetrics={qualified}
-            />
-          )}
-
-          {profile.nflAnalytics && (
-            <NflRefAnalyticsSection
-              analytics={profile.nflAnalytics}
-              leagueAvgFouls={stats.meta.leagueAvgFouls}
-              leagueAvgPenaltyYards={stats.meta.leagueAvgPenaltyYards}
-              showMetrics={qualified}
-              profile={profile}
-            />
-          )}
-
-          <RefGsniSection
-            metrics={gsniMetrics}
-            refName={profile.name}
-            showMetrics={qualified}
+          <RefProfileNarrativeLayout
+            leagueId="nfl"
+            profile={profile}
+            stats={stats}
+            qualified={qualified}
+            gsniMetrics={gsniMetrics}
+            closeGameMetrics={closeGameMetrics}
+            closeGameLeague="NFL"
+            showBettingProfile={Boolean(profile.bettingStats && stats.meta.atsAvailable)}
+            statGridLabels={{
+              foulLabel: "Flags per game",
+              scoreLabel: "Avg combined points",
+              overLabel: `Games over ${stats.meta.leagueOverBaseline} pts`,
+            }}
+            whistleAnalytics={
+              profile.nflAnalytics ? (
+                <NflRefAnalyticsSection
+                  analytics={profile.nflAnalytics}
+                  leagueAvgFouls={stats.meta.leagueAvgFouls}
+                  leagueAvgPenaltyYards={stats.meta.leagueAvgPenaltyYards}
+                  showMetrics={qualified}
+                  profile={profile}
+                  embedded
+                />
+              ) : undefined
+            }
           />
-
-          <CloseGameSection
-            metrics={closeGameMetrics}
-            subjectLabel={profile.name}
-            league="NFL"
-            embedded
-          />
-
         </div>
 
         <div className="ref-dashboard-sidebar">

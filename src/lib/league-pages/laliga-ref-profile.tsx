@@ -1,15 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CloseGameSection } from "@/components/CloseGameSection";
 import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { RefBettingProfile } from "@/components/RefBettingProfile";
 import { JsonLd } from "@/components/JsonLd";
 import { EplRefAnalyticsSection } from "@/components/EplRefAnalyticsSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
+import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
-import { RefStatGrid } from "@/components/RefStatGrid";
 import {
   formatPct,
   getAllRefSlugs,
@@ -153,42 +151,33 @@ export default async function EplRefProfilePage({
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">
-          {profile.bettingStats && stats.meta.atsAvailable ? (
-            <RefBettingProfile
-              profile={profile}
-              stats={profile.bettingStats}
-              leagueId="laliga"
-              showMetrics={qualified}
-            />
-          ) : (
-            <RefStatGrid
-              profile={profile}
-              overBaseline={stats.meta.leagueOverBaseline}
-              foulLabel="Flags per game"
-              scoreLabel="Avg combined goals"
-              overLabel={`Games over ${stats.meta.leagueOverBaseline} goals`}
-              showMetrics={qualified}
-            />
-          )}
-
-          {profile.eplAnalytics && (
-            <EplRefAnalyticsSection
-              analytics={profile.eplAnalytics}
-              leagueAvgFouls={stats.meta.leagueAvgFouls}
-              leagueAvgYellowCards={stats.meta.leagueAvgYellowCards}
-              leagueAvgRedCards={stats.meta.leagueAvgRedCards}
-              leagueAvgPenalties={stats.meta.leagueAvgPenalties}
-              showMetrics={qualified}
-            />
-          )}
-
-          <CloseGameSection
-            metrics={closeGameMetrics}
-            subjectLabel={profile.name}
-            league="LALIGA"
-            embedded
+          <RefProfileNarrativeLayout
+            leagueId="laliga"
+            profile={profile}
+            stats={stats}
+            qualified={qualified}
+            closeGameMetrics={closeGameMetrics}
+            closeGameLeague="LALIGA"
+            showBettingProfile={Boolean(profile.bettingStats && stats.meta.atsAvailable)}
+            statGridLabels={{
+              foulLabel: "Flags per game",
+              scoreLabel: "Avg combined goals",
+              overLabel: `Games over ${stats.meta.leagueOverBaseline} goals`,
+            }}
+            whistleAnalytics={
+              profile.eplAnalytics ? (
+                <EplRefAnalyticsSection
+                  analytics={profile.eplAnalytics}
+                  leagueAvgFouls={stats.meta.leagueAvgFouls}
+                  leagueAvgYellowCards={stats.meta.leagueAvgYellowCards}
+                  leagueAvgRedCards={stats.meta.leagueAvgRedCards}
+                  leagueAvgPenalties={stats.meta.leagueAvgPenalties}
+                  showMetrics={qualified}
+                  embedded
+                />
+              ) : undefined
+            }
           />
-
         </div>
 
         <div className="ref-dashboard-sidebar">
