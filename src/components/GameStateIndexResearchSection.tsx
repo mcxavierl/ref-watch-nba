@@ -4,7 +4,7 @@ import { GsniBandBadge } from "@/components/GsniBandBadge";
 import { GsniCard } from "@/components/GsniCard";
 import { GsniResearchTable } from "@/components/GsniResearchTable";
 import { GsniSampleCount } from "@/components/GsniSampleCount";
-import { GsniSharedTrack } from "@/components/GsniSharedTrack";
+import { GsniScoreBlock } from "@/components/GsniScoreBlock";
 import { TermHelp } from "@/components/TermHelp";
 import { explainGsni } from "@/lib/gsni-display";
 import {
@@ -13,7 +13,6 @@ import {
   gsniResearchConfigForLeague,
   type GsniResearchHighlight,
 } from "@/lib/gsni-research";
-import { formatGsniIndexScore } from "@/lib/gsni-ui";
 import type { InsightsLeagueId } from "@/lib/league-manifest";
 import type { RefStatsFile } from "@/lib/types";
 
@@ -28,14 +27,10 @@ function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
           <p className="gsni-gauge-label m-0">High-Leverage Penalty Frequency</p>
         </div>
         <p className="mt-2 truncate text-base font-semibold text-white">{finding.refName}</p>
-        <div className="mt-2 flex flex-wrap items-center gap-2">
+        <div className="mt-2">
           <GsniBandBadge band={explanation.band} zScore={explanation.zScore} />
-          <span className="gsni-sub-text font-medium text-white">
-            {formatGsniIndexScore(explanation.zScore)}
-          </span>
         </div>
-        <GsniSharedTrack mode="score" value={finding.gsni!} showValue={false} className="mt-3" />
-        <p className="gsni-sub-text mt-2">{explanation.comparisonLine}</p>
+        <GsniScoreBlock score={finding.gsni!} compact className="mt-3" />
         <p className="gsni-sub-text mt-2">
           Sample size:{" "}
           <GsniSampleCount>{finding.sampleGames}</GsniSampleCount> games ·{" "}

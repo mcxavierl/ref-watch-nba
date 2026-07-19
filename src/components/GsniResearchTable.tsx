@@ -7,7 +7,7 @@ import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { explainGsni, GSNI_INSUFFICIENT_DATA_LABEL } from "@/lib/gsni-display";
-import { formatGsniIndexScore } from "@/lib/gsni-ui";
+import { formatGsniScoreValue } from "@/lib/gsni-ui";
 import type { GsniResearchRow } from "@/lib/gsni-research";
 
 type SortField = "gsni" | "volatility" | "highLeverageMinutes" | "sampleGames";
@@ -130,13 +130,13 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
                   <div className="gsni-table-score-cell min-w-[8.5rem]">
                     {row.gsniShrinkageTooltip ? (
                       <MetricInfoHint hint={row.gsniShrinkageTooltip}>
-                        <span className="gsni-sub-text font-medium text-white">
-                          {formatGsniIndexScore(row.gsni)}
+                        <span className="gsni-score-value gsni-score-value--table tabular-nums">
+                          {formatGsniScoreValue(row.gsni)}
                         </span>
                       </MetricInfoHint>
                     ) : (
-                      <span className="gsni-sub-text font-medium text-white">
-                        {formatGsniIndexScore(row.gsni)}
+                      <span className="gsni-score-value gsni-score-value--table tabular-nums">
+                        {formatGsniScoreValue(row.gsni)}
                       </span>
                     )}
                     <div className="mt-1 flex flex-wrap items-center justify-end gap-2">
@@ -145,8 +145,9 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
                     <GsniSharedTrack
                       mode="score"
                       value={row.gsni}
-        showValue={false}
-        className="gsni-shared-track--compact mt-2"
+                      showValue={false}
+                      showCenterLabel
+                      className="gsni-shared-track--compact mt-2"
                     />
                   </div>
                 ) : (

@@ -7,6 +7,8 @@ import {
   type RankingsSynthesis,
 } from "@/lib/rankings-synthesis";
 import type { LeagueConfig } from "@/lib/leagues";
+import { gsniInsightSummary, gsniShrinkageFromProfile } from "@/lib/gsni-display";
+import { formatGsniScoreValue } from "@/lib/gsni-ui";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 export type InsightsHubView = "tendencies" | "trends" | "findings" | "game-state";
@@ -147,15 +149,19 @@ export function heroSynthesisForView(
       ...base,
       headline: "Top highlights",
       subhead: "",
-      insights: gsniRefs.map((ref) => ({
-        id: "gsni-highlight",
-        title: "High-Leverage Penalty Frequency",
-        body: `${ref.name} shows ${ref.referee_gsni!.toFixed(1)} Index Score for penalty frequency in high-leverage situations.`,
-        refSlug: ref.slug,
-        refName: ref.name,
-        statLabel: "Game-State Index",
-        statValue: `Index Score: ${ref.referee_gsni!.toFixed(1)}`,
-      })),
+      insights: gsniRefs.map((ref) => {
+        const displayScore =
+          gsniShrinkageFromProfile(ref)?.display ?? ref.referee_gsni!;
+        return {
+          id: "gsni-highlight",
+          title: "High-Leverage Penalty Frequency",
+          body: gsniInsightSummary(displayScore),
+          refSlug: ref.slug,
+          refName: ref.name,
+          statLabel: "Game-State Index",
+          statValue: formatGsniScoreValue(displayScore),
+        };
+      }),
       leagueSummary: "",
     };
   }

@@ -52,11 +52,11 @@ test("StatusBadge and InsightBadge truncate label text", () => {
   assert.match(insight, /pill-constrain-text/);
 });
 
-test("GsniBandBadge uses compact labels with full title tooltip", () => {
+test("GsniBandBadge uses Insights category Pill with tooltip", () => {
   const source = readFileSync("src/components/GsniBandBadge.tsx", "utf8");
-  assert.match(source, /gsniBandCompactLabel/);
+  assert.match(source, /gsniCategoryLabel/);
+  assert.match(source, /<Pill variant="category"/);
   assert.match(source, /title=\{fullLabel\}/);
-  assert.match(source, /pill-constrain-text/);
 });
 
 test("Finding angle category pills can shrink inside flex headers", () => {

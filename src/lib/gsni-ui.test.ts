@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import {
   formatGsniDelta,
   formatGsniIndexScore,
+  formatGsniScoreValue,
   formatGsniZ,
   gsniDeltaArrow,
   gsniDeltaFromNeutral,
@@ -15,6 +16,9 @@ describe("gsni-ui", () => {
     assert.equal(formatGsniIndexScore(-0.84), "Index Score: -0.8");
     assert.equal(formatGsniIndexScore(0), "Index Score: 0.0");
     assert.equal(formatGsniZ(1.23), "Index Score: +1.2");
+    assert.equal(formatGsniScoreValue(1.23), "+1.2");
+    assert.equal(formatGsniScoreValue(-0.84), "-0.8");
+    assert.equal(formatGsniScoreValue(0), "0.0");
   });
 
   it("computes delta tone and arrows from league average", () => {
