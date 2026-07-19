@@ -1661,9 +1661,14 @@ p {
   .clinical-metric-card-head {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 0.35rem;
+    gap: 0.35rem 0.5rem;
+  }
+
+  .clinical-metric-card-head .ref-stat-label {
+    flex: 1 1 8rem;
+    min-width: 0;
   }
 
   .clinical-metric-card-head-actions {
@@ -6137,9 +6142,15 @@ p {
     gap: 0.65rem;
   }
 
+  .rankings-insight-card-head > .ref-card-kicker {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   .rankings-insight-card-head .stat-card-share-btn {
     margin-left: auto;
     align-self: flex-start;
+    flex-shrink: 0;
   }
 
   .rankings-insight-icon {
@@ -6234,6 +6245,7 @@ p {
 
   .highlight-stat-card-head-copy {
     display: flex;
+    flex: 1 1 auto;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.35rem;
@@ -6252,15 +6264,28 @@ p {
     border-top: 1px solid var(--border-subtle, rgb(30 41 59));
   }
 
+  @media (max-width: 24rem) {
+    .ranking-table-expand-btn,
+    .refs-directory-expand-btn {
+      white-space: normal;
+      text-align: center;
+      line-height: 1.35;
+    }
+  }
+
   .ranking-table-expand-btn {
     border: 1px solid color-mix(in srgb, var(--foreground) 12%, var(--border));
     border-radius: 9999px;
     background: color-mix(in srgb, var(--surface) 88%, transparent);
-    padding: 0.45rem 0.95rem;
-    font-size: 0.75rem;
+    padding: 0.5rem 1.1rem;
+    min-height: 2.25rem;
+    width: auto;
+    max-width: 100%;
+    white-space: nowrap;
+    font-size: 0.8125rem;
     font-weight: 650;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    text-transform: none;
     color: var(--foreground);
     cursor: pointer;
     transition: border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
@@ -7099,7 +7124,7 @@ p {
     vertical-align: middle;
   }
 
-  .ranking-table-expand-btn {
+  .ranking-table-row-toggle-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -7116,8 +7141,8 @@ p {
       background var(--duration-fast) var(--ease-out-quart);
   }
 
-  .ranking-table-expand-btn:hover,
-  .ranking-table-expand-btn[aria-expanded="true"] {
+  .ranking-table-row-toggle-btn:hover,
+  .ranking-table-row-toggle-btn[aria-expanded="true"] {
     border-color: color-mix(in srgb, var(--header-sapphire) 35%, var(--border));
     color: var(--foreground);
     background: color-mix(in srgb, var(--header-sapphire) 8%, var(--surface));
@@ -8669,6 +8694,10 @@ p {
     border: 1px solid color-mix(in srgb, var(--header-sapphire) 35%, var(--border));
     background: color-mix(in srgb, var(--header-sapphire) 6%, var(--surface));
     padding: 0.5rem 1.25rem;
+    min-height: 2.25rem;
+    width: auto;
+    max-width: 100%;
+    white-space: nowrap;
     font-size: var(--text-sm);
     font-weight: 600;
     color: var(--ink-secondary);
