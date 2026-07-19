@@ -11,7 +11,10 @@ import {
   gsniCorrelationLabel,
   gsniDiagnosticHeader,
   gsniFromRefProfile,
+  gsniHighLeverageStatesCopy,
+  gsniIndexScoreExplainer,
   gsniInsightSummary,
+  gsniMinHighLeverageMinutesForLeague,
   gsniObservedFromRefProfile,
   gsniQualitativeLabel,
   gsniShrinkageFromProfile,
@@ -122,5 +125,17 @@ describe("gsni display", () => {
   it("returns null when Game-State Index is missing", () => {
     assert.equal(gsniFromRefProfile(makeRef()), null);
     assert.equal(gsniShrinkageFromProfile(makeRef()), null);
+  });
+
+  it("defines high-leverage states and index score copy for research pages", () => {
+    assert.equal(gsniMinHighLeverageMinutesForLeague("nfl"), 25);
+    assert.equal(gsniMinHighLeverageMinutesForLeague("nba"), 50);
+    assert.match(gsniHighLeverageStatesCopy("nfl"), /within 5 points/);
+    assert.match(gsniHighLeverageStatesCopy("nfl"), /under 5:00/);
+    assert.match(gsniHighLeverageStatesCopy("nfl"), /25\+ high-leverage minutes/);
+    assert.match(gsniHighLeverageStatesCopy("nba"), /50\+ high-leverage minutes/);
+    assert.match(gsniHighLeverageStatesCopy("nba"), /foul rate/);
+    assert.match(gsniIndexScoreExplainer("nfl"), /Index score 0 is league average/);
+    assert.match(gsniIndexScoreExplainer("nba"), /more fouls than peers/);
   });
 });
