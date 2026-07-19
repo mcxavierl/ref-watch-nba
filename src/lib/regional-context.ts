@@ -42,6 +42,7 @@ const TEAMS_BY_LEAGUE: Record<FindingLeague, TeamGeo[]> = {
   LALIGA: LALIGA_TEAMS,
   CBB: CBB_TEAMS,
   CFB: CFB_TEAMS,
+  WNBA: [],
 };
 
 function normalizeGeoToken(value: string): string {

@@ -46,7 +46,7 @@ function copyRefStatsCore(root: string): void {
 
 function copyLeagueRefStatsSplit(
   root: string,
-  league: "nhl" | "nfl" | "epl" | "laliga" | "cbb",
+  league: "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "wnba",
 ): void {
   const leagueDir = path.join(root, "data", league);
   const publicDir = path.join(root, "public", "data", league);
@@ -274,6 +274,7 @@ copyLeagueRefStatsSplit(root, "nfl");
 copyLeagueRefStatsSplit(root, "epl");
 copyLeagueRefStatsSplit(root, "laliga");
 copyLeagueRefStatsSplit(root, "cbb");
+copyLeagueRefStatsSplit(root, "wnba");
 refreshBaselinesFromGameLogs("Refreshed during copy-data-to-public");
 copyPair(path.join(root, "data"), path.join(root, "public/data"), "baselines");
 const usedVerifiedNhl = copyNhlVerifiedIngest(root);
@@ -359,13 +360,25 @@ if (fs.existsSync(eplAssignments)) {
 
 const wnbaDataDir = path.join(root, "data/wnba");
 if (fs.existsSync(wnbaDataDir)) {
-  for (const file of ["assignments.json", "ref-stats-core.json", "odds.json"]) {
+  copyLeagueRefStatsSplit(root, "wnba");
+  for (const file of ["assignments.json", "odds.json", "manifest.json", "game-logs.json"]) {
     const src = path.join(wnbaDataDir, file);
     if (!fs.existsSync(src)) continue;
     const dest = path.join(root, "public/data/wnba", file);
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.copyFileSync(src, dest);
     console.log(`Copied ${src} → ${dest}`);
+  }
+  const wnbaShardDir = path.join(wnbaDataDir, "game-logs");
+  if (fs.existsSync(wnbaShardDir)) {
+    const publicShardDir = path.join(root, "public/data/wnba/game-logs");
+    fs.mkdirSync(publicShardDir, { recursive: true });
+    for (const shard of fs.readdirSync(wnbaShardDir).filter((f) => f.endsWith(".ndjson"))) {
+      const src = path.join(wnbaShardDir, shard);
+      const dest = path.join(publicShardDir, shard);
+      fs.copyFileSync(src, dest);
+      console.log(`Copied ${src} → ${dest}`);
+    }
   }
 }
 

@@ -70,6 +70,7 @@ import {
   getRefStats as getWnbaRefStats,
 } from "@/lib/wnba/data";
 import { getOdds as getWnbaOdds } from "@/lib/wnba/odds";
+import { computeFindings as computeWnbaFindings } from "@/lib/wnba/findings";
 
 import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
 
@@ -220,7 +221,8 @@ export function loadLeagueSlateBundle(leagueId: SlateLeagueId): LeagueSlateBundl
         refStats,
         odds: getWnbaOdds(),
         nightlyFeed: buildWnbaNightlyFeed(),
-        findings: () => [],
+        findings: (limit, scopedSeasons) =>
+          computeWnbaFindings(limit, scopedSeasons, { hub: true }),
         isOffseason: assignments.games.length === 0,
         isPending: false,
       };

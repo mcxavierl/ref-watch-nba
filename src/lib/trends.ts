@@ -1,7 +1,7 @@
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { SeasonBaseline } from "../../scripts/lib/baselines";
 
-export type TrendLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+export type TrendLeague = "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
 export interface TrendRow {
   season: string;
@@ -30,6 +30,7 @@ const TREND_LEAGUE_TO_ID: Record<TrendLeague, LeagueId> = {
   LALIGA: "laliga",
   CBB: "cbb",
   CFB: "cfb",
+  WNBA: "wnba",
 };
 
 export function trendWhistleValue(

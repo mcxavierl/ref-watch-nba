@@ -9,6 +9,7 @@ import { teamLogoUrl as laligaTeamLogoUrl } from "@/lib/laliga/teams";
 import { teamLogoUrl as nflTeamLogoUrl } from "@/lib/nfl/teams";
 import { teamLogoUrl as nhlTeamLogoUrl } from "@/lib/nhl/teams";
 import { getTeam as getNbaTeam, teamLogoUrl as nbaTeamLogoUrl } from "@/lib/teams";
+import { teamLogoUrl as wnbaTeamLogoUrl } from "@/lib/wnba/teams";
 import type { NbaTeam } from "@/lib/teams";
 import type { NhlTeam } from "@/lib/nhl/teams";
 
@@ -38,7 +39,7 @@ export function TeamLogo({
   sport = "nba",
 }: {
   team: TeamLike;
-  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  sport?: "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   size?: keyof typeof sizeClasses;
   className?: string;
 }) {
@@ -48,7 +49,9 @@ export function TeamLogo({
   const nbaId = team.nbaId ?? (sport === "nba" ? getNbaTeam(team.abbr)?.nbaId : undefined);
   const logoSrc =
     team.logoUrl ??
-    (sport === "laliga"
+    (sport === "wnba"
+      ? wnbaTeamLogoUrl(team.abbr)
+      : sport === "laliga"
       ? laligaTeamLogoUrl(team.abbr)
       : sport === "epl"
       ? eplTeamLogoUrl(team.abbr)

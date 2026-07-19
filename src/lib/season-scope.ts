@@ -24,7 +24,7 @@ export function needsGameLogRebuild(
   _scopeMode: SeasonScopeMode,
   _context?: SeasonScopeContext,
 ): boolean {
-  return leagueId === "nba";
+  return leagueId === "nba" || leagueId === "wnba";
 }
 
 export function parseSeasonScopeMode(
@@ -113,7 +113,7 @@ export function resolveScopedSeasonsForLeague(
 ): string[] {
   const dataLeagueMap: Record<
     LeagueId,
-    "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB"
+    "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA"
   > = {
     nba: "NBA",
     nhl: "NHL",
@@ -122,7 +122,7 @@ export function resolveScopedSeasonsForLeague(
     laliga: "LALIGA",
     cbb: "CBB",
     cfb: "CFB",
-    wnba: "NBA",
+    wnba: "WNBA",
     mlb: "NBA",
   };
   const fallback = dataLeagueTenSeasons(dataLeagueMap[leagueId]);

@@ -134,6 +134,7 @@ const GAME_LOG_PATHS: Partial<Record<LeagueId, string>> = {
   laliga: "data/laliga/game-logs.json",
   cbb: "data/cbb/game-logs.json",
   cfb: "data/cfb/game-logs.json",
+  wnba: "data/wnba/game-logs.json",
 };
 
 const TEAM_SPLITS_PATHS: Partial<Record<LeagueId, string>> = {
@@ -144,6 +145,7 @@ const TEAM_SPLITS_PATHS: Partial<Record<LeagueId, string>> = {
   laliga: "data/laliga/team-splits.json",
   cbb: "data/cbb/team-splits.json",
   cfb: "data/cfb/team-splits.json",
+  wnba: "data/wnba/team-splits.json",
 };
 
 const REF_STATS_PATHS: Partial<Record<LeagueId, string>> = Object.fromEntries(

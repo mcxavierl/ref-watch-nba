@@ -16,6 +16,7 @@ const LEAGUE_DATA_MAP = {
   laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
+  wnba: "WNBA",
 } as const;
 
 export interface TeamDisplayRecordOptions {
@@ -30,7 +31,7 @@ export interface TeamDisplayRecordOptions {
  * available; all leagues prefer DISTINCT game_id totals from logs over crew splits.
  */
 export function getTeamDisplayRecord(
-  league: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb",
+  league: "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb",
   teamAbbr: string,
   splits: TeamCrewSplit[],
   seasons: string[],

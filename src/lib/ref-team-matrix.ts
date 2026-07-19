@@ -105,7 +105,7 @@ export function teamRecordFromStat(
 }
 
 export interface RefTeamMatrixOptions {
-  league?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  league?: "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   /** Earliest season label for NBA official baseline totals. */
   sinceSeason?: string;
   /** Hide refs with no qualified cells (useful for sparse ESPN-only leagues). */

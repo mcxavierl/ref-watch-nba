@@ -18,6 +18,8 @@ import * as cbbData from "@/lib/cbb/data";
 import * as cfbData from "@/lib/cfb/data";
 import * as cbbTeams from "@/lib/cbb/teams";
 import * as cfbTeams from "@/lib/cfb/teams";
+import * as wnbaData from "@/lib/wnba/data";
+import * as wnbaTeams from "@/lib/wnba/teams";
 import * as laligaTeams from "@/lib/laliga/teams";
 import * as eplTeams from "@/lib/epl/teams";
 import { getTeamRefSplits } from "@/lib/teamRefLeaderboards";
@@ -44,11 +46,12 @@ const LEAGUE_MODULES = {
   laliga: { data: laligaData, teams: laligaTeams, basePath: "/laliga", dataLeague: "LALIGA" as const, crewSize: "one", surface: "pitch" },
   cbb: { data: cbbData, teams: cbbTeams, basePath: "/cbb", dataLeague: "CBB" as const, crewSize: "three", surface: "court" },
   cfb: { data: cfbData, teams: cfbTeams, basePath: "/cfb", dataLeague: "CFB" as const, crewSize: "seven", surface: "field" },
+  wnba: { data: wnbaData, teams: wnbaTeams, basePath: "/wnba", dataLeague: "WNBA" as const, crewSize: "three", surface: "court" },
 };
 
 export interface TeamPageConfig {
   teamAbbr: string;
-  league?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  league?: "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 }
 
 export function TeamCrewPage({

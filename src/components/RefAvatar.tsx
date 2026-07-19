@@ -80,7 +80,7 @@ export function RefAvatar({
 }: {
   name: string;
   slug: string;
-  sport: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  sport: "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   size?: keyof typeof sizeClasses;
   className?: string;
   /** When true (default), name is exposed by an adjacent label/link — image is decorative. */
@@ -88,7 +88,7 @@ export function RefAvatar({
 }) {
   const [failed, setFailed] = useState(false);
 
-  if (sport === "cbb" || sport === "cfb") {
+  if (sport === "cbb" || sport === "cfb" || sport === "wnba") {
     return (
       <RefStripesBadge
         name={name}

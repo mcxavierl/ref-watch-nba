@@ -22,6 +22,8 @@ export async function importMatrixPage(leagueId: LeagueManifestId): Promise<Page
       return import("@/lib/league-pages/cbb-matrix");
     case "cfb":
       return import("@/lib/league-pages/cfb-matrix");
+    case "wnba":
+      return import("@/lib/league-pages/wnba-matrix");
     default:
       throw new Error(`No matrix page for ${leagueId}`);
   }
@@ -43,6 +45,8 @@ export async function importTeamsPage(leagueId: LeagueManifestId): Promise<PageM
       return import("@/lib/league-pages/cbb-teams");
     case "cfb":
       return import("@/lib/league-pages/cfb-teams");
+    case "wnba":
+      return import("@/lib/league-pages/wnba-teams");
     default:
       throw new Error(`No teams page for ${leagueId}`);
   }
@@ -64,6 +68,8 @@ export async function importTeamProfilePage(leagueId: LeagueManifestId): Promise
       return import("@/lib/league-pages/cbb-team-profile");
     case "cfb":
       return import("@/lib/league-pages/cfb-team-profile");
+    case "wnba":
+      return import("@/lib/league-pages/wnba-team-profile");
     default:
       throw new Error(`No team profile page for ${leagueId}`);
   }
@@ -85,6 +91,8 @@ export async function importRefProfilePage(leagueId: LeagueManifestId): Promise<
       return import("@/lib/league-pages/cbb-ref-profile");
     case "cfb":
       return import("@/lib/league-pages/cfb-ref-profile");
+    case "wnba":
+      return import("@/lib/league-pages/wnba-ref-profile");
     default:
       throw new Error(`No ref profile page for ${leagueId}`);
   }

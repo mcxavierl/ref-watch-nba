@@ -202,10 +202,18 @@ export function computeLeagueBaselines(
   };
 }
 
+export const FALLBACK_WNBA = {
+  label: "WNBA static fallback (empty or missing game logs)",
+  leagueAvgTotal: 165,
+  leagueOverBaseline: 165,
+  leagueAvgFouls: 34,
+} as const;
+
 export function fallbackForLeague(
-  l: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL" | "LALIGA",
+  l: "NBA" | "NHL" | "NFL" | "CBB" | "CFB" | "EPL" | "LALIGA" | "WNBA",
 ) {
   if (l === "NBA") return FALLBACK_NBA;
+  if (l === "WNBA") return FALLBACK_WNBA;
   if (l === "NFL") return FALLBACK_NFL;
   if (l === "CBB") return FALLBACK_CBB;
   if (l === "CFB") return FALLBACK_CFB;

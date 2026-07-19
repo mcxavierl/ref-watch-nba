@@ -732,7 +732,7 @@ export function researchArticleJsonLd(
 }
 
 export function researchHubDatasetJsonLd(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   count: number,
   lastUpdated: string,
 ): Record<string, unknown> {
@@ -750,7 +750,7 @@ export function researchHubDatasetJsonLd(
 }
 
 export function researchHubArticleJsonLd(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   count: number,
   lastUpdated: string,
 ): Record<string, unknown> {
@@ -771,7 +771,7 @@ export function researchHubArticleJsonLd(
 export function refProfileDatasetJsonLd(
   name: string,
   slug: string,
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   games: number,
   lastUpdated: string,
 ): Record<string, unknown> {

@@ -13,6 +13,7 @@ type PageProps = {
 const REFS_LEAGUES = new Set([
   "nba",
   "nhl",
+  "wnba",
   "nfl",
   "epl",
   "laliga",

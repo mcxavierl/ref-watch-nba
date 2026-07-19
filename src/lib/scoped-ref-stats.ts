@@ -30,7 +30,7 @@ import type {
 } from "@/lib/types";
 import { teamFoulsFromGameLog } from "@/lib/team-foul-split";
 
-type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA";
 
 const LEAGUE_ID_TO_DATA: Record<LeagueId, DataLeague> = {
   nba: "NBA",
@@ -40,7 +40,7 @@ const LEAGUE_ID_TO_DATA: Record<LeagueId, DataLeague> = {
   laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
-  wnba: "NBA",
+  wnba: "WNBA",
   mlb: "NBA",
 };
 
@@ -396,7 +396,7 @@ export function rebuildScopedRefStatsFromGames(
 
 function baselineLeagueForData(
   dataLeague: DataLeague,
-): "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" {
+): "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA" {
   return dataLeague;
 }
 
@@ -501,7 +501,7 @@ function shouldRebuildFromLogs(
   if (!logs?.games?.length) return false;
   if (depth === "full") return true;
   if (depth === "refs-only") {
-    return leagueId === "nba" || leagueId === "cbb" || leagueId === "cfb";
+    return leagueId === "nba" || leagueId === "wnba" || leagueId === "cbb" || leagueId === "cfb";
   }
   return false;
 }
