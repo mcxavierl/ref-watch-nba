@@ -191,6 +191,6 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   gsni: {
     label: "Game-State Index (GSNI)",
-    text: "Clutch whistle metric for NFL and NBA where game logs support GSNI. We group plays by score gap and clock, weight close late-game minutes higher, and compare this official's flag or foul rate to the league in those same buckets. Labeled Quiet (fewer whistles than league), Heavy (more), or Neutral. Reported as a Z-score (σ): positive is quieter, negative is heavier. NBA requires 50+ high-leverage minutes; NFL requires 25+ before we publish a score.",
+    text: "Clutch whistle metric for NFL and NBA. We group plays by score gap and clock, weight close late-game minutes higher, and compare this official's flag or foul rate to the league in those same buckets. Labeled Quiet (fewer whistles than league), Heavy (more), or Neutral. Reported as a Z-score (σ): positive is quieter, negative is heavier. NBA requires 50+ high-leverage minutes; NFL requires 25+ before we publish a score.",
   },
 };
