@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import {
@@ -99,7 +99,7 @@ export function BrowseActionCards({
   return (
     <nav className={gridClass} aria-label="Browse historical data">
       {links.map((link, index) => (
-        <Link
+        <PrefetchLink
           key={link.href}
           href={link.href}
           className={compact ? "browse-action-compact-card" : "browse-action-card"}
@@ -125,7 +125,7 @@ export function BrowseActionCards({
             }
             aria-hidden
           />
-        </Link>
+        </PrefetchLink>
       ))}
     </nav>
   );

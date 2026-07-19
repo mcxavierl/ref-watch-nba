@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { CompareDualGsniGauge } from "@/components/compare/CompareDualGsniGauge";
 import {
   CompareDualLeagueSignal,
@@ -39,9 +39,12 @@ function CompareRefHeader({ bundle }: { bundle: CompareRefBundle }) {
       />
       <div className="ref-compare-header-copy">
         <h2 className="ref-compare-header-name">
-          <Link href={`${bundle.config.pathPrefix}/refs/${bundle.profile.slug}`}>
+          <PrefetchLink
+            href={`${bundle.config.pathPrefix}/refs/${bundle.profile.slug}`}
+            prefetch={true}
+          >
             {bundle.profile.name}
-          </Link>
+          </PrefetchLink>
         </h2>
         <p className="ref-compare-header-meta">
           <span className="ref-compare-league-badge">{bundle.config.shortLabel}</span>
