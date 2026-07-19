@@ -357,6 +357,18 @@ if (fs.existsSync(eplAssignments)) {
   console.log(`Copied ${eplAssignments} → ${dest}`);
 }
 
+const wnbaDataDir = path.join(root, "data/wnba");
+if (fs.existsSync(wnbaDataDir)) {
+  for (const file of ["assignments.json", "ref-stats-core.json", "odds.json"]) {
+    const src = path.join(wnbaDataDir, file);
+    if (!fs.existsSync(src)) continue;
+    const dest = path.join(root, "public/data/wnba", file);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.copyFileSync(src, dest);
+    console.log(`Copied ${src} → ${dest}`);
+  }
+}
+
 function resolveVerifiedNcaaLiveLeagues(): ("cbb" | "cfb")[] {
   const live: ("cbb" | "cfb")[] = [];
 

@@ -26,6 +26,10 @@ import {
   formatRefStatsRange as formatCfbRange,
   getRefStats as getCfbStats,
 } from "@/lib/cfb/data";
+import {
+  formatRefStatsRange as formatWnbaRange,
+  getRefStats as getWnbaStats,
+} from "@/lib/wnba/data";
 import type { LeagueId } from "@/lib/leagues";
 import {
   buildScopedRefStats,
@@ -70,7 +74,7 @@ const LOADERS: Record<LeagueId, () => LeagueStatsBundle> = {
   laliga: () => ({ stats: getLaligaStats(), formatRange: formatLaligaRange }),
   cbb: () => ({ stats: getCbbStats(), formatRange: formatCbbRange }),
   cfb: () => ({ stats: getCfbStats(), formatRange: formatCfbRange }),
-  wnba: () => ({ stats: getNbaStats(), formatRange: formatNbaRange }),
+  wnba: () => ({ stats: getWnbaStats(), formatRange: formatWnbaRange }),
   mlb: () => ({ stats: getNbaStats(), formatRange: formatNbaRange }),
 };
 

@@ -113,7 +113,7 @@ function renderHeroHead(head: ReactNode[]) {
 /** Leagues with sport-watermark hub heroes (court / rink / field / pitch). */
 export type HubHeroLeagueId = Extract<
   LeagueId,
-  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb"
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba"
 >;
 
 type LeagueHubHeroProps = {
@@ -636,6 +636,7 @@ function SportWatermark({ leagueId }: { leagueId: HubHeroLeagueId }) {
   switch (leagueId) {
     case "nba":
     case "cbb":
+    case "wnba":
       return <BasketballCourtWatermark />;
     case "nhl":
       return <HockeyRinkWatermark />;

@@ -16,7 +16,7 @@ export type LeagueHeroCopy = {
 };
 
 export const LEAGUE_HERO_COPY: Record<
-  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb",
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba",
   LeagueHeroCopy
 > = {
   nba: {
@@ -122,6 +122,20 @@ export const LEAGUE_HERO_COPY: Record<
       "Season opens soon. Crews and penalty tendencies load from game data. Team pages track Power Four and Group of Five programs.",
     statLabels: {
       officials: "Officials indexed",
+      games: "Games logged",
+      seasons: "Seasons",
+    },
+  },
+  wnba: {
+    kicker: "WNBA officiating desk",
+    liveTitle: "Crew assignments and tonight's whistle slate.",
+    offseasonTitle: "WNBA refereeing stats, in local preview.",
+    liveLead:
+      "Official crew assignments and upcoming matchups from official.nba.com, with historical ingest coming in Phase 2.",
+    offseasonLead:
+      "Phase 1 local preview. Run npm run fetch-wnba-assignments when the schedule is live.",
+    statLabels: {
+      officials: "Refs indexed",
       games: "Games logged",
       seasons: "Seasons",
     },

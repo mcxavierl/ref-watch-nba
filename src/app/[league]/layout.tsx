@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { CollegeLeagueGate } from "@/components/CollegeLeagueGate";
+import { LocalOnlyLeagueGate } from "@/components/LocalOnlyLeagueGate";
 import { LeagueSectionNav } from "@/components/LeagueSectionNav";
 import { PageContentFadeIn } from "@/components/PageContentFadeIn";
 import { preloadLeagueRefStatsForPath } from "@/lib/edge-preload";
@@ -41,6 +42,10 @@ export default async function LeagueHubLayout({ children, params }: LayoutProps)
         {content}
       </CollegeLeagueGate>
     );
+  }
+
+  if (league === "wnba") {
+    return <LocalOnlyLeagueGate leagueId="wnba">{content}</LocalOnlyLeagueGate>;
   }
 
   return content;

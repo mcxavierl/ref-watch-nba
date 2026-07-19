@@ -45,16 +45,6 @@ const nextConfig: NextConfig = {
     return [
       ...legacy,
       {
-        source: "/wnba",
-        destination: "/",
-        permanent: false,
-      },
-      {
-        source: "/wnba/:path*",
-        destination: "/",
-        permanent: false,
-      },
-      {
         source: "/mlb",
         destination: "/",
         permanent: false,

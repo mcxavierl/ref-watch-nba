@@ -10,6 +10,7 @@ import { getAssignments as getEplAssignments } from "@/lib/epl/data";
 import { getAssignments as getLaligaAssignments } from "@/lib/laliga/data";
 import { getAssignments as getCbbAssignments } from "@/lib/cbb/data";
 import { getAssignments as getCfbAssignments } from "@/lib/cfb/data";
+import { getAssignments as getWnbaAssignments } from "@/lib/wnba/data";
 
 const EMPTY_ODDS: OddsFile = {
   lastUpdated: new Date().toISOString(),
@@ -20,7 +21,7 @@ const EMPTY_ODDS: OddsFile = {
 
 const LEAGUE_ODDS_PATHS: Partial<Record<LeagueId, string[]>> = {
   nba: ["data/odds.json"],
-  wnba: ["data/odds.json"],
+  wnba: ["data/wnba/odds.json"],
   mlb: ["data/odds.json"],
   nhl: ["data/nhl/odds.json", "data/odds.json"],
   nfl: ["data/nfl/odds.json", "data/nfl/game-lines.json"],
@@ -62,7 +63,7 @@ export function loadLeagueOddsShard(leagueId: LeagueId): OddsFile {
 
 const ASSIGNMENT_LOADERS: Partial<Record<LeagueId, () => AssignmentsFile>> = {
   nba: getNbaAssignments,
-  wnba: getNbaAssignments,
+  wnba: getWnbaAssignments,
   mlb: getNbaAssignments,
   nhl: getNhlAssignments,
   nfl: getNflAssignments,

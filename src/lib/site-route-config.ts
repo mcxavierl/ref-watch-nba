@@ -16,7 +16,6 @@ export type RoutedLeagueId = (typeof ROUTED_LEAGUE_IDS)[number];
 
 /** Coming-soon leagues linked from roadmap catalog but without live hubs. */
 export const COMING_SOON_LEAGUE_IDS = [
-  "wnba",
   "mlb",
   "cfb",
 ] as const satisfies readonly LeagueId[];

@@ -9,6 +9,7 @@ import { execSync } from "node:child_process";
 
 const STEPS: { label: string; command: string; optional?: boolean }[] = [
   { label: "NBA assignments", command: "npm run fetch-assignments" },
+  { label: "WNBA assignments", command: "npm run fetch-wnba-assignments", optional: true },
   { label: "NHL assignments", command: "npm run fetch-nhl-assignments" },
   { label: "NFL assignments", command: "npm run fetch-nfl-assignments" },
   { label: "EPL assignments", command: "npm run fetch-epl-assignments" },

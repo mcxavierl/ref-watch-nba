@@ -77,6 +77,12 @@ type LeagueSlatePageProps = {
   searchParams: Promise<{ scope?: string; conference?: string }>;
 };
 
+function slateCardSport(
+  leagueId: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba",
+): "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" {
+  return leagueId === "wnba" ? "nba" : leagueId;
+}
+
 export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePageProps) {
   if (!isSlateLeagueId(leagueId)) {
     throw new Error(`LeagueSlatePage does not support ${leagueId}`);
@@ -117,7 +123,7 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
   const slateStorylines = computeSlateStorylines(sortedGames, refStats, 5);
   const pendingMatchups = upcomingMatchups(assignments).map((game) => game.matchup);
   const pathPrefix = entry.pathPrefix;
-  const sport = leagueId as "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  const sport = slateCardSport(leagueId);
 
   const edgeItems = buildTonightEdgeSummary({
     sport,
