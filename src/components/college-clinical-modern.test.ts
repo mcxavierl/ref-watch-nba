@@ -34,10 +34,10 @@ test("ConferenceCoverage uses StatusBadge for live conference labels", () => {
   assert.doesNotMatch(source, /ncaa-coverage-live-item-badge/);
 });
 
-test("CBB opengraph uses hub renderer with ref-focused copy", () => {
+test("CBB opengraph uses dashboard hero renderer with league focus", () => {
   const ogPage = readFileSync("src/app/[league]/opengraph-image.tsx", "utf8");
-  assert.match(ogPage, /renderHubOgImage/);
-  assert.match(ogPage, /cbbHubOgContent|hubOgContentForLeague/);
+  assert.match(ogPage, /renderDashboardOgImage/);
+  assert.match(ogPage, /dashboardOgContent/);
   const heroCopy = readFileSync("src/lib/league-hero-copy.ts", "utf8");
   assert.match(heroCopy, /College basketball officiating analytics/);
 });

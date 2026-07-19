@@ -1,11 +1,14 @@
 import type { ReactElement, ReactNode } from "react";
 import { ImageResponse } from "next/og";
+import { HeroView } from "@/components/og-components/HeroView";
 import { WHISTLE_PATHS } from "@/lib/brand-colors";
 import { loadOgFonts } from "@/lib/og-fonts";
 import type { BrandOgContent } from "@/lib/og-brand";
 import { leagueAccentFromOgTitle } from "@/lib/og-brand";
 import type { HubOgContent } from "@/lib/og-hub";
+import type { DashboardOgContent } from "@/lib/og-hero";
 import type { LeagueInsightTone } from "@/lib/league-overview-insights";
+import ogTailwindConfig from "../../tailwind.og.config";
 
 export const ogImageSize = { width: 1200, height: 630 };
 export const ogImageContentType = "image/png";
@@ -457,12 +460,19 @@ function OgFooter({ line }: { line: string }) {
   );
 }
 
-async function renderOgImage(jsx: ReactElement) {
+async function renderOgImage(jsx: ReactElement, useTailwind = false) {
   const fonts = await loadOgFonts();
   return new ImageResponse(jsx, {
     ...ogImageSize,
     fonts,
+    ...(useTailwind
+      ? { tailwindConfig: ogTailwindConfig as Record<string, unknown> }
+      : {}),
   });
+}
+
+export async function renderDashboardOgImage(content: DashboardOgContent) {
+  return renderOgImage(<HeroView {...content} />, true);
 }
 
 export async function renderBrandOgImage(content: BrandOgContent) {
