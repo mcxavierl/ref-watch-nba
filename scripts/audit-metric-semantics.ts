@@ -29,7 +29,7 @@ const SURFACES = [
   "InsightMetricComparison (editorial baseline vs delta)",
   "InsightSplitMetrics (homepage split sample + delta)",
   "StandoutMetricBar (magnitude / maxMagnitude)",
-  "TeamSplitView / NeutralDivergenceBar",
+  "MetricBlock / NeutralDivergenceBar",
   "FindingCardLayout contextual benchmarks",
   "ClinicalInsightMatrixCard directional delta",
   "GameSlateCard / hub KPI pills",
@@ -202,11 +202,11 @@ const staticChecks: Array<{ name: string; surface: string; run: () => AuditResul
       ),
   },
   {
-    name: "TeamSplitView uses NeutralDivergenceBar for neutral tone",
-    surface: "TeamSplitView / NeutralDivergenceBar",
+    name: "MetricBlock uses NeutralDivergenceBar for neutral tone",
+    surface: "MetricBlock / NeutralDivergenceBar",
     run: () =>
       auditFileContains(
-        "src/components/TeamSplitView.tsx",
+        "src/components/MetricBlock.tsx",
         /NeutralDivergenceBar/,
         "neutral divergence bar usage",
       ),

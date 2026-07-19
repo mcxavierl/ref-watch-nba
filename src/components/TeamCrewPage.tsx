@@ -23,7 +23,6 @@ import * as wnbaTeams from "@/lib/wnba/teams";
 import * as laligaTeams from "@/lib/laliga/teams";
 import * as eplTeams from "@/lib/epl/teams";
 import { getTeamRefSplits } from "@/lib/teamRefLeaderboards";
-import { TEAM_CREW_MIN_GAMES } from "@/lib/teamCrewSplits";
 import { formatTeamSampleRecord } from "@/lib/teamRecord";
 import { getTeamDisplayRecord } from "@/lib/teamDisplayRecord";
 import { resolveTeamCrewSplits } from "@/lib/teamCrewSplits";
@@ -39,14 +38,14 @@ import type { SeasonScopeMode } from "@/lib/season-scope";
 import { DEFAULT_SEASON_SCOPE_MODE } from "@/lib/season-scope";
 
 const LEAGUE_MODULES = {
-  nba: { data: nbaData, teams: nbaTeams, basePath: "", dataLeague: "NBA" as const, crewSize: "three", surface: "court" },
-  nhl: { data: nhlData, teams: nhlTeams, basePath: "/nhl", dataLeague: "NHL" as const, crewSize: "four", surface: "ice" },
-  nfl: { data: nflData, teams: nflTeams, basePath: "/nfl", dataLeague: "NFL" as const, crewSize: "seven", surface: "field" },
-  epl: { data: eplData, teams: eplTeams, basePath: "/epl", dataLeague: "EPL" as const, crewSize: "one", surface: "pitch" },
-  laliga: { data: laligaData, teams: laligaTeams, basePath: "/laliga", dataLeague: "LALIGA" as const, crewSize: "one", surface: "pitch" },
-  cbb: { data: cbbData, teams: cbbTeams, basePath: "/cbb", dataLeague: "CBB" as const, crewSize: "three", surface: "court" },
-  cfb: { data: cfbData, teams: cfbTeams, basePath: "/cfb", dataLeague: "CFB" as const, crewSize: "seven", surface: "field" },
-  wnba: { data: wnbaData, teams: wnbaTeams, basePath: "/wnba", dataLeague: "WNBA" as const, crewSize: "three", surface: "court" },
+  nba: { data: nbaData, teams: nbaTeams, basePath: "", dataLeague: "NBA" as const },
+  nhl: { data: nhlData, teams: nhlTeams, basePath: "/nhl", dataLeague: "NHL" as const },
+  nfl: { data: nflData, teams: nflTeams, basePath: "/nfl", dataLeague: "NFL" as const },
+  epl: { data: eplData, teams: eplTeams, basePath: "/epl", dataLeague: "EPL" as const },
+  laliga: { data: laligaData, teams: laligaTeams, basePath: "/laliga", dataLeague: "LALIGA" as const },
+  cbb: { data: cbbData, teams: cbbTeams, basePath: "/cbb", dataLeague: "CBB" as const },
+  cfb: { data: cfbData, teams: cfbTeams, basePath: "/cfb", dataLeague: "CFB" as const },
+  wnba: { data: wnbaData, teams: wnbaTeams, basePath: "/wnba", dataLeague: "WNBA" as const },
 };
 
 export interface TeamPageConfig {
@@ -81,7 +80,6 @@ export function TeamCrewPage({
 
   const isNhl = league === "nhl";
   const isNfl = league === "nfl" || league === "cfb";
-  const isRefsOnly = league === "cbb";
   const analyticsRefs = isNhl ? filterNhlReferees(stats.refs) : stats.refs;
   const splits = sortSplitsByGames(
     resolveTeamCrewSplits(stats, team.abbr, getTeamSplits),
@@ -96,8 +94,6 @@ export function TeamCrewPage({
   );
   const teamName = teamFullName(team as never);
   const teamLabel = teamWithArticle(team as never);
-  const crewSize = mod.crewSize;
-  const playingSurface = mod.surface;
   const dataLeague = mod.dataLeague;
   const closeGameMetrics = computeTeamCloseGameMetrics(
     team.abbr,
@@ -117,27 +113,14 @@ export function TeamCrewPage({
           <div className="page-hero-head-copy">
             <p className="section-kicker team-page-kicker">{teamName}</p>
             <h1 className="page-title">
-              {isRefsOnly
-                ? `How ${teamLabel} play under each referee`
-                : `How ${teamLabel} play under each ref or ref crew`}
+              How {teamLabel} play under each referee
             </h1>
           </div>
         </div>
         <p className="page-lead">
-          {isRefsOnly ? (
-            <>
-              Every {team.name} game grouped by individual referee. Over this sample{" "}
-              {teamLabel} are {formatTeamSampleRecord(teamRecord)}; each ref win rate
-              below is compared to that team average.
-            </>
-          ) : (
-            <>
-              Every {team.name} game grouped by individual official, or by the same{" "}
-              {crewSize} officials on the {playingSurface}. Over this sample {teamLabel}{" "}
-              are {formatTeamSampleRecord(teamRecord)}; each ref and crew win rate below
-              is compared to that team average.
-            </>
-          )}
+          Every {team.name} game grouped by individual referee. Over this sample{" "}
+          {teamLabel} are {formatTeamSampleRecord(teamRecord)}; each ref win rate
+          below is compared to that team average.
         </p>
         <p className="page-meta">
           <span className="page-meta-updated">
@@ -176,9 +159,9 @@ export function TeamCrewPage({
             No ref history for {teamName} yet
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-            {isRefsOnly
-              ? `We don't have enough referee history for ${teamLabel} in the current dataset. Check back after the next data refresh, or browse other teams with fuller samples.`
-              : `We don't have enough crew-level games for ${teamLabel} in the current dataset. Check back after the next data refresh, or browse other teams with fuller samples.`}
+            We don&apos;t have enough referee history for {teamLabel} in the current
+            dataset. Check back after the next data refresh, or browse other teams with
+            fuller samples.
           </p>
           <Link
             href={`${basePath || ""}/teams`}
@@ -189,15 +172,10 @@ export function TeamCrewPage({
         </div>
       ) : (
         <TeamSplitView
-          crewSplits={splits}
           refSplits={refSplits}
-          refs={analyticsRefs}
           teamAbbr={team.abbr}
           teamLabel={teamLabel}
           teamRecord={teamRecord}
-          leagueAvgTotal={stats.meta.leagueAvgTotal}
-          leagueAvgFouls={stats.meta.leagueAvgFouls}
-          overBaseline={stats.meta.leagueOverBaseline}
           basePath={basePath}
           sport={league}
           dataLeague={dataLeague}
@@ -219,18 +197,10 @@ export function TeamCrewPage({
             stats for one official across all {team.name} games they worked, even
             with different partners.
           </li>
-          {!isRefsOnly ? (
-            <li>
-              <span className="font-medium text-zinc-800">Ref crews</span>: stats
-              when the same {crewSize} officials worked together on {teamLabel}{" "}
-              games ({TEAM_CREW_MIN_GAMES}+ games shown by default).
-            </li>
-          ) : null}
           <li>
             <span className="font-medium text-zinc-800">Team baseline</span>:{" "}
             {teamLabel} went {formatTeamSampleRecord(teamRecord)} across this
-            sample. Ref{isRefsOnly ? "" : " and crew"} win
-            rates show how they compare to that team average.
+            sample. Ref win rates show how they compare to that team average.
           </li>
           <li>
             <span className="font-medium text-zinc-800">Whistle differential</span>:{" "}
