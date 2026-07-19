@@ -5284,6 +5284,21 @@ p {
     border-radius: 2px;
   }
 
+  .site-footer-copyright {
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+    text-align: center;
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+
+  @media (min-width: 640px) {
+    .site-footer-copyright {
+      padding-inline: var(--space-6);
+    }
+  }
+
   /* ── CLS skeleton placeholders (reserve space before client hydration) ── */
   .cls-skeleton-panel,
   .cls-skeleton-line,

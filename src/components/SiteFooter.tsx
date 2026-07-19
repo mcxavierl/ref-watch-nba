@@ -92,6 +92,9 @@ export function SiteFooter({ league }: { league?: FooterLeague }) {
         </div>
       </div>
       <GamblingDisclaimer />
+      <p className="site-footer-copyright">
+        © 2026 Ref Watch. All rights reserved.
+      </p>
     </footer>
   );
 }
