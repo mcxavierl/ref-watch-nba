@@ -40,6 +40,14 @@ import { applyClinicalTone } from "@/lib/insights/tone-filter";
 
 export type LeagueInsightTone = "positive" | "negative" | "neutral";
 
+/** Structured ref×team counts for homepage significance testing. */
+export type MatrixEdgeSignificance = {
+  refWins: number;
+  refGames: number;
+  baselineWins: number;
+  baselineGames: number;
+};
+
 export type LeagueInsightCard = {
   leagueId: LeagueId;
   label: string;
@@ -60,6 +68,8 @@ export type LeagueInsightCard = {
   refSlug?: string;
   teamAbbr?: string;
   drilldownId?: string;
+  /** Ref×team win counts for two-proportion significance (matrix-edge only). */
+  significance?: MatrixEdgeSignificance;
 };
 
 type LeagueInsightConfig = {
@@ -208,6 +218,12 @@ function cardFromMatrix(
       highlight.refSlug,
       highlight.teamAbbr,
     ),
+    significance: {
+      refWins: highlight.wins,
+      refGames: highlight.games,
+      baselineWins: highlight.baselineWins,
+      baselineGames: highlight.baselineGames,
+    },
   };
 }
 

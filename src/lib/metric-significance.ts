@@ -1,3 +1,5 @@
+import { REF_TEAM_SPLIT_MIN_GAMES } from "@/config/methodology";
+
 /**
  * Neutral-first metric highlighting: color only when a value clears ~1σ from baseline.
  *
@@ -30,6 +32,83 @@ export const FINDING_DELTA_SIGNIFICANT_ABS = 2;
 export const DELTA_STANDOUT_ABS = 12;
 
 export type SignificantTone = "positive" | "negative" | "neutral";
+
+export type TwoProportionZTestResult = {
+  z: number;
+  pValue: number;
+  significantAt05: boolean;
+};
+
+/** Standard normal CDF approximation (Abramowitz & Stegun 26.2.17). */
+function standardNormalCdf(z: number): number {
+  const absZ = Math.abs(z);
+  const t = 1 / (1 + 0.2316419 * absZ);
+  const poly =
+    t *
+    (0.319381530 +
+      t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+  const pdf = Math.exp(-0.5 * absZ * absZ) / Math.sqrt(2 * Math.PI);
+  const cdf = 1 - pdf * poly;
+  return z >= 0 ? cdf : 1 - cdf;
+}
+
+function twoTailedPValue(z: number): number {
+  if (!Number.isFinite(z)) return 1;
+  return Math.max(0, Math.min(1, 2 * (1 - standardNormalCdf(Math.abs(z)))));
+}
+
+/**
+ * Two-tailed two-proportion z-test: does group A differ from group B?
+ * Returns not significant when either n is 0, pooled variance is 0,
+ * or nA is below the published ref-team sample gate.
+ */
+export function twoProportionZTest(
+  successesA: number,
+  nA: number,
+  successesB: number,
+  nB: number,
+): TwoProportionZTestResult {
+  const invalid =
+    !Number.isFinite(successesA) ||
+    !Number.isFinite(nA) ||
+    !Number.isFinite(successesB) ||
+    !Number.isFinite(nB) ||
+    nA <= 0 ||
+    nB <= 0 ||
+    nA < REF_TEAM_SPLIT_MIN_GAMES ||
+    successesA < 0 ||
+    successesB < 0 ||
+    successesA > nA ||
+    successesB > nB;
+
+  if (invalid) {
+    return { z: 0, pValue: 1, significantAt05: false };
+  }
+
+  const pA = successesA / nA;
+  const pB = successesB / nB;
+  const pooledSuccesses = successesA + successesB;
+  const pooledN = nA + nB;
+  const pooledRate = pooledSuccesses / pooledN;
+  const pooledVariance = pooledRate * (1 - pooledRate);
+
+  if (pooledVariance <= 0) {
+    return { z: 0, pValue: 1, significantAt05: false };
+  }
+
+  const standardError = Math.sqrt(pooledVariance * (1 / nA + 1 / nB));
+  if (standardError <= 0) {
+    return { z: 0, pValue: 1, significantAt05: false };
+  }
+
+  const z = (pA - pB) / standardError;
+  const pValue = twoTailedPValue(z);
+  return {
+    z,
+    pValue,
+    significantAt05: pValue < 0.05,
+  };
+}
 
 /** True when |value - mean| >= 1 population standard deviation. */
 export function isSignificantDeviation(

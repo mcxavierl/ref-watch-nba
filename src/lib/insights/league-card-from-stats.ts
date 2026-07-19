@@ -91,6 +91,12 @@ function cardFromMatrix(
       highlight.refSlug,
       highlight.teamAbbr,
     ),
+    significance: {
+      refWins: highlight.wins,
+      refGames: highlight.games,
+      baselineWins: highlight.baselineWins,
+      baselineGames: highlight.baselineGames,
+    },
   };
 }
 

@@ -8,7 +8,7 @@ import {
 import { RELIABILITY_FLOOR_GAMES } from "@/lib/data-maturity";
 import { parseGamesFromCard } from "@/lib/insight-editorial";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
-import { WIN_RATE_OUTLIER_PP } from "@/lib/metric-significance";
+import { WIN_RATE_OUTLIER_PP, twoProportionZTest } from "@/lib/metric-significance";
 
 const CREW_ANOMALY_PATTERN =
   /crew anomaly|team[- ]crew|crew pairing|when .+ work .+ games/i;
@@ -79,13 +79,24 @@ export function filterHomepageInsightCards(
   return cards.filter(passesHomepageSampleGate);
 }
 
-/** Statistically significant label is reserved for gate-qualified splits with material deltas. */
+/** Statistically significant label requires gate, z-test, and material delta. */
 export function isStatisticallySignificantInsight(card: LeagueInsightCard): boolean {
   if (!passesHomepageSampleGate(card)) return false;
 
   if (card.kind === "matrix-edge") {
     const delta = parseDeltaPpFromCard(card);
-    return delta !== null && Math.abs(delta) >= WIN_RATE_OUTLIER_PP;
+    if (delta === null || Math.abs(delta) < WIN_RATE_OUTLIER_PP) return false;
+
+    const counts = card.significance;
+    if (!counts) return false;
+
+    const test = twoProportionZTest(
+      counts.refWins,
+      counts.refGames,
+      counts.baselineWins,
+      counts.baselineGames,
+    );
+    return test.significantAt05;
   }
 
   if (card.kind === "ref-outlier") {

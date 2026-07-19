@@ -8,6 +8,7 @@ import {
   overRateHeroTone,
   populationStdDev,
   statValueSignificanceTone,
+  twoProportionZTest,
   WIN_RATE_SIGNIFICANT_PP,
 } from "./metric-significance";
 
@@ -53,5 +54,31 @@ describe("metric-significance", () => {
     assert.equal(statValueSignificanceTone("+12.5"), "standout-high");
     assert.equal(statValueSignificanceTone("-18.0pp"), "standout-low");
     assert.equal(statValueSignificanceTone("62.8%"), "neutral");
+  });
+
+  it("twoProportionZTest rejects thin ref samples and zero-variance pools", () => {
+    assert.equal(twoProportionZTest(12, 12, 10, 12).significantAt05, false);
+    assert.equal(twoProportionZTest(7, 7, 3, 10).significantAt05, false);
+    assert.equal(twoProportionZTest(0, 0, 10, 20).significantAt05, false);
+    assert.equal(twoProportionZTest(10, 10, 10, 10).significantAt05, false);
+  });
+
+  it("twoProportionZTest flags large-sample moderate deltas", () => {
+    const result = twoProportionZTest(65, 100, 500, 1000);
+    assert.ok(result.significantAt05);
+    assert.ok(result.pValue < 0.05);
+    assert.ok(Math.abs(result.z) > 1.96);
+  });
+
+  it("twoProportionZTest flags thick ref×team splits against team baseline", () => {
+    const result = twoProportionZTest(17, 19, 363, 820);
+    assert.ok(result.significantAt05);
+    assert.ok(result.pValue < 0.05);
+  });
+
+  it("twoProportionZTest stays conservative when baseline sample is thin", () => {
+    const result = twoProportionZTest(15, 19, 8, 15);
+    assert.equal(result.significantAt05, false);
+    assert.ok(result.pValue >= 0.05);
   });
 });
