@@ -1,24 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { RankingSignalPill } from "@/components/RankingSignalPill";
 import { StandoutMetricBar } from "@/components/StandoutMetric";
+import {
+  DataSufficiencyNotice,
+  DataSufficiencyToggle,
+} from "@/components/shared/DataSufficiencyNotice";
 import { Pill } from "@/components/ui/Pill";
 import {
   NO_ANOMALIES_DETECTED_COPY,
   qualifiesRefAnomaly,
   sortRefsByInterestingness,
 } from "@/lib/anomaly-surface";
+import { meetsDataSufficiency } from "@/lib/data-sufficiency";
+import { useDataSufficiencyFilter } from "@/hooks/useDataSufficiencyFilter";
 import { rankingInsightHeadline } from "@/lib/insight-headlines";
 import type { LeagueId } from "@/lib/leagues";
 import { signedDeltaTone } from "@/lib/metric-delight";
 import { formatPct, formatSigned, bettingAtsRate, bettingOuRate } from "@/lib/stats-utils";
 import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
-import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/rankings";
+import { sortRefRankings, type RefRankingSort } from "@/lib/rankings";
 import type { RefProfile } from "@/lib/types";
 
 type SortField = "games" | "scoring" | "whistle" | "overRate" | "ats" | "ouBetting";
@@ -123,11 +129,15 @@ export function RefRankingsTable({
   preserveOrder?: boolean;
 }) {
   const [sort, setSort] = useState<RefRankingSort>(defaultSort);
-  const [showLowSample, setShowLowSample] = useState(false);
   const [showAllRows, setShowAllRows] = useState(false);
   const [anomaliesOnly, setAnomaliesOnly] = useState(false);
   const [expandedSlugs, setExpandedSlugs] = useState<Set<string>>(() => new Set());
   const leagueId = LEAGUE_ID_BY_LABEL[league];
+
+  const meetsThreshold = useCallback(
+    (ref: RefProfile) => meetsDataSufficiency(ref.games, minSampleSize),
+    [minSampleSize],
+  );
 
   useEffect(() => {
     setSort(defaultSort);
@@ -135,11 +145,10 @@ export function RefRankingsTable({
   }, [defaultSort, filterSlugs, preserveOrder, refs]);
 
   const sorted = useMemo(() => {
-    const pool = showLowSample ? refs : qualifiedRefs(refs, minSampleSize);
     const filteredBySlug =
       filterSlugs && filterSlugs.size > 0
-        ? pool.filter((ref) => filterSlugs.has(ref.slug))
-        : pool;
+        ? refs.filter((ref) => filterSlugs.has(ref.slug))
+        : refs;
     const filtered = anomaliesOnly
       ? filteredBySlug.filter((ref) =>
           qualifiesRefAnomaly(ref, leagueId, signalCounts[ref.slug] ?? 0),
@@ -151,8 +160,6 @@ export function RefRankingsTable({
   }, [
     refs,
     sort,
-    showLowSample,
-    minSampleSize,
     filterSlugs,
     preserveOrder,
     anomaliesOnly,
@@ -160,8 +167,11 @@ export function RefRankingsTable({
     signalCounts,
   ]);
 
-  const visibleRows = showAllRows ? sorted : sorted.slice(0, initialRowLimit);
-  const hiddenCount = Math.max(0, sorted.length - initialRowLimit);
+  const sufficiency = useDataSufficiencyFilter(sorted, meetsThreshold);
+  const visibleRows = showAllRows
+    ? sufficiency.visible
+    : sufficiency.visible.slice(0, initialRowLimit);
+  const hiddenCount = Math.max(0, sufficiency.visible.length - initialRowLimit);
 
   const isBasketball = league === "NBA" || league === "CBB";
   const scoringLabel = isBasketball
@@ -209,15 +219,6 @@ export function RefRankingsTable({
     <div>
       <div className="ranking-toolbar">
         <div className="ranking-toolbar-row flex flex-wrap items-center gap-3">
-          <label className="ranking-toggle">
-            <input
-              type="checkbox"
-              checked={showLowSample}
-              onChange={(e) => setShowLowSample(e.target.checked)}
-              className="rounded border-border"
-            />
-            Show refs below {minSampleSize}-game gate
-          </label>
           <Pill
             as="button"
             variant="insight"
@@ -228,9 +229,15 @@ export function RefRankingsTable({
             Anomalies only
           </Pill>
         </div>
+        <DataSufficiencyNotice
+          showAll={sufficiency.showAll}
+          hiddenCount={sufficiency.hiddenCount}
+          onExpand={sufficiency.expandList}
+          className="ranking-toolbar-context"
+        />
       </div>
 
-      {sorted.length === 0 ? (
+      {sufficiency.visible.length === 0 ? (
         <p className="overview-slate-empty overview-slate-empty-panel">{NO_ANOMALIES_DETECTED_COPY}</p>
       ) : (
         <>
@@ -238,6 +245,7 @@ export function RefRankingsTable({
         {visibleRows.map((ref) => {
           const profileHref = `${basePath}/refs/${ref.slug}`;
           const signalCount = signalCounts[ref.slug] ?? 0;
+          const belowGate = !sufficiency.meetsThreshold(ref);
           const whistleDelta =
             league === "NHL"
               ? ref.nhlAnalytics?.minorsDelta
@@ -257,7 +265,9 @@ export function RefRankingsTable({
           return (
             <article
               key={ref.slug}
-              className="ranking-mobile-card overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-4"
+              className={`ranking-mobile-card overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-4${
+                belowGate && sufficiency.showAll ? " text-slate-600 opacity-50" : ""
+              }`}
             >
               <div className="flex min-w-0 items-start gap-3">
                 <RefAvatar name={ref.name} slug={ref.slug} sport={sport} size="sm" />
@@ -319,11 +329,9 @@ export function RefRankingsTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
-            {visibleRows
-              .filter((ref) => showLowSample || ref.games >= minSampleSize)
-              .flatMap((ref, index) => {
+            {visibleRows.flatMap((ref, index) => {
               const rank = index + 1;
-              const belowGate = ref.games < minSampleSize;
+              const belowGate = !sufficiency.meetsThreshold(ref);
 
               const whistleDelta =
                 league === "NHL"
@@ -347,7 +355,13 @@ export function RefRankingsTable({
               const rows: ReactNode[] = [
                 <tr
                   key={ref.slug}
-                  className={`ranking-table-row ${belowGate ? "ranking-table-row-thin" : ""}`}
+                  className={`ranking-table-row${
+                    belowGate && sufficiency.showAll
+                      ? " ranking-table-row-thin text-slate-600 opacity-50"
+                      : belowGate
+                        ? " ranking-table-row-thin"
+                        : ""
+                  }`}
                 >
                   <td className="data-table-rank px-4 py-4 font-tabular tabular-nums text-zinc-400 sm:px-5">
                     {rank}
@@ -494,10 +508,17 @@ export function RefRankingsTable({
           >
             {showAllRows
               ? "Show top rankings"
-              : `View full rankings (${sorted.length})`}
+              : `View full rankings (${sufficiency.visible.length})`}
           </button>
         </div>
       ) : null}
+
+      <DataSufficiencyToggle
+        showAll={sufficiency.showAll}
+        hiddenCount={sufficiency.hiddenCount}
+        onToggle={sufficiency.toggleShowAll}
+        officialLabel="officials"
+      />
         </>
       )}
     </div>

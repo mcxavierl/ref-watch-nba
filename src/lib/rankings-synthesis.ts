@@ -489,7 +489,7 @@ export function buildRankingsSynthesis(
   const leagueSummary =
     qualified.length > 0
       ? `${highScoring.length} of ${qualified.length} ${league.officialNounPlural} trend toward higher scoring. ${lowScoring.length} trend lower. Past ${contestUnit} tendencies - not predictions.`
-      : `Not enough qualified officials in this scope yet. Use the rankings table toggle to include refs below the ${min}-${contestUnit} gate.`;
+      : `Not enough qualified officials in this scope yet. Expand the rankings list to include refs below the ${min}-${contestUnit} gate.`;
 
   return {
     headline: "Top highlights",
