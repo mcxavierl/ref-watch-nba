@@ -10,19 +10,6 @@ test("NcaaAuditStatusPill delegates to shared StatusBadge", () => {
   assert.match(source, /tabular-nums/);
 });
 
-test("College preview banners use shared Clinical Modern banner", () => {
-  const cbb = readFileSync("src/components/CbbPreviewBanner.tsx", "utf8");
-  assert.match(cbb, /CollegePreviewBanner/);
-
-  const cfb = readFileSync("src/components/CfbPreviewBanner.tsx", "utf8");
-  assert.match(cfb, /StatusBadge/);
-  assert.match(cfb, /isCfbOfficialsPending/);
-
-  const shared = readFileSync("src/components/CollegePreviewBanner.tsx", "utf8");
-  assert.match(shared, /StatusBadge/);
-  assert.match(shared, /CLINICAL MODERN STANDARD/);
-});
-
 test("CollegeLeagueGate unlocks children when NCAA league is launched", () => {
   const source = readFileSync("src/components/CollegeLeagueGate.tsx", "utf8");
   assert.match(source, /isCollegeLiveLeague/);

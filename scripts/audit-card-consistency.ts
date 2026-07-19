@@ -386,15 +386,6 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "College preview banners use StatusBadge",
-    run: () =>
-      auditFileContains(
-        "src/components/CollegePreviewBanner.tsx",
-        /StatusBadge/,
-        "StatusBadge in college preview banner",
-      ),
-  },
-  {
     name: "NcaaIntegrityAuditDashboard uses ClinicalMetricCard",
     run: () =>
       auditFileContains(

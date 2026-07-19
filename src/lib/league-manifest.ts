@@ -41,8 +41,6 @@ export type LeagueSlateFeatures = {
   seasonScopeOnSlate: boolean;
   /** Season scope toggle on findings section (NBA) */
   seasonScopeOnFindings: boolean;
-  /** CFB preview / data-source banner above slate content */
-  cfbPreviewBanner: boolean;
   /** Hide generic offseason notice (NBA uses feature showcase instead) */
   hideOffseasonNotice: boolean;
   /** In-season findings section title override */
@@ -112,7 +110,6 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       ppOtSignals: false,
       seasonScopeOnSlate: true,
       seasonScopeOnFindings: true,
-      cfbPreviewBanner: false,
       hideOffseasonNotice: true,
       findingsInSeasonTitle: "Tonight's edges",
     },
@@ -155,7 +152,6 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       ppOtSignals: true,
       seasonScopeOnSlate: false,
       seasonScopeOnFindings: false,
-      cfbPreviewBanner: false,
       hideOffseasonNotice: false,
     },
   },
@@ -185,7 +181,6 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       ppOtSignals: false,
       seasonScopeOnSlate: false,
       seasonScopeOnFindings: false,
-      cfbPreviewBanner: false,
       hideOffseasonNotice: false,
     },
   },
@@ -227,7 +222,6 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       ppOtSignals: false,
       seasonScopeOnSlate: false,
       seasonScopeOnFindings: false,
-      cfbPreviewBanner: false,
       hideOffseasonNotice: false,
     },
   },
@@ -269,7 +263,6 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       ppOtSignals: false,
       seasonScopeOnSlate: false,
       seasonScopeOnFindings: false,
-      cfbPreviewBanner: false,
       hideOffseasonNotice: false,
     },
   },
@@ -311,7 +304,6 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       ppOtSignals: false,
       seasonScopeOnSlate: false,
       seasonScopeOnFindings: false,
-      cfbPreviewBanner: false,
       hideOffseasonNotice: false,
     },
   },
@@ -353,7 +345,6 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       ppOtSignals: false,
       seasonScopeOnSlate: false,
       seasonScopeOnFindings: false,
-      cfbPreviewBanner: false,
       hideOffseasonNotice: false,
     },
   },
@@ -383,7 +374,6 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       ppOtSignals: false,
       seasonScopeOnSlate: false,
       seasonScopeOnFindings: false,
-      cfbPreviewBanner: false,
       hideOffseasonNotice: false,
     },
   },
@@ -425,7 +415,6 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       ppOtSignals: false,
       seasonScopeOnSlate: false,
       seasonScopeOnFindings: false,
-      cfbPreviewBanner: true,
       hideOffseasonNotice: false,
     },
   },

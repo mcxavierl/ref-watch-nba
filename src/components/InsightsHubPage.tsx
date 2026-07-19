@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { CbbConferenceTrendsToggle } from "@/components/CbbConferenceTrendsToggle";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
-import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { LeagueHubTabs } from "@/components/LeagueHubTabs";
 import { LeagueTrendsTable } from "@/components/LeagueTrendsTable";
 import { RankingsInsightCards } from "@/components/RankingsInsightCards";
@@ -25,7 +24,6 @@ import {
   loadHubLeagueStats,
   loadLeagueStats,
 } from "@/lib/load-league-stats";
-import { resolveLeagueVerification } from "@/lib/league-verification";
 import { scopedBaselinesSeasons } from "@/lib/scoped-ref-stats";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
@@ -173,9 +171,6 @@ export function InsightsHubPage({
     availableSeasons,
   } = scopeContext;
 
-  const verification = resolveLeagueVerification(leagueId, stats.meta, stats);
-  const showDataSourceBanner =
-    !verification.data_verified && manifest.slate.cfbPreviewBanner;
   const range = formatRange(stats.meta);
 
   const hubFindings = hubFindingsForLeague(leagueId, scopedSeasons, dataLeague);
@@ -408,10 +403,6 @@ export function InsightsHubPage({
 
   return (
     <div className="page-shell page-shell-insights">
-      {showDataSourceBanner ? (
-        <LeagueDataSourceBanner league="cfb" meta={stats.meta} />
-      ) : null}
-
       <LeagueHubTabs
         ariaLabel="Insights views"
         defaultTabId={activeView}
