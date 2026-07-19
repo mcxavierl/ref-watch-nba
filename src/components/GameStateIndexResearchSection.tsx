@@ -7,7 +7,6 @@ import { GsniResearchTable } from "@/components/GsniResearchTable";
 import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 import { TermHelp } from "@/components/TermHelp";
-import { GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL } from "@/lib/gsni";
 import { explainGsni } from "@/lib/gsni-display";
 import {
   buildGsniResearchHighlights,
@@ -49,9 +48,12 @@ function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
 export function GameStateIndexResearchSection({
   stats,
   basePath = "/nfl",
+  compactHub = false,
 }: {
   stats: RefStatsFile;
   basePath?: string;
+  /** Hide duplicate hero highlights when GSNI cards already sit in the insights hub hero. */
+  compactHub?: boolean;
 }) {
   const highlights = buildGsniResearchHighlights(stats, basePath);
   const rows = buildGsniResearchRows(stats, basePath);
@@ -59,16 +61,11 @@ export function GameStateIndexResearchSection({
 
   return (
     <>
-      {highlights.length > 0 ? (
+      {!compactHub && highlights.length > 0 ? (
         <section className="section-block">
           <h2 className="section-title">
             <TermHelp id="game-state-index">GSNI highlights</TermHelp>
           </h2>
-          <p className="gsni-sub-text section-lead">
-            Clutch-state whistle profiles after the{" "}
-            {GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL}+ high-leverage minute gate. Quiet means
-            fewer flags than league in close, late-clock spots; Heavy means more.
-          </p>
           <div className="rankings-insight-grid">
             {highlights.map((finding) => (
               <HighlightCard key={finding.refSlug} finding={finding} />
@@ -79,14 +76,15 @@ export function GameStateIndexResearchSection({
 
       <section className="section-block">
         <h2 className="section-title">GSNI official table</h2>
-        <p className="gsni-sub-text section-lead">
-          Flag rate vs league in matched score-and-clock buckets. Labels: Quiet (below
-          league), Heavy (above), Neutral (within 0.5σ of mean).{" "}
-          <Link href="/research/leverage-spike-anomaly" className="font-medium hover:underline">
-            Methodology
-          </Link>
-          .
-        </p>
+        {!compactHub ? (
+          <p className="gsni-sub-text section-lead">
+            Flag rate vs league in matched score-and-clock buckets.{" "}
+            <Link href="/research/leverage-spike-anomaly" className="font-medium hover:underline">
+              Methodology
+            </Link>
+            .
+          </p>
+        ) : null}
         <GsniResearchTable rows={rows} />
       </section>
     </>

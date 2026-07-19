@@ -25,7 +25,7 @@ export function RankingsInsightCards({
     <ul
       className={
         variant === "hero"
-          ? "rankings-insight-grid rankings-insight-grid--hero"
+          ? "rankings-insight-grid rankings-insight-grid--hero rankings-insight-grid--hero-focus"
           : "rankings-insight-grid"
       }
     >
@@ -44,6 +44,7 @@ export function RankingsInsightCards({
           statValue={insight.statValue}
           statLabel={insight.statLabel}
           body={insight.body}
+          heroPills={variant === "hero"}
         />
       ))}
     </ul>
@@ -51,11 +52,8 @@ export function RankingsInsightCards({
 
   if (variant === "hero") {
     return (
-      <div className="hero-highlights-block hero-highlights-block--league">
-        <HeroHighlightsHeader
-          title="Top highlights"
-          lead="Recent high-confidence patterns"
-        />
+      <div className="hero-highlights-block hero-highlights-block--league hero-highlights-block--insights-hub">
+        <HeroHighlightsHeader title="Top highlights" />
         {cards}
       </div>
     );
