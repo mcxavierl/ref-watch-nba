@@ -12067,7 +12067,7 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: stretch;
   height: 100%;
   min-height: 11.25rem;
@@ -12205,6 +12205,7 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   gap: 0.85rem;
   flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
 }
 
 .overview-league-chooser-mark {
@@ -12314,28 +12315,38 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   flex-direction: column;
   gap: 0.2rem;
   min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .overview-league-chooser-label {
-  font-size: 1.05rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-league-chooser-meta {
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   line-height: 1.4;
   font-variant-numeric: tabular-nums;
   color: color-mix(in srgb, var(--text-primary, var(--ink)) 86%, var(--text-muted, var(--muted)));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-league-chooser-cta {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  margin-top: 0.75rem;
-  font-size: 0.78rem;
+  margin-top: auto;
+  flex-shrink: 0;
+  font-size: 0.75rem;
   font-weight: 650;
   color: color-mix(in srgb, var(--chooser-accent) 72%, var(--ink));
 }
@@ -14384,6 +14395,9 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
   padding: 1rem 1.05rem;
   border-radius: 0.9rem;
   border: 1px solid color-mix(in srgb, var(--pace-accent) 18%, var(--line));
@@ -14436,14 +14450,20 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 }
 
 .overview-pace-label {
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 750;
   color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-pace-meta {
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-pace-metric {
@@ -14457,19 +14477,30 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   align-items: baseline;
   justify-content: space-between;
   gap: 0.5rem;
-  font-size: 0.68rem;
+  min-width: 0;
+  font-size: 0.75rem;
   font-weight: 650;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
+.overview-pace-metric-head > span:first-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+}
+
 .overview-pace-metric-head strong {
-  font-size: 0.88rem;
-  font-weight: 800;
+  font-size: 0.875rem;
+  font-weight: 700;
   color: var(--ink);
   text-transform: none;
   letter-spacing: -0.02em;
+  flex-shrink: 0;
 }
 
 .overview-pace-bar {
@@ -14507,8 +14538,9 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
-  margin-top: 0.1rem;
-  font-size: 0.72rem;
+  margin-top: auto;
+  flex-shrink: 0;
+  font-size: 0.75rem;
   font-weight: 650;
   color: color-mix(in srgb, var(--pace-accent) 65%, var(--muted));
 }

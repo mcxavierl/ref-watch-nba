@@ -127,9 +127,12 @@ export function LeagueHubCard({ card }: { card: OgLeagueHubCardData }) {
                 gap: 8,
                 fontSize: 10,
                 color: "#94a3b8",
+                minWidth: 0,
               }}
             >
-              <span>{card.whistleLabel}</span>
+              <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {card.whistleLabel}
+              </span>
               <strong
                 style={{
                   fontSize: 12,
@@ -149,9 +152,12 @@ export function LeagueHubCard({ card }: { card: OgLeagueHubCardData }) {
                 gap: 8,
                 fontSize: 10,
                 color: "#94a3b8",
+                minWidth: 0,
               }}
             >
-              <span>{card.scoreLabel}</span>
+              <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {card.scoreLabel}
+              </span>
               <strong
                 style={{
                   fontSize: 12,
@@ -171,7 +177,8 @@ export function LeagueHubCard({ card }: { card: OgLeagueHubCardData }) {
           display: "flex",
           alignItems: "center",
           gap: 4,
-          marginTop: 8,
+          marginTop: "auto",
+          flexShrink: 0,
           fontSize: 9,
           fontWeight: 600,
           letterSpacing: "0.16em",
