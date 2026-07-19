@@ -1,19 +1,100 @@
 {
-  "lastUpdated": "2026-07-17T19:00:00.000Z",
-  "date": "2026-08-09",
-  "source": "seeded",
+  "lastUpdated": "2026-07-19T23:57:56.371Z",
+  "date": "2026-08-21",
+  "source": "espn",
   "games": [],
   "scheduledGames": [
     {
-      "id": "epl-fa-cov-ars-2026",
+      "id": "401879301",
       "matchup": "COV @ ARS",
       "awayTeam": "COV",
       "homeTeam": "ARS",
       "league": "EPL",
-      "seasonStage": "exhibition",
+      "slateDate": "2026-08-21",
+      "crew": []
+    },
+    {
+      "id": "401879322",
+      "matchup": "MUN @ HUL",
+      "awayTeam": "MUN",
+      "homeTeam": "HUL",
+      "league": "EPL",
+      "slateDate": "2026-08-22",
+      "crew": []
+    },
+    {
+      "id": "401879300",
+      "matchup": "CRY @ EVE",
+      "awayTeam": "CRY",
+      "homeTeam": "EVE",
+      "league": "EPL",
+      "slateDate": "2026-08-22",
+      "crew": []
+    },
+    {
+      "id": "401879299",
+      "matchup": "SUN @ IPS",
+      "awayTeam": "SUN",
+      "homeTeam": "IPS",
+      "league": "EPL",
+      "slateDate": "2026-08-22",
+      "crew": []
+    },
+    {
+      "id": "401879298",
+      "matchup": "LEE @ NFO",
+      "awayTeam": "LEE",
+      "homeTeam": "NFO",
+      "league": "EPL",
+      "slateDate": "2026-08-22",
+      "crew": []
+    },
+    {
+      "id": "401879321",
+      "matchup": "TOT @ BRE",
+      "awayTeam": "TOT",
+      "homeTeam": "BRE",
+      "league": "EPL",
+      "slateDate": "2026-08-22",
+      "crew": []
+    },
+    {
+      "id": "401879297",
+      "matchup": "AVL @ BHA",
+      "awayTeam": "AVL",
+      "homeTeam": "BHA",
+      "league": "EPL",
+      "slateDate": "2026-08-23",
+      "crew": []
+    },
+    {
+      "id": "401879320",
+      "matchup": "BOU @ MCI",
+      "awayTeam": "BOU",
+      "homeTeam": "MCI",
+      "league": "EPL",
+      "slateDate": "2026-08-23",
+      "crew": []
+    },
+    {
+      "id": "401879319",
+      "matchup": "LIV @ NEW",
+      "awayTeam": "LIV",
+      "homeTeam": "NEW",
+      "league": "EPL",
+      "slateDate": "2026-08-23",
+      "crew": []
+    },
+    {
+      "id": "401879318",
+      "matchup": "CHE @ FUL",
+      "awayTeam": "CHE",
+      "homeTeam": "FUL",
+      "league": "EPL",
+      "slateDate": "2026-08-24",
       "crew": []
     }
   ],
-  "nextSlateDate": "2026-08-09",
-  "note": "Next EPL slate is 2026-08-09 (FA Cup fixture). Match officials not published yet."
+  "nextSlateDate": "2026-08-21",
+  "note": "Next 10 EPL scheduled matchups (2026-08-21 onward). Officials publish closer to kickoff."
 }

@@ -1,19 +1,110 @@
 {
-  "lastUpdated": "2026-07-08T04:01:07.016Z",
+  "lastUpdated": "2026-07-19T23:57:40.228Z",
   "date": "2026-08-06",
   "source": "espn",
   "games": [],
   "scheduledGames": [
     {
-      "id": "401772971",
-      "matchup": "LAC @ DET",
-      "awayTeam": "LAC",
-      "homeTeam": "DET",
+      "id": "401873271",
+      "matchup": "CAR @ ARI",
+      "awayTeam": "CAR",
+      "homeTeam": "ARI",
       "league": "NFL",
+      "slateDate": "2026-08-06",
+      "seasonStage": "preseason",
+      "crew": []
+    },
+    {
+      "id": "401873272",
+      "matchup": "DET @ CIN",
+      "awayTeam": "DET",
+      "homeTeam": "CIN",
+      "league": "NFL",
+      "slateDate": "2026-08-13",
+      "seasonStage": "preseason",
+      "crew": []
+    },
+    {
+      "id": "401873275",
+      "matchup": "GB @ PIT",
+      "awayTeam": "GB",
+      "homeTeam": "PIT",
+      "league": "NFL",
+      "slateDate": "2026-08-13",
+      "seasonStage": "preseason",
+      "crew": []
+    },
+    {
+      "id": "401873273",
+      "matchup": "IND @ NE",
+      "awayTeam": "IND",
+      "homeTeam": "NE",
+      "league": "NFL",
+      "slateDate": "2026-08-13",
+      "seasonStage": "preseason",
+      "crew": []
+    },
+    {
+      "id": "401873640",
+      "matchup": "ARI @ LV",
+      "awayTeam": "ARI",
+      "homeTeam": "LV",
+      "league": "NFL",
+      "slateDate": "2026-08-13",
+      "seasonStage": "preseason",
+      "crew": []
+    },
+    {
+      "id": "401873274",
+      "matchup": "LAC @ HOU",
+      "awayTeam": "LAC",
+      "homeTeam": "HOU",
+      "league": "NFL",
+      "slateDate": "2026-08-13",
+      "seasonStage": "preseason",
+      "crew": []
+    },
+    {
+      "id": "401874392",
+      "matchup": "TEN @ SF",
+      "awayTeam": "TEN",
+      "homeTeam": "SF",
+      "league": "NFL",
+      "slateDate": "2026-08-13",
+      "seasonStage": "preseason",
+      "crew": []
+    },
+    {
+      "id": "401873278",
+      "matchup": "DEN @ ATL",
+      "awayTeam": "DEN",
+      "homeTeam": "ATL",
+      "league": "NFL",
+      "slateDate": "2026-08-14",
+      "seasonStage": "preseason",
+      "crew": []
+    },
+    {
+      "id": "401873276",
+      "matchup": "TB @ NYJ",
+      "awayTeam": "TB",
+      "homeTeam": "NYJ",
+      "league": "NFL",
+      "slateDate": "2026-08-14",
+      "seasonStage": "preseason",
+      "crew": []
+    },
+    {
+      "id": "401873277",
+      "matchup": "MIA @ WAS",
+      "awayTeam": "MIA",
+      "homeTeam": "WAS",
+      "league": "NFL",
+      "slateDate": "2026-08-14",
       "seasonStage": "preseason",
       "crew": []
     }
   ],
   "nextSlateDate": "2026-08-06",
-  "note": "Next NFL slate is 2026-08-06 (1 game on ESPN). Crew assignments not published yet."
+  "note": "Next 10 NFL pre-season matchups (2026-08-06 onward). Crew assignments not published yet."
 }

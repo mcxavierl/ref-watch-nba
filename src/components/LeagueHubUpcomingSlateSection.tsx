@@ -8,6 +8,8 @@ import "@/components/overview-dashboard.css";
 type LeagueHubUpcomingSlateSectionProps = {
   slate: LeagueUpcomingSlate;
   leagueLabel: string;
+  /** Optional heading override (defaults to "Upcoming games"). */
+  title?: string;
 };
 
 function formatCount(n: number): string {
@@ -17,6 +19,7 @@ function formatCount(n: number): string {
 export function LeagueHubUpcomingSlateSection({
   slate,
   leagueLabel,
+  title = "Upcoming games",
 }: LeagueHubUpcomingSlateSectionProps) {
   const group = slate.leagueGroup;
   if (!slate.inSeason || !group || group.games.length === 0) return null;
@@ -35,12 +38,12 @@ export function LeagueHubUpcomingSlateSection({
           id="league-hub-upcoming-heading"
         >
           <CalendarDays aria-hidden className="overview-slate-icon" />
-          Upcoming games
+          {title}
         </h2>
         <p className="overview-section-lead">
           {matchupCount > 0
-            ? `${formatCount(matchupCount)} ${leagueLabel} matchup${matchupCount === 1 ? "" : "s"} on the live slate${countLabel ? ` (${countLabel})` : ""}.`
-            : "Live slate updates as assignments publish."}
+            ? `${formatCount(matchupCount)} ${leagueLabel} matchup${matchupCount === 1 ? "" : "s"} on the schedule${countLabel ? ` (${countLabel})` : ""}.`
+            : "Schedule updates as assignments publish."}
         </p>
       </div>
 
