@@ -4,6 +4,7 @@
 @import "../styles/clinical-doc-tokens.css";
 @import "../styles/kpi-data-pill.css";
 @import "../styles/pill-constraints.css";
+@import "../styles/season-highlights-delight.css";
 
 @custom-variant dark (&:where([data-color="dark"], [data-color="dark"] *));
 
@@ -2804,13 +2805,7 @@ p {
     color: color-mix(in srgb, var(--header-gold) 92%, var(--pill-ink));
   }
 
-  .finding-meta-pill--category[data-category="whistle-extreme"],
-  .finding-meta-pill--category[data-category="ref-outlier"] {
-    --pill-glow-accent: var(--metric-negative-ink);
-    border-color: color-mix(in srgb, var(--metric-negative-ink) 35%, var(--pill-border));
-    background: color-mix(in srgb, var(--metric-negative-ink) 10%, var(--pill-bg));
-    color: color-mix(in srgb, var(--metric-negative-ink) 88%, var(--pill-ink));
-  }
+  /* whistle-extreme / ref-outlier semantic pills — see season-highlights-delight.css */
 
   .finding-meta-pill--category[data-category="ou-edge"],
   .finding-meta-pill--category[data-category="ats-edge"] {
@@ -5920,10 +5915,6 @@ p {
     gap: 0.35rem;
     min-width: 0;
     max-width: 100%;
-  }
-
-  .highlight-stat-card--hero-pill .rankings-insight-metric {
-    font-size: clamp(1.45rem, 2.4vw, 1.85rem);
   }
 
   .insights-rankings-hook {

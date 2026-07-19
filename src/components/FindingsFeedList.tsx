@@ -17,16 +17,20 @@ export function FindingsFeedList({
   league,
   openFirst = true,
   evByFindingId,
+  heroLead = false,
 }: {
   feed: FindingsFeedItem[];
   league?: FindingLeague;
   openFirst?: boolean;
   evByFindingId?: Record<string, FindingEvSnapshot | null>;
+  /** First card gets hero glow treatment (Season highlights slate). */
+  heroLead?: boolean;
 }) {
   return (
     <>
       {feed.map((item, index) => {
         const defaultOpen = openFirst && index === 0;
+        const hero = heroLead && index === 0;
 
         if (item.kind === "official") {
           return (
@@ -37,6 +41,7 @@ export function FindingsFeedList({
               defaultOpen={defaultOpen}
               league={league}
               evByFindingId={evByFindingId}
+              hero={hero}
             />
           );
         }
@@ -48,6 +53,7 @@ export function FindingsFeedList({
             defaultOpen={defaultOpen}
             league={league}
             evSnapshot={evByFindingId?.[item.finding.id]}
+            hero={hero}
           />
         );
       })}

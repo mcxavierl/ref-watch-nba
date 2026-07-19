@@ -17,6 +17,7 @@ import {
 } from "@/components/hub/RefCard";
 import { RefAvatar } from "@/components/RefAvatar";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { DirectionalDeltaValue, deltaToneFromValue } from "@/components/shared/DirectionalDeltaValue";
 import { Pill } from "@/components/ui/Pill";
 import {
   adjustedDeltaTooltipText,
@@ -147,17 +148,21 @@ export function HighlightStatCard({
           {secondaryValue ? (
             <div className="ref-card-metric-block ref-card-metric-block--secondary">
               <div className={`${REF_CARD_METRIC_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
-                <StandoutMetricValue
-                  tone={metricTone}
+                <DirectionalDeltaValue
+                  value={secondaryValue}
+                  tone={
+                    metricTone === "positive" || metricTone === "negative"
+                      ? metricTone
+                      : deltaToneFromValue(secondaryValue)
+                  }
                   size="md"
+                  className="highlight-stat-delta"
                   title={
                     deltaDisplay?.isAdjusted
                       ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
                       : undefined
                   }
-                >
-                  {secondaryValue}
-                </StandoutMetricValue>
+                />
               </div>
               {secondaryLabel ? (
                 <p className={REF_CARD_METRIC_LABEL_CLASS}>{secondaryLabel}</p>

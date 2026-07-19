@@ -146,7 +146,7 @@ export function FindingsSection({
       <div
         className={`finding-accordion-stack ${slateHero ? "slate-findings-hero-stack" : compact && !featured ? "" : "mt-4"}`}
       >
-        <FindingsFeedList feed={visible} league={league} />
+        <FindingsFeedList feed={visible} league={league} heroLead={slateHero} />
       </div>
       {hidden.length > 0 && (
         <details className="findings-expand-more">
@@ -154,7 +154,7 @@ export function FindingsSection({
             {hidden.length} more insight card{hidden.length === 1 ? "" : "s"}
           </summary>
           <div className="finding-accordion-stack mt-3">
-            <FindingsFeedList feed={hidden} league={league} openFirst={false} />
+            <FindingsFeedList feed={hidden} league={league} openFirst={false} heroLead={false} />
           </div>
         </details>
       )}
