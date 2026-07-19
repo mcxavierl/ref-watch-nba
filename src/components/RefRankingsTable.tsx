@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
@@ -81,6 +81,10 @@ export function RefRankingsTable({
   basePath = "",
   signalCounts = {},
   atsAvailable = false,
+  initialRowLimit = 5,
+  defaultSort = "scoring-desc",
+  filterSlugs,
+  preserveOrder = false,
 }: {
   refs: RefProfile[];
   league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
@@ -90,19 +94,33 @@ export function RefRankingsTable({
   basePath?: string;
   signalCounts?: Record<string, number>;
   atsAvailable?: boolean;
+  initialRowLimit?: number;
+  defaultSort?: RefRankingSort;
+  filterSlugs?: Set<string>;
+  preserveOrder?: boolean;
 }) {
-  const [sort, setSort] = useState<RefRankingSort>("scoring-desc");
+  const [sort, setSort] = useState<RefRankingSort>(defaultSort);
   const [showLowSample, setShowLowSample] = useState(false);
+  const [showAllRows, setShowAllRows] = useState(false);
   const [expandedSlugs, setExpandedSlugs] = useState<Set<string>>(() => new Set());
 
-  const sorted = useMemo(
-    () =>
-      sortRefRankings(
-        showLowSample ? refs : qualifiedRefs(refs, minSampleSize),
-        sort,
-      ),
-    [refs, sort, showLowSample, minSampleSize],
-  );
+  useEffect(() => {
+    setSort(defaultSort);
+    setShowAllRows(false);
+  }, [defaultSort, filterSlugs, preserveOrder, refs]);
+
+  const sorted = useMemo(() => {
+    const pool = showLowSample ? refs : qualifiedRefs(refs, minSampleSize);
+    const filtered =
+      filterSlugs && filterSlugs.size > 0
+        ? pool.filter((ref) => filterSlugs.has(ref.slug))
+        : pool;
+    if (preserveOrder) return filtered;
+    return sortRefRankings(filtered, sort);
+  }, [refs, sort, showLowSample, minSampleSize, filterSlugs, preserveOrder]);
+
+  const visibleRows = showAllRows ? sorted : sorted.slice(0, initialRowLimit);
+  const hiddenCount = Math.max(0, sorted.length - initialRowLimit);
 
   const isBasketball = league === "NBA" || league === "CBB";
   const scoringLabel = isBasketball
@@ -117,8 +135,6 @@ export function RefRankingsTable({
     : league === "NFL"
       ? "Flags Δ"
       : "Minors Δ";
-  const unit =
-    isBasketball || league === "NFL" ? "points" : "goals";
   const sport =
     league === "NHL"
       ? "nhl"
@@ -152,10 +168,6 @@ export function RefRankingsTable({
     <div>
       <div className="ranking-toolbar">
         <div className="ranking-toolbar-row">
-          <p className="ranking-toolbar-hint">
-            Top three influence metrics shown by default. Expand a row for ATS,
-            O/U, and league-specific splits. Descriptive only, not picks.
-          </p>
           <label className="ranking-toggle">
             <input
               type="checkbox"
@@ -166,12 +178,6 @@ export function RefRankingsTable({
             Show refs below {minSampleSize}-game gate
           </label>
         </div>
-        <p className="ranking-toolbar-context">
-          Over rate uses {overBaseline} combined {unit} benchmark.
-          {atsAvailable
-            ? " ATS and O/U % use closing lines where available (NHL uses synthetic lines)."
-            : null}
-        </p>
       </div>
 
       <div className="ranking-table-wrap overflow-x-auto">
@@ -205,7 +211,7 @@ export function RefRankingsTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
-            {sorted
+            {visibleRows
               .filter((ref) => showLowSample || ref.games >= minSampleSize)
               .flatMap((ref, index) => {
               const rank = index + 1;
@@ -369,6 +375,21 @@ export function RefRankingsTable({
           </tbody>
         </table>
       </div>
+
+      {hiddenCount > 0 ? (
+        <div className="ranking-table-expand-wrap">
+          <button
+            type="button"
+            className="ranking-table-expand-btn rw-focus-ring"
+            aria-expanded={showAllRows}
+            onClick={() => setShowAllRows((current) => !current)}
+          >
+            {showAllRows
+              ? "Show top rankings"
+              : `View full rankings (${sorted.length})`}
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

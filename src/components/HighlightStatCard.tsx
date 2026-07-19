@@ -25,6 +25,7 @@ import {
   isPreliminarySample,
 } from "@/lib/data-maturity";
 import type { HighlightCardAccent, HighlightCardTone } from "@/lib/highlight-card-visuals";
+import { insightPillLabel } from "@/lib/highlight-card-visuals";
 import type { LeagueId } from "@/lib/leagues";
 import { statValueDelightTone } from "@/lib/metric-delight";
 
@@ -45,6 +46,7 @@ export function HighlightStatCard({
   refMeta,
   sampleGames,
   rawDeltaPp,
+  heroPills = false,
 }: {
   leagueId: LeagueId;
   insightKind: string;
@@ -62,6 +64,7 @@ export function HighlightStatCard({
   refMeta?: string;
   sampleGames?: number;
   rawDeltaPp?: number;
+  heroPills?: boolean;
 }) {
   const usesSplitHierarchy =
     sampleGames !== undefined &&
@@ -114,12 +117,22 @@ export function HighlightStatCard({
       data-insight={insightKind}
       data-accent={accent}
       data-tone={tone}
+      className={heroPills ? "highlight-stat-card--hero-pill" : undefined}
     >
       <div className={REF_CARD_HEAD_CLASS}>
         <span className={`${REF_CARD_ICON_CLASS} ref-card-icon--badge`} aria-hidden>
           <Icon className="rankings-insight-icon-glyph" strokeWidth={2.1} />
         </span>
-        <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
+        {heroPills ? (
+          <div className="highlight-stat-card-head-copy">
+            <span className="ref-master-insight-pill ref-master-insight-pill--static ref-master-insight-pill--high rankings-insight-category-pill">
+              {insightPillLabel(insightKind, kicker)}
+            </span>
+            <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
+          </div>
+        ) : (
+          <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
+        )}
       </div>
       {profile}
       {primaryValue ? (

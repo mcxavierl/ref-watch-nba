@@ -119,6 +119,37 @@ export function highlightCardIconForLeaderCategory(category: string): LucideIcon
   return LEADER_CATEGORY_ICONS[category] ?? Activity;
 }
 
+const INSIGHT_PILL_LABELS: Record<string, string> = {
+  "top-scoring": "Scoring",
+  "bottom-scoring": "Scoring",
+  "scoring-depth": "Scoring",
+  "top-over": "Over rate",
+  "top-under": "Over rate",
+  "over-depth": "Over rate",
+  "top-ats": "ATS",
+  "top-ou-betting": "O/U",
+  "top-whistle": "Whistle",
+  "light-whistle": "Whistle",
+  "whistle-depth": "Whistle",
+  "sample-depth": "Sample",
+  "gsni-highlight": "GSNI",
+  "ref-outlier": "Outlier",
+  "team-crew": "Team crew",
+  "whistle-extreme": "Whistle",
+  "scoring-extreme": "Scoring",
+  "ats-edge": "ATS",
+  "ou-edge": "O/U",
+  "ref-team-split": "Ref-team",
+  "marquee-efficiency": "Marquee",
+  "coach-friction": "Coach",
+  "player-friction": "Player",
+  "league-trend": "Trend",
+};
+
+export function insightPillLabel(insightId: string, fallback?: string): string {
+  return INSIGHT_PILL_LABELS[insightId] ?? fallback ?? "Insight";
+}
+
 export function spotlightAccentForCard(card: {
   kicker: string;
   heroLabel: string;
