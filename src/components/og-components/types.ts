@@ -1,3 +1,4 @@
+import type { BrandOgHighlight } from "@/lib/og-brand";
 import type { LeagueId } from "@/lib/leagues";
 
 export type OgLeagueHubCardData = {
@@ -10,7 +11,6 @@ export type OgLeagueHubCardData = {
   whistlePerGame: number;
   scoreLabel: string;
   scorePerGame: number;
-  /** Emphasize this card when generating a league-specific OG image. */
   highlighted?: boolean;
 };
 
@@ -23,7 +23,7 @@ export type OgUpcomingSlateCardData = {
 };
 
 export type HeroViewProps = {
-  leagueCards: OgLeagueHubCardData[];
+  pulseInsights: BrandOgHighlight[];
   slateGame: OgUpcomingSlateCardData | null;
   focusLeagueId?: LeagueId | null;
   subtitle?: string;

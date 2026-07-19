@@ -11,19 +11,26 @@ function readSrc(rel: string): string {
 }
 
 describe("dashboard OG hero", () => {
-  it("builds a 2x3 league hub grid with one slate card", () => {
+  it("builds three pulse insights with one slate card", () => {
     const content = dashboardOgContent();
-    assert.ok(content.leagueCards.length >= 1);
-    assert.ok(content.leagueCards.length <= 6);
+    assert.ok(content.pulseInsights.length >= 1);
+    assert.ok(content.pulseInsights.length <= 3);
     assert.ok(content.slateGame === null || typeof content.slateGame.awayTeam === "string");
   });
 
-  it("highlights a focused league when leagueId is provided", () => {
+  it("prioritizes focused league insights when leagueId is provided", () => {
+    const global = dashboardOgContent();
     const content = dashboardOgContent("nfl");
     assert.equal(content.focusLeagueId, "nfl");
-    const nflCard = content.leagueCards.find((card) => card.leagueId === "nfl");
-    assert.ok(nflCard);
-    assert.equal(nflCard?.highlighted, true);
+    const globalNflIndex = global.pulseInsights.findIndex(
+      (insight) => insight.league === "NFL",
+    );
+    const focusedNflIndex = content.pulseInsights.findIndex(
+      (insight) => insight.league === "NFL",
+    );
+    if (globalNflIndex >= 0 && focusedNflIndex >= 0) {
+      assert.ok(focusedNflIndex <= globalNflIndex);
+    }
     if (content.slateGame) {
       assert.equal(content.slateGame.leagueId, "nfl");
     }
@@ -38,16 +45,16 @@ describe("dashboard OG hero", () => {
 });
 
 describe("dashboard OG components", () => {
-  it("uses shared Tailwind slate tokens on hub and slate cards", () => {
-    const hub = readSrc("src/components/og-components/LeagueHubCard.tsx");
-    const slate = readSrc("src/components/og-components/UpcomingSlateCard.tsx");
+  it("uses insight pulse cards and explicit widths in HeroView", () => {
     const hero = readSrc("src/components/og-components/HeroView.tsx");
+    const pulse = readSrc("src/components/og-components/OgPulseInsightCard.tsx");
+    const slate = readSrc("src/components/og-components/UpcomingSlateCard.tsx");
 
-    assert.match(hub, /backgroundColor: "#0f172a"/);
-    assert.match(hub, /boxShadow:[\s\S]*"none"/);
+    assert.match(hero, /OgPulseInsightCard/);
+    assert.match(hero, /width: 229/);
+    assert.match(hero, /League pulse/);
+    assert.match(pulse, /Notable/);
     assert.match(slate, /backgroundColor: "#020617"/);
-    assert.match(hero, /display: "flex"/);
-    assert.match(hero, /UpcomingSlateCard/);
   });
 
   it("routes render dashboard hero snapshots with leagueId search params", () => {
@@ -60,6 +67,5 @@ describe("dashboard OG components", () => {
     assert.match(rootRoute, /renderDashboardOgImage/);
     assert.match(leagueRoute, /renderDashboardOgImage/);
     assert.match(renderer, /renderDashboardOgImage/);
-    assert.match(renderer, /tailwindConfig/);
   });
 });

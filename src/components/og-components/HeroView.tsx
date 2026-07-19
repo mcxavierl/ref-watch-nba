@@ -1,5 +1,5 @@
-import { LeagueHubCard } from "@/components/og-components/LeagueHubCard";
 import { OgHeaderBand } from "@/components/og-components/OgHeaderBand";
+import { OgPulseInsightCard } from "@/components/og-components/OgPulseInsightCard";
 import { UpcomingSlateCard } from "@/components/og-components/UpcomingSlateCard";
 import type { HeroViewProps } from "@/components/og-components/types";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
@@ -9,18 +9,13 @@ function leagueLabelForFocus(focusLeagueId: LeagueId | null | undefined): string
   return LEAGUES[focusLeagueId]?.shortLabel ?? focusLeagueId.toUpperCase();
 }
 
-/** Dashboard hero snapshot: 2x3 league hub grid plus one upcoming slate card. */
+/** Dashboard OG snapshot: insight pulse row plus upcoming slate card. */
 export function HeroView({
-  leagueCards,
+  pulseInsights,
   slateGame,
   focusLeagueId = null,
   subtitle = "Verified officiating analytics",
 }: HeroViewProps) {
-  const cards = leagueCards.map((card) => ({
-    ...card,
-    highlighted: focusLeagueId ? card.leagueId === focusLeagueId : card.highlighted,
-  }));
-
   return (
     <div
       style={{
@@ -42,31 +37,46 @@ export function HeroView({
         style={{
           display: "flex",
           flex: 1,
-          gap: 12,
-          padding: "16px 32px",
+          gap: 16,
+          padding: "18px 32px 12px",
         }}
       >
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: 10,
-            flex: 1.55,
-            minWidth: 0,
+            gap: 12,
+            width: 712,
           }}
         >
-          {[0, 1].map((row) => (
-            <div key={row} style={{ display: "flex", gap: 10, flex: 1 }}>
-              {cards.slice(row * 3, row * 3 + 3).map((card) => (
-                <div key={card.leagueId} style={{ display: "flex", flex: 1, minWidth: 0 }}>
-                  <LeagueHubCard card={card} />
-                </div>
-              ))}
-            </div>
-          ))}
+          <div
+            style={{
+              display: "flex",
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "#64748b",
+            }}
+          >
+            League pulse
+          </div>
+          <div style={{ display: "flex", gap: 12, height: 168 }}>
+            {pulseInsights.map((insight, index) => (
+              <div
+                key={`${insight.league}-${insight.headline}`}
+                style={{ display: "flex", width: 229, height: "100%" }}
+              >
+                <OgPulseInsightCard
+                  insight={insight}
+                  emphasized={index === 0 && Boolean(focusLeagueId)}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div style={{ display: "flex", minWidth: 0, flex: 0.95 }}>
+        <div style={{ display: "flex", width: 408, height: 196 }}>
           {slateGame ? (
             <UpcomingSlateCard game={slateGame} />
           ) : (
