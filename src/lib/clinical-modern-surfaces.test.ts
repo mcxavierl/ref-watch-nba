@@ -199,8 +199,13 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*background: transparent/);
     assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*overflow: hidden/);
     assert.match(css, /container-type: inline-size/);
-    assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*place-items: center/);
+    assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*align-items: center/);
+    assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*justify-content: center/);
+    assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*border-radius: 9999px/);
+    assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*overflow: hidden/);
+    assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark[\s\S]*object-fit: contain/);
     assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark[\s\S]*object-position: center/);
+    assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark--epl[\s\S]*transform: translate\(1px, 0\)/);
     assert.match(row, /overview-slate-row-game-context/);
   });
 

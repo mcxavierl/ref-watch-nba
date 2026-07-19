@@ -49,11 +49,13 @@
 }
 
 .overview-slate-capsule-mark {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   width: 2rem;
   height: 2rem;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 9999px;
   border: 1px solid rgb(51 65 85);
@@ -62,9 +64,12 @@
 
 .overview-slate-capsule-mark .league-nav-mark,
 .overview-slate-capsule-mark .league-nav-mark-fallback {
-  grid-area: 1 / 1;
-  width: 1.15rem;
-  height: 1.15rem;
+  display: block;
+  flex-shrink: 0;
+  width: auto;
+  height: 58%;
+  max-width: 58%;
+  max-height: 58%;
   margin: 0;
   object-fit: contain;
   object-position: center;
@@ -73,13 +78,12 @@
 .overview-slate-capsule-mark .league-nav-mark--epl,
 .overview-slate-capsule-mark .league-nav-mark[data-league="epl"] {
   width: auto;
-  height: 1.5rem;
-  max-width: 1.5rem;
+  height: 72%;
+  max-width: 72%;
+  max-height: 72%;
   object-fit: contain;
   object-position: center;
-  justify-self: center;
-  align-self: center;
-  transform: translateX(1px);
+  transform: translate(1px, 0);
 }
 
 .overview-slate-capsule-copy {
@@ -284,11 +288,13 @@
 }
 
 .upcoming-game-card__league-mark {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   width: 2.35rem;
   height: 2.35rem;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 9999px;
   border: 1px solid rgb(51 65 85);
@@ -297,12 +303,12 @@
 
 .upcoming-game-card__league-mark .league-nav-mark,
 .upcoming-game-card__league-mark .league-nav-mark-fallback {
-  grid-area: 1 / 1;
   display: block;
+  flex-shrink: 0;
   width: auto;
-  height: auto;
-  max-width: 1.35rem;
-  max-height: 1.35rem;
+  height: 58%;
+  max-width: 58%;
+  max-height: 58%;
   margin: 0;
   object-fit: contain;
   object-position: center;
@@ -310,28 +316,27 @@
 
 .upcoming-game-card__league-mark .league-nav-mark--nfl,
 .upcoming-game-card__league-mark .league-nav-mark[data-league="nfl"] {
-  max-width: 1rem;
-  max-height: 1.25rem;
+  height: 54%;
+  max-width: 42%;
+  max-height: 54%;
 }
 
 .upcoming-game-card__league-mark .league-nav-mark--epl,
 .upcoming-game-card__league-mark .league-nav-mark[data-league="epl"] {
   width: auto;
-  height: 1.55rem;
-  max-width: 1.5rem;
-  max-height: 1.6rem;
+  height: 72%;
+  max-width: 72%;
+  max-height: 72%;
   object-fit: contain;
   object-position: center;
-  justify-self: center;
-  align-self: center;
-  margin-inline: auto;
-  transform: translateX(1px);
+  transform: translate(1px, 0);
 }
 
 .upcoming-game-card__league-mark .league-nav-mark--laliga,
 .upcoming-game-card__league-mark .league-nav-mark[data-league="laliga"] {
-  max-width: 1.2rem;
-  max-height: 1.2rem;
+  height: 52%;
+  max-width: 52%;
+  max-height: 52%;
 }
 
 .upcoming-game-card__cta {
