@@ -5764,6 +5764,169 @@ p {
     backdrop-filter: none;
   }
 
+  .team-ref-filter-bar {
+    width: 100%;
+    max-width: 36rem;
+  }
+
+  .team-ref-filter-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .team-ref-matrix-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .team-ref-matrix-head,
+  .team-ref-matrix-row {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(7rem, 1.6fr) minmax(4.5rem, 0.9fr) minmax(
+        5.5rem,
+        1fr
+      ) minmax(4.5rem, 0.75fr) minmax(4.5rem, 0.85fr);
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .team-ref-matrix-head {
+    padding: 0 0.5rem 0.25rem;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .team-ref-matrix-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .team-ref-matrix-row {
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    padding: 0.5rem;
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    min-height: 0;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .team-ref-matrix-row {
+    background: #ffffff;
+    border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
+  }
+
+  .team-ref-matrix-rank {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .team-ref-matrix-ref-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .team-ref-matrix-ref-link:hover .team-ref-matrix-ref-name {
+    color: var(--raptors);
+    text-decoration: underline;
+  }
+
+  .team-ref-matrix-ref-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .team-ref-matrix-stat {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .team-ref-matrix-stat--positive {
+    color: var(--metric-positive-ink);
+  }
+
+  .team-ref-matrix-stat--negative {
+    color: var(--metric-negative-ink);
+  }
+
+  .team-ref-matrix-stat--neutral {
+    color: var(--text-primary);
+  }
+
+  .team-ref-matrix-close-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: inherit;
+    cursor: help;
+    text-decoration: underline dotted;
+    text-underline-offset: 0.15em;
+  }
+
+  @media (max-width: 767px) {
+    .team-ref-matrix-head {
+      display: none;
+    }
+
+    .team-ref-matrix-row {
+      grid-template-columns: 1.25rem minmax(0, 1fr);
+      grid-template-areas:
+        "rank ref"
+        ". win"
+        ". baseline"
+        ". close"
+        ". whistle";
+      gap: 0.15rem 0.5rem;
+      padding: 0.5rem 0.65rem;
+    }
+
+    .team-ref-matrix-rank {
+      grid-area: rank;
+    }
+
+    .team-ref-matrix-ref {
+      grid-area: ref;
+    }
+
+    .team-ref-matrix-stat--win {
+      grid-area: win;
+    }
+
+    .team-ref-matrix-stat--baseline {
+      grid-area: baseline;
+    }
+
+    .team-ref-matrix-stat--close {
+      grid-area: close;
+    }
+
+    .team-ref-matrix-stat--whistle {
+      grid-area: whistle;
+    }
+  }
+
   .team-crew-split-card .team-split-metric {
     border: none;
     border-radius: 0;

@@ -27,6 +27,7 @@ import { getTeamDisplayRecord } from "@/lib/teamDisplayRecord";
 import { resolveTeamCrewSplits } from "@/lib/teamCrewSplits";
 import { userFacingDataNote } from "@/lib/user-language";
 import { computeTeamCloseGameMetrics } from "@/lib/close-game";
+import { computeTeamRefCloseGames } from "@/lib/team-ref-close-games";
 import { TeamPageInsights } from "@/components/TeamPageInsights";
 import { loadTeamPageInsightCards } from "@/lib/team-page-insights";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
@@ -102,6 +103,7 @@ export function TeamCrewPage({
     stats.meta,
     dataLeague,
   );
+  const refCloseGamesByRef = computeTeamRefCloseGames(dataLeague, team.abbr);
   const teamSos =
     league === "nba" ? getCachedTeamStrengthOfSchedule(team.abbr) : null;
   const teamInsightCards = loadTeamPageInsightCards(league, team.abbr);
@@ -197,6 +199,8 @@ export function TeamCrewPage({
           overBaseline={stats.meta.leagueOverBaseline}
           basePath={basePath}
           sport={league}
+          dataLeague={dataLeague}
+          closeGamesByRef={refCloseGamesByRef}
         />
       )}
 
