@@ -46,10 +46,10 @@ function makeStats(refs: RefProfile[]): RefStatsFile {
 }
 
 describe("shared GSNI research", () => {
-  it("enables GSNI research for nfl, nba, and nhl", () => {
+  it("enables GSNI research for nfl and nba only", () => {
     assert.equal(leagueSupportsGsniResearch("nfl"), true);
     assert.equal(leagueSupportsGsniResearch("nba"), true);
-    assert.equal(leagueSupportsGsniResearch("nhl"), true);
+    assert.equal(leagueSupportsGsniResearch("nhl"), false);
     assert.equal(leagueSupportsGsniResearch("epl"), false);
   });
 

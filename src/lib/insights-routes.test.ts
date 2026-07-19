@@ -68,11 +68,12 @@ test("research view pages use research-route-page factory", () => {
   }
 });
 
-test("game-state is manifest-gated for GSNI leagues only", () => {
-  const gsniLeagues: InsightsLeagueId[] = ["nfl", "nba", "nhl"];
+test("game-state is manifest-gated for NFL and NBA only", () => {
+  const gsniLeagues: InsightsLeagueId[] = ["nfl", "nba"];
   for (const league of gsniLeagues) {
     assert.equal(leagueHasResearchView(league, "game-state"), true);
   }
+  assert.equal(leagueHasResearchView("nhl", "game-state"), false);
   assert.equal(leagueHasResearchView("epl", "game-state"), false);
 });
 

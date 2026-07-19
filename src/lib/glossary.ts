@@ -159,7 +159,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "game-state-index": {
     label: "Game-State Index",
-    text: "Clutch whistle tendency vs the league in matched score-and-clock situations. Labeled Quiet when flags run below league average in those spots, Heavy when above, Neutral when near average. Reported as a Z-score (σ): positive means quieter, negative means heavier, 0σ is league average. NFL officials need 25+ high-leverage minutes before this appears on profiles.",
+    text: "Clutch whistle tendency vs the league in matched score-and-clock situations. Labeled Quiet when flags or fouls run below league average in those spots, Heavy when above, Neutral when near average. Reported as a Z-score (σ): positive means quieter, negative means heavier, 0σ is league average. NFL officials need 25+ high-leverage minutes; NBA officials need 50+ before this appears on profiles.",
   },
   "home-margin": {
     label: "Home avg margin",
@@ -191,6 +191,6 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   gsni: {
     label: "Game-State Index (GSNI)",
-    text: "Clutch whistle metric for leagues with game-log support (NFL, NBA, NHL). We group plays by score gap and clock, weight close late-game minutes higher, and compare this official's flag or foul rate to the league in those same buckets. Labeled Quiet (fewer whistles than league), Heavy (more), or Neutral. Reported as a Z-score (σ): positive is quieter, negative is heavier. NBA and NHL require 50+ high-leverage minutes; NFL requires 25+ before we publish a score.",
+    text: "Clutch whistle metric for NFL and NBA where game logs support GSNI. We group plays by score gap and clock, weight close late-game minutes higher, and compare this official's flag or foul rate to the league in those same buckets. Labeled Quiet (fewer whistles than league), Heavy (more), or Neutral. Reported as a Z-score (σ): positive is quieter, negative is heavier. NBA requires 50+ high-leverage minutes; NFL requires 25+ before we publish a score.",
   },
 };

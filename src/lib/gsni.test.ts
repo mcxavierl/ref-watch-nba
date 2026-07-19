@@ -209,6 +209,20 @@ describe("extractGsniObservations", () => {
 
     assert.equal(corpus.games.length, 1);
     assert.equal(corpus.games[0]?.refereeIds[0], "Scott Foster-48");
-    assert.equal(corpus.games[0]?.observations.length, 1);
+    assert.equal(corpus.games[0]?.observations.length, 4);
+  });
+
+  it("distributes game totals across quarter anchors when splits are missing", () => {
+    const observations = extractGsniObservations({
+      gameId: "nba-3",
+      homeScore: 110,
+      awayScore: 108,
+      totalFouls: 40,
+      officials: [],
+    });
+
+    assert.equal(observations.length, 4);
+    assert.equal(observations[3]?.timeRemainingSeconds, 360);
+    assert.equal(observations[0]?.fouls, 10);
   });
 });
