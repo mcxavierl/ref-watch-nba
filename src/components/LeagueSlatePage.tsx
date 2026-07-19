@@ -3,6 +3,8 @@ import {
   ConferenceCoverage,
   readCbbTrendsConferenceParam,
 } from "@/components/ConferenceCoverage";
+import { CbbConferenceNavSection } from "@/components/cbb/CbbConferenceNavSection";
+import { CbbResearchFeed } from "@/components/cbb/CbbResearchFeed";
 import { CbbAnalyticsLeaders } from "@/components/CbbAnalyticsLeaders";
 import { CbbConferenceHub } from "@/components/CbbConferenceHub";
 import { GameSlateCard } from "@/components/GameSlateCard";
@@ -138,7 +140,7 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
   const footerLeague = findingLeague;
 
   return (
-    <div className="page-shell page-shell-slate">
+    <div className={`page-shell page-shell-slate${leagueId === "cbb" ? " page-shell-slate--cbb-terminal" : ""}`}>
       <JsonLd
         data={buildLeagueSlateJsonLd(
           leagueSlatePageTitle(leagueId, { isOffseason, isPending }),
@@ -178,10 +180,14 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
       {features.slateFeatureShowcase && isOffseason && <SlateFeatureShowcase />}
       {features.slateQuickLookup && isOffseason && <SlateQuickLookupSection />}
 
-      {features.conferenceCoverage && (leagueId === "cbb" || leagueId === "cfb") && (
+      {features.conferenceCoverage && leagueId === "cbb" && (
+        <CbbConferenceNavSection activeConference={cbbConference} />
+      )}
+
+      {features.conferenceCoverage && leagueId === "cfb" && (
         <ConferenceCoverage
-          leagueId={leagueId}
-          activeConference={leagueId === "cbb" ? cbbConference : "all"}
+          leagueId="cfb"
+          activeConference="all"
         />
       )}
 
@@ -299,7 +305,11 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
       )}
 
       <TrustCharterSummary />
-      <RelatedInsightsFooter league={footerLeague} />
+      {leagueId === "cbb" ? (
+        <CbbResearchFeed />
+      ) : (
+        <RelatedInsightsFooter league={footerLeague} />
+      )}
     </div>
   );
 }
