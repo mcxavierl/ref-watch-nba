@@ -9,6 +9,7 @@ import { SITE_URL } from "@/lib/site";
 type TeamCrewLeagueId =
   | "nba"
   | "nhl"
+  | "wnba"
   | "nfl"
   | "epl"
   | "laliga"

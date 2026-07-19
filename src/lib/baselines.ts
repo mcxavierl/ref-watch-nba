@@ -25,7 +25,13 @@ export interface ResolvedBaseline {
   season: string | null;
 }
 
-type BaselineLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+type BaselineLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA";
+
+const FALLBACK_WNBA = {
+  leagueAvgTotal: 165,
+  leagueOverBaseline: 165,
+  leagueAvgFouls: 34,
+} as const;
 
 const EMPTY: BaselinesFile = {
   generatedAt: "",
@@ -123,8 +129,10 @@ function readBaselines(): BaselinesFile {
   }
 }
 
+type FileBaselineLeague = Exclude<BaselineLeague, "WNBA">;
+
 function pickSeasonBaseline(
-  league: BaselineLeague,
+  league: FileBaselineLeague,
   file: BaselinesFile,
   season?: string | null,
 ): { baseline: SeasonBaseline; source: BaselineSource } {
@@ -155,6 +163,13 @@ export function resolveLeagueBaseline(
   league: BaselineLeague,
   season?: string | null,
 ): ResolvedBaseline {
+  if (league === "WNBA") {
+    return {
+      ...FALLBACK_WNBA,
+      source: "fallback",
+      season: season ?? null,
+    };
+  }
   const file = readBaselines();
   const { baseline, source } = pickSeasonBaseline(league, file, season);
   return {
@@ -171,6 +186,7 @@ export function resolveLeagueBaseline(
 }
 
 export function baselineUsingFallback(league: BaselineLeague): boolean {
+  if (league === "WNBA") return true;
   const file = readBaselines();
   return file[league].usingFallback;
 }
@@ -192,6 +208,7 @@ export function aggregateBaselineForSeasons(
   league: BaselineLeague,
   seasons: string[],
 ): SeasonBaseline | null {
+  if (league === "WNBA") return null;
   const file = readBaselines();
   const block = file[league];
   const rows = seasons

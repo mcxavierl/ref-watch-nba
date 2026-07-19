@@ -17,6 +17,7 @@ const LEAGUE_DATA_MAP: Partial<Record<LeagueId, DataLeague>> = {
   laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
+  wnba: "WNBA",
 };
 
 function gameLogRowsForLeague(leagueId: LeagueId) {

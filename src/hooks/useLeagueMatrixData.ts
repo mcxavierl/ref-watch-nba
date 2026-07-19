@@ -14,6 +14,7 @@ import type { TeamSampleRecord } from "@/lib/teamRecord";
 export type LeagueMatrixSport =
   | "nba"
   | "nhl"
+  | "wnba"
   | "nfl"
   | "epl"
   | "laliga"

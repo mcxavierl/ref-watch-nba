@@ -186,7 +186,21 @@ export function InsightsHubPage({
 
   const baselines = getBaselinesFile();
   const baselineKey = dataLeague === "LALIGA" ? "EPL" : dataLeague;
-  const leagueBaselines = baselines[baselineKey];
+  const leagueBaselines =
+    dataLeague === "WNBA"
+      ? {
+          seasons: {},
+          currentSeason: null,
+          aggregate: {
+            season: "fallback",
+            gameCount: 0,
+            leagueAvgTotal: 165,
+            leagueOverBaseline: 165,
+            leagueAvgFouls: 34,
+          },
+          usingFallback: true,
+        }
+      : baselines[baselineKey as Exclude<FindingLeague, "WNBA">];
   let scopedBaselineSeasons = scopedBaselinesSeasons(
     leagueBaselines.seasons,
     scopedSeasons,

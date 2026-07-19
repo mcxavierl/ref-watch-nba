@@ -114,6 +114,7 @@ function gameLogPath(league: DataLeague): string {
   if (league === "EPL") return path.join(root, "epl", "game-logs.json");
   if (league === "LALIGA") return path.join(root, "laliga", "game-logs.json");
   if (league === "CBB") return path.join(root, "cbb", "game-logs.json");
+  if (league === "WNBA") return path.join(root, "wnba", "game-logs.json");
   return path.join(root, "cfb", "game-logs.json");
 }
 

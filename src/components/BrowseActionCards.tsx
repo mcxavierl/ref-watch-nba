@@ -67,7 +67,13 @@ const BROWSE_COPY: Record<
     { label: "Browse all refs", description: "Profiles across seasons" },
     { label: "League trends", description: "Season scoring and penalty context" },
   ],
-  wnba: null,
+  wnba: [
+    { label: "Research findings", description: "WNBA dataset patterns ranked by effect size" },
+    { label: "Referee tendency index", description: "Crew scoring and foul tendencies" },
+    { label: "Team histories", description: "Crew splits for every franchise" },
+    { label: "Browse all refs", description: "Profiles across seasons" },
+    { label: "League trends", description: "Ten-season scoring and foul context" },
+  ],
   mlb: null,
 };
 
@@ -90,7 +96,7 @@ export function BrowseActionCards({
   league,
   compact = false,
 }: {
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   compact?: boolean;
 }) {
   const links = browseLinksForLeague(league);

@@ -23,11 +23,12 @@ import type { RefProfile } from "@/lib/types";
 type SortField = "games" | "scoring" | "whistle" | "overRate" | "ats" | "ouBetting";
 
 const LEAGUE_ID_BY_LABEL: Record<
-  "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   LeagueId
 > = {
   NBA: "nba",
   NHL: "nhl",
+  WNBA: "wnba",
   NFL: "nfl",
   EPL: "epl",
   LALIGA: "laliga",
@@ -111,7 +112,7 @@ export function RefRankingsTable({
   preserveOrder = false,
 }: {
   refs: RefProfile[];
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   minSampleSize: number;
   overBaseline: number;
   leagueAvgTotal?: number;

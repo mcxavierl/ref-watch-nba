@@ -100,6 +100,7 @@ const COACH_METRIC_LABEL: Record<DataLeague, string> = {
   LALIGA: "bookings",
   CBB: "fouls",
   CFB: "penalties",
+  WNBA: "fouls",
 };
 
 function refSlug(name: string, number: number): string {

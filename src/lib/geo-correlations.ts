@@ -73,6 +73,7 @@ const LEAGUE_TO_DATA: Record<FindingLeague, DataLeague> = {
   LALIGA: "LALIGA",
   CBB: "CBB",
   CFB: "CFB",
+  WNBA: "WNBA",
 };
 
 const LEAGUE_ID_TO_FINDING: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], FindingLeague> = {
@@ -91,6 +92,7 @@ const TEAMS_BY_LEAGUE: Record<FindingLeague, TeamGeo[]> = {
   LALIGA: LALIGA_TEAMS,
   CBB: [],
   CFB: [],
+  WNBA: [],
 };
 
 const CITY_ALIASES: Record<string, string[]> = {

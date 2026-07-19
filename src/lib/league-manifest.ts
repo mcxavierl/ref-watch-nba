@@ -168,20 +168,21 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
     whistleFromMinors: false,
     metrics: NBA_METRICS,
     routed: true,
-    sectionNav: ["slate"],
-    researchViews: ["tendencies"],
+    sectionNav: ["slate", "teams", "matrix", "refs", "research"],
+    researchViews: ["tendencies", "trends", "findings"],
     slate: {
       upcomingSlateSection: true,
       analyticsLeaders: null,
       superBowlSection: false,
       conferenceCoverage: false,
-      slateFeatureShowcase: false,
-      slateQuickLookup: false,
+      slateFeatureShowcase: true,
+      slateQuickLookup: true,
       pendingCrewNotice: false,
       ppOtSignals: false,
-      seasonScopeOnSlate: false,
-      seasonScopeOnFindings: false,
-      hideOffseasonNotice: false,
+      seasonScopeOnSlate: true,
+      seasonScopeOnFindings: true,
+      hideOffseasonNotice: true,
+      findingsInSeasonTitle: "Tonight's edges",
     },
   },
   mlb: {
@@ -424,10 +425,11 @@ export const ROUTED_LEAGUE_MANIFEST_IDS = LEAGUE_MANIFEST_IDS.filter(
   (id) => LEAGUE_MANIFEST[id].routed,
 );
 
-/** Routed leagues with a full insights hub (excludes wnba/mlb). */
+/** Routed leagues with a full insights hub (excludes mlb). */
 export type InsightsLeagueId =
   | "nba"
   | "nhl"
+  | "wnba"
   | "nfl"
   | "epl"
   | "laliga"

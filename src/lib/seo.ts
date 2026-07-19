@@ -386,12 +386,13 @@ export function refProfileBreadcrumbJsonLd(
 }
 
 export function leagueRefPath(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   slug: string,
 ): string {
   const leagueIdMap: Record<typeof league, LeagueId> = {
     NBA: "nba",
     NHL: "nhl",
+    WNBA: "wnba",
     NFL: "nfl",
     EPL: "epl",
     LALIGA: "laliga",

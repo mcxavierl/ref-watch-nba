@@ -22,6 +22,7 @@ const DATA_LEAGUE_TO_ID: Record<FindingLeague, LeagueId> = {
   NFL: "nfl",
   EPL: "epl",
   LALIGA: "laliga",
+  WNBA: "wnba",
   CBB: "cbb",
   CFB: "cfb",
 };

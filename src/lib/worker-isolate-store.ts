@@ -35,6 +35,7 @@ export function clearNcaaSportComponents(
 export type WorkerDataLeague =
   | "nba"
   | "nhl"
+  | "wnba"
   | "nfl"
   | "epl"
   | "laliga"

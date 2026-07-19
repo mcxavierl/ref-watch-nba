@@ -55,7 +55,7 @@ export function FindingAccordionItem({
 }: {
   finding: Finding;
   defaultOpen?: boolean;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league?: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   evSnapshot?: FindingEvSnapshot | null;
   hero?: boolean;
 }) {
@@ -163,7 +163,7 @@ function OfficialFindingsSingleCard({
 }: {
   official: OfficialIdentity;
   finding: Finding;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league?: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   evSnapshot?: FindingEvSnapshot | null;
   hero?: boolean;
 }) {
@@ -220,7 +220,7 @@ export function OfficialFindingsAccordionItem({
   official: OfficialIdentity;
   findings: Finding[];
   defaultOpen?: boolean;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league?: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   evByFindingId?: Record<string, FindingEvSnapshot | null>;
   hero?: boolean;
 }) {

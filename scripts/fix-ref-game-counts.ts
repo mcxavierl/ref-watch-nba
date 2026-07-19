@@ -78,6 +78,14 @@ export const REF_GAME_COUNT_LEAGUES: RefGameCountLeagueConfig[] = [
     corePath: "data/cfb/ref-stats-core.json",
     maxDriftPct: 3,
   },
+  {
+    id: "wnba",
+    statsPath: "data/wnba/ref-stats.json",
+    gameLogPath: "data/wnba/game-logs.json",
+    useCanonicalKey: true,
+    corePath: "data/wnba/ref-stats-core.json",
+    maxDriftPct: 3,
+  },
 ];
 
 function writeJson(root: string, rel: string, data: unknown): void {

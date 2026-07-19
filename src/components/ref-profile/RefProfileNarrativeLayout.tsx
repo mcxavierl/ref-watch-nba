@@ -9,7 +9,7 @@ import type { LeagueId } from "@/lib/leagues";
 import type { RefGsniMetrics } from "@/lib/ref-gsni";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
-type CloseGameLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+type CloseGameLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA";
 
 type StatGridLabels = {
   foulLabel?: string;
