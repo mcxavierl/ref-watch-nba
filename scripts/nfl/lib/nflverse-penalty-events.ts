@@ -6,6 +6,7 @@ import {
 } from "../../../src/lib/impact-calculator";
 import type { NflPenaltyEvent } from "../../../src/lib/types";
 import { normalizeNflverseTeam } from "./nflverse-lines";
+import { tagNflPenaltyEvent } from "./ingest-utils";
 
 export type NflPenaltyEventIndex = Record<string, NflPenaltyEvent[]>;
 
@@ -72,21 +73,23 @@ export function parsePenaltyEventsCsv(csv: string): NflPenaltyEventIndex {
     const yardsRaw = Number(fields[penaltyYardsI]);
     const yards = Number.isFinite(yardsRaw) ? Math.abs(yardsRaw) : 0;
 
-    const event = buildPenaltyEvent(
-      rawType,
-      penaltyTeam,
-      yards,
-      {
-        down: parseNum(fields[downI]),
-        distance: parseNum(fields[distanceI]),
-        yardLine: parseNum(fields[yardLineI]),
-        quarter: parseNum(fields[quarterI]),
-        gameSecondsRemaining: parseNum(fields[secondsI]),
-        scoreDifferential: parseNum(fields[scoreDiffI]),
-        wpBefore: parseNum(fields[wpI]),
-        wpaDelta: parseNum(fields[wpaI]),
-      },
-      true,
+    const event = tagNflPenaltyEvent(
+      buildPenaltyEvent(
+        rawType,
+        penaltyTeam,
+        yards,
+        {
+          down: parseNum(fields[downI]),
+          distance: parseNum(fields[distanceI]),
+          yardLine: parseNum(fields[yardLineI]),
+          quarter: parseNum(fields[quarterI]),
+          gameSecondsRemaining: parseNum(fields[secondsI]),
+          scoreDifferential: parseNum(fields[scoreDiffI]),
+          wpBefore: parseNum(fields[wpI]),
+          wpaDelta: parseNum(fields[wpaI]),
+        },
+        true,
+      ),
     );
 
     const bucket = index[gameId] ?? [];

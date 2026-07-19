@@ -6,6 +6,7 @@ import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
+import { FoulBreakdown } from "@/components/ref-profile/FoulBreakdown";
 import { TermHelp } from "@/components/TermHelp";
 import {
   formatPct,
@@ -23,6 +24,7 @@ import { userFacingDataNote, refTeamDataNote } from "@/lib/user-language";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
 import { computeRefGsniMetrics } from "@/lib/ref-gsni";
+import { buildRefProfileFouls } from "@/lib/build-ref-profile-fouls";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
@@ -85,6 +87,7 @@ export default async function RefProfilePage({
     "NBA",
     profile,
   );
+  const profileFouls = buildRefProfileFouls(profile.slug, "nba");
 
   return (
     <div className="page-shell">
@@ -149,6 +152,8 @@ export default async function RefProfilePage({
             closeGameLeague="NBA"
             showBettingProfile={Boolean(profile.bettingStats)}
           />
+
+          <FoulBreakdown fouls={profileFouls} />
         </div>
 
         <div className="ref-dashboard-sidebar">
