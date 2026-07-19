@@ -237,23 +237,33 @@ function loserNarrativeLabel(leagueId: LeagueId, abbr: string): string {
   return isSoccerLeague(leagueId) ? nickname : `the ${nickname}`;
 }
 
-function meetingYear(date: string): number {
-  return new Date(`${date}T12:00:00`).getFullYear();
+function meetingSeasonYear(game: RuntimeGameLogEntry): number {
+  const seasonStart = /^(\d{4})/.exec(game.season);
+  if (seasonStart) return Number(seasonStart[1]);
+  return new Date(`${game.date}T12:00:00`).getFullYear();
+}
+
+function meetingVenuePhrase(leagueId: LeagueId, homeAbbr: string): string | undefined {
+  const city = teamCityForLeague(leagueId, homeAbbr);
+  if (!city) return undefined;
+  return isSoccerLeague(leagueId) ? `at ${city}` : `in ${city}`;
 }
 
 function formatRecentGameContextLine(
   game: RuntimeGameLogEntry,
   leagueId: LeagueId,
 ): string {
-  const year = meetingYear(game.date);
+  const year = meetingSeasonYear(game);
   const awayAbbr = game.awayTeam.toUpperCase();
   const homeAbbr = game.homeTeam.toUpperCase();
+  const venue = meetingVenuePhrase(leagueId, homeAbbr);
+  const venueClause = venue ? ` ${venue}` : "";
 
   if (game.awayScore === game.homeScore) {
     const awayLabel = winnerNarrativeLabel(leagueId, awayAbbr);
     const homeLabel = winnerNarrativeLabel(leagueId, homeAbbr);
     const tieVerb = isSoccerLeague(leagueId) ? "drew with" : "tied";
-    return `${awayLabel} ${tieVerb} ${homeLabel} in ${year}, ${game.awayScore}-${game.homeScore}.`;
+    return `${awayLabel} ${tieVerb} ${homeLabel} in ${year}${venueClause}, ${game.awayScore}-${game.homeScore}.`;
   }
 
   const awayWon = game.awayScore > game.homeScore;
@@ -262,7 +272,7 @@ function formatRecentGameContextLine(
   const winnerScore = awayWon ? game.awayScore : game.homeScore;
   const loserScore = awayWon ? game.homeScore : game.awayScore;
 
-  return `${winnerNarrativeLabel(leagueId, winnerAbbr)} beat ${loserNarrativeLabel(leagueId, loserAbbr)} in ${year}, ${winnerScore}-${loserScore}.`;
+  return `${winnerNarrativeLabel(leagueId, winnerAbbr)} beat ${loserNarrativeLabel(leagueId, loserAbbr)} in ${year}${venueClause}, ${winnerScore}-${loserScore}.`;
 }
 
 function recentHeadToHeadMeeting(

@@ -201,7 +201,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /container-type: inline-size/);
     assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*place-items: center/);
     assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark[\s\S]*object-position: center/);
-    assert.match(row, /overview-slate-row-last-meeting/);
+    assert.match(row, /overview-slate-row-game-context/);
   });
 
   it("editorial insight cards show season start except homepage trend splits", () => {
