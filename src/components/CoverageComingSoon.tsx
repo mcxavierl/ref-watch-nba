@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { StatusBadge } from "@/components/hub/StatusBadge";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
 
@@ -25,14 +24,6 @@ export function CoverageComingSoon({
             : "This program is outside the current key-conferences launch window."}
         </p>
       </section>
-
-      <div className="data-source-banner data-source-banner--preview" role="status">
-        <StatusBadge verdict="caution" label="Coverage coming soon" compact />
-        <p className="data-source-banner-text">
-          Ref Watch NCAA launches conference by conference. Live hubs currently track key
-          conferences only.
-        </p>
-      </div>
 
       <nav className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
         <Link href={league.pathPrefix || "/"} className="site-footer-inline-link">

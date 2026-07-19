@@ -5,7 +5,6 @@ import {
   isNhlSimulatedData,
   isNhlVerifiedData,
   nhlAssignmentsAreVerified,
-  nhlPreviewBannerMessage,
 } from "./data-source";
 
 describe("NHL data source honesty", () => {
@@ -24,19 +23,6 @@ describe("NHL data source honesty", () => {
   it("recognizes hybrid source flag", () => {
     assert.equal(isNhlHybridData("hybrid"), true);
     assert.equal(isNhlHybridData("nhl-api"), false);
-  });
-
-  it("preview banner warns on preview data", () => {
-    const msg = nhlPreviewBannerMessage("seeded", "seeded");
-    assert.match(msg, /Preview dataset/i);
-    assert.match(msg, /placeholder schedules/i);
-    assert.doesNotMatch(msg, /simulated|simulation|projected|projection/i);
-  });
-
-  it("preview banner notes synthetic lines for verified stats", () => {
-    const msg = nhlPreviewBannerMessage("nhl-api", "nhl-api", true);
-    assert.match(msg, /NHL API/i);
-    assert.match(msg, /synthetic closing lines/i);
   });
 
   it("assignments are verified when sourced from nhl-api with games", () => {

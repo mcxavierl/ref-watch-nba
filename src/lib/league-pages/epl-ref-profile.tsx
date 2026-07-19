@@ -24,7 +24,6 @@ import {
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
 import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote } from "@/lib/user-language";
-import { EplPreviewBanner } from "@/components/EplPreviewBanner";
 import { isEplSimulatedData } from "@/lib/epl/data-source";
 import { formatRefNameWithNumber } from "@/lib/ref-number";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
@@ -151,8 +150,6 @@ export default async function EplRefProfilePage({
           slug={profile.slug}
         />
       </RefereeMasterCard>
-
-      <EplPreviewBanner statsSource={stats.meta.source} />
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">

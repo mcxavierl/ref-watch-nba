@@ -16,8 +16,6 @@ import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import { UpcomingSlateNotice } from "@/components/UpcomingSlateNotice";
 import { EplAnalyticsLeaders } from "@/components/EplAnalyticsLeaders";
 import { NflAnalyticsLeaders } from "@/components/NflAnalyticsLeaders";
-import { NflPreviewBanner } from "@/components/NflPreviewBanner";
-import { CfbPreviewBanner } from "@/components/CfbPreviewBanner";
 import { CfbAnalyticsLeaders } from "@/components/CfbAnalyticsLeaders";
 import { LEAGUE_MANIFEST, type LeagueManifestId } from "@/lib/league-manifest";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
@@ -160,22 +158,6 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
 
       {features.conferenceCoverage && (leagueId === "cbb" || leagueId === "cfb") && (
         <ConferenceCoverage leagueId={leagueId} />
-      )}
-
-      {features.cfbPreviewBanner && (
-        <CfbPreviewBanner
-          statsSource={refStats.meta.source}
-          assignmentsSource={assignments.source}
-          refStats={refStats}
-        />
-      )}
-
-      {leagueId === "nfl" && (
-        <NflPreviewBanner
-          statsSource={refStats.meta.source}
-          assignmentsSource={assignments.source}
-          atsAvailable={refStats.meta.atsAvailable === true}
-        />
       )}
 
       <FindingsSection

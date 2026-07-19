@@ -31,23 +31,6 @@ export function cfbOfficialsPendingMessage(meta: RefStatsFile["meta"]): string {
   return `ESPN provides ${games.toLocaleString("en-US")} scored games with penalty data, but official crews are not published in ESPN summaries. Ref profiles and ref×team matrix stay unavailable until a secondary officials source is linked.`;
 }
 
-export function cfbPreviewBannerMessage(
-  statsSource: RefStatsFile["meta"]["source"],
-  assignmentsSource?: AssignmentsFile["source"],
-  stats?: Pick<RefStatsFile, "meta" | "refs"> | null,
-): string {
-  if (isCfbOfficialsPending(stats)) {
-    return cfbOfficialsPendingMessage(stats!.meta);
-  }
-  if (isCfbVerifiedData(statsSource) && assignmentsSource === "espn") {
-    return "Scores, penalty counts, and tonight's crews are from ESPN. ATS/O-U splits are unavailable without verified closing lines.";
-  }
-  if (isCfbVerifiedData(statsSource)) {
-    return "Historical scores and penalty stats are from ESPN game data. Tonight's crew assignments may still be pending official release.";
-  }
-  return "NCAA football preview dataset, offseason seed data only. Do not treat ref×team or betting stats as verified against official records.";
-}
-
 export function cfbAssignmentsAreVerified(
   assignments: Pick<AssignmentsFile, "source" | "games">,
 ): boolean {

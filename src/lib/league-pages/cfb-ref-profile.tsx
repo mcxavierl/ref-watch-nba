@@ -25,7 +25,6 @@ import {
 import { refProfileDatasetJsonLd } from "@/lib/syndication";
 import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote } from "@/lib/user-language";
-import { CfbPreviewBanner } from "@/components/CfbPreviewBanner";
 import { isCfbSimulatedData } from "@/lib/cfb/data-source";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
@@ -160,8 +159,6 @@ export default async function CfbRefProfilePage({
           slug={profile.slug}
         />
       </header>
-
-      <CfbPreviewBanner statsSource={stats.meta.source} refStats={stats} />
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">
