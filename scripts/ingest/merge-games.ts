@@ -1,5 +1,6 @@
 import type { BbrScheduleGame } from "./parse-schedule";
 import type { NbaOfficial } from "./fetch-nba-stats";
+import type { IngestFoulRecord } from "./lib/ingest-utils";
 
 export interface MergedGame {
   gameId: string;
@@ -15,6 +16,8 @@ export interface MergedGame {
   officialsSource: "nba-stats-api" | "bbr-boxscore";
   bbrGameId: string;
   isPlayoff: boolean;
+  /** Play-level fouls when parsed during ingest enrichment. */
+  fouls?: IngestFoulRecord[];
 }
 
 export interface Discrepancy {

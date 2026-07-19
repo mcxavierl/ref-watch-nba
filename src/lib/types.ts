@@ -1,3 +1,5 @@
+import type { FoulCategory } from "@/lib/types/foul-categories";
+
 export type RefRole =
   | "crew_chief"
   | "referee"
@@ -110,6 +112,11 @@ export interface NflPenaltyEvent {
   accepted: boolean;
   leverage: PenaltyLeverageState;
   leverageScore: number;
+  /**
+   * ADMIN vs SUBJECTIVE taxonomy tag.
+   * Ingest pipelines must set this via tagNflPenaltyEvent before persistence.
+   */
+  category?: FoulCategory;
 }
 
 /** NHL-only referee analytics (minors, OT, penalty balance). */
