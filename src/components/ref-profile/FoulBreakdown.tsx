@@ -1,12 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FoulViewToggle } from "@/components/ref-profile/FoulViewToggle";
-import { useFoulView } from "@/hooks/useFoulView";
-import { foulViewAriaLabel } from "@/lib/foul-view";
+import {
+  foulViewAriaLabel,
+  foulViewQueryValue,
+  parseFoulViewParam,
+  type FoulView,
+} from "@/lib/foul-view";
 import {
   filterRefProfileFouls,
-  resolveRefProfileFoulCategory,
+  getFoulCategoryDisplay,
   type RefProfileFoulRecord,
 } from "@/lib/ref-profile-fouls";
 import { FoulCategory } from "@/lib/types/foul-categories";
@@ -23,7 +28,28 @@ function categoryLabel(category: FoulCategory): string {
 }
 
 export function FoulBreakdown({ fouls }: { fouls: RefProfileFoulRecord[] }) {
-  const { view, setView } = useFoulView();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const view = parseFoulViewParam(searchParams?.get("view"));
+
+  const setView = useCallback(
+    (next: FoulView) => {
+      const params = new URLSearchParams(searchParams?.toString() ?? "");
+      const queryValue = foulViewQueryValue(next);
+      if (queryValue) {
+        params.set("view", queryValue);
+      } else {
+        params.delete("view");
+      }
+      const query = params.toString();
+      const resolvedPath = pathname ?? "/";
+      router.replace(query ? `${resolvedPath}?${query}` : resolvedPath, {
+        scroll: false,
+      });
+    },
+    [pathname, router, searchParams],
+  );
 
   const filtered = useMemo(
     () => filterRefProfileFouls(fouls, view),
@@ -49,7 +75,7 @@ export function FoulBreakdown({ fouls }: { fouls: RefProfileFoulRecord[] }) {
         </div>
         <FoulViewToggle
           className="foul-breakdown-toggle"
-          view={view}
+          value={view}
           onChange={setView}
         />
       </div>
@@ -68,7 +94,7 @@ export function FoulBreakdown({ fouls }: { fouls: RefProfileFoulRecord[] }) {
         ) : (
           <ul className="foul-breakdown-list">
             {filtered.map((foul) => {
-              const category = resolveRefProfileFoulCategory(foul.category);
+              const category = getFoulCategoryDisplay(foul);
               return (
                 <li key={foul.id} className="foul-breakdown-row">
                   <div className="foul-breakdown-row-main">

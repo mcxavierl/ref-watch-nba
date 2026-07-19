@@ -1445,35 +1445,77 @@ p {
 
   .foul-view-toggle {
     align-self: flex-start;
-    border-color: color-mix(in srgb, var(--header-sapphire) 22%, var(--border));
-    background: color-mix(in srgb, var(--header-sapphire) 4%, var(--surface));
   }
 
-  .foul-view-toggle .refs-directory-metric-btn {
-    padding: 0.25rem 0.625rem;
-    font-size: 0.6875rem;
-    letter-spacing: 0.04em;
+  .foul-view-toggle-track {
+    position: relative;
+    display: inline-flex;
+    gap: 0.125rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--header-sapphire) 22%, var(--border));
+    background: color-mix(in srgb, #64748b 8%, var(--surface));
+    padding: 0.1875rem;
+    box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 4%, transparent);
   }
 
-  .foul-view-toggle .refs-directory-metric-btn-active {
-    background: color-mix(in srgb, var(--header-sapphire) 16%, var(--surface));
-    color: color-mix(in srgb, var(--header-sapphire) 70%, var(--ink-secondary));
+  .foul-view-toggle-btn {
+    position: relative;
+    z-index: 1;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    padding: 0.3125rem 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 180ms ease-out;
+  }
+
+  .foul-view-toggle-btn:hover {
+    color: var(--ink-secondary);
+  }
+
+  .foul-view-toggle-btn:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--header-sapphire) 50%, var(--border));
+    outline-offset: 2px;
+  }
+
+  .foul-view-toggle-btn-active {
+    color: color-mix(in srgb, var(--header-sapphire) 78%, #eef2ff);
+  }
+
+  .foul-view-toggle-indicator {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: color-mix(in srgb, var(--header-sapphire) 22%, #312e81);
     box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, var(--header-sapphire) 35%, var(--border)),
-      0 1px 2px color-mix(in srgb, var(--header-sapphire) 12%, transparent);
+      inset 0 0 0 1px color-mix(in srgb, #818cf8 45%, transparent),
+      0 1px 2px color-mix(in srgb, #312e81 35%, transparent);
+    pointer-events: none;
   }
 
-  html[data-color="light"]:not([data-contrast="high"]) .foul-view-toggle {
+  .foul-view-toggle-label {
+    position: relative;
+    z-index: 1;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .foul-view-toggle-track {
     border-color: #cbd5e1;
     background: #f8fafc;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
   }
 
-  html[data-color="light"]:not([data-contrast="high"]) .foul-view-toggle .refs-directory-metric-btn-active {
-    background: #eef2ff;
+  html[data-color="light"]:not([data-contrast="high"]) .foul-view-toggle-btn-active {
     color: #3730a3;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .foul-view-toggle-indicator {
+    background: #eef2ff;
     box-shadow:
       inset 0 0 0 1px rgba(99, 102, 241, 0.28),
-      0 1px 2px rgba(15, 23, 42, 0.03);
+      0 1px 2px rgba(15, 23, 42, 0.04);
   }
 
   .foul-breakdown-body {

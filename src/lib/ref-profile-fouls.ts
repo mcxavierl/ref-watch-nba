@@ -20,13 +20,20 @@ export function resolveRefProfileFoulCategory(
   return category ?? FoulCategory.SUBJECTIVE;
 }
 
+/** Resolve display/filter category for one foul row (historical-safe). */
+export function getFoulCategoryDisplay(
+  foul: Pick<RefProfileFoulRecord, "category">,
+): FoulCategory {
+  return resolveRefProfileFoulCategory(foul.category);
+}
+
 export function filterRefProfileFouls(
   fouls: readonly RefProfileFoulRecord[],
   filter: FoulBreakdownFilter,
 ): RefProfileFoulRecord[] {
   if (filter === "all") return [...fouls];
   return fouls.filter((foul) => {
-    const category = resolveRefProfileFoulCategory(foul.category);
+    const category = getFoulCategoryDisplay(foul);
     if (filter === "admin") return category === FoulCategory.ADMIN;
     return category === FoulCategory.SUBJECTIVE;
   });

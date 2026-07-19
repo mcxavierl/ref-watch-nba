@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   filterRefProfileFouls,
+  getFoulCategoryDisplay,
   resolveRefProfileFoulCategory,
 } from "@/lib/ref-profile-fouls";
 import { FoulCategory } from "@/lib/types/foul-categories";
@@ -36,6 +37,10 @@ describe("ref-profile-fouls", () => {
   it("defaults missing categories to subjective", () => {
     assert.equal(
       resolveRefProfileFoulCategory(undefined),
+      FoulCategory.SUBJECTIVE,
+    );
+    assert.equal(
+      getFoulCategoryDisplay({ category: undefined }),
       FoulCategory.SUBJECTIVE,
     );
   });
