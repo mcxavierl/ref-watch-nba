@@ -1,0 +1,92 @@
+/**
+ * Pill text containment — shared overflow rules and design tokens.
+ * Use Pill (src/components/ui/Pill.tsx) or .pill-constrain on label surfaces.
+ *
+ * Padding standard: py-1.5 (0.375rem) px-4 (1rem) — aligned with kpi-data-pill.css.
+ */
+
+:root {
+  --pill-padding-y: 0.375rem;
+  --pill-padding-x: 1rem;
+  --pill-font-size: var(--text-xs, 0.75rem);
+  --pill-font-weight: 600;
+  --pill-max-width: 100%;
+  --pill-category-max-width: 11.5rem;
+}
+
+/* Core overflow utility — prevents flex/grid text slide */
+.pill-constrain {
+  display: inline-flex;
+  align-items: center;
+  max-width: var(--pill-max-width, 100%);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pill-constrain-text {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pill-constrain--category {
+  max-width: min(var(--pill-category-max-width), 100%);
+}
+
+/* Legacy pill surfaces — enforce containment even without the Pill wrapper */
+.ref-master-insight-pill,
+.finding-meta-pill,
+.ranking-signal-pill,
+.gsni-band-badge,
+.rankings-insight-league,
+.friction-personnel-pill,
+.insight-badge,
+.status-badge {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.ref-master-insight-pill,
+.finding-meta-pill,
+.ranking-signal-pill,
+.gsni-band-badge,
+.rankings-insight-league,
+.friction-personnel-pill {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.finding-meta-pill-label,
+.status-badge-label {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Card/flex parents that host pills */
+.ref-card-head,
+.rankings-insight-card-head {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Dev-only layout audit — toggle with html[data-pill-debug="true"] */
+html[data-pill-debug="true"] .pill-constrain,
+html[data-pill-debug="true"] .ref-master-insight-pill,
+html[data-pill-debug="true"] .finding-meta-pill,
+html[data-pill-debug="true"] .ranking-signal-pill,
+html[data-pill-debug="true"] .gsni-band-badge,
+html[data-pill-debug="true"] .insight-badge,
+html[data-pill-debug="true"] .status-badge,
+html[data-pill-debug="true"] .highlight-stat-card-head-copy,
+html[data-pill-debug="true"] .ref-card-head {
+  outline: 1px dashed color-mix(in srgb, var(--accent-brand, #d4a017) 55%, transparent);
+  outline-offset: 1px;
+}

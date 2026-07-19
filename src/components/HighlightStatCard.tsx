@@ -17,6 +17,7 @@ import {
 } from "@/components/hub/RefCard";
 import { RefAvatar } from "@/components/RefAvatar";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { Pill } from "@/components/ui/Pill";
 import {
   adjustedDeltaTooltipText,
   displayWinRateDelta,
@@ -125,9 +126,7 @@ export function HighlightStatCard({
         </span>
         {heroPills ? (
           <div className="highlight-stat-card-head-copy">
-            <span className="ref-master-insight-pill ref-master-insight-pill--static ref-master-insight-pill--high rankings-insight-category-pill">
-              {insightPillLabel(insightKind, kicker)}
-            </span>
+            <Pill variant="category">{insightPillLabel(insightKind, kicker)}</Pill>
             <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
           </div>
         ) : (

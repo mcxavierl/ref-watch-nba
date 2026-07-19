@@ -3,6 +3,7 @@
 @import "../styles/a11y-utilities.css";
 @import "../styles/clinical-doc-tokens.css";
 @import "../styles/kpi-data-pill.css";
+@import "../styles/pill-constraints.css";
 
 @custom-variant dark (&:where([data-color="dark"], [data-color="dark"] *));
 
@@ -5918,13 +5919,7 @@ p {
     align-items: flex-start;
     gap: 0.35rem;
     min-width: 0;
-  }
-
-  .rankings-insight-category-pill {
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .highlight-stat-card--hero-pill .rankings-insight-metric {
