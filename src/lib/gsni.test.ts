@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   GSNI_MIN_HIGH_LEVERAGE_MINUTES,
+  GSNI_THRESHOLD,
   buildGsniCorpusFromGameLogs,
   calculateLeverageWeight,
   computeGSNI,
@@ -11,6 +12,10 @@ import {
 } from "@/lib/gsni";
 
 describe("calculateLeverageWeight", () => {
+  it("defines GSNI_THRESHOLD at one standard deviation", () => {
+    assert.equal(GSNI_THRESHOLD, 1);
+  });
+
   it("returns 1.0 for high-leverage game states", () => {
     assert.equal(calculateLeverageWeight(3, 240), 1);
     assert.equal(calculateLeverageWeight(-4, 120), 1);
