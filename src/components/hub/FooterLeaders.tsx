@@ -53,6 +53,7 @@ export function FooterLeaders({
             body={item.detail}
             avatarSport={sport}
             refMeta={formatRefGamesMeta(item.ref.number, item.ref.games, leagueGamesUnit(leagueId))}
+            metric={item.metric}
           />
         ))}
       </ul>

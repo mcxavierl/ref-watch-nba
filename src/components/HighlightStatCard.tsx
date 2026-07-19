@@ -21,6 +21,7 @@ import { NotableInsightBadge } from "@/components/hub/NotableInsightBadge";
 import { StatCardShareButton } from "@/components/StatCardShareButton";
 import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { MetricVarianceDisplay } from "@/components/shared/MetricVarianceDisplay";
 import { DirectionalDeltaValue, deltaToneFromValue } from "@/components/shared/DirectionalDeltaValue";
 import { Pill } from "@/components/ui/Pill";
 import {
@@ -55,6 +56,7 @@ export function HighlightStatCard({
   heroPills = false,
   categoryHref,
   notable = false,
+  metric,
 }: {
   leagueId: LeagueId;
   insightKind: string;
@@ -75,6 +77,11 @@ export function HighlightStatCard({
   heroPills?: boolean;
   categoryHref?: string;
   notable?: boolean;
+  metric?: {
+    primaryTotal: string;
+    variancePct: number;
+    comparisonCaption?: string;
+  };
 }) {
   const usesSplitHierarchy =
     sampleGames !== undefined &&
@@ -125,7 +132,15 @@ export function HighlightStatCard({
     <Pill variant="category">{insightPillLabel(insightKind, kicker)}</Pill>
   );
 
-  const metricBlock = primaryValue ? (
+  const metricBlock = metric ? (
+    <MetricVarianceDisplay
+      primaryTotal={metric.primaryTotal}
+      variancePct={metric.variancePct}
+      comparisonCaption={metric.comparisonCaption}
+      tone={metric.variancePct > 0 ? "positive" : metric.variancePct < 0 ? "negative" : "neutral"}
+      size="lg"
+    />
+  ) : primaryValue ? (
     <div className="ref-card-metric-block" aria-label={primaryLabel}>
       <div className={REF_CARD_METRIC_CLASS}>
         <StandoutMetricValue tone={metricTone} size="lg">
