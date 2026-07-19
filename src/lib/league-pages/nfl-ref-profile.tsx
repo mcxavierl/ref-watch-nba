@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { NflRefAnalyticsSection } from "@/components/NflRefAnalyticsSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
+import { FoulBreakdown } from "@/components/ref-profile/FoulBreakdown";
 import { TermHelp } from "@/components/TermHelp";
 import {
   formatPct,
@@ -26,6 +27,7 @@ import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
 import { computeRefGsniMetrics } from "@/lib/ref-gsni";
+import { buildRefProfileFouls } from "@/lib/build-ref-profile-fouls";
 
 export function generateStaticParams() {
   return getAllRefSlugs().map((slug) => ({ slug }));
@@ -97,6 +99,7 @@ export default async function NflRefProfilePage({
     "NFL",
     profile,
   );
+  const profileFouls = buildRefProfileFouls(profile.slug, "nfl");
 
   return (
     <div className="page-shell">
@@ -177,6 +180,8 @@ export default async function NflRefProfilePage({
               ) : undefined
             }
           />
+
+          <FoulBreakdown fouls={profileFouls} />
         </div>
 
         <div className="ref-dashboard-sidebar">
