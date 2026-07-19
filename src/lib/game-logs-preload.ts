@@ -42,6 +42,15 @@ export interface RuntimeGameLogEntry {
   personnel?: GamePersonnelSnapshot;
   /** Play-level NFL penalties with leverage scoring when ingested. */
   penaltyEvents?: import("@/lib/types").NflPenaltyEvent[];
+  /** Optional play-level NBA fouls when ingest enrichment is present. */
+  fouls?: Array<{
+    foulName?: string;
+    rawType?: string;
+    type?: string;
+    team?: string;
+    period?: number;
+    category?: import("@/lib/types/foul-categories").FoulCategory;
+  }>;
   highLeverageImpact?: number;
   highLeverageFlagRate?: number;
   subjectiveFlags?: number;
