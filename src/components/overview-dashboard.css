@@ -610,6 +610,20 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.45rem 0.65rem;
+  width: 100%;
+}
+
+.overview-top-story-meta-band {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.overview-top-story-meta-band .overview-top-story-meta-pill {
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .overview-top-story-league {

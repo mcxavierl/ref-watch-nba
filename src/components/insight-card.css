@@ -46,6 +46,24 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.35rem;
+  width: 100%;
+}
+
+.insight-card-head-band {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.insight-card-head-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .insight-card--inline .insight-card-head-row {
@@ -266,6 +284,24 @@ html.dark .insight-card--inline {
   flex-direction: column;
   align-items: flex-start;
   gap: 0.35rem;
+  width: 100%;
+}
+
+.insight-editorial-head-band {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.insight-editorial-head-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .insight-editorial-head-row {
@@ -1008,4 +1044,41 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-metric-comparison-
 html[data-color="light"]:not([data-contrast="high"]) .overview-top-story-secondary-label,
 html[data-color="light"]:not([data-contrast="high"]) .insight-editorial-link--muted {
   color: var(--text-secondary);
+}
+
+/* Team logo anchor — ref×team editorial cards */
+.insight-team-mark {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.insight-team-mark__logo.team-logo-plate {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--foreground) 7%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--insight-accent, var(--logo-plate-border)) 24%, var(--logo-plate-border)),
+    0 0 14px color-mix(in srgb, var(--insight-accent, var(--header-gold)) 16%, transparent);
+}
+
+.insight-card--trend .insight-team-mark__logo.team-logo-plate {
+  padding: 0.1875rem;
+}
+
+.insight-card--featured .insight-team-mark__logo.team-logo-plate,
+.insight-card--carousel .insight-team-mark__logo.team-logo-plate {
+  padding: 0.25rem;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-team-mark__logo.team-logo-plate {
+  background: var(--logo-plate);
+  border-color: color-mix(in srgb, var(--insight-accent, var(--logo-plate-border)) 28%, var(--logo-plate-border));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.65),
+    0 0 0 1px color-mix(in srgb, var(--insight-accent, var(--logo-plate-border)) 18%, var(--logo-plate-border)),
+    0 1px 3px rgb(15 23 42 / 0.08);
+}
+
+html[data-contrast="high"] .insight-team-mark__logo.team-logo-plate {
+  box-shadow: none;
 }
