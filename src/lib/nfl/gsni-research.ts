@@ -39,5 +39,5 @@ export function buildGsniResearchHighlights(
 ): GsniResearchHighlight[] {
   const config = gsniResearchConfigForLeague("nfl");
   if (!config) return [];
-  return buildHighlightsShared(stats, { ...config, basePath }, limit);
+  return buildHighlightsShared(stats, { ...config, basePath }, { limit });
 }
