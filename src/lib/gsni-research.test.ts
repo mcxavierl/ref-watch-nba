@@ -80,6 +80,25 @@ describe("shared GSNI research", () => {
     });
   });
 
+  it("returns all tracked rows when highVarianceOnly is false", () => {
+    const config = gsniResearchConfigForLeague("nba");
+    assert.ok(config);
+    const stats = makeStats([
+      makeRef({ slug: "quiet", name: "Quiet Ref", referee_gsni: 1.8, referee_gsni_volatility: 0.35 }),
+      makeRef({ slug: "heavy", name: "Heavy Ref", referee_gsni: -1.9, referee_gsni_volatility: 0.42 }),
+      makeRef({ slug: "typical", name: "Typical Ref", referee_gsni: 0.3 }),
+      makeRef({
+        slug: "pending",
+        name: "Pending Ref",
+        referee_gsni: 2.1,
+        gsniHighLeverageMinutes: 10,
+      }),
+    ]);
+    const rows = buildGsniResearchRows(stats, config!, { highVarianceOnly: false });
+    assert.equal(rows.length, 4);
+    assert.equal(rows[0]?.refSlug, "heavy");
+  });
+
   it("returns only high-variance gate-cleared rows sorted by |score|", () => {
     const config = gsniResearchConfigForLeague("nba");
     assert.ok(config);
@@ -109,8 +128,9 @@ describe("shared GSNI research", () => {
     }
 
     const allRows = buildGsniResearchRows(stats, config!, { highVarianceOnly: false });
-    assert.equal(allRows.length, 3);
+    assert.equal(allRows.length, 4);
     assert.ok(allRows.some((row) => row.refSlug === "typical"));
+    assert.ok(allRows.some((row) => row.refSlug === "pending"));
   });
 
   it("builds highlight cards for high-variance officials", () => {

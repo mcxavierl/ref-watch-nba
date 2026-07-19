@@ -16,8 +16,8 @@ import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 export { GSNI_THRESHOLD };
 
-export const GSNI_RESEARCH_HIGHLIGHT_LIMIT = 4;
-export const GSNI_RESEARCH_MIN_SAMPLE_GAMES = 100;
+export const GSNI_RESEARCH_HIGHLIGHT_LIMIT = 6;
+export const GSNI_RESEARCH_MIN_SAMPLE_GAMES = 50;
 
 export type GsniConfidenceInterval = {
   lower: number;
@@ -212,6 +212,16 @@ function sortedGateClearedRows(rows: GsniResearchRow[]): GsniResearchRow[] {
     .sort((a, b) => compareGsniByAbsDesc(a.gsni, b.gsni));
 }
 
+function allResearchRows(rows: GsniResearchRow[]): GsniResearchRow[] {
+  return [...rows].sort((a, b) => {
+    if (a.gateCleared !== b.gateCleared) return a.gateCleared ? -1 : 1;
+    if (a.gateCleared && b.gateCleared) {
+      return compareGsniByAbsDesc(a.gsni, b.gsni);
+    }
+    return b.highLeverageMinutes - a.highLeverageMinutes;
+  });
+}
+
 function highVarianceRows(rows: GsniResearchRow[]): GsniResearchRow[] {
   return sortedGateClearedRows(rows).filter((row) => row.highVariance);
 }
@@ -235,7 +245,7 @@ export function buildGsniResearchRows(
     )
     .map((ref) => toRow(ref, config.basePath, config.minHighLeverageMinutes));
 
-  return highVarianceOnly ? highVarianceRows(rows) : sortedGateClearedRows(rows);
+  return highVarianceOnly ? highVarianceRows(rows) : allResearchRows(rows);
 }
 
 export function buildGsniResearchHighlights(

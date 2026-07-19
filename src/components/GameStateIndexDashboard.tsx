@@ -7,6 +7,7 @@ import { GsniCorrelationPill } from "@/components/GsniCorrelationPill";
 import { GsniResearchTable } from "@/components/GsniResearchTable";
 import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniScoreBlock } from "@/components/GsniScoreBlock";
+import { GsniResearchIntro } from "@/components/GsniResearchIntro";
 import { Pill } from "@/components/ui/Pill";
 import { TermHelp } from "@/components/TermHelp";
 import { gsniQualifiesHighVariance } from "@/lib/gsni-research";
@@ -70,9 +71,17 @@ export function GameStateIndexDashboard({
 
   if (rows.length === 0) return null;
 
+  const ratedCount = rows.filter((row) => row.gateCleared && row.gsni !== null).length;
+
   return (
     <>
-      {!compactHub && highlights.length > 0 ? (
+      <GsniResearchIntro
+        leagueId={leagueId}
+        ratedCount={ratedCount}
+        trackedCount={rows.length}
+      />
+
+      {highlights.length > 0 ? (
         <section className="section-block">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <h2 className="section-title m-0">
@@ -121,14 +130,14 @@ export function GameStateIndexDashboard({
         {!compactHub ? (
           <p className="gsni-sub-text section-lead">
             {leagueId === "nfl"
-              ? "Historical penalty frequency vs league average in matched score-and-clock situations."
-              : "Historical foul frequency vs league average in matched score-and-clock situations."}{" "}
-            <Link href="/research/leverage-spike-anomaly" className="font-medium hover:underline">
-              Methodology
-            </Link>
-            .
+              ? "Penalty frequency in high-leverage states vs league average."
+              : "Foul frequency in high-leverage states vs league average."}
           </p>
         ) : null}
+        <p className="gsni-sub-text mb-3">
+          {filteredRows.length} official{filteredRows.length === 1 ? "" : "s"} shown
+          {highVarianceOnly ? " (high-variance filter on)" : ""}.
+        </p>
         <GsniResearchTable rows={filteredRows} />
       </section>
     </>

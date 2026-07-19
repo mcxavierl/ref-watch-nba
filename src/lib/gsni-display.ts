@@ -1,5 +1,7 @@
 import { shrinkGsni, type ShrunkMetric } from "@/lib/bayesian-shrinkage";
 import {
+  GSNI_MIN_HIGH_LEVERAGE_MINUTES,
+  GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL,
   GSNI_THRESHOLD,
   GSNI_Z_EXTREME_THRESHOLD,
   GSNI_Z_NEUTRAL_THRESHOLD,
@@ -246,4 +248,27 @@ export function gsniSampleLabel(profile: RefProfile): string | null {
   if (profile.gsniHighLeverageMinutes === undefined) return null;
   const games = profile.gsniSampleGames ?? 0;
   return `${profile.gsniHighLeverageMinutes.toFixed(0)} high-leverage minutes across ${games} games`;
+}
+
+const GSNI_GAP_CLOSE_POINTS = 5;
+const GSNI_CLOCK_LATE_MINUTES = 5;
+
+export function gsniMinHighLeverageMinutesForLeague(
+  leagueId: "nfl" | "nba",
+): number {
+  return leagueId === "nfl"
+    ? GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL
+    : GSNI_MIN_HIGH_LEVERAGE_MINUTES;
+}
+
+/** Plain-language definition of high-leverage game states for the research page. */
+export function gsniHighLeverageStatesCopy(leagueId: "nfl" | "nba"): string {
+  const gate = gsniMinHighLeverageMinutesForLeague(leagueId);
+  const eventNoun = leagueId === "nfl" ? "penalty" : "foul";
+  return `High-leverage states are close, late-game minutes: score within ${GSNI_GAP_CLOSE_POINTS} points and under ${GSNI_CLOCK_LATE_MINUTES}:00 on the clock (overtime at full weight). We bucket plays by score gap and time, then compare each official's ${eventNoun} rate to the league in the same buckets. ${gate}+ high-leverage minutes are required before we publish an index score.`;
+}
+
+export function gsniIndexScoreExplainer(leagueId: "nfl" | "nba"): string {
+  const eventNoun = leagueId === "nfl" ? "penalties" : "fouls";
+  return `Index score 0 is league average in those states. Negative means more ${eventNoun} than peers; positive means fewer. ${GSNI_SCALE_LEGEND}`;
 }

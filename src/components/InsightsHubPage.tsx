@@ -322,15 +322,12 @@ export function InsightsHubPage({
     leagueHasResearchView(leagueId, "game-state")
   ) {
     gameStatePanel = (
-      <>
-        {rankingsHook}
-        <GameStateIndexResearchSection
-          stats={stats}
-          leagueId={leagueId}
-          basePath={league.pathPrefix}
-          compactHub
-        />
-      </>
+      <GameStateIndexResearchSection
+        stats={stats}
+        leagueId={leagueId}
+        basePath={league.pathPrefix}
+        compactHub={false}
+      />
     );
   }
 
