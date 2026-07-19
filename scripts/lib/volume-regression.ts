@@ -35,6 +35,7 @@ import { LALIGA_TEAMS, teamFullName as laligaTeamFullName } from "../../src/lib/
 import { NFL_TEAMS, teamFullName as nflTeamFullName } from "../../src/lib/nfl/teams";
 import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "../../src/lib/nhl/teams";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "../../src/lib/teams";
+import { MIN_NFL_GAMES, MIN_NHL_GAMES } from "./constants/ingest-thresholds";
 import { findReverseNameGhosts } from "./ref-identity";
 
 export type LiveLeague = (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
@@ -45,8 +46,8 @@ export const MIN_TOTAL_GAMES_FOR_CLAIMED_SEASONS: Record<
 > = {
   nba: { minTotal: 10_000, minPerSeason: 900 },
   cbb: { minTotal: 400, minPerSeason: 80 },
-  nhl: { minTotal: 10_000, minPerSeason: 700 },
-  nfl: { minTotal: 2_500, minPerSeason: 220 },
+  nhl: { minTotal: MIN_NHL_GAMES, minPerSeason: 700 },
+  nfl: { minTotal: MIN_NFL_GAMES, minPerSeason: 220 },
   cfb: { minTotal: 400, minPerSeason: 80 },
   epl: { minTotal: 3_500, minPerSeason: 300 },
   laliga: { minTotal: 1_200, minPerSeason: 90 },
