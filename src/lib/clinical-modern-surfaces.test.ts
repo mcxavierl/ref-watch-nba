@@ -18,13 +18,13 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /StandoutMetricValue/);
   });
 
-  it("TeamSplitView uses Clinical Modern metrics without Balanced pills", () => {
+  it("TeamSplitView uses matrix reporting for ref splits", () => {
     const source = readSrc("src/components/TeamSplitView.tsx");
     assert.match(source, /REF_CARD_CLASS/);
-    assert.match(source, /resolveRefProfileTeam/);
+    assert.match(source, /useLeagueMatrixData/);
+    assert.match(source, /MatrixView/);
     assert.match(source, /StandoutMetricValue/);
     assert.match(source, /NeutralDivergenceBar/);
-    assert.match(source, /clinical-insight-matrix-avatars/);
     assert.doesNotMatch(source, /Balanced/);
     assert.doesNotMatch(source, /MetricBlock/);
   });

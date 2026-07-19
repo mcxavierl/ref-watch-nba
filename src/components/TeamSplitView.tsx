@@ -10,23 +10,15 @@ import {
   REF_CARD_METRIC_CLASS,
   StatComparison,
 } from "@/components/hub/RefCard";
-import { RefAvatar } from "@/components/RefAvatar";
 import {
   NeutralDivergenceBar,
   StandoutMetricValue,
 } from "@/components/StandoutMetric";
-import { TeamLogo } from "@/components/TeamLogo";
 import { TermHelp } from "@/components/TermHelp";
-import type { LeagueId } from "@/lib/leagues";
-import { resolveRefProfileTeam, refProfileTeamLogoSport } from "@/lib/ref-profile-team-utils";
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
-import {
-  filterTeamRefEntries,
-  TeamRefFilterBar,
-  TeamRefMatrixTable,
-  type TeamRefFilterMode,
-} from "@/components/TeamRefMatrixTable";
+import { MatrixFilterBar, MatrixView } from "@/components/analytics/MatrixView";
+import { useLeagueMatrixData, type LeagueMatrixSport } from "@/hooks/useLeagueMatrixData";
 import {
   filterTeamCrewSplits,
   sortTeamCrewSplits,
@@ -44,8 +36,7 @@ import {
   scoringDeltaTone,
   winRateTone,
 } from "@/lib/metricTone";
-import type { TeamRefLeaderboardEntry, TeamRefSort } from "@/lib/teamRefLeaderboards";
-import { sortTeamRefEntries } from "@/lib/teamRefLeaderboards";
+import type { TeamRefLeaderboardEntry } from "@/lib/teamRefLeaderboards";
 import type { TeamRefCloseGamesStat } from "@/lib/team-ref-close-games-display";
 import type { DataLeague } from "@/lib/game-logs-preload";
 import type { TeamSampleRecord } from "@/lib/teamRecord";
@@ -258,90 +249,6 @@ function TeamSplitCard({
   );
 }
 
-function TeamRefSplitCard({
-  entry,
-  leagueAvgTotal,
-  overBaseline,
-  teamAbbr,
-  teamLabel,
-  teamRecord,
-  basePath = "",
-  sport = "nba",
-}: {
-  entry: TeamRefLeaderboardEntry;
-  leagueAvgTotal: number;
-  overBaseline: number;
-  teamAbbr: string;
-  teamLabel: string;
-  teamRecord: TeamSampleRecord;
-  basePath?: string;
-  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
-}) {
-  const totalDelta = entry.avgTotalPoints - leagueAvgTotal;
-  const winTone = winRateTone(entry.winRate, teamRecord.winRate);
-  const foulTone = foulEdgeTone(entry.avgFoulDifferential);
-  const scoreTone = scoringDeltaTone(totalDelta);
-  const teamBaselinePct =
-    teamRecord.games > 0 ? formatPct(teamRecord.winRate) : "n/a";
-  const team = resolveRefProfileTeam(sport as LeagueId, teamAbbr);
-  const logoSport = refProfileTeamLogoSport(sport as LeagueId);
-
-  return (
-    <ClinicalCard
-      as="article"
-      className={`team-ref-split-card ${REF_CARD_CLASS} overflow-hidden border-slate-800`}
-    >
-      <Link
-        href={`${basePath}/refs/${entry.slug}`}
-        className="clinical-insight-matrix-ref-name rankings-insight-name px-4 pt-4 sm:px-5"
-      >
-        {entry.name}
-      </Link>
-
-      <div className="clinical-insight-matrix-avatars px-4 sm:px-5" aria-hidden>
-        <RefAvatar
-          name={entry.name}
-          slug={entry.slug}
-          sport={sport}
-          size="lg"
-          decorative
-        />
-        <span className="clinical-insight-matrix-vs">vs</span>
-        <TeamLogo
-          team={team}
-          sport={logoSport}
-          size="xl"
-          className="clinical-insight-matrix-team-logo"
-        />
-      </div>
-
-      <TeamSplitMetricGrid>
-        <TeamSplitMetricColumn
-          label="Win rate"
-          value={formatPct(entry.winRate)}
-          tone={winTone}
-          comparison={formatWinRateVsTeam(entry.winRate, teamRecord.winRate)}
-          detail={`vs team baseline ${teamBaselinePct}`}
-        />
-        <TeamSplitMetricColumn
-          label="Totals"
-          value={`${entry.avgTotalPoints} avg`}
-          tone={scoreTone}
-          comparison={`${formatSigned(totalDelta)} vs league`}
-          detail={`${formatPct(entry.overRate)} over ${overBaseline}`}
-        />
-        <TeamSplitMetricColumn
-          label={<TermHelp id="foul-edge">Whistle differential</TermHelp>}
-          value={formatSigned(entry.avgFoulDifferential)}
-          tone={foulTone}
-          detail={`More fouls on ${teamLabel}'s opponents when positive`}
-          showNeutralBar
-        />
-      </TeamSplitMetricGrid>
-    </ClinicalCard>
-  );
-}
-
 export function TeamSplitView({
   crewSplits,
   refSplits,
@@ -367,15 +274,24 @@ export function TeamSplitView({
   leagueAvgFouls: number;
   overBaseline: number;
   basePath?: string;
-  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  sport?: LeagueMatrixSport;
   dataLeague?: DataLeague;
   closeGamesByRef?: Record<string, TeamRefCloseGamesStat>;
 }) {
   const [view, setView] = useState<SplitView>("ref");
-  const [refFilter, setRefFilter] = useState<TeamRefFilterMode>("all");
-  const [refSort, setRefSort] = useState<TeamRefSort>("winRate-desc");
   const [crewSort, setCrewSort] = useState<TeamCrewSort>("games-desc");
   const [showAllCrews, setShowAllCrews] = useState(false);
+
+  const matrix = useLeagueMatrixData({
+    teamAbbr,
+    refEntries: refSplits,
+    teamRecord,
+    teamLabel,
+    closeGamesByRef,
+    dataLeague,
+    basePath,
+    sport,
+  });
 
   const { visible: visibleCrewSplits, hiddenCount: hiddenCrewCount } = useMemo(
     () => filterTeamCrewSplits(crewSplits, TEAM_CREW_MIN_GAMES, showAllCrews),
@@ -387,14 +303,6 @@ export function TeamSplitView({
     [visibleCrewSplits, crewSort],
   );
 
-  const filteredRefSplits = useMemo(() => {
-    if (refFilter === "all") {
-      return sortTeamRefEntries(refSplits, refSort);
-    }
-    return filterTeamRefEntries(refSplits, refFilter);
-  }, [refSplits, refSort, refFilter]);
-
-  const showRefMatrix = refFilter !== "all";
   const qualifiedCrewCount = useMemo(
     () => crewSplits.filter((split) => split.games >= TEAM_CREW_MIN_GAMES).length,
     [crewSplits],
@@ -402,6 +310,8 @@ export function TeamSplitView({
   const crewTabCount =
     qualifiedCrewCount > 0 ? qualifiedCrewCount : crewSplits.length;
   const showCrewTab = sport !== "cbb";
+  const teamBaselineLabel =
+    teamRecord.games > 0 ? formatPct(teamRecord.winRate) : undefined;
 
   return (
     <div>
@@ -448,42 +358,24 @@ export function TeamSplitView({
         ) : (
           <>
             <div className="mb-4 flex flex-col gap-3">
-              <TeamRefFilterBar value={refFilter} onChange={setRefFilter} />
-              {!showRefMatrix ? (
+              <MatrixFilterBar
+                value={matrix.filterMode}
+                onChange={matrix.setFilterMode}
+              />
+              {!matrix.isTopTenView ? (
                 <TeamRefSortBar
-                  value={refSort}
-                  onChange={setRefSort}
+                  value={matrix.sort}
+                  onChange={matrix.setSort}
                   id="team-ref-cards-sort"
                 />
               ) : null}
             </div>
-            {showRefMatrix ? (
-              <TeamRefMatrixTable
-                entries={filteredRefSplits}
-                teamRecord={teamRecord}
-                teamLabel={teamLabel}
-                closeGamesByRef={closeGamesByRef}
-                dataLeague={dataLeague}
-                basePath={basePath}
-                sport={sport}
-              />
-            ) : (
-              <div className="space-y-4">
-                {filteredRefSplits.map((entry) => (
-                  <TeamRefSplitCard
-                    key={entry.slug}
-                    entry={entry}
-                    leagueAvgTotal={leagueAvgTotal}
-                    overBaseline={overBaseline}
-                    teamAbbr={teamAbbr}
-                    teamLabel={teamLabel}
-                    teamRecord={teamRecord}
-                    basePath={basePath}
-                    sport={sport}
-                  />
-                ))}
-              </div>
-            )}
+            <MatrixView
+              rows={matrix.rows}
+              sport={sport}
+              teamLabel={teamLabel}
+              teamBaselineLabel={teamBaselineLabel}
+            />
           </>
         )
       ) : (

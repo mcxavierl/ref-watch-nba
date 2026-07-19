@@ -5872,6 +5872,17 @@ p {
     color: var(--text-primary);
   }
 
+  .analytics-matrix-row {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: var(--text-sm);
+  }
+
+  .analytics-matrix-view .team-ref-matrix-row:hover {
+    border-color: color-mix(in srgb, var(--raptors) 25%, var(--border-subtle));
+    background: color-mix(in srgb, var(--surface) 92%, var(--raptors) 8%);
+  }
+
   .team-ref-matrix-close-btn {
     border: none;
     background: transparent;

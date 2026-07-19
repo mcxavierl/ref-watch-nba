@@ -4,34 +4,19 @@ import {
   type DataLeague,
   type RuntimeGameLogEntry,
 } from "@/lib/game-logs";
-import type {
-  TeamRefCloseGameSummary,
-  TeamRefCloseGamesStat,
+import {
+  closeGameMarginThreshold,
+  type TeamRefCloseGamesStat,
 } from "@/lib/team-ref-close-games-display";
 
 export type {
   TeamRefCloseGameSummary,
   TeamRefCloseGamesStat,
 } from "@/lib/team-ref-close-games-display";
-export { formatTeamRefCloseGamesTooltip } from "@/lib/team-ref-close-games-display";
-
-/** League-aware final-margin threshold for ref×team close-game counts. */
-export function closeGameMarginThreshold(league: DataLeague): number {
-  switch (league) {
-    case "NHL":
-    case "EPL":
-    case "LALIGA":
-      return 2;
-    case "NBA":
-    case "CBB":
-      return 5;
-    case "NFL":
-    case "CFB":
-      return 7;
-    default:
-      return 5;
-  }
-}
+export {
+  closeGameMarginThreshold,
+  formatTeamRefCloseGamesTooltip,
+} from "@/lib/team-ref-close-games-display";
 
 export function isCloseGameByMargin(
   game: RuntimeGameLogEntry,

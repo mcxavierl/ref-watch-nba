@@ -14,6 +14,24 @@ export interface TeamRefCloseGamesStat {
   closeGames: TeamRefCloseGameSummary[];
 }
 
+/** League-aware final-margin threshold for ref×team close-game counts. */
+export function closeGameMarginThreshold(league: DataLeague): number {
+  switch (league) {
+    case "NHL":
+    case "EPL":
+    case "LALIGA":
+      return 2;
+    case "NBA":
+    case "CBB":
+      return 5;
+    case "NFL":
+    case "CFB":
+      return 7;
+    default:
+      return 5;
+  }
+}
+
 export function formatTeamRefCloseGamesTooltip(
   stat: TeamRefCloseGamesStat | undefined,
   teamLabel: string,
