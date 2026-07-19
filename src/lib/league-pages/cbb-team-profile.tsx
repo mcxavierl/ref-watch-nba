@@ -3,6 +3,7 @@ import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
 import { CoverageComingSoon } from "@/components/CoverageComingSoon";
+import { prepareTeamCrewPage } from "@/lib/league-pages/prepare-team-crew-page";
 import { teamInLiveNcaaConference } from "@/lib/ncaa-conference-gate";
 import { getTeam, CBB_TEAMS, teamFullName } from "@/lib/cbb/teams";
 
@@ -44,5 +45,9 @@ export default async function CbbTeamPage({
     );
   }
 
-  return <TeamCrewPage config={{ teamAbbr: team.abbr }} />;
+  await prepareTeamCrewPage("cbb", team.abbr);
+
+  return (
+    <TeamCrewPage config={{ teamAbbr: team.abbr, league: "cbb" }} />
+  );
 }
