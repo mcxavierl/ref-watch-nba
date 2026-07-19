@@ -11542,29 +11542,11 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 }
 
 .overview-league-chooser-grid {
-  display: grid;
   align-items: stretch;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1rem;
 }
 
-@media (min-width: 480px) {
-  .overview-league-chooser-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 768px) {
-  .overview-league-chooser-grid {
-    gap: 1.5rem;
-  }
-}
-
-@media (min-width: 960px) {
-  .overview-league-chooser-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-auto-rows: 1fr;
-  }
+.overview-league-chooser-grid > .overview-league-chooser-card {
+  min-width: 0;
 }
 
 .overview-league-chooser-card {
@@ -11579,13 +11561,15 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   );
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: stretch;
+  width: 100%;
+  min-width: 280px;
   height: 100%;
   min-height: 11.25rem;
-  padding: 1.15rem 1.2rem 1.05rem;
+  padding: 1.5rem;
   border-radius: 1rem;
   border: 1px solid rgb(30 41 59);
   background: rgb(15 23 42);
@@ -11715,7 +11699,8 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 
 .overview-league-chooser-top {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-start;
   gap: 0.85rem;
   flex: 1 1 auto;
   min-width: 0;
@@ -11827,6 +11812,7 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -11835,6 +11821,10 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--ink);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-league-chooser-meta {
@@ -11848,7 +11838,8 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  margin-top: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
   font-size: 0.78rem;
   font-weight: 650;
   color: color-mix(in srgb, var(--chooser-accent) 72%, var(--ink));
