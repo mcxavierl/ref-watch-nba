@@ -199,6 +199,108 @@ function teamCityForLeague(leagueId: LeagueId, abbr: string): string | undefined
   return team?.city;
 }
 
+function teamNameForLeague(leagueId: LeagueId, abbr: string): string | undefined {
+  const key = abbr.toUpperCase();
+  const team =
+    leagueId === "nba"
+      ? getNbaTeam(key)
+      : leagueId === "nhl"
+        ? getNhlTeam(key)
+        : leagueId === "nfl"
+          ? getNflTeam(key === "SD" ? "LAC" : key)
+          : leagueId === "epl"
+            ? getEplTeam(key)
+            : leagueId === "laliga"
+              ? getLaligaTeam(key)
+              : leagueId === "cbb"
+                ? getCbbTeam(key)
+                : leagueId === "cfb"
+                  ? getCfbTeam(key)
+                  : undefined;
+  return team?.name;
+}
+
+function isSoccerLeague(leagueId: LeagueId): boolean {
+  return leagueId === "epl" || leagueId === "laliga";
+}
+
+function winnerNarrativeLabel(leagueId: LeagueId, abbr: string): string {
+  if (isSoccerLeague(leagueId)) {
+    return teamNameForLeague(leagueId, abbr) ?? abbr;
+  }
+  return teamCityForLeague(leagueId, abbr) ?? abbr;
+}
+
+function loserNarrativeLabel(leagueId: LeagueId, abbr: string): string {
+  const nickname = teamNameForLeague(leagueId, abbr);
+  if (!nickname) return abbr;
+  return isSoccerLeague(leagueId) ? nickname : `the ${nickname}`;
+}
+
+function meetingYear(date: string): number {
+  return new Date(`${date}T12:00:00`).getFullYear();
+}
+
+function formatRecentGameContextLine(
+  game: RuntimeGameLogEntry,
+  leagueId: LeagueId,
+): string {
+  const year = meetingYear(game.date);
+  const awayAbbr = game.awayTeam.toUpperCase();
+  const homeAbbr = game.homeTeam.toUpperCase();
+
+  if (game.awayScore === game.homeScore) {
+    const awayLabel = winnerNarrativeLabel(leagueId, awayAbbr);
+    const homeLabel = winnerNarrativeLabel(leagueId, homeAbbr);
+    const tieVerb = isSoccerLeague(leagueId) ? "drew with" : "tied";
+    return `${awayLabel} ${tieVerb} ${homeLabel} in ${year}, ${game.awayScore}-${game.homeScore}.`;
+  }
+
+  const awayWon = game.awayScore > game.homeScore;
+  const winnerAbbr = awayWon ? awayAbbr : homeAbbr;
+  const loserAbbr = awayWon ? homeAbbr : awayAbbr;
+  const winnerScore = awayWon ? game.awayScore : game.homeScore;
+  const loserScore = awayWon ? game.homeScore : game.awayScore;
+
+  return `${winnerNarrativeLabel(leagueId, winnerAbbr)} beat ${loserNarrativeLabel(leagueId, loserAbbr)} in ${year}, ${winnerScore}-${loserScore}.`;
+}
+
+function recentHeadToHeadMeeting(
+  leagueId: LeagueId,
+  awayTeam: string,
+  homeTeam: string,
+): RuntimeGameLogEntry | undefined {
+  const dataLeague = LEAGUE_TO_DATA[leagueId];
+  if (!dataLeague) return undefined;
+  const logs = loadRuntimeGameLogs(dataLeague);
+  if (!logs?.games?.length) return undefined;
+
+  const allMeetings = logs.games.filter((game) =>
+    isHeadToHead(game, awayTeam, homeTeam, leagueId),
+  );
+  if (allMeetings.length === 0) return undefined;
+
+  const seasons = distinctSeasons(logs.games);
+  const recentSeasons = new Set(seasons.slice(-RECENT_SEASON_WINDOW));
+  const recentMeetings = allMeetings.filter((game) => recentSeasons.has(game.season));
+  if (recentMeetings.length === 0) return undefined;
+
+  return [...recentMeetings].sort(
+    (a, b) => b.date.localeCompare(a.date) || b.gameId.localeCompare(a.gameId),
+  )[0];
+}
+
+/** Narrative last-meeting note for upcoming cards when teams met in the last 5 seasons. */
+export function buildOverviewRecentGameContextLine(
+  leagueId: LeagueId,
+  awayTeam: string,
+  homeTeam: string,
+): string | undefined {
+  const latest = recentHeadToHeadMeeting(leagueId, awayTeam, homeTeam);
+  if (!latest) return undefined;
+  return formatRecentGameContextLine(latest, leagueId);
+}
+
 function latestHeadToHeadMeeting(
   leagueId: LeagueId,
   awayTeam: string,
