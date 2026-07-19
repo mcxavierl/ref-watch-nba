@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ProfileSignal, ProfileSignalsBundle } from "@/lib/profile-signals";
 import { NotableInsightBadge } from "@/components/hub/NotableInsightBadge";
 import { StatCardShareButton } from "@/components/StatCardShareButton";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { researchHubHref, type FindingLeague } from "@/lib/findings-shared";
@@ -90,7 +91,7 @@ function SignalCard({
       : "mt-2 text-sm leading-relaxed text-zinc-600";
 
   return (
-    <div id={signal.kind} data-stat-card="true" className="profile-signal-card stat-card">
+    <div id={STAT_CARD_ANCHOR.profileSignal(signal.kind)} data-stat-card="true" className="profile-signal-card stat-card">
       <div className="profile-signal-card-head">
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           <h3 className={titleClass}>
@@ -99,7 +100,7 @@ function SignalCard({
           {signal.notable && <NotableInsightBadge />}
         </div>
         <StatCardShareButton
-          hashId={signal.kind}
+          hashId={STAT_CARD_ANCHOR.profileSignal(signal.kind)}
           label={showKeyLabel ? keyFindingLabel(signal) : signal.headline}
         />
       </div>

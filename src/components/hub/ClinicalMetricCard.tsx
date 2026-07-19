@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { ProvenanceIndicator, type ProvenanceIndicatorProps } from "@/components/hub/ProvenanceIndicator";
 import { StatCardShareButton } from "@/components/StatCardShareButton";
-import { statCardHashId } from "@/lib/stat-card-id";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 
 /**
  * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
@@ -34,7 +34,7 @@ export function ClinicalMetricCard({
   const hashId =
     id ??
     shareId ??
-    (typeof label === "string" ? statCardHashId(label) : undefined);
+    (typeof label === "string" ? STAT_CARD_ANCHOR.metricLabel(label) : undefined);
 
   return (
     <div

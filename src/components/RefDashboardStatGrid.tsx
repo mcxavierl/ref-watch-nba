@@ -5,7 +5,7 @@ import { provenanceValueClass } from "@/components/ProvenanceMarker";
 import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { StatCardShareButton } from "@/components/StatCardShareButton";
-import { statCardHashId } from "@/lib/stat-card-id";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 
 /**
  * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
@@ -49,7 +49,7 @@ export function RefDashboardStatCell({
   const hidden = isFallbackMetric(provenance);
   const hashId =
     shareId ??
-    (typeof label === "string" ? statCardHashId(label) : undefined);
+    (typeof label === "string" ? STAT_CARD_ANCHOR.metricLabel(label) : undefined);
 
   const valueNode = (
     <dd

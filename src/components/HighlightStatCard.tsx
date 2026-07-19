@@ -19,6 +19,7 @@ import {
 import { RefAvatar } from "@/components/RefAvatar";
 import { NotableInsightBadge } from "@/components/hub/NotableInsightBadge";
 import { StatCardShareButton } from "@/components/StatCardShareButton";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { DirectionalDeltaValue, deltaToneFromValue } from "@/components/shared/DirectionalDeltaValue";
 import { Pill } from "@/components/ui/Pill";
@@ -165,7 +166,7 @@ export function HighlightStatCard({
 
   return (
     <RefCard
-      id={insightKind}
+      id={STAT_CARD_ANCHOR.hubInsight(insightKind)}
       data-league={leagueId}
       data-insight={insightKind}
       data-accent={accent}
@@ -193,7 +194,7 @@ export function HighlightStatCard({
         ) : (
           <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
         )}
-        <StatCardShareButton hashId={insightKind} label={kicker} />
+        <StatCardShareButton hashId={STAT_CARD_ANCHOR.hubInsight(insightKind)} label={kicker} />
       </div>
       {profile}
       {metricBlock ? (

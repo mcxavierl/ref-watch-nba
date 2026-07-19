@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { StatCardShareButton } from "@/components/StatCardShareButton";
-import { statCardHashId } from "@/lib/stat-card-id";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 
 export type StatCardElement = "div" | "article" | "li";
 
@@ -29,7 +29,7 @@ export function StatCard({
   children,
   showShare = true,
 }: StatCardProps) {
-  const hashId = id ?? statCardHashId(title);
+  const hashId = id ?? STAT_CARD_ANCHOR.metricLabel(title);
 
   return (
     <Tag

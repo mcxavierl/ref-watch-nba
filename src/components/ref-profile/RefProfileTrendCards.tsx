@@ -1,6 +1,6 @@
 import { TermHelp } from "@/components/TermHelp";
 import { StatCardShareButton } from "@/components/StatCardShareButton";
-import { statCardHashId } from "@/lib/stat-card-id";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 import type { RefBettingStats } from "@/lib/types";
 import { formatPctFromWlp, formatWlp } from "@/lib/ref-betting";
 import { formatPct } from "@/lib/data";
@@ -86,7 +86,7 @@ export function RefProfileTrendCards({ stats }: { stats: RefBettingStats }) {
       <TrendCard
         title="Home team W/L"
         termId="home-team-wl"
-        shareId={statCardHashId("home-team-wl")}
+        shareId={STAT_CARD_ANCHOR.trend.homeTeamWl}
         record={stats.homeTeamRecord}
         rateLabel={`${(homeWlRate * 100).toFixed(1)}% home win rate`}
         rate={homeWlRate}
@@ -95,7 +95,7 @@ export function RefProfileTrendCards({ stats }: { stats: RefBettingStats }) {
       <TrendCard
         title="Home team ATS"
         termId="ats"
-        shareId={statCardHashId("home-team-ats")}
+        shareId={STAT_CARD_ANCHOR.trend.homeTeamAts}
         record={stats.homeTeamAts}
         rateLabel={`${(atsRate * 100).toFixed(1)}% ATS`}
         rate={atsRate}

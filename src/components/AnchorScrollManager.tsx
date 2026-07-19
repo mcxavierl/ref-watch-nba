@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { scrollToId } from "@/lib/scroll-offset";
+import { scrollToId, scrollToIdWhenReady } from "@/lib/scroll-offset";
 
 function syncScrollOffsetToken(): void {
   const chrome = document.querySelector(".site-chrome");
@@ -36,22 +36,36 @@ export function AnchorScrollManager() {
   }, []);
 
   useEffect(() => {
-    return runDeferredScroll(() => {
+    let cancelled = false;
+
+    const run = async () => {
       syncScrollOffsetToken();
       const hash = window.location.hash.replace(/^#/, "");
-      if (hash) {
-        scrollToId(hash, "auto");
+      if (!hash) {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
         return;
       }
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
+      const scrolled = await scrollToIdWhenReady(hash, "smooth");
+      if (cancelled) return;
+      if (!scrolled) scrollToId(hash, "auto");
+    };
+
+    const cancel = runDeferredScroll(() => {
+      void run();
     });
+
+    return () => {
+      cancelled = true;
+      cancel();
+    };
   }, [pathname]);
 
   useEffect(() => {
     const onHashChange = () => {
       const hash = window.location.hash.replace(/^#/, "");
       if (!hash) return;
-      runDeferredScroll(() => scrollToId(hash, "smooth"));
+      void scrollToIdWhenReady(hash, "smooth");
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
