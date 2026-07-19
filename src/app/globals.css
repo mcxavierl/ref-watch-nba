@@ -6368,6 +6368,46 @@ p {
     min-width: 0;
   }
 
+  .gsni-research-info.methodology-accordion {
+    margin-top: 0;
+    border-color: rgb(30 41 59);
+    background: rgb(15 23 42);
+  }
+
+  .gsni-anomaly-callout-grid {
+    gap: 1rem;
+  }
+
+  .gsni-anomaly-callout-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100%;
+  }
+
+  .gsni-anomaly-callout-link {
+    margin-top: auto;
+    padding-top: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .gsni-table-score-cell--integrated {
+    padding: 0.15rem 0;
+  }
+
+  .gsni-table-score-gauge-row {
+    max-width: 24rem;
+  }
+
+  #gsni-official-table tr.gsni-table-row--flash {
+    outline: 2px solid color-mix(in srgb, var(--raptors) 45%, transparent);
+    outline-offset: -2px;
+    transition: outline-color 200ms ease;
+  }
+
   .gsni-profile-active {
     display: grid;
     gap: var(--space-4);

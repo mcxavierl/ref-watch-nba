@@ -295,3 +295,11 @@ export function buildGsniResearchHighlights(
 export function gsniResearchBasePath(leagueId: InsightsLeagueId): string {
   return LEAGUE_MANIFEST[leagueId].pathPrefix;
 }
+
+/** DOM id for a GSNI official table row (scroll target from anomaly callouts). */
+export function gsniOfficialRowAnchor(refSlug: string): string {
+  return `gsni-row-${refSlug}`;
+}
+
+export const GSNI_ANOMALY_HIGHLIGHT_MIN = 3;
+export const GSNI_ANOMALY_HIGHLIGHT_MAX = 6;
