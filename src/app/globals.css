@@ -6029,6 +6029,44 @@ p {
     min-width: 22rem;
   }
 
+  /* Pin each cell to its column so hiding the mobile expand control on desktop
+     does not shift ref names and win rates into the same grid track. */
+  .team-ref-matrix-rank,
+  .team-ref-matrix-head-rank {
+    grid-column: 1;
+  }
+
+  .team-ref-matrix-expand,
+  .team-ref-matrix-head-expand {
+    grid-column: 2;
+  }
+
+  .team-ref-matrix-ref,
+  .team-ref-matrix-head-ref {
+    grid-column: 3;
+    min-width: 0;
+  }
+
+  .team-ref-matrix-stat--win,
+  .team-ref-matrix-head > .team-ref-matrix-head-stat:nth-child(4) {
+    grid-column: 4;
+  }
+
+  .team-ref-matrix-stat--baseline,
+  .team-ref-matrix-head > .team-ref-matrix-head-stat:nth-child(5) {
+    grid-column: 5;
+  }
+
+  .team-ref-matrix-stat--close,
+  .team-ref-matrix-head > .team-ref-matrix-head-stat:nth-child(6) {
+    grid-column: 6;
+  }
+
+  .team-ref-matrix-stat--whistle,
+  .team-ref-matrix-head > .team-ref-matrix-head-stat:nth-child(7) {
+    grid-column: 7;
+  }
+
   .team-ref-matrix-row {
     border: 1px solid var(--border-subtle);
     border-radius: 0.5rem;
