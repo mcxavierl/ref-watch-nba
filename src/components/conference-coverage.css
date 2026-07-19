@@ -237,6 +237,16 @@ html[data-color="light"]:not([data-contrast="high"]) .ncaa-coverage-clinical-lin
   font-size: var(--text-sm);
 }
 
+.cbb-teams-conference-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.cbb-teams-conference-heading .ncaa-conference-logo {
+  flex-shrink: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ncaa-coverage-live-dot {
     animation: none;
@@ -333,9 +343,22 @@ html.dark .ncaa-coverage-live-item {
 }
 
 .ncaa-conference-logo-frame {
-  fill: rgba(15, 23, 42, 0.85);
-  stroke: #334155;
+  fill: color-mix(in srgb, currentColor 8%, rgba(15, 23, 42, 0.88));
+  stroke: color-mix(in srgb, currentColor 35%, #334155);
   stroke-width: 1;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo-frame {
+  fill: color-mix(in srgb, currentColor 6%, #ffffff);
+  stroke: color-mix(in srgb, currentColor 28%, #cbd5e1);
+}
+
+.ncaa-coverage-live-item .ncaa-conference-logo {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-coverage-live-item .ncaa-conference-logo {
+  filter: none;
 }
 
 .ncaa-conference-logo-label {
@@ -375,8 +398,8 @@ html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo {
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .ncaa-conference-logo-frame {
-  fill: #ffffff;
-  stroke: #cbd5e1;
+  fill: color-mix(in srgb, currentColor 6%, #ffffff);
+  stroke: color-mix(in srgb, currentColor 28%, #cbd5e1);
 }
 
 .ncaa-conference-logo[data-conference="ACC"] {
