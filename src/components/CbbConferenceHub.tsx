@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { RefRankingsTable } from "@/components/RefRankingsTable";
+import { CbbRefRankMatrix } from "@/components/cbb/CbbRefRankMatrix";
 import { CbbAnalyticsLeaders } from "@/components/CbbAnalyticsLeaders";
 import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";
 import { buildCbbAnalyticsLeaders } from "@/lib/cbb/analytics-leaders";
@@ -10,6 +10,7 @@ import {
 } from "@/lib/cbb/conference-trends-shared";
 import type { LiveNcaaConferenceId } from "@/lib/ncaa-conference-gate";
 import type { RefStatsFile } from "@/lib/types";
+import "@/components/cbb/cbb-research-terminal.css";
 import "@/components/conference-coverage.css";
 
 export function CbbConferenceHub({
@@ -55,22 +56,18 @@ export function CbbConferenceHub({
 
       <div className="section-block section-block-tight">
         <div className="section-block-header">
-          <h3 className="section-title">Referee rankings</h3>
+          <h3 className="section-title">Top 10 officials</h3>
           <p className="section-lead">
-            Officials ranked by conference-scoped tendencies. Open a profile for full splits.
+            Matrix-style leaderboard by conference-scoped scoring impact. Over rate and
+            fouls use tabular numerals for scan comparison.
           </p>
         </div>
-        <div className="data-card">
-          <RefRankingsTable
-            refs={refStats.refs}
-            league="CBB"
-            minSampleSize={refStats.meta.minSampleSize}
-            overBaseline={refStats.meta.leagueOverBaseline}
-            leagueAvgTotal={refStats.meta.leagueAvgTotal}
-            basePath="/cbb"
-            initialRowLimit={10}
-          />
-        </div>
+        <CbbRefRankMatrix
+          refs={refStats.refs}
+          minSampleSize={refStats.meta.minSampleSize}
+          basePath="/cbb"
+          limit={10}
+        />
         <p className="cbb-conference-hub-more">
           <Link
             href={`/cbb/research/tendencies?conference=${cbbTrendsConferenceSlug(conference as CbbTrendsConferenceScope)}`}
