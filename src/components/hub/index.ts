@@ -20,6 +20,8 @@ export {
   StatComparison,
 } from "@/components/hub/RefCard";
 export { FooterLeaders } from "@/components/hub/FooterLeaders";
+export { StatCard, type StatCardProps } from "@/components/StatCard";
+export { StatCardShareButton } from "@/components/StatCardShareButton";
 export {
   ClinicalMetricCard,
   CLINICAL_METRIC_CARD_CLASS,

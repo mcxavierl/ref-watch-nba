@@ -4,6 +4,8 @@ import { isFallbackMetric } from "@/lib/provenance-utils";
 import { provenanceValueClass } from "@/components/ProvenanceMarker";
 import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
+import { StatCardShareButton } from "@/components/StatCardShareButton";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 
 /**
  * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
@@ -29,6 +31,7 @@ export function RefDashboardStatCell({
   source,
   lastUpdated,
   valueTooltip,
+  shareId,
 }: {
   label: ReactNode;
   value: string;
@@ -40,8 +43,13 @@ export function RefDashboardStatCell({
   lastUpdated?: string;
   /** Tooltip explaining the shrunk estimate and raw observed value. */
   valueTooltip?: string;
+  /** Stable deep-link id; defaults to slugified label when label is a string. */
+  shareId?: string;
 }) {
   const hidden = isFallbackMetric(provenance);
+  const hashId =
+    shareId ??
+    (typeof label === "string" ? STAT_CARD_ANCHOR.metricLabel(label) : undefined);
 
   const valueNode = (
     <dd
@@ -52,17 +60,29 @@ export function RefDashboardStatCell({
   );
 
   return (
-    <div className="ref-stat-card clinical-metric-card backdrop-blur-md">
+    <div
+      id={hashId}
+      data-stat-card={hashId ? "true" : undefined}
+      className="ref-stat-card clinical-metric-card stat-card backdrop-blur-md"
+    >
       <div className="clinical-metric-card-head">
         <dt className="ref-stat-label">{label}</dt>
-        {!hidden && (
-          <ProvenanceIndicator
-            sampleSize={sampleSize}
-            source={source}
-            lastUpdated={lastUpdated}
-            provenance={provenance}
-          />
-        )}
+        <div className="clinical-metric-card-head-actions">
+          {!hidden && (
+            <ProvenanceIndicator
+              sampleSize={sampleSize}
+              source={source}
+              lastUpdated={lastUpdated}
+              provenance={provenance}
+            />
+          )}
+          {hashId ? (
+            <StatCardShareButton
+              hashId={hashId}
+              label={typeof label === "string" ? label : undefined}
+            />
+          ) : null}
+        </div>
       </div>
       {valueTooltip && !hidden ? (
         <MetricInfoHint hint={valueTooltip}>{valueNode}</MetricInfoHint>
