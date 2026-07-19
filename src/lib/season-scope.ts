@@ -93,6 +93,50 @@ function seasonStartYear(label: string): number | null {
   return Number.isFinite(start) ? start : null;
 }
 
+/** Calendar year when a season ends (e.g. 2025-26 → 2026). */
+export function seasonEndDisplayYear(season: string): number {
+  const start = seasonStartYear(season);
+  if (start === null) return new Date().getFullYear();
+  const endPart = season.split("-")[1];
+  if (!endPart) return start + 1;
+  if (endPart.length === 2) {
+    const century = Math.floor(start / 100) * 100;
+    return century + Number.parseInt(endPart, 10);
+  }
+  const parsed = Number.parseInt(endPart, 10);
+  return Number.isFinite(parsed) ? parsed : start + 1;
+}
+
+/** Compact year span for scoped seasons, e.g. 2016-2026. */
+export function formatScopedSeasonYearSpan(scopedSeasons: string[]): string {
+  const sorted = [...scopedSeasons].sort();
+  if (sorted.length === 0) return "-";
+  const first = sorted[0]!;
+  const last = sorted[sorted.length - 1]!;
+  const startYear = seasonStartYear(first);
+  const endYear = seasonEndDisplayYear(last);
+  if (startYear === null) return "-";
+  if (sorted.length === 1) {
+    return `${startYear}-${String(endYear).slice(-2)}`;
+  }
+  return `${startYear}-${endYear}`;
+}
+
+/** Approximate calendar bounds for a scoped season list (Sep start year through Feb end year). */
+export function scopedSeasonDateRange(
+  scopedSeasons: string[],
+): { earliest: string; latest: string } | null {
+  const sorted = [...scopedSeasons].sort();
+  if (sorted.length === 0) return null;
+  const startYear = seasonStartYear(sorted[0]!);
+  if (startYear === null) return null;
+  const endYear = seasonEndDisplayYear(sorted[sorted.length - 1]!);
+  return {
+    earliest: `${startYear}-09-01`,
+    latest: `${endYear}-02-28`,
+  };
+}
+
 export function resolveScopedSeasons(
   allSeasons: string[],
   mode: SeasonScopeMode,
@@ -221,7 +265,7 @@ export function hubDisplaySeasonScope(
   const scoped = resolveScopedSeasonsForLeague(leagueId, mode, availableSeasons);
   return {
     seasonCount: scoped.length,
-    seasonSpan: formatSeasonScope(scoped.length),
+    seasonSpan: formatScopedSeasonYearSpan(scoped),
   };
 }
 

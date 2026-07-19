@@ -36,7 +36,7 @@ import {
 } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 import {
-  formatSeasonScope,
+  formatScopedSeasonYearSpan,
   resolveScopedSeasonsForLeague,
   scopedSinceSeason,
   type SeasonScopeMode,
@@ -142,7 +142,7 @@ export function loadHubLeagueStats(
     scopedSeasons,
     availableSeasons,
     sinceSeason: scopedSinceSeason(scopedSeasons),
-    scopeLabel: formatSeasonScope(scopedSeasons.length),
+    scopeLabel: formatScopedSeasonYearSpan(scopedSeasons),
   };
 }
 
@@ -179,7 +179,7 @@ export function loadScopedLeagueStats(
     scopedSeasons,
     availableSeasons,
     sinceSeason: scopedSinceSeason(scopedSeasons),
-    scopeLabel: formatSeasonScope(scopedSeasons.length),
+    scopeLabel: formatScopedSeasonYearSpan(scopedSeasons),
   };
 }
 

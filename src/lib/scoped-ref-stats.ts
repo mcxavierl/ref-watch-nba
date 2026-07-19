@@ -19,6 +19,7 @@ import type { LeagueId } from "@/lib/leagues";
 import {
   type SeasonScopeContext,
   type SeasonScopeMode,
+  scopedSeasonDateRange,
 } from "@/lib/season-scope";
 import type {
   RefGameRecord,
@@ -447,6 +448,8 @@ function filterByRefSeasons(
   const refs = base.refs.filter((ref) =>
     ref.seasons.some((s) => seasonSet.has(s)),
   );
+  const scopedDateRange =
+    scopedSeasonDateRange(scopedSeasons) ?? base.meta.dateRange;
   return applyScopedMetaBaselines(
     overlayNcaaConferenceBaselines(
       {
@@ -455,6 +458,7 @@ function filterByRefSeasons(
           ...base.meta,
           seasons: scopedSeasons,
           refCount: refs.length,
+          ...(scopedDateRange ? { dateRange: scopedDateRange } : {}),
         },
         refs,
       },

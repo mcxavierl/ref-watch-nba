@@ -165,13 +165,10 @@ export function InsightsHubPage({
 
   const {
     stats,
-    formatRange,
     scopedSeasons,
     scopeLabel,
     availableSeasons,
   } = scopeContext;
-
-  const range = formatRange(stats.meta);
 
   const hubFindings = hubFindingsForLeague(leagueId, scopedSeasons, dataLeague);
   const cbbHasFindings = leagueId !== "cbb" || hubFindings.length > 0;
@@ -220,8 +217,7 @@ export function InsightsHubPage({
   const scopeMeta = (
     <div className="insights-hero-meta">
       <p className="insights-hero-meta-copy">
-        Showing <span className="insights-hero-meta-strong">{scopeLabel}</span>{" "}
-        ({range})
+        Showing <span className="insights-hero-meta-strong">{scopeLabel}</span>
         {leagueId === "cbb" &&
         (activeView === "trends" || activeView === "tendencies") ? (
           <>

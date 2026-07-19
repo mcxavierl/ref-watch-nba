@@ -10,7 +10,6 @@ import type { LeagueConfig } from "@/lib/leagues";
 import { gsniInsightSummary, gsniShrinkageFromProfile } from "@/lib/gsni-display";
 import {
   compareGsniByAbsDesc,
-  gsniQualifiesHighVariance,
 } from "@/lib/gsni-research";
 import { formatGsniScoreValue } from "@/lib/gsni-ui";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
@@ -86,7 +85,11 @@ export function gsniSortedRefs(refs: RefProfile[]): RefProfile[] {
     .filter((ref) => {
       const display =
         gsniShrinkageFromProfile(ref)?.display ?? ref.referee_gsni;
-      return display !== undefined && gsniQualifiesHighVariance(display);
+      return (
+        display !== undefined &&
+        Number.isFinite(display) &&
+        (ref.gsniHighLeverageMinutes ?? 0) > 0
+      );
     })
     .sort((a, b) => {
       const aDisplay =
