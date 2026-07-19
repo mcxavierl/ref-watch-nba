@@ -31,18 +31,23 @@ export function RankingsInsightCards({
     >
       {synthesis.insights.map((insight) => (
         <HighlightStatCard
-          key={insight.id}
+          key={insight.refSlug ?? insight.id}
           leagueId={leagueId}
-          insightKind={insight.id}
-          accent={highlightCardAccentForInsight(insight.id)}
+          insightKind={insight.id.startsWith("gsni-highlight") ? "gsni-highlight" : insight.id}
+          accent={highlightCardAccentForInsight(
+            insight.id.startsWith("gsni-highlight") ? "gsni-highlight" : insight.id,
+          )}
           tone={rankingsInsightCardTone(insight)}
-          icon={highlightCardIconForInsight(insight.id)}
+          icon={highlightCardIconForInsight(
+            insight.id.startsWith("gsni-highlight") ? "gsni-highlight" : insight.id,
+          )}
           kicker={insight.title}
           refName={insight.refName}
           refSlug={insight.refSlug}
           basePath={basePath}
           statValue={insight.statValue}
           statLabel={insight.statLabel}
+          categoryHref={insight.categoryHref}
           body={insight.body}
           heroPills={variant === "hero"}
         />

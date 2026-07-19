@@ -67,4 +67,10 @@ describe("Clinical Modern OG image surfaces", () => {
     assert.doesNotMatch(source, /OG_NHL_CARD_BG/);
     assert.doesNotMatch(source, /cardBackground/);
   });
+
+  it("OG league hub cards avoid undefined boxShadow for ImageResponse", () => {
+    const source = readSrc("src/components/og-components/LeagueHubCard.tsx");
+    assert.doesNotMatch(source, /boxShadow:[\s\S]*undefined/);
+    assert.match(source, /boxShadow:[\s\S]*"none"/);
+  });
 });

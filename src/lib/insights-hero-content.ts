@@ -167,13 +167,14 @@ export function heroSynthesisForView(
         const displayScore =
           gsniShrinkageFromProfile(ref)?.display ?? ref.referee_gsni!;
         return {
-          id: "gsni-highlight",
+          id: `gsni-highlight-${ref.slug}`,
           title: "High-Leverage Penalty Frequency",
           body: gsniInsightSummary(displayScore),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: "Game-State Index",
           statValue: formatGsniScoreValue(displayScore),
+          categoryHref: `${league.pathPrefix}/research/game-state#gsni-official-table`,
         };
       }),
       leagueSummary: "",

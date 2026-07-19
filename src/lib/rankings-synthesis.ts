@@ -21,6 +21,8 @@ export type RankingsInsight = {
   refName?: string;
   statLabel?: string;
   statValue?: string;
+  /** When set, the category pill and stat block link here instead of the ref profile. */
+  categoryHref?: string;
 };
 
 export type RankingsSynthesis = {

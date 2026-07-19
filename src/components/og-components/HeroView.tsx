@@ -22,29 +22,83 @@ export function HeroView({
   }));
 
   return (
-    <div className="flex h-full w-full flex-col bg-slate-950 font-sans text-slate-100">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "#020617",
+        color: "#f1f5f9",
+        fontFamily: "Inter, system-ui, sans-serif",
+      }}
+    >
       <OgHeaderBand
         leagueLabel={leagueLabelForFocus(focusLeagueId)}
         subtitle={subtitle}
       />
 
-      <div className="flex flex-1 gap-3 px-8 py-4">
-        <div className="grid min-w-0 flex-[1.55] grid-cols-3 grid-rows-2 gap-2.5">
-          {cards.map((card) => (
-            <LeagueHubCard key={card.leagueId} card={card} />
+      <div
+        style={{
+          display: "flex",
+          flex: 1,
+          gap: 12,
+          padding: "16px 32px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            flex: 1.55,
+            minWidth: 0,
+          }}
+        >
+          {[0, 1].map((row) => (
+            <div key={row} style={{ display: "flex", gap: 10, flex: 1 }}>
+              {cards.slice(row * 3, row * 3 + 3).map((card) => (
+                <div key={card.leagueId} style={{ display: "flex", flex: 1, minWidth: 0 }}>
+                  <LeagueHubCard card={card} />
+                </div>
+              ))}
+            </div>
           ))}
         </div>
 
-        <div className="min-w-0 flex-[0.95]">
-          {slateGame ? <UpcomingSlateCard game={slateGame} /> : (
-            <div className="flex h-full items-center justify-center rounded-2xl border border-dashed border-slate-800 bg-slate-900 p-4 text-sm text-slate-400">
+        <div style={{ display: "flex", minWidth: 0, flex: 0.95 }}>
+          {slateGame ? (
+            <UpcomingSlateCard game={slateGame} />
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                height: "100%",
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 16,
+                border: "1px dashed #1e293b",
+                backgroundColor: "#0f172a",
+                padding: 16,
+                fontSize: 14,
+                color: "#94a3b8",
+              }}
+            >
               Upcoming slate loading
             </div>
           )}
         </div>
       </div>
 
-      <div className="px-8 pb-4 text-xs font-semibold text-slate-500">
+      <div
+        style={{
+          padding: "0 32px 16px",
+          fontSize: 12,
+          fontWeight: 600,
+          color: "#64748b",
+        }}
+      >
         refwatch.ca · Historical referee analytics · Not betting advice
       </div>
     </div>

@@ -45,6 +45,7 @@ export type GsniResearchRow = {
   highLeverageMinutes: number;
   gateCleared: boolean;
   href: string;
+  gameStateHref: string;
 };
 
 export type GsniResearchHighlight = GsniResearchRow & {
@@ -173,6 +174,7 @@ function toRow(
     highLeverageMinutes: ref.gsniHighLeverageMinutes ?? 0,
     gateCleared: cleared,
     href: `${basePath}/refs/${ref.slug}`,
+    gameStateHref: `${basePath}/research/game-state#gsni-official-table`,
   };
 }
 

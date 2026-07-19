@@ -16,54 +16,169 @@ export function LeagueHubCard({ card }: { card: OgLeagueHubCardData }) {
 
   return (
     <div
-      className={`relative flex h-full min-h-0 flex-col justify-between overflow-hidden rounded-2xl border bg-slate-900 p-3 ${
-        highlighted ? "border-slate-600 shadow-lg" : "border-slate-800"
-      }`.trim()}
       style={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: "100%",
+        minHeight: 0,
+        overflow: "hidden",
+        borderRadius: 16,
+        border: highlighted ? "1px solid #475569" : "1px solid #1e293b",
+        backgroundColor: "#0f172a",
+        padding: 12,
         boxShadow: highlighted
           ? `0 0 0 1px ${accent}55, 0 12px 28px ${accent}22`
-          : undefined,
+          : "none",
       }}
     >
       <div
-        className="absolute left-0 right-0 top-0 h-[3px]"
         style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 0,
+          height: 3,
           background: `linear-gradient(90deg, ${accent} 0%, ${accent}88 100%)`,
         }}
       />
-      <div className="flex min-w-0 items-start gap-2.5 pt-1">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-700 bg-slate-900">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 10,
+          minWidth: 0,
+          paddingTop: 4,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: 36,
+            height: 36,
+            flexShrink: 0,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 999,
+            border: "1px solid #334155",
+            backgroundColor: "#0f172a",
+          }}
+        >
           <OgLeagueMark leagueId={card.leagueId} size={16} />
         </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            minWidth: 0,
+            flex: 1,
+          }}
+        >
           {collegeTier ? (
-            <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+            <span
+              style={{
+                fontSize: 9,
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#64748b",
+              }}
+            >
               College sports
             </span>
           ) : null}
-          <span className="truncate text-sm font-bold text-slate-50">
+          <span
+            style={{
+              fontSize: 14,
+              fontWeight: 700,
+              color: "#f8fafc",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
             {collegeTier ? card.shortLabel : card.label}
           </span>
-          <span className="text-[10px] font-medium tabular-nums text-slate-400">
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 500,
+              color: "#94a3b8",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
             {formatCount(card.refCount)} refs · {formatCount(card.gameCount)} games
           </span>
-          <div className="mt-1 flex flex-col gap-0.5">
-            <div className="flex items-baseline justify-between gap-2 text-[10px] text-slate-400">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              marginTop: 4,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                justifyContent: "space-between",
+                gap: 8,
+                fontSize: 10,
+                color: "#94a3b8",
+              }}
+            >
               <span>{card.whistleLabel}</span>
-              <strong className="text-xs font-bold tabular-nums text-slate-100">
+              <strong
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#f1f5f9",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
                 {formatLeaguePaceValue(card.whistlePerGame)}
               </strong>
             </div>
-            <div className="flex items-baseline justify-between gap-2 text-[10px] text-slate-400">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                justifyContent: "space-between",
+                gap: 8,
+                fontSize: 10,
+                color: "#94a3b8",
+              }}
+            >
               <span>{card.scoreLabel}</span>
-              <strong className="text-xs font-bold tabular-nums text-slate-100">
+              <strong
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#f1f5f9",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
                 {formatLeaguePaceValue(card.scorePerGame)}
               </strong>
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-2 flex items-center gap-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 4,
+          marginTop: 8,
+          fontSize: 9,
+          fontWeight: 600,
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: "#64748b",
+        }}
+      >
         Open hub
       </div>
     </div>

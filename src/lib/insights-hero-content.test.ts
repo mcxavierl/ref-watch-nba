@@ -3,11 +3,14 @@ import { describe, it } from "node:test";
 import {
   findingsToRankingsInsights,
   filterSynthesisForTrends,
+  heroSynthesisForView,
   rankingsConfigForView,
   refSlugsFromFindings,
 } from "@/lib/insights-hero-content";
 import type { Finding } from "@/lib/findings-shared";
+import { LEAGUES } from "@/lib/leagues";
 import type { RankingsSynthesis } from "@/lib/rankings-synthesis";
+import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 function makeFinding(overrides: Partial<Finding> = {}): Finding {
   return {
@@ -81,5 +84,47 @@ describe("insights-hero-content", () => {
       findings: [makeFinding()],
     });
     assert.ok(findingsConfig.filterSlugs?.has("test-ref"));
+  });
+
+  it("links Game-State Index hero cards to the research table, not ref profiles", () => {
+    const ref: RefProfile = {
+      slug: "sample-ref",
+      name: "Sample Ref",
+      number: 12,
+      games: 150,
+      avgTotalPoints: 44,
+      overRate: 0.5,
+      avgFouls: 12,
+      homeCoverRate: null,
+      totalPointsDelta: 0,
+      foulsDelta: 0,
+      referee_gsni: 1.8,
+      gsniHighLeverageMinutes: 80,
+      gsniSampleGames: 150,
+      seasons: ["2024-25"],
+      recentGames: [],
+    };
+    const stats: RefStatsFile = {
+      refs: [ref],
+      teamSplits: {},
+      meta: {
+        seasons: ["2024-25"],
+        minSampleSize: 50,
+        leagueOverBaseline: 45,
+        leagueAvgTotal: 44,
+        leagueAvgFouls: 12,
+        lastUpdated: "2026-01-01",
+        source: "espn",
+        atsAvailable: false,
+      },
+    };
+    const synthesis = heroSynthesisForView("game-state", stats, LEAGUES.nfl, []);
+    assert.equal(synthesis.insights.length, 1);
+    assert.equal(synthesis.insights[0]?.id, "gsni-highlight-sample-ref");
+    assert.equal(
+      synthesis.insights[0]?.categoryHref,
+      "/nfl/research/game-state#gsni-official-table",
+    );
+    assert.equal(synthesis.insights[0]?.refSlug, "sample-ref");
   });
 });
