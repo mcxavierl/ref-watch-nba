@@ -1,6 +1,7 @@
 #!/usr/bin/env npx tsx
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { writeCommandPaletteIndex } from "./build-search-index";
 import { refreshBaselinesFromGameLogs } from "./lib/baselines";
 import { mergeMarketLinesForActiveLeagues } from "./lib/game-logs";
 import { writeCbbConferenceCoverageSnapshot } from "./lib/build-cbb-conference-coverage";
@@ -481,5 +482,6 @@ const ncaaLiveLeagues = resolveVerifiedNcaaLiveLeagues();
 writeLiveHeaderLeagues(ncaaLiveLeagues);
 writeNcaaLiveLeagues(ncaaLiveLeagues);
 writeLeagueHeroStats(root);
+writeCommandPaletteIndex(root);
 copyInsightsToPublic(root);
 copyDrilldownShardsToPublic(root);
