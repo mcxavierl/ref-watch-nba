@@ -147,7 +147,14 @@ export function HighlightStatCard({
           ) : null}
           {secondaryValue ? (
             <div className="ref-card-metric-block ref-card-metric-block--secondary">
-              <div className={`${REF_CARD_METRIC_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
+              <div
+                className={`${REF_CARD_METRIC_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}
+                title={
+                  deltaDisplay?.isAdjusted
+                    ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
+                    : undefined
+                }
+              >
                 <DirectionalDeltaValue
                   value={secondaryValue}
                   tone={
@@ -157,11 +164,6 @@ export function HighlightStatCard({
                   }
                   size="md"
                   className="highlight-stat-delta"
-                  title={
-                    deltaDisplay?.isAdjusted
-                      ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
-                      : undefined
-                  }
                 />
               </div>
               {secondaryLabel ? (
