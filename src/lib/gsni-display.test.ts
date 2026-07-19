@@ -8,6 +8,8 @@ import {
   gsniBandTitle,
   gsniCaption,
   gsniCategoryLabel,
+  gsniCorrelationLabel,
+  gsniDiagnosticHeader,
   gsniFromRefProfile,
   gsniInsightSummary,
   gsniObservedFromRefProfile,
@@ -43,12 +45,23 @@ describe("gsni display", () => {
     assert.equal(gsniBand(-1.2), "heavy");
     assert.equal(gsniBand(0.2), "neutral");
     assert.equal(gsniBandTitle("quiet"), "Below-Average Frequency");
-    assert.match(gsniCaption(1.2), /whistle-suppression/i);
+    assert.match(gsniCaption(1.2), /suppressed/i);
     assert.match(gsniCaption(-1.2), /elevated penalty frequency/i);
     assert.equal(gsniShortLabel(0.2), "Typical Frequency");
     assert.equal(formatGsni(1.23), "Index Score: +1.2");
     assert.equal(isExtremeGsni(1.8), true);
     assert.equal(isExtremeGsni(0.8), false);
+  });
+
+  it("maps high-correlation diagnostic pill labels by sign", () => {
+    assert.equal(gsniCorrelationLabel(0.2), "Neutral");
+    assert.equal(gsniCorrelationLabel(0.9), "Neutral");
+    assert.equal(gsniCorrelationLabel(1.0), "Elevated");
+    assert.equal(gsniCorrelationLabel(1.8), "Elevated");
+    assert.equal(gsniCorrelationLabel(-1.0), "Suppressed");
+    assert.equal(gsniCorrelationLabel(-1.8), "Suppressed");
+    assert.equal(gsniDiagnosticHeader(1.2), "+1.2: Elevated");
+    assert.equal(gsniDiagnosticHeader(0.3), "+0.3: Neutral");
   });
 
   it("maps category pill labels", () => {
@@ -75,7 +88,9 @@ describe("gsni display", () => {
     assert.match(gsniInsightSummary(-0.9), /^-0\.9: Slightly elevated/i);
     assert.match(gsniInsightSummary(-1.5), /^-1\.5: Significantly elevated/i);
     assert.equal(formatGsniScoreValue(0), "0.0");
-    assert.match(GSNI_SCALE_LEGEND, /0\.0 = Neutral/);
+    assert.match(GSNI_SCALE_LEGEND, /0\.0 = League Avg/);
+    assert.match(GSNI_SCALE_LEGEND, /Higher Frequency/);
+    assert.match(GSNI_SCALE_LEGEND, /Lower Frequency/);
   });
 
   it("explains frequency labels in plain language", () => {
@@ -83,7 +98,7 @@ describe("gsni display", () => {
     assert.equal(quiet.band, "quiet");
     assert.equal(quiet.tendency, "below-average");
     assert.equal(quiet.categoryLabel, "Suppressed");
-    assert.match(quiet.insightSummary, /whistle-suppression/i);
+    assert.match(quiet.insightSummary, /suppressed/i);
     assert.match(quiet.methodLine, /score gap and clock/i);
     assert.equal(quiet.scaleLine, GSNI_SCALE_LEGEND);
 

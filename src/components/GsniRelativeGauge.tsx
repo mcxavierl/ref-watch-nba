@@ -1,8 +1,7 @@
-import { GsniBandBadge } from "@/components/GsniBandBadge";
+import { GsniCorrelationPill } from "@/components/GsniCorrelationPill";
 import { GsniScoreBlock } from "@/components/GsniScoreBlock";
-import { explainGsni } from "@/lib/gsni-display";
 
-/** Horizontal league-baseline gauge using the shared Game-State Index track. */
+/** Horizontal league-baseline gauge using the diagnostic Game-State Index track. */
 export function GsniRelativeGauge({
   gsni,
   className = "",
@@ -10,15 +9,12 @@ export function GsniRelativeGauge({
   gsni: number;
   className?: string;
 }) {
-  const explanation = explainGsni(gsni);
-
   return (
     <div className={`gsni-relative-gauge ${className}`.trim()}>
       <div className="gsni-relative-gauge-head">
-        <GsniBandBadge band={explanation.band} zScore={gsni} />
+        <GsniCorrelationPill score={gsni} />
       </div>
-      <GsniScoreBlock score={gsni} />
-      <p className="gsni-sub-text">{explanation.methodLine}</p>
+      <GsniScoreBlock score={gsni} showPill={false} />
     </div>
   );
 }

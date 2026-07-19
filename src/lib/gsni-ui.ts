@@ -14,9 +14,9 @@ export const GSNI_Z_TRACK_MAX = GSNI_Z_TRACK_SPAN;
 
 export const GSNI_INSUFFICIENT_DATA_LABEL = "Insufficient Data to Rate";
 
-/** Muted scale hint shown under the index score. */
+/** Muted scale hint shown under the diagnostic index header. */
 export const GSNI_SCALE_LEGEND =
-  "(0.0 = Neutral | + Lower frequency | - Higher frequency)";
+  "(0.0 = League Avg | + Higher Frequency | - Lower Frequency)";
 
 export function formatGsniScoreValue(value: number): string {
   const rounded = Math.round(value * 10) / 10;

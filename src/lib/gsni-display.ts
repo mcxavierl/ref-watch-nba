@@ -1,5 +1,6 @@
 import { shrinkGsni, type ShrunkMetric } from "@/lib/bayesian-shrinkage";
 import {
+  GSNI_THRESHOLD,
   GSNI_Z_EXTREME_THRESHOLD,
   GSNI_Z_NEUTRAL_THRESHOLD,
 } from "@/lib/gsni";
@@ -24,6 +25,8 @@ export type GsniQualitativeLabel =
   | "Well Above-Average Frequency";
 
 export type GsniCategory = "elevated" | "neutral" | "suppressed";
+
+export type GsniCorrelationLabel = "Elevated" | "Neutral" | "Suppressed";
 
 export type GsniExplanation = {
   band: GsniBand;
@@ -59,6 +62,18 @@ export function gsniQualitativeLabel(z: number): GsniQualitativeLabel {
     return z > 0 ? "Well Below-Average Frequency" : "Well Above-Average Frequency";
   }
   return z > 0 ? "Below-Average Frequency" : "Above-Average Frequency";
+}
+
+/** High-correlation pill label for diagnostic dashboard cards (sign-aligned). */
+export function gsniCorrelationLabel(z: number): GsniCorrelationLabel {
+  if (z >= GSNI_THRESHOLD) return "Elevated";
+  if (z <= -GSNI_THRESHOLD) return "Suppressed";
+  return "Neutral";
+}
+
+/** Punchy diagnostic header: "[SCORE]: [PILL LABEL]". */
+export function gsniDiagnosticHeader(z: number): string {
+  return `${formatGsniScoreValue(z)}: ${gsniCorrelationLabel(z)}`;
 }
 
 /** Category pill label aligned with Insights page vocabulary. */
