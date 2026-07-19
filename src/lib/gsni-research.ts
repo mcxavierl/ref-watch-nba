@@ -5,6 +5,7 @@ import {
 import {
   gsniBand,
   gsniCaption,
+  gsniInsightSummary,
   gsniShrinkageFromProfile,
   isExtremeGsni,
   type GsniBand,
@@ -100,21 +101,15 @@ function toRow(
   };
 }
 
-function highlightHeadline(band: GsniBand): string {
-  if (band === "quiet") {
-    return "Historical tendency toward lower-than-average penalty frequency in high-leverage situations";
-  }
-  if (band === "heavy") {
-    return "Historical tendency toward higher-than-average penalty frequency in high-leverage situations";
-  }
-  return "Historical tendency near league-average penalty frequency in high-leverage situations";
+function highlightHeadline(gsni: number): string {
+  return gsniInsightSummary(gsni);
 }
 
 function toHighlight(row: GsniResearchRow): GsniResearchHighlight {
   const band = row.band!;
   return {
     ...row,
-    headline: highlightHeadline(band),
+    headline: highlightHeadline(row.gsni!),
     detail: `${row.sampleGames}-game sample · ${row.highLeverageMinutes.toFixed(0)} high-leverage min`,
   };
 }

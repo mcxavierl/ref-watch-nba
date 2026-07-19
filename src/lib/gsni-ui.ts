@@ -14,10 +14,18 @@ export const GSNI_Z_TRACK_MAX = GSNI_Z_TRACK_SPAN;
 
 export const GSNI_INSUFFICIENT_DATA_LABEL = "Insufficient Data to Rate";
 
-export function formatGsniIndexScore(value: number): string {
+/** Muted scale hint shown under the index score. */
+export const GSNI_SCALE_LEGEND =
+  "(0.0 = Neutral | + Lower frequency | - Higher frequency)";
+
+export function formatGsniScoreValue(value: number): string {
   const rounded = Math.round(value * 10) / 10;
   const sign = rounded > 0 ? "+" : "";
-  return `Index Score: ${sign}${rounded.toFixed(1)}`;
+  return `${sign}${rounded.toFixed(1)}`;
+}
+
+export function formatGsniIndexScore(value: number): string {
+  return `Index Score: ${formatGsniScoreValue(value)}`;
 }
 
 /** @deprecated Prefer formatGsniIndexScore. Kept for internal callers. */

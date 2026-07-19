@@ -5,12 +5,14 @@ import {
 } from "@/lib/gsni";
 import {
   formatGsniIndexScore,
+  formatGsniScoreValue,
   formatGsniZ,
   GSNI_INSUFFICIENT_DATA_LABEL,
+  GSNI_SCALE_LEGEND,
 } from "@/lib/gsni-ui";
 import type { RefProfile } from "@/lib/types";
 
-export { GSNI_INSUFFICIENT_DATA_LABEL };
+export { GSNI_INSUFFICIENT_DATA_LABEL, GSNI_SCALE_LEGEND };
 
 export type GsniBand = "quiet" | "neutral" | "heavy";
 
@@ -21,13 +23,18 @@ export type GsniQualitativeLabel =
   | "Well Below-Average Frequency"
   | "Well Above-Average Frequency";
 
+export type GsniCategory = "elevated" | "neutral" | "suppressed";
+
 export type GsniExplanation = {
   band: GsniBand;
   bandTitle: string;
   qualitativeLabel: GsniQualitativeLabel;
+  category: GsniCategory;
+  categoryLabel: "Elevated" | "Neutral" | "Suppressed";
   zScore: number;
   tendency: "below-average" | "above-average" | "typical";
   headline: string;
+  insightSummary: string;
   comparisonLine: string;
   methodLine: string;
   scaleLine: string;
@@ -54,14 +61,45 @@ export function gsniQualitativeLabel(z: number): GsniQualitativeLabel {
   return z > 0 ? "Below-Average Frequency" : "Above-Average Frequency";
 }
 
-/** Short pill label for tight badge surfaces; full label belongs in title/tooltip. */
-export function gsniBandCompactLabel(z: number): string {
+/** Category pill label aligned with Insights page vocabulary. */
+export function gsniCategoryLabel(
+  z: number,
+): "Elevated" | "Neutral" | "Suppressed" {
   const absZ = Math.abs(z);
-  if (absZ < GSNI_Z_NEUTRAL_THRESHOLD) return "Typical";
-  if (absZ >= GSNI_Z_EXTREME_THRESHOLD) {
-    return z > 0 ? "Well below avg" : "Well above avg";
+  if (absZ < GSNI_Z_NEUTRAL_THRESHOLD) return "Neutral";
+  return z > 0 ? "Suppressed" : "Elevated";
+}
+
+export function gsniCategory(z: number): GsniCategory {
+  const label = gsniCategoryLabel(z);
+  if (label === "Neutral") return "neutral";
+  return label === "Elevated" ? "elevated" : "suppressed";
+}
+
+/** One-line insight for cards and hero highlights. */
+export function gsniInsightSummary(zScore: number): string {
+  const value = formatGsniScoreValue(zScore);
+  const category = gsniCategoryLabel(zScore);
+  const absZ = Math.abs(zScore);
+
+  if (category === "Neutral") {
+    return `${value}: Typical penalty frequency in high-leverage states.`;
   }
-  return z > 0 ? "Below avg" : "Above avg";
+
+  if (category === "Elevated") {
+    return absZ >= GSNI_Z_EXTREME_THRESHOLD
+      ? `${value}: Significantly elevated penalty frequency in high-leverage states.`
+      : `${value}: Slightly elevated penalty frequency in high-leverage states.`;
+  }
+
+  return absZ >= GSNI_Z_EXTREME_THRESHOLD
+    ? `${value}: Significant whistle-suppression in high-leverage states.`
+    : `${value}: Slightly suppressed penalty frequency in high-leverage states.`;
+}
+
+/** @deprecated Prefer gsniCategoryLabel for pill text. */
+export function gsniBandCompactLabel(z: number): string {
+  return gsniCategoryLabel(z);
 }
 
 function historicalTendencyHeadline(
@@ -94,31 +132,28 @@ export function explainGsni(zScore: number): GsniExplanation {
         : "typical";
 
   const headline = historicalTendencyHeadline(qualitativeLabel);
-  const indexScore = formatGsniIndexScore(zScore);
+  const category = gsniCategory(zScore);
+  const categoryLabel = gsniCategoryLabel(zScore);
+  const insightSummary = gsniInsightSummary(zScore);
 
-  const comparisonLine =
-    tendency === "typical"
-      ? `${indexScore}. This official's penalty frequency in high-leverage situations has been close to the league average.`
-      : tendency === "below-average"
-        ? `${indexScore}. This official shows a historical tendency for lower-than-average penalty frequency in high-leverage situations.`
-        : `${indexScore}. This official shows a historical tendency for higher-than-average penalty frequency in high-leverage situations.`;
+  const comparisonLine = insightSummary;
 
   const methodLine =
     "We group each game by score gap and clock, weight close late-game minutes higher, " +
     "then compare this official's penalty frequency in those situations to the league average.";
 
-  const scaleLine =
-    "Index Score compares this official to the league average in matched high-leverage situations. " +
-    "Positive scores indicate below-average penalty frequency; negative scores indicate above-average frequency; " +
-    "scores near zero indicate typical frequency.";
+  const scaleLine = GSNI_SCALE_LEGEND;
 
   return {
     band,
     bandTitle,
     qualitativeLabel,
+    category,
+    categoryLabel,
     zScore,
     tendency,
     headline,
+    insightSummary,
     comparisonLine,
     methodLine,
     scaleLine,
@@ -141,7 +176,7 @@ export function formatGsni(zScore: number): string {
 }
 
 export function gsniCaption(zScore: number): string {
-  return explainGsni(zScore).headline;
+  return gsniInsightSummary(zScore);
 }
 
 export function gsniShortLabel(zScore: number): string {

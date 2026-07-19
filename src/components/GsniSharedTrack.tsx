@@ -1,5 +1,6 @@
 import {
   formatGsniIndexScore,
+  formatGsniScoreValue,
   GSNI_NEUTRAL_BASELINE,
   GSNI_Z_TRACK_MAX,
   gsniDeltaFromNeutral,
@@ -14,6 +15,7 @@ type GsniSharedTrackProps = {
   baseline?: number;
   max?: number;
   showValue?: boolean;
+  showCenterLabel?: boolean;
   className?: string;
   ariaLabel?: string;
 };
@@ -29,6 +31,7 @@ export function GsniSharedTrack({
   baseline = GSNI_NEUTRAL_BASELINE,
   max = GSNI_Z_TRACK_MAX,
   showValue = true,
+  showCenterLabel = false,
   className = "",
   ariaLabel,
 }: GsniSharedTrackProps) {
@@ -77,7 +80,7 @@ export function GsniSharedTrack({
       role="img"
       aria-label={
         ariaLabel ??
-        `${formatGsniIndexScore(clamped)} vs league average. Positive scores indicate below-average penalty frequency; negative scores indicate above-average frequency.`
+        `${formatGsniIndexScore(clamped)} vs league average. ${formatGsniScoreValue(clamped)} on the Game-State Index scale.`
       }
     >
       <div className="gsni-shared-track-meta">
@@ -103,6 +106,19 @@ export function GsniSharedTrack({
           style={{ left: `${markerPercent}%` }}
         />
       </div>
+      {showCenterLabel ? (
+        <div className="gsni-shared-track-axis" aria-hidden>
+          <span className="gsni-shared-track-axis-label gsni-shared-track-axis-label--start">
+            -{max.toFixed(1)}
+          </span>
+          <span className="gsni-shared-track-axis-label gsni-shared-track-axis-label--center">
+            0.0
+          </span>
+          <span className="gsni-shared-track-axis-label gsni-shared-track-axis-label--end">
+            +{max.toFixed(1)}
+          </span>
+        </div>
+      ) : null}
     </div>
   );
 }

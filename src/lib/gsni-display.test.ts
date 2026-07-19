@@ -7,13 +7,16 @@ import {
   gsniBandCompactLabel,
   gsniBandTitle,
   gsniCaption,
+  gsniCategoryLabel,
   gsniFromRefProfile,
+  gsniInsightSummary,
   gsniObservedFromRefProfile,
   gsniQualitativeLabel,
   gsniShrinkageFromProfile,
   gsniShortLabel,
   isExtremeGsni,
 } from "@/lib/gsni-display";
+import { formatGsniScoreValue, GSNI_SCALE_LEGEND } from "@/lib/gsni-ui";
 import type { RefProfile } from "@/lib/types";
 
 function makeRef(overrides: Partial<RefProfile> = {}): RefProfile {
@@ -40,12 +43,21 @@ describe("gsni display", () => {
     assert.equal(gsniBand(-1.2), "heavy");
     assert.equal(gsniBand(0.2), "neutral");
     assert.equal(gsniBandTitle("quiet"), "Below-Average Frequency");
-    assert.match(gsniCaption(1.2), /lower-than-average penalty frequency/i);
-    assert.match(gsniCaption(-1.2), /higher-than-average penalty frequency/i);
+    assert.match(gsniCaption(1.2), /whistle-suppression/i);
+    assert.match(gsniCaption(-1.2), /elevated penalty frequency/i);
     assert.equal(gsniShortLabel(0.2), "Typical Frequency");
     assert.equal(formatGsni(1.23), "Index Score: +1.2");
     assert.equal(isExtremeGsni(1.8), true);
     assert.equal(isExtremeGsni(0.8), false);
+  });
+
+  it("maps category pill labels", () => {
+    assert.equal(gsniCategoryLabel(0.2), "Neutral");
+    assert.equal(gsniCategoryLabel(0.9), "Suppressed");
+    assert.equal(gsniCategoryLabel(-0.9), "Elevated");
+    assert.equal(gsniCategoryLabel(1.8), "Suppressed");
+    assert.equal(gsniCategoryLabel(-1.8), "Elevated");
+    assert.equal(gsniBandCompactLabel(0.9), "Suppressed");
   });
 
   it("maps qualitative labels by index score thresholds", () => {
@@ -54,22 +66,31 @@ describe("gsni display", () => {
     assert.equal(gsniQualitativeLabel(-0.9), "Above-Average Frequency");
     assert.equal(gsniQualitativeLabel(1.8), "Well Below-Average Frequency");
     assert.equal(gsniQualitativeLabel(-1.8), "Well Above-Average Frequency");
-    assert.equal(gsniBandCompactLabel(0.2), "Typical");
-    assert.equal(gsniBandCompactLabel(0.9), "Below avg");
-    assert.equal(gsniBandCompactLabel(-1.8), "Well above avg");
+  });
+
+  it("builds concise insight summaries", () => {
+    assert.match(gsniInsightSummary(0.3), /^\+0\.3: Typical penalty frequency/i);
+    assert.match(gsniInsightSummary(0.9), /^\+0\.9: Slightly suppressed/i);
+    assert.match(gsniInsightSummary(1.8), /^\+1\.8: Significant whistle-suppression/i);
+    assert.match(gsniInsightSummary(-0.9), /^-0\.9: Slightly elevated/i);
+    assert.match(gsniInsightSummary(-1.5), /^-1\.5: Significantly elevated/i);
+    assert.equal(formatGsniScoreValue(0), "0.0");
+    assert.match(GSNI_SCALE_LEGEND, /0\.0 = Neutral/);
   });
 
   it("explains frequency labels in plain language", () => {
     const quiet = explainGsni(1.2);
     assert.equal(quiet.band, "quiet");
     assert.equal(quiet.tendency, "below-average");
-    assert.match(quiet.comparisonLine, /lower-than-average penalty frequency/i);
+    assert.equal(quiet.categoryLabel, "Suppressed");
+    assert.match(quiet.insightSummary, /whistle-suppression/i);
     assert.match(quiet.methodLine, /score gap and clock/i);
-    assert.match(quiet.scaleLine, /Index Score/i);
+    assert.equal(quiet.scaleLine, GSNI_SCALE_LEGEND);
 
     const heavy = explainGsni(-1.2);
     assert.equal(heavy.band, "heavy");
     assert.equal(heavy.tendency, "above-average");
+    assert.equal(heavy.categoryLabel, "Elevated");
   });
 
   it("reads shrunk Game-State Index from ref profiles when present", () => {

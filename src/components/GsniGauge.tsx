@@ -1,8 +1,7 @@
 import { GsniBandBadge } from "@/components/GsniBandBadge";
 import { GsniCard } from "@/components/GsniCard";
-import { GsniSharedTrack } from "@/components/GsniSharedTrack";
+import { GsniScoreBlock } from "@/components/GsniScoreBlock";
 import { explainGsni } from "@/lib/gsni-display";
-import { formatGsniIndexScore } from "@/lib/gsni-ui";
 
 type GsniGaugeProps = {
   index: number;
@@ -28,24 +27,11 @@ export function GsniGauge({
         <p className="gsni-gauge-label">High-Leverage Penalty Frequency</p>
         <GsniBandBadge band={explanation.band} zScore={index} />
       </div>
-      <div className="gsni-gauge-score tabular-nums text-xl font-semibold text-white">
-        {formatGsniIndexScore(index)}
-      </div>
-      <div className="gsni-gauge-compare">
-        <span className="gsni-sub-text">vs league average</span>
-      </div>
-      <GsniSharedTrack
-        mode="score"
-        value={index}
-        showValue={false}
-        ariaLabel={`${explanation.qualitativeLabel} at ${formatGsniIndexScore(index)}. ${explanation.headline}.`}
+      <GsniScoreBlock
+        score={index}
+        compact={size === "sm"}
+        className={showCaption ? undefined : "gsni-score-block--no-summary"}
       />
-      {showCaption ? (
-        <>
-          <p className="gsni-sub-text">{explanation.comparisonLine}</p>
-          <p className="gsni-sub-text gsni-scale-legend">{explanation.scaleLine}</p>
-        </>
-      ) : null}
     </GsniCard>
   );
 }
