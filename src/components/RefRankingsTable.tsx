@@ -355,7 +355,7 @@ export function RefRankingsTable({
                   <td className="ranking-table-row-expand px-2 py-4">
                     <button
                       type="button"
-                      className="ranking-table-expand-btn"
+                      className="ranking-table-row-toggle-btn"
                       aria-expanded={expanded}
                       aria-label={`${expanded ? "Hide" : "Show"} details for ${ref.name}`}
                       onClick={() => toggleExpanded(ref.slug)}

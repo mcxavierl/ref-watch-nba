@@ -305,6 +305,26 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
+    name: "RefRankingsTable separates row toggle and footer expand classes",
+    run: () => {
+      const content = read("src/components/RefRankingsTable.tsx");
+      if (!content.includes("ranking-table-row-toggle-btn")) {
+        return {
+          ok: false,
+          message: "RefRankingsTable must use ranking-table-row-toggle-btn for row chevrons",
+        };
+      }
+      if (content.includes('className="ranking-table-expand-btn"') &&
+          content.match(/ranking-table-expand-btn/g)?.length !== 1) {
+        return {
+          ok: false,
+          message: "RefRankingsTable footer must be the only ranking-table-expand-btn usage",
+        };
+      }
+      return { ok: true };
+    },
+  },
+  {
     name: "RefRankingsTable applies semantic delta coloring",
     run: () =>
       auditFileContains(
