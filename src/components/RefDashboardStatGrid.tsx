@@ -18,7 +18,7 @@ export function RefDashboardStatGrid({
   children: ReactNode;
   className?: string;
 }) {
-  return <dl className={className ?? "ref-stat-grid"}>{children}</dl>;
+  return <dl className={`stat-data-container ${className ?? "ref-stat-grid"}`.trim()}>{children}</dl>;
 }
 
 export function RefDashboardStatCell({

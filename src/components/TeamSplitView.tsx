@@ -18,6 +18,7 @@ import { TermHelp } from "@/components/TermHelp";
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
 import { MatrixFilterBar, MatrixView } from "@/components/analytics/MatrixView";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { useLeagueMatrixData, type LeagueMatrixSport } from "@/hooks/useLeagueMatrixData";
 import {
   filterTeamCrewSplits,
@@ -352,9 +353,7 @@ export function TeamSplitView({
 
       {(showCrewTab ? view === "ref" : true) ? (
         refSplits.length === 0 ? (
-          <p className="text-sm text-zinc-600">
-            No refs with enough games involving {teamLabel} yet.
-          </p>
+          <EmptyState />
         ) : (
           <>
             <div className="mb-4 flex flex-col gap-3">
@@ -375,16 +374,19 @@ export function TeamSplitView({
               sport={sport}
               teamLabel={teamLabel}
               teamBaselineLabel={teamBaselineLabel}
+              onReset={() => matrix.setFilterMode("all")}
             />
           </>
         )
       ) : (
         crewSplits.length === 0 ? (
-          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-            {refSplits.length > 0
-              ? `No crew groupings for ${teamLabel} in this sample yet. Use the Refs tab for individual official history (${refSplits.length} refs).`
-              : `No crew history for ${teamLabel} yet.`}
-          </p>
+          <EmptyState
+            message={
+              refSplits.length > 0
+                ? `No crew groupings for ${teamLabel} in this sample yet.`
+                : "No data available for this range"
+            }
+          />
         ) : (
           <>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -406,21 +408,7 @@ export function TeamSplitView({
               )}
             </div>
             {sortedCrewSplits.length === 0 ? (
-              <p className="text-sm text-zinc-600">
-                No crews with {TEAM_CREW_MIN_GAMES}+ games for {teamLabel} yet.
-                {hiddenCrewCount > 0 && (
-                  <>
-                    {" "}
-                    <button
-                      type="button"
-                      onClick={() => setShowAllCrews(true)}
-                      className="font-medium text-zinc-800 underline-offset-2 hover:underline"
-                    >
-                      Show all {crewSplits.length} crews
-                    </button>
-                  </>
-                )}
-              </p>
+              <EmptyState onReset={() => setShowAllCrews(true)} />
             ) : (
               <div className="space-y-4">
                 {sortedCrewSplits.map((split) => (

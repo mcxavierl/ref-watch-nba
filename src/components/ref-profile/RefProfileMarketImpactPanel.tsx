@@ -67,7 +67,7 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
           <p className="ref-market-impact-meta text-slate-400">{rate}% ATS cover rate</p>
         </article>
       </div>
-      <div className="ref-table-section-body mt-4 overflow-x-auto">
+      <div className="ref-table-section-body mt-4 overflow-x-auto stat-data-container master-table-scroll">
         <table className="ref-data-table data-table min-w-[28rem] w-full">
           <thead>
             <tr className="data-table-head">

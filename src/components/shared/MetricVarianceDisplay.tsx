@@ -24,7 +24,7 @@ export function MetricVarianceDisplay({
     size === "lg" ? "metric-variance-primary--lg" : "metric-variance-primary--md";
 
   return (
-    <div className="metric-variance-stack">
+    <div className="metric-variance-stack stat-data-container">
       <p className={`metric-variance-primary tabular-nums ${primaryClass}`}>
         {primaryTotal}
       </p>
