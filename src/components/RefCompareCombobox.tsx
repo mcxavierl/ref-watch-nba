@@ -11,6 +11,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import type { CompareRefPickerEntry } from "@/lib/ref-compare";
+import { LEAGUES, type LeagueId } from "@/lib/leagues";
 
 function entryLabel(entry: CompareRefPickerEntry): string {
   return `${entry.name} (${entry.leagueLabel}) · ${entry.games} gp`;
@@ -22,12 +23,16 @@ export function RefCompareCombobox({
   entries,
   value,
   onChange,
+  leagueHint = null,
+  autoFocus = false,
 }: {
   id: string;
   label: string;
   entries: CompareRefPickerEntry[];
   value: string;
   onChange: (key: string) => void;
+  leagueHint?: LeagueId | null;
+  autoFocus?: boolean;
 }) {
   const autoId = useId();
   const inputId = idProp || autoId;
@@ -124,6 +129,10 @@ export function RefCompareCombobox({
     }
   }
 
+  const placeholder = leagueHint
+    ? `Search ${LEAGUES[leagueHint].shortLabel} officials`
+    : "Search officials by name or league";
+
   return (
     <div ref={rootRef} className="ref-compare-combobox">
       <label htmlFor={inputId} className="ref-compare-combobox-label">
@@ -139,8 +148,9 @@ export function RefCompareCombobox({
           aria-controls={listboxId}
           aria-autocomplete="list"
           autoComplete="off"
+          autoFocus={autoFocus}
           value={displayValue}
-          placeholder="Search officials by name or league"
+          placeholder={placeholder}
           className="ref-compare-combobox-input"
           onChange={(event) => {
             setQuery(event.target.value);

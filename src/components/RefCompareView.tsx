@@ -1,10 +1,16 @@
 import Link from "next/link";
+import { CompareDualGsniGauge } from "@/components/compare/CompareDualGsniGauge";
+import {
+  CompareDualLeagueSignal,
+  CompareLeagueSignalBar,
+} from "@/components/compare/CompareLeagueSignalBar";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import {
   buildCompareLeagueMetrics,
   buildCompareMetricRows,
   CROSS_LEAGUE_COMPARE_DISCLAIMER,
+  type CompareMetricRow,
   type CompareRefBundle,
 } from "@/lib/ref-compare";
 import { COMPARE_GHOST_METRIC_ROWS } from "@/lib/ref-compare-client";
@@ -41,12 +47,140 @@ function CompareRefHeader({ bundle }: { bundle: CompareRefBundle }) {
           <span className="ref-compare-league-badge">{bundle.config.shortLabel}</span>
           <RefJerseyNumber
             number={bundle.profile.number}
-            className="font-tabular text-sm text-zinc-500"
+            className="font-tabular text-sm text-slate-400"
           />
-          <span className="text-zinc-500">· {bundle.scopeLabel}</span>
+          <span className="text-slate-400">· {bundle.scopeLabel}</span>
         </p>
       </div>
     </div>
+  );
+}
+
+function MetricValueCell({
+  value,
+  detail,
+}: {
+  value: string;
+  detail?: string;
+}) {
+  return (
+    <>
+      <span className="ref-compare-value">{value}</span>
+      {detail ? <span className="ref-compare-detail">{detail}</span> : null}
+    </>
+  );
+}
+
+function CompareMetricRowDesktop({
+  row,
+  leftName,
+  rightName,
+}: {
+  row: CompareMetricRow;
+  leftName: string;
+  rightName: string;
+}) {
+  if (row.kind === "disclaimer") {
+    return (
+      <tr className="ref-compare-disclaimer-row">
+        <td colSpan={3} className="ref-compare-disclaimer-cell">
+          {CROSS_LEAGUE_COMPARE_DISCLAIMER}
+        </td>
+      </tr>
+    );
+  }
+
+  if (row.kind === "gsni") {
+    return (
+      <tr key={row.id} className="ref-compare-gsni-row">
+        <th scope="row">
+          <span>{row.label}</span>
+          <span className="ref-compare-metric-hint">Shared whistle-bias axis</span>
+        </th>
+        <td colSpan={2}>
+          <CompareDualGsniGauge
+            scoreA={row.gsniA}
+            scoreB={row.gsniB}
+            labelA={leftName}
+            labelB={rightName}
+          />
+        </td>
+      </tr>
+    );
+  }
+
+  return (
+    <tr key={row.id}>
+      <th scope="row">
+        <span>{row.label}</span>
+        <CompareDualLeagueSignal
+          signalA={row.signalA}
+          signalB={row.signalB}
+          className="ref-compare-signal-dual--inline"
+        />
+      </th>
+      <td>
+        <MetricValueCell value={row.valueA} detail={row.detailA} />
+        <CompareLeagueSignalBar signal={row.signalA} tone="a" className="ref-compare-signal--cell" />
+      </td>
+      <td>
+        <MetricValueCell value={row.valueB} detail={row.detailB} />
+        <CompareLeagueSignalBar signal={row.signalB} tone="b" className="ref-compare-signal--cell" />
+      </td>
+    </tr>
+  );
+}
+
+function CompareMetricRowVersus({
+  row,
+  leftName,
+  rightName,
+}: {
+  row: CompareMetricRow;
+  leftName: string;
+  rightName: string;
+}) {
+  if (row.kind === "disclaimer") {
+    return (
+      <p className="ref-compare-versus-disclaimer">{CROSS_LEAGUE_COMPARE_DISCLAIMER}</p>
+    );
+  }
+
+  if (row.kind === "gsni") {
+    return (
+      <article className="ref-compare-versus-row ref-compare-versus-row--gsni">
+        <div className="ref-compare-versus-center ref-compare-versus-center--full">
+          <p className="ref-compare-versus-label">{row.label}</p>
+          <CompareDualGsniGauge
+            scoreA={row.gsniA}
+            scoreB={row.gsniB}
+            labelA={leftName}
+            labelB={rightName}
+          />
+        </div>
+      </article>
+    );
+  }
+
+  return (
+    <article className="ref-compare-versus-row">
+      <div className="ref-compare-versus-side ref-compare-versus-side--a">
+        <span className="ref-compare-versus-side-label">Official A</span>
+        <MetricValueCell value={row.valueA} detail={row.detailA} />
+        <CompareLeagueSignalBar signal={row.signalA} tone="a" />
+      </div>
+
+      <div className="ref-compare-versus-center">
+        <p className="ref-compare-versus-label">{row.label}</p>
+        <CompareDualLeagueSignal signalA={row.signalA} signalB={row.signalB} />
+      </div>
+
+      <div className="ref-compare-versus-side ref-compare-versus-side--b">
+        <span className="ref-compare-versus-side-label">Official B</span>
+        <MetricValueCell value={row.valueB} detail={row.detailB} />
+        <CompareLeagueSignalBar signal={row.signalB} tone="b" />
+      </div>
+    </article>
   );
 }
 
@@ -90,7 +224,7 @@ function CompareGhostTable({
   const rightName = right?.profile.name ?? "Official B";
 
   return (
-    <div className="ref-compare-view ref-compare-view--ghost ref-profile-section overflow-hidden p-0">
+    <div className="ref-compare-view ref-compare-view--ghost rounded-xl border border-slate-800 bg-slate-900 overflow-hidden p-0">
       {(left || right) && (
         <div className="ref-compare-columns">
           {left ? <CompareRefHeader bundle={left} /> : <div aria-hidden />}
@@ -98,7 +232,7 @@ function CompareGhostTable({
         </div>
       )}
 
-      <div className="ref-compare-table-wrap overflow-x-auto">
+      <div className="ref-compare-table-wrap hidden md:block overflow-x-auto">
         <table className="ref-compare-table ref-compare-table--ghost">
           <thead>
             <tr>
@@ -133,6 +267,76 @@ function CompareGhostTable({
   );
 }
 
+function CompareResults({
+  left,
+  right,
+  rows,
+  crossLeague,
+}: {
+  left: CompareRefBundle;
+  right: CompareRefBundle;
+  rows: CompareMetricRow[];
+  crossLeague: boolean;
+}) {
+  const leftName = left.profile.name;
+  const rightName = right.profile.name;
+
+  return (
+    <div className="ref-compare-view rounded-xl border border-slate-800 bg-slate-900 overflow-hidden p-0">
+      <div className="ref-compare-columns">
+        <CompareRefHeader bundle={left} />
+        <CompareRefHeader bundle={right} />
+      </div>
+
+      <div className="ref-compare-versus md:hidden">
+        {rows.map((row) => (
+          <CompareMetricRowVersus
+            key={row.id}
+            row={row}
+            leftName={leftName}
+            rightName={rightName}
+          />
+        ))}
+      </div>
+
+      <div className="ref-compare-table-wrap hidden md:block overflow-x-auto">
+        <table className="ref-compare-table">
+          <thead>
+            <tr>
+              <th scope="col">Metric</th>
+              <th scope="col">{leftName}</th>
+              <th scope="col">{rightName}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <CompareMetricRowDesktop
+                key={row.id}
+                row={row}
+                leftName={leftName}
+                rightName={rightName}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {crossLeague ? (
+        <div className="ref-compare-league-metrics-grid px-4 py-4 sm:px-5">
+          <LeagueMetricList
+            bundle={left}
+            title={`${left.config.shortLabel} metrics · ${left.profile.name}`}
+          />
+          <LeagueMetricList
+            bundle={right}
+            title={`${right.config.shortLabel} metrics · ${right.profile.name}`}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export function RefCompareView({
   left,
   right,
@@ -159,8 +363,6 @@ export function RefCompareView({
   }
 
   if (!left || !right) {
-    const single = left ?? right;
-    if (!single) return <CompareGhostTable crossLeague={false} />;
     return (
       <CompareGhostTable
         crossLeague={crossLeagueHint}
@@ -174,64 +376,12 @@ export function RefCompareView({
   const rows = buildCompareMetricRows(left, right);
 
   return (
-    <div className="ref-compare-view ref-profile-section overflow-hidden p-0">
-      <div className="ref-compare-columns">
-        <CompareRefHeader bundle={left} />
-        <CompareRefHeader bundle={right} />
-      </div>
-
-      <div className="ref-compare-table-wrap overflow-x-auto">
-        <table className="ref-compare-table">
-          <thead>
-            <tr>
-              <th scope="col">Metric</th>
-              <th scope="col">{left.profile.name}</th>
-              <th scope="col">{right.profile.name}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) =>
-              row.kind === "disclaimer" ? (
-                <tr key={row.id} className="ref-compare-disclaimer-row">
-                  <td colSpan={3} className="ref-compare-disclaimer-cell">
-                    {CROSS_LEAGUE_COMPARE_DISCLAIMER}
-                  </td>
-                </tr>
-              ) : (
-                <tr key={row.id}>
-                  <th scope="row">{row.label}</th>
-                  <td>
-                    <span className="ref-compare-value">{row.valueA}</span>
-                    {row.detailA ? (
-                      <span className="ref-compare-detail">{row.detailA}</span>
-                    ) : null}
-                  </td>
-                  <td>
-                    <span className="ref-compare-value">{row.valueB}</span>
-                    {row.detailB ? (
-                      <span className="ref-compare-detail">{row.detailB}</span>
-                    ) : null}
-                  </td>
-                </tr>
-              ),
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {crossLeague ? (
-        <div className="ref-compare-league-metrics-grid px-4 py-4 sm:px-5">
-          <LeagueMetricList
-            bundle={left}
-            title={`${left.config.shortLabel} metrics · ${left.profile.name}`}
-          />
-          <LeagueMetricList
-            bundle={right}
-            title={`${right.config.shortLabel} metrics · ${right.profile.name}`}
-          />
-        </div>
-      ) : null}
-    </div>
+    <CompareResults
+      left={left}
+      right={right}
+      rows={rows}
+      crossLeague={crossLeague}
+    />
   );
 }
 

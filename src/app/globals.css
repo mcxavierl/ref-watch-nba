@@ -14348,12 +14348,21 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-h
 /* ── Compare officials + matrix share ── */
 .ref-compare-entry-link {
   font-weight: 600;
-  color: var(--league-accent, var(--raptors));
+  color: #c5a059;
   text-decoration: none;
 }
 
 .ref-compare-entry-link:hover {
+  color: #d4b06a;
   text-decoration: underline;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-entry-link {
+  color: #92680a;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-entry-link:hover {
+  color: #7a5608;
 }
 
 .matrix-split-share-preview {
@@ -14465,15 +14474,15 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 .ref-compare-combobox-input {
   width: 100%;
   border-radius: 0.625rem;
-  border: 1px solid rgb(39 39 42 / 0.8);
-  background: rgb(24 24 27 / 0.55);
+  border: 1px solid rgb(51 65 85);
+  background: rgb(15 23 42);
   padding: 0.65rem 2.25rem 0.65rem 0.75rem;
   font-size: var(--text-sm);
-  color: var(--foreground);
+  color: rgb(248 250 252);
 }
 
 .ref-compare-combobox-input:focus {
-  outline: 2px solid color-mix(in srgb, var(--league-accent, var(--raptors)) 45%, transparent);
+  outline: 2px solid color-mix(in srgb, #c5a059 45%, transparent);
   outline-offset: 1px;
 }
 
@@ -14511,8 +14520,8 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
   padding: 0.3rem;
   list-style: none;
   border-radius: 0.625rem;
-  border: 1px solid rgb(39 39 42 / 0.9);
-  background: rgb(24 24 27 / 0.98);
+  border: 1px solid rgb(51 65 85);
+  background: rgb(15 23 42);
   box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
 }
 
@@ -14527,11 +14536,11 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 
 .ref-compare-combobox-option--active,
 .ref-compare-combobox-option:hover {
-  background: rgb(39 39 42 / 0.85);
+  background: rgb(30 41 59);
 }
 
 .ref-compare-combobox-option--selected {
-  border: 1px solid color-mix(in srgb, var(--league-accent, var(--raptors)) 35%, transparent);
+  border: 1px solid color-mix(in srgb, #c5a059 35%, transparent);
 }
 
 .ref-compare-combobox-option-name {
@@ -14559,8 +14568,12 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 
 .ref-compare-combobox-profile-link {
   font-weight: 600;
-  color: var(--league-accent, var(--raptors));
+  color: #c5a059;
   text-decoration: none;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-profile-link {
+  color: #92680a;
 }
 
 .ref-compare-combobox-profile-link:hover {
@@ -14626,7 +14639,11 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 }
 
 .ref-compare-header-name a:hover {
-  color: var(--league-accent, var(--raptors));
+  color: #c5a059;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-header-name a:hover {
+  color: #92680a;
 }
 
 .ref-compare-header-meta {
@@ -14778,6 +14795,238 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
   color: var(--muted-strong);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Compare diagnostic visuals */
+.ref-compare-metric-hint {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: rgb(100 116 139);
+}
+
+.ref-compare-dual-gsni {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.ref-compare-dual-gsni-rail {
+  position: relative;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgb(30 41 59);
+}
+
+.ref-compare-dual-gsni-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 1px;
+  height: 0.65rem;
+  transform: translate(-50%, -50%);
+  background: rgb(100 116 139);
+}
+
+.ref-compare-dual-gsni-marker {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 0.55rem;
+  height: 0.55rem;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  border: 2px solid rgb(15 23 42);
+}
+
+.ref-compare-dual-gsni-marker--a {
+  background: rgb(52 211 153);
+}
+
+.ref-compare-dual-gsni-marker--b {
+  background: rgb(129 140 248);
+}
+
+.ref-compare-dual-gsni-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: rgb(100 116 139);
+}
+
+.ref-compare-dual-gsni-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.ref-compare-dual-gsni-legend-item--a {
+  color: rgb(110 231 183);
+}
+
+.ref-compare-dual-gsni-legend-item--b {
+  color: rgb(165 180 252);
+}
+
+.ref-compare-signal {
+  display: block;
+  width: 100%;
+  max-width: 5.5rem;
+  min-width: 3.5rem;
+}
+
+.ref-compare-signal--cell {
+  margin-top: 0.35rem;
+}
+
+.ref-compare-signal--empty {
+  height: 0.35rem;
+}
+
+.ref-compare-signal-rail {
+  position: relative;
+  display: block;
+  height: 0.28rem;
+  border-radius: 999px;
+  background: rgb(30 41 59);
+}
+
+.ref-compare-signal-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 0.55rem;
+  transform: translate(-50%, -50%);
+  background: rgb(71 85 105);
+}
+
+.ref-compare-signal-marker {
+  position: absolute;
+  top: 50%;
+  width: 0.35rem;
+  height: 0.35rem;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+}
+
+.ref-compare-signal--a .ref-compare-signal-marker {
+  background: rgb(52 211 153);
+}
+
+.ref-compare-signal--b .ref-compare-signal-marker {
+  background: rgb(129 140 248);
+}
+
+.ref-compare-signal-dual {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.35rem;
+}
+
+.ref-compare-signal-dual--inline {
+  max-width: 4.5rem;
+}
+
+.ref-compare-versus {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem 1rem;
+  border-top: 1px solid rgb(30 41 59);
+}
+
+.ref-compare-versus-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: start;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgb(30 41 59);
+}
+
+.ref-compare-versus-row:last-child {
+  border-bottom: none;
+}
+
+.ref-compare-versus-row--gsni {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ref-compare-versus-side {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.ref-compare-versus-side-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(100 116 139);
+}
+
+.ref-compare-versus-center {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  min-width: 5.5rem;
+  padding-inline: 0.25rem;
+}
+
+.ref-compare-versus-center--full {
+  width: 100%;
+  min-width: 0;
+}
+
+.ref-compare-versus-label {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgb(148 163 184);
+}
+
+.ref-compare-versus-disclaimer {
+  margin: 0;
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+  color: rgb(148 163 184);
+}
+
+.site-nav-link--compare {
+  margin-left: 0.35rem;
+  border-color: color-mix(in srgb, #c5a059 35%, var(--border));
+  color: #c5a059;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .site-nav-link--compare {
+  color: #92680a;
+  border-color: color-mix(in srgb, #92680a 28%, var(--border));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-input {
+  background: rgb(248 250 252);
+  border-color: rgb(203 213 225);
+  color: rgb(15 23 42);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-list {
+  background: rgb(255 255 255);
+  border-color: rgb(203 213 225);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-view {
+  background: rgb(255 255 255);
+  border-color: rgb(226 232 240);
 }
 
 /* ── Integrity & methodology data cards ───────────────────────────────────── */

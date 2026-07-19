@@ -1,5 +1,8 @@
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { EMPTY_DISPLAY } from "@/lib/finding-copy";
+import { GSNI_INSUFFICIENT_DATA_LABEL } from "@/lib/gsni-display";
+import { gsniFromRefProfile } from "@/lib/gsni-display";
+import { formatGsniScoreValue } from "@/lib/gsni-ui";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
 import type { SeasonScopeMode } from "@/lib/season-scope";
@@ -33,7 +36,14 @@ export type CompareMetricRow = {
   valueB: string;
   detailA?: string;
   detailB?: string;
-  kind?: "metric" | "disclaimer";
+  /** Normalized league-relative position for Official A in [-1, 1]. */
+  signalA?: number | null;
+  /** Normalized league-relative position for Official B in [-1, 1]. */
+  signalB?: number | null;
+  /** Raw GSNI scores when row kind is gsni. */
+  gsniA?: number | null;
+  gsniB?: number | null;
+  kind?: "metric" | "disclaimer" | "gsni";
 };
 
 export type CompareLeagueMetric = {
@@ -55,6 +65,24 @@ const COMPARE_LEAGUE_IDS: LeagueId[] = [
 ];
 
 export { COMPARE_LEAGUE_IDS };
+
+export const GSNI_COMPARE_LEAGUE_IDS: LeagueId[] = ["nba", "nfl"];
+
+export function compareSupportsGsni(leagueId: LeagueId): boolean {
+  return GSNI_COMPARE_LEAGUE_IDS.includes(leagueId);
+}
+
+export function parseCompareLeagueParam(
+  raw: string | null | undefined,
+): LeagueId | null {
+  if (!raw) return null;
+  const leagueId = raw.toLowerCase() as LeagueId;
+  return COMPARE_LEAGUE_IDS.includes(leagueId) ? leagueId : null;
+}
+
+export function compareLeagueHref(leagueId: LeagueId): string {
+  return `/compare?league=${encodeURIComponent(leagueId)}`;
+}
 
 export function encodeCompareRef(leagueId: LeagueId, slug: string): CompareRefKey {
   return `${leagueId}:${slug}`;
@@ -112,7 +140,34 @@ type BundleMetric = {
   label: string;
   value: string;
   detail?: string;
+  signal?: number | null;
 };
+
+function normalizeSignal(delta: number, span: number): number {
+  if (!Number.isFinite(delta) || span <= 0) return 0;
+  return Math.max(-1, Math.min(1, delta / span));
+}
+
+function gsniMetric(bundle: CompareRefBundle): BundleMetric | null {
+  if (!compareSupportsGsni(bundle.leagueId)) return null;
+  const score = gsniFromRefProfile(bundle.profile);
+  if (score === null) {
+    return {
+      id: "gsni",
+      label: "Game-State Index",
+      value: GSNI_INSUFFICIENT_DATA_LABEL,
+      detail: "High-leverage sample gate",
+      signal: null,
+    };
+  }
+  return {
+    id: "gsni",
+    label: "Game-State Index",
+    value: formatGsniScoreValue(score),
+    detail: "vs league avg in matched states",
+    signal: normalizeSignal(score, 3),
+  };
+}
 
 function bundleMetrics(bundle: CompareRefBundle): BundleMetric[] {
   const { profile, meta, config } = bundle;
@@ -123,24 +178,38 @@ function bundleMetrics(bundle: CompareRefBundle): BundleMetric[] {
       id: "games",
       label: "Games",
       value: String(profile.games),
+      signal: normalizeSignal(
+        profile.games - (meta.minSampleSize ?? profile.games),
+        Math.max(meta.minSampleSize ?? 1, 50),
+      ),
     },
     {
       id: "scoring",
       label: config.metrics.scoringColumn,
       value: scoring.value,
       detail: scoring.detail,
+      signal: normalizeSignal(profile.totalPointsDelta, 5),
     },
     {
       id: "over",
       label: config.metrics.overColumn,
       value: formatPct(profile.overRate),
       detail: `vs ${meta.leagueOverBaseline} ${config.metrics.scoreUnitPlural}`,
+      signal: normalizeSignal(profile.overRate - 0.5, 0.25),
     },
     {
       id: "whistle",
       label: config.metrics.whistleColumn,
       value: whistle.value,
       detail: whistle.detail,
+      signal: normalizeSignal(
+        config.whistleFromMinors
+          ? profile.nhlAnalytics?.minorsDelta ?? profile.foulsDelta
+          : config.id === "nfl"
+            ? profile.nflAnalytics?.flagsDelta ?? profile.foulsDelta
+            : profile.foulsDelta,
+        3,
+      ),
     },
   ];
 
@@ -168,6 +237,9 @@ function bundleMetrics(bundle: CompareRefBundle): BundleMetric[] {
     });
   }
 
+  const gsni = gsniMetric(bundle);
+  if (gsni) rows.push(gsni);
+
   return rows;
 }
 
@@ -180,6 +252,28 @@ export function buildCompareLeagueMetrics(
 export const CROSS_LEAGUE_COMPARE_DISCLAIMER =
   "Cross-league compare: scoring, whistle, and over-rate use each sport's native definitions (e.g. NBA fouls vs EPL fouls). Only games are shown side-by-side below; league-specific metrics appear in each official's column.";
 
+function metricRowFromBundlePair(
+  leftRow: BundleMetric,
+  rightRow: BundleMetric | undefined,
+  leftGsni: number | null,
+  rightGsni: number | null,
+): CompareMetricRow {
+  const isGsni = leftRow.id === "gsni";
+  return {
+    id: leftRow.id,
+    label: leftRow.label,
+    valueA: leftRow.value,
+    valueB: rightRow?.value ?? EMPTY_DISPLAY,
+    detailA: leftRow.detail,
+    detailB: rightRow?.detail,
+    signalA: leftRow.signal ?? null,
+    signalB: rightRow?.signal ?? null,
+    gsniA: isGsni ? leftGsni : null,
+    gsniB: isGsni ? rightGsni : null,
+    kind: isGsni ? "gsni" : "metric",
+  };
+}
+
 export function buildCompareMetricRows(
   left: CompareRefBundle,
   right: CompareRefBundle,
@@ -188,6 +282,12 @@ export function buildCompareMetricRows(
   const leftMetrics = bundleMetrics(left);
   const rightMetrics = bundleMetrics(right);
   const rightById = new Map(rightMetrics.map((row) => [row.id, row]));
+  const leftGsni = compareSupportsGsni(left.leagueId)
+    ? gsniFromRefProfile(left.profile)
+    : null;
+  const rightGsni = compareSupportsGsni(right.leagueId)
+    ? gsniFromRefProfile(right.profile)
+    : null;
 
   if (!sameLeague) {
     const shared: CompareMetricRow[] = [];
@@ -195,15 +295,9 @@ export function buildCompareMetricRows(
       if (!CROSS_LEAGUE_SHARED_METRIC_IDS.has(leftRow.id)) continue;
       const rightRow = rightById.get(leftRow.id);
       if (!rightRow) continue;
-      shared.push({
-        id: leftRow.id,
-        label: leftRow.label,
-        valueA: leftRow.value,
-        valueB: rightRow.value,
-        detailA: leftRow.detail,
-        detailB: rightRow.detail,
-        kind: "metric",
-      });
+      shared.push(
+        metricRowFromBundlePair(leftRow, rightRow, leftGsni, rightGsni),
+      );
     }
 
     shared.push({
@@ -222,26 +316,20 @@ export function buildCompareMetricRows(
   for (const leftRow of leftMetrics) {
     seen.add(leftRow.id);
     const rightRow = rightById.get(leftRow.id);
-    merged.push({
-      id: leftRow.id,
-      label: leftRow.label,
-      valueA: leftRow.value,
-      valueB: rightRow?.value ?? EMPTY_DISPLAY,
-      detailA: leftRow.detail,
-      detailB: rightRow?.detail,
-      kind: "metric",
-    });
+    merged.push(metricRowFromBundlePair(leftRow, rightRow, leftGsni, rightGsni));
   }
 
   for (const rightRow of rightMetrics) {
     if (seen.has(rightRow.id)) continue;
+    const row = metricRowFromBundlePair(rightRow, rightRow, leftGsni, rightGsni);
     merged.push({
-      id: rightRow.id,
-      label: rightRow.label,
+      ...row,
       valueA: EMPTY_DISPLAY,
       valueB: rightRow.value,
+      detailA: undefined,
       detailB: rightRow.detail,
-      kind: "metric",
+      signalA: null,
+      signalB: rightRow.signal ?? null,
     });
   }
 

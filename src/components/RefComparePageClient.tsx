@@ -8,6 +8,7 @@ import { RefCompareView } from "@/components/RefCompareView";
 import {
   buildCompareShareText,
   buildCompareShareUrl,
+  parseCompareLeagueParam,
   parseCompareRef,
   type CompareRefBundle,
   type CompareRefKey,
@@ -63,6 +64,9 @@ export function RefComparePageClient({ siteUrl }: { siteUrl: string }) {
   const [scopeMode, setScopeMode] = useState<SeasonScopeMode>(() =>
     readSeasonScopeParam(searchParams.get("scope")),
   );
+  const [leagueHint] = useState<LeagueId | null>(() =>
+    parseCompareLeagueParam(searchParams.get("league")),
+  );
   const [left, setLeft] = useState<CompareRefBundle | null>(null);
   const [right, setRight] = useState<CompareRefBundle | null>(null);
   const [bundlesReady, setBundlesReady] = useState(false);
@@ -100,10 +104,10 @@ export function RefComparePageClient({ siteUrl }: { siteUrl: string }) {
   const leftLeague = leagueFromKey(leftKey);
   const rightLeague = leagueFromKey(rightKey);
 
-  const leftEntries = useMemo(
-    () => entriesForLeague(entries, rightLeague),
-    [entries, rightLeague],
-  );
+  const leftEntries = useMemo(() => {
+    const leagueLocked = leagueHint && !leftKey && !rightKey ? leagueHint : rightLeague;
+    return entriesForLeague(entries, leagueLocked);
+  }, [entries, leagueHint, leftKey, rightKey, rightLeague]);
   const rightEntries = useMemo(
     () => entriesForLeague(entries, leftLeague),
     [entries, leftLeague],
@@ -225,6 +229,7 @@ export function RefComparePageClient({ siteUrl }: { siteUrl: string }) {
         leftKey={leftKey}
         rightKey={rightKey}
         scopeMode={scopeMode}
+        leagueHint={leagueHint}
         onLeftChange={handleLeftChange}
         onRightChange={handleRightChange}
         onScopeChange={handleScopeChange}
@@ -232,7 +237,7 @@ export function RefComparePageClient({ siteUrl }: { siteUrl: string }) {
       />
 
       {!pickerReady ? (
-        <p className="ref-compare-loading text-sm text-zinc-500">
+        <p className="ref-compare-loading text-sm text-slate-400">
           Loading official directory…
         </p>
       ) : null}

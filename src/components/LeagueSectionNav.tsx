@@ -4,6 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import {
+  compareLeagueHref,
+  COMPARE_LEAGUE_IDS,
+} from "@/lib/ref-compare";
+import {
   LEAGUE_MANIFEST,
   LEAGUE_SLATE_NAV_LABEL,
   leagueSectionNavHref,
@@ -75,6 +79,14 @@ export function LeagueSectionNav({ leagueId, id = "league-section-nav" }: League
             </Link>
           );
         })}
+        {COMPARE_LEAGUE_IDS.includes(leagueId) ? (
+          <Link
+            href={compareLeagueHref(leagueId)}
+            className="site-nav-link site-nav-link--compare"
+          >
+            <span className="site-nav-link-label">Compare Officials</span>
+          </Link>
+        ) : null}
       </nav>
     </div>
   );

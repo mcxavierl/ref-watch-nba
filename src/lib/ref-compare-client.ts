@@ -119,6 +119,6 @@ export const COMPARE_GHOST_METRIC_ROWS = [
   "Scoring pace",
   "Over rate",
   "Whistle pace",
+  "Game-State Index",
   "Spread cover",
-  "O/U delta",
 ] as const;
