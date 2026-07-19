@@ -19,13 +19,13 @@ export type ResearchArticle = {
 export const LEVERAGE_SPIKE_ANOMALY_ARTICLE: ResearchArticle = {
   slug: "leverage-spike-anomaly",
   title: "The Leverage-Spike Anomaly",
-  subtitle: "Quantifying referee pressure elasticity when game state matters most",
+  subtitle: "Historical clutch whistle tendency when game state matters most",
   readMinutes: 5,
   publishedLabel: "July 2026 · Ref Watch Research",
   tldr: [
     "Raw foul and flag counts treat every minute like every other minute. They miss the clutch stretch where whistle behavior often shifts.",
-    "The Leverage-Spike Anomaly flags officials whose high-leverage whistle rate diverges from their volume baseline.",
-    "Ref Watch surfaces this through leverage-weighted NFL metrics (GSNI and LWIS) with explicit sample gates before anything is published.",
+    "The Leverage-Spike Anomaly surfaces officials whose high-leverage whistle rate diverges from their volume baseline.",
+    "Ref Watch reports this through leverage-weighted NFL metrics (Game-State Index and LWIS) with explicit sample gates before anything is published.",
   ],
   sections: [
     {
@@ -56,18 +56,18 @@ export const LEVERAGE_SPIKE_ANOMALY_ARTICLE: ResearchArticle = {
       title: "Defining the anomaly",
       paragraphs: [
         "An official shows a leverage-spike profile when their high-leverage whistle activity materially diverges from what their overall volume would predict.",
-        "Some crews go quiet under pressure: fewer subjective flags in clutch states than peers facing the same game script. Others spike: leverage-weighted impact jumps even when per-game totals look ordinary.",
+        "Some crews go quiet under pressure: fewer subjective flags in clutch states than peers facing the same game script. Others show higher leverage-weighted readings even when per-game totals look ordinary.",
         "Neither pattern is good or bad on its own. The signal is descriptive. It tells you where to look before you trust a simple foul average.",
       ],
     },
     {
       id: "elasticity",
-      title: "Pressure elasticity on Ref Watch",
+      title: "Pressure readings on Ref Watch",
       paragraphs: [
-        "We quantify elasticity with two NFL-facing tools already in the product. Both require play-level or state-backed samples before we show a number.",
+        "We summarize clutch divergence with two NFL-facing tools already in the product. Both require play-level or state-backed samples before we show a number.",
       ],
       bullets: [
-        "GSNI (Game-State Neutralization Index): compares leverage-weighted foul rate to league peers in matched game states. Reported as a Z-score (σ) from the league mean; 0σ is neutral. Withheld until 50+ high-leverage minutes.",
+        "Game-State Index (GSNI): compares leverage-weighted foul rate to league peers in matched game states. Reported as a Z-score (σ) from the league mean; 0σ is neutral. Withheld until 50+ high-leverage minutes.",
         "LWIS (Leverage-Weighted Impact Score): sums |ΔWPA| × leverage weight on subjective whistles. Withheld until 15+ high-leverage subjective events in the trailing window.",
         "High-leverage impact and flag-rate splits on ref profiles when penalty events are ingested from play-by-play.",
       ],
@@ -76,7 +76,7 @@ export const LEVERAGE_SPIKE_ANOMALY_ARTICLE: ResearchArticle = {
       id: "use-it",
       title: "How to use the signal",
       paragraphs: [
-        "Start with volume to understand baseline pace, then flip to leverage on NFL ref profiles when the sample gate clears. If GSNI or LWIS is withheld, the honest answer is still no answer.",
+        "Start with volume to understand baseline pace, then review leverage on NFL ref profiles when the sample gate clears. If Game-State Index or LWIS is withheld, the honest answer is still no answer.",
         "Pair the anomaly read with crew and team matrix splits: a leverage spike against a specific opponent is a different story than a league-wide clutch tilt.",
         "This is historical intelligence for scouts, analysts, and broadcast prep. It is not a betting trigger and not a prediction of the next flag.",
       ],
@@ -87,7 +87,7 @@ export const LEVERAGE_SPIKE_ANOMALY_ARTICLE: ResearchArticle = {
       paragraphs: [
         "Leverage metrics depend on ingest depth. Early-season or partial play-by-play coverage stays muted rather than extrapolated.",
         "Cross-league comparison is not supported: leverage weights and whistle taxonomies differ by sport.",
-        "All Ref Watch research is verified against game logs with published sample gates. See Methodology for gates, provenance labels, and confidence tiers.",
+        "All Ref Watch research aligns with game logs and published sample gates. See Methodology for gates, provenance labels, and confidence tiers.",
       ],
     },
   ],

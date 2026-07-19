@@ -24,7 +24,7 @@ import {
   MATRIX_EXTREME_DELTA_PTS,
   MATRIX_MIN_GAMES,
 } from "@/lib/ref-team-matrix";
-import { NHL_LINESMAN_METHODOLOGY_NOTE, TRUST_CHARTER_PRINCIPLES } from "@/lib/trust-charter";
+import { NHL_LINESMAN_METHODOLOGY_NOTE, TRUST_CHARTER_PRINCIPLES, DATA_INTEGRITY_VERIFIED_COPY } from "@/lib/trust-charter";
 
 export type MethodologySection = {
   id: string;
@@ -73,7 +73,7 @@ export const METHODOLOGY_SECTIONS: MethodologySection[] = [
     title: "Advanced metrics",
     lead: "Research-grade models for clutch states, leverage, and shrinkage. Each metric ships with explicit sample gates before surfacing.",
     bullets: [
-      `Game-State Neutralization (GSNI): compares an official's whistle rate in matched score-and-clock buckets to the league mean in those same states. Reported as a Z-score (σ): positive is quieter than league average, negative is heavier, 0σ is neutral. Bands: Quiet, Neutral, Heavy. NBA and NHL require ${GSNI_MIN_HIGH_LEVERAGE_MINUTES}+ high-leverage minutes; NFL requires ${GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL}+. Research highlights need ${GSNI_RESEARCH_MIN_SAMPLE_GAMES}+ games and an extreme band after Bayesian shrinkage.`,
+      `Game-State Index (GSNI): compares an official's whistle rate in matched score-and-clock buckets to the league mean in those same states. Reported as a Z-score (σ): positive is quieter than league average, negative is heavier, 0σ is neutral. Bands: Quiet, Neutral, Heavy. NBA and NHL require ${GSNI_MIN_HIGH_LEVERAGE_MINUTES}+ high-leverage minutes; NFL requires ${GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL}+. Research highlights need ${GSNI_RESEARCH_MIN_SAMPLE_GAMES}+ games and an extreme band after Bayesian shrinkage.`,
       "Z-score bands: we label outliers when |σ| exceeds the configured extreme threshold. GSNI uses shrinkage toward league mean so thin samples regress before ranking.",
       `Bayesian win-rate shrinkage: ref×team deltas below ${RELIABILITY_FLOOR_GAMES} shared games show an empirical-Bayes adjusted value (${BAYESIAN_PRIOR_STRENGTH}-game prior). ${DELTA_HONESTY_FOOTNOTE}`,
       `Leverage-Weighted Impact Score (LWIS): Σ(|ΔWPA| × LeverageWeight) on subjective whistles. Surfaced only after ${LWIS_MIN_HIGH_LEVERAGE_EVENTS}+ high-leverage subjective events in the trailing ${LWIS_TRAILING_GAME_WINDOW}-game window. Peer z-scores flag officials >2σ above the league LWIS mean.`,
@@ -98,7 +98,8 @@ export const METHODOLOGY_SECTIONS: MethodologySection[] = [
       "Live leagues (NBA, NHL, NFL, EPL, La Liga, NCAA men's basketball) pull from historical game logs, ref-stats sidecars, and crew assignment feeds where available.",
       "Season windows vary by league ingest depth. Overview totals and league cards reflect the latest bundled snapshot at build time.",
       "When closing totals or spreads are unavailable, league-average benchmarks from game logs act as over-rate proxies.",
-      "NCAA hubs stay gated until conference coverage and integrity audits pass release thresholds.",
+      DATA_INTEGRITY_VERIFIED_COPY,
+      "NCAA hubs stay gated until conference coverage and automated integrity checks pass release thresholds.",
       "Historical line data is unavailable for some games. Benchmarks and provenance labels apply wherever noted on the card or profile.",
     ],
   },

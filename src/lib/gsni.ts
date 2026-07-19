@@ -1,7 +1,7 @@
 /**
- * Game-State Neutralization Index (GSNI).
+ * Game-State Index (GSNI).
  *
- * Measures how closely a referee's leverage-weighted foul rate tracks the league
+ * Measures how closely a referee's leverage-weighted foul rate aligns with the league
  * baseline in comparable game states (score gap × clock).
  */
 

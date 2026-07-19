@@ -150,10 +150,10 @@ export function heroSynthesisForView(
       insights: gsniRefs.map((ref) => ({
         id: "gsni-highlight",
         title: "Clutch whistle tendency",
-        body: `${ref.name} GSNI ${ref.referee_gsni!.toFixed(1)}σ in matched clutch states.`,
+        body: `${ref.name} shows ${ref.referee_gsni!.toFixed(1)}σ Game-State Index in matched clutch states.`,
         refSlug: ref.slug,
         refName: ref.name,
-        statLabel: "GSNI",
+        statLabel: "Game-State Index",
         statValue: `${ref.referee_gsni!.toFixed(1)}σ`,
       })),
       leagueSummary: "",

@@ -91,7 +91,7 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
           <tr>
             <th>Official</th>
             <SortableHeader
-              label="GSNI"
+              label="Game-State Index"
               field="gsni"
               sort={sort}
               onSort={(field) => setSort(toggleSort(sort, field))}

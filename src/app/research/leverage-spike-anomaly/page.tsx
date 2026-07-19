@@ -6,11 +6,12 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "The Leverage-Spike Anomaly",
   description:
-    "A concise Ref Watch research brief on referee pressure elasticity: why volume metrics miss clutch whistle behavior, and how GSNI and LWIS surface the gap.",
+    "A concise Ref Watch research brief on historical clutch whistle tendency: why volume metrics miss pressure-state behavior, and how the Game-State Index and LWIS surface the gap.",
   path: "/research/leverage-spike-anomaly",
   keywords: [
     "leverage spike anomaly",
-    "referee pressure elasticity",
+    "clutch whistle tendency",
+    "Game-State Index",
     "GSNI",
     "LWIS",
     "NFL officiating research",

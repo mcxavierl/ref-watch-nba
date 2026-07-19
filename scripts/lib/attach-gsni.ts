@@ -1,5 +1,5 @@
 /**
- * Attach Game-State Neutralization Index fields to ref profiles during rebuilds.
+ * Attach Game-State Index (GSNI) fields to ref profiles during rebuilds.
  */
 import {
   attachGsniToProfiles,

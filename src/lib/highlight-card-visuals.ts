@@ -132,7 +132,7 @@ const INSIGHT_PILL_LABELS: Record<string, string> = {
   "light-whistle": "Whistle",
   "whistle-depth": "Whistle",
   "sample-depth": "Sample",
-  "gsni-highlight": "GSNI",
+  "gsni-highlight": "Game-State Index",
   "ref-outlier": "Outlier",
   "team-crew": "Team crew",
   "whistle-extreme": "Whistle",

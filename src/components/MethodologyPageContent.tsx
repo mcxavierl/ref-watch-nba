@@ -108,10 +108,7 @@ export function MethodologyPageContent({ snapshot }: MethodologyPageContentProps
               available in the ingest.
             </li>
             <li>
-              <TermHelp id="gsni" />: clutch whistle tendency vs league in matched game states (multi-league where game logs support GSNI).
-            </li>
-            <li>
-              <TermHelp id="game-state-index" />: inline label for GSNI on profiles and research hubs.
+              <TermHelp id="game-state-index" />: clutch whistle tendency vs league in matched game states (NFL, NBA, NHL where game logs support GSNI).
             </li>
             <li>
               LWIS (Leverage-Weighted Impact Score): subjective whistle leverage from win-probability proxies; withheld until the high-leverage event gate clears.

@@ -15,9 +15,12 @@ export const REFWATCH_VALIDATION_POSITIONING =
 export const REFWATCH_HERO_SUPPORTING =
   "RefWatch analyzes referee assignments, crew history, and officiating tendencies using historical data, with transparent methodology and confidence levels.";
 
+export const DATA_INTEGRITY_VERIFIED_COPY =
+  "Data-integrity verified: all automated schema and record-count checks pass.";
+
 export const TRUST_CHARTER_PRINCIPLES = [
   "We measure historical tendencies, not outcomes.",
-  "Officials influence game environment, not guaranteed results.",
+  "Official whistle patterns show historical tendency in game environment, not guaranteed results.",
   "Some signals are meaningful; some are not.",
   "We show uncertainty and sample size.",
   "We do not provide betting advice.",

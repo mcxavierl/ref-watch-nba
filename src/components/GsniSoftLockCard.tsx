@@ -21,7 +21,7 @@ export function GsniSoftLockCard({
           aria-hidden
         />
         <div className="min-w-0">
-          <p className="gsni-soft-lock-card-headline">Building GSNI profile</p>
+          <p className="gsni-soft-lock-card-headline">Building Game-State Index profile</p>
           <p className="gsni-soft-lock-card-copy">
             <GsniSampleCount>{collected}</GsniSampleCount> / {gate} high-leverage
             minutes collected.

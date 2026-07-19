@@ -9,7 +9,7 @@ export const INSIGHTS_HUB_TAB_LABELS: Record<ResearchView, string> = {
   tendencies: "Tendencies",
   trends: "Trends",
   findings: "Findings",
-  "game-state": "Game State",
+  "game-state": "Game-State Index",
 };
 
 /** Research sub-views exposed as hub tabs for a league. */

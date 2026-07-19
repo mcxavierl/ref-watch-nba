@@ -340,7 +340,7 @@ export interface RefProfile {
   homeCoverRate: number | null;
   totalPointsDelta: number;
   foulsDelta: number;
-  /** Game-State Neutralization Index (0-100). Undefined when high-leverage sample < 50 min. */
+  /** Game-State Index (GSNI). Undefined when high-leverage sample < 50 min. */
   referee_gsni?: number;
   /** Per-game weighted foul deviation spread. Undefined when GSNI is withheld. */
   referee_gsni_volatility?: number;

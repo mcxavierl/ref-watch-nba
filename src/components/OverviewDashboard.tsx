@@ -120,7 +120,7 @@ export function OverviewDashboard({
                   <summary className="overview-sidebar-heading overview-catalog-summary">
                     <span className="overview-catalog-summary-copy">
                       <h3 className="overview-catalog-summary-title">League catalog</h3>
-                      <span className="overview-catalog-summary-hint">Live verified hubs</span>
+                      <span className="overview-catalog-summary-hint">Data-integrity verified hubs</span>
                     </span>
                     <span
                       className="overview-sidebar-count"
