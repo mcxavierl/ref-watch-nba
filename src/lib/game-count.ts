@@ -49,6 +49,17 @@ export function countDistinctGames(
   return ids.size;
 }
 
+/** COUNT(DISTINCT game_id) within a season window. */
+export function countDistinctGamesInSeasons(
+  games: readonly { gameId?: string | null; season?: string }[],
+  seasons: readonly string[],
+): number {
+  const seasonSet = new Set(seasons);
+  return countDistinctGames(
+    games.filter((game) => game.season && seasonSet.has(game.season)),
+  );
+}
+
 /** COUNT(DISTINCT game_id) for games where the ref officiated (slug match). */
 export function countRefGamesFromLogs(
   games: readonly RefGameLogRow[],

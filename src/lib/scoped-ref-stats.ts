@@ -1,5 +1,5 @@
 import { aggregateBaselineForSeasons } from "@/lib/baselines";
-import { dedupeByGameId } from "@/lib/game-count";
+import { countDistinctGamesInSeasons, dedupeByGameId } from "@/lib/game-count";
 import {
   applyConferenceAdjustedMeta,
   isNcaaMetricsLeague,
@@ -439,6 +439,16 @@ function applyScopedMetaBaselines(
   };
 }
 
+function scopedTotalGamesProcessed(
+  leagueId: LeagueId,
+  scopedSeasons: string[],
+): number | undefined {
+  const dataLeague = LEAGUE_ID_TO_DATA[leagueId];
+  const logs = loadRuntimeGameLogs(dataLeague);
+  if (!logs?.games?.length) return undefined;
+  return countDistinctGamesInSeasons(logs.games, scopedSeasons);
+}
+
 function filterByRefSeasons(
   base: RefStatsFile,
   scopedSeasons: string[],
@@ -450,6 +460,7 @@ function filterByRefSeasons(
   );
   const scopedDateRange =
     scopedSeasonDateRange(scopedSeasons) ?? base.meta.dateRange;
+  const totalGamesProcessed = scopedTotalGamesProcessed(leagueId, scopedSeasons);
   return applyScopedMetaBaselines(
     overlayNcaaConferenceBaselines(
       {
@@ -458,6 +469,9 @@ function filterByRefSeasons(
           ...base.meta,
           seasons: scopedSeasons,
           refCount: refs.length,
+          ...(totalGamesProcessed !== undefined
+            ? { totalGamesProcessed }
+            : {}),
           ...(scopedDateRange ? { dateRange: scopedDateRange } : {}),
         },
         refs,

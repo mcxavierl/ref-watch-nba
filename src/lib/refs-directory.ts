@@ -150,7 +150,7 @@ export function buildRefsDirectoryContext(
   const resolveTeamNation = (abbr: string) => teamNationForLeague(league.id, abbr);
   const enriched = pool.map((ref) => enrichRefWithOriginVariance(ref, resolveTeamNation));
   const qualified = qualifiedRefs(enriched, stats.meta.minSampleSize);
-  const totalGameRecords = qualified.reduce((sum, ref) => sum + ref.games, 0);
+  const totalGameRecords = stats.meta.totalGamesProcessed ?? 0;
 
   return {
     refs: qualified,

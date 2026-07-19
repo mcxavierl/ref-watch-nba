@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  buildRefsDirectoryContext,
   buildRefsSpotlightCards,
   computeOverRateMean,
   filterRefsDiscovery,
@@ -8,7 +9,7 @@ import {
   sortRefsByOutlierDeviation,
 } from "@/lib/refs-directory";
 import { LEAGUES } from "@/lib/leagues";
-import type { RefProfile } from "@/lib/types";
+import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 function makeRef(overrides: Partial<RefProfile> & Pick<RefProfile, "slug" | "name">): RefProfile {
   return {
@@ -111,6 +112,35 @@ describe("sortRefsByOutlierDeviation", () => {
       ["c", "a", "b"],
     );
     assert.equal(computeOverRateMean(refs), 0.43333333333333335);
+  });
+});
+
+describe("buildRefsDirectoryContext", () => {
+  it("uses distinct games processed, not summed ref assignments", () => {
+    const stats: RefStatsFile = {
+      refs: [
+        makeRef({ slug: "a", name: "Alpha", games: 80 }),
+        makeRef({ slug: "b", name: "Bravo", games: 70 }),
+      ],
+      teamSplits: {},
+      meta: {
+        seasons: ["2024-25", "2025-26"],
+        leagueAvgTotal: 220,
+        leagueAvgFouls: 40,
+        leagueOverBaseline: 220,
+        minSampleSize: 30,
+        refCount: 2,
+        totalGamesProcessed: 95,
+        lastUpdated: "2026-01-01",
+        source: "hybrid",
+        atsAvailable: true,
+      },
+    };
+
+    const ctx = buildRefsDirectoryContext(stats, LEAGUES.nba);
+    assert.equal(ctx.meta.totalGameRecords, 95);
+    assert.equal(ctx.meta.totalGameRecordsLabel, "95+");
+    assert.equal(ctx.meta.qualifiedCount, 2);
   });
 });
 
