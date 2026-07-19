@@ -33,8 +33,6 @@ import { loadTeamPageInsightCards } from "@/lib/team-page-insights";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import { getCachedTeamStrengthOfSchedule } from "@/lib/nba-team-sos-cache";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
-import { signedDeltaTone } from "@/lib/metric-delight";
-import { StandoutMetricValue } from "@/components/StandoutMetric";
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import { DEFAULT_SEASON_SCOPE_MODE } from "@/lib/season-scope";
 
@@ -64,7 +62,7 @@ export function TeamCrewPage({
   const mod = LEAGUE_MODULES[league];
   const basePath = mod.basePath;
   const { getTeam, teamFullName, teamWithArticle } = mod.teams;
-  const { sortSplitsByGames, formatDate, formatPct, getTeamSplits } = mod.data;
+  const { sortSplitsByGames, formatDate, getTeamSplits } = mod.data;
 
   const team = getTeam(config.teamAbbr);
   if (!team) return null;
@@ -247,35 +245,6 @@ export function TeamCrewPage({
           </p>
         )}
       </details>
-
-      <section className="section-block team-ref-profiles-section" data-league={league}>
-        <h2 className="section-title">League-wide ref profiles</h2>
-        <div className="data-card divide-y divide-border-subtle">
-          {analyticsRefs
-            .filter((r) => r.games >= stats.meta.minSampleSize)
-            .slice(0, 12)
-            .map((ref) => {
-              const overDeltaPp = (ref.overRate - 0.5) * 100;
-              return (
-              <Link
-                key={ref.slug}
-                href={`${basePath}/refs/${ref.slug}`}
-                className="team-ref-profile-row flex items-center gap-4 px-5 py-3 text-sm transition"
-              >
-                <span className="min-w-0 flex-1 font-medium text-zinc-800 dark:text-zinc-100">
-                  {ref.name}
-                </span>
-                <span className="shrink-0 text-right font-mono text-xs leading-snug tabular-nums text-zinc-600 dark:text-zinc-400">
-                  <StandoutMetricValue tone={signedDeltaTone(overDeltaPp)} size="md">
-                    {formatPct(ref.overRate)}
-                  </StandoutMetricValue>{" "}
-                  over {stats.meta.leagueOverBaseline}
-                </span>
-              </Link>
-              );
-            })}
-        </div>
-      </section>
     </div>
   );
 }
