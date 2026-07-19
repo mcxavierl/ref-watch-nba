@@ -228,17 +228,20 @@
   flex-direction: column;
   gap: 1rem;
   min-height: 100%;
+  min-width: 0;
   padding: 1.15rem 1.2rem 1.2rem;
   border-radius: 1rem;
   border: 1px solid rgb(30 41 59);
   background: rgb(2 6 23);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+  container-type: inline-size;
   --upcoming-matchup-glow-accent: rgb(148 163 184);
   --upcoming-matchup-glow: color-mix(
     in srgb,
     var(--upcoming-matchup-glow-accent) 72%,
     rgb(248 250 252)
   );
+  --upcoming-matchup-logo-size: clamp(2.35rem, 34cqi, 3.5rem);
 }
 
 .upcoming-game-card__header {
@@ -344,8 +347,11 @@
 .upcoming-game-card__body {
   display: flex;
   flex: 1 1 auto;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: center;
+  width: 100%;
+  min-width: 0;
   min-height: 5.5rem;
   isolation: isolate;
 }
@@ -379,12 +385,16 @@
 }
 
 .upcoming-game-card__matchup {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem 1.15rem;
+  gap: clamp(0.45rem, 4cqi, 1.15rem);
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
-  padding: 1rem 1.25rem 1.1rem;
+  box-sizing: border-box;
+  padding: clamp(0.75rem, 5cqi, 1rem) clamp(0.65rem, 4cqi, 1.25rem)
+    clamp(0.85rem, 5cqi, 1.1rem);
   border-radius: 1.35rem;
   border: 1px solid color-mix(in srgb, var(--upcoming-matchup-glow) 32%, rgb(30 41 59));
   background:
@@ -397,14 +407,17 @@
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow) 12%, transparent),
     0 0 26px color-mix(in srgb, var(--upcoming-matchup-glow) 18%, transparent);
+  overflow: hidden;
 }
 
 .upcoming-game-card__team {
   display: flex;
+  flex: 1 1 0;
   flex-direction: column;
   align-items: center;
-  gap: 0.85rem;
+  gap: clamp(0.45rem, 3cqi, 0.85rem);
   min-width: 0;
+  max-width: 5.5rem;
 }
 
 html[data-contrast="high"] .upcoming-game-card__matchup {
@@ -421,24 +434,40 @@ html[data-contrast="high"] .upcoming-game-card__date-pill {
 }
 
 .upcoming-game-card__matchup .team-logo-plate {
+  width: var(--upcoming-matchup-logo-size);
+  height: var(--upcoming-matchup-logo-size);
+  max-width: 100%;
+  flex-shrink: 1;
   padding: 0;
   border: none;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  overflow: visible;
+  overflow: hidden;
+}
+
+.upcoming-game-card__matchup .team-logo-plate__img,
+.upcoming-game-card__matchup .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
+.upcoming-game-card__matchup .team-logo-plate[data-sport="epl"] .team-logo-plate__img,
+.upcoming-game-card__matchup .team-logo-plate[data-sport="laliga"] .team-logo-plate__img,
+.upcoming-game-card__matchup .team-logo-plate[data-sport="cbb"] .team-logo-plate__img {
+  transform: none;
 }
 
 .upcoming-game-card__at {
+  flex: 0 0 auto;
   align-self: center;
-  font-size: 1.375rem;
+  font-size: clamp(1rem, 5cqi, 1.375rem);
   font-weight: 800;
   line-height: 1;
   color: rgb(148 163 184);
 }
 
 .upcoming-game-card__team-abbr {
-  font-size: 1.125rem;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: clamp(0.875rem, 4.5cqi, 1.125rem);
   font-weight: 700;
   letter-spacing: 0.03em;
   text-align: center;
@@ -447,6 +476,7 @@ html[data-contrast="high"] .upcoming-game-card__date-pill {
 
 .upcoming-game-card__context {
   margin: 0.625rem 0 0;
+  min-width: 0;
   font-size: 0.75rem;
   font-weight: 500;
   line-height: 1.45;
