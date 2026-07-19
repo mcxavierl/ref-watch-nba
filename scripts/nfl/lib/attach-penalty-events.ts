@@ -5,6 +5,7 @@ import {
 } from "../../../src/lib/impact-calculator";
 import { classifyNflPenaltySlug } from "../../../src/config/penalty-types";
 import type { NflPenaltyEvent } from "../../../src/lib/types";
+import { tagNflPenaltyEvents } from "./ingest-utils";
 import {
   loadCachedPenaltyEventIndex,
   summarizePenaltyEvents,
@@ -153,11 +154,12 @@ export function enrichGameLogsWithPenaltyEvents<T extends GameLogEntry>(
     }
 
     applied += 1;
-    const summary = summarizePenaltyEvents(penaltyEvents);
-    const disposition = dispositionFromEvents(penaltyEvents);
+    const taggedEvents = tagNflPenaltyEvents(penaltyEvents);
+    const summary = summarizePenaltyEvents(taggedEvents);
+    const disposition = dispositionFromEvents(taggedEvents);
     return {
       ...game,
-      penaltyEvents,
+      penaltyEvents: taggedEvents,
       highLeverageImpact: summary.highLeverageImpact,
       highLeverageFlagRate: summary.highLeverageFlagRate,
       subjectiveFlags: disposition.subjectiveFlags,

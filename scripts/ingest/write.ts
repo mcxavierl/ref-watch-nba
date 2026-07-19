@@ -2,12 +2,13 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { toOfficials } from "../lib/game-logs";
 import { GAME_LOGS_DIR } from "./config";
+import { processNbaFoulShardEntry } from "./lib/ingest-utils";
 import type { MergedGame } from "./merge-games";
 
 const LEAGUE_AVG_TOTAL = 225;
 
 export function toNdjsonGame(game: MergedGame) {
-  return {
+  const base = {
     gameId: game.gameId,
     date: game.date,
     season: game.season,
@@ -31,6 +32,15 @@ export function toNdjsonGame(game: MergedGame) {
     officialsSource: game.officialsSource,
     isPlayoff: game.isPlayoff,
   };
+
+  if (!game.fouls?.length) {
+    return base;
+  }
+
+  return processNbaFoulShardEntry({
+    ...base,
+    fouls: game.fouls,
+  });
 }
 
 export function writeSeasonShards(games: MergedGame[]): void {

@@ -39,7 +39,13 @@ import {
 } from "./validate";
 import { writeSeasonShards } from "./write";
 import { buildRefStatsFromLogs } from "./build-ref-stats-from-logs";
+import { processNbaFoulShardEntry } from "./lib/ingest-utils";
 import { NBA_SEASON_OPENERS } from "../../src/lib/nba-team-season-records";
+
+function tagMergedGameFouls(game: MergedGame): MergedGame {
+  if (!game.fouls?.length) return game;
+  return processNbaFoulShardEntry(game) as MergedGame;
+}
 
 function gameMatchKey(date: string, home: string, away: string): string {
   return `${date}|${home}|${away}`;
@@ -276,8 +282,9 @@ async function main() {
 
   assertAllPassed(results);
 
-  // 6. Write output
-  writeSeasonShards(finalGames);
+  // 6. Write output — tag foul categories at source before shard persistence
+  const taggedGames = finalGames.map(tagMergedGameFouls);
+  writeSeasonShards(taggedGames);
   writeManifest(finalGames, pagesFetched);
 
   const logsOnly = process.argv.includes("--logs-only");

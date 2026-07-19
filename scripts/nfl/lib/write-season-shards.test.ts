@@ -3,6 +3,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { afterEach, describe, it } from "node:test";
+import { FoulCategory } from "../../../src/lib/types/foul-categories";
 import {
   finalizeNflVerifiedArtifacts,
   groupGamesBySeason,
@@ -79,5 +80,30 @@ describe("writeNflSeasonShards", () => {
     assert.equal(manifest.data_verified, true);
     assert.equal(manifest.game_count, 1);
     assert.ok(fs.existsSync(path.join(root, "data/nfl/manifest.json")));
+  });
+
+  it("tags penalty event categories before writing shards", () => {
+    const root = makeTempRoot();
+    const games = [
+      {
+        ...sampleGame(),
+        penaltyEvents: [
+          {
+            type: "delay_of_game" as const,
+            rawType: "Delay of Game",
+            team: "KC",
+            yards: 5,
+            accepted: true,
+            leverage: { tier: "moderate" as const },
+            leverageScore: 0.4,
+          },
+        ],
+      },
+    ];
+
+    writeNflSeasonShards(games, root);
+    const shardPath = path.join(root, "data/nfl/game-logs/2024-25.ndjson");
+    const parsed = JSON.parse(fs.readFileSync(shardPath, "utf8").trim().split("\n")[0]!);
+    assert.equal(parsed.penaltyEvents[0].category, FoulCategory.ADMIN);
   });
 });
