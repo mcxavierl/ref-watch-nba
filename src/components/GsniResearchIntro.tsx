@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChevronDown } from "lucide-react";
 import { TermHelp } from "@/components/TermHelp";
 import {
   gsniHighLeverageStatesCopy,
@@ -18,12 +19,15 @@ export function GsniResearchIntro({
   if (leagueId !== "nfl" && leagueId !== "nba") return null;
 
   return (
-    <section className="section-block-tight mb-4" aria-labelledby="gsni-research-intro-title">
-      <div className="insights-trends-panel panel-inset px-4 py-4 sm:px-5">
-        <h2 className="insights-trends-title m-0" id="gsni-research-intro-title">
-          <TermHelp id="game-state-index">What the Game-State Index measures</TermHelp>
-        </h2>
-        <p className="insights-trends-body mt-2 mb-0">
+    <details className="methodology-accordion gsni-research-info mb-4">
+      <summary className="methodology-accordion-trigger">
+        <span>
+          <TermHelp id="game-state-index">Game-State Index definition and methodology</TermHelp>
+        </span>
+        <ChevronDown className="methodology-accordion-chevron" aria-hidden />
+      </summary>
+      <div className="methodology-accordion-panel px-5 pb-4">
+        <p className="insights-trends-body mt-0 mb-0">
           {gsniHighLeverageStatesCopy(leagueId)}
         </p>
         <p className="gsni-sub-text mt-3 mb-0">{gsniIndexScoreExplainer(leagueId)}</p>
@@ -39,6 +43,6 @@ export function GsniResearchIntro({
           .
         </p>
       </div>
-    </section>
+    </details>
   );
 }

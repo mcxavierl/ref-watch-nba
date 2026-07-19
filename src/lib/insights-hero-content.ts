@@ -10,6 +10,9 @@ import type { LeagueConfig } from "@/lib/leagues";
 import { gsniInsightSummary, gsniShrinkageFromProfile } from "@/lib/gsni-display";
 import {
   compareGsniByAbsDesc,
+  gsniOfficialRowAnchor,
+  gsniQualifiesHighVariance,
+  GSNI_ANOMALY_HIGHLIGHT_MAX,
 } from "@/lib/gsni-research";
 import { formatGsniScoreValue } from "@/lib/gsni-ui";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
@@ -161,23 +164,31 @@ export function heroSynthesisForView(
   }
 
   if (view === "game-state") {
-    const gsniRefs = gsniSortedRefs(stats.refs).slice(0, MAX_RANKINGS_HIGHLIGHT_CARDS);
+    const gsniRefs = gsniSortedRefs(stats.refs)
+      .filter((ref) => {
+        const displayScore =
+          gsniShrinkageFromProfile(ref)?.display ?? ref.referee_gsni;
+        return (
+          displayScore !== undefined && gsniQualifiesHighVariance(displayScore)
+        );
+      })
+      .slice(0, GSNI_ANOMALY_HIGHLIGHT_MAX);
     return {
       ...base,
       headline: "Top highlights",
-      subhead: "",
+      subhead: "Extreme high-leverage frequency anomalies only.",
       insights: gsniRefs.map((ref) => {
         const displayScore =
           gsniShrinkageFromProfile(ref)?.display ?? ref.referee_gsni!;
         return {
           id: `gsni-highlight-${ref.slug}`,
-          title: "High-Leverage Penalty Frequency",
+          title: "Extreme anomaly",
           body: gsniInsightSummary(displayScore),
           refSlug: ref.slug,
           refName: ref.name,
           statLabel: "Game-State Index",
           statValue: formatGsniScoreValue(displayScore),
-          categoryHref: `${league.pathPrefix}/research/game-state#gsni-official-table`,
+          categoryHref: `${league.pathPrefix}/research/game-state#${gsniOfficialRowAnchor(ref.slug)}`,
         };
       }),
       leagueSummary: "",

@@ -1,5 +1,4 @@
 import {
-  buildGsniResearchHighlights,
   buildGsniResearchRows,
   gsniResearchConfigForLeague,
 } from "@/lib/gsni-research";
@@ -22,9 +21,6 @@ export function GameStateIndexResearchSection({
   const config = gsniResearchConfigForLeague(leagueId);
   if (!config) return null;
   const resolvedConfig = basePath ? { ...config, basePath } : config;
-  const highlights = buildGsniResearchHighlights(stats, resolvedConfig, {
-    highVarianceOnly: false,
-  });
   const rows = buildGsniResearchRows(stats, resolvedConfig, {
     highVarianceOnly: false,
   });
@@ -32,7 +28,6 @@ export function GameStateIndexResearchSection({
 
   return (
     <GameStateIndexDashboard
-      highlights={highlights}
       rows={rows}
       leagueId={leagueId}
       compactHub={compactHub}

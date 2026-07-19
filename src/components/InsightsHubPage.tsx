@@ -7,6 +7,7 @@ import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { LeagueHubTabs } from "@/components/LeagueHubTabs";
 import { LeagueTrendsTable } from "@/components/LeagueTrendsTable";
 import { RankingsInsightCards } from "@/components/RankingsInsightCards";
+import { GsniAnomalyCalloutGrid } from "@/components/GsniAnomalyCalloutGrid";
 import { RefRankingsTable } from "@/components/RefRankingsTable";
 import { FrictionGrudgeMatrixSection } from "@/components/FrictionGrudgeMatrixSection";
 import {
@@ -281,12 +282,19 @@ export function InsightsHubPage({
   });
   const heroHighlights =
     heroSynthesis.insights.length > 0 ? (
-      <RankingsInsightCards
-        synthesis={heroSynthesis}
-        basePath={league.pathPrefix}
-        leagueId={leagueId}
-        variant="hero"
-      />
+      activeView === "game-state" ? (
+        <GsniAnomalyCalloutGrid
+          insights={heroSynthesis.insights}
+          basePath={league.pathPrefix}
+        />
+      ) : (
+        <RankingsInsightCards
+          synthesis={heroSynthesis}
+          basePath={league.pathPrefix}
+          leagueId={leagueId}
+          variant="hero"
+        />
+      )
     ) : null;
 
   const tendenciesPanel: ReactNode = rankingsHook;

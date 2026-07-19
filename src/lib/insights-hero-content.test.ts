@@ -123,7 +123,7 @@ describe("insights-hero-content", () => {
     assert.equal(synthesis.insights[0]?.id, "gsni-highlight-sample-ref");
     assert.equal(
       synthesis.insights[0]?.categoryHref,
-      "/nfl/research/game-state#gsni-official-table",
+      "/nfl/research/game-state#gsni-row-sample-ref",
     );
     assert.equal(synthesis.insights[0]?.refSlug, "sample-ref");
   });
