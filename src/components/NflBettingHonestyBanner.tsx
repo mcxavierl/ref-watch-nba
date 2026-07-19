@@ -5,6 +5,7 @@ import {
   isNflHybridData,
   isNflSimulatedData,
   isNflVerifiedData,
+  nflBettingHonestyCopy,
 } from "@/lib/nfl/data-source";
 
 /** League-wide honesty strip for NFL betting splits (shown on every /nfl route). */
@@ -49,10 +50,7 @@ export function NflBettingHonestyBanner() {
     <div className="data-source-banner data-source-banner--betting" role="status">
       <AlertTriangle className="data-source-banner-icon" aria-hidden />
       <p className="data-source-banner-text">
-        <strong>Betting splits disclaimer.</strong> ATS/O-U uses nflverse
-        historical closing lines on matched games only, not live sportsbook
-        prices. Treat as exploratory historical context, not picks.{" "}
-        {meta.note ? <span className="data-source-banner-detail">{meta.note}</span> : null}{" "}
+        <strong>Betting splits disclaimer.</strong> {nflBettingHonestyCopy(meta)}{" "}
         <Link href="/methodology" className="data-source-banner-link">
           Methodology
         </Link>

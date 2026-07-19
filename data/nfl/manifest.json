@@ -1,7 +1,7 @@
 {
   "data_verified": true,
   "data_source": "ESPN + nflverse (2000-present)",
-  "last_ingested_at": "2026-07-16T23:29:08.797Z",
+  "last_ingested_at": "2026-07-19T01:29:07.299Z",
   "game_count": 6825,
   "seasons": [
     "2000-01",
@@ -31,5 +31,5 @@
     "2024-25",
     "2025-26"
   ],
-  "note": "Ref×team W-L rebuilt from 6825 ESPN game logs. 5151/6676 ref×team pairs meet the 3+ game matrix gate."
+  "note": "Ref×team W-L rebuilt from 6825 ESPN game logs. 5151/6676 ref×team pairs meet the 3+ game matrix gate. Ties are excluded from straight-up W-L."
 }

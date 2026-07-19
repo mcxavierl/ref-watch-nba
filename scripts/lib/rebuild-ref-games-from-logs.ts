@@ -16,6 +16,7 @@ import {
   pushRefTeamGame,
   type RefTeamGameRow,
 } from "./ref-team-stats";
+import { appendMetaNoteOnce } from "./meta-note";
 import { refSlug } from "./slug";
 import { teamWonGame } from "./team-win";
 import { teamFoulsFromGameLog } from "../../src/lib/team-foul-split";
@@ -189,8 +190,10 @@ export function rebuildRefGamesFromLogs(
       ...stats.meta,
       lastUpdated: new Date().toISOString(),
       refCount: refs.length,
-      note:
-        `${stats.meta.note ?? ""} Ref game counts rebuilt from DISTINCT game_id in game logs.`.trim(),
+      note: appendMetaNoteOnce(
+        stats.meta.note,
+        "Ref game counts rebuilt from DISTINCT game_id in game logs.",
+      ),
     },
   };
 }

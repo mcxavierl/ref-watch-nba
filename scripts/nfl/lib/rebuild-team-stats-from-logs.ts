@@ -5,6 +5,7 @@ import {
 } from "../../lib/ref-team-stats";
 import { refSlug } from "../../lib/slug";
 import type { GameLogFile } from "../../lib/game-logs";
+import { nflVerifiedDatasetNote } from "../../../src/lib/nfl/data-source";
 import type { RefProfile, RefStatsFile, RefTeamStat } from "../../../src/lib/types";
 
 function round1(n: number): number {
@@ -22,21 +23,24 @@ export function buildTeamStatsBucketsFromGameLogs(
   const refTeamBuckets = new Map<string, Map<string, RefTeamGameRow[]>>();
 
   for (const game of logs.games) {
-    const homeWin = game.homeScore > game.awayScore;
+    const isTie = game.homeScore === game.awayScore;
+    const homeWin = !isTie && game.homeScore > game.awayScore;
+    const awayWin = !isTie && game.awayScore > game.homeScore;
     const overHit = game.totalPoints > game.closingTotal;
 
     for (const official of game.officials) {
       const slug = refSlug(official.name, official.number);
 
-      for (const [teamAbbr, teamWin, teamFouls, opponentFouls] of [
-        [game.homeTeam, homeWin, game.homeFlags ?? 0, game.awayFlags ?? 0],
-        [game.awayTeam, !homeWin, game.awayFlags ?? 0, game.homeFlags ?? 0],
+      for (const [teamAbbr, teamWin, teamTie, teamFouls, opponentFouls] of [
+        [game.homeTeam, homeWin, isTie, game.homeFlags ?? 0, game.awayFlags ?? 0],
+        [game.awayTeam, awayWin, isTie, game.awayFlags ?? 0, game.homeFlags ?? 0],
       ] as const) {
         pushRefTeamGame(refTeamBuckets, slug, teamAbbr, {
           foulDifferential: teamFouls - opponentFouls,
           totalPoints: game.totalPoints,
           overHit,
           teamWin,
+          teamTie,
         });
       }
     }
@@ -158,9 +162,11 @@ export function applyGameLogTeamStats(
         refCount: updatedRefs.length,
         totalGamesProcessed: logs.games.length,
         source: stats.meta.source === "seeded" ? "espn" : stats.meta.source,
-        note:
-          `Ref×team W-L rebuilt from ${logs.games.length} ESPN game logs. ` +
-          `${qualifiedPairs}/${teamStatsPairs} ref×team pairs meet the 3+ game matrix gate.`,
+        note: nflVerifiedDatasetNote(
+          logs.games.length,
+          qualifiedPairs,
+          teamStatsPairs,
+        ),
       },
       refs: updatedRefs,
     },

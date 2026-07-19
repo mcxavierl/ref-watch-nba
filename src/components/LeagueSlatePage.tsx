@@ -16,6 +16,7 @@ import { TrustCharterSummary } from "@/components/TrustCharterSummary";
 import { UpcomingSlateNotice } from "@/components/UpcomingSlateNotice";
 import { EplAnalyticsLeaders } from "@/components/EplAnalyticsLeaders";
 import { NflAnalyticsLeaders } from "@/components/NflAnalyticsLeaders";
+import { NflPreviewBanner } from "@/components/NflPreviewBanner";
 import { CfbPreviewBanner } from "@/components/CfbPreviewBanner";
 import { CfbAnalyticsLeaders } from "@/components/CfbAnalyticsLeaders";
 import { LEAGUE_MANIFEST, type LeagueManifestId } from "@/lib/league-manifest";
@@ -166,6 +167,14 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
           statsSource={refStats.meta.source}
           assignmentsSource={assignments.source}
           refStats={refStats}
+        />
+      )}
+
+      {leagueId === "nfl" && (
+        <NflPreviewBanner
+          statsSource={refStats.meta.source}
+          assignmentsSource={assignments.source}
+          atsAvailable={refStats.meta.atsAvailable === true}
         />
       )}
 

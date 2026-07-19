@@ -245,6 +245,8 @@ export interface RefTeamStat {
   /** Exact W-L when sourced from Basketball-Reference or game logs. */
   wins?: number;
   losses?: number;
+  /** NFL regulation ties excluded from W and L. */
+  ties?: number;
   /** ATS cover record when closing lines are available for ref×team games. */
   atsWins?: number;
   atsLosses?: number;
