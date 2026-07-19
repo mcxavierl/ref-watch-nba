@@ -1,4 +1,5 @@
 import type { RefProfile, RefStatsFile } from "@/lib/types";
+import { variancePercent } from "@/lib/metric-variance-display";
 
 export type NflLeaderCategory =
   | "flags"
@@ -15,6 +16,11 @@ export interface NflLeaderEntry {
   ref: RefProfile;
   value: string;
   delta?: number;
+  metric?: {
+    primaryTotal: string;
+    variancePct: number;
+    comparisonCaption?: string;
+  };
 }
 
 const MIN_GAMES = 15;
@@ -58,25 +64,37 @@ export function buildNflAnalyticsLeaders(stats: RefStatsFile): NflLeaderEntry[] 
 
   const flagRef = byFlags[0];
   if (flagRef?.nflAnalytics) {
+    const flagsDelta = flagRef.nflAnalytics.flagsDelta;
     leaders.push({
       category: "flags",
-      title: "Most flags called",
-      detail: `${flagRef.nflAnalytics.avgFlagsPerGame} flags/game avg`,
+      title: "Flags called",
+      detail: `${flagRef.name} leads verified penalty volume in the sample window.`,
       ref: flagRef,
-      value: `+${flagRef.nflAnalytics.flagsDelta.toFixed(1)} vs league`,
-      delta: flagRef.nflAnalytics.flagsDelta,
+      value: `+${flagsDelta.toFixed(1)} vs league`,
+      delta: flagsDelta,
+      metric: {
+        primaryTotal: `${flagRef.nflAnalytics.avgFlagsPerGame.toFixed(1)} flags/game`,
+        variancePct: variancePercent(flagsDelta, stats.meta.leagueAvgFouls),
+        comparisonCaption: "vs league avg",
+      },
     });
   }
 
   const yardsRef = byYards[0];
   if (yardsRef?.nflAnalytics) {
+    const yardsDelta = yardsRef.nflAnalytics.penaltyYardsDelta;
     leaders.push({
       category: "penaltyYards",
-      title: "Highest penalty yards",
-      detail: `${yardsRef.nflAnalytics.avgPenaltyYardsPerGame} yds/game avg`,
+      title: "Penalty yards",
+      detail: `${yardsRef.name} posts the heaviest yardage pace in the sample window.`,
       ref: yardsRef,
-      value: `+${yardsRef.nflAnalytics.penaltyYardsDelta.toFixed(1)} vs league`,
-      delta: yardsRef.nflAnalytics.penaltyYardsDelta,
+      value: `+${yardsDelta.toFixed(1)} vs league`,
+      delta: yardsDelta,
+      metric: {
+        primaryTotal: `${yardsRef.nflAnalytics.avgPenaltyYardsPerGame.toFixed(1)} yards/game`,
+        variancePct: variancePercent(yardsDelta, stats.meta.leagueAvgPenaltyYards ?? 95),
+        comparisonCaption: "vs league avg",
+      },
     });
   }
 
@@ -94,13 +112,19 @@ export function buildNflAnalyticsLeaders(stats: RefStatsFile): NflLeaderEntry[] 
 
   const scoreRef = byScoring[0];
   if (scoreRef) {
+    const pointsDelta = scoreRef.totalPointsDelta;
     leaders.push({
       category: "scoring",
-      title: "Highest-scoring crews",
-      detail: `${scoreRef.avgTotalPoints.toFixed(1)} combined pts/game`,
+      title: "Combined points",
+      detail: `${scoreRef.name} runs the hottest combined scoring pace in the sample window.`,
       ref: scoreRef,
-      value: `${scoreRef.totalPointsDelta > 0 ? "+" : ""}${scoreRef.totalPointsDelta.toFixed(1)} pts vs avg`,
-      delta: scoreRef.totalPointsDelta,
+      value: `${pointsDelta > 0 ? "+" : ""}${pointsDelta.toFixed(1)} pts vs avg`,
+      delta: pointsDelta,
+      metric: {
+        primaryTotal: `${scoreRef.avgTotalPoints.toFixed(1)} points/game`,
+        variancePct: variancePercent(pointsDelta, stats.meta.leagueAvgTotal),
+        comparisonCaption: "vs league avg",
+      },
     });
   }
 

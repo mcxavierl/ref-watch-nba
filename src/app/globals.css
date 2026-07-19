@@ -6479,6 +6479,54 @@ p {
     margin: 0;
   }
 
+  .metric-variance-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .metric-variance-primary {
+    margin: 0;
+    font-family: var(--font-data);
+    font-weight: 800;
+    line-height: var(--leading-tight);
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+  }
+
+  .metric-variance-primary--lg {
+    font-size: var(--text-2xl);
+  }
+
+  .metric-variance-primary--md {
+    font-size: var(--text-xl);
+  }
+
+  .metric-variance-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.2rem 0.65rem;
+  }
+
+  .metric-variance-pill-value {
+    font-family: var(--font-data);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    line-height: var(--leading-snug);
+    letter-spacing: -0.01em;
+  }
+
+  .metric-variance-caption {
+    margin: 0;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
   .ref-card-body.rankings-insight-body {
     margin-top: -0.15rem;
   }

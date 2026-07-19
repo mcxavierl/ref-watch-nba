@@ -2,6 +2,12 @@ import { FooterLeaders } from "@/components/hub/FooterLeaders";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile } from "@/lib/types";
 
+export type AnalyticsLeaderMetric = {
+  primaryTotal: string;
+  variancePct: number;
+  comparisonCaption?: string;
+};
+
 export type AnalyticsLeaderItem = {
   category: string;
   title: string;
@@ -9,6 +15,7 @@ export type AnalyticsLeaderItem = {
   ref: RefProfile;
   value: string;
   delta?: number;
+  metric?: AnalyticsLeaderMetric;
 };
 
 export function AnalyticsLeadersSection({
