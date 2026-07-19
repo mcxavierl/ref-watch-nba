@@ -35,6 +35,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Regenerate overview snapshot
+        run: npx tsx scripts/build-overview-snapshot.ts
+
       - name: Generated artifact freshness
         run: npm run check:artifact-freshness
         env:
