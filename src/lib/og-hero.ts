@@ -1,35 +1,15 @@
 import type {
   HeroViewProps,
-  OgLeagueHubCardData,
   OgUpcomingSlateCardData,
 } from "@/components/og-components/types";
-import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
-import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
+import { formatOgHighlight } from "@/lib/og-brand";
+import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
-import { OVERVIEW_HUB_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 
 export type DashboardOgContent = HeroViewProps;
-
-function toOgLeagueCard(
-  card: LeagueOverviewCard,
-  focusLeagueId?: LeagueId | null,
-): OgLeagueHubCardData {
-  return {
-    leagueId: card.leagueId,
-    label: card.label,
-    shortLabel: card.shortLabel,
-    refCount: card.refCount,
-    gameCount: card.gameCount,
-    whistleLabel: card.whistleLabel,
-    whistlePerGame: card.whistlePerGame,
-    scoreLabel: card.scoreLabel,
-    scorePerGame: card.scorePerGame,
-    highlighted: focusLeagueId ? card.leagueId === focusLeagueId : undefined,
-  };
-}
 
 function toOgSlateGame(entry: OverviewSlateEntry): OgUpcomingSlateCardData {
   return {
@@ -55,20 +35,29 @@ function pickSlateGame(
   return toOgSlateGame(games[0]!);
 }
 
-function hubOrderIndex(leagueId: LeagueId): number {
-  const index = OVERVIEW_HUB_LEAGUE_IDS.indexOf(
-    leagueId as (typeof OVERVIEW_HUB_LEAGUE_IDS)[number],
-  );
-  return index === -1 ? 99 : index;
+function pickPulseInsights(
+  cards: LeagueInsightCard[],
+  focusLeagueId?: LeagueId | null,
+  limit = 3,
+) {
+  const prioritized = focusLeagueId
+    ? [
+        ...cards.filter((card) => card.leagueId === focusLeagueId),
+        ...cards.filter((card) => card.leagueId !== focusLeagueId),
+      ]
+    : cards;
+
+  return prioritized.slice(0, limit).map(formatOgHighlight);
 }
 
 export function dashboardOgContent(focusLeagueId?: LeagueId | null): DashboardOgContent {
   const snapshot = loadOverviewSnapshot();
-  const leagueCards = snapshot.leagueCards
-    .filter((card) => isDashboardLeagueExposed(card.leagueId))
-    .sort((a, b) => hubOrderIndex(a.leagueId) - hubOrderIndex(b.leagueId))
-    .slice(0, 6)
-    .map((card) => toOgLeagueCard(card, focusLeagueId));
+  const pulseInsights = pickPulseInsights(
+    snapshot.standoutSplitCards.length > 0
+      ? snapshot.standoutSplitCards
+      : snapshot.insightCards,
+    focusLeagueId,
+  );
 
   const slateGame = pickSlateGame(snapshot.upcomingSlate?.games ?? [], focusLeagueId);
 
@@ -77,7 +66,7 @@ export function dashboardOgContent(focusLeagueId?: LeagueId | null): DashboardOg
     : "Verified officiating analytics";
 
   return {
-    leagueCards,
+    pulseInsights,
     slateGame,
     focusLeagueId: focusLeagueId ?? null,
     subtitle,

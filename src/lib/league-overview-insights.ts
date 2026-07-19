@@ -35,7 +35,9 @@ import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
 
+import { buildLeagueStandoutCardsForLeague } from "@/lib/insights/league-card-from-stats";
 import { heroToneFromWinRateDelta } from "@/lib/metric-significance";
+import type { RefStatsFile } from "@/lib/types";
 import { applyClinicalTone } from "@/lib/insights/tone-filter";
 
 export type LeagueInsightTone = "positive" | "negative" | "neutral";
@@ -167,6 +169,17 @@ function formatDeltaPts(delta: number): string {
 }
 
 export { buildLeagueInsightCardForLeague } from "@/lib/insights/league-card-from-stats";
+
+/** Strongest ref×team matrix split for league home pulse row. */
+export function buildTopMatrixSplitCardForLeague(
+  leagueId: VerifiedLiveLeagueId,
+  stats: RefStatsFile,
+): LeagueInsightCard | null {
+  const setup = LEAGUE_CONFIG[leagueId];
+  if (!setup || stats.refs.length === 0) return null;
+  const cards = buildLeagueStandoutCardsForLeague(leagueId, stats, setup);
+  return cards[0] ?? null;
+}
 
 function heroToneFromDelta(delta: number): LeagueInsightTone {
   return heroToneFromWinRateDelta(delta);

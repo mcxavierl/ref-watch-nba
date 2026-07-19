@@ -5887,6 +5887,76 @@ p {
     --insight-card-glow: #eab308;
   }
 
+  .league-home-insights {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .league-home-insights-section {
+    margin-top: 0;
+  }
+
+  .league-pulse-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .league-pulse-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .league-matchup-grid,
+  .league-spotlight-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .league-matchup-grid,
+    .league-spotlight-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .league-spotlight-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .league-home-insights .rankings-insight-card {
+    border-color: rgb(30 41 59);
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--insight-accent, var(--muted)) 8%, transparent),
+        transparent 62%
+      ),
+      rgb(15 23 42);
+    box-shadow: 0 0 0 1px color-mix(in srgb, rgb(30 41 59) 80%, transparent);
+  }
+
+  .league-home-insights .rankings-insight-card[data-tone="positive"],
+  .league-home-insights .rankings-insight-card[data-tone="negative"] {
+    --insight-card-glow: color-mix(in srgb, var(--insight-accent, var(--muted)) 72%, var(--foreground));
+  }
+
+  .highlight-stat-card-head-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+  }
+
+  .highlight-stat-notable-badge {
+    flex-shrink: 0;
+  }
+
   .rankings-insight-card[data-accent="balance"] {
     --insight-card-glow: #94a3b8;
   }

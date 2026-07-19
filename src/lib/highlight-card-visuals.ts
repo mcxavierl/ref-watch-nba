@@ -33,6 +33,9 @@ const INSIGHT_ACCENT: Record<string, HighlightCardAccent> = {
   "top-ats": "ats",
   "top-ou-betting": "ou",
   "top-whistle": "whistle",
+  "ref-team-split": "default",
+  "marquee-matchup": "leverage",
+  "marquee-efficiency": "leverage",
 };
 
 const LEADER_CATEGORY_ACCENT: Record<string, HighlightCardAccent> = {
@@ -53,6 +56,9 @@ const INSIGHT_ICONS: Record<string, LucideIcon> = {
   "top-ats": Home,
   "top-ou-betting": LineChart,
   "top-whistle": Whistle,
+  "ref-team-split": Scale,
+  "marquee-matchup": Zap,
+  "marquee-efficiency": Zap,
 };
 
 const LEADER_CATEGORY_ICONS: Record<string, LucideIcon> = {
@@ -102,7 +108,10 @@ export function leaderHighlightTone(
 }
 
 export function highlightCardAccentForInsight(insightId: string): HighlightCardAccent {
-  return INSIGHT_ACCENT[insightId] ?? "default";
+  if (INSIGHT_ACCENT[insightId]) return INSIGHT_ACCENT[insightId]!;
+  if (insightId.startsWith("ref-team-split")) return "default";
+  if (insightId.startsWith("marquee-matchup")) return "leverage";
+  return "default";
 }
 
 export function highlightCardAccentForLeaderCategory(
@@ -112,7 +121,10 @@ export function highlightCardAccentForLeaderCategory(
 }
 
 export function highlightCardIconForInsight(insightId: string): LucideIcon {
-  return INSIGHT_ICONS[insightId] ?? Activity;
+  if (INSIGHT_ICONS[insightId]) return INSIGHT_ICONS[insightId]!;
+  if (insightId.startsWith("ref-team-split")) return Scale;
+  if (insightId.startsWith("marquee-matchup")) return Zap;
+  return Activity;
 }
 
 export function highlightCardIconForLeaderCategory(category: string): LucideIcon {
@@ -140,6 +152,7 @@ const INSIGHT_PILL_LABELS: Record<string, string> = {
   "ats-edge": "ATS",
   "ou-edge": "O/U",
   "ref-team-split": "Ref-team",
+  "marquee-matchup": "Marquee",
   "marquee-efficiency": "Marquee",
   "coach-friction": "Coach",
   "player-friction": "Player",
