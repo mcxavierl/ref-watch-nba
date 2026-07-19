@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { entityNotFoundMetadata, teamProfileMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TeamCrewPage } from "@/components/TeamCrewPage";
+import { prepareTeamCrewPage } from "@/lib/league-pages/prepare-team-crew-page";
 import { getTeam, LALIGA_TEAMS, teamFullName } from "@/lib/laliga/teams";
 
 export const dynamic = "force-static";
@@ -32,6 +33,8 @@ export default async function LaligaTeamPage({
   const { abbr } = await params;
   const team = getTeam(abbr);
   if (!team) notFound();
+
+  await prepareTeamCrewPage("laliga", team.abbr);
 
   return <TeamCrewPage config={{ teamAbbr: team.abbr, league: "laliga" }} />;
 }
