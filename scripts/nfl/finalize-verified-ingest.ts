@@ -25,9 +25,9 @@ function main(): void {
   }
 
   console.log(`Validating ${logs.games.length} NFL game logs…`);
-  assertNflIngestValid(logs.games, { minGames: 5000 });
+  assertNflIngestValid(logs.games, { minGames: 2500 });
 
-  let dataSource = "ESPN + nflverse (2000-present)";
+  let dataSource = "ESPN + nflverse (2016-2026)";
   try {
     const stats = JSON.parse(fs.readFileSync(STATS_PATH, "utf8")) as RefStatsFile;
     if (stats.meta.data_source) {
@@ -40,7 +40,7 @@ function main(): void {
   const { shards, manifest } = finalizeNflVerifiedArtifacts(logs.games, process.cwd(), {
     dataSource,
     note:
-      "Officials from ESPN summaries (2016+) and nflverse history (2000-2015). " +
+      "Officials from ESPN summaries (2016-2026). " +
       "Ref-stats rebuilt from DISTINCT game_id in game logs.",
   });
 

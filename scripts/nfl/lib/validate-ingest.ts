@@ -23,7 +23,7 @@ export function validateNflGameLogs(
   games: NflHistoricalGameLogEntry[],
   options: NflIngestValidationOptions = {},
 ): NflValidationResult[] {
-  const minGames = options.minGames ?? 5000;
+  const minGames = options.minGames ?? 2500;
   const minOfficialCoveragePct = options.minOfficialCoveragePct ?? 95;
   const maxDuplicateGameIds = options.maxDuplicateGameIds ?? 0;
 

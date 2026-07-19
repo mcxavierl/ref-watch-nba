@@ -1,17 +1,10 @@
 import {
-  CURRENT_SEASON_LABEL,
   dataLeagueTenSeasons,
   DEFAULT_SINCE_SEASON,
 } from "@/lib/league-seasons";
 import type { LeagueId } from "@/lib/leagues";
 
-export type SeasonScopeMode =
-  | "current"
-  | "last5"
-  | "last10"
-  | "era2000s"
-  | "era2010s"
-  | "era2020s";
+export type SeasonScopeMode = "current" | "last5" | "last10";
 
 export const SEASON_SCOPE_MODES: SeasonScopeMode[] = [
   "current",
@@ -19,71 +12,28 @@ export const SEASON_SCOPE_MODES: SeasonScopeMode[] = [
   "last10",
 ];
 
-/** NFL decade buckets requested for historical ref×team analysis. */
-export const NFL_SEASON_SCOPE_MODES: SeasonScopeMode[] = [
-  "era2020s",
-  "era2010s",
-  "era2000s",
-];
-
 export const DEFAULT_SEASON_SCOPE_MODE: SeasonScopeMode = "last10";
-
-export const DEFAULT_NFL_SEASON_SCOPE_MODE: SeasonScopeMode = "era2020s";
-
-/** Patriots-only decade buckets for historical ref×team analysis. */
-export const PATRIOTS_ERA_TEAM_ABBR = "NE";
 
 export type SeasonScopeContext = {
   teamAbbr?: string;
 };
 
-export function usesPatriotsEraScope(
-  leagueId?: LeagueId,
-  context?: SeasonScopeContext,
-): boolean {
-  return (
-    leagueId === "nfl" &&
-    context?.teamAbbr?.toUpperCase() === PATRIOTS_ERA_TEAM_ABBR
-  );
-}
-
-export function isEraScopeMode(mode: SeasonScopeMode): boolean {
-  return mode === "era2000s" || mode === "era2010s" || mode === "era2020s";
-}
-
 /** True only when a route must parse game logs and rebuild scoped stats (Worker-heavy). */
 export function needsGameLogRebuild(
   leagueId: LeagueId,
-  scopeMode: SeasonScopeMode,
-  context?: SeasonScopeContext,
+  _scopeMode: SeasonScopeMode,
+  _context?: SeasonScopeContext,
 ): boolean {
-  if (leagueId === "nfl") {
-    return (
-      isEraScopeMode(scopeMode) && usesPatriotsEraScope(leagueId, context)
-    );
-  }
-  if (leagueId === "nba") return true;
-  return false;
+  return leagueId === "nba";
 }
 
 export function parseSeasonScopeMode(
   raw: string | null | undefined,
-  leagueId?: LeagueId,
-  context?: SeasonScopeContext,
+  _leagueId?: LeagueId,
+  _context?: SeasonScopeContext,
 ): SeasonScopeMode {
   if (raw === "current" || raw === "last5" || raw === "last10") {
     return raw;
-  }
-  if (
-    raw === "era2000s" ||
-    raw === "era2010s" ||
-    raw === "era2020s"
-  ) {
-    if (usesPatriotsEraScope(leagueId, context)) return raw;
-    return DEFAULT_SEASON_SCOPE_MODE;
-  }
-  if (usesPatriotsEraScope(leagueId, context)) {
-    return DEFAULT_NFL_SEASON_SCOPE_MODE;
   }
   return DEFAULT_SEASON_SCOPE_MODE;
 }
@@ -151,21 +101,6 @@ export function resolveScopedSeasons(
       return sorted.slice(-5);
     case "last10":
       return sorted.slice(-10);
-    case "era2000s":
-      return sorted.filter((season) => {
-        const start = seasonStartYear(season);
-        return start !== null && start >= 2000 && start <= 2009;
-      });
-    case "era2010s":
-      return sorted.filter((season) => {
-        const start = seasonStartYear(season);
-        return start !== null && start >= 2010 && start <= 2019;
-      });
-    case "era2020s":
-      return sorted.filter((season) => {
-        const start = seasonStartYear(season);
-        return start !== null && start >= 2020;
-      });
     default:
       return sorted;
   }
@@ -199,20 +134,16 @@ export function resolveScopedSeasonsForLeague(
 }
 
 export function seasonScopeModesForLeague(
-  leagueId: LeagueId,
-  context?: SeasonScopeContext,
+  _leagueId: LeagueId,
+  _context?: SeasonScopeContext,
 ): SeasonScopeMode[] {
-  if (usesPatriotsEraScope(leagueId, context)) return NFL_SEASON_SCOPE_MODES;
   return SEASON_SCOPE_MODES;
 }
 
 export function defaultSeasonScopeForLeague(
-  leagueId: LeagueId,
-  context?: SeasonScopeContext,
+  _leagueId: LeagueId,
+  _context?: SeasonScopeContext,
 ): SeasonScopeMode {
-  if (usesPatriotsEraScope(leagueId, context)) {
-    return DEFAULT_NFL_SEASON_SCOPE_MODE;
-  }
   return DEFAULT_SEASON_SCOPE_MODE;
 }
 
@@ -224,12 +155,6 @@ export function seasonScopeLabel(mode: SeasonScopeMode): string {
       return "Last 5 seasons";
     case "last10":
       return "Last 10 seasons";
-    case "era2000s":
-      return "2000–2010";
-    case "era2010s":
-      return "2010–2020";
-    case "era2020s":
-      return "2020–now";
   }
 }
 
@@ -238,11 +163,6 @@ export function seasonScopeLabelForSeasons(
   mode: SeasonScopeMode,
   availableSeasons: string[],
 ): string {
-  if (mode === "era2000s" || mode === "era2010s" || mode === "era2020s") {
-    const count = resolveScopedSeasons(availableSeasons, mode).length;
-    if (count === 0) return seasonScopeLabel(mode);
-    return `${seasonScopeLabel(mode)} (${count} seasons)`;
-  }
   return formatSeasonScope(resolveScopedSeasons(availableSeasons, mode).length);
 }
 

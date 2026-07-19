@@ -23,9 +23,9 @@ export function nflVerifiedDatasetNote(
   qualifiedPairs?: number,
   teamStatsPairs?: number,
 ): string {
-  const games = gameCount ?? 6825;
+  const games = gameCount ?? 2757;
   if (qualifiedPairs !== undefined && teamStatsPairs !== undefined) {
-    return `Ref×team W-L rebuilt from ${games} ESPN game logs. ${qualifiedPairs}/${teamStatsPairs} ref×team pairs meet the 3+ game matrix gate. Ties are excluded from straight-up W-L.`;
+    return `Ref×team W-L rebuilt from ${games} ESPN game logs (2016-2026). ${qualifiedPairs}/${teamStatsPairs} ref×team pairs meet the 3+ game matrix gate. Ties are excluded from straight-up W-L.`;
   }
-  return "Scores, penalty counts, and ref×team W-L from ESPN game logs (2000-present). ATS/O-U from nflverse closing lines where matched.";
+  return "Scores, penalty counts, and ref×team W-L from ESPN game logs (2016-2026). ATS/O-U from nflverse closing lines where matched.";
 }
