@@ -7,17 +7,21 @@ const BAND_CLASS: Record<GsniBand, string> = {
   heavy: "gsni-band-badge gsni-band-badge--heavy",
 };
 
-/** Primary Quiet / Neutral / Heavy label derived from the GSNI index. */
+/** Primary Quiet / Neutral / Heavy label derived from the GSNI Z-score. */
 export function GsniBandBadge({
   band,
+  extreme = false,
   className = "",
 }: {
   band: GsniBand;
+  extreme?: boolean;
   className?: string;
 }) {
+  const label = extreme ? `Extreme ${gsniBandTitle(band)}` : gsniBandTitle(band);
+
   return (
     <span className={`${BAND_CLASS[band]} ${className}`.trim()}>
-      {gsniBandTitle(band)}
+      {label}
     </span>
   );
 }

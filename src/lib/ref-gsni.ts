@@ -16,7 +16,7 @@ import {
   sampleGateStatus,
 } from "@/lib/provenance";
 import { refSlug } from "@/lib/ref-slug";
-import { formatSigned } from "@/lib/stats-utils";
+import { formatGsniZ } from "@/lib/gsni-ui";
 import type {
   MetricProvenance,
   RefProfile,
@@ -105,9 +105,7 @@ function metricsFromCompute(
   const displayGsni = gsniShrinkage?.shrunk ?? observedGsni;
 
   const vsNeutralDetail =
-    displayGsni !== undefined
-      ? `${formatSigned(displayGsni - 50)} vs 50 neutral`
-      : null;
+    displayGsni !== undefined ? `${formatGsniZ(displayGsni)} from league mean` : null;
 
   const volatilityDetail =
     result.referee_gsni_volatility !== undefined
@@ -116,7 +114,7 @@ function metricsFromCompute(
 
   const gsniShrinkageTooltip =
     gsniShrinkage !== undefined
-      ? shrunkMetricTooltip(gsniShrinkage, { label: "GSNI", unit: "GSNI" })
+      ? shrunkMetricTooltip(gsniShrinkage, { label: "GSNI", unit: "σ" })
       : null;
 
   const honestyBanner = gateCleared

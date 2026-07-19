@@ -28,8 +28,11 @@ function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
         </div>
         <p className="mt-2 truncate text-base font-semibold text-white">{finding.refName}</p>
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <GsniBandBadge band={explanation.band} />
-          <GsniDeltaValue delta={explanation.vsLeaguePoints} />
+          <GsniBandBadge
+            band={explanation.band}
+            extreme={explanation.qualitativeLabel.startsWith("Extreme")}
+          />
+          <GsniDeltaValue delta={explanation.zScore} />
         </div>
         <GsniSharedTrack mode="score" value={finding.gsni!} showValue={false} className="mt-3" />
         <p className="gsni-sub-text mt-2">{explanation.comparisonLine}</p>
@@ -78,7 +81,7 @@ export function GameStateIndexResearchSection({
         <h2 className="section-title">GSNI official table</h2>
         <p className="gsni-sub-text section-lead">
           Flag rate vs league in matched score-and-clock buckets. Labels: Quiet (below
-          league), Heavy (above), Neutral (near 50).{" "}
+          league), Heavy (above), Neutral (within 0.5σ of mean).{" "}
           <Link href="/research/leverage-spike-anomaly" className="font-medium hover:underline">
             Methodology
           </Link>

@@ -1,19 +1,25 @@
 import { shrinkGsni, shrunkMetricTooltip, type ShrunkMetric } from "@/lib/bayesian-shrinkage";
-import { gsniDeltaFromNeutral } from "@/lib/gsni-ui";
+import {
+  GSNI_Z_EXTREME_THRESHOLD,
+  GSNI_Z_NEUTRAL_THRESHOLD,
+} from "@/lib/gsni";
+import { formatGsniZ } from "@/lib/gsni-ui";
 import type { RefProfile } from "@/lib/types";
 
-/** Percent divergence from league that maps GSNI to 0 or 100. */
-export const GSNI_EXTREME_DIVERGENCE = 0.25;
-
-export const GSNI_HIGH_THRESHOLD = 75;
-export const GSNI_LOW_THRESHOLD = 25;
-
 export type GsniBand = "quiet" | "neutral" | "heavy";
+
+export type GsniQualitativeLabel =
+  | "Neutral"
+  | "Quiet"
+  | "Heavy"
+  | "Extreme Quiet"
+  | "Extreme Heavy";
 
 export type GsniExplanation = {
   band: GsniBand;
   bandTitle: string;
-  vsLeaguePoints: number;
+  qualitativeLabel: GsniQualitativeLabel;
+  zScore: number;
   tendency: "quieter" | "heavier" | "league-average";
   headline: string;
   comparisonLine: string;
@@ -32,41 +38,57 @@ export function gsniBandTitle(band: GsniBand): string {
   }
 }
 
-/** Plain-language breakdown of how the index maps to Quiet / Heavy labels. */
-export function explainGsni(index: number): GsniExplanation {
-  const band = gsniBand(index);
+/** Map a Z-score to a qualitative Quiet / Neutral / Heavy / Extreme label. */
+export function gsniQualitativeLabel(z: number): GsniQualitativeLabel {
+  const absZ = Math.abs(z);
+  if (absZ < GSNI_Z_NEUTRAL_THRESHOLD) return "Neutral";
+  if (absZ >= GSNI_Z_EXTREME_THRESHOLD) {
+    return z > 0 ? "Extreme Quiet" : "Extreme Heavy";
+  }
+  return z > 0 ? "Quiet" : "Heavy";
+}
+
+/** Plain-language breakdown of how the Z-score maps to Quiet / Heavy labels. */
+export function explainGsni(zScore: number): GsniExplanation {
+  const band = gsniBand(zScore);
+  const qualitativeLabel = gsniQualitativeLabel(zScore);
   const bandTitle = gsniBandTitle(band);
-  const vsLeaguePoints = gsniDeltaFromNeutral(index);
   const tendency =
-    vsLeaguePoints >= 3
+    zScore >= GSNI_Z_NEUTRAL_THRESHOLD
       ? "quieter"
-      : vsLeaguePoints <= -3
+      : zScore <= -GSNI_Z_NEUTRAL_THRESHOLD
         ? "heavier"
         : "league-average";
 
   const headline =
-    band === "quiet"
-      ? "Quiet in clutch states"
-      : band === "heavy"
-        ? "Heavy in clutch states"
-        : "League-average in clutch states";
+    qualitativeLabel === "Extreme Quiet"
+      ? "Extremely quiet in clutch states"
+      : qualitativeLabel === "Extreme Heavy"
+        ? "Extremely heavy in clutch states"
+        : band === "quiet"
+          ? "Quiet in clutch states"
+          : band === "heavy"
+            ? "Heavy in clutch states"
+            : "League-average in clutch states";
 
+  const formattedZ = formatGsniZ(zScore);
   const comparisonLine =
     tendency === "league-average"
-      ? "Matches the league flag rate in close, late-clock situations (50 baseline)."
-      : `${Math.abs(vsLeaguePoints)} pts ${tendency} than league on the GSNI scale (50 = league avg).`;
+      ? "Within half a standard deviation of the league flag rate in close, late-clock situations (0σ baseline)."
+      : `${formattedZ} from league mean (${Math.abs(zScore).toFixed(1)}σ ${tendency} than average).`;
 
   const methodLine =
     "We bucket each game by score gap and clock, weight late close-game minutes higher, " +
     "then compare this official's flag rate in those buckets to the league average.";
 
   const scaleLine =
-    "Scale: 0 = heaviest vs league, 50 = league average, 100 = quietest vs league.";
+    "Scale: Z-score in standard deviations (σ) from the league mean. Positive = quieter; negative = heavier.";
 
   return {
     band,
     bandTitle,
-    vsLeaguePoints,
+    qualitativeLabel,
+    zScore,
     tendency,
     headline,
     comparisonLine,
@@ -75,29 +97,27 @@ export function explainGsni(index: number): GsniExplanation {
   };
 }
 
-export function gsniBand(index: number): GsniBand {
-  if (index >= GSNI_HIGH_THRESHOLD) return "quiet";
-  if (index <= GSNI_LOW_THRESHOLD) return "heavy";
+export function gsniBand(zScore: number): GsniBand {
+  if (zScore >= GSNI_Z_NEUTRAL_THRESHOLD) return "quiet";
+  if (zScore <= -GSNI_Z_NEUTRAL_THRESHOLD) return "heavy";
   return "neutral";
 }
 
-export function isExtremeGsni(index: number): boolean {
-  return index >= GSNI_HIGH_THRESHOLD || index <= GSNI_LOW_THRESHOLD;
+export function isExtremeGsni(zScore: number): boolean {
+  return Math.abs(zScore) >= GSNI_Z_EXTREME_THRESHOLD;
 }
 
-export function formatGsni(index: number): string {
-  return String(Math.round(index));
+/** @deprecated Use formatGsniZ from gsni-ui. Kept for internal track aria labels. */
+export function formatGsni(zScore: number): string {
+  return formatGsniZ(zScore);
 }
 
-export function gsniCaption(index: number): string {
-  return explainGsni(index).headline;
+export function gsniCaption(zScore: number): string {
+  return explainGsni(zScore).headline;
 }
 
-export function gsniShortLabel(index: number): string {
-  const band = gsniBand(index);
-  if (band === "quiet") return "Quiet";
-  if (band === "heavy") return "Heavy";
-  return "Neutral";
+export function gsniShortLabel(zScore: number): string {
+  return gsniQualitativeLabel(zScore);
 }
 
 export type GsniProfileDisplay = {
@@ -119,11 +139,11 @@ export function gsniShrinkageFromProfile(
     display: shrinkage.shrunk,
     observed: shrinkage.observed,
     shrinkage,
-    tooltip: shrunkMetricTooltip(shrinkage, { label: "GSNI", unit: "GSNI" }),
+    tooltip: shrunkMetricTooltip(shrinkage, { label: "GSNI", unit: "σ" }),
   };
 }
 
-/** Shrunk GSNI for UI display; null when the profile has no observed score. */
+/** Shrunk GSNI Z-score for UI display; null when the profile has no observed score. */
 export function gsniFromRefProfile(profile: RefProfile): number | null {
   return gsniShrinkageFromProfile(profile)?.display ?? null;
 }

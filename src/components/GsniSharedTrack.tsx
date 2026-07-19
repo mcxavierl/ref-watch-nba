@@ -1,13 +1,14 @@
-import { formatGsni } from "@/lib/gsni-display";
 import {
+  formatGsniZ,
   GSNI_NEUTRAL_BASELINE,
+  GSNI_Z_TRACK_MAX,
   gsniDeltaFromNeutral,
 } from "@/lib/gsni-ui";
 import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 
 type GsniSharedTrackProps = {
   mode: "score" | "progress";
-  /** GSNI score (0-100) for score mode, or collected minutes for progress mode. */
+  /** GSNI Z-score for score mode, or collected minutes for progress mode. */
   value: number;
   /** Gate maximum for progress mode. */
   gate?: number;
@@ -28,7 +29,7 @@ export function GsniSharedTrack({
   value,
   gate = 50,
   baseline = GSNI_NEUTRAL_BASELINE,
-  max = 100,
+  max = GSNI_Z_TRACK_MAX,
   showDelta = true,
   showValue = true,
   className = "",
@@ -64,9 +65,10 @@ export function GsniSharedTrack({
     );
   }
 
-  const clamped = clamp(value, 0, max);
-  const baselinePercent = (baseline / max) * 100;
-  const markerPercent = (clamped / max) * 100;
+  const span = max * 2;
+  const clamped = clamp(value, -max, max);
+  const baselinePercent = ((baseline + max) / span) * 100;
+  const markerPercent = ((clamped + max) / span) * 100;
   const delta = gsniDeltaFromNeutral(clamped);
   const spanStart = Math.min(baselinePercent, markerPercent);
   const spanWidth = Math.abs(markerPercent - baselinePercent);
@@ -78,17 +80,16 @@ export function GsniSharedTrack({
       role="img"
       aria-label={
         ariaLabel ??
-        `${formatGsni(clamped)} on GSNI scale. 50 is league average; higher is quieter, lower is heavier.`
+        `${formatGsniZ(clamped)} from league mean. 0σ is league average; positive is quieter, negative is heavier.`
       }
     >
       <div className="gsni-shared-track-meta">
         {showValue ? (
           <span className="gsni-shared-track-score tabular-nums text-white font-semibold">
-            {formatGsni(clamped)}
-            <span className="gsni-shared-track-score-suffix"> index</span>
+            {formatGsniZ(clamped)}
           </span>
         ) : null}
-        {showDelta && delta !== 0 ? <GsniDeltaValue delta={delta} /> : null}
+        {showDelta && Math.abs(delta) >= 0.05 ? <GsniDeltaValue delta={delta} /> : null}
       </div>
       <div className="gsni-shared-track-rail" aria-hidden>
         {spanWidth > 0 ? (
