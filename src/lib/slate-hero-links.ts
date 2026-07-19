@@ -11,7 +11,7 @@ export type SlateHeroAction = {
 
 type SlateHeroLeagueId = Extract<
   LeagueId,
-  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb"
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba"
 >;
 
 /** Map visible season counts to the closest scope toggle value. */
@@ -42,6 +42,10 @@ export function slateHeroStatHref(
 }
 
 export function slateHeroActions(leagueId: SlateHeroLeagueId): SlateHeroAction[] {
+  if (leagueId === "wnba") {
+    return [];
+  }
+
   const matrixLabel = leagueId === "cbb" || leagueId === "cfb" ? "Ref matrix" : "Crew matrix";
 
   return [

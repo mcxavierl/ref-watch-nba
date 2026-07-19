@@ -17,6 +17,7 @@ import {
   buildLaligaNightlyFeed,
   buildCbbNightlyFeed,
   buildCfbNightlyFeed,
+  buildWnbaNightlyFeed,
 } from "@/lib/syndication";
 
 import {
@@ -64,12 +65,17 @@ import { getOdds as getCfbOdds } from "@/lib/cfb/odds";
 import { computeFindings as computeCfbFindings } from "@/lib/cfb/findings";
 import { buildCfbAnalyticsLeaders } from "@/lib/cfb/analytics-leaders";
 import { buildCbbAnalyticsLeaders } from "@/lib/cbb/analytics-leaders";
+import {
+  getAssignments as getWnbaAssignments,
+  getRefStats as getWnbaRefStats,
+} from "@/lib/wnba/data";
+import { getOdds as getWnbaOdds } from "@/lib/wnba/odds";
 
 import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
 
 type SlateLeagueId = Extract<
   LeagueManifestId,
-  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb"
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba"
 >;
 
 export type LeagueSlateBundle = {
@@ -94,6 +100,7 @@ const SLATE_LEAGUES = new Set<SlateLeagueId>([
   "laliga",
   "cbb",
   "cfb",
+  "wnba",
 ]);
 
 export function isSlateLeagueId(id: LeagueManifestId): id is SlateLeagueId {
@@ -203,6 +210,19 @@ export function loadLeagueSlateBundle(leagueId: SlateLeagueId): LeagueSlateBundl
         isOffseason: isOffseasonSlate(assignments),
         isPending: isPendingCrewSlate(assignments),
         cfbAnalyticsLeaders: buildCfbAnalyticsLeaders(refStats),
+      };
+    }
+    case "wnba": {
+      const assignments = getWnbaAssignments();
+      const refStats = getWnbaRefStats();
+      return {
+        assignments,
+        refStats,
+        odds: getWnbaOdds(),
+        nightlyFeed: buildWnbaNightlyFeed(),
+        findings: () => [],
+        isOffseason: assignments.games.length === 0,
+        isPending: false,
       };
     }
   }

@@ -1,6 +1,10 @@
 import { HEADER_LEAGUE_IDS, type LeagueId } from "@/lib/leagues";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "@/lib/live-header-leagues.generated";
 import { isShowUnverifiedEnv } from "@/lib/show-unverified";
+import {
+  canAccessLocalOnlyLeagues,
+  LOCAL_ONLY_LEAGUE_IDS,
+} from "@/lib/local-only-leagues";
 
 /** Leagues hidden from nav and section tabs until verified ingest ships. */
 export const INGEST_GATED_LEAGUE_IDS = [] as const satisfies readonly LeagueId[];
@@ -16,7 +20,13 @@ export function getHeaderLeagueIds(): LeagueId[] {
     isShowUnverifiedEnv() || process.env.NODE_ENV !== "production"
       ? [...HEADER_LEAGUE_IDS]
       : [...PRODUCTION_LIVE_HEADER_LEAGUE_IDS];
-  return base.filter((id) => !HEADER_HIDDEN_LEAGUE_IDS.includes(id));
+  const ids: LeagueId[] = base.filter((id) => !HEADER_HIDDEN_LEAGUE_IDS.includes(id));
+  if (canAccessLocalOnlyLeagues()) {
+    for (const leagueId of LOCAL_ONLY_LEAGUE_IDS) {
+      if (!ids.includes(leagueId)) ids.push(leagueId);
+    }
+  }
+  return ids;
 }
 
 export function isIngestGatedLeague(leagueId: LeagueId): leagueId is IngestGatedLeagueId {
@@ -40,7 +50,7 @@ export function isNhlNavHidden(leagueId: LeagueId): boolean {
 }
 
 /** Leagues with nav stubs but no shipped routes yet. */
-const UNROUTED_LEAGUE_PREFIXES = ["/wnba", "/mlb"] as const;
+const UNROUTED_LEAGUE_PREFIXES = ["/mlb"] as const;
 
 /** Hidden league routes redirect to home when ingest is not verified. */
 export function shouldRedirectHiddenLeague(pathname: string): boolean {

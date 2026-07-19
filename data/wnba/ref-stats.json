@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-19T21:52:57.689Z",
+    "seasons": [],
+    "leagueAvgTotal": 165,
+    "leagueAvgFouls": 34,
+    "leagueOverBaseline": 165,
+    "minSampleSize": 30,
+    "source": "seeded",
+    "atsAvailable": false,
+    "data_verified": false,
+    "note": "WNBA Phase 1 scaffold. Assignments only. Run npm run fetch-wnba-assignments for tonight's crews."
+  },
+  "refs": [],
+  "teamSplits": {}
+}

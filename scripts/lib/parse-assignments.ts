@@ -60,7 +60,10 @@ function parseTableRows(
   return games;
 }
 
-export async function fetchAssignments(): Promise<AssignmentsFile> {
+async function loadAssignmentsPage(): Promise<{
+  $: cheerio.CheerioAPI;
+  today: string;
+}> {
   const { BROWSER_HEADERS } = await import("./nba-headers");
   const res = await fetch(ASSIGNMENTS_URL, { headers: BROWSER_HEADERS });
   if (!res.ok) {
@@ -68,10 +71,17 @@ export async function fetchAssignments(): Promise<AssignmentsFile> {
   }
 
   const html = await res.text();
-  const $ = cheerio.load(html) as cheerio.CheerioAPI;
-  const today = new Date().toISOString().slice(0, 10);
-  const games: AssignmentGame[] = [];
+  return {
+    $: cheerio.load(html) as cheerio.CheerioAPI,
+    today: new Date().toISOString().slice(0, 10),
+  };
+}
 
+function parseAssignmentsForLeague(
+  $: cheerio.CheerioAPI,
+  targetLeague: "NBA" | "WNBA",
+): AssignmentGame[] {
+  const games: AssignmentGame[] = [];
   const headers = $("h1.entry-title").toArray();
   const tables = $("table").toArray();
 
@@ -82,17 +92,36 @@ export async function fetchAssignments(): Promise<AssignmentsFile> {
       : title.startsWith("WNBA Referee")
         ? "WNBA"
         : null;
-    if (!league) continue;
+    if (league !== targetLeague) continue;
 
     const table = tables[i];
     if (!table) continue;
     games.push(...parseTableRows($, table, league));
   }
 
+  return games;
+}
+
+export async function fetchWnbaAssignments(): Promise<AssignmentsFile> {
+  const { $, today } = await loadAssignmentsPage();
+  const games = parseAssignmentsForLeague($, "WNBA");
+
   return {
     lastUpdated: new Date().toISOString(),
     date: today,
     source: "official.nba.com",
-    games: games.filter((g) => g.league === "NBA"),
+    games,
+  };
+}
+
+export async function fetchAssignments(): Promise<AssignmentsFile> {
+  const { $, today } = await loadAssignmentsPage();
+  const games = parseAssignmentsForLeague($, "NBA");
+
+  return {
+    lastUpdated: new Date().toISOString(),
+    date: today,
+    source: "official.nba.com",
+    games,
   };
 }

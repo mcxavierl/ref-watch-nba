@@ -167,7 +167,7 @@ export function slatePageMetadata({
 
 export type SlateHubLeagueId = Extract<
   LeagueId,
-  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb"
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba"
 >;
 
 const SLATE_HUB_KEYWORDS: Record<SlateHubLeagueId, string[]> = {
@@ -178,6 +178,7 @@ const SLATE_HUB_KEYWORDS: Record<SlateHubLeagueId, string[]> = {
   laliga: ["La Liga referees", "La Liga matchday", "referee analytics", "soccer officiating"],
   cbb: ["CBB referees", "college basketball refs", "NCAA officiating"],
   cfb: ["CFB officials", "college football refs", "NCAA officiating"],
+  wnba: ["WNBA refs", "WNBA referee crew", "referee analytics", "basketball officiating"],
 };
 
 export function leagueSlateHubPath(leagueId: SlateHubLeagueId): string {

@@ -11,7 +11,7 @@ import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
 import { slateHeroActions } from "@/lib/slate-hero-links";
 import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
 
-type SlateLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+type SlateLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba";
 
 type LeagueSlateHeroProps = {
   leagueId: SlateLeagueId;

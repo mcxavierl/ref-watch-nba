@@ -24,10 +24,10 @@ describe("header league switcher", () => {
   });
 
   it("redirects unshipped league prefixes to home", () => {
-    assert.equal(shouldRedirectHiddenLeague("/wnba"), true);
-    assert.equal(shouldRedirectHiddenLeague("/wnba/rankings"), true);
     assert.equal(shouldRedirectHiddenLeague("/mlb"), true);
     assert.equal(shouldRedirectHiddenLeague("/mlb/teams"), true);
+    assert.equal(shouldRedirectHiddenLeague("/wnba"), false);
+    assert.equal(shouldRedirectHiddenLeague("/wnba/rankings"), false);
     assert.equal(shouldRedirectHiddenLeague("/nba"), false);
     assert.equal(shouldRedirectHiddenLeague("/cbb/rankings"), false);
   });
