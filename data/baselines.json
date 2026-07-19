@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T07:27:15.361Z",
+  "generatedAt": "2026-07-19T07:51:50.483Z",
   "note": "Refreshed during copy-data-to-public",
   "fallback": {
     "NBA": {
@@ -491,7 +491,7 @@
     "seasons": {
       "2020-21": {
         "season": "2020-21",
-        "gameCount": 1264,
+        "gameCount": 1263,
         "leagueAvgTotal": 142.2,
         "leagueOverBaseline": 141,
         "leagueAvgFouls": 34.5,
@@ -522,15 +522,15 @@
       },
       "2024-25": {
         "season": "2024-25",
-        "gameCount": 1662,
+        "gameCount": 1664,
         "leagueAvgTotal": 147.3,
         "leagueOverBaseline": 147.3,
         "leagueAvgFouls": 33.9
       },
       "2025-26": {
         "season": "2025-26",
-        "gameCount": 1656,
-        "leagueAvgTotal": 152.8,
+        "gameCount": 1672,
+        "leagueAvgTotal": 152.9,
         "leagueOverBaseline": 151.8,
         "leagueAvgFouls": 35,
         "meanClosingTotal": 151.8
@@ -538,8 +538,8 @@
     },
     "aggregate": {
       "season": "all",
-      "gameCount": 9688,
-      "leagueAvgTotal": 145,
+      "gameCount": 9705,
+      "leagueAvgTotal": 145.1,
       "leagueOverBaseline": 142.6,
       "leagueAvgFouls": 33.8,
       "meanClosingTotal": 142.6
