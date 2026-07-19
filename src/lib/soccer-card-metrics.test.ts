@@ -44,4 +44,13 @@ describe("soccer card metrics", () => {
       );
     }
   });
+
+  it("precomputes homepage standout split cards in the overview snapshot", () => {
+    const overview = buildCrossLeagueOverview(20);
+    assert.ok(Array.isArray(overview.standoutSplitCards));
+    assert.ok(overview.standoutSplitCards.length > 0);
+    for (const card of overview.standoutSplitCards) {
+      assert.equal(card.kind, "matrix-edge");
+    }
+  });
 });

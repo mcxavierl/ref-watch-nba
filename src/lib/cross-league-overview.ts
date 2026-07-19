@@ -12,6 +12,7 @@ import {
 } from "@/lib/insights/insights-query";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import type { TopStoriesStatus } from "@/lib/insights/generator";
+import { overviewStandoutSplitCards } from "@/lib/insight-editorial";
 import {
   paceBarWidthPercent,
   sortLeaguePaceCards,
@@ -62,6 +63,8 @@ export type CrossLeagueOverview = {
   whistleLabel: string;
   leagueCards: LeagueOverviewCard[];
   insightCards: LeagueInsightCard[];
+  /** Precomputed homepage editorial grid (avoids client-side filtering). */
+  standoutSplitCards: LeagueInsightCard[];
   topStories: LeagueInsightCard[];
   topStoriesStatus: TopStoriesStatus;
   topStoriesGeneratedAt: string | null;
@@ -203,6 +206,8 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
 
   const orderedLeagueCards = sortLeaguePaceCards(leagueCards);
   const topStoriesBundle = loadInsightsBundle();
+  const insightCards = loadOverviewInsightCards();
+  const standoutSplitCards = overviewStandoutSplitCards(insightCards, null);
 
   return {
     totalRefs,
@@ -213,7 +218,8 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
     whistleEventsLogged,
     whistleLabel: "Whistle events logged",
     leagueCards: orderedLeagueCards,
-    insightCards: loadOverviewInsightCards(),
+    insightCards,
+    standoutSplitCards,
     topStories: topStoriesBundle.insights,
     topStoriesStatus: topStoriesBundle.status,
     topStoriesGeneratedAt: topStoriesBundle.generatedAt,

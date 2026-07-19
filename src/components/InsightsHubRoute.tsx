@@ -4,10 +4,9 @@ import { InsightsHubPage } from "@/components/InsightsHubPage";
 import { hydrateLeagueAnalyticsData } from "@/lib/league-analytics-hydrate";
 import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import type { CbbTrendsConferenceScope } from "@/lib/cbb/conference-trends-shared";
+import type { InsightsLeagueId } from "@/lib/league-manifest";
 import { SITE_URL } from "@/lib/site";
 import type { SeasonScopeMode } from "@/lib/season-scope";
-
-type InsightsLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 
 type InsightsHubRouteProps = {
   leagueId: InsightsLeagueId;

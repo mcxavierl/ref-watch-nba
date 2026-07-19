@@ -10,6 +10,15 @@ import {
   RELIABILITY_FLOOR_GAMES,
 } from "@/lib/data-maturity";
 import { FOUL_RATE_VARIANCE_PCT, MIN_WHISTLE_REF_GAMES } from "@/lib/insights/generator-core";
+import {
+  GSNI_MIN_HIGH_LEVERAGE_MINUTES,
+  GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL,
+} from "@/lib/gsni";
+import { GSNI_RESEARCH_MIN_SAMPLE_GAMES } from "@/lib/gsni-research";
+import {
+  LWIS_MIN_HIGH_LEVERAGE_EVENTS,
+  LWIS_TRAILING_GAME_WINDOW,
+} from "@/lib/whistle-disposition";
 import { WIN_RATE_OUTLIER_PP } from "@/lib/metric-significance";
 import {
   MATRIX_EXTREME_DELTA_PTS,
@@ -57,6 +66,18 @@ export const METHODOLOGY_SECTIONS: MethodologySection[] = [
       "Over rate and line benchmarks: share of games finishing above a closing total or league-average proxy when lines are missing.",
       "Home and road bias: win-rate and whistle splits by venue, separate from ATS cover rates.",
       NHL_LINESMAN_METHODOLOGY_NOTE,
+    ],
+  },
+  {
+    id: "advanced-metrics",
+    title: "Advanced metrics",
+    lead: "Research-grade models for clutch states, leverage, and shrinkage. Each metric ships with explicit sample gates before surfacing.",
+    bullets: [
+      `Game-State Neutralization (GSNI): compares an official's whistle rate in matched score-and-clock buckets to the league mean in those same states. Reported as a Z-score (σ): positive is quieter than league average, negative is heavier, 0σ is neutral. Bands: Quiet, Neutral, Heavy. NBA and NHL require ${GSNI_MIN_HIGH_LEVERAGE_MINUTES}+ high-leverage minutes; NFL requires ${GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL}+. Research highlights need ${GSNI_RESEARCH_MIN_SAMPLE_GAMES}+ games and an extreme band after Bayesian shrinkage.`,
+      "Z-score bands: we label outliers when |σ| exceeds the configured extreme threshold. GSNI uses shrinkage toward league mean so thin samples regress before ranking.",
+      `Bayesian win-rate shrinkage: ref×team deltas below ${RELIABILITY_FLOOR_GAMES} shared games show an empirical-Bayes adjusted value (${BAYESIAN_PRIOR_STRENGTH}-game prior). ${DELTA_HONESTY_FOOTNOTE}`,
+      `Leverage-Weighted Impact Score (LWIS): Σ(|ΔWPA| × LeverageWeight) on subjective whistles. Surfaced only after ${LWIS_MIN_HIGH_LEVERAGE_EVENTS}+ high-leverage subjective events in the trailing ${LWIS_TRAILING_GAME_WINDOW}-game window. Peer z-scores flag officials >2σ above the league LWIS mean.`,
+      "Findings ranking still multiplies effect size by √sample size and deduplicates categories so one metric type cannot dominate a hub feed.",
     ],
   },
   {

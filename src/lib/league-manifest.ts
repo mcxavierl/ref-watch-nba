@@ -37,6 +37,16 @@ export type LeagueSlateFeatures = {
   pendingCrewNotice: boolean;
   /** NHL PP/OT signals on game cards */
   ppOtSignals: boolean;
+  /** Season scope toggle on slate hero (NBA offseason) */
+  seasonScopeOnSlate: boolean;
+  /** Season scope toggle on findings section (NBA) */
+  seasonScopeOnFindings: boolean;
+  /** CFB preview / data-source banner above slate content */
+  cfbPreviewBanner: boolean;
+  /** Hide generic offseason notice (NBA uses feature showcase instead) */
+  hideOffseasonNotice: boolean;
+  /** In-season findings section title override */
+  findingsInSeasonTitle?: string;
 };
 
 export type LeagueManifestEntry = {
@@ -90,7 +100,7 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
     metrics: NBA_METRICS,
     routed: true,
     sectionNav: ["slate", "teams", "matrix", "refs", "research"],
-    researchViews: ["tendencies", "trends", "findings"],
+    researchViews: ["tendencies", "trends", "findings", "game-state"],
     slate: {
       upcomingSlateSection: true,
       analyticsLeaders: null,
@@ -100,6 +110,11 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       slateQuickLookup: true,
       pendingCrewNotice: false,
       ppOtSignals: false,
+      seasonScopeOnSlate: true,
+      seasonScopeOnFindings: true,
+      cfbPreviewBanner: false,
+      hideOffseasonNotice: true,
+      findingsInSeasonTitle: "Tonight's edges",
     },
   },
   nhl: {
@@ -128,7 +143,7 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
     },
     routed: true,
     sectionNav: ["slate", "teams", "matrix", "refs", "research"],
-    researchViews: ["tendencies", "trends", "findings"],
+    researchViews: ["tendencies", "trends", "findings", "game-state"],
     slate: {
       upcomingSlateSection: true,
       analyticsLeaders: null,
@@ -138,6 +153,10 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       slateQuickLookup: false,
       pendingCrewNotice: false,
       ppOtSignals: true,
+      seasonScopeOnSlate: false,
+      seasonScopeOnFindings: false,
+      cfbPreviewBanner: false,
+      hideOffseasonNotice: false,
     },
   },
   wnba: {
@@ -164,6 +183,10 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       slateQuickLookup: false,
       pendingCrewNotice: false,
       ppOtSignals: false,
+      seasonScopeOnSlate: false,
+      seasonScopeOnFindings: false,
+      cfbPreviewBanner: false,
+      hideOffseasonNotice: false,
     },
   },
   mlb: {
@@ -202,6 +225,10 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       slateQuickLookup: false,
       pendingCrewNotice: false,
       ppOtSignals: false,
+      seasonScopeOnSlate: false,
+      seasonScopeOnFindings: false,
+      cfbPreviewBanner: false,
+      hideOffseasonNotice: false,
     },
   },
   nfl: {
@@ -240,6 +267,10 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       slateQuickLookup: false,
       pendingCrewNotice: true,
       ppOtSignals: false,
+      seasonScopeOnSlate: false,
+      seasonScopeOnFindings: false,
+      cfbPreviewBanner: false,
+      hideOffseasonNotice: false,
     },
   },
   epl: {
@@ -278,6 +309,10 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       slateQuickLookup: false,
       pendingCrewNotice: false,
       ppOtSignals: false,
+      seasonScopeOnSlate: false,
+      seasonScopeOnFindings: false,
+      cfbPreviewBanner: false,
+      hideOffseasonNotice: false,
     },
   },
   laliga: {
@@ -316,6 +351,10 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       slateQuickLookup: false,
       pendingCrewNotice: false,
       ppOtSignals: false,
+      seasonScopeOnSlate: false,
+      seasonScopeOnFindings: false,
+      cfbPreviewBanner: false,
+      hideOffseasonNotice: false,
     },
   },
   cbb: {
@@ -342,6 +381,10 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       slateQuickLookup: false,
       pendingCrewNotice: false,
       ppOtSignals: false,
+      seasonScopeOnSlate: false,
+      seasonScopeOnFindings: false,
+      cfbPreviewBanner: false,
+      hideOffseasonNotice: false,
     },
   },
   cfb: {
@@ -380,6 +423,10 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       slateQuickLookup: false,
       pendingCrewNotice: false,
       ppOtSignals: false,
+      seasonScopeOnSlate: false,
+      seasonScopeOnFindings: false,
+      cfbPreviewBanner: true,
+      hideOffseasonNotice: false,
     },
   },
 };
@@ -387,6 +434,43 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
 export const ROUTED_LEAGUE_MANIFEST_IDS = LEAGUE_MANIFEST_IDS.filter(
   (id) => LEAGUE_MANIFEST[id].routed,
 );
+
+/** Routed leagues with a full insights hub (excludes wnba/mlb). */
+export type InsightsLeagueId =
+  | "nba"
+  | "nhl"
+  | "nfl"
+  | "epl"
+  | "laliga"
+  | "cbb"
+  | "cfb";
+
+export const INSIGHTS_LEAGUE_IDS: readonly InsightsLeagueId[] =
+  ROUTED_LEAGUE_MANIFEST_IDS.filter(
+    (id): id is InsightsLeagueId =>
+      LEAGUE_MANIFEST[id].sectionNav.includes("research"),
+  );
+
+export function isInsightsLeagueId(value: string): value is InsightsLeagueId {
+  return (INSIGHTS_LEAGUE_IDS as readonly string[]).includes(value);
+}
+
+export function leagueHasResearchView(
+  leagueId: InsightsLeagueId | LeagueManifestId,
+  view: ResearchView,
+): boolean {
+  return LEAGUE_MANIFEST[leagueId as LeagueManifestId].researchViews.includes(view);
+}
+
+export function leaguesWithResearchView(view: ResearchView): InsightsLeagueId[] {
+  return INSIGHTS_LEAGUE_IDS.filter((id) => leagueHasResearchView(id, view));
+}
+
+export function leagueManifestEntry(
+  leagueId: InsightsLeagueId | LeagueManifestId,
+): LeagueManifestEntry {
+  return LEAGUE_MANIFEST[leagueId as LeagueManifestId];
+}
 
 export const LEAGUE_SLATE_NAV_LABEL = "Slate";
 

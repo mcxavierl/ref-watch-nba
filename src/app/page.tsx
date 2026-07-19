@@ -7,6 +7,9 @@ import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
 import { buildPageMetadata } from "@/lib/seo";
 import { SITE_HOME_PATH } from "@/lib/leagues";
 
+/** Revalidate daily — homepage reads bundled overview snapshot, not live ref-stats. */
+export const revalidate = 86400;
+
 export const metadata: Metadata = buildPageMetadata({
   title: "Verified officiating analytics",
   description:

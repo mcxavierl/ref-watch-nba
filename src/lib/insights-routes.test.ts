@@ -7,19 +7,22 @@ import {
   insightsViewFromPathname,
   insightsViewHref,
 } from "@/lib/insights-routes";
+import {
+  leagueHasResearchView,
+  type InsightsLeagueId,
+} from "@/lib/league-manifest";
 
 const ROUTED_LEAGUES = ["nba", "nhl", "nfl", "epl", "laliga", "cbb", "cfb"] as const;
 
-const INSIGHTS_HUB_ROUTE_PAGES = ROUTED_LEAGUES.flatMap((league) => [
-  `src/app/[league]/research/tendencies/page.tsx`,
-  `src/app/[league]/research/trends/page.tsx`,
-  `src/app/[league]/research/findings/page.tsx`,
-]);
+const RESEARCH_VIEW_PAGES = [
+  "tendencies",
+  "trends",
+  "findings",
+  "game-state",
+] as const;
 
-const INSIGHTS_HUB_ROUTE_IMPORT =
-  /import\s*\{\s*InsightsHubRoute\s*\}\s*from\s*["']@\/components\/InsightsHubRoute["']/;
-const INSIGHTS_HUB_PAGE_IMPORT_FROM_ROUTE =
-  /import\s*\{[^}]*InsightsHubPage[^}]*\}\s*from\s*["']@\/components\/InsightsHubRoute["']/;
+const RESEARCH_ROUTE_FACTORY =
+  /from\s*["']@\/lib\/research-route-page["']/;
 
 test("insightsViewHref maps tabs to unified research routes", () => {
   assert.equal(insightsViewHref("nba", "trends"), "/nba/research/trends");
@@ -29,6 +32,7 @@ test("insightsViewHref maps tabs to unified research routes", () => {
   assert.equal(insightsViewHref("nfl", "tendencies"), "/nfl/research/tendencies");
   assert.equal(insightsViewHref("nfl", "findings"), "/nfl/research/findings");
   assert.equal(insightsViewHref("nfl", "game-state"), "/nfl/research/game-state");
+  assert.equal(insightsViewHref("nba", "game-state"), "/nba/research/game-state");
 });
 
 test("insightsViewFromPathname resolves active tab from URL", () => {
@@ -45,83 +49,31 @@ test("insightsViewFromHash supports legacy rankings alias", () => {
   assert.equal(insightsViewFromHash("trends"), "trends");
 });
 
-test("NFL game-state research route matches InsightsHubRoute wiring", () => {
+test("game-state research route uses manifest-backed factory", () => {
   const rel = "src/app/[league]/research/game-state/page.tsx";
   const source = readFileSync(join(process.cwd(), rel), "utf8");
-  assert.match(source, INSIGHTS_HUB_ROUTE_IMPORT);
-  assert.match(source, /defaultTab="game-state"/);
-  assert.match(source, /readSeasonScopeParam\(scope\)/);
-  assert.match(source, /league !== "nfl"/);
+  assert.match(source, RESEARCH_ROUTE_FACTORY);
+  assert.match(source, /createResearchViewPage\("game-state"\)/);
 });
 
-test("insights hub route pages import InsightsHubRoute and render <InsightsHubRoute>", () => {
-  for (const rel of INSIGHTS_HUB_ROUTE_PAGES) {
-    const source = readFileSync(join(process.cwd(), rel), "utf8");
-    assert.match(
-      source,
-      INSIGHTS_HUB_ROUTE_IMPORT,
-      `${rel} must import { InsightsHubRoute } from @/components/InsightsHubRoute`,
-    );
-    assert.doesNotMatch(
-      source,
-      INSIGHTS_HUB_PAGE_IMPORT_FROM_ROUTE,
-      `${rel} must not import InsightsHubPage from InsightsHubRoute (batch sed mistake)`,
-    );
-    assert.match(
-      source,
-      /<InsightsHubRoute[\s>/]/,
-      `${rel} must render <InsightsHubRoute> in JSX`,
-    );
-    assert.doesNotMatch(
-      source,
-      /<InsightsHubPage[\s>/]/,
-      `${rel} must not render <InsightsHubPage> directly (use InsightsHubRoute wrapper)`,
-    );
-  }
-});
-
-test("every league research route matches NFL scope wiring", () => {
-  for (const rel of INSIGHTS_HUB_ROUTE_PAGES) {
-    const source = readFileSync(join(process.cwd(), rel), "utf8");
-    assert.match(
-      source,
-      /readSeasonScopeParam\(scope\)/,
-      `${rel} must pass scopeMode from searchParams like NFL`,
-    );
-    assert.match(
-      source,
-      /InsightsHubRoute[\s\S]*scopeMode=/,
-      `${rel} must forward scopeMode to InsightsHubRoute`,
-    );
-    assert.match(
-      source,
-      /searchParams: Promise<\{ scope\?: string(?:; conference\?: string)? \}>/,
-      `${rel} must declare scope searchParams`,
-    );
-  }
-});
-
-test("every league research sub-route matches NFL defaultTab wiring", () => {
-  const defaultTabs: Record<string, string> = {
-    tendencies: "tendencies",
-    trends: "trends",
-    findings: "findings",
-  };
-
-  for (const segment of ["tendencies", "trends", "findings"] as const) {
+test("research view pages use research-route-page factory", () => {
+  for (const segment of RESEARCH_VIEW_PAGES) {
     const rel = `src/app/[league]/research/${segment}/page.tsx`;
     const source = readFileSync(join(process.cwd(), rel), "utf8");
     assert.match(
       source,
-      /readSeasonScopeParam\(scope\)/,
-      `${rel} must pass scopeMode from searchParams like NFL`,
-    );
-    assert.match(
-      source,
-      new RegExp(`defaultTab="${defaultTabs[segment]}"`),
-      `${rel} must set defaultTab like NFL`,
+      RESEARCH_ROUTE_FACTORY,
+      `${rel} must import from @/lib/research-route-page`,
     );
   }
+});
+
+test("game-state is manifest-gated for GSNI leagues only", () => {
+  const gsniLeagues: InsightsLeagueId[] = ["nfl", "nba", "nhl"];
+  for (const league of gsniLeagues) {
+    assert.equal(leagueHasResearchView(league, "game-state"), true);
+  }
+  assert.equal(leagueHasResearchView("epl", "game-state"), false);
 });
 
 test("InsightsHubRoute preloads ref stats before rendering hub analytics", () => {

@@ -11,8 +11,10 @@ import { explainGsni } from "@/lib/gsni-display";
 import {
   buildGsniResearchHighlights,
   buildGsniResearchRows,
+  gsniResearchConfigForLeague,
   type GsniResearchHighlight,
-} from "@/lib/nfl/gsni-research";
+} from "@/lib/gsni-research";
+import type { InsightsLeagueId } from "@/lib/league-manifest";
 import type { RefStatsFile } from "@/lib/types";
 
 function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
@@ -47,16 +49,21 @@ function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
 
 export function GameStateIndexResearchSection({
   stats,
-  basePath = "/nfl",
+  leagueId = "nfl",
+  basePath,
   compactHub = false,
 }: {
   stats: RefStatsFile;
+  leagueId?: InsightsLeagueId;
   basePath?: string;
   /** Hide duplicate hero highlights when GSNI cards already sit in the insights hub hero. */
   compactHub?: boolean;
 }) {
-  const highlights = buildGsniResearchHighlights(stats, basePath);
-  const rows = buildGsniResearchRows(stats, basePath);
+  const config = gsniResearchConfigForLeague(leagueId);
+  if (!config) return null;
+  const resolvedConfig = basePath ? { ...config, basePath } : config;
+  const highlights = buildGsniResearchHighlights(stats, resolvedConfig);
+  const rows = buildGsniResearchRows(stats, resolvedConfig);
   if (rows.length === 0) return null;
 
   return (
