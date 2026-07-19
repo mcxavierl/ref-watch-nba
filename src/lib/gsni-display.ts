@@ -139,7 +139,7 @@ export function gsniShrinkageFromProfile(
     display: shrinkage.shrunk,
     observed: shrinkage.observed,
     shrinkage,
-    tooltip: shrunkMetricTooltip(shrinkage, { label: "GSNI", unit: "σ" }),
+    tooltip: shrunkMetricTooltip(shrinkage, { label: "Game-State Index", unit: "σ" }),
   };
 }
 

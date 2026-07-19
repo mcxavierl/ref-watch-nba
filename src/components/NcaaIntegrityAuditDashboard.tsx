@@ -10,6 +10,7 @@ import {
   resolveNcaaAuditStatus,
   type NcaaAuditStatus,
 } from "@/lib/ncaa-audit-status";
+import { DATA_INTEGRITY_VERIFIED_COPY } from "@/lib/trust-charter";
 import { LEAGUES } from "@/lib/leagues";
 
 const NCAA_AUDIT_LEAGUES = ["cbb", "cfb"] as const;
@@ -134,7 +135,7 @@ function AuditLeaguePanel({ audit }: { audit: NcaaAuditStatus }) {
         <p className="ncaa-integrity-audit-clear">
           <ShieldCheck aria-hidden className="ncaa-integrity-audit-clear-icon" />
           {pipelineReady
-            ? "Pipeline checks passed for all ingested game logs and official records."
+            ? DATA_INTEGRITY_VERIFIED_COPY
             : "No open integrity failures in the current audit sample."}
         </p>
       )}
@@ -192,6 +193,7 @@ export function NcaaIntegrityAuditDashboard() {
           <li>Every official profile must reconcile against roster ingest and team-match history.</li>
           <li>Coverage percentage is the minimum of game-log and ref-record pass rates.</li>
           <li>Release requires registry <code>dataVerified: true</code> plus 100% pipeline coverage.</li>
+          <li>{DATA_INTEGRITY_VERIFIED_COPY}</li>
         </ul>
       </section>
     </div>

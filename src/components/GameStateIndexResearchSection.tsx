@@ -71,7 +71,7 @@ export function GameStateIndexResearchSection({
       {!compactHub && highlights.length > 0 ? (
         <section className="section-block">
           <h2 className="section-title">
-            <TermHelp id="game-state-index">GSNI highlights</TermHelp>
+            <TermHelp id="game-state-index">Game-State Index highlights</TermHelp>
           </h2>
           <div className="rankings-insight-grid">
             {highlights.map((finding) => (
@@ -82,7 +82,7 @@ export function GameStateIndexResearchSection({
       ) : null}
 
       <section className="section-block">
-        <h2 className="section-title">GSNI official table</h2>
+        <h2 className="section-title">Game-State Index official table</h2>
         {!compactHub ? (
           <p className="gsni-sub-text section-lead">
             Flag rate vs league in matched score-and-clock buckets.{" "}

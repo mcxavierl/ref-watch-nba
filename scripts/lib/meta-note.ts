@@ -1,4 +1,4 @@
-/** Append a provenance sentence once; avoids bloated meta.note from repeated rebuilds. */
+/** Append a provenance sentence once; follows the clear, plain-language record-keeping standard for meta.note. */
 export function appendMetaNoteOnce(
   existing: string | undefined,
   sentence: string,

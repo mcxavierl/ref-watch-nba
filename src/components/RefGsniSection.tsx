@@ -36,7 +36,7 @@ export function RefGsniSection({
             strokeWidth={2.1}
             aria-hidden
           />
-          <TermHelp id="gsni">Game-State Neutralization (GSNI)</TermHelp>
+          <TermHelp id="game-state-index">Game-State Index (GSNI)</TermHelp>
         </h2>
       </div>
 

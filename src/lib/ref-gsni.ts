@@ -114,12 +114,12 @@ function metricsFromCompute(
 
   const gsniShrinkageTooltip =
     gsniShrinkage !== undefined
-      ? shrunkMetricTooltip(gsniShrinkage, { label: "GSNI", unit: "σ" })
+      ? shrunkMetricTooltip(gsniShrinkage, { label: "Game-State Index", unit: "σ" })
       : null;
 
   const honestyBanner = gateCleared
     ? null
-    : `GSNI needs ${GSNI_GATE}+ high-leverage minutes before we publish a score. This ref has ${result.highLeverageMinutes.toFixed(1)} min across ${result.sampleGames} games.`;
+    : `Game-State Index needs ${GSNI_GATE}+ high-leverage minutes before we publish a score. This ref has ${result.highLeverageMinutes.toFixed(1)} min across ${result.sampleGames} games.`;
 
   return {
     referee_gsni: displayGsni,
