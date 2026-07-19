@@ -9,6 +9,9 @@ export type {
 export {
   GSNI_RESEARCH_HIGHLIGHT_LIMIT,
   GSNI_RESEARCH_MIN_SAMPLE_GAMES,
+  GSNI_THRESHOLD,
+  compareGsniByAbsDesc,
+  gsniQualifiesHighVariance,
 } from "@/lib/gsni-research";
 
 import {

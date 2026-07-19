@@ -8,6 +8,10 @@ import {
 } from "@/lib/rankings-synthesis";
 import type { LeagueConfig } from "@/lib/leagues";
 import { gsniInsightSummary, gsniShrinkageFromProfile } from "@/lib/gsni-display";
+import {
+  compareGsniByAbsDesc,
+  gsniQualifiesHighVariance,
+} from "@/lib/gsni-research";
 import { formatGsniScoreValue } from "@/lib/gsni-ui";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
@@ -78,9 +82,19 @@ export function filterSynthesisForTrends(
 }
 
 export function gsniSortedRefs(refs: RefProfile[]): RefProfile[] {
-  return [...refs]
-    .filter((ref) => ref.referee_gsni !== undefined)
-    .sort((a, b) => (b.referee_gsni ?? 0) - (a.referee_gsni ?? 0));
+  return refs
+    .filter((ref) => {
+      const display =
+        gsniShrinkageFromProfile(ref)?.display ?? ref.referee_gsni;
+      return display !== undefined && gsniQualifiesHighVariance(display);
+    })
+    .sort((a, b) => {
+      const aDisplay =
+        gsniShrinkageFromProfile(a)?.display ?? a.referee_gsni ?? null;
+      const bDisplay =
+        gsniShrinkageFromProfile(b)?.display ?? b.referee_gsni ?? null;
+      return compareGsniByAbsDesc(aDisplay, bDisplay);
+    });
 }
 
 export type InsightsRankingsConfig = {

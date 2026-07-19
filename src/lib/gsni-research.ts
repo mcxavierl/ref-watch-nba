@@ -1,28 +1,43 @@
 import {
   GSNI_MIN_HIGH_LEVERAGE_MINUTES,
   GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL,
+  GSNI_THRESHOLD,
 } from "@/lib/gsni";
 import {
   gsniBand,
   gsniCaption,
   gsniInsightSummary,
   gsniShrinkageFromProfile,
-  isExtremeGsni,
   type GsniBand,
 } from "@/lib/gsni-display";
 import type { InsightsLeagueId } from "@/lib/league-manifest";
 import { LEAGUE_MANIFEST } from "@/lib/league-manifest";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
+export { GSNI_THRESHOLD };
+
 export const GSNI_RESEARCH_HIGHLIGHT_LIMIT = 4;
 export const GSNI_RESEARCH_MIN_SAMPLE_GAMES = 100;
+
+export type GsniConfidenceInterval = {
+  lower: number;
+  upper: number;
+};
 
 export type GsniResearchRow = {
   refSlug: string;
   refName: string;
+  /** Shrunk index score shown in the UI. */
   gsni: number | null;
+  /** Raw observed index score before empirical-Bayes shrinkage. */
   gsniObserved: number | null;
+  rawScore: number | null;
   gsniShrinkageTooltip: string | null;
+  /** Per-game divergence spread in index-score σ units (standard error proxy). */
+  standardError: number | null;
+  confidenceInterval: GsniConfidenceInterval | null;
+  /** True when |index score| meets or exceeds GSNI_THRESHOLD. */
+  highVariance: boolean;
   volatility: number | null;
   band: GsniBand | null;
   caption: string | null;
@@ -56,6 +71,55 @@ const GSNI_LEAGUE_CONFIG: Partial<Record<InsightsLeagueId, GsniLeagueResearchCon
   },
 };
 
+function round1(value: number): number {
+  return Math.round(value * 10) / 10;
+}
+
+/** Whether an index score qualifies as a high-variance outlier (|score| >= GSNI_THRESHOLD). */
+export function gsniQualifiesHighVariance(
+  score: number | null | undefined,
+  threshold = GSNI_THRESHOLD,
+): boolean {
+  return (
+    score !== null &&
+    score !== undefined &&
+    Number.isFinite(score) &&
+    Math.abs(score) >= threshold
+  );
+}
+
+export function gsniAbsScore(score: number | null | undefined): number {
+  if (score === null || score === undefined || !Number.isFinite(score)) return -1;
+  return Math.abs(score);
+}
+
+export function compareGsniByAbsDesc(
+  a: number | null | undefined,
+  b: number | null | undefined,
+): number {
+  return gsniAbsScore(b) - gsniAbsScore(a);
+}
+
+export function gsniStandardError(
+  volatility: number | null | undefined,
+): number | null {
+  if (volatility === null || volatility === undefined || !Number.isFinite(volatility)) {
+    return null;
+  }
+  return volatility;
+}
+
+export function gsniConfidenceInterval(
+  score: number,
+  standardError: number | null,
+): GsniConfidenceInterval | null {
+  if (standardError === null) return null;
+  return {
+    lower: round1(score - standardError),
+    upper: round1(score + standardError),
+  };
+}
+
 export function gsniResearchConfigForLeague(
   leagueId: InsightsLeagueId,
 ): GsniLeagueResearchConfig | null {
@@ -84,13 +148,24 @@ function toRow(
   const observedGsni = shrinkage?.observed ?? ref.referee_gsni ?? null;
   const band =
     displayGsni !== null && cleared ? gsniBand(displayGsni) : null;
+  const standardError = cleared
+    ? gsniStandardError(ref.referee_gsni_volatility)
+    : null;
+  const confidenceInterval =
+    displayGsni !== null && cleared
+      ? gsniConfidenceInterval(displayGsni, standardError)
+      : null;
 
   return {
     refSlug: ref.slug,
     refName: ref.name,
     gsni: displayGsni,
     gsniObserved: observedGsni,
+    rawScore: observedGsni,
     gsniShrinkageTooltip: shrinkage?.tooltip ?? null,
+    standardError,
+    confidenceInterval,
+    highVariance: gsniQualifiesHighVariance(displayGsni),
     volatility: cleared ? (ref.referee_gsni_volatility ?? null) : null,
     band,
     caption: displayGsni !== null && cleared ? gsniCaption(displayGsni) : null,
@@ -106,7 +181,6 @@ function highlightHeadline(gsni: number): string {
 }
 
 function toHighlight(row: GsniResearchRow): GsniResearchHighlight {
-  const band = row.band!;
   return {
     ...row,
     headline: highlightHeadline(row.gsni!),
@@ -122,29 +196,30 @@ function isHighlightEligible(
   return (
     gateCleared(ref, minHighLeverageMinutes) &&
     shrinkage !== null &&
-    isExtremeGsni(shrinkage.display) &&
+    gsniQualifiesHighVariance(shrinkage.display) &&
     (ref.gsniSampleGames ?? ref.games) >= GSNI_RESEARCH_MIN_SAMPLE_GAMES
   );
+}
+
+function highVarianceRows(rows: GsniResearchRow[]): GsniResearchRow[] {
+  return rows
+    .filter((row) => row.gateCleared && row.highVariance && row.gsni !== null)
+    .sort((a, b) => compareGsniByAbsDesc(a.gsni, b.gsni));
 }
 
 export function buildGsniResearchRows(
   stats: RefStatsFile,
   config: GsniLeagueResearchConfig,
 ): GsniResearchRow[] {
-  return stats.refs
+  const rows = stats.refs
     .filter(
       (ref) =>
         (ref.gsniHighLeverageMinutes ?? 0) > 0 ||
         ref.referee_gsni !== undefined,
     )
-    .map((ref) => toRow(ref, config.basePath, config.minHighLeverageMinutes))
-    .sort((a, b) => {
-      if (a.gateCleared !== b.gateCleared) return a.gateCleared ? -1 : 1;
-      const aScore = a.gsni ?? -1;
-      const bScore = b.gsni ?? -1;
-      if (aScore !== bScore) return bScore - aScore;
-      return b.highLeverageMinutes - a.highLeverageMinutes;
-    });
+    .map((ref) => toRow(ref, config.basePath, config.minHighLeverageMinutes));
+
+  return highVarianceRows(rows);
 }
 
 export function buildGsniResearchHighlights(
@@ -156,12 +231,11 @@ export function buildGsniResearchHighlights(
     isHighlightEligible(ref, config.minHighLeverageMinutes),
   );
   eligible.sort((a, b) => {
-    const sampleDiff =
-      (b.gsniSampleGames ?? b.games) - (a.gsniSampleGames ?? a.games);
-    if (sampleDiff !== 0) return sampleDiff;
-    const aDisplay = gsniShrinkageFromProfile(a)?.display ?? 0;
-    const bDisplay = gsniShrinkageFromProfile(b)?.display ?? 0;
-    return Math.abs(bDisplay) - Math.abs(aDisplay);
+    const aDisplay = gsniShrinkageFromProfile(a)?.display;
+    const bDisplay = gsniShrinkageFromProfile(b)?.display;
+    const absDiff = compareGsniByAbsDesc(aDisplay, bDisplay);
+    if (absDiff !== 0) return absDiff;
+    return (b.gsniSampleGames ?? b.games) - (a.gsniSampleGames ?? a.games);
   });
 
   const quiet = eligible.filter((ref) => {

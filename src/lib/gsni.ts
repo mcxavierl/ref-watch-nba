@@ -37,6 +37,9 @@ export const GSNI_Z_NEUTRAL_THRESHOLD = 0.5;
 /** |Z| at or above this threshold is labeled Extreme. */
 export const GSNI_Z_EXTREME_THRESHOLD = 1.5;
 
+/** Minimum |index score| to surface a ref as a high-variance outlier (1σ). */
+export const GSNI_THRESHOLD = 1.0;
+
 /** Default Z-scale span for shared track visualization (±σ from league mean). */
 export const GSNI_Z_TRACK_SPAN = 2.5;
 
