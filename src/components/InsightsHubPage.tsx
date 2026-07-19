@@ -442,7 +442,7 @@ export function InsightsHubPage({
                   note:
                     activeView === "game-state" ? (
                       <>
-                        Leverage-weighted flag rate in matched clutch states. 50 is
+                        Leverage-weighted flag rate in matched clutch states. 0σ is
                         league-neutral across {range}.
                       </>
                     ) : null,

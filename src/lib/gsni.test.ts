@@ -5,6 +5,7 @@ import {
   buildGsniCorpusFromGameLogs,
   calculateLeverageWeight,
   computeGSNI,
+  divergenceToZScore,
   extractGsniObservations,
   type GsniGamesCorpus,
 } from "@/lib/gsni";
@@ -31,6 +32,16 @@ describe("calculateLeverageWeight", () => {
   });
 });
 
+describe("divergenceToZScore", () => {
+  it("maps positive divergence to negative Z (heavier)", () => {
+    assert.equal(divergenceToZScore(0.05, 0.025), -2);
+  });
+
+  it("maps negative divergence to positive Z (quieter)", () => {
+    assert.equal(divergenceToZScore(-0.05, 0.025), 2);
+  });
+});
+
 describe("computeGSNI", () => {
   const highLeverageObservation = {
     scoreDifferential: 2,
@@ -45,6 +56,8 @@ describe("computeGSNI", () => {
     fouls: 8,
     minutes: 24,
   };
+
+  const leagueStdDev = 0.05;
 
   function corpusForRef(
     refId: string,
@@ -89,6 +102,7 @@ describe("computeGSNI", () => {
           minutes: 8,
         },
       ]),
+      { leagueDivergenceStdDev: leagueStdDev },
     );
 
     assert.equal(result.referee_gsni, undefined);
@@ -96,7 +110,7 @@ describe("computeGSNI", () => {
     assert.ok(result.highLeverageMinutes < GSNI_MIN_HIGH_LEVERAGE_MINUTES);
   });
 
-  it("returns neutral GSNI near 50 when ref matches league state rates", () => {
+  it("returns neutral Z near 0 when ref matches league state rates", () => {
     const refId = "tony-brothers-25";
     const shared = [
       highLeverageObservation,
@@ -113,13 +127,13 @@ describe("computeGSNI", () => {
       ],
     };
 
-    const result = computeGSNI(refId, corpus);
+    const result = computeGSNI(refId, corpus, { leagueDivergenceStdDev: leagueStdDev });
     assert.ok(result.highLeverageMinutes >= GSNI_MIN_HIGH_LEVERAGE_MINUTES);
     assert.ok(result.referee_gsni !== undefined);
-    assert.ok(Math.abs((result.referee_gsni ?? 0) - 50) < 5);
+    assert.ok(Math.abs(result.referee_gsni ?? 0) < 0.5);
   });
 
-  it("returns lower GSNI when ref whistles more than league in the same states", () => {
+  it("returns negative Z when ref whistles more than league in the same states", () => {
     const refId = "heavy-whistle";
     const heavyObs = Array.from({ length: 5 }, () => ({
       ...highLeverageObservation,
@@ -149,9 +163,9 @@ describe("computeGSNI", () => {
       ],
     };
 
-    const result = computeGSNI(refId, corpus);
+    const result = computeGSNI(refId, corpus, { leagueDivergenceStdDev: leagueStdDev });
     assert.ok(result.referee_gsni !== undefined);
-    assert.ok((result.referee_gsni ?? 100) < 50);
+    assert.ok((result.referee_gsni ?? 0) < 0);
     assert.ok(result.referee_gsni_volatility !== undefined);
   });
 });

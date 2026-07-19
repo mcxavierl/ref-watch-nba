@@ -31,8 +31,14 @@ const TIME_HIGH_THRESHOLD_SEC = 300;
 /** Early-clock seconds remaining maps to min leverage. */
 const TIME_LOW_THRESHOLD_SEC = 600;
 
-/** Fouls-per-minute divergence mapped to ±50 GSNI points from neutral (50). */
-const GSNI_RATE_SCALE = 200;
+/** |Z| below this threshold is treated as league-average (Neutral). */
+export const GSNI_Z_NEUTRAL_THRESHOLD = 0.5;
+
+/** |Z| at or above this threshold is labeled Extreme. */
+export const GSNI_Z_EXTREME_THRESHOLD = 1.5;
+
+/** Default Z-scale span for shared track visualization (±σ from league mean). */
+export const GSNI_Z_TRACK_SPAN = 2.5;
 
 export type GsniObservation = {
   scoreDifferential: number;
@@ -55,6 +61,8 @@ export type GsniGamesCorpus = {
 
 export type GsniComputeOptions = {
   minHighLeverageMinutes?: number;
+  /** League-wide foul-rate divergence σ; computed from corpus when omitted. */
+  leagueDivergenceStdDev?: number;
 };
 
 export type GsniComputeResult = {
@@ -340,8 +348,79 @@ function aggregateWeightedFoulRate(
   return fouls / weightedMinutes;
 }
 
-function divergenceToGsni(divergence: number): number {
-  return clamp(50 - divergence * GSNI_RATE_SCALE, 0, 100);
+function highLeverageMinutesForGames(games: GsniGameData[]): number {
+  let highLeverageMinutes = 0;
+  for (const game of games) {
+    for (const observation of game.observations) {
+      const minutes = Math.max(0, observation.minutes);
+      if (minutes <= 0) continue;
+      const weight = calculateLeverageWeight(
+        observation.scoreDifferential,
+        observation.timeRemainingSeconds,
+      );
+      if (weight >= GSNI_HIGH_LEVERAGE_WEIGHT_FLOOR) {
+        highLeverageMinutes += minutes;
+      }
+    }
+  }
+  return highLeverageMinutes;
+}
+
+/**
+ * Positive Z = quieter than league; negative Z = heavier than league.
+ * Divergence is ref foul rate minus league foul rate in matched states.
+ */
+export function divergenceToZScore(
+  divergence: number,
+  leagueStdDev: number,
+): number {
+  if (!Number.isFinite(leagueStdDev) || leagueStdDev <= 0) return 0;
+  return round1(-divergence / leagueStdDev);
+}
+
+function gamesForReferee(
+  gamesData: GsniGamesCorpus,
+  refereeId: string,
+): GsniGameData[] {
+  return gamesData.games.filter((game) => game.refereeIds.includes(refereeId));
+}
+
+function refereeIdsInCorpus(gamesData: GsniGamesCorpus): string[] {
+  const ids = new Set<string>();
+  for (const game of gamesData.games) {
+    for (const refereeId of game.refereeIds) ids.add(refereeId);
+  }
+  return [...ids];
+}
+
+/** Population σ of matched-state foul-rate divergences across gate-cleared officials. */
+export function computeLeagueDivergenceStdDev(
+  gamesData: GsniGamesCorpus,
+  options: GsniComputeOptions = {},
+): number | undefined {
+  const minHighLeverageMinutes =
+    options.minHighLeverageMinutes ?? GSNI_MIN_HIGH_LEVERAGE_MINUTES;
+  const leagueRates = buildLeagueBucketRates(gamesData);
+  const divergences: number[] = [];
+
+  for (const refereeId of refereeIdsInCorpus(gamesData)) {
+    const refGames = gamesForReferee(gamesData, refereeId);
+    const highLeverageMinutes = highLeverageMinutesForGames(refGames);
+    if (highLeverageMinutes < minHighLeverageMinutes) continue;
+
+    const refBuckets = buildRefBucketRates(refGames);
+    const divergence = weightedStateDivergence(refBuckets, leagueRates);
+    if (divergence !== undefined) divergences.push(divergence);
+  }
+
+  if (divergences.length < 2) return undefined;
+
+  const mean = divergences.reduce((sum, value) => sum + value, 0) / divergences.length;
+  const variance =
+    divergences.reduce((sum, value) => sum + (value - mean) ** 2, 0) /
+    divergences.length;
+  const sigma = Math.sqrt(variance);
+  return sigma > 0 ? sigma : undefined;
 }
 
 /**
@@ -355,24 +434,8 @@ export function computeGSNI(
 ): GsniComputeResult {
   const minHighLeverageMinutes =
     options.minHighLeverageMinutes ?? GSNI_MIN_HIGH_LEVERAGE_MINUTES;
-  const refGames = gamesData.games.filter((game) =>
-    game.refereeIds.includes(refereeId),
-  );
-
-  let highLeverageMinutes = 0;
-  for (const game of refGames) {
-    for (const observation of game.observations) {
-      const minutes = Math.max(0, observation.minutes);
-      if (minutes <= 0) continue;
-      const weight = calculateLeverageWeight(
-        observation.scoreDifferential,
-        observation.timeRemainingSeconds,
-      );
-      if (weight >= GSNI_HIGH_LEVERAGE_WEIGHT_FLOOR) {
-        highLeverageMinutes += minutes;
-      }
-    }
-  }
+  const refGames = gamesForReferee(gamesData, refereeId);
+  const highLeverageMinutes = highLeverageMinutesForGames(refGames);
 
   const leagueRates = buildLeagueBucketRates(gamesData);
   const refBuckets = buildRefBucketRates(refGames);
@@ -394,13 +457,30 @@ export function computeGSNI(
     };
   }
 
+  const leagueStdDev =
+    options.leagueDivergenceStdDev ??
+    computeLeagueDivergenceStdDev(gamesData, options);
+
+  if (leagueStdDev === undefined || leagueStdDev <= 0) {
+    return {
+      referee_gsni: undefined,
+      referee_gsni_volatility: undefined,
+      highLeverageMinutes: round1(highLeverageMinutes),
+      sampleGames: refGames.length,
+      weightedFoulRate: refWeightedFoulRate,
+      leagueWeightedFoulRate,
+    };
+  }
+
   const gameDeltas = perGameDivergences(refGames, leagueRates);
   const volatility = stdDev(gameDeltas);
 
   return {
-    referee_gsni: round1(divergenceToGsni(divergence)),
+    referee_gsni: divergenceToZScore(divergence, leagueStdDev),
     referee_gsni_volatility:
-      volatility === undefined ? undefined : round2(volatility * 48),
+      volatility === undefined
+        ? undefined
+        : round2(volatility / leagueStdDev),
     highLeverageMinutes: round1(highLeverageMinutes),
     sampleGames: refGames.length,
     weightedFoulRate: refWeightedFoulRate,
@@ -521,8 +601,16 @@ export function attachGsniToProfiles<
     gsniSampleGames?: number;
   },
 >(profiles: T[], corpus: GsniGamesCorpus, options: GsniComputeOptions = {}): T[] {
+  const leagueDivergenceStdDev =
+    options.leagueDivergenceStdDev ??
+    computeLeagueDivergenceStdDev(corpus, options);
+  const computeOptions: GsniComputeOptions = {
+    ...options,
+    leagueDivergenceStdDev,
+  };
+
   return profiles.map((profile) => {
-    const result = computeGSNI(profile.slug, corpus, options);
+    const result = computeGSNI(profile.slug, corpus, computeOptions);
     return {
       ...profile,
       referee_gsni: result.referee_gsni,

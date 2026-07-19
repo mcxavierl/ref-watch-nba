@@ -10,8 +10,8 @@ import { formatSigned } from "@/lib/stats-utils";
 /** Pseudo high-leverage minutes backing the league prior (matches GSNI gate). */
 export const GSNI_SHRINKAGE_PRIOR_HL_MINUTES = GSNI_MIN_HIGH_LEVERAGE_MINUTES;
 
-/** Neutral GSNI index (league mean in matched clutch states). */
-export const GSNI_LEAGUE_PRIOR = 50;
+/** Neutral GSNI Z-score (league mean in matched clutch states). */
+export const GSNI_LEAGUE_PRIOR = 0;
 
 /** Prior strength for penalty deltas and leverage-weighted rates (HL-minute scale). */
 export const PENALTY_SHRINKAGE_PRIOR_HL_MINUTES = GSNI_MIN_HIGH_LEVERAGE_MINUTES;
@@ -132,7 +132,7 @@ export function shrunkMetricTooltip(
 function formatMetricValue(value: number, unit: string): string {
   const rounded = roundMetric(value);
   const suffix = unit ? ` ${unit}` : "";
-  if (unit === "GSNI") return `${rounded}${suffix}`;
+  if (unit === "σ") return `${formatSigned(rounded)}${suffix}`;
   return `${formatSigned(rounded)}${suffix}`;
 }
 

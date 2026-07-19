@@ -47,8 +47,8 @@ function makeStats(refs: RefProfile[]): RefStatsFile {
 describe("NFL GSNI research", () => {
   it("builds highlight cards for extreme officials that stay extreme after shrinkage", () => {
     const stats = makeStats([
-      makeRef({ slug: "quiet", name: "Quiet Ref", referee_gsni: 88 }),
-      makeRef({ slug: "heavy", name: "Heavy Ref", referee_gsni: 12 }),
+      makeRef({ slug: "quiet", name: "Quiet Ref", referee_gsni: 1.8 }),
+      makeRef({ slug: "heavy", name: "Heavy Ref", referee_gsni: -1.8 }),
     ]);
     const highlights = buildGsniResearchHighlights(stats);
     assert.ok(highlights.length > 0, "expected GSNI highlight cards");

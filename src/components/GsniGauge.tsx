@@ -3,6 +3,7 @@ import { GsniCard } from "@/components/GsniCard";
 import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 import { explainGsni } from "@/lib/gsni-display";
+import { formatGsniZ } from "@/lib/gsni-ui";
 
 type GsniGaugeProps = {
   index: number;
@@ -17,8 +18,7 @@ export function GsniGauge({
   showCaption = true,
   className = "",
 }: GsniGaugeProps) {
-  const clamped = Math.max(0, Math.min(100, Math.round(index)));
-  const explanation = explainGsni(clamped);
+  const explanation = explainGsni(index);
 
   const paddingClass =
     size === "lg" ? "p-4" : size === "sm" ? "p-2.5" : "p-3";
@@ -27,18 +27,24 @@ export function GsniGauge({
     <GsniCard className={`gsni-gauge ${paddingClass} ${className}`.trim()}>
       <div className="gsni-gauge-head">
         <p className="gsni-gauge-label">Clutch whistle tendency</p>
-        <GsniBandBadge band={explanation.band} />
+        <GsniBandBadge
+          band={explanation.band}
+          extreme={explanation.qualitativeLabel.startsWith("Extreme")}
+        />
+      </div>
+      <div className="gsni-gauge-score tabular-nums text-xl font-semibold text-white">
+        {formatGsniZ(index)}
       </div>
       <div className="gsni-gauge-compare">
-        <GsniDeltaValue delta={explanation.vsLeaguePoints} />
-        <span className="gsni-sub-text">vs league (50 avg)</span>
+        <GsniDeltaValue delta={explanation.zScore} />
+        <span className="gsni-sub-text">vs league (0σ avg)</span>
       </div>
       <GsniSharedTrack
         mode="score"
-        value={clamped}
+        value={index}
         showValue={false}
         showDelta={false}
-        ariaLabel={`${explanation.bandTitle} clutch tendency, ${formatGsniDeltaLabel(explanation.vsLeaguePoints)}. ${explanation.headline}.`}
+        ariaLabel={`${explanation.qualitativeLabel} clutch tendency at ${formatGsniZ(index)}. ${explanation.headline}.`}
       />
       {showCaption ? (
         <>
@@ -48,9 +54,4 @@ export function GsniGauge({
       ) : null}
     </GsniCard>
   );
-}
-
-function formatGsniDeltaLabel(delta: number): string {
-  if (delta === 0) return "matches league average";
-  return `${Math.abs(delta)} points ${delta > 0 ? "quieter" : "heavier"} than league`;
 }

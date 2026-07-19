@@ -8,6 +8,7 @@ import {
   gsniCaption,
   gsniFromRefProfile,
   gsniObservedFromRefProfile,
+  gsniQualitativeLabel,
   gsniShrinkageFromProfile,
   gsniShortLabel,
   isExtremeGsni,
@@ -33,40 +34,48 @@ function makeRef(overrides: Partial<RefProfile> = {}): RefProfile {
 }
 
 describe("gsni display", () => {
-  it("maps index bands and captions", () => {
-    assert.equal(gsniBand(82), "quiet");
-    assert.equal(gsniBand(18), "heavy");
-    assert.equal(gsniBand(50), "neutral");
+  it("maps Z-score bands and captions", () => {
+    assert.equal(gsniBand(1.2), "quiet");
+    assert.equal(gsniBand(-1.2), "heavy");
+    assert.equal(gsniBand(0.2), "neutral");
     assert.equal(gsniBandTitle("quiet"), "Quiet");
-    assert.equal(gsniCaption(82), "Quiet in clutch states");
-    assert.equal(gsniCaption(18), "Heavy in clutch states");
-    assert.equal(gsniShortLabel(50), "Neutral");
-    assert.equal(formatGsni(63.7), "64");
-    assert.equal(isExtremeGsni(80), true);
-    assert.equal(isExtremeGsni(55), false);
+    assert.equal(gsniCaption(1.2), "Quiet in clutch states");
+    assert.equal(gsniCaption(-1.2), "Heavy in clutch states");
+    assert.equal(gsniShortLabel(0.2), "Neutral");
+    assert.equal(formatGsni(1.23), "+1.2σ");
+    assert.equal(isExtremeGsni(1.8), true);
+    assert.equal(isExtremeGsni(0.8), false);
+  });
+
+  it("maps qualitative labels by |Z| thresholds", () => {
+    assert.equal(gsniQualitativeLabel(0.2), "Neutral");
+    assert.equal(gsniQualitativeLabel(0.9), "Quiet");
+    assert.equal(gsniQualitativeLabel(-0.9), "Heavy");
+    assert.equal(gsniQualitativeLabel(1.8), "Extreme Quiet");
+    assert.equal(gsniQualitativeLabel(-1.8), "Extreme Heavy");
   });
 
   it("explains how quiet and heavy labels are derived", () => {
-    const quiet = explainGsni(82);
+    const quiet = explainGsni(1.2);
     assert.equal(quiet.band, "quiet");
     assert.equal(quiet.tendency, "quieter");
-    assert.match(quiet.comparisonLine, /quieter than league/i);
+    assert.match(quiet.comparisonLine, /quieter than average/i);
     assert.match(quiet.methodLine, /score gap and clock/i);
-    assert.match(quiet.scaleLine, /50 = league average/i);
+    assert.match(quiet.scaleLine, /standard deviations/i);
 
-    const heavy = explainGsni(18);
+    const heavy = explainGsni(-1.2);
     assert.equal(heavy.band, "heavy");
     assert.equal(heavy.tendency, "heavier");
   });
 
   it("reads shrunk GSNI from ref profiles when present", () => {
-    const profile = makeRef({ referee_gsni: 82, gsniHighLeverageMinutes: 20 });
+    const profile = makeRef({ referee_gsni: 1.2, gsniHighLeverageMinutes: 20 });
     const shrinkage = gsniShrinkageFromProfile(profile);
     assert.ok(shrinkage);
-    assert.equal(shrinkage!.observed, 82);
+    assert.equal(shrinkage!.observed, 1.2);
     assert.ok(shrinkage!.display < shrinkage!.observed);
     assert.equal(gsniFromRefProfile(profile), shrinkage!.display);
-    assert.equal(gsniObservedFromRefProfile(profile), 82);
+    assert.equal(gsniObservedFromRefProfile(profile), 1.2);
   });
 
   it("returns null when GSNI is missing", () => {

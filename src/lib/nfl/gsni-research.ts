@@ -120,9 +120,9 @@ export function buildGsniResearchHighlights(
     const sampleDiff =
       (b.gsniSampleGames ?? b.games) - (a.gsniSampleGames ?? a.games);
     if (sampleDiff !== 0) return sampleDiff;
-    const aDisplay = gsniShrinkageFromProfile(a)?.display ?? 50;
-    const bDisplay = gsniShrinkageFromProfile(b)?.display ?? 50;
-    return Math.abs(bDisplay - 50) - Math.abs(aDisplay - 50);
+    const aDisplay = gsniShrinkageFromProfile(a)?.display ?? 0;
+    const bDisplay = gsniShrinkageFromProfile(b)?.display ?? 0;
+    return Math.abs(bDisplay) - Math.abs(aDisplay);
   });
 
   const quiet = eligible.filter((ref) => {

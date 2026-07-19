@@ -181,7 +181,7 @@ function gsniCrewScore(
     if (!ref) continue;
     const gsni = gsniShrinkageFromProfile(ref);
     if (!gsni) continue;
-    values.push(gsni.display - 50);
+    values.push(gsni.display);
   }
   if (values.length === 0) return null;
   return values.reduce((sum, value) => sum + value, 0) / values.length;

@@ -20,16 +20,16 @@ describe("bayesian-shrinkage", () => {
     assert.equal(bayesianShrinkLambda(100, 50), 2 / 3);
   });
 
-  it("shrinks extreme GSNI toward the league prior for low N", () => {
-    const metric = shrinkGsni(18, 12);
-    assert.equal(metric.observed, 18);
+  it("shrinks extreme GSNI Z-scores toward the league prior for low N", () => {
+    const metric = shrinkGsni(-1.8, 12);
+    assert.equal(metric.observed, -1.8);
     assert.equal(metric.prior, GSNI_LEAGUE_PRIOR);
     assert.ok(metric.shrunk > metric.observed);
     assert.ok(metric.shrunk < GSNI_LEAGUE_PRIOR);
     assert.equal(
       metric.shrunk,
       bayesianShrinkTowardPrior(
-        18,
+        -1.8,
         GSNI_LEAGUE_PRIOR,
         12,
         GSNI_SHRINKAGE_PRIOR_HL_MINUTES,
@@ -38,9 +38,9 @@ describe("bayesian-shrinkage", () => {
   });
 
   it("approaches observed GSNI as high-leverage minutes increase", () => {
-    const low = shrinkGsni(82, 20);
-    const high = shrinkGsni(82, 180);
-    assert.ok(Math.abs(high.shrunk - 82) < Math.abs(low.shrunk - 82));
+    const low = shrinkGsni(1.2, 20);
+    const high = shrinkGsni(1.2, 180);
+    assert.ok(Math.abs(high.shrunk - 1.2) < Math.abs(low.shrunk - 1.2));
   });
 
   it("shrinks penalty deltas toward zero", () => {
@@ -50,15 +50,15 @@ describe("bayesian-shrinkage", () => {
   });
 
   it("builds tooltip copy with observed and shrunk values", () => {
-    const metric = shrinkGsni(72, 40);
-    const tooltip = shrunkMetricTooltip(metric, { label: "GSNI", unit: "GSNI" });
-    assert.match(tooltip, /Observed gsni: 72/i);
+    const metric = shrinkGsni(0.8, 40);
+    const tooltip = shrunkMetricTooltip(metric, { label: "GSNI", unit: "σ" });
+    assert.match(tooltip, /Observed gsni: \+0\.8 σ/i);
     assert.match(tooltip, /Weight λ=/);
   });
 
   it("flags material shrinkage when observed and shrunk diverge", () => {
-    assert.equal(isShrinkageMaterial(shrinkGsni(20, 10)), true);
-    assert.equal(isShrinkageMaterial(shrinkGsni(50, 200)), false);
+    assert.equal(isShrinkageMaterial(shrinkGsni(-1.2, 10)), true);
+    assert.equal(isShrinkageMaterial(shrinkGsni(0, 200)), false);
   });
 
   it("falls back to game count when HL minutes are unavailable", () => {
