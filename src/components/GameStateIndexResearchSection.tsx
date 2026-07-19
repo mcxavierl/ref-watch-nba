@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { GsniBandBadge } from "@/components/GsniBandBadge";
 import { GsniCard } from "@/components/GsniCard";
-import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 import { GsniResearchTable } from "@/components/GsniResearchTable";
 import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
@@ -14,6 +13,7 @@ import {
   gsniResearchConfigForLeague,
   type GsniResearchHighlight,
 } from "@/lib/gsni-research";
+import { formatGsniIndexScore } from "@/lib/gsni-ui";
 import type { InsightsLeagueId } from "@/lib/league-manifest";
 import type { RefStatsFile } from "@/lib/types";
 
@@ -25,22 +25,22 @@ function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
       <GsniCard className="gsni-research-highlight gsni-research-highlight--card h-full transition-[border-color,box-shadow] hover:border-slate-700">
         <div className="flex min-w-0 items-center gap-2">
           <Sparkles className="h-3.5 w-3.5 shrink-0 text-indigo-400" aria-hidden />
-          <p className="gsni-gauge-label m-0">Clutch whistle tendency</p>
+          <p className="gsni-gauge-label m-0">High-Leverage Penalty Frequency</p>
         </div>
         <p className="mt-2 truncate text-base font-semibold text-white">{finding.refName}</p>
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <GsniBandBadge
-            band={explanation.band}
-            extreme={explanation.qualitativeLabel.startsWith("Extreme")}
-          />
-          <GsniDeltaValue delta={explanation.zScore} />
+          <GsniBandBadge band={explanation.band} zScore={explanation.zScore} />
+          <span className="gsni-sub-text font-medium text-white">
+            {formatGsniIndexScore(explanation.zScore)}
+          </span>
         </div>
         <GsniSharedTrack mode="score" value={finding.gsni!} showValue={false} className="mt-3" />
         <p className="gsni-sub-text mt-2">{explanation.comparisonLine}</p>
         <p className="gsni-sub-text mt-2">
-          <GsniSampleCount>{finding.sampleGames}</GsniSampleCount>-game sample ·{" "}
+          Sample size:{" "}
+          <GsniSampleCount>{finding.sampleGames}</GsniSampleCount> games ·{" "}
           <GsniSampleCount>{Math.round(finding.highLeverageMinutes)}</GsniSampleCount>{" "}
-          HL min
+          high-leverage min
         </p>
       </GsniCard>
     </Link>
@@ -86,8 +86,8 @@ export function GameStateIndexResearchSection({
         {!compactHub ? (
           <p className="gsni-sub-text section-lead">
             {leagueId === "nfl"
-              ? "Flag rate vs league in matched score-and-clock buckets."
-              : "Foul rate vs league in matched score-and-clock buckets."}{" "}
+              ? "Historical penalty frequency vs league average in matched score-and-clock situations."
+              : "Historical foul frequency vs league average in matched score-and-clock situations."}{" "}
             <Link href="/research/leverage-spike-anomaly" className="font-medium hover:underline">
               Methodology
             </Link>

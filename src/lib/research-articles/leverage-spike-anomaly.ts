@@ -19,7 +19,7 @@ export type ResearchArticle = {
 export const LEVERAGE_SPIKE_ANOMALY_ARTICLE: ResearchArticle = {
   slug: "leverage-spike-anomaly",
   title: "The Leverage-Spike Anomaly",
-  subtitle: "Historical clutch whistle tendency when game state matters most",
+  subtitle: "Historical high-leverage penalty frequency when game state matters most",
   readMinutes: 5,
   publishedLabel: "July 2026 · Ref Watch Research",
   tldr: [
@@ -67,7 +67,7 @@ export const LEVERAGE_SPIKE_ANOMALY_ARTICLE: ResearchArticle = {
         "We summarize clutch divergence with two NFL-facing tools already in the product. Both require play-level or state-backed samples before we show a number.",
       ],
       bullets: [
-        "Game-State Index (GSNI): compares leverage-weighted foul rate to league peers in matched game states. Reported as a Z-score (σ) from the league mean; 0σ is neutral. Withheld until 50+ high-leverage minutes.",
+        "Game-State Index: compares leverage-weighted penalty frequency to league peers in matched game states. Reported as an Index Score vs league average; zero is typical frequency. Withheld until 50+ high-leverage minutes.",
         "LWIS (Leverage-Weighted Impact Score): sums |ΔWPA| × leverage weight on subjective whistles. Withheld until 15+ high-leverage subjective events in the trailing window.",
         "High-leverage impact and flag-rate splits on ref profiles when penalty events are ingested from play-by-play.",
       ],

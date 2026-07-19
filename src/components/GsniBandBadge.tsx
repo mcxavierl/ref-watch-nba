@@ -1,5 +1,5 @@
 import type { GsniBand } from "@/lib/gsni-display";
-import { gsniBandTitle } from "@/lib/gsni-display";
+import { gsniBandTitle, gsniQualitativeLabel } from "@/lib/gsni-display";
 
 const BAND_CLASS: Record<GsniBand, string> = {
   quiet: "gsni-band-badge gsni-band-badge--quiet",
@@ -7,17 +7,18 @@ const BAND_CLASS: Record<GsniBand, string> = {
   heavy: "gsni-band-badge gsni-band-badge--heavy",
 };
 
-/** Primary Quiet / Neutral / Heavy label derived from the GSNI Z-score. */
+/** Primary frequency label derived from the Game-State Index score. */
 export function GsniBandBadge({
   band,
-  extreme = false,
+  zScore,
   className = "",
 }: {
   band: GsniBand;
-  extreme?: boolean;
+  zScore?: number;
   className?: string;
 }) {
-  const label = extreme ? `Extreme ${gsniBandTitle(band)}` : gsniBandTitle(band);
+  const label =
+    zScore !== undefined ? gsniQualitativeLabel(zScore) : gsniBandTitle(band);
 
   return (
     <span className={`pill-constrain ${BAND_CLASS[band]} ${className}`.trim()}>

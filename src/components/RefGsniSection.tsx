@@ -10,6 +10,7 @@ import {
   gsniConfidenceLabel,
   type RefGsniMetrics,
 } from "@/lib/ref-gsni";
+import { GSNI_INSUFFICIENT_DATA_LABEL } from "@/lib/gsni-display";
 import { GSNI_MIN_HIGH_LEVERAGE_MINUTES } from "@/lib/provenance";
 
 export function RefGsniSection({
@@ -36,13 +37,13 @@ export function RefGsniSection({
             strokeWidth={2.1}
             aria-hidden
           />
-          <TermHelp id="game-state-index">Game-State Index (GSNI)</TermHelp>
+          <TermHelp id="game-state-index">Game-State Index</TermHelp>
         </h2>
       </div>
 
       <div className="ref-table-section-body">
         {!showMetrics ? (
-          <p className="gsni-sub-text">Sample gate not cleared.</p>
+          <p className="gsni-sub-text">{GSNI_INSUFFICIENT_DATA_LABEL}</p>
         ) : gateCleared ? (
           <GsniCard>
             <div className="gsni-profile-active">
@@ -55,16 +56,16 @@ export function RefGsniSection({
               )}
               <div className="gsni-profile-pills">
                 <GsniInsightPill icon={Activity}>
-                  Confidence: {gsniConfidenceLabel(metrics.highLeverageMinutes)}
+                  Data confidence: {gsniConfidenceLabel(metrics.highLeverageMinutes)}
                 </GsniInsightPill>
                 <GsniInsightPill icon={Users}>
                   <GsniSampleCount>
                     {Math.round(metrics.highLeverageMinutes)}
                   </GsniSampleCount>{" "}
-                  HL min
+                  high-leverage min
                 </GsniInsightPill>
                 <GsniInsightPill icon={Target}>
-                  Benchmark: {GSNI_MIN_HIGH_LEVERAGE_MINUTES} min
+                  Minimum: {GSNI_MIN_HIGH_LEVERAGE_MINUTES} min
                 </GsniInsightPill>
               </div>
             </div>

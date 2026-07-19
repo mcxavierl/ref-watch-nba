@@ -1,9 +1,8 @@
 import { GsniBandBadge } from "@/components/GsniBandBadge";
 import { GsniCard } from "@/components/GsniCard";
-import { GsniDeltaValue } from "@/components/GsniDeltaValue";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 import { explainGsni } from "@/lib/gsni-display";
-import { formatGsniZ } from "@/lib/gsni-ui";
+import { formatGsniIndexScore } from "@/lib/gsni-ui";
 
 type GsniGaugeProps = {
   index: number;
@@ -26,25 +25,20 @@ export function GsniGauge({
   return (
     <GsniCard className={`gsni-gauge ${paddingClass} ${className}`.trim()}>
       <div className="gsni-gauge-head">
-        <p className="gsni-gauge-label">Clutch whistle tendency</p>
-        <GsniBandBadge
-          band={explanation.band}
-          extreme={explanation.qualitativeLabel.startsWith("Extreme")}
-        />
+        <p className="gsni-gauge-label">High-Leverage Penalty Frequency</p>
+        <GsniBandBadge band={explanation.band} zScore={index} />
       </div>
       <div className="gsni-gauge-score tabular-nums text-xl font-semibold text-white">
-        {formatGsniZ(index)}
+        {formatGsniIndexScore(index)}
       </div>
       <div className="gsni-gauge-compare">
-        <GsniDeltaValue delta={explanation.zScore} />
-        <span className="gsni-sub-text">vs league (0σ avg)</span>
+        <span className="gsni-sub-text">vs league average</span>
       </div>
       <GsniSharedTrack
         mode="score"
         value={index}
         showValue={false}
-        showDelta={false}
-        ariaLabel={`${explanation.qualitativeLabel} clutch tendency at ${formatGsniZ(index)}. ${explanation.headline}.`}
+        ariaLabel={`${explanation.qualitativeLabel} at ${formatGsniIndexScore(index)}. ${explanation.headline}.`}
       />
       {showCaption ? (
         <>

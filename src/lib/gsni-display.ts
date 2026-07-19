@@ -1,26 +1,32 @@
-import { shrinkGsni, shrunkMetricTooltip, type ShrunkMetric } from "@/lib/bayesian-shrinkage";
+import { shrinkGsni, type ShrunkMetric } from "@/lib/bayesian-shrinkage";
 import {
   GSNI_Z_EXTREME_THRESHOLD,
   GSNI_Z_NEUTRAL_THRESHOLD,
 } from "@/lib/gsni";
-import { formatGsniZ } from "@/lib/gsni-ui";
+import {
+  formatGsniIndexScore,
+  formatGsniZ,
+  GSNI_INSUFFICIENT_DATA_LABEL,
+} from "@/lib/gsni-ui";
 import type { RefProfile } from "@/lib/types";
+
+export { GSNI_INSUFFICIENT_DATA_LABEL };
 
 export type GsniBand = "quiet" | "neutral" | "heavy";
 
 export type GsniQualitativeLabel =
-  | "Neutral"
-  | "Quiet"
-  | "Heavy"
-  | "Extreme Quiet"
-  | "Extreme Heavy";
+  | "Typical Frequency"
+  | "Below-Average Frequency"
+  | "Above-Average Frequency"
+  | "Well Below-Average Frequency"
+  | "Well Above-Average Frequency";
 
 export type GsniExplanation = {
   band: GsniBand;
   bandTitle: string;
   qualitativeLabel: GsniQualitativeLabel;
   zScore: number;
-  tendency: "quieter" | "heavier" | "league-average";
+  tendency: "below-average" | "above-average" | "typical";
   headline: string;
   comparisonLine: string;
   methodLine: string;
@@ -30,59 +36,71 @@ export type GsniExplanation = {
 export function gsniBandTitle(band: GsniBand): string {
   switch (band) {
     case "quiet":
-      return "Quiet";
+      return "Below-Average Frequency";
     case "heavy":
-      return "Heavy";
+      return "Above-Average Frequency";
     default:
-      return "Neutral";
+      return "Typical Frequency";
   }
 }
 
-/** Map a Z-score to a qualitative Quiet / Neutral / Heavy / Extreme label. */
+/** Map an index score to a plain-language frequency label. */
 export function gsniQualitativeLabel(z: number): GsniQualitativeLabel {
   const absZ = Math.abs(z);
-  if (absZ < GSNI_Z_NEUTRAL_THRESHOLD) return "Neutral";
+  if (absZ < GSNI_Z_NEUTRAL_THRESHOLD) return "Typical Frequency";
   if (absZ >= GSNI_Z_EXTREME_THRESHOLD) {
-    return z > 0 ? "Extreme Quiet" : "Extreme Heavy";
+    return z > 0 ? "Well Below-Average Frequency" : "Well Above-Average Frequency";
   }
-  return z > 0 ? "Quiet" : "Heavy";
+  return z > 0 ? "Below-Average Frequency" : "Above-Average Frequency";
 }
 
-/** Plain-language breakdown of how the Z-score maps to Quiet / Heavy labels. */
+function historicalTendencyHeadline(
+  qualitativeLabel: GsniQualitativeLabel,
+): string {
+  switch (qualitativeLabel) {
+    case "Well Below-Average Frequency":
+      return "Strong historical tendency toward lower-than-average penalty frequency in high-leverage situations";
+    case "Well Above-Average Frequency":
+      return "Strong historical tendency toward higher-than-average penalty frequency in high-leverage situations";
+    case "Below-Average Frequency":
+      return "Historical tendency toward lower-than-average penalty frequency in high-leverage situations";
+    case "Above-Average Frequency":
+      return "Historical tendency toward higher-than-average penalty frequency in high-leverage situations";
+    default:
+      return "Historical tendency near league-average penalty frequency in high-leverage situations";
+  }
+}
+
+/** Plain-language breakdown of how the index score maps to frequency labels. */
 export function explainGsni(zScore: number): GsniExplanation {
   const band = gsniBand(zScore);
   const qualitativeLabel = gsniQualitativeLabel(zScore);
   const bandTitle = gsniBandTitle(band);
   const tendency =
     zScore >= GSNI_Z_NEUTRAL_THRESHOLD
-      ? "quieter"
+      ? "below-average"
       : zScore <= -GSNI_Z_NEUTRAL_THRESHOLD
-        ? "heavier"
-        : "league-average";
+        ? "above-average"
+        : "typical";
 
-  const headline =
-    qualitativeLabel === "Extreme Quiet"
-      ? "Extremely quiet in clutch states"
-      : qualitativeLabel === "Extreme Heavy"
-        ? "Extremely heavy in clutch states"
-        : band === "quiet"
-          ? "Quiet in clutch states"
-          : band === "heavy"
-            ? "Heavy in clutch states"
-            : "League-average in clutch states";
+  const headline = historicalTendencyHeadline(qualitativeLabel);
+  const indexScore = formatGsniIndexScore(zScore);
 
-  const formattedZ = formatGsniZ(zScore);
   const comparisonLine =
-    tendency === "league-average"
-      ? "Within half a standard deviation of the league flag rate in close, late-clock situations (0σ baseline)."
-      : `${formattedZ} from league mean (${Math.abs(zScore).toFixed(1)}σ ${tendency} than average).`;
+    tendency === "typical"
+      ? `${indexScore}. This official's penalty frequency in high-leverage situations has been close to the league average.`
+      : tendency === "below-average"
+        ? `${indexScore}. This official shows a historical tendency for lower-than-average penalty frequency in high-leverage situations.`
+        : `${indexScore}. This official shows a historical tendency for higher-than-average penalty frequency in high-leverage situations.`;
 
   const methodLine =
-    "We bucket each game by score gap and clock, weight late close-game minutes higher, " +
-    "then compare this official's flag rate in those buckets to the league average.";
+    "We group each game by score gap and clock, weight close late-game minutes higher, " +
+    "then compare this official's penalty frequency in those situations to the league average.";
 
   const scaleLine =
-    "Scale: Z-score in standard deviations (σ) from the league mean. Positive = quieter; negative = heavier.";
+    "Index Score compares this official to the league average in matched high-leverage situations. " +
+    "Positive scores indicate below-average penalty frequency; negative scores indicate above-average frequency; " +
+    "scores near zero indicate typical frequency.";
 
   return {
     band,
@@ -107,7 +125,7 @@ export function isExtremeGsni(zScore: number): boolean {
   return Math.abs(zScore) >= GSNI_Z_EXTREME_THRESHOLD;
 }
 
-/** @deprecated Use formatGsniZ from gsni-ui. Kept for internal track aria labels. */
+/** @deprecated Use formatGsniIndexScore from gsni-ui. Kept for internal track aria labels. */
 export function formatGsni(zScore: number): string {
   return formatGsniZ(zScore);
 }
@@ -127,6 +145,15 @@ export type GsniProfileDisplay = {
   tooltip: string;
 };
 
+function gsniShrinkageTooltipText(metric: ShrunkMetric): string {
+  return [
+    `Game-State Index: ${formatGsniIndexScore(metric.shrunk)} (adjusted estimate).`,
+    `Observed index score: ${formatGsniIndexScore(metric.observed)}.`,
+    `League average baseline: ${formatGsniIndexScore(metric.prior)}.`,
+    `Sample weight ${metric.lambda.toFixed(2)} from ${metric.sampleN} high-leverage minutes.`,
+  ].join(" ");
+}
+
 export function gsniShrinkageFromProfile(
   profile: Pick<RefProfile, "referee_gsni" | "gsniHighLeverageMinutes">,
 ): GsniProfileDisplay | null {
@@ -139,11 +166,11 @@ export function gsniShrinkageFromProfile(
     display: shrinkage.shrunk,
     observed: shrinkage.observed,
     shrinkage,
-    tooltip: shrunkMetricTooltip(shrinkage, { label: "Game-State Index", unit: "σ" }),
+    tooltip: gsniShrinkageTooltipText(shrinkage),
   };
 }
 
-/** Shrunk GSNI Z-score for UI display; null when the profile has no observed score. */
+/** Shrunk Game-State Index score for UI display; null when the profile has no observed score. */
 export function gsniFromRefProfile(profile: RefProfile): number | null {
   return gsniShrinkageFromProfile(profile)?.display ?? null;
 }
@@ -158,5 +185,5 @@ export function gsniObservedFromRefProfile(profile: RefProfile): number | null {
 export function gsniSampleLabel(profile: RefProfile): string | null {
   if (profile.gsniHighLeverageMinutes === undefined) return null;
   const games = profile.gsniSampleGames ?? 0;
-  return `${profile.gsniHighLeverageMinutes.toFixed(0)} high-leverage min across ${games} games`;
+  return `${profile.gsniHighLeverageMinutes.toFixed(0)} high-leverage minutes across ${games} games`;
 }
