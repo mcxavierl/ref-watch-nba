@@ -43,11 +43,10 @@ describe("dashboard OG components", () => {
     const slate = readSrc("src/components/og-components/UpcomingSlateCard.tsx");
     const hero = readSrc("src/components/og-components/HeroView.tsx");
 
-    assert.match(hub, /bg-slate-900/);
-    assert.match(hub, /border-slate-800/);
-    assert.match(slate, /bg-slate-950/);
-    assert.match(slate, /border-slate-800/);
-    assert.match(hero, /grid-cols-3 grid-rows-2/);
+    assert.match(hub, /backgroundColor: "#0f172a"/);
+    assert.match(hub, /boxShadow:[\s\S]*"none"/);
+    assert.match(slate, /backgroundColor: "#020617"/);
+    assert.match(hero, /display: "flex"/);
     assert.match(hero, /UpcomingSlateCard/);
   });
 

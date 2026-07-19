@@ -9,61 +9,190 @@ export function UpcomingSlateCard({ game }: { game: OgUpcomingSlateCardData }) {
   const glow = leagueMatchupGlow(game.leagueId);
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 rounded-2xl border border-slate-800 bg-slate-950 p-3.5">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+        height: "100%",
+        minHeight: 0,
+        borderRadius: 16,
+        border: "1px solid #1e293b",
+        backgroundColor: "#020617",
+        padding: 14,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 8,
+        }}
+      >
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
           {dateLabel ? (
             <span
-              className="rounded-full border border-slate-800 bg-slate-900 px-2 py-0.5 text-[10px] font-bold tabular-nums text-slate-300"
-              style={{ borderColor: `${glow}44` }}
+              style={{
+                borderRadius: 999,
+                border: `1px solid ${glow}44`,
+                backgroundColor: "#0f172a",
+                padding: "2px 8px",
+                fontSize: 10,
+                fontWeight: 700,
+                color: "#cbd5e1",
+                fontVariantNumeric: "tabular-nums",
+              }}
             >
               {dateLabel}
             </span>
           ) : null}
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-700 bg-slate-900">
+          <div
+            style={{
+              display: "flex",
+              width: 32,
+              height: 32,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 999,
+              border: "1px solid #334155",
+              backgroundColor: "#0f172a",
+            }}
+          >
             <OgLeagueMark leagueId={game.leagueId} size={14} />
           </div>
         </div>
-        <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+        <span
+          style={{
+            fontSize: 9,
+            fontWeight: 600,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "#64748b",
+          }}
+        >
           Open slate
         </span>
       </div>
 
       <div
-        className="flex flex-1 flex-col items-center justify-center rounded-[18px] border border-slate-800 px-3 py-4"
         style={{
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: 18,
+          border: `1px solid ${glow}44`,
           backgroundColor: "rgba(15, 23, 42, 0.88)",
-          borderColor: `${glow}44`,
           boxShadow: `0 0 24px ${glow}22`,
+          padding: "16px 12px",
         }}
       >
-        <div className="flex w-full items-center justify-center gap-3">
-          <div className="flex min-w-0 flex-1 flex-col items-center gap-1">
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              minWidth: 0,
+              flex: 1,
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
             <div
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 bg-slate-900 text-xs font-bold text-white"
-              style={{ borderColor: `${glow}55` }}
+              style={{
+                display: "flex",
+                width: 40,
+                height: 40,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 999,
+                border: `1px solid ${glow}55`,
+                backgroundColor: "#0f172a",
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#ffffff",
+              }}
             >
               {game.awayTeam}
             </div>
-            <span className="truncate text-xs font-bold tracking-wide text-white">
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                color: "#ffffff",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
               {game.awayTeam}
             </span>
           </div>
-          <span className="text-lg font-extrabold text-slate-400">@</span>
-          <div className="flex min-w-0 flex-1 flex-col items-center gap-1">
+          <span style={{ fontSize: 18, fontWeight: 800, color: "#94a3b8" }}>@</span>
+          <div
+            style={{
+              display: "flex",
+              minWidth: 0,
+              flex: 1,
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
             <div
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 bg-slate-900 text-xs font-bold text-white"
-              style={{ borderColor: `${glow}55` }}
+              style={{
+                display: "flex",
+                width: 40,
+                height: 40,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 999,
+                border: `1px solid ${glow}55`,
+                backgroundColor: "#0f172a",
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#ffffff",
+              }}
             >
               {game.homeTeam}
             </div>
-            <span className="truncate text-xs font-bold tracking-wide text-white">
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                color: "#ffffff",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
               {game.homeTeam}
             </span>
           </div>
         </div>
         {game.gameContextLine ? (
-          <p className="mt-2 text-center text-[10px] font-medium leading-snug text-slate-300">
+          <p
+            style={{
+              marginTop: 8,
+              textAlign: "center",
+              fontSize: 10,
+              fontWeight: 500,
+              lineHeight: 1.35,
+              color: "#cbd5e1",
+            }}
+          >
             {game.gameContextLine}
           </p>
         ) : null}

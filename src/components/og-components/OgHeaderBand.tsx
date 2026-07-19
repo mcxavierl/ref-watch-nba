@@ -10,9 +10,29 @@ export function OgHeaderBand({
   subtitle: string;
 }) {
   return (
-    <div className="flex flex-col border-b border-slate-800 bg-slate-950 px-10 py-5">
-      <div className="flex items-center gap-4">
-        <div className="relative flex h-[52px] w-[52px] items-center justify-center rounded-xl border border-slate-700 bg-slate-900">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        borderBottom: "1px solid #1e293b",
+        backgroundColor: "#020617",
+        padding: "20px 40px",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div
+          style={{
+            display: "flex",
+            position: "relative",
+            width: 52,
+            height: 52,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 12,
+            border: "1px solid #334155",
+            backgroundColor: "#0f172a",
+          }}
+        >
           <svg
             width={24}
             height={24}
@@ -28,21 +48,36 @@ export function OgHeaderBand({
             ))}
           </svg>
         </div>
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span
-              className="text-[28px] font-black tracking-[0.08em]"
-              style={{ color: CHAMPAGNE_GOLD }}
+              style={{
+                fontSize: 28,
+                fontWeight: 900,
+                letterSpacing: "0.08em",
+                color: CHAMPAGNE_GOLD,
+              }}
             >
               REF WATCH
             </span>
             {leagueLabel ? (
-              <span className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-bold tracking-[0.1em] text-slate-50">
+              <span
+                style={{
+                  borderRadius: 999,
+                  border: "1px solid #334155",
+                  backgroundColor: "#0f172a",
+                  padding: "4px 12px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: "0.1em",
+                  color: "#f8fafc",
+                }}
+              >
                 {leagueLabel}
               </span>
             ) : null}
           </div>
-          <span className="text-base font-semibold" style={{ color: CHAMPAGNE_GOLD }}>
+          <span style={{ fontSize: 16, fontWeight: 600, color: CHAMPAGNE_GOLD }}>
             {subtitle}
           </span>
         </div>
