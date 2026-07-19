@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { InsightsHubRoute } from "@/components/InsightsHubRoute";
+import { readCbbTrendsConferenceParam } from "@/lib/cbb/conference-trends-shared";
 import { resolveInsightsLeagueRoute, resolveResearchViewRoute } from "@/lib/research-route-guards";
 import { hubPageMetadata } from "@/lib/seo";
 import { readSeasonScopeParam } from "@/lib/season-scope";
@@ -8,7 +9,7 @@ import type { InsightsHubView } from "@/lib/insights-hero-content";
 
 type PageProps = {
   params: Promise<{ league: string }>;
-  searchParams: Promise<{ scope?: string }>;
+  searchParams: Promise<{ scope?: string; conference?: string }>;
 };
 
 function metadataTab(
@@ -38,12 +39,15 @@ export function createResearchViewPage(defaultTab: InsightsHubView) {
     ) {
       redirect(`/${resolved}/research/tendencies`);
     }
-    const { scope } = await searchParams;
+    const { scope, conference } = await searchParams;
     return (
       <InsightsHubRoute
         leagueId={resolved}
         defaultTab={defaultTab}
         scopeMode={readSeasonScopeParam(scope)}
+        cbbTrendsConference={
+          resolved === "cbb" ? readCbbTrendsConferenceParam(conference) : undefined
+        }
       />
     );
   }
@@ -63,12 +67,15 @@ export function createTendenciesPage() {
     const { league } = await params;
     const resolved = resolveInsightsLeagueRoute(league);
     if (!resolved) notFound();
-    const { scope } = await searchParams;
+    const { scope, conference } = await searchParams;
     return (
       <InsightsHubRoute
         leagueId={resolved}
         defaultTab="tendencies"
         scopeMode={readSeasonScopeParam(scope)}
+        cbbTrendsConference={
+          resolved === "cbb" ? readCbbTrendsConferenceParam(conference) : undefined
+        }
       />
     );
   }

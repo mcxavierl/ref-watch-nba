@@ -1,5 +1,11 @@
+import Link from "next/link";
 import type { NcaaRouteLeague } from "@/lib/ncaa-conference-gate";
 import { preloadCbbConferenceCoverageFromAssets } from "@/lib/cbb/conference-coverage-preload";
+import {
+  cbbTrendsConferenceSlug,
+  readCbbTrendsConferenceParam,
+  type CbbTrendsConferenceScope,
+} from "@/lib/cbb/conference-trends-shared";
 import { getConferenceCoverageRows } from "@/lib/ncaa-conference-coverage";
 import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";
 import { StatusBadge } from "@/components/hub/StatusBadge";
@@ -10,11 +16,23 @@ import "@/components/conference-coverage.css";
 type ConferenceCoverageProps = {
   leagueId: NcaaRouteLeague;
   variant?: "default" | "clinical";
+  activeConference?: CbbTrendsConferenceScope;
 };
+
+function conferenceHubHref(
+  leagueId: NcaaRouteLeague,
+  conferenceId: CbbTrendsConferenceScope,
+): string {
+  if (leagueId === "cbb") {
+    return `/cbb?conference=${cbbTrendsConferenceSlug(conferenceId)}`;
+  }
+  return `/${leagueId}`;
+}
 
 export async function ConferenceCoverage({
   leagueId,
   variant = "default",
+  activeConference = "all",
 }: ConferenceCoverageProps) {
   if (leagueId === "cbb") {
     await preloadCbbConferenceCoverageFromAssets(SITE_URL);
@@ -45,14 +63,23 @@ export async function ConferenceCoverage({
 
           <ul className="ncaa-coverage-clinical-grid" role="list">
             {coverageRows.map((row) => (
-              <li key={row.conferenceId} className="ncaa-coverage-clinical-item">
-                <NcaaConferenceLogo conferenceId={row.conferenceId} size={32} />
-                <span className="ncaa-coverage-clinical-name">{row.conferenceId}</span>
-                <span className="ncaa-coverage-clinical-tag tabular-nums">
-                  {row.distinctGames > 0
-                    ? `${row.distinctGames.toLocaleString("en-US")} games`
-                    : "Pre-season"}
-                </span>
+              <li key={row.conferenceId}>
+                <Link
+                  href={conferenceHubHref(leagueId, row.conferenceId)}
+                  className={`ncaa-coverage-clinical-item ncaa-coverage-clinical-link${
+                    activeConference === row.conferenceId
+                      ? " ncaa-coverage-item--active"
+                      : ""
+                  }`}
+                >
+                  <NcaaConferenceLogo conferenceId={row.conferenceId} size={32} />
+                  <span className="ncaa-coverage-clinical-name">{row.conferenceId}</span>
+                  <span className="ncaa-coverage-clinical-tag tabular-nums">
+                    {row.distinctGames > 0
+                      ? `${row.distinctGames.toLocaleString("en-US")} games`
+                      : "Pre-season"}
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>
@@ -74,19 +101,36 @@ export async function ConferenceCoverage({
               {league.label}: key conferences
             </h2>
             <p className="ncaa-coverage-lead">
-              Referee analytics below reflect verified game data for the conferences listed
-              here. Status reflects distinct games with referee coverage in each conference.
-              Other leagues and programs are not included in current totals.
+              Select a conference to view referee rankings and analytics for that
+              territory. Status reflects distinct games with referee coverage in each
+              conference.
             </p>
           </div>
         </header>
 
         <ul className="ncaa-coverage-live-grid" role="list">
           {coverageRows.map((row) => (
-            <li key={row.conferenceId} className="ncaa-coverage-live-item">
-              <span className="ncaa-coverage-live-item-dot" aria-hidden />
-              <span className="ncaa-coverage-live-item-label">{row.name}</span>
-              <StatusBadge verdict={row.verdict} label={row.maturity} compact />
+            <li key={row.conferenceId}>
+              <Link
+                href={conferenceHubHref(leagueId, row.conferenceId)}
+                className={`ncaa-coverage-live-item ncaa-coverage-live-link${
+                  activeConference === row.conferenceId
+                    ? " ncaa-coverage-item--active"
+                    : ""
+                }`}
+                aria-current={
+                  activeConference === row.conferenceId ? "page" : undefined
+                }
+              >
+                <NcaaConferenceLogo conferenceId={row.conferenceId} size={24} />
+                <span className="ncaa-coverage-live-item-label">{row.name}</span>
+                <StatusBadge
+                  verdict={row.verdict}
+                  label={row.maturity}
+                  compact
+                  className="ncaa-coverage-status-badge"
+                />
+              </Link>
             </li>
           ))}
         </ul>
@@ -98,3 +142,5 @@ export async function ConferenceCoverage({
     </div>
   );
 }
+
+export { readCbbTrendsConferenceParam };
