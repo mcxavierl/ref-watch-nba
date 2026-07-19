@@ -22,6 +22,12 @@ import { resolveRefProfileTeam, refProfileTeamLogoSport } from "@/lib/ref-profil
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
 import {
+  filterTeamRefEntries,
+  TeamRefFilterBar,
+  TeamRefMatrixTable,
+  type TeamRefFilterMode,
+} from "@/components/TeamRefMatrixTable";
+import {
   filterTeamCrewSplits,
   sortTeamCrewSplits,
   TEAM_CREW_MIN_GAMES,
@@ -40,6 +46,8 @@ import {
 } from "@/lib/metricTone";
 import type { TeamRefLeaderboardEntry, TeamRefSort } from "@/lib/teamRefLeaderboards";
 import { sortTeamRefEntries } from "@/lib/teamRefLeaderboards";
+import type { TeamRefCloseGamesStat } from "@/lib/team-ref-close-games-display";
+import type { DataLeague } from "@/lib/game-logs-preload";
 import type { TeamSampleRecord } from "@/lib/teamRecord";
 import type { RefProfile, TeamCrewSplit } from "@/lib/types";
 
@@ -269,7 +277,6 @@ function TeamRefSplitCard({
   basePath?: string;
   sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 }) {
-  const wins = Math.round(entry.winRate * entry.games);
   const totalDelta = entry.avgTotalPoints - leagueAvgTotal;
   const winTone = winRateTone(entry.winRate, teamRecord.winRate);
   const foulTone = foulEdgeTone(entry.avgFoulDifferential);
@@ -307,11 +314,6 @@ function TeamRefSplitCard({
           className="clinical-insight-matrix-team-logo"
         />
       </div>
-
-      <p className="clinical-insight-matrix-subject px-4 sm:px-5">
-        <VerifiedGamesHint>{entry.games} games</VerifiedGamesHint> with {teamLabel} · ~{wins}-
-        {entry.games - wins}
-      </p>
 
       <TeamSplitMetricGrid>
         <TeamSplitMetricColumn
@@ -352,6 +354,8 @@ export function TeamSplitView({
   overBaseline,
   basePath = "",
   sport = "nba",
+  dataLeague = "NBA",
+  closeGamesByRef = {},
 }: {
   crewSplits: TeamCrewSplit[];
   refSplits: TeamRefLeaderboardEntry[];
@@ -364,8 +368,11 @@ export function TeamSplitView({
   overBaseline: number;
   basePath?: string;
   sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  dataLeague?: DataLeague;
+  closeGamesByRef?: Record<string, TeamRefCloseGamesStat>;
 }) {
   const [view, setView] = useState<SplitView>("ref");
+  const [refFilter, setRefFilter] = useState<TeamRefFilterMode>("all");
   const [refSort, setRefSort] = useState<TeamRefSort>("winRate-desc");
   const [crewSort, setCrewSort] = useState<TeamCrewSort>("games-desc");
   const [showAllCrews, setShowAllCrews] = useState(false);
@@ -380,10 +387,14 @@ export function TeamSplitView({
     [visibleCrewSplits, crewSort],
   );
 
-  const sortedRefSplits = useMemo(
-    () => sortTeamRefEntries(refSplits, refSort),
-    [refSplits, refSort],
-  );
+  const filteredRefSplits = useMemo(() => {
+    if (refFilter === "all") {
+      return sortTeamRefEntries(refSplits, refSort);
+    }
+    return filterTeamRefEntries(refSplits, refFilter);
+  }, [refSplits, refSort, refFilter]);
+
+  const showRefMatrix = refFilter !== "all";
   const qualifiedCrewCount = useMemo(
     () => crewSplits.filter((split) => split.games >= TEAM_CREW_MIN_GAMES).length,
     [crewSplits],
@@ -436,28 +447,43 @@ export function TeamSplitView({
           </p>
         ) : (
           <>
-            <div className="mb-4">
-              <TeamRefSortBar
-                value={refSort}
-                onChange={setRefSort}
-                id="team-ref-cards-sort"
-              />
-            </div>
-            <div className="space-y-4">
-              {sortedRefSplits.map((entry) => (
-                <TeamRefSplitCard
-                  key={entry.slug}
-                  entry={entry}
-                  leagueAvgTotal={leagueAvgTotal}
-                  overBaseline={overBaseline}
-                  teamAbbr={teamAbbr}
-                  teamLabel={teamLabel}
-                  teamRecord={teamRecord}
-                  basePath={basePath}
-                  sport={sport}
+            <div className="mb-4 flex flex-col gap-3">
+              <TeamRefFilterBar value={refFilter} onChange={setRefFilter} />
+              {!showRefMatrix ? (
+                <TeamRefSortBar
+                  value={refSort}
+                  onChange={setRefSort}
+                  id="team-ref-cards-sort"
                 />
-              ))}
+              ) : null}
             </div>
+            {showRefMatrix ? (
+              <TeamRefMatrixTable
+                entries={filteredRefSplits}
+                teamRecord={teamRecord}
+                teamLabel={teamLabel}
+                closeGamesByRef={closeGamesByRef}
+                dataLeague={dataLeague}
+                basePath={basePath}
+                sport={sport}
+              />
+            ) : (
+              <div className="space-y-4">
+                {filteredRefSplits.map((entry) => (
+                  <TeamRefSplitCard
+                    key={entry.slug}
+                    entry={entry}
+                    leagueAvgTotal={leagueAvgTotal}
+                    overBaseline={overBaseline}
+                    teamAbbr={teamAbbr}
+                    teamLabel={teamLabel}
+                    teamRecord={teamRecord}
+                    basePath={basePath}
+                    sport={sport}
+                  />
+                ))}
+              </div>
+            )}
           </>
         )
       ) : (
