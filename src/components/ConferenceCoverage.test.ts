@@ -24,4 +24,6 @@ test("ConferenceCoverage uses maturity-based StatusBadge verdicts for default va
   assert.match(source, /row\.verdict/);
   assert.match(source, /row\.maturity/);
   assert.match(source, /NcaaConferenceLogo/);
+  assert.match(source, /ncaa-coverage-live-link/);
+  assert.match(source, /conferenceHubHref/);
 });

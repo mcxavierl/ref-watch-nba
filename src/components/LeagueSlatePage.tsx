@@ -1,5 +1,10 @@
 import { BrowseActionCards } from "@/components/BrowseActionCards";
-import { ConferenceCoverage } from "@/components/ConferenceCoverage";
+import {
+  ConferenceCoverage,
+  readCbbTrendsConferenceParam,
+} from "@/components/ConferenceCoverage";
+import { CbbAnalyticsLeaders } from "@/components/CbbAnalyticsLeaders";
+import { CbbConferenceHub } from "@/components/CbbConferenceHub";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueHomeInsightSections } from "@/components/LeagueHomeInsightSections";
@@ -17,6 +22,8 @@ import { UpcomingSlateNotice } from "@/components/UpcomingSlateNotice";
 import { EplAnalyticsLeaders } from "@/components/EplAnalyticsLeaders";
 import { NflAnalyticsLeaders } from "@/components/NflAnalyticsLeaders";
 import { CfbAnalyticsLeaders } from "@/components/CfbAnalyticsLeaders";
+import { buildCbbConferenceTendenciesStats } from "@/lib/cbb/conference-tendencies";
+import type { LiveNcaaConferenceId } from "@/lib/ncaa-conference-gate";
 import { LEAGUE_MANIFEST, type LeagueManifestId } from "@/lib/league-manifest";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import {
@@ -65,7 +72,7 @@ function sortSlateGames(games: AssignmentGame[], refStats: RefStatsFile) {
 
 type LeagueSlatePageProps = {
   leagueId: LeagueManifestId;
-  searchParams: Promise<{ scope?: string }>;
+  searchParams: Promise<{ scope?: string; conference?: string }>;
 };
 
 export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePageProps) {
@@ -75,8 +82,10 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
 
   const entry = LEAGUE_MANIFEST[leagueId];
   const features = entry.slate;
-  const { scope } = await searchParams;
+  const { scope, conference: conferenceParam } = await searchParams;
   const scopeMode = readSeasonScopeParam(scope);
+  const cbbConference =
+    leagueId === "cbb" ? readCbbTrendsConferenceParam(conferenceParam) : "all";
   const scoped =
     features.seasonScopeOnSlate
       ? loadScopedLeagueStats(leagueId, scopeMode)
@@ -84,9 +93,17 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
   const bundle = loadLeagueSlateBundle(leagueId);
   const { assignments, refStats, odds, nightlyFeed, isOffseason, isPending } = bundle;
   const activeRefStats = scoped?.stats ?? refStats;
+  const cbbConferenceStats =
+    leagueId === "cbb" && cbbConference !== "all"
+      ? buildCbbConferenceTendenciesStats(
+          refStats,
+          refStats.meta.seasons,
+          cbbConference,
+        )
+      : null;
   const homeInsights = buildLeagueHomeInsights({
     leagueId,
-    refStats: activeRefStats,
+    refStats: cbbConferenceStats ?? activeRefStats,
     assignments,
   });
   const upcomingSlate = buildLeagueUpcomingSlateFromAssignments(leagueId, assignments);
@@ -162,17 +179,36 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
       {features.slateQuickLookup && isOffseason && <SlateQuickLookupSection />}
 
       {features.conferenceCoverage && (leagueId === "cbb" || leagueId === "cfb") && (
-        <ConferenceCoverage leagueId={leagueId} />
+        <ConferenceCoverage
+          leagueId={leagueId}
+          activeConference={leagueId === "cbb" ? cbbConference : "all"}
+        />
       )}
 
-      <LeagueHomeInsightSections
-        pulse={homeInsights.pulse}
-        matchups={homeInsights.matchups}
-        spotlights={homeInsights.spotlights}
-        leagueId={leagueId}
-        basePath={pathPrefix}
-        sport={sport}
-      />
+      {leagueId === "cbb" &&
+      cbbConference !== "all" &&
+      cbbConferenceStats ? (
+        <CbbConferenceHub
+          conference={cbbConference as LiveNcaaConferenceId}
+          refStats={cbbConferenceStats}
+          distinctGames={
+            refStats.meta.conferenceCoverageDistinctGames?.[
+              cbbConference as LiveNcaaConferenceId
+            ] ?? 0
+          }
+        />
+      ) : null}
+
+      {!(leagueId === "cbb" && cbbConference !== "all") ? (
+        <LeagueHomeInsightSections
+          pulse={homeInsights.pulse}
+          matchups={homeInsights.matchups}
+          spotlights={homeInsights.spotlights}
+          leagueId={leagueId}
+          basePath={pathPrefix}
+          sport={sport}
+        />
+      ) : null}
 
       {features.superBowlSection && (
         <SuperBowlOfficiatingSection variant="home" limit={4} />
@@ -190,6 +226,11 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
       {features.analyticsLeaders === "cfb" && bundle.cfbAnalyticsLeaders && (
         <CfbAnalyticsLeaders leaders={bundle.cfbAnalyticsLeaders} />
       )}
+      {features.analyticsLeaders === "cbb" &&
+        bundle.cbbAnalyticsLeaders &&
+        !(leagueId === "cbb" && cbbConference !== "all") && (
+          <CbbAnalyticsLeaders leaders={bundle.cbbAnalyticsLeaders} />
+        )}
 
       {!isOffseason && (
         <section className="slate-quick-links">

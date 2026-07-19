@@ -42,12 +42,13 @@ const LEADER_CATEGORY_ACCENT: Record<string, HighlightCardAccent> = {
   scoring: "scoring",
   overRate: "over",
   flags: "flags",
-  fouls: "flags",
+  fouls: "whistle",
   yellowCards: "flags",
   penalties: "flags",
   penaltyYards: "flags",
   leverageImpact: "leverage",
   balance: "balance",
+  homeCover: "ats",
 };
 
 const INSIGHT_ICONS: Record<string, LucideIcon> = {
@@ -65,12 +66,13 @@ const LEADER_CATEGORY_ICONS: Record<string, LucideIcon> = {
   scoring: TrendingUp,
   overRate: Percent,
   flags: Flag,
-  fouls: Flag,
+  fouls: Whistle,
   yellowCards: Flag,
   penalties: Flag,
   penaltyYards: Flag,
   leverageImpact: Zap,
   balance: Scale,
+  homeCover: Home,
 };
 
 function toneFromStatValue(statValue?: string): HighlightCardTone {

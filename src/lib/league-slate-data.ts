@@ -63,6 +63,7 @@ import {
 import { getOdds as getCfbOdds } from "@/lib/cfb/odds";
 import { computeFindings as computeCfbFindings } from "@/lib/cfb/findings";
 import { buildCfbAnalyticsLeaders } from "@/lib/cfb/analytics-leaders";
+import { buildCbbAnalyticsLeaders } from "@/lib/cbb/analytics-leaders";
 
 import { isOffseasonSlate, isPendingCrewSlate } from "@/lib/offseason";
 
@@ -82,6 +83,7 @@ export type LeagueSlateBundle = {
   nflAnalyticsLeaders?: ReturnType<typeof buildNflAnalyticsLeaders>;
   eplAnalyticsLeaders?: ReturnType<typeof buildEplAnalyticsLeaders>;
   cfbAnalyticsLeaders?: ReturnType<typeof buildCfbAnalyticsLeaders>;
+  cbbAnalyticsLeaders?: ReturnType<typeof buildCbbAnalyticsLeaders>;
 };
 
 const SLATE_LEAGUES = new Set<SlateLeagueId>([
@@ -185,6 +187,7 @@ export function loadLeagueSlateBundle(leagueId: SlateLeagueId): LeagueSlateBundl
           computeCbbFindings(limit, scopedSeasons, { hub: true }),
         isOffseason: assignments.games.length === 0,
         isPending: false,
+        cbbAnalyticsLeaders: buildCbbAnalyticsLeaders(refStats),
       };
     }
     case "cfb": {

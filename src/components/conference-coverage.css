@@ -124,6 +124,54 @@
   background: color-mix(in srgb, var(--surface) 88%, transparent);
 }
 
+.ncaa-coverage-live-link {
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 150ms ease-out,
+    background-color 150ms ease-out,
+    box-shadow 150ms ease-out;
+}
+
+.ncaa-coverage-live-link:hover {
+  border-color: color-mix(in srgb, var(--header-sapphire) 35%, var(--border-subtle));
+  background: color-mix(in srgb, var(--header-sapphire) 6%, var(--surface));
+}
+
+.ncaa-coverage-live-link:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--header-sapphire) 50%, var(--border));
+  outline-offset: 2px;
+}
+
+.ncaa-coverage-item--active {
+  border-color: color-mix(in srgb, var(--header-sapphire) 45%, var(--border-subtle));
+  background: color-mix(in srgb, var(--header-sapphire) 10%, var(--surface));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--header-sapphire) 20%, transparent);
+}
+
+.ncaa-coverage-clinical-link {
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+
+.ncaa-coverage-clinical-link:hover {
+  border-color: #475569;
+  background: rgba(30, 41, 59, 0.75);
+}
+
+.ncaa-coverage-clinical-link:focus-visible {
+  outline: 2px solid #64748b;
+  outline-offset: 2px;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-coverage-clinical-link:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
 .ncaa-coverage-live-item-dot {
   flex-shrink: 0;
   width: 0.4rem;
@@ -157,7 +205,36 @@
   font-size: 0.78rem;
   line-height: 1.5;
   color: var(--text-muted);
-  opacity: 0.72;
+}
+
+.cbb-conference-hub-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.cbb-conference-hub-back {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.cbb-conference-hub-back:hover {
+  color: var(--foreground);
+  text-decoration: underline;
+}
+
+.cbb-conference-hub-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.cbb-conference-hub-more {
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-sm);
 }
 
 @media (prefers-reduced-motion: reduce) {

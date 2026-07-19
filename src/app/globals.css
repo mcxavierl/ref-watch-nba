@@ -6211,6 +6211,21 @@ p {
     box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
   }
 
+  html[data-color="dark"]:not([data-contrast="high"]) .status-badge--pass,
+  html.dark .status-badge--pass {
+    --pill-glow-accent: #4ade80;
+    border-color: color-mix(in srgb, #4ade80 45%, var(--clinical-card-border));
+    color: #86efac;
+    background: color-mix(in srgb, #4ade80 14%, var(--surface));
+  }
+
+  html[data-color="dark"]:not([data-contrast="high"]) .ncaa-coverage-status-badge.status-badge--pass,
+  html.dark .ncaa-coverage-status-badge.status-badge--pass {
+    color: #bbf7d0;
+    border-color: color-mix(in srgb, #4ade80 55%, var(--border-subtle));
+    background: color-mix(in srgb, #22c55e 18%, var(--surface));
+  }
+
   .status-badge--fail {
     --pill-glow-accent: var(--semantic-negative);
     border-color: color-mix(in srgb, var(--semantic-negative) 35%, var(--clinical-card-border));

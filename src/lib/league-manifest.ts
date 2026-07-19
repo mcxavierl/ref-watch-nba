@@ -24,7 +24,7 @@ export type LeagueSlateFeatures = {
   /** Upcoming games grid above tonight's slate */
   upcomingSlateSection: boolean;
   /** League-specific analytics leader cards on slate hub */
-  analyticsLeaders: "nfl" | "epl" | "cfb" | null;
+  analyticsLeaders: "nfl" | "epl" | "cfb" | "cbb" | null;
   /** NFL super bowl officiating block */
   superBowlSection: boolean;
   /** CBB/CFB conference coverage */
@@ -365,7 +365,7 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
     researchViews: ["tendencies", "trends", "findings"],
     slate: {
       upcomingSlateSection: true,
-      analyticsLeaders: null,
+      analyticsLeaders: "cbb",
       superBowlSection: false,
       conferenceCoverage: true,
       slateFeatureShowcase: false,

@@ -23,7 +23,7 @@ export function FooterLeaders({
   leaders: AnalyticsLeaderItem[];
   leagueId: LeagueId;
   hrefPrefix: string;
-  sport: "nfl" | "epl" | "laliga" | "cfb";
+  sport: "nfl" | "epl" | "laliga" | "cfb" | "cbb";
   title: string;
   lead: string;
 }) {
