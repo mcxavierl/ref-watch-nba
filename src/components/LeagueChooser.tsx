@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
@@ -26,7 +26,7 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
   const collegeTier = isCollegeLiveLeague(card.leagueId);
 
   return (
-    <Link
+    <PrefetchLink
       href={pending ? (card.auditHref ?? card.href) : card.href}
       className={`overview-league-chooser-card overview-league-chooser-card--live-tier rw-focus-ring${
         collegeTier ? " overview-league-chooser-card--college-tier" : ""
@@ -71,7 +71,7 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
         {pending ? "View audit status" : "Open hub"}
         <ArrowRight aria-hidden />
       </span>
-    </Link>
+    </PrefetchLink>
   );
 }
 

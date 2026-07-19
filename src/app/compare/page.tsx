@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { ComparePageSkeleton } from "@/components/RefCompareView";
+import { PageContentFadeIn } from "@/components/PageContentFadeIn";
 import { RefComparePageClient } from "@/components/RefComparePageClient";
 import { buildPageMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
@@ -36,9 +37,11 @@ export default function ComparePage() {
         </p>
       </header>
 
-      <Suspense fallback={<ComparePageSkeleton />}>
-        <RefComparePageClient siteUrl={SITE_URL} />
-      </Suspense>
+      <PageContentFadeIn>
+        <Suspense fallback={<ComparePageSkeleton />}>
+          <RefComparePageClient siteUrl={SITE_URL} />
+        </Suspense>
+      </PageContentFadeIn>
     </div>
   );
 }

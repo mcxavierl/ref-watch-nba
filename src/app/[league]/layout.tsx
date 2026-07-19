@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { CollegeLeagueGate } from "@/components/CollegeLeagueGate";
 import { LeagueSectionNav } from "@/components/LeagueSectionNav";
+import { PageContentFadeIn } from "@/components/PageContentFadeIn";
 import { preloadLeagueRefStatsForPath } from "@/lib/edge-preload";
 import {
   isLeagueManifestId,
@@ -30,7 +31,7 @@ export default async function LeagueHubLayout({ children, params }: LayoutProps)
   const content = (
     <>
       <LeagueSectionNav leagueId={league} />
-      {children}
+      <PageContentFadeIn>{children}</PageContentFadeIn>
     </>
   );
 

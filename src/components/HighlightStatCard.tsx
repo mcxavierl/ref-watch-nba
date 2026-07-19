@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import type { LucideIcon } from "lucide-react";
 /**
  * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
@@ -100,7 +101,7 @@ export function HighlightStatCard({
 
   const profile =
     refSlug && refName ? (
-      <Link href={`${basePath}/refs/${refSlug}`} className="highlight-stat-profile">
+      <PrefetchLink href={`${basePath}/refs/${refSlug}`} className="highlight-stat-profile" prefetch={true}>
         {avatarSport ? (
           <RefAvatar name={refName} slug={refSlug} sport={avatarSport} size="lg" />
         ) : null}
@@ -113,7 +114,7 @@ export function HighlightStatCard({
           ) : null}
           {refMeta ? <span className="highlight-stat-profile-meta">{refMeta}</span> : null}
         </span>
-      </Link>
+      </PrefetchLink>
     ) : refName ? (
       <p className="rankings-insight-name">{refName}</p>
     ) : null;

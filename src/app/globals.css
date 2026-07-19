@@ -5221,6 +5221,76 @@ p {
     }
   }
 
+  /* ── Route-level page skeleton + content fade-in ── */
+  .page-skeleton-hero {
+    margin-bottom: var(--space-6);
+    max-width: 48rem;
+  }
+
+  .page-skeleton-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .page-skeleton-grid--dashboard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .page-skeleton-grid--dashboard {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-skeleton-grid--dashboard {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .page-skeleton-grid--league-hub {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    .page-skeleton-grid--league-hub {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .page-skeleton-grid--ref-profile {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    .page-skeleton-grid--ref-profile {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
+  }
+
+  .page-skeleton-card--tall {
+    min-height: 18rem;
+  }
+
+  .page-content-fade-in {
+    animation: page-content-fade-in 500ms ease-out both;
+  }
+
+  @keyframes page-content-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-content-fade-in {
+      animation: none;
+    }
+  }
+
   .cls-skeleton-toggle {
     pointer-events: none;
   }

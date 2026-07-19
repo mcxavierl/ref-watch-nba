@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { RefAvatar } from "@/components/RefAvatar";
@@ -263,9 +263,9 @@ export function RefRankingsTable({
                 <RefAvatar name={ref.name} slug={ref.slug} sport={sport} size="sm" />
                 <div className="min-w-0 flex-1">
                   <div className="flex min-w-0 items-center gap-2">
-                    <Link href={profileHref} className="truncate font-medium text-white">
+                    <PrefetchLink href={profileHref} prefetch={true} className="truncate font-medium text-white">
                       {ref.name}
-                    </Link>
+                    </PrefetchLink>
                     <RankingSignalPill
                       officialRef={ref}
                       leagueId={leagueId}
@@ -377,24 +377,26 @@ export function RefRankingsTable({
                       />
                       <div className="flex min-w-0 flex-1 items-center gap-2">
                         <div className="min-w-0">
-                          <Link
+                          <PrefetchLink
                             href={profileHref}
+                            prefetch={true}
                             className="ranking-table-row-link font-medium text-zinc-900 hover:text-raptors hover:underline"
                           >
                             {ref.name}
-                          </Link>
+                          </PrefetchLink>
                           <RefJerseyNumber
                             number={ref.number}
                             className="ml-2 whitespace-nowrap font-tabular text-xs text-zinc-500"
                           />
                         </div>
-                        <Link
+                        <PrefetchLink
                           href={profileHref}
+                          prefetch={true}
                           className="ranking-table-row-profile-arrow"
                           aria-label={`Open ${ref.name} profile`}
                         >
                           <ArrowRight className="h-4 w-4" aria-hidden />
-                        </Link>
+                        </PrefetchLink>
                       </div>
                     </div>
                   </td>
@@ -436,12 +438,13 @@ export function RefRankingsTable({
                         {signalCount > 0 ? (
                           <div className="ranking-table-details-stat">
                             <span className="ranking-table-details-label">Signals</span>
-                            <Link
+                            <PrefetchLink
                               href={`${profileHref}#profile-signals`}
+                              prefetch={true}
                               className="ranking-table-details-value ranking-signal-badge"
                             >
                               {signalCount} notable
-                            </Link>
+                            </PrefetchLink>
                           </div>
                         ) : null}
                         {league === "NHL" && (
@@ -464,12 +467,13 @@ export function RefRankingsTable({
                         <DetailStat
                           label="Profile"
                           value={
-                            <Link
+                            <PrefetchLink
                               href={profileHref}
+                              prefetch={true}
                               className="text-raptors hover:underline"
                             >
                               Full breakdown →
-                            </Link>
+                            </PrefetchLink>
                           }
                         />
                       </div>

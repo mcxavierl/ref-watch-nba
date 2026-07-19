@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { classifyRankingSignalPattern } from "@/lib/ranking-signal-pattern";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile } from "@/lib/types";
@@ -28,11 +28,12 @@ export function RankingSignalPill({
   }
 
   return (
-    <Link
+    <PrefetchLink
       href={`${profileHref}#profile-signals`}
+      prefetch={true}
       className={`pill-constrain ranking-signal-pill ${className} ranking-signal-pill--link`}
     >
       <span className="pill-constrain-text">{pattern.label}</span>
-    </Link>
+    </PrefetchLink>
   );
 }

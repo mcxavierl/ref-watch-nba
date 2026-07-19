@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { ArrowRight } from "lucide-react";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
@@ -130,7 +130,7 @@ export function OverviewLeaguePaceGrid({
 
         if (pending) {
           return (
-            <Link
+            <PrefetchLink
               key={card.leagueId}
               href={card.auditHref ?? card.href}
               className="overview-pace-card overview-pace-card--pending"
@@ -138,19 +138,19 @@ export function OverviewLeaguePaceGrid({
               data-verification="audit-in-progress"
             >
               <PaceCardBody card={card} />
-            </Link>
+            </PrefetchLink>
           );
         }
 
         return (
-          <Link
+          <PrefetchLink
             key={card.leagueId}
             href={card.href}
             className="overview-pace-card"
             data-league={card.leagueId}
           >
             <PaceCardBody card={card} />
-          </Link>
+          </PrefetchLink>
         );
       })}
     </div>

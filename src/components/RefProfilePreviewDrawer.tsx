@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import {
   useCallback,
   useEffect,
@@ -372,10 +372,14 @@ export function RefProfilePreviewDrawer({
           </div>
 
           <footer className="ref-preview-drawer-footer">
-            <Link href={profileHref} className="ref-preview-drawer-profile-link">
+            <PrefetchLink
+              href={profileHref}
+              prefetch={true}
+              className="ref-preview-drawer-profile-link"
+            >
               Open full profile
               <ArrowRight size={16} aria-hidden />
-            </Link>
+            </PrefetchLink>
           </footer>
         </aside>
       </div>
