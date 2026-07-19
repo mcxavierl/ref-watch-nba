@@ -40,10 +40,12 @@ export function OverviewSlateRow({
         {game.seasonStageNote ? (
           <span className="overview-slate-row-season-stage">{game.seasonStageNote}</span>
         ) : null}
-        {game.lastMeetingLine ? (
+        {game.gameContextLine ? (
+          <span className="overview-slate-row-game-context">{game.gameContextLine}</span>
+        ) : game.lastMeetingLine ? (
           <span className="overview-slate-row-last-meeting">{game.lastMeetingLine}</span>
         ) : null}
-        {game.teamContextLine ? (
+        {!game.gameContextLine && game.teamContextLine ? (
           <span className="overview-slate-row-team-context">{game.teamContextLine}</span>
         ) : null}
         {game.officialsLine ? (

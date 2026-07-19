@@ -24,12 +24,13 @@ function nflGame(
   totalPoints: number,
   totalFouls: number,
   scores?: { awayScore: number; homeScore: number },
+  date?: string,
 ): RuntimeGameLogEntry {
   const awayScore = scores?.awayScore ?? Math.ceil(totalPoints / 2);
   const homeScore = scores?.homeScore ?? Math.floor(totalPoints / 2);
   return {
     gameId: `nfl-${index}`,
-    date: `2024-11-${String(index).padStart(2, "0")}`,
+    date: date ?? `2024-11-${String(index).padStart(2, "0")}`,
     season,
     league: "NFL",
     awayTeam: away,
@@ -117,12 +118,21 @@ describe("overview-matchup-insight", () => {
   it("builds narrative recent game context for meetings in the last 5 seasons", () => {
     resetNflLogs();
     seedNflLogs([
-      nflGame(1, "DET", "LAC", "2023-24", 79, 7, { awayScore: 41, homeScore: 38 }),
+      nflGame(
+        1,
+        "DET",
+        "LAC",
+        "2023-24",
+        79,
+        7,
+        { awayScore: 41, homeScore: 38 },
+        "2023-11-12",
+      ),
       nflGame(2, "LAC", "KC", "2023-24", 44, 10),
     ]);
 
     const line = buildOverviewRecentGameContextLine("nfl", "LAC", "DET");
-    assert.equal(line, "Detroit beat the Chargers in 2024, 41-38.");
+    assert.equal(line, "Detroit beat the Chargers in 2023 in Los Angeles, 41-38.");
   });
 
   it("returns undefined for game context when last meeting is outside recent seasons", () => {
@@ -156,5 +166,10 @@ describe("overview-matchup-insight", () => {
     const line = buildOverviewTeamRecentContextLine("laliga", "OVI", "VIL");
     assert.match(line ?? "", /^Recent form: OVI lost to MLL 3-0 away/);
     assert.match(line ?? "", /VIL beat ATM 5-1 at home/);
+  });
+
+  it("builds narrative game context with venue for La Liga head-to-head", () => {
+    const line = buildOverviewRecentGameContextLine("laliga", "OVI", "VIL");
+    assert.equal(line, "Villarreal beat Real Oviedo in 2025 at Villarreal, 2-0.");
   });
 });

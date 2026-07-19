@@ -86,6 +86,10 @@ describe("overview-upcoming-slate", () => {
       slate.leagueGroup?.games[0]?.lastMeetingLine ?? "",
       /Last met Nov 12, 2023 in Los Angeles · DET 41, LAC 38/,
     );
+    assert.equal(
+      slate.leagueGroup?.games[0]?.gameContextLine,
+      "Detroit beat the Chargers in 2023 in Los Angeles, 41-38.",
+    );
     assert.equal(slate.leagueGroup?.games[0]?.seasonStageNote, "Pre-season game");
     assert.equal(slate.leagueNote?.note, file.note);
   });
@@ -154,6 +158,10 @@ describe("overview-upcoming-slate", () => {
     assert.match(
       slate.leagueGroup?.games[0]?.teamContextLine ?? "",
       /Recent form: OVI lost to MLL 3-0 away/,
+    );
+    assert.equal(
+      slate.leagueGroup?.games[0]?.gameContextLine,
+      "Villarreal beat Real Oviedo in 2025 at Villarreal, 2-0.",
     );
   });
 });
