@@ -10,6 +10,7 @@ import type { MouseEvent, ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { FindingExplainer } from "@/components/FindingNameWall";
+import { DirectionalDeltaValue, deltaToneFromValue } from "@/components/shared/DirectionalDeltaValue";
 import { delightValueSize } from "@/components/StandoutMetric";
 import type { Finding, FindingLeague, FindingStat } from "@/lib/findings-shared";
 import {
@@ -29,6 +30,7 @@ import {
   isLeagueBaselineComparisonStat,
   isStandoutTone,
 } from "@/lib/metric-delight";
+import { splitSignedMetricDetail } from "@/lib/finding-metric-display";
 import type { ConfidenceTier } from "@/lib/user-language";
 
 function AccordionSafeLink({
@@ -229,6 +231,27 @@ function metricValueClass(stat: FindingStat, index: number): string {
   return classes.join(" ");
 }
 
+function FindingMetricDetail({ detail }: { detail: string }) {
+  const split = splitSignedMetricDetail(detail);
+  if (!split) {
+    return <>{detail}</>;
+  }
+
+  return (
+    <span className="finding-metric-detail-row inline-flex flex-wrap items-baseline gap-x-1.5">
+      <DirectionalDeltaValue
+        value={split.delta}
+        tone={deltaToneFromValue(split.delta)}
+        size="sm"
+        className="finding-metric-delta !text-base font-bold"
+      />
+      {split.suffix ? (
+        <span className="finding-metric-detail-suffix">{split.suffix}</span>
+      ) : null}
+    </span>
+  );
+}
+
 export function FindingMetricsGrid({ stats }: { stats: FindingStat[] }) {
   const displayStats = filterDisplayStats(stats);
   if (displayStats.length === 0) return null;
@@ -241,7 +264,7 @@ export function FindingMetricsGrid({ stats }: { stats: FindingStat[] }) {
           <dt className="finding-metric-label">{stat.label}</dt>
           {stat.detail && (
             <dd className="finding-metric-detail finding-metric-detail--muted">
-              {stat.detail}
+              <FindingMetricDetail detail={stat.detail} />
             </dd>
           )}
         </div>

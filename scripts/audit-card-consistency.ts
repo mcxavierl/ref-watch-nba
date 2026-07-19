@@ -562,6 +562,24 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "Pill in DynamicInsightPill",
       ),
   },
+  {
+    name: "globals.css imports season-highlights-delight stylesheet",
+    run: () =>
+      auditFileContains(
+        "src/app/globals.css",
+        /season-highlights-delight\.css/,
+        "season highlights delight import",
+      ),
+  },
+  {
+    name: "FindingCardLayout uses DirectionalDeltaValue for metric details",
+    run: () =>
+      auditFileContains(
+        "src/components/FindingCardLayout.tsx",
+        /DirectionalDeltaValue/,
+        "directional delta in finding metrics",
+      ),
+  },
 ];
 
 function main(): void {
