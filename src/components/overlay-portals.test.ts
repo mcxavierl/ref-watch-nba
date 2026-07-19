@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const OVERLAY_COMPONENTS = [
+  "src/components/CommandPalette.tsx",
   "src/components/InsightDrilldownModal.tsx",
   "src/components/MatrixTeamFocusDrawer.tsx",
   "src/components/RefProfilePreviewDrawer.tsx",
@@ -34,6 +35,7 @@ for (const path of OVERLAY_COMPONENTS) {
 test("full-screen overlay components are covered by portal guard", () => {
   const portalUsers = new Set<string>(OVERLAY_COMPONENTS);
   const dialogSources = [
+    "src/components/CommandPalette.tsx",
     "src/components/InsightDrilldownModal.tsx",
     "src/components/MatrixTeamFocusDrawer.tsx",
     "src/components/RefProfilePreviewDrawer.tsx",

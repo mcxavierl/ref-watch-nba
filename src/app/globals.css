@@ -13251,6 +13251,157 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   opacity: 1;
 }
 
+.command-palette-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-overlay) + 2);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: min(12vh, 6rem) 1rem 1rem;
+  background: color-mix(in srgb, #000 76%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.command-palette {
+  width: min(100%, 40rem);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border-default) 88%, #fff 12%);
+  border-radius: 1rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--bg-surface-1) 92%, #fff 8%) 0%,
+    var(--bg-surface-0) 100%
+  );
+  box-shadow:
+    0 24px 64px color-mix(in srgb, #000 55%, transparent),
+    0 0 0 1px color-mix(in srgb, #fff 6%, transparent) inset;
+  color: var(--text-primary);
+}
+
+.command-palette-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-default) 80%, transparent);
+}
+
+.command-palette-input-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.command-palette-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  outline: none;
+}
+
+.command-palette-input::placeholder {
+  color: var(--text-muted);
+}
+
+.command-palette-list {
+  max-height: min(52vh, 28rem);
+  overflow: auto;
+  padding: 0.45rem;
+}
+
+.command-palette-group [cmdk-group-heading] {
+  padding: 0.55rem 0.65rem 0.35rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.command-palette-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.62rem 0.7rem;
+  border-radius: 0.65rem;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.command-palette-item[data-selected="true"] {
+  background: color-mix(in srgb, var(--accent-brand) 16%, var(--bg-surface-2));
+}
+
+.command-palette-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-surface-2) 88%, #fff 12%);
+  color: color-mix(in srgb, var(--accent-brand) 72%, #fff 28%);
+}
+
+.command-palette-item-icon svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.command-palette-item-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.command-palette-item-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.command-palette-item-detail {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.command-palette-empty {
+  padding: 1.25rem 0.85rem;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.command-palette-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.95rem;
+  border-top: 1px solid color-mix(in srgb, var(--border-default) 80%, transparent);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.command-palette-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  padding: 0.12rem 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--border-default) 85%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--bg-surface-2) 90%, #fff 10%);
+  font-size: 0.68rem;
+  line-height: 1.2;
+  color: var(--text-muted);
+}
+
 .insight-drilldown-modal {
   width: min(100%, 42rem);
   max-height: min(88vh, 52rem);
