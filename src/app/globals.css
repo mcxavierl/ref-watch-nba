@@ -6037,6 +6037,49 @@ p {
     box-shadow: 0 0 18px color-mix(in srgb, var(--raptors) 16%, transparent);
   }
 
+  .data-sufficiency-notice {
+    margin: 0;
+  }
+
+  .data-sufficiency-notice-expand {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .data-sufficiency-toggle-wrap,
+  .refs-directory-sufficiency-toggle {
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem 1rem 1rem;
+  }
+
+  .data-sufficiency-toggle-btn {
+    border: 1px solid color-mix(in srgb, var(--foreground) 12%, var(--border));
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    padding: 0.45rem 0.95rem;
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--foreground);
+    cursor: pointer;
+    transition: border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .data-sufficiency-toggle-btn:hover,
+  .data-sufficiency-toggle-btn[aria-pressed="true"] {
+    border-color: color-mix(in srgb, var(--raptors) 45%, var(--border));
+    color: color-mix(in srgb, var(--raptors) 80%, var(--foreground));
+    box-shadow: 0 0 18px color-mix(in srgb, var(--raptors) 16%, transparent);
+  }
+
+  .refs-directory-sufficiency-notice {
+    margin-top: 0.65rem;
+  }
+
   .league-hub-hero .hero-highlights-title {
     color: color-mix(in srgb, var(--foreground) 92%, #fff);
   }

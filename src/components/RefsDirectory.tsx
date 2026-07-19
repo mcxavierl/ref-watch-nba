@@ -1,10 +1,14 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useCallback, useMemo, useState, type CSSProperties } from "react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import { RefProfilePreviewDrawer } from "@/components/RefProfilePreviewDrawer";
 import { RefsTrendSpotlight } from "@/components/RefsTrendSpotlight";
+import {
+  DataSufficiencyNotice,
+  DataSufficiencyToggle,
+} from "@/components/shared/DataSufficiencyNotice";
 import {
   buildRefsDirectoryPreviewRows,
   buildRefsSpotlightCards,
@@ -23,6 +27,8 @@ import {
   type RefsDirectoryMeta,
   type RefsDirectoryTab,
 } from "@/lib/refs-directory";
+import { meetsDataSufficiency } from "@/lib/data-sufficiency";
+import { useDataSufficiencyFilter } from "@/hooks/useDataSufficiencyFilter";
 import type { LeagueConfig } from "@/lib/leagues";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import type { RefProfile } from "@/lib/types";
@@ -216,6 +222,11 @@ export function RefsDirectory({
 
   const sorted = useMemo(() => sortRefsDirectory(refs, tab), [refs, tab]);
 
+  const meetsThreshold = useCallback(
+    (ref: RefProfile) => meetsDataSufficiency(ref.games, meta.minSampleSize),
+    [meta.minSampleSize],
+  );
+
   const discovered = useMemo(() => {
     let pool = filterRefsDiscovery(sorted, {
       query: discoveryQuery,
@@ -228,21 +239,28 @@ export function RefsDirectory({
     return pool;
   }, [sorted, discoveryQuery, outliersOnly, refs]);
 
+  const sufficiency = useDataSufficiencyFilter(discovered, meetsThreshold);
+
+  const qualifiedRefs = useMemo(
+    () => refs.filter((ref) => meetsThreshold(ref)),
+    [refs, meetsThreshold],
+  );
+
   const spotlightCards = useMemo(
-    () => buildRefsSpotlightCards(refs, tab, meta, league, basePath),
-    [refs, tab, meta, league, basePath],
+    () => buildRefsSpotlightCards(qualifiedRefs, tab, meta, league, basePath),
+    [qualifiedRefs, tab, meta, league, basePath],
   );
 
   const visible = useMemo(
-    () => buildRefsDirectoryPreviewRows(discovered, expanded),
-    [discovered, expanded],
+    () => buildRefsDirectoryPreviewRows(sufficiency.visible, expanded),
+    [sufficiency.visible, expanded],
   );
-  const hasMore = !expanded && visible.length < discovered.length;
+  const hasMore = !expanded && visible.length < sufficiency.visible.length;
   const unit = league.metrics.scoreUnit;
   const isNhl = league.id === "nhl";
   const isNfl = league.id === "nfl";
   const officialLabel =
-    discovered.length === 1 ? league.officialNoun : league.officialNounPlural;
+    sufficiency.visible.length === 1 ? league.officialNoun : league.officialNounPlural;
   const activeNhlMetric = NHL_DIRECTORY_METRICS.find((m) => m.id === nhlMetric)!;
   const activeNflMetric = NFL_DIRECTORY_METRICS.find((m) => m.id === nflMetric)!;
   const deltaHeader = isNhl
@@ -337,6 +355,13 @@ export function RefsDirectory({
               nflMetric === "penaltyYards" &&
               " Penalty yards Δ vs league average."}
           </p>
+
+          <DataSufficiencyNotice
+            showAll={sufficiency.showAll}
+            hiddenCount={sufficiency.hiddenCount}
+            onExpand={sufficiency.expandList}
+            className="refs-directory-sufficiency-notice"
+          />
         </div>
 
         <div className="refs-directory-head" aria-hidden="true">
@@ -355,6 +380,7 @@ export function RefsDirectory({
           <ol className="refs-directory-list">
             {visible.map(({ ref, rank }, index) => {
               const rankTier = performanceRankTier(rank);
+              const belowGate = !sufficiency.meetsThreshold(ref);
               const resumesBottomTier =
                 !expanded && rank === 16 && index > 0;
               const nhlDisplay = isNhl
@@ -376,7 +402,9 @@ export function RefsDirectory({
               return (
                 <li
                   key={ref.slug}
-                  className={`refs-directory-row${rankTier ? ` refs-directory-row--${rankTier}` : ""}${resumesBottomTier ? " refs-directory-row--bottom-resume" : ""}${expanded && index >= 20 ? " refs-directory-row-reveal" : ""}`}
+                  className={`refs-directory-row${rankTier ? ` refs-directory-row--${rankTier}` : ""}${resumesBottomTier ? " refs-directory-row--bottom-resume" : ""}${expanded && index >= 20 ? " refs-directory-row-reveal" : ""}${
+                    belowGate && sufficiency.showAll ? " text-slate-600 opacity-50" : ""
+                  }`}
                 >
                   <div className="refs-directory-row-link">
                     <span className="refs-directory-col-rank font-tabular tabular-nums">
@@ -443,10 +471,18 @@ export function RefsDirectory({
               className="refs-directory-expand-btn"
               onClick={() => setExpanded(true)}
             >
-              Show all {discovered.length} {officialLabel}
+              Show all {sufficiency.visible.length} {officialLabel}
             </button>
           </div>
         )}
+
+        <DataSufficiencyToggle
+          showAll={sufficiency.showAll}
+          hiddenCount={sufficiency.hiddenCount}
+          onToggle={sufficiency.toggleShowAll}
+          officialLabel={officialLabel}
+          className="refs-directory-sufficiency-toggle"
+        />
       </div>
 
       <RefProfilePreviewDrawer

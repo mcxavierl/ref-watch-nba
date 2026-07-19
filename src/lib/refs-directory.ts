@@ -153,7 +153,7 @@ export function buildRefsDirectoryContext(
   const totalGameRecords = qualified.reduce((sum, ref) => sum + ref.games, 0);
 
   return {
-    refs: qualified,
+    refs: enriched,
     meta: {
       seasons: stats.meta.seasons,
       seasonCount: stats.meta.seasons.length,

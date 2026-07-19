@@ -11,7 +11,7 @@ import { Pill } from "@/components/ui/Pill";
 import { TermHelp } from "@/components/TermHelp";
 import { NO_ANOMALIES_DETECTED_COPY } from "@/lib/anomaly-surface";
 import { gsniInsightSummary } from "@/lib/gsni-display";
-import { gsniQualifiesHighVariance } from "@/lib/gsni-research";
+import { gsniQualifiesHighVariance, gsniResearchConfigForLeague } from "@/lib/gsni-research";
 import type { GsniResearchHighlight, GsniResearchRow } from "@/lib/gsni-research";
 import type { InsightsLeagueId } from "@/lib/league-manifest";
 
@@ -73,6 +73,8 @@ export function GameStateIndexDashboard({
   if (rows.length === 0) return null;
 
   const ratedCount = rows.filter((row) => row.gateCleared && row.gsni !== null).length;
+  const gsniConfig = gsniResearchConfigForLeague(leagueId);
+  const minHighLeverageMinutes = gsniConfig?.minHighLeverageMinutes ?? 50;
 
   return (
     <>
@@ -137,7 +139,10 @@ export function GameStateIndexDashboard({
           {highVarianceOnly ? " (anomalies filter on)" : ""}.
         </p>
         {filteredRows.length > 0 ? (
-          <GsniResearchTable rows={filteredRows} />
+          <GsniResearchTable
+            rows={filteredRows}
+            minHighLeverageMinutes={minHighLeverageMinutes}
+          />
         ) : (
           <p className="gsni-sub-text">{NO_ANOMALIES_DETECTED_COPY}</p>
         )}
