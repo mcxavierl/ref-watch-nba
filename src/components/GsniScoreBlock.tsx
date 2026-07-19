@@ -1,37 +1,35 @@
-import { GsniSharedTrack } from "@/components/GsniSharedTrack";
-import { explainGsni } from "@/lib/gsni-display";
-import { formatGsniScoreValue, GSNI_SCALE_LEGEND } from "@/lib/gsni-ui";
+import { GsniCorrelationPill } from "@/components/GsniCorrelationPill";
+import { GsniDiagnosticGauge } from "@/components/GsniDiagnosticGauge";
+import { gsniDiagnosticHeader } from "@/lib/gsni-display";
+import { GSNI_SCALE_LEGEND } from "@/lib/gsni-ui";
 
 type GsniScoreBlockProps = {
   score: number;
   className?: string;
   compact?: boolean;
+  /** Hide the correlation pill when the header already carries the label. */
+  showPill?: boolean;
 };
 
-/** Score value, scale legend, anchored gauge, and insight summary. */
+/** Diagnostic score header, scale context, gauge, and optional correlation pill. */
 export function GsniScoreBlock({
   score,
   className = "",
   compact = false,
+  showPill = true,
 }: GsniScoreBlockProps) {
-  const explanation = explainGsni(score);
+  const header = gsniDiagnosticHeader(score);
 
   return (
     <div className={`gsni-score-block ${compact ? "gsni-score-block--compact" : ""} ${className}`.trim()}>
       <div className="gsni-score-block-value-wrap">
-        <p className="gsni-gauge-label">Index Score</p>
-        <p className="gsni-score-value tabular-nums">{formatGsniScoreValue(score)}</p>
+        <p className={`gsni-diagnostic-header tabular-nums font-semibold text-white ${compact ? "text-base" : "text-lg"}`}>
+          {header}
+        </p>
         <p className="gsni-scale-hint">{GSNI_SCALE_LEGEND}</p>
       </div>
-      <GsniSharedTrack
-        mode="score"
-        value={score}
-        showValue={false}
-        showCenterLabel
-        className={compact ? "gsni-shared-track--compact" : undefined}
-        ariaLabel={`${explanation.categoryLabel} at ${formatGsniScoreValue(score)}. ${explanation.insightSummary}`}
-      />
-      <p className="gsni-insight-summary">{explanation.insightSummary}</p>
+      <GsniDiagnosticGauge score={score} />
+      {showPill ? <GsniCorrelationPill score={score} /> : null}
     </div>
   );
 }

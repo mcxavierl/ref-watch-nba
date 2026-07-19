@@ -191,26 +191,40 @@ function toHighlight(row: GsniResearchRow): GsniResearchHighlight {
 function isHighlightEligible(
   ref: RefProfile,
   minHighLeverageMinutes: number,
+  highVarianceOnly: boolean,
 ): boolean {
   const shrinkage = gsniShrinkageFromProfile(ref);
+  const display = shrinkage?.display;
   return (
     gateCleared(ref, minHighLeverageMinutes) &&
     shrinkage !== null &&
-    gsniQualifiesHighVariance(shrinkage.display) &&
+    display !== undefined &&
+    (!highVarianceOnly || gsniQualifiesHighVariance(display)) &&
     (ref.gsniSampleGames ?? ref.games) >= GSNI_RESEARCH_MIN_SAMPLE_GAMES
   );
 }
 
-function highVarianceRows(rows: GsniResearchRow[]): GsniResearchRow[] {
+function sortedGateClearedRows(rows: GsniResearchRow[]): GsniResearchRow[] {
   return rows
-    .filter((row) => row.gateCleared && row.highVariance && row.gsni !== null)
+    .filter((row) => row.gateCleared && row.gsni !== null)
     .sort((a, b) => compareGsniByAbsDesc(a.gsni, b.gsni));
 }
+
+function highVarianceRows(rows: GsniResearchRow[]): GsniResearchRow[] {
+  return sortedGateClearedRows(rows).filter((row) => row.highVariance);
+}
+
+export type GsniResearchBuildOptions = {
+  /** When true (default), return only |score| >= GSNI_THRESHOLD officials. */
+  highVarianceOnly?: boolean;
+};
 
 export function buildGsniResearchRows(
   stats: RefStatsFile,
   config: GsniLeagueResearchConfig,
+  options: GsniResearchBuildOptions = {},
 ): GsniResearchRow[] {
+  const { highVarianceOnly = true } = options;
   const rows = stats.refs
     .filter(
       (ref) =>
@@ -219,16 +233,18 @@ export function buildGsniResearchRows(
     )
     .map((ref) => toRow(ref, config.basePath, config.minHighLeverageMinutes));
 
-  return highVarianceRows(rows);
+  return highVarianceOnly ? highVarianceRows(rows) : sortedGateClearedRows(rows);
 }
 
 export function buildGsniResearchHighlights(
   stats: RefStatsFile,
   config: GsniLeagueResearchConfig,
-  limit = GSNI_RESEARCH_HIGHLIGHT_LIMIT,
+  options: GsniResearchBuildOptions & { limit?: number } = {},
 ): GsniResearchHighlight[] {
+  const { highVarianceOnly = true, limit = GSNI_RESEARCH_HIGHLIGHT_LIMIT } =
+    options;
   const eligible = stats.refs.filter((ref) =>
-    isHighlightEligible(ref, config.minHighLeverageMinutes),
+    isHighlightEligible(ref, config.minHighLeverageMinutes, highVarianceOnly),
   );
   eligible.sort((a, b) => {
     const aDisplay = gsniShrinkageFromProfile(a)?.display;

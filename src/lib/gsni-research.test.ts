@@ -67,8 +67,8 @@ describe("shared GSNI research", () => {
   });
 
   it("sorts by absolute index score descending", () => {
-    assert.equal(compareGsniByAbsDesc(-1.9, 1.2), -1);
-    assert.equal(compareGsniByAbsDesc(1.2, -1.9), 1);
+    assert.equal(compareGsniByAbsDesc(-1.9, 1.2), -0.7);
+    assert.equal(compareGsniByAbsDesc(1.2, -1.9), 0.7);
     assert.equal(compareGsniByAbsDesc(1.5, -1.5), 0);
   });
 
@@ -107,6 +107,10 @@ describe("shared GSNI research", () => {
       assert.ok(row.gsni !== null);
       assert.ok(Math.abs(row.gsni!) >= GSNI_THRESHOLD);
     }
+
+    const allRows = buildGsniResearchRows(stats, config!, { highVarianceOnly: false });
+    assert.equal(allRows.length, 3);
+    assert.ok(allRows.some((row) => row.refSlug === "typical"));
   });
 
   it("builds highlight cards for high-variance officials", () => {

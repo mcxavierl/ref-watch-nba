@@ -59,6 +59,34 @@ test("GsniBandBadge uses Insights category Pill with tooltip", () => {
   assert.match(source, /title=\{fullLabel\}/);
 });
 
+test("GsniCorrelationPill renders high-correlation diagnostic tones", () => {
+  const source = readFileSync("src/components/GsniCorrelationPill.tsx", "utf8");
+  assert.match(source, /gsniCorrelationLabel/);
+  assert.match(source, /Sparkles/);
+  assert.match(source, /bg-emerald-900\/50/);
+  assert.match(source, /bg-rose-900\/50/);
+});
+
+test("GsniDiagnosticGauge renders a full-width 4px diagnostic track", () => {
+  const source = readFileSync("src/components/GsniDiagnosticGauge.tsx", "utf8");
+  assert.match(source, /h-1 w-full/);
+  assert.match(source, /bg-emerald-500/);
+  assert.match(source, /bg-rose-500/);
+});
+
+test("GsniScoreBlock uses diagnostic header and gauge", () => {
+  const source = readFileSync("src/components/GsniScoreBlock.tsx", "utf8");
+  assert.match(source, /gsniDiagnosticHeader/);
+  assert.match(source, /GsniDiagnosticGauge/);
+  assert.match(source, /GSNI_SCALE_LEGEND/);
+});
+
+test("GameStateIndexDashboard defaults High Variance Only filter to active", () => {
+  const source = readFileSync("src/components/GameStateIndexDashboard.tsx", "utf8");
+  assert.match(source, /useState\(true\)/);
+  assert.match(source, /High Variance Only/);
+});
+
 test("Finding angle category pills can shrink inside flex headers", () => {
   const css = readFileSync("src/styles/pill-constraints.css", "utf8");
   assert.match(css, /\.finding-angle-category/);

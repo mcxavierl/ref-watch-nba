@@ -1,46 +1,11 @@
-import Link from "next/link";
-import { Sparkles } from "lucide-react";
-import { GsniBandBadge } from "@/components/GsniBandBadge";
-import { GsniCard } from "@/components/GsniCard";
-import { GsniResearchTable } from "@/components/GsniResearchTable";
-import { GsniSampleCount } from "@/components/GsniSampleCount";
-import { GsniScoreBlock } from "@/components/GsniScoreBlock";
-import { TermHelp } from "@/components/TermHelp";
-import { explainGsni } from "@/lib/gsni-display";
 import {
   buildGsniResearchHighlights,
   buildGsniResearchRows,
   gsniResearchConfigForLeague,
-  type GsniResearchHighlight,
 } from "@/lib/gsni-research";
 import type { InsightsLeagueId } from "@/lib/league-manifest";
 import type { RefStatsFile } from "@/lib/types";
-
-function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
-  const explanation = explainGsni(finding.gsni!);
-
-  return (
-    <Link href={finding.href} className="block min-w-0">
-      <GsniCard className="gsni-research-highlight gsni-research-highlight--card h-full transition-[border-color,box-shadow] hover:border-slate-700">
-        <div className="flex min-w-0 items-center gap-2">
-          <Sparkles className="h-3.5 w-3.5 shrink-0 text-indigo-400" aria-hidden />
-          <p className="gsni-gauge-label m-0">High-Leverage Penalty Frequency</p>
-        </div>
-        <p className="mt-2 truncate text-base font-semibold text-white">{finding.refName}</p>
-        <div className="mt-2">
-          <GsniBandBadge band={explanation.band} zScore={explanation.zScore} />
-        </div>
-        <GsniScoreBlock score={finding.gsni!} compact className="mt-3" />
-        <p className="gsni-sub-text mt-2">
-          Sample size:{" "}
-          <GsniSampleCount>{finding.sampleGames}</GsniSampleCount> games ·{" "}
-          <GsniSampleCount>{Math.round(finding.highLeverageMinutes)}</GsniSampleCount>{" "}
-          high-leverage min
-        </p>
-      </GsniCard>
-    </Link>
-  );
-}
+import { GameStateIndexDashboard } from "@/components/GameStateIndexDashboard";
 
 export function GameStateIndexResearchSection({
   stats,
@@ -57,40 +22,20 @@ export function GameStateIndexResearchSection({
   const config = gsniResearchConfigForLeague(leagueId);
   if (!config) return null;
   const resolvedConfig = basePath ? { ...config, basePath } : config;
-  const highlights = buildGsniResearchHighlights(stats, resolvedConfig);
-  const rows = buildGsniResearchRows(stats, resolvedConfig);
+  const highlights = buildGsniResearchHighlights(stats, resolvedConfig, {
+    highVarianceOnly: false,
+  });
+  const rows = buildGsniResearchRows(stats, resolvedConfig, {
+    highVarianceOnly: false,
+  });
   if (rows.length === 0) return null;
 
   return (
-    <>
-      {!compactHub && highlights.length > 0 ? (
-        <section className="section-block">
-          <h2 className="section-title">
-            <TermHelp id="game-state-index">Game-State Index highlights</TermHelp>
-          </h2>
-          <div className="rankings-insight-grid">
-            {highlights.map((finding) => (
-              <HighlightCard key={finding.refSlug} finding={finding} />
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      <section className="section-block">
-        <h2 className="section-title">Game-State Index official table</h2>
-        {!compactHub ? (
-          <p className="gsni-sub-text section-lead">
-            {leagueId === "nfl"
-              ? "Historical penalty frequency vs league average in matched score-and-clock situations."
-              : "Historical foul frequency vs league average in matched score-and-clock situations."}{" "}
-            <Link href="/research/leverage-spike-anomaly" className="font-medium hover:underline">
-              Methodology
-            </Link>
-            .
-          </p>
-        ) : null}
-        <GsniResearchTable rows={rows} />
-      </section>
-    </>
+    <GameStateIndexDashboard
+      highlights={highlights}
+      rows={rows}
+      leagueId={leagueId}
+      compactHub={compactHub}
+    />
   );
 }
