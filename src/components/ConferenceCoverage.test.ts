@@ -17,13 +17,14 @@ test("ConferenceCoverage DOM markup avoids internal league slugs in ids", () => 
   assert.doesNotMatch(source, /data-league/);
 });
 
-test("ConferenceCoverage uses maturity-based StatusBadge verdicts for default variant", () => {
+test("ConferenceCoverage uses conference-tinted logo marks in default variant", () => {
   const source = readFileSync("src/components/ConferenceCoverage.tsx", "utf8");
+  const css = readFileSync("src/components/conference-coverage.css", "utf8");
   assert.match(source, /StatusBadge/);
-  assert.match(source, /getConferenceCoverageRows/);
-  assert.match(source, /row\.verdict/);
-  assert.match(source, /row\.maturity/);
   assert.match(source, /NcaaConferenceLogo/);
   assert.match(source, /ncaa-coverage-live-link/);
   assert.match(source, /conferenceHubHref/);
+  assert.match(source, /size=\{28\}/);
+  assert.match(css, /ncaa-conference-logo\[data-conference="ACC"\]/);
+  assert.match(css, /html\[data-color="light"\][\s\S]*ncaa-conference-logo\[data-conference="ACC"\]/);
 });

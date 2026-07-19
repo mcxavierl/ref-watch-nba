@@ -122,7 +122,7 @@ export async function ConferenceCoverage({
                   activeConference === row.conferenceId ? "page" : undefined
                 }
               >
-                <NcaaConferenceLogo conferenceId={row.conferenceId} size={24} />
+                <NcaaConferenceLogo conferenceId={row.conferenceId} size={28} />
                 <span className="ncaa-coverage-live-item-label">{row.name}</span>
                 <StatusBadge
                   verdict={row.verdict}

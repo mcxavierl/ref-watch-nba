@@ -23,7 +23,14 @@
       "earliest": "2020-11-25",
       "latest": "2026-04-07"
     },
-    "note": "Scores, fouls, and referee crews from ESPN (9705 games across 80 tracked programs, 5930 with sportsbook totals). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Matrix: 4009/8224 ref×team pairs with 3+ games. 69 games skipped (no officials listed). 180 games skipped (outside live conference gate)."
+    "note": "Scores, fouls, and referee crews from ESPN (9705 games across 80 tracked programs, 5930 with sportsbook totals). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Matrix: 4009/8224 ref×team pairs with 3+ games. 69 games skipped (no officials listed). 180 games skipped (outside live conference gate).",
+    "conferenceCoverageDistinctGames": {
+      "ACC": 2154,
+      "Big Ten": 2198,
+      "Big 12": 2108,
+      "SEC": 1974,
+      "Big East": 1271
+    }
   },
   "refs": [
     {
