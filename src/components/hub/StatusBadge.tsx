@@ -42,10 +42,10 @@ export function StatusBadge({
 
   return (
     <span
-      className={`status-badge ${toneClass} ${compact ? "status-badge--compact" : ""} ${className}`.trim()}
+      className={`status-badge pill-constrain ${toneClass} ${compact ? "status-badge--compact" : ""} ${className}`.trim()}
     >
       <Icon className="status-badge-icon" strokeWidth={2.25} aria-hidden />
-      <span className="status-badge-label">{label}</span>
+      <span className="status-badge-label pill-constrain-text">{label}</span>
     </span>
   );
 }

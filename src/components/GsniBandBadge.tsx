@@ -20,8 +20,8 @@ export function GsniBandBadge({
   const label = extreme ? `Extreme ${gsniBandTitle(band)}` : gsniBandTitle(band);
 
   return (
-    <span className={`${BAND_CLASS[band]} ${className}`.trim()}>
-      {label}
+    <span className={`pill-constrain ${BAND_CLASS[band]} ${className}`.trim()}>
+      <span className="pill-constrain-text">{label}</span>
     </span>
   );
 }

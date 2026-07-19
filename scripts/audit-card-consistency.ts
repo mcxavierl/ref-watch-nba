@@ -526,6 +526,42 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "dynamic insight pill class",
       ),
   },
+  {
+    name: "Pill component defines overflow containment utilities",
+    run: () =>
+      auditFileContains(
+        "src/components/ui/Pill.tsx",
+        /pill-constrain/,
+        "pill constrain utility",
+      ),
+  },
+  {
+    name: "pill-constraints.css defines shared pill tokens",
+    run: () =>
+      auditFileContains(
+        "src/styles/pill-constraints.css",
+        /--pill-padding-y/,
+        "pill padding token",
+      ),
+  },
+  {
+    name: "globals.css imports pill-constraints stylesheet",
+    run: () =>
+      auditFileContains(
+        "src/app/globals.css",
+        /pill-constraints\.css/,
+        "pill constraints import",
+      ),
+  },
+  {
+    name: "Ref master insight pills use Pill wrapper",
+    run: () =>
+      auditFileContains(
+        "src/components/DynamicInsightPill.tsx",
+        /<Pill/,
+        "Pill in DynamicInsightPill",
+      ),
+  },
 ];
 
 function main(): void {
