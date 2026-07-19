@@ -483,11 +483,78 @@ html[data-contrast="high"] .upcoming-game-card__date-pill {
 
 .upcoming-game-card__context-slot {
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0.5rem;
   flex: 0 0 auto;
   min-height: 2.75rem;
+  min-width: 0;
   margin-top: 0.625rem;
+}
+
+.upcoming-game-card__split {
+  width: 100%;
+}
+
+.betting-split-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.betting-split-bar__labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.betting-split-bar__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgb(148 163 184);
+}
+
+.betting-split-bar__label--sharp {
+  color: rgb(129 140 248);
+}
+
+.betting-split-bar__track {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  height: 0.25rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: rgb(30 41 59);
+}
+
+.betting-split-bar__segment {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.betting-split-bar__segment--public {
+  background: rgb(100 116 139);
+}
+
+.betting-split-bar__segment--sharp {
+  background: rgb(99 102 241);
+}
+
+.upcoming-game-card__marquee {
+  flex-shrink: 1;
+  max-width: 100%;
 }
 
 .upcoming-game-card__context {

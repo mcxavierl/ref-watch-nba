@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { BettingSplitBar } from "@/components/BettingSplitBar";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
+import { MarqueeBadge } from "@/components/MarqueeBadge";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import {
@@ -20,6 +22,7 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
       className="upcoming-game-card"
       data-league={game.leagueId}
       data-status={game.status}
+      data-marquee={game.isMarquee ? "true" : "false"}
     >
       <header className="upcoming-game-card__header">
         <div className="upcoming-game-card__header-start">
@@ -30,6 +33,9 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
             <time className="upcoming-game-card__date-pill" dateTime={game.slateDate}>
               {dateLabel}
             </time>
+          ) : null}
+          {game.isMarquee ? (
+            <MarqueeBadge breakdown={game.leverageBreakdown} className="upcoming-game-card__marquee" />
           ) : null}
         </div>
         <Link href={game.href} className="upcoming-game-card__cta rw-focus-ring">
@@ -55,6 +61,9 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
           </div>
         </div>
         <div className="upcoming-game-card__context-slot">
+          {game.bettingSplit ? (
+            <BettingSplitBar split={game.bettingSplit} className="upcoming-game-card__split" />
+          ) : null}
           {game.gameContextLine ? (
             <p className="upcoming-game-card__context">{game.gameContextLine}</p>
           ) : null}

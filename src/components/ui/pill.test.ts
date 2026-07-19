@@ -74,6 +74,26 @@ test("GsniDiagnosticGauge renders a full-width 4px diagnostic track", () => {
   assert.match(source, /bg-rose-500/);
 });
 
+test("MarqueeBadge uses indigo marquee styling and Sparkles icon", () => {
+  const source = readFileSync("src/components/MarqueeBadge.tsx", "utf8");
+  assert.match(source, /Sparkles/);
+  assert.match(source, /bg-indigo-900\/30/);
+  assert.match(source, /text-indigo-400/);
+});
+
+test("BettingSplitBar renders a two-segment public/sharp track", () => {
+  const source = readFileSync("src/components/BettingSplitBar.tsx", "utf8");
+  assert.match(source, /betting-split-bar__segment--public/);
+  assert.match(source, /betting-split-bar__segment--sharp/);
+});
+
+test("UpcomingGameCard surfaces marquee badge and betting split metadata", () => {
+  const source = readFileSync("src/components/UpcomingGameCard.tsx", "utf8");
+  assert.match(source, /MarqueeBadge/);
+  assert.match(source, /BettingSplitBar/);
+  assert.match(source, /game\.isMarquee/);
+});
+
 test("GsniScoreBlock uses diagnostic header and gauge", () => {
   const source = readFileSync("src/components/GsniScoreBlock.tsx", "utf8");
   assert.match(source, /gsniDiagnosticHeader/);

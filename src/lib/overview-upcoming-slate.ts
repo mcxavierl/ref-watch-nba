@@ -2,14 +2,15 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
-import { buildSeasonStageNote } from "@/lib/assignment-season-stage";
+import { buildSeasonStageNote, resolveAssignmentSeasonStage } from "@/lib/assignment-season-stage";
+import { computeLeverageIndex } from "@/lib/leverage-index";
 import {
   buildOverviewLastMeetingLine,
   buildOverviewMatchupInsight,
   buildOverviewRecentGameContextLine,
   buildOverviewTeamRecentContextLine,
 } from "@/lib/overview-matchup-insight";
-import type { AssignmentsFile, RefOfficial } from "@/lib/types";
+import type { AssignmentsFile, GameOddsLine, OddsFile, RefOfficial } from "@/lib/types";
 
 export type {
   OverviewLeagueNote,
@@ -46,20 +47,21 @@ function collectLeagueSlateEntries(
 ): OverviewSlateEntry[] {
   const games: OverviewSlateEntry[] = [];
   const seenIds = new Set<string>();
+  const odds = loadOddsForLeague(leagueId);
 
   for (const game of file.games) {
     if (seenIds.has(game.id)) continue;
     seenIds.add(game.id);
     if (game.crew.length > 0) {
-      pushEntry(games, leagueId, file, game, "live");
+      pushEntry(games, leagueId, file, game, "live", odds);
     } else {
-      pushEntry(games, leagueId, file, game, "scheduled");
+      pushEntry(games, leagueId, file, game, "scheduled", odds);
     }
   }
   for (const game of file.scheduledGames ?? []) {
     if (seenIds.has(game.id)) continue;
     seenIds.add(game.id);
-    pushEntry(games, leagueId, file, game, "scheduled");
+    pushEntry(games, leagueId, file, game, "scheduled", odds);
   }
 
   return games;
@@ -126,6 +128,56 @@ function assignmentsPath(leagueId: LeagueId): string {
   return path.join(root, "data", leagueId, "assignments.json");
 }
 
+const LEAGUE_ODDS_PATHS: Partial<Record<LeagueId, string[]>> = {
+  nba: ["data/odds.json"],
+  nhl: ["data/nhl/odds.json", "data/odds.json"],
+  nfl: ["data/nfl/odds.json", "data/nfl/game-lines.json"],
+  epl: ["data/epl/odds.json"],
+  laliga: ["data/laliga/odds.json"],
+  cbb: ["data/cbb/odds.json"],
+  cfb: ["data/cfb/odds.json"],
+};
+
+function readOddsShard(relativePath: string): OddsFile | null {
+  try {
+    const raw = fs.readFileSync(path.join(process.cwd(), relativePath), "utf8");
+    const parsed = JSON.parse(raw) as OddsFile;
+    if (!parsed.lines?.length) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function loadOddsForLeague(leagueId: LeagueId): OddsFile | null {
+  const candidates = LEAGUE_ODDS_PATHS[leagueId] ?? [];
+  for (const candidate of candidates) {
+    const shard = readOddsShard(candidate);
+    if (shard) return shard;
+  }
+  return null;
+}
+
+function normalizeTeam(value: string): string {
+  return value.trim().toUpperCase();
+}
+
+function findOddsLineForGame(
+  odds: OddsFile | null,
+  game: AssignmentsFile["games"][number],
+): GameOddsLine | undefined {
+  if (!odds) return undefined;
+  const byId = odds.lines.find((line) => line.gameId && line.gameId === game.id);
+  if (byId) return byId;
+
+  const away = normalizeTeam(game.awayTeam);
+  const home = normalizeTeam(game.homeTeam);
+  return odds.lines.find(
+    (line) =>
+      normalizeTeam(line.awayTeam) === away && normalizeTeam(line.homeTeam) === home,
+  );
+}
+
 function buildOverviewOfficialsLine(
   leagueId: LeagueId,
   crew: RefOfficial[],
@@ -161,6 +213,7 @@ function pushEntry(
   file: AssignmentsFile,
   game: AssignmentsFile["games"][number],
   status: OverviewSlateStatus,
+  odds: OddsFile | null,
 ): void {
   const league = LEAGUES[leagueId];
   const headRef =
@@ -177,6 +230,16 @@ function pushEntry(
     game.homeTeam,
   );
   const seasonStageNote = buildSeasonStageNote(leagueId, game, file.date);
+  const seasonStage = resolveAssignmentSeasonStage(leagueId, game, file.date);
+  const oddsLine = findOddsLineForGame(odds, game);
+  const leverage = computeLeverageIndex({
+    leagueId,
+    game,
+    slateDate: file.date,
+    oddsLine,
+    seasonStage,
+  });
+
   games.push({
     leagueId,
     leagueLabel: league.label,
@@ -196,6 +259,10 @@ function pushEntry(
     teamContextLine,
     officialsLine: buildOverviewOfficialsLine(leagueId, game.crew, status),
     seasonStageNote,
+    leverageIndex: leverage.index,
+    leverageBreakdown: leverage.breakdownTooltip,
+    isMarquee: leverage.isMarquee,
+    bettingSplit: leverage.bettingSplit,
   });
 }
 

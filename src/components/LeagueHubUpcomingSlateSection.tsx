@@ -1,4 +1,8 @@
+"use client";
+
 import { CalendarDays } from "lucide-react";
+import { useMemo, useState } from "react";
+import { MarqueeOnlyToggle, MARQUEE_ONLY_EMPTY_COPY } from "@/components/MarqueeOnlyToggle";
 import { UpcomingGameCard } from "@/components/UpcomingGameCard";
 import type { LeagueUpcomingSlate } from "@/lib/overview-upcoming-slate";
 import { formatLeagueSlateCounts } from "@/lib/overview-slate-shared";
@@ -18,7 +22,15 @@ export function LeagueHubUpcomingSlateSection({
   slate,
   leagueLabel,
 }: LeagueHubUpcomingSlateSectionProps) {
+  const [marqueeOnly, setMarqueeOnly] = useState(false);
   const group = slate.leagueGroup;
+
+  const visibleGames = useMemo(() => {
+    if (!group) return [];
+    if (!marqueeOnly) return group.games;
+    return group.games.filter((game) => game.isMarquee);
+  }, [group, marqueeOnly]);
+
   if (!slate.inSeason || !group || group.games.length === 0) return null;
 
   const matchupCount = group.liveCount + group.scheduledCount;
@@ -30,13 +42,16 @@ export function LeagueHubUpcomingSlateSection({
       aria-labelledby="league-hub-upcoming-heading"
     >
       <div className="overview-section-header overview-section-header--primary">
-        <h2
-          className="overview-section-title overview-section-title--with-icon"
-          id="league-hub-upcoming-heading"
-        >
-          <CalendarDays aria-hidden className="overview-slate-icon" />
-          Upcoming games
-        </h2>
+        <div className="overview-upcoming-toolbar">
+          <h2
+            className="overview-section-title overview-section-title--with-icon"
+            id="league-hub-upcoming-heading"
+          >
+            <CalendarDays aria-hidden className="overview-slate-icon" />
+            Upcoming games
+          </h2>
+          <MarqueeOnlyToggle active={marqueeOnly} onToggle={() => setMarqueeOnly((v) => !v)} />
+        </div>
         <p className="overview-section-lead">
           {matchupCount > 0
             ? `${formatCount(matchupCount)} ${leagueLabel} matchup${matchupCount === 1 ? "" : "s"} on the live slate${countLabel ? ` (${countLabel})` : ""}.`
@@ -53,11 +68,15 @@ export function LeagueHubUpcomingSlateSection({
         </ul>
       ) : null}
 
-      <div className="upcoming-games-grid">
-        {group.games.map((game) => (
-          <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} />
-        ))}
-      </div>
+      {visibleGames.length > 0 ? (
+        <div className="upcoming-games-grid">
+          {visibleGames.map((game) => (
+            <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} />
+          ))}
+        </div>
+      ) : (
+        <p className="overview-slate-empty overview-slate-empty-panel">{MARQUEE_ONLY_EMPTY_COPY}</p>
+      )}
 
       {slate.lastUpdated ? (
         <p className="overview-slate-updated">

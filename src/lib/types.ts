@@ -522,6 +522,10 @@ export interface GameOddsLine {
   underOdds?: number;
   /** American price for the home spread side. */
   homeSpreadOdds?: number;
+  /** Share of handle/tickets from public/retail bettors (0-100). */
+  publicHandlePct?: number;
+  /** Share of handle from sharp/pro bettors (0-100). */
+  sharpHandlePct?: number;
   source: string;
   lastUpdated: string;
 }

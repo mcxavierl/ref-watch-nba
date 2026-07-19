@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo, useState } from "react";
+import { MarqueeOnlyToggle, MARQUEE_ONLY_EMPTY_COPY } from "@/components/MarqueeOnlyToggle";
 import { UpcomingGameCard } from "@/components/UpcomingGameCard";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { LEAGUES } from "@/lib/leagues";
@@ -15,10 +17,15 @@ function formatCount(n: number): string {
 }
 
 export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSectionProps) {
+  const [marqueeOnly, setMarqueeOnly] = useState(false);
   const { upcomingSlate } = data;
   const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
   const matchupCount = upcomingSlate.totalGames + upcomingSlate.totalScheduled;
-  const slateGames = upcomingSlate.games;
+
+  const visibleGames = useMemo(() => {
+    if (!marqueeOnly) return upcomingSlate.games;
+    return upcomingSlate.games.filter((game) => game.isMarquee);
+  }, [marqueeOnly, upcomingSlate.games]);
 
   return (
     <section
@@ -26,9 +33,14 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
       aria-labelledby="overview-upcoming-heading"
     >
       <div className="overview-section-header overview-section-header--primary overview-upcoming-header">
-        <h2 className="overview-section-title" id="overview-upcoming-heading">
-          Upcoming games
-        </h2>
+        <div className="overview-upcoming-toolbar">
+          <h2 className="overview-section-title" id="overview-upcoming-heading">
+            Upcoming games
+          </h2>
+          {upcomingSlate.inSeason && upcomingSlate.games.length > 0 ? (
+            <MarqueeOnlyToggle active={marqueeOnly} onToggle={() => setMarqueeOnly((v) => !v)} />
+          ) : null}
+        </div>
         <p className="overview-section-lead overview-upcoming-lead">
           {upcomingSlate.inSeason
             ? matchupCount > 0
@@ -39,12 +51,14 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
       </div>
 
       {upcomingSlate.inSeason ? (
-        slateGames.length > 0 ? (
+        visibleGames.length > 0 ? (
           <div className="upcoming-games-grid">
-            {slateGames.map((game) => (
+            {visibleGames.map((game) => (
               <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} />
             ))}
           </div>
+        ) : marqueeOnly ? (
+          <p className="overview-slate-empty overview-slate-empty-panel">{MARQUEE_ONLY_EMPTY_COPY}</p>
         ) : (
           <p className="overview-slate-empty overview-slate-empty-panel">
             No published matchups yet. Check back closer to tip-off.

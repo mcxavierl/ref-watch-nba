@@ -1,3 +1,4 @@
+import type { BettingSplitFlow } from "@/lib/leverage-index";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 
@@ -24,6 +25,14 @@ export type OverviewSlateEntry = {
   officialsLine?: string;
   metadataLine?: string;
   seasonStageNote?: string;
+  /** Dynamic 0-100 leverage score for upcoming slate prioritization. */
+  leverageIndex?: number;
+  /** Pipe-delimited factor breakdown for marquee badge tooltip. */
+  leverageBreakdown?: string;
+  /** True when leverageIndex exceeds the marquee threshold (>75). */
+  isMarquee?: boolean;
+  /** Public vs sharp handle flow for market visualization. */
+  bettingSplit?: BettingSplitFlow;
 };
 
 export type OverviewLeagueNote = {

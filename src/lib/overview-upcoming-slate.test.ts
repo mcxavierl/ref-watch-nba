@@ -87,6 +87,8 @@ describe("overview-upcoming-slate", () => {
       /Last met Nov 12, 2023 in Los Angeles · DET 41, LAC 38/,
     );
     assert.equal(slate.leagueGroup?.games[0]?.seasonStageNote, "Pre-season game");
+    assert.equal(typeof slate.leagueGroup?.games[0]?.leverageIndex, "number");
+    assert.ok(slate.leagueGroup?.games[0]?.bettingSplit);
     assert.equal(slate.leagueNote?.note, file.note);
   });
 
