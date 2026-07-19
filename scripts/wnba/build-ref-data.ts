@@ -14,6 +14,7 @@ import { dedupeGameLogs, loadGameLogs, saveGameLogs, type GameLogEntry } from ".
 import { rebuildRefGamesFromLogs } from "../lib/rebuild-ref-games-from-logs";
 import { rebuildTeamSplitsFromGameLogs } from "../lib/rebuild-team-splits-from-logs";
 import { splitRefStatsForDeploy } from "../lib/split-ref-stats";
+import { processNbaFoulShardEntry } from "../ingest/lib/ingest-utils";
 import { WNBA_TEAM_ABBRS } from "../../src/lib/wnba/teams";
 import type { RefStatsFile } from "../../src/lib/types";
 
@@ -46,12 +47,24 @@ function emptyStats(): RefStatsFile {
   };
 }
 
+function tagWnbaGameFouls(game: GameLogEntry): GameLogEntry {
+  if (!game.fouls?.length) return game;
+  return {
+    ...game,
+    ...processNbaFoulShardEntry({
+      gameId: game.gameId,
+      season: game.season,
+      fouls: game.fouls,
+    }),
+  };
+}
+
 function writeSeasonShards(games: GameLogEntry[]): void {
   fs.mkdirSync(WNBA_SHARD_DIR, { recursive: true });
   const bySeason = new Map<string, GameLogEntry[]>();
   for (const game of games) {
     const bucket = bySeason.get(game.season) ?? [];
-    bucket.push(game);
+    bucket.push(tagWnbaGameFouls(game));
     bySeason.set(game.season, bucket);
   }
   for (const [season, rows] of bySeason) {

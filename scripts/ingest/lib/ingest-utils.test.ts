@@ -13,9 +13,9 @@ describe("nba ingest-utils", () => {
     assert.equal(classifyFoul("Shooting Foul"), FoulCategory.SUBJECTIVE);
   });
 
-  it("processFoulData leaves unknown fouls additive-compatible", () => {
+  it("processFoulData defaults unknown fouls to subjective", () => {
     const [tagged] = processFoulData([{ foulName: "Custom Event" }]);
-    assert.equal(tagged.category, FoulCategory.SUBJECTIVE);
+    assert.equal((tagged as { category: FoulCategory }).category, FoulCategory.SUBJECTIVE);
   });
 
   it("processNbaFoulShardEntry tags nested fouls before shard write", () => {

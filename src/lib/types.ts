@@ -112,7 +112,10 @@ export interface NflPenaltyEvent {
   accepted: boolean;
   leverage: PenaltyLeverageState;
   leverageScore: number;
-  /** ADMIN vs SUBJECTIVE taxonomy tag from ingest enrichment. */
+  /**
+   * ADMIN vs SUBJECTIVE taxonomy tag.
+   * Ingest pipelines must set this via tagNflPenaltyEvent before persistence.
+   */
   category?: FoulCategory;
 }
 

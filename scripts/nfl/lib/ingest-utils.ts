@@ -1,56 +1,46 @@
 import type { NflPenaltyEvent } from "../../../src/lib/types";
 import {
-  classifyFoulName,
   FoulCategory,
+  type FoulClassificationLeague,
 } from "../../../src/lib/types/foul-categories";
+import {
+  classifyFoulForLeague,
+  processFoulData as processLeagueFoulData,
+  tagIngestFoul,
+  type IngestFoulRecord,
+  type TaggedIngestFoul,
+} from "../../lib/process-foul-data";
 
-/** Minimal foul shape accepted by NFL ingest enrichment. */
-export type IngestFoulRecord = {
-  foulName?: string;
-  rawType?: string;
-  type?: string;
-  category?: FoulCategory;
-};
+export type { IngestFoulRecord, TaggedIngestFoul };
 
-export type TaggedIngestFoul<T extends IngestFoulRecord> = T & {
-  category?: FoulCategory;
-};
-
-function resolveFoulName(foul: IngestFoulRecord): string {
-  return (foul.foulName ?? foul.rawType ?? foul.type ?? "").trim();
-}
+const NFL_LEAGUE: FoulClassificationLeague = "nfl";
 
 /** Classify an NFL penalty label using the shared foul taxonomy. */
 export function classifyFoul(foulName: string): FoulCategory {
-  return classifyFoulName("nfl", foulName);
+  return classifyFoulForLeague(NFL_LEAGUE, foulName);
 }
 
-/**
- * Tag each foul with an optional category before shard writes.
- * Existing records without a resolvable name are returned unchanged.
- */
+/** Tag each foul with category before shard writes. */
 export function processFoulData<T extends IngestFoulRecord>(
   fouls: readonly T[],
-): TaggedIngestFoul<T>[] {
-  return fouls.map((foul) => {
-    const foulName = resolveFoulName(foul);
-    if (!foulName) return { ...foul };
-    return {
-      ...foul,
-      category: classifyFoul(foulName),
-    };
-  });
+): Array<T | TaggedIngestFoul<T>> {
+  return processLeagueFoulData(NFL_LEAGUE, fouls);
 }
 
+/** Foul row after ingest enrichment (category required when a name is present). */
+export type TaggedNflPenaltyEvent = NflPenaltyEvent & {
+  category: FoulCategory;
+};
+
 /** Tag one NFL penalty event for play-level caches and game-log shards. */
-export function tagNflPenaltyEvent(event: NflPenaltyEvent): NflPenaltyEvent {
-  const [tagged] = processFoulData([event]);
-  return tagged;
+export function tagNflPenaltyEvent(event: NflPenaltyEvent): TaggedNflPenaltyEvent {
+  const tagged = tagIngestFoul(NFL_LEAGUE, event);
+  return tagged as TaggedNflPenaltyEvent;
 }
 
 /** Tag penalty arrays attached to NFL game-log shard rows. */
 export function tagNflPenaltyEvents(
   events: readonly NflPenaltyEvent[],
-): NflPenaltyEvent[] {
-  return processFoulData(events);
+): TaggedNflPenaltyEvent[] {
+  return processFoulData(events) as TaggedNflPenaltyEvent[];
 }

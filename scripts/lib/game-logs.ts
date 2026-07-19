@@ -1,12 +1,23 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { RefOfficial, RefRole } from "../../src/lib/types";
+import type { FoulCategory } from "../../src/lib/types/foul-categories";
 import {
   buildMarketLineIndex,
   lookupMarketLine,
 } from "../../src/lib/market-lines";
 
 export type GameLineSource = "external" | "synthetic";
+
+/** Play-level foul row persisted after ingest enrichment. */
+export type GameLogFoulRecord = {
+  foulName?: string;
+  rawType?: string;
+  type?: string;
+  team?: string;
+  period?: number;
+  category: FoulCategory;
+};
 
 export interface GameLogEntry {
   gameId: string;
@@ -34,6 +45,8 @@ export interface GameLogEntry {
   officials: RefOfficial[];
   whistlePeriodSplits?: import("../../src/lib/whistle-period-splits").WhistlePeriodSplits;
   penaltyEvents?: import("../../src/lib/types").NflPenaltyEvent[];
+  /** Play-level fouls tagged during ingest (NBA/WNBA). */
+  fouls?: GameLogFoulRecord[];
 }
 
 export interface GameLogFile {

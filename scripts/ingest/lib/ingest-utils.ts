@@ -1,19 +1,18 @@
 import {
-  classifyFoulName,
   FoulCategory,
+  type FoulClassificationLeague,
 } from "../../../src/lib/types/foul-categories";
+import {
+  classifyFoulForLeague,
+  processFoulData as processLeagueFoulData,
+  tagIngestFoul,
+  type IngestFoulRecord,
+  type TaggedIngestFoul,
+} from "../../lib/process-foul-data";
 
-/** Minimal foul shape accepted by NBA ingest enrichment. */
-export type IngestFoulRecord = {
-  foulName?: string;
-  rawType?: string;
-  type?: string;
-  category?: FoulCategory;
-};
+export type { IngestFoulRecord, TaggedIngestFoul };
 
-export type TaggedIngestFoul<T extends IngestFoulRecord> = T & {
-  category?: FoulCategory;
-};
+const NBA_LEAGUE: FoulClassificationLeague = "nba";
 
 /** Optional foul list carried on NBA NDJSON game-log or foul shard rows. */
 export type NbaFoulGameShardEntry = {
@@ -22,30 +21,16 @@ export type NbaFoulGameShardEntry = {
   fouls?: IngestFoulRecord[];
 };
 
-function resolveFoulName(foul: IngestFoulRecord): string {
-  return (foul.foulName ?? foul.rawType ?? foul.type ?? "").trim();
-}
-
 /** Classify an NBA foul label using the shared foul taxonomy. */
 export function classifyFoul(foulName: string): FoulCategory {
-  return classifyFoulName("nba", foulName);
+  return classifyFoulForLeague(NBA_LEAGUE, foulName);
 }
 
-/**
- * Tag each foul with an optional category before shard writes.
- * Existing records without a resolvable name are returned unchanged.
- */
+/** Tag each foul with category before shard writes. */
 export function processFoulData<T extends IngestFoulRecord>(
   fouls: readonly T[],
-): TaggedIngestFoul<T>[] {
-  return fouls.map((foul) => {
-    const foulName = resolveFoulName(foul);
-    if (!foulName) return { ...foul };
-    return {
-      ...foul,
-      category: classifyFoul(foulName),
-    };
-  });
+): Array<T | TaggedIngestFoul<T>> {
+  return processLeagueFoulData(NBA_LEAGUE, fouls);
 }
 
 /** Enrich one NBA game shard row that may carry a nested foul list. */
@@ -57,4 +42,11 @@ export function processNbaFoulShardEntry<T extends NbaFoulGameShardEntry>(
     ...entry,
     fouls: processFoulData(entry.fouls),
   };
+}
+
+/** Tag one parsed foul row during NBA ingest parsing. */
+export function tagNbaIngestFoul<T extends IngestFoulRecord>(
+  foul: T,
+): T | TaggedIngestFoul<T> {
+  return tagIngestFoul(NBA_LEAGUE, foul);
 }
