@@ -1,5 +1,9 @@
 import type { GsniBand } from "@/lib/gsni-display";
-import { gsniBandTitle, gsniQualitativeLabel } from "@/lib/gsni-display";
+import {
+  gsniBandCompactLabel,
+  gsniBandTitle,
+  gsniQualitativeLabel,
+} from "@/lib/gsni-display";
 
 const BAND_CLASS: Record<GsniBand, string> = {
   quiet: "gsni-band-badge gsni-band-badge--quiet",
@@ -17,12 +21,17 @@ export function GsniBandBadge({
   zScore?: number;
   className?: string;
 }) {
-  const label =
+  const fullLabel =
     zScore !== undefined ? gsniQualitativeLabel(zScore) : gsniBandTitle(band);
+  const compactLabel =
+    zScore !== undefined ? gsniBandCompactLabel(zScore) : gsniBandTitle(band);
 
   return (
-    <span className={`pill-constrain ${BAND_CLASS[band]} ${className}`.trim()}>
-      <span className="pill-constrain-text">{label}</span>
+    <span
+      className={`pill-constrain gsni-band-badge-wrap ${BAND_CLASS[band]} ${className}`.trim()}
+      title={fullLabel}
+    >
+      <span className="pill-constrain-text">{compactLabel}</span>
     </span>
   );
 }

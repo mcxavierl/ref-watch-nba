@@ -7,10 +7,10 @@ export function OuLeanBadge({ lean }: { lean: OuLean }) {
 
   return (
     <span
-      className="ou-lean-badge"
+      className="ou-lean-badge pill-constrain"
       title={`Historical over-rate tendency: ${label}`}
     >
-      <span className="ou-lean-badge-label">Over tendency</span>
+      <span className="ou-lean-badge-label pill-constrain-text">Over tendency</span>
       <span
         className={`ou-lean-badge-value ${isDirectional ? "ou-lean-badge-value--directional" : ""}`}
       >

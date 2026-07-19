@@ -16,7 +16,7 @@ export function InsightBadge({
 }) {
   return (
     <span
-      className={`insight-badge pill-constrain inline-flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-medium leading-none text-slate-300 ${className}`.trim()}
+      className={`insight-badge pill-constrain inline-flex min-w-0 items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900 px-4 py-1.5 text-xs font-medium leading-none text-slate-300 ${className}`.trim()}
     >
       <Icon className="h-3 w-3 shrink-0 opacity-80" strokeWidth={2.1} aria-hidden />
       <span className="pill-constrain-text">{label}</span>

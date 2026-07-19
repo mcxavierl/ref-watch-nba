@@ -491,9 +491,9 @@ html.dark .dashboard-insight-card:hover {
   color: var(--text-secondary);
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   line-height: 1;
-  padding: 0.4rem 0.7rem;
+  padding: var(--pill-padding-y) var(--pill-padding-x);
   border-color: color-mix(in srgb, var(--pill-glow) 38%, var(--pill-border));
   background:
     radial-gradient(

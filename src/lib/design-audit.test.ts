@@ -109,4 +109,14 @@ describe("design audit guardrails", () => {
     assert.match(card, /data-honesty-footnote/);
     assert.doesNotMatch(card, /text-slate-500/);
   });
+
+  it("pill surfaces enforce shared containment utilities", () => {
+    const css = readSrc("src/styles/pill-constraints.css");
+    const gsni = readSrc("src/components/GsniBandBadge.tsx");
+    assert.match(css, /--pill-padding-y/);
+    assert.match(css, /\.finding-angle-category/);
+    assert.match(css, /\.gsni-band-badge-wrap/);
+    assert.match(gsni, /gsniBandCompactLabel/);
+    assert.match(readSrc("src/components/ConfidenceTierBadge.tsx"), /pill-constrain-text/);
+  });
 });

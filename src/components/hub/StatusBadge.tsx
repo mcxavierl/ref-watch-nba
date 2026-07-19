@@ -12,6 +12,7 @@ export interface StatusBadgeProps {
   label: ReactNode;
   className?: string;
   compact?: boolean;
+  title?: string;
 }
 
 const VERDICT_CONFIG: Record<
@@ -37,12 +38,14 @@ export function StatusBadge({
   label,
   className = "",
   compact = false,
+  title,
 }: StatusBadgeProps) {
   const { Icon, className: toneClass } = VERDICT_CONFIG[verdict];
 
   return (
     <span
       className={`status-badge pill-constrain ${toneClass} ${compact ? "status-badge--compact" : ""} ${className}`.trim()}
+      title={title}
     >
       <Icon className="status-badge-icon" strokeWidth={2.25} aria-hidden />
       <span className="status-badge-label pill-constrain-text">{label}</span>

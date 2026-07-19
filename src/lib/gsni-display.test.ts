@@ -4,6 +4,7 @@ import {
   explainGsni,
   formatGsni,
   gsniBand,
+  gsniBandCompactLabel,
   gsniBandTitle,
   gsniCaption,
   gsniFromRefProfile,
@@ -53,6 +54,9 @@ describe("gsni display", () => {
     assert.equal(gsniQualitativeLabel(-0.9), "Above-Average Frequency");
     assert.equal(gsniQualitativeLabel(1.8), "Well Below-Average Frequency");
     assert.equal(gsniQualitativeLabel(-1.8), "Well Above-Average Frequency");
+    assert.equal(gsniBandCompactLabel(0.2), "Typical");
+    assert.equal(gsniBandCompactLabel(0.9), "Below avg");
+    assert.equal(gsniBandCompactLabel(-1.8), "Well above avg");
   });
 
   it("explains frequency labels in plain language", () => {
