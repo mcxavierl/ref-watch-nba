@@ -1,15 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CloseGameSection } from "@/components/CloseGameSection";
 import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { RefBettingProfile } from "@/components/RefBettingProfile";
 import { JsonLd } from "@/components/JsonLd";
 import { NhlRefAnalyticsSection } from "@/components/NhlRefAnalyticsSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
+import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
-import { RefStatGrid } from "@/components/RefStatGrid";
 import {
   formatPct,
   getAllRefSlugs,
@@ -141,38 +139,30 @@ export default async function NhlRefProfilePage({
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">
-          {profile.bettingStats ? (
-            <RefBettingProfile
-              profile={profile}
-              stats={profile.bettingStats}
-              leagueId="nhl"
-              showMetrics={qualified}
-            />
-          ) : (
-            <RefStatGrid
-              profile={profile}
-              overBaseline={stats.meta.leagueOverBaseline}
-              foulLabel="PIM per game"
-              scoreLabel="Avg combined goals"
-              overLabel="Games over 6.0 goals"
-              showMetrics={qualified}
-            />
-          )}
-
-          {profile.nhlAnalytics && (
-            <NhlRefAnalyticsSection
-              analytics={profile.nhlAnalytics}
-              leagueAvgMinors={stats.meta.leagueAvgMinors}
-              leagueOvertimeRate={stats.meta.leagueOvertimeRate}
-              showMetrics={qualified}
-            />
-          )}
-
-          <CloseGameSection
-            metrics={closeGameMetrics}
-            subjectLabel={profile.name}
-            league="NHL"
-            embedded
+          <RefProfileNarrativeLayout
+            leagueId="nhl"
+            profile={profile}
+            stats={stats}
+            qualified={qualified}
+            closeGameMetrics={closeGameMetrics}
+            closeGameLeague="NHL"
+            showBettingProfile={Boolean(profile.bettingStats)}
+            statGridLabels={{
+              foulLabel: "PIM per game",
+              scoreLabel: "Avg combined goals",
+              overLabel: "Games over 6.0 goals",
+            }}
+            whistleAnalytics={
+              profile.nhlAnalytics ? (
+                <NhlRefAnalyticsSection
+                  analytics={profile.nhlAnalytics}
+                  leagueAvgMinors={stats.meta.leagueAvgMinors}
+                  leagueOvertimeRate={stats.meta.leagueOvertimeRate}
+                  showMetrics={qualified}
+                  embedded
+                />
+              ) : undefined
+            }
           />
         </div>
 

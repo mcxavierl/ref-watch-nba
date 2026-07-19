@@ -1,15 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CloseGameSection } from "@/components/CloseGameSection";
 import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { RefBettingProfile } from "@/components/RefBettingProfile";
-import { RefGsniSection } from "@/components/RefGsniSection";
 import { JsonLd } from "@/components/JsonLd";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
+import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
-import { RefStatGrid } from "@/components/RefStatGrid";
 import {
   formatPct,
   getAllRefSlugs,
@@ -142,32 +139,15 @@ export default async function RefProfilePage({
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">
-          {profile.bettingStats ? (
-            <RefBettingProfile
-              profile={profile}
-              stats={profile.bettingStats}
-              leagueId="nba"
-              showMetrics={qualified}
-            />
-          ) : (
-            <RefStatGrid
-              profile={profile}
-              overBaseline={stats.meta.leagueOverBaseline}
-              showMetrics={qualified}
-            />
-          )}
-
-          <RefGsniSection
-            metrics={gsniMetrics}
-            refName={profile.name}
-            showMetrics={qualified}
-          />
-
-          <CloseGameSection
-            metrics={closeGameMetrics}
-            subjectLabel={profile.name}
-            league="NBA"
-            embedded
+          <RefProfileNarrativeLayout
+            leagueId="nba"
+            profile={profile}
+            stats={stats}
+            qualified={qualified}
+            gsniMetrics={gsniMetrics}
+            closeGameMetrics={closeGameMetrics}
+            closeGameLeague="NBA"
+            showBettingProfile={Boolean(profile.bettingStats)}
           />
         </div>
 

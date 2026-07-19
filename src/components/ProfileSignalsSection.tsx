@@ -18,9 +18,7 @@ const KEY_SIGNAL_KINDS = new Set<ProfileSignal["kind"]>([
 ]);
 
 function keyFindingLabel(signal: ProfileSignal): string {
-  if (signal.kind === "scoring-delta") return "Scoring outlier";
-  if (signal.kind === "whistle-delta") return "Whistle extreme";
-  return signal.headline;
+  return signal.headline.split(" · ")[0] ?? signal.headline;
 }
 
 function profileStatToneClass(label: string, value: string, detail?: string) {
@@ -99,7 +97,12 @@ function SignalCard({
         {signal.notable && <NotableInsightBadge />}
       </div>
       <p className={bodyClass}>{signal.body}</p>
-      <SignalStats stats={signal.stats} />
+      <details className="profile-signal-details mt-3">
+        <summary className="cursor-pointer text-xs font-medium text-slate-400">
+          Technical details
+        </summary>
+        <SignalStats stats={signal.stats} />
+      </details>
     </div>
   );
 }

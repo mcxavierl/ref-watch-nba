@@ -16,10 +16,12 @@ import { GSNI_MIN_HIGH_LEVERAGE_MINUTES } from "@/lib/provenance";
 export function RefGsniSection({
   metrics,
   showMetrics = true,
+  embedded = false,
 }: {
   metrics: RefGsniMetrics | null;
   refName: string;
   showMetrics?: boolean;
+  embedded?: boolean;
 }) {
   if (!metrics) return null;
 
@@ -27,6 +29,49 @@ export function RefGsniSection({
     showMetrics &&
     metrics.gateCleared &&
     metrics.referee_gsni !== undefined;
+
+  const body = (
+    <>
+      {!showMetrics ? (
+        <p className="gsni-sub-text">{GSNI_INSUFFICIENT_DATA_LABEL}</p>
+      ) : gateCleared ? (
+        <GsniCard>
+          <div className="gsni-profile-active">
+            {metrics.gsniShrinkageTooltip ? (
+              <MetricInfoHint hint={metrics.gsniShrinkageTooltip}>
+                <GsniRelativeGauge gsni={metrics.referee_gsni!} />
+              </MetricInfoHint>
+            ) : (
+              <GsniRelativeGauge gsni={metrics.referee_gsni!} />
+            )}
+            <div className="gsni-profile-pills">
+              <GsniInsightPill icon={Activity}>
+                Data confidence: {gsniConfidenceLabel(metrics.highLeverageMinutes)}
+              </GsniInsightPill>
+              <GsniInsightPill icon={Users}>
+                <GsniSampleCount>
+                  {Math.round(metrics.highLeverageMinutes)}
+                </GsniSampleCount>{" "}
+                high-leverage min
+              </GsniInsightPill>
+              <GsniInsightPill icon={Target}>
+                Minimum: {GSNI_MIN_HIGH_LEVERAGE_MINUTES} min
+              </GsniInsightPill>
+            </div>
+          </div>
+        </GsniCard>
+      ) : (
+        <GsniSoftLockCard
+          minutes={metrics.highLeverageMinutes}
+          gate={GSNI_MIN_HIGH_LEVERAGE_MINUTES}
+        />
+      )}
+    </>
+  );
+
+  if (embedded) {
+    return <div className="ref-gsni-embedded min-w-0">{body}</div>;
+  }
 
   return (
     <section className="ref-profile-section">
@@ -41,42 +86,7 @@ export function RefGsniSection({
         </h2>
       </div>
 
-      <div className="ref-table-section-body">
-        {!showMetrics ? (
-          <p className="gsni-sub-text">{GSNI_INSUFFICIENT_DATA_LABEL}</p>
-        ) : gateCleared ? (
-          <GsniCard>
-            <div className="gsni-profile-active">
-              {metrics.gsniShrinkageTooltip ? (
-                <MetricInfoHint hint={metrics.gsniShrinkageTooltip}>
-                  <GsniRelativeGauge gsni={metrics.referee_gsni!} />
-                </MetricInfoHint>
-              ) : (
-                <GsniRelativeGauge gsni={metrics.referee_gsni!} />
-              )}
-              <div className="gsni-profile-pills">
-                <GsniInsightPill icon={Activity}>
-                  Data confidence: {gsniConfidenceLabel(metrics.highLeverageMinutes)}
-                </GsniInsightPill>
-                <GsniInsightPill icon={Users}>
-                  <GsniSampleCount>
-                    {Math.round(metrics.highLeverageMinutes)}
-                  </GsniSampleCount>{" "}
-                  high-leverage min
-                </GsniInsightPill>
-                <GsniInsightPill icon={Target}>
-                  Minimum: {GSNI_MIN_HIGH_LEVERAGE_MINUTES} min
-                </GsniInsightPill>
-              </div>
-            </div>
-          </GsniCard>
-        ) : (
-          <GsniSoftLockCard
-            minutes={metrics.highLeverageMinutes}
-            gate={GSNI_MIN_HIGH_LEVERAGE_MINUTES}
-          />
-        )}
-      </div>
+      <div className="ref-table-section-body">{body}</div>
     </section>
   );
 }

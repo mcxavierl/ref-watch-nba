@@ -6,6 +6,7 @@ import type { Finding, ScoredFindingBase } from "@/lib/findings-shared";
 import { collectRefTeamScoringExtremes, rankScore } from "@/lib/findings-shared";
 import { pickFeaturedFindings, rankScoredFindings, weightedLeagueOverRate } from "@/lib/findings-significance";
 import { attachRegionalContextToFindings } from "@/lib/regional-context";
+import { atsOutlierHeadline } from "@/lib/insight-headlines";
 import {
   buildCloseGameLeagueFinding,
   buildLeagueSkewFinding,
@@ -233,12 +234,15 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
   if (!best) return null;
 
   const record = best.ref.bettingStats!.homeTeamAts;
-  const direction = best.coverRate >= 0.5 ? "cover" : "fail to cover";
 
   return {
     id: "cbb-ats-outlier",
     category: "ats-edge",
-    headline: `Home teams ${direction} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS with ${best.ref.name}`,
+    headline: atsOutlierHeadline(
+      best.ref.name,
+      best.coverRate,
+      formatPctFromWlp(record.wins, record.losses, record.pushes),
+    ),
     summary: `${formatWlpShort(record)} across ${best.games} lined games, ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
     stats: [
       {

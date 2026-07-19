@@ -2,15 +2,7 @@ import type { ReactNode } from "react";
 import { DynamicInsightPillRow } from "@/components/DynamicInsightPill";
 import { FavoritesStar } from "@/components/FavoritesStar";
 import { RefAvatar } from "@/components/RefAvatar";
-import { RefereeWhistleDispositionStrip } from "@/components/RefereeWhistleDispositionStrip";
-import { RefereeWhistleMetricToggle } from "@/components/RefereeWhistleMetricToggle";
-import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
-import { GsniGauge } from "@/components/GsniGauge";
-import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { buildRefMasterInsights } from "@/lib/ref-master-insights";
-import { gsniShrinkageFromProfile } from "@/lib/gsni-display";
-import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
-import { isWhistleTaxonomyLeague } from "@/config/penalty-types";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
@@ -31,8 +23,8 @@ export type RefereeMasterCardProps = {
 };
 
 /**
- * Unified referee profile header with consolidated request-scoped insight pills.
- * Heavy anomaly blocks (marquee, whistle drift, geo) collapse into DynamicInsightPill.
+ * Unified referee profile header: identity and master insight pills only.
+ * Officiating gauges live in RefProfileOfficiatingBiasSection.
  */
 export function RefereeMasterCard({
   profile,
@@ -47,11 +39,6 @@ export function RefereeMasterCard({
   children,
 }: RefereeMasterCardProps) {
   const insights = buildRefMasterInsights(leagueId, profile, stats, qualified);
-  const whistleIndex = qualified ? whistleIndexFromRefProfile(profile) : null;
-  const gsniDisplay = qualified && leagueId === "nfl" ? gsniShrinkageFromProfile(profile) : null;
-  const gameStateIndex = gsniDisplay?.display ?? null;
-  const gsniSample =
-    gameStateIndex !== null && profile.gsniHighLeverageMinutes !== undefined;
 
   return (
     <header className="page-profile-header">
@@ -78,54 +65,6 @@ export function RefereeMasterCard({
             />
           </div>
           <DynamicInsightPillRow insights={insights} />
-          {(whistleIndex !== null || gameStateIndex !== null) ? (
-            <div className="ref-profile-gauge-row">
-              {whistleIndex !== null ? (
-                <WhistleIndexGauge index={whistleIndex} size="sm" className="min-w-[9.5rem] flex-1" />
-              ) : null}
-              {gameStateIndex !== null ? (
-                <MetricInfoHint
-                  hint={
-                    gsniDisplay?.tooltip ??
-                    "High-leverage penalty frequency vs league average in matched score-and-clock situations. Index Score compares this official to the league average: positive scores indicate below-average penalty frequency; negative scores indicate above-average frequency."
-                  }
-                >
-                  <GsniGauge index={gameStateIndex} size="sm" className="min-w-[9.5rem] flex-1" />
-                </MetricInfoHint>
-              ) : null}
-            </div>
-          ) : null}
-          {gsniSample ? (
-            <p className="gsni-sub-text mt-1">
-              <span className="gsni-sample-count font-semibold tabular-nums text-white">
-                {profile.gsniHighLeverageMinutes?.toFixed(0)}
-              </span>{" "}
-              HL min across{" "}
-              <span className="gsni-sample-count font-semibold tabular-nums text-white">
-                {profile.gsniSampleGames ?? 0}
-              </span>{" "}
-              games
-            </p>
-          ) : null}
-          {isWhistleTaxonomyLeague(leagueId) ? (
-            <RefereeWhistleDispositionStrip
-              profile={profile}
-              leagueId={leagueId}
-              stats={stats}
-              scopedSeasons={stats.meta.seasons}
-              showMetrics={qualified}
-            />
-          ) : null}
-          {leagueId === "nfl" && profile.nflAnalytics ? (
-            <RefereeWhistleMetricToggle
-              analytics={profile.nflAnalytics}
-              profile={profile}
-              leagueAvgFouls={stats.meta.leagueAvgFouls}
-              leagueAvgPenaltyYards={stats.meta.leagueAvgPenaltyYards}
-              showMetrics={qualified}
-              className="mt-2"
-            />
-          ) : null}
         </div>
       </div>
 

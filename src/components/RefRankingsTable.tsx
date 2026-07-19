@@ -5,6 +5,16 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
+import { RankingSignalPill } from "@/components/RankingSignalPill";
+import { StandoutMetricBar } from "@/components/StandoutMetric";
+import { Pill } from "@/components/ui/Pill";
+import {
+  NO_ANOMALIES_DETECTED_COPY,
+  qualifiesRefAnomaly,
+  sortRefsByInterestingness,
+} from "@/lib/anomaly-surface";
+import { rankingInsightHeadline } from "@/lib/insight-headlines";
+import type { LeagueId } from "@/lib/leagues";
 import { signedDeltaTone } from "@/lib/metric-delight";
 import { formatPct, formatSigned, bettingAtsRate, bettingOuRate } from "@/lib/stats-utils";
 import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
@@ -12,6 +22,19 @@ import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/ranki
 import type { RefProfile } from "@/lib/types";
 
 type SortField = "games" | "scoring" | "whistle" | "overRate" | "ats" | "ouBetting";
+
+const LEAGUE_ID_BY_LABEL: Record<
+  "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  LeagueId
+> = {
+  NBA: "nba",
+  NHL: "nhl",
+  NFL: "nfl",
+  EPL: "epl",
+  LALIGA: "laliga",
+  CBB: "cbb",
+  CFB: "cfb",
+};
 
 function toggleSort(current: RefRankingSort, field: SortField): RefRankingSort {
   const [activeField, direction] = current.split("-") as [string, "asc" | "desc"];
@@ -102,7 +125,9 @@ export function RefRankingsTable({
   const [sort, setSort] = useState<RefRankingSort>(defaultSort);
   const [showLowSample, setShowLowSample] = useState(false);
   const [showAllRows, setShowAllRows] = useState(false);
+  const [anomaliesOnly, setAnomaliesOnly] = useState(false);
   const [expandedSlugs, setExpandedSlugs] = useState<Set<string>>(() => new Set());
+  const leagueId = LEAGUE_ID_BY_LABEL[league];
 
   useEffect(() => {
     setSort(defaultSort);
@@ -111,13 +136,29 @@ export function RefRankingsTable({
 
   const sorted = useMemo(() => {
     const pool = showLowSample ? refs : qualifiedRefs(refs, minSampleSize);
-    const filtered =
+    const filteredBySlug =
       filterSlugs && filterSlugs.size > 0
         ? pool.filter((ref) => filterSlugs.has(ref.slug))
         : pool;
+    const filtered = anomaliesOnly
+      ? filteredBySlug.filter((ref) =>
+          qualifiesRefAnomaly(ref, leagueId, signalCounts[ref.slug] ?? 0),
+        )
+      : filteredBySlug;
     if (preserveOrder) return filtered;
+    if (anomaliesOnly) return sortRefsByInterestingness(filtered, leagueId);
     return sortRefRankings(filtered, sort);
-  }, [refs, sort, showLowSample, minSampleSize, filterSlugs, preserveOrder]);
+  }, [
+    refs,
+    sort,
+    showLowSample,
+    minSampleSize,
+    filterSlugs,
+    preserveOrder,
+    anomaliesOnly,
+    leagueId,
+    signalCounts,
+  ]);
 
   const visibleRows = showAllRows ? sorted : sorted.slice(0, initialRowLimit);
   const hiddenCount = Math.max(0, sorted.length - initialRowLimit);
@@ -167,7 +208,7 @@ export function RefRankingsTable({
   return (
     <div>
       <div className="ranking-toolbar">
-        <div className="ranking-toolbar-row">
+        <div className="ranking-toolbar-row flex flex-wrap items-center gap-3">
           <label className="ranking-toggle">
             <input
               type="checkbox"
@@ -177,10 +218,77 @@ export function RefRankingsTable({
             />
             Show refs below {minSampleSize}-game gate
           </label>
+          <Pill
+            as="button"
+            variant="insight"
+            active={anomaliesOnly}
+            onClick={() => setAnomaliesOnly((current) => !current)}
+            aria-pressed={anomaliesOnly}
+          >
+            Anomalies only
+          </Pill>
         </div>
       </div>
 
-      <div className="ranking-table-wrap overflow-x-auto">
+      {sorted.length === 0 ? (
+        <p className="overview-slate-empty overview-slate-empty-panel">{NO_ANOMALIES_DETECTED_COPY}</p>
+      ) : (
+        <>
+      <div className="ranking-mobile-list md:hidden">
+        {visibleRows.map((ref) => {
+          const profileHref = `${basePath}/refs/${ref.slug}`;
+          const signalCount = signalCounts[ref.slug] ?? 0;
+          const whistleDelta =
+            league === "NHL"
+              ? ref.nhlAnalytics?.minorsDelta
+              : league === "NFL"
+                ? ref.nflAnalytics?.flagsDelta ?? ref.foulsDelta
+                : ref.foulsDelta;
+          const scoringDisplay =
+            leagueAvgTotal && prefersPctScoringDelta(leagueAvgTotal)
+              ? directoryScoringDisplay(ref, leagueAvgTotal).formatted
+              : formatSigned(ref.totalPointsDelta);
+          const headline = rankingInsightHeadline(ref, leagueId, whistleDelta);
+          const barMagnitude = Math.max(
+            Math.abs(ref.totalPointsDelta),
+            Math.abs(whistleDelta ?? 0),
+          );
+
+          return (
+            <article
+              key={ref.slug}
+              className="ranking-mobile-card overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-4"
+            >
+              <div className="flex min-w-0 items-start gap-3">
+                <RefAvatar name={ref.name} slug={ref.slug} sport={sport} size="sm" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Link href={profileHref} className="truncate font-medium text-white">
+                      {ref.name}
+                    </Link>
+                    <RankingSignalPill
+                      officialRef={ref}
+                      leagueId={leagueId}
+                      signalCount={signalCount}
+                      profileHref={profileHref}
+                    />
+                  </div>
+                  <p className="mt-1 truncate text-sm font-medium text-slate-200">{headline}</p>
+                  <StandoutMetricBar
+                    label={scoringDisplay}
+                    magnitude={barMagnitude}
+                    maxMagnitude={5}
+                    hideLabel
+                  />
+                  <p className="mt-2 text-xs text-slate-400">N={ref.games.toLocaleString()} games</p>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="ranking-table-wrap hidden overflow-x-auto md:block">
         <table className="data-table ranking-table min-w-[640px]">
           <thead>
             <tr className="data-table-head">
@@ -390,6 +498,8 @@ export function RefRankingsTable({
           </button>
         </div>
       ) : null}
+        </>
+      )}
     </div>
   );
 }

@@ -19,12 +19,14 @@ export function NflRefAnalyticsSection({
   leagueAvgPenaltyYards,
   showMetrics = true,
   profile,
+  embedded = false,
 }: {
   analytics: NflRefAnalytics;
   leagueAvgFouls?: number;
   leagueAvgPenaltyYards?: number;
   showMetrics?: boolean;
   profile?: Pick<RefProfile, "gsniHighLeverageMinutes" | "games">;
+  embedded?: boolean;
 }) {
   const lf = leagueAvgFouls ?? 13;
   const ly = leagueAvgPenaltyYards ?? 95;
@@ -34,6 +36,48 @@ export function NflRefAnalyticsSection({
     : analytics.leverageSampleGames ?? 0;
   const shrunk = shrinkNflAnalyticsDisplay(analytics, sampleN, lf, ly);
 
+  const content = !showMetrics ? (
+    <p className="text-sm font-normal text-slate-400">Sample gate not cleared.</p>
+  ) : (
+    <>
+      <RefereeWhistleMetricToggle
+        analytics={analytics}
+        shrunk={shrunk}
+        className="mb-4"
+      />
+      <RefDashboardStatGrid>
+        <RefDashboardStatCell
+          label="Flags per game"
+          value={roundDisplay(shrunk.avgFlagsPerGame.display)}
+          detail={`${formatSigned(shrunk.flagsDelta.display)} vs ${lf} avg`}
+          provenance={prov?.avgFlagsPerGame}
+          valueTooltip={shrunk.avgFlagsPerGame.tooltip}
+        />
+        <RefDashboardStatCell
+          label="Penalty yards"
+          value={roundDisplay(shrunk.avgPenaltyYardsPerGame.display)}
+          detail={`${formatSigned(shrunk.penaltyYardsDelta.display)} vs ${ly} avg`}
+          provenance={prov?.penaltyYards}
+          valueTooltip={shrunk.avgPenaltyYardsPerGame.tooltip}
+        />
+        <RefDashboardStatCell label="Flag imbalance" value={String(analytics.avgFlagImbalance)} detail="Avg |home − away| flags" provenance={prov?.penaltyBalance} />
+        <RefDashboardStatCell label="Balance profile" value={analytics.balanceKind} detail={`${formatPct(analytics.balancedGameRate)} within 1 flag`} provenance={prov?.penaltyBalance} />
+        {shrunk.avgHighLeverageImpactPerGame ? (
+          <RefDashboardStatCell
+            label="High-leverage impact"
+            value={roundDisplay(shrunk.avgHighLeverageImpactPerGame.display)}
+            detail={`${formatSigned(shrunk.highLeverageImpactDelta?.display ?? 0)} vs 8.2 league avg`}
+            valueTooltip={shrunk.avgHighLeverageImpactPerGame.tooltip}
+          />
+        ) : null}
+      </RefDashboardStatGrid>
+    </>
+  );
+
+  if (embedded) {
+    return <div className="ref-whistle-analytics-embedded min-w-0">{content}</div>;
+  }
+
   return (
     <section className="ref-profile-section">
       <div className="ref-table-section-header">
@@ -41,43 +85,7 @@ export function NflRefAnalyticsSection({
           <TermHelp id="nfl-ref-analytics">Whistle analytics</TermHelp>
         </h2>
       </div>
-      {!showMetrics ? (
-        <p className="ref-table-section-body text-sm font-normal text-slate-400">Sample gate not cleared.</p>
-      ) : (
-        <div className="ref-table-section-body">
-          <RefereeWhistleMetricToggle
-            analytics={analytics}
-            shrunk={shrunk}
-            className="mb-4"
-          />
-          <RefDashboardStatGrid>
-            <RefDashboardStatCell
-              label="Flags per game"
-              value={roundDisplay(shrunk.avgFlagsPerGame.display)}
-              detail={`${formatSigned(shrunk.flagsDelta.display)} vs ${lf} avg`}
-              provenance={prov?.avgFlagsPerGame}
-              valueTooltip={shrunk.avgFlagsPerGame.tooltip}
-            />
-            <RefDashboardStatCell
-              label="Penalty yards"
-              value={roundDisplay(shrunk.avgPenaltyYardsPerGame.display)}
-              detail={`${formatSigned(shrunk.penaltyYardsDelta.display)} vs ${ly} avg`}
-              provenance={prov?.penaltyYards}
-              valueTooltip={shrunk.avgPenaltyYardsPerGame.tooltip}
-            />
-            <RefDashboardStatCell label="Flag imbalance" value={String(analytics.avgFlagImbalance)} detail="Avg |home − away| flags" provenance={prov?.penaltyBalance} />
-            <RefDashboardStatCell label="Balance profile" value={analytics.balanceKind} detail={`${formatPct(analytics.balancedGameRate)} within 1 flag`} provenance={prov?.penaltyBalance} />
-            {shrunk.avgHighLeverageImpactPerGame ? (
-              <RefDashboardStatCell
-                label="High-leverage impact"
-                value={roundDisplay(shrunk.avgHighLeverageImpactPerGame.display)}
-                detail={`${formatSigned(shrunk.highLeverageImpactDelta?.display ?? 0)} vs 8.2 league avg`}
-                valueTooltip={shrunk.avgHighLeverageImpactPerGame.tooltip}
-              />
-            ) : null}
-          </RefDashboardStatGrid>
-        </div>
-      )}
+      <div className="ref-table-section-body">{content}</div>
     </section>
   );
 }

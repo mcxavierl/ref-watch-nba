@@ -5,11 +5,12 @@ import { useMemo, useState } from "react";
 import { GsniCard } from "@/components/GsniCard";
 import { GsniCorrelationPill } from "@/components/GsniCorrelationPill";
 import { GsniResearchTable } from "@/components/GsniResearchTable";
-import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniScoreBlock } from "@/components/GsniScoreBlock";
 import { GsniResearchIntro } from "@/components/GsniResearchIntro";
 import { Pill } from "@/components/ui/Pill";
 import { TermHelp } from "@/components/TermHelp";
+import { NO_ANOMALIES_DETECTED_COPY } from "@/lib/anomaly-surface";
+import { gsniInsightSummary } from "@/lib/gsni-display";
 import { gsniQualifiesHighVariance } from "@/lib/gsni-research";
 import type { GsniResearchHighlight, GsniResearchRow } from "@/lib/gsni-research";
 import type { InsightsLeagueId } from "@/lib/league-manifest";
@@ -18,7 +19,9 @@ function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
   return (
     <GsniCard className="gsni-research-highlight gsni-research-highlight--card h-full">
       <div className="flex min-w-0 flex-wrap items-center justify-between gap-2">
-        <p className="gsni-gauge-label m-0">High-Leverage Penalty Frequency</p>
+        <p className="gsni-gauge-label m-0 min-w-0 truncate">
+          {gsniInsightSummary(finding.gsni!)}
+        </p>
         <GsniCorrelationPill score={finding.gsni!} />
       </div>
       <Link
@@ -33,11 +36,9 @@ function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
       >
         <GsniScoreBlock score={finding.gsni!} compact showPill={false} />
       </Link>
-      <p className="gsni-sub-text mt-2">
-        Sample size:{" "}
-        <GsniSampleCount>{finding.sampleGames}</GsniSampleCount> games ·{" "}
-        <GsniSampleCount>{Math.round(finding.highLeverageMinutes)}</GsniSampleCount>{" "}
-        high-leverage min
+      <p className="gsni-sub-text mt-2 text-slate-400">
+        N={finding.sampleGames} games ·{" "}
+        {Math.round(finding.highLeverageMinutes)} high-leverage min
       </p>
     </GsniCard>
   );
@@ -94,7 +95,7 @@ export function GameStateIndexDashboard({
               onClick={() => setHighVarianceOnly((current) => !current)}
               aria-pressed={highVarianceOnly}
             >
-              High Variance Only
+              Anomalies only
             </Pill>
           </div>
           {filteredHighlights.length > 0 ? (
@@ -104,10 +105,7 @@ export function GameStateIndexDashboard({
               ))}
             </div>
           ) : (
-            <p className="gsni-sub-text">
-              No high-variance officials match this filter. Turn off High Variance Only to
-              view league-average profiles.
-            </p>
+            <p className="gsni-sub-text">{NO_ANOMALIES_DETECTED_COPY}</p>
           )}
         </section>
       ) : null}
@@ -123,7 +121,7 @@ export function GameStateIndexDashboard({
               onClick={() => setHighVarianceOnly((current) => !current)}
               aria-pressed={highVarianceOnly}
             >
-              High Variance Only
+              Anomalies only
             </Pill>
           ) : null}
         </div>
@@ -136,9 +134,13 @@ export function GameStateIndexDashboard({
         ) : null}
         <p className="gsni-sub-text mb-3">
           {filteredRows.length} official{filteredRows.length === 1 ? "" : "s"} shown
-          {highVarianceOnly ? " (high-variance filter on)" : ""}.
+          {highVarianceOnly ? " (anomalies filter on)" : ""}.
         </p>
-        <GsniResearchTable rows={filteredRows} />
+        {filteredRows.length > 0 ? (
+          <GsniResearchTable rows={filteredRows} />
+        ) : (
+          <p className="gsni-sub-text">{NO_ANOMALIES_DETECTED_COPY}</p>
+        )}
       </section>
     </>
   );

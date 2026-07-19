@@ -1,15 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CloseGameSection } from "@/components/CloseGameSection";
+import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { RefBettingProfile } from "@/components/RefBettingProfile";
-import { FavoritesStar } from "@/components/FavoritesStar";
-import { RefAvatar } from "@/components/RefAvatar";
 import { JsonLd } from "@/components/JsonLd";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
+import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
-import { RefStatGrid } from "@/components/RefStatGrid";
 import {
   formatPct,
   getAllRefSlugs,
@@ -75,7 +72,7 @@ export default async function RefProfilePage({
   };
   const qualified = profile.games >= stats.meta.minSampleSize;
   const bbrTeamNote = refTeamDataNote(stats.meta);
-  const profileSignals = computeProfileSignals(profile, stats.meta, "nba");
+  const profileSignals = computeProfileSignals(profile, stats.meta, "cbb");
   const closeGameMetrics = computeRefCloseGameMetrics(
     profile.slug,
     stats.meta,
@@ -107,35 +104,19 @@ export default async function RefProfilePage({
         ← Home
       </Link>
 
-      <header className="page-profile-header">
-        <div className="page-hero-head">
-          <RefAvatar
-            name={profile.name}
-            slug={profile.slug}
-            sport="cbb"
-            size="lg"
-          />
-          <div className="page-hero-head-copy">
-            <div className="page-hero-head-title-row">
-              <h1 className="page-title">{profile.name}</h1>
-              <span className="font-tabular text-sm text-muted">
-                #{profile.number}
-              </span>
-              <FavoritesStar
-                id={profile.slug}
-                kind="ref"
-                league="cbb"
-                label={profile.name}
-              />
-            </div>
-          </div>
-        </div>
-        {!qualified && (
-          <p className="mt-3 text-sm text-amber-800">
+      <RefereeMasterCard
+        profile={profile}
+        leagueId="cbb"
+        stats={stats}
+        sport="cbb"
+        qualified={qualified}
+        sampleGateMessage={
+          <>
             Below {stats.meta.minSampleSize}-game minimum, metrics hidden until
             sample gate clears.
-          </p>
-        )}
+          </>
+        }
+      >
         <RefProfileMetadataBar
           seasons={profile.seasons}
           games={profile.games}
@@ -147,30 +128,18 @@ export default async function RefProfilePage({
         {bbrTeamNote && (
           <p className="mt-3 text-sm text-amber-800">{bbrTeamNote}</p>
         )}
-      </header>
+      </RefereeMasterCard>
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">
-          {profile.bettingStats ? (
-            <RefBettingProfile
-              profile={profile}
-              stats={profile.bettingStats}
-              leagueId="cbb"
-              showMetrics={qualified}
-            />
-          ) : (
-            <RefStatGrid
-              profile={profile}
-              overBaseline={stats.meta.leagueOverBaseline}
-              showMetrics={qualified}
-            />
-          )}
-
-          <CloseGameSection
-            metrics={closeGameMetrics}
-            subjectLabel={profile.name}
-            league="CBB"
-            embedded
+          <RefProfileNarrativeLayout
+            leagueId="cbb"
+            profile={profile}
+            stats={stats}
+            qualified={qualified}
+            closeGameMetrics={closeGameMetrics}
+            closeGameLeague="CBB"
+            showBettingProfile={Boolean(profile.bettingStats)}
           />
         </div>
 

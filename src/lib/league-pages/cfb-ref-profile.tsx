@@ -1,16 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CloseGameSection } from "@/components/CloseGameSection";
+import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { RefBettingProfile } from "@/components/RefBettingProfile";
-import { FavoritesStar } from "@/components/FavoritesStar";
-import { RefAvatar } from "@/components/RefAvatar";
 import { JsonLd } from "@/components/JsonLd";
 import { CfbRefAnalyticsSection } from "@/components/CfbRefAnalyticsSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
+import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
-import { RefStatGrid } from "@/components/RefStatGrid";
 import {
   formatPct,
   getAllRefSlugs,
@@ -119,37 +116,21 @@ export default async function CfbRefProfilePage({
         ← Home
       </Link>
 
-      <header className="page-profile-header">
-        <div className="page-hero-head">
-          <RefAvatar
-            name={profile.name}
-            slug={profile.slug}
-            sport="cfb"
-            size="xl"
-            decorative={false}
-            className="ring-2 ring-zinc-200 shadow-md"
-          />
-          <div className="page-hero-head-copy">
-            <div className="page-hero-head-title-row">
-              <h1 className="page-title">{profile.name}</h1>
-              <span className="font-tabular text-sm text-muted">
-                #{profile.number}
-              </span>
-              <FavoritesStar
-                id={profile.slug}
-                kind="ref"
-                league="cfb"
-                label={profile.name}
-              />
-            </div>
-          </div>
-        </div>
-        {!qualified && (
-          <p className="mt-3 text-sm text-amber-800">
+      <RefereeMasterCard
+        profile={profile}
+        leagueId="cfb"
+        stats={stats}
+        sport="cfb"
+        qualified={qualified}
+        avatarSize="xl"
+        avatarClassName="ring-2 ring-zinc-200 shadow-md"
+        sampleGateMessage={
+          <>
             Below {stats.meta.minSampleSize}-game minimum, metrics hidden until
             sample gate clears.
-          </p>
-        )}
+          </>
+        }
+      >
         <RefProfileMetadataBar
           seasons={profile.seasons}
           games={profile.games}
@@ -158,42 +139,34 @@ export default async function CfbRefProfilePage({
           leagueId="cfb"
           slug={profile.slug}
         />
-      </header>
+      </RefereeMasterCard>
 
       <div className="ref-dashboard-grid">
         <div className="ref-dashboard-main">
-          {profile.bettingStats && stats.meta.atsAvailable ? (
-            <RefBettingProfile
-              profile={profile}
-              stats={profile.bettingStats}
-              leagueId="cfb"
-              showMetrics={qualified}
-            />
-          ) : (
-            <RefStatGrid
-              profile={profile}
-              overBaseline={stats.meta.leagueOverBaseline}
-              foulLabel="Flags per game"
-              scoreLabel="Avg combined points"
-              overLabel={`Games over ${stats.meta.leagueOverBaseline} pts`}
-              showMetrics={qualified}
-            />
-          )}
-
-          {profile.cfbAnalytics && (
-            <CfbRefAnalyticsSection
-              analytics={profile.cfbAnalytics}
-              leagueAvgFouls={stats.meta.leagueAvgFouls}
-              leagueAvgPenaltyYards={stats.meta.leagueAvgPenaltyYards}
-              showMetrics={qualified}
-            />
-          )}
-
-          <CloseGameSection
-            metrics={closeGameMetrics}
-            subjectLabel={profile.name}
-            league="CFB"
-            embedded
+          <RefProfileNarrativeLayout
+            leagueId="cfb"
+            profile={profile}
+            stats={stats}
+            qualified={qualified}
+            closeGameMetrics={closeGameMetrics}
+            closeGameLeague="CFB"
+            showBettingProfile={Boolean(profile.bettingStats && stats.meta.atsAvailable)}
+            statGridLabels={{
+              foulLabel: "Flags per game",
+              scoreLabel: "Avg combined points",
+              overLabel: `Games over ${stats.meta.leagueOverBaseline} pts`,
+            }}
+            whistleAnalytics={
+              profile.cfbAnalytics ? (
+                <CfbRefAnalyticsSection
+                  analytics={profile.cfbAnalytics}
+                  leagueAvgFouls={stats.meta.leagueAvgFouls}
+                  leagueAvgPenaltyYards={stats.meta.leagueAvgPenaltyYards}
+                  showMetrics={qualified}
+                  embedded
+                />
+              ) : undefined
+            }
           />
         </div>
 

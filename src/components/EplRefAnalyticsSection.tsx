@@ -10,6 +10,7 @@ export function EplRefAnalyticsSection({
   leagueAvgRedCards,
   leagueAvgPenalties,
   showMetrics = true,
+  embedded = false,
 }: {
   analytics: EplRefAnalytics;
   leagueAvgFouls?: number;
@@ -17,12 +18,60 @@ export function EplRefAnalyticsSection({
   leagueAvgRedCards?: number;
   leagueAvgPenalties?: number;
   showMetrics?: boolean;
+  embedded?: boolean;
 }) {
   const lf = leagueAvgFouls ?? 22;
   const ly = leagueAvgYellowCards ?? 3.5;
   const lr = leagueAvgRedCards ?? 0.15;
   const lp = leagueAvgPenalties ?? 0.28;
   const prov = analytics.provenance;
+
+  const content = !showMetrics ? (
+    <p className="text-sm font-normal text-slate-400">Sample gate not cleared.</p>
+  ) : (
+    <RefDashboardStatGrid>
+      <RefDashboardStatCell
+        label="Goals per match"
+        value={String(analytics.avgGoalsPerGame)}
+        detail={`${formatSigned(analytics.goalsDelta)} vs league avg`}
+        provenance={prov?.foulsBaseline}
+      />
+      <RefDashboardStatCell
+        label="Fouls per match"
+        value={String(analytics.avgFoulsPerGame)}
+        detail={`${formatSigned(analytics.foulsDelta)} vs ${lf} avg`}
+        provenance={prov?.avgFoulsPerGame}
+      />
+      <RefDashboardStatCell
+        label="Yellow cards"
+        value={String(analytics.avgYellowCardsPerGame)}
+        detail={`${formatSigned(analytics.yellowCardsDelta)} vs ${ly} avg`}
+        provenance={prov?.avgYellowCardsPerGame}
+      />
+      <RefDashboardStatCell
+        label="Red cards"
+        value={String(analytics.avgRedCardsPerGame)}
+        detail={`${formatSigned(analytics.redCardsDelta)} vs ${lr} avg`}
+        provenance={prov?.avgRedCardsPerGame}
+      />
+      <RefDashboardStatCell
+        label="Penalties"
+        value={String(analytics.avgPenaltiesPerGame)}
+        detail={`${formatSigned(analytics.penaltiesDelta)} vs ${lp} avg`}
+        provenance={prov?.avgPenaltiesPerGame}
+      />
+      <RefDashboardStatCell
+        label="Card balance"
+        value={analytics.balanceKind}
+        detail={`${(analytics.balancedGameRate * 100).toFixed(0)}% within 1 card · avg imbalance ${analytics.avgCardImbalance}`}
+        provenance={prov?.cardBalance}
+      />
+    </RefDashboardStatGrid>
+  );
+
+  if (embedded) {
+    return <div className="ref-whistle-analytics-embedded min-w-0">{content}</div>;
+  }
 
   return (
     <section className="ref-profile-section">
@@ -31,50 +80,7 @@ export function EplRefAnalyticsSection({
           <TermHelp id="nfl-ref-analytics">Whistle analytics</TermHelp>
         </h2>
       </div>
-      {!showMetrics ? (
-        <p className="ref-table-section-body text-sm font-normal text-slate-400">Sample gate not cleared.</p>
-      ) : (
-        <div className="ref-table-section-body">
-          <RefDashboardStatGrid>
-            <RefDashboardStatCell
-              label="Goals per match"
-              value={String(analytics.avgGoalsPerGame)}
-              detail={`${formatSigned(analytics.goalsDelta)} vs league avg`}
-              provenance={prov?.foulsBaseline}
-            />
-            <RefDashboardStatCell
-              label="Fouls per match"
-              value={String(analytics.avgFoulsPerGame)}
-              detail={`${formatSigned(analytics.foulsDelta)} vs ${lf} avg`}
-              provenance={prov?.avgFoulsPerGame}
-            />
-            <RefDashboardStatCell
-              label="Yellow cards"
-              value={String(analytics.avgYellowCardsPerGame)}
-              detail={`${formatSigned(analytics.yellowCardsDelta)} vs ${ly} avg`}
-              provenance={prov?.avgYellowCardsPerGame}
-            />
-            <RefDashboardStatCell
-              label="Red cards"
-              value={String(analytics.avgRedCardsPerGame)}
-              detail={`${formatSigned(analytics.redCardsDelta)} vs ${lr} avg`}
-              provenance={prov?.avgRedCardsPerGame}
-            />
-            <RefDashboardStatCell
-              label="Penalties"
-              value={String(analytics.avgPenaltiesPerGame)}
-              detail={`${formatSigned(analytics.penaltiesDelta)} vs ${lp} avg`}
-              provenance={prov?.avgPenaltiesPerGame}
-            />
-            <RefDashboardStatCell
-              label="Card balance"
-              value={analytics.balanceKind}
-              detail={`${(analytics.balancedGameRate * 100).toFixed(0)}% within 1 card · avg imbalance ${analytics.avgCardImbalance}`}
-              provenance={prov?.cardBalance}
-            />
-          </RefDashboardStatGrid>
-        </div>
-      )}
+      <div className="ref-table-section-body">{content}</div>
     </section>
   );
 }

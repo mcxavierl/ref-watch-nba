@@ -1,4 +1,10 @@
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import {
+  homeAtsSignalHeadline,
+  overTiltInsight,
+  scoringPaceInsight,
+  whistleInflationHeadline,
+} from "@/lib/insight-headlines";
 import { formatPctFromWlp } from "@/lib/ref-betting";
 import { sampleGateStatus } from "@/lib/provenance";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
@@ -74,11 +80,10 @@ function buildScoringSignal(
   if (Math.abs(delta) < threshold) return null;
 
   const unit = LEAGUES[leagueId].metrics.scoreUnitPlural;
-  const direction = delta > 0 ? "higher" : "lower";
 
   return {
     kind: "scoring-delta",
-    headline: `Combined scoring runs ${direction} than league average`,
+    headline: `${scoringPaceInsight(delta)} · ${formatSigned(delta)} vs league avg`,
     body: `${ref.name}'s games average ${ref.avgTotalPoints} combined ${unit}, ${formatSigned(delta)} vs the ${meta.leagueAvgTotal} league baseline across ${ref.games} games.`,
     stats: [
       {
@@ -106,11 +111,10 @@ function buildWhistleSignal(
   if (Math.abs(delta) < threshold) return null;
 
   const whistle = LEAGUES[leagueId].metrics.whistlePlain;
-  const direction = delta > 0 ? "more" : "fewer";
 
   return {
     kind: "whistle-delta",
-    headline: `${direction.charAt(0).toUpperCase()}${direction.slice(1)} ${whistle} than baseline`,
+    headline: `${whistleInflationHeadline(delta, whistle)} · ${formatSigned(delta)} vs avg`,
     body: `This crew averages ${ref.avgFouls} ${whistle} per game (${formatSigned(delta)} vs league). Whistle rate alone does not predict scoring; compare with the scoring delta above.`,
     stats: [
       {
@@ -135,12 +139,9 @@ function buildOverTiltSignal(
   const tilt = ref.overRate - 0.5;
   if (Math.abs(tilt) < overTiltThreshold()) return null;
 
-  const unit = LEAGUES[leagueId].metrics.scoreUnitPlural;
-  const lean = tilt > 0 ? "above" : "below";
-
   return {
     kind: "over-tilt",
-    headline: `Games finish ${lean} the ${meta.leagueOverBaseline}-${unit} benchmark more often than not`,
+    headline: `${overTiltInsight(tilt)} · ${formatPct(ref.overRate)} over rate`,
     body: `${formatPct(ref.overRate)} of ${ref.name}'s ${ref.games} games beat the combined ${meta.leagueOverBaseline} benchmark, ${formatSigned(tilt * 100)} percentage points from a neutral 50% split.`,
     stats: [
       {
@@ -202,12 +203,12 @@ function buildHomeAtsSignal(betting: RefBettingStats): ProfileSignal | null {
   const edge = rate - 0.5;
   if (Math.abs(edge) < 0.05) return null;
 
-  const direction = edge > 0 ? "cover" : "fail to cover";
+  const direction = edge > 0 ? "cover" : "fade";
 
   return {
     kind: "home-ats",
-    headline: `Home teams ${direction} the spread more often than not`,
-    body: `Home sides are ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS (${record.wins}-${record.losses}${record.pushes ? `-${record.pushes}` : ""}) across ${decisions} lined games. Closing lines may be estimated where sportsbook data is unavailable; treat as exploratory.`,
+    headline: `${homeAtsSignalHeadline(edge)} · ${formatPctFromWlp(record.wins, record.losses, record.pushes)} home ATS`,
+    body: `Home sides ${direction} the spread at ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS (${record.wins}-${record.losses}${record.pushes ? `-${record.pushes}` : ""}) across ${decisions} lined games. Closing lines may be estimated where sportsbook data is unavailable; treat as exploratory.`,
     stats: [
       {
         label: "Home ATS",

@@ -18,15 +18,51 @@ export function NhlRefAnalyticsSection({
   leagueAvgMinors,
   leagueOvertimeRate,
   showMetrics = true,
+  embedded = false,
 }: {
   analytics: NhlRefAnalytics;
   leagueAvgMinors?: number;
   leagueOvertimeRate?: number;
   showMetrics?: boolean;
+  embedded?: boolean;
 }) {
   const leagueMinors = leagueAvgMinors ?? 5.5;
   const leagueOt = leagueOvertimeRate ?? 0.23;
   const prov = analytics.provenance;
+
+  const content = !showMetrics ? (
+    <p className="text-sm font-normal text-slate-400">
+      Whistle analytics appear after this official clears the sample gate.
+    </p>
+  ) : (
+    <>
+      <RefDashboardStatGrid>
+        <RefDashboardStatCell
+          label={<TermHelp id="minors-per-game">Minors per game</TermHelp>}
+          value={String(analytics.avgMinorsPerGame)}
+          detail={`${formatSigned(analytics.minorsDelta)} vs ${leagueMinors} league`}
+          provenance={prov?.avgMinorsPerGame}
+        />
+        <RefDashboardStatCell
+          label={<TermHelp id="ot-rate">OT rate</TermHelp>}
+          value={formatPct(analytics.overtimeRate)}
+          detail={`${analytics.overtimeGames} OT/SO · league ${formatPct(leagueOt)}`}
+          provenance={prov?.overtimeRate}
+        />
+        <RefDashboardStatCell
+          label={<TermHelp id="penalty-balance">Penalty balance</TermHelp>}
+          value={analytics.balanceKind}
+          detail={`${formatPct(analytics.balancedGameRate)} within ±1 minor · avg gap ${analytics.avgMinorImbalance}`}
+          provenance={prov?.penaltyBalance}
+        />
+      </RefDashboardStatGrid>
+      <p className="mt-3 text-sm text-zinc-600">{balanceCopy[analytics.balanceKind]}</p>
+    </>
+  );
+
+  if (embedded) {
+    return <div className="ref-whistle-analytics-embedded min-w-0">{content}</div>;
+  }
 
   return (
     <section className="ref-profile-section">
@@ -38,39 +74,7 @@ export function NhlRefAnalyticsSection({
           Referee-only sample; linesmen excluded from minor and balance metrics.
         </p>
       </div>
-      {!showMetrics ? (
-        <p className="ref-table-section-body text-sm font-normal text-slate-400">
-          Whistle analytics appear after this official clears the sample gate.
-        </p>
-      ) : (
-        <>
-          <div className="ref-table-section-body">
-            <RefDashboardStatGrid>
-              <RefDashboardStatCell
-                label={<TermHelp id="minors-per-game">Minors per game</TermHelp>}
-                value={String(analytics.avgMinorsPerGame)}
-                detail={`${formatSigned(analytics.minorsDelta)} vs ${leagueMinors} league`}
-                provenance={prov?.avgMinorsPerGame}
-              />
-              <RefDashboardStatCell
-                label={<TermHelp id="ot-rate">OT rate</TermHelp>}
-                value={formatPct(analytics.overtimeRate)}
-                detail={`${analytics.overtimeGames} OT/SO · league ${formatPct(leagueOt)}`}
-                provenance={prov?.overtimeRate}
-              />
-              <RefDashboardStatCell
-                label={<TermHelp id="penalty-balance">Penalty balance</TermHelp>}
-                value={analytics.balanceKind}
-                detail={`${formatPct(analytics.balancedGameRate)} within ±1 minor · avg gap ${analytics.avgMinorImbalance}`}
-                provenance={prov?.penaltyBalance}
-              />
-            </RefDashboardStatGrid>
-          </div>
-          <p className="border-t border-border-subtle px-4 py-3 text-sm text-zinc-600 sm:px-5">
-            {balanceCopy[analytics.balanceKind]}
-          </p>
-        </>
-      )}
+      <div className="ref-table-section-body">{content}</div>
     </section>
   );
 }

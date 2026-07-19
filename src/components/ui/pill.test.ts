@@ -81,10 +81,10 @@ test("GsniScoreBlock uses diagnostic header and gauge", () => {
   assert.match(source, /GSNI_SCALE_LEGEND/);
 });
 
-test("GameStateIndexDashboard keeps High Variance Only filter available", () => {
+test("GameStateIndexDashboard keeps Anomalies only filter available", () => {
   const source = readFileSync("src/components/GameStateIndexDashboard.tsx", "utf8");
   assert.match(source, /useState\(false\)/);
-  assert.match(source, /High Variance Only/);
+  assert.match(source, /Anomalies only/);
 });
 
 test("Finding angle category pills can shrink inside flex headers", () => {
