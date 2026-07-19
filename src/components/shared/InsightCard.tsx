@@ -32,6 +32,7 @@ import { whistleIndexFromInsightCard } from "@/lib/whistle-index";
 import { STANDOUT_SPLIT_FOOTNOTE, formatSampleSizeLabel } from "@/lib/data-maturity";
 import { InsightCardShell } from "@/components/shared/InsightCardShell";
 import { InsightMetricComparison } from "@/components/shared/InsightMetricComparison";
+import { InsightTeamMark } from "@/components/shared/InsightTeamMark";
 import "@/components/insight-card.css";
 
 const InsightDrilldownModal = dynamic(
@@ -95,6 +96,12 @@ function InsightHonestyFootnote({
   );
 }
 
+function insightTeamMarkSize(
+  variant: "featured" | "trend" | "quick" | "carousel",
+): "md" | "lg" {
+  return variant === "featured" || variant === "carousel" ? "lg" : "md";
+}
+
 function InsightCardMeta({
   card,
   compact = false,
@@ -149,10 +156,20 @@ function CarouselInsightCard({
 
       <div className="overview-top-story-copy">
         <header className="overview-top-story-meta">
-          <span className="overview-top-story-meta-pill">
-            <LeagueNavMark league={card.leagueId} />
-            <span>{carouselMetaLabel(card)}</span>
-          </span>
+          <div className="overview-top-story-meta-band">
+            <span className="overview-top-story-meta-pill">
+              <LeagueNavMark league={card.leagueId} />
+              <span>{carouselMetaLabel(card)}</span>
+            </span>
+            {card.teamAbbr ? (
+              <InsightTeamMark
+                leagueId={card.leagueId}
+                teamAbbr={card.teamAbbr}
+                teamLabel={card.teamLabel}
+                size="lg"
+              />
+            ) : null}
+          </div>
         </header>
 
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-6">
@@ -246,18 +263,30 @@ function EditorialInsightCard({
         style={{ "--insight-index": index } as CSSProperties}
       >
         <header className="insight-editorial-head">
-          <div className="insight-editorial-head-row">
-            <span className="insight-editorial-league">
-              <LeagueNavMark league={card.leagueId} />
-              <span>{card.shortLabel}</span>
-            </span>
-            {variant !== "trend" ? (
-              <LeagueSeasonStartBadge leagueId={card.leagueId} />
+          <div className="insight-editorial-head-band">
+            <div className="insight-editorial-head-meta">
+              <div className="insight-editorial-head-row">
+                <span className="insight-editorial-league">
+                  <LeagueNavMark league={card.leagueId} />
+                  <span>{card.shortLabel}</span>
+                </span>
+                {variant !== "trend" ? (
+                  <LeagueSeasonStartBadge leagueId={card.leagueId} />
+                ) : null}
+              </div>
+              <p className="insight-editorial-kicker">
+                {normalizeCarouselCopy(homepageInsightKicker(card))}
+              </p>
+            </div>
+            {card.teamAbbr ? (
+              <InsightTeamMark
+                leagueId={card.leagueId}
+                teamAbbr={card.teamAbbr}
+                teamLabel={card.teamLabel}
+                size={insightTeamMarkSize(variant)}
+              />
             ) : null}
           </div>
-          <p className="insight-editorial-kicker">
-            {normalizeCarouselCopy(homepageInsightKicker(card))}
-          </p>
         </header>
 
         <button
@@ -378,11 +407,23 @@ function InlineInsightCard({
         style={{ "--insight-index": index } as CSSProperties}
       >
         <header className="insight-card-head">
-          <div className="insight-card-head-row">
-            <span className="insight-card-league">{card.shortLabel}</span>
-            <LeagueSeasonStartBadge leagueId={card.leagueId} />
+          <div className="insight-card-head-band">
+            <div className="insight-card-head-meta">
+              <div className="insight-card-head-row">
+                <span className="insight-card-league">{card.shortLabel}</span>
+                <LeagueSeasonStartBadge leagueId={card.leagueId} />
+              </div>
+              <p className="insight-card-kicker">{card.kicker}</p>
+            </div>
+            {card.teamAbbr ? (
+              <InsightTeamMark
+                leagueId={card.leagueId}
+                teamAbbr={card.teamAbbr}
+                teamLabel={card.teamLabel}
+                size="md"
+              />
+            ) : null}
           </div>
-          <p className="insight-card-kicker">{card.kicker}</p>
         </header>
 
         <button
