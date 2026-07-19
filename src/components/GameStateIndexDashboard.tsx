@@ -15,22 +15,30 @@ import type { InsightsLeagueId } from "@/lib/league-manifest";
 
 function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
   return (
-    <Link href={finding.href} className="block min-w-0">
-      <GsniCard className="gsni-research-highlight gsni-research-highlight--card h-full transition-[border-color,box-shadow] hover:border-slate-700">
-        <div className="flex min-w-0 flex-wrap items-center justify-between gap-2">
-          <p className="gsni-gauge-label m-0">High-Leverage Penalty Frequency</p>
-          <GsniCorrelationPill score={finding.gsni!} />
-        </div>
-        <p className="mt-2 truncate text-base font-semibold text-white">{finding.refName}</p>
-        <GsniScoreBlock score={finding.gsni!} compact showPill={false} className="mt-3" />
-        <p className="gsni-sub-text mt-2">
-          Sample size:{" "}
-          <GsniSampleCount>{finding.sampleGames}</GsniSampleCount> games ·{" "}
-          <GsniSampleCount>{Math.round(finding.highLeverageMinutes)}</GsniSampleCount>{" "}
-          high-leverage min
-        </p>
-      </GsniCard>
-    </Link>
+    <GsniCard className="gsni-research-highlight gsni-research-highlight--card h-full">
+      <div className="flex min-w-0 flex-wrap items-center justify-between gap-2">
+        <p className="gsni-gauge-label m-0">High-Leverage Penalty Frequency</p>
+        <GsniCorrelationPill score={finding.gsni!} />
+      </div>
+      <Link
+        href={finding.href}
+        className="mt-2 block truncate text-base font-semibold text-white hover:underline"
+      >
+        {finding.refName}
+      </Link>
+      <Link
+        href={finding.gameStateHref}
+        className="mt-3 block transition-[border-color,box-shadow] hover:opacity-95"
+      >
+        <GsniScoreBlock score={finding.gsni!} compact showPill={false} />
+      </Link>
+      <p className="gsni-sub-text mt-2">
+        Sample size:{" "}
+        <GsniSampleCount>{finding.sampleGames}</GsniSampleCount> games ·{" "}
+        <GsniSampleCount>{Math.round(finding.highLeverageMinutes)}</GsniSampleCount>{" "}
+        high-leverage min
+      </p>
+    </GsniCard>
   );
 }
 
@@ -95,7 +103,7 @@ export function GameStateIndexDashboard({
         </section>
       ) : null}
 
-      <section className="section-block">
+      <section className="section-block" id="gsni-official-table">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h2 className="section-title m-0">Game-State Index official table</h2>
           {compactHub ? (

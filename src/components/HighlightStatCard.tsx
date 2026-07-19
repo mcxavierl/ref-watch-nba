@@ -49,6 +49,7 @@ export function HighlightStatCard({
   sampleGames,
   rawDeltaPp,
   heroPills = false,
+  categoryHref,
 }: {
   leagueId: LeagueId;
   insightKind: string;
@@ -67,6 +68,7 @@ export function HighlightStatCard({
   sampleGames?: number;
   rawDeltaPp?: number;
   heroPills?: boolean;
+  categoryHref?: string;
 }) {
   const usesSplitHierarchy =
     sampleGames !== undefined &&
@@ -113,6 +115,49 @@ export function HighlightStatCard({
       <p className="rankings-insight-name">{refName}</p>
     ) : null;
 
+  const categoryPill = (
+    <Pill variant="category">{insightPillLabel(insightKind, kicker)}</Pill>
+  );
+
+  const metricBlock = primaryValue ? (
+    <div className="ref-card-metric-block" aria-label={primaryLabel}>
+      <div className={REF_CARD_METRIC_CLASS}>
+        <StandoutMetricValue tone={metricTone} size="lg">
+          {primaryValue}
+        </StandoutMetricValue>
+      </div>
+      {primaryLabel ? (
+        <p className={REF_CARD_METRIC_LABEL_CLASS}>{primaryLabel}</p>
+      ) : null}
+      {secondaryValue ? (
+        <div className="ref-card-metric-block ref-card-metric-block--secondary">
+          <div
+            className={`${REF_CARD_METRIC_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}
+            title={
+              deltaDisplay?.isAdjusted
+                ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
+                : undefined
+            }
+          >
+            <DirectionalDeltaValue
+              value={secondaryValue}
+              tone={
+                metricTone === "positive" || metricTone === "negative"
+                  ? metricTone
+                  : deltaToneFromValue(secondaryValue)
+              }
+              size="md"
+              className="highlight-stat-delta"
+            />
+          </div>
+          {secondaryLabel ? (
+            <p className={REF_CARD_METRIC_LABEL_CLASS}>{secondaryLabel}</p>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  ) : null;
+
   return (
     <RefCard
       data-league={leagueId}
@@ -127,7 +172,13 @@ export function HighlightStatCard({
         </span>
         {heroPills ? (
           <div className="highlight-stat-card-head-copy">
-            <Pill variant="category">{insightPillLabel(insightKind, kicker)}</Pill>
+            {categoryHref ? (
+              <Link href={categoryHref} className="highlight-stat-category-link">
+                {categoryPill}
+              </Link>
+            ) : (
+              categoryPill
+            )}
             <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
           </div>
         ) : (
@@ -135,43 +186,14 @@ export function HighlightStatCard({
         )}
       </div>
       {profile}
-      {primaryValue ? (
-        <div className="ref-card-metric-block" aria-label={primaryLabel}>
-          <div className={REF_CARD_METRIC_CLASS}>
-            <StandoutMetricValue tone={metricTone} size="lg">
-              {primaryValue}
-            </StandoutMetricValue>
-          </div>
-          {primaryLabel ? (
-            <p className={REF_CARD_METRIC_LABEL_CLASS}>{primaryLabel}</p>
-          ) : null}
-          {secondaryValue ? (
-            <div className="ref-card-metric-block ref-card-metric-block--secondary">
-              <div
-                className={`${REF_CARD_METRIC_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}
-                title={
-                  deltaDisplay?.isAdjusted
-                    ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
-                    : undefined
-                }
-              >
-                <DirectionalDeltaValue
-                  value={secondaryValue}
-                  tone={
-                    metricTone === "positive" || metricTone === "negative"
-                      ? metricTone
-                      : deltaToneFromValue(secondaryValue)
-                  }
-                  size="md"
-                  className="highlight-stat-delta"
-                />
-              </div>
-              {secondaryLabel ? (
-                <p className={REF_CARD_METRIC_LABEL_CLASS}>{secondaryLabel}</p>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
+      {metricBlock ? (
+        categoryHref ? (
+          <Link href={categoryHref} className="highlight-stat-metric-link">
+            {metricBlock}
+          </Link>
+        ) : (
+          metricBlock
+        )
       ) : null}
       <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
         <StatComparison>{body}</StatComparison>

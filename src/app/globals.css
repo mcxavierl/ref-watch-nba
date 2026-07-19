@@ -5868,6 +5868,22 @@ p {
     text-decoration: none;
   }
 
+  .highlight-stat-category-link,
+  .highlight-stat-metric-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .highlight-stat-category-link:hover,
+  .highlight-stat-metric-link:hover {
+    color: inherit;
+  }
+
+  .highlight-stat-metric-link:hover .ref-card-metric-label {
+    color: var(--insight-accent, var(--raptors));
+    text-decoration: underline;
+  }
+
   .highlight-stat-profile:hover .rankings-insight-name {
     color: var(--insight-accent, var(--raptors));
     text-decoration: underline;
