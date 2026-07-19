@@ -66,13 +66,13 @@ export function writeNflIngestManifest(
 ): NflIngestManifest {
   const manifest: NflIngestManifest = {
     data_verified: true,
-    data_source: options.dataSource ?? "ESPN + nflverse (2000-present)",
+    data_source: options.dataSource ?? "ESPN + nflverse (2016-2026)",
     last_ingested_at: new Date().toISOString(),
     game_count: options.gameCount,
     seasons: options.seasons,
     note:
       options.note ??
-      "Officials from ESPN summaries (2016+) and nflverse history (2000-2015). Ref-stats rebuilt from DISTINCT game_id.",
+      "Officials from ESPN summaries (2016-2026). Ref-stats rebuilt from DISTINCT game_id.",
   };
   const manifestPath = path.join(root, NFL_MANIFEST_PATH);
   fs.mkdirSync(path.dirname(manifestPath), { recursive: true });

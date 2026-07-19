@@ -35,7 +35,7 @@ import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { signedDeltaTone } from "@/lib/metric-delight";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import type { SeasonScopeMode } from "@/lib/season-scope";
-import { DEFAULT_SEASON_SCOPE_MODE, usesPatriotsEraScope } from "@/lib/season-scope";
+import { DEFAULT_SEASON_SCOPE_MODE } from "@/lib/season-scope";
 
 const LEAGUE_MODULES = {
   nba: { data: nbaData, teams: nbaTeams, basePath: "", dataLeague: "NBA" as const, crewSize: "three", surface: "court" },
@@ -80,7 +80,6 @@ export function TeamCrewPage({
   const isNhl = league === "nhl";
   const isNfl = league === "nfl" || league === "cfb";
   const isRefsOnly = league === "cbb";
-  const showPatriotsEra = usesPatriotsEraScope(league, { teamAbbr: team.abbr });
   const analyticsRefs = isNhl ? filterNhlReferees(stats.refs) : stats.refs;
   const splits = sortSplitsByGames(
     resolveTeamCrewSplits(stats, team.abbr, getTeamSplits),
@@ -144,18 +143,9 @@ export function TeamCrewPage({
           <span className="mx-2 text-zinc-300">·</span>
           <span>{scopeLabel} ({formatRange(stats.meta)})</span>
         </p>
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-          {showPatriotsEra ? (
-            <p className="text-sm font-medium text-muted-strong">Era scope</p>
-          ) : (
-            <span />
-          )}
+        <div className="mt-3 flex flex-wrap items-center justify-end gap-3">
           <Suspense fallback={<SeasonScopeToggleSkeleton />}>
-            <SeasonScopeToggle
-              leagueId={showPatriotsEra ? league : undefined}
-              teamAbbr={showPatriotsEra ? team.abbr : undefined}
-              availableSeasons={availableSeasons}
-            />
+            <SeasonScopeToggle availableSeasons={availableSeasons} />
           </Suspense>
         </div>
         {teamSos ? (

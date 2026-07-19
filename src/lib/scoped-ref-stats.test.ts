@@ -84,7 +84,7 @@ describe("buildScopedRefStats", () => {
 
     assert.equal(scoped.meta.seasons.length, 10);
     assert.equal(scoped.meta.totalGamesProcessed, 2757);
-    assert.ok((full.meta.totalGamesProcessed ?? 0) > 2757);
+    assert.equal(full.meta.totalGamesProcessed, 2757);
   });
 
   it("returns base unchanged when scope matches full season list", () => {

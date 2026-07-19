@@ -9,36 +9,36 @@ export const LEAGUE_HERO_STATS: Record<string, LeagueHeroStatsSnapshot> = {
   "nba": {
     "officials": 53,
     "games": 12301,
-    "seasonSpan": "Last 10 seasons"
+    "seasonSpan": "2016-2026"
   },
   "nfl": {
-    "officials": 259,
-    "games": 6825,
-    "seasonSpan": "Last 10 seasons"
+    "officials": 208,
+    "games": 2757,
+    "seasonSpan": "2016-2026"
   },
   "nhl": {
     "officials": 123,
     "games": 12282,
-    "seasonSpan": "Last 10 seasons"
+    "seasonSpan": "2016-2026"
   },
   "epl": {
     "officials": 48,
     "games": 3800,
-    "seasonSpan": "Last 10 seasons"
+    "seasonSpan": "2016-2026"
   },
   "laliga": {
     "officials": 33,
     "games": 1546,
-    "seasonSpan": "Last 5 seasons"
+    "seasonSpan": "2021-2026"
   },
   "cbb": {
     "officials": 515,
-    "games": 9701,
-    "seasonSpan": "Last 6 seasons"
+    "games": 9705,
+    "seasonSpan": "2020-2026"
   },
   "cfb": {
     "officials": 0,
     "games": 1426,
-    "seasonSpan": "Last 6 seasons"
+    "seasonSpan": "2020-2026"
   }
 };
