@@ -53,6 +53,7 @@ export function NcaaAuditStatusPill({
       label={auditBadgeLabel(coveragePct, pendingLabel)}
       compact
       className={className}
+      title={pendingLabel ? `${pillLabel} · ${pendingLabel}` : pillLabel}
     />
   );
 

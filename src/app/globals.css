@@ -2337,7 +2337,7 @@ p {
   .ou-lean-badge {
     display: inline-flex;
     max-width: 100%;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 0.25rem 0.5rem;
     border-radius: 999px;
@@ -2358,11 +2358,19 @@ p {
   }
 
   .ou-lean-badge-label {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     font-weight: 500;
     color: var(--muted);
   }
 
   .ou-lean-badge-value {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     font-family: var(--font-data);
     font-variant-numeric: tabular-nums;
   }
@@ -3200,7 +3208,6 @@ p {
   }
 
   .finding-angle-category {
-    flex-shrink: 0;
     margin: 0;
   }
 
@@ -6440,11 +6447,10 @@ p {
     display: inline-flex;
     align-items: center;
     border-radius: 9999px;
-    padding: 0.125rem 0.5rem;
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    padding: var(--pill-padding-y) var(--pill-padding-x);
+    font-size: var(--pill-font-size);
+    font-weight: var(--pill-font-weight);
+    letter-spacing: 0.01em;
     line-height: 1.25;
   }
 
@@ -13612,7 +13618,10 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 .overview-pace-audit-pill {
   align-self: flex-start;
   max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .overview-pace-label {

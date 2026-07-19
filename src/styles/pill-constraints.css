@@ -12,6 +12,7 @@
   --pill-font-weight: 600;
   --pill-max-width: 100%;
   --pill-category-max-width: 11.5rem;
+  --pill-gsni-max-width: 8.75rem;
 }
 
 /* Core overflow utility — prevents flex/grid text slide */
@@ -42,11 +43,15 @@
 .ref-master-insight-pill,
 .finding-meta-pill,
 .ranking-signal-pill,
-.gsni-band-badge,
+.gsni-band-badge-wrap,
 .rankings-insight-league,
 .friction-personnel-pill,
 .insight-badge,
-.status-badge {
+.status-badge,
+.confidence-tier-badge,
+.intensity-badge,
+.ou-lean-badge,
+.overview-pace-audit-pill {
   max-width: 100%;
   min-width: 0;
 }
@@ -54,9 +59,13 @@
 .ref-master-insight-pill,
 .finding-meta-pill,
 .ranking-signal-pill,
-.gsni-band-badge,
+.gsni-band-badge-wrap,
 .rankings-insight-league,
-.friction-personnel-pill {
+.friction-personnel-pill,
+.confidence-tier-badge,
+.intensity-badge,
+.ou-lean-badge,
+.overview-pace-audit-pill {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -70,9 +79,27 @@
   text-overflow: ellipsis;
 }
 
+.gsni-band-badge-wrap {
+  max-width: min(var(--pill-gsni-max-width), 100%);
+}
+
+.finding-angle-category {
+  min-width: 0;
+  max-width: min(var(--pill-category-max-width), 100%);
+  flex-shrink: 1;
+}
+
+.ncaa-audit-status-pill-state {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 /* Card/flex parents that host pills */
 .ref-card-head,
-.rankings-insight-card-head {
+.rankings-insight-card-head,
+.finding-angle-header {
   min-width: 0;
   max-width: 100%;
 }
@@ -82,11 +109,16 @@ html[data-pill-debug="true"] .pill-constrain,
 html[data-pill-debug="true"] .ref-master-insight-pill,
 html[data-pill-debug="true"] .finding-meta-pill,
 html[data-pill-debug="true"] .ranking-signal-pill,
-html[data-pill-debug="true"] .gsni-band-badge,
+html[data-pill-debug="true"] .gsni-band-badge-wrap,
 html[data-pill-debug="true"] .insight-badge,
 html[data-pill-debug="true"] .status-badge,
+html[data-pill-debug="true"] .confidence-tier-badge,
+html[data-pill-debug="true"] .intensity-badge,
+html[data-pill-debug="true"] .ou-lean-badge,
+html[data-pill-debug="true"] .overview-pace-audit-pill,
 html[data-pill-debug="true"] .highlight-stat-card-head-copy,
-html[data-pill-debug="true"] .ref-card-head {
+html[data-pill-debug="true"] .ref-card-head,
+html[data-pill-debug="true"] .finding-angle-category {
   outline: 1px dashed color-mix(in srgb, var(--accent-brand, #d4a017) 55%, transparent);
   outline-offset: 1px;
 }

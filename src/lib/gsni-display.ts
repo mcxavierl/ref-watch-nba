@@ -54,6 +54,16 @@ export function gsniQualitativeLabel(z: number): GsniQualitativeLabel {
   return z > 0 ? "Below-Average Frequency" : "Above-Average Frequency";
 }
 
+/** Short pill label for tight badge surfaces; full label belongs in title/tooltip. */
+export function gsniBandCompactLabel(z: number): string {
+  const absZ = Math.abs(z);
+  if (absZ < GSNI_Z_NEUTRAL_THRESHOLD) return "Typical";
+  if (absZ >= GSNI_Z_EXTREME_THRESHOLD) {
+    return z > 0 ? "Well below avg" : "Well above avg";
+  }
+  return z > 0 ? "Below avg" : "Above avg";
+}
+
 function historicalTendencyHeadline(
   qualitativeLabel: GsniQualitativeLabel,
 ): string {

@@ -21,11 +21,11 @@ export function ConfidenceTierBadge({
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1 ${confidenceTierClass(tier)} ${className}`.trim()}
+      className={`pill-constrain inline-flex min-w-0 items-center gap-1 ${confidenceTierClass(tier)} ${className}`.trim()}
       aria-label={`${tier} confidence`}
     >
       <Icon className="size-3 shrink-0" strokeWidth={2.25} aria-hidden />
-      {tier}
+      <span className="pill-constrain-text">{tier}</span>
     </span>
   );
 }

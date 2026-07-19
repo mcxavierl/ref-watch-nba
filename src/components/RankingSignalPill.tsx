@@ -30,7 +30,7 @@ export function RankingSignalPill({
   return (
     <Link
       href={`${profileHref}#profile-signals`}
-      className={`pill-constrain ranking-signal-pill ${className} ranking-signal-pill--link shrink-0`}
+      className={`pill-constrain ranking-signal-pill ${className} ranking-signal-pill--link`}
     >
       <span className="pill-constrain-text">{pattern.label}</span>
     </Link>
