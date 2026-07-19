@@ -13,8 +13,18 @@ import {
   isStatisticallySignificantInsight,
   passesHomepageSampleGate,
 } from "@/lib/homepage-insight-gates";
-import type { LeagueInsightCard } from "@/lib/league-overview-insights";
+import type { LeagueInsightCard, MatrixEdgeSignificance } from "@/lib/league-overview-insights";
 import { editorialInsightView, insightMetricComparison } from "@/lib/insight-editorial";
+
+function matrixSignificance(overrides: Partial<MatrixEdgeSignificance> = {}): MatrixEdgeSignificance {
+  return {
+    refWins: 17,
+    refGames: 19,
+    baselineWins: 363,
+    baselineGames: 820,
+    ...overrides,
+  };
+}
 
 function matrixCard(games: number, overrides: Partial<LeagueInsightCard> = {}): LeagueInsightCard {
   return {
@@ -23,7 +33,7 @@ function matrixCard(games: number, overrides: Partial<LeagueInsightCard> = {}): 
     shortLabel: "NBA",
     kind: "matrix-edge",
     kicker: "Statistically significant ref×team split",
-    headline: "Evan Scott boosts Minnesota Timberwolves results",
+    headline: "Ref×team split",
     story: "12-0 across 12 games.",
     heroValue: "+51.5pp",
     heroLabel: "Win rate vs team baseline",
@@ -38,6 +48,7 @@ function matrixCard(games: number, overrides: Partial<LeagueInsightCard> = {}): 
     teamLabel: "Minnesota Timberwolves",
     refSlug: "evan-scott-78",
     teamAbbr: "MIN",
+    significance: matrixSignificance({ refWins: 12, refGames: games }),
     ...overrides,
   };
 }
@@ -77,12 +88,24 @@ describe("homepage insight gates", () => {
     );
   });
 
-  it("only labels statistically significant when gate and effect clear", () => {
-    const thin = matrixCard(12);
-    const robust = matrixCard(19, { heroValue: "+45.2pp" });
+  it("only labels statistically significant when gate, z-test, and effect clear", () => {
+    const thin = matrixCard(12, {
+      significance: matrixSignificance({ refWins: 12, refGames: 12, baselineWins: 96, baselineGames: 200 }),
+    });
+    const inflatedDeltaOnly = matrixCard(19, {
+      heroValue: "+25.6pp",
+      significance: matrixSignificance({ refWins: 15, refGames: 19, baselineWins: 8, baselineGames: 15 }),
+    });
+    const robust = matrixCard(19, {
+      heroValue: "+45.2pp",
+      significance: matrixSignificance(),
+    });
+
     assert.equal(isStatisticallySignificantInsight(thin), false);
+    assert.equal(isStatisticallySignificantInsight(inflatedDeltaOnly), false);
     assert.equal(isStatisticallySignificantInsight(robust), true);
     assert.match(homepageInsightKicker(robust), /Statistically significant/);
+    assert.match(homepageInsightKicker(inflatedDeltaOnly), /Ref×team split · N=19/);
     assert.match(homepageInsightKicker(thin), /Ref×team split/);
   });
 
