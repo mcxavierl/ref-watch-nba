@@ -78,34 +78,6 @@
   color: var(--header-gold-bright);
 }
 
-.team-ref-profiles-section .section-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.team-ref-profiles-section .section-title::before {
-  content: "";
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: var(--league-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--league-accent) 22%, transparent);
-}
-
-.team-ref-profiles-section[data-league="nba"] { --league-accent: var(--raptors); }
-.team-ref-profiles-section[data-league="nhl"] { --league-accent: var(--nhl-blue); }
-.team-ref-profiles-section[data-league="nfl"] { --league-accent: var(--nfl-green); }
-.team-ref-profiles-section[data-league="epl"] { --league-accent: #8b6bb5; }
-.team-ref-profiles-section[data-league="laliga"] { --league-accent: #c8102e; }
-.team-ref-profiles-section[data-league="cbb"] { --league-accent: var(--cbb-gold); }
-.team-ref-profiles-section[data-league="cfb"] { --league-accent: var(--cfb-bronze); }
-
-.team-ref-profile-row:hover,
-.team-ref-profile-row:focus-visible {
-  background: color-mix(in srgb, var(--league-accent) 6%, var(--surface-raised));
-}
-
 .site-footer {
   background:
     linear-gradient(
