@@ -28,16 +28,16 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
   return (
     <Link
       href={pending ? (card.auditHref ?? card.href) : card.href}
-      className={`overview-league-chooser-card overview-league-chooser-card--live-tier rw-focus-ring${
+      className={`overview-league-chooser-card overview-league-chooser-card--live-tier rw-focus-ring flex w-full min-w-[280px] flex-col p-6${
         collegeTier ? " overview-league-chooser-card--college-tier" : ""
       }${pending ? " overview-league-chooser-card--pending" : ""}`}
       data-league={card.leagueId}
     >
-      <span className="overview-league-chooser-top">
-        <span className="overview-league-chooser-mark" aria-hidden>
+      <span className="overview-league-chooser-top min-w-0">
+        <span className="overview-league-chooser-mark shrink-0" aria-hidden>
           <LeagueNavMark league={card.leagueId as LeagueId} active={false} />
         </span>
-        <span className="overview-league-chooser-body">
+        <span className="overview-league-chooser-body min-w-0 flex-1">
           <span className="overview-league-chooser-label-row">
             {collegeTier ? (
               <span className="overview-league-chooser-scope">College sports</span>
@@ -54,20 +54,20 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
               {card.auditPendingLabel ?? "Pending Verification"} - hub locked
             </span>
           ) : (
-            <span className="overview-league-chooser-metrics tabular-nums">
-              <span className="overview-league-chooser-metric">
+            <span className="overview-league-chooser-metrics tabular-nums min-w-0 w-full">
+              <span className="overview-league-chooser-metric min-w-0">
                 <span className="overview-league-chooser-metric-label">{card.whistleLabel}</span>
-                <strong className="tabular-nums">{formatLeaguePaceValue(card.whistlePerGame)}</strong>
+                <strong className="break-words hyphens-none tabular-nums">{formatLeaguePaceValue(card.whistlePerGame)}</strong>
               </span>
-              <span className="overview-league-chooser-metric">
+              <span className="overview-league-chooser-metric min-w-0">
                 <span className="overview-league-chooser-metric-label">{card.scoreLabel}</span>
-                <strong className="tabular-nums">{formatLeaguePaceValue(card.scorePerGame)}</strong>
+                <strong className="break-words hyphens-none tabular-nums">{formatLeaguePaceValue(card.scorePerGame)}</strong>
               </span>
             </span>
           )}
         </span>
       </span>
-      <span className="overview-league-chooser-cta">
+      <span className="overview-league-chooser-cta mt-auto shrink-0">
         {pending ? "View audit status" : "Open hub"}
         <ArrowRight aria-hidden />
       </span>
@@ -104,7 +104,7 @@ export function LeagueChooser({ cards, placement = "default" }: LeagueChooserPro
         </h2>
       </div>
 
-      <div className="overview-league-chooser-grid">
+      <div className="overview-league-chooser-grid grid w-full min-w-0 grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {sortedCards.map((card) => (
           <ChooserCard key={card.leagueId} card={card} />
         ))}

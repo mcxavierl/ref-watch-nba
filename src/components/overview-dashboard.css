@@ -331,6 +331,9 @@
 .overview-league-chooser--primary .overview-league-chooser-card {
   min-height: 8.75rem;
   height: 100%;
+  width: 100%;
+  min-width: 280px;
+  padding: 1.5rem;
   border: 1px solid rgb(30 41 59);
   background: rgb(15 23 42);
   box-shadow:
@@ -354,26 +357,33 @@
 }
 
 .overview-league-chooser-metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 0.75rem;
   margin-top: 0.35rem;
+  min-width: 0;
+  width: 100%;
 }
 
 .overview-league-chooser-metric {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  min-width: 0;
+  max-width: 100%;
   font-size: 0.82rem;
   font-variant-numeric: tabular-nums;
 }
 
 .overview-league-chooser-metric-label {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: color-mix(in srgb, var(--text-primary, var(--ink)) 86%, var(--text-muted, var(--muted)));
   font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
 }
 
 .overview-league-chooser-estimated-mark {
@@ -384,9 +394,13 @@
 }
 
 .overview-league-chooser-metric strong {
+  flex-shrink: 0;
   font-size: 0.95rem;
   font-weight: 750;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: none;
   color: color-mix(in srgb, var(--text-primary, var(--text)) 92%, var(--text-muted, var(--muted)));
 }
 
