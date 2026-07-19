@@ -85,7 +85,9 @@ export function GameStateIndexResearchSection({
         <h2 className="section-title">Game-State Index official table</h2>
         {!compactHub ? (
           <p className="gsni-sub-text section-lead">
-            Flag rate vs league in matched score-and-clock buckets.{" "}
+            {leagueId === "nfl"
+              ? "Flag rate vs league in matched score-and-clock buckets."
+              : "Foul rate vs league in matched score-and-clock buckets."}{" "}
             <Link href="/research/leverage-spike-anomaly" className="font-medium hover:underline">
               Methodology
             </Link>

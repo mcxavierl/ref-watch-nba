@@ -50,6 +50,7 @@
     "validation:refresh": "tsx scripts/validation-refresh.ts",
     "build-nfl-penalty-events": "tsx scripts/nfl/rebuild-gsni.ts --events-only",
     "rebuild-nfl-gsni": "tsx scripts/nfl/rebuild-gsni.ts",
+    "rebuild-nba-gsni": "tsx scripts/nba/rebuild-gsni.ts",
     "rebuild-gsni:all": "tsx scripts/rebuild-gsni-all.ts",
     "generate-ref-seed": "tsx scripts/generate-comprehensive-seed.ts",
     "fetch-nhl-ref-photos": "tsx scripts/nhl/fetch-ref-photos.ts",

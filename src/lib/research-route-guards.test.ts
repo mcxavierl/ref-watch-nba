@@ -16,6 +16,7 @@ describe("research route guards", () => {
   it("gates research views by manifest researchViews", () => {
     assert.equal(resolveResearchViewRoute("nfl", "game-state"), "nfl");
     assert.equal(resolveResearchViewRoute("nba", "game-state"), "nba");
+    assert.equal(resolveResearchViewRoute("nhl", "game-state"), null);
     assert.equal(resolveResearchViewRoute("epl", "game-state"), null);
     assert.equal(resolveResearchViewRoute("nba", "trends"), "nba");
   });

@@ -529,15 +529,37 @@ export function observationsFromGameTotals(input: {
   minutesPlayed?: number;
 }): GsniObservation[] {
   const minutes = input.minutesPlayed ?? 48;
-  if (minutes <= 0) return [];
-  return [
-    {
-      scoreDifferential: input.homeScore - input.awayScore,
-      timeRemainingSeconds: 1440,
-      fouls: input.totalFouls,
-      minutes,
-    },
-  ];
+  if (minutes <= 0 || input.totalFouls <= 0) return [];
+  return observationsFromDistributedQuarterFouls({
+    totalFouls: input.totalFouls,
+    homeScore: input.homeScore,
+    awayScore: input.awayScore,
+    minutesPerPeriod: minutes / 4,
+  });
+}
+
+/**
+ * Approximate quarter-level foul observations from game totals when period splits
+ * are unavailable. Uses final score differential at mid-quarter clock anchors.
+ */
+export function observationsFromDistributedQuarterFouls(input: {
+  totalFouls: number;
+  homeScore: number;
+  awayScore: number;
+  minutesPerPeriod?: number;
+}): GsniObservation[] {
+  const minutesPerPeriod = input.minutesPerPeriod ?? 12;
+  if (input.totalFouls <= 0 || minutesPerPeriod <= 0) return [];
+
+  const foulsPerPeriod = input.totalFouls / 4;
+  const scoreDifferential = input.homeScore - input.awayScore;
+
+  return [1, 2, 3, 4].map((period) => ({
+    scoreDifferential,
+    timeRemainingSeconds: NBA_PERIOD_MID_SECONDS[period] ?? 1440,
+    fouls: foulsPerPeriod,
+    minutes: minutesPerPeriod,
+  }));
 }
 
 export type GsniGameLogLike = {

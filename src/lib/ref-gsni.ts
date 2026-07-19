@@ -7,6 +7,7 @@ import {
   buildGsniCorpusFromGameLogs,
   computeGSNI,
   GSNI_MIN_HIGH_LEVERAGE_MINUTES,
+  GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL,
 } from "@/lib/gsni";
 import { gameLogsAvailable, loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { DataLeague } from "@/lib/game-logs-preload";
@@ -23,6 +24,13 @@ import type {
   RefStatsFile,
   SampleGateStatus,
 } from "@/lib/types";
+
+const GSNI_DATA_LEAGUES: DataLeague[] = ["NFL", "NBA"];
+
+function gsniGateForLeague(league: DataLeague): number {
+  if (league === "NFL") return GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL;
+  return GSNI_MIN_HIGH_LEVERAGE_MINUTES;
+}
 
 export type GsniHighLeverageSampleTier = "high" | "moderate" | "withheld";
 
@@ -77,24 +85,26 @@ function gsniProvenance(
   meta: RefStatsFile["meta"],
   sampleGames: number,
   gateCleared: boolean,
+  gateThreshold: number,
 ): MetricProvenance {
   const tag = refStatsDataTag(meta);
   return {
     tag: gateCleared ? tag : "computed-with-partial-data",
     sampleSize: sampleGames,
-    gateThreshold: GSNI_GATE,
+    gateThreshold,
     note: gateCleared
       ? "Leverage-weighted foul rate vs league in matched game states."
-      : `GSNI withheld until ${GSNI_GATE}+ high-leverage minutes.`,
+      : `Game-State Index withheld until ${gateThreshold}+ high-leverage minutes.`,
   };
 }
 
 function metricsFromCompute(
   result: ReturnType<typeof computeGSNI>,
   meta: RefStatsFile["meta"],
+  gateThreshold: number,
 ): RefGsniMetrics {
   const gateCleared =
-    result.highLeverageMinutes >= GSNI_MIN_HIGH_LEVERAGE_MINUTES &&
+    result.highLeverageMinutes >= gateThreshold &&
     result.referee_gsni !== undefined;
 
   const observedGsni = result.referee_gsni;
@@ -119,7 +129,7 @@ function metricsFromCompute(
 
   const honestyBanner = gateCleared
     ? null
-    : `Game-State Index needs ${GSNI_GATE}+ high-leverage minutes before we publish a score. This ref has ${result.highLeverageMinutes.toFixed(1)} min across ${result.sampleGames} games.`;
+    : `Game-State Index needs ${gateThreshold}+ high-leverage minutes before we publish a score. This ref has ${result.highLeverageMinutes.toFixed(1)} min across ${result.sampleGames} games.`;
 
   return {
     referee_gsni: displayGsni,
@@ -131,10 +141,10 @@ function metricsFromCompute(
     sampleGames: result.sampleGames,
     gateCleared,
     honestyBanner,
-    provenance: gsniProvenance(meta, result.sampleGames, gateCleared),
+    provenance: gsniProvenance(meta, result.sampleGames, gateCleared, gateThreshold),
     sampleGate: sampleGateStatus(
       Math.floor(result.highLeverageMinutes),
-      GSNI_GATE,
+      gateThreshold,
     ),
     vsNeutralDetail,
     volatilityDetail,
@@ -152,6 +162,7 @@ function metricsFromProfile(
     | "gsniSampleGames"
   >,
   meta: RefStatsFile["meta"],
+  gateThreshold: number,
 ): RefGsniMetrics | null {
   if (
     profile.gsniHighLeverageMinutes === undefined &&
@@ -163,7 +174,7 @@ function metricsFromProfile(
   const highLeverageMinutes = profile.gsniHighLeverageMinutes ?? 0;
   const sampleGames = profile.gsniSampleGames ?? 0;
   const gateCleared =
-    highLeverageMinutes >= GSNI_MIN_HIGH_LEVERAGE_MINUTES &&
+    highLeverageMinutes >= gateThreshold &&
     profile.referee_gsni !== undefined;
 
   return metricsFromCompute(
@@ -176,6 +187,7 @@ function metricsFromProfile(
       leagueWeightedFoulRate: undefined,
     },
     meta,
+    gateThreshold,
   );
 }
 
@@ -191,10 +203,12 @@ export function computeRefGsniMetrics(
     | "gsniSampleGames"
   >,
 ): RefGsniMetrics | null {
-  if (league !== "NFL") return null;
+  if (!GSNI_DATA_LEAGUES.includes(league)) return null;
+
+  const gateThreshold = gsniGateForLeague(league);
 
   if (profile) {
-    const fromProfile = metricsFromProfile(profile, meta);
+    const fromProfile = metricsFromProfile(profile, meta, gateThreshold);
     if (fromProfile) return fromProfile;
   }
 
@@ -206,6 +220,8 @@ export function computeRefGsniMetrics(
   const corpus = buildGsniCorpusFromGameLogs(logs.games, (official) =>
     refSlug(official.name, official.number),
   );
-  const result = computeGSNI(refSlugValue, corpus);
-  return metricsFromCompute(result, meta);
+  const result = computeGSNI(refSlugValue, corpus, {
+    minHighLeverageMinutes: gateThreshold,
+  });
+  return metricsFromCompute(result, meta, gateThreshold);
 }
