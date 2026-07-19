@@ -15,8 +15,9 @@ function readSrc(rel: string): string {
 
 describe("methodology content", () => {
   it("defines expanded sections with sample gates and confidence tiers", () => {
-    assert.ok(METHODOLOGY_SECTIONS.length >= 6);
+    assert.ok(METHODOLOGY_SECTIONS.length >= 7);
     assert.ok(METHODOLOGY_SECTIONS.some((section) => section.id === "sample-gates"));
+    assert.ok(METHODOLOGY_SECTIONS.some((section) => section.id === "advanced-metrics"));
     assert.ok(METHODOLOGY_SECTIONS.some((section) => section.id === "confidence"));
     assert.match(METHODOLOGY_PAGE_LEAD, /sample gates/i);
   });

@@ -79,8 +79,8 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
   const { scope } = await searchParams;
   const scopeMode = readSeasonScopeParam(scope);
   const scoped =
-    leagueId === "nba"
-      ? loadScopedLeagueStats("nba", scopeMode)
+    features.seasonScopeOnSlate
+      ? loadScopedLeagueStats(leagueId, scopeMode)
       : null;
   const bundle = loadLeagueSlateBundle(leagueId);
   const { assignments, refStats, odds, nightlyFeed, isOffseason, isPending } = bundle;
@@ -129,8 +129,8 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
         leagueId={leagueId}
         assignments={assignments}
         refStats={scoped?.stats ?? refStats}
-        productHome={leagueId === "nba" && isOffseason}
-        showScopeToggle={leagueId === "nba" && isOffseason}
+        productHome={features.seasonScopeOnSlate && isOffseason}
+        showScopeToggle={features.seasonScopeOnSlate && isOffseason}
         scopeLabel={scoped?.scopeLabel}
       />
 
@@ -150,7 +150,7 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
         />
       )}
 
-      {isOffseason && leagueId !== "nba" && (
+      {isOffseason && !features.hideOffseasonNotice && (
         <OffseasonSlateNotice league={findingLeague} />
       )}
 
@@ -161,7 +161,7 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
         <ConferenceCoverage leagueId={leagueId} />
       )}
 
-      {leagueId === "cfb" && (
+      {features.cfbPreviewBanner && (
         <CfbPreviewBanner
           statsSource={refStats.meta.source}
           assignmentsSource={assignments.source}
@@ -177,18 +177,16 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
         title={
           isOffseason
             ? "Season highlights"
-            : leagueId === "nba"
-              ? "Tonight's edges"
-              : "Officiating intelligence"
+            : features.findingsInSeasonTitle ?? "Officiating intelligence"
         }
         sectionLead={
-          isOffseason && leagueId === "nba"
+          isOffseason && features.seasonScopeOnFindings
             ? "Ranked historical edges with over/under signals, ordered by effect size and sample depth."
             : undefined
         }
         league={findingLeague}
-        showScopeToggle={leagueId === "nba"}
-        scopeLeagueId={leagueId === "nba" ? "nba" : undefined}
+        showScopeToggle={features.seasonScopeOnFindings}
+        scopeLeagueId={features.seasonScopeOnFindings ? leagueId : undefined}
         scopeLabel={
           scoped
             ? `${scoped.scopeLabel} · ${scoped.formatRange(scoped.stats.meta)}`

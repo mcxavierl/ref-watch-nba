@@ -91,7 +91,7 @@ export function OverviewDashboard({
       <LeagueChooser cards={data.leagueCards} placement="primary" />
 
       <div className="overview-dashboard-league-to-insight">
-        <OverviewEditorialNarrative insightCards={data.insightCards} />
+        <OverviewEditorialNarrative trendCards={data.standoutSplitCards} />
       </div>
 
       <section

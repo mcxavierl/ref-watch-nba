@@ -34,18 +34,23 @@ import {
   rankingsConfigForView,
   type InsightsHubView,
 } from "@/lib/insights-hero-content";
+import {
+  INSIGHTS_HUB_TAB_LABELS,
+  insightsHubTabViews,
+  leagueSupportsInsightsView,
+} from "@/lib/insights-hub-config";
+import { computeHubFindings } from "@/lib/hub-findings-registry";
+import {
+  leagueHasResearchView,
+  leagueManifestEntry,
+  type InsightsLeagueId,
+  type ResearchView,
+} from "@/lib/league-manifest";
+import { ContextualLinkerText } from "@/lib/contextual-linker";
+import { insightsViewHref } from "@/lib/insights-routes";
 import { getFrictionMatrixDataset } from "@/lib/friction-matrix";
 import { getCbbWhistleMatrixDataset } from "@/lib/cbb-whistle-matrix";
 import { getCfbPenaltyEngineDataset } from "@/lib/cfb-penalty-engine";
-import { computeFindings as computeNbaFindings } from "@/lib/findings";
-import { computeFindings as computeCbbFindings } from "@/lib/cbb/findings";
-import { computeFindings as computeCfbFindings } from "@/lib/cfb/findings";
-import { computeFindings as computeEplFindings } from "@/lib/epl/findings";
-import { computeFindings as computeLaligaFindings } from "@/lib/laliga/findings";
-import { computeFindings as computeNflFindings } from "@/lib/nfl/findings";
-import { computeFindings as computeNhlFindings } from "@/lib/nhl/findings";
-import { ContextualLinkerText } from "@/lib/contextual-linker";
-import { insightsViewHref } from "@/lib/insights-routes";
 import {
   researchHubArticleJsonLd,
   researchHubDatasetJsonLd,
@@ -62,20 +67,16 @@ import {
 import { buildCbbConferenceTendenciesStats } from "@/lib/cbb/conference-tendencies";
 import type { CbbTrendsConferenceScope } from "@/lib/cbb/conference-trends-shared";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
-import type { Finding, FindingLeague } from "@/lib/findings-shared";
+import type { FindingLeague } from "@/lib/findings-shared";
 import type { ResearchFinding } from "@/lib/research";
 import type { SeasonBaseline } from "../../scripts/lib/baselines";
-
-type InsightsLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 
 function hubFindingsForLeague(
   leagueId: InsightsLeagueId,
   scopedSeasons: string[],
   dataLeague: FindingLeague,
-  cbbHubFindings: ResearchFinding[],
 ): ResearchFinding[] {
-  if (leagueId === "cbb") return cbbHubFindings;
-  return HUB_FINDINGS_COMPUTERS[leagueId](12, scopedSeasons).map((finding) => ({
+  return computeHubFindings(leagueId, 12, scopedSeasons).map((finding) => ({
     ...finding,
     league: dataLeague,
   }));
@@ -139,26 +140,6 @@ function renderRankingsPanel(input: {
   );
 }
 
-const HUB_FINDINGS_COMPUTERS: Record<
-  InsightsLeagueId,
-  (limit: number, scopedSeasons: string[]) => Finding[]
-> = {
-  nba: (limit, scopedSeasons) =>
-    computeNbaFindings(limit, scopedSeasons, { hub: true }),
-  nhl: (limit, scopedSeasons) =>
-    computeNhlFindings(limit, scopedSeasons, { hub: true }),
-  nfl: (limit, scopedSeasons) =>
-    computeNflFindings(limit, scopedSeasons, { hub: true }),
-  epl: (limit, scopedSeasons) =>
-    computeEplFindings(limit, scopedSeasons, { hub: true }),
-  laliga: (limit, scopedSeasons) =>
-    computeLaligaFindings(limit, scopedSeasons, { hub: true }),
-  cbb: (limit, scopedSeasons) =>
-    computeCbbFindings(limit, scopedSeasons, { hub: true }),
-  cfb: (limit, scopedSeasons) =>
-    computeCfbFindings(limit, scopedSeasons, { hub: true }),
-};
-
 type InsightsHubPageProps = {
   leagueId: InsightsLeagueId;
   defaultTab?: "tendencies" | "trends" | "findings" | "game-state";
@@ -176,6 +157,7 @@ export function InsightsHubPage({
   scopeMode = DEFAULT_SEASON_SCOPE_MODE,
   cbbTrendsConference = "all",
 }: InsightsHubPageProps) {
+  const manifest = leagueManifestEntry(leagueId);
   const league = LEAGUES[leagueId];
   const homeHref = leagueHubHref(leagueId);
   const dataLeague = insightsDataLeague(leagueId);
@@ -193,23 +175,20 @@ export function InsightsHubPage({
 
   const verification = resolveLeagueVerification(leagueId, stats.meta, stats);
   const showDataSourceBanner =
-    !verification.data_verified && leagueId === "cfb";
+    !verification.data_verified && manifest.slate.cfbPreviewBanner;
   const range = formatRange(stats.meta);
 
-  const hubFindings: ResearchFinding[] =
-    leagueId === "cbb"
-      ? HUB_FINDINGS_COMPUTERS.cbb(12, scopedSeasons).map((finding) => ({
-          ...finding,
-          league: dataLeague,
-        }))
-      : [];
+  const hubFindings = hubFindingsForLeague(leagueId, scopedSeasons, dataLeague);
   const cbbHasFindings = leagueId !== "cbb" || hubFindings.length > 0;
+  const tabOptions = { cbbHasFindings };
 
   if (leagueId === "cbb" && activeView === "findings" && !cbbHasFindings) {
     redirect(insightsViewHref("cbb", "tendencies"));
   }
 
-  if (leagueId !== "nfl" && activeView === "game-state") {
+  if (
+    !leagueSupportsInsightsView(leagueId, activeView as ResearchView, tabOptions)
+  ) {
     redirect(insightsViewHref(leagueId, "tendencies"));
   }
 
@@ -287,7 +266,6 @@ export function InsightsHubPage({
     leagueId,
     scopedSeasons,
     dataLeague,
-    hubFindings,
   );
   const heroSynthesis = heroSynthesisForView(
     activeView as InsightsHubView,
@@ -348,12 +326,16 @@ export function InsightsHubPage({
   }
 
   let gameStatePanel: ReactNode = null;
-  if (activeView === "game-state" && leagueId === "nfl") {
+  if (
+    activeView === "game-state" &&
+    leagueHasResearchView(leagueId, "game-state")
+  ) {
     gameStatePanel = (
       <>
         {rankingsHook}
         <GameStateIndexResearchSection
           stats={stats}
+          leagueId={leagueId}
           basePath={league.pathPrefix}
           compactHub
         />
@@ -427,7 +409,7 @@ export function InsightsHubPage({
   return (
     <div className="page-shell page-shell-insights">
       {showDataSourceBanner ? (
-        <LeagueDataSourceBanner league={leagueId} meta={stats.meta} />
+        <LeagueDataSourceBanner league="cfb" meta={stats.meta} />
       ) : null}
 
       <LeagueHubTabs
@@ -447,36 +429,18 @@ export function InsightsHubPage({
           </>
         }
         afterTablist={scopeMeta}
-        tabs={[
-          {
-            id: "tendencies",
-            label: "Tendencies",
-            panel: tendenciesPanel,
-          },
-          {
-            id: "trends",
-            label: "Trends",
-            panel: trendsPanel,
-          },
-          ...(leagueId === "nfl"
-            ? [
-                {
-                  id: "game-state" as const,
-                  label: "Game State",
-                  panel: gameStatePanel,
-                },
-              ]
-            : []),
-          ...(cbbHasFindings
-            ? [
-                {
-                  id: "findings" as const,
-                  label: "Findings",
-                  panel: findingsPanel,
-                },
-              ]
-            : []),
-        ]}
+        tabs={insightsHubTabViews(leagueId, tabOptions).map((view) => ({
+          id: view,
+          label: INSIGHTS_HUB_TAB_LABELS[view],
+          panel:
+            view === "tendencies"
+              ? tendenciesPanel
+              : view === "trends"
+                ? trendsPanel
+                : view === "game-state"
+                  ? gameStatePanel
+                  : findingsPanel,
+        }))}
       />
     </div>
   );

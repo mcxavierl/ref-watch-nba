@@ -8,7 +8,7 @@ import { GsniSampleCount } from "@/components/GsniSampleCount";
 import { GsniSharedTrack } from "@/components/GsniSharedTrack";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { explainGsni } from "@/lib/gsni-display";
-import type { GsniResearchRow } from "@/lib/nfl/gsni-research";
+import type { GsniResearchRow } from "@/lib/gsni-research";
 
 type SortField = "gsni" | "volatility" | "highLeverageMinutes" | "sampleGames";
 type SortDirection = "asc" | "desc";

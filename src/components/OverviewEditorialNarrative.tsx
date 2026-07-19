@@ -1,26 +1,15 @@
-"use client";
-
-import { useMemo } from "react";
 import { InsightCard } from "@/components/shared/InsightCard";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
-import {
-  insightCardKey,
-  overviewStandoutSplitCards,
-} from "@/lib/insight-editorial";
+import { insightCardKey } from "@/lib/insight-editorial";
 import { HOMEPAGE_METHODOLOGY_BLURB } from "@/lib/homepage-insight-gates";
 
 type OverviewEditorialNarrativeProps = {
-  insightCards: CrossLeagueOverview["insightCards"];
+  trendCards: CrossLeagueOverview["standoutSplitCards"];
 };
 
 export function OverviewEditorialNarrative({
-  insightCards,
+  trendCards,
 }: OverviewEditorialNarrativeProps) {
-  const trendCards = useMemo(
-    () => overviewStandoutSplitCards(insightCards, null),
-    [insightCards],
-  );
-
   if (trendCards.length === 0) {
     return null;
   }
