@@ -49,9 +49,8 @@
 }
 
 .overview-slate-capsule-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
   width: 2rem;
   height: 2rem;
@@ -61,9 +60,12 @@
   background: rgb(15 23 42);
 }
 
-.overview-slate-capsule-mark .league-nav-mark {
+.overview-slate-capsule-mark .league-nav-mark,
+.overview-slate-capsule-mark .league-nav-mark-fallback {
+  grid-area: 1 / 1;
   width: 1.15rem;
   height: 1.15rem;
+  margin: 0;
   object-fit: contain;
   object-position: center;
 }
@@ -71,11 +73,13 @@
 .overview-slate-capsule-mark .league-nav-mark--epl,
 .overview-slate-capsule-mark .league-nav-mark[data-league="epl"] {
   width: auto;
-  height: 1.35rem;
-  max-width: 1.35rem;
+  height: 1.5rem;
+  max-width: 1.5rem;
   object-fit: contain;
   object-position: center;
-  margin-inline: auto;
+  justify-self: center;
+  align-self: center;
+  transform: translateX(1px);
 }
 
 .overview-slate-capsule-copy {
@@ -312,12 +316,15 @@
 .upcoming-game-card__league-mark .league-nav-mark--epl,
 .upcoming-game-card__league-mark .league-nav-mark[data-league="epl"] {
   width: auto;
-  height: 1.4rem;
-  max-width: 1.35rem;
-  max-height: 1.45rem;
+  height: 1.55rem;
+  max-width: 1.5rem;
+  max-height: 1.6rem;
   object-fit: contain;
   object-position: center;
+  justify-self: center;
+  align-self: center;
   margin-inline: auto;
+  transform: translateX(1px);
 }
 
 .upcoming-game-card__league-mark .league-nav-mark--laliga,
