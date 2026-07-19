@@ -1443,6 +1443,39 @@ p {
     align-self: flex-start;
   }
 
+  .foul-view-toggle {
+    align-self: flex-start;
+    border-color: color-mix(in srgb, var(--header-sapphire) 22%, var(--border));
+    background: color-mix(in srgb, var(--header-sapphire) 4%, var(--surface));
+  }
+
+  .foul-view-toggle .refs-directory-metric-btn {
+    padding: 0.25rem 0.625rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+  }
+
+  .foul-view-toggle .refs-directory-metric-btn-active {
+    background: color-mix(in srgb, var(--header-sapphire) 16%, var(--surface));
+    color: color-mix(in srgb, var(--header-sapphire) 70%, var(--ink-secondary));
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--header-sapphire) 35%, var(--border)),
+      0 1px 2px color-mix(in srgb, var(--header-sapphire) 12%, transparent);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .foul-view-toggle {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .foul-view-toggle .refs-directory-metric-btn-active {
+    background: #eef2ff;
+    color: #3730a3;
+    box-shadow:
+      inset 0 0 0 1px rgba(99, 102, 241, 0.28),
+      0 1px 2px rgba(15, 23, 42, 0.03);
+  }
+
   .foul-breakdown-body {
     display: flex;
     flex-direction: column;

@@ -1,19 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { FoulViewToggle } from "@/components/ref-profile/FoulViewToggle";
+import { useFoulView } from "@/hooks/useFoulView";
+import { foulViewAriaLabel } from "@/lib/foul-view";
 import {
   filterRefProfileFouls,
   resolveRefProfileFoulCategory,
-  type FoulBreakdownFilter,
   type RefProfileFoulRecord,
 } from "@/lib/ref-profile-fouls";
 import { FoulCategory } from "@/lib/types/foul-categories";
-
-const FILTER_OPTIONS: { id: FoulBreakdownFilter; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "subjective", label: "Subjective" },
-  { id: "admin", label: "Admin" },
-];
 
 function categoryBadgeClass(category: FoulCategory): string {
   if (category === FoulCategory.ADMIN) {
@@ -23,15 +19,15 @@ function categoryBadgeClass(category: FoulCategory): string {
 }
 
 function categoryLabel(category: FoulCategory): string {
-  return category === FoulCategory.ADMIN ? "Admin" : "Subjective";
+  return category === FoulCategory.ADMIN ? "Administrative" : "Subjective";
 }
 
 export function FoulBreakdown({ fouls }: { fouls: RefProfileFoulRecord[] }) {
-  const [filter, setFilter] = useState<FoulBreakdownFilter>("all");
+  const { view, setView } = useFoulView();
 
   const filtered = useMemo(
-    () => filterRefProfileFouls(fouls, filter),
-    [filter, fouls],
+    () => filterRefProfileFouls(fouls, view),
+    [view, fouls],
   );
 
   if (fouls.length === 0) return null;
@@ -51,36 +47,22 @@ export function FoulBreakdown({ fouls }: { fouls: RefProfileFoulRecord[] }) {
             (judgment). Untagged historical rows count as subjective.
           </p>
         </div>
-        <div
-          className="refs-directory-metric-toggle foul-breakdown-toggle"
-          role="group"
-          aria-label="Filter fouls by category"
-        >
-          {FILTER_OPTIONS.map((option) => {
-            const isActive = option.id === filter;
-            return (
-              <button
-                key={option.id}
-                type="button"
-                className={`refs-directory-metric-btn${isActive ? " refs-directory-metric-btn-active" : ""}`}
-                aria-pressed={isActive}
-                onClick={() => setFilter(option.id)}
-              >
-                {option.label}
-              </button>
-            );
-          })}
-        </div>
+        <FoulViewToggle
+          className="foul-breakdown-toggle"
+          view={view}
+          onChange={setView}
+        />
       </div>
 
       <div className="foul-breakdown-body">
         <p className="foul-breakdown-count tabular-nums" aria-live="polite">
           Showing {filtered.length} of {fouls.length} tagged calls
+          {view !== "all" ? ` (${foulViewAriaLabel(view).toLowerCase()})` : ""}
         </p>
 
         {filtered.length === 0 ? (
           <p className="foul-breakdown-empty">
-            No {filter === "all" ? "" : `${optionLabel(filter)} `}
+            No {view === "all" ? "" : `${foulViewAriaLabel(view).toLowerCase()} `}
             fouls in this sample.
           </p>
         ) : (
@@ -109,10 +91,4 @@ export function FoulBreakdown({ fouls }: { fouls: RefProfileFoulRecord[] }) {
       </div>
     </section>
   );
-}
-
-function optionLabel(filter: FoulBreakdownFilter): string {
-  if (filter === "admin") return "administrative";
-  if (filter === "subjective") return "subjective";
-  return "";
 }
