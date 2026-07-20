@@ -218,6 +218,31 @@ describe("overview-upcoming-slate", () => {
     assert.equal(slate.leagueGroup?.liveCount, LEAGUE_UPCOMING_SLATE_LIMIT);
   });
 
+  it("normalizes WNBA city names to canonical abbreviations in slate entries", () => {
+    const file: AssignmentsFile = {
+      lastUpdated: "2026-07-20T00:00:00.000Z",
+      date: "2026-07-20",
+      source: "official.nba.com",
+      games: [
+        {
+          id: "wnba-las-vegas-0-toronto-0-2",
+          matchup: "Las Vegas @ Toronto",
+          awayTeam: "Las Vegas",
+          homeTeam: "Toronto",
+          league: "WNBA",
+          crew: [],
+        },
+      ],
+    };
+
+    const slate = buildLeagueUpcomingSlateFromAssignments("wnba", file);
+    const game = slate.leagueGroup?.games[0];
+
+    assert.equal(game?.awayTeam, "LVA");
+    assert.equal(game?.homeTeam, "TOR");
+    assert.equal(game?.matchup, "LVA @ TOR");
+  });
+
   it("uses refs-not-assigned copy for WNBA scheduled games", () => {
     const file: AssignmentsFile = {
       lastUpdated: "2026-07-20T00:00:00.000Z",

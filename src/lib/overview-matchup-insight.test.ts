@@ -172,4 +172,11 @@ describe("overview-matchup-insight", () => {
     const line = buildOverviewRecentGameContextLine("laliga", "OVI", "VIL");
     assert.equal(line, "Villarreal beat Real Oviedo in 2025 at Villarreal, 2-0.");
   });
+
+  it("resolves WNBA city names when building recent-form context", () => {
+    const line = buildOverviewTeamRecentContextLine("wnba", "Las Vegas", "Toronto");
+    assert.ok(line?.startsWith("Recent form:"));
+    assert.match(line ?? "", /LVA/);
+    assert.match(line ?? "", /TOR/);
+  });
 });
