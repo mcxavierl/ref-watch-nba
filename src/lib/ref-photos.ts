@@ -4,6 +4,8 @@ import { nflRefPhotoUrl } from "@/lib/nfl/ref-photos";
 import { eplRefPhotoUrl } from "@/lib/epl/ref-photos";
 import { laligaRefPhotoUrl } from "@/lib/laliga/ref-photos";
 import { cbbRefPhotoUrl } from "@/lib/cbb/ref-photos";
+import { wnbaRefPhotoUrl } from "@/lib/wnba/ref-photos";
+import { cfbRefPhotoUrl } from "@/lib/cfb/ref-photos";
 
 export function refPhotoUrl(
   slug: string,
@@ -16,12 +18,7 @@ export function refPhotoUrl(
   if (sport === "epl") return eplRefPhotoUrl(slug, size);
   if (sport === "laliga") return laligaRefPhotoUrl(slug, size);
   if (sport === "cbb") return cbbRefPhotoUrl(slug, size);
+  if (sport === "wnba") return wnbaRefPhotoUrl(slug, size);
+  if (sport === "cfb") return cfbRefPhotoUrl(slug, size);
   return null;
-}
-
-export function refInitials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
 }

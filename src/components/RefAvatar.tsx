@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { refInitials, refPhotoUrl } from "@/lib/ref-photos";
+import { useId, useState } from "react";
+import { refPhotoUrl } from "@/lib/ref-photos";
 
 const sizeClasses = {
   sm: "h-8 w-8",
@@ -15,13 +15,6 @@ const sizePixels = {
   md: 40,
   lg: 64,
   xl: 96,
-} as const;
-
-const textSizeClasses = {
-  sm: "text-[10px]",
-  md: "text-xs",
-  lg: "text-sm",
-  xl: "text-base",
 } as const;
 
 type RefAvatarSport = "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
@@ -45,16 +38,7 @@ function sportRingClass(sport?: RefAvatarSport): string {
   return "ring-zinc-200/80";
 }
 
-function sportInitialsClass(sport?: RefAvatarSport): string {
-  if (sport === "nfl") return "ref-initials-badge--nfl";
-  if (sport === "nhl") return "ref-initials-badge--nhl";
-  if (sport === "epl" || sport === "laliga") return "ref-initials-badge--soccer";
-  if (sport === "cbb" || sport === "cfb") return "ref-initials-badge--college";
-  if (sport === "wnba") return "ref-initials-badge--wnba";
-  return "ref-initials-badge--nba";
-}
-
-function RefInitialsBadge({
+function RefStripesBadge({
   name,
   size,
   sport,
@@ -67,15 +51,34 @@ function RefInitialsBadge({
   className?: string;
   decorative?: boolean;
 }) {
+  const patternId = `ref-stripes-${useId().replace(/:/g, "")}`;
+
   return (
     <span
-      className={`ref-initials-badge ${sportInitialsClass(sport)} ${sizeClasses[size]} ${textSizeClasses[size]} ${className}`}
+      className={`inline-flex shrink-0 overflow-hidden rounded-full ring-2 ${sportRingClass(sport)} ${sizeClasses[size]} ${className}`}
       aria-hidden={decorative || undefined}
       aria-label={decorative ? undefined : `${name} avatar`}
       role={decorative ? undefined : "img"}
     >
-      <span className={`ref-initials-badge__ring ring-2 ${sportRingClass(sport)}`} aria-hidden />
-      <span className="ref-initials-badge__label">{refInitials(name)}</span>
+      <svg
+        viewBox="0 0 32 32"
+        className="h-full w-full"
+        aria-hidden
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <pattern
+            id={patternId}
+            width="8"
+            height="8"
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width="4" height="8" fill="#171717" />
+            <rect x="4" width="4" height="8" fill="#fafafa" />
+          </pattern>
+        </defs>
+        <rect width="32" height="32" fill={`url(#${patternId})`} />
+      </svg>
     </span>
   );
 }
@@ -106,7 +109,7 @@ export function RefAvatar({
 
   if (failed || !photoSrc) {
     return (
-      <RefInitialsBadge
+      <RefStripesBadge
         name={name}
         size={size}
         sport={sport}
@@ -130,7 +133,7 @@ export function RefAvatar({
               : "ring-1 ring-zinc-200/80";
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- onError fallback to initials badge
+    // eslint-disable-next-line @next/next/no-img-element -- onError fallback to striped ref badge
     <img
       src={photoSrc}
       alt={decorative ? "" : `Photo of ${name}`}

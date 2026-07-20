@@ -1,11 +1,11 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-11T17:54:22.690Z",
+    "lastUpdated": "2026-07-20T19:15:22.677Z",
     "source": "wikipedia+commons+curated",
-    "count": 34,
-    "missed": 169,
-    "newlyResolved": 1,
-    "note": "Verified NFL official headshots; striped badge fallback when missing. Purged bad/duplicate Commons matches."
+    "count": 32,
+    "missed": 176,
+    "newlyResolved": 0,
+    "note": "Verified NFL official headshots; striped badge fallback when missing."
   },
   "photos": {
     "greg-meyer-0": {
