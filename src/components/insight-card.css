@@ -1046,6 +1046,23 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-editorial-link--mu
   color: var(--text-secondary);
 }
 
+html[data-color="light"]:not([data-contrast="high"]) .insight-metric-comparison-value,
+html[data-color="light"]:not([data-contrast="high"]) .insight-metric-comparison-value--rate {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .insight-metric-comparison-label,
+html.dark .insight-metric-comparison-label {
+  color: #cbd5e1;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .insight-metric-comparison-value,
+html[data-color="dark"]:not([data-contrast="high"]) .insight-metric-comparison-value--rate,
+html.dark .insight-metric-comparison-value,
+html.dark .insight-metric-comparison-value--rate {
+  color: #f8fafc;
+}
+
 /* Team logo anchor — ref×team editorial cards */
 .insight-team-mark {
   display: inline-flex;

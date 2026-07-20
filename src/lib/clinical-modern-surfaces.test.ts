@@ -255,6 +255,10 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(overviewCss, /Explore bento: equal-height catalog \+ analytics columns/);
     assert.match(overviewCss, /overview-secondary-tabs/);
     assert.match(insightCss, /insight-editorial-kicker/);
+    assert.match(globalsCss, /hide decorative metric bars/);
+    assert.match(globalsCss, /\.overview-pace-bar/);
+    assert.match(insightCss, /insight-metric-comparison-value--rate/);
+    assert.match(insightCss, /var\(--text-primary\)/);
   });
 
   it("pill glow tokens are centralized in kpi-data-pill.css", () => {
