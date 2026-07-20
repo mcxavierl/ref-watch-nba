@@ -45,6 +45,20 @@ describe("matrix-record-schema", () => {
     assert.equal(result.invalid.length, 1);
   });
 
+  it("skips games with no officials without treating them as dirty data", () => {
+    const clean = makeGame();
+    const incomplete = makeGame({
+      gameId: "game-incomplete",
+      officials: [],
+    });
+
+    const filtered = filterGamesForMatrixGeneration([clean, incomplete], "nba");
+    assert.equal(filtered.games.length, 1);
+    assert.equal(filtered.skippedIncomplete, 1);
+    assert.equal(filtered.excludedGames, 0);
+    assert.equal(filtered.games[0]?.gameId, "game-1");
+  });
+
   it("excludes games with invalid matrix records from generation", () => {
     const clean = makeGame();
     const dirty = makeGame({

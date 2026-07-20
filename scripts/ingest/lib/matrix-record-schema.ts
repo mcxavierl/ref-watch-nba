@@ -92,22 +92,24 @@ function logCriticalMatrixError(gameId: string, issues: string[]): void {
 export function filterGamesForMatrixGeneration(
   games: GameLogEntry[],
   leagueId: LeagueId,
-): { games: GameLogEntry[]; excludedGames: number; excludedRecords: number } {
+): {
+  games: GameLogEntry[];
+  excludedGames: number;
+  excludedRecords: number;
+  skippedIncomplete: number;
+} {
   const clean: GameLogEntry[] = [];
   let excludedGames = 0;
   let excludedRecords = 0;
+  let skippedIncomplete = 0;
 
   for (const game of games) {
-    const rawRecords = expandGameToMatrixRecords(game, leagueId);
-    if (rawRecords.length === 0) {
-      excludedGames += 1;
-      logCriticalMatrixError(
-        game.gameId,
-        ["no officiating records derived from game log"],
-      );
+    if (game.officials.length === 0) {
+      skippedIncomplete += 1;
       continue;
     }
 
+    const rawRecords = expandGameToMatrixRecords(game, leagueId);
     const validation = validateMatrixRecords(rawRecords);
     if (validation.invalid.length > 0) {
       excludedGames += 1;
@@ -119,8 +121,14 @@ export function filterGamesForMatrixGeneration(
       continue;
     }
 
+    if (validation.valid.length === 0) {
+      excludedGames += 1;
+      logCriticalMatrixError(game.gameId, ["no valid matrix records after validation"]);
+      continue;
+    }
+
     clean.push(game);
   }
 
-  return { games: clean, excludedGames, excludedRecords };
+  return { games: clean, excludedGames, excludedRecords, skippedIncomplete };
 }

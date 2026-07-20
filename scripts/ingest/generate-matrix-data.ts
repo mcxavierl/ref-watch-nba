@@ -95,8 +95,13 @@ export function generateMatrixDataForLeague(
     return 0;
   }
 
-  const { games: validatedGames, excludedGames, excludedRecords } =
+  const { games: validatedGames, excludedGames, excludedRecords, skippedIncomplete } =
     filterGamesForMatrixGeneration(logs.games, leagueId);
+  if (skippedIncomplete > 0) {
+    console.log(
+      `${leagueId}: skipped ${skippedIncomplete} game(s) with no official assignments`,
+    );
+  }
   if (excludedGames > 0) {
     console.error(
       `${leagueId}: excluded ${excludedGames} game(s) and ${excludedRecords} invalid matrix record(s)`,

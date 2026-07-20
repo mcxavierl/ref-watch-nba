@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-17T16:56:34.816Z",
+    "lastUpdated": "2026-07-20T06:41:36.672Z",
     "seasons": [
       "2016-17",
       "2017-18",
@@ -466,7 +466,23 @@
         "balancedGameRate": 0.651,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 53
+      "cached_oii_score": 53,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.004,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.44,
+        "high_pressure_foul_rate": 10.48,
+        "leverage_sample_games": 50,
+        "close_game_sample": 49,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "michael-oliver-0",
@@ -886,7 +902,23 @@
         "balancedGameRate": 0.648,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 54
+      "cached_oii_score": 54,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 7,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.56,
+        "high_pressure_foul_rate": 11.56,
+        "leverage_sample_games": 50,
+        "close_game_sample": 50,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "craig-pawson-0",
@@ -1306,7 +1338,23 @@
         "balancedGameRate": 0.611,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 58
+      "cached_oii_score": 58,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.001,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.96,
+        "high_pressure_foul_rate": 10.969,
+        "leverage_sample_games": 50,
+        "close_game_sample": 49,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "stuart-attwell-0",
@@ -1735,7 +1783,23 @@
         "balancedGameRate": 0.615,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 56,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.02,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.44,
+        "high_pressure_foul_rate": 10.646,
+        "leverage_sample_games": 50,
+        "close_game_sample": 48,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "chris-kavanagh-0",
@@ -2146,7 +2210,23 @@
         "balancedGameRate": 0.627,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 56,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.84,
+        "high_pressure_foul_rate": 10.84,
+        "leverage_sample_games": 50,
+        "close_game_sample": 50,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "paul-tierney-0",
@@ -2565,7 +2645,23 @@
         "balancedGameRate": 0.695,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 56,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": 0.111,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.008,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.75,
+        "high_pressure_foul_rate": 10.837,
+        "leverage_sample_games": 50,
+        "close_game_sample": 46,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "martin-atkinson-0",
@@ -2963,7 +3059,23 @@
         "balancedGameRate": 0.637,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 61
+      "cached_oii_score": 61,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 4,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.006,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 8.5,
+        "high_pressure_foul_rate": 8.552,
+        "leverage_sample_games": 50,
+        "close_game_sample": 48,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "andre-marriner-0",
@@ -3353,7 +3465,23 @@
         "balancedGameRate": 0.689,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 53
+      "cached_oii_score": 53,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 9.6,
+        "high_pressure_foul_rate": 9.602,
+        "leverage_sample_games": 50,
+        "close_game_sample": 49,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "mike-dean-0",
@@ -3760,7 +3888,23 @@
         "balancedGameRate": 0.722,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 52
+      "cached_oii_score": 52,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.004,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.49,
+        "high_pressure_foul_rate": 10.531,
+        "leverage_sample_games": 50,
+        "close_game_sample": 49,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "jonathan-moss-0",
@@ -4140,7 +4284,23 @@
         "balancedGameRate": 0.725,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 51
+      "cached_oii_score": 51,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.009,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 9.54,
+        "high_pressure_foul_rate": 9.625,
+        "leverage_sample_games": 50,
+        "close_game_sample": 48,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "simon-hooper-0",
@@ -4514,7 +4674,23 @@
         "balancedGameRate": 0.64,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 54
+      "cached_oii_score": 54,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": -0.001,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.67,
+        "high_pressure_foul_rate": 10.656,
+        "leverage_sample_games": 50,
+        "close_game_sample": 48,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "kevin-friend-0",
@@ -4894,7 +5070,23 @@
         "balancedGameRate": 0.654,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 54
+      "cached_oii_score": 54,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": -0.001,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 9.96,
+        "high_pressure_foul_rate": 9.949,
+        "leverage_sample_games": 50,
+        "close_game_sample": 49,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "andy-madley-0",
@@ -5276,7 +5468,23 @@
         "balancedGameRate": 0.632,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 56,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.001,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.29,
+        "high_pressure_foul_rate": 11.296,
+        "leverage_sample_games": 50,
+        "close_game_sample": 49,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "peter-bankes-0",
@@ -5639,7 +5847,23 @@
         "balancedGameRate": 0.635,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 54
+      "cached_oii_score": 54,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.61,
+        "high_pressure_foul_rate": 10.61,
+        "leverage_sample_games": 50,
+        "close_game_sample": 50,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "david-coote-0",
@@ -6003,7 +6227,23 @@
         "balancedGameRate": 0.554,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 56
+      "cached_oii_score": 56,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.003,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 12.09,
+        "high_pressure_foul_rate": 12.125,
+        "leverage_sample_games": 50,
+        "close_game_sample": 48,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "robert-jones-0",
@@ -6357,7 +6597,23 @@
         "balancedGameRate": 0.609,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 53
+      "cached_oii_score": 53,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.43,
+        "high_pressure_foul_rate": 11.43,
+        "leverage_sample_games": 50,
+        "close_game_sample": 50,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "graham-scott-0",
@@ -6784,7 +7040,23 @@
         "balancedGameRate": 0.75,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 54
+      "cached_oii_score": 54,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": true,
+        "pressure_delta_pct": 0.231,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.011,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.14,
+        "high_pressure_foul_rate": 10.255,
+        "leverage_sample_games": 50,
+        "close_game_sample": 47,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "darren-england-0",
@@ -7156,7 +7428,23 @@
         "balancedGameRate": 0.636,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 50
+      "cached_oii_score": 50,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 7,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": -0.107,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": -0.007,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.24,
+        "high_pressure_foul_rate": 11.16,
+        "leverage_sample_games": 50,
+        "close_game_sample": 47,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "jarred-gillett-0",
@@ -7499,7 +7787,23 @@
         "balancedGameRate": 0.553,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 48
+      "cached_oii_score": 48,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.003,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.28,
+        "high_pressure_foul_rate": 10.313,
+        "leverage_sample_games": 50,
+        "close_game_sample": 48,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "lee-mason-0",
@@ -7896,7 +8200,23 @@
         "balancedGameRate": 0.667,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 49
+      "cached_oii_score": 49,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": 0.199,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.01,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.08,
+        "high_pressure_foul_rate": 11.191,
+        "leverage_sample_games": 50,
+        "close_game_sample": 47,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "john-brooks-0",
@@ -8248,7 +8568,23 @@
         "balancedGameRate": 0.622,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 47
+      "cached_oii_score": 47,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.81,
+        "high_pressure_foul_rate": 10.81,
+        "leverage_sample_games": 50,
+        "close_game_sample": 50,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "sam-barrott-0",
@@ -8589,7 +8925,23 @@
         "balancedGameRate": 0.597,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 49
+      "cached_oii_score": 49,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.015,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.09,
+        "high_pressure_foul_rate": 10.24,
+        "leverage_sample_games": 50,
+        "close_game_sample": 48,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "michael-salisbury-0",
@@ -8941,7 +9293,23 @@
         "balancedGameRate": 0.738,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 51
+      "cached_oii_score": 51,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.25,
+        "high_pressure_foul_rate": 11.25,
+        "leverage_sample_games": 50,
+        "close_game_sample": 50,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "tom-bramall-0",
@@ -9274,7 +9642,23 @@
         "balancedGameRate": 0.596,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 45
+      "cached_oii_score": 45,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 7,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.23,
+        "high_pressure_foul_rate": 11.23,
+        "leverage_sample_games": 50,
+        "close_game_sample": 50,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "robert-madley-0",
@@ -9616,7 +10000,23 @@
         "balancedGameRate": 0.6,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 48
+      "cached_oii_score": 48,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 50,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.002,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.56,
+        "high_pressure_foul_rate": 11.582,
+        "leverage_sample_games": 50,
+        "close_game_sample": 49,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "tim-robinson-0",
@@ -9968,7 +10368,23 @@
         "balancedGameRate": 0.49,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 47
+      "cached_oii_score": 47,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 7,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 49,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.001,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.612,
+        "high_pressure_foul_rate": 11.625,
+        "leverage_sample_games": 49,
+        "close_game_sample": 48,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "tony-harrington-0",
@@ -10329,7 +10745,23 @@
         "balancedGameRate": 0.521,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 48
+      "cached_oii_score": 48,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 7,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 48,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.833,
+        "high_pressure_foul_rate": 10.833,
+        "leverage_sample_games": 48,
+        "close_game_sample": 48,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "neil-swarbrick-0",
@@ -10651,7 +11083,23 @@
         "balancedGameRate": 0.5,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 48
+      "cached_oii_score": 48,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 44,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.008,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.045,
+        "high_pressure_foul_rate": 10.128,
+        "leverage_sample_games": 44,
+        "close_game_sample": 43,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "roger-east-0",
@@ -10992,7 +11440,23 @@
         "balancedGameRate": 0.564,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 52
+      "cached_oii_score": 52,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 7,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 39,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 11.026,
+        "high_pressure_foul_rate": 11.026,
+        "leverage_sample_games": 39,
+        "close_game_sample": 39,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "lee-probert-0",
@@ -11288,7 +11752,23 @@
         "balancedGameRate": 0.778,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 51
+      "cached_oii_score": 51,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 36,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.014,
+        "high_pressure_foul_rate": 10.014,
+        "leverage_sample_games": 36,
+        "close_game_sample": 36,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "michael-jones-0",
@@ -11864,7 +12344,23 @@
         "balancedGameRate": 0.565,
         "balanceKind": "neutral"
       },
-      "cached_oii_score": 46
+      "cached_oii_score": 46,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 6,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 23,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0.007,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.761,
+        "high_pressure_foul_rate": 10.841,
+        "leverage_sample_games": 23,
+        "close_game_sample": 22,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "mark-clattenburg-0",
@@ -12149,7 +12645,23 @@
         "balancedGameRate": 0.591,
         "balanceKind": "balancer"
       },
-      "cached_oii_score": 43
+      "cached_oii_score": 43,
+      "officialStats": {
+        "primary_archetype": "game-flow-manager",
+        "consistency_score": 5,
+        "admin_ratio": 0.282,
+        "pressure_sensitive": false,
+        "pressure_delta_pct": null,
+        "sample_games": 22,
+        "last_calculated": "2026-07-20T06:41:36.672Z",
+        "leverage_index": 0,
+        "leverage_profile": "neutral",
+        "early_period_foul_rate": 10.523,
+        "high_pressure_foul_rate": 10.523,
+        "leverage_sample_games": 22,
+        "close_game_sample": 22,
+        "split_backed_games": 0
+      }
     },
     {
       "slug": "lee-smith-0",
