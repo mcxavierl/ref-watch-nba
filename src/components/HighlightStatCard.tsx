@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { PrefetchLink } from "@/components/PrefetchLink";
 import type { LucideIcon } from "lucide-react";
 /**
@@ -57,6 +58,7 @@ export function HighlightStatCard({
   categoryHref,
   notable = false,
   metric,
+  cardIndex = 0,
 }: {
   leagueId: LeagueId;
   insightKind: string;
@@ -82,6 +84,7 @@ export function HighlightStatCard({
     variancePct: number;
     comparisonCaption?: string;
   };
+  cardIndex?: number;
 }) {
   const usesSplitHierarchy =
     sampleGames !== undefined &&
@@ -187,6 +190,7 @@ export function HighlightStatCard({
       data-accent={accent}
       data-tone={tone}
       className={heroPills ? "highlight-stat-card--hero-pill" : undefined}
+      style={{ "--insight-index": cardIndex } as CSSProperties}
     >
       <div className={REF_CARD_HEAD_CLASS}>
         <span className={`${REF_CARD_ICON_CLASS} ref-card-icon--badge`} aria-hidden>

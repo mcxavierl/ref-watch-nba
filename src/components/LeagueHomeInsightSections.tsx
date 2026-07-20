@@ -25,9 +25,10 @@ function LeagueHomeInsightGrid({
 
   return (
     <ul className={gridClassName}>
-      {insights.map((insight) => (
+      {insights.map((insight, index) => (
         <HighlightStatCard
           key={insight.id}
+          cardIndex={index}
           leagueId={leagueId}
           insightKind={insight.id}
           accent={highlightCardAccentForInsight(insight.id)}

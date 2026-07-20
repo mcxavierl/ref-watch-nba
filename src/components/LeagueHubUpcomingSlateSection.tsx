@@ -54,8 +54,8 @@ export function LeagueHubUpcomingSlateSection({
       ) : null}
 
       <div className="upcoming-games-grid upcoming-games-grid--hub">
-        {group.games.map((game) => (
-          <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} />
+        {group.games.map((game, index) => (
+          <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} index={index} />
         ))}
       </div>
 

@@ -38,14 +38,15 @@ export default function WnbaTeamsIndexPage() {
                   <li key={team.abbr}>
                     <Link
                       href={`/wnba/teams/${team.abbr}`}
-                      className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2.5 transition hover:border-zinc-300 hover:bg-zinc-50"
+                      data-league="wnba"
+                      className="team-index-link flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2.5"
                     >
-                      <TeamLogo team={{ ...team, logoUrl: teamLogoUrl(team.abbr) }} size="md" />
+                      <TeamLogo team={{ ...team, logoUrl: teamLogoUrl(team.abbr) }} size="md" sport="wnba" />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-base font-medium text-zinc-900">
+                        <p className="team-index-name truncate text-base font-medium">
                           {teamFullName(team)}
                         </p>
-                        <p className="text-sm text-zinc-600">
+                        <p className="team-index-meta text-sm">
                           {splits.length > 0
                             ? (
                               <>
@@ -56,7 +57,7 @@ export default function WnbaTeamsIndexPage() {
                             : "No data yet"}
                         </p>
                       </div>
-                      <span className="font-mono text-sm text-zinc-500">
+                      <span className="team-index-abbr font-mono text-sm">
                         {team.abbr}
                       </span>
                     </Link>
