@@ -15,7 +15,7 @@ export function GsniResearchIntro({
   ratedCount: number;
   trackedCount: number;
 }) {
-  if (leagueId !== "nfl" && leagueId !== "nba") return null;
+  if (leagueId !== "nfl" && leagueId !== "nba" && leagueId !== "nhl") return null;
 
   return (
     <section className="section-block-tight mb-4" aria-labelledby="gsni-research-intro-title">

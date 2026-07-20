@@ -217,6 +217,23 @@ describe("extractGsniObservations", () => {
     assert.equal(corpus.games[0]?.observations.length, 4);
   });
 
+  it("uses minor counts for NHL game logs when homeMinors and awayMinors are present", () => {
+    const observations = extractGsniObservations({
+      gameId: "nhl-1",
+      homeScore: 4,
+      awayScore: 3,
+      totalFouls: 26,
+      homeMinors: 5,
+      awayMinors: 3,
+      officials: [],
+    });
+
+    assert.equal(observations.length, 3);
+    assert.equal(observations[0]?.fouls, 8 / 3);
+    assert.equal(observations[0]?.minutes, 20);
+    assert.equal(observations[2]?.timeRemainingSeconds, 300);
+  });
+
   it("distributes game totals across quarter anchors when splits are missing", () => {
     const observations = extractGsniObservations({
       gameId: "nba-3",
