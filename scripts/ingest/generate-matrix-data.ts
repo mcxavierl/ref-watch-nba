@@ -73,7 +73,6 @@ function refreshAggregateFoulStats(
     if (!bucket || bucket.games === 0) return profile;
     return {
       ...profile,
-      games: bucket.games,
       avgFouls: round1(bucket.total / bucket.games),
     };
   });
@@ -123,7 +122,6 @@ export function generateMatrixDataForLeague(
       return fresh
         ? {
             ...ref,
-            games: fresh.games,
             avgFouls: fresh.avgFouls,
             officialStats: fresh.officialStats,
           }
