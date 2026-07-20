@@ -91,6 +91,7 @@
     "generate-wnba-seed": "tsx scripts/wnba/generate-seed.ts",
     "build-wnba-data": "tsx scripts/wnba/build-ref-data.ts",
     "rebuild-wnba-from-logs": "tsx scripts/wnba/build-ref-data.ts --from-logs",
+    "enrich-wnba-officials": "tsx scripts/wnba/enrich-game-log-officials.ts",
     "validate-wnba-ingest": "tsx scripts/wnba/validate-ingest.ts",
     "ingest-wnba": "npm run build-wnba-data && npm run validate-wnba-ingest",
     "build-cbb-data": "tsx scripts/cbb/build-ref-data.ts",

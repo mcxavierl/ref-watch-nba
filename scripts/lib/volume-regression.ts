@@ -29,13 +29,14 @@ import { getRefStats as getLaligaRefStats, getTeamSplits as getLaligaTeamSplits 
 import { getRefStats as getNbaRefStats, getTeamSplits as getNbaTeamSplits } from "../../src/lib/data";
 import { getRefStats as getNflRefStats, getTeamSplits as getNflTeamSplits } from "../../src/lib/nfl/data";
 import { getRefStats as getNhlRefStats, getTeamSplits as getNhlTeamSplits } from "../../src/lib/nhl/data";
-import { getRefStats as getWnbaRefStats } from "../../src/lib/wnba/data";
+import { getRefStats as getWnbaRefStats, getTeamSplits as getWnbaTeamSplits } from "../../src/lib/wnba/data";
 import { nhlAnalyticsRefStats } from "../../src/lib/nhl/officials";
 import { EPL_TEAMS, teamFullName as eplTeamFullName } from "../../src/lib/epl/teams";
 import { LALIGA_TEAMS, teamFullName as laligaTeamFullName } from "../../src/lib/laliga/teams";
 import { NFL_TEAMS, teamFullName as nflTeamFullName } from "../../src/lib/nfl/teams";
 import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "../../src/lib/nhl/teams";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "../../src/lib/teams";
+import { WNBA_TEAMS, teamFullName as wnbaTeamFullName } from "../../src/lib/wnba/teams";
 import { MIN_NFL_GAMES, MIN_NHL_GAMES } from "./constants/ingest-thresholds";
 import { findReverseNameGhosts } from "./ref-identity";
 
@@ -296,6 +297,15 @@ export function checkMatrixBaselines(
         name: t.name,
       })),
       getTeamSplits: getCfbTeamSplits,
+    },
+    wnba: {
+      stats: getWnbaRefStats(),
+      teams: WNBA_TEAMS.map((t) => ({
+        abbr: t.abbr,
+        label: wnbaTeamFullName(t),
+        name: t.name,
+      })),
+      getTeamSplits: getWnbaTeamSplits,
     },
   } as const;
 

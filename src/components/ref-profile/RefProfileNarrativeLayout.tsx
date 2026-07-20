@@ -7,6 +7,7 @@ import {
   ScoutingReportEdge,
 } from "@/components/ref-profile/ScoutingReport";
 import { RefProfileTeamTrends } from "@/components/ref-profile/RefProfileTeamTrends";
+import { RefProfileCareerEvolution } from "@/components/ref-profile/RefProfile";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import { buildRefTeamPerformanceTrends } from "@/lib/ref-team-performance-trends";
 import type { CloseGameMetrics } from "@/lib/close-game";
@@ -65,6 +66,8 @@ export function RefProfileNarrativeLayout({
   return (
     <div className="ref-narrative-layout">
       <ScoutingReportEdge {...scoutingProps} />
+
+      <RefProfileCareerEvolution profile={profile} />
 
       <RefProfileDepthExpand label="Expand officiating and market depth">
         <div className="ref-narrative-outcome-grid">

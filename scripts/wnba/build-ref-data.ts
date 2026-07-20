@@ -11,11 +11,11 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { fetchWnbaAssignments } from "../lib/parse-assignments";
 import { dedupeGameLogs, loadGameLogs, saveGameLogs, type GameLogEntry } from "../lib/game-logs";
-import { rebuildRefGamesFromLogs } from "../lib/rebuild-ref-games-from-logs";
 import { rebuildTeamSplitsFromGameLogs } from "../lib/rebuild-team-splits-from-logs";
+import { enrichWnbaGameLogOfficials } from "./enrich-game-log-officials";
+import { buildWnbaRefStatsFromLogs } from "./lib/build-ref-stats-from-logs";
 import { splitRefStatsForDeploy } from "../lib/split-ref-stats";
 import { WNBA_TEAM_ABBRS } from "../../src/lib/wnba/teams";
-import { isWnbaVerifiedData } from "../../src/lib/wnba/data-source";
 import type { RefStatsFile } from "../../src/lib/types";
 
 const WNBA_DATA_DIR = path.join(process.cwd(), "data", "wnba");
@@ -105,39 +105,18 @@ function publishWnbaArtifacts(stats: RefStatsFile, games: GameLogEntry[]): void 
 }
 
 function buildStatsFromLogs(games: GameLogEntry[]): RefStatsFile {
-  let stats = emptyStats();
-  const seasons = [...new Set(games.map((g) => g.season))].sort();
-  stats.meta.seasons = seasons;
-  stats.meta.source = "wnba-stats-api";
-  stats.meta.lastUpdated = new Date().toISOString();
+  return buildWnbaRefStatsFromLogs(games);
+}
 
-  const logs = {
-    lastUpdated: new Date().toISOString(),
-    league: "WNBA" as const,
-    source: "wnba-stats-api",
-    games,
-  };
-
-  stats = rebuildRefGamesFromLogs(stats, logs, { useCanonicalKey: true, seasons });
-  const teamSplits = rebuildTeamSplitsFromGameLogs("wnba", stats, logs);
-  stats.teamSplits = teamSplits;
-
-  const gameCount = games.length;
-  const minGamesForVerify = Number.parseInt(
-    process.env.WNBA_MIN_GAMES ?? "400",
-    10,
+async function enrichLogsIfNeeded(games: GameLogEntry[]): Promise<GameLogEntry[]> {
+  const missing = games.filter((game) => !game.officials?.length).length;
+  if (missing === 0) return games;
+  console.log(`Enriching officials for ${missing}/${games.length} WNBA games...`);
+  const result = await enrichWnbaGameLogOfficials(games);
+  console.log(
+    `Official enrichment: added=${result.enriched}, already_present=${result.skipped}`,
   );
-  if (gameCount >= minGamesForVerify && isWnbaVerifiedData(logs.source)) {
-    stats.meta.data_verified = true;
-    stats.meta.data_source = "ESPN";
-    stats.meta.totalGamesProcessed = gameCount;
-    stats.meta.note = `${gameCount} WNBA games from ESPN with scores and foul totals. Referee profiles populate as official assignments backfill into game logs.`;
-  } else if (gameCount > 0) {
-    stats.meta.totalGamesProcessed = gameCount;
-    stats.meta.note = `${gameCount} WNBA games indexed. Referee profiles populate as official assignments backfill into game logs.`;
-  }
-
-  return stats;
+  return result.games;
 }
 
 async function main(): Promise<void> {
@@ -176,8 +155,16 @@ async function main(): Promise<void> {
   }
 
   const deduped = dedupeGameLogs(existing.games);
-  const stats = buildStatsFromLogs(deduped);
-  publishWnbaArtifacts(stats, deduped);
+  const enriched = await enrichLogsIfNeeded(deduped);
+  const stats = buildStatsFromLogs(enriched);
+  const teamSplits = rebuildTeamSplitsFromGameLogs("wnba", stats, {
+    lastUpdated: new Date().toISOString(),
+    league: "WNBA",
+    source: stats.meta.source ?? "wnba-stats-api",
+    games: enriched,
+  });
+  stats.teamSplits = teamSplits;
+  publishWnbaArtifacts(stats, enriched);
   console.log(
     `WNBA ref stats: ${stats.refs.length} refs, ${deduped.length} games, verified=${stats.meta.data_verified === true}`,
   );

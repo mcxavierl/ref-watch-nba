@@ -1,5 +1,7 @@
-const SCOREBOARD_BASE =
-  "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba";
+import type { RefOfficial } from "../../src/lib/types";
+
+const SUMMARY_BASE =
+  "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/summary";
 
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -7,6 +9,14 @@ export function sleep(ms: number): Promise<void> {
 
 export function yyyymmdd(isoDate: string): string {
   return isoDate.slice(0, 10).replace(/-/g, "");
+}
+
+export function normalizeOfficialName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export interface WnbaScoreboardEvent {
@@ -20,7 +30,9 @@ export interface WnbaScoreboardEvent {
 export async function fetchWnbaScoreboard(
   yyyymmddDate: string,
 ): Promise<WnbaScoreboardEvent[]> {
-  const res = await fetch(`${SCOREBOARD_BASE}/scoreboard?dates=${yyyymmddDate}`);
+  const res = await fetch(
+    `https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard?dates=${yyyymmddDate}`,
+  );
   if (!res.ok) {
     throw new Error(`ESPN WNBA scoreboard ${yyyymmddDate}: ${res.status}`);
   }
@@ -59,4 +71,53 @@ export async function fetchWnbaScoreboard(
     });
   }
   return events;
+}
+
+export async function fetchWnbaSummaryOfficials(
+  eventId: string,
+): Promise<{ fullName: string; positionName?: string }[]> {
+  const res = await fetch(`${SUMMARY_BASE}?event=${eventId}`);
+  if (!res.ok) return [];
+  const body = (await res.json()) as {
+    gameInfo?: {
+      officials?: {
+        fullName?: string;
+        displayName?: string;
+        position?: { name?: string; displayName?: string };
+      }[];
+    };
+  };
+
+  return (body.gameInfo?.officials ?? [])
+    .map((official) => ({
+      fullName: (official.fullName ?? official.displayName ?? "").trim(),
+      positionName: official.position?.displayName ?? official.position?.name,
+    }))
+    .filter((official) => official.fullName.length > 0);
+}
+
+function roleFromPosition(positionName: string | undefined, index: number): RefOfficial["role"] {
+  const normalized = (positionName ?? "").toLowerCase();
+  if (normalized.includes("crew")) return "crew_chief";
+  if (normalized.includes("umpire")) return "umpire";
+  if (normalized.includes("referee")) return "referee";
+  const fallback: RefOfficial["role"][] = ["crew_chief", "referee", "umpire", "alternate"];
+  return fallback[index] ?? "alternate";
+}
+
+export function toWnbaOfficials(
+  officials: { fullName: string; positionName?: string }[],
+  roster: Map<string, number>,
+): RefOfficial[] {
+  return officials
+    .map((official, index) => {
+      const name = official.fullName.trim();
+      if (!name) return null;
+      return {
+        name,
+        number: roster.get(normalizeOfficialName(name)) ?? 0,
+        role: roleFromPosition(official.positionName, index),
+      };
+    })
+    .filter((official): official is RefOfficial => official !== null);
 }

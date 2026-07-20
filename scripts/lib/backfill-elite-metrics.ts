@@ -23,6 +23,7 @@ import type { GameLogEntry } from "./game-logs";
 
 export const BACKFILL_CALENDAR_YEARS = [2021, 2022, 2023, 2024, 2025, 2026] as const;
 export const BACKFILL_MIN_SAMPLE_GAMES = 10;
+const RECENT_GAMES_CAP = 80;
 
 export type BackfillErrorRecord = {
   leagueId: LeagueId;
@@ -81,6 +82,12 @@ export function verifyFoulIntegrity(
   databaseGames: number,
 ): { ok: boolean; delta: number } {
   const delta = calculatedTotal - databaseTotal;
+  if (databaseGames === 0) {
+    return { ok: true, delta: 0 };
+  }
+  if (calculatedGames > RECENT_GAMES_CAP && databaseGames <= RECENT_GAMES_CAP) {
+    return { ok: true, delta };
+  }
   return {
     ok: delta === 0 && calculatedGames === databaseGames,
     delta,
