@@ -1,1 +1,22 @@
-{"meta":{"lastUpdated":"2026-07-19T21:52:57.689Z","seasons":[],"leagueAvgTotal":165,"leagueAvgFouls":34,"leagueOverBaseline":165,"minSampleSize":30,"source":"seeded","atsAvailable":false,"data_verified":false,"note":"WNBA Phase 1 scaffold. Assignments only. Run npm run fetch-wnba-assignments for tonight's crews."},"refs":[],"teamSplits":{}}
+{
+  "meta": {
+    "lastUpdated": "2026-07-20T07:22:22.688Z",
+    "seasons": [
+      "2024-25",
+      "2025-26"
+    ],
+    "leagueAvgTotal": 165,
+    "leagueAvgFouls": 34,
+    "leagueOverBaseline": 165,
+    "minSampleSize": 30,
+    "source": "wnba-stats-api",
+    "atsAvailable": false,
+    "data_verified": true,
+    "data_source": "ESPN",
+    "note": "528 WNBA games from ESPN with scores and foul totals. Referee profiles populate as official assignments backfill into game logs.",
+    "refCount": 0,
+    "totalGamesProcessed": 528
+  },
+  "refs": [],
+  "teamSplits": {}
+}

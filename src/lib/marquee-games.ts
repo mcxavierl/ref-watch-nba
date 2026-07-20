@@ -2,7 +2,7 @@ import { opponentTiersForSeason } from "@/lib/nba-strength-of-schedule";
 import { getTeam as getNflTeam } from "@/lib/nfl/teams";
 import type { RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import type { LeagueId } from "@/lib/leagues";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 
 export type MarqueeTag =
   | "prime-time"
@@ -17,7 +17,7 @@ export interface MarqueeGameContext {
   reasons: string[];
 }
 
-const PRO_LEAGUES = new Set<LeagueId>(PRO_VERIFIED_LIVE_LEAGUE_IDS);
+const PRO_LEAGUES = new Set<LeagueId>(PRO_MATRIX_ANALYTICS_LEAGUE_IDS);
 
 const HIGH_CAPACITY_VENUES: Record<LeagueId, readonly string[]> = {
   nba: ["LAL", "LAC", "GSW", "NYK", "BKN", "CHI", "BOS", "PHI", "DAL", "MIA"],

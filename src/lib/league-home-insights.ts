@@ -7,7 +7,7 @@ import {
   type LeagueInsightCard,
 } from "@/lib/league-overview-insights";
 import { buildWnbaSlateInsights } from "@/lib/wnba/slate-insights";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import {
   buildRankingsSynthesis,
   type RankingsInsight,
@@ -90,10 +90,10 @@ export function buildLeaguePulseInsights(
 
   if (
     pulse.length < LEAGUE_PULSE_LIMIT &&
-    PRO_VERIFIED_LIVE_LEAGUE_IDS.includes(league.id as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number])
+    PRO_MATRIX_ANALYTICS_LEAGUE_IDS.includes(league.id as (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number])
   ) {
     const matrixCard = buildTopMatrixSplitCardForLeague(
-      league.id as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number],
+      league.id as (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number],
       stats,
     );
     if (matrixCard?.refSlug && !usedSlugs.has(matrixCard.refSlug)) {

@@ -42,10 +42,10 @@ describe("verified live leagues", () => {
     ]);
   });
 
-  it("launches WNBA on slate before ref-stats ingest is verified", () => {
-    assert.deepEqual([...PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS], ["wnba"]);
-    assert.equal(isProAssignmentsLiveLeague("wnba"), true);
-    assert.equal(isProVerifiedLiveLeague("wnba"), false);
+  it("includes WNBA as a verified pro league", () => {
+    assert.deepEqual([...PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS], []);
+    assert.equal(isProAssignmentsLiveLeague("wnba"), false);
+    assert.equal(isProVerifiedLiveLeague("wnba"), true);
     assert.equal(isVerifiedLiveLeague("wnba"), true);
     assert.ok((VERIFIED_LIVE_LEAGUE_IDS as readonly string[]).includes("wnba"));
   });

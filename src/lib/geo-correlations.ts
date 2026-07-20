@@ -11,7 +11,7 @@ import { NFL_TEAMS } from "@/lib/nfl/teams";
 import { NHL_TEAMS } from "@/lib/nhl/teams";
 import { EPL_TEAMS } from "@/lib/epl/teams";
 import { LALIGA_TEAMS } from "@/lib/laliga/teams";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 import {
@@ -76,7 +76,7 @@ const LEAGUE_TO_DATA: Record<FindingLeague, DataLeague> = {
   WNBA: "WNBA",
 };
 
-const LEAGUE_ID_TO_FINDING: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], FindingLeague> = {
+const LEAGUE_ID_TO_FINDING: Record<(typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number], FindingLeague> = {
   nba: "NBA",
   nhl: "NHL",
   nfl: "NFL",
@@ -1061,12 +1061,12 @@ export function computeRefGeoCorrelations(
   stats: RefStatsFile,
   gameLogs?: RuntimeGameLogEntry[] | null,
 ): GeoCorrelationFinding[] {
-  if (!(PRO_VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
+  if (!(PRO_MATRIX_ANALYTICS_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
     return [];
   }
 
   const findingLeague =
-    LEAGUE_ID_TO_FINDING[leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number]];
+    LEAGUE_ID_TO_FINDING[leagueId as (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number]];
   const dataLeague = LEAGUE_TO_DATA[findingLeague];
   const logs =
     gameLogs ?? loadRuntimeGameLogs(dataLeague)?.games ?? getCachedGameLogs(dataLeague)?.games ?? null;
@@ -1102,7 +1102,7 @@ export function computeRefGeoCorrelations(
 export function computeAllGeoCorrelations(): GeoCorrelationFinding[] {
   const all: GeoCorrelationFinding[] = [];
 
-  for (const leagueId of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
+  for (const leagueId of PRO_MATRIX_ANALYTICS_LEAGUE_IDS) {
     const findingLeague = LEAGUE_ID_TO_FINDING[leagueId];
     const dataLeague = LEAGUE_TO_DATA[findingLeague];
     const stats = getCachedRefStats(leagueId);

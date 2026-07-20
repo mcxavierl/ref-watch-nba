@@ -5,6 +5,10 @@ import { isCfbSimulatedData, isCfbVerifiedData } from "@/lib/cfb/data-source";
 import { isEplSimulatedData, isEplVerifiedData } from "@/lib/epl/data-source";
 import { isLaligaSimulatedData, isLaligaVerifiedData } from "@/lib/laliga/data-source";
 import {
+  isWnbaSimulatedData,
+  isWnbaVerifiedData,
+} from "@/lib/wnba/data-source";
+import {
   isNhlSimulatedData,
   isNhlVerifiedData,
 } from "@/lib/nhl/data-source";
@@ -44,6 +48,7 @@ export {
   OVERVIEW_HUB_LEAGUE_IDS,
   PRIMARY_LIVE_LEAGUE_IDS,
   PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS,
+  PRO_MATRIX_ANALYTICS_LEAGUE_IDS,
   PRO_ONLY_LIVE_LEAGUE_IDS,
   PRO_VERIFIED_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
@@ -157,6 +162,19 @@ function inferCollegeVerification(
   };
 }
 
+function inferWnbaVerification(meta: RefStatsFile["meta"]): LeagueVerification {
+  const verified =
+    meta.data_verified === true &&
+    isWnbaVerifiedData(meta.source) &&
+    !isWnbaSimulatedData(meta.source);
+  return {
+    data_verified: verified,
+    data_source: meta.data_source ?? (verified ? "ESPN" : "synthetic"),
+    canRenderStats: verified,
+    verifiedSeasons: verified ? [...meta.seasons] : [],
+  };
+}
+
 export function resolveLeagueVerification(
   leagueId: LeagueId,
   meta: RefStatsFile["meta"],
@@ -164,9 +182,10 @@ export function resolveLeagueVerification(
 ): LeagueVerification {
   switch (leagueId) {
     case "nba":
-    case "wnba":
     case "mlb":
       return inferNbaVerification(meta);
+    case "wnba":
+      return inferWnbaVerification(meta);
     case "nhl":
       return inferNhlVerification(meta);
     case "nfl":
@@ -215,6 +234,11 @@ export function unverifiedBannerMessage(
   const v = resolveLeagueVerification(leagueId, meta);
   if (v.data_verified) return "";
   if (leagueId === "cbb") return "";
+  if (leagueId === "wnba") {
+    return v.data_verified
+      ? ""
+      : "WNBA game logs and slate assignments are loading.";
+  }
   if (leagueId === "nhl" || leagueId === "nfl") {
     const label = leagueId.toUpperCase();
     return `We're still building verified ${label} data.`;

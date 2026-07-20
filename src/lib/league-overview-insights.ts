@@ -13,7 +13,7 @@ import { getTeamSplits as getNhlTeamSplits } from "@/lib/nhl/data";
 import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "@/lib/nhl/teams";
 import type { Finding } from "@/lib/findings-shared";
 import { loadLeagueStats } from "@/lib/load-league-stats";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import {
   hasNcaaLiveConferenceCoverage,
   isNcaaConferenceGatedLeague,
@@ -82,7 +82,7 @@ type LeagueInsightConfig = {
   matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga";
 };
 
-const LEAGUE_CONFIG: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], LeagueInsightConfig> = {
+const LEAGUE_CONFIG: Record<(typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number], LeagueInsightConfig> = {
   nba: {
     leagueId: "nba",
     teams: NBA_TEAMS.map((team) => ({
@@ -153,7 +153,7 @@ function matrixHref(leagueId: LeagueId): string {
   return `${leaguePrefix(leagueId)}/matrix`;
 }
 
-type VerifiedLiveLeagueId = (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
+type VerifiedLiveLeagueId = (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number];
 
 function insightsHref(leagueId: VerifiedLiveLeagueId): string {
   return insightsViewHref(leagueId, "findings");
@@ -336,7 +336,7 @@ function matrixStandoutCardsForLeague(
 export function buildLeagueInsightCards(): LeagueInsightCard[] {
   const cards: LeagueInsightCard[] = [];
 
-  for (const leagueId of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
+  for (const leagueId of PRO_MATRIX_ANALYTICS_LEAGUE_IDS) {
     const setup = LEAGUE_CONFIG[leagueId];
     const { stats } = loadLeagueStats(leagueId);
     if (stats.refs.length === 0) continue;

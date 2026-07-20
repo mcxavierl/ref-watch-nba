@@ -8,7 +8,7 @@ import {
 } from "@/lib/marquee-metrics.constants";
 import type { RefMarqueePerformance } from "@/lib/marquee-metrics.shared";
 import { passesMarqueeComparisonGate } from "@/lib/marquee-metrics.shared";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import {
   formatWilsonPct,
   wilsonScoreInterval,
@@ -31,7 +31,7 @@ export {
   type RefMarqueePerformance,
 } from "@/lib/marquee-metrics.shared";
 
-const LEAGUE_TO_DATA: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], DataLeague> = {
+const LEAGUE_TO_DATA: Record<(typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number], DataLeague> = {
   nba: "NBA",
   nhl: "NHL",
   nfl: "NFL",
@@ -143,7 +143,7 @@ export function computeRefMarqueePerformance(
   profile: RefProfile,
   gameLogs?: RuntimeGameLogEntry[] | null,
 ): RefMarqueePerformance | null {
-  if (!(PRO_VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
+  if (!(PRO_MATRIX_ANALYTICS_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
     return null;
   }
 
@@ -152,7 +152,7 @@ export function computeRefMarqueePerformance(
   const cached = cache.get(cacheKey);
   if (cached) return cached as RefMarqueePerformance;
 
-  const dataLeague = LEAGUE_TO_DATA[leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number]];
+  const dataLeague = LEAGUE_TO_DATA[leagueId as (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number]];
   let allGames: RuntimeGameLogEntry[] | null =
     gameLogs ?? loadRuntimeGameLogs(dataLeague)?.games ?? null;
 

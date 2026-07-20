@@ -1,6 +1,6 @@
 import { insightsViewHref } from "@/lib/insights-routes";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import {
   computeMatrixExtremes,
   formatMatrixHighlightBaseline,
@@ -45,7 +45,7 @@ export type TopStoriesStatus = "generated" | "fallback";
 export type InsightOutlierKind = "win-rate" | "whistle-pace" | "international-origin";
 
 export type InsightOutlierCandidate = {
-  leagueId: (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
+  leagueId: (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number];
   kind: InsightOutlierKind;
   significance: number;
   refSlug: string;
@@ -71,7 +71,7 @@ export type OverviewInsightsPayload = {
 };
 
 export type LeagueGeneratorSetup = LeagueCardBuildSetup & {
-  leagueId: (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number];
+  leagueId: (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number];
 };
 
 function leaguePrefix(leagueId: LeagueId): string {
@@ -86,7 +86,7 @@ function matrixHref(leagueId: LeagueId): string {
   return `${leaguePrefix(leagueId)}/matrix`;
 }
 
-function trendsHref(leagueId: (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number]): string {
+function trendsHref(leagueId: (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number]): string {
   return insightsViewHref(leagueId, "trends");
 }
 
