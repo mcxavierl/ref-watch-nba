@@ -63,7 +63,7 @@ export function RefDashboardStatCell({
     <div
       id={hashId}
       data-stat-card={hashId ? "true" : undefined}
-      className="ref-stat-card clinical-metric-card stat-card backdrop-blur-md"
+      className="ref-stat-card clinical-metric-card stat-card backdrop-blur-md h-fit flex flex-col"
     >
       <div className="clinical-metric-card-head">
         <dt className="ref-stat-label">{label}</dt>

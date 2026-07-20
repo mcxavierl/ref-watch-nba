@@ -8,7 +8,7 @@ import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
  * metrics must display maturity indicators and adjusted projections.
  */
 export const CLINICAL_METRIC_CARD_CLASS =
-  "clinical-metric-card ref-stat-card backdrop-blur-md";
+  "clinical-metric-card ref-stat-card backdrop-blur-md h-fit flex flex-col";
 
 export function ClinicalMetricCard({
   label,
