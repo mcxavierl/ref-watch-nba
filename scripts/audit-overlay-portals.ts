@@ -17,6 +17,7 @@ const OVERLAY_COMPONENTS = [
   "src/components/CommandPalette.tsx",
   "src/components/InsightDrilldownModal.tsx",
   "src/components/MatrixTeamFocusDrawer.tsx",
+  "src/components/GameSlatePreviewDrawer.tsx",
   "src/components/RefProfilePreviewDrawer.tsx",
 ] as const;
 

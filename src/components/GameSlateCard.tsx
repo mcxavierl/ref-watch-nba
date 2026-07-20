@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
 import { ChevronDown } from "lucide-react";
 import type { CrewMetrics } from "@/lib/data";
 import {
@@ -102,6 +102,7 @@ export function GameSlateCard({
   otSignal = null,
   overBenchmark,
   slateIndex = 0,
+  onOpenPreview,
 }: {
   gameId: string;
   matchup: string;
@@ -117,6 +118,7 @@ export function GameSlateCard({
   otSignal?: NhlOtRateSignal | null;
   overBenchmark?: number;
   slateIndex?: number;
+  onOpenPreview?: () => void;
 }) {
   const copy = sportCopy(sport);
   const defaultBenchmark = SPORT_BENCHMARK[sport];
@@ -191,13 +193,37 @@ export function GameSlateCard({
         ? "Low scoring crew"
         : null;
 
+  const handleCardActivate = () => {
+    onOpenPreview?.();
+  };
+
+  const handleCardClick = (event: MouseEvent<HTMLElement>) => {
+    if (!onOpenPreview) return;
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button, summary, details, input, select, textarea, label")) return;
+    handleCardActivate();
+  };
+
+  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (!onOpenPreview) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleCardActivate();
+    }
+  };
+
   return (
     <article
       id={`game-${gameId}`}
-      className={`data-card ${CLINICAL_CARD_CLASS}`}
+      className={`data-card ${CLINICAL_CARD_CLASS}${onOpenPreview ? " game-slate-card--interactive" : ""}`}
       data-sport={sport}
       data-crew-pending={metrics.crew.length === 0 ? "true" : undefined}
       style={{ "--slate-i": slateIndex } as CSSProperties}
+      onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
+      tabIndex={onOpenPreview ? 0 : undefined}
+      role={onOpenPreview ? "button" : undefined}
+      aria-label={onOpenPreview ? `Open ${matchup} ref preview` : undefined}
     >
       <div className="data-card-header">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">

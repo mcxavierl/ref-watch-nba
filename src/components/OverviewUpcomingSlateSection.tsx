@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { UpcomingGameCard } from "@/components/UpcomingGameCard";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
+import { OverviewSlateGamesInteractive } from "@/components/OverviewSlateGamesInteractive";
 import { LEAGUES } from "@/lib/leagues";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 
@@ -41,9 +41,7 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
       {upcomingSlate.inSeason ? (
         slateGames.length > 0 ? (
           <div className="upcoming-games-grid upcoming-games-grid--homepage">
-            {slateGames.map((game, index) => (
-              <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} index={index} />
-            ))}
+            <OverviewSlateGamesInteractive games={slateGames} variant="card" />
           </div>
         ) : (
           <p className="overview-slate-empty overview-slate-empty-panel">

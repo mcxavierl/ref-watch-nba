@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { KeyboardEvent, MouseEvent } from "react";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import {
@@ -12,16 +13,46 @@ import {
 export function OverviewSlateRow({
   game,
   showHubLink = true,
+  onOpenPreview,
 }: {
   game: OverviewSlateEntry;
   showHubLink?: boolean;
+  onOpenPreview?: () => void;
 }) {
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateLabel = formatSlateDateLabel(game.slateDate);
 
+  const handleActivate = () => {
+    onOpenPreview?.();
+  };
+
+  const handleClick = (event: MouseEvent<HTMLLIElement>) => {
+    if (!onOpenPreview) return;
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button")) return;
+    handleActivate();
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLLIElement>) => {
+    if (!onOpenPreview) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleActivate();
+    }
+  };
+
   return (
-    <li className="overview-slate-row" data-league={game.leagueId} data-status={game.status}>
+    <li
+      className={`overview-slate-row${onOpenPreview ? " overview-slate-row--interactive" : ""}`}
+      data-league={game.leagueId}
+      data-status={game.status}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={onOpenPreview ? 0 : undefined}
+      role={onOpenPreview ? "button" : undefined}
+      aria-label={onOpenPreview ? `Open ${awayTeam.abbr} at ${homeTeam.abbr} ref preview` : undefined}
+    >
       <div className="overview-slate-row-inner">
       <div className="overview-slate-row-matchup-block">
         <span
@@ -56,9 +87,13 @@ export function OverviewSlateRow({
           <span className="overview-slate-date">{dateLabel}</span>
         ) : null}
         {showHubLink ? (
-          <Link href={game.href} className="overview-slate-row-link">
-            Open slate
-          </Link>
+          onOpenPreview ? (
+            <span className="overview-slate-row-link">Preview refs</span>
+          ) : (
+            <Link href={game.href} className="overview-slate-row-link">
+              Open slate
+            </Link>
+          )
         ) : null}
       </div>
       {game.matchupInsight ? (

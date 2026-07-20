@@ -1,3 +1,4 @@
+import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 
@@ -24,6 +25,7 @@ export type OverviewSlateEntry = {
   officialsLine?: string;
   metadataLine?: string;
   seasonStageNote?: string;
+  preview?: GameSlatePreviewPayload;
 };
 
 export type OverviewLeagueNote = {

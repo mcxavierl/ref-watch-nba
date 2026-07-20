@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import type { CSSProperties } from "react";
+import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
@@ -18,9 +17,11 @@ function primaryInsightLine(game: OverviewSlateEntry): string | undefined {
 export function UpcomingGameCard({
   game,
   index = 0,
+  onOpenPreview,
 }: {
   game: OverviewSlateEntry;
   index?: number;
+  onOpenPreview?: () => void;
 }) {
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
@@ -29,12 +30,38 @@ export function UpcomingGameCard({
   const secondaryLine =
     insightLine !== game.matchupInsight ? game.matchupInsight : undefined;
 
+  const handleActivate = () => {
+    onOpenPreview?.();
+  };
+
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
+    if (!onOpenPreview) return;
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button")) return;
+    handleActivate();
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (!onOpenPreview) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleActivate();
+    }
+  };
+
   return (
     <article
-      className="upcoming-game-card"
+      className={`upcoming-game-card${onOpenPreview ? " upcoming-game-card--interactive" : ""}`}
       data-league={game.leagueId}
       data-status={game.status}
       style={{ "--upcoming-i": index } as CSSProperties}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={onOpenPreview ? 0 : undefined}
+      role={onOpenPreview ? "button" : undefined}
+      aria-label={
+        onOpenPreview ? `Open ${awayTeam.abbr} at ${homeTeam.abbr} ref preview` : undefined
+      }
     >
       <header className="upcoming-game-card__header">
         <div className="upcoming-game-card__header-start">
@@ -47,9 +74,9 @@ export function UpcomingGameCard({
             </time>
           ) : null}
         </div>
-        <Link href={game.href} className="upcoming-game-card__cta rw-focus-ring">
-          Slate
-        </Link>
+        {onOpenPreview ? (
+          <span className="upcoming-game-card__cta">Preview refs</span>
+        ) : null}
       </header>
 
       <div className="upcoming-game-card__body">

@@ -165,7 +165,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const card = readSrc("src/components/UpcomingGameCard.tsx");
     const row = readSrc("src/components/OverviewSlateRow.tsx");
     assert.match(page, /overview-shell--clinical/);
-    assert.match(section, /UpcomingGameCard/);
+    assert.match(section, /OverviewSlateGamesInteractive/);
     assert.match(section, /upcoming-games-grid/);
     assert.doesNotMatch(section, /overview-slate-notes/);
     assert.doesNotMatch(section, /overview-slate-updated/);
