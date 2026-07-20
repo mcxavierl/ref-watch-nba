@@ -195,6 +195,8 @@ export function GameSlateCard({
     <article
       id={`game-${gameId}`}
       className={`data-card ${CLINICAL_CARD_CLASS}`}
+      data-sport={sport}
+      data-crew-pending={metrics.crew.length === 0 ? "true" : undefined}
       style={{ "--slate-i": slateIndex } as CSSProperties}
     >
       <div className="data-card-header">

@@ -31,6 +31,7 @@
   --nfl-green: #34d399;
   --cbb-gold: #009CDE;
   --cfb-bronze: #009CDE;
+  --wnba-orange: #ff6900;
   --ncaa-blue: #009CDE;
 
   /* Per-league accent (nav + hero) */
@@ -509,6 +510,21 @@ p {
   .slate-stack > .data-card {
     animation: card-enter var(--duration-normal) var(--ease-out-quint) both;
     animation-delay: calc(var(--slate-i, 0) * 55ms);
+    transition:
+      transform var(--duration-normal) var(--ease-out-quint),
+      box-shadow var(--duration-normal) var(--ease-out-quint),
+      border-color var(--duration-normal) ease;
+  }
+
+  .slate-stack > .data-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px color-mix(in srgb, #000 18%, transparent);
+  }
+
+  .slate-stack > .data-card[data-sport="wnba"]:hover {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--wnba-orange) 10%, transparent),
+      0 10px 26px color-mix(in srgb, var(--wnba-orange) 12%, transparent);
   }
 
   .browse-action-card,
@@ -2467,6 +2483,38 @@ p {
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--muted);
+  }
+
+  .crew-chip--pending {
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--state-caution) 42%, var(--border));
+    background: color-mix(in srgb, var(--state-caution) 6%, var(--surface-raised));
+    color: var(--muted-strong);
+    cursor: default;
+    animation: crew-pending-glow 2.8s var(--ease-out-quint) infinite;
+  }
+
+  .data-card[data-sport="wnba"][data-crew-pending="true"] {
+    border-color: color-mix(in srgb, var(--wnba-orange) 22%, var(--border));
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--wnba-orange) 8%, transparent),
+      0 4px 18px color-mix(in srgb, var(--wnba-orange) 10%, transparent);
+  }
+
+  .data-card[data-sport="wnba"][data-crew-pending="true"] .crew-chip--pending {
+    border-color: color-mix(in srgb, var(--wnba-orange) 45%, var(--border));
+    background: color-mix(in srgb, var(--wnba-orange) 8%, var(--surface-raised));
+    color: color-mix(in srgb, var(--wnba-orange) 82%, var(--ink-secondary));
+  }
+
+  @keyframes crew-pending-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--state-caution) 0%, transparent);
+    }
+    50% {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--state-caution) 14%, transparent);
+    }
   }
 
   .official-role-badge {
@@ -6612,6 +6660,20 @@ p {
       ),
       rgb(15 23 42);
     box-shadow: 0 0 0 1px color-mix(in srgb, rgb(30 41 59) 80%, transparent);
+    animation: overview-insight-enter 520ms var(--ease-out-quint) both;
+    animation-delay: calc(var(--insight-index, 0) * 70ms);
+    transition:
+      border-color 200ms ease,
+      transform 200ms var(--ease-out-quint),
+      box-shadow 200ms ease;
+  }
+
+  .league-home-insights .rankings-insight-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--insight-accent, var(--border)) 28%, var(--border));
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--insight-accent, var(--muted)) 12%, transparent),
+      0 10px 24px color-mix(in srgb, #000 22%, transparent);
   }
 
   .league-home-insights .rankings-insight-card[data-tone="positive"],
@@ -6890,6 +6952,7 @@ p {
   .rankings-insight-card[data-league="laliga"] { --insight-accent: #c8102e; }
   .rankings-insight-card[data-league="cbb"] { --insight-accent: var(--cbb-gold); }
   .rankings-insight-card[data-league="cfb"] { --insight-accent: var(--cfb-bronze); }
+  .rankings-insight-card[data-league="wnba"] { --insight-accent: var(--wnba-orange); }
 
   .ranking-signal-pill {
     display: inline-flex;
@@ -8372,6 +8435,11 @@ p {
     --league-accent: #c8102e;
   }
 
+  .league-hub-hero[data-league="wnba"] {
+    --league-accent: var(--wnba-orange);
+    --sport-surface-tint: rgba(255, 105, 0, 0.07);
+  }
+
   .page-hero-slate .page-title {
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 700;
@@ -8652,6 +8720,10 @@ p {
     color: color-mix(in srgb, var(--raptors) 22%, var(--league-hub-hero-watermark-color));
   }
 
+  .league-hub-hero[data-league="wnba"] .league-hub-hero-watermark-svg--nba {
+    color: color-mix(in srgb, var(--wnba-orange) 28%, var(--league-hub-hero-watermark-color));
+  }
+
   .league-hub-hero[data-league="nhl"] .league-hub-hero-watermark {
     opacity: var(--league-hub-hero-watermark-opacity);
   }
@@ -8712,6 +8784,25 @@ p {
       radial-gradient(
         ellipse 70% 60% at 72% 40%,
         color-mix(in srgb, var(--league-accent) 8%, transparent),
+        transparent 58%
+      ),
+      linear-gradient(
+        165deg,
+        var(--league-hub-hero-bg-start) 0%,
+        var(--league-hub-hero-bg) 48%,
+        var(--league-hub-hero-bg-end) 100%
+      );
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero[data-league="wnba"] {
+    --league-hub-hero-bg-start: #fff7f0;
+    --league-hub-hero-bg: #fff3e8;
+    --league-hub-hero-bg-end: #ffe8d6;
+    --league-hub-hero-accent-glow: 10%;
+    background:
+      radial-gradient(
+        ellipse 70% 60% at 72% 40%,
+        color-mix(in srgb, var(--wnba-orange) 10%, transparent),
         transparent 58%
       ),
       linear-gradient(
@@ -12042,8 +12133,14 @@ html.dark .page-shell-insights .hover\:border-zinc-300:hover {
   .page-shell,
   .slate-stack > .data-card,
   .browse-action-card,
-  .browse-action-compact-card {
+  .browse-action-compact-card,
+  .upcoming-games-grid > .upcoming-game-card,
+  .league-home-insights .rankings-insight-card {
     animation: none !important;
+  }
+
+  .crew-chip--pending {
+    animation: none;
   }
 
   *,
@@ -13383,6 +13480,10 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
 
 .overview-insight-card[data-league="epl"] {
   --insight-accent: #8b6bb5;
+}
+
+.overview-insight-card[data-league="wnba"] {
+  --insight-accent: var(--wnba-orange);
 }
 
 .overview-insight-card-cover {
@@ -15123,7 +15224,10 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 
   .overview-league-chooser-card:hover,
   .browse-action-card:hover,
-  .league-slate-hero-action:hover {
+  .league-slate-hero-action:hover,
+  .upcoming-game-card:hover,
+  .slate-stack > .data-card:hover,
+  .league-home-insights .rankings-insight-card:hover {
     transform: none;
   }
 

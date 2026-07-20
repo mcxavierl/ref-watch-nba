@@ -19,6 +19,7 @@
 .page-hero-team[data-league="laliga"] { --league-accent: #c8102e; }
 .page-hero-team[data-league="cbb"] { --league-accent: var(--cbb-gold); }
 .page-hero-team[data-league="cfb"] { --league-accent: var(--cfb-bronze); }
+.page-hero-team[data-league="wnba"] { --league-accent: var(--wnba-orange); }
 
 .page-hero-team .team-page-kicker {
   font-size: var(--text-xs);
@@ -176,6 +177,12 @@
   background: color-mix(in srgb, var(--cfb-bronze) 10%, var(--surface));
 }
 
+.overview-slate-league-badge[data-league="wnba"] {
+  border-color: color-mix(in srgb, var(--wnba-orange) 35%, var(--border));
+  color: color-mix(in srgb, var(--wnba-orange) 88%, var(--foreground));
+  background: color-mix(in srgb, var(--wnba-orange) 10%, var(--surface));
+}
+
 .overview-slate-empty-panel {
   margin: 0;
   padding: var(--space-4) var(--space-5);
@@ -235,6 +242,7 @@
 .team-index-link[data-league="laliga"] { --league-accent: #c8102e; }
 .team-index-link[data-league="cbb"] { --league-accent: var(--cbb-gold); }
 .team-index-link[data-league="cfb"] { --league-accent: var(--cfb-bronze); }
+.team-index-link[data-league="wnba"] { --league-accent: var(--wnba-orange); }
 
 .team-index-abbr {
   font-family: var(--font-mono, ui-monospace, monospace);

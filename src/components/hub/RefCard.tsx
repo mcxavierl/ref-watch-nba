@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { CLINICAL_CARD_CLASS } from "@/components/hub/ClinicalCard";
 
 /**
@@ -44,11 +44,13 @@ export function RefCard({
   id,
   className = "",
   children,
+  style,
   ...dataAttrs
 }: {
   id?: string;
   className?: string;
   children: ReactNode;
+  style?: CSSProperties;
   "data-league"?: string;
   "data-insight"?: string;
   "data-accent"?: string;
@@ -59,6 +61,7 @@ export function RefCard({
       id={id}
       data-stat-card={id ? "true" : undefined}
       className={`${REF_CARD_CLASS} stat-card ${className}`.trim()}
+      style={style}
       {...dataAttrs}
     >
       {children}

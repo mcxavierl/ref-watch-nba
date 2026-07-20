@@ -424,7 +424,22 @@
 }
 
 .upcoming-game-card[data-league="wnba"] {
-  --upcoming-matchup-glow-accent: var(--cbb-gold);
+  --upcoming-matchup-glow-accent: var(--wnba-orange);
+}
+
+.upcoming-game-card {
+  transition:
+    transform var(--duration-normal) var(--ease-out-quint),
+    box-shadow var(--duration-normal) var(--ease-out-quint),
+    border-color var(--duration-normal) ease;
+}
+
+.upcoming-game-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--upcoming-matchup-glow-accent) 28%, var(--upcoming-card-border));
+  box-shadow:
+    var(--upcoming-card-shadow),
+    0 10px 28px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 14%, transparent);
 }
 
 .upcoming-game-card__matchup {

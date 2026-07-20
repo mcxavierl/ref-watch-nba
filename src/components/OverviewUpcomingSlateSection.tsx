@@ -41,8 +41,8 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
       {upcomingSlate.inSeason ? (
         slateGames.length > 0 ? (
           <div className="upcoming-games-grid upcoming-games-grid--homepage">
-            {slateGames.map((game) => (
-              <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} />
+            {slateGames.map((game, index) => (
+              <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} index={index} />
             ))}
           </div>
         ) : (

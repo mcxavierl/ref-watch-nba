@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
@@ -14,7 +15,13 @@ function primaryInsightLine(game: OverviewSlateEntry): string | undefined {
   return game.gameContextLine ?? game.lastMeetingLine ?? game.teamContextLine ?? game.matchupInsight;
 }
 
-export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
+export function UpcomingGameCard({
+  game,
+  index = 0,
+}: {
+  game: OverviewSlateEntry;
+  index?: number;
+}) {
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateLabel = formatSlateDateLabel(game.slateDate);
@@ -27,6 +34,7 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
       className="upcoming-game-card"
       data-league={game.leagueId}
       data-status={game.status}
+      style={{ "--upcoming-i": index } as CSSProperties}
     >
       <header className="upcoming-game-card__header">
         <div className="upcoming-game-card__header-start">
