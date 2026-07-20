@@ -1,0 +1,70 @@
+---
+description: Ship guardrails — run before push, PR, or merge
+alwaysApply: true
+---
+
+# Ship guardrails
+
+When moving fast on dashboard or slate work, **never skip validation**.
+
+## Before push or merge
+
+Run the full CI mirror locally:
+
+```bash
+npm run check:ci
+```
+
+`check:ci` runs artifact freshness **before** `check:volume`, because volume refresh rewrites `data/baselines.json` and would falsely fail a later snapshot check.
+
+The pre-push hook runs `check:css-syntax` first (~1s) so broken CSS fails before the full CI mirror. `check:ci` also runs CSS syntax + `build:next` before tests.
+
+GitHub validate jobs use a **20-minute** timeout to accommodate the production build step.
+
+Remove untracked local dev artifacts before shipping if freshness fails unexpectedly:
+
+```bash
+git clean -fd data/insights-cache data/stats-query-log.jsonl 2>/dev/null || true
+git checkout -- data/
+```
+
+`data/stats-query-log.jsonl` and `data/insights-cache/` are gitignored local caches. Do not commit background ingest drift in `data/*` unless you intentionally refreshed shipped datasets.
+
+Install the pre-push hook once per clone:
+
+```bash
+npm run setup:hooks
+```
+
+## Merge policy
+
+1. **Do not merge** a PR until GitHub **validate** is green.
+2. **Do not merge** if `npm run check:ci` fails locally.
+3. PR CI can **skip** snapshot freshness when a diff touches no overview sources or league data inputs, but **deploy on main always forces it**. If you change insight gates, methodology, overview builders, or committed `data/**` stats/logs/assignments, refresh the snapshot in the same PR.
+4. After changing any file listed in `scripts/overview-snapshot-sources.ts` or league stats under `data/`, rebuild `data/overview-snapshot.json`:
+
+```bash
+npx tsx scripts/build-overview-snapshot.ts
+git add data/overview-snapshot.json
+```
+
+5. After changing overview/slate logic, update related tests in the same PR.
+
+## Common failure modes
+
+| Symptom | Fix |
+|--------|-----|
+| Stale `overview-snapshot.json` | Run `build-overview-snapshot.ts` and commit |
+| PR green but deploy on main fails freshness | League stats or overview inputs changed without snapshot refresh — PR CI skipped because only UI changed; rebuild snapshot and merge, or ensure automated data workflows refresh it |
+| PR green but deploy fails on CSS/webpack | Run `npm run check:css-syntax` and `npm run build:next` locally — CI now runs both before merge |
+| Validation backtest stale after game-log edits | Run `npm run validation:refresh` and commit `data/backtest-results.json` + `BACKTEST.md` |
+| Snapshot sources changed but snapshot file not in PR | `check-artifact-freshness` fails — rebuild and commit snapshot in the same PR |
+| Slate metadata test mismatch | Update `overview-upcoming-slate.test.ts` or use flexible assertions |
+| Merged PR but nothing on production | Deploy validate failed — fix tests and merge a green PR |
+| Pre-push hook blocks push | Fix failures or `SKIP_SHIP_CHECK=1` only in emergencies |
+
+## Avoid
+
+- Merging with red CI because "we'll fix it in the next PR"
+- Hardcoding exact metadata strings tied to live game logs when H2H data can change priority
+- Using `git commit --no-verify` to skip checks (hook errors excepted)

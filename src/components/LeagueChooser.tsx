@@ -1,13 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
 import { formatLeaguePaceValue } from "@/lib/league-pace-bars";
-import { OVERVIEW_HUB_LEAGUE_IDS } from "@/lib/verified-live-leagues";
+import {
+  isCollegeLiveLeague,
+  OVERVIEW_HUB_LEAGUE_IDS,
+} from "@/lib/verified-live-leagues";
 
 type LeagueChooserProps = {
   cards: LeagueOverviewCard[];
@@ -20,49 +23,65 @@ function formatCount(n: number): string {
 
 function ChooserCard({ card }: { card: LeagueOverviewCard }) {
   const pending = !card.analyticsUnlocked;
+  const collegeTier = isCollegeLiveLeague(card.leagueId);
 
   return (
-    <Link
+    <PrefetchLink
       href={pending ? (card.auditHref ?? card.href) : card.href}
-      className={`overview-league-chooser-card overview-league-chooser-card--live-tier rw-focus-ring${
-        pending ? " overview-league-chooser-card--pending" : ""
-      }`}
+      className={`overview-league-chooser-card overview-league-chooser-card--live-tier rw-focus-ring flex h-full min-h-0 flex-col overflow-hidden${
+        collegeTier ? " overview-league-chooser-card--college-tier" : ""
+      }${pending ? " overview-league-chooser-card--pending" : ""}`}
       data-league={card.leagueId}
     >
-      <span className="overview-league-chooser-top">
-        <span className="overview-league-chooser-mark" aria-hidden>
+      <span className="overview-league-chooser-top flex min-h-0 flex-1 flex-col">
+        <span className="overview-league-chooser-mark shrink-0" aria-hidden>
           <LeagueNavMark league={card.leagueId as LeagueId} active={false} />
         </span>
-        <span className="overview-league-chooser-body">
-          <span className="overview-league-chooser-label-row">
-            <span className="overview-league-chooser-label">{card.label}</span>
+        <span className="overview-league-chooser-body flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+          <span className="overview-league-chooser-label-row min-w-0">
+            {collegeTier ? (
+              <span className="overview-league-chooser-scope truncate text-xs">
+                College sports
+              </span>
+            ) : null}
+            <span className="overview-league-chooser-label truncate text-sm">
+              {collegeTier ? card.shortLabel : card.label}
+            </span>
           </span>
-          <span className="overview-league-chooser-meta tabular-nums">
+          <span className="overview-league-chooser-meta tabular-nums truncate text-xs">
             {formatCount(card.refCount)} refs · {formatCount(card.gameCount)} games
           </span>
           {pending ? (
-            <span className="overview-league-chooser-pending">
+            <span className="overview-league-chooser-pending break-words text-xs">
               {card.auditPendingLabel ?? "Pending Verification"} - hub locked
             </span>
           ) : (
             <span className="overview-league-chooser-metrics tabular-nums">
-              <span className="overview-league-chooser-metric">
-                <span className="overview-league-chooser-metric-label">{card.whistleLabel}</span>
-                <strong className="tabular-nums">{formatLeaguePaceValue(card.whistlePerGame)}</strong>
+              <span className="overview-league-chooser-metric min-w-0">
+                <span className="overview-league-chooser-metric-label whitespace-nowrap text-xs">
+                  {card.whistleLabel}
+                </span>
+                <strong className="shrink-0 font-bold tabular-nums text-sm">
+                  {formatLeaguePaceValue(card.whistlePerGame)}
+                </strong>
               </span>
-              <span className="overview-league-chooser-metric">
-                <span className="overview-league-chooser-metric-label">{card.scoreLabel}</span>
-                <strong className="tabular-nums">{formatLeaguePaceValue(card.scorePerGame)}</strong>
+              <span className="overview-league-chooser-metric min-w-0">
+                <span className="overview-league-chooser-metric-label whitespace-nowrap text-xs">
+                  {card.scoreLabel}
+                </span>
+                <strong className="shrink-0 font-bold tabular-nums text-sm">
+                  {formatLeaguePaceValue(card.scorePerGame)}
+                </strong>
               </span>
             </span>
           )}
         </span>
       </span>
-      <span className="overview-league-chooser-cta">
+      <span className="overview-league-chooser-cta mt-auto shrink-0 text-xs uppercase tracking-wide">
         {pending ? "View audit status" : "Open hub"}
         <ArrowRight aria-hidden />
       </span>
-    </Link>
+    </PrefetchLink>
   );
 }
 

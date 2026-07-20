@@ -16,12 +16,12 @@ export type LeagueHeroCopy = {
 };
 
 export const LEAGUE_HERO_COPY: Record<
-  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb",
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba",
   LeagueHeroCopy
 > = {
   nba: {
     kicker: "NBA officiating desk",
-    liveTitle: "Who's blowing the whistle tonight.",
+    liveTitle: "Crew assignments and leverage-weighted whistle context.",
     offseasonTitle: "NBA refereeing stats, analyzed.",
     liveLead:
       "Crew assignments, foul tendencies, and ref×team history before tip-off, scored by sample depth.",
@@ -35,7 +35,7 @@ export const LEAGUE_HERO_COPY: Record<
   },
   nhl: {
     kicker: "NHL penalty desk",
-    liveTitle: "Who's putting them in the box tonight.",
+    liveTitle: "Penalty environment and crew leverage profiles.",
     offseasonTitle: "NHL refereeing stats, analyzed.",
     liveLead:
       "Crew assignments, minor-penalty rates, PP environment, and OT history before puck drop.",
@@ -49,7 +49,7 @@ export const LEAGUE_HERO_COPY: Record<
   },
   nfl: {
     kicker: "NFL flag desk",
-    liveTitle: "Who's throwing flags this week.",
+    liveTitle: "Crew context and high-leverage whistle variance.",
     pendingTitle: "Next NFL week is on the board.",
     offseasonTitle: "NFL officiating stats, analyzed.",
     liveLead:
@@ -66,7 +66,7 @@ export const LEAGUE_HERO_COPY: Record<
   },
   epl: {
     kicker: "Premier League whistle desk",
-    liveTitle: "Who's officiating the matchday.",
+    liveTitle: "Referee assignments and matchday whistle context.",
     pendingTitle: "Next matchday is on the board.",
     offseasonTitle: "Premier League refereeing stats, analyzed.",
     liveLead:
@@ -83,7 +83,7 @@ export const LEAGUE_HERO_COPY: Record<
   },
   laliga: {
     kicker: "La Liga whistle desk",
-    liveTitle: "Who's officiating the matchday.",
+    liveTitle: "Referee assignments and matchday whistle context.",
     pendingTitle: "Next matchday is on the board.",
     offseasonTitle: "La Liga refereeing stats, analyzed.",
     liveLead:
@@ -100,7 +100,7 @@ export const LEAGUE_HERO_COPY: Record<
   },
   cbb: {
     kicker: "Men's college hoops",
-    liveTitle: "Who's calling fouls on campus tonight.",
+    liveTitle: "Crew assignments and whistle context across D-I.",
     offseasonTitle: "College basketball officiating analytics.",
     liveLead:
       "Referee assignments and whistle tendencies across D-I, with conference context on every team page.",
@@ -114,7 +114,7 @@ export const LEAGUE_HERO_COPY: Record<
   },
   cfb: {
     kicker: "College football",
-    liveTitle: "Who's marking off Saturday.",
+    liveTitle: "Crew context and penalty variance this week.",
     offseasonTitle: "College football officials, kickoff pending.",
     liveLead:
       "Crew assignments, flag rates, and official×team splits before kickoff, with conference rivalries included.",
@@ -122,6 +122,20 @@ export const LEAGUE_HERO_COPY: Record<
       "Season opens soon. Crews and penalty tendencies load from game data. Team pages track Power Four and Group of Five programs.",
     statLabels: {
       officials: "Officials indexed",
+      games: "Games logged",
+      seasons: "Seasons",
+    },
+  },
+  wnba: {
+    kicker: "WNBA officiating desk",
+    liveTitle: "Crew assignments and tonight's whistle slate.",
+    offseasonTitle: "WNBA refereeing stats, in local preview.",
+    liveLead:
+      "Official crew assignments and upcoming matchups from official.nba.com, with historical ingest coming in Phase 2.",
+    offseasonLead:
+      "Phase 1 local preview. Run npm run fetch-wnba-assignments when the schedule is live.",
+    statLabels: {
+      officials: "Refs indexed",
       games: "Games logged",
       seasons: "Seasons",
     },

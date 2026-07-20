@@ -1,0 +1,354 @@
+{
+  "sourceMtime": 1784307717350.8845,
+  "generatedAt": "2026-07-17T18:59:26.466Z",
+  "leagueCards": [
+    {
+      "leagueId": "cbb",
+      "label": "NCAA Basketball",
+      "shortLabel": "CBB",
+      "kind": "matrix-edge",
+      "kicker": "Standout ref×team split",
+      "headline": "Tyler Kumpf beats Cincinnati Bearcats baseline",
+      "story": "12-0 (100.0%) across 12 games. Team sample without this ref: 56.7% (110-84 (56.7% across 194 gp)).",
+      "heroValue": "+43.3pp",
+      "heroLabel": "Win rate vs team baseline",
+      "heroTone": "positive",
+      "stats": [
+        {
+          "label": "Ref×team record",
+          "value": "12-0"
+        },
+        {
+          "label": "Games",
+          "value": "12"
+        },
+        {
+          "label": "Team baseline",
+          "value": "56.7%"
+        }
+      ],
+      "links": [
+        {
+          "label": "Open matrix",
+          "href": "/cbb/matrix"
+        },
+        {
+          "label": "Ref profile",
+          "href": "/cbb/refs/tyler-kumpf-246"
+        },
+        {
+          "label": "League trends",
+          "href": "/cbb/trends"
+        }
+      ],
+      "entityName": "Tyler Kumpf",
+      "entityHref": "/cbb/refs/tyler-kumpf-246",
+      "teamLabel": "Cincinnati Bearcats",
+      "refSlug": "tyler-kumpf-246",
+      "teamAbbr": "CIN",
+      "drilldownId": "cbb--tyler-kumpf-246--CIN"
+    }
+  ],
+  "outlierCandidates": [
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 51.910792513499274,
+      "refSlug": "brooks-wells-85",
+      "refName": "Brooks Wells",
+      "teamAbbr": "NEB",
+      "teamLabel": "Nebraska Cornhuskers",
+      "matrix": {
+        "refSlug": "brooks-wells-85",
+        "refName": "Brooks Wells",
+        "teamAbbr": "NEB",
+        "teamLabel": "Nebraska Cornhuskers",
+        "games": 8,
+        "wins": 0,
+        "losses": 8,
+        "winRate": 0,
+        "baselineWins": 105,
+        "baselineLosses": 88,
+        "baselineGames": 193,
+        "baselineWinRate": 0.5440414507772021,
+        "deltaPts": -54.4,
+        "kind": "low"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 56.33934426705997,
+      "refSlug": "terry-oglesby-50",
+      "refName": "Terry Oglesby",
+      "teamAbbr": "TEX",
+      "teamLabel": "Texas Longhorns",
+      "matrix": {
+        "refSlug": "terry-oglesby-50",
+        "refName": "Terry Oglesby",
+        "teamAbbr": "TEX",
+        "teamLabel": "Texas Longhorns",
+        "games": 10,
+        "wins": 1,
+        "losses": 9,
+        "winRate": 0.1,
+        "baselineWins": 127,
+        "baselineLosses": 71,
+        "baselineGames": 198,
+        "baselineWinRate": 0.6414141414141414,
+        "deltaPts": -54.1,
+        "kind": "low"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 49.429761988957026,
+      "refSlug": "doug-sirmons-56",
+      "refName": "Doug Sirmons",
+      "teamAbbr": "TA&M",
+      "teamLabel": "Texas A&M Aggies",
+      "matrix": {
+        "refSlug": "doug-sirmons-56",
+        "refName": "Doug Sirmons",
+        "teamAbbr": "TA&M",
+        "teamLabel": "Texas A&M Aggies",
+        "games": 8,
+        "wins": 1,
+        "losses": 7,
+        "winRate": 0.125,
+        "baselineWins": 126,
+        "baselineLosses": 70,
+        "baselineGames": 196,
+        "baselineWinRate": 0.6428571428571429,
+        "deltaPts": -51.8,
+        "kind": "low"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 47.13957996630265,
+      "refSlug": "tony-henderson-32",
+      "refName": "Tony Henderson",
+      "teamAbbr": "MARQ",
+      "teamLabel": "Marquette Golden Eagles",
+      "matrix": {
+        "refSlug": "tony-henderson-32",
+        "refName": "Tony Henderson",
+        "teamAbbr": "MARQ",
+        "teamLabel": "Marquette Golden Eagles",
+        "games": 8,
+        "wins": 1,
+        "losses": 7,
+        "winRate": 0.125,
+        "baselineWins": 122,
+        "baselineLosses": 75,
+        "baselineGames": 197,
+        "baselineWinRate": 0.6192893401015228,
+        "deltaPts": -49.4,
+        "kind": "low"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 50.09098815611062,
+      "refSlug": "matt-potter-31",
+      "refName": "Matt Potter",
+      "teamAbbr": "PITT",
+      "teamLabel": "Pittsburgh Panthers",
+      "matrix": {
+        "refSlug": "matt-potter-31",
+        "refName": "Matt Potter",
+        "teamAbbr": "PITT",
+        "teamLabel": "Pittsburgh Panthers",
+        "games": 10,
+        "wins": 10,
+        "losses": 0,
+        "winRate": 1,
+        "baselineWins": 97,
+        "baselineLosses": 90,
+        "baselineGames": 187,
+        "baselineWinRate": 0.5187165775401069,
+        "deltaPts": 48.1,
+        "kind": "high"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 44.944822194592206,
+      "refSlug": "tony-henderson-32",
+      "refName": "Tony Henderson",
+      "teamAbbr": "XAV",
+      "teamLabel": "Xavier Musketeers",
+      "matrix": {
+        "refSlug": "tony-henderson-32",
+        "refName": "Tony Henderson",
+        "teamAbbr": "XAV",
+        "teamLabel": "Xavier Musketeers",
+        "games": 8,
+        "wins": 1,
+        "losses": 7,
+        "winRate": 0.125,
+        "baselineWins": 115,
+        "baselineLosses": 78,
+        "baselineGames": 193,
+        "baselineWinRate": 0.5958549222797928,
+        "deltaPts": -47.1,
+        "kind": "low"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 46.5,
+      "refSlug": "brian-o-connell-30",
+      "refName": "Brian O'Connell",
+      "teamAbbr": "WAKE",
+      "teamLabel": "Wake Forest Demon Deacons",
+      "matrix": {
+        "refSlug": "brian-o-connell-30",
+        "refName": "Brian O'Connell",
+        "teamAbbr": "WAKE",
+        "teamLabel": "Wake Forest Demon Deacons",
+        "games": 9,
+        "wins": 1,
+        "losses": 8,
+        "winRate": 0.111,
+        "baselineWins": 110,
+        "baselineLosses": 81,
+        "baselineGames": 191,
+        "baselineWinRate": 0.5759162303664922,
+        "deltaPts": -46.5,
+        "kind": "low"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 45.8,
+      "refSlug": "brian-o-connell-30",
+      "refName": "Brian O'Connell",
+      "teamAbbr": "ND",
+      "teamLabel": "Notre Dame Fighting Irish",
+      "matrix": {
+        "refSlug": "brian-o-connell-30",
+        "refName": "Brian O'Connell",
+        "teamAbbr": "ND",
+        "teamLabel": "Notre Dame Fighting Irish",
+        "games": 9,
+        "wins": 0,
+        "losses": 9,
+        "winRate": 0,
+        "baselineWins": 87,
+        "baselineLosses": 103,
+        "baselineGames": 190,
+        "baselineWinRate": 0.45789473684210524,
+        "deltaPts": -45.8,
+        "kind": "low"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 45.092303267351134,
+      "refSlug": "patrick-evans-39",
+      "refName": "Patrick Evans",
+      "teamAbbr": "VAN",
+      "teamLabel": "Vanderbilt Commodores",
+      "matrix": {
+        "refSlug": "patrick-evans-39",
+        "refName": "Patrick Evans",
+        "teamAbbr": "VAN",
+        "teamLabel": "Vanderbilt Commodores",
+        "games": 10,
+        "wins": 1,
+        "losses": 9,
+        "winRate": 0.1,
+        "baselineWins": 105,
+        "baselineLosses": 92,
+        "baselineGames": 197,
+        "baselineWinRate": 0.5329949238578681,
+        "deltaPts": -43.3,
+        "kind": "low"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 48.233747154886025,
+      "refSlug": "tyler-kumpf-246",
+      "refName": "Tyler Kumpf",
+      "teamAbbr": "CIN",
+      "teamLabel": "Cincinnati Bearcats",
+      "matrix": {
+        "refSlug": "tyler-kumpf-246",
+        "refName": "Tyler Kumpf",
+        "teamAbbr": "CIN",
+        "teamLabel": "Cincinnati Bearcats",
+        "games": 12,
+        "wins": 12,
+        "losses": 0,
+        "winRate": 1,
+        "baselineWins": 110,
+        "baselineLosses": 84,
+        "baselineGames": 194,
+        "baselineWinRate": 0.5670103092783505,
+        "deltaPts": 43.3,
+        "kind": "high"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 37.310882119077604,
+      "refSlug": "scott-brown-97",
+      "refName": "Scott Brown",
+      "teamAbbr": "STAN",
+      "teamLabel": "Stanford Cardinal",
+      "matrix": {
+        "refSlug": "scott-brown-97",
+        "refName": "Scott Brown",
+        "teamAbbr": "STAN",
+        "teamLabel": "Stanford Cardinal",
+        "games": 8,
+        "wins": 1,
+        "losses": 7,
+        "winRate": 0.125,
+        "baselineWins": 99,
+        "baselineLosses": 93,
+        "baselineGames": 192,
+        "baselineWinRate": 0.515625,
+        "deltaPts": -39.1,
+        "kind": "low"
+      }
+    },
+    {
+      "leagueId": "cbb",
+      "kind": "win-rate",
+      "significance": 40.406036184139126,
+      "refSlug": "brian-o-connell-30",
+      "refName": "Brian O'Connell",
+      "teamAbbr": "BC",
+      "teamLabel": "Boston College Eagles",
+      "matrix": {
+        "refSlug": "brian-o-connell-30",
+        "refName": "Brian O'Connell",
+        "teamAbbr": "BC",
+        "teamLabel": "Boston College Eagles",
+        "games": 10,
+        "wins": 8,
+        "losses": 2,
+        "winRate": 0.8,
+        "baselineWins": 75,
+        "baselineLosses": 107,
+        "baselineGames": 182,
+        "baselineWinRate": 0.41208791208791207,
+        "deltaPts": 38.8,
+        "kind": "high"
+      }
+    }
+  ]
+}

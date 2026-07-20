@@ -83,19 +83,20 @@ function formatDeltaMagnitude(delta: number): string {
   return Math.abs(delta).toFixed(1);
 }
 
-/** Third-person ranking card copy for whistle pace vs league average. */
+/** Ranking card copy for whistle pace vs league average (gender-neutral). */
 export function thirdPersonWhistlePaceBody(
   delta: number,
   whistlePlain: string,
+  perGamePhrase = "per game",
 ): string {
   const magnitude = formatDeltaMagnitude(delta);
   if (delta > 0) {
-    return `He runs ${magnitude} ${whistlePlain} above average per match.`;
+    return `Runs ${magnitude} ${whistlePlain} above average ${perGamePhrase}.`;
   }
   if (delta < 0) {
-    return `He runs ${magnitude} ${whistlePlain} below average per match.`;
+    return `Runs ${magnitude} ${whistlePlain} below average ${perGamePhrase}.`;
   }
-  return `He matches league average ${whistlePlain} pace per match.`;
+  return `Matches league average ${whistlePlain} pace ${perGamePhrase}.`;
 }
 
 /** Ranking card title for whistle outliers; never "heaviest" on negative deltas. */
@@ -105,16 +106,20 @@ export function whistlePaceRankTitle(delta: number, whistleShort: string): strin
   return `Lightest ${unit} ref`;
 }
 
-/** Third-person ranking card copy for combined scoring vs league baseline. */
-export function thirdPersonScoringPaceBody(delta: number, unit: string): string {
+/** Ranking card copy for combined scoring vs league baseline (gender-neutral). */
+export function thirdPersonScoringPaceBody(
+  delta: number,
+  unit: string,
+  perGamePhrase = "per game",
+): string {
   const magnitude = formatDeltaMagnitude(delta);
   if (delta > 0) {
-    return `He averages ${magnitude} more combined ${unit} than the league baseline in his matches.`;
+    return `Averages ${magnitude} more combined ${unit} than the league baseline ${perGamePhrase}.`;
   }
   if (delta < 0) {
-    return `He averages ${magnitude} fewer combined ${unit} than the league baseline in his matches.`;
+    return `Averages ${magnitude} fewer combined ${unit} than the league baseline ${perGamePhrase}.`;
   }
-  return `He matches the league baseline for combined ${unit} in his matches.`;
+  return `Matches the league baseline for combined ${unit} ${perGamePhrase}.`;
 }
 
 /** Ranking card title for scoring outliers; never "bump" on negative deltas. */

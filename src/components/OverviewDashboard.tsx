@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { WorldCupFinalSection } from "@/components/WorldCupFinalSection";
 import type { ReactNode } from "react";
 import { LeagueChooser } from "@/components/LeagueChooser";
 import { OverviewEditorialNarrative } from "@/components/OverviewEditorialNarrative";
@@ -19,6 +18,7 @@ import {
 } from "@/lib/league-catalog";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import "@/components/overview-dashboard.css";
+import "@/components/overview-clinical-modern.css";
 
 function CatalogLeagueRow({ entry }: { entry: CatalogLeagueEntry }) {
   const rowClass = [
@@ -86,17 +86,12 @@ export function OverviewDashboard({
     <DashboardShell>
       {hero}
 
-      <WorldCupFinalSection />
-
       <OverviewUpcomingSlateSection data={data} />
 
       <LeagueChooser cards={data.leagueCards} placement="primary" />
 
       <div className="overview-dashboard-league-to-insight">
-        <OverviewEditorialNarrative
-          insightCards={data.insightCards}
-          topStories={data.topStories}
-        />
+        <OverviewEditorialNarrative trendCards={data.standoutSplitCards} />
       </div>
 
       <section
@@ -125,7 +120,7 @@ export function OverviewDashboard({
                   <summary className="overview-sidebar-heading overview-catalog-summary">
                     <span className="overview-catalog-summary-copy">
                       <h3 className="overview-catalog-summary-title">League catalog</h3>
-                      <span className="overview-catalog-summary-hint">Live verified hubs</span>
+                      <span className="overview-catalog-summary-hint">Data-integrity verified hubs</span>
                     </span>
                     <span
                       className="overview-sidebar-count"

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import {
   CREW_DOMINANCE_SORT_OPTIONS,
@@ -47,12 +48,7 @@ export function CrewDominanceTable({ entries, basePath, league, overBaseline, le
   const sorted = useMemo(() => sortCrewDominance(entries, sort), [entries, sort]);
 
   if (entries.length === 0) {
-    return (
-      <div className="panel-inset px-6 py-8 text-center">
-        <p className="text-base font-medium text-zinc-800">No qualifying crews in this dataset yet</p>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-zinc-600">Crew rows need enough combined games across team splits before they appear here.</p>
-      </div>
-    );
+    return <EmptyState />;
   }
 
   return (
@@ -67,13 +63,13 @@ export function CrewDominanceTable({ entries, basePath, league, overBaseline, le
           </label>
         </div>
       </div>
-      <div className="ranking-table-wrap overflow-x-auto">
+      <div className="ranking-table-wrap stat-data-container">
         <table className="data-table ranking-table min-w-[800px]">
           <thead><tr className="data-table-head">
             <th className="data-table-rank">#</th><th>Crew</th>
-            <th className="data-table-num">Games</th><th className="data-table-num">Pace</th>
-            <th className="data-table-num">Scoring Δ</th><th className="data-table-num">{whistleLabel} Δ</th>
-            <th className="data-table-num">Over rate</th><th className="data-table-num">DOM PACE Δ</th><th className="data-table-num">DOM WHISTLE Δ</th>
+            <th className="data-table-num master-table-head-secondary">Games</th><th className="data-table-num master-table-head-secondary">Pace</th>
+            <th className="data-table-num">Scoring Δ</th><th className="data-table-num master-table-head-secondary">{whistleLabel} Δ</th>
+            <th className="data-table-num master-table-head-secondary">Over rate</th><th className="data-table-num master-table-head-secondary">DOM PACE Δ</th><th className="data-table-num master-table-head-secondary">DOM WHISTLE Δ</th>
           </tr></thead>
           <tbody>{sorted.map((entry, index) => (
             <tr key={entry.crewKey} className="data-table-row">
@@ -85,13 +81,13 @@ export function CrewDominanceTable({ entries, basePath, league, overBaseline, le
                     {linesmanSlugs?.has(slug) ? <OfficialRoleBadge role="linesman" /> : null}
                   </Link>))}
               </div></td>
-              <td className="data-table-num align-middle"><div className="flex flex-col items-end gap-0.5"><span className="font-tabular text-sm">{entry.games}</span><span className="text-[10px] leading-tight text-zinc-500 whitespace-nowrap">{entry.teamCount} teams</span></div></td>
-              <td className="data-table-num align-middle font-tabular text-sm">{entry.avgTotalPoints}</td>
+              <td className="data-table-num align-middle master-table-metric-secondary"><div className="flex flex-col items-end gap-0.5"><span className="font-tabular text-sm">{entry.games}</span><span className="text-[10px] leading-tight text-zinc-500 whitespace-nowrap">{entry.teamCount} teams</span></div></td>
+              <td className="data-table-num align-middle font-tabular text-sm master-table-metric-secondary">{entry.avgTotalPoints}</td>
               <td className={`data-table-num align-middle font-tabular text-sm ${deltaClass(entry.scoringDelta, 1.5)}`.trim()}>{formatSigned(entry.scoringDelta)}</td>
-              <td className={`data-table-num align-middle font-tabular text-sm ${deltaClass(entry.whistleDelta, 0.8)}`.trim()}>{formatSigned(entry.whistleDelta)}</td>
-              <td className="data-table-num align-middle font-tabular text-sm">{formatPct(entry.overRate)}</td>
-              <td className="data-table-num align-middle"><DominanceMetric value={entry.dominanceScoringDelta} threshold={1} /></td>
-              <td className="data-table-num align-middle"><DominanceMetric value={entry.dominanceWhistleDelta} threshold={0.5} /></td>
+              <td className={`data-table-num align-middle font-tabular text-sm master-table-metric-secondary ${deltaClass(entry.whistleDelta, 0.8)}`.trim()}>{formatSigned(entry.whistleDelta)}</td>
+              <td className="data-table-num align-middle font-tabular text-sm master-table-metric-secondary">{formatPct(entry.overRate)}</td>
+              <td className="data-table-num align-middle master-table-metric-secondary"><DominanceMetric value={entry.dominanceScoringDelta} threshold={1} /></td>
+              <td className="data-table-num align-middle master-table-metric-secondary"><DominanceMetric value={entry.dominanceWhistleDelta} threshold={0.5} /></td>
             </tr>))}</tbody>
         </table>
       </div>

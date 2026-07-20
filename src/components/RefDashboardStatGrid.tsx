@@ -3,6 +3,9 @@ import type { MetricProvenance } from "@/lib/types";
 import { isFallbackMetric } from "@/lib/provenance-utils";
 import { provenanceValueClass } from "@/components/ProvenanceMarker";
 import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
+import { StatCardShareButton } from "@/components/StatCardShareButton";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 
 /**
  * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
@@ -15,7 +18,7 @@ export function RefDashboardStatGrid({
   children: ReactNode;
   className?: string;
 }) {
-  return <dl className={className ?? "ref-stat-grid"}>{children}</dl>;
+  return <dl className={`stat-data-container ${className ?? "ref-stat-grid"}`.trim()}>{children}</dl>;
 }
 
 export function RefDashboardStatCell({
@@ -27,6 +30,8 @@ export function RefDashboardStatCell({
   sampleSize,
   source,
   lastUpdated,
+  valueTooltip,
+  shareId,
 }: {
   label: ReactNode;
   value: string;
@@ -36,27 +41,54 @@ export function RefDashboardStatCell({
   sampleSize?: number;
   source?: string;
   lastUpdated?: string;
+  /** Tooltip explaining the shrunk estimate and raw observed value. */
+  valueTooltip?: string;
+  /** Stable deep-link id; defaults to slugified label when label is a string. */
+  shareId?: string;
 }) {
   const hidden = isFallbackMetric(provenance);
+  const hashId =
+    shareId ??
+    (typeof label === "string" ? STAT_CARD_ANCHOR.metricLabel(label) : undefined);
+
+  const valueNode = (
+    <dd
+      className={`ref-stat-value font-medium tabular-nums ${provenanceValueClass(provenance) ?? ""}`.trim()}
+    >
+      {hidden ? "-" : value}
+    </dd>
+  );
 
   return (
-    <div className="ref-stat-card clinical-metric-card backdrop-blur-md">
+    <div
+      id={hashId}
+      data-stat-card={hashId ? "true" : undefined}
+      className="ref-stat-card clinical-metric-card stat-card backdrop-blur-md"
+    >
       <div className="clinical-metric-card-head">
         <dt className="ref-stat-label">{label}</dt>
-        {!hidden && (
-          <ProvenanceIndicator
-            sampleSize={sampleSize}
-            source={source}
-            lastUpdated={lastUpdated}
-            provenance={provenance}
-          />
-        )}
+        <div className="clinical-metric-card-head-actions">
+          {!hidden && (
+            <ProvenanceIndicator
+              sampleSize={sampleSize}
+              source={source}
+              lastUpdated={lastUpdated}
+              provenance={provenance}
+            />
+          )}
+          {hashId ? (
+            <StatCardShareButton
+              hashId={hashId}
+              label={typeof label === "string" ? label : undefined}
+            />
+          ) : null}
+        </div>
       </div>
-      <dd
-        className={`ref-stat-value font-medium tabular-nums ${provenanceValueClass(provenance) ?? ""}`.trim()}
-      >
-        {hidden ? "-" : value}
-      </dd>
+      {valueTooltip && !hidden ? (
+        <MetricInfoHint hint={valueTooltip}>{valueNode}</MetricInfoHint>
+      ) : (
+        valueNode
+      )}
       {detail && !hidden && (
         <dd
           className={

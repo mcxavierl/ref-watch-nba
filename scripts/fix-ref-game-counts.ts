@@ -6,6 +6,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { GameLogFile } from "./lib/game-logs";
 import { rebuildRefGamesFromLogs } from "./lib/rebuild-ref-games-from-logs";
+import { rebuildTeamSplitsFromGameLogs } from "./lib/rebuild-team-splits-from-logs";
 import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
 import type { RefStatsFile } from "./lib/types";
 
@@ -77,6 +78,14 @@ export const REF_GAME_COUNT_LEAGUES: RefGameCountLeagueConfig[] = [
     corePath: "data/cfb/ref-stats-core.json",
     maxDriftPct: 3,
   },
+  {
+    id: "wnba",
+    statsPath: "data/wnba/ref-stats.json",
+    gameLogPath: "data/wnba/game-logs.json",
+    useCanonicalKey: true,
+    corePath: "data/wnba/ref-stats-core.json",
+    maxDriftPct: 3,
+  },
 ];
 
 function writeJson(root: string, rel: string, data: unknown): void {
@@ -134,7 +143,10 @@ export function syncRefGameCountsFromLogs(
 
     writeJson(r, league.statsPath, rebuilt);
 
-    const { core, teamSplits } = splitRefStatsForDeploy(rebuilt);
+    const { core } = splitRefStatsForDeploy(rebuilt);
+    const teamSplits =
+      rebuildTeamSplitsFromGameLogs(league.id, rebuilt, logs) ??
+      splitRefStatsForDeploy(rebuilt).teamSplits;
     const corePath =
       league.id === "nba"
         ? "data/ref-stats-core.json"

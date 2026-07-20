@@ -36,15 +36,18 @@ export {
   COLLEGE_LIVE_LEAGUE_IDS,
   isCollegeLiveLeague,
   isNcaaConferenceGatedLive,
+  isProAssignmentsLiveLeague,
   isProOnlyLiveLeague,
   isProVerifiedLiveLeague,
   isVerifiedLiveLeague,
   LAUNCHED_NCAA_LEAGUE_IDS,
   OVERVIEW_HUB_LEAGUE_IDS,
   PRIMARY_LIVE_LEAGUE_IDS,
+  PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS,
   PRO_ONLY_LIVE_LEAGUE_IDS,
   PRO_VERIFIED_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
+  OVERVIEW_INSIGHT_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
 
 const INGEST_TICKET_URLS: Partial<Record<LeagueId, string>> = {
@@ -95,7 +98,7 @@ function inferNflVerification(meta: RefStatsFile["meta"]): LeagueVerification {
     data_verified: verified,
     data_source:
       meta.data_source ??
-      (verified ? "ESPN + nflverse (2000-present)" : "synthetic"),
+      (verified ? "ESPN + nflverse (2016-2026)" : "synthetic"),
     canRenderStats: verified,
     verifiedSeasons: verified ? [...meta.seasons] : [],
   };
@@ -211,6 +214,7 @@ export function unverifiedBannerMessage(
 ): string {
   const v = resolveLeagueVerification(leagueId, meta);
   if (v.data_verified) return "";
+  if (leagueId === "cbb") return "";
   if (leagueId === "nhl" || leagueId === "nfl") {
     const label = leagueId.toUpperCase();
     return `We're still building verified ${label} data.`;

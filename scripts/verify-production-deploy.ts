@@ -2,7 +2,11 @@
 /**
  * Post-deploy smoke test — fails loudly on 1102 or zero-data regressions.
  */
-import { VERIFIED_LIVE_LEAGUE_IDS } from "../src/lib/league-verification";
+import {
+  LAUNCHED_NCAA_LEAGUE_IDS,
+  PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS,
+  PRO_VERIFIED_LIVE_LEAGUE_IDS,
+} from "../src/lib/league-verification";
 import { isCfbSimulatedData } from "../src/lib/cfb/data-source";
 
 const ORIGIN = (process.env.REFWATCH_DEPLOY_URL ?? "https://refwatch.ca").replace(
@@ -63,10 +67,13 @@ const ROUTES: RouteCheck[] = [
   },
 ];
 
-const JSON_ASSETS = VERIFIED_LIVE_LEAGUE_IDS.filter((league) => league !== "cfb").map((league) =>
-  league === "nba"
-    ? "/data/nba/ref-stats.json"
-    : `/data/${league}/ref-stats.json`,
+const JSON_ASSETS = [...PRO_VERIFIED_LIVE_LEAGUE_IDS, ...LAUNCHED_NCAA_LEAGUE_IDS].map(
+  (league) =>
+    league === "nba" ? "/data/nba/ref-stats.json" : `/data/${league}/ref-stats.json`,
+);
+
+const ASSIGNMENTS_ASSETS = PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS.map(
+  (league) => `/data/${league}/assignments.json`,
 );
 
 const failures: string[] = [];
@@ -75,11 +82,36 @@ function fail(msg: string): void {
   failures.push(msg);
 }
 
-async function fetchText(url: string): Promise<{ status: number; body: string }> {
+async function fetchText(url: string): Promise<{ status: number; body: string; url: string }> {
   const res = await fetch(url, {
     headers: { "User-Agent": "refwatch-deploy-verify/1.0" },
   });
-  return { status: res.status, body: await res.text() };
+  return { status: res.status, body: await res.text(), url: res.url };
+}
+
+async function fetchRouteWithRetry(
+  route: RouteCheck,
+  url: string,
+  attempts = 4,
+  delayMs = 3000,
+): Promise<{ status: number; body: string; url: string }> {
+  let last: { status: number; body: string; url: string } | null = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    last = await fetchText(url);
+    const okStatus =
+      (route.minStatus == null || last.status >= route.minStatus) &&
+      (route.maxStatus == null || last.status <= route.maxStatus);
+    const needles = route.mustIncludeOne ?? [];
+    const okBody =
+      needles.length === 0 || needles.some((needle) => last!.body.includes(needle));
+    if (okStatus && okBody) return last;
+    if (attempt < attempts && last.status === 404) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      continue;
+    }
+    return last;
+  }
+  return last!;
 }
 
 console.log(`Production deploy verify → ${ORIGIN}`);
@@ -88,7 +120,7 @@ async function main(): Promise<void> {
   for (const route of ROUTES) {
     const url = `${ORIGIN}${route.path}`;
     try {
-      const { status, body } = await fetchText(url);
+      const { status, body } = await fetchRouteWithRetry(route, url);
       if (route.minStatus != null && status < route.minStatus) {
         fail(`${route.path}: HTTP ${status} (need >= ${route.minStatus})`);
       }
@@ -110,6 +142,23 @@ async function main(): Promise<void> {
       console.log(`  ✓ ${route.path} HTTP ${status}`);
     } catch (err) {
       fail(`${route.path}: fetch failed (${err instanceof Error ? err.message : err})`);
+    }
+  }
+
+  for (const assetPath of ASSIGNMENTS_ASSETS) {
+    const url = `${ORIGIN}${assetPath}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        fail(`${assetPath}: HTTP ${res.status}`);
+        continue;
+      }
+      const data = (await res.json()) as { games?: unknown[] };
+      const games = data.games?.length ?? 0;
+      if (games < 1) fail(`${assetPath}: games array is empty`);
+      console.log(`  ✓ ${assetPath} games=${games}`);
+    } catch (err) {
+      fail(`${assetPath}: ${err instanceof Error ? err.message : err}`);
     }
   }
 

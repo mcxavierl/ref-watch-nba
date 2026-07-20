@@ -1,0 +1,247 @@
+/**
+ * Season Highlights — visual delight for slate hero finding cards.
+ * Scoped to .slate-findings-hero so research hub dense lists stay clinical.
+ */
+
+:root {
+  --finding-category-whistle: #8b5cf6;
+  --finding-category-whistle-ink: #c4b5fd;
+  --finding-category-outlier: #6366f1;
+  --finding-category-outlier-ink: #a5b4fc;
+  --finding-metric-label-muted: rgb(148 163 184);
+}
+
+/* ── Hero card vibrancy ─────────────────────────────────────────────────── */
+
+.slate-findings-hero-stack .finding-accordion--hero,
+.slate-findings-hero-stack .official-findings-card--hero {
+  position: relative;
+  border-color: color-mix(in srgb, var(--finding-card-glow, var(--header-gold)) 42%, var(--border));
+  background:
+    radial-gradient(
+      ellipse 140% 90% at 50% -20%,
+      color-mix(in srgb, var(--finding-card-glow, var(--header-gold)) 14%, transparent),
+      transparent 58%
+    ),
+    var(--surface);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--finding-card-glow, var(--header-gold)) 20%, transparent),
+    0 0 28px color-mix(in srgb, var(--finding-card-glow, var(--header-gold)) 22%, transparent),
+    0 1px 2px rgb(0 0 0 / 0.32);
+}
+
+.slate-findings-hero-stack .finding-accordion--hero[data-category="whistle-extreme"] {
+  --finding-card-glow: var(--finding-category-whistle);
+}
+
+.slate-findings-hero-stack .finding-accordion--hero[data-category="ref-outlier"] {
+  --finding-card-glow: var(--finding-category-outlier);
+}
+
+.slate-findings-hero-stack .finding-accordion--hero[data-category="ou-edge"],
+.slate-findings-hero-stack .finding-accordion--hero[data-category="ats-edge"] {
+  --finding-card-glow: var(--metric-positive-ink);
+}
+
+.slate-findings-hero-stack .finding-accordion--hero[data-category="scoring-extreme"] {
+  --finding-card-glow: #22c55e;
+}
+
+.slate-findings-hero-stack .official-findings-card--hero {
+  --finding-card-glow: var(--header-gold);
+}
+
+.slate-findings-hero-stack .official-findings-card--hero[data-category="whistle-extreme"] {
+  --finding-card-glow: var(--finding-category-whistle);
+}
+
+.slate-findings-hero-stack .official-findings-card--hero[data-category="ref-outlier"] {
+  --finding-card-glow: var(--finding-category-outlier);
+}
+
+/* ── Typographic hierarchy ────────────────────────────────────────────── */
+
+.slate-findings-hero-stack .finding-metric-value {
+  font-size: clamp(2.125rem, 4.25vw, 2.875rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.slate-findings-hero-stack .finding-metric-value--lg,
+.slate-findings-hero-stack .finding-metric-value--hero {
+  font-size: clamp(2.375rem, 4.75vw, 3.125rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.slate-findings-hero-stack .finding-accordion--hero .finding-metric-value,
+.slate-findings-hero-stack .official-findings-card--hero .finding-metric-value {
+  font-size: clamp(2.375rem, 5vw, 3.25rem);
+}
+
+.slate-findings-hero-stack .finding-accordion--hero .finding-metric-value--hero,
+.slate-findings-hero-stack .official-findings-card--hero .finding-metric-value--hero {
+  font-size: clamp(2.625rem, 5.25vw, 3.5rem);
+}
+
+.slate-findings-hero-stack .finding-metric-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--finding-metric-label-muted);
+}
+
+.slate-findings-hero-stack .finding-metric-detail--muted {
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--finding-metric-label-muted) 88%, var(--foreground));
+}
+
+.slate-findings-hero-stack .finding-metric-delta {
+  font-size: 1rem;
+  font-weight: 750;
+}
+
+.slate-findings-hero-stack .finding-accordion--hero .finding-metric-delta,
+.slate-findings-hero-stack .official-findings-card--hero .finding-metric-delta {
+  font-size: 1.0625rem;
+}
+
+/* ── Category pill semantic color + inner glow ──────────────────────────── */
+
+.finding-meta-pill--category[data-category="whistle-extreme"] {
+  --pill-glow-accent: var(--finding-category-whistle);
+  border-color: color-mix(in srgb, var(--finding-category-whistle) 45%, var(--pill-border));
+  background:
+    radial-gradient(
+      ellipse 120% 90% at 50% 0%,
+      color-mix(in srgb, var(--finding-category-whistle) 22%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--finding-category-whistle) 14%, var(--pill-bg));
+  color: color-mix(in srgb, var(--finding-category-whistle-ink) 92%, var(--pill-ink));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--finding-category-whistle) 18%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--finding-category-whistle) 16%, transparent),
+    0 0 14px color-mix(in srgb, var(--finding-category-whistle) 24%, transparent);
+}
+
+.finding-meta-pill--category[data-category="ref-outlier"] {
+  --pill-glow-accent: var(--finding-category-outlier);
+  border-color: color-mix(in srgb, var(--finding-category-outlier) 45%, var(--pill-border));
+  background:
+    radial-gradient(
+      ellipse 120% 90% at 50% 0%,
+      color-mix(in srgb, var(--finding-category-outlier) 22%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--finding-category-outlier) 14%, var(--pill-bg));
+  color: color-mix(in srgb, var(--finding-category-outlier-ink) 92%, var(--pill-ink));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--finding-category-outlier) 18%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--finding-category-outlier) 16%, transparent),
+    0 0 14px color-mix(in srgb, var(--finding-category-outlier) 24%, transparent);
+}
+
+.finding-meta-pill--category[data-category="scoring-extreme"] {
+  --pill-glow-accent: #22c55e;
+  border-color: color-mix(in srgb, #22c55e 40%, var(--pill-border));
+  background:
+    radial-gradient(
+      ellipse 120% 90% at 50% 0%,
+      color-mix(in srgb, #22c55e 18%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, #22c55e 12%, var(--pill-bg));
+  color: color-mix(in srgb, #86efac 90%, var(--pill-ink));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #22c55e 16%, transparent),
+    0 0 0 1px color-mix(in srgb, #22c55e 14%, transparent),
+    0 0 12px color-mix(in srgb, #22c55e 20%, transparent);
+}
+
+.finding-meta-pill--category[data-category="league-trend"] {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--nhl-blue) 16%, transparent),
+    var(--pill-glow-ring),
+    var(--pill-glow-halo);
+}
+
+/* League pills — inner glow matched to league accent */
+.finding-meta-pill--league[data-league="nhl"] {
+  background:
+    radial-gradient(
+      ellipse 120% 90% at 50% 0%,
+      color-mix(in srgb, var(--nhl-blue) 20%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--nhl-blue) 14%, var(--pill-bg));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--nhl-blue) 18%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--nhl-blue) 16%, transparent),
+    0 0 14px color-mix(in srgb, var(--nhl-blue) 22%, transparent);
+}
+
+.finding-meta-pill--league[data-league="nba"],
+.finding-meta-pill--league[data-league="nfl"],
+.finding-meta-pill--league[data-league="epl"],
+.finding-meta-pill--league[data-league="laliga"],
+.finding-meta-pill--league[data-league="cbb"],
+.finding-meta-pill--league[data-league="cfb"] {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--pill-glow-accent) 16%, transparent),
+    var(--pill-glow-ring),
+    var(--pill-glow-halo);
+}
+
+/* Subtle category tint on non-hero cards in season highlights */
+.slate-findings-hero-stack .finding-accordion[data-category="whistle-extreme"]:not(.finding-accordion--hero) {
+  border-color: color-mix(in srgb, var(--finding-category-whistle) 22%, var(--border));
+}
+
+.slate-findings-hero-stack .finding-accordion[data-category="ref-outlier"]:not(.finding-accordion--hero) {
+  border-color: color-mix(in srgb, var(--finding-category-outlier) 22%, var(--border));
+}
+
+/* Insights hub hero cards — gradient border glow */
+.highlight-stat-card--hero-pill {
+  border-color: color-mix(in srgb, var(--insight-card-glow) 48%, var(--border));
+  background:
+    radial-gradient(
+      ellipse 130% 85% at 50% -15%,
+      color-mix(in srgb, var(--insight-card-glow) 12%, transparent),
+      transparent 55%
+    ),
+    color-mix(in srgb, var(--background) 58%, var(--surface));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--insight-card-glow) 22%, transparent),
+    0 0 26px color-mix(in srgb, var(--insight-card-glow) 20%, transparent);
+}
+
+.highlight-stat-card--hero-pill .rankings-insight-category-pill,
+.highlight-stat-card--hero-pill .pill-constrain--category {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--insight-card-glow) 20%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--insight-card-glow) 18%, transparent),
+    0 0 12px color-mix(in srgb, var(--insight-card-glow) 22%, transparent);
+}
+
+.highlight-stat-card--hero-pill .ref-card-metric-block .finding-metric-label,
+.highlight-stat-card--hero-pill .ref-card-metric-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--finding-metric-label-muted);
+}
+
+.highlight-stat-card--hero-pill .rankings-insight-metric {
+  font-size: clamp(1.85rem, 3.2vw, 2.35rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+html[data-contrast="high"] .slate-findings-hero-stack .finding-accordion--hero,
+html[data-contrast="high"] .slate-findings-hero-stack .official-findings-card--hero,
+html[data-contrast="high"] .highlight-stat-card--hero-pill {
+  box-shadow: none;
+}

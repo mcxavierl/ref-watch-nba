@@ -51,14 +51,20 @@ export function FindingAccordionItem({
   defaultOpen = false,
   league,
   evSnapshot,
+  hero = false,
 }: {
   finding: Finding;
   defaultOpen?: boolean;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league?: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   evSnapshot?: FindingEvSnapshot | null;
+  hero?: boolean;
 }) {
   return (
-    <details className="finding-accordion data-card" open={defaultOpen}>
+    <details
+      className={`finding-accordion data-card${hero ? " finding-accordion--hero" : ""}`}
+      data-category={finding.category}
+      open={defaultOpen}
+    >
       <summary className="finding-accordion-trigger">
         <div className="finding-accordion-trigger-inner">
           <div className="finding-accordion-main">
@@ -153,14 +159,21 @@ function OfficialFindingsSingleCard({
   finding,
   league,
   evSnapshot,
+  hero = false,
 }: {
   official: OfficialIdentity;
   finding: Finding;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league?: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   evSnapshot?: FindingEvSnapshot | null;
+  hero?: boolean;
 }) {
   return (
-    <article className="finding-accordion official-findings-card official-findings-card--single data-card">
+    <article
+      className={`finding-accordion official-findings-card official-findings-card--single data-card${
+        hero ? " official-findings-card--hero" : ""
+      }`}
+      data-category={finding.category}
+    >
       <div className="finding-accordion-trigger-inner official-findings-single-body">
         <div className="finding-accordion-main">
           <FindingHeaderRow
@@ -202,12 +215,14 @@ export function OfficialFindingsAccordionItem({
   defaultOpen = false,
   league,
   evByFindingId,
+  hero = false,
 }: {
   official: OfficialIdentity;
   findings: Finding[];
   defaultOpen?: boolean;
-  league?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league?: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   evByFindingId?: Record<string, FindingEvSnapshot | null>;
+  hero?: boolean;
 }) {
   const groupEv = evByFindingId
     ? pickStrongestEvSnapshot(findings.map((row) => evByFindingId[row.id]))
@@ -222,6 +237,7 @@ export function OfficialFindingsAccordionItem({
         evSnapshot={
           evByFindingId ? evByFindingId[findings[0]!.id] : undefined
         }
+        hero={hero}
       />
     );
   }
@@ -234,7 +250,10 @@ export function OfficialFindingsAccordionItem({
 
   return (
     <details
-      className="finding-accordion official-findings-card data-card"
+      className={`finding-accordion official-findings-card data-card${
+        hero ? " finding-accordion--hero official-findings-card--hero" : ""
+      }`}
+      data-category={findings[0]?.category}
       open={defaultOpen}
     >
       <summary className="finding-accordion-trigger">

@@ -1,11 +1,19 @@
 "use client";
 
-import Link from "next/link";
-import { useMemo, useState, type ReactNode } from "react";
-import { ArrowRight, ChevronDown } from "lucide-react";
-import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { PrefetchLink } from "@/components/PrefetchLink";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { ArrowRight, Plus } from "lucide-react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
+import { RankingSignalPill } from "@/components/RankingSignalPill";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { Pill } from "@/components/ui/Pill";
+import {
+  NO_ANOMALIES_DETECTED_COPY,
+  qualifiesRefAnomaly,
+  sortRefsByInterestingness,
+} from "@/lib/anomaly-surface";
+import type { LeagueId } from "@/lib/leagues";
 import { signedDeltaTone } from "@/lib/metric-delight";
 import { formatPct, formatSigned, bettingAtsRate, bettingOuRate } from "@/lib/stats-utils";
 import { directoryScoringDisplay, prefersPctScoringDelta } from "@/lib/scoring-metrics";
@@ -13,6 +21,20 @@ import { qualifiedRefs, sortRefRankings, type RefRankingSort } from "@/lib/ranki
 import type { RefProfile } from "@/lib/types";
 
 type SortField = "games" | "scoring" | "whistle" | "overRate" | "ats" | "ouBetting";
+
+const LEAGUE_ID_BY_LABEL: Record<
+  "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  LeagueId
+> = {
+  NBA: "nba",
+  NHL: "nhl",
+  WNBA: "wnba",
+  NFL: "nfl",
+  EPL: "epl",
+  LALIGA: "laliga",
+  CBB: "cbb",
+  CFB: "cfb",
+};
 
 function toggleSort(current: RefRankingSort, field: SortField): RefRankingSort {
   const [activeField, direction] = current.split("-") as [string, "asc" | "desc"];
@@ -27,18 +49,20 @@ function SortableHeader({
   field,
   sort,
   onSort,
+  className,
 }: {
   label: string;
   field: SortField;
   sort: RefRankingSort;
   onSort: (field: SortField) => void;
+  className?: string;
 }) {
   const [activeField, direction] = sort.split("-") as [string, "asc" | "desc"];
   const isActive = activeField === field;
 
   return (
     <th
-      className="data-table-num"
+      className={`data-table-num${className ? ` ${className}` : ""}`}
       aria-sort={isActive ? (direction === "asc" ? "ascending" : "descending") : "none"}
     >
       <button
@@ -82,28 +106,64 @@ export function RefRankingsTable({
   basePath = "",
   signalCounts = {},
   atsAvailable = false,
+  initialRowLimit = 5,
+  defaultSort = "scoring-desc",
+  filterSlugs,
+  preserveOrder = false,
 }: {
   refs: RefProfile[];
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   minSampleSize: number;
   overBaseline: number;
   leagueAvgTotal?: number;
   basePath?: string;
   signalCounts?: Record<string, number>;
   atsAvailable?: boolean;
+  initialRowLimit?: number;
+  defaultSort?: RefRankingSort;
+  filterSlugs?: Set<string>;
+  preserveOrder?: boolean;
 }) {
-  const [sort, setSort] = useState<RefRankingSort>("scoring-desc");
+  const [sort, setSort] = useState<RefRankingSort>(defaultSort);
   const [showLowSample, setShowLowSample] = useState(false);
+  const [showAllRows, setShowAllRows] = useState(false);
+  const [anomaliesOnly, setAnomaliesOnly] = useState(false);
   const [expandedSlugs, setExpandedSlugs] = useState<Set<string>>(() => new Set());
+  const leagueId = LEAGUE_ID_BY_LABEL[league];
 
-  const sorted = useMemo(
-    () =>
-      sortRefRankings(
-        showLowSample ? refs : qualifiedRefs(refs, minSampleSize),
-        sort,
-      ),
-    [refs, sort, showLowSample, minSampleSize],
-  );
+  useEffect(() => {
+    setSort(defaultSort);
+    setShowAllRows(false);
+  }, [defaultSort, filterSlugs, preserveOrder, refs]);
+
+  const sorted = useMemo(() => {
+    const pool = showLowSample ? refs : qualifiedRefs(refs, minSampleSize);
+    const filteredBySlug =
+      filterSlugs && filterSlugs.size > 0
+        ? pool.filter((ref) => filterSlugs.has(ref.slug))
+        : pool;
+    const filtered = anomaliesOnly
+      ? filteredBySlug.filter((ref) =>
+          qualifiesRefAnomaly(ref, leagueId, signalCounts[ref.slug] ?? 0),
+        )
+      : filteredBySlug;
+    if (preserveOrder) return filtered;
+    if (anomaliesOnly) return sortRefsByInterestingness(filtered, leagueId);
+    return sortRefRankings(filtered, sort);
+  }, [
+    refs,
+    sort,
+    showLowSample,
+    minSampleSize,
+    filterSlugs,
+    preserveOrder,
+    anomaliesOnly,
+    leagueId,
+    signalCounts,
+  ]);
+
+  const visibleRows = showAllRows ? sorted : sorted.slice(0, initialRowLimit);
+  const hiddenCount = Math.max(0, sorted.length - initialRowLimit);
 
   const isBasketball = league === "NBA" || league === "CBB";
   const scoringLabel = isBasketball
@@ -118,8 +178,6 @@ export function RefRankingsTable({
     : league === "NFL"
       ? "Flags Δ"
       : "Minors Δ";
-  const unit =
-    isBasketball || league === "NFL" ? "points" : "goals";
   const sport =
     league === "NHL"
       ? "nhl"
@@ -140,6 +198,14 @@ export function RefRankingsTable({
     setSort((current) => toggleSort(current, field));
   };
 
+  const resetView = () => {
+    setSort(defaultSort);
+    setShowLowSample(false);
+    setAnomaliesOnly(false);
+    setShowAllRows(false);
+    setExpandedSlugs(new Set());
+  };
+
   const toggleExpanded = (slug: string) => {
     setExpandedSlugs((current) => {
       const next = new Set(current);
@@ -152,11 +218,7 @@ export function RefRankingsTable({
   return (
     <div>
       <div className="ranking-toolbar">
-        <div className="ranking-toolbar-row">
-          <p className="ranking-toolbar-hint">
-            Top three influence metrics shown by default. Expand a row for ATS,
-            O/U, and league-specific splits. Descriptive only, not picks.
-          </p>
+        <div className="ranking-toolbar-row flex flex-wrap items-center gap-3">
           <label className="ranking-toggle">
             <input
               type="checkbox"
@@ -166,16 +228,30 @@ export function RefRankingsTable({
             />
             Show refs below {minSampleSize}-game gate
           </label>
+          <Pill
+            as="button"
+            variant="insight"
+            active={anomaliesOnly}
+            onClick={() => setAnomaliesOnly((current) => !current)}
+            aria-pressed={anomaliesOnly}
+          >
+            Anomalies only
+          </Pill>
         </div>
-        <p className="ranking-toolbar-context">
-          Over rate uses {overBaseline} combined {unit} benchmark.
-          {atsAvailable
-            ? " ATS and O/U % use closing lines where available (NHL uses synthetic lines)."
-            : null}
-        </p>
       </div>
 
-      <div className="ranking-table-wrap overflow-x-auto">
+      {sorted.length === 0 ? (
+        <EmptyState
+          message={
+            anomaliesOnly
+              ? NO_ANOMALIES_DETECTED_COPY
+              : "No data available for this range"
+          }
+          onReset={resetView}
+        />
+      ) : (
+        <>
+      <div className="ranking-table-wrap stat-data-container">
         <table className="data-table ranking-table min-w-[640px]">
           <thead>
             <tr className="data-table-head">
@@ -184,7 +260,13 @@ export function RefRankingsTable({
                 <span className="sr-only">Details</span>
               </th>
               <th>Official</th>
-              <SortableHeader label="Games" field="games" sort={sort} onSort={handleSort} />
+              <SortableHeader
+                label="Games"
+                field="games"
+                sort={sort}
+                onSort={handleSort}
+                className="master-table-head-secondary"
+              />
               <SortableHeader
                 label={scoringLabel}
                 field="scoring"
@@ -196,17 +278,19 @@ export function RefRankingsTable({
                 field="whistle"
                 sort={sort}
                 onSort={handleSort}
+                className="master-table-head-secondary"
               />
               <SortableHeader
                 label="Over rate"
                 field="overRate"
                 sort={sort}
                 onSort={handleSort}
+                className="master-table-head-secondary"
               />
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
-            {sorted
+            {visibleRows
               .filter((ref) => showLowSample || ref.games >= minSampleSize)
               .flatMap((ref, index) => {
               const rank = index + 1;
@@ -242,14 +326,13 @@ export function RefRankingsTable({
                   <td className="ranking-table-row-expand px-2 py-4">
                     <button
                       type="button"
-                      className="ranking-table-expand-btn"
+                      className="ranking-table-row-toggle-btn"
                       aria-expanded={expanded}
                       aria-label={`${expanded ? "Hide" : "Show"} details for ${ref.name}`}
                       onClick={() => toggleExpanded(ref.slug)}
                     >
-                      <ChevronDown
-                        className="h-4 w-4 transition-transform duration-150"
-                        style={{ transform: expanded ? "rotate(180deg)" : undefined }}
+                      <Plus
+                        className={`h-3.5 w-3.5 ranking-table-row-toggle-icon transition-transform duration-150${expanded ? " ranking-table-row-toggle-icon--expanded" : ""}`}
                         aria-hidden
                       />
                     </button>
@@ -264,28 +347,30 @@ export function RefRankingsTable({
                       />
                       <div className="flex min-w-0 flex-1 items-center gap-2">
                         <div className="min-w-0">
-                          <Link
+                          <PrefetchLink
                             href={profileHref}
+                            prefetch={true}
                             className="ranking-table-row-link font-medium text-zinc-900 hover:text-raptors hover:underline"
                           >
                             {ref.name}
-                          </Link>
+                          </PrefetchLink>
                           <RefJerseyNumber
                             number={ref.number}
                             className="ml-2 whitespace-nowrap font-tabular text-xs text-zinc-500"
                           />
                         </div>
-                        <Link
+                        <PrefetchLink
                           href={profileHref}
+                          prefetch={true}
                           className="ranking-table-row-profile-arrow"
                           aria-label={`Open ${ref.name} profile`}
                         >
                           <ArrowRight className="h-4 w-4" aria-hidden />
-                        </Link>
+                        </PrefetchLink>
                       </div>
                     </div>
                   </td>
-                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-secondary-metric">
+                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-secondary-metric master-table-metric-secondary">
                     {ref.games.toLocaleString()}
                     {belowGate && (
                       <span className="ml-1 text-xs text-amber-700">· thin</span>
@@ -294,10 +379,10 @@ export function RefRankingsTable({
                   <td className={`data-table-num px-4 py-4 ${deltaMetricClass(ref.totalPointsDelta)}`}>
                     {scoringDisplay}
                   </td>
-                  <td className={`data-table-num px-4 py-4 ${deltaMetricClass(whistleDelta)}`}>
+                  <td className={`data-table-num px-4 py-4 master-table-metric-secondary ${deltaMetricClass(whistleDelta)}`}>
                     {whistleDelta !== undefined ? formatSigned(whistleDelta) : "-"}
                   </td>
-                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-primary-metric">
+                  <td className="data-table-num px-4 py-4 tabular-nums ranking-table-row-primary-metric master-table-metric-secondary">
                     {formatPct(ref.overRate)}
                   </td>
                 </tr>,
@@ -308,6 +393,27 @@ export function RefRankingsTable({
                   <tr key={`${ref.slug}-details`} className="ranking-table-details-row">
                     <td colSpan={7}>
                       <div className="ranking-table-details-grid">
+                        <DetailStat
+                          label="Games"
+                          value={
+                            <>
+                              {ref.games.toLocaleString()}
+                              {belowGate ? " · thin" : ""}
+                            </>
+                          }
+                        />
+                        <DetailStat
+                          label={whistleLabel}
+                          value={
+                            whistleDelta !== undefined
+                              ? formatSigned(whistleDelta)
+                              : "-"
+                          }
+                        />
+                        <DetailStat
+                          label="Over rate"
+                          value={formatPct(ref.overRate)}
+                        />
                         {atsAvailable ? (
                           <>
                             <DetailStat
@@ -323,12 +429,13 @@ export function RefRankingsTable({
                         {signalCount > 0 ? (
                           <div className="ranking-table-details-stat">
                             <span className="ranking-table-details-label">Signals</span>
-                            <Link
+                            <PrefetchLink
                               href={`${profileHref}#profile-signals`}
+                              prefetch={true}
                               className="ranking-table-details-value ranking-signal-badge"
                             >
                               {signalCount} notable
-                            </Link>
+                            </PrefetchLink>
                           </div>
                         ) : null}
                         {league === "NHL" && (
@@ -351,12 +458,13 @@ export function RefRankingsTable({
                         <DetailStat
                           label="Profile"
                           value={
-                            <Link
+                            <PrefetchLink
                               href={profileHref}
+                              prefetch={true}
                               className="text-raptors hover:underline"
                             >
                               Full breakdown →
-                            </Link>
+                            </PrefetchLink>
                           }
                         />
                       </div>
@@ -371,9 +479,22 @@ export function RefRankingsTable({
         </table>
       </div>
 
-      <div className="border-t border-border-subtle px-4 py-4 sm:px-5">
-        <ProComingSoonTease league={league} compact />
-      </div>
+      {hiddenCount > 0 ? (
+        <div className="ranking-table-expand-wrap">
+          <button
+            type="button"
+            className="ranking-table-expand-btn rw-focus-ring"
+            aria-expanded={showAllRows}
+            onClick={() => setShowAllRows((current) => !current)}
+          >
+            {showAllRows
+              ? "Show top rankings"
+              : `View full rankings (${sorted.length})`}
+          </button>
+        </div>
+      ) : null}
+        </>
+      )}
     </div>
   );
 }

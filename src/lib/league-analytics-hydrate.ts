@@ -15,7 +15,7 @@ const LEAGUE_ID_TO_DATA: Record<LeagueId, DataLeague> = {
   laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
-  wnba: "NBA",
+  wnba: "WNBA",
   mlb: "NBA",
 };
 

@@ -16,13 +16,15 @@ export interface RuntimeGameLogEntry {
   gameId: string;
   date: string;
   season: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA";
   homeTeam: string;
   awayTeam: string;
   homeScore: number;
   awayScore: number;
   totalPoints: number;
   totalFouls: number;
+  homeFouls?: number;
+  awayFouls?: number;
   homeMinors?: number;
   awayMinors?: number;
   wentToOvertime?: boolean;
@@ -48,12 +50,12 @@ export interface RuntimeGameLogEntry {
 
 export interface RuntimeGameLogFile {
   lastUpdated: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA";
   source: string;
   games: RuntimeGameLogEntry[];
 }
 
-export type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+export type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA";
 
 const GAME_LOG_GLOBAL_KEYS = freezeWorkerConfig({
   NBA: "__REFWATCH_NBA_GAME_LOGS__",
@@ -63,6 +65,7 @@ const GAME_LOG_GLOBAL_KEYS = freezeWorkerConfig({
   LALIGA: "__REFWATCH_LALIGA_GAME_LOGS__",
   CBB: "__REFWATCH_CBB_GAME_LOGS__",
   CFB: "__REFWATCH_CFB_GAME_LOGS__",
+  WNBA: "__REFWATCH_WNBA_GAME_LOGS__",
 } as const);
 
 const GAME_LOG_ASSET_BASE = freezeWorkerConfig({
@@ -73,6 +76,7 @@ const GAME_LOG_ASSET_BASE = freezeWorkerConfig({
   LALIGA: "/data/laliga",
   CBB: "/data/cbb",
   CFB: "/data/cfb",
+  WNBA: "/data/wnba",
 } as const);
 
 function readGlobalGameLogs(league: DataLeague): RuntimeGameLogFile | null {

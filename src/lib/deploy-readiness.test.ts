@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "@/lib/live-header-leagues.generated";
+import { NCAA_LIVE_LEAGUE_IDS } from "@/lib/ncaa-live-leagues.generated";
 import { PRO_ONLY_LIVE_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 import { getRefStats as getEplRefStats, getTeamSplits as getEplTeamSplits } from "@/lib/epl/data";
 import { getRefStats as getNhlRefStats, getTeamSplits as getNhlTeamSplits } from "@/lib/nhl/data";
@@ -37,8 +38,14 @@ function clearLeagueCaches(): void {
 }
 
 describe("deploy readiness regressions", () => {
-  it("live header lists every verified pro league", () => {
+  it("live header lists every verified pro league and launched NCAA league", () => {
     for (const league of PRO_ONLY_LIVE_LEAGUE_IDS) {
+      assert.ok(
+        (PRODUCTION_LIVE_HEADER_LEAGUE_IDS as readonly string[]).includes(league),
+        `missing ${league} from PRODUCTION_LIVE_HEADER_LEAGUE_IDS`,
+      );
+    }
+    for (const league of NCAA_LIVE_LEAGUE_IDS) {
       assert.ok(
         (PRODUCTION_LIVE_HEADER_LEAGUE_IDS as readonly string[]).includes(league),
         `missing ${league} from PRODUCTION_LIVE_HEADER_LEAGUE_IDS`,

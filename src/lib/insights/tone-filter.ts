@@ -19,8 +19,13 @@ const BANNED_PHRASES: readonly { pattern: RegExp; replacement: string }[] = [
 ];
 
 const CLINICAL_REPLACEMENTS: readonly { pattern: RegExp; replacement: string }[] = [
+  { pattern: /\bboosts\b/gi, replacement: "correlates with" },
+  { pattern: /\bfavors\b/gi, replacement: "aligns with" },
+  { pattern: /\bhurts\b/gi, replacement: "runs below" },
+  { pattern: /\bimpacts\b/gi, replacement: "tracks with" },
   { pattern: /\bbeats\b/gi, replacement: "exceeds" },
   { pattern: /\btrails\b/gi, replacement: "runs below" },
+  { pattern: /\bdrags\b/gi, replacement: "runs below" },
   { pattern: /\blargest\b/gi, replacement: "most pronounced" },
   { pattern: /\bbiggest\b/gi, replacement: "most pronounced" },
 ];

@@ -2,10 +2,15 @@ import {
   dataMaturityPercent,
   displayWinRateDelta,
   formatDeltaPp,
-  formatSampleSizeLabel,
   isPreliminarySample,
 } from "@/lib/data-maturity";
+import {
+  filterHomepageInsightCards,
+  minSampleGateForCard,
+  passesHomepageSampleGate,
+} from "@/lib/homepage-insight-gates";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
+import { applyClinicalTone } from "@/lib/insights/tone-filter";
 
 export type EditorialMetric = {
   value: string;
@@ -52,6 +57,13 @@ function headlineLooksNarrative(headline: string): boolean {
   );
 }
 
+/** Last token of a multi-word team label (e.g. "New York Knicks" -> "Knicks"). */
+function shortTeamLabel(teamLabel: string): string {
+  const parts = teamLabel.trim().split(/\s+/);
+  if (parts.length <= 1) return teamLabel.trim();
+  return parts[parts.length - 1]!;
+}
+
 /** Human-first headline for insight surfaces (featured, trends, quick lists). */
 export function humanCentricHeadline(card: LeagueInsightCard): string {
   if (headlineLooksNarrative(card.headline)) {
@@ -65,33 +77,35 @@ export function humanCentricHeadline(card: LeagueInsightCard): string {
   if (card.kind === "ref-outlier" && name) {
     const label = card.heroLabel.toLowerCase();
     if (label.includes("flag") || label.includes("foul") || label.includes("minor")) {
-      const intensity =
-        card.heroTone === "positive"
-          ? "highest"
-          : card.heroTone === "negative"
-            ? "lowest"
-            : "most unusual";
-      return `${name} calls one of the ${league}'s ${intensity} whistle rates`;
+      return applyClinicalTone(
+        `${name}: ${card.heroValue} whistle-rate variance vs ${league} league average`,
+      );
     }
-    return `${name} leads ${league} ${card.heroLabel.toLowerCase()} this season`;
+    return applyClinicalTone(
+      `${name}: ${card.heroValue} ${card.heroLabel.toLowerCase()} vs ${league} baseline`,
+    );
   }
 
   if (card.kind === "matrix-edge" && name && team) {
-    const verb =
-      card.heroTone === "positive"
-        ? "boosts"
-        : card.heroTone === "negative"
-          ? "drags"
-          : "shifts";
-    return `${name} ${verb} ${team} results vs the ${league} baseline`;
+    const delta = parseDeltaPpFromCard(card);
+    const deltaLabel =
+      delta === null
+        ? card.heroValue
+        : formatDeltaPp(delta);
+    const teamShort = shortTeamLabel(team);
+    return applyClinicalTone(`${teamShort} & ${name}: ${deltaLabel} Delta`);
   }
 
   if (name && team) {
-    return `${name} and ${team} show the clearest ${league} split on record`;
+    return applyClinicalTone(
+      `${team} games with ${name} show the clearest ${league} ref×team variance in the current sample`,
+    );
   }
 
   if (name) {
-    return `${name} anchors the top ${league} story this week`;
+    return applyClinicalTone(
+      `${name}: largest ${league} officiating variance in the current homepage sample`,
+    );
   }
 
   return normalizeCopy(card.headline);
@@ -136,23 +150,26 @@ function splitDisplayMetrics(card: LeagueInsightCard): {
 } {
   const sampleGames = parseGamesFromCard(card);
   const rawDelta = parseDeltaPpFromCard(card);
+  const gate = minSampleGateForCard(card);
   const usesSplitHierarchy =
-    card.kind === "matrix-edge" || (rawDelta !== null && isPreliminarySample(sampleGames));
+    card.kind === "matrix-edge" &&
+    rawDelta !== null &&
+    sampleGames > 0 &&
+    sampleGames >= gate;
 
-  if (usesSplitHierarchy && rawDelta !== null && sampleGames > 0) {
+  if (usesSplitHierarchy) {
     const { displayDelta, isPreliminary, isAdjusted } = displayWinRateDelta(
       rawDelta,
       sampleGames,
     );
     return {
       primaryMetric: {
-        value: formatSampleSizeLabel(sampleGames),
-        label: "Sample size",
-      },
-      secondaryMetric: {
         value: formatDeltaPp(displayDelta),
-        label: "Win rate delta",
+        label: isAdjusted
+          ? `Adjusted win-rate delta (N=${sampleGames})`
+          : "Win rate delta vs baseline",
       },
+      secondaryMetric: null,
       sampleGames,
       isPreliminary,
       isAdjusted,
@@ -207,6 +224,11 @@ export function editorialInsightView(card: LeagueInsightCard): EditorialInsightV
   };
 }
 
+/** Gate-qualified cards for homepage editorial surfaces. */
+export function homepageInsightCards(cards: LeagueInsightCard[]): LeagueInsightCard[] {
+  return filterHomepageInsightCards(cards);
+}
+
 function heroValueMagnitude(value: string): number {
   const match = value.match(/([+-]?\d+(?:\.\d+)?)/);
   if (!match) return 0;
@@ -221,7 +243,81 @@ export function pickTopInsightCard(cards: LeagueInsightCard[]): LeagueInsightCar
   )[0]!;
 }
 
-/** One trend card per league for the medium grid. */
+/** Stable dedupe key for ref×team insight cards. */
+export function insightCardKey(card: LeagueInsightCard): string {
+  return `${card.leagueId}:${card.refSlug ?? card.headline}:${card.teamAbbr ?? ""}`;
+}
+
+const OVERVIEW_STANDOUT_LEAGUE_ORDER: LeagueInsightCard["leagueId"][] = [
+  "nba",
+  "nhl",
+  "nfl",
+  "epl",
+  "laliga",
+];
+
+const OVERVIEW_EXTRA_STANDOUT_LEAGUES = new Set<LeagueInsightCard["leagueId"]>([
+  "nba",
+  "nfl",
+  "epl",
+]);
+
+/** Homepage grid: one split per league plus a second NBA, NFL, and EPL sample. */
+export function overviewStandoutSplitCards(
+  cards: LeagueInsightCard[],
+  featured: LeagueInsightCard | null,
+): LeagueInsightCard[] {
+  const gated = filterHomepageInsightCards(cards);
+  const used = new Set<string>();
+  if (featured && passesHomepageSampleGate(featured)) {
+    used.add(insightCardKey(featured));
+  }
+
+  const matrixCards = gated.filter((card) => card.kind === "matrix-edge");
+  const byLeague = new Map<string, LeagueInsightCard[]>();
+
+  for (const card of matrixCards) {
+    const list = byLeague.get(card.leagueId) ?? [];
+    list.push(card);
+    byLeague.set(card.leagueId, list);
+  }
+
+  for (const list of byLeague.values()) {
+    list.sort((a, b) => {
+      const gamesA = parseGamesFromCard(a);
+      const gamesB = parseGamesFromCard(b);
+      if (gamesB !== gamesA) return gamesB - gamesA;
+      return heroValueMagnitude(b.heroValue) - heroValueMagnitude(a.heroValue);
+    });
+  }
+
+  const result: LeagueInsightCard[] = [];
+
+  function takeNext(leagueId: LeagueInsightCard["leagueId"]): LeagueInsightCard | null {
+    const list = byLeague.get(leagueId) ?? [];
+    for (const card of list) {
+      const key = insightCardKey(card);
+      if (used.has(key)) continue;
+      used.add(key);
+      return card;
+    }
+    return null;
+  }
+
+  for (const leagueId of OVERVIEW_STANDOUT_LEAGUE_ORDER) {
+    const card = takeNext(leagueId);
+    if (card) result.push(card);
+  }
+
+  for (const leagueId of OVERVIEW_EXTRA_STANDOUT_LEAGUES) {
+    const card = takeNext(leagueId);
+    if (card) result.push(card);
+  }
+
+  return result;
+}
+
+/** One trend card per league for compact surfaces. */
 export function trendInsightCards(cards: LeagueInsightCard[]): LeagueInsightCard[] {
   const byLeague = new Map<string, LeagueInsightCard>();
   for (const card of cards) {
@@ -234,7 +330,7 @@ export function trendInsightCards(cards: LeagueInsightCard[]): LeagueInsightCard
 
 /** Compact quick-insight row (up to three cards). */
 export function quickInsightCards(cards: LeagueInsightCard[], limit = 3): LeagueInsightCard[] {
-  return [...cards]
+  return filterHomepageInsightCards(cards)
     .sort((a, b) => heroValueMagnitude(b.heroValue) - heroValueMagnitude(a.heroValue))
     .slice(0, limit);
 }
@@ -320,24 +416,32 @@ export function insightMetricComparison(
     if (baselinePct !== null) {
       const recordWinRate = recordStat ? winRateFromRecord(recordStat.value) : null;
       const heroDelta = parseNumericToken(card.heroValue);
+      const sampleGames = parseGamesFromCard(card);
+      const gate = minSampleGateForCard(card);
+      if (sampleGames < gate) return null;
+
       const rawDeltaPp =
         heroDelta ??
         (recordWinRate !== null ? recordWinRate - baselinePct : null);
-      const sampleGames = parseGamesFromCard(card);
       const deltaPp =
         rawDeltaPp !== null
           ? displayWinRateDelta(rawDeltaPp, sampleGames).displayDelta
           : null;
 
-      if (deltaPp !== null && recordWinRate !== null) {
+      if (deltaPp !== null) {
+        const refWinRate =
+          recordWinRate !== null
+            ? recordWinRate
+            : Math.max(0, Math.min(100, baselinePct + deltaPp));
+
         return {
           crewValue: Math.abs(deltaPp),
           leagueValue: baselinePct,
-          crewLabel: "Ref×team win rate",
+          crewLabel: "Adjusted delta vs baseline",
           leagueLabel: "Team baseline",
           format: "pct",
           deltaPp,
-          refWinRate: recordWinRate,
+          refWinRate,
           teamBaseline: baselinePct,
         };
       }

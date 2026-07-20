@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { encodeCompareRef } from "@/lib/ref-compare";
 import type { LeagueId } from "@/lib/leagues";
 
@@ -12,11 +12,12 @@ export function RefCompareLink({
   className?: string;
 }) {
   return (
-    <Link
+    <PrefetchLink
       href={`/compare?a=${encodeURIComponent(encodeCompareRef(leagueId, slug))}`}
       className={className ?? "ref-compare-entry-link"}
+      prefetch={true}
     >
       Compare
-    </Link>
+    </PrefetchLink>
   );
 }

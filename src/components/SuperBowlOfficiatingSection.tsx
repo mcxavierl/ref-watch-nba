@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { FindingCard } from "@/components/FindingsSection";
+import { SuperBowlInsightCard } from "@/components/SuperBowlInsightCard";
 import {
   computeSuperBowlFindings,
   resolveSuperBowlGames,
   superBowlCatalogMeta,
 } from "@/lib/nfl/super-bowl-officiating";
-import type { Finding } from "@/lib/findings-shared";
+import { superBowlFindingCardModel } from "@/lib/nfl/super-bowl-insight-card";
 import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 
 type SuperBowlOfficiatingSectionProps = {
@@ -35,7 +35,7 @@ export function SuperBowlOfficiatingSection({
 
   return (
     <section
-      className={`section-block${variant === "home" ? " super-bowl-officiating--home" : " super-bowl-officiating--hub"}`}
+      className={`section-block super-bowl-officiating${variant === "home" ? " super-bowl-officiating--home" : " super-bowl-officiating--hub"}`}
       aria-labelledby="super-bowl-officiating-heading"
     >
       <div className="overview-section-header">
@@ -48,15 +48,14 @@ export function SuperBowlOfficiatingSection({
         </p>
       </div>
 
-      <div className="finding-accordion-stack mt-4">
-        {findings.map((finding: Finding) => (
-          <FindingCard
+      <ul className="super-bowl-insight-grid rankings-insight-grid mt-4" role="list">
+        {findings.map((finding) => (
+          <SuperBowlInsightCard
             key={finding.id}
-            finding={finding}
-            league="NFL"
+            card={superBowlFindingCardModel(finding)}
           />
         ))}
-      </div>
+      </ul>
 
       {variant === "hub" ? (
         <details className="super-bowl-catalog mt-6">

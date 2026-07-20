@@ -138,7 +138,7 @@ export const DEMO_LIVE_GAMES: LiveGameSnapshot[] = [
     confidence: 91,
     leverageContext: "High-leverage · tied · late 3rd OT",
     headline: "Leverage Signal Active",
-    body: "Kelly Sutherland / Dan O'Halloran / Brian Pochmara historical data suggests a heavy whistle swallow pattern in late-game situations. Live betting Under detect bias.",
+    body: "Kelly Sutherland / Dan O'Halloran / Brian Pochmara historical data shows below-baseline whistle volume in late-game high-leverage states for this crew profile.",
   },
   {
     id: "live-nba-1",
@@ -154,7 +154,7 @@ export const DEMO_LIVE_GAMES: LiveGameSnapshot[] = [
     confidence: 84,
     leverageContext: "High-leverage · 1-possession margin",
     headline: "Whistle Volume Alert",
-    body: "Tony Brothers crews average +3.8 fouls above baseline in clutch segments (≤ 4:00, ≤ 5 pt). Live foul props trending over.",
+    body: "Tony Brothers crews average +3.8 fouls above baseline in clutch segments (≤ 4:00, ≤ 5 pt). High-leverage whistle variance profile for research context.",
   },
   {
     id: "live-nhl-2",
@@ -170,7 +170,7 @@ export const DEMO_LIVE_GAMES: LiveGameSnapshot[] = [
     confidence: 62,
     leverageContext: "Early mid-game · neutral leverage",
     headline: "Baseline Whistle Pace",
-    body: "Crew within ±0.4 PIM of league baseline through 40+ min samples. No live directional edge detected yet.",
+    body: "Crew within ±0.4 PIM of league baseline through 40+ min samples. No directional leverage variance flagged in current state.",
   },
 ];
 

@@ -1,5 +1,6 @@
 import overviewSnapshotJson from "../../data/overview-snapshot.json";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
+import { overviewStandoutSplitCards } from "@/lib/insight-editorial";
 import { groupOverviewSlateByLeague } from "@/lib/overview-upcoming-slate";
 
 type OverviewSnapshotFile = {
@@ -21,8 +22,15 @@ export function loadOverviewSnapshot(): CrossLeagueOverview {
       }
     : upcomingSlate;
 
+  const insightCards = snap.insightCards ?? [];
+  const standoutSplitCards =
+    snap.standoutSplitCards ??
+    overviewStandoutSplitCards(insightCards, null);
+
   return {
     ...snap,
+    insightCards,
+    standoutSplitCards,
     upcomingSlate: normalizedUpcomingSlate,
     topStories: snap.topStories ?? snap.insightCards ?? [],
     topStoriesStatus: snap.topStoriesStatus ?? "ready",

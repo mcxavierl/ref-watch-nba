@@ -1,5 +1,5 @@
 import { aggregateBaselineForSeasons } from "@/lib/baselines";
-import { dedupeByGameId } from "@/lib/game-count";
+import { countDistinctGamesInSeasons, dedupeByGameId } from "@/lib/game-count";
 import {
   applyConferenceAdjustedMeta,
   isNcaaMetricsLeague,
@@ -19,6 +19,7 @@ import type { LeagueId } from "@/lib/leagues";
 import {
   type SeasonScopeContext,
   type SeasonScopeMode,
+  scopedSeasonDateRange,
 } from "@/lib/season-scope";
 import type {
   RefGameRecord,
@@ -27,8 +28,9 @@ import type {
   RefTeamStat,
   TeamCrewSplit,
 } from "@/lib/types";
+import { teamFoulsFromGameLog } from "@/lib/team-foul-split";
 
-type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+type DataLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA";
 
 const LEAGUE_ID_TO_DATA: Record<LeagueId, DataLeague> = {
   nba: "NBA",
@@ -38,7 +40,7 @@ const LEAGUE_ID_TO_DATA: Record<LeagueId, DataLeague> = {
   laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
-  wnba: "NBA",
+  wnba: "WNBA",
   mlb: "NBA",
 };
 
@@ -88,18 +90,7 @@ function teamFoulSplit(
   game: RuntimeGameLogEntry,
   isHome: boolean,
 ): { teamFouls: number; opponentFouls: number } {
-  if (game.homeFlags !== undefined && game.awayFlags !== undefined) {
-    return isHome
-      ? { teamFouls: game.homeFlags, opponentFouls: game.awayFlags }
-      : { teamFouls: game.awayFlags, opponentFouls: game.homeFlags };
-  }
-  if (game.homeMinors !== undefined && game.awayMinors !== undefined) {
-    return isHome
-      ? { teamFouls: game.homeMinors, opponentFouls: game.awayMinors }
-      : { teamFouls: game.awayMinors, opponentFouls: game.homeMinors };
-  }
-  const half = game.totalFouls / 2;
-  return { teamFouls: half, opponentFouls: half };
+  return teamFoulsFromGameLog(game, isHome);
 }
 
 function buildRefTeamStat(games: RefTeamGameRow[]): RefTeamStat {
@@ -384,9 +375,28 @@ function rebuildFromGameLogs(
   };
 }
 
+/** Rebuild ref profiles from an explicit game subset (conference or team filters). */
+export function rebuildScopedRefStatsFromGames(
+  leagueId: LeagueId,
+  base: RefStatsFile,
+  games: RuntimeGameLogEntry[],
+  scopedSeasons: string[],
+  options?: { includeTeamSplits?: boolean },
+): RefStatsFile {
+  const result = rebuildFromGameLogs(base, games, scopedSeasons, leagueId, {
+    includeTeamSplits: options?.includeTeamSplits ?? false,
+  });
+  if (isNcaaMetricsLeague(leagueId)) {
+    const seasonSet = new Set(scopedSeasons);
+    const scopedGames = games.filter((game) => seasonSet.has(game.season));
+    return applyConferenceAdjustedMeta(result, scopedGames, leagueId);
+  }
+  return result;
+}
+
 function baselineLeagueForData(
   dataLeague: DataLeague,
-): "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" {
+): "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA" {
   return dataLeague;
 }
 
@@ -429,6 +439,16 @@ function applyScopedMetaBaselines(
   };
 }
 
+function scopedTotalGamesProcessed(
+  leagueId: LeagueId,
+  scopedSeasons: string[],
+): number | undefined {
+  const dataLeague = LEAGUE_ID_TO_DATA[leagueId];
+  const logs = loadRuntimeGameLogs(dataLeague);
+  if (!logs?.games?.length) return undefined;
+  return countDistinctGamesInSeasons(logs.games, scopedSeasons);
+}
+
 function filterByRefSeasons(
   base: RefStatsFile,
   scopedSeasons: string[],
@@ -438,6 +458,9 @@ function filterByRefSeasons(
   const refs = base.refs.filter((ref) =>
     ref.seasons.some((s) => seasonSet.has(s)),
   );
+  const scopedDateRange =
+    scopedSeasonDateRange(scopedSeasons) ?? base.meta.dateRange;
+  const totalGamesProcessed = scopedTotalGamesProcessed(leagueId, scopedSeasons);
   return applyScopedMetaBaselines(
     overlayNcaaConferenceBaselines(
       {
@@ -446,6 +469,10 @@ function filterByRefSeasons(
           ...base.meta,
           seasons: scopedSeasons,
           refCount: refs.length,
+          ...(totalGamesProcessed !== undefined
+            ? { totalGamesProcessed }
+            : {}),
+          ...(scopedDateRange ? { dateRange: scopedDateRange } : {}),
         },
         refs,
       },
@@ -474,7 +501,7 @@ function shouldRebuildFromLogs(
   if (!logs?.games?.length) return false;
   if (depth === "full") return true;
   if (depth === "refs-only") {
-    return leagueId === "nba" || leagueId === "cbb" || leagueId === "cfb";
+    return leagueId === "nba" || leagueId === "wnba" || leagueId === "cbb" || leagueId === "cfb";
   }
   return false;
 }

@@ -13,6 +13,7 @@ export const EPL_TEAMS: EplTeam[] = [
   { abbr: "BRE", name: "Brentford", city: "Brentford", espnId: 337 },
   { abbr: "BHA", name: "Brighton", city: "Brighton", espnId: 331 },
   { abbr: "CHE", name: "Chelsea", city: "Chelsea", espnId: 363 },
+  { abbr: "COV", name: "Coventry City", city: "Coventry", espnId: 388 },
   { abbr: "CRY", name: "Crystal Palace", city: "Crystal Palace", espnId: 384 },
   { abbr: "EVE", name: "Everton", city: "Everton", espnId: 368 },
   { abbr: "FUL", name: "Fulham", city: "Fulham", espnId: 370 },

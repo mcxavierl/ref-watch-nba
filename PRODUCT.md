@@ -6,15 +6,15 @@ product
 
 ## Users & purpose
 
-Pre-game bettors-adjacent males who want plain-language referee crew signals before tip-off or puck drop. Free NBA and NHL analytics at refwatch.ca — not betting picks, informational only.
+Research analysts, broadcast producers, and officiating-intelligence teams who need sample-gated referee crew context before games air or publish. Free multi-league analytics at refwatch.ca - descriptive historical tendencies, not betting picks.
 
 ## Brand personality
 
-Signal-first, bold, plain language. Confident pre-game analytics desk — not a sportsbook, not a pick service.
+Process-first, transparent, plain language. Institutional-grade officiating research desk - not a sportsbook, not a pick service, not unvalidated trader alpha.
 
 ## Anti-references
 
-Betting pick language, fake precision, gradient hero metrics, card-grid AI slop, eyebrow kickers on every section, Inter/Roboto defaults, cream paper backgrounds.
+Betting pick language, fake precision, sensationalized ref bias narratives, gradient hero metrics, card-grid AI slop, eyebrow kickers on every section, Inter/Roboto defaults, cream paper backgrounds.
 
 ## Accessibility
 

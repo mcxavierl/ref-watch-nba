@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { TermHelp } from "@/components/TermHelp";
 import type { RefBettingStats, RefProfile } from "@/lib/types";
-import { formatPct } from "@/lib/data";
+import { formatPct } from "@/lib/stats-utils";
 import { formatSigned } from "@/lib/stats-utils";
 
 type QuickStat = {
@@ -58,21 +58,35 @@ export function RefProfileQuickStatsBar({
 
 export function RefProfileSecondaryStats({
   profile,
+  hideWhistleMetrics = false,
+  leagueId = "nba",
 }: {
   profile: RefProfile;
+  hideWhistleMetrics?: boolean;
+  leagueId?: string;
 }) {
   const prov = profile.provenance;
+  const foulLabel =
+    leagueId === "nfl"
+      ? "Flags per game"
+      : leagueId === "nhl"
+        ? "PIM per game"
+        : "Fouls per game";
   const items: QuickStat[] = [
     {
       label: "Avg total score",
       value: String(profile.avgTotalPoints),
       detail: `${formatSigned(profile.totalPointsDelta)} vs league`,
     },
-    {
-      label: "Fouls per game",
-      value: String(profile.avgFouls),
-      detail: `${formatSigned(profile.foulsDelta)} vs league`,
-    },
+    ...(hideWhistleMetrics
+      ? []
+      : [
+          {
+            label: foulLabel,
+            value: String(profile.avgFouls),
+            detail: `${formatSigned(profile.foulsDelta)} vs league`,
+          },
+        ]),
     {
       label: (
         <TermHelp id="over-225">Over rate (225 proxy)</TermHelp>

@@ -90,12 +90,12 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
     text: "Opponent whistle volume minus team volume per game. Positive means your team is whistled less (or the opponent more), a favorable minors/flags edge.",
   },
   "grudge-match": {
-    label: "Grudge match",
-    text: "An auto-flag when a ref on tonight’s crew has an unusual history with one of the teams playing: win rate, fouls, or a prior result with this exact crew.",
+    label: "Crew history spotlight",
+    text: "When a ref on tonight's crew has an unusual historical pattern with one of the teams: win rate, fouls, or a prior result with this exact crew.",
   },
   "home-bias": {
-    label: "Home / road bias",
-    text: "Whether this crew’s games skew toward home or away teams winning, a win-rate pattern, not ATS.",
+    label: "Home / road venue split",
+    text: "Whether this crew's games skew toward home or away teams winning. A descriptive win-rate pattern, not ATS edge.",
   },
   "crew-reunion": {
     label: "Crew reunion",
@@ -159,7 +159,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   },
   "game-state-index": {
     label: "Game-State Index",
-    text: "Compares a referee's leverage-weighted flag rate to the league in similar score-and-clock states. 50 is neutral; higher means quieter in key moments; lower means heavier. NFL officials need 25+ high-leverage minutes of play-level penalty data before this appears.",
+    text: "High-leverage penalty frequency vs the league in matched score-and-clock situations. Labeled Below-Average Frequency when penalties run below league average in those spots, Above-Average Frequency when above, Typical Frequency when near average. Reported as an Index Score: positive means below-average penalty frequency, negative means above-average frequency, zero is league average. NFL officials need 25+ high-leverage minutes; NBA officials need 50+ before this appears on profiles.",
   },
   "home-margin": {
     label: "Home avg margin",
@@ -190,7 +190,7 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
     text: "Research-style patterns on a ref profile: scoring delta, whistle rate vs baseline, over frequency, and home/road splits when available. Informational only; always shows sample size and data provenance.",
   },
   gsni: {
-    label: "Game-State Neutralization Index (NFL)",
-    text: "NFL-only metric. GSNI compares a referee's leverage-weighted whistle rate to league peers in the same game states (score gap and clock). 50 is neutral. Higher means fewer whistles than league in clutch states; lower means more. Requires 50+ high-leverage minutes before we publish a score.",
+    label: "Game-State Index",
+    text: "High-leverage penalty frequency metric for NFL and NBA. We group plays by score gap and clock, weight close late-game minutes higher, and compare this official's penalty frequency to the league in those same buckets. Labeled Below-Average Frequency, Above-Average Frequency, or Typical Frequency. Reported as an Index Score: positive is below-average frequency, negative is above-average frequency. NBA requires 50+ high-leverage minutes; NFL requires 25+ before we publish a score.",
   },
 };

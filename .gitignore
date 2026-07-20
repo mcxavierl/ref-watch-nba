@@ -33,6 +33,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 .dev.vars
 .wrangler/
 
@@ -48,6 +49,10 @@ next-env.d.ts
 
 # copied from data/ during npm run build for Cloudflare static asset serving
 /public/data/
+
+# local dev caches (background ingest / stats queries — never commit)
+/data/stats-query-log.jsonl
+/data/insights-cache/
 
 # BBR ingest HTML cache (fetched locally; not shipped)
 /data/nba/cache/

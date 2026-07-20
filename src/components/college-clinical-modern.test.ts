@@ -10,20 +10,6 @@ test("NcaaAuditStatusPill delegates to shared StatusBadge", () => {
   assert.match(source, /tabular-nums/);
 });
 
-test("College preview banners use shared Clinical Modern banner", () => {
-  for (const file of [
-    "src/components/CbbPreviewBanner.tsx",
-    "src/components/CfbPreviewBanner.tsx",
-  ]) {
-    const source = readFileSync(file, "utf8");
-    assert.match(source, /CollegePreviewBanner/);
-  }
-
-  const shared = readFileSync("src/components/CollegePreviewBanner.tsx", "utf8");
-  assert.match(shared, /StatusBadge/);
-  assert.match(shared, /CLINICAL MODERN STANDARD/);
-});
-
 test("CollegeLeagueGate unlocks children when NCAA league is launched", () => {
   const source = readFileSync("src/components/CollegeLeagueGate.tsx", "utf8");
   assert.match(source, /isCollegeLiveLeague/);
@@ -48,25 +34,22 @@ test("ConferenceCoverage uses StatusBadge for live conference labels", () => {
   assert.doesNotMatch(source, /ncaa-coverage-live-item-badge/);
 });
 
-test("CBB opengraph uses hub renderer with ref-focused copy", () => {
-  const ogPage = readFileSync("src/app/cbb/opengraph-image.tsx", "utf8");
-  assert.match(ogPage, /renderHubOgImage/);
-  assert.match(ogPage, /cbbHubOgContent/);
+test("CBB opengraph uses dashboard hero renderer with league focus", () => {
+  const ogPage = readFileSync("src/app/[league]/opengraph-image.tsx", "utf8");
+  assert.match(ogPage, /renderDashboardOgImage/);
+  assert.match(ogPage, /dashboardOgContent/);
   const heroCopy = readFileSync("src/lib/league-hero-copy.ts", "utf8");
   assert.match(heroCopy, /College basketball officiating analytics/);
 });
 
 test("CBB hub page uses standard league slate layout", () => {
-  const page = readFileSync("src/app/cbb/page.tsx", "utf8");
-  assert.match(page, /LeagueSlateHero/);
-  assert.match(page, /OffseasonSlateNotice/);
-  assert.match(page, /BrowseActionCards/);
-  assert.match(page, /ProComingSoonTease/);
-  assert.match(page, /page-shell-slate/);
-  assert.doesNotMatch(page, /CbbClinicalHero/);
-  assert.doesNotMatch(page, /CbbClinicalActionTiles/);
-  assert.doesNotMatch(page, /CbbClinicalProvenanceBanner/);
-  assert.doesNotMatch(page, /CbbClinicalConferenceHubs/);
-  assert.doesNotMatch(page, /CbbClinicalNotifyCallout/);
-  assert.doesNotMatch(page, /cbb-clinical-shell/);
+  const page = readFileSync("src/app/[league]/page.tsx", "utf8");
+  const slate = readFileSync("src/components/LeagueSlatePage.tsx", "utf8");
+  assert.match(page, /LeagueSlatePage/);
+  assert.match(slate, /LeagueSlateHero/);
+  assert.match(slate, /OffseasonSlateNotice/);
+  assert.match(slate, /BrowseActionCards/);
+  assert.doesNotMatch(slate, /ProComingSoonTease/);
+  assert.match(slate, /page-shell-slate/);
+  assert.doesNotMatch(slate, /CbbClinicalHero/);
 });

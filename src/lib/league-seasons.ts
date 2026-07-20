@@ -64,7 +64,7 @@ export function buildSeasonLabels(
 }
 
 export function dataLeagueTenSeasons(
-  dataLeague: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  dataLeague: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA",
 ): readonly string[] {
   const map: Record<string, readonly string[]> = {
     NBA: NBA_TEN_SEASONS,
@@ -74,6 +74,7 @@ export function dataLeagueTenSeasons(
     LALIGA: LALIGA_ESPN_SEASONS,
     CBB: CBB_TEN_SEASONS,
     CFB: CFB_TEN_SEASONS,
+    WNBA: NBA_TEN_SEASONS,
   };
   return map[dataLeague] ?? NBA_TEN_SEASONS;
 }

@@ -14,19 +14,6 @@ export function eplUsesSimulatedStats(meta: RefStatsFile["meta"]): boolean {
   return isEplSimulatedData(meta.source) || !meta.atsAvailable;
 }
 
-export function eplPreviewBannerMessage(
-  statsSource: RefStatsFile["meta"]["source"],
-  assignmentsSource?: AssignmentsFile["source"],
-): string {
-  if (isEplVerifiedData(statsSource) && assignmentsSource === "espn") {
-    return "Scores, fouls, cards, and tonight's referee assignments are from verified match data. ATS/O-U splits are unavailable without verified closing lines.";
-  }
-  if (isEplVerifiedData(statsSource)) {
-    return "Historical goals, fouls, and card stats are from verified match data. Tonight's referee assignments may still be pending official release.";
-  }
-  return "Premier League preview dataset, offseason seed data only. Do not treat ref×team or betting stats as verified against official records.";
-}
-
 export function eplAssignmentsAreVerified(
   assignments: Pick<AssignmentsFile, "source" | "games">,
 ): boolean {

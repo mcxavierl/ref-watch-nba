@@ -1,4 +1,5 @@
-import { dataLeagueTenSeasons, DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
+import { DEFAULT_SINCE_SEASON } from "@/lib/league-seasons";
+import { resolveRecordSeasonsForDisplay } from "@/lib/record-seasons";
 import {
   atsFieldsFromStat,
   getTeamAtsSampleRecord,
@@ -57,24 +58,25 @@ export function computeRefTeamMatrix(
   const cached = matrixComputeCache().get(cacheKey) as RefTeamMatrix | undefined;
   if (cached) return cached;
 
-  const recordSeasons =
-    stats.meta.seasons.length === 0
-      ? [...dataLeagueTenSeasons(
-          league === "nba"
-            ? "NBA"
-            : league === "nhl"
-              ? "NHL"
-              : league === "nfl"
-                ? "NFL"
-                : league === "epl"
-                  ? "EPL"
-                  : league === "laliga"
-                    ? "LALIGA"
-                    : league === "cbb"
-                      ? "CBB"
-                      : "CFB",
-        )]
-      : stats.meta.seasons;
+  const dataLeague =
+    league === "nba"
+      ? "NBA"
+      : league === "nhl"
+        ? "NHL"
+        : league === "nfl"
+          ? "NFL"
+          : league === "epl"
+            ? "EPL"
+            : league === "laliga"
+              ? "LALIGA"
+              : league === "cbb"
+                ? "CBB"
+                : "CFB";
+  const recordSeasons = resolveRecordSeasonsForDisplay(
+    dataLeague,
+    stats.meta.seasons,
+    sinceSeason,
+  );
 
   const teams: RefTeamMatrixTeam[] = teamList.map((team) => {
     const abbr = team.abbr.toUpperCase();

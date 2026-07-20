@@ -1,31 +1,21 @@
 import { LEAGUE_IDS, LEAGUES, type LeagueId } from "@/lib/leagues";
+import { LEAGUE_MANIFEST, ROUTED_LEAGUE_MANIFEST_IDS } from "@/lib/league-manifest";
 
-/** Hub segments with a dedicated page (insights aliases rankings via redirect). */
+/** Hub segments with a dedicated page under /{league}/. */
 export const HUB_SEGMENTS = [
-  "rankings",
-  "trends",
-  "research",
-  "insights",
-  "matrix",
   "refs",
+  "matrix",
   "teams",
+  "research",
 ] as const;
 
 /** Leagues that ship full hub routes in the App Router. */
-export const ROUTED_LEAGUE_IDS = [
-  "nba",
-  "nhl",
-  "nfl",
-  "epl",
-  "laliga",
-  "cbb",
-] as const satisfies readonly LeagueId[];
+export const ROUTED_LEAGUE_IDS = ROUTED_LEAGUE_MANIFEST_IDS;
 
 export type RoutedLeagueId = (typeof ROUTED_LEAGUE_IDS)[number];
 
 /** Coming-soon leagues linked from roadmap catalog but without live hubs. */
 export const COMING_SOON_LEAGUE_IDS = [
-  "wnba",
   "mlb",
   "cfb",
 ] as const satisfies readonly LeagueId[];
@@ -44,20 +34,26 @@ export function siteRouteRedirects(): SiteRouteRedirect[] {
 
   for (const leagueId of ROUTED_LEAGUE_IDS) {
     const prefix = LEAGUES[leagueId].pathPrefix;
-    const hubPrefix = prefix || "";
     redirects.push({
-      source: `${hubPrefix}/insights`,
-      destination: `${hubPrefix}/rankings`,
+      source: `${prefix}/rankings`,
+      destination: `${prefix}/research/tendencies`,
     });
     redirects.push({
-      source: `${hubPrefix}/crews`,
-      destination: `${hubPrefix}/refs`,
+      source: `${prefix}/trends`,
+      destination: `${prefix}/research/trends`,
     });
-    if (leagueId === "nba") {
-      redirects.push({ source: "/nba/compare", destination: "/compare" });
-    } else {
-      redirects.push({ source: `${prefix}/compare`, destination: "/compare" });
-    }
+    redirects.push({
+      source: `${prefix}/insights`,
+      destination: `${prefix}/research/tendencies`,
+    });
+    redirects.push({
+      source: `${prefix}/crews`,
+      destination: `${prefix}/refs`,
+    });
+    redirects.push({
+      source: `${prefix}/compare`,
+      destination: "/compare",
+    });
   }
 
   for (const leagueId of COMING_SOON_LEAGUE_IDS) {
@@ -82,9 +78,15 @@ export function canonicalSiteRoutePaths(): string[] {
 
   for (const leagueId of ROUTED_LEAGUE_IDS) {
     const prefix = LEAGUES[leagueId].pathPrefix;
-    paths.push(prefix || "/nba");
+    paths.push(prefix);
     for (const segment of HUB_SEGMENTS) {
       paths.push(`${prefix}/${segment}`);
+    }
+    paths.push(`${prefix}/research/tendencies`);
+    paths.push(`${prefix}/research/trends`);
+    paths.push(`${prefix}/research/findings`);
+    if (leagueId === "nfl") {
+      paths.push(`${prefix}/research/game-state`);
     }
   }
 
@@ -96,24 +98,30 @@ export function routePathToPageModule(routePath: string): string {
   const normalized = routePath.replace(/\/$/, "") || "/";
   if (normalized === "/") return "src/app/page.tsx";
   const segments = normalized.split("/").filter(Boolean);
+  if (segments.length >= 1 && LEAGUE_MANIFEST[segments[0] as LeagueId]?.routed) {
+    if (segments.length === 1) return "src/app/[league]/page.tsx";
+    return `src/app/[league]/${segments.slice(1).join("/")}/page.tsx`;
+  }
   return `src/app/${segments.join("/")}/page.tsx`;
 }
 
-/** Nav hrefs from SiteNav that must resolve (page or redirect). */
+/** Nav hrefs from league section nav that must resolve (page or redirect). */
 export function siteNavHrefPaths(): string[] {
   const paths: string[] = [];
   for (const leagueId of LEAGUE_IDS) {
     const prefix = LEAGUES[leagueId].pathPrefix;
-    if (leagueId === "nba") {
-      paths.push("/nba", "/teams", "/matrix", "/refs", "/rankings", "/compare");
-      continue;
-    }
     if ((COMING_SOON_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
-      paths.push(prefix, `${prefix}/rankings`);
+      paths.push(prefix, `${prefix}/research/tendencies`);
       continue;
     }
     if ((ROUTED_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
-      paths.push(prefix, `${prefix}/teams`, `${prefix}/matrix`, `${prefix}/refs`, `${prefix}/rankings`, "/compare");
+      paths.push(
+        prefix,
+        `${prefix}/teams`,
+        `${prefix}/matrix`,
+        `${prefix}/refs`,
+        `${prefix}/research/tendencies`,
+      );
     }
   }
   return paths;

@@ -241,12 +241,12 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "ProfileSignalsSection uses StatusBadge",
+    name: "ProfileSignalsSection uses NotableInsightBadge for notable signals",
     run: () =>
       auditFileContains(
         "src/components/ProfileSignalsSection.tsx",
-        /StatusBadge/,
-        "StatusBadge in profile signals",
+        /NotableInsightBadge/,
+        "NotableInsightBadge in profile signals",
       ),
   },
   {
@@ -305,6 +305,26 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
+    name: "RefRankingsTable separates row toggle and footer expand classes",
+    run: () => {
+      const content = read("src/components/RefRankingsTable.tsx");
+      if (!content.includes("ranking-table-row-toggle-btn")) {
+        return {
+          ok: false,
+          message: "RefRankingsTable must use ranking-table-row-toggle-btn for row chevrons",
+        };
+      }
+      if (content.includes('className="ranking-table-expand-btn"') &&
+          content.match(/ranking-table-expand-btn/g)?.length !== 1) {
+        return {
+          ok: false,
+          message: "RefRankingsTable footer must be the only ranking-table-expand-btn usage",
+        };
+      }
+      return { ok: true };
+    },
+  },
+  {
     name: "RefRankingsTable applies semantic delta coloring",
     run: () =>
       auditFileContains(
@@ -359,12 +379,12 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "ProfileSignalsSection uses StatusBadge",
+    name: "ProfileSignalsSection uses NotableInsightBadge for notable signals",
     run: () =>
       auditFileContains(
         "src/components/ProfileSignalsSection.tsx",
-        /StatusBadge/,
-        "StatusBadge in profile signals",
+        /NotableInsightBadge/,
+        "NotableInsightBadge in profile signals",
       ),
   },
   {
@@ -386,15 +406,6 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "College preview banners use StatusBadge",
-    run: () =>
-      auditFileContains(
-        "src/components/CollegePreviewBanner.tsx",
-        /StatusBadge/,
-        "StatusBadge in college preview banner",
-      ),
-  },
-  {
     name: "NcaaIntegrityAuditDashboard uses ClinicalMetricCard",
     run: () =>
       auditFileContains(
@@ -406,14 +417,18 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
   {
     name: "College hub pages include ConferenceCoverage",
     run: () => {
-      for (const page of ["src/app/cbb/page.tsx", "src/app/cfb/page.tsx"]) {
-        const content = read(page);
-        if (!content.includes("ConferenceCoverage")) {
-          return {
-            ok: false,
-            message: `ConferenceCoverage missing in ${page}`,
-          };
-        }
+      const content = read("src/components/LeagueSlatePage.tsx");
+      if (!content.includes("ConferenceCoverage")) {
+        return {
+          ok: false,
+          message: "ConferenceCoverage missing in src/components/LeagueSlatePage.tsx",
+        };
+      }
+      if (!content.includes('leagueId === "cbb"') || !content.includes('leagueId === "cfb"')) {
+        return {
+          ok: false,
+          message: "LeagueSlatePage must gate ConferenceCoverage to CBB and CFB",
+        };
       }
       return { ok: true };
     },
@@ -514,21 +529,66 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "SampleConfidencePill uses shared sample-confidence-pill class",
-    run: () =>
-      auditFileContains(
-        "src/components/hub/SampleConfidencePill.tsx",
-        /sample-confidence-pill/,
-        "sample confidence pill class",
-      ),
-  },
-  {
     name: "DynamicInsightPill uses shared dynamic-insight-pill class",
     run: () =>
       auditFileContains(
         "src/components/ui/DynamicInsightPill.tsx",
         /dynamic-insight-pill/,
         "dynamic insight pill class",
+      ),
+  },
+  {
+    name: "Pill component defines overflow containment utilities",
+    run: () =>
+      auditFileContains(
+        "src/components/ui/Pill.tsx",
+        /pill-constrain/,
+        "pill constrain utility",
+      ),
+  },
+  {
+    name: "pill-constraints.css defines shared pill tokens",
+    run: () =>
+      auditFileContains(
+        "src/styles/pill-constraints.css",
+        /--pill-padding-y/,
+        "pill padding token",
+      ),
+  },
+  {
+    name: "globals.css imports pill-constraints stylesheet",
+    run: () =>
+      auditFileContains(
+        "src/app/globals.css",
+        /pill-constraints\.css/,
+        "pill constraints import",
+      ),
+  },
+  {
+    name: "Ref master insight pills use Pill wrapper",
+    run: () =>
+      auditFileContains(
+        "src/components/DynamicInsightPill.tsx",
+        /<Pill/,
+        "Pill in DynamicInsightPill",
+      ),
+  },
+  {
+    name: "globals.css imports season-highlights-delight stylesheet",
+    run: () =>
+      auditFileContains(
+        "src/app/globals.css",
+        /season-highlights-delight\.css/,
+        "season highlights delight import",
+      ),
+  },
+  {
+    name: "FindingCardLayout uses DirectionalDeltaValue for metric details",
+    run: () =>
+      auditFileContains(
+        "src/components/FindingCardLayout.tsx",
+        /DirectionalDeltaValue/,
+        "directional delta in finding metrics",
       ),
   },
 ];

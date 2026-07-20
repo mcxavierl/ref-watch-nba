@@ -162,6 +162,7 @@ const NCAA_CONFERENCES: NcaaConferenceTerritory[] = [
   "SEC",
   "Big East",
   "Pac-12",
+  "WCC",
   "Other",
 ];
 

@@ -2,7 +2,8 @@ import type { FindingStat } from "@/lib/findings-shared";
 
 export type WcKpiTone = "negative" | "positive" | "neutral" | "name";
 
-const KPI_CLASS = "text-7xl font-black tabular-nums leading-none tracking-tight";
+const KPI_CLASS = "text-6xl font-black tabular-nums leading-none tracking-tight text-slate-50";
+const RECORD_CLASS = "text-6xl font-black tabular-nums leading-none tracking-tight";
 
 export function worldCupKpiTone(stat: FindingStat): WcKpiTone {
   const label = stat.label.toLowerCase();
@@ -43,35 +44,22 @@ export function worldCupKpiTone(stat: FindingStat): WcKpiTone {
   return "neutral";
 }
 
-function toneClass(tone: WcKpiTone): string {
-  switch (tone) {
-    case "negative":
-      return "wc-kpi-negative";
-    case "positive":
-      return "wc-kpi-positive";
-    case "name":
-      return "wc-authority-value text-lg font-medium";
-    default:
-      return "wc-authority-value";
-  }
-}
-
 /** Semantic KPI rendering with partial highlights for record and goals splits. */
 export function WorldCupKpiValue({ stat, tone }: { stat: FindingStat; tone: WcKpiTone }) {
   const label = stat.label.toLowerCase();
   const value = stat.value.trim();
 
   if (tone === "name") {
-    return <span className="wc-authority-value text-lg font-medium">{value}</span>;
+    return <span className="text-base font-semibold text-slate-50">{value}</span>;
   }
 
   if (label.includes("record")) {
     const match = value.match(/^(\d+W)(.*)$/);
     if (match) {
       return (
-        <span className={`${KPI_CLASS} wc-authority-value`}>
-          <span className="wc-kpi-positive">{match[1]}</span>
-          {match[2]}
+        <span className={RECORD_CLASS}>
+          <span className="text-emerald-400">{match[1]}</span>
+          <span className="text-slate-50">{match[2]}</span>
         </span>
       );
     }
@@ -82,12 +70,12 @@ export function WorldCupKpiValue({ stat, tone }: { stat: FindingStat; tone: WcKp
     const forGoals = value.slice(0, dashIndex);
     const againstGoals = value.slice(dashIndex);
     return (
-      <span className={`${KPI_CLASS} wc-authority-value`}>
-        <span className="wc-kpi-positive">{forGoals}</span>
-        {againstGoals}
+      <span className={KPI_CLASS}>
+        <span className="text-emerald-400">{forGoals}</span>
+        <span className="text-slate-50">{againstGoals}</span>
       </span>
     );
   }
 
-  return <span className={`${KPI_CLASS} ${toneClass(tone)}`}>{value}</span>;
+  return <span className={KPI_CLASS}>{value}</span>;
 }

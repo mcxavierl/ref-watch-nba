@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ProfileSignal, ProfileSignalsBundle } from "@/lib/profile-signals";
-import { StatusBadge } from "@/components/hub/StatusBadge";
+import { NotableInsightBadge } from "@/components/hub/NotableInsightBadge";
+import { StatCardShareButton } from "@/components/StatCardShareButton";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { researchHubHref, type FindingLeague } from "@/lib/findings-shared";
@@ -18,9 +20,7 @@ const KEY_SIGNAL_KINDS = new Set<ProfileSignal["kind"]>([
 ]);
 
 function keyFindingLabel(signal: ProfileSignal): string {
-  if (signal.kind === "scoring-delta") return "Scoring outlier";
-  if (signal.kind === "whistle-delta") return "Whistle extreme";
-  return signal.headline;
+  return signal.headline.split(" · ")[0] ?? signal.headline;
 }
 
 function profileStatToneClass(label: string, value: string, detail?: string) {
@@ -91,22 +91,26 @@ function SignalCard({
       : "mt-2 text-sm leading-relaxed text-zinc-600";
 
   return (
-    <div>
-      <div className="flex flex-wrap items-start gap-x-2 gap-y-1">
-        <h3 className={titleClass}>
-          {showKeyLabel ? keyFindingLabel(signal) : signal.headline}
-        </h3>
-        {signal.notable && (
-          <StatusBadge
-            verdict="caution"
-            label="Notable"
-            compact
-            className="profile-signal-badge"
-          />
-        )}
+    <div id={STAT_CARD_ANCHOR.profileSignal(signal.kind)} data-stat-card="true" className="profile-signal-card stat-card">
+      <div className="profile-signal-card-head">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+          <h3 className={titleClass}>
+            {showKeyLabel ? keyFindingLabel(signal) : signal.headline}
+          </h3>
+          {signal.notable && <NotableInsightBadge />}
+        </div>
+        <StatCardShareButton
+          hashId={STAT_CARD_ANCHOR.profileSignal(signal.kind)}
+          label={showKeyLabel ? keyFindingLabel(signal) : signal.headline}
+        />
       </div>
       <p className={bodyClass}>{signal.body}</p>
-      <SignalStats stats={signal.stats} />
+      <details className="profile-signal-details mt-3">
+        <summary className="cursor-pointer text-xs font-medium text-slate-400">
+          Technical details
+        </summary>
+        <SignalStats stats={signal.stats} />
+      </details>
     </div>
   );
 }

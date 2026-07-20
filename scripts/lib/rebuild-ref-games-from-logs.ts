@@ -16,8 +16,10 @@ import {
   pushRefTeamGame,
   type RefTeamGameRow,
 } from "./ref-team-stats";
+import { appendMetaNoteOnce } from "./meta-note";
 import { refSlug } from "./slug";
 import { teamWonGame } from "./team-win";
+import { teamFoulsFromGameLog } from "../../src/lib/team-foul-split";
 import type { RefGameRecord, RefProfile, RefStatsFile } from "./types";
 
 function round1(n: number): number {
@@ -126,16 +128,11 @@ export function rebuildRefGamesFromLogs(
           game.awayTeam,
           teamAbbr,
         );
-        const teamFouls = isHome
-          ? (game.homeFlags ?? game.homeMinors ?? game.totalFouls / 2)
-          : (game.awayFlags ?? game.awayMinors ?? game.totalFouls / 2);
-        const opponentFouls = isHome
-          ? (game.awayFlags ?? game.awayMinors ?? game.totalFouls / 2)
-          : (game.homeFlags ?? game.homeMinors ?? game.totalFouls / 2);
+        const fouls = teamFoulsFromGameLog(game, isHome);
 
         pushRefTeamGame(refTeamBuckets, refKey, teamAbbr, {
           gameId: game.gameId,
-          foulDifferential: teamFouls - opponentFouls,
+          foulDifferential: fouls.teamFouls - fouls.opponentFouls,
           totalPoints: game.totalPoints,
           overHit,
           teamWin,
@@ -193,8 +190,10 @@ export function rebuildRefGamesFromLogs(
       ...stats.meta,
       lastUpdated: new Date().toISOString(),
       refCount: refs.length,
-      note:
-        `${stats.meta.note ?? ""} Ref game counts rebuilt from DISTINCT game_id in game logs.`.trim(),
+      note: appendMetaNoteOnce(
+        stats.meta.note,
+        "Ref game counts rebuilt from DISTINCT game_id in game logs.",
+      ),
     },
   };
 }

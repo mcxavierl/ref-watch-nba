@@ -2,24 +2,25 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import type { CSSProperties } from "react";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
-import { InsightCardShell } from "@/components/shared/InsightCardShell";
+import { StandoutMetricValue } from "@/components/StandoutMetric";
 import {
-  KpiDataPill,
-  type KpiDataPillAccent,
-} from "@/components/ui/KpiDataPill";
-import type {
-  LeagueInsightCard,
-  LeagueInsightTone,
-} from "@/lib/league-overview-insights";
-import "@/components/insight-card.css";
-
-function toneToAccent(tone: LeagueInsightTone): KpiDataPillAccent | undefined {
-  if (tone === "positive") return "emerald";
-  if (tone === "negative") return "rose";
-  return undefined;
-}
+  REF_CARD_BODY_CLASS,
+  REF_CARD_HEAD_CLASS,
+  REF_CARD_ICON_CLASS,
+  REF_CARD_KICKER_CLASS,
+  REF_CARD_METRIC_DETAIL_CLASS,
+  REF_CARD_METRIC_LABEL_CLASS,
+  RefCard,
+  StatComparison,
+} from "@/components/hub/RefCard";
+import {
+  spotlightAccentForCard,
+  spotlightCardTone,
+  spotlightIconForCard,
+} from "@/lib/highlight-card-visuals";
+import type { LeagueInsightCard } from "@/lib/league-overview-insights";
+import { statValueDelightTone } from "@/lib/metric-delight";
 
 function secondaryMetric(
   card: LeagueInsightCard,
@@ -42,55 +43,57 @@ function secondaryMetric(
 
 type RefsTrendSpotlightCardProps = {
   card: LeagueInsightCard;
-  index: number;
 };
 
 export function RefsTrendSpotlightCard({
   card,
-  index,
 }: RefsTrendSpotlightCardProps) {
   const secondary = secondaryMetric(card);
-  const accent = toneToAccent(card.heroTone);
+  const accent = spotlightAccentForCard(card);
+  const Icon = spotlightIconForCard(card);
+  const tone = spotlightCardTone(card.heroTone);
+  const primaryMetricTone =
+    tone === "neutral" ? statValueDelightTone(card.heroValue) : tone;
 
   return (
-    <InsightCardShell
-      className="insight-card insight-card--inline refs-trend-spotlight-card"
+    <RefCard
+      className="refs-trend-spotlight-card"
       data-league={card.leagueId}
-      data-tone={card.heroTone}
-      style={{ "--insight-index": index } as CSSProperties}
+      data-insight="ref-spotlight"
+      data-accent={accent}
+      data-tone={tone}
     >
-      <header className="insight-card-head">
-        <span className="insight-card-league">{card.shortLabel}</span>
-        <div className="flex flex-wrap items-center gap-2">
-          <LeagueSeasonStartBadge leagueId={card.leagueId} />
-          <p className="insight-card-kicker">{card.kicker}</p>
+      <div className={REF_CARD_HEAD_CLASS}>
+        <span className={`${REF_CARD_ICON_CLASS} ref-card-icon--badge`} aria-hidden>
+          <Icon className="rankings-insight-icon-glyph" strokeWidth={2.1} />
+        </span>
+        <div className="refs-trend-spotlight-head-meta">
+          <span className="refs-trend-spotlight-league">{card.shortLabel}</span>
+          <LeagueSeasonStartBadge leagueId={card.leagueId} variant="glow" />
         </div>
-      </header>
+        <p className={REF_CARD_KICKER_CLASS}>{card.kicker}</p>
+      </div>
 
-      <div className="refs-trend-spotlight-metrics">
-        <KpiDataPill
-          variant="compact"
-          value={card.heroValue}
-          caption={card.heroLabel}
-          tone={card.heroTone}
-          accent={accent}
-          className="refs-trend-spotlight-metric refs-trend-spotlight-metric--primary"
-        />
+      <div className="refs-trend-spotlight-metrics insight-editorial-metrics">
+        <div className="insight-editorial-metric insight-editorial-metric--primary">
+          <StandoutMetricValue tone={primaryMetricTone} size="lg">
+            {card.heroValue}
+          </StandoutMetricValue>
+          <span className="insight-editorial-metric-label">{card.heroLabel}</span>
+        </div>
         {secondary ? (
-          <KpiDataPill
-            variant="compact"
-            value={secondary.value}
-            caption={secondary.caption}
-            tone="neutral"
-            metricPriority="secondary"
-            className="refs-trend-spotlight-metric"
-          />
+          <div className="insight-editorial-metric">
+            <StandoutMetricValue tone="neutral" size="md">
+              {secondary.value}
+            </StandoutMetricValue>
+            <span className="insight-editorial-metric-label">{secondary.caption}</span>
+          </div>
         ) : null}
       </div>
 
-      <h3 className="insight-card-headline">
+      <h3 className="refs-trend-spotlight-name">
         {card.entityHref && card.entityName ? (
-          <Link href={card.entityHref} className="insight-card-entity-link">
+          <Link href={card.entityHref} className="rankings-insight-name">
             {card.entityName}
           </Link>
         ) : (
@@ -98,10 +101,12 @@ export function RefsTrendSpotlightCard({
         )}
       </h3>
 
-      <p className="insight-card-story">{card.story}</p>
+      <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
+        <StatComparison>{card.story}</StatComparison>
+      </p>
 
       {card.stats.length > 0 ? (
-        <dl className="insight-card-stats">
+        <dl className="refs-trend-spotlight-stats">
           {card.stats.map((stat) => (
             <div key={stat.label}>
               <dt>{stat.label}</dt>
@@ -111,7 +116,7 @@ export function RefsTrendSpotlightCard({
         </dl>
       ) : null}
 
-      <footer className="insight-card-footer">
+      <footer className="refs-trend-spotlight-footer">
         {card.links.map((link, linkIndex) => (
           <Link key={link.href} href={link.href} className="insight-card-link">
             {link.label}
@@ -119,6 +124,6 @@ export function RefsTrendSpotlightCard({
           </Link>
         ))}
       </footer>
-    </InsightCardShell>
+    </RefCard>
   );
 }

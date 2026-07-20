@@ -10,24 +10,22 @@ export function RefsMacroInsight({
   league: LeagueConfig;
   scopeLabel?: string;
 }) {
-  const seasonLabel =
-    meta.seasonCount === 1 ? "1 season" : `${meta.seasonCount} consecutive seasons`;
+  const seasonPhrase =
+    meta.seasonCount === 1 ? "1 season" : `${meta.seasonCount} seasons`;
 
   return (
     <aside className="refs-macro-insight" aria-label="Dataset sample size">
       <p className="refs-macro-insight-kicker">{scopeLabel} sample size</p>
       <p className="refs-macro-insight-body">
-        Analyzing{" "}
         <strong className="refs-macro-insight-stat">
           {meta.totalGameRecordsLabel}
         </strong>{" "}
-        total game records across {seasonLabel}. Only{" "}
+        games logged over {seasonPhrase}.{" "}
         <strong className="refs-macro-insight-stat">{meta.qualifiedCount}</strong>{" "}
         {meta.qualifiedCount === 1
           ? league.officialNoun
           : league.officialNounPlural}{" "}
-        meet the multi-year volume baseline ({meta.minSampleSize}+ games),
-        ensuring deep statistical reliability.
+        cleared the {meta.minSampleSize}+ game sample filter in this window.
       </p>
     </aside>
   );

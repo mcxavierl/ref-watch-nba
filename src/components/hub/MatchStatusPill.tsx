@@ -8,14 +8,14 @@ type MatchStatusPillProps = {
 
 const TONE_CLASS: Record<MatchStatusPillTone, string> = {
   clinical:
-    "bg-slate-700 text-slate-50",
+    "border border-slate-700 bg-slate-800 text-slate-200",
   prestige:
-    "match-status-pill--prestige bg-[#BFA86A]",
+    "match-status-pill--prestige border border-slate-700 bg-slate-800 text-slate-200",
 };
 
 /**
  * Clinical Modern match status signal for card headers.
- * Default: cool slate pill. Prestige: champagne-gold for World Cup finals.
+ * Default: slate capsule pill. Prestige alias kept for API compatibility.
  */
 export function MatchStatusPill({
   label,

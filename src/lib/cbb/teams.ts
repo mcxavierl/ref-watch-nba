@@ -1,8 +1,10 @@
+import { CBB_ESPN_TEAM_IDS } from "@/lib/cbb/team-ids";
+
 export interface CbbTeam {
   abbr: string;
   name: string;
   city: string;
-  conference: "ACC" | "Big Ten" | "Big 12" | "SEC" | "Big East" | "Pac-12" | "Other";
+  conference: "ACC" | "Big Ten" | "Big 12" | "SEC" | "Big East" | "Pac-12" | "WCC" | "Other";
   division: string;
 }
 
@@ -87,8 +89,18 @@ export const CBB_TEAMS: CbbTeam[] = [
   { abbr: "SJU", name: "Red Storm", city: "St. John's", conference: "Big East", division: "-" },
   { abbr: "VILL", name: "Wildcats", city: "Villanova", conference: "Big East", division: "-" },
   { abbr: "XAV", name: "Musketeers", city: "Xavier", conference: "Big East", division: "-" },
-  { abbr: "GONZ", name: "Bulldogs", city: "Gonzaga", conference: "Other", division: "WCC" },
+  { abbr: "GONZ", name: "Bulldogs", city: "Gonzaga", conference: "WCC", division: "-" },
 ];
+
+/** Hub teams index section order (power conferences, then supplemental leagues). */
+export const CBB_CONFERENCE_DISPLAY_ORDER = [
+  "ACC",
+  "Big Ten",
+  "Big 12",
+  "SEC",
+  "Big East",
+  "WCC",
+] as const satisfies readonly CbbTeam["conference"][];
 
 export const CBB_TEAM_ABBRS = CBB_TEAMS.map((t) => t.abbr);
 
@@ -112,8 +124,10 @@ export function teamWithArticle(team: CbbTeam): string {
   return `the ${team.name}`;
 }
 
-export function teamLogoUrl(_abbr: string): string {
-  return "";
+export function teamLogoUrl(abbr: string): string {
+  const id = CBB_ESPN_TEAM_IDS[abbr.toUpperCase()];
+  if (!id) return "";
+  return `https://a.espncdn.com/i/teamlogos/ncaa/500/${id}.png`;
 }
 
 export function matchTeamString(team: string): CbbTeam | undefined {
@@ -146,4 +160,18 @@ export function teamsByConference(): Record<CbbTeam["conference"], CbbTeam[]> {
     (groups[t.conference] ??= []).push(t);
   }
   return groups;
+}
+
+/** Matrix and hub column order: conference blocks, A–Z within each. */
+export function cbbTeamsInDisplayOrder(): CbbTeam[] {
+  const byConf = teamsByConference();
+  return CBB_CONFERENCE_DISPLAY_ORDER.flatMap((conf) =>
+    (byConf[conf] ?? [])
+      .slice()
+      .sort((a, b) => teamFullName(a).localeCompare(teamFullName(b))),
+  );
+}
+
+export function cbbTeamConferenceByAbbr(): Record<string, CbbTeam["conference"]> {
+  return Object.fromEntries(CBB_TEAMS.map((team) => [team.abbr, team.conference]));
 }

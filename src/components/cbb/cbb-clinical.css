@@ -228,12 +228,30 @@
 .cbb-clinical-conference-tag {
   display: inline-flex;
   align-items: center;
+  gap: 0.4rem;
   border-radius: 0.375rem;
   border: 1px solid rgb(51 65 85);
-  padding: 0.125rem 0.5rem;
+  padding: 0.25rem 0.55rem;
   font-size: 0.75rem;
   font-weight: 500;
   color: rgb(203 213 225);
+}
+
+.cbb-clinical-conference-tag-link {
+  text-decoration: none;
+  transition:
+    border-color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+
+.cbb-clinical-conference-tag-link:hover {
+  border-color: rgb(100 116 139);
+  background: rgba(30, 41, 59, 0.55);
+}
+
+.cbb-clinical-conference-tag-link:focus-visible {
+  outline: 2px solid rgb(100 116 139);
+  outline-offset: 2px;
 }
 
 .cbb-clinical-notify {

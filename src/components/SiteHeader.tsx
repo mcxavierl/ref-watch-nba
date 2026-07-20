@@ -5,8 +5,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { A11ySettingsPanel } from "@/components/A11ySettingsPanel";
 import { Whistle } from "@/components/icons/Whistle";
-import { isOverviewPath, leagueFromPathname, SITE_HOME_PATH } from "@/lib/leagues";
-import { LeagueNav, SiteNav } from "./SiteNav";
+import {
+  leagueFromPathname,
+  SITE_HOME_PATH,
+} from "@/lib/leagues";
+import { LeagueNav } from "./SiteNav";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -47,10 +50,6 @@ export function SiteHeader() {
 
           <div className="site-header-util">
             <A11ySettingsPanel />
-          </div>
-
-          <div className="site-header-nav">
-            {isOverviewPath(resolvedPath) ? null : <SiteNav id="site-primary-nav" />}
           </div>
         </div>
       </header>

@@ -25,6 +25,7 @@ const DATA_LEAGUE_FOR_ROUTE = freezeWorkerConfig({
   laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
+  wnba: "WNBA",
 } as const);
 
 /** SSR isolate: fetch /public data assets when Workers cannot read data/ from disk. */

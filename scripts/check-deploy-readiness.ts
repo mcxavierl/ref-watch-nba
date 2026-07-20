@@ -9,6 +9,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "../src/lib/live-header-leagues.generated";
+import { NCAA_LIVE_LEAGUE_IDS } from "../src/lib/ncaa-live-leagues.generated";
 import { PRO_ONLY_LIVE_LEAGUE_IDS, PRO_VERIFIED_LIVE_LEAGUE_IDS, LAUNCHED_NCAA_LEAGUE_IDS } from "../src/lib/verified-live-leagues";
 import {
   MATRIX_MIN_GAMES,
@@ -179,9 +180,20 @@ function checkLiveHeader(): void {
       );
     }
   }
+  for (const league of NCAA_LIVE_LEAGUE_IDS) {
+    if (!(PRODUCTION_LIVE_HEADER_LEAGUE_IDS as readonly string[]).includes(league)) {
+      fail(
+        `live header missing verified NCAA league "${league}" (have: ${PRODUCTION_LIVE_HEADER_LEAGUE_IDS.join(", ")})`,
+      );
+    }
+  }
+  const allowedHeaderLeagues = [
+    ...PRO_ONLY_LIVE_LEAGUE_IDS,
+    ...NCAA_LIVE_LEAGUE_IDS,
+  ] as const;
   for (const league of PRODUCTION_LIVE_HEADER_LEAGUE_IDS) {
-    if (!(PRO_ONLY_LIVE_LEAGUE_IDS as readonly string[]).includes(league as (typeof PRO_ONLY_LIVE_LEAGUE_IDS)[number])) {
-      fail(`live header includes non-pro league "${league}"`);
+    if (!(allowedHeaderLeagues as readonly string[]).includes(league)) {
+      fail(`live header includes unverified league "${league}"`);
     }
   }
 }
@@ -201,12 +213,10 @@ function checkWorkerPreloadContract(): void {
     fail("edge-preload.ts must merge team splits into ref-stats cache after preload");
   }
 
-  for (const league of ["nhl", "nfl", "epl", "laliga", "nba"] as const) {
-    const layoutPath = path.join(ROOT, `src/app/${league}/layout.tsx`);
-    const layout = fs.readFileSync(layoutPath, "utf8");
-    if (!layout.includes("preloadLeagueRefStats")) {
-      fail(`${league} layout must await preloadLeagueRefStats before rendering`);
-    }
+  const layoutPath = path.join(ROOT, "src/app/[league]/layout.tsx");
+  const layout = fs.readFileSync(layoutPath, "utf8");
+  if (!layout.includes("preloadLeagueRefStatsForPath")) {
+    fail("[league] layout must await preloadLeagueRefStatsForPath before rendering");
   }
 }
 
@@ -370,6 +380,20 @@ function checkRankingsRefLinks(): void {
   }
 }
 
+function checkLegacyPublicAliases(): void {
+  const aliases = [
+    "public/data/ref-stats.json",
+    "public/data/team-splits.json",
+    "public/data/game-logs.json",
+    "public/data/overview/snapshot.json",
+  ];
+  for (const rel of aliases) {
+    if (!fileExists(rel)) {
+      fail(`missing legacy public alias ${rel}`);
+    }
+  }
+}
+
 console.log("Deploy readiness check…");
 checkLiveHeader();
 checkWorkerPreloadContract();
@@ -377,6 +401,7 @@ checkSingleFooterLayout();
 checkRankingsRefLinks();
 checkNflAnalyticsCoverage();
 checkOverviewSnapshot();
+checkLegacyPublicAliases();
 for (const league of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
   checkDeployArtifacts(league);
 }

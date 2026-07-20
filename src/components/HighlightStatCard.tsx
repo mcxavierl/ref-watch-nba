@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import type { LucideIcon } from "lucide-react";
 /**
  * CLINICAL MODERN STANDARD: High-accuracy data visualization. All volatility-prone
@@ -16,7 +17,13 @@ import {
   StatComparison,
 } from "@/components/hub/RefCard";
 import { RefAvatar } from "@/components/RefAvatar";
+import { NotableInsightBadge } from "@/components/hub/NotableInsightBadge";
+import { StatCardShareButton } from "@/components/StatCardShareButton";
+import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { MetricVarianceDisplay } from "@/components/shared/MetricVarianceDisplay";
+import { DirectionalDeltaValue, deltaToneFromValue } from "@/components/shared/DirectionalDeltaValue";
+import { Pill } from "@/components/ui/Pill";
 import {
   adjustedDeltaTooltipText,
   displayWinRateDelta,
@@ -25,6 +32,7 @@ import {
   isPreliminarySample,
 } from "@/lib/data-maturity";
 import type { HighlightCardAccent, HighlightCardTone } from "@/lib/highlight-card-visuals";
+import { insightPillLabel } from "@/lib/highlight-card-visuals";
 import type { LeagueId } from "@/lib/leagues";
 import { statValueDelightTone } from "@/lib/metric-delight";
 
@@ -45,6 +53,10 @@ export function HighlightStatCard({
   refMeta,
   sampleGames,
   rawDeltaPp,
+  heroPills = false,
+  categoryHref,
+  notable = false,
+  metric,
 }: {
   leagueId: LeagueId;
   insightKind: string;
@@ -62,6 +74,14 @@ export function HighlightStatCard({
   refMeta?: string;
   sampleGames?: number;
   rawDeltaPp?: number;
+  heroPills?: boolean;
+  categoryHref?: string;
+  notable?: boolean;
+  metric?: {
+    primaryTotal: string;
+    variancePct: number;
+    comparisonCaption?: string;
+  };
 }) {
   const usesSplitHierarchy =
     sampleGames !== undefined &&
@@ -90,7 +110,7 @@ export function HighlightStatCard({
 
   const profile =
     refSlug && refName ? (
-      <Link href={`${basePath}/refs/${refSlug}`} className="highlight-stat-profile">
+      <PrefetchLink href={`${basePath}/refs/${refSlug}`} className="highlight-stat-profile" prefetch={true}>
         {avatarSport ? (
           <RefAvatar name={refName} slug={refSlug} sport={avatarSport} size="lg" />
         ) : null}
@@ -103,56 +123,103 @@ export function HighlightStatCard({
           ) : null}
           {refMeta ? <span className="highlight-stat-profile-meta">{refMeta}</span> : null}
         </span>
-      </Link>
+      </PrefetchLink>
     ) : refName ? (
       <p className="rankings-insight-name">{refName}</p>
     ) : null;
 
+  const categoryPill = (
+    <Pill variant="category">{insightPillLabel(insightKind, kicker)}</Pill>
+  );
+
+  const metricBlock = metric ? (
+    <MetricVarianceDisplay
+      primaryTotal={metric.primaryTotal}
+      variancePct={metric.variancePct}
+      comparisonCaption={metric.comparisonCaption}
+      tone={metric.variancePct > 0 ? "positive" : metric.variancePct < 0 ? "negative" : "neutral"}
+      size="lg"
+    />
+  ) : primaryValue ? (
+    <div className="ref-card-metric-block" aria-label={primaryLabel}>
+      <div className={REF_CARD_METRIC_CLASS}>
+        <StandoutMetricValue tone={metricTone} size="lg">
+          {primaryValue}
+        </StandoutMetricValue>
+      </div>
+      {primaryLabel ? (
+        <p className={REF_CARD_METRIC_LABEL_CLASS}>{primaryLabel}</p>
+      ) : null}
+      {secondaryValue ? (
+        <div className="ref-card-metric-block ref-card-metric-block--secondary">
+          <div
+            className={`${REF_CARD_METRIC_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}
+            title={
+              deltaDisplay?.isAdjusted
+                ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
+                : undefined
+            }
+          >
+            <DirectionalDeltaValue
+              value={secondaryValue}
+              tone={
+                metricTone === "positive" || metricTone === "negative"
+                  ? metricTone
+                  : deltaToneFromValue(secondaryValue)
+              }
+              size="md"
+              className="highlight-stat-delta"
+            />
+          </div>
+          {secondaryLabel ? (
+            <p className={REF_CARD_METRIC_LABEL_CLASS}>{secondaryLabel}</p>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  ) : null;
+
   return (
     <RefCard
+      id={STAT_CARD_ANCHOR.hubInsight(insightKind)}
       data-league={leagueId}
       data-insight={insightKind}
       data-accent={accent}
       data-tone={tone}
+      className={heroPills ? "highlight-stat-card--hero-pill" : undefined}
     >
       <div className={REF_CARD_HEAD_CLASS}>
         <span className={`${REF_CARD_ICON_CLASS} ref-card-icon--badge`} aria-hidden>
           <Icon className="rankings-insight-icon-glyph" strokeWidth={2.1} />
         </span>
-        <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
+        {heroPills ? (
+          <div className="highlight-stat-card-head-copy">
+            <div className="highlight-stat-card-head-badges">
+              {notable ? <NotableInsightBadge className="highlight-stat-notable-badge" /> : null}
+              {categoryHref ? (
+                <Link href={categoryHref} className="highlight-stat-category-link">
+                  {categoryPill}
+                </Link>
+              ) : (
+                categoryPill
+              )}
+            </div>
+            <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
+          </div>
+        ) : (
+          <p className={REF_CARD_KICKER_CLASS}>{kicker}</p>
+        )}
+        <StatCardShareButton hashId={STAT_CARD_ANCHOR.hubInsight(insightKind)} label={kicker} />
       </div>
       {profile}
-      {primaryValue ? (
-        <div className="ref-card-metric-block" aria-label={primaryLabel}>
-          <div className={REF_CARD_METRIC_CLASS}>
-            <StandoutMetricValue tone={metricTone} size="lg">
-              {primaryValue}
-            </StandoutMetricValue>
-          </div>
-          {primaryLabel ? (
-            <p className={REF_CARD_METRIC_LABEL_CLASS}>{primaryLabel}</p>
-          ) : null}
-          {secondaryValue ? (
-            <div className="ref-card-metric-block ref-card-metric-block--secondary">
-              <div className={`${REF_CARD_METRIC_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
-                <StandoutMetricValue
-                  tone={metricTone}
-                  size="md"
-                  title={
-                    deltaDisplay?.isAdjusted
-                      ? adjustedDeltaTooltipText(deltaDisplay.displayDelta)
-                      : undefined
-                  }
-                >
-                  {secondaryValue}
-                </StandoutMetricValue>
-              </div>
-              {secondaryLabel ? (
-                <p className={REF_CARD_METRIC_LABEL_CLASS}>{secondaryLabel}</p>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
+      {metricBlock ? (
+        categoryHref ? (
+          <Link href={categoryHref} className="highlight-stat-metric-link">
+            {metricBlock}
+          </Link>
+        ) : (
+          metricBlock
+        )
       ) : null}
       <p className={`${REF_CARD_BODY_CLASS} ${REF_CARD_METRIC_DETAIL_CLASS}`}>
         <StatComparison>{body}</StatComparison>

@@ -25,13 +25,13 @@ export function IntensityBadge({
 
   return (
     <span
-      className={`intensity-badge intensity-badge--${slug}${
+      className={`pill-constrain intensity-badge intensity-badge--${slug}${
         compact ? " intensity-badge--compact" : ""
       }${className ? ` ${className}` : ""}`.trim()}
       title={`${resolved} whistle pace`}
     >
-      <Activity className="intensity-badge-icon" strokeWidth={2.25} aria-hidden />
-      <span className="intensity-badge-label">{resolved}</span>
+      <Activity className="intensity-badge-icon shrink-0" strokeWidth={2.25} aria-hidden />
+      <span className="pill-constrain-text intensity-badge-label">{resolved}</span>
     </span>
   );
 }

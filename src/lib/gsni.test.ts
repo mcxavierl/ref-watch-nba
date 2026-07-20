@@ -2,14 +2,20 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   GSNI_MIN_HIGH_LEVERAGE_MINUTES,
+  GSNI_THRESHOLD,
   buildGsniCorpusFromGameLogs,
   calculateLeverageWeight,
   computeGSNI,
+  divergenceToZScore,
   extractGsniObservations,
   type GsniGamesCorpus,
 } from "@/lib/gsni";
 
 describe("calculateLeverageWeight", () => {
+  it("defines GSNI_THRESHOLD at one standard deviation", () => {
+    assert.equal(GSNI_THRESHOLD, 1);
+  });
+
   it("returns 1.0 for high-leverage game states", () => {
     assert.equal(calculateLeverageWeight(3, 240), 1);
     assert.equal(calculateLeverageWeight(-4, 120), 1);
@@ -31,6 +37,16 @@ describe("calculateLeverageWeight", () => {
   });
 });
 
+describe("divergenceToZScore", () => {
+  it("maps positive divergence to negative Z (heavier)", () => {
+    assert.equal(divergenceToZScore(0.05, 0.025), -2);
+  });
+
+  it("maps negative divergence to positive Z (quieter)", () => {
+    assert.equal(divergenceToZScore(-0.05, 0.025), 2);
+  });
+});
+
 describe("computeGSNI", () => {
   const highLeverageObservation = {
     scoreDifferential: 2,
@@ -45,6 +61,8 @@ describe("computeGSNI", () => {
     fouls: 8,
     minutes: 24,
   };
+
+  const leagueStdDev = 0.05;
 
   function corpusForRef(
     refId: string,
@@ -89,6 +107,7 @@ describe("computeGSNI", () => {
           minutes: 8,
         },
       ]),
+      { leagueDivergenceStdDev: leagueStdDev },
     );
 
     assert.equal(result.referee_gsni, undefined);
@@ -96,7 +115,7 @@ describe("computeGSNI", () => {
     assert.ok(result.highLeverageMinutes < GSNI_MIN_HIGH_LEVERAGE_MINUTES);
   });
 
-  it("returns neutral GSNI near 50 when ref matches league state rates", () => {
+  it("returns neutral Z near 0 when ref matches league state rates", () => {
     const refId = "tony-brothers-25";
     const shared = [
       highLeverageObservation,
@@ -113,13 +132,13 @@ describe("computeGSNI", () => {
       ],
     };
 
-    const result = computeGSNI(refId, corpus);
+    const result = computeGSNI(refId, corpus, { leagueDivergenceStdDev: leagueStdDev });
     assert.ok(result.highLeverageMinutes >= GSNI_MIN_HIGH_LEVERAGE_MINUTES);
     assert.ok(result.referee_gsni !== undefined);
-    assert.ok(Math.abs((result.referee_gsni ?? 0) - 50) < 5);
+    assert.ok(Math.abs(result.referee_gsni ?? 0) < 0.5);
   });
 
-  it("returns lower GSNI when ref whistles more than league in the same states", () => {
+  it("returns negative Z when ref whistles more than league in the same states", () => {
     const refId = "heavy-whistle";
     const heavyObs = Array.from({ length: 5 }, () => ({
       ...highLeverageObservation,
@@ -149,9 +168,9 @@ describe("computeGSNI", () => {
       ],
     };
 
-    const result = computeGSNI(refId, corpus);
+    const result = computeGSNI(refId, corpus, { leagueDivergenceStdDev: leagueStdDev });
     assert.ok(result.referee_gsni !== undefined);
-    assert.ok((result.referee_gsni ?? 100) < 50);
+    assert.ok((result.referee_gsni ?? 0) < 0);
     assert.ok(result.referee_gsni_volatility !== undefined);
   });
 });
@@ -195,6 +214,20 @@ describe("extractGsniObservations", () => {
 
     assert.equal(corpus.games.length, 1);
     assert.equal(corpus.games[0]?.refereeIds[0], "Scott Foster-48");
-    assert.equal(corpus.games[0]?.observations.length, 1);
+    assert.equal(corpus.games[0]?.observations.length, 4);
+  });
+
+  it("distributes game totals across quarter anchors when splits are missing", () => {
+    const observations = extractGsniObservations({
+      gameId: "nba-3",
+      homeScore: 110,
+      awayScore: 108,
+      totalFouls: 40,
+      officials: [],
+    });
+
+    assert.equal(observations.length, 4);
+    assert.equal(observations[3]?.timeRemainingSeconds, 360);
+    assert.equal(observations[0]?.fouls, 10);
   });
 });

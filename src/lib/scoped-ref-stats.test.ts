@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { aggregateBaselineForSeasons, getBaselinesFile } from "@/lib/baselines";
 import { buildScopedRefStats } from "@/lib/scoped-ref-stats";
+import { getRefStats as getNflStats } from "@/lib/nfl/data";
 import type { RefStatsFile } from "@/lib/types";
 
 function miniStats(seasons: string[]): RefStatsFile {
@@ -61,6 +62,29 @@ describe("buildScopedRefStats", () => {
     assert.deepEqual(scoped.meta.seasons, ["2024-25", "2025-26"]);
     assert.equal(scoped.refs.length, 1);
     assert.ok(scoped.meta.leagueAvgTotal > 0);
+  });
+
+  it("meta-only NFL scope sets totalGamesProcessed from scoped game logs", () => {
+    const scopedSeasons = [
+      "2016-17",
+      "2017-18",
+      "2018-19",
+      "2019-20",
+      "2020-21",
+      "2021-22",
+      "2022-23",
+      "2023-24",
+      "2024-25",
+      "2025-26",
+    ];
+    const full = getNflStats();
+    const scoped = buildScopedRefStats("nfl", full, scopedSeasons, {
+      depth: "meta-only",
+    });
+
+    assert.equal(scoped.meta.seasons.length, 10);
+    assert.equal(scoped.meta.totalGamesProcessed, 2757);
+    assert.equal(full.meta.totalGamesProcessed, 2757);
   });
 
   it("returns base unchanged when scope matches full season list", () => {

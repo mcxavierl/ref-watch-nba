@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Atkinson_Hyperlegible, Inter, Space_Grotesk } from "next/font/google";
 import { AnchorScrollManager } from "@/components/AnchorScrollManager";
+import { CommandPalette } from "@/components/CommandPalette";
 import { JsonLd } from "@/components/JsonLd";
 import { RoutedSiteFooter } from "@/components/RoutedSiteFooter";
+import { VerifiedAnalyticsBar } from "@/components/VerifiedAnalyticsBar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { A11Y_BLOCKING_SCRIPT } from "@/lib/a11y/a11yBootstrap";
 import { DEFAULT_SITE_DESCRIPTION, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
@@ -104,10 +106,12 @@ export default async function RootLayout({
         </a>
         <JsonLd data={[websiteJsonLd(), organizationJsonLd()]} />
         <SiteHeader />
+        <CommandPalette />
         <AnchorScrollManager />
         <main id="main-content" className="flex-1" tabIndex={-1}>
           {children}
         </main>
+        <VerifiedAnalyticsBar />
         <RoutedSiteFooter />
       </body>
     </html>

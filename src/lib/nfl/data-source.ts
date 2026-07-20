@@ -1,4 +1,4 @@
-import type { AssignmentsFile, RefStatsFile } from "@/lib/types";
+import type { RefStatsFile } from "@/lib/types";
 
 /** ESPN-backed game logs and ref stats — verified scores, penalties, crews. */
 export function isNflVerifiedData(source: string | undefined): boolean {
@@ -18,22 +18,14 @@ export function nflUsesSimulatedStats(meta: RefStatsFile["meta"]): boolean {
   return isNflSimulatedData(meta.source) || !meta.atsAvailable;
 }
 
-export function nflPreviewBannerMessage(
-  statsSource: RefStatsFile["meta"]["source"],
-  assignmentsSource?: AssignmentsFile["source"],
-  atsAvailable?: boolean,
+export function nflVerifiedDatasetNote(
+  gameCount?: number,
+  qualifiedPairs?: number,
+  teamStatsPairs?: number,
 ): string {
-  if (isNflVerifiedData(statsSource) && atsAvailable) {
-    return "Scores, penalty counts, ref×team W-L, and ATS/O-U splits use ESPN game data with nflverse closing lines.";
+  const games = gameCount ?? 2757;
+  if (qualifiedPairs !== undefined && teamStatsPairs !== undefined) {
+    return `Ref×team W-L rebuilt from ${games} ESPN game logs (2016-2026). ${qualifiedPairs}/${teamStatsPairs} ref×team pairs meet the 3+ game matrix gate. Ties are excluded from straight-up W-L.`;
   }
-  if (isNflVerifiedData(statsSource)) {
-    return "Scores, penalty counts, and ref×team W-L are from ESPN game logs. ATS/O-U splits use nflverse lines when available.";
-  }
-  return "Preview dataset with placeholder schedules, crews, penalty splits, and lines. Do not treat ref×team or betting stats as verified against official records.";
-}
-
-export function nflAssignmentsAreVerified(
-  assignments: Pick<AssignmentsFile, "source" | "games">,
-): boolean {
-  return assignments.source === "espn" && assignments.games.length > 0;
+  return "Scores, penalty counts, and ref×team W-L from ESPN game logs (2016-2026). ATS/O-U from nflverse closing lines where matched.";
 }

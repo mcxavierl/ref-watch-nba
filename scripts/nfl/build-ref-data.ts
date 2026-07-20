@@ -44,10 +44,7 @@ import {
   nflverseMatchupKey,
   type NflverseLineIndex,
 } from "./lib/nflverse-lines";
-import {
-  ingestHistoricalNflverseGames,
-  type NflHistoricalGameLogEntry,
-} from "./lib/nflverse-historical";
+import type { NflHistoricalGameLogEntry } from "./lib/nflverse-historical";
 import { homeCoverRate, NflBettingAccumulator } from "./lib/nfl-betting";
 import { enrichGameLogsWithPenaltyEvents, compactGameLogPenaltyPayload } from "./lib/attach-penalty-events";
 import { attachNflGsniFieldsFromGames } from "../lib/attach-gsni";
@@ -517,9 +514,12 @@ async function buildFromEspn(
         const isHome = homeTeam === teamAbbr;
         const isAway = awayTeam === teamAbbr;
         if (!isHome && !isAway) return null;
-        const teamWin = isHome
-          ? summary.homeScore > summary.awayScore
-          : summary.awayScore > summary.homeScore;
+        const isTie = summary.homeScore === summary.awayScore;
+        const teamWin = isTie
+          ? false
+          : isHome
+            ? summary.homeScore > summary.awayScore
+            : summary.awayScore > summary.homeScore;
         return {
           totalPoints,
           totalFouls,
@@ -527,6 +527,7 @@ async function buildFromEspn(
           teamFouls: isHome ? summary.homeFlags : summary.awayFlags,
           opponentFouls: isHome ? summary.awayFlags : summary.homeFlags,
           teamWin,
+          teamTie: isTie,
           isHome,
         };
       };
@@ -596,12 +597,7 @@ async function buildFromEspn(
     await fillMissingNflverseGames(existingById, lineIndex, roster);
   }
 
-  if (!options.skipHistorical) {
-    await ingestHistoricalNflverseGames(existingById, roster, DATA_DIR, {
-      minSeason: 2000,
-      maxSeason: 2015,
-    });
-  }
+  // Pre-2016 nflverse history removed from the public product window (2016-2026 only).
 
   // Merge cached + newly fetched logs, then rebuild aggregates from the full set.
   let mergedLogs = [...existingById.values()]
@@ -826,7 +822,7 @@ async function buildFromEspn(
       minSampleSize: MIN_SAMPLE,
       source: "hybrid",
       data_verified: true,
-      data_source: "ESPN + nflverse (2000-present)",
+      data_source: "ESPN + nflverse (2016-2026)",
       atsAvailable,
       refCount: refsWithGsni.length,
       totalGamesProcessed: processedTotal,
@@ -835,8 +831,8 @@ async function buildFromEspn(
         latest: allDates[allDates.length - 1],
       },
       note: atsAvailable
-        ? `Scores, penalties, and crews from ESPN (2016+) plus nflverse history (2000–2015). ATS/O-U from nflverse closing lines (${linedGames}/${processedTotal} games matched).`
-        : "Scores, penalties, and crews from ESPN (2016+) plus nflverse history (2000–2015). Ref×team W-L from stored game logs.",
+        ? `Scores, penalties, and crews from ESPN (2016-2026). ATS/O-U from nflverse closing lines (${linedGames}/${processedTotal} games matched).`
+        : "Scores, penalties, and crews from ESPN (2016-2026). Ref×team W-L from stored game logs.",
     },
     refs: refsWithGsni,
     teamSplits,
@@ -898,7 +894,7 @@ async function main() {
     const logsForShards = loadGameLogs("NFL");
     if (logsForShards?.games.length) {
       console.log("\n--- Finalizing verified ingest artifacts ---");
-      assertNflIngestValid(logsForShards.games, { minGames: 5000 });
+      assertNflIngestValid(logsForShards.games, { minGames: 2500 });
       const { shards } = finalizeNflVerifiedArtifacts(logsForShards.games, process.cwd(), {
         dataSource: output.meta.data_source,
         note: output.meta.note,

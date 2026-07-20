@@ -18,9 +18,9 @@ export function FindingCategoryPillLabel({
   const label = FINDING_CATEGORY_LABELS[category];
 
   return (
-    <span className="finding-meta-pill-label">
-      {Icon ? <Icon className="finding-meta-pill-icon" aria-hidden /> : null}
-      {label}
+    <span className="finding-meta-pill-label pill-constrain">
+      {Icon ? <Icon className="finding-meta-pill-icon shrink-0" aria-hidden /> : null}
+      <span className="pill-constrain-text">{label}</span>
     </span>
   );
 }

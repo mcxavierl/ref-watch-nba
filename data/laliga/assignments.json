@@ -1,0 +1,100 @@
+{
+  "lastUpdated": "2026-07-20T03:22:59.912Z",
+  "date": "2026-08-15",
+  "source": "espn",
+  "games": [],
+  "scheduledGames": [
+    {
+      "id": "401882926",
+      "matchup": "GET @ ALA",
+      "awayTeam": "GET",
+      "homeTeam": "ALA",
+      "league": "LALIGA",
+      "slateDate": "2026-08-15",
+      "crew": []
+    },
+    {
+      "id": "401882918",
+      "matchup": "RAY @ SEV",
+      "awayTeam": "RAY",
+      "homeTeam": "SEV",
+      "league": "LALIGA",
+      "slateDate": "2026-08-15",
+      "crew": []
+    },
+    {
+      "id": "401882920",
+      "matchup": "VIL @ RAC",
+      "awayTeam": "VIL",
+      "homeTeam": "RAC",
+      "league": "LALIGA",
+      "slateDate": "2026-08-16",
+      "crew": []
+    },
+    {
+      "id": "401882922",
+      "matchup": "LEV @ ESP",
+      "awayTeam": "LEV",
+      "homeTeam": "ESP",
+      "league": "LALIGA",
+      "slateDate": "2026-08-16",
+      "crew": []
+    },
+    {
+      "id": "401882924",
+      "matchup": "OSA @ CEL",
+      "awayTeam": "OSA",
+      "homeTeam": "CEL",
+      "league": "LALIGA",
+      "slateDate": "2026-08-16",
+      "crew": []
+    },
+    {
+      "id": "401882923",
+      "matchup": "ELC @ DEP",
+      "awayTeam": "ELC",
+      "homeTeam": "DEP",
+      "league": "LALIGA",
+      "slateDate": "2026-08-17",
+      "crew": []
+    },
+    {
+      "id": "401882925",
+      "matchup": "MCF @ ATM",
+      "awayTeam": "MCF",
+      "homeTeam": "ATM",
+      "league": "LALIGA",
+      "slateDate": "2026-08-19",
+      "crew": []
+    },
+    {
+      "id": "401882908",
+      "matchup": "ALA @ RAY",
+      "awayTeam": "ALA",
+      "homeTeam": "RAY",
+      "league": "LALIGA",
+      "slateDate": "2026-08-20",
+      "crew": []
+    },
+    {
+      "id": "401882914",
+      "matchup": "RSO @ BET",
+      "awayTeam": "RSO",
+      "homeTeam": "BET",
+      "league": "LALIGA",
+      "slateDate": "2026-08-21",
+      "crew": []
+    },
+    {
+      "id": "401882916",
+      "matchup": "SEV @ ATH",
+      "awayTeam": "SEV",
+      "homeTeam": "ATH",
+      "league": "LALIGA",
+      "slateDate": "2026-08-22",
+      "crew": []
+    }
+  ],
+  "nextSlateDate": "2026-08-15",
+  "note": "Next 10 La Liga scheduled matchups (2026-08-15 onward). Referees publish closer to kickoff."
+}

@@ -1,8 +1,9 @@
 import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
+import { CbbConferenceTrendsToggle } from "@/components/CbbConferenceTrendsToggle";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
-import { LeagueDataSourceBanner } from "@/components/LeagueDataSourceBanner";
 import { LeagueHubTabs } from "@/components/LeagueHubTabs";
 import { LeagueTrendsTable } from "@/components/LeagueTrendsTable";
 import { RankingsInsightCards } from "@/components/RankingsInsightCards";
@@ -13,6 +14,7 @@ import {
   CfbPenaltyEngineSection,
 } from "@/components/NcaaAnalyticsResearchSection";
 import { WhistleDispositionResearchSection } from "@/components/WhistleDispositionResearchSection";
+import { GameStateIndexResearchSection } from "@/components/GameStateIndexResearchSection";
 import { ResearchHubFindings } from "@/components/ResearchHubFindings";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { SeasonScopeToggleSkeleton } from "@/components/LayoutShiftSkeletons";
@@ -22,23 +24,31 @@ import {
   loadHubLeagueStats,
   loadLeagueStats,
 } from "@/lib/load-league-stats";
-import { resolveLeagueVerification } from "@/lib/league-verification";
 import { scopedBaselinesSeasons } from "@/lib/scoped-ref-stats";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { buildRankingsSynthesis } from "@/lib/rankings-synthesis";
-import { buildResearchFindingEvMap } from "@/lib/ev-calculator";
-import { loadLeagueAssignments } from "@/lib/league-odds";
+import {
+  heroSynthesisForView,
+  rankingsConfigForView,
+  type InsightsHubView,
+} from "@/lib/insights-hero-content";
+import {
+  INSIGHTS_HUB_TAB_LABELS,
+  insightsHubTabViews,
+  leagueSupportsInsightsView,
+} from "@/lib/insights-hub-config";
+import { computeHubFindings } from "@/lib/hub-findings-registry";
+import {
+  leagueHasResearchView,
+  leagueManifestEntry,
+  type InsightsLeagueId,
+  type ResearchView,
+} from "@/lib/league-manifest";
+import { ContextualLinkerText } from "@/lib/contextual-linker";
+import { insightsViewHref } from "@/lib/insights-routes";
 import { getFrictionMatrixDataset } from "@/lib/friction-matrix";
 import { getCbbWhistleMatrixDataset } from "@/lib/cbb-whistle-matrix";
 import { getCfbPenaltyEngineDataset } from "@/lib/cfb-penalty-engine";
-import { computeFindings as computeNbaFindings } from "@/lib/findings";
-import { computeFindings as computeCbbFindings } from "@/lib/cbb/findings";
-import { computeFindings as computeCfbFindings } from "@/lib/cfb/findings";
-import { computeFindings as computeEplFindings } from "@/lib/epl/findings";
-import { computeFindings as computeLaligaFindings } from "@/lib/laliga/findings";
-import { computeFindings as computeNflFindings } from "@/lib/nfl/findings";
-import { computeFindings as computeNhlFindings } from "@/lib/nhl/findings";
-import { ContextualLinkerText } from "@/lib/contextual-linker";
 import {
   researchHubArticleJsonLd,
   researchHubDatasetJsonLd,
@@ -46,111 +56,151 @@ import {
 import type { SeasonScopeMode } from "@/lib/season-scope";
 import {
   DEFAULT_SEASON_SCOPE_MODE,
-  formatSeasonScope,
-  resolveScopedSeasonsForLeague,
 } from "@/lib/season-scope";
 import { buildYoYNarrative, seasonRowsFromBaselines } from "@/lib/trends";
-import { RANKINGS_PAGE_LEAD } from "@/lib/trust-charter";
-import type { Finding, FindingLeague } from "@/lib/findings-shared";
+import {
+  buildCbbConferenceTrendRows,
+  cbbTrendsConferenceLabel,
+} from "@/lib/cbb/conference-trends";
+import { buildCbbConferenceTendenciesStats } from "@/lib/cbb/conference-tendencies";
+import type { CbbTrendsConferenceScope } from "@/lib/cbb/conference-trends-shared";
+import { loadRuntimeGameLogs } from "@/lib/game-logs";
+import type { FindingLeague } from "@/lib/findings-shared";
+import type { ResearchFinding } from "@/lib/research";
 import type { SeasonBaseline } from "../../scripts/lib/baselines";
 
-type InsightsLeagueId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+function hubFindingsForLeague(
+  leagueId: InsightsLeagueId,
+  scopedSeasons: string[],
+  dataLeague: FindingLeague,
+): ResearchFinding[] {
+  return computeHubFindings(leagueId, 12, scopedSeasons).map((finding) => ({
+    ...finding,
+    league: dataLeague,
+  }));
+}
 
-const HUB_FINDINGS_COMPUTERS: Record<
-  InsightsLeagueId,
-  (limit: number, scopedSeasons: string[]) => Finding[]
-> = {
-  nba: (limit, scopedSeasons) =>
-    computeNbaFindings(limit, scopedSeasons, { hub: true }),
-  nhl: (limit, scopedSeasons) =>
-    computeNhlFindings(limit, scopedSeasons, { hub: true }),
-  nfl: (limit, scopedSeasons) =>
-    computeNflFindings(limit, scopedSeasons, { hub: true }),
-  epl: (limit, scopedSeasons) =>
-    computeEplFindings(limit, scopedSeasons, { hub: true }),
-  laliga: (limit, scopedSeasons) =>
-    computeLaligaFindings(limit, scopedSeasons, { hub: true }),
-  cbb: (limit, scopedSeasons) =>
-    computeCbbFindings(limit, scopedSeasons, { hub: true }),
-  cfb: (limit, scopedSeasons) =>
-    computeCfbFindings(limit, scopedSeasons, { hub: true }),
-};
+function rankingStatsForView(
+  leagueId: InsightsLeagueId,
+  activeView: InsightsHubView,
+  stats: ReturnType<typeof loadLeagueStats>["stats"],
+  scopedSeasons: string[],
+  cbbTrendsConference: CbbTrendsConferenceScope,
+) {
+  if (
+    leagueId === "cbb" &&
+    (activeView === "tendencies" || activeView === "trends")
+  ) {
+    return buildCbbConferenceTendenciesStats(
+      stats,
+      scopedSeasons,
+      cbbTrendsConference,
+    );
+  }
+  return stats;
+}
+
+function renderRankingsPanel(input: {
+  activeView: InsightsHubView;
+  rankingStats: ReturnType<typeof loadLeagueStats>["stats"];
+  league: (typeof LEAGUES)[InsightsLeagueId];
+  dataLeague: FindingLeague;
+  leagueId: InsightsLeagueId;
+  findings: ResearchFinding[];
+  signalCounts: Record<string, number>;
+}) {
+  const synthesis = buildRankingsSynthesis(input.rankingStats, input.league);
+  const rankingsConfig = rankingsConfigForView(input.activeView, {
+    refs: input.rankingStats.refs,
+    synthesis,
+    findings: input.findings,
+  });
+  const tableRefs = rankingsConfig.refs ?? input.rankingStats.refs;
+
+  return (
+    <section className="section-block section-block-tight insights-rankings-hook">
+      <div className="data-card">
+        <RefRankingsTable
+          refs={tableRefs}
+          league={input.dataLeague}
+          minSampleSize={input.rankingStats.meta.minSampleSize}
+          overBaseline={input.rankingStats.meta.leagueOverBaseline}
+          leagueAvgTotal={input.rankingStats.meta.leagueAvgTotal}
+          atsAvailable={input.rankingStats.meta.atsAvailable === true}
+          signalCounts={input.signalCounts}
+          basePath={input.league.pathPrefix}
+          defaultSort={rankingsConfig.defaultSort}
+          filterSlugs={rankingsConfig.filterSlugs}
+          preserveOrder={rankingsConfig.preserveOrder}
+        />
+      </div>
+    </section>
+  );
+}
 
 type InsightsHubPageProps = {
   leagueId: InsightsLeagueId;
-  defaultTab?: "tendencies" | "trends" | "findings";
+  defaultTab?: "tendencies" | "trends" | "findings" | "game-state";
   scopeMode?: SeasonScopeMode;
+  cbbTrendsConference?: CbbTrendsConferenceScope;
 };
 
 function insightsDataLeague(leagueId: InsightsLeagueId): FindingLeague {
   return LEAGUES[leagueId].dataLeague as FindingLeague;
 }
 
-function seasonsWithGameData(
-  stats: ReturnType<typeof loadLeagueStats>["stats"],
-): string[] {
-  const covered = new Set<string>();
-  for (const ref of stats.refs) {
-    for (const season of ref.seasons) covered.add(season);
-  }
-  const pool = [...stats.meta.seasons].sort();
-  const filtered = pool.filter((season) => covered.has(season));
-  return filtered.length > 0 ? filtered : pool;
-}
-
-/** Trends only needs meta + scoped seasons — skip ref rebuilds and findings. */
-function loadTrendsScopeContext(
-  leagueId: InsightsLeagueId,
-  scopeMode: SeasonScopeMode,
-) {
-  const { stats, formatRange } = loadLeagueStats(leagueId);
-  const availableSeasons = seasonsWithGameData(stats);
-  const scopedSeasons = resolveScopedSeasonsForLeague(
-    leagueId,
-    scopeMode,
-    availableSeasons,
-  );
-  return {
-    stats,
-    formatRange,
-    scopedSeasons,
-    availableSeasons,
-    scopeLabel: formatSeasonScope(scopedSeasons.length),
-  };
-}
-
 export function InsightsHubPage({
   leagueId,
   defaultTab = "tendencies",
   scopeMode = DEFAULT_SEASON_SCOPE_MODE,
+  cbbTrendsConference = "all",
 }: InsightsHubPageProps) {
+  const manifest = leagueManifestEntry(leagueId);
   const league = LEAGUES[leagueId];
   const homeHref = leagueHubHref(leagueId);
   const dataLeague = insightsDataLeague(leagueId);
   const activeView = defaultTab;
 
-  const scopeContext =
-    activeView === "trends"
-      ? loadTrendsScopeContext(leagueId, scopeMode)
-      : loadHubLeagueStats(leagueId, scopeMode);
+  const scopeContext = loadHubLeagueStats(leagueId, scopeMode);
 
   const {
     stats,
-    formatRange,
     scopedSeasons,
     scopeLabel,
     availableSeasons,
   } = scopeContext;
 
-  const verification = resolveLeagueVerification(leagueId, stats.meta, stats);
-  const showDataSourceBanner =
-    !verification.data_verified &&
-    (leagueId === "cbb" || leagueId === "cfb");
-  const range = formatRange(stats.meta);
+  const hubFindings = hubFindingsForLeague(leagueId, scopedSeasons, dataLeague);
+  const cbbHasFindings = leagueId !== "cbb" || hubFindings.length > 0;
+  const tabOptions = { cbbHasFindings };
+
+  if (leagueId === "cbb" && activeView === "findings" && !cbbHasFindings) {
+    redirect(insightsViewHref("cbb", "tendencies"));
+  }
+
+  if (
+    !leagueSupportsInsightsView(leagueId, activeView as ResearchView, tabOptions)
+  ) {
+    redirect(insightsViewHref(leagueId, "tendencies"));
+  }
 
   const baselines = getBaselinesFile();
   const baselineKey = dataLeague === "LALIGA" ? "EPL" : dataLeague;
-  const leagueBaselines = baselines[baselineKey];
+  const leagueBaselines =
+    dataLeague === "WNBA"
+      ? {
+          seasons: {},
+          currentSeason: null,
+          aggregate: {
+            season: "fallback",
+            gameCount: 0,
+            leagueAvgTotal: 165,
+            leagueOverBaseline: 165,
+            leagueAvgFouls: 34,
+          },
+          usingFallback: true,
+        }
+      : baselines[baselineKey as Exclude<FindingLeague, "WNBA">];
   let scopedBaselineSeasons = scopedBaselinesSeasons(
     leagueBaselines.seasons,
     scopedSeasons,
@@ -164,65 +214,103 @@ export function InsightsHubPage({
       SeasonBaseline
     >;
   }
-  const rows = seasonRowsFromBaselines(scopedBaselineSeasons);
-  const narrative = buildYoYNarrative(rows, dataLeague);
+  const rows =
+    leagueId === "cbb" && activeView === "trends"
+      ? buildCbbConferenceTrendRows(
+          loadRuntimeGameLogs("CBB")?.games ?? [],
+          scopedSeasons,
+          cbbTrendsConference,
+        )
+      : seasonRowsFromBaselines(scopedBaselineSeasons);
+  const trendsSubjectLabel =
+    leagueId === "cbb" && activeView === "trends"
+      ? cbbTrendsConferenceLabel(cbbTrendsConference)
+      : undefined;
+  const narrative = buildYoYNarrative(rows, dataLeague, trendsSubjectLabel);
 
   const scopeMeta = (
     <div className="insights-hero-meta">
       <p className="insights-hero-meta-copy">
-        Showing <span className="insights-hero-meta-strong">{scopeLabel}</span>{" "}
-        ({range})
+        Showing <span className="insights-hero-meta-strong">{scopeLabel}</span>
+        {leagueId === "cbb" &&
+        (activeView === "trends" || activeView === "tendencies") ? (
+          <>
+            {" "}
+            for{" "}
+            <span className="insights-hero-meta-strong">
+              {cbbTrendsConferenceLabel(cbbTrendsConference)}
+            </span>
+          </>
+        ) : null}
       </p>
-      <Suspense fallback={<SeasonScopeToggleSkeleton />}>
-        <SeasonScopeToggle
-          leagueId={leagueId}
-          availableSeasons={availableSeasons}
-        />
-      </Suspense>
+      <div className="insights-hero-meta-controls">
+        <Suspense fallback={<SeasonScopeToggleSkeleton />}>
+          <SeasonScopeToggle
+            leagueId={leagueId}
+            availableSeasons={availableSeasons}
+          />
+        </Suspense>
+        {leagueId === "cbb" &&
+        (activeView === "trends" || activeView === "tendencies") ? (
+          <Suspense fallback={<SeasonScopeToggleSkeleton />}>
+            <CbbConferenceTrendsToggle />
+          </Suspense>
+        ) : null}
+      </div>
     </div>
   );
 
-  let tendenciesPanel: ReactNode = null;
-  let tendenciesHeroHighlights: ReactNode = null;
-  if (activeView === "tendencies") {
-    const synthesis = buildRankingsSynthesis(stats, league);
-    const signalCounts = Object.fromEntries(
-      stats.refs.map((ref) => [
-        ref.slug,
-        countNotableSignals(ref, stats.meta, leagueId),
-      ]),
-    );
-    tendenciesHeroHighlights = (
+  const rankingStats = rankingStatsForView(
+    leagueId,
+    activeView as InsightsHubView,
+    stats,
+    scopedSeasons,
+    cbbTrendsConference,
+  );
+  const findingsForView = hubFindingsForLeague(
+    leagueId,
+    scopedSeasons,
+    dataLeague,
+  );
+  const heroSynthesis = heroSynthesisForView(
+    activeView as InsightsHubView,
+    rankingStats,
+    league,
+    findingsForView,
+  );
+  const signalCounts = Object.fromEntries(
+    rankingStats.refs.map((ref) => [
+      ref.slug,
+      countNotableSignals(ref, rankingStats.meta, leagueId),
+    ]),
+  );
+  const rankingsHook = renderRankingsPanel({
+    activeView: activeView as InsightsHubView,
+    rankingStats,
+    league,
+    dataLeague,
+    leagueId,
+    findings: findingsForView,
+    signalCounts,
+  });
+  const heroHighlights =
+    heroSynthesis.insights.length > 0 ? (
       <RankingsInsightCards
-        synthesis={synthesis}
+        synthesis={heroSynthesis}
         basePath={league.pathPrefix}
         leagueId={leagueId}
         variant="hero"
       />
-    );
-    tendenciesPanel = (
-      <section className="section-block">
-        <div className="data-card">
-          <RefRankingsTable
-            refs={stats.refs}
-            league={dataLeague}
-            minSampleSize={stats.meta.minSampleSize}
-            overBaseline={stats.meta.leagueOverBaseline}
-            leagueAvgTotal={stats.meta.leagueAvgTotal}
-            atsAvailable={stats.meta.atsAvailable === true}
-            signalCounts={signalCounts}
-            basePath={league.pathPrefix}
-          />
-        </div>
-      </section>
-    );
-  }
+    ) : null;
+
+  const tendenciesPanel: ReactNode = rankingsHook;
 
   let trendsPanel: ReactNode = null;
   if (activeView === "trends") {
     trendsPanel = (
       <>
-        {narrative && (
+        {rankingsHook}
+        {narrative ? (
           <section className="section-block-tight mb-4">
             <div className="insights-trends-panel panel-inset px-4 py-4 sm:px-5">
               <div className="insights-trends-panel-head">
@@ -234,7 +322,7 @@ export function InsightsHubPage({
               </p>
             </div>
           </section>
-        )}
+        ) : null}
         <section className="section-block">
           <LeagueTrendsTable leagueId={leagueId} rows={rows} />
         </section>
@@ -242,21 +330,23 @@ export function InsightsHubPage({
     );
   }
 
+  let gameStatePanel: ReactNode = null;
+  if (
+    activeView === "game-state" &&
+    leagueHasResearchView(leagueId, "game-state")
+  ) {
+    gameStatePanel = (
+      <GameStateIndexResearchSection
+        stats={stats}
+        leagueId={leagueId}
+        basePath={league.pathPrefix}
+        compactHub={false}
+      />
+    );
+  }
+
   let findingsPanel: ReactNode = null;
   if (activeView === "findings") {
-    const findings = HUB_FINDINGS_COMPUTERS[leagueId](12, scopedSeasons).map(
-      (finding) => ({
-        ...finding,
-        league: dataLeague,
-      }),
-    );
-    const evByFindingId = buildResearchFindingEvMap(
-      findings,
-      stats,
-      leagueId,
-      scopedSeasons,
-      loadLeagueAssignments(leagueId),
-    );
     const frictionDataset = getFrictionMatrixDataset(leagueId, stats);
     const cbbWhistleDataset =
       leagueId === "cbb"
@@ -268,16 +358,17 @@ export function InsightsHubPage({
         : null;
     findingsPanel = (
       <>
+        {rankingsHook}
         <JsonLd
           data={[
             researchHubDatasetJsonLd(
               dataLeague,
-              findings.length,
+              findingsForView.length,
               stats.meta.lastUpdated,
             ),
             researchHubArticleJsonLd(
               dataLeague,
-              findings.length,
+              findingsForView.length,
               stats.meta.lastUpdated,
             ),
           ]}
@@ -308,10 +399,9 @@ export function InsightsHubPage({
         />
         <Suspense fallback={<p className="insights-loading-copy">Loading findings…</p>}>
           <ResearchHubFindings
-            findings={findings}
+            findings={findingsForView}
             league={dataLeague}
             refCount={stats.refs.length}
-            evByFindingId={evByFindingId}
           />
         </Suspense>
       </>
@@ -320,10 +410,6 @@ export function InsightsHubPage({
 
   return (
     <div className="page-shell page-shell-insights">
-      {showDataSourceBanner ? (
-        <LeagueDataSourceBanner league={leagueId} meta={stats.meta} />
-      ) : null}
-
       <LeagueHubTabs
         ariaLabel="Insights views"
         defaultTabId={activeView}
@@ -337,49 +423,22 @@ export function InsightsHubPage({
             <h1 className="insights-hero-title">
               {league.shortLabel} insights
             </h1>
-            {activeView === "tendencies" ? tendenciesHeroHighlights : null}
-            <p className="insights-hero-lead">
-              Actionable ref tendencies, league trends, and ranked findings - built
-              for match-level edge discovery.
-            </p>
+            {heroHighlights}
           </>
         }
         afterTablist={scopeMeta}
-        tabs={[
-          {
-            id: "tendencies",
-            label: "Tendencies",
-            note:
-              activeView === "tendencies" ? (
-                <>{RANKINGS_PAGE_LEAD}</>
-              ) : null,
-            panel: tendenciesPanel,
-          },
-          {
-            id: "trends",
-            label: "Trends",
-            note:
-              activeView === "trends" ? (
-                <>
-                  {scopeLabel} scoring and whistle baselines from game logs (
-                  {range}). Historical context only.
-                </>
-              ) : null,
-            panel: trendsPanel,
-          },
-          {
-            id: "findings",
-            label: "Findings",
-            note:
-              activeView === "findings" ? (
-                <>
-                  Ranked by effect size and sample size across {range}.
-                  Descriptive historical tendencies, not betting advice.
-                </>
-              ) : null,
-            panel: findingsPanel,
-          },
-        ]}
+        tabs={insightsHubTabViews(leagueId, tabOptions).map((view) => ({
+          id: view,
+          label: INSIGHTS_HUB_TAB_LABELS[view],
+          panel:
+            view === "tendencies"
+              ? tendenciesPanel
+              : view === "trends"
+                ? trendsPanel
+                : view === "game-state"
+                  ? gameStatePanel
+                  : findingsPanel,
+        }))}
       />
     </div>
   );

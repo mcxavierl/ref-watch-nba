@@ -21,7 +21,7 @@ import {
   setCachedTeamSplits,
 } from "@/lib/ref-stats-preload";
 
-type League = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+type League = "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 
 type PreloadOptions = {
   /** Overview only needs ref-stats totals/search; skip ~20MB of team-splits. */
@@ -36,6 +36,7 @@ const REF_STATS_ASSET = freezeWorkerConfig({
   laliga: "/data/laliga/ref-stats.json",
   cbb: "/data/cbb/ref-stats.json",
   cfb: "/data/cfb/ref-stats.json",
+  wnba: "/data/wnba/ref-stats.json",
 } as const);
 
 async function parseJsonResponse(response: Response): Promise<unknown | null> {
@@ -118,6 +119,7 @@ const ASSET_BASE = freezeWorkerConfig({
   laliga: "/data/laliga",
   cbb: "/data/cbb",
   cfb: "/data/cfb",
+  wnba: "/data/wnba",
 } as const);
 
 async function preloadRefStats(

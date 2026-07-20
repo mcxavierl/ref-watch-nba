@@ -14,7 +14,7 @@ import { normalizeAppPathname } from "@/lib/json-asset-guards";
 import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
 import { enrichRefStatsWithGeography } from "@/lib/ref-geography";
 
-type League = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+type League = "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 
 function hasGameLogOnlyIngest(stats: RefStatsFile | null | undefined): boolean {
   if (!stats) return false;
@@ -32,6 +32,7 @@ const REF_STATS_CACHE_KEYS = freezeWorkerConfig({
   laliga: "__REFWATCH_LALIGA_REF_STATS__",
   cbb: "__REFWATCH_CBB_REF_STATS__",
   cfb: "__REFWATCH_CFB_REF_STATS__",
+  wnba: "__REFWATCH_WNBA_REF_STATS__",
 } as const);
 
 const TEAM_SPLITS_CACHE_KEYS = freezeWorkerConfig({
@@ -41,6 +42,7 @@ const TEAM_SPLITS_CACHE_KEYS = freezeWorkerConfig({
   epl: "__REFWATCH_EPL_TEAM_SPLITS__",
   laliga: "__REFWATCH_LALIGA_TEAM_SPLITS__",
   cbb: "__REFWATCH_CBB_TEAM_SPLITS__",
+  wnba: "__REFWATCH_WNBA_TEAM_SPLITS__",
 } as const);
 
 const ASSET_BASE = freezeWorkerConfig({
@@ -51,6 +53,7 @@ const ASSET_BASE = freezeWorkerConfig({
   laliga: "/data/laliga",
   cbb: "/data/cbb",
   cfb: "/data/cfb",
+  wnba: "/data/wnba",
 } as const);
 
 function readGlobalRefStats(league: League): RefStatsFile | null {
@@ -71,6 +74,9 @@ export function getCachedRefStats(league: League): RefStatsFile | null {
 export function getPreferHydratedRefStats(league: League): RefStatsFile | null {
   const cached = getCachedRefStats(league);
   if (!cached?.refs?.length) return null;
+  if (hasGameLogOnlyIngest(cached)) {
+    return cached;
+  }
   const leagueId = league as LeagueId;
   if (
     isVerifiedLiveLeague(leagueId) &&
@@ -328,7 +334,7 @@ export function pathNeedsTeamSplits(pathname: string): boolean {
   if (HUB_ROUTE.test(path)) return false;
   // League slates only need slim ref-stats (~0.5–1.5MB); team-splits are 2–9MB each.
   if (path === "/nba") return false;
-  if (/^\/(nhl|nfl|epl|laliga|cbb|cfb)\/?$/.test(path)) return false;
+  if (/^\/(nhl|nfl|epl|laliga|cbb|cfb|wnba)\/?$/.test(path)) return false;
   return true;
 }
 
@@ -346,6 +352,7 @@ export function leaguesForPath(pathname: string): League[] {
   if (path.startsWith("/cbb")) return ["cbb"];
   if (path.startsWith("/nfl")) return ["nfl"];
   if (path.startsWith("/nhl")) return ["nhl"];
+  if (path.startsWith("/wnba")) return ["wnba"];
   if (
     path.startsWith("/research") ||
     path.startsWith("/methodology") ||

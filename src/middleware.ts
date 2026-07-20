@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { shouldRedirectHiddenLeague } from "@/lib/header-leagues";
+import { shouldRedirectLocalOnlyLeague } from "@/lib/local-only-leagues";
 import { LEAGUES, SITE_HOME_PATH } from "@/lib/leagues";
 import { isVerifiedLiveLeague } from "@/lib/league-verification";
 import { COMING_SOON_LEAGUE_IDS, GATED_COLLEGE_LEAGUE_IDS } from "@/lib/site-route-config";
@@ -61,6 +62,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isGatedCollegePath(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = SITE_HOME_PATH;
+    return NextResponse.redirect(url);
+  }
+
+  if (shouldRedirectLocalOnlyLeague(pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = SITE_HOME_PATH;
     return NextResponse.redirect(url);

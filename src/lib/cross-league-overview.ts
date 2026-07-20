@@ -12,6 +12,7 @@ import {
 } from "@/lib/insights/insights-query";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import type { TopStoriesStatus } from "@/lib/insights/generator";
+import { overviewStandoutSplitCards } from "@/lib/insight-editorial";
 import {
   paceBarWidthPercent,
   sortLeaguePaceCards,
@@ -20,6 +21,7 @@ import {
   buildOverviewUpcomingSlate,
   type OverviewUpcomingSlate,
 } from "@/lib/overview-upcoming-slate";
+import { computeLeagueHomeCoverDelta } from "@/lib/league-home-bias-index";
 import {
   NCAA_INTEGRITY_AUDIT_HREF,
   resolveNcaaAuditStatus,
@@ -39,6 +41,8 @@ export type LeagueOverviewCard = {
   whistleLabel: string;
   scorePerGame: number;
   scoreLabel: string;
+  /** League scoring pace uses a proxy average when closing lines are unavailable. */
+  scoreEstimated: boolean;
   whistleBar: number;
   scoreBar: number;
   /** False for NCAA hubs still awaiting ingest or conference coverage. */
@@ -46,6 +50,8 @@ export type LeagueOverviewCard = {
   auditCoveragePct?: number;
   auditHref?: string;
   auditPendingLabel?: NcaaAuditPendingLabel;
+  /** Home ATS cover rate delta vs a neutral 50% split (from lined game logs). */
+  homeBiasCoverDelta: string | null;
 };
 
 export type CrossLeagueOverview = {
@@ -57,6 +63,8 @@ export type CrossLeagueOverview = {
   whistleLabel: string;
   leagueCards: LeagueOverviewCard[];
   insightCards: LeagueInsightCard[];
+  /** Precomputed homepage editorial grid (avoids client-side filtering). */
+  standoutSplitCards: LeagueInsightCard[];
   topStories: LeagueInsightCard[];
   topStoriesStatus: TopStoriesStatus;
   topStoriesGeneratedAt: string | null;
@@ -98,7 +106,8 @@ function scorePerGameForLeague(
 
 function scoreLabelForLeague(leagueId: LeagueId): string {
   const unit = LEAGUES[leagueId].metrics.scoreUnitPlural;
-  return `${unit} per game`;
+  const labelUnit = unit.charAt(0).toUpperCase() + unit.slice(1);
+  return `${labelUnit} per game`;
 }
 
 function refHref(leagueId: LeagueId, slug: string): string {
@@ -144,6 +153,7 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       : 0;
 
     const scorePerGame = analyticsUnlocked ? scorePerGameForLeague(leagueId, stats) : 0;
+    const scoreEstimated = false;
 
     if (analyticsUnlocked) {
       totalRefs += refCount;
@@ -174,12 +184,16 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
       whistleLabel: whistleLabelForLeague(leagueId),
       scorePerGame,
       scoreLabel: scoreLabelForLeague(leagueId),
+      scoreEstimated,
       whistleBar: 0,
       scoreBar: 0,
       analyticsUnlocked,
       auditCoveragePct,
       auditHref,
       auditPendingLabel,
+      homeBiasCoverDelta: analyticsUnlocked
+        ? computeLeagueHomeCoverDelta(leagueId)?.value ?? null
+        : null,
     });
   }
 
@@ -192,6 +206,8 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
 
   const orderedLeagueCards = sortLeaguePaceCards(leagueCards);
   const topStoriesBundle = loadInsightsBundle();
+  const insightCards = loadOverviewInsightCards();
+  const standoutSplitCards = overviewStandoutSplitCards(insightCards, null);
 
   return {
     totalRefs,
@@ -202,7 +218,8 @@ export function buildCrossLeagueOverview(catalogCompetitionCount: number): Cross
     whistleEventsLogged,
     whistleLabel: "Whistle events logged",
     leagueCards: orderedLeagueCards,
-    insightCards: loadOverviewInsightCards(),
+    insightCards,
+    standoutSplitCards,
     topStories: topStoriesBundle.insights,
     topStoriesStatus: topStoriesBundle.status,
     topStoriesGeneratedAt: topStoriesBundle.generatedAt,

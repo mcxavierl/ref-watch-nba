@@ -1,25 +1,9 @@
 {
   "data_verified": true,
-  "data_source": "ESPN + nflverse (2000-present)",
-  "last_ingested_at": "2026-07-16T23:29:08.797Z",
-  "game_count": 6825,
+  "data_source": "ESPN + nflverse (2016-2026)",
+  "last_ingested_at": "2026-07-19T20:12:52.709Z",
+  "game_count": 2757,
   "seasons": [
-    "2000-01",
-    "2001-02",
-    "2002-03",
-    "2003-04",
-    "2004-05",
-    "2005-06",
-    "2006-07",
-    "2007-08",
-    "2008-09",
-    "2009-10",
-    "2010-11",
-    "2011-12",
-    "2012-13",
-    "2013-14",
-    "2014-15",
-    "2015-16",
     "2016-17",
     "2017-18",
     "2018-19",
@@ -31,5 +15,5 @@
     "2024-25",
     "2025-26"
   ],
-  "note": "Ref×team W-L rebuilt from 6825 ESPN game logs. 5151/6676 ref×team pairs meet the 3+ game matrix gate."
+  "note": "Ref×team W-L rebuilt from 2757 ESPN game logs (2016-2026). 4623/5992 ref×team pairs meet the 3+ game matrix gate. Ties are excluded from straight-up W-L."
 }

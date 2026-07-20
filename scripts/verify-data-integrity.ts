@@ -134,6 +134,7 @@ const GAME_LOG_PATHS: Partial<Record<LeagueId, string>> = {
   laliga: "data/laliga/game-logs.json",
   cbb: "data/cbb/game-logs.json",
   cfb: "data/cfb/game-logs.json",
+  wnba: "data/wnba/game-logs.json",
 };
 
 const TEAM_SPLITS_PATHS: Partial<Record<LeagueId, string>> = {
@@ -144,6 +145,7 @@ const TEAM_SPLITS_PATHS: Partial<Record<LeagueId, string>> = {
   laliga: "data/laliga/team-splits.json",
   cbb: "data/cbb/team-splits.json",
   cfb: "data/cfb/team-splits.json",
+  wnba: "data/wnba/team-splits.json",
 };
 
 const REF_STATS_PATHS: Partial<Record<LeagueId, string>> = Object.fromEntries(
@@ -295,6 +297,59 @@ function checkRefGameCounts(
   }
 }
 
+/** Leagues whose game logs carry per-team fouls must not have all-zero ref×team edges. */
+const PER_TEAM_FOUL_LEAGUES: LeagueId[] = ["epl", "laliga", "cbb"];
+
+function logsHavePerTeamFouls(league: LeagueId): boolean {
+  const games = loadGameRows(league);
+  if (games.length === 0) return false;
+  const sample = games.find(
+    (game) =>
+      (game as { homeFouls?: number }).homeFouls !== undefined &&
+      (game as { awayFouls?: number }).awayFouls !== undefined,
+  );
+  return sample !== undefined;
+}
+
+function checkFoulDifferentialCoverage(): void {
+  for (const league of PER_TEAM_FOUL_LEAGUES) {
+    if (!logsHavePerTeamFouls(league)) {
+      warn(`${league}: skipping foul-edge check (game logs lack homeFouls/awayFouls)`);
+      continue;
+    }
+
+    const refs = loadRefStats(league);
+    if (refs.length === 0) continue;
+
+    let total = 0;
+    let zero = 0;
+    for (const ref of refs) {
+      for (const stat of Object.values(ref.teamStats ?? {})) {
+        total++;
+        if (stat.avgFoulDifferential === 0) zero++;
+      }
+    }
+    if (total === 0) {
+      warn(`${league}: no ref×team cells to check for foul edges`);
+      continue;
+    }
+
+    const zeroPct = (zero / total) * 100;
+    console.log(
+      `${league.toUpperCase()} foul edges: ${total - zero}/${total} non-zero (${zeroPct.toFixed(1)}% zero)`,
+    );
+    if (zeroPct >= 90) {
+      fail(
+        `${league.toUpperCase()}: ${zeroPct.toFixed(1)}% of ref×team cells have avgFoulDifferential=0 despite per-team fouls in logs - run sync-ref-stats-from-logs`,
+      );
+    } else if (zeroPct >= 50) {
+      warn(
+        `${league.toUpperCase()}: ${zeroPct.toFixed(1)}% of ref×team cells have zero foul edge - review game-log rebuild`,
+      );
+    }
+  }
+}
+
 function checkBbrFixtureCoverage(): void {
   const result = verifyBbrCoverage(ROOT);
   console.log(
@@ -325,6 +380,9 @@ function main(): void {
       league.useCanonicalKey,
     );
   }
+
+  console.log("");
+  checkFoulDifferentialCoverage();
 
   console.log("");
   const identityAudit = auditRefIdentity(ROOT);

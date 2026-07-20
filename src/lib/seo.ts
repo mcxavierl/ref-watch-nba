@@ -167,7 +167,7 @@ export function slatePageMetadata({
 
 export type SlateHubLeagueId = Extract<
   LeagueId,
-  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb"
+  "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba"
 >;
 
 const SLATE_HUB_KEYWORDS: Record<SlateHubLeagueId, string[]> = {
@@ -178,6 +178,7 @@ const SLATE_HUB_KEYWORDS: Record<SlateHubLeagueId, string[]> = {
   laliga: ["La Liga referees", "La Liga matchday", "referee analytics", "soccer officiating"],
   cbb: ["CBB referees", "college basketball refs", "NCAA officiating"],
   cfb: ["CFB officials", "college football refs", "NCAA officiating"],
+  wnba: ["WNBA refs", "WNBA referee crew", "referee analytics", "basketball officiating"],
 };
 
 export function leagueSlateHubPath(leagueId: SlateHubLeagueId): string {
@@ -385,12 +386,13 @@ export function refProfileBreadcrumbJsonLd(
 }
 
 export function leagueRefPath(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   slug: string,
 ): string {
   const leagueIdMap: Record<typeof league, LeagueId> = {
     NBA: "nba",
     NHL: "nhl",
+    WNBA: "wnba",
     NFL: "nfl",
     EPL: "epl",
     LALIGA: "laliga",

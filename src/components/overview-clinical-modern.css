@@ -1,0 +1,647 @@
+/* Clinical Modern — Verified Officiating Analytics homepage */
+
+@import "./overview-slate-shared.css";
+
+.overview-shell--clinical .overview-title {
+  color: var(--clinical-ink);
+  font-size: clamp(1.65rem, 3.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.overview-shell--clinical .overview-hero-minimal-bridge {
+  color: var(--clinical-ink-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-width: 40rem;
+}
+
+.overview-shell--clinical .overview-section-title {
+  color: var(--clinical-ink);
+}
+
+.overview-shell--clinical .overview-section-lead {
+  color: var(--clinical-ink-muted);
+  font-size: 0.875rem;
+}
+
+.overview-shell--clinical .overview-slate-icon {
+  color: var(--clinical-ink-muted);
+}
+
+/* Upcoming games capsules — match DataCapsule rhythm */
+.overview-slate-capsule {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--clinical-capsule-border);
+  background: var(--clinical-capsule-bg);
+}
+
+.overview-slate-capsule-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.overview-slate-capsule-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 9999px;
+  border: 1px solid rgb(51 65 85);
+  background: rgb(15 23 42);
+}
+
+.overview-slate-capsule-mark .league-nav-mark,
+.overview-slate-capsule-mark .league-nav-mark-fallback {
+  display: block;
+  flex-shrink: 0;
+  width: auto;
+  height: 58%;
+  max-width: 58%;
+  max-height: 58%;
+  margin: 0;
+  object-fit: contain;
+  object-position: center;
+}
+
+.overview-slate-capsule-mark .league-nav-mark--epl,
+.overview-slate-capsule-mark .league-nav-mark[data-league="epl"] {
+  width: auto;
+  height: 72%;
+  max-width: 72%;
+  max-height: 72%;
+  object-fit: contain;
+  object-position: center;
+  transform: translate(1px, 0);
+}
+
+.overview-slate-capsule-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.overview-slate-capsule-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--clinical-ink);
+  line-height: 1.25;
+}
+
+.overview-slate-capsule-meta {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--clinical-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-slate-capsule-cta {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--clinical-ink-muted);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.overview-slate-capsule-cta:hover {
+  color: var(--clinical-ink);
+  text-decoration: underline;
+}
+
+.overview-shell--clinical .overview-slate-list {
+  gap: 0.5rem;
+}
+
+.overview-shell--clinical .overview-slate-row {
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.overview-slate-row-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.5rem 0;
+  border-top: 1px solid rgb(30 41 59);
+}
+
+.overview-slate-capsule .overview-slate-list > li:first-child .overview-slate-row-inner {
+  border-top: none;
+  padding-top: 0;
+}
+
+.overview-slate-row-matchup-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.overview-slate-row-matchup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.overview-slate-row-names {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--clinical-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overview-slate-row-at {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--clinical-ink-label);
+}
+
+.overview-slate-row-last-meeting,
+.overview-slate-row-game-context,
+.overview-slate-row-season-stage,
+.overview-slate-row-team-context,
+.overview-slate-row-officials {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--clinical-ink-muted);
+}
+
+.overview-slate-row-season-stage {
+  font-weight: 600;
+  color: var(--clinical-ink-label);
+}
+
+.overview-slate-row-officials {
+  font-weight: 600;
+  color: var(--clinical-ink-label);
+}
+
+.overview-shell--clinical .overview-slate-date {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--clinical-ink-muted);
+}
+
+.overview-shell--clinical .overview-slate-row-link {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--clinical-ink-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.overview-shell--clinical .overview-slate-row-link:hover {
+  color: var(--clinical-ink);
+  text-decoration: underline;
+}
+
+.overview-shell--clinical .overview-slate-insight,
+.overview-shell--clinical .overview-slate-crew {
+  display: none;
+}
+
+/* Upcoming games — premium match cards */
+.upcoming-game-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-height: 100%;
+  min-width: 0;
+  padding: 0.75rem 0.8rem 0.85rem;
+  border-radius: 0.85rem;
+  container-type: inline-size;
+  --upcoming-matchup-glow-accent: rgb(148 163 184);
+  --upcoming-matchup-glow: color-mix(
+    in srgb,
+    var(--upcoming-matchup-glow-accent) 72%,
+    rgb(248 250 252)
+  );
+  --upcoming-matchup-logo-size: clamp(1.85rem, 28cqi, 2.5rem);
+  --upcoming-card-border: rgb(30 41 59);
+  --upcoming-card-bg: rgb(2 6 23);
+  --upcoming-card-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+  --upcoming-mark-border: rgb(51 65 85);
+  --upcoming-mark-bg: rgb(15 23 42);
+  --upcoming-cta: rgb(148 163 184);
+  --upcoming-cta-hover: rgb(224 231 255);
+  --upcoming-pill-border-base: rgb(30 41 59);
+  --upcoming-pill-bg-base: rgb(15 23 42);
+  --upcoming-pill-accent-bg: 16%;
+  --upcoming-pill-accent-border: 42%;
+  --upcoming-pill-ink: color-mix(in srgb, var(--upcoming-matchup-glow) 90%, rgb(248 250 252));
+  --upcoming-pill-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow) 14%, transparent),
+    0 0 16px color-mix(in srgb, var(--upcoming-matchup-glow) 32%, transparent);
+  --upcoming-matchup-border-base: rgb(30 41 59);
+  --upcoming-matchup-bg-top: rgb(15 23 42);
+  --upcoming-matchup-bg-bottom: rgb(2 6 23);
+  --upcoming-matchup-glow-strength: 9%;
+  --upcoming-matchup-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow) 12%, transparent),
+    0 0 26px color-mix(in srgb, var(--upcoming-matchup-glow) 18%, transparent);
+  --upcoming-ink-strong: rgb(241 245 249);
+  --upcoming-ink-body: rgb(203 213 225);
+  --upcoming-ink-muted: rgb(148 163 184);
+  --upcoming-logo-plate-bg: transparent;
+  --upcoming-logo-plate-border: transparent;
+  border: 1px solid var(--upcoming-card-border);
+  background: var(--upcoming-card-bg);
+  box-shadow: var(--upcoming-card-shadow);
+}
+
+.upcoming-game-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.upcoming-game-card__header-start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.upcoming-game-card__date-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--upcoming-matchup-glow) var(--upcoming-pill-accent-border), var(--upcoming-pill-border-base));
+  background: color-mix(in srgb, var(--upcoming-matchup-glow-accent) var(--upcoming-pill-accent-bg), var(--upcoming-pill-bg-base));
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--upcoming-pill-ink);
+  white-space: nowrap;
+  box-shadow: var(--upcoming-pill-shadow);
+}
+
+.upcoming-game-card__league-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.85rem;
+  height: 1.85rem;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 9999px;
+  border: 1px solid var(--upcoming-mark-border);
+  background: var(--upcoming-mark-bg);
+}
+
+.upcoming-game-card__league-mark .league-nav-mark,
+.upcoming-game-card__league-mark .league-nav-mark-fallback {
+  display: block;
+  flex-shrink: 0;
+  width: auto;
+  height: 58%;
+  max-width: 58%;
+  max-height: 58%;
+  margin: 0;
+  object-fit: contain;
+  object-position: center;
+}
+
+.upcoming-game-card__league-mark .league-nav-mark--nfl,
+.upcoming-game-card__league-mark .league-nav-mark[data-league="nfl"] {
+  height: 54%;
+  max-width: 42%;
+  max-height: 54%;
+}
+
+.upcoming-game-card__league-mark .league-nav-mark--epl,
+.upcoming-game-card__league-mark .league-nav-mark[data-league="epl"] {
+  width: auto;
+  height: 72%;
+  max-width: 72%;
+  max-height: 72%;
+  object-fit: contain;
+  object-position: center;
+  transform: translate(1px, 0);
+}
+
+.upcoming-game-card__league-mark .league-nav-mark--laliga,
+.upcoming-game-card__league-mark .league-nav-mark[data-league="laliga"] {
+  height: 52%;
+  max-width: 52%;
+  max-height: 52%;
+}
+
+.upcoming-game-card__cta {
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--upcoming-cta);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 150ms ease;
+}
+
+.upcoming-game-card__cta:hover {
+  color: var(--upcoming-cta-hover);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.upcoming-game-card__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  isolation: isolate;
+}
+
+.upcoming-game-card[data-league="nfl"] {
+  --upcoming-matchup-glow-accent: #1e4fd4;
+}
+
+.upcoming-game-card[data-league="epl"] {
+  --upcoming-matchup-glow-accent: #6b3fa8;
+}
+
+.upcoming-game-card[data-league="laliga"] {
+  --upcoming-matchup-glow-accent: #c9a227;
+}
+
+.upcoming-game-card[data-league="nba"] {
+  --upcoming-matchup-glow-accent: var(--raptors);
+}
+
+.upcoming-game-card[data-league="nhl"] {
+  --upcoming-matchup-glow-accent: var(--nhl-blue);
+}
+
+.upcoming-game-card[data-league="cbb"] {
+  --upcoming-matchup-glow-accent: var(--cbb-gold);
+}
+
+.upcoming-game-card[data-league="cfb"] {
+  --upcoming-matchup-glow-accent: var(--cfb-bronze);
+}
+
+.upcoming-game-card[data-league="wnba"] {
+  --upcoming-matchup-glow-accent: var(--cbb-gold);
+}
+
+.upcoming-game-card__matchup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.45rem, 4cqi, 1.15rem);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: clamp(0.5rem, 4cqi, 0.75rem) clamp(0.45rem, 3cqi, 0.85rem)
+    clamp(0.55rem, 4cqi, 0.75rem);
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--upcoming-matchup-glow) 32%, var(--upcoming-matchup-border-base));
+  background:
+    radial-gradient(
+      ellipse 120% 90% at 50% 0%,
+      color-mix(in srgb, var(--upcoming-matchup-glow) var(--upcoming-matchup-glow-strength), transparent),
+      transparent 68%
+    ),
+    color-mix(in srgb, var(--upcoming-matchup-bg-top) 88%, var(--upcoming-matchup-bg-bottom));
+  box-shadow: var(--upcoming-matchup-shadow);
+  overflow: hidden;
+}
+
+.upcoming-game-card__team {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.3rem, 2cqi, 0.55rem);
+  min-width: 0;
+  max-width: 4.75rem;
+}
+
+html[data-contrast="high"] .upcoming-game-card__matchup {
+  box-shadow: none;
+  border-color: rgb(51 65 85);
+  background: rgb(15 23 42);
+}
+
+html[data-contrast="high"] .upcoming-game-card__date-pill {
+  box-shadow: none;
+  border-color: rgb(51 65 85);
+  background: rgb(15 23 42);
+  color: rgb(226 232 240);
+}
+
+.upcoming-game-card__matchup .team-logo-plate {
+  width: var(--upcoming-matchup-logo-size);
+  height: var(--upcoming-matchup-logo-size);
+  max-width: 100%;
+  flex-shrink: 1;
+  padding: 0.125rem;
+  border: 1px solid var(--upcoming-logo-plate-border);
+  border-radius: 0.375rem;
+  background: var(--upcoming-logo-plate-bg);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.upcoming-game-card__matchup .team-logo-plate__img,
+.upcoming-game-card__matchup .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
+.upcoming-game-card__matchup .team-logo-plate[data-sport="epl"] .team-logo-plate__img,
+.upcoming-game-card__matchup .team-logo-plate[data-sport="laliga"] .team-logo-plate__img,
+.upcoming-game-card__matchup .team-logo-plate[data-sport="cbb"] .team-logo-plate__img {
+  transform: none;
+}
+
+.upcoming-game-card__at {
+  flex: 0 0 auto;
+  align-self: center;
+  font-size: clamp(1rem, 5cqi, 1.375rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--upcoming-ink-muted);
+}
+
+.upcoming-game-card__team-abbr {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: clamp(0.875rem, 4.5cqi, 1.125rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-align: center;
+  color: var(--upcoming-ink-strong);
+}
+
+.upcoming-game-card__context-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+  gap: 0.2rem;
+  min-height: 0;
+  margin-top: 0.45rem;
+}
+
+.upcoming-game-card__context {
+  margin: 0;
+  min-width: 0;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--upcoming-ink-body);
+  text-align: center;
+}
+
+.upcoming-game-card__context--meta {
+  font-size: 0.625rem;
+  color: var(--upcoming-ink-muted);
+}
+
+.upcoming-game-card__meta {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  color: var(--upcoming-ink-muted);
+  text-align: center;
+}
+
+.upcoming-game-card__metadata {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--upcoming-ink-body);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card,
+html.light:not([data-contrast="high"]) .upcoming-game-card {
+  --upcoming-card-border: #e2e8f0;
+  --upcoming-card-bg: #ffffff;
+  --upcoming-card-shadow: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --upcoming-mark-border: #e2e8f0;
+  --upcoming-mark-bg: #f8fafc;
+  --upcoming-cta: #475569;
+  --upcoming-cta-hover: #0f172a;
+  --upcoming-pill-border-base: #e2e8f0;
+  --upcoming-pill-bg-base: #ffffff;
+  --upcoming-pill-accent-bg: 10%;
+  --upcoming-pill-accent-border: 28%;
+  --upcoming-pill-ink: #0f172a;
+  --upcoming-pill-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 12%, transparent);
+  --upcoming-matchup-border-base: #e2e8f0;
+  --upcoming-matchup-bg-top: #f8fafc;
+  --upcoming-matchup-bg-bottom: #f8fafc;
+  --upcoming-matchup-glow-strength: 8%;
+  --upcoming-matchup-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 10%, transparent);
+  --upcoming-ink-strong: #0f172a;
+  --upcoming-ink-body: #334155;
+  --upcoming-ink-muted: #64748b;
+  --upcoming-logo-plate-bg: var(--logo-plate-matrix);
+  --upcoming-logo-plate-border: var(--logo-plate-matrix-border);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__league-mark .league-nav-mark,
+html.light:not([data-contrast="high"]) .upcoming-game-card__league-mark .league-nav-mark {
+  filter: none;
+  opacity: 1;
+}
+
+.overview-shell--clinical .overview-slate-leagues {
+  gap: 1rem;
+}
+
+.overview-shell--clinical .overview-slate-notes {
+  margin-bottom: 0.75rem;
+}
+
+.overview-shell--clinical .overview-slate-note {
+  font-size: 0.8125rem;
+  color: var(--clinical-ink-muted);
+}
+
+.overview-shell--clinical .overview-slate-updated {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--clinical-ink-label);
+}
+
+.overview-shell--clinical .overview-slate-view-more-btn {
+  font-size: 0.75rem;
+  color: var(--clinical-ink-muted);
+}
+
+html[data-color="light"] .overview-shell--clinical .overview-slate-capsule,
+html[data-color="dark"] .overview-shell--clinical .overview-slate-capsule {
+  background: var(--clinical-capsule-bg);
+  border-color: var(--clinical-capsule-border);
+}
+
+html[data-color="light"] .overview-shell--clinical .overview-slate-capsule-label,
+html[data-color="light"] .overview-shell--clinical .overview-slate-row-names,
+html[data-color="dark"] .overview-shell--clinical .overview-slate-capsule-label,
+html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
+  color: var(--clinical-ink);
+}
+
+.section-block--compact {
+  margin-bottom: var(--space-8);
+}
+
+.section-block--compact .overview-section-header--primary {
+  margin-bottom: var(--space-4);
+}
+
+.section-block--compact .overview-section-lead {
+  font-size: 0.8125rem;
+}
+
+.section-block--compact .overview-slate-notes {
+  margin-bottom: 0.55rem;
+}
+
+.section-block--compact .overview-slate-updated {
+  margin-top: 0.5rem;
+}

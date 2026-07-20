@@ -26,7 +26,7 @@ const LEAGUE_HISTORY_RANGE: Record<
 > = {
   nba: "2016-17 – 2025-26",
   nhl: "2016-17 – 2025-26",
-  nfl: "2000-01 – 2025-26",
+  nfl: "2016-17 – 2025-26",
   epl: "2016-17 – 2025-26",
   laliga: "2021-22 – 2025-26",
   cbb: "2019-20 – 2025-26",
@@ -76,7 +76,9 @@ const OVERVIEW_EXPLORE: FooterExploreLink[] = [
   { key: "nhl", label: "NHL hub", href: "/nhl" },
   { key: "epl", label: "Premier League hub", href: "/epl" },
   { key: "laliga", label: "La Liga hub", href: "/laliga" },
+  { key: "about", label: "About", href: "/about" },
   { key: "methodology", label: "Methodology", href: "/methodology" },
+  { key: "validation", label: "Closing-line validation", href: "/research/validation" },
   {
     key: "contact",
     label: "Contact Me",

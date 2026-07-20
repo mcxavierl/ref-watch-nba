@@ -1,6 +1,12 @@
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
+import {
+  LEAGUE_MANIFEST,
+  leagueManifestPath,
+  researchViewHref,
+  type LeagueManifestId,
+} from "@/lib/league-manifest";
 
 type BrowseLink = {
   href: string;
@@ -8,229 +14,98 @@ type BrowseLink = {
   description: string;
 };
 
-const NBA_LINKS: BrowseLink[] = [
-  {
-    href: "/research",
-    label: "Research findings",
-    description: "NBA dataset patterns ranked by effect size",
-  },
-  {
-    href: "/rankings",
-    label: "Official tendency index",
-    description: "Crew scoring and foul tendencies",
-  },
-  {
-    href: "/teams",
-    label: "Team histories",
-    description: "Crew splits for every franchise",
-  },
-  {
-    href: "/refs",
-    label: "Browse all refs",
-    description: "Profiles across seasons",
-  },
-  {
-    href: "/trends",
-    label: "League trends",
-    description: "Ten-season scoring and foul context",
-  },
-];
+const BROWSE_COPY: Record<
+  LeagueManifestId,
+  Omit<BrowseLink, "href">[] | null
+> = {
+  nba: [
+    { label: "Research findings", description: "NBA dataset patterns ranked by effect size" },
+    { label: "Official tendency index", description: "Crew scoring and foul tendencies" },
+    { label: "Team histories", description: "Crew splits for every franchise" },
+    { label: "Browse all refs", description: "Profiles across seasons" },
+    { label: "League trends", description: "Ten-season scoring and foul context" },
+  ],
+  nhl: [
+    { label: "Research findings", description: "NHL dataset patterns ranked by effect size" },
+    { label: "Official tendency index", description: "Crew goal and PIM tendencies" },
+    { label: "Team histories", description: "Crew splits for every franchise" },
+    { label: "Browse all refs", description: "Profiles across seasons" },
+    { label: "League trends", description: "Ten-season scoring and penalty context" },
+  ],
+  nfl: [
+    { label: "Research findings", description: "NFL dataset patterns ranked by effect size" },
+    { label: "Official tendency index", description: "Crew scoring and flag tendencies" },
+    { label: "Team histories", description: "Crew splits for every franchise" },
+    { label: "Browse all officials", description: "Profiles across seasons" },
+    { label: "League trends", description: "Ten-season scoring and penalty context" },
+  ],
+  epl: [
+    { label: "Research findings", description: "EPL dataset patterns ranked by effect size" },
+    { label: "Referee tendency index", description: "Goal and foul tendencies by referee" },
+    { label: "Club histories", description: "Crew splits for every PL club" },
+    { label: "Browse all refs", description: "Profiles across seasons" },
+    { label: "League trends", description: "Ten-season goal and card context" },
+  ],
+  laliga: [
+    { label: "Research findings", description: "La Liga dataset patterns ranked by effect size" },
+    { label: "Referee tendency index", description: "Goal and foul tendencies by referee" },
+    { label: "Club histories", description: "Crew splits for every La Liga club" },
+    { label: "Browse all refs", description: "Profiles across seasons" },
+    { label: "League trends", description: "Season goal and card context" },
+  ],
+  cbb: [
+    { label: "Research findings", description: "CBB dataset patterns ranked by effect size" },
+    { label: "Official tendency index", description: "Scoring and foul tendencies by referee" },
+    { label: "Program histories", description: "Crew splits for tracked D-I programs" },
+    { label: "Browse all refs", description: "Profiles across seasons" },
+    { label: "League trends", description: "Season scoring and foul context" },
+  ],
+  cfb: [
+    { label: "Research findings", description: "CFB dataset patterns ranked by effect size" },
+    { label: "Official tendency index", description: "Penalty and scoring tendencies by referee" },
+    { label: "Program histories", description: "Crew splits for tracked programs" },
+    { label: "Browse all refs", description: "Profiles across seasons" },
+    { label: "League trends", description: "Season scoring and penalty context" },
+  ],
+  wnba: [
+    { label: "Research findings", description: "WNBA dataset patterns ranked by effect size" },
+    { label: "Referee tendency index", description: "Crew scoring and foul tendencies" },
+    { label: "Team histories", description: "Crew splits for every franchise" },
+    { label: "Browse all refs", description: "Profiles across seasons" },
+    { label: "League trends", description: "Ten-season scoring and foul context" },
+  ],
+  mlb: null,
+};
 
-const NHL_LINKS: BrowseLink[] = [
-  {
-    href: "/nhl/research",
-    label: "Research findings",
-    description: "NHL dataset patterns ranked by effect size",
-  },
-  {
-    href: "/nhl/rankings",
-    label: "Official tendency index",
-    description: "Crew goal and PIM tendencies",
-  },
-  {
-    href: "/nhl/teams",
-    label: "Team histories",
-    description: "Crew splits for every franchise",
-  },
-  {
-    href: "/nhl/refs",
-    label: "Browse all refs",
-    description: "Profiles across seasons",
-  },
-  {
-    href: "/nhl/trends",
-    label: "League trends",
-    description: "Ten-season scoring and penalty context",
-  },
-];
-
-const NFL_LINKS: BrowseLink[] = [
-  {
-    href: "/nfl/research",
-    label: "Research findings",
-    description: "NFL dataset patterns ranked by effect size",
-  },
-  {
-    href: "/nfl/rankings",
-    label: "Official tendency index",
-    description: "Crew scoring and flag tendencies",
-  },
-  {
-    href: "/nfl/teams",
-    label: "Team histories",
-    description: "Crew splits for every franchise",
-  },
-  {
-    href: "/nfl/refs",
-    label: "Browse all officials",
-    description: "Profiles across seasons",
-  },
-  {
-    href: "/nfl/trends",
-    label: "League trends",
-    description: "Ten-season scoring and penalty context",
-  },
-];
-
-const EPL_LINKS: BrowseLink[] = [
-  {
-    href: "/epl/research",
-    label: "Research findings",
-    description: "EPL dataset patterns ranked by effect size",
-  },
-  {
-    href: "/epl/rankings",
-    label: "Referee tendency index",
-    description: "Goal and foul tendencies by referee",
-  },
-  {
-    href: "/epl/teams",
-    label: "Club histories",
-    description: "Crew splits for every PL club",
-  },
-  {
-    href: "/epl/refs",
-    label: "Browse all refs",
-    description: "Profiles across seasons",
-  },
-  {
-    href: "/epl/trends",
-    label: "League trends",
-    description: "Ten-season goal and card context",
-  },
-];
-
-const LALIGA_LINKS: BrowseLink[] = [
-  {
-    href: "/laliga/research",
-    label: "Research findings",
-    description: "La Liga dataset patterns ranked by effect size",
-  },
-  {
-    href: "/laliga/rankings",
-    label: "Referee tendency index",
-    description: "Goal and foul tendencies by referee",
-  },
-  {
-    href: "/laliga/teams",
-    label: "Club histories",
-    description: "Crew splits for every La Liga club",
-  },
-  {
-    href: "/laliga/refs",
-    label: "Browse all refs",
-    description: "Profiles across seasons",
-  },
-  {
-    href: "/laliga/trends",
-    label: "League trends",
-    description: "Season goal and card context",
-  },
-];
-
-const CBB_LINKS: BrowseLink[] = [
-  {
-    href: "/cbb/research",
-    label: "Research findings",
-    description: "CBB dataset patterns ranked by effect size",
-  },
-  {
-    href: "/cbb/rankings",
-    label: "Official tendency index",
-    description: "Scoring and foul tendencies by referee",
-  },
-  {
-    href: "/cbb/teams",
-    label: "Program histories",
-    description: "Crew splits for tracked D-I programs",
-  },
-  {
-    href: "/cbb/refs",
-    label: "Browse all refs",
-    description: "Profiles across seasons",
-  },
-  {
-    href: "/cbb/trends",
-    label: "League trends",
-    description: "Season scoring and foul context",
-  },
-];
-
-const CFB_LINKS: BrowseLink[] = [
-  {
-    href: "/cfb/research",
-    label: "Research findings",
-    description: "CFB dataset patterns ranked by effect size",
-  },
-  {
-    href: "/cfb/rankings",
-    label: "Official tendency index",
-    description: "Penalty and scoring tendencies by referee",
-  },
-  {
-    href: "/cfb/teams",
-    label: "Program histories",
-    description: "Crew splits for tracked programs",
-  },
-  {
-    href: "/cfb/refs",
-    label: "Browse all refs",
-    description: "Profiles across seasons",
-  },
-  {
-    href: "/cfb/trends",
-    label: "League trends",
-    description: "Season scoring and penalty context",
-  },
-];
+function browseLinksForLeague(dataLeague: string): BrowseLink[] {
+  const entry = Object.values(LEAGUE_MANIFEST).find((m) => m.dataLeague === dataLeague);
+  if (!entry) return [];
+  const copy = BROWSE_COPY[entry.id];
+  if (!copy) return [];
+  const hrefs = [
+    researchViewHref(entry.id, "findings"),
+    researchViewHref(entry.id, "tendencies"),
+    leagueManifestPath(entry.id, "/teams"),
+    leagueManifestPath(entry.id, "/refs"),
+    researchViewHref(entry.id, "trends"),
+  ];
+  return copy.map((item, index) => ({ ...item, href: hrefs[index]! }));
+}
 
 export function BrowseActionCards({
   league,
   compact = false,
 }: {
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   compact?: boolean;
 }) {
-  const links =
-    league === "NBA"
-      ? NBA_LINKS
-      : league === "NFL"
-        ? NFL_LINKS
-        : league === "LALIGA"
-          ? LALIGA_LINKS
-          : league === "EPL"
-            ? EPL_LINKS
-            : league === "CBB"
-              ? CBB_LINKS
-              : league === "CFB"
-                ? CFB_LINKS
-                : NHL_LINKS;
+  const links = browseLinksForLeague(league);
   const gridClass = compact ? "browse-action-compact" : "browse-action-grid";
 
   return (
     <nav className={gridClass} aria-label="Browse historical data">
       {links.map((link, index) => (
-        <Link
+        <PrefetchLink
           key={link.href}
           href={link.href}
           className={compact ? "browse-action-compact-card" : "browse-action-card"}
@@ -256,7 +131,7 @@ export function BrowseActionCards({
             }
             aria-hidden
           />
-        </Link>
+        </PrefetchLink>
       ))}
     </nav>
   );

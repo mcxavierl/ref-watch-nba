@@ -19,6 +19,7 @@ import {
   rankScore,
 } from "@/lib/findings-shared";
 import { buildMarketExpectationAtsFinding } from "@/lib/findings-market";
+import { atsOutlierHeadline } from "@/lib/insight-headlines";
 import { pickFeaturedFindings, rankScoredFindings, weightedLeagueOverRate } from "@/lib/findings-significance";
 import { attachRegionalContextToFindings } from "@/lib/regional-context";
 import { prepareStatsForAtsAnalytics } from "@/lib/ref-market-expectation";
@@ -539,13 +540,16 @@ function atsOutlierFinding(stats: RefStatsFile): ScoredFindingBase | null {
 
   if (!best) return null;
 
-  const direction = best.coverRate >= 0.5 ? "covers" : "fails to cover";
   const record = best.ref.bettingStats!.homeTeamAts;
 
   return {
     id: "ats-outlier",
     category: "ats-edge",
-    headline: `${best.ref.name}: home teams ${direction} ${formatPctFromWlp(record.wins, record.losses, record.pushes)} ATS`,
+    headline: atsOutlierHeadline(
+      best.ref.name,
+      best.coverRate,
+      formatPctFromWlp(record.wins, record.losses, record.pushes),
+    ),
     summary: `Among ${best.games} lined games, home teams are ${formatWlpShort(record)} against the spread when ${best.ref.name} officiates, ${(best.edge * 100).toFixed(1)} pts from a neutral 50% split.`,
     explainer: `ATS splits require closing-line data. Where sportsbook lines are unavailable, estimated lines are used; treat as exploratory historical context only.`,
     stats: [

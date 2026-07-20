@@ -28,6 +28,10 @@ import {
   getRefStats as getCfbRefStats,
 } from "@/lib/cfb/data";
 import {
+  getAssignments as getWnbaAssignments,
+  getRefStats as getWnbaRefStats,
+} from "@/lib/wnba/data";
+import {
   getAssignments as getEplAssignments,
   getRefStats as getEplRefStats,
 } from "@/lib/epl/data";
@@ -96,7 +100,7 @@ export interface SyndicatedSignal {
 export interface NightlyFeed {
   generatedAt: string;
   slateDate: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA";
   isPreview: boolean;
   assignmentsSource: AssignmentsFile["source"];
   statsSource: RefStatsFile["meta"]["source"];
@@ -333,6 +337,25 @@ export function buildCfbNightlyFeed(): NightlyFeed {
   });
 }
 
+let wnbaFeedCache: NightlyFeed | null = null;
+export function buildWnbaNightlyFeed(): NightlyFeed {
+  if (wnbaFeedCache) return wnbaFeedCache;
+  const assignments = getWnbaAssignments();
+  const stats = getWnbaRefStats();
+  const { isPreview } = resolveSlateGames(assignments);
+  return (wnbaFeedCache = {
+    generatedAt: new Date().toISOString(),
+    slateDate: assignments.date,
+    league: "WNBA",
+    isPreview,
+    assignmentsSource: assignments.source,
+    statsSource: stats.meta.source,
+    pageUrl: absoluteUrl("/wnba"),
+    disclaimer: SYNDICATION_DISCLAIMER,
+    signals: [],
+  });
+}
+
 let eplFeedCache: NightlyFeed | null = null;
 export function buildEplNightlyFeed(): NightlyFeed {
   if (eplFeedCache) return eplFeedCache;
@@ -474,12 +497,20 @@ function assignmentsForLeague(
   switch (league) {
     case "NBA":
       return getNbaAssignments();
+    case "WNBA":
+      return getWnbaAssignments();
     case "NHL":
       return getNhlAssignments();
     case "NFL":
       return getNflAssignments();
     case "EPL":
       return getEplAssignments();
+    case "LALIGA":
+      return getLaligaAssignments();
+    case "CBB":
+      return getCbbAssignments();
+    case "CFB":
+      return getCfbAssignments();
     default:
       return getNbaAssignments();
   }
@@ -516,7 +547,7 @@ export function slateMetadataDescription(feed: NightlyFeed): string {
 const AFFILIATION_SHORT = "Not affiliated with the league. Informational only.";
 
 const SPORT_BY_LEAGUE: Record<
-  "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA",
   string
 > = {
   NBA: "Basketball",
@@ -526,10 +557,11 @@ const SPORT_BY_LEAGUE: Record<
   LALIGA: "Soccer",
   CBB: "Basketball",
   CFB: "American Football",
+  WNBA: "Basketball",
 };
 
 export function slateSportsEvents(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA",
 ): Array<Record<string, unknown>> {
   const assignments = assignmentsForLeague(league);
   const { games } = resolveSlateGames(assignments);
@@ -595,6 +627,7 @@ const SLATE_LEAGUE_ID: Record<
   LALIGA: "laliga",
   CBB: "cbb",
   CFB: "cfb",
+  WNBA: "wnba",
 };
 
 export function leagueHubArticleJsonLd(input: {
@@ -699,7 +732,7 @@ export function researchArticleJsonLd(
 }
 
 export function researchHubDatasetJsonLd(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   count: number,
   lastUpdated: string,
 ): Record<string, unknown> {
@@ -717,7 +750,7 @@ export function researchHubDatasetJsonLd(
 }
 
 export function researchHubArticleJsonLd(
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   count: number,
   lastUpdated: string,
 ): Record<string, unknown> {
@@ -738,7 +771,7 @@ export function researchHubArticleJsonLd(
 export function refProfileDatasetJsonLd(
   name: string,
   slug: string,
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
+  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB",
   games: number,
   lastUpdated: string,
 ): Record<string, unknown> {

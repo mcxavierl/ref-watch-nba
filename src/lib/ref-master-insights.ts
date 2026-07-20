@@ -253,7 +253,7 @@ function insightFromHighLeverage(profile: RefProfile): RefMasterInsight | null {
     kind: "high-leverage-penalty",
     pillLabel: "High-Leverage Impact",
     shortLine: `${formatSigned(delta)} leverage impact vs ${LEAGUE_AVG_HIGH_LEVERAGE_IMPACT} league avg`,
-    headline: `${direction.charAt(0).toUpperCase()}${direction.slice(1)} game-altering penalty impact`,
+    headline: `${direction.charAt(0).toUpperCase()}${direction.slice(1)} high-leverage penalty tendency`,
     summary:
       "Leverage-weighted scoring uses down, distance, field position, and WPA deltas - not raw flag counts.",
     confidence:

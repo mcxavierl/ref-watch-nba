@@ -24,6 +24,7 @@ import {
   computeMatrixExtremes,
   formatMatrixHighlightBaseline,
   type MatrixExtremeHighlight,
+  type RefTeamMatrix,
 } from "@/lib/ref-team-matrix";
 import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import {
@@ -34,9 +35,20 @@ import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
 
+import { buildLeagueStandoutCardsForLeague } from "@/lib/insights/league-card-from-stats";
 import { heroToneFromWinRateDelta } from "@/lib/metric-significance";
+import type { RefStatsFile } from "@/lib/types";
+import { applyClinicalTone } from "@/lib/insights/tone-filter";
 
 export type LeagueInsightTone = "positive" | "negative" | "neutral";
+
+/** Structured ref×team counts for homepage significance testing. */
+export type MatrixEdgeSignificance = {
+  refWins: number;
+  refGames: number;
+  baselineWins: number;
+  baselineGames: number;
+};
 
 export type LeagueInsightCard = {
   leagueId: LeagueId;
@@ -58,6 +70,8 @@ export type LeagueInsightCard = {
   refSlug?: string;
   teamAbbr?: string;
   drilldownId?: string;
+  /** Ref×team win counts for two-proportion significance (matrix-edge only). */
+  significance?: MatrixEdgeSignificance;
 };
 
 type LeagueInsightConfig = {
@@ -156,6 +170,17 @@ function formatDeltaPts(delta: number): string {
 
 export { buildLeagueInsightCardForLeague } from "@/lib/insights/league-card-from-stats";
 
+/** Strongest ref×team matrix split for league home pulse row. */
+export function buildTopMatrixSplitCardForLeague(
+  leagueId: VerifiedLiveLeagueId,
+  stats: RefStatsFile,
+): LeagueInsightCard | null {
+  const setup = LEAGUE_CONFIG[leagueId];
+  if (!setup || stats.refs.length === 0) return null;
+  const cards = buildLeagueStandoutCardsForLeague(leagueId, stats, setup);
+  return cards[0] ?? null;
+}
+
 function heroToneFromDelta(delta: number): LeagueInsightTone {
   return heroToneFromWinRateDelta(delta);
 }
@@ -172,8 +197,6 @@ function cardFromMatrix(
     highlight.baselineWinRate,
   );
   const deltaLabel = formatDeltaPts(highlight.deltaPts);
-  const direction =
-    highlight.deltaPts > 0 ? "beats" : highlight.deltaPts < 0 ? "trails" : "matches";
 
   return {
     leagueId,
@@ -181,7 +204,9 @@ function cardFromMatrix(
     shortLabel: config.shortLabel,
     kind: "matrix-edge",
     kicker: "Standout ref×team split",
-    headline: `${highlight.refName} ${direction === "beats" ? "boosts" : direction === "trails" ? "drags" : "shifts"} ${highlight.teamLabel} results in ${config.shortLabel} games`,
+    headline: applyClinicalTone(
+      `${highlight.teamLabel} games officiated by ${highlight.refName} have historically shown a ${deltaLabel} win-rate delta vs the team baseline in ${config.shortLabel}.`,
+    ),
     story: `${highlight.wins}-${highlight.losses} (${splitPct}) across ${highlight.games} games. Team sample without this ref: ${baselinePct} (${formatMatrixHighlightBaseline(highlight)}).`,
     heroValue: deltaLabel,
     heroLabel: "Win rate vs team baseline",
@@ -206,6 +231,12 @@ function cardFromMatrix(
       highlight.refSlug,
       highlight.teamAbbr,
     ),
+    significance: {
+      refWins: highlight.wins,
+      refGames: highlight.games,
+      baselineWins: highlight.baselineWins,
+      baselineGames: highlight.baselineGames,
+    },
   };
 }
 
@@ -268,6 +299,40 @@ function pickInsight(
   return null;
 }
 
+const MULTI_STANDOUT_LEAGUE_IDS = new Set<VerifiedLiveLeagueId>(["nba", "nfl", "epl"]);
+const MULTI_STANDOUT_MATRIX_LIMIT = 4;
+
+function sortMatrixHighlightsBySample(
+  highlights: MatrixExtremeHighlight[],
+): MatrixExtremeHighlight[] {
+  return [...highlights].sort((a, b) => {
+    if (b.games !== a.games) return b.games - a.games;
+    return Math.abs(b.deltaPts) - Math.abs(a.deltaPts);
+  });
+}
+
+function matrixStandoutCardsForLeague(
+  leagueId: VerifiedLiveLeagueId,
+  matrix: RefTeamMatrix,
+  limit: number,
+): LeagueInsightCard[] {
+  const highlights = sortMatrixHighlightsBySample(
+    computeMatrixExtremes(matrix, Math.max(limit * 4, 16)),
+  );
+  const cards: LeagueInsightCard[] = [];
+  const seen = new Set<string>();
+
+  for (const highlight of highlights) {
+    const key = `${highlight.refSlug}|${highlight.teamAbbr.toUpperCase()}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    cards.push(cardFromMatrix(leagueId, highlight));
+    if (cards.length >= limit) break;
+  }
+
+  return cards;
+}
+
 export function buildLeagueInsightCards(): LeagueInsightCard[] {
   const cards: LeagueInsightCard[] = [];
 
@@ -289,6 +354,18 @@ export function buildLeagueInsightCards(): LeagueInsightCard[] {
       8,
       { league: setup.matrixLeague },
     );
+    if (MULTI_STANDOUT_LEAGUE_IDS.has(leagueId)) {
+      const matrixCards = matrixStandoutCardsForLeague(
+        leagueId,
+        matrix,
+        MULTI_STANDOUT_MATRIX_LIMIT,
+      );
+      if (matrixCards.length > 0) {
+        cards.push(...matrixCards);
+        continue;
+      }
+    }
+
     const extreme = computeMatrixExtremes(matrix, 1)[0];
     const finding = setup.computeFindings(1)[0];
     const card = pickInsight(leagueId, extreme, finding);

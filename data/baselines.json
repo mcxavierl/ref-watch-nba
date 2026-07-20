@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-17T03:53:40.276Z",
-  "note": "Refreshed during copy-data-to-public",
+  "generatedAt": "2026-07-19T20:15:03.796Z",
+  "note": "Refreshed before volume regression check",
   "fallback": {
     "NBA": {
       "label": "NBA static fallback (empty or missing game logs)",
@@ -240,150 +240,6 @@
   "NFL": {
     "currentSeason": "2025-26",
     "seasons": {
-      "2000-01": {
-        "season": "2000-01",
-        "gameCount": 248,
-        "leagueAvgTotal": 41.3,
-        "leagueOverBaseline": 28,
-        "leagueAvgFouls": 12.6,
-        "leagueAvgPenaltyYards": 104.3,
-        "meanClosingTotal": 28
-      },
-      "2001-02": {
-        "season": "2001-02",
-        "gameCount": 248,
-        "leagueAvgTotal": 40.4,
-        "leagueOverBaseline": 30.6,
-        "leagueAvgFouls": 11.6,
-        "leagueAvgPenaltyYards": 97.9,
-        "meanClosingTotal": 30.6
-      },
-      "2002-03": {
-        "season": "2002-03",
-        "gameCount": 256,
-        "leagueAvgTotal": 43.3,
-        "leagueOverBaseline": 18.5,
-        "leagueAvgFouls": 13,
-        "leagueAvgPenaltyYards": 107.8,
-        "meanClosingTotal": 18.5
-      },
-      "2003-04": {
-        "season": "2003-04",
-        "gameCount": 251,
-        "leagueAvgTotal": 41.8,
-        "leagueOverBaseline": 30.3,
-        "leagueAvgFouls": 13.2,
-        "leagueAvgPenaltyYards": 109.3,
-        "meanClosingTotal": 30.3
-      },
-      "2004-05": {
-        "season": "2004-05",
-        "gameCount": 252,
-        "leagueAvgTotal": 42.8,
-        "leagueOverBaseline": 28.5,
-        "leagueAvgFouls": 13.9,
-        "leagueAvgPenaltyYards": 113.8,
-        "meanClosingTotal": 28.5
-      },
-      "2005-06": {
-        "season": "2005-06",
-        "gameCount": 255,
-        "leagueAvgTotal": 41.3,
-        "leagueOverBaseline": 29.8,
-        "leagueAvgFouls": 14.5,
-        "leagueAvgPenaltyYards": 116.1,
-        "meanClosingTotal": 29.8
-      },
-      "2006-07": {
-        "season": "2006-07",
-        "gameCount": 255,
-        "leagueAvgTotal": 41.3,
-        "leagueOverBaseline": 28.1,
-        "leagueAvgFouls": 11.9,
-        "leagueAvgPenaltyYards": 98,
-        "meanClosingTotal": 28.1
-      },
-      "2007-08": {
-        "season": "2007-08",
-        "gameCount": 256,
-        "leagueAvgTotal": 43.4,
-        "leagueOverBaseline": 28.1,
-        "leagueAvgFouls": 11.4,
-        "leagueAvgPenaltyYards": 89.7,
-        "meanClosingTotal": 28.1
-      },
-      "2008-09": {
-        "season": "2008-09",
-        "gameCount": 256,
-        "leagueAvgTotal": 44.1,
-        "leagueOverBaseline": 24,
-        "leagueAvgFouls": 11.2,
-        "leagueAvgPenaltyYards": 89.1,
-        "meanClosingTotal": 24
-      },
-      "2009-10": {
-        "season": "2009-10",
-        "gameCount": 256,
-        "leagueAvgTotal": 42.9,
-        "leagueOverBaseline": 31,
-        "leagueAvgFouls": 11.8,
-        "leagueAvgPenaltyYards": 97.2,
-        "meanClosingTotal": 31
-      },
-      "2010-11": {
-        "season": "2010-11",
-        "gameCount": 255,
-        "leagueAvgTotal": 44,
-        "leagueOverBaseline": 22.4,
-        "leagueAvgFouls": 12.1,
-        "leagueAvgPenaltyYards": 101.7,
-        "meanClosingTotal": 22.4
-      },
-      "2011-12": {
-        "season": "2011-12",
-        "gameCount": 256,
-        "leagueAvgTotal": 44.4,
-        "leagueOverBaseline": 31.1,
-        "leagueAvgFouls": 12.8,
-        "leagueAvgPenaltyYards": 108.4,
-        "meanClosingTotal": 31.1
-      },
-      "2012-13": {
-        "season": "2012-13",
-        "gameCount": 256,
-        "leagueAvgTotal": 45.5,
-        "leagueOverBaseline": 28.9,
-        "leagueAvgFouls": 12.5,
-        "leagueAvgPenaltyYards": 106.2,
-        "meanClosingTotal": 28.9
-      },
-      "2013-14": {
-        "season": "2013-14",
-        "gameCount": 256,
-        "leagueAvgTotal": 46.8,
-        "leagueOverBaseline": 29.6,
-        "leagueAvgFouls": 12.2,
-        "leagueAvgPenaltyYards": 105.3,
-        "meanClosingTotal": 29.6
-      },
-      "2014-15": {
-        "season": "2014-15",
-        "gameCount": 256,
-        "leagueAvgTotal": 45.2,
-        "leagueOverBaseline": 22.9,
-        "leagueAvgFouls": 13.2,
-        "leagueAvgPenaltyYards": 110.8,
-        "meanClosingTotal": 22.9
-      },
-      "2015-16": {
-        "season": "2015-16",
-        "gameCount": 256,
-        "leagueAvgTotal": 45.6,
-        "leagueOverBaseline": 30.2,
-        "leagueAvgFouls": 13.8,
-        "leagueAvgPenaltyYards": 117.3,
-        "meanClosingTotal": 30.2
-      },
       "2016-17": {
         "season": "2016-17",
         "gameCount": 279,
@@ -477,12 +333,12 @@
     },
     "aggregate": {
       "season": "all",
-      "gameCount": 6825,
-      "leagueAvgTotal": 44.3,
-      "leagueOverBaseline": 31,
-      "leagueAvgFouls": 12.5,
-      "leagueAvgPenaltyYards": 104.4,
-      "meanClosingTotal": 31
+      "gameCount": 2757,
+      "leagueAvgTotal": 45.6,
+      "leagueOverBaseline": 36.1,
+      "leagueAvgFouls": 12.4,
+      "leagueAvgPenaltyYards": 104.2,
+      "meanClosingTotal": 36.1
     },
     "usingFallback": false
   },

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { ArrowRight } from "lucide-react";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
@@ -44,57 +44,63 @@ function PaceCardBody({ card }: { card: LeagueOverviewCard }) {
 
   return (
     <>
-      <div className="overview-pace-card-head">
-        <div className="league-header league-header--compact">
-          <span className="overview-pace-label">{card.shortLabel}</span>
-          <LeagueSeasonStartBadge leagueId={card.leagueId} />
-        </div>
-        {pending && card.auditCoveragePct != null && card.auditHref ? (
-          <NcaaAuditStatusPill
-            coveragePct={card.auditCoveragePct}
-            auditHref={card.auditHref}
-            className="overview-pace-audit-pill"
-            asLabel
-          />
-        ) : null}
-        <span className="overview-pace-meta">
-          {formatCount(card.refCount)} refs · {card.seasonCount} seasons
-        </span>
-        {pending ? (
-          <p className="overview-pace-pending">
-            <StatusBadge
-              verdict="caution"
-              label={card.auditPendingLabel ?? "Pending Verification"}
-              compact
+      <div className="overview-pace-card-content flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden text-sm">
+        <div className="overview-pace-card-head min-w-0">
+          <div className="league-header league-header--compact min-w-0">
+            <span className="overview-pace-label truncate text-sm">{card.shortLabel}</span>
+            <LeagueSeasonStartBadge leagueId={card.leagueId} />
+          </div>
+          {pending && card.auditCoveragePct != null && card.auditHref ? (
+            <NcaaAuditStatusPill
+              coveragePct={card.auditCoveragePct}
+              auditHref={card.auditHref}
+              className="overview-pace-audit-pill"
+              asLabel
             />
-            <span className="overview-pace-pending-copy">
-              Detailed analytics locked
-            </span>
-          </p>
-        ) : null}
+          ) : null}
+          <span className="overview-pace-meta truncate text-xs">
+            {formatCount(card.refCount)} refs · {card.seasonCount} seasons
+          </span>
+          {pending ? (
+            <p className="overview-pace-pending text-xs">
+              <StatusBadge
+                verdict="caution"
+                label={card.auditPendingLabel ?? "Pending Verification"}
+                compact
+              />
+              <span className="overview-pace-pending-copy break-words">
+                Detailed analytics locked
+              </span>
+            </p>
+          ) : null}
+        </div>
+
+        {pending ? null : (
+          <>
+            <div className="overview-pace-metric min-w-0">
+              <div className="overview-pace-metric-head">
+                <span className="truncate whitespace-nowrap text-xs">{card.whistleLabel}</span>
+                <strong className="shrink-0 font-bold tabular-nums text-sm">
+                  {formatLeaguePaceValue(card.whistlePerGame)}
+                </strong>
+              </div>
+              <PaceBar leagueId={card.leagueId} track="whistle" rawValue={card.whistlePerGame} />
+            </div>
+
+            <div className="overview-pace-metric min-w-0">
+              <div className="overview-pace-metric-head">
+                <span className="truncate whitespace-nowrap text-xs">{card.scoreLabel}</span>
+                <strong className="shrink-0 font-bold tabular-nums text-sm">
+                  {formatLeaguePaceValue(card.scorePerGame)}
+                </strong>
+              </div>
+              <PaceBar leagueId={card.leagueId} track="score" rawValue={card.scorePerGame} />
+            </div>
+          </>
+        )}
       </div>
 
-      {pending ? null : (
-        <>
-          <div className="overview-pace-metric">
-            <div className="overview-pace-metric-head">
-              <span>{card.whistleLabel}</span>
-              <strong>{formatLeaguePaceValue(card.whistlePerGame)}</strong>
-            </div>
-            <PaceBar leagueId={card.leagueId} track="whistle" rawValue={card.whistlePerGame} />
-          </div>
-
-          <div className="overview-pace-metric">
-            <div className="overview-pace-metric-head">
-              <span>{card.scoreLabel}</span>
-              <strong>{formatLeaguePaceValue(card.scorePerGame)}</strong>
-            </div>
-            <PaceBar leagueId={card.leagueId} track="score" rawValue={card.scorePerGame} />
-          </div>
-        </>
-      )}
-
-      <span className="overview-pace-cta">
+      <span className="overview-pace-cta mt-auto shrink-0 text-xs uppercase tracking-wide">
         {pending ? "View audit status" : "Open hub"} <ArrowRight aria-hidden />
       </span>
     </>
@@ -130,27 +136,27 @@ export function OverviewLeaguePaceGrid({
 
         if (pending) {
           return (
-            <Link
+            <PrefetchLink
               key={card.leagueId}
               href={card.auditHref ?? card.href}
-              className="overview-pace-card overview-pace-card--pending"
+              className="overview-pace-card overview-pace-card--pending flex h-full min-h-0 flex-col overflow-hidden"
               data-league={card.leagueId}
               data-verification="audit-in-progress"
             >
               <PaceCardBody card={card} />
-            </Link>
+            </PrefetchLink>
           );
         }
 
         return (
-          <Link
+          <PrefetchLink
             key={card.leagueId}
             href={card.href}
-            className="overview-pace-card"
+            className="overview-pace-card flex h-full min-h-0 flex-col overflow-hidden"
             data-league={card.leagueId}
           >
             <PaceCardBody card={card} />
-          </Link>
+          </PrefetchLink>
         );
       })}
     </div>

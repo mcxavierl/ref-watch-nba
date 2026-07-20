@@ -15,16 +15,24 @@ import {
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
+import { InsightSplitMetrics } from "@/components/shared/InsightSplitMetrics";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import {
   editorialInsightView,
   insightMetricComparison,
+  parseGamesFromCard,
 } from "@/lib/insight-editorial";
+import {
+  homepageInsightKicker,
+} from "@/lib/homepage-insight-gates";
 import { leagueHubHref, type LeagueId } from "@/lib/leagues";
 import { whistleIndexFromInsightCard } from "@/lib/whistle-index";
+import { STANDOUT_SPLIT_FOOTNOTE, formatSampleSizeLabel } from "@/lib/data-maturity";
 import { InsightCardShell } from "@/components/shared/InsightCardShell";
 import { InsightMetricComparison } from "@/components/shared/InsightMetricComparison";
+import { InsightTeamMark } from "@/components/shared/InsightTeamMark";
 import "@/components/insight-card.css";
 
 const InsightDrilldownModal = dynamic(
@@ -49,6 +57,7 @@ type InsightCardProps = {
   index?: number;
   active?: boolean;
   className?: string;
+  showHubLink?: boolean;
 };
 
 /** Enforce spaced hyphens instead of em/en dashes in carousel copy. */
@@ -73,6 +82,26 @@ function comparisonImpactTone(
   return "neutral";
 }
 
+function InsightHonestyFootnote({
+  editorial,
+}: {
+  editorial: ReturnType<typeof editorialInsightView>;
+}) {
+  if (!editorial.showHonestyFootnote && !editorial.isPreliminary) return null;
+
+  return (
+    <p className="data-honesty-footnote insight-editorial-footnote">
+      {STANDOUT_SPLIT_FOOTNOTE}
+    </p>
+  );
+}
+
+function insightTeamMarkSize(
+  variant: "featured" | "trend" | "quick" | "carousel",
+): "md" | "lg" {
+  return variant === "featured" || variant === "carousel" ? "lg" : "md";
+}
+
 function InsightCardMeta({
   card,
   compact = false,
@@ -91,6 +120,7 @@ function InsightCardMeta({
           compact={compact}
           crewImpactTone={comparisonImpactTone(comparison)}
           isAdjusted={editorial.isAdjusted}
+          sampleGames={parseGamesFromCard(card)}
         />
       ) : null}
     </div>
@@ -101,10 +131,12 @@ function CarouselInsightCard({
   card,
   active,
   className,
+  showHubLink = true,
 }: {
   card: LeagueInsightCard;
   active: boolean;
   className?: string;
+  showHubLink?: boolean;
 }) {
   const Icon = STORY_ICONS[card.leagueId] ?? Flame;
   const editorial = editorialInsightView(card);
@@ -124,10 +156,20 @@ function CarouselInsightCard({
 
       <div className="overview-top-story-copy">
         <header className="overview-top-story-meta">
-          <span className="overview-top-story-meta-pill">
-            <LeagueNavMark league={card.leagueId} />
-            <span>{carouselMetaLabel(card)}</span>
-          </span>
+          <div className="overview-top-story-meta-band">
+            <span className="overview-top-story-meta-pill">
+              <LeagueNavMark league={card.leagueId} />
+              <span>{carouselMetaLabel(card)}</span>
+            </span>
+            {card.teamAbbr ? (
+              <InsightTeamMark
+                leagueId={card.leagueId}
+                teamAbbr={card.teamAbbr}
+                teamLabel={card.teamLabel}
+                size="lg"
+              />
+            ) : null}
+          </div>
         </header>
 
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-6">
@@ -158,6 +200,8 @@ function CarouselInsightCard({
 
             <InsightCardMeta card={card} />
 
+            <InsightHonestyFootnote editorial={editorial} />
+
             <div className="overview-top-story-actions">
               {card.links[0] ? (
                 <Link href={card.links[0].href} className="overview-top-story-link">
@@ -165,12 +209,14 @@ function CarouselInsightCard({
                   <ArrowRight aria-hidden />
                 </Link>
               ) : null}
-              <Link
-                href={leagueHubHref(card.leagueId)}
-                className="overview-top-story-link overview-top-story-link--muted"
-              >
-                Open {card.shortLabel} hub
-              </Link>
+              {showHubLink ? (
+                <Link
+                  href={leagueHubHref(card.leagueId)}
+                  className="overview-top-story-link overview-top-story-link--muted"
+                >
+                  Open {card.shortLabel} hub
+                </Link>
+              ) : null}
             </div>
           </div>
         </div>
@@ -184,11 +230,13 @@ function EditorialInsightCard({
   variant,
   index = 0,
   className,
+  showHubLink = true,
 }: {
   card: LeagueInsightCard;
   variant: "featured" | "trend" | "quick";
   index?: number;
   className?: string;
+  showHubLink?: boolean;
 }) {
   const [drilldownOpen, setDrilldownOpen] = useState(false);
   const drilldownEnabled = Boolean(card.drilldownId);
@@ -197,6 +245,7 @@ function EditorialInsightCard({
   const whistleIndex =
     variant === "featured" ? whistleIndexFromInsightCard(card) : null;
   const metaCompact = variant === "quick";
+  const isCompactEditorial = variant === "quick" || variant === "trend";
 
   function openDrilldown() {
     if (!drilldownEnabled) return;
@@ -214,14 +263,30 @@ function EditorialInsightCard({
         style={{ "--insight-index": index } as CSSProperties}
       >
         <header className="insight-editorial-head">
-          <div className="insight-editorial-head-row">
-            <span className="insight-editorial-league">
-              <LeagueNavMark league={card.leagueId} />
-              <span>{card.shortLabel}</span>
-            </span>
-            <LeagueSeasonStartBadge leagueId={card.leagueId} />
+          <div className="insight-editorial-head-band">
+            <div className="insight-editorial-head-meta">
+              <div className="insight-editorial-head-row">
+                <span className="insight-editorial-league">
+                  <LeagueNavMark league={card.leagueId} />
+                  <span>{card.shortLabel}</span>
+                </span>
+                {variant !== "trend" ? (
+                  <LeagueSeasonStartBadge leagueId={card.leagueId} />
+                ) : null}
+              </div>
+              <p className="insight-editorial-kicker">
+                {normalizeCarouselCopy(homepageInsightKicker(card))}
+              </p>
+            </div>
+            {card.teamAbbr ? (
+              <InsightTeamMark
+                leagueId={card.leagueId}
+                teamAbbr={card.teamAbbr}
+                teamLabel={card.teamLabel}
+                size={insightTeamMarkSize(variant)}
+              />
+            ) : null}
           </div>
-          <p className="insight-editorial-kicker">{normalizeCarouselCopy(card.kicker)}</p>
         </header>
 
         <button
@@ -232,34 +297,57 @@ function EditorialInsightCard({
           aria-haspopup={drilldownEnabled ? "dialog" : undefined}
           aria-expanded={drilldownEnabled ? drilldownOpen : undefined}
         >
-          <h2 className="insight-editorial-headline">{editorial.headline}</h2>
+          <div className="insight-editorial-body-main">
+            <h2 className="insight-editorial-headline">{editorial.headline}</h2>
 
-          {whistleIndex !== null ? (
-            <WhistleIndexGauge index={whistleIndex} size="lg" className="insight-editorial-whistle-index" />
-          ) : null}
+            {isCompactEditorial && editorial.whyItMatters ? (
+              <p className="insight-editorial-subheadline">
+                {editorial.whyItMatters}
+              </p>
+            ) : null}
 
-          <div className="insight-editorial-metrics">
-            <div className="insight-editorial-metric insight-editorial-metric--primary">
-              <span className="insight-editorial-metric-value">{editorial.primaryMetric.value}</span>
-              <span className="insight-editorial-metric-label">
-                {normalizeCarouselCopy(editorial.primaryMetric.label)}
-              </span>
-            </div>
-            {editorial.secondaryMetric ? (
-              <div className="insight-editorial-metric insight-editorial-metric--secondary">
-                <span className="insight-editorial-metric-value">
-                  {editorial.secondaryMetric.value}
-                </span>
-                <span className="insight-editorial-metric-label">
-                  {normalizeCarouselCopy(editorial.secondaryMetric.label)}
-                </span>
+            {whistleIndex !== null ? (
+              <WhistleIndexGauge index={whistleIndex} size="lg" className="insight-editorial-whistle-index" />
+            ) : null}
+
+            {card.kind === "matrix-edge" ? (
+              <InsightSplitMetrics
+                sampleMetric={{
+                  value: formatSampleSizeLabel(editorial.sampleGames),
+                  label: "Sample size (N)",
+                }}
+                deltaMetric={editorial.primaryMetric}
+                compact={isCompactEditorial}
+              />
+            ) : (
+              <div className="insight-editorial-metrics">
+                <div className="insight-editorial-metric insight-editorial-metric--primary">
+                  <span className="insight-editorial-metric-value">{editorial.primaryMetric.value}</span>
+                  <span className="insight-editorial-metric-label">
+                    {normalizeCarouselCopy(editorial.primaryMetric.label)}
+                  </span>
+                </div>
+                {editorial.secondaryMetric ? (
+                  <div className="insight-editorial-metric insight-editorial-metric--secondary">
+                    <span className="insight-editorial-metric-value">
+                      {editorial.secondaryMetric.value}
+                    </span>
+                    <span className="insight-editorial-metric-label">
+                      {normalizeCarouselCopy(editorial.secondaryMetric.label)}
+                    </span>
+                  </div>
+                ) : null}
               </div>
+            )}
+
+            <InsightCardMeta card={card} compact={metaCompact} />
+
+            <InsightHonestyFootnote editorial={editorial} />
+
+            {!isCompactEditorial ? (
+              <p className="insight-editorial-why">{editorial.whyItMatters}</p>
             ) : null}
           </div>
-
-          <InsightCardMeta card={card} compact={metaCompact} />
-
-          <p className="insight-editorial-why">{editorial.whyItMatters}</p>
         </button>
 
         <footer className="insight-editorial-footer">
@@ -269,12 +357,14 @@ function EditorialInsightCard({
               <ArrowRight aria-hidden />
             </Link>
           ) : null}
-          <Link
-            href={leagueHubHref(card.leagueId)}
-            className="insight-editorial-link insight-editorial-link--muted"
-          >
-            Open {card.shortLabel} hub
-          </Link>
+          {showHubLink ? (
+            <Link
+              href={leagueHubHref(card.leagueId)}
+              className="insight-editorial-link insight-editorial-link--muted"
+            >
+              Open {card.shortLabel} hub
+            </Link>
+          ) : null}
         </footer>
       </InsightCardShell>
 
@@ -317,11 +407,23 @@ function InlineInsightCard({
         style={{ "--insight-index": index } as CSSProperties}
       >
         <header className="insight-card-head">
-          <div className="insight-card-head-row">
-            <span className="insight-card-league">{card.shortLabel}</span>
-            <LeagueSeasonStartBadge leagueId={card.leagueId} />
+          <div className="insight-card-head-band">
+            <div className="insight-card-head-meta">
+              <div className="insight-card-head-row">
+                <span className="insight-card-league">{card.shortLabel}</span>
+                <LeagueSeasonStartBadge leagueId={card.leagueId} />
+              </div>
+              <p className="insight-card-kicker">{card.kicker}</p>
+            </div>
+            {card.teamAbbr ? (
+              <InsightTeamMark
+                leagueId={card.leagueId}
+                teamAbbr={card.teamAbbr}
+                teamLabel={card.teamLabel}
+                size="md"
+              />
+            ) : null}
           </div>
-          <p className="insight-card-kicker">{card.kicker}</p>
         </header>
 
         <button
@@ -356,6 +458,8 @@ function InlineInsightCard({
           ) : null}
 
           <InsightCardMeta card={card} compact />
+
+          <InsightHonestyFootnote editorial={editorial} />
 
           <div className="mt-3">
             <h3 className="insight-card-headline">{editorial.headline}</h3>
@@ -412,6 +516,7 @@ export const InsightCard = memo(function InsightCard({
   index,
   active = true,
   className,
+  showHubLink = true,
 }: InsightCardProps) {
   if (variant === "featured" || variant === "trend" || variant === "quick") {
     return (
@@ -420,13 +525,19 @@ export const InsightCard = memo(function InsightCard({
         variant={variant}
         index={index}
         className={className}
+        showHubLink={showHubLink}
       />
     );
   }
 
   if (variant === "carousel") {
     return (
-      <CarouselInsightCard card={card} active={active} className={className} />
+      <CarouselInsightCard
+        card={card}
+        active={active}
+        className={className}
+        showHubLink={showHubLink}
+      />
     );
   }
 

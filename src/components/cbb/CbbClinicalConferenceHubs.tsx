@@ -1,4 +1,9 @@
+import Link from "next/link";
 import { getConferenceCoverageRows } from "@/lib/ncaa-conference-coverage";
+import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";
+import { cbbTrendsConferenceSlug } from "@/lib/cbb/conference-trends-shared";
+import type { LiveNcaaConferenceId } from "@/lib/ncaa-conference-gate";
+import "@/components/conference-coverage.css";
 import "./cbb-clinical.css";
 
 export function CbbClinicalConferenceHubs() {
@@ -15,7 +20,16 @@ export function CbbClinicalConferenceHubs() {
       <ul className="cbb-clinical-conference-tags" role="list">
         {coverageRows.map((row) => (
           <li key={row.conferenceId}>
-            <span className="cbb-clinical-conference-tag">{row.conferenceId}</span>
+            <Link
+              href={`/cbb?conference=${cbbTrendsConferenceSlug(row.conferenceId)}`}
+              className="cbb-clinical-conference-tag cbb-clinical-conference-tag-link"
+            >
+              <NcaaConferenceLogo
+                conferenceId={row.conferenceId as LiveNcaaConferenceId}
+                size={22}
+              />
+              <span>{row.conferenceId}</span>
+            </Link>
           </li>
         ))}
       </ul>

@@ -5,9 +5,12 @@ import {
   COLLEGE_LIVE_LEAGUE_IDS,
   isCollegeLiveLeague,
   isNcaaConferenceGatedLive,
+  isProAssignmentsLiveLeague,
+  isProVerifiedLiveLeague,
   isVerifiedLiveLeague,
   LAUNCHED_NCAA_LEAGUE_IDS,
   OVERVIEW_HUB_LEAGUE_IDS,
+  PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS,
   PRO_ONLY_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
@@ -27,15 +30,24 @@ describe("verified live leagues", () => {
     assert.equal(isVerifiedLiveLeague("cfb"), false);
   });
 
-  it("orders overview hub leagues with CBB beside La Liga", () => {
+  it("orders overview hub leagues with WNBA before CBB", () => {
     assert.deepEqual([...OVERVIEW_HUB_LEAGUE_IDS], [
       "nba",
       "nhl",
       "nfl",
       "epl",
       "laliga",
+      "wnba",
       "cbb",
     ]);
+  });
+
+  it("launches WNBA on slate before ref-stats ingest is verified", () => {
+    assert.deepEqual([...PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS], ["wnba"]);
+    assert.equal(isProAssignmentsLiveLeague("wnba"), true);
+    assert.equal(isProVerifiedLiveLeague("wnba"), false);
+    assert.equal(isVerifiedLiveLeague("wnba"), true);
+    assert.ok((VERIFIED_LIVE_LEAGUE_IDS as readonly string[]).includes("wnba"));
   });
 
   it("keeps pro-only leagues separate from college launch list", () => {

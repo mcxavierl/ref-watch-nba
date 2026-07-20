@@ -3,7 +3,7 @@ import { BrowseActionCards } from "@/components/BrowseActionCards";
 import { FindingsSection } from "@/components/FindingsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueSlateHero } from "@/components/LeagueSlateHero";
-import { ProComingSoonTease } from "@/components/ProComingSoonTease";
+import { LeagueHubUpcomingSlateSection } from "@/components/LeagueHubUpcomingSlateSection";
 import { RelatedInsightsFooter } from "@/components/RelatedInsightsFooter";
 import { SlateFeatureShowcase } from "@/components/SlateFeatureShowcase";
 import { SlateQuickLookupSection } from "@/components/SlateQuickLookupSection";
@@ -47,6 +47,7 @@ import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
+import { buildLeagueUpcomingSlateFromAssignments } from "@/lib/overview-upcoming-slate";
 
 export const NBA_SLATE_PATH = "/nba";
 
@@ -87,6 +88,7 @@ export async function NbaSlatePage({
   const odds = getOdds();
   const findings = computeFindings(6, scoped.scopedSeasons, { hub: true });
   const isOffseason = assignments.games.length === 0;
+  const upcomingSlate = buildLeagueUpcomingSlateFromAssignments("nba", assignments);
   const { games: slateGames } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
@@ -120,6 +122,8 @@ export async function NbaSlatePage({
         showScopeToggle={isOffseason}
         scopeLabel={scoped.scopeLabel}
       />
+
+      <LeagueHubUpcomingSlateSection slate={upcomingSlate} leagueLabel="NBA" />
 
       {isOffseason && <SlateFeatureShowcase />}
 
@@ -194,7 +198,6 @@ export async function NbaSlatePage({
 
       <RelatedInsightsFooter league="NBA" />
 
-      <ProComingSoonTease league="NBA" compact={isOffseason} />
     </div>
   );
 }

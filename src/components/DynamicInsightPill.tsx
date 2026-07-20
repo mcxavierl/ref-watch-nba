@@ -6,12 +6,7 @@ import {
   RefDashboardStatCell,
   RefDashboardStatGrid,
 } from "@/components/RefDashboardStatGrid";
-
-function confidenceClass(confidence: RefMasterInsight["confidence"]): string {
-  return confidence === "high"
-    ? "ref-master-insight-pill--high"
-    : "ref-master-insight-pill--moderate";
-}
+import { Pill } from "@/components/ui/Pill";
 
 export function DynamicInsightPill({
   insight,
@@ -26,27 +21,29 @@ export function DynamicInsightPill({
 
   if (!insight.interactive) {
     return (
-      <span
-        className={`ref-master-insight-pill ref-master-insight-pill--static ${confidenceClass(insight.confidence)}`}
+      <Pill
+        variant="insight"
+        confidence={insight.confidence}
+        static
         title={insight.shortLine}
       >
         {insight.pillLabel}
-      </span>
+      </Pill>
     );
   }
 
   return (
-    <button
-      type="button"
-      className={`ref-master-insight-pill rw-focus-visible ${confidenceClass(insight.confidence)}${
-        expanded ? " ref-master-insight-pill--active" : ""
-      }`}
+    <Pill
+      as="button"
+      variant="insight"
+      confidence={insight.confidence}
+      active={expanded}
       aria-expanded={expanded}
       aria-controls={panelId}
       onClick={onToggle}
     >
       {insight.pillLabel}
-    </button>
+    </Pill>
   );
 }
 

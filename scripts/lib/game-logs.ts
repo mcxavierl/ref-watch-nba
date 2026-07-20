@@ -12,13 +12,15 @@ export interface GameLogEntry {
   gameId: string;
   date: string;
   season: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "WNBA";
   homeTeam: string;
   awayTeam: string;
   homeScore: number;
   awayScore: number;
   totalPoints: number;
   totalFouls: number;
+  homeFouls?: number;
+  awayFouls?: number;
   homeMinors?: number;
   awayMinors?: number;
   homeFlags?: number;
@@ -36,21 +38,22 @@ export interface GameLogEntry {
 
 export interface GameLogFile {
   lastUpdated: string;
-  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA";
+  league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "WNBA";
   source: string;
   games: GameLogEntry[];
 }
 
-export function gameLogPath(league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA"): string {
+export function gameLogPath(league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "WNBA"): string {
   const root = path.join(process.cwd(), "data");
   if (league === "NBA") return path.join(root, "game-logs.json");
   if (league === "NFL") return path.join(root, "nfl", "game-logs.json");
   if (league === "EPL") return path.join(root, "epl", "game-logs.json");
   if (league === "LALIGA") return path.join(root, "laliga", "game-logs.json");
+  if (league === "WNBA") return path.join(root, "wnba", "game-logs.json");
   return path.join(root, "nhl", "game-logs.json");
 }
 
-export function loadGameLogs(league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA"): GameLogFile | null {
+export function loadGameLogs(league: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "WNBA"): GameLogFile | null {
   const filePath = gameLogPath(league);
   try {
     return JSON.parse(fs.readFileSync(filePath, "utf8")) as GameLogFile;
@@ -116,6 +119,9 @@ export function applyMarketLineShards(
   file: GameLogFile,
   root = process.cwd(),
 ): { file: GameLogFile; applied: number } {
+  if (file.league === "WNBA") {
+    return { file, applied: 0 };
+  }
   const index = buildMarketLineIndex(file.league, root);
   let applied = 0;
 

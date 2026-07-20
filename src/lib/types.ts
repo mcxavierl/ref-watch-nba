@@ -23,6 +23,10 @@ export interface AssignmentGame {
   homeTeam: string;
   league: "NBA" | "WNBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   crew: RefOfficial[];
+  /** ISO date for multi-day upcoming schedules (defaults to assignments file date). */
+  slateDate?: string;
+  /** Pre-season or exhibition/friendly; omitted for regular-season games. */
+  seasonStage?: "preseason" | "exhibition";
 }
 
 export interface AssignmentsFile {
@@ -243,6 +247,8 @@ export interface RefTeamStat {
   /** Exact W-L when sourced from Basketball-Reference or game logs. */
   wins?: number;
   losses?: number;
+  /** NFL regulation ties excluded from W and L. */
+  ties?: number;
   /** ATS cover record when closing lines are available for ref×team games. */
   atsWins?: number;
   atsLosses?: number;
@@ -336,7 +342,7 @@ export interface RefProfile {
   homeCoverRate: number | null;
   totalPointsDelta: number;
   foulsDelta: number;
-  /** Game-State Neutralization Index (0-100). Undefined when high-leverage sample < 50 min. */
+  /** Game-State Index (GSNI). Undefined when high-leverage sample < 50 min. */
   referee_gsni?: number;
   /** Per-game weighted foul deviation spread. Undefined when GSNI is withheld. */
   referee_gsni_volatility?: number;

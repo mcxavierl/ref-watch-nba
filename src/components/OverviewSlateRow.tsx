@@ -1,46 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
-import type { LeagueId } from "@/lib/leagues";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
-import { getTeam as getCbbTeam } from "@/lib/cbb/teams";
-import { getTeam as getCfbTeam } from "@/lib/cfb/teams";
-import { getTeam as getEplTeam } from "@/lib/epl/teams";
-import { getTeam as getLaligaTeam } from "@/lib/laliga/teams";
-import { getTeam as getNflTeam } from "@/lib/nfl/teams";
-import { getTeam as getNhlTeam } from "@/lib/nhl/teams";
-import { getTeam as getNbaTeam } from "@/lib/teams";
-
-type TeamLike = { abbr: string; name: string; nbaId?: number; logoUrl?: string };
-
-type TeamLogoSport = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
-
-function teamLogoSport(leagueId: LeagueId): TeamLogoSport {
-  if (leagueId === "wnba" || leagueId === "mlb") return "nba";
-  return leagueId;
-}
-
-function resolveTeam(leagueId: LeagueId, abbr: string): TeamLike {
-  const key = abbr.toUpperCase();
-  const team =
-    leagueId === "nba"
-      ? getNbaTeam(key)
-      : leagueId === "nhl"
-        ? getNhlTeam(key)
-        : leagueId === "nfl"
-          ? getNflTeam(key)
-          : leagueId === "epl"
-            ? getEplTeam(key)
-            : leagueId === "laliga"
-              ? getLaligaTeam(key)
-              : leagueId === "cbb"
-                ? getCbbTeam(key)
-                : getCfbTeam(key);
-
-  return team ?? { abbr: key, name: key };
-}
+import {
+  formatSlateDateLabel,
+  resolveSlateTeam,
+  slateTeamLogoSport,
+} from "@/lib/slate-team-display";
 
 export function OverviewSlateRow({
   game,
@@ -49,33 +16,49 @@ export function OverviewSlateRow({
   game: OverviewSlateEntry;
   showHubLink?: boolean;
 }) {
-  const awayTeam = resolveTeam(game.leagueId, game.awayTeam);
-  const homeTeam = resolveTeam(game.leagueId, game.homeTeam);
-  const dateLabel = game.slateDate
-    ? new Date(`${game.slateDate}T12:00:00`).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      })
-    : null;
+  const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
+  const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
+  const dateLabel = formatSlateDateLabel(game.slateDate);
 
   return (
     <li className="overview-slate-row" data-league={game.leagueId} data-status={game.status}>
-      <div className="overview-slate-row-main">
-        <span className="overview-slate-league-mark" aria-hidden>
-          <LeagueNavMark league={game.leagueId} active={false} />
-        </span>
+      <div className="overview-slate-row-inner">
+      <div className="overview-slate-row-matchup-block">
         <span
-          className="overview-slate-matchup-logos"
+          className="overview-slate-row-matchup"
           aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
         >
-          <TeamLogo team={awayTeam} sport={teamLogoSport(game.leagueId)} size="sm" />
-          <span className="overview-slate-matchup-at" aria-hidden>
+          <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <span className="overview-slate-row-at" aria-hidden>
             @
           </span>
-          <TeamLogo team={homeTeam} sport={teamLogoSport(game.leagueId)} size="sm" />
+          <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <span className="overview-slate-row-names">
+            {awayTeam.abbr} @ {homeTeam.abbr}
+          </span>
         </span>
+        {game.seasonStageNote ? (
+          <span className="overview-slate-row-season-stage">{game.seasonStageNote}</span>
+        ) : null}
+        {game.gameContextLine ? (
+          <span className="overview-slate-row-game-context">{game.gameContextLine}</span>
+        ) : game.lastMeetingLine ? (
+          <span className="overview-slate-row-last-meeting">{game.lastMeetingLine}</span>
+        ) : null}
+        {!game.gameContextLine && game.teamContextLine ? (
+          <span className="overview-slate-row-team-context">{game.teamContextLine}</span>
+        ) : null}
+        {game.officialsLine ? (
+          <span className="overview-slate-row-officials">{game.officialsLine}</span>
+        ) : null}
+      </div>
         {game.status === "scheduled" && dateLabel ? (
           <span className="overview-slate-date">{dateLabel}</span>
+        ) : null}
+        {showHubLink ? (
+          <Link href={game.href} className="overview-slate-row-link">
+            Open slate
+          </Link>
         ) : null}
       </div>
       {game.matchupInsight ? (
@@ -93,11 +76,6 @@ export function OverviewSlateRow({
           `${game.crewCount}-person crew`
         )}
       </p>
-      {showHubLink ? (
-        <Link href={game.href} className="overview-slate-row-link">
-          Open {game.leagueShortLabel} hub
-        </Link>
-      ) : null}
     </li>
   );
 }

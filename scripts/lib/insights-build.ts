@@ -1,8 +1,8 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "../../src/lib/league-verification";
+import { OVERVIEW_INSIGHT_LEAGUE_IDS } from "../../src/lib/league-verification";
 import { slimLeagueStatsToRefStatsFile } from "../../src/lib/insights/insight-input-slim";
-import { buildLeagueInsightCardForLeague } from "../../src/lib/insights/league-card-from-stats";
+import { buildLeagueStandoutCardsForLeague } from "../../src/lib/insights/league-card-from-stats";
 import {
   generateTopStoriesFromCandidates,
   hydrateOutlierCandidates,
@@ -19,7 +19,7 @@ import {
   loadSlimLeagueStatsForInsights,
   tryClearDataModuleCaches,
   tryRunGc,
-  type ProInsightLeagueId,
+  type OverviewInsightLeagueId,
 } from "./insights-data-loader";
 import {
   hasNcaaLiveConferenceCoverage,
@@ -51,7 +51,7 @@ export type InsightsBuildOptions = {
 type LeagueInsightCacheEntry = {
   sourceMtime: number;
   generatedAt: string;
-  leagueCard: LeagueInsightCard | null;
+  leagueCards: LeagueInsightCard[];
   outlierCandidates: CachedOutlierCandidate[];
 };
 
@@ -65,7 +65,7 @@ type InsightsCacheManifest = {
   >;
 };
 
-function leagueCachePath(leagueId: ProInsightLeagueId): string {
+function leagueCachePath(leagueId: OverviewInsightLeagueId): string {
   return path.join(cacheDir(), `${leagueId}.json`);
 }
 
@@ -87,13 +87,13 @@ function writeManifest(manifest: InsightsCacheManifest): void {
   fs.writeFileSync(manifestPath(), `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
-function writeLeagueCache(leagueId: ProInsightLeagueId, entry: LeagueInsightCacheEntry): void {
+function writeLeagueCache(leagueId: OverviewInsightLeagueId, entry: LeagueInsightCacheEntry): void {
   fs.mkdirSync(cacheDir(), { recursive: true });
   const cachePath = leagueCachePath(leagueId);
   fs.writeFileSync(cachePath, `${JSON.stringify(entry, null, 2)}\n`);
 }
 
-function readLeagueCache(leagueId: ProInsightLeagueId): LeagueInsightCacheEntry | null {
+function readLeagueCache(leagueId: OverviewInsightLeagueId): LeagueInsightCacheEntry | null {
   return readJsonFile<LeagueInsightCacheEntry>(leagueCachePath(leagueId));
 }
 
@@ -103,8 +103,8 @@ function readExistingGeneratedAt(): string | null {
 }
 
 type LeagueBuildResult = {
-  leagueId: ProInsightLeagueId;
-  leagueCard: LeagueInsightCard | null;
+  leagueId: OverviewInsightLeagueId;
+  leagueCards: LeagueInsightCard[];
   outlierCandidates: InsightOutlierCandidate[];
   regenerated: boolean;
   generatedAt: string;
@@ -112,7 +112,7 @@ type LeagueBuildResult = {
 };
 
 async function buildLeagueInsights(
-  leagueId: ProInsightLeagueId,
+  leagueId: OverviewInsightLeagueId,
   force: boolean,
 ): Promise<LeagueBuildResult> {
   const sourceMtime = getLeagueInsightSourceMtime(leagueId);
@@ -120,9 +120,12 @@ async function buildLeagueInsights(
 
   if (cached && cached.sourceMtime === sourceMtime) {
     console.log(`Insights: ${leagueId} cache hit`);
+    const leagueCards =
+      cached.leagueCards ??
+      ("leagueCard" in cached && cached.leagueCard ? [cached.leagueCard] : []);
     return {
       leagueId,
-      leagueCard: cached.leagueCard,
+      leagueCards,
       outlierCandidates: hydrateOutlierCandidates(cached.outlierCandidates),
       regenerated: false,
       generatedAt: cached.generatedAt,
@@ -146,13 +149,13 @@ async function buildLeagueInsights(
     const empty: LeagueInsightCacheEntry = {
       sourceMtime,
       generatedAt,
-      leagueCard: null,
+      leagueCards: [],
       outlierCandidates: [],
     };
     writeLeagueCache(leagueId, empty);
     return {
       leagueId,
-      leagueCard: null,
+      leagueCards: [],
       outlierCandidates: [],
       regenerated: true,
       generatedAt,
@@ -163,14 +166,14 @@ async function buildLeagueInsights(
   const setup = await loadLeagueGeneratorSetup(leagueId, slimBundle.getTeamSplits);
 
   const stats = slimLeagueStatsToRefStatsFile(slimBundle);
-  const leagueCard = buildLeagueInsightCardForLeague(leagueId, stats, setup);
+  const leagueCards = buildLeagueStandoutCardsForLeague(leagueId, stats, setup);
   const outlierCandidates = scanLeagueOutliersFromSlim(slimBundle, setup);
 
   const generatedAt = new Date().toISOString();
   writeLeagueCache(leagueId, {
     sourceMtime,
     generatedAt,
-    leagueCard,
+    leagueCards,
     outlierCandidates: serializeOutlierCandidates(outlierCandidates),
   });
 
@@ -180,7 +183,7 @@ async function buildLeagueInsights(
 
   return {
     leagueId,
-    leagueCard,
+    leagueCards,
     outlierCandidates,
     regenerated: true,
     generatedAt,
@@ -198,9 +201,9 @@ export async function buildOverviewInsightsPayload(
   let latestRegeneratedAt: string | null = null;
   const manifest = readManifest();
 
-  for (const leagueId of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
+  for (const leagueId of OVERVIEW_INSIGHT_LEAGUE_IDS) {
     const result = await buildLeagueInsights(leagueId, force);
-    if (result.leagueCard) cards.push(result.leagueCard);
+    if (result.leagueCards.length > 0) cards.push(...result.leagueCards);
     allCandidates.push(...result.outlierCandidates);
     if (result.regenerated) {
       anyRegenerated = true;
@@ -234,7 +237,7 @@ export async function buildOverviewInsightsPayload(
 }
 
 export function shouldSkipLeagueRegeneration(
-  leagueId: ProInsightLeagueId,
+  leagueId: OverviewInsightLeagueId,
   force: boolean,
 ): boolean {
   if (force) return false;

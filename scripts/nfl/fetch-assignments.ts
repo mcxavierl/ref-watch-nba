@@ -2,6 +2,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { AssignmentGame, AssignmentsFile, RefStatsFile } from "../../src/lib/types";
+import { seasonStageFromEspnSeason } from "../../src/lib/assignment-season-stage";
 import {
   fetchEspnScoreboard,
   fetchEspnSummary,
@@ -13,6 +14,7 @@ import {
 
 const outPath = path.join(process.cwd(), "data", "nfl", "assignments.json");
 const SCAN_DAYS = 45;
+const UPCOMING_LIMIT = 10;
 const SLATE_STATUSES = new Set([
   "STATUS_SCHEDULED",
   "STATUS_IN_PROGRESS",
@@ -54,52 +56,81 @@ function addDays(isoDate: string, days: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-async function findSlateDate(startDate: string): Promise<{
-  date: string;
-  eventIds: { id: string; awayAbbr: string; homeAbbr: string }[];
-}> {
-  for (let i = 0; i <= SCAN_DAYS; i++) {
-    const date = addDays(startDate, i);
-    const events = await fetchEspnScoreboard(yyyymmdd(date));
-    const slate = events.filter((event) => SLATE_STATUSES.has(event.status));
-    if (slate.length > 0) {
-      return {
-        date,
-        eventIds: slate.map((event) => ({
-          id: event.id,
-          awayAbbr: event.awayAbbr,
-          homeAbbr: event.homeAbbr,
-        })),
-      };
+type SlateEvent = {
+  id: string;
+  awayAbbr: string;
+  homeAbbr: string;
+  seasonType?: number;
+  seasonSlug?: string;
+  slateDate: string;
+};
+
+async function collectUpcomingPreseasonEvents(
+  startDate: string,
+): Promise<SlateEvent[]> {
+  const collected: SlateEvent[] = [];
+  const seen = new Set<string>();
+
+  for (let i = 0; i <= SCAN_DAYS && collected.length < UPCOMING_LIMIT; i++) {
+    const slateDate = addDays(startDate, i);
+    const events = await fetchEspnScoreboard(yyyymmdd(slateDate));
+    for (const event of events) {
+      if (!SLATE_STATUSES.has(event.status)) continue;
+      const seasonStage = seasonStageFromEspnSeason({
+        type: event.seasonType,
+        slug: event.seasonSlug,
+      });
+      if (seasonStage !== "preseason") continue;
+      if (seen.has(event.id)) continue;
+      seen.add(event.id);
+      collected.push({
+        id: event.id,
+        awayAbbr: event.awayAbbr,
+        homeAbbr: event.homeAbbr,
+        seasonType: event.seasonType,
+        seasonSlug: event.seasonSlug,
+        slateDate,
+      });
+      if (collected.length >= UPCOMING_LIMIT) break;
     }
     await sleep(80);
   }
-  return { date: startDate, eventIds: [] };
+
+  return collected;
 }
 
 async function main() {
   const requestedDate = torontoDate();
   console.log(
-    `Fetching NFL slate for ${requestedDate} (America/Toronto), scanning forward if empty...`,
+    `Fetching up to ${UPCOMING_LIMIT} NFL pre-season matchups from ${requestedDate} (America/Toronto)...`,
   );
 
   const roster = loadOfficialRoster();
-  const { date, eventIds } = await findSlateDate(requestedDate);
+  const events = await collectUpcomingPreseasonEvents(requestedDate);
   const games: AssignmentGame[] = [];
   const scheduledGames: AssignmentGame[] = [];
   let crewsPending = false;
 
-  for (const event of eventIds) {
+  for (const event of events) {
     await sleep(100);
     const summary = await fetchEspnSummary(event.id);
+    const seasonStage = seasonStageFromEspnSeason({
+      type: event.seasonType,
+      slug: event.seasonSlug,
+    });
+    const baseGame = {
+      id: event.id,
+      matchup: `${event.awayAbbr} @ ${event.homeAbbr}`,
+      awayTeam: event.awayAbbr,
+      homeTeam: event.homeAbbr,
+      league: "NFL" as const,
+      slateDate: event.slateDate,
+      ...(seasonStage ? { seasonStage } : {}),
+    };
     if (!summary || summary.officials.length === 0) {
       crewsPending = true;
       scheduledGames.push({
-        id: event.id,
-        matchup: `${event.awayAbbr} @ ${event.homeAbbr}`,
-        awayTeam: event.awayAbbr,
-        homeTeam: event.homeAbbr,
-        league: "NFL",
+        ...baseGame,
         crew: [],
       });
       continue;
@@ -107,39 +138,36 @@ async function main() {
 
     const crew = toRefOfficials(summary.officials, roster);
     games.push({
-      id: event.id,
-      matchup: `${event.awayAbbr} @ ${event.homeAbbr}`,
-      awayTeam: event.awayAbbr,
-      homeTeam: event.homeAbbr,
-      league: "NFL",
+      ...baseGame,
       crew,
     });
   }
 
-  const hasSlate = eventIds.length > 0;
+  const firstSlateDate = events[0]?.slateDate ?? requestedDate;
+  const hasSlate = events.length > 0;
   const note =
-    games.length > 0 && date !== requestedDate
-      ? `No games on ${requestedDate}; next slate with crews is ${date}.`
+    games.length > 0 && firstSlateDate !== requestedDate
+      ? `No games on ${requestedDate}; next pre-season slate is ${firstSlateDate}.`
       : games.length === 0 && hasSlate && crewsPending
-        ? `Next NFL slate is ${date} (${eventIds.length} game${eventIds.length === 1 ? "" : "s"} on ESPN). Crew assignments not published yet.`
+        ? `Next ${events.length} NFL pre-season matchups (${firstSlateDate} onward). Crew assignments not published yet.`
         : games.length === 0 && !hasSlate
-          ? `No NFL games found within ${SCAN_DAYS} days of ${requestedDate}.`
+          ? `No NFL pre-season games found within ${SCAN_DAYS} days of ${requestedDate}.`
           : undefined;
 
   const data: AssignmentsFile = {
     lastUpdated: new Date().toISOString(),
-    date: hasSlate ? date : requestedDate,
+    date: hasSlate ? firstSlateDate : requestedDate,
     source: games.length > 0 ? "espn" : hasSlate ? "espn" : "seeded",
     games,
     ...(scheduledGames.length > 0 ? { scheduledGames } : {}),
-    ...(hasSlate ? { nextSlateDate: date } : {}),
+    ...(hasSlate ? { nextSlateDate: firstSlateDate } : {}),
     ...(note ? { note } : {}),
   };
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, `${JSON.stringify(data, null, 2)}\n`);
   console.log(
-    `Wrote ${games.length} NFL game(s) to ${outPath} (slate date: ${data.date}, source: ${data.source})`,
+    `Wrote ${games.length} live + ${scheduledGames.length} scheduled NFL game(s) to ${outPath}`,
   );
   if (note) console.log(note);
 }

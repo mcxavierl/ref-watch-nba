@@ -74,7 +74,14 @@ export function SiteFooter({ league }: { league?: FooterLeague }) {
             <p className="site-footer-heading">Disclaimer</p>
             <p className="site-footer-body">
               Patterns from past games, not predictions. For research and
-              entertainment only. Not betting advice.
+              entertainment only. Not betting advice. ATS/O-U uses nflverse
+              historical closing lines on matched games only, not live
+              sportsbook prices. Treat as exploratory historical context, not
+              picks.{" "}
+              <Link href="/methodology" className="site-footer-inline-link">
+                Methodology
+              </Link>
+              .
             </p>
             {config.notifyLeague ? (
               <p className="mt-3 site-footer-body">
@@ -85,6 +92,9 @@ export function SiteFooter({ league }: { league?: FooterLeague }) {
         </div>
       </div>
       <GamblingDisclaimer />
+      <p className="site-footer-copyright">
+        © 2026 Ref Watch. All rights reserved.
+      </p>
     </footer>
   );
 }

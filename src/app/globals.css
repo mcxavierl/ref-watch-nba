@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "../styles/theme-tokens.css";
+@import "../styles/a11y-utilities.css";
+@import "../styles/clinical-doc-tokens.css";
 @import "../styles/kpi-data-pill.css";
+@import "../styles/pill-constraints.css";
+@import "../styles/season-highlights-delight.css";
 
 @custom-variant dark (&:where([data-color="dark"], [data-color="dark"] *));
 
@@ -115,14 +119,11 @@
 
   --measure-prose: 65ch;
   --measure-narrow: 42ch;
+  --page-max: 72rem;
 
   --font-heading: var(--font-inter), system-ui, sans-serif;
   --font-body: var(--font-inter), system-ui, sans-serif;
   --font-data: var(--font-inter), system-ui, sans-serif;
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-fast: 150ms;
-
-  /* Spacing — 4pt base */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -230,6 +231,10 @@
   --color-sky-900: #7dd3fc;
   --color-rose-50: #221015;
   --color-rose-800: #fda4af;
+
+  --color-champagne-300: #d4b06a;
+  --color-champagne-400: #c5a059;
+  --color-champagne-500: #c5a059;
 }
 
 body {
@@ -260,7 +265,13 @@ body {
   [data-matrix-cell],
   .ref-matrix-team-panel,
   .methodology-details,
-  #main-content
+  #main-content,
+  .stat-card,
+  .highlight-stat-card,
+  .clinical-metric-card,
+  .ref-profile-trend-card,
+  .profile-signal-card,
+  [data-stat-card="true"]
 ) {
   scroll-margin-top: var(--site-scroll-offset);
 }
@@ -1249,6 +1260,55 @@ p {
     color: var(--text-secondary);
   }
 
+  .ref-narrative-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .ref-narrative-outcome-grid {
+    display: grid;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .ref-narrative-outcome-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+
+  .ref-officiating-gauge-row {
+    display: grid;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  @media (min-width: 768px) {
+    .ref-officiating-gauge-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .ref-officiating-bias-grid {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    min-width: 0;
+  }
+
+  @media (min-width: 768px) {
+    .ref-officiating-bias-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .ref-officiating-bias-lead {
+    margin: 0;
+  }
+
   .ref-profile-trend-grid {
     display: grid;
     gap: var(--space-3);
@@ -1259,6 +1319,11 @@ p {
     .ref-profile-trend-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
+
+  .ref-profile-trend-grid--single,
+  .ref-profile-trend-grid--single.ref-profile-trend-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .ref-profile-trend-card {
@@ -1280,6 +1345,10 @@ p {
   }
 
   .ref-profile-trend-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
     min-width: 0;
   }
 
@@ -1592,9 +1661,94 @@ p {
   .clinical-metric-card-head {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    gap: 0.35rem 0.5rem;
+  }
+
+  .clinical-metric-card-head .ref-stat-label {
+    flex: 1 1 8rem;
+    min-width: 0;
+  }
+
+  .clinical-metric-card-head-actions {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
     gap: 0.35rem;
+    margin-left: auto;
+  }
+
+  .stat-card-share-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.65rem;
+    height: 1.65rem;
+    border: none;
+    border-radius: 0.45rem;
+    background: transparent;
+    color: rgb(100 116 139);
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .stat-card-share-btn:hover,
+  .stat-card-share-btn:focus-visible {
+    color: rgb(129 140 248);
+    background: rgb(238 242 255 / 0.65);
+    outline: none;
+  }
+
+  .stat-card-share-btn-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+
+  .stat-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .stat-card-header-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+    min-width: 0;
+  }
+
+  .profile-signal-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .ref-card-head .stat-card-share-btn,
+  .ref-profile-trend-card-head .stat-card-share-btn {
+    margin-left: auto;
+    align-self: flex-start;
+  }
+
+  .stat-card--hash-focus {
+    animation: stat-card-hash-focus 1.5s ease-out;
+  }
+
+  @keyframes stat-card-hash-focus {
+    0%,
+    18% {
+      box-shadow:
+        0 0 0 2px rgb(129 140 248 / 0.75),
+        0 0 24px rgb(129 140 248 / 0.28);
+    }
+
+    100% {
+      box-shadow: none;
+    }
   }
 
   .ref-table-section-header {
@@ -2269,7 +2423,8 @@ p {
   /* Optical boost for marks that read small inside the square plate */
   .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
   .team-logo-plate[data-sport="epl"] .team-logo-plate__img,
-  .team-logo-plate[data-sport="laliga"] .team-logo-plate__img {
+  .team-logo-plate[data-sport="laliga"] .team-logo-plate__img,
+  .team-logo-plate[data-sport="cbb"] .team-logo-plate__img {
     transform: scale(1.14);
   }
 
@@ -2331,7 +2486,7 @@ p {
   .ou-lean-badge {
     display: inline-flex;
     max-width: 100%;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 0.25rem 0.5rem;
     border-radius: 999px;
@@ -2352,11 +2507,19 @@ p {
   }
 
   .ou-lean-badge-label {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     font-weight: 500;
     color: var(--muted);
   }
 
   .ou-lean-badge-value {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     font-family: var(--font-data);
     font-variant-numeric: tabular-nums;
   }
@@ -2374,10 +2537,6 @@ p {
     line-height: var(--leading-relaxed);
     word-break: break-word;
     color: var(--text-secondary);
-  }
-
-  .profile-signal-badge {
-    align-self: flex-start;
   }
 
   .profile-signal-stat {
@@ -2494,7 +2653,6 @@ p {
     transition: background-color 150ms ease-out;
   }
 
-  .finding-accordion-stack--pro .finding-accordion-trigger-inner,
   .official-findings-single-body {
     display: flex;
     align-items: flex-start;
@@ -2513,35 +2671,6 @@ p {
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-3) var(--space-4);
-  }
-
-  .research-pro-toggle {
-    display: inline-flex;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    background: var(--surface);
-  }
-
-  .research-pro-toggle-btn {
-    padding: 0.35rem 0.75rem;
-    font-size: var(--text-xs);
-    font-weight: 600;
-    color: var(--muted-foreground);
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-  }
-
-  .research-pro-toggle-btn-active {
-    color: var(--foreground);
-    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-  }
-
-  .research-pro-lead {
-    margin-top: var(--space-2);
-    font-size: var(--text-sm);
-    color: var(--muted-foreground);
   }
 
   .edge-finder-cell {
@@ -2833,13 +2962,7 @@ p {
     color: color-mix(in srgb, var(--header-gold) 92%, var(--pill-ink));
   }
 
-  .finding-meta-pill--category[data-category="whistle-extreme"],
-  .finding-meta-pill--category[data-category="ref-outlier"] {
-    --pill-glow-accent: var(--metric-negative-ink);
-    border-color: color-mix(in srgb, var(--metric-negative-ink) 35%, var(--pill-border));
-    background: color-mix(in srgb, var(--metric-negative-ink) 10%, var(--pill-bg));
-    color: color-mix(in srgb, var(--metric-negative-ink) 88%, var(--pill-ink));
-  }
+  /* whistle-extreme / ref-outlier semantic pills — see season-highlights-delight.css */
 
   .finding-meta-pill--category[data-category="ou-edge"],
   .finding-meta-pill--category[data-category="ats-edge"] {
@@ -3144,6 +3267,97 @@ p {
     margin-bottom: 2rem;
   }
 
+  .super-bowl-insight-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .super-bowl-insight-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .super-bowl-officiating .rankings-insight-card {
+    border-color: rgb(30 41 59);
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--insight-accent, var(--muted)) 8%, transparent),
+        transparent 62%
+      ),
+      rgb(15 23 42);
+    box-shadow: 0 0 0 1px color-mix(in srgb, rgb(30 41 59) 80%, transparent);
+  }
+
+  .super-bowl-insight-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0.65rem;
+    padding: 1rem 1rem 1.05rem;
+  }
+
+  .super-bowl-insight-stat-title {
+    margin: 0;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .super-bowl-insight-metric-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.45rem 0.6rem;
+  }
+
+  .super-bowl-insight-variance-pill {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .super-bowl-insight-context {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  .super-bowl-insight-game-context {
+    margin: 0;
+  }
+
+  .super-bowl-insight-action {
+    margin-top: auto;
+    padding-top: 0.35rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: color-mix(in srgb, var(--header-sapphire) 90%, var(--text));
+    text-decoration: none;
+  }
+
+  .super-bowl-insight-action:hover {
+    text-decoration: underline;
+  }
+
+  .super-bowl-insight-action--muted {
+    margin-top: auto;
+    padding-top: 0.35rem;
+    color: var(--text-muted);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .super-bowl-officiating .rankings-insight-card {
+    border-color: #e2e8f0;
+    background: #ffffff;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+  }
+
   .finding-accordion-summary {
     padding: var(--space-4) var(--space-4) var(--space-2);
     font-size: var(--text-sm);
@@ -3234,7 +3448,6 @@ p {
   }
 
   .finding-angle-category {
-    flex-shrink: 0;
     margin: 0;
   }
 
@@ -3818,27 +4031,36 @@ p {
 
   @media (max-width: 767px) {
     .site-header-league {
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .site-header-league .league-nav {
       width: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .site-header-league .league-nav-scroll {
-      width: auto;
+      width: 100%;
       max-width: 100%;
-      margin-inline: auto;
+      margin-inline: 0;
+      -webkit-overflow-scrolling: touch;
+      scroll-padding-inline: 0.35rem;
+      mask-image: linear-gradient(
+        to right,
+        #000 0%,
+        #000 calc(100% - 1.5rem),
+        transparent 100%
+      );
     }
 
-    .site-header-league::after {
-      display: none;
-    }
-
-    .league-nav-scroll {
-      mask-image: none;
+    .site-chrome--scrolled .site-header-league .league-nav-scroll {
+      mask-image: linear-gradient(
+        to right,
+        #000 0%,
+        #000 calc(100% - 1.5rem),
+        transparent 100%
+      );
     }
   }
 
@@ -3856,8 +4078,12 @@ p {
       display: none;
     }
 
+    .league-nav-links {
+      gap: 0.08rem;
+    }
+
     .league-nav-link {
-      padding-inline: 0.45rem;
+      padding-inline: 0.4rem;
       min-height: 2.15rem;
     }
   }
@@ -4289,19 +4515,33 @@ p {
   }
 
   .league-nav-mark--nhl,
-  .league-nav-mark[data-league="nhl"],
-  .league-nav-mark--epl,
-  .league-nav-mark[data-league="epl"] {
+  .league-nav-mark[data-league="nhl"] {
     height: 1.1rem;
     max-width: 1.95rem;
   }
 
   .league-nav-mark--epl,
   .league-nav-mark[data-league="epl"] {
-    height: 1.05rem;
-    max-width: 1.35rem;
+    height: 1.35rem;
+    width: auto;
+    max-width: 1.75rem;
+    object-fit: contain;
+    object-position: center;
+    margin-inline: auto;
     filter: none;
     opacity: 1;
+  }
+
+  .league-nav-link .league-nav-mark--epl,
+  .league-nav-link .league-nav-mark[data-league="epl"] {
+    height: 1.4rem;
+    max-width: 1.85rem;
+    transform: translateX(1px);
+  }
+
+  .league-nav-link--active .league-nav-mark--epl,
+  .league-nav-link--active .league-nav-mark[data-league="epl"] {
+    transform: translateX(1px) scale(1.02);
   }
 
   .league-nav-mark--laliga,
@@ -5135,6 +5375,21 @@ p {
     border-radius: 2px;
   }
 
+  .site-footer-copyright {
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+    text-align: center;
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+
+  @media (min-width: 640px) {
+    .site-footer-copyright {
+      padding-inline: var(--space-6);
+    }
+  }
+
   /* ── CLS skeleton placeholders (reserve space before client hydration) ── */
   .cls-skeleton-panel,
   .cls-skeleton-line,
@@ -5163,6 +5418,76 @@ p {
     .cls-skeleton-panel,
     .cls-skeleton-line,
     .cls-skeleton-pill {
+      animation: none;
+    }
+  }
+
+  /* ── Route-level page skeleton + content fade-in ── */
+  .page-skeleton-hero {
+    margin-bottom: var(--space-6);
+    max-width: 48rem;
+  }
+
+  .page-skeleton-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .page-skeleton-grid--dashboard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .page-skeleton-grid--dashboard {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-skeleton-grid--dashboard {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .page-skeleton-grid--league-hub {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    .page-skeleton-grid--league-hub {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .page-skeleton-grid--ref-profile {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    .page-skeleton-grid--ref-profile {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
+  }
+
+  .page-skeleton-card--tall {
+    min-height: 18rem;
+  }
+
+  .page-content-fade-in {
+    animation: page-content-fade-in 500ms ease-out both;
+  }
+
+  @keyframes page-content-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-content-fade-in {
       animation: none;
     }
   }
@@ -5387,6 +5712,131 @@ p {
 
   .data-table-num{text-align:right;font-family:var(--font-data);font-weight:500;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;}
   .font-tabular{font-family:var(--font-data);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;}
+
+  /* Terminal standard: tabular numerals on all stat-data containers */
+  .stat-data-container {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  .stat-data-container .data-table-num,
+  .stat-data-container .font-tabular,
+  .stat-data-container .tabular-nums,
+  .stat-data-container .ref-stat-value,
+  .stat-data-container .metric-variance-primary,
+  .stat-data-container .metric-variance-pill-value,
+  .stat-data-container .team-ref-matrix-stat {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* Unified empty state for analytical tables */
+  .stat-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--space-5);
+    border-radius: 0.75rem;
+    border: 1px dashed color-mix(in srgb, var(--header-sapphire) 28%, var(--border));
+    background: color-mix(in srgb, var(--header-sapphire) 4%, var(--surface));
+    text-align: center;
+  }
+
+  .stat-empty-state-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    color: var(--muted);
+    opacity: 0.85;
+  }
+
+  .stat-empty-state-message {
+    margin: 0;
+    max-width: 22rem;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary, var(--muted));
+  }
+
+  .stat-empty-state-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.375rem;
+    border: 1px solid color-mix(in srgb, var(--header-sapphire) 35%, var(--border));
+    background: color-mix(in srgb, var(--header-sapphire) 8%, var(--surface));
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink-secondary);
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast) var(--ease-out-quart),
+      background var(--duration-fast) var(--ease-out-quart),
+      color var(--duration-fast) var(--ease-out-quart);
+  }
+
+  .stat-empty-state-reset:hover {
+    border-color: color-mix(in srgb, var(--header-sapphire) 50%, var(--border));
+    background: color-mix(in srgb, var(--header-sapphire) 12%, var(--surface));
+    color: var(--foreground);
+  }
+
+  /* Branded methodology bar above site footer */
+  .verified-analytics-bar {
+    border-top: 1px solid var(--border-subtle);
+    background: color-mix(in srgb, var(--header-sapphire) 6%, var(--surface-raised));
+  }
+
+  .verified-analytics-bar-inner {
+    margin-inline: auto;
+    max-width: 72rem;
+    padding: 0.65rem 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .verified-analytics-bar-inner {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  .verified-analytics-bar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color var(--duration-fast) ease-out;
+  }
+
+  .verified-analytics-bar-link:hover {
+    color: var(--header-sapphire, var(--raptors));
+  }
+
+  .verified-analytics-bar-link:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--header-sapphire) 50%, var(--border));
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .verified-analytics-bar-brand {
+    color: var(--foreground);
+  }
+
+  .verified-analytics-bar-sep {
+    opacity: 0.45;
+    font-weight: 400;
+  }
+
+  .verified-analytics-bar-tagline {
+    color: color-mix(in srgb, var(--header-sapphire) 75%, var(--muted));
+  }
+
   .dom-delta-positive{color:var(--metric-positive-muted);}
   .dom-delta-negative{color:var(--metric-negative-muted);}
 
@@ -5481,17 +5931,8 @@ p {
 
   .clinical-insight-matrix-kpi {
     font-size: 1.875rem;
-    font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.15;
-  }
-
-  .clinical-insight-matrix-card[data-tone="positive"] .clinical-insight-matrix-kpi.metric-delight-value--positive {
-    color: rgb(52 211 153);
-  }
-
-  .clinical-insight-matrix-card[data-tone="negative"] .clinical-insight-matrix-kpi.metric-delight-value--negative {
-    color: rgb(251 113 133);
   }
 
   .clinical-insight-matrix-baseline {
@@ -5552,6 +5993,247 @@ p {
     background: transparent;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+
+  .team-ref-filter-bar {
+    width: 100%;
+    max-width: 36rem;
+  }
+
+  .team-ref-filter-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .team-ref-matrix-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .master-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .team-ref-matrix-head,
+  .team-ref-matrix-row-main {
+    display: grid;
+    grid-template-columns: 1.5rem 1.75rem minmax(7rem, 1.6fr) minmax(4.5rem, 0.9fr) minmax(
+        5.5rem,
+        1fr
+      ) minmax(4.5rem, 0.75fr) minmax(4.5rem, 0.85fr);
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 22rem;
+  }
+
+  /* Pin each cell to its column so hiding the mobile expand control on desktop
+     does not shift ref names and win rates into the same grid track. */
+  .team-ref-matrix-rank,
+  .team-ref-matrix-head-rank {
+    grid-column: 1;
+  }
+
+  .team-ref-matrix-expand,
+  .team-ref-matrix-head-expand {
+    grid-column: 2;
+  }
+
+  .team-ref-matrix-ref,
+  .team-ref-matrix-head-ref {
+    grid-column: 3;
+    min-width: 0;
+  }
+
+  .team-ref-matrix-stat--win,
+  .team-ref-matrix-head > .team-ref-matrix-head-stat:nth-child(4) {
+    grid-column: 4;
+  }
+
+  .team-ref-matrix-stat--baseline,
+  .team-ref-matrix-head > .team-ref-matrix-head-stat:nth-child(5) {
+    grid-column: 5;
+  }
+
+  .team-ref-matrix-stat--close,
+  .team-ref-matrix-head > .team-ref-matrix-head-stat:nth-child(6) {
+    grid-column: 6;
+  }
+
+  .team-ref-matrix-stat--whistle,
+  .team-ref-matrix-head > .team-ref-matrix-head-stat:nth-child(7) {
+    grid-column: 7;
+  }
+
+  .team-ref-matrix-row {
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    padding: 0.5rem;
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    min-height: 0;
+  }
+
+  .team-ref-matrix-row-details {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem 0.75rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .team-ref-matrix-row-details-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .team-ref-matrix-row-details-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .team-ref-matrix-row-details-value {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .team-ref-matrix-expand,
+  .team-ref-matrix-head-expand {
+    display: none;
+  }
+
+  .master-table-expand-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .team-ref-matrix-head {
+    padding: 0 0.5rem 0.25rem;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .team-ref-matrix-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .team-ref-matrix-row {
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    padding: 0.5rem;
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    min-height: 0;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .team-ref-matrix-row {
+    background: #ffffff;
+    border-color: var(--card-border-light, rgba(226, 232, 240, 0.6));
+  }
+
+  .team-ref-matrix-rank {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .team-ref-matrix-ref-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .team-ref-matrix-ref-link:hover .team-ref-matrix-ref-name {
+    color: var(--raptors);
+    text-decoration: underline;
+  }
+
+  .team-ref-matrix-ref-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .team-ref-matrix-stat {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .team-ref-matrix-stat--positive {
+    color: var(--metric-positive-ink);
+  }
+
+  .team-ref-matrix-stat--negative {
+    color: var(--metric-negative-ink);
+  }
+
+  .team-ref-matrix-stat--neutral {
+    color: var(--text-primary);
+  }
+
+  .analytics-matrix-row {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: var(--text-sm);
+  }
+
+  .analytics-matrix-view .team-ref-matrix-row:hover {
+    border-color: color-mix(in srgb, var(--raptors) 25%, var(--border-subtle));
+    background: color-mix(in srgb, var(--surface) 92%, var(--raptors) 8%);
+  }
+
+  .team-ref-matrix-close-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: inherit;
+    cursor: help;
+    text-decoration: underline dotted;
+    text-underline-offset: 0.15em;
+  }
+
+  @media (max-width: 767px) {
+    .team-ref-matrix-expand,
+    .team-ref-matrix-head-expand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .team-ref-matrix-head,
+    .team-ref-matrix-row-main {
+      grid-template-columns: 1.25rem 1.75rem minmax(0, 1fr) minmax(4rem, auto);
+      min-width: 0;
+    }
   }
 
   .team-crew-split-card .team-split-metric {
@@ -5656,6 +6338,21 @@ p {
     color: var(--semantic-positive);
     background: color-mix(in srgb, var(--semantic-positive) 8%, var(--surface));
     box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+  }
+
+  html[data-color="dark"]:not([data-contrast="high"]) .status-badge--pass,
+  html.dark .status-badge--pass {
+    --pill-glow-accent: #4ade80;
+    border-color: color-mix(in srgb, #4ade80 45%, var(--clinical-card-border));
+    color: #86efac;
+    background: color-mix(in srgb, #4ade80 14%, var(--surface));
+  }
+
+  html[data-color="dark"]:not([data-contrast="high"]) .ncaa-coverage-status-badge.status-badge--pass,
+  html.dark .ncaa-coverage-status-badge.status-badge--pass {
+    color: #bbf7d0;
+    border-color: color-mix(in srgb, #4ade80 55%, var(--border-subtle));
+    background: color-mix(in srgb, #22c55e 18%, var(--surface));
   }
 
   .status-badge--fail {
@@ -5842,6 +6539,76 @@ p {
     --insight-card-glow: #eab308;
   }
 
+  .league-home-insights {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .league-home-insights-section {
+    margin-top: 0;
+  }
+
+  .league-pulse-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .league-pulse-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .league-matchup-grid,
+  .league-spotlight-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .league-matchup-grid,
+    .league-spotlight-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .league-spotlight-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .league-home-insights .rankings-insight-card {
+    border-color: rgb(30 41 59);
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% 0%,
+        color-mix(in srgb, var(--insight-accent, var(--muted)) 8%, transparent),
+        transparent 62%
+      ),
+      rgb(15 23 42);
+    box-shadow: 0 0 0 1px color-mix(in srgb, rgb(30 41 59) 80%, transparent);
+  }
+
+  .league-home-insights .rankings-insight-card[data-tone="positive"],
+  .league-home-insights .rankings-insight-card[data-tone="negative"] {
+    --insight-card-glow: color-mix(in srgb, var(--insight-accent, var(--muted)) 72%, var(--foreground));
+  }
+
+  .highlight-stat-card-head-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+  }
+
+  .highlight-stat-notable-badge {
+    flex-shrink: 0;
+  }
+
   .rankings-insight-card[data-accent="balance"] {
     --insight-card-glow: #94a3b8;
   }
@@ -5860,6 +6627,17 @@ p {
     display: flex;
     align-items: flex-start;
     gap: 0.65rem;
+  }
+
+  .rankings-insight-card-head > .ref-card-kicker {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .rankings-insight-card-head .stat-card-share-btn {
+    margin-left: auto;
+    align-self: flex-start;
+    flex-shrink: 0;
   }
 
   .rankings-insight-icon {
@@ -5889,6 +6667,22 @@ p {
     text-decoration: none;
   }
 
+  .highlight-stat-category-link,
+  .highlight-stat-metric-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .highlight-stat-category-link:hover,
+  .highlight-stat-metric-link:hover {
+    color: inherit;
+  }
+
+  .highlight-stat-metric-link:hover .ref-card-metric-label {
+    color: var(--insight-accent, var(--raptors));
+    text-decoration: underline;
+  }
+
   .highlight-stat-profile:hover .rankings-insight-name {
     color: var(--insight-accent, var(--raptors));
     text-decoration: underline;
@@ -5910,6 +6704,84 @@ p {
   .hero-highlights-block--league {
     margin-top: var(--space-4);
     margin-bottom: var(--space-2);
+  }
+
+  .hero-highlights-block--insights-hub {
+    gap: 0.85rem;
+  }
+
+  .hero-highlights-block--insights-hub .hero-highlights-title {
+    font-size: 0.78rem;
+  }
+
+  .rankings-insight-grid--hero-focus {
+    gap: 0.9rem;
+  }
+
+  @media (min-width: 1100px) {
+    .rankings-insight-grid--hero-focus {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+  }
+
+  .highlight-stat-card--hero-pill {
+    padding: 1.05rem 1rem 1.1rem;
+    gap: 0.85rem;
+  }
+
+  .highlight-stat-card-head-copy {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .insights-rankings-hook {
+    margin-top: 0.35rem;
+  }
+
+  .ranking-table-expand-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 0.85rem 1rem 1rem;
+    border-top: 1px solid var(--border-subtle, rgb(30 41 59));
+  }
+
+  @media (max-width: 24rem) {
+    .ranking-table-expand-btn,
+    .refs-directory-expand-btn {
+      white-space: normal;
+      text-align: center;
+      line-height: 1.35;
+    }
+  }
+
+  .ranking-table-expand-btn {
+    border: 1px solid color-mix(in srgb, var(--foreground) 12%, var(--border));
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    padding: 0.5rem 1.1rem;
+    min-height: 2.25rem;
+    width: auto;
+    max-width: 100%;
+    white-space: nowrap;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--foreground);
+    cursor: pointer;
+    transition: border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .ranking-table-expand-btn:hover {
+    border-color: color-mix(in srgb, var(--raptors) 45%, var(--border));
+    color: color-mix(in srgb, var(--raptors) 80%, var(--foreground));
+    box-shadow: 0 0 18px color-mix(in srgb, var(--raptors) 16%, transparent);
   }
 
   .league-hub-hero .hero-highlights-title {
@@ -6094,6 +6966,54 @@ p {
     margin: 0;
   }
 
+  .metric-variance-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .metric-variance-primary {
+    margin: 0;
+    font-family: var(--font-data);
+    font-weight: 800;
+    line-height: var(--leading-tight);
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+  }
+
+  .metric-variance-primary--lg {
+    font-size: var(--text-2xl);
+  }
+
+  .metric-variance-primary--md {
+    font-size: var(--text-xl);
+  }
+
+  .metric-variance-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.2rem 0.65rem;
+  }
+
+  .metric-variance-pill-value {
+    font-family: var(--font-data);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    line-height: var(--leading-snug);
+    letter-spacing: -0.01em;
+  }
+
+  .metric-variance-caption {
+    margin: 0;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
   .ref-card-body.rankings-insight-body {
     margin-top: -0.15rem;
   }
@@ -6157,6 +7077,528 @@ p {
     color: var(--muted);
   }
 
+  .gsni-research-highlight {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .gsni-research-highlight--quiet {
+    box-shadow: 0 0 22px color-mix(in srgb, rgb(56 189 248) 14%, transparent);
+    border-color: color-mix(in srgb, rgb(56 189 248) 28%, var(--border-subtle));
+  }
+
+  .gsni-research-highlight--heavy {
+    box-shadow: 0 0 22px color-mix(in srgb, rgb(251 146 60) 14%, transparent);
+    border-color: color-mix(in srgb, rgb(251 146 60) 28%, var(--border-subtle));
+  }
+
+  .gsni-research-highlight-score {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-data);
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: var(--leading-tight);
+    color: var(--text-primary);
+  }
+
+  .rankings-insight-copy {
+    margin: 0.35rem 0 0;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--muted);
+  }
+
+  .gsni-research-band {
+    display: inline-flex;
+    min-width: 2rem;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0.1rem 0.45rem;
+    font-family: var(--font-data);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gsni-research-band--quiet {
+    color: rgb(56 189 248);
+    background: color-mix(in srgb, rgb(56 189 248) 12%, transparent);
+  }
+
+  .gsni-research-band--heavy {
+    color: rgb(251 146 60);
+    background: color-mix(in srgb, rgb(251 146 60) 12%, transparent);
+  }
+
+  .gsni-research-band--neutral {
+    color: var(--muted);
+    background: color-mix(in srgb, var(--muted) 12%, transparent);
+  }
+
+  .gsni-research-band--withheld {
+    color: var(--muted);
+    background: transparent;
+  }
+
+  /* ── GSNI design system (shared track, cards, pills) ── */
+  .gsni-sub-text {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: rgb(148 163 184);
+  }
+
+  .gsni-gauge-label,
+  .gsni-soft-lock-card-headline {
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(148 163 184);
+  }
+
+  .gsni-card {
+    min-width: 0;
+    --gsni-ink-strong: rgb(248 250 252);
+    --gsni-ink-body: rgb(226 232 240);
+    --gsni-ink-muted: rgb(148 163 184);
+    --gsni-ink-faint: rgb(100 116 139);
+    --gsni-panel-bg: color-mix(in srgb, rgb(15 23 42) 90%, var(--surface-raised));
+    --gsni-panel-border: color-mix(in srgb, rgb(51 65 85) 72%, var(--border-subtle));
+    background: var(--gsni-panel-bg);
+    border-color: var(--gsni-panel-border);
+    color: var(--gsni-ink-body);
+  }
+
+  .gsni-card--soft-lock {
+    background: color-mix(in srgb, rgb(49 46 129) 22%, var(--gsni-panel-bg));
+    border-color: color-mix(in srgb, rgb(99 102 241) 34%, var(--gsni-panel-border));
+  }
+
+  .gsni-card .gsni-sample-count,
+  .gsni-card .gsni-score-value,
+  .gsni-card .gsni-score-value--table,
+  .gsni-card .gsni-official-link,
+  .gsni-card .gsni-score-headline {
+    color: var(--gsni-ink-strong);
+  }
+
+  .gsni-card .gsni-sub-text,
+  .gsni-card .gsni-gauge-label,
+  .gsni-card .gsni-soft-lock-card-copy,
+  .gsni-card .gsni-scale-hint,
+  .gsni-card .gsni-insight-summary {
+    color: var(--gsni-ink-muted);
+  }
+
+  .gsni-card .gsni-table-metric {
+    color: var(--gsni-ink-body);
+    font-weight: 600;
+  }
+
+  .gsni-card .data-table td,
+  .gsni-card .data-table td a {
+    color: var(--gsni-ink-body);
+  }
+
+  .gsni-card .data-table td a.gsni-official-link:hover {
+    color: var(--gsni-ink-strong);
+  }
+
+  .gsni-card .data-table-head th,
+  .gsni-card .ranking-sort-btn {
+    color: var(--gsni-ink-muted);
+  }
+
+  .gsni-card .ranking-sort-btn-active {
+    color: var(--gsni-ink-strong);
+  }
+
+  .gsni-correlation-pill {
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  .gsni-correlation-pill--elevated {
+    border-color: color-mix(in srgb, rgb(52 211 153) 42%, transparent);
+    background: color-mix(in srgb, rgb(6 78 59) 55%, transparent);
+    color: rgb(110 231 183);
+  }
+
+  .gsni-correlation-pill--suppressed {
+    border-color: color-mix(in srgb, rgb(251 113 133) 42%, transparent);
+    background: color-mix(in srgb, rgb(136 19 55) 48%, transparent);
+    color: rgb(253 164 175);
+  }
+
+  .gsni-correlation-pill--neutral {
+    border-color: color-mix(in srgb, rgb(100 116 139) 45%, transparent);
+    background: color-mix(in srgb, rgb(51 65 85) 55%, transparent);
+    color: rgb(203 213 225);
+  }
+
+  .gsni-card .gsni-sample-count {
+    font-weight: 600;
+  }
+
+  .gsni-profile-active {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .gsni-profile-pills {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .insight-badge {
+    max-width: 100%;
+  }
+
+  .gsni-soft-lock-card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .gsni-soft-lock-card-copy {
+    margin: 0.35rem 0 0;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: rgb(148 163 184);
+  }
+
+  .gsni-shared-track {
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+  }
+
+  .gsni-shared-track-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .gsni-shared-track-rail {
+    position: relative;
+    height: 0.75rem;
+    border-radius: 999px;
+    background: rgb(30 41 59);
+    border: 1px solid rgb(51 65 85);
+    overflow: hidden;
+  }
+
+  .gsni-shared-track--compact .gsni-shared-track-rail {
+    height: 0.5rem;
+  }
+
+  .gsni-shared-track-span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: inherit;
+    transition: left 400ms ease-out, width 400ms ease-out;
+  }
+
+  .gsni-shared-track-span--positive {
+    background: color-mix(in srgb, rgb(52 211 153) 55%, transparent);
+  }
+
+  .gsni-shared-track-span--negative {
+    background: color-mix(in srgb, rgb(251 113 133) 55%, transparent);
+  }
+
+  .gsni-shared-track-fill--progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background: color-mix(in srgb, rgb(129 140 248) 72%, rgb(56 189 248));
+    transition: width 400ms ease-out;
+  }
+
+  .gsni-shared-track-baseline {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    width: 2px;
+    height: 0.85rem;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    background: rgb(148 163 184);
+  }
+
+  .gsni-shared-track-baseline--gate {
+    left: 100%;
+    transform: translate(-100%, -50%);
+    height: 0.65rem;
+    background: rgb(129 140 248);
+  }
+
+  .gsni-shared-track-marker {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    width: 0.625rem;
+    height: 0.625rem;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    border: 2px solid rgb(165 180 252);
+    background: rgb(79 70 229);
+    box-shadow: 0 0 0 2px color-mix(in srgb, rgb(129 140 248) 25%, transparent);
+  }
+
+  .gsni-shared-track-marker--progress {
+    border-color: rgb(129 140 248);
+    background: rgb(99 102 241);
+  }
+
+  .gsni-relative-gauge {
+    display: grid;
+    gap: 0.65rem;
+    min-width: 0;
+  }
+
+  .gsni-relative-gauge-head {
+    display: grid;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  .gsni-relative-gauge-headline {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: rgb(226 232 240);
+  }
+
+  .gsni-relative-gauge-compare,
+  .gsni-gauge-compare {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+    min-width: 0;
+  }
+
+  .gsni-gauge-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem 0.5rem;
+    min-width: 0;
+  }
+
+  .gsni-band-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: var(--pill-padding-y) var(--pill-padding-x);
+    font-size: var(--pill-font-size);
+    font-weight: var(--pill-font-weight);
+    letter-spacing: 0.01em;
+    line-height: 1.25;
+  }
+
+  .gsni-band-badge--quiet {
+    background: rgb(49 46 129 / 0.45);
+    color: rgb(196 181 253);
+    border: 1px solid rgb(99 102 241 / 0.35);
+  }
+
+  .gsni-band-badge--neutral {
+    background: rgb(51 65 85 / 0.45);
+    color: rgb(203 213 225);
+    border: 1px solid rgb(100 116 139 / 0.35);
+  }
+
+  .gsni-band-badge--heavy {
+    background: rgb(136 19 55 / 0.35);
+    color: rgb(253 164 175);
+    border: 1px solid rgb(244 63 94 / 0.35);
+  }
+
+  .gsni-scale-legend {
+    font-size: 0.8125rem;
+    color: rgb(100 116 139);
+  }
+
+  .gsni-score-block {
+    display: grid;
+    gap: 0.55rem;
+    min-width: 0;
+  }
+
+  .gsni-score-block--compact {
+    gap: 0.45rem;
+  }
+
+  .gsni-score-block--no-summary .gsni-insight-summary {
+    display: none;
+  }
+
+  .gsni-score-block-value-wrap {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .gsni-score-value {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: rgb(248 250 252);
+  }
+
+  .gsni-score-block--compact .gsni-score-value {
+    font-size: 1.375rem;
+  }
+
+  .gsni-score-value--table {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgb(248 250 252);
+  }
+
+  .gsni-scale-hint {
+    margin: 0;
+    font-size: 0.6875rem;
+    line-height: 1.35;
+    color: rgb(100 116 139);
+  }
+
+  .gsni-insight-summary {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: rgb(203 213 225);
+    font-weight: 500;
+  }
+
+  .gsni-shared-track-axis {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  .gsni-shared-track-axis-label {
+    font-size: 0.625rem;
+    line-height: 1.2;
+    color: rgb(100 116 139);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gsni-shared-track-axis-label--start {
+    text-align: left;
+  }
+
+  .gsni-shared-track-axis-label--center {
+    text-align: center;
+    font-weight: 600;
+    color: rgb(148 163 184);
+  }
+
+  .gsni-shared-track-axis-label--end {
+    text-align: right;
+  }
+
+  .gsni-shared-track-score-suffix {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgb(148 163 184);
+  }
+
+  .gsni-relative-gauge-labels {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: start;
+  }
+
+  .gsni-relative-gauge-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgb(148 163 184);
+    line-height: 1.35;
+  }
+
+  .gsni-relative-gauge-label--center {
+    text-align: center;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-weight: 500;
+  }
+
+  .gsni-relative-gauge-label--end {
+    text-align: right;
+  }
+
+  .gsni-research-highlight--card {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .gsni-table-score-cell {
+    min-width: 0;
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-shared-track-rail {
+    background: rgb(226 232 240);
+    border-color: rgb(203 213 225);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-sub-text,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-gauge-label,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-soft-lock-card-copy,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-relative-gauge-label {
+    color: rgb(100 116 139);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-sample-count {
+    color: rgb(15 23 42);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-sub-text,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-gauge-label,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-soft-lock-card-copy,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-relative-gauge-label,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-scale-hint,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-insight-summary {
+    color: var(--gsni-ink-muted);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-sample-count,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-score-value,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-score-value--table,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-official-link,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-score-headline,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-table-metric,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .data-table td,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .data-table td a {
+    color: var(--gsni-ink-strong);
+  }
+
+  html[data-contrast="high"] .insight-badge,
+  html[data-contrast="high"] .gsni-card {
+    box-shadow: none;
+  }
+
   /* ── Rankings table toolbar ── */
   .ranking-toolbar {
     padding: var(--space-4) var(--space-5) var(--space-3);
@@ -6206,6 +7648,27 @@ p {
 
   .ranking-table-wrap {
     padding-top: var(--space-1);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Mobile-first table density: hide secondary metrics below md */
+  @media (max-width: 767px) {
+    .master-table-metric-secondary {
+      display: none;
+    }
+
+    .master-table-head-secondary {
+      display: none;
+    }
+
+    .master-table-head-expand {
+      display: table-cell;
+    }
+  }
+
+  .ranking-table-row-toggle-btn .ranking-table-row-toggle-icon--expanded {
+    transform: rotate(45deg);
   }
 
   .ranking-sort-btn {
@@ -6307,7 +7770,7 @@ p {
     vertical-align: middle;
   }
 
-  .ranking-table-expand-btn {
+  .ranking-table-row-toggle-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -6324,8 +7787,8 @@ p {
       background var(--duration-fast) var(--ease-out-quart);
   }
 
-  .ranking-table-expand-btn:hover,
-  .ranking-table-expand-btn[aria-expanded="true"] {
+  .ranking-table-row-toggle-btn:hover,
+  .ranking-table-row-toggle-btn[aria-expanded="true"] {
     border-color: color-mix(in srgb, var(--header-sapphire) 35%, var(--border));
     color: var(--foreground);
     background: color-mix(in srgb, var(--header-sapphire) 8%, var(--surface));
@@ -6481,11 +7944,20 @@ p {
   .refs-trend-spotlight {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--space-4) var(--space-5);
+    gap: var(--space-4);
+    padding: var(--space-5);
     border-radius: 1rem;
-    border: 1px solid var(--border-subtle);
-    background: color-mix(in srgb, var(--surface-raised) 72%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--header-gold) 18%, var(--border-subtle));
+    background:
+      radial-gradient(
+        ellipse 120% 90% at 50% -20%,
+        color-mix(in srgb, var(--header-gold) 8%, transparent),
+        transparent 58%
+      ),
+      color-mix(in srgb, var(--surface-raised) 78%, var(--surface));
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--header-gold) 10%, transparent),
+      0 12px 32px color-mix(in srgb, rgb(15 23 42) 28%, transparent);
   }
 
   .refs-trend-spotlight-head {
@@ -6498,11 +7970,11 @@ p {
 
   .refs-trend-spotlight-title {
     margin: 0;
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     font-weight: 700;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--ink-secondary);
+    color: color-mix(in srgb, var(--header-gold) 72%, var(--ink-secondary));
   }
 
   .refs-trend-spotlight-lead {
@@ -6512,32 +7984,90 @@ p {
   }
 
   .refs-trend-spotlight-track {
-    display: grid;
-    gap: var(--space-3);
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .refs-trend-spotlight-card {
+    min-height: 100%;
+  }
+
+  .refs-trend-spotlight-head-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .refs-trend-spotlight-league {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--insight-card-glow) 55%, var(--muted));
+  }
+
+  .league-season-start-badge--glow {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
   }
 
   .refs-trend-spotlight-metrics {
+    margin-top: 0.15rem;
+  }
+
+  .refs-trend-spotlight-name {
+    margin: 0;
+    font-size: var(--text-md);
+    font-weight: 700;
+    line-height: var(--leading-snug);
+  }
+
+  .refs-trend-spotlight-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem 0.75rem;
+    margin: 0;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--insight-card-glow) 16%, var(--border-subtle));
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+  }
+
+  .refs-trend-spotlight-stats div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .refs-trend-spotlight-stats dt {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .refs-trend-spotlight-stats dd {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+  }
+
+  .refs-trend-spotlight-footer {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 0.65rem 1.15rem;
-  }
-
-  .refs-trend-spotlight-metric.kpi-data-pill--compact {
-    align-items: flex-start;
-    min-width: 4.5rem;
-    text-align: left;
-  }
-
-  .refs-trend-spotlight-metric--primary .kpi-data-pill__value {
-    font-size: 1.35rem;
-    font-weight: 800;
-    line-height: 1.1;
-  }
-
-  .refs-trend-spotlight-metric .kpi-data-pill__caption {
-    margin-top: 0.2rem;
+    gap: 0.5rem 0.85rem;
+    margin-top: auto;
+    padding-top: 0.15rem;
   }
 
   @media (max-width: 1023px) {
@@ -6993,8 +8523,12 @@ p {
 
   .league-hero-logo.league-nav-mark--epl,
   .league-hero-logo[data-league="epl"] {
-    height: 2.5rem;
-    max-width: 2.1rem;
+    height: 3rem;
+    width: auto;
+    max-width: 2.85rem;
+    object-fit: contain;
+    object-position: center;
+    margin-inline: auto;
   }
 
   .league-hero-logo.league-nav-mark--laliga,
@@ -7396,6 +8930,29 @@ p {
     color: var(--foreground);
   }
 
+  .insights-hero-meta-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.65rem;
+  }
+
+  .cbb-conference-trends-toggle {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .cbb-conference-trends-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .cbb-conference-trends-btn .ncaa-conference-logo {
+    flex-shrink: 0;
+  }
+
   .insights-hero-note {
     margin: 0;
     max-width: 44rem;
@@ -7783,6 +9340,10 @@ p {
     border: 1px solid color-mix(in srgb, var(--header-sapphire) 35%, var(--border));
     background: color-mix(in srgb, var(--header-sapphire) 6%, var(--surface));
     padding: 0.5rem 1.25rem;
+    min-height: 2.25rem;
+    width: auto;
+    max-width: 100%;
+    white-space: nowrap;
     font-size: var(--text-sm);
     font-weight: 600;
     color: var(--ink-secondary);
@@ -8426,14 +9987,14 @@ p {
     height: 4rem !important;
     padding: 0.2rem;
     border-radius: 0.625rem;
-    background: #ececf0;
-    border: 1px solid color-mix(in srgb, var(--border-subtle) 55%, #fff);
+    background: var(--logo-plate-matrix);
+    border: 1px solid var(--logo-plate-matrix-border);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.32);
   }
 
   .ref-matrix-team-panel-logo.team-logo-plate {
-    background: #ececf0;
-    border-color: color-mix(in srgb, var(--border-subtle) 55%, #fff);
+    background: var(--logo-plate-matrix);
+    border-color: var(--logo-plate-matrix-border);
   }
 
   .ref-matrix-team-panel-logo .team-logo-plate__img {
@@ -8442,7 +10003,8 @@ p {
 
   .ref-matrix-team-panel-logo.team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
   .ref-matrix-team-panel-logo.team-logo-plate[data-sport="epl"] .team-logo-plate__img,
-  .ref-matrix-team-panel-logo.team-logo-plate[data-sport="laliga"] .team-logo-plate__img {
+  .ref-matrix-team-panel-logo.team-logo-plate[data-sport="laliga"] .team-logo-plate__img,
+  .ref-matrix-team-panel-logo.team-logo-plate[data-sport="cbb"] .team-logo-plate__img {
     transform: scale(1.14);
   }
 
@@ -9198,8 +10760,8 @@ p {
   }
 
   .ref-matrix-logo-row .team-logo-plate {
-    background: #ececf0;
-    border-color: color-mix(in srgb, var(--border-subtle) 60%, #fff);
+    background: var(--logo-plate-matrix);
+    border-color: var(--logo-plate-matrix-border);
     padding: 0.15rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
   }
@@ -9210,7 +10772,8 @@ p {
 
   .ref-matrix-logo-row .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
   .ref-matrix-logo-row .team-logo-plate[data-sport="epl"] .team-logo-plate__img,
-  .ref-matrix-logo-row .team-logo-plate[data-sport="laliga"] .team-logo-plate__img {
+  .ref-matrix-logo-row .team-logo-plate[data-sport="laliga"] .team-logo-plate__img,
+  .ref-matrix-logo-row .team-logo-plate[data-sport="cbb"] .team-logo-plate__img {
     transform: scale(1.14);
   }
 
@@ -10890,11 +12453,12 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 
 .overview-league-chooser-grid {
   display: grid;
+  align-items: stretch;
   grid-template-columns: minmax(0, 1fr);
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 480px) {
   .overview-league-chooser-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -10902,19 +12466,14 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 
 @media (min-width: 768px) {
   .overview-league-chooser-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 960px) {
   .overview-league-chooser-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1280px) {
-  .overview-league-chooser-grid {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
   }
 }
 
@@ -10922,23 +12481,24 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   --chooser-accent: var(--muted);
   --chooser-glow: rgba(15, 23, 42, 0.1);
   --chooser-mark-border: color-mix(in srgb, var(--chooser-accent) 15%, transparent);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    color-mix(in srgb, var(--muted) 70%, var(--ink)) 50%,
+    var(--muted) 100%
+  );
   position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: stretch;
+  height: 100%;
   min-height: 11.25rem;
   padding: 1.15rem 1.2rem 1.05rem;
   border-radius: 1rem;
-  border: 1px solid color-mix(in srgb, var(--chooser-accent) 22%, var(--line));
-  background:
-    radial-gradient(
-      ellipse 90% 70% at 100% 0%,
-      color-mix(in srgb, var(--chooser-accent) 12%, transparent),
-      transparent 58%
-    ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 45%),
-    var(--surface-raised);
+  border: 1px solid rgb(30 41 59);
+  background: rgb(15 23 42);
   color: var(--ink);
   text-decoration: none;
   box-shadow:
@@ -10951,40 +12511,97 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
     box-shadow 200ms ease;
 }
 
+.overview-league-chooser-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--chooser-rainbow);
+  border-radius: 1rem 1rem 0 0;
+  pointer-events: none;
+}
+
 .overview-league-chooser-card[data-league="nba"] {
   --chooser-accent: #006bb6;
   --chooser-glow: rgba(0, 107, 182, 0.1);
   --chooser-mark-border: rgba(0, 107, 182, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #004a7c 0%,
+    #006bb6 22%,
+    #4d9fff 48%,
+    #fdb927 72%,
+    #ef3b55 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="cbb"] {
   --chooser-accent: var(--cbb-gold);
   --chooser-glow: rgba(0, 156, 222, 0.1);
   --chooser-mark-border: rgba(0, 156, 222, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #004e89 0%,
+    var(--cbb-gold) 28%,
+    #7dd3fc 52%,
+    #fdb927 76%,
+    var(--cbb-gold) 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="nhl"] {
   --chooser-accent: #0a4c7a;
   --chooser-glow: rgba(10, 76, 122, 0.1);
   --chooser-mark-border: rgba(10, 76, 122, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #0a4c7a 0%,
+    var(--nhl-blue) 38%,
+    #b8d4e8 58%,
+    var(--nhl-red) 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="nfl"] {
   --chooser-accent: #012348;
   --chooser-glow: rgba(1, 35, 72, 0.1);
   --chooser-mark-border: rgba(1, 35, 72, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #012348 0%,
+    #1e4d7b 32%,
+    var(--nfl-green) 62%,
+    #94a3b8 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="epl"] {
   --chooser-accent: #3d195b;
   --chooser-glow: rgba(61, 25, 91, 0.12);
   --chooser-mark-border: rgba(61, 25, 91, 0.22);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #3d195b 0%,
+    #6b3d8f 30%,
+    #8b6bb5 55%,
+    #c4a8e0 78%,
+    #3d195b 100%
+  );
 }
 
 .overview-league-chooser-card[data-league="laliga"] {
   --chooser-accent: #c8102e;
   --chooser-glow: rgba(169, 136, 46, 0.1);
   --chooser-mark-border: rgba(169, 136, 46, 0.15);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #7a0819 0%,
+    #c8102e 32%,
+    #a9882e 62%,
+    #f4c430 100%
+  );
 }
 
 .overview-league-chooser-card:hover {
@@ -11012,6 +12629,7 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   gap: 0.85rem;
   flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
 }
 
 .overview-league-chooser-mark {
@@ -11075,12 +12693,14 @@ html[data-color="light"] .overview-league-chooser-mark .league-nav-mark[data-lea
 
 .overview-league-chooser-mark .league-nav-mark--epl,
 .overview-league-chooser-mark .league-nav-mark[data-league="epl"] {
-  width: 92%;
+  width: auto;
   height: 92%;
-  max-width: 92%;
+  max-width: 88%;
   max-height: 92%;
+  object-fit: contain;
+  object-position: center;
+  margin-inline: auto;
   transform: none;
-  transform-origin: center;
   filter: none;
 }
 
@@ -11119,28 +12739,38 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   flex-direction: column;
   gap: 0.2rem;
   min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .overview-league-chooser-label {
-  font-size: 1.05rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-league-chooser-meta {
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   line-height: 1.4;
   font-variant-numeric: tabular-nums;
   color: color-mix(in srgb, var(--text-primary, var(--ink)) 86%, var(--text-muted, var(--muted)));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-league-chooser-cta {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  margin-top: 0.75rem;
-  font-size: 0.78rem;
+  margin-top: auto;
+  flex-shrink: 0;
+  font-size: 0.75rem;
   font-weight: 650;
   color: color-mix(in srgb, var(--chooser-accent) 72%, var(--ink));
 }
@@ -11152,6 +12782,13 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
 
 .overview-league-chooser-card[data-league="cfb"] {
   --chooser-accent: var(--cfb-bronze);
+  --chooser-rainbow: linear-gradient(
+    90deg,
+    #7c3d12 0%,
+    var(--cfb-bronze) 35%,
+    #fdb927 65%,
+    #d97706 100%
+  );
 }
 
 .overview-league-chooser-label-row,
@@ -11162,12 +12799,33 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   gap: 0.35rem 0.5rem;
 }
 
-.overview-league-chooser-scope,
+.overview-league-chooser-scope {
+  display: block;
+  width: 100%;
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text-muted) 92%, var(--ink));
+  padding-inline: 0.15rem;
+}
+
 .overview-pace-scope {
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--muted);
+}
+
+.overview-league-chooser-card--college-tier .overview-league-chooser-label-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  padding-inline: 0.15rem;
+}
+
+.overview-league-chooser-card--college-tier .overview-league-chooser-body {
+  padding-inline: 0.15rem;
 }
 
 .overview-section-lead-ncaa-note {
@@ -11303,7 +12961,7 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
 @media (min-width: 1024px) {
   .overview-layout {
     grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
   }
 
   .overview-sidebar > .overview-sidebar-block:first-child {
@@ -11433,6 +13091,8 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
 .overview-catalog-status {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  align-self: center;
   flex-shrink: 0;
   font-size: 0.75rem;
   font-weight: 600;
@@ -11442,6 +13102,7 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   white-space: nowrap;
   padding: 0.125rem 0.5rem;
   border-radius: 0.25rem;
+  min-height: 1.375rem;
 }
 
 .league-season-start-badge {
@@ -11895,14 +13556,68 @@ html.dark .dashboard-hero-highlight-league {
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-league-chooser-card,
 html.dark .overview-league-chooser-card {
-  background:
-    radial-gradient(
-      ellipse 90% 70% at 100% 0%,
-      color-mix(in srgb, var(--chooser-accent) 10%, transparent),
-      transparent 58%
-    ),
-    var(--bg-surface-1);
-  border-color: color-mix(in srgb, var(--chooser-accent) 22%, var(--border-subtle));
+  background: rgb(15 23 42);
+  border-color: rgb(30 41 59);
+}
+
+/* League hub cards — light mode surfaces (unlayered; beats base hardcoded navy) */
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card {
+  background: #ffffff;
+  border-color: var(--card-border-light, #e2e8f0);
+  color: var(--text-primary);
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card:hover {
+  border-color: color-mix(in srgb, var(--chooser-accent) 34%, var(--card-border-light, #e2e8f0));
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-label {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-meta,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-metric-label,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-estimated-mark,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-scope,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-pending,
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-pending {
+  color: var(--text-secondary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-metric strong {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-cta {
+  color: color-mix(in srgb, var(--chooser-accent) 88%, var(--text-primary));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="nfl"] .overview-league-chooser-cta {
+  color: #047857;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="nhl"] .overview-league-chooser-cta {
+  color: #0369a1;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="epl"] .overview-league-chooser-cta {
+  color: #6d28d9;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card {
+  background: #ffffff;
+  border-color: color-mix(in srgb, var(--pace-accent) 22%, var(--card-border-light, #e2e8f0));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-label {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-meta,
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-scope {
+  color: var(--text-secondary);
 }
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-sidebar-block,
@@ -11911,74 +13626,6 @@ html.dark .overview-sidebar-block {
   border-color: var(--border-subtle);
 }
 
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segmented,
-html.dark .overview-quicklists-segmented {
-  background: var(--bg-surface-2);
-  border-color: var(--border-subtle);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment,
-html.dark .overview-quicklists-segment {
-  color: var(--text-muted);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[aria-selected="true"],
-html.dark .overview-quicklists-segment[aria-selected="true"] {
-  background: var(--bg-surface-1);
-  border-color: var(--border-default);
-  color: var(--text-primary);
-  box-shadow: 0 1px 2px color-mix(in srgb, var(--bg-surface-0) 55%, transparent);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nba"][aria-selected="true"],
-html.dark .overview-quicklists-segment[data-league="nba"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--raptors) 45%, var(--border-subtle));
-  color: var(--raptors);
-  background: color-mix(in srgb, var(--raptors) 14%, var(--bg-surface-1));
-  box-shadow: 0 1px 4px color-mix(in srgb, var(--raptors) 20%, transparent);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="cbb"][aria-selected="true"],
-html.dark .overview-quicklists-segment[data-league="cbb"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--cbb-gold) 45%, var(--border-subtle));
-  color: var(--cbb-gold);
-  background: color-mix(in srgb, var(--cbb-gold) 14%, var(--bg-surface-1));
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="cfb"][aria-selected="true"],
-html.dark .overview-quicklists-segment[data-league="cfb"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--cfb-bronze) 45%, var(--border-subtle));
-  color: var(--cfb-bronze);
-  background: color-mix(in srgb, var(--cfb-bronze) 14%, var(--bg-surface-1));
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nhl"][aria-selected="true"],
-html.dark .overview-quicklists-segment[data-league="nhl"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--nhl-blue) 45%, var(--border-subtle));
-  color: var(--nhl-blue);
-  background: color-mix(in srgb, var(--nhl-blue) 14%, var(--bg-surface-1));
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nfl"][aria-selected="true"],
-html.dark .overview-quicklists-segment[data-league="nfl"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--nfl-green) 45%, var(--border-subtle));
-  color: var(--nfl-green);
-  background: color-mix(in srgb, var(--nfl-green) 14%, var(--bg-surface-1));
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="epl"][aria-selected="true"],
-html.dark .overview-quicklists-segment[data-league="epl"][aria-selected="true"] {
-  border-color: color-mix(in srgb, #8b6bb5 45%, var(--border-subtle));
-  color: #c4b5fd;
-  background: color-mix(in srgb, #8b6bb5 14%, var(--bg-surface-1));
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="laliga"][aria-selected="true"],
-html.dark .overview-quicklists-segment[data-league="laliga"][aria-selected="true"] {
-  border-color: color-mix(in srgb, #c8102e 45%, var(--border-subtle));
-  color: #f87171;
-  background: color-mix(in srgb, #c8102e 14%, var(--bg-surface-1));
-}
 
 html[data-color="dark"]:not([data-contrast="high"]) .overview-quick-list,
 html.dark .overview-quick-list {
@@ -12002,13 +13649,6 @@ html.dark .overview-quick-list[aria-pressed="true"] {
   background: var(--bg-surface-2);
   border-color: var(--border-default);
   box-shadow: 0 1px 3px color-mix(in srgb, var(--bg-surface-0) 65%, transparent);
-}
-
-html[data-color="dark"]:not([data-contrast="high"]) .overview-quicklists-open-btn,
-html.dark .overview-quicklists-open-btn {
-  background: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 14%, var(--bg-surface-2));
-  border-color: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 35%, var(--border-subtle));
-  color: var(--text-primary);
 }
 
 html[data-color="dark"]:not([data-contrast="high"]) .league-season-start-badge,
@@ -12326,6 +13966,157 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 
 .insight-drilldown-backdrop--visible {
   opacity: 1;
+}
+
+.command-palette-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-overlay) + 2);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: min(12vh, 6rem) 1rem 1rem;
+  background: color-mix(in srgb, #000 76%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.command-palette {
+  width: min(100%, 40rem);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border-default) 88%, #fff 12%);
+  border-radius: 1rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--bg-surface-1) 92%, #fff 8%) 0%,
+    var(--bg-surface-0) 100%
+  );
+  box-shadow:
+    0 24px 64px color-mix(in srgb, #000 55%, transparent),
+    0 0 0 1px color-mix(in srgb, #fff 6%, transparent) inset;
+  color: var(--text-primary);
+}
+
+.command-palette-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-default) 80%, transparent);
+}
+
+.command-palette-input-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.command-palette-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  outline: none;
+}
+
+.command-palette-input::placeholder {
+  color: var(--text-muted);
+}
+
+.command-palette-list {
+  max-height: min(52vh, 28rem);
+  overflow: auto;
+  padding: 0.45rem;
+}
+
+.command-palette-group [cmdk-group-heading] {
+  padding: 0.55rem 0.65rem 0.35rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.command-palette-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.62rem 0.7rem;
+  border-radius: 0.65rem;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.command-palette-item[data-selected="true"] {
+  background: color-mix(in srgb, var(--accent-brand) 16%, var(--bg-surface-2));
+}
+
+.command-palette-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-surface-2) 88%, #fff 12%);
+  color: color-mix(in srgb, var(--accent-brand) 72%, #fff 28%);
+}
+
+.command-palette-item-icon svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.command-palette-item-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.command-palette-item-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.command-palette-item-detail {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.command-palette-empty {
+  padding: 1.25rem 0.85rem;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.command-palette-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.95rem;
+  border-top: 1px solid color-mix(in srgb, var(--border-default) 80%, transparent);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.command-palette-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  padding: 0.12rem 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--border-default) 85%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--bg-surface-2) 90%, #fff 10%);
+  font-size: 0.68rem;
+  line-height: 1.2;
+  color: var(--text-muted);
 }
 
 .insight-drilldown-modal {
@@ -12855,185 +14646,6 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 
 /* Overview round 2: league tabs, slate, pace cards, mobile */
 
-.overview-quicklists-tabs {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 0.35rem;
-  margin-bottom: 0.55rem;
-  overflow-x: auto;
-  padding-bottom: 0.15rem;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-}
-
-.overview-quicklists-segmented {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.25rem;
-  margin-bottom: 0.65rem;
-  padding: 0.25rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface-raised) 55%, transparent);
-}
-
-@media (min-width: 640px) {
-  .overview-quicklists-segmented {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-}
-
-.overview-quicklists-segment {
-  border: 1px solid transparent;
-  border-radius: 0.375rem;
-  padding: 0.375rem 0.25rem;
-  text-align: center;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--muted-strong);
-  background: transparent;
-  cursor: pointer;
-  transition:
-    border-color 140ms ease,
-    color 140ms ease,
-    background-color 140ms ease,
-    box-shadow 140ms ease;
-}
-
-.overview-quicklists-segment[aria-selected="true"] {
-  border-color: var(--border);
-  background: var(--surface-raised);
-  color: var(--ink);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
-}
-
-.overview-quicklists-segment:not([aria-selected="true"]):hover {
-  background: color-mix(in srgb, var(--surface-raised) 45%, transparent);
-  color: var(--ink-secondary);
-}
-
-.overview-quicklists-open-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem 0.75rem;
-  margin-top: 0.65rem;
-  padding-top: 0.65rem;
-  border-top: 1px solid var(--line);
-}
-
-.overview-quicklists-open-hint {
-  margin: 0;
-  flex: 1 1 12rem;
-  font-size: 0.72rem;
-  line-height: 1.4;
-  color: var(--muted);
-}
-
-.overview-quicklists-open-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.75rem;
-  border-radius: 0.55rem;
-  border: 1px solid color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 35%, var(--line));
-  background: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 12%, rgba(0, 0, 0, 0.15));
-  font-size: 0.74rem;
-  font-weight: 650;
-  color: var(--ink);
-  text-decoration: none;
-  transition:
-    border-color 140ms ease,
-    background-color 140ms ease,
-    transform 140ms ease,
-    box-shadow 140ms ease;
-}
-
-.overview-quicklists-open-btn:hover {
-  border-color: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 50%, var(--line));
-  background: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 18%, rgba(0, 0, 0, 0.15));
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 22%, transparent);
-}
-
-.overview-quicklists-step {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin: 0 0 0.45rem;
-  font-size: 0.74rem;
-  font-weight: 600;
-  color: var(--ink-secondary);
-}
-
-.overview-quicklists-step-label {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.12rem 0.45rem;
-  border-radius: 999px;
-  border: 1px solid var(--pill-border);
-  background: var(--pill-bg);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--pill-ink);
-}
-
-.overview-quicklists-tab {
-  flex: 0 0 auto;
-  padding: 0.35rem 0.65rem;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.12);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--muted);
-  cursor: pointer;
-  transition:
-    border-color 140ms ease,
-    color 140ms ease,
-    background-color 140ms ease;
-}
-
-.overview-quicklists-tab[data-league="nba"].overview-quicklists-tab--active {
-  border-color: color-mix(in srgb, var(--raptors) 45%, var(--line));
-  color: var(--raptors);
-  background: color-mix(in srgb, var(--raptors) 10%, rgba(0, 0, 0, 0.12));
-}
-
-.overview-quicklists-tab[data-league="nhl"].overview-quicklists-tab--active {
-  border-color: color-mix(in srgb, var(--nhl-blue) 45%, var(--line));
-  color: var(--nhl-blue);
-  background: color-mix(in srgb, var(--nhl-blue) 10%, rgba(0, 0, 0, 0.12));
-}
-
-.overview-quicklists-tab[data-league="nfl"].overview-quicklists-tab--active {
-  border-color: color-mix(in srgb, var(--nfl-green) 45%, var(--line));
-  color: var(--nfl-green);
-  background: color-mix(in srgb, var(--nfl-green) 10%, rgba(0, 0, 0, 0.12));
-}
-
-.overview-quicklists-tab[data-league="epl"].overview-quicklists-tab--active {
-  border-color: color-mix(in srgb, #8b6bb5 45%, var(--line));
-  color: #c4b5fd;
-  background: color-mix(in srgb, #8b6bb5 10%, rgba(0, 0, 0, 0.12));
-}
-
-.overview-quicklists-mobile {
-  display: block;
-}
-
-@media (min-width: 1024px) {
-  .overview-quicklists-mobile {
-    display: none;
-  }
-}
 
 .overview-catalog-collapsible {
   padding: 0;
@@ -13267,6 +14879,9 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
   padding: 1rem 1.05rem;
   border-radius: 0.9rem;
   border: 1px solid color-mix(in srgb, var(--pace-accent) 18%, var(--line));
@@ -13312,18 +14927,27 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 .overview-pace-audit-pill {
   align-self: flex-start;
   max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .overview-pace-label {
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 750;
   color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-pace-meta {
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-pace-metric {
@@ -13337,19 +14961,30 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   align-items: baseline;
   justify-content: space-between;
   gap: 0.5rem;
-  font-size: 0.68rem;
+  min-width: 0;
+  font-size: 0.75rem;
   font-weight: 650;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
+.overview-pace-metric-head > span:first-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+}
+
 .overview-pace-metric-head strong {
-  font-size: 0.88rem;
-  font-weight: 800;
+  font-size: 0.875rem;
+  font-weight: 700;
   color: var(--ink);
   text-transform: none;
   letter-spacing: -0.02em;
+  flex-shrink: 0;
 }
 
 .overview-pace-bar {
@@ -13387,8 +15022,9 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
-  margin-top: 0.1rem;
-  font-size: 0.72rem;
+  margin-top: auto;
+  flex-shrink: 0;
+  font-size: 0.75rem;
   font-weight: 650;
   color: color-mix(in srgb, var(--pace-accent) 65%, var(--muted));
 }
@@ -13926,55 +15562,6 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-quick-list[aria-p
   box-shadow: var(--card-shadow-light);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segmented {
-  background: color-mix(in srgb, var(--surface-raised) 88%, #18181b);
-  border-color: var(--border);
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[aria-selected="true"] {
-  background: var(--surface);
-  border-color: var(--border);
-  color: var(--ink);
-  box-shadow: var(--card-shadow-light);
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nba"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--raptors) 40%, var(--border));
-  color: var(--raptors);
-  background: color-mix(in srgb, var(--raptors) 8%, var(--surface));
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="cbb"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--cbb-gold) 40%, var(--border));
-  color: var(--cbb-gold);
-  background: color-mix(in srgb, var(--cbb-gold) 8%, var(--surface));
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="cfb"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--cfb-bronze) 40%, var(--border));
-  color: var(--cfb-bronze);
-  background: color-mix(in srgb, var(--cfb-bronze) 8%, var(--surface));
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nhl"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--nhl-blue) 40%, var(--border));
-  color: var(--nhl-blue);
-  background: color-mix(in srgb, var(--nhl-blue) 8%, var(--surface));
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment[data-league="nfl"][aria-selected="true"] {
-  border-color: color-mix(in srgb, var(--nfl-green) 40%, var(--border));
-  color: var(--nfl-green);
-  background: color-mix(in srgb, var(--nfl-green) 8%, var(--surface));
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-segment:not([aria-selected="true"]) {
-  color: var(--muted);
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-open-btn {
-  background: color-mix(in srgb, var(--quicklist-accent, var(--raptors)) 8%, var(--surface));
-}
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--coming-soon,
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--preview,
@@ -13984,34 +15571,146 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--a
   border: 1px solid var(--pill-border);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-soon {
-  background: var(--surface-raised);
-}
-
 html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-block,
 html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card {
   box-shadow: var(--card-shadow-light);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-count,
-html[data-color="light"]:not([data-contrast="high"]) .overview-quicklists-step-label {
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card:hover {
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser--primary .overview-league-chooser-card {
+  background: #ffffff;
+  border-color: var(--card-border-light, #e2e8f0);
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser--primary .overview-league-chooser-card:hover {
+  border-color: color-mix(in srgb, var(--chooser-accent) 34%, var(--card-border-light, #e2e8f0));
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-soon {
+  background: var(--surface-raised);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-count {
   background: var(--surface-raised);
   border: 1px solid var(--border);
 }
+
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-hint {
   color: var(--muted);
 }
 
+/* Light mode: hide decorative metric bars (numeric labels remain) */
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-bar,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-bar-track,
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-trend-progress,
+html[data-color="light"]:not([data-contrast="high"]) .insight-metric-comparison-track,
+html[data-color="light"]:not([data-contrast="high"]) .insight-metric-comparison-dual-track,
+html[data-color="light"]:not([data-contrast="high"]) .metric-delight-bar-track,
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-integrity-audit-progress {
+  display: none;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-trend-rate-pill {
+  color: var(--text-primary);
+  border-color: var(--card-border-light, #e2e8f0);
+  background: #f8fafc;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--high {
+  color: #047857;
+  border-color: color-mix(in srgb, #059669 38%, #e2e8f0);
+  background: color-mix(in srgb, #059669 10%, #fff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--mid {
+  color: #92400e;
+  border-color: color-mix(in srgb, #d97706 35%, #e2e8f0);
+  background: color-mix(in srgb, #f59e0b 12%, #fff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--low {
+  color: #b91c1c;
+  border-color: color-mix(in srgb, #ef4444 35%, #e2e8f0);
+  background: color-mix(in srgb, #ef4444 10%, #fff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--neutral {
+  color: #475569;
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-metric-head strong {
+  color: #0f172a;
+}
+
+/* Dark mode: stronger metric and badge contrast */
+html[data-color="dark"]:not([data-contrast="high"]) .overview-pace-metric-head,
+html.dark .overview-pace-metric-head {
+  color: #94a3b8;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-pace-metric-head strong,
+html.dark .overview-pace-metric-head strong {
+  color: #f8fafc;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-pace-meta,
+html.dark .overview-pace-meta {
+  color: #cbd5e1;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .ref-profile-trend-rate-pill,
+html.dark .ref-profile-trend-rate-pill {
+  color: #e2e8f0;
+  border-color: color-mix(in srgb, var(--pill-glow) 32%, #475569);
+  background: color-mix(in srgb, var(--pill-glow) 10%, #1e293b);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--high,
+html.dark .ref-profile-team-rate-badge--high {
+  color: #bbf7d0;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--low,
+html.dark .ref-profile-team-rate-badge--low {
+  color: #fecaca;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .team-ref-matrix-stat--positive,
+html.dark .team-ref-matrix-stat--positive {
+  color: #86efac;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .team-ref-matrix-stat--negative,
+html.dark .team-ref-matrix-stat--negative {
+  color: #fca5a5;
+}
+
 /* ── Compare officials + matrix share ── */
 .ref-compare-entry-link {
   font-weight: 600;
-  color: var(--league-accent, var(--raptors));
+  color: #c5a059;
   text-decoration: none;
 }
 
 .ref-compare-entry-link:hover {
+  color: #d4b06a;
   text-decoration: underline;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-entry-link {
+  color: #92680a;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-entry-link:hover {
+  color: #7a5608;
 }
 
 .matrix-split-share-preview {
@@ -14123,15 +15822,15 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 .ref-compare-combobox-input {
   width: 100%;
   border-radius: 0.625rem;
-  border: 1px solid rgb(39 39 42 / 0.8);
-  background: rgb(24 24 27 / 0.55);
+  border: 1px solid rgb(51 65 85);
+  background: rgb(15 23 42);
   padding: 0.65rem 2.25rem 0.65rem 0.75rem;
   font-size: var(--text-sm);
-  color: var(--foreground);
+  color: rgb(248 250 252);
 }
 
 .ref-compare-combobox-input:focus {
-  outline: 2px solid color-mix(in srgb, var(--league-accent, var(--raptors)) 45%, transparent);
+  outline: 2px solid color-mix(in srgb, #c5a059 45%, transparent);
   outline-offset: 1px;
 }
 
@@ -14169,8 +15868,8 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
   padding: 0.3rem;
   list-style: none;
   border-radius: 0.625rem;
-  border: 1px solid rgb(39 39 42 / 0.9);
-  background: rgb(24 24 27 / 0.98);
+  border: 1px solid rgb(51 65 85);
+  background: rgb(15 23 42);
   box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
 }
 
@@ -14185,11 +15884,11 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 
 .ref-compare-combobox-option--active,
 .ref-compare-combobox-option:hover {
-  background: rgb(39 39 42 / 0.85);
+  background: rgb(30 41 59);
 }
 
 .ref-compare-combobox-option--selected {
-  border: 1px solid color-mix(in srgb, var(--league-accent, var(--raptors)) 35%, transparent);
+  border: 1px solid color-mix(in srgb, #c5a059 35%, transparent);
 }
 
 .ref-compare-combobox-option-name {
@@ -14217,8 +15916,12 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 
 .ref-compare-combobox-profile-link {
   font-weight: 600;
-  color: var(--league-accent, var(--raptors));
+  color: #c5a059;
   text-decoration: none;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-profile-link {
+  color: #92680a;
 }
 
 .ref-compare-combobox-profile-link:hover {
@@ -14284,7 +15987,11 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 }
 
 .ref-compare-header-name a:hover {
-  color: var(--league-accent, var(--raptors));
+  color: #c5a059;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-header-name a:hover {
+  color: #92680a;
 }
 
 .ref-compare-header-meta {
@@ -14436,6 +16143,238 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
   color: var(--muted-strong);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Compare diagnostic visuals */
+.ref-compare-metric-hint {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: rgb(100 116 139);
+}
+
+.ref-compare-dual-gsni {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.ref-compare-dual-gsni-rail {
+  position: relative;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgb(30 41 59);
+}
+
+.ref-compare-dual-gsni-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 1px;
+  height: 0.65rem;
+  transform: translate(-50%, -50%);
+  background: rgb(100 116 139);
+}
+
+.ref-compare-dual-gsni-marker {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 0.55rem;
+  height: 0.55rem;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  border: 2px solid rgb(15 23 42);
+}
+
+.ref-compare-dual-gsni-marker--a {
+  background: rgb(52 211 153);
+}
+
+.ref-compare-dual-gsni-marker--b {
+  background: rgb(129 140 248);
+}
+
+.ref-compare-dual-gsni-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: rgb(100 116 139);
+}
+
+.ref-compare-dual-gsni-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.ref-compare-dual-gsni-legend-item--a {
+  color: rgb(110 231 183);
+}
+
+.ref-compare-dual-gsni-legend-item--b {
+  color: rgb(165 180 252);
+}
+
+.ref-compare-signal {
+  display: block;
+  width: 100%;
+  max-width: 5.5rem;
+  min-width: 3.5rem;
+}
+
+.ref-compare-signal--cell {
+  margin-top: 0.35rem;
+}
+
+.ref-compare-signal--empty {
+  height: 0.35rem;
+}
+
+.ref-compare-signal-rail {
+  position: relative;
+  display: block;
+  height: 0.28rem;
+  border-radius: 999px;
+  background: rgb(30 41 59);
+}
+
+.ref-compare-signal-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 0.55rem;
+  transform: translate(-50%, -50%);
+  background: rgb(71 85 105);
+}
+
+.ref-compare-signal-marker {
+  position: absolute;
+  top: 50%;
+  width: 0.35rem;
+  height: 0.35rem;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+}
+
+.ref-compare-signal--a .ref-compare-signal-marker {
+  background: rgb(52 211 153);
+}
+
+.ref-compare-signal--b .ref-compare-signal-marker {
+  background: rgb(129 140 248);
+}
+
+.ref-compare-signal-dual {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.35rem;
+}
+
+.ref-compare-signal-dual--inline {
+  max-width: 4.5rem;
+}
+
+.ref-compare-versus {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem 1rem;
+  border-top: 1px solid rgb(30 41 59);
+}
+
+.ref-compare-versus-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: start;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgb(30 41 59);
+}
+
+.ref-compare-versus-row:last-child {
+  border-bottom: none;
+}
+
+.ref-compare-versus-row--gsni {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ref-compare-versus-side {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.ref-compare-versus-side-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(100 116 139);
+}
+
+.ref-compare-versus-center {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  min-width: 5.5rem;
+  padding-inline: 0.25rem;
+}
+
+.ref-compare-versus-center--full {
+  width: 100%;
+  min-width: 0;
+}
+
+.ref-compare-versus-label {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgb(148 163 184);
+}
+
+.ref-compare-versus-disclaimer {
+  margin: 0;
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+  color: rgb(148 163 184);
+}
+
+.site-nav-link--compare {
+  margin-left: 0.35rem;
+  border-color: color-mix(in srgb, #c5a059 35%, var(--border));
+  color: #c5a059;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .site-nav-link--compare {
+  color: #92680a;
+  border-color: color-mix(in srgb, #92680a 28%, var(--border));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-input {
+  background: rgb(248 250 252);
+  border-color: rgb(203 213 225);
+  color: rgb(15 23 42);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-list {
+  background: rgb(255 255 255);
+  border-color: rgb(203 213 225);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-view {
+  background: rgb(255 255 255);
+  border-color: rgb(226 232 240);
 }
 
 /* ── Integrity & methodology data cards ───────────────────────────────────── */

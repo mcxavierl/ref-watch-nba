@@ -1,0 +1,99 @@
+{
+  "lastUpdated": "2026-07-20T03:37:26.774Z",
+  "date": "2026-07-20",
+  "source": "official.nba.com",
+  "games": [
+    {
+      "id": "401857083",
+      "matchup": "LVA @ TOR",
+      "awayTeam": "LVA",
+      "homeTeam": "TOR",
+      "league": "WNBA",
+      "slateDate": "2026-07-20",
+      "crew": []
+    },
+    {
+      "id": "401892393",
+      "matchup": "NYL @ DAL",
+      "awayTeam": "NYL",
+      "homeTeam": "DAL",
+      "league": "WNBA",
+      "slateDate": "2026-07-20",
+      "crew": []
+    },
+    {
+      "id": "401857084",
+      "matchup": "WAS @ GSV",
+      "awayTeam": "WAS",
+      "homeTeam": "GSV",
+      "league": "WNBA",
+      "slateDate": "2026-07-20",
+      "crew": []
+    },
+    {
+      "id": "401857085",
+      "matchup": "MIN @ SEA",
+      "awayTeam": "MIN",
+      "homeTeam": "SEA",
+      "league": "WNBA",
+      "slateDate": "2026-07-20",
+      "crew": []
+    },
+    {
+      "id": "401857086",
+      "matchup": "PHO @ LAS",
+      "awayTeam": "PHO",
+      "homeTeam": "LAS",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "crew": []
+    },
+    {
+      "id": "401857087",
+      "matchup": "MIN @ SEA",
+      "awayTeam": "MIN",
+      "homeTeam": "SEA",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "crew": []
+    },
+    {
+      "id": "401857088",
+      "matchup": "CHI @ NYL",
+      "awayTeam": "CHI",
+      "homeTeam": "NYL",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "crew": []
+    },
+    {
+      "id": "401857089",
+      "matchup": "LVA @ WAS",
+      "awayTeam": "LVA",
+      "homeTeam": "WAS",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "crew": []
+    },
+    {
+      "id": "401857090",
+      "matchup": "CON @ IND",
+      "awayTeam": "CON",
+      "homeTeam": "IND",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "crew": []
+    },
+    {
+      "id": "401857091",
+      "matchup": "DAL @ POR",
+      "awayTeam": "DAL",
+      "homeTeam": "POR",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "crew": []
+    }
+  ],
+  "nextSlateDate": "2026-07-20",
+  "note": "Next 10 WNBA games (2026-07-20 onward). Crews from official.nba.com when published."
+}

@@ -32,6 +32,7 @@ import {
   heroToneFromWinRateDelta,
   WIN_RATE_OUTLIER_PP,
 } from "@/lib/metric-significance";
+import { filterHomepageInsightCards } from "@/lib/homepage-insight-gates";
 
 export const TOP_STORY_LIMIT = 3;
 export { WIN_RATE_OUTLIER_PP };
@@ -154,18 +155,6 @@ export function scanLeagueOutliersFromSlim(
   return candidates;
 }
 
-function winRateHeadline(
-  candidate: InsightOutlierCandidate,
-  leagueLabel: string,
-): string {
-  const highlight = candidate.matrix!;
-  const pct = Math.abs(highlight.deltaPts).toFixed(1);
-  const direction = highlight.deltaPts > 0 ? "above" : "below";
-  return applyClinicalTone(
-    `${highlight.refName} is showing a ${pct}% win-rate outlier ${direction} the ${highlight.teamLabel} baseline in ${leagueLabel} games`,
-  );
-}
-
 function whistleHeadline(
   candidate: InsightOutlierCandidate,
   leagueLabel: string,
@@ -175,7 +164,7 @@ function whistleHeadline(
   const variance = candidate.whistleVariancePct!.toFixed(1);
   const direction = ref.foulsDelta > 0 ? "above" : "below";
   return applyClinicalTone(
-    `${ref.name} is pacing ${variance}% ${direction} league average for ${whistleUnit} in ${leagueLabel}`,
+    `${ref.name}: ${variance}% ${whistleUnit} variance ${direction} ${leagueLabel} league average (N=${ref.games})`,
   );
 }
 
@@ -197,8 +186,10 @@ export function candidateToInsightCard(candidate: InsightOutlierCandidate): Leag
       label: config.label,
       shortLabel: config.shortLabel,
       kind: "matrix-edge",
-      kicker: "Statistically significant ref×team split",
-      headline: winRateHeadline(candidate, config.shortLabel),
+      kicker: "Standout ref×team split",
+      headline: applyClinicalTone(
+        `${highlight.teamLabel} games officiated by ${highlight.refName} have historically shown a ${deltaLabel} win-rate delta vs the team baseline in ${config.shortLabel}.`,
+      ),
       story: applyClinicalTone(
         `${highlight.wins}-${highlight.losses} (${splitPct}) across ${highlight.games} games. Team sample without this official: ${baselinePct} (${formatMatrixHighlightBaseline(highlight)}).`,
       ),
@@ -309,7 +300,9 @@ export function generateTopStoriesFromCandidates(
   limit = TOP_STORY_LIMIT,
 ): { stories: LeagueInsightCard[]; status: TopStoriesStatus } {
   const sorted = [...candidates].sort((a, b) => b.significance - a.significance);
-  const generated = dedupeCards(sorted.map(candidateToInsightCard)).slice(0, limit);
+  const generated = filterHomepageInsightCards(
+    dedupeCards(sorted.map(candidateToInsightCard)),
+  ).slice(0, limit);
 
   if (generated.length >= limit) {
     return { stories: generated, status: "generated" };

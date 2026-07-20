@@ -1,14 +1,18 @@
 import { HEADER_LEAGUE_IDS, type LeagueId } from "@/lib/leagues";
 import { PRODUCTION_LIVE_HEADER_LEAGUE_IDS } from "@/lib/live-header-leagues.generated";
 import { isShowUnverifiedEnv } from "@/lib/show-unverified";
+import {
+  canAccessLocalOnlyLeagues,
+  LOCAL_ONLY_LEAGUE_IDS,
+} from "@/lib/local-only-leagues";
 
 /** Leagues hidden from nav and section tabs until verified ingest ships. */
 export const INGEST_GATED_LEAGUE_IDS = [] as const satisfies readonly LeagueId[];
 
 export type IngestGatedLeagueId = (typeof INGEST_GATED_LEAGUE_IDS)[number];
 
-/** College leagues never appear in the site header sport switcher. */
-const HEADER_HIDDEN_LEAGUE_IDS: readonly LeagueId[] = ["cbb", "cfb"];
+/** College leagues kept out of the header sport switcher until launched. */
+const HEADER_HIDDEN_LEAGUE_IDS: readonly LeagueId[] = ["cfb"];
 
 /** Leagues with verified ingest shown in the header sport switcher. */
 export function getHeaderLeagueIds(): LeagueId[] {
@@ -16,7 +20,13 @@ export function getHeaderLeagueIds(): LeagueId[] {
     isShowUnverifiedEnv() || process.env.NODE_ENV !== "production"
       ? [...HEADER_LEAGUE_IDS]
       : [...PRODUCTION_LIVE_HEADER_LEAGUE_IDS];
-  return base.filter((id) => !HEADER_HIDDEN_LEAGUE_IDS.includes(id));
+  const ids: LeagueId[] = base.filter((id) => !HEADER_HIDDEN_LEAGUE_IDS.includes(id));
+  if (canAccessLocalOnlyLeagues()) {
+    for (const leagueId of LOCAL_ONLY_LEAGUE_IDS) {
+      if (!ids.includes(leagueId)) ids.push(leagueId);
+    }
+  }
+  return ids;
 }
 
 export function isIngestGatedLeague(leagueId: LeagueId): leagueId is IngestGatedLeagueId {
@@ -39,7 +49,12 @@ export function isNhlNavHidden(leagueId: LeagueId): boolean {
   return !getHeaderLeagueIds().includes("nhl");
 }
 
-/** Hidden league routes redirect to home in production when ingest is not verified. */
-export function shouldRedirectHiddenLeague(_pathname: string): boolean {
-  return false;
+/** Leagues with nav stubs but no shipped routes yet. */
+const UNROUTED_LEAGUE_PREFIXES = ["/mlb"] as const;
+
+/** Hidden league routes redirect to home when ingest is not verified. */
+export function shouldRedirectHiddenLeague(pathname: string): boolean {
+  return UNROUTED_LEAGUE_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
 }

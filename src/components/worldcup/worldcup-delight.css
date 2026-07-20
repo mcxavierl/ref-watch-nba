@@ -1,51 +1,135 @@
-/* World Cup High-Stakes Authority — champagne accent on slate-950 capsules */
+/* Clinical Modern DataCapsule grid — World Cup narrative */
 
-.wc-authority-section {
+.wc-narrative-section {
   font-family: var(--font-inter), system-ui, sans-serif;
 }
 
-.wc-authority-capsule {
-  --wc-ink-strong: rgb(255 255 255);
-  --wc-ink-body: rgb(226 232 240);
-  --wc-ink-muted: rgb(148 163 184);
-  --wc-ink-subtle: rgb(100 116 139);
-  --wc-ink-link: rgb(148 163 184);
-  --wc-ink-link-hover: #bfa86a;
-  --wc-ink-positive: rgb(52 211 153);
-  --wc-ink-negative: rgb(251 113 133);
-  --wc-ink-accent: #bfa86a;
-  --wc-prestige-ink: rgb(15 23 42);
+.wc-data-grid {
+  display: grid;
+  gap: 1rem;
+}
 
-  position: relative;
+@media (min-width: 48rem) {
+  .wc-data-grid--bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.wc-data-capsule {
+  --wc-capsule-ink: rgb(248 250 252);
+  --wc-capsule-ink-muted: rgb(148 163 184);
+  --wc-capsule-ink-label: rgb(148 163 184);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   background: rgb(2 6 23);
-  color: var(--wc-ink-body);
+  color: var(--wc-capsule-ink-muted);
+}
+
+.wc-data-capsule--span-full {
+  grid-column: 1 / -1;
+}
+
+.wc-data-capsule__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.wc-data-capsule__footnote {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgb(30 41 59);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgb(148 163 184);
+  text-align: justify;
+  text-wrap: pretty;
+  hyphens: auto;
+}
+
+.wc-data-capsule__footnote-label {
+  font-weight: 500;
+  color: rgb(100 116 139);
+}
+
+.wc-data-capsule--referee header {
+  padding-bottom: 0.25rem;
+}
+
+/* Theme-safe ink on always-dark capsules */
+.wc-data-capsule .wc-match-headline,
+.wc-data-capsule h2,
+.wc-data-capsule h3,
+.wc-data-capsule .text-slate-50 {
+  color: var(--wc-capsule-ink);
+}
+
+html[data-color="light"] .wc-data-capsule .wc-match-headline,
+html[data-color="light"] .wc-data-capsule h2,
+html[data-color="light"] .wc-data-capsule h3,
+html[data-color="light"] .wc-data-capsule .text-slate-50,
+html[data-theme="light"] .wc-data-capsule .wc-match-headline,
+html[data-theme="light"] .wc-data-capsule h2,
+html[data-theme="light"] .wc-data-capsule h3,
+html[data-theme="light"] .wc-data-capsule .text-slate-50,
+html[data-color="dark"] .wc-data-capsule .wc-match-headline,
+html[data-color="dark"] .wc-data-capsule h2,
+html[data-color="dark"] .wc-data-capsule h3,
+html[data-color="dark"] .wc-data-capsule .text-slate-50,
+html[data-theme="dark"] .wc-data-capsule .wc-match-headline,
+html[data-theme="dark"] .wc-data-capsule h2,
+html[data-theme="dark"] .wc-data-capsule h3,
+html[data-theme="dark"] .wc-data-capsule .text-slate-50 {
+  color: var(--wc-capsule-ink);
 }
 
 /* Beat light-mode global heading ink on always-dark capsules */
-html[data-color="light"]:not([data-contrast="high"]) .wc-authority-capsule h2,
-html[data-theme="light"]:not([data-contrast="high"]) .wc-authority-capsule h2,
-html[data-color="light"]:not([data-contrast="high"]) .wc-authority-capsule .wc-match-headline,
-html[data-theme="light"]:not([data-contrast="high"]) .wc-authority-capsule .wc-match-headline,
-html[data-color="light"]:not([data-contrast="high"]) .wc-authority-capsule--referee h3,
-html[data-theme="light"]:not([data-contrast="high"]) .wc-authority-capsule--referee h3,
-html[data-color="light"]:not([data-contrast="high"]) .wc-authority-capsule .text-white,
-html[data-theme="light"]:not([data-contrast="high"]) .wc-authority-capsule .text-white {
-  color: var(--wc-ink-strong);
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule h2,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule h2,
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule .wc-match-headline,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule .wc-match-headline,
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule--referee h3,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule--referee h3,
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule .text-slate-50,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule .text-slate-50 {
+  color: var(--wc-capsule-ink);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .wc-authority-capsule--kpi h3,
-html[data-theme="light"]:not([data-contrast="high"]) .wc-authority-capsule--kpi h3 {
-  color: var(--wc-ink-subtle);
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule .text-slate-400,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule .text-slate-400,
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule h3.text-slate-400,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule h3.text-slate-400 {
+  color: var(--wc-capsule-ink-muted);
 }
 
-.wc-authority-capsule--match {
-  background:
-    radial-gradient(
-      ellipse 90% 60% at 100% 0%,
-      color-mix(in srgb, var(--wc-research-accent, #bfa86a) 8%, transparent),
-      transparent 55%
-    ),
-    rgb(2 6 23);
+.wc-data-capsule--referee h3 {
+  color: var(--wc-capsule-ink);
+}
+
+.wc-data-capsule .text-slate-400 {
+  color: var(--wc-capsule-ink-muted);
+}
+
+.wc-data-capsule .text-slate-500 {
+  color: var(--wc-capsule-ink-label);
+}
+
+.wc-data-capsule .text-slate-600 {
+  color: var(--wc-capsule-ink-muted);
+}
+
+.wc-data-capsule .text-slate-600:hover {
+  color: var(--wc-capsule-ink);
+}
+
+.wc-data-capsule .text-slate-100 {
+  color: rgb(241 245 249);
+}
+
+.wc-data-capsule .text-slate-300 {
+  color: rgb(203 213 225);
 }
 
 .wc-flag-avatar {
@@ -64,81 +148,76 @@ html[data-theme="light"]:not([data-contrast="high"]) .wc-authority-capsule--kpi 
 }
 
 .wc-match-headline {
-  color: var(--wc-ink-strong);
+  color: var(--wc-capsule-ink);
 }
 
-.wc-authority-kicker {
-  color: var(--wc-ink-accent);
+.wc-data-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgb(100 116 139);
 }
 
-.wc-authority-label {
-  color: var(--wc-ink-subtle);
+.wc-metric-grid {
+  display: grid;
+  gap: 1rem;
 }
 
-.wc-authority-value {
-  color: var(--wc-ink-strong);
+@media (min-width: 40rem) {
+  .wc-metric-grid--2x2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.wc-authority-body {
-  color: var(--wc-ink-muted);
+.wc-metric-cell {
+  min-width: 0;
 }
 
-.wc-authority-meta {
-  color: var(--wc-ink-link);
+.wc-officials-grid {
+  display: grid;
+  gap: 0.65rem 1rem;
 }
 
-.wc-authority-link {
-  color: var(--wc-ink-link);
-  text-underline-offset: 3px;
-  transition: color 150ms ease;
+@media (min-width: 40rem) {
+  .wc-officials-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.wc-authority-link:hover {
-  color: var(--wc-ink-link-hover);
-  text-decoration: underline;
+.wc-official-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  min-width: 0;
 }
 
-.wc-authority-metric-cell {
-  padding: 0.25rem 0;
+.wc-match-meta-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem;
+  border-top: 1px solid rgb(30 41 59);
+  padding-top: 1rem;
 }
 
-.wc-authority-capsule--kpi .wc-authority-metric-cell {
-  padding: 1rem 0;
+.wc-match-meta-item {
+  min-width: 0;
+  flex: 1 1 8rem;
 }
 
-.wc-authority-narrative {
-  color: var(--wc-ink-muted);
-}
-
-.wc-authority-pill {
-  border-color: rgb(51 65 85);
-  background: rgb(30 41 59);
-  color: var(--wc-ink-body);
-}
-
-.wc-kpi-positive {
-  color: var(--wc-ink-positive);
-}
-
-.wc-kpi-negative {
-  color: var(--wc-ink-negative);
-}
-
-.match-status-pill--prestige {
-  background: #bfa86a;
-  color: var(--wc-prestige-ink);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, #bfa86a 40%, transparent),
-    0 0 16px color-mix(in srgb, #bfa86a 18%, transparent);
+.wc-match-meta-item dd {
+  margin-top: 0.25rem;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .wc-authority-capsule {
-    transition: border-color 180ms ease, box-shadow 180ms ease;
+  .wc-data-capsule {
+    transition: border-color 180ms ease;
   }
 
-  .wc-authority-capsule:hover {
+  .wc-data-capsule:hover {
     border-color: rgb(51 65 85);
-    box-shadow: 0 16px 40px rgb(0 0 0 / 0.28);
   }
 }

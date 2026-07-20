@@ -1,114 +1,92 @@
+import { Activity, Sparkles, Target, Users } from "lucide-react";
 import { TermHelp } from "@/components/TermHelp";
+import { GsniCard } from "@/components/GsniCard";
+import { GsniInsightPill } from "@/components/GsniInsightPill";
+import { GsniRelativeGauge } from "@/components/GsniRelativeGauge";
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
+import { GsniSampleCount } from "@/components/GsniSampleCount";
+import { GsniSoftLockCard } from "@/components/GsniSoftLockCard";
 import {
-  RefDashboardStatCell,
-  RefDashboardStatGrid,
-} from "@/components/RefDashboardStatGrid";
-import {
-  gsniHighLeverageSampleLabel,
-  gsniHighLeverageSampleTier,
+  gsniConfidenceLabel,
   type RefGsniMetrics,
 } from "@/lib/ref-gsni";
+import { GSNI_INSUFFICIENT_DATA_LABEL } from "@/lib/gsni-display";
 import { GSNI_MIN_HIGH_LEVERAGE_MINUTES } from "@/lib/provenance";
-import { formatSampleSizeLabel } from "@/lib/data-maturity";
-
-const TIER_CLASS = {
-  high: "sample-confidence-pill sample-confidence-pill--high bg-emerald-500/10 text-emerald-400",
-  moderate:
-    "sample-confidence-pill sample-confidence-pill--moderate bg-amber-500/10 text-amber-400",
-  withheld: "sample-confidence-pill sample-confidence-pill--low bg-rose-500/10 text-rose-400",
-} as const;
-
-function GsniSamplePill({ minutes }: { minutes: number }) {
-  const tier = gsniHighLeverageSampleTier(minutes);
-  const label = gsniHighLeverageSampleLabel(tier);
-
-  return (
-    <span
-      className={`inline-flex shrink-0 items-center rounded-full px-3 py-1 text-xs font-semibold tabular-nums ${TIER_CLASS[tier]}`}
-      aria-label={`High-leverage sample: ${label}`}
-    >
-      {label}
-    </span>
-  );
-}
 
 export function RefGsniSection({
   metrics,
-  refName,
   showMetrics = true,
+  embedded = false,
 }: {
   metrics: RefGsniMetrics | null;
   refName: string;
   showMetrics?: boolean;
+  embedded?: boolean;
 }) {
   if (!metrics) return null;
 
-  const sampleDetail = `${metrics.highLeverageMinutes.toFixed(1)} high-leverage min · ${formatSampleSizeLabel(metrics.sampleGames)}`;
+  const gateCleared =
+    showMetrics &&
+    metrics.gateCleared &&
+    metrics.referee_gsni !== undefined;
+
+  const body = (
+    <>
+      {!showMetrics ? (
+        <p className="gsni-sub-text">{GSNI_INSUFFICIENT_DATA_LABEL}</p>
+      ) : gateCleared ? (
+        <GsniCard>
+          <div className="gsni-profile-active">
+            {metrics.gsniShrinkageTooltip ? (
+              <MetricInfoHint hint={metrics.gsniShrinkageTooltip}>
+                <GsniRelativeGauge gsni={metrics.referee_gsni!} />
+              </MetricInfoHint>
+            ) : (
+              <GsniRelativeGauge gsni={metrics.referee_gsni!} />
+            )}
+            <div className="gsni-profile-pills">
+              <GsniInsightPill icon={Activity}>
+                Data confidence: {gsniConfidenceLabel(metrics.highLeverageMinutes)}
+              </GsniInsightPill>
+              <GsniInsightPill icon={Users}>
+                <GsniSampleCount>
+                  {Math.round(metrics.highLeverageMinutes)}
+                </GsniSampleCount>{" "}
+                high-leverage min
+              </GsniInsightPill>
+              <GsniInsightPill icon={Target}>
+                Minimum: {GSNI_MIN_HIGH_LEVERAGE_MINUTES} min
+              </GsniInsightPill>
+            </div>
+          </div>
+        </GsniCard>
+      ) : (
+        <GsniSoftLockCard
+          minutes={metrics.highLeverageMinutes}
+          gate={GSNI_MIN_HIGH_LEVERAGE_MINUTES}
+        />
+      )}
+    </>
+  );
+
+  if (embedded) {
+    return <div className="ref-gsni-embedded min-w-0">{body}</div>;
+  }
 
   return (
     <section className="ref-profile-section">
-      <div className="ref-table-section-header flex min-w-0 flex-wrap items-start justify-between gap-x-3 gap-y-2 sm:items-center">
-        <h2 className="min-w-0 font-semibold tracking-tight leading-snug">
-          <TermHelp id="gsni">Game-State Neutralization</TermHelp>
+      <div className="ref-table-section-header flex min-w-0 flex-wrap items-center gap-2">
+        <h2 className="flex min-w-0 items-center gap-2 font-semibold leading-snug tracking-tight">
+          <Sparkles
+            className="h-4 w-4 shrink-0 text-indigo-400"
+            strokeWidth={2.1}
+            aria-hidden
+          />
+          <TermHelp id="game-state-index">Game-State Index</TermHelp>
         </h2>
-        <GsniSamplePill minutes={metrics.highLeverageMinutes} />
       </div>
 
-      {!showMetrics ? (
-        <p className="ref-table-section-body text-sm font-normal text-slate-400">Sample gate not cleared.</p>
-      ) : metrics.honestyBanner ? (
-        <div className="ref-table-section-body">
-          <p className="text-sm font-normal leading-relaxed text-slate-400">{metrics.honestyBanner}</p>
-          <p className="mt-2 text-xs font-normal text-slate-400 tabular-nums">{sampleDetail}</p>
-          <p className="mt-2 text-xs font-normal text-slate-400">
-            50 is league-neutral in matched clutch states. Higher means fewer whistles than
-            league peers; lower means more.
-          </p>
-        </div>
-      ) : (
-        <div className="ref-table-section-body">
-          <p className="mb-4 text-xs font-normal leading-relaxed text-slate-400">
-            How {refName} whistles in clutch game states (score gap and clock) vs league
-            baselines in the same states. {GSNI_MIN_HIGH_LEVERAGE_MINUTES}+ high-leverage
-            minutes required.
-          </p>
-          <RefDashboardStatGrid className="ref-stat-grid--gsni">
-            <RefDashboardStatCell
-              label="GSNI score"
-              value={
-                metrics.referee_gsni !== undefined
-                  ? String(metrics.referee_gsni)
-                  : "-"
-              }
-              detail={metrics.vsNeutralDetail ?? undefined}
-              provenance={metrics.provenance}
-              sampleSize={metrics.sampleGames}
-              source={metrics.source}
-              lastUpdated={metrics.lastUpdated}
-            />
-            {metrics.referee_gsni_volatility !== undefined ? (
-              <RefDashboardStatCell
-                label="Volatility"
-                value={String(metrics.referee_gsni_volatility)}
-                detail={metrics.volatilityDetail ?? undefined}
-                provenance={metrics.provenance}
-                sampleSize={metrics.sampleGames}
-                source={metrics.source}
-                lastUpdated={metrics.lastUpdated}
-              />
-            ) : null}
-            <RefDashboardStatCell
-              label="High-leverage sample"
-              value={`${metrics.highLeverageMinutes.toFixed(1)} min`}
-              detail={formatSampleSizeLabel(metrics.sampleGames)}
-              provenance={metrics.provenance}
-              sampleSize={metrics.sampleGames}
-              source={metrics.source}
-              lastUpdated={metrics.lastUpdated}
-            />
-          </RefDashboardStatGrid>
-        </div>
-      )}
+      <div className="ref-table-section-body">{body}</div>
     </section>
   );
 }

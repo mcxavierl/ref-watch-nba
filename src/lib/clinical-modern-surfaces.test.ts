@@ -18,14 +18,13 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /StandoutMetricValue/);
   });
 
-  it("TeamSplitView uses Clinical Modern metrics without Balanced pills", () => {
+  it("TeamSplitView uses matrix reporting for ref splits", () => {
     const source = readSrc("src/components/TeamSplitView.tsx");
-    assert.match(source, /REF_CARD_CLASS/);
-    assert.match(source, /StandoutMetricValue/);
-    assert.match(source, /NeutralDivergenceBar/);
-    assert.match(source, /clinical-insight-matrix-avatars/);
+    assert.match(source, /useLeagueMatrixData/);
+    assert.match(source, /MatrixView/);
     assert.doesNotMatch(source, /Balanced/);
     assert.doesNotMatch(source, /MetricBlock/);
+    assert.doesNotMatch(source, /Crews \(/);
   });
 
   it("TeamPageInsights uses shared InsightCard editorial shell", () => {
@@ -60,71 +59,164 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /signedDeltaTone/);
   });
 
-  it("ClinicalInsightMatrixCard uses sample confidence pills without provenance footer", () => {
+  it("ClinicalInsightMatrixCard uses directional delta without sample pills", () => {
     const source = readSrc("src/components/ClinicalInsightMatrixCard.tsx");
-    assert.match(source, /SampleConfidencePill/);
+    assert.match(source, /DirectionalDeltaValue/);
+    assert.match(source, /resolveRefProfileTeam/);
+    assert.doesNotMatch(source, /SampleConfidencePill/);
     assert.match(source, /clinical-insight-matrix-header/);
     assert.match(source, /clinical-insight-matrix-record/);
     assert.match(source, /text-sm text-slate-300/);
-    assert.match(source, /text-sm text-slate-400/);
+    assert.match(source, /text-sm font-normal text-slate-400/);
     assert.match(source, /recordLine/);
-    assert.match(source, /text-3xl/);
-    assert.match(source, /tabular-nums/);
+    assert.match(source, /DirectionalDeltaValue/);
+    assert.match(source, /font-normal text-slate-400/);
     assert.doesNotMatch(source, /clinical-insight-matrix-provenance/);
     assert.doesNotMatch(source, /Based on .* shared games/);
   });
 
-  it("WorldCupFinalSection uses authority match capsule", () => {
+  it("InsightCard editorial variants use split metric hierarchy for matrix splits", () => {
+    const source = readSrc("src/components/shared/InsightCard.tsx");
+    assert.match(source, /InsightSplitMetrics/);
+    assert.match(source, /formatSampleSizeLabel/);
+    assert.match(source, /Sample size \(N\)/);
+  });
+
+  it("InsightSplitMetrics keeps sample size white and delta directional", () => {
+    const source = readSrc("src/components/shared/InsightSplitMetrics.tsx");
+    assert.match(source, /insight-split-sample-value/);
+    assert.match(source, /DirectionalDeltaValue/);
+    assert.match(source, /insight-split-metrics-row/);
+    const css = readSrc("src/components/insight-card.css");
+    assert.match(css, /insight-split-metrics-box--sample/);
+    assert.match(css, /insight-split-sample-value[\s\S]*color: #fff/);
+    assert.match(css, /insight-split-metrics-box--delta/);
+    assert.match(css, /insight-split-delta-value--positive/);
+  });
+
+  it("InsightMetricComparison uses dual-marker win-rate track for baseline splits", () => {
+    const source = readSrc("src/components/shared/InsightMetricComparison.tsx");
+    assert.match(source, /insight-metric-comparison-dual-axis/);
+    assert.match(source, /insight-metric-comparison-marker--baseline/);
+    assert.match(source, /insight-metric-comparison-marker--outcome/);
+    assert.match(source, /insight-metric-comparison-gap/);
+    const css = readSrc("src/components/insight-card.css");
+    assert.match(css, /insight-metric-comparison-dual-axis/);
+    assert.match(css, /height: 0\.25rem/);
+    assert.match(css, /border-radius: 999px/);
+  });
+
+  it("WorldCupFinalSection uses Clinical Modern DataCapsule match header", () => {
     const source = readSrc("src/components/WorldCupFinalSection.tsx");
     assert.match(source, /MatchStatusPill/);
-    assert.match(source, /tone="prestige"/);
+    assert.match(source, /tone="clinical"/);
     assert.match(source, /WorldCupFindingCard/);
-    assert.match(source, /text-5xl font-extrabold tracking-tighter/);
+    assert.match(source, /wc-data-grid--bento/);
+    assert.match(source, /text-3xl font-bold tracking-tight/);
     assert.match(source, /wc-flag-avatar/);
-    assert.match(source, /wc-authority-link/);
-    assert.match(source, /wc-authority-meta/);
-    assert.doesNotMatch(source, /text-slate-600/);
+    assert.match(source, /text-slate-400/);
+    assert.doesNotMatch(source, /#BFA86A/);
+    assert.doesNotMatch(source, /tone="prestige"/);
     assert.doesNotMatch(source, /overview-research-hub-card/);
     assert.doesNotMatch(source, /from "@\/components\/FindingsSection"/);
   });
 
-  it("WorldCupFindingCard uses authority KPI scale and semantic tones", () => {
+  it("WorldCupFindingCard uses DataCapsule KPI scale without top pills", () => {
     const card = readSrc("src/components/worldcup/WorldCupFindingCard.tsx");
     const kpi = readSrc("src/components/worldcup/WorldCupKpiValue.tsx");
     assert.match(card, /WorldCupKpiValue/);
-    assert.match(kpi, /text-7xl font-black/);
-    assert.match(card, /wc-authority-pill/);
+    assert.match(kpi, /text-6xl font-black/);
+    assert.match(card, /wc-data-capsule/);
+    assert.match(card, /text-base font-normal text-slate-400/);
     assert.match(card, /border-slate-800/);
-    assert.doesNotMatch(card, /text-slate-600/);
-    assert.match(card, /border-slate-800/);
-    assert.match(card, /wc-authority-capsule--referee/);
+    assert.match(card, /wc-data-capsule--referee/);
+    assert.match(card, /wc-data-capsule__footnote/);
+    assert.doesNotMatch(card, /wc-data-capsule__pills/);
+    assert.doesNotMatch(card, /FindingCategoryPillLabel/);
   });
 
-  it("World Cup editorial delight surfaces are defined", () => {
+  it("World Cup DataCapsule surfaces are defined", () => {
     const css = readSrc("src/components/worldcup/worldcup-delight.css");
-    assert.match(css, /wc-authority-capsule/);
-    assert.match(css, /wc-authority-capsule--kpi h3/);
-    assert.match(css, /wc-authority-link/);
-    assert.match(css, /wc-kpi-positive/);
-    assert.match(css, /--wc-prestige-ink/);
-    assert.match(css, /match-status-pill--prestige/);
+    assert.match(css, /wc-data-capsule/);
+    assert.match(css, /wc-data-grid--bento/);
+    assert.match(css, /wc-flag-avatar/);
+    assert.match(css, /--wc-capsule-ink/);
+    assert.match(css, /html\[data-color="light"\]:not\(\[data-contrast="high"\]\) .wc-data-capsule h2/);
+    assert.match(css, /html\[data-color="light"\]:not\(\[data-contrast="high"\]\) .wc-data-capsule .text-slate-400/);
+    assert.doesNotMatch(css, /wc-data-capsule__pills/);
+    assert.doesNotMatch(css, /bfa86a/i);
+    assert.doesNotMatch(css, /prestige/i);
   });
 
-  it("MatchStatusPill supports clinical and prestige tones", () => {
+  it("MatchStatusPill supports clinical slate capsule styling", () => {
     const source = readSrc("src/components/hub/MatchStatusPill.tsx");
-    assert.match(source, /bg-slate-700/);
-    assert.match(source, /text-slate-50/);
-    assert.match(source, /match-status-pill--prestige/);
-    assert.match(source, /bg-\[#BFA86A\]/);
-    assert.doesNotMatch(source, /text-white/);
+    assert.match(source, /bg-slate-800/);
+    assert.match(source, /text-slate-200/);
+    assert.match(source, /border-slate-700/);
     assert.match(source, /font-semibold/);
     assert.match(source, /tracking-wider/);
     assert.match(source, /h-\[2\.35rem\]/);
   });
 
-  it("editorial insight cards pair league badge with season start", () => {
+  it("homepage Clinical Modern shell and upcoming game cards are defined", () => {
+    const css = readSrc("src/components/overview-clinical-modern.css");
+    const page = readSrc("src/app/page.tsx");
+    const section = readSrc("src/components/OverviewUpcomingSlateSection.tsx");
+    const card = readSrc("src/components/UpcomingGameCard.tsx");
+    const row = readSrc("src/components/OverviewSlateRow.tsx");
+    assert.match(page, /overview-shell--clinical/);
+    assert.match(section, /UpcomingGameCard/);
+    assert.match(section, /upcoming-games-grid/);
+    assert.doesNotMatch(section, /overview-slate-notes/);
+    assert.doesNotMatch(section, /overview-slate-updated/);
+    assert.match(card, /gameContextLine/);
+    assert.match(card, /upcoming-game-card__context/);
+    assert.match(card, /upcoming-game-card__context-slot/);
+    assert.match(
+      card,
+      /upcoming-game-card__league-mark[\s\S]*upcoming-game-card__date-pill/,
+    );
+    assert.match(css, /upcoming-game-card__context/);
+    assert.match(css, /upcoming-game-card__context-slot/);
+    assert.match(card, /size="xl"/);
+    assert.match(css, /upcoming-game-card/);
+    assert.match(readSrc("src/components/overview-slate-shared.css"), /upcoming-games-grid/);
+    assert.match(css, /upcoming-game-card__matchup/);
+    assert.match(css, /--upcoming-matchup-glow-accent/);
+    assert.match(
+      css,
+      /\.upcoming-game-card__date-pill[\s\S]*var\(--upcoming-matchup-glow\)/,
+    );
+    assert.match(
+      css,
+      /\.upcoming-game-card__date-pill[\s\S]*var\(--upcoming-pill-shadow\)/,
+    );
+    assert.match(css, /\[data-league="nfl"\][\s\S]*--upcoming-matchup-glow-accent: #1e4fd4/);
+    assert.match(css, /\[data-league="epl"\][\s\S]*--upcoming-matchup-glow-accent: #6b3fa8/);
+    assert.match(css, /\[data-league="laliga"\][\s\S]*--upcoming-matchup-glow-accent: #c9a227/);
+    assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*var\(--upcoming-logo-plate-bg\)/);
+    assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*overflow: hidden/);
+    assert.match(css, /--upcoming-card-bg/);
+    assert.match(
+      css,
+      /html\[data-color="light"\][\s\S]*--upcoming-card-bg: #ffffff/,
+    );
+    assert.match(css, /\.upcoming-game-card__team-abbr[\s\S]*var\(--upcoming-ink-strong\)/);
+    assert.match(css, /container-type: inline-size/);
+    assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*align-items: center/);
+    assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*justify-content: center/);
+    assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*border-radius: 9999px/);
+    assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*overflow: hidden/);
+    assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark[\s\S]*object-fit: contain/);
+    assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark[\s\S]*object-position: center/);
+    assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark--epl[\s\S]*transform: translate\(1px, 0\)/);
+    assert.match(row, /overview-slate-row-game-context/);
+  });
+
+  it("editorial insight cards show season start except homepage trend splits", () => {
     const source = readSrc("src/components/shared/InsightCard.tsx");
     assert.match(source, /insight-editorial-head-row/);
+    assert.match(source, /variant !== "trend"/);
     assert.match(source, /LeagueSeasonStartBadge leagueId=\{card\.leagueId\}/);
   });
 
@@ -133,6 +225,16 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(source, /OverviewHistoricalLeaders/);
     assert.doesNotMatch(source, /Expanding coverage/);
     assert.doesNotMatch(source, /overview-expansion/);
+    assert.doesNotMatch(source, /WorldCupFinalSection/);
+    assert.doesNotMatch(source, /GameStateIndexFindings/);
+    assert.doesNotMatch(source, /ResearchHighlightBanner/);
+  });
+
+  it("research highlight banner component stays available for future promos", () => {
+    const banner = readSrc("src/components/ResearchHighlightBanner.tsx");
+    const config = readSrc("src/config/research-highlight.ts");
+    assert.match(banner, /research-highlight-banner/);
+    assert.match(config, /Leverage-Spike Anomaly/);
   });
 
   it("live league date badges use high-contrast blue tokens", () => {
@@ -140,6 +242,29 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /--live-league-date-ink/);
     assert.match(css, /--live-league-date-bg/);
     assert.match(css, /--live-league-date-border/);
+  });
+
+  it("homepage contrast fixes keep muted copy readable", () => {
+    const overviewCss = readSrc("src/components/overview-dashboard.css");
+    const globalsCss = readSrc("src/app/globals.css");
+    const quicklistsCss = readSrc("src/components/overview-quicklists.css");
+    const insightCss = readSrc("src/components/insight-card.css");
+    assert.match(overviewCss, /Homepage contrast/);
+    assert.match(overviewCss, /overview-slate-row/);
+    assert.match(overviewCss, /overview-league-chooser-card\[data-league="nfl"\]/);
+    assert.match(overviewCss, /html\[data-color="light"\][\s\S]*overview-league-chooser-card/);
+    assert.match(globalsCss, /League hub cards — light mode surfaces/);
+    assert.match(globalsCss, /html\[data-color="light"\][\s\S]*overview-league-chooser-card[\s\S]*background: #ffffff/);
+    assert.match(overviewCss, /overview-section--secondary .overview-section-lead/);
+    assert.match(quicklistsCss, /overview-quicklists-step-label/);
+    assert.match(quicklistsCss, /overview-quicklists-context/);
+    assert.match(overviewCss, /Explore bento: equal-height catalog \+ analytics columns/);
+    assert.match(overviewCss, /overview-secondary-tabs/);
+    assert.match(insightCss, /insight-editorial-kicker/);
+    assert.match(globalsCss, /hide decorative metric bars/);
+    assert.match(globalsCss, /\.overview-pace-bar/);
+    assert.match(insightCss, /insight-metric-comparison-value--rate/);
+    assert.match(insightCss, /var\(--text-primary\)/);
   });
 
   it("pill glow tokens are centralized in kpi-data-pill.css", () => {

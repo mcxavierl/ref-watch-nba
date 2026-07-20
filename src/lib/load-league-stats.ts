@@ -26,6 +26,10 @@ import {
   formatRefStatsRange as formatCfbRange,
   getRefStats as getCfbStats,
 } from "@/lib/cfb/data";
+import {
+  formatRefStatsRange as formatWnbaRange,
+  getRefStats as getWnbaStats,
+} from "@/lib/wnba/data";
 import type { LeagueId } from "@/lib/leagues";
 import {
   buildScopedRefStats,
@@ -36,7 +40,7 @@ import {
 } from "@/lib/league-verification";
 import { shouldShowUnverifiedData } from "@/lib/show-unverified";
 import {
-  formatSeasonScope,
+  formatScopedSeasonYearSpan,
   resolveScopedSeasonsForLeague,
   scopedSinceSeason,
   type SeasonScopeMode,
@@ -70,7 +74,7 @@ const LOADERS: Record<LeagueId, () => LeagueStatsBundle> = {
   laliga: () => ({ stats: getLaligaStats(), formatRange: formatLaligaRange }),
   cbb: () => ({ stats: getCbbStats(), formatRange: formatCbbRange }),
   cfb: () => ({ stats: getCfbStats(), formatRange: formatCfbRange }),
-  wnba: () => ({ stats: getNbaStats(), formatRange: formatNbaRange }),
+  wnba: () => ({ stats: getWnbaStats(), formatRange: formatWnbaRange }),
   mlb: () => ({ stats: getNbaStats(), formatRange: formatNbaRange }),
 };
 
@@ -142,7 +146,7 @@ export function loadHubLeagueStats(
     scopedSeasons,
     availableSeasons,
     sinceSeason: scopedSinceSeason(scopedSeasons),
-    scopeLabel: formatSeasonScope(scopedSeasons.length),
+    scopeLabel: formatScopedSeasonYearSpan(scopedSeasons),
   };
 }
 
@@ -179,7 +183,7 @@ export function loadScopedLeagueStats(
     scopedSeasons,
     availableSeasons,
     sinceSeason: scopedSinceSeason(scopedSeasons),
-    scopeLabel: formatSeasonScope(scopedSeasons.length),
+    scopeLabel: formatScopedSeasonYearSpan(scopedSeasons),
   };
 }
 

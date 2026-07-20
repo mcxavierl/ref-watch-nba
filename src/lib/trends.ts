@@ -1,7 +1,7 @@
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { SeasonBaseline } from "../../scripts/lib/baselines";
 
-export type TrendLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+export type TrendLeague = "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
 export interface TrendRow {
   season: string;
@@ -30,6 +30,7 @@ const TREND_LEAGUE_TO_ID: Record<TrendLeague, LeagueId> = {
   LALIGA: "laliga",
   CBB: "cbb",
   CFB: "cfb",
+  WNBA: "wnba",
 };
 
 export function trendWhistleValue(
@@ -91,6 +92,7 @@ export function seasonRowsFromBaselines(
 export function buildYoYNarrative(
   rows: TrendRow[],
   league: TrendLeague,
+  subjectLabel?: string,
 ): YoYNarrative | null {
   if (rows.length < 2) return null;
 
@@ -140,7 +142,9 @@ export function buildYoYNarrative(
   }
 
   return {
-    headline: `${latest.season} vs ${prior.season}: league scoring and whistle context`,
+    headline: subjectLabel
+      ? `${subjectLabel}: ${latest.season} vs ${prior.season} scoring and whistle context`
+      : `${latest.season} vs ${prior.season}: league scoring and whistle context`,
     body,
   };
 }

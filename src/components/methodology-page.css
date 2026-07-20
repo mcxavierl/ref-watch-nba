@@ -1,0 +1,119 @@
+/* Clinical Modern methodology page */
+
+.methodology-shell,
+.clinical-doc-shell {
+  /* Ink + capsule tokens: src/styles/clinical-doc-tokens.css */
+}
+
+.methodology-shell .page-title,
+.clinical-doc-shell .page-title {
+  color: var(--methodology-ink);
+}
+
+.methodology-shell .page-lead,
+.clinical-doc-shell .page-lead {
+  color: var(--methodology-muted);
+  max-width: 42rem;
+}
+
+.methodology-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.methodology-stat-pill {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--methodology-capsule-border);
+  background: var(--methodology-capsule-bg);
+  min-width: 7.5rem;
+}
+
+.methodology-stat-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--methodology-ink);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.methodology-stat-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--methodology-label);
+}
+
+.methodology-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .methodology-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .methodology-grid .methodology-capsule--wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.methodology-capsule {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--methodology-capsule-border);
+  background: var(--methodology-capsule-bg);
+}
+
+.methodology-capsule-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--methodology-ink);
+}
+
+.methodology-capsule-lead {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--methodology-muted);
+}
+
+.methodology-capsule-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.55rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--methodology-muted);
+}
+
+.methodology-quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 2rem;
+}
+
+.methodology-quick-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(197 160 89);
+  text-decoration: none;
+}
+
+.methodology-quick-link:hover {
+  text-decoration: underline;
+}

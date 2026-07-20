@@ -18,6 +18,11 @@ export interface RefGeographyFile {
   officials: Record<string, RefGeographyEntry>;
 }
 
+const EMPTY_GEOGRAPHY: RefGeographyFile = {
+  meta: { lastUpdated: "", league: "WNBA" },
+  officials: {},
+};
+
 const GEOGRAPHY_BY_LEAGUE: Record<FindingLeague, RefGeographyFile> = {
   NBA: nbaGeographyData as RefGeographyFile,
   NFL: nflGeographyData as RefGeographyFile,
@@ -26,6 +31,7 @@ const GEOGRAPHY_BY_LEAGUE: Record<FindingLeague, RefGeographyFile> = {
   LALIGA: laligaGeographyData as RefGeographyFile,
   CBB: cbbGeographyData as RefGeographyFile,
   CFB: cfbGeographyData as RefGeographyFile,
+  WNBA: EMPTY_GEOGRAPHY,
 };
 
 const LEAGUE_ID_TO_FINDING: Partial<Record<LeagueId, FindingLeague>> = {
@@ -36,6 +42,7 @@ const LEAGUE_ID_TO_FINDING: Partial<Record<LeagueId, FindingLeague>> = {
   laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
+  wnba: "WNBA",
 };
 
 export function getRefGeographyShard(league: FindingLeague): RefGeographyFile {

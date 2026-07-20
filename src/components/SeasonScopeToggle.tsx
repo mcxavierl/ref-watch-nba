@@ -19,9 +19,9 @@ type SeasonScopeToggleProps = {
   availableSeasons?: string[];
   /** Override pill set (defaults to standard three-mode toggle). */
   modes?: SeasonScopeMode[];
-  /** When set with Patriots team abbr, NFL gets decade buckets. */
+  /** Optional league for URL default scope resolution. */
   leagueId?: LeagueId;
-  /** Patriots-only era scope on NFL team pages. */
+  /** Optional team context for URL default scope resolution. */
   teamAbbr?: string;
 };
 

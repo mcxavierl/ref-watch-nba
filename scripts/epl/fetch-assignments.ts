@@ -13,7 +13,8 @@ import {
 } from "./lib/espn";
 
 const outPath = path.join(process.cwd(), "data", "epl", "assignments.json");
-const SCAN_DAYS = 21;
+const SCAN_DAYS = 45;
+const UPCOMING_LIMIT = 10;
 const SLATE_STATUSES = new Set([
   "STATUS_SCHEDULED",
   "STATUS_IN_PROGRESS",
@@ -50,36 +51,52 @@ function torontoDate(): string {
   return new Date().toLocaleDateString("en-CA", { timeZone: "America/Toronto" });
 }
 
-async function findSlateDate(startDate: string): Promise<{
-  date: string;
-  eventIds: { id: string; awayAbbr: string; homeAbbr: string }[];
-}> {
-  for (let i = 0; i <= SCAN_DAYS; i++) {
-    const date = addDays(startDate, i);
-    const events = await fetchEplScoreboard(yyyymmdd(date));
-    const slate = events.filter((event) => SLATE_STATUSES.has(event.status));
-    if (slate.length > 0) {
-      return {
-        date,
-        eventIds: slate.map((event) => ({
-          id: event.id,
-          awayAbbr: event.awayAbbr,
-          homeAbbr: event.homeAbbr,
-        })),
-      };
+type SlateEvent = {
+  id: string;
+  awayAbbr: string;
+  homeAbbr: string;
+  slateDate: string;
+};
+
+async function collectUpcomingScheduledEvents(
+  startDate: string,
+): Promise<SlateEvent[]> {
+  const collected: SlateEvent[] = [];
+  const seen = new Set<string>();
+
+  for (let i = 0; i <= SCAN_DAYS && collected.length < UPCOMING_LIMIT; i++) {
+    const slateDate = addDays(startDate, i);
+    const events = await fetchEplScoreboard(yyyymmdd(slateDate));
+    for (const event of events) {
+      if (!SLATE_STATUSES.has(event.status)) continue;
+      if (seen.has(event.id)) continue;
+      seen.add(event.id);
+      collected.push({
+        id: event.id,
+        awayAbbr: event.awayAbbr,
+        homeAbbr: event.homeAbbr,
+        slateDate,
+      });
+      if (collected.length >= UPCOMING_LIMIT) break;
     }
     await sleep(80);
   }
-  return { date: startDate, eventIds: [] };
+
+  return collected;
 }
 
 async function main() {
   const roster = loadOfficialRoster();
   const start = torontoDate();
-  const { date, eventIds } = await findSlateDate(start);
-  const games: AssignmentGame[] = [];
+  console.log(
+    `Fetching up to ${UPCOMING_LIMIT} EPL scheduled matchups from ${start} (America/Toronto)...`,
+  );
 
-  for (const event of eventIds) {
+  const events = await collectUpcomingScheduledEvents(start);
+  const games: AssignmentGame[] = [];
+  const scheduledGames: AssignmentGame[] = [];
+
+  for (const event of events) {
     await sleep(120);
     const summary = await fetchEplSummary(event.id, 2024);
     const officials = summary?.officials ?? [];
@@ -94,25 +111,45 @@ async function main() {
       }
     }
 
-    games.push({
+    const baseGame: AssignmentGame = {
       id: event.id,
       matchup: `${event.awayAbbr} @ ${event.homeAbbr}`,
       awayTeam: event.awayAbbr,
       homeTeam: event.homeAbbr,
+      league: "EPL",
+      slateDate: event.slateDate,
       crew,
-    });
+    };
+
+    if (crew.length > 0) {
+      games.push(baseGame);
+    } else {
+      scheduledGames.push({ ...baseGame, crew: [] });
+    }
   }
+
+  const firstSlateDate = events[0]?.slateDate ?? start;
+  const hasSlate = events.length > 0;
+  const note = hasSlate
+    ? `Next ${events.length} EPL scheduled matchups (${firstSlateDate} onward). Officials publish closer to kickoff.`
+    : `No EPL fixtures found within ${SCAN_DAYS} days of ${start}.`;
 
   const file: AssignmentsFile = {
     lastUpdated: new Date().toISOString(),
-    date,
-    source: games.length > 0 ? "espn" : "seeded",
+    date: hasSlate ? firstSlateDate : start,
+    source: hasSlate ? "espn" : "seeded",
     games,
+    ...(scheduledGames.length > 0 ? { scheduledGames } : {}),
+    ...(hasSlate ? { nextSlateDate: firstSlateDate } : {}),
+    note,
   };
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, `${JSON.stringify(file, null, 2)}\n`);
-  console.log(`EPL assignments: ${games.length} game(s) on ${date} (${file.source})`);
+  console.log(
+    `EPL assignments: ${games.length} live + ${scheduledGames.length} scheduled on ${file.date} (${file.source})`,
+  );
+  console.log(note);
 }
 
 main().catch((err) => {

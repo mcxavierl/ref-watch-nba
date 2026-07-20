@@ -5,6 +5,7 @@ import { getRefStats as getNflRefStats } from "@/lib/nfl/data";
 import { getRefStats as getNhlRefStats } from "@/lib/nhl/data";
 import { getRefStats as getEplRefStats } from "@/lib/epl/data";
 import { getRefStats as getLaligaRefStats } from "@/lib/laliga/data";
+import { getRefStats as getCbbRefStats } from "@/lib/cbb/data";
 
 import {
   beginWorkerIsolateRequest,
@@ -35,6 +36,7 @@ describe("production getRefStats fallbacks", () => {
       ["nhl", getNhlRefStats],
       ["epl", getEplRefStats],
       ["laliga", getLaligaRefStats],
+      ["cbb", getCbbRefStats],
     ] as const;
 
     for (const [league, getRefStats] of leagues) {

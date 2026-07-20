@@ -1,7 +1,8 @@
 import { CalendarDays } from "lucide-react";
-import { LeagueSlateGamesList } from "@/components/LeagueSlateGamesList";
+import { UpcomingGameCard } from "@/components/UpcomingGameCard";
 import type { LeagueUpcomingSlate } from "@/lib/overview-upcoming-slate";
 import { formatLeagueSlateCounts } from "@/lib/overview-slate-shared";
+import "@/components/overview-clinical-modern.css";
 import "@/components/overview-dashboard.css";
 
 type LeagueHubUpcomingSlateSectionProps = {
@@ -25,7 +26,7 @@ export function LeagueHubUpcomingSlateSection({
 
   return (
     <section
-      className="overview-editorial-section overview-editorial-section--slate section-block"
+      className="overview-editorial-section overview-editorial-section--slate section-block section-block--compact"
       aria-labelledby="league-hub-upcoming-heading"
     >
       <div className="overview-section-header overview-section-header--primary">
@@ -52,20 +53,10 @@ export function LeagueHubUpcomingSlateSection({
         </ul>
       ) : null}
 
-      <div className="overview-slate-leagues">
-        <section
-          className="overview-slate-league-group"
-          data-league={group.leagueId}
-          aria-label={`${group.leagueLabel} upcoming games`}
-        >
-          <ul className="overview-slate-list">
-            <LeagueSlateGamesList
-              games={group.games}
-              leagueShortLabel={group.leagueShortLabel}
-              showHubLink={false}
-            />
-          </ul>
-        </section>
+      <div className="upcoming-games-grid upcoming-games-grid--hub">
+        {group.games.map((game) => (
+          <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} />
+        ))}
       </div>
 
       {slate.lastUpdated ? (

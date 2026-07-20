@@ -2,10 +2,9 @@ import Link from "next/link";
 import { RefAvatar } from "@/components/RefAvatar";
 import { PersonnelAvatar } from "@/components/PersonnelAvatar";
 import { TeamLogo } from "@/components/TeamLogo";
-import { StandoutMetricValue } from "@/components/StandoutMetric";
-import { SampleConfidencePill } from "@/components/hub/SampleConfidencePill";
+import { DirectionalDeltaValue } from "@/components/shared/DirectionalDeltaValue";
 import {
-  REF_CARD_METRIC_CLASS,
+  REF_CARD_CLASS,
   RefCard,
 } from "@/components/hub/RefCard";
 import { formatDeltaPp } from "@/lib/data-maturity";
@@ -13,6 +12,7 @@ import type { FrictionGrudgeFinding } from "@/lib/friction-grudge-matrix";
 import type { LeagueId } from "@/lib/leagues";
 import { statValueDelightTone, type MetricDelightTone } from "@/lib/metric-delight";
 import type { MatrixExtremeHighlight } from "@/lib/ref-team-matrix";
+import { resolveRefProfileTeam, refProfileTeamLogoSport } from "@/lib/ref-profile-team-utils";
 import { formatBaselinePct, formatSigned } from "@/lib/stats-utils";
 
 type MatrixAvatarSport = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
@@ -163,15 +163,24 @@ export function matrixExtremeToMatrixCard(
   };
 }
 
-function MatrixSubjectAvatar({ subject }: { subject: ClinicalInsightMatrixSubject }) {
+function MatrixSubjectAvatar({
+  subject,
+  leagueId,
+}: {
+  subject: ClinicalInsightMatrixSubject;
+  leagueId: LeagueId;
+}) {
   if (subject.kind === "personnel") {
     return <PersonnelAvatar name={subject.name} sport={subject.sport} size="lg" />;
   }
 
+  const team = resolveRefProfileTeam(leagueId, subject.abbr);
+  const logoSport = refProfileTeamLogoSport(leagueId);
+
   return (
     <TeamLogo
-      team={{ abbr: subject.abbr, name: subject.label }}
-      sport={subject.sport}
+      team={team}
+      sport={logoSport}
       size="xl"
       className="clinical-insight-matrix-team-logo"
     />
@@ -203,7 +212,6 @@ export function ClinicalInsightMatrixCard({
         >
           {model.refName}
         </Link>
-        <SampleConfidencePill games={model.games} />
       </div>
 
       {model.categoryLabel ? (
@@ -223,7 +231,7 @@ export function ClinicalInsightMatrixCard({
               decorative
             />
             <span className="clinical-insight-matrix-vs">vs</span>
-            <MatrixSubjectAvatar subject={model.subject} />
+            <MatrixSubjectAvatar subject={model.subject} leagueId={leagueId} />
           </>
         ) : null}
       </div>
@@ -239,16 +247,13 @@ export function ClinicalInsightMatrixCard({
       ) : null}
 
       <div className="clinical-insight-matrix-metric" aria-label="Delta vs baseline">
-        <div className={REF_CARD_METRIC_CLASS}>
-          <StandoutMetricValue
-            tone={model.tone}
-            size="lg"
-            className="clinical-insight-matrix-kpi text-3xl tabular-nums"
-          >
-            {model.deltaDisplay}
-          </StandoutMetricValue>
-        </div>
-        <p className="clinical-insight-matrix-baseline text-sm text-slate-400 tabular-nums">
+        <DirectionalDeltaValue
+          value={model.deltaDisplay}
+          tone={model.tone === "positive" || model.tone === "standout-high" ? "positive" : model.tone === "negative" || model.tone === "standout-low" ? "negative" : "neutral"}
+          size="lg"
+          className="clinical-insight-matrix-kpi"
+        />
+        <p className="clinical-insight-matrix-baseline text-sm font-normal text-slate-400 tabular-nums">
           {model.baselineLine}
         </p>
       </div>

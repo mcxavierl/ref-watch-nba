@@ -1,4 +1,5 @@
 import { formatFindingSampleMeta } from "@/lib/finding-copy";
+import { atsOutlierHeadline } from "@/lib/insight-headlines";
 import type { ScoredFindingBase } from "@/lib/findings-shared";
 import {
   MIN_MARKET_EXPECTATION_GAMES,
@@ -29,18 +30,16 @@ export function buildMarketExpectationAtsFinding(
 
   const { ref, market } = pick;
   const edge = Math.abs(market.deviationFromNeutral);
-  const direction =
-    market.outlierDirection === "covers_more" ? "cover" : "fail to cover";
-  const correlationNote =
-    market.underdogCoverCorrelation !== null
-      ? ` Underdog ATS correlation: ${(market.underdogCoverCorrelation * 100).toFixed(0)}% (φ).`
-      : "";
 
   return {
     id: "ats-outlier",
     category: "ats-edge",
-    headline: `${ref.name}: teams ${direction} ${formatCoverPct(market.coverRate)} ATS vs market`,
-    summary: `Across ${market.linedGames} lined games, teams are ${formatCoverPct(market.coverRate)} against the spread with ${ref.name} - ${(edge * 100).toFixed(1)} pts from a neutral 50% split, independent of straight-up wins.${correlationNote}`,
+    headline: atsOutlierHeadline(
+      ref.name,
+      market.coverRate,
+      formatCoverPct(market.coverRate),
+    ),
+    summary: `Across ${market.linedGames} lined games, teams are ${formatCoverPct(market.coverRate)} against the spread with ${ref.name} - ${(edge * 100).toFixed(1)} pts from a neutral 50% split, independent of straight-up wins.`,
     explainer:
       "Performance vs. market expectation uses closing spreads only (lineSource=external). Synthetic lines are excluded.",
     stats: [

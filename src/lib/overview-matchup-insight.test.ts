@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { clearRuntimeGameLogsModuleCache } from "@/lib/game-logs";
-import { buildOverviewMatchupInsight } from "@/lib/overview-matchup-insight";
+import {
+  buildOverviewLastMeetingLine,
+  buildOverviewMatchupInsight,
+  buildOverviewRecentGameContextLine,
+  buildOverviewTeamRecentContextLine,
+} from "@/lib/overview-matchup-insight";
 import type { RuntimeGameLogEntry, RuntimeGameLogFile } from "@/lib/game-logs-preload";
 import { setCachedGameLogs } from "@/lib/game-logs-preload";
 import { getWorkerIsolateStore } from "@/lib/worker-isolate-store";
@@ -19,12 +24,13 @@ function nflGame(
   totalPoints: number,
   totalFouls: number,
   scores?: { awayScore: number; homeScore: number },
+  date?: string,
 ): RuntimeGameLogEntry {
   const awayScore = scores?.awayScore ?? Math.ceil(totalPoints / 2);
   const homeScore = scores?.homeScore ?? Math.floor(totalPoints / 2);
   return {
     gameId: `nfl-${index}`,
-    date: `2024-11-${String(index).padStart(2, "0")}`,
+    date: date ?? `2024-11-${String(index).padStart(2, "0")}`,
     season,
     league: "NFL",
     awayTeam: away,
@@ -86,5 +92,84 @@ describe("overview-matchup-insight", () => {
     resetNflLogs();
     seedNflLogs([nflGame(1, "LAC", "KC", "2023-24", 44, 10)]);
     assert.equal(buildOverviewMatchupInsight("nfl", "LAC", "DET"), undefined);
+  });
+
+  it("builds a compact last-meeting line with site and score", () => {
+    resetNflLogs();
+    seedNflLogs([
+      nflGame(1, "DET", "LAC", "2023-24", 79, 7, { awayScore: 41, homeScore: 38 }),
+      nflGame(2, "LAC", "KC", "2023-24", 44, 10),
+    ]);
+
+    const line = buildOverviewLastMeetingLine("nfl", "LAC", "DET");
+    assert.equal(line, "Last met Nov 1, 2024 in Los Angeles · DET 41, LAC 38");
+  });
+
+  it("uses LAC/SD alias for last-meeting history", () => {
+    resetNflLogs();
+    seedNflLogs([
+      nflGame(1, "SD", "DET", "2003-04", 48, 11, { awayScore: 26, homeScore: 24 }),
+    ]);
+
+    const line = buildOverviewLastMeetingLine("nfl", "LAC", "DET");
+    assert.equal(line, "Last met Nov 1, 2024 in Detroit · SD 26, DET 24");
+  });
+
+  it("builds narrative recent game context for meetings in the last 5 seasons", () => {
+    resetNflLogs();
+    seedNflLogs([
+      nflGame(
+        1,
+        "DET",
+        "LAC",
+        "2023-24",
+        79,
+        7,
+        { awayScore: 41, homeScore: 38 },
+        "2023-11-12",
+      ),
+      nflGame(2, "LAC", "KC", "2023-24", 44, 10),
+    ]);
+
+    const line = buildOverviewRecentGameContextLine("nfl", "LAC", "DET");
+    assert.equal(line, "Detroit beat the Chargers in 2023 in Los Angeles, 41-38.");
+  });
+
+  it("returns undefined for game context when last meeting is outside recent seasons", () => {
+    resetNflLogs();
+    seedNflLogs([
+      nflGame(1, "SD", "DET", "2001-02", 48, 11, { awayScore: 26, homeScore: 24 }),
+      nflGame(2, "LAC", "KC", "2003-04", 44, 10),
+      nflGame(3, "LAC", "KC", "2005-06", 44, 10),
+      nflGame(4, "LAC", "KC", "2007-08", 44, 10),
+      nflGame(5, "LAC", "KC", "2009-10", 44, 10),
+      nflGame(6, "LAC", "KC", "2011-12", 44, 10),
+      nflGame(7, "LAC", "KC", "2023-24", 44, 10),
+    ]);
+
+    assert.equal(buildOverviewRecentGameContextLine("nfl", "LAC", "DET"), undefined);
+  });
+
+  it("returns undefined for game context when teams have never met", () => {
+    resetNflLogs();
+    seedNflLogs([nflGame(1, "LAC", "KC", "2023-24", 44, 10)]);
+    assert.equal(buildOverviewRecentGameContextLine("nfl", "LAC", "DET"), undefined);
+  });
+
+  it("builds recent-form context for soccer teams without head-to-head history", () => {
+    const line = buildOverviewTeamRecentContextLine("epl", "COV", "ARS");
+    assert.match(line ?? "", /^Recent form: COV: no recent EPL log on file · ARS beat CRY 2-1 away/);
+    assert.match(line ?? "", /May 24, 2026/);
+  });
+
+  it("builds recent-form context for La Liga openers", () => {
+    const line = buildOverviewTeamRecentContextLine("laliga", "OVI", "VIL");
+    assert.match(line ?? "", /^Recent form: OVI lost to MLL 3-0 away/);
+    assert.match(line ?? "", /VIL beat ATM 5-1 at home/);
+  });
+
+  it("builds narrative game context with venue for La Liga head-to-head", () => {
+    const line = buildOverviewRecentGameContextLine("laliga", "OVI", "VIL");
+    assert.equal(line, "Villarreal beat Real Oviedo in 2025 at Villarreal, 2-0.");
   });
 });
