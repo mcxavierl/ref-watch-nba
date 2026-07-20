@@ -3,6 +3,7 @@ import { test } from "node:test";
 import {
   hiddenInsightDrilldownGameCount,
   insightDrilldownExpandLabel,
+  insightDrilldownHasSpreadData,
   INSIGHT_DRILLDOWN_GAMES_PREVIEW_COUNT,
   visibleInsightDrilldownGames,
 } from "./insight-drilldown-preview";
@@ -37,4 +38,21 @@ test("expand labels include hidden game count", () => {
   assert.equal(insightDrilldownExpandLabel(3, false), "View 3 more games");
   assert.equal(insightDrilldownExpandLabel(1, false), "View 1 more game");
   assert.equal(insightDrilldownExpandLabel(0, true), "Show fewer games");
+});
+
+test("spread column only renders when at least one game has line data", () => {
+  assert.equal(
+    insightDrilldownHasSpreadData([
+      { spreadCovered: null },
+      { spreadCovered: null },
+    ]),
+    false,
+  );
+  assert.equal(
+    insightDrilldownHasSpreadData([
+      { spreadCovered: null },
+      { spreadCovered: true },
+    ]),
+    true,
+  );
 });

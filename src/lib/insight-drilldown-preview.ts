@@ -24,3 +24,9 @@ export function insightDrilldownExpandLabel(
   if (expanded) return "Show fewer games";
   return `View ${hiddenCount} more game${hiddenCount === 1 ? "" : "s"}`;
 }
+
+export function insightDrilldownHasSpreadData(
+  games: readonly { spreadCovered: boolean | null }[],
+): boolean {
+  return games.some((game) => game.spreadCovered !== null);
+}
