@@ -240,11 +240,15 @@ describe("Clinical Modern priority #11 surfaces", () => {
 
   it("homepage contrast fixes keep muted copy readable", () => {
     const overviewCss = readSrc("src/components/overview-dashboard.css");
+    const globalsCss = readSrc("src/app/globals.css");
     const quicklistsCss = readSrc("src/components/overview-quicklists.css");
     const insightCss = readSrc("src/components/insight-card.css");
     assert.match(overviewCss, /Homepage contrast/);
     assert.match(overviewCss, /overview-slate-row/);
     assert.match(overviewCss, /overview-league-chooser-card\[data-league="nfl"\]/);
+    assert.match(overviewCss, /html\[data-color="light"\][\s\S]*overview-league-chooser-card/);
+    assert.match(globalsCss, /League hub cards — light mode surfaces/);
+    assert.match(globalsCss, /html\[data-color="light"\][\s\S]*overview-league-chooser-card[\s\S]*background: #ffffff/);
     assert.match(overviewCss, /overview-section--secondary .overview-section-lead/);
     assert.match(quicklistsCss, /overview-quicklists-step-label/);
     assert.match(quicklistsCss, /overview-quicklists-context/);

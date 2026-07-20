@@ -1612,6 +1612,49 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-slate-offseason-c
   border-color: var(--border);
 }
 
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card {
+  background: #ffffff;
+  border-color: var(--card-border-light, #e2e8f0);
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card:hover {
+  border-color: color-mix(in srgb, var(--chooser-accent) 34%, var(--card-border-light, #e2e8f0));
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-label,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-metric strong {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-meta,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-metric-label,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-estimated-mark {
+  color: var(--text-secondary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-cta {
+  color: color-mix(in srgb, var(--chooser-accent) 88%, var(--text-primary));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="nfl"] .overview-league-chooser-cta {
+  color: #047857;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="nhl"] .overview-league-chooser-cta {
+  color: #0369a1;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="epl"] .overview-league-chooser-cta {
+  color: #6d28d9;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser--primary .overview-league-chooser-card {
+  background: #ffffff;
+  border-color: var(--card-border-light, #e2e8f0);
+}
+
 html[data-color="dark"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="nfl"] .overview-league-chooser-cta,
 html.dark .overview-league-chooser-card[data-league="nfl"] .overview-league-chooser-cta {
   color: var(--nfl-green);

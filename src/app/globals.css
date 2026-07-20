@@ -13460,6 +13460,66 @@ html.dark .overview-league-chooser-card {
   border-color: rgb(30 41 59);
 }
 
+/* League hub cards — light mode surfaces (unlayered; beats base hardcoded navy) */
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card {
+  background: #ffffff;
+  border-color: var(--card-border-light, #e2e8f0);
+  color: var(--text-primary);
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card:hover {
+  border-color: color-mix(in srgb, var(--chooser-accent) 34%, var(--card-border-light, #e2e8f0));
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-label {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-meta,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-metric-label,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-estimated-mark,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-scope,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-pending,
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-pending {
+  color: var(--text-secondary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-metric strong {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-cta {
+  color: color-mix(in srgb, var(--chooser-accent) 88%, var(--text-primary));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="nfl"] .overview-league-chooser-cta {
+  color: #047857;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="nhl"] .overview-league-chooser-cta {
+  color: #0369a1;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="epl"] .overview-league-chooser-cta {
+  color: #6d28d9;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card {
+  background: #ffffff;
+  border-color: color-mix(in srgb, var(--pace-accent) 22%, var(--card-border-light, #e2e8f0));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-label {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-meta,
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-scope {
+  color: var(--text-secondary);
+}
+
 html[data-color="dark"]:not([data-contrast="high"]) .overview-sidebar-block,
 html.dark .overview-sidebar-block {
   background: var(--bg-surface-1);
@@ -15411,13 +15471,28 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--a
   border: 1px solid var(--pill-border);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-soon {
-  background: var(--surface-raised);
-}
-
 html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-block,
 html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card {
   box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card:hover {
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser--primary .overview-league-chooser-card {
+  background: #ffffff;
+  border-color: var(--card-border-light, #e2e8f0);
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser--primary .overview-league-chooser-card:hover {
+  border-color: color-mix(in srgb, var(--chooser-accent) 34%, var(--card-border-light, #e2e8f0));
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-soon {
+  background: var(--surface-raised);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-count {
