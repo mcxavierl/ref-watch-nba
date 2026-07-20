@@ -47,7 +47,7 @@ import {
   NO_SIGNAL_SLATE_COPY,
   TONIGHT_SIGNALS_TITLE,
 } from "@/lib/trust-charter";
-import { buildLeagueUpcomingSlateFromAssignments } from "@/lib/overview-upcoming-slate";
+import { loadLeagueHubUpcomingSlateFromSnapshot } from "@/lib/overview-snapshot-data";
 
 export const NBA_SLATE_PATH = "/nba";
 
@@ -88,7 +88,7 @@ export async function NbaSlatePage({
   const odds = getOdds();
   const findings = computeFindings(6, scoped.scopedSeasons, { hub: true });
   const isOffseason = assignments.games.length === 0;
-  const upcomingSlate = buildLeagueUpcomingSlateFromAssignments("nba", assignments);
+  const upcomingSlate = loadLeagueHubUpcomingSlateFromSnapshot("nba");
   const { games: slateGames } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(slateGames, refStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
