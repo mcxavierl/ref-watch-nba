@@ -17,6 +17,22 @@ describe("game slate preview", () => {
     assert.ok(preview.scoringLabel.length > 0);
   });
 
+  it("returns null when the crew has not been assigned yet", () => {
+    const preview = buildGameSlatePreview(
+      "wnba",
+      {
+        id: "wnba-unassigned",
+        matchup: "LVA @ TOR",
+        awayTeam: "LVA",
+        homeTeam: "TOR",
+        league: "WNBA",
+        crew: [],
+      },
+      getWnbaOdds(),
+    );
+    assert.equal(preview, null);
+  });
+
   it("includes ref-team rows when crew has team history", () => {
     const assignments = getWnbaAssignments();
     const game = assignments.games.find((entry) => entry.crew.length >= 2);

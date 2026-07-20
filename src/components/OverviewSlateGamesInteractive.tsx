@@ -20,8 +20,9 @@ export function OverviewSlateGamesInteractive({
 
   const previewByKey = new Map(
     games
-      .filter((game): game is OverviewSlateEntry & { preview: GameSlatePreviewPayload } =>
-        Boolean(game.preview),
+      .filter(
+        (game): game is OverviewSlateEntry & { preview: GameSlatePreviewPayload } =>
+          game.crewCount > 0 && Boolean(game.preview),
       )
       .map((game) => [`${game.leagueId}:${game.gameId}`, game.preview]),
   );

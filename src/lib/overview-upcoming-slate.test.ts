@@ -264,6 +264,7 @@ describe("overview-upcoming-slate", () => {
     const slate = buildLeagueHubUpcomingSchedule("wnba", file, 5);
     assert.equal(slate.leagueGroup?.games[0]?.officialsLine, "Refs not assigned yet");
     assert.equal(slate.leagueGroup?.games[0]?.status, "scheduled");
+    assert.equal(slate.leagueGroup?.games[0]?.preview, undefined);
   });
 
   it("features all tomorrow WNBA games ahead of other leagues on the homepage grid", () => {
