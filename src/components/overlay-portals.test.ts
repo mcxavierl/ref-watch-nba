@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 const OVERLAY_COMPONENTS = [
   "src/components/CommandPalette.tsx",
   "src/components/InsightDrilldownModal.tsx",
+  "src/components/RefTeamMatchupGamesModal.tsx",
   "src/components/MatrixTeamFocusDrawer.tsx",
   "src/components/GameSlatePreviewDrawer.tsx",
   "src/components/RefProfilePreviewDrawer.tsx",
@@ -38,6 +39,7 @@ test("full-screen overlay components are covered by portal guard", () => {
   const dialogSources = [
     "src/components/CommandPalette.tsx",
     "src/components/InsightDrilldownModal.tsx",
+    "src/components/RefTeamMatchupGamesModal.tsx",
     "src/components/MatrixTeamFocusDrawer.tsx",
     "src/components/RefProfilePreviewDrawer.tsx",
     "src/components/A11ySettingsPanel.tsx",
