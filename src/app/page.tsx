@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { HomeHeroPreload } from "@/components/HomeHeroPreload";
+import { JsonLd } from "@/components/JsonLd";
 import { OverviewDashboard } from "@/components/OverviewDashboard";
 import { OverviewHero } from "@/components/OverviewHero";
 import { OverviewSecondaryTabs } from "@/components/OverviewSecondaryTabs";
 import { PageContentFadeIn } from "@/components/PageContentFadeIn";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, homepageWebPageJsonLd } from "@/lib/seo";
 import { SITE_HOME_PATH } from "@/lib/leagues";
 
 /** Revalidate daily — homepage reads bundled overview snapshot, not live ref-stats. */
@@ -14,7 +15,7 @@ export const revalidate = 86400;
 export const metadata: Metadata = buildPageMetadata({
   title: "Verified officiating analytics",
   description:
-    "Cross-league referee analytics for the NBA, NHL, NFL, Premier League, La Liga, and NCAA men's basketball.",
+    "Cross-league referee analytics for the NBA, NHL, NFL, Premier League, La Liga, WNBA, and NCAA men's basketball.",
   path: SITE_HOME_PATH,
   keywords: [
     "referee analytics",
@@ -29,6 +30,7 @@ export default function HomePage() {
 
   return (
     <>
+      <JsonLd data={homepageWebPageJsonLd()} />
       <HomeHeroPreload />
       <PageContentFadeIn>
         <div className="page-shell overview-shell overview-shell--clinical">

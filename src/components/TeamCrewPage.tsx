@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { TeamLogo } from "@/components/TeamLogo";
+import { TeamProfileJsonLd } from "@/components/TeamProfileJsonLd";
 import { CloseGameSection } from "@/components/CloseGameSection";
 import { TeamSplitView } from "@/components/TeamSplitView";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
@@ -107,6 +108,7 @@ export function TeamCrewPage({
 
   return (
     <div className="page-shell" data-league={league}>
+      <TeamProfileJsonLd leagueId={league} teamName={teamName} abbr={team.abbr} />
       <section className="page-hero page-hero-team" data-league={league}>
         <div className="page-hero-head">
           <TeamLogo team={team} size="lg" sport={league} />
