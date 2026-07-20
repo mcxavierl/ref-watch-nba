@@ -70,6 +70,8 @@ describe("upcoming card hero insight", () => {
   it("summarizes long fallback context to a single line", () => {
     const insight = selectUpcomingCardHeroInsight(
       baseEntry({
+        crewCount: 3,
+        status: "live",
         gameContextLine:
           "Last met Apr 12, 2025 at Scotiabank Arena. Toronto won 112-108 in overtime with a late whistle swing.",
       }),
@@ -78,5 +80,17 @@ describe("upcoming card hero insight", () => {
     assert.ok(!insight.includes("\n"));
     assert.ok(insight.length <= 72);
     assert.match(insight, /^Last met Apr 12, 2025 at Scotiabank Arena/);
+  });
+
+  it("skips historical fallback context when crews are not assigned", () => {
+    const insight = selectUpcomingCardHeroInsight(
+      baseEntry({
+        crewCount: 0,
+        status: "scheduled",
+        gameContextLine:
+          "Last met Apr 12, 2025 at Scotiabank Arena. Toronto won 112-108 in overtime with a late whistle swing.",
+      }),
+    );
+    assert.equal(insight, undefined);
   });
 });

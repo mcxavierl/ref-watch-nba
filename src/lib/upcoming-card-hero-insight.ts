@@ -9,6 +9,25 @@ type HeroInsightCandidate = {
   text: string;
 };
 
+export function hasUpcomingCardAssignedCrew(game: OverviewSlateEntry): boolean {
+  return game.crewCount > 0 && game.status !== "scheduled";
+}
+
+export function upcomingCardInsightFallback(game: OverviewSlateEntry): string {
+  if (game.leagueId === "wnba") {
+    return "Refs not assigned yet · Matchup data loads on click";
+  }
+  if (game.leagueId === "epl" || game.leagueId === "laliga") {
+    return "Officials TBD · Matchup data loads on click";
+  }
+  return "Crews TBD · Matchup data loads on click";
+}
+
+type HeroInsightCandidate = {
+  score: number;
+  text: string;
+};
+
 function summarizeInsightLine(line: string, maxLength = HERO_INSIGHT_MAX_LENGTH): string {
   const trimmed = line.trim();
   if (!trimmed) return trimmed;
@@ -71,6 +90,8 @@ function selectPreviewHeroInsight(preview: GameSlatePreviewPayload): string | un
 
 /** Pick one compact hero insight for upcoming game cards. */
 export function selectUpcomingCardHeroInsight(game: OverviewSlateEntry): string | undefined {
+  if (!hasUpcomingCardAssignedCrew(game)) return undefined;
+
   if (game.preview) {
     const previewTrend = selectPreviewHeroInsight(game.preview);
     if (previewTrend) return previewTrend;

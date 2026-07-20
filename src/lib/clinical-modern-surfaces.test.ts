@@ -171,6 +171,9 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(section, /overview-slate-updated/);
     assert.match(card, /selectUpcomingCardHeroInsight/);
     assert.match(card, /upcoming-game-card__hero-insight/);
+    assert.match(card, /upcoming-game-card__hero-fallback/);
+    assert.match(card, /upcoming-game-card__context-slot/);
+    assert.match(card, /line-clamp-1/);
     assert.match(card, /upcoming-game-card__footer/);
     assert.match(card, /upcoming-game-card__cta--footer/);
     assert.match(card, /upcoming-game-card__crew-meta/);
@@ -180,7 +183,12 @@ describe("Clinical Modern priority #11 surfaces", () => {
       /upcoming-game-card__league-mark[\s\S]*upcoming-game-card__date-label--corner/,
     );
     assert.match(css, /upcoming-game-card__hero-insight/);
+    assert.match(css, /upcoming-game-card__hero-fallback/);
+    assert.match(css, /upcoming-game-card__context-slot/);
     assert.match(css, /upcoming-game-card__footer/);
+    assert.match(css, /upcoming-game-card[\s\S]*min-height: 13\.75rem/);
+    assert.match(css, /upcoming-game-card[\s\S]*height: 13\.75rem/);
+    assert.match(css, /upcoming-game-card__footer[\s\S]*margin-top: auto/);
     assert.match(css, /upcoming-game-card__crew-meta/);
     assert.doesNotMatch(css, /upcoming-game-card__insight-pill/);
     assert.doesNotMatch(card, /upcoming-game-card__insight-pill/);
@@ -190,7 +198,9 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(readSrc("src/components/overview-slate-shared.css"), /upcoming-games-grid/);
     assert.match(css, /upcoming-game-card__matchup/);
     assert.match(css, /upcoming-game-card__date-label--corner[\s\S]*text-align: right/);
-    assert.match(css, /upcoming-game-card__hero-insight[\s\S]*white-space: nowrap/);
+    const heroInsightBlock =
+      css.match(/\.upcoming-game-card__hero-insight\s*\{[\s\S]*?\}/)?.[0] ?? "";
+    assert.doesNotMatch(heroInsightBlock, /white-space:\s*nowrap/);
     assert.match(
       css,
       /\.upcoming-game-card__matchup[\s\S]*border-radius: 1rem[\s\S]*--upcoming-matchup-shadow/,
