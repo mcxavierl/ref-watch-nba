@@ -26,5 +26,6 @@ describe("audit-metric-semantics", () => {
   it("package.json exposes audit:metric-semantics script", () => {
     const pkg = readFileSync(join(ROOT, "package.json"), "utf8");
     assert.match(pkg, /audit:metric-semantics/);
+    assert.match(pkg, /check:ci[\s\S]*audit:metric-semantics/);
   });
 });

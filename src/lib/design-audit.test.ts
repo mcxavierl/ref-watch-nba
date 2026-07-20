@@ -172,4 +172,15 @@ describe("design audit guardrails", () => {
     assert.doesNotMatch(layout, /LeagueSectionNav/);
     assert.match(readSrc("src/app/globals.css"), /\.site-header-inner:has\(\.site-header-nav:not\(:empty\)\)/);
   });
+
+  it("metric semantics audit guards chart scales and delta visualization", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:metric-semantics"] ?? "", /audit-metric-semantics/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:metric-semantics/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Metric semantics audit/);
+    assert.match(readSrc("src/components/shared/InsightMetricComparison.tsx"), /insight-metric-comparison-dual-axis/);
+    assert.match(readSrc("src/components/FindingCardLayout.tsx"), /DirectionalDeltaValue/);
+  });
 });

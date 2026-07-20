@@ -82,6 +82,9 @@ jobs:
       - name: Clinical card consistency audit
         run: npm run audit:card-consistency
 
+      - name: Metric semantics audit
+        run: npm run audit:metric-semantics
+
       - name: Unit tests
         run: npm run test
 

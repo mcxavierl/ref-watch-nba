@@ -110,7 +110,7 @@
     "honesty-audit": "tsx scripts/honesty-audit.ts",
     "audit:market-efficiency": "tsx scripts/market-efficiency-audit.ts",
     "validate-nfl": "node scripts/validate-nfl-accuracy.js",
-    "check:ci": "npm run check:refactor-safety && npm run check:client-imports && npm run typecheck && npm run check:artifact-freshness && npm run check:validation-freshness && npm run check:coupled-tests && npm run check:volume && npm run check:deploy && npm run check:css-syntax && npm run build:next && npm run audit:theme-matrix && npm run audit:color-drift && npm run audit:design-tokens && npm run audit:card-consistency && npm run test && npm run honesty-audit",
+    "check:ci": "npm run check:refactor-safety && npm run check:client-imports && npm run typecheck && npm run check:artifact-freshness && npm run check:validation-freshness && npm run check:coupled-tests && npm run check:volume && npm run check:deploy && npm run check:css-syntax && npm run build:next && npm run audit:theme-matrix && npm run audit:color-drift && npm run audit:design-tokens && npm run audit:card-consistency && npm run audit:metric-semantics && npm run test && npm run honesty-audit",
     "setup:hooks": "bash scripts/setup-git-hooks.sh",
     "prepare": "bash scripts/setup-git-hooks.sh",
     "validate": "npm run check:ci && npm run verify:data-integrity && npm run validate-nfl",
