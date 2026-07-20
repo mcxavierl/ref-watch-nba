@@ -350,6 +350,9 @@ export interface OfficialStats {
   leverage_sample_games: number;
   close_game_sample: number;
   split_backed_games: number;
+  tactical_event_backed_games?: number;
+  intentional_foul_noise_filtered?: boolean;
+  leverage_method_note?: string;
 }
 
 /** Season-scoped elite metrics from analytics backfill (2021-2026 window). */

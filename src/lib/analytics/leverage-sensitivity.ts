@@ -1,5 +1,10 @@
 import type { LeagueId } from "@/lib/leagues";
 import {
+  computeTacticalLateRateAdjustment,
+  LEVERAGE_INTENTIONAL_FOUL_FILTER_NOTE,
+  type LeverageGameInput,
+} from "@/lib/analytics/leverage";
+import {
   SAMPLE_SIZE_THRESHOLD,
   type DataQualityState,
 } from "@/lib/analytics/sample-size";
@@ -17,17 +22,7 @@ export const LEVERAGE_MIN_CLOSE_GAMES = 3;
 export const LEVERAGE_INDEX_THRESHOLD = 0.2;
 export const CLOSE_GAME_SCORE_DIFF = 5;
 
-export type LeverageGameInput = {
-  homeScore: number;
-  awayScore: number;
-  totalFouls: number;
-  homeFlags?: number;
-  awayFlags?: number;
-  homeMinors?: number;
-  awayMinors?: number;
-  wentToOvertime?: boolean;
-  whistlePeriodSplits?: WhistlePeriodSplits;
-};
+export type { LeverageGameInput } from "@/lib/analytics/leverage";
 
 export type LeverageIndexResult = {
   leverage_index: number | null;
@@ -37,6 +32,9 @@ export type LeverageIndexResult = {
   leverage_sample_games: number;
   close_game_sample: number;
   split_backed_games: number;
+  tactical_event_backed_games: number;
+  intentional_foul_noise_filtered: boolean;
+  leverage_method_note: string;
   data_quality: DataQualityState;
 };
 
@@ -44,6 +42,7 @@ function insufficientLeverageResult(
   earlyRateCount: number,
   closeGameSample: number,
   splitBackedGames: number,
+  tacticalEventBackedGames = 0,
 ): LeverageIndexResult {
   return {
     leverage_index: null,
@@ -53,6 +52,9 @@ function insufficientLeverageResult(
     leverage_sample_games: earlyRateCount,
     close_game_sample: closeGameSample,
     split_backed_games: splitBackedGames,
+    tactical_event_backed_games: tacticalEventBackedGames,
+    intentional_foul_noise_filtered: true,
+    leverage_method_note: LEVERAGE_INTENTIONAL_FOUL_FILTER_NOTE,
     data_quality: "insufficient",
   };
 }
@@ -194,12 +196,12 @@ export function pressureGaugeState(
 
 export function buildLeverageInsight(profile: LeveragePressureProfile): string {
   if (profile === "high-leverage-sensitivity") {
-    return "High Leverage Sensitivity: Expect increased foul-calling in the final minutes, affecting Over/Under totals.";
+    return "Adjusted High Leverage Sensitivity: Expect increased foul-calling in the final minutes after filtering tactical intentional fouls, affecting Over/Under totals.";
   }
   if (profile === "swallows-whistle") {
-    return "Swallows The Whistle: Foul frequency drops in late close-game minutes, which can suppress Over/Under totals.";
+    return "Swallows The Whistle: Foul frequency drops in late close-game minutes after intentional-foul filtering, which can suppress Over/Under totals.";
   }
-  return "Neutral leverage profile: Late-period foul pace tracks early-quarter baselines in close games.";
+  return "Neutral leverage profile: Late-period foul pace tracks early-quarter baselines in close games after intentional-foul filtering.";
 }
 
 export function computeLeverageIndex(
@@ -217,6 +219,7 @@ export function computeLeverageIndex(
   let highPressureRateCount = 0;
   let splitBackedGames = 0;
   let closeGameSample = 0;
+  let tacticalEventBackedGames = 0;
 
   for (const game of sampleGames) {
     const rates = splitPeriodRates(leagueId, game);
@@ -228,13 +231,24 @@ export function computeLeverageIndex(
 
     if (isCloseGame(game)) {
       closeGameSample += 1;
-      highPressureRateSum += rates.lateRate;
+      const tacticalLate = computeTacticalLateRateAdjustment(
+        leagueId,
+        game,
+        rates.lateRate,
+      );
+      highPressureRateSum += tacticalLate.adjustedLateRate;
+      if (tacticalLate.eventBacked) tacticalEventBackedGames += 1;
       highPressureRateCount += 1;
     }
   }
 
   if (earlyRateCount < minSampleGames) {
-    return insufficientLeverageResult(earlyRateCount, closeGameSample, splitBackedGames);
+    return insufficientLeverageResult(
+      earlyRateCount,
+      closeGameSample,
+      splitBackedGames,
+      tacticalEventBackedGames,
+    );
   }
 
   const earlyPeriodFoulRate = earlyRateSum / earlyRateCount;
@@ -259,6 +273,9 @@ export function computeLeverageIndex(
     leverage_sample_games: earlyRateCount,
     close_game_sample: closeGameSample,
     split_backed_games: splitBackedGames,
+    tactical_event_backed_games: tacticalEventBackedGames,
+    intentional_foul_noise_filtered: true,
+    leverage_method_note: LEVERAGE_INTENTIONAL_FOUL_FILTER_NOTE,
     data_quality: earlyRateCount >= minSampleGames ? "ok" : "insufficient",
   };
 }
@@ -274,6 +291,9 @@ export function leverageFieldsFromResult(
   | "leverage_sample_games"
   | "close_game_sample"
   | "split_backed_games"
+  | "tactical_event_backed_games"
+  | "intentional_foul_noise_filtered"
+  | "leverage_method_note"
 > {
   return {
     leverage_index: result.leverage_index,
@@ -283,5 +303,8 @@ export function leverageFieldsFromResult(
     leverage_sample_games: result.leverage_sample_games,
     close_game_sample: result.close_game_sample,
     split_backed_games: result.split_backed_games,
+    tactical_event_backed_games: result.tactical_event_backed_games,
+    intentional_foul_noise_filtered: result.intentional_foul_noise_filtered,
+    leverage_method_note: result.leverage_method_note,
   };
 }
