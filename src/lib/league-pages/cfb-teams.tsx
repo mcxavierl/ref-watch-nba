@@ -9,8 +9,6 @@ import { hubPageMetadata } from "@/lib/seo";
 export const metadata = hubPageMetadata("cfb", "teams");
 
 
-export const dynamic = "force-static";
-
 export default function CfbTeamsIndexPage() {
   const byConference = teamsByConference();
   const conferences = Object.keys(byConference) as CfbTeam["conference"][];

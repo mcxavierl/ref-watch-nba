@@ -9,8 +9,6 @@ import { hubPageMetadata } from "@/lib/seo";
 export const metadata = hubPageMetadata("nba", "teams");
 
 
-export const dynamic = "force-static";
-
 export default function TeamsIndexPage() {
   const { East, West } = teamsByConference();
   const gameCounts = loadTeamIndexGameCounts("nba");
