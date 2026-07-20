@@ -23,6 +23,18 @@ function loadBundledCore(league: BundledLeague): RefStatsFile | null {
   return data?.refs?.length ? data : null;
 }
 
+/** Prefer disk when it has refs; otherwise fall back to build-time bundled core. */
+export function coalesceRefStatsFromDiskAndBundled(
+  fromDisk: RefStatsFile | null | undefined,
+  bundled: RefStatsFile | null | undefined,
+): RefStatsFile | null {
+  const diskRefs = fromDisk?.refs?.length ?? 0;
+  const bundledRefs = bundled?.refs?.length ?? 0;
+  if (diskRefs > 0) return fromDisk!;
+  if (bundledRefs > 0) return bundled!;
+  return fromDisk ?? bundled ?? null;
+}
+
 /** Bundled at build time from data/ref-stats-core.json (~500KB). */
 export function getBundledNbaRefStatsCore(): RefStatsFile | null {
   return loadBundledCore("nba");

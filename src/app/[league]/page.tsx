@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { LeagueSlatePage } from "@/components/LeagueSlatePage";
+import { preloadLeagueRefStatsForPath } from "@/lib/edge-preload";
 import {
   isLeagueManifestId,
   LEAGUE_MANIFEST,
@@ -10,6 +12,7 @@ import {
   generateLeagueSlateMetadata,
 } from "@/lib/seo";
 import { slateMetadataDescription } from "@/lib/syndication";
+import { SITE_URL } from "@/lib/site";
 
 type PageProps = {
   params: Promise<{ league: string }>;
@@ -21,6 +24,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!isLeagueManifestId(league) || !isSlateLeagueId(league)) {
     return {};
   }
+  const pathname =
+    (await headers()).get("x-pathname") ?? LEAGUE_MANIFEST[league].pathPrefix;
+  await preloadLeagueRefStatsForPath(
+    SITE_URL,
+    league as Parameters<typeof preloadLeagueRefStatsForPath>[1],
+    pathname,
+  );
   const bundle = loadLeagueSlateBundle(league);
   return generateLeagueSlateMetadata(league, {
     isOffseason: bundle.isOffseason,
