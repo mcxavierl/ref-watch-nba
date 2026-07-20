@@ -181,6 +181,7 @@ export function TeamCrewPage({
           basePath={basePath}
           sport={league}
           dataLeague={dataLeague}
+          leagueId={league}
           closeGamesByRef={refCloseGamesByRef}
         />
       )}

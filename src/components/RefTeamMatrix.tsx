@@ -56,6 +56,10 @@ import type { LeagueId } from "@/lib/leagues";
 import { leagueGameUnit } from "@/lib/leagues";
 import { formatBaselineAtsPct, formatBaselinePct, formatTeamWhistleEdgeLabel } from "@/lib/stats-utils";
 import type { SeasonScopeMode } from "@/lib/season-scope";
+import {
+  RefTeamMatchupGamesModal,
+  type RefTeamMatchupTarget,
+} from "@/components/RefTeamMatchupGamesModal";
 import { TeamRecordSosCard } from "@/components/TeamRecordSosCard";
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 import type { TeamStrengthOfSchedule } from "@/lib/nba-strength-of-schedule";
@@ -103,8 +107,8 @@ function MatrixLegendBlock({ minGames }: { minGames: number }) {
         {MATRIX_TONE_DELTA_PTS} pts); splits at ±{MATRIX_EXTREME_DELTA_PTS}{" "}
         pts or more are standout outliers. Delta text and W-L are shown in
         every cell, not color alone. Click a team logo to rank the top and
-        bottom {TEAM_MATRIX_REF_PANEL_LIMIT} refs for that team; tap a cell for that
-        ref&apos;s profile (including tight-game proxy). Historical splits
+        bottom {TEAM_MATRIX_REF_PANEL_LIMIT} refs for that team; tap a cell or
+        ref row to see the games behind that split. Historical splits
         only, not picks.
       </p>
       <div className="ref-matrix-legend-swatches" aria-hidden>
@@ -173,9 +177,11 @@ function TeamRefRankListItem({
   sport,
   whistleDiffLabel,
   teamLabel,
+  teamAbbr,
   teamBaselineRate,
   teamBaselineGames,
   viewMode,
+  onOpenGames,
 }: {
   entry: TeamTopRefEntry;
   rank: number;
@@ -184,9 +190,11 @@ function TeamRefRankListItem({
   sport: RefTeamMatrixProps["sport"];
   whistleDiffLabel: string;
   teamLabel: string;
+  teamAbbr: string;
   teamBaselineRate: number;
   teamBaselineGames: number;
   viewMode: MatrixViewMode;
+  onOpenGames: () => void;
 }) {
   const deltaClass =
     variant === "positive"
@@ -222,7 +230,7 @@ function TeamRefRankListItem({
       </span>
       <div className="ref-matrix-team-panel-ref-wrap">
         <Link
-          href={`${basePath}/refs/${entry.refSlug}#close-game`}
+          href={`${basePath}/refs/${entry.refSlug}`}
           className="ref-matrix-team-panel-ref-avatar-link"
           aria-label={`${entry.refName} profile`}
         >
@@ -235,14 +243,19 @@ function TeamRefRankListItem({
           />
         </Link>
         <Link
-          href={`${basePath}/refs/${entry.refSlug}#close-game`}
+          href={`${basePath}/refs/${entry.refSlug}`}
           className="ref-matrix-team-panel-ref-name"
           title={entry.refName}
         >
           {entry.refName}
         </Link>
       </div>
-      <span className="ref-matrix-team-panel-record">
+      <button
+        type="button"
+        className="ref-matrix-team-panel-record ref-matrix-team-panel-record-btn"
+        onClick={onOpenGames}
+        aria-label={`View games for ${entry.refName} with ${teamLabel}: ${teamPanelEntryRecord(entry, viewMode)}`}
+      >
         <span className="ref-matrix-team-panel-record-line">
           {teamPanelEntryRecord(entry, viewMode)}
         </span>
@@ -258,7 +271,7 @@ function TeamRefRankListItem({
         >
           {winDeltaLabel}
         </span>
-      </span>
+      </button>
       <span className="ref-matrix-team-panel-games ref-matrix-team-panel-games--primary">
         <VerifiedGamesHint>{entry.games} gp</VerifiedGamesHint>
       </span>
@@ -284,9 +297,11 @@ function TeamRefRankColumn({
   leagueId,
   whistleDiffLabel,
   teamLabel,
+  teamAbbr,
   teamBaselineRate,
   teamBaselineGames,
   viewMode,
+  onOpenGames,
 }: {
   titleId: string;
   title: string;
@@ -299,9 +314,11 @@ function TeamRefRankColumn({
   leagueId: LeagueId;
   whistleDiffLabel: string;
   teamLabel: string;
+  teamAbbr: string;
   teamBaselineRate: number;
   teamBaselineGames: number;
   viewMode: MatrixViewMode;
+  onOpenGames: (entry: TeamTopRefEntry) => void;
 }) {
   const recordHead = viewMode === "ats" ? "ATS" : "W-L";
 
@@ -342,9 +359,11 @@ function TeamRefRankColumn({
                 sport={sport}
                 whistleDiffLabel={whistleDiffLabel}
                 teamLabel={teamLabel}
+                teamAbbr={teamAbbr}
                 teamBaselineRate={teamBaselineRate}
                 teamBaselineGames={teamBaselineGames}
                 viewMode={viewMode}
+                onOpenGames={() => onOpenGames(entry)}
               />
             ))}
           </ul>
@@ -442,6 +461,9 @@ export function RefTeamMatrix({
   const [teamColumnSort, setTeamColumnSort] = useState<MatrixTeamColumnSort>(
     MATRIX_DEFAULT_TEAM_COLUMN_SORT,
   );
+  const [matchupDrilldown, setMatchupDrilldown] =
+    useState<RefTeamMatchupTarget | null>(null);
+  const [matchupModalOpen, setMatchupModalOpen] = useState(false);
   const searchQuery = refSearch.trim().toLowerCase();
   const teamSearchQuery = teamSearch.trim();
   const sortedRefs = useMemo(
@@ -722,6 +744,32 @@ export function RefTeamMatrix({
 
   function clearCrosshair() {
     setCrosshair(null);
+  }
+
+  function openMatchupDrilldown(
+    refSlug: string,
+    refName: string,
+    teamAbbr: string,
+    teamLabel: string,
+    wins: number,
+    losses: number,
+    baselineWinRate: number,
+  ) {
+    setMatchupDrilldown({
+      leagueId,
+      refSlug,
+      refName,
+      teamAbbr,
+      teamLabel,
+      recordWins: wins,
+      recordLosses: losses,
+      baselineWinRate,
+    });
+    setMatchupModalOpen(true);
+  }
+
+  function closeMatchupDrilldown() {
+    setMatchupModalOpen(false);
   }
 
   return (
@@ -1092,11 +1140,22 @@ export function RefTeamMatrix({
                           activateCrosshair(ref.slug, team.abbr)
                         }
                       >
-                        <Link
-                          href={`${basePath}/refs/${ref.slug}#close-game`}
+                        <button
+                          type="button"
                           className="ref-matrix-cell-link"
                           title={ariaLabel}
-                          aria-label={ariaLabel}
+                          aria-label={`${ariaLabel}. View games.`}
+                          onClick={() =>
+                            openMatchupDrilldown(
+                              ref.slug,
+                              ref.name,
+                              team.abbr,
+                              team.label,
+                              cell.wins,
+                              cell.losses,
+                              team.baselineWinRate,
+                            )
+                          }
                         >
                           <span className="ref-matrix-games ref-matrix-games--primary">
                             <VerifiedGamesHint>
@@ -1120,7 +1179,7 @@ export function RefTeamMatrix({
                                 : "Baseline n/a"}
                             </span>
                           ) : null}
-                        </Link>
+                        </button>
                       </td>
                     );
                   })}
@@ -1279,9 +1338,21 @@ export function RefTeamMatrix({
               leagueId={leagueId}
               whistleDiffLabel={whistleDiffLabel}
               teamLabel={selectedTeam.label}
+              teamAbbr={selectedTeam.abbr}
               teamBaselineRate={matrixTeamMetricRate(selectedTeam, viewMode)}
               teamBaselineGames={matrixTeamMetricGames(selectedTeam, viewMode)}
               viewMode={viewMode}
+              onOpenGames={(entry) =>
+                openMatchupDrilldown(
+                  entry.refSlug,
+                  entry.refName,
+                  selectedTeam.abbr,
+                  selectedTeam.label,
+                  entry.wins,
+                  entry.losses,
+                  selectedTeam.baselineWinRate,
+                )
+              }
             />
             <TeamRefRankColumn
               titleId="ref-matrix-team-panel-bottom-title"
@@ -1301,9 +1372,21 @@ export function RefTeamMatrix({
               leagueId={leagueId}
               whistleDiffLabel={whistleDiffLabel}
               teamLabel={selectedTeam.label}
+              teamAbbr={selectedTeam.abbr}
               teamBaselineRate={matrixTeamMetricRate(selectedTeam, viewMode)}
               teamBaselineGames={matrixTeamMetricGames(selectedTeam, viewMode)}
               viewMode={viewMode}
+              onOpenGames={(entry) =>
+                openMatchupDrilldown(
+                  entry.refSlug,
+                  entry.refName,
+                  selectedTeam.abbr,
+                  selectedTeam.label,
+                  entry.wins,
+                  entry.losses,
+                  selectedTeam.baselineWinRate,
+                )
+              }
             />
           </div>
 
@@ -1345,6 +1428,12 @@ export function RefTeamMatrix({
           </div>
         </details>
       ) : null}
+
+      <RefTeamMatchupGamesModal
+        target={matchupDrilldown}
+        open={matchupModalOpen}
+        onClose={closeMatchupDrilldown}
+      />
     </div>
   );
 }

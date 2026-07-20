@@ -6311,6 +6311,23 @@ p {
     grid-column: 4;
   }
 
+  .team-ref-matrix-win-btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    text-decoration: underline dotted transparent;
+    transition: text-decoration-color 0.12s ease;
+  }
+
+  .team-ref-matrix-win-btn:hover,
+  .team-ref-matrix-win-btn:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
   .team-ref-matrix-stat--baseline,
   .team-ref-matrix-head > .team-ref-matrix-head-stat:nth-child(5) {
     grid-column: 5;
@@ -11081,6 +11098,21 @@ p {
     line-height: 1.25;
   }
 
+  .ref-matrix-team-panel-record-btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    text-align: right;
+  }
+
+  .ref-matrix-team-panel-record-btn:hover .ref-matrix-team-panel-record-line,
+  .ref-matrix-team-panel-record-btn:focus-visible .ref-matrix-team-panel-record-line {
+    text-decoration: underline;
+  }
+
   .ref-matrix-team-panel-record-line {
     font-weight: 600;
     color: var(--foreground);
@@ -11390,6 +11422,11 @@ p {
     color: inherit;
     text-decoration: none;
     transition: background 0.12s ease;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
   }
 
   .ref-matrix-cell-link:hover {

@@ -47,6 +47,7 @@ export function MatrixView({
   teamBaselineLabel,
   emptyMessage,
   onReset,
+  onOpenGames,
 }: {
   rows: MatrixRowData[];
   sport: LeagueMatrixSport;
@@ -54,6 +55,7 @@ export function MatrixView({
   teamBaselineLabel?: string;
   emptyMessage?: string;
   onReset?: () => void;
+  onOpenGames?: (row: MatrixRowData) => void;
 }) {
   if (rows.length === 0) {
     return (
@@ -98,6 +100,9 @@ export function MatrixView({
               teamBaselineLabel
                 ? `Win rate vs team baseline (${teamBaselineLabel})`
                 : undefined
+            }
+            onOpenGames={
+              onOpenGames ? () => onOpenGames(row) : undefined
             }
           />
         ))}

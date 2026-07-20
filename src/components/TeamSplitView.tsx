@@ -1,9 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { TeamRefSortBar } from "@/components/TeamRefSortBar";
 import { MatrixFilterBar, MatrixView } from "@/components/analytics/MatrixView";
 import { EmptyState } from "@/components/shared/EmptyState";
+import {
+  RefTeamMatchupGamesModal,
+  type RefTeamMatchupTarget,
+} from "@/components/RefTeamMatchupGamesModal";
 import { useLeagueMatrixData, type LeagueMatrixSport } from "@/hooks/useLeagueMatrixData";
+import type { MatrixRowData } from "@/lib/league-matrix-data";
+import type { LeagueId } from "@/lib/leagues";
 import { formatPct } from "@/lib/stats-utils";
 import type { TeamRefLeaderboardEntry } from "@/lib/teamRefLeaderboards";
 import type { TeamRefCloseGamesStat } from "@/lib/team-ref-close-games-display";
@@ -18,6 +25,7 @@ export function TeamSplitView({
   basePath = "",
   sport = "nba",
   dataLeague = "NBA",
+  leagueId = "nba",
   closeGamesByRef = {},
 }: {
   refSplits: TeamRefLeaderboardEntry[];
@@ -27,8 +35,13 @@ export function TeamSplitView({
   basePath?: string;
   sport?: LeagueMatrixSport;
   dataLeague?: DataLeague;
+  leagueId?: LeagueId;
   closeGamesByRef?: Record<string, TeamRefCloseGamesStat>;
 }) {
+  const [matchupDrilldown, setMatchupDrilldown] =
+    useState<RefTeamMatchupTarget | null>(null);
+  const [matchupModalOpen, setMatchupModalOpen] = useState(false);
+
   const matrix = useLeagueMatrixData({
     teamAbbr,
     refEntries: refSplits,
@@ -42,6 +55,18 @@ export function TeamSplitView({
 
   const teamBaselineLabel =
     teamRecord.games > 0 ? formatPct(teamRecord.winRate) : undefined;
+
+  function openMatchupDrilldown(row: MatrixRowData) {
+    setMatchupDrilldown({
+      leagueId,
+      refSlug: row.refSlug,
+      refName: row.refName,
+      teamAbbr,
+      teamLabel,
+      baselineWinRate: teamRecord.winRate,
+    });
+    setMatchupModalOpen(true);
+  }
 
   if (refSplits.length === 0) {
     return <EmptyState />;
@@ -68,6 +93,12 @@ export function TeamSplitView({
         teamLabel={teamLabel}
         teamBaselineLabel={teamBaselineLabel}
         onReset={() => matrix.setFilterMode("all")}
+        onOpenGames={openMatchupDrilldown}
+      />
+      <RefTeamMatchupGamesModal
+        target={matchupDrilldown}
+        open={matchupModalOpen}
+        onClose={() => setMatchupModalOpen(false)}
       />
     </>
   );

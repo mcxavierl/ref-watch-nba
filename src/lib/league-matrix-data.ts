@@ -32,6 +32,8 @@ export type MatrixRowData = {
   whistleDiff: string;
   whistleTone: "positive" | "negative" | "neutral";
   refProfileLink: string;
+  games: number;
+  winRateValue: number;
 };
 
 export function leagueMatrixFilterLabel(mode: LeagueMatrixFilter): string {
@@ -107,6 +109,8 @@ export function buildMatrixRowData(
     whistleDiff: formatSigned(entry.avgFoulDifferential),
     whistleTone: foulTone,
     refProfileLink: `${basePath}/refs/${entry.slug}`,
+    games: entry.games,
+    winRateValue: entry.winRate,
   };
 }
 

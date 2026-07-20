@@ -21,6 +21,7 @@ export type MatrixRowProps = {
   winRateTone?: "positive" | "negative" | "neutral";
   whistleTone?: "positive" | "negative" | "neutral";
   baselineTitle?: string;
+  onOpenGames?: () => void;
 };
 
 export function MatrixRow({
@@ -36,6 +37,7 @@ export function MatrixRow({
   winRateTone = "neutral",
   whistleTone = "neutral",
   baselineTitle,
+  onOpenGames,
 }: MatrixRowProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -86,7 +88,18 @@ export function MatrixRow({
         <span
           className={`team-ref-matrix-stat team-ref-matrix-stat--win tabular-nums text-right team-ref-matrix-stat--${winRateTone}`}
         >
-          {winRate}
+          {onOpenGames ? (
+            <button
+              type="button"
+              className="team-ref-matrix-win-btn"
+              onClick={onOpenGames}
+              aria-label={`View games for ${refName}: ${winRate} win rate`}
+            >
+              {winRate}
+            </button>
+          ) : (
+            winRate
+          )}
         </span>
         <span
           className={`team-ref-matrix-stat team-ref-matrix-stat--baseline tabular-nums text-right team-ref-matrix-stat--${winRateTone} master-table-metric-secondary`}
