@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { OverviewSlateRow } from "@/components/OverviewSlateRow";
+import { OverviewSlateGamesInteractive } from "@/components/OverviewSlateGamesInteractive";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 
 export const SLATE_PREVIEW_COUNT = 5;
@@ -30,13 +30,11 @@ export function LeagueSlateGamesList({
 
   return (
     <>
-      {visibleGames.map((game) => (
-        <OverviewSlateRow
-          key={`${game.leagueId}-${game.gameId}`}
-          game={game}
-          showHubLink={showHubLink}
-        />
-      ))}
+      <OverviewSlateGamesInteractive
+        games={visibleGames}
+        showHubLink={showHubLink}
+        variant="row"
+      />
       {hiddenCount > 0 ? (
         <li className="overview-slate-view-more">
           <button

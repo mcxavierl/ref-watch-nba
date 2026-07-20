@@ -1,45 +1,23 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
 import { ChevronDown } from "lucide-react";
-import type { CrewMetrics } from "@/lib/data";
-import {
-  detectTeamsInGame as detectNbaTeams,
-  formatPct,
-  refSlug as nbaRefSlug,
-} from "@/lib/data";
-import {
-  detectTeamsInGame as detectNhlTeams,
-  refSlug as nhlRefSlug,
-} from "@/lib/nhl/data";
-import {
-  detectTeamsInGame as detectNflTeams,
-  refSlug as nflRefSlug,
-} from "@/lib/nfl/data";
-import {
-  detectTeamsInGame as detectCbbTeams,
-  refSlug as cbbRefSlug,
-} from "@/lib/cbb/data";
-import {
-  detectTeamsInGame as detectLaligaTeams,
-  refSlug as laligaRefSlug,
-} from "@/lib/laliga/data";
-import {
-  detectTeamsInGame as detectEplTeams,
-  refSlug as eplRefSlug,
-} from "@/lib/epl/data";
-import {
-  detectTeamsInGame as detectCfbTeams,
-  refSlug as cfbRefSlug,
-} from "@/lib/cfb/data";
+import { detectTeamsInGame as detectNbaTeams } from "@/lib/teams";
+import { detectTeamsInGame as detectNhlTeams } from "@/lib/nhl/teams";
+import { detectTeamsInGame as detectNflTeams } from "@/lib/nfl/teams";
+import { detectTeamsInGame as detectCbbTeams } from "@/lib/cbb/teams";
+import { detectTeamsInGame as detectLaligaTeams } from "@/lib/laliga/teams";
+import { detectTeamsInGame as detectEplTeams } from "@/lib/epl/teams";
+import { detectTeamsInGame as detectCfbTeams } from "@/lib/cfb/teams";
 import {
   detectTeamsInGame as detectWnbaTeams,
   teamFullName as wnbaTeamFullName,
   type WnbaTeam,
 } from "@/lib/wnba/teams";
-import { refSlug as wnbaRefSlug } from "@/lib/wnba/data";
+import { refSlug } from "@/lib/ref-slug";
 import type { GrudgeStoryline } from "@/lib/grudge-match";
 import type {
   CrewHomeBias,
+  CrewMetrics,
   CrewWhistlePremium,
   NhlOtRateSignal,
   NhlPpPremiumSignal,
@@ -57,8 +35,7 @@ import {
   formatSampleCount,
   sportCopy,
 } from "@/lib/user-language";
-import { formatSigned } from "@/lib/stats-utils";
-import { formatPremiumLabel } from "@/lib/whistle-premium";
+import { formatPct, formatPremiumLabel, formatSigned } from "@/lib/stats-utils";
 import { whistleIndexFromCrewMetrics } from "@/lib/whistle-index";
 import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
 import { CLINICAL_CARD_CLASS } from "@/components/hub/ClinicalCard";
@@ -102,6 +79,7 @@ export function GameSlateCard({
   otSignal = null,
   overBenchmark,
   slateIndex = 0,
+  onOpenPreview,
 }: {
   gameId: string;
   matchup: string;
@@ -117,6 +95,7 @@ export function GameSlateCard({
   otSignal?: NhlOtRateSignal | null;
   overBenchmark?: number;
   slateIndex?: number;
+  onOpenPreview?: () => void;
 }) {
   const copy = sportCopy(sport);
   const defaultBenchmark = SPORT_BENCHMARK[sport];
@@ -150,22 +129,6 @@ export function GameSlateCard({
     if (sport === "nhl") return nhlTeamFullName(team as NhlTeam);
     return nbaTeamFullName(team as NbaTeam);
   };
-  const refSlug =
-    sport === "wnba"
-      ? wnbaRefSlug
-      : sport === "laliga"
-      ? laligaRefSlug
-      : sport === "epl"
-      ? eplRefSlug
-      : sport === "cfb"
-      ? cfbRefSlug
-      : sport === "cbb"
-        ? cbbRefSlug
-        : sport === "nfl"
-          ? nflRefSlug
-          : sport === "nhl"
-            ? nhlRefSlug
-            : nbaRefSlug;
   const teams = detectTeams(awayTeam, homeTeam);
 
   const totalDelta = formatSigned(metrics.totalPointsDelta);
@@ -191,13 +154,37 @@ export function GameSlateCard({
         ? "Low scoring crew"
         : null;
 
+  const handleCardActivate = () => {
+    onOpenPreview?.();
+  };
+
+  const handleCardClick = (event: MouseEvent<HTMLElement>) => {
+    if (!onOpenPreview) return;
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button, summary, details, input, select, textarea, label")) return;
+    handleCardActivate();
+  };
+
+  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (!onOpenPreview) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleCardActivate();
+    }
+  };
+
   return (
     <article
       id={`game-${gameId}`}
-      className={`data-card ${CLINICAL_CARD_CLASS}`}
+      className={`data-card ${CLINICAL_CARD_CLASS}${onOpenPreview ? " game-slate-card--interactive" : ""}`}
       data-sport={sport}
       data-crew-pending={metrics.crew.length === 0 ? "true" : undefined}
       style={{ "--slate-i": slateIndex } as CSSProperties}
+      onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
+      tabIndex={onOpenPreview ? 0 : undefined}
+      role={onOpenPreview ? "button" : undefined}
+      aria-label={onOpenPreview ? `Open ${matchup} ref preview` : undefined}
     >
       <div className="data-card-header">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">

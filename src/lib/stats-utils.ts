@@ -38,6 +38,10 @@ export function formatSigned(n: number, decimals = 1): string {
   return n >= 0 ? `+${formatted}` : formatted;
 }
 
+export function formatPremiumLabel(premium: number): string {
+  return `${formatSigned(premium)} whistle premium`;
+}
+
 /**
  * Whistle edge from the team's perspective: opponent volume minus team volume.
  * JSON stores team−opponent historically; positive here means the team is whistled less.

@@ -1,5 +1,5 @@
 import { CalendarDays } from "lucide-react";
-import { UpcomingGameCard } from "@/components/UpcomingGameCard";
+import { OverviewSlateGamesInteractive } from "@/components/OverviewSlateGamesInteractive";
 import type { LeagueUpcomingSlate } from "@/lib/overview-upcoming-slate";
 import { formatLeagueSlateCounts } from "@/lib/overview-slate-shared";
 import "@/components/overview-clinical-modern.css";
@@ -54,9 +54,7 @@ export function LeagueHubUpcomingSlateSection({
       ) : null}
 
       <div className="upcoming-games-grid upcoming-games-grid--hub">
-        {group.games.map((game, index) => (
-          <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} index={index} />
-        ))}
+        <OverviewSlateGamesInteractive games={group.games} variant="card" />
       </div>
 
       {slate.lastUpdated ? (

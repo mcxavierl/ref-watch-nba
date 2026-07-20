@@ -12,7 +12,9 @@ import {
   buildOverviewRecentGameContextLine,
   buildOverviewTeamRecentContextLine,
 } from "@/lib/overview-matchup-insight";
-import type { AssignmentsFile, RefOfficial } from "@/lib/types";
+import type { AssignmentsFile, AssignmentGame, OddsFile, RefOfficial } from "@/lib/types";
+import { isSlatePreviewLeague } from "@/lib/game-slate-preview-adapters";
+import { buildGameSlatePreview } from "@/lib/game-slate-preview";
 
 export type {
   OverviewLeagueNote,
@@ -239,6 +241,25 @@ function assignmentsPath(leagueId: LeagueId): string {
   return path.join(root, "data", leagueId, "assignments.json");
 }
 
+function assignmentsOddsPath(leagueId: LeagueId): string | null {
+  const root = process.cwd();
+  if (leagueId === "nba") return path.join(root, "data/odds.json");
+  const leagueOdds = path.join(root, "data", leagueId, "odds.json");
+  return fs.existsSync(leagueOdds) ? leagueOdds : null;
+}
+
+function loadLeagueOdds(leagueId: LeagueId): OddsFile {
+  const oddsPath = assignmentsOddsPath(leagueId);
+  if (!oddsPath) {
+    return { lastUpdated: "", source: "seeded", lines: [] };
+  }
+  try {
+    return JSON.parse(fs.readFileSync(oddsPath, "utf8")) as OddsFile;
+  } catch {
+    return { lastUpdated: "", source: "seeded", lines: [] };
+  }
+}
+
 function buildOverviewOfficialsLine(
   leagueId: LeagueId,
   crew: RefOfficial[],
@@ -293,6 +314,10 @@ function pushEntry(
     game.homeTeam,
   );
   const seasonStageNote = buildSeasonStageNote(leagueId, game, slateDate);
+  const preview =
+    isSlatePreviewLeague(leagueId)
+      ? buildGameSlatePreview(leagueId, game, loadLeagueOdds(leagueId)) ?? undefined
+      : undefined;
   games.push({
     leagueId,
     leagueLabel: league.label,
@@ -312,6 +337,7 @@ function pushEntry(
     teamContextLine,
     officialsLine: buildOverviewOfficialsLine(leagueId, game.crew, status),
     seasonStageNote,
+    preview,
   });
 }
 

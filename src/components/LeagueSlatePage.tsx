@@ -8,6 +8,7 @@ import { CbbResearchFeed } from "@/components/cbb/CbbResearchFeed";
 import { CbbAnalyticsLeaders } from "@/components/CbbAnalyticsLeaders";
 import { CbbConferenceHub } from "@/components/CbbConferenceHub";
 import { GameSlateCard } from "@/components/GameSlateCard";
+import { SlateGamePreviewHost, type SlateGamePreviewBundle } from "@/components/SlateGamePreviewHost";
 import { JsonLd } from "@/components/JsonLd";
 import { LeagueHomeInsightSections } from "@/components/LeagueHomeInsightSections";
 import { LeagueHubUpcomingSlateSection } from "@/components/LeagueHubUpcomingSlateSection";
@@ -62,6 +63,8 @@ import {
   computeSlatePremiums,
   paceAlerts,
 } from "@/lib/whistle-premium";
+import { buildGameSlatePreview } from "@/lib/game-slate-preview";
+import { isSlatePreviewLeague } from "@/lib/game-slate-preview-adapters";
 import type { AssignmentGame, RefStatsFile } from "@/lib/types";
 
 function computeLeagueCrewMetrics(
@@ -151,6 +154,33 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
     ppPremiums: [],
     otSignals: [],
   });
+
+  const slatePreviewBundles: SlateGamePreviewBundle[] = isSlatePreviewLeague(leagueId)
+    ? sortedGames.flatMap((game, index) => {
+        const preview = buildGameSlatePreview(leagueId, game, odds);
+        if (!preview) return [];
+        return [
+          {
+            gameId: game.id,
+            preview,
+            card: {
+              slateIndex: index,
+              gameId: game.id,
+              matchup: game.matchup,
+              awayTeam: game.awayTeam,
+              homeTeam: game.homeTeam,
+              metrics: computeLeagueCrewMetrics(leagueId, game.crew, activeRefStats),
+              premium: computeCrewWhistlePremium(game, refStats, odds),
+              homeBias: computeCrewHomeBias(game, refStats),
+              sport,
+              basePath: pathPrefix,
+              storylines: computeGameStorylines(game, refStats, 1),
+              overBenchmark: refStats.meta.leagueOverBaseline,
+            },
+          },
+        ];
+      })
+    : [];
 
   const findingLeague = entry.dataLeague as
     | "NBA"
@@ -305,24 +335,28 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
               </p>
             )}
             <div className="slate-stack mt-4">
-              {sortedGames.map((game, index) => (
-                <div key={game.id} id={`slate-game-${game.id}`}>
-                  <GameSlateCard
-                    slateIndex={index}
-                    gameId={game.id}
-                    matchup={game.matchup}
-                    awayTeam={game.awayTeam}
-                    homeTeam={game.homeTeam}
-                    metrics={computeLeagueCrewMetrics(leagueId, game.crew, activeRefStats)}
-                    premium={computeCrewWhistlePremium(game, refStats, odds)}
-                    homeBias={computeCrewHomeBias(game, refStats)}
-                    sport={sport}
-                    basePath={pathPrefix}
-                    storylines={computeGameStorylines(game, refStats, 1)}
-                    overBenchmark={refStats.meta.leagueOverBaseline}
-                  />
-                </div>
-              ))}
+              {slatePreviewBundles.length > 0 ? (
+                <SlateGamePreviewHost games={slatePreviewBundles} />
+              ) : (
+                sortedGames.map((game, index) => (
+                  <div key={game.id} id={`slate-game-${game.id}`}>
+                    <GameSlateCard
+                      slateIndex={index}
+                      gameId={game.id}
+                      matchup={game.matchup}
+                      awayTeam={game.awayTeam}
+                      homeTeam={game.homeTeam}
+                      metrics={computeLeagueCrewMetrics(leagueId, game.crew, activeRefStats)}
+                      premium={computeCrewWhistlePremium(game, refStats, odds)}
+                      homeBias={computeCrewHomeBias(game, refStats)}
+                      sport={sport}
+                      basePath={pathPrefix}
+                      storylines={computeGameStorylines(game, refStats, 1)}
+                      overBenchmark={refStats.meta.leagueOverBaseline}
+                    />
+                  </div>
+                ))
+              )}
             </div>
           </section>
         </>

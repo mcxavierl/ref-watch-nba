@@ -9860,6 +9860,73 @@ p {
     }
   }
 
+  .game-slate-card--interactive,
+  .overview-slate-row--interactive,
+  .upcoming-game-card--interactive {
+    cursor: pointer;
+  }
+
+  .game-slate-card--interactive:focus-visible,
+  .overview-slate-row--interactive:focus-visible,
+  .upcoming-game-card--interactive:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .game-slate-preview-drawer .ref-preview-drawer-title-row {
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .game-slate-preview-matchup {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  .game-slate-preview-at {
+    color: var(--muted);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .game-slate-preview-crew-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .game-slate-preview-stat-meta {
+    display: block;
+    margin-top: var(--space-1);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .game-slate-preview-storylines,
+  .game-slate-preview-outliers {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .game-slate-preview-storylines li p,
+  .game-slate-preview-outliers li {
+    margin: var(--space-1) 0 0;
+    font-size: var(--text-sm);
+    color: var(--muted-strong);
+  }
+
+  .game-slate-preview-row--outlier {
+    background: color-mix(in srgb, var(--state-caution) 8%, transparent);
+  }
+
   /* ── Ref × team matrix ── */
   .ref-matrix {
     display: flex;
