@@ -29,8 +29,9 @@ Do not merge until this passes locally **and** the GitHub **validate** check is 
 | 13 | `npm run audit:design-tokens` | Design token parity audit |
 | 14 | `npm run audit:card-consistency` | Clinical card consistency audit |
 | 15 | `npm run audit:metric-semantics` | Metric semantics audit |
-| 16 | `npm run test` | Unit tests |
-| 17 | `npm run honesty-audit` | Honesty audit |
+| 16 | `npm run check:no-em-dashes` | Em dash copy audit |
+| 17 | `npm run test` | Unit tests |
+| 18 | `npm run honesty-audit` | Honesty audit |
 
 ## When overview snapshot sources change
 

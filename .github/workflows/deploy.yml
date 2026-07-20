@@ -87,6 +87,9 @@ jobs:
       - name: Metric semantics audit
         run: npm run audit:metric-semantics
 
+      - name: Em dash copy audit
+        run: npm run check:no-em-dashes
+
       - name: Unit tests
         run: npm run test
 

@@ -183,4 +183,14 @@ describe("design audit guardrails", () => {
     assert.match(readSrc("src/components/shared/InsightMetricComparison.tsx"), /insight-metric-comparison-dual-axis/);
     assert.match(readSrc("src/components/FindingCardLayout.tsx"), /DirectionalDeltaValue/);
   });
+
+  it("em dash copy audit blocks unicode em dashes in user-facing copy", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["check:no-em-dashes"] ?? "", /check-no-em-dashes/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /check:no-em-dashes/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Em dash copy audit/);
+    assert.match(readSrc(".cursor/rules/no-em-dashes.mdc"), /Never use em dashes/);
+  });
 });
