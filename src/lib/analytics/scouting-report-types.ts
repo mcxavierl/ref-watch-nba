@@ -47,6 +47,11 @@ export type ScoutingReport = {
   leverageSensitivityIndex: number | null;
   intentionalFoulNoiseFiltered: boolean;
   leverageMethodNote: string;
+  pressureIndex: number | null;
+  pressureTendencyLabel: string;
+  pressureTendencyDisplay: string;
+  pressureBaselineWhistleRate: number | null;
+  pressureContextWhistleRate: number | null;
   edgeNote: string;
   styleProfile: ScoutingStyleProfile;
   pressureSensitive: boolean;

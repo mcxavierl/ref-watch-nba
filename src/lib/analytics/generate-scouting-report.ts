@@ -20,6 +20,12 @@ import {
   whistleCoefficientOfVariation,
   type ArchetypeGameInput,
 } from "@/lib/analytics/referee-archetypes";
+import {
+  computePressureIndex,
+  classifyPressureContext,
+  pressureFieldsFromResult,
+  pressureTendencyDisplayLabel,
+} from "@/lib/analytics/pressure-index";
 import { buildEdgeNote } from "@/lib/analytics/build-edge-note";
 import {
   meetsSampleSizeThreshold,
@@ -32,7 +38,6 @@ import {
 } from "@/lib/analytics/leverage-sensitivity";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { RuntimeGameLogEntry } from "@/lib/game-logs-preload";
-import { classifyMarqueeGame } from "@/lib/marquee-games";
 import type { LeagueId } from "@/lib/leagues";
 import { refSlug } from "@/lib/ref-slug";
 import { computeGameDispositionCounts } from "@/lib/whistle-disposition";
@@ -96,18 +101,6 @@ function officiatedGame(
   return game.officials.some(
     (official) => refSlug(official.name, official.number) === officialId,
   );
-}
-
-function isHighStakesGame(
-  game: RuntimeGameLogEntry,
-  leagueId: LeagueId,
-  metadata: GameScoutingMetadata,
-): boolean {
-  if (metadata.isPlayoff || metadata.seasonStage === "playoff") return true;
-  if (metadata.isPrimetime) return true;
-
-  const marquee = classifyMarqueeGame(game, leagueId);
-  return marquee.tags.includes("prime-time") || marquee.tags.includes("high-stakes");
 }
 
 function deriveStyleProfile(
@@ -243,10 +236,23 @@ function resolveOfficialStats(
   administrativeTotal: number,
   pressureSensitive: boolean,
   pressureDeltaPct: number | null,
+  gameMetadata: GameScoutingMetadata,
 ): OfficialStats {
   const leverage = computeLeverageIndex(
     leagueId,
     sampleGames.map(toLeverageGameInput),
+  );
+  const pressure = computePressureIndex(
+    leagueId,
+    sampleGames.map((game) => ({
+      homeScore: game.homeScore,
+      awayScore: game.awayScore,
+      date: game.date,
+      season: game.season,
+      whistlePeriodSplits: game.whistlePeriodSplits,
+      whistleTotal: gameWhistleTotal(leagueId, game),
+    })),
+    gameMetadata,
   );
 
   const computed = computeRefereeArchetype(
@@ -257,6 +263,7 @@ function resolveOfficialStats(
     return {
       ...toOfficialStats(computed),
       ...leverageFieldsFromResult(leverage),
+      ...pressureFieldsFromResult(pressure),
     };
   }
 
@@ -265,6 +272,7 @@ function resolveOfficialStats(
     return {
       ...persisted,
       ...leverageFieldsFromResult(leverage),
+      ...pressureFieldsFromResult(pressure),
     };
   }
 
@@ -281,6 +289,22 @@ function resolveOfficialStats(
     last_calculated: new Date().toISOString(),
     ...DEFAULT_LEVERAGE_STATS,
     ...leverageFieldsFromResult(leverage),
+    ...pressureFieldsFromResult(pressure),
+  };
+}
+
+function pressureReportFields(officialStats: OfficialStats) {
+  return {
+    pressureIndex: officialStats.pressure_index ?? null,
+    pressureTendencyLabel: officialStats.pressure_tendency_label ?? "insufficient-sample",
+    pressureTendencyDisplay: pressureTendencyDisplayLabel(
+      (officialStats.pressure_tendency_label as import("@/lib/analytics/pressure-index").PressureTendencyLabel) ??
+        "insufficient-sample",
+    ),
+    pressureBaselineWhistleRate:
+      officialStats.pressure_baseline_whistle_rate ?? null,
+    pressureContextWhistleRate:
+      officialStats.pressure_context_whistle_rate ?? null,
   };
 }
 
@@ -387,6 +411,7 @@ function buildAnalyticsFallbackReport(
     consistencyScore: officialStats.consistency_score,
     officialStats,
     ...leverageReportFields(officialStats),
+    ...pressureReportFields(officialStats),
     styleProfile,
     pressureSensitive,
     pressureDeltaPct,
@@ -482,7 +507,18 @@ export function generateScoutingReport(
       administrativeTotal += whistleTotal * (1 - share);
     }
 
-    const highStakes = isHighStakesGame(game, leagueId, gameMetadata);
+    const highStakes = classifyPressureContext(
+      {
+        homeScore: game.homeScore,
+        awayScore: game.awayScore,
+        date: game.date,
+        season: game.season,
+        whistlePeriodSplits: game.whistlePeriodSplits,
+        isPrimetime: gameMetadata.isPrimetime,
+      },
+      leagueId,
+      gameMetadata,
+    ).pressureFlag;
     if (highStakes) {
       pressureWhistleSum += whistleTotal;
       pressureGameCount += 1;
@@ -562,6 +598,7 @@ export function generateScoutingReport(
     administrativeTotal,
     pressureSensitive,
     pressureDeltaPct,
+    gameMetadata,
   );
 
   const perGameWhistles = sampleGames.map((game) => gameWhistleTotal(leagueId, game));
@@ -580,6 +617,7 @@ export function generateScoutingReport(
     consistencyScore: officialStats.consistency_score,
     officialStats,
     ...leverageReportFields(officialStats),
+    ...pressureReportFields(officialStats),
     styleProfile,
     pressureSensitive,
     pressureDeltaPct:

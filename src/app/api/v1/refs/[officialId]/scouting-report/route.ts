@@ -73,6 +73,9 @@ export async function GET(
     archetype: report.archetype,
     consistencyScore: report.consistencyScore,
     leverageSensitivityIndex: report.leverageSensitivityIndex,
+    pressureIndex: report.pressureIndex,
+    pressureTendencyLabel: report.pressureTendencyLabel,
+    pressureTendencyDisplay: report.pressureTendencyDisplay,
     edge_note: report.edgeNote,
   };
 

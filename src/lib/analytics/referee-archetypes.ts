@@ -189,6 +189,10 @@ export const DEFAULT_LEVERAGE_STATS: Pick<
   | "tactical_event_backed_games"
   | "intentional_foul_noise_filtered"
   | "leverage_method_note"
+  | "pressure_index"
+  | "pressure_tendency_label"
+  | "pressure_baseline_whistle_rate"
+  | "pressure_context_whistle_rate"
 > = {
   leverage_index: null,
   leverage_profile: "neutral",
@@ -200,6 +204,10 @@ export const DEFAULT_LEVERAGE_STATS: Pick<
   tactical_event_backed_games: 0,
   intentional_foul_noise_filtered: true,
   leverage_method_note: "",
+  pressure_index: null,
+  pressure_tendency_label: "insufficient-sample",
+  pressure_baseline_whistle_rate: null,
+  pressure_context_whistle_rate: null,
 };
 
 export function toOfficialStats(
@@ -391,6 +399,30 @@ export function normalizeOfficialStats(raw: unknown): OfficialStats | null {
         : typeof value.splitBackedGames === "number"
           ? value.splitBackedGames
           : 0,
+    pressure_index:
+      typeof value.pressure_index === "number"
+        ? value.pressure_index
+        : typeof value.pressureIndex === "number"
+          ? value.pressureIndex
+          : null,
+    pressure_tendency_label:
+      typeof value.pressure_tendency_label === "string"
+        ? value.pressure_tendency_label
+        : typeof value.pressureTendencyLabel === "string"
+          ? value.pressureTendencyLabel
+          : "insufficient-sample",
+    pressure_baseline_whistle_rate:
+      typeof value.pressure_baseline_whistle_rate === "number"
+        ? value.pressure_baseline_whistle_rate
+        : typeof value.pressureBaselineWhistleRate === "number"
+          ? value.pressureBaselineWhistleRate
+          : null,
+    pressure_context_whistle_rate:
+      typeof value.pressure_context_whistle_rate === "number"
+        ? value.pressure_context_whistle_rate
+        : typeof value.pressureContextWhistleRate === "number"
+          ? value.pressureContextWhistleRate
+          : null,
   };
 }
 
