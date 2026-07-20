@@ -82,7 +82,7 @@ describe("design audit guardrails", () => {
   it("live league hubs wire upcoming slate cards below the hero", () => {
     const slate = readSrc("src/components/LeagueSlatePage.tsx");
     assert.match(slate, /LeagueHubUpcomingSlateSection/);
-    assert.match(slate, /buildLeagueUpcomingSlateFromAssignments/);
+    assert.match(slate, /buildLeagueHubUpcomingSchedule/);
     assert.match(slate, /leagueLabel=\{entry\.shortLabel\}/);
 
     const route = readSrc("src/app/[league]/page.tsx");

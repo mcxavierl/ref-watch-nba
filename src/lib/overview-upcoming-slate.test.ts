@@ -6,6 +6,7 @@ import {
   type OverviewSlateEntry,
 } from "@/lib/overview-slate-shared";
 import {
+  buildLeagueHubUpcomingSchedule,
   buildLeagueUpcomingSlateFromAssignments,
   LEAGUE_UPCOMING_SLATE_LIMIT,
   selectHomepageSlateGrid,
@@ -96,6 +97,31 @@ describe("overview-upcoming-slate", () => {
     );
     assert.equal(slate.leagueGroup?.games[0]?.seasonStageNote, "Pre-season game");
     assert.equal(slate.leagueNote?.note, file.note);
+  });
+
+  it("builds hub schedule capped at limit with per-game slate dates", () => {
+    const file: AssignmentsFile = {
+      lastUpdated: "2026-07-08T04:01:07.016Z",
+      date: "2026-08-06",
+      source: "espn",
+      games: [],
+      scheduledGames: Array.from({ length: 12 }, (_, index) => ({
+        id: `40177297${index}`,
+        matchup: `TEA${index} @ DET`,
+        awayTeam: `T${index}`,
+        homeTeam: "DET",
+        league: "NFL",
+        seasonStage: "preseason" as const,
+        slateDate: `2026-08-${String(6 + index).padStart(2, "0")}`,
+        crew: [],
+      })),
+    };
+
+    const slate = buildLeagueHubUpcomingSchedule("nfl", file, 10);
+
+    assert.equal(slate.leagueGroup?.games.length, 10);
+    assert.equal(slate.leagueGroup?.games[0]?.slateDate, "2026-08-06");
+    assert.equal(slate.leagueGroup?.games[9]?.slateDate, "2026-08-15");
   });
 
   it("builds EPL slate with team context and officials status", () => {

@@ -90,6 +90,7 @@
     "generate-epl-seed": "tsx scripts/epl/generate-seed.ts",
     "build-epl-data": "tsx scripts/epl/build-ref-data.ts",
     "fetch-laliga-football-data": "tsx scripts/laliga/fetch-football-data.ts",
+    "fetch-laliga-assignments": "tsx scripts/laliga/fetch-assignments.ts",
     "build-laliga-data": "tsx scripts/laliga/build-ref-data.ts",
     "fetch-epl-assignments": "tsx scripts/epl/fetch-assignments.ts",
     "fetch-epl-ref-photos": "tsx scripts/epl/fetch-ref-photos.ts",

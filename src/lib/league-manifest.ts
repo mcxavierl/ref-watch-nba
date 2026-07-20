@@ -295,7 +295,7 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
     sectionNav: ["slate", "teams", "matrix", "refs", "research"],
     researchViews: ["tendencies", "trends", "findings"],
     slate: {
-      upcomingSlateSection: false,
+      upcomingSlateSection: true,
       analyticsLeaders: "epl",
       superBowlSection: false,
       conferenceCoverage: false,
@@ -336,7 +336,7 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
     sectionNav: ["slate", "teams", "matrix", "refs", "research"],
     researchViews: ["tendencies", "trends", "findings"],
     slate: {
-      upcomingSlateSection: false,
+      upcomingSlateSection: true,
       analyticsLeaders: "epl",
       superBowlSection: false,
       conferenceCoverage: false,

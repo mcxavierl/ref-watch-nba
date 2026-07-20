@@ -2,7 +2,10 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
-import { buildSeasonStageNote } from "@/lib/assignment-season-stage";
+import {
+  buildSeasonStageNote,
+  resolveAssignmentSeasonStage,
+} from "@/lib/assignment-season-stage";
 import {
   buildOverviewLastMeetingLine,
   buildOverviewMatchupInsight,
@@ -223,8 +226,10 @@ function pushEntry(
   file: AssignmentsFile,
   game: AssignmentsFile["games"][number],
   status: OverviewSlateStatus,
+  slateDateOverride?: string,
 ): void {
   const league = LEAGUES[leagueId];
+  const slateDate = slateDateOverride ?? game.slateDate ?? file.date;
   const headRef =
     game.crew.find((o) => o.role === "referee")?.name ?? game.crew[0]?.name;
   const teamContextLine = buildOverviewTeamRecentContextLine(
@@ -238,7 +243,7 @@ function pushEntry(
     game.awayTeam,
     game.homeTeam,
   );
-  const seasonStageNote = buildSeasonStageNote(leagueId, game, file.date);
+  const seasonStageNote = buildSeasonStageNote(leagueId, game, slateDate);
   games.push({
     leagueId,
     leagueLabel: league.label,
@@ -251,7 +256,7 @@ function pushEntry(
     headRef,
     crewCount: game.crew.length,
     status,
-    slateDate: file.date,
+    slateDate,
     matchupInsight: buildOverviewMatchupInsight(leagueId, game.awayTeam, game.homeTeam),
     lastMeetingLine,
     gameContextLine,
@@ -259,6 +264,84 @@ function pushEntry(
     officialsLine: buildOverviewOfficialsLine(leagueId, game.crew, status),
     seasonStageNote,
   });
+}
+
+const HUB_PRESEASON_STAGES: Partial<
+  Record<LeagueId, Array<NonNullable<ReturnType<typeof resolveAssignmentSeasonStage>>>>
+> = {
+  nfl: ["preseason"],
+  epl: ["preseason", "exhibition"],
+};
+
+function isHubPreseasonMatch(
+  leagueId: LeagueId,
+  game: AssignmentsFile["games"][number],
+  slateDate: string,
+): boolean {
+  const allowed = HUB_PRESEASON_STAGES[leagueId];
+  if (!allowed) return true;
+  const stage = resolveAssignmentSeasonStage(leagueId, game, slateDate);
+  return stage !== undefined && allowed.includes(stage);
+}
+
+/**
+ * Build up to `limit` upcoming games for a league hub.
+ * NFL/EPL hubs prefer pre-season or exhibition matchups when present.
+ */
+export function buildLeagueHubUpcomingSchedule(
+  leagueId: LeagueId,
+  file: AssignmentsFile,
+  limit = LEAGUE_UPCOMING_SLATE_LIMIT,
+): LeagueUpcomingSlate {
+  const entries: OverviewSlateEntry[] = [];
+  const seenIds = new Set<string>();
+
+  const consider = (
+    game: AssignmentsFile["games"][number],
+    status: OverviewSlateStatus,
+  ) => {
+    if (seenIds.has(game.id)) return;
+    const slateDate = game.slateDate ?? file.date;
+    if (!isHubPreseasonMatch(leagueId, game, slateDate)) return;
+    seenIds.add(game.id);
+    pushEntry(entries, leagueId, file, game, status, slateDate);
+  };
+
+  for (const game of file.games) {
+    consider(game, game.crew.length > 0 ? "live" : "scheduled");
+  }
+  for (const game of file.scheduledGames ?? []) {
+    consider(game, game.crew.length > 0 ? "live" : "scheduled");
+  }
+
+  if (entries.length === 0 && HUB_PRESEASON_STAGES[leagueId]) {
+    return buildLeagueUpcomingSlateFromAssignments(leagueId, file);
+  }
+
+  entries.sort(
+    (a, b) =>
+      (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1) ||
+      (a.slateDate ?? "").localeCompare(b.slateDate ?? "") ||
+      a.matchup.localeCompare(b.matchup),
+  );
+
+  const limited = entries.slice(0, limit);
+  const groups = groupOverviewSlateByLeague(limited);
+  const leagueNote = file.note
+    ? {
+        leagueId,
+        leagueShortLabel: LEAGUES[leagueId].shortLabel,
+        note: file.note,
+        slateDate: file.nextSlateDate ?? file.date,
+      }
+    : null;
+
+  return {
+    inSeason: limited.length > 0,
+    leagueGroup: groups.find((group) => group.leagueId === leagueId) ?? groups[0] ?? null,
+    leagueNote,
+    lastUpdated: file.lastUpdated ?? null,
+  };
 }
 
 /** Aggregate tonight's assignments across live leagues (build-time / snapshot). */
