@@ -3,9 +3,14 @@ import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";
 import { TeamLogo } from "@/components/TeamLogo";
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
-import { getRefStats, getTeamSplits } from "@/lib/cbb/data";
+import { getTeamSplits } from "@/lib/cbb/data";
 import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
-import { teamFullName, teamsByConference, type CbbTeam } from "@/lib/cbb/teams";
+import {
+  CBB_CONFERENCE_DISPLAY_ORDER,
+  teamFullName,
+  teamsByConference,
+  type CbbTeam,
+} from "@/lib/cbb/teams";
 import {
   isLiveNcaaConference,
   type LiveNcaaConferenceId,
@@ -17,16 +22,12 @@ export const metadata = hubPageMetadata("cbb", "teams");
 
 export const dynamic = "force-static";
 
-function refCountForTeam(abbr: string, refs: ReturnType<typeof getRefStats>["refs"]): number {
-  const key = abbr.toUpperCase();
-  return refs.filter((ref) => (ref.teamStats?.[key]?.games ?? 0) > 0).length;
-}
-
 export default function CbbTeamsIndexPage() {
   const byConference = teamsByConference();
-  const conferences = Object.keys(byConference) as CbbTeam["conference"][];
+  const conferences = CBB_CONFERENCE_DISPLAY_ORDER.filter(
+    (conference) => (byConference[conference]?.length ?? 0) > 0,
+  );
   const gameCounts = loadTeamIndexGameCounts("cbb");
-  const refs = getRefStats().refs;
 
   return (
     <div className="page-shell page-shell-hub">
@@ -55,7 +56,6 @@ export default function CbbTeamsIndexPage() {
               {teams.map((team) => {
                 const splits = getTeamSplits(team.abbr);
                 const games = teamIndexGameCount("cbb", team.abbr, splits, gameCounts);
-                const refCount = refCountForTeam(team.abbr, refs);
                 return (
                   <li key={team.abbr}>
                     <Link
@@ -65,14 +65,14 @@ export default function CbbTeamsIndexPage() {
                     >
                       <TeamLogo team={team} size="md" sport="cbb" />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-base font-medium text-zinc-900">
+                        <p className="team-index-name truncate text-base font-medium">
                           {teamFullName(team)}
                         </p>
-                        <p className="text-sm text-zinc-600">
-                          {refCount > 0
+                        <p className="team-index-meta text-sm">
+                          {splits.length > 0
                             ? (
                               <>
-                                {refCount} refs ·{" "}
+                                {splits.length} crews ·{" "}
                                 <VerifiedGamesHint>{games} games</VerifiedGamesHint>
                               </>
                             )

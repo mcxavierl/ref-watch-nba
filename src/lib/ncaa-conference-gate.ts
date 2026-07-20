@@ -33,6 +33,7 @@ export type NcaaConferenceTerritory =
   | "SEC"
   | "Big East"
   | "Pac-12"
+  | "WCC"
   | "Other";
 
 /**
