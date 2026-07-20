@@ -118,7 +118,7 @@ export function buildLeagueStandoutCardsForLeague(
   stats: RefStatsFile,
   setup: LeagueCardBuildSetup,
 ): LeagueInsightCard[] {
-  if (stats.refs.length === 0) return [];
+  if (stats.refs.length === 0 || !setup?.teams?.length) return [];
 
   const matrix = computeRefTeamMatrix(
     stats,

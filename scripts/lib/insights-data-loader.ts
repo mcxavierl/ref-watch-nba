@@ -292,6 +292,19 @@ export async function loadLeagueGeneratorSetup(
         matrixLeague: "cfb",
       };
     }
+    case "wnba": {
+      const { WNBA_TEAMS, teamFullName } = await import("../../src/lib/wnba/teams");
+      return {
+        leagueId,
+        teams: WNBA_TEAMS.map((team) => ({
+          abbr: team.abbr,
+          label: teamFullName(team),
+          name: team.name,
+        })),
+        getTeamSplits,
+        matrixLeague: "wnba",
+      };
+    }
   }
 }
 
@@ -304,6 +317,7 @@ export function tryClearDataModuleCaches(): void {
     "../../src/lib/nfl/data",
     "../../src/lib/epl/data",
     "../../src/lib/laliga/data",
+    "../../src/lib/wnba/data",
   ];
   for (const modPath of modules) {
     try {
