@@ -28,11 +28,14 @@ describe("league logos", () => {
     assert.equal(leagueLogoSrc("epl", "light"), "/logos/epl-lion-dark.svg");
   });
 
-  it("uses square-ish intrinsic dimensions for the EPL lion mark", () => {
+  it("uses square intrinsic dimensions for the EPL lion mark", () => {
+    const onDark = readLogo("epl-lion.svg");
+    assert.match(onDark, /width="92" height="91"/);
+
     const epl = leagueNavMarkDimensions("epl");
     const nba = leagueNavMarkDimensions("nba");
-    assert.ok(epl.height >= epl.width, "EPL lion mark should be portrait or square");
+    assert.equal(epl.width, epl.height, "EPL lion mark should use a square intrinsic box");
     assert.ok(nba.width > nba.height, "NBA mark remains landscape");
-    assert.equal(leagueHeroLogoDimensions("epl").height, 56);
+    assert.equal(leagueHeroLogoDimensions("epl").width, leagueHeroLogoDimensions("epl").height);
   });
 });
