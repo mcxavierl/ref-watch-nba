@@ -947,6 +947,7 @@ export function RefTeamMatrix({
                         sport={sport}
                         size="xl"
                         className="ref-matrix-team-logo"
+                        plateTone="light"
                       />
                     </button>
                   </th>
@@ -1158,6 +1159,7 @@ export function RefTeamMatrix({
                 sport={sport}
                 size="xl"
                 className="ref-matrix-team-panel-logo"
+                plateTone="light"
               />
               <div className="ref-matrix-team-panel-copy">
                 <h3 id="ref-matrix-team-panel-title" className="ref-matrix-team-panel-title">

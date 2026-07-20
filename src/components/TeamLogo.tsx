@@ -37,21 +37,35 @@ export function TeamLogo({
   size = "md",
   className = "",
   sport = "nba",
+  plateTone = "auto",
 }: {
   team: TeamLike;
   sport?: "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   size?: keyof typeof sizeClasses;
   className?: string;
+  /** Background the logo sits on — drives WNBA/NHL variant selection. */
+  plateTone?: "auto" | "dark" | "light";
 }) {
   const [failed, setFailed] = useState(false);
   const colorMode = useColorMode();
-  const nhlUiSurface = colorMode === "light" ? "light" : "dark";
+  const resolvedPlateTone =
+    plateTone === "auto"
+      ? colorMode === "light"
+        ? "light"
+        : "dark"
+      : plateTone;
+  const themedUiSurface = resolvedPlateTone === "dark" ? "dark" : "light";
   const nbaId = team.nbaId ?? (sport === "nba" ? getNbaTeam(team.abbr)?.nbaId : undefined);
+  const themedLogoSrc =
+    sport === "wnba"
+      ? wnbaTeamLogoUrl(team.abbr, themedUiSurface)
+      : sport === "nhl"
+        ? nhlTeamLogoUrl(team.abbr, themedUiSurface)
+        : null;
   const logoSrc =
+    themedLogoSrc ??
     team.logoUrl ??
-    (sport === "wnba"
-      ? wnbaTeamLogoUrl(team.abbr)
-      : sport === "laliga"
+    (sport === "laliga"
       ? laligaTeamLogoUrl(team.abbr)
       : sport === "epl"
       ? eplTeamLogoUrl(team.abbr)
@@ -61,8 +75,6 @@ export function TeamLogo({
           ? cbbTeamLogoUrl(team.abbr)
           : sport === "cfb"
             ? cfbTeamLogoUrl(team.abbr)
-          : sport === "nhl"
-          ? nhlTeamLogoUrl(team.abbr, nhlUiSurface)
           : nbaId
             ? nbaTeamLogoUrl(nbaId)
             : null);

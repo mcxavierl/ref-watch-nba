@@ -35,7 +35,7 @@ export default function LaligaTeamsIndexPage() {
                   href={`/laliga/teams/${team.abbr}`}
                   className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2.5 transition hover:border-zinc-300 hover:bg-zinc-50"
                 >
-                  <TeamLogo team={team} size="md" sport="laliga" />
+                  <TeamLogo team={team} size="md" sport="laliga" plateTone="light" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-base font-medium text-zinc-900">
                       {teamFullName(team)}
