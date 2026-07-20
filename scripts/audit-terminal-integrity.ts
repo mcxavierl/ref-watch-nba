@@ -148,6 +148,52 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "npm audit:terminal-integrity script",
       ),
   },
+  {
+    name: "constants/colors.ts defines terminal state colors",
+    run: () => {
+      const content = read("src/constants/colors.ts");
+      if (!content.includes("VOLATILE_RED") || !content.includes("STATE_COLOR_CLASS")) {
+        return {
+          ok: false,
+          message: "src/constants/colors.ts missing state color exports",
+        };
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "theme-tokens.css defines state color CSS variables",
+    run: () =>
+      auditFileContains(
+        "src/styles/theme-tokens.css",
+        /--state-volatile/,
+        "state color CSS variables",
+      ),
+  },
+  {
+    name: "RefProfileNarrativeLayout prioritizes edge stack before depth expand",
+    run: () => {
+      const content = read("src/components/ref-profile/RefProfileNarrativeLayout.tsx");
+      const edgeIdx = content.indexOf("<ScoutingReportEdge");
+      const expandIdx = content.indexOf("<RefProfileDepthExpand");
+      if (edgeIdx < 0 || expandIdx < 0 || edgeIdx > expandIdx) {
+        return {
+          ok: false,
+          message: "Ref profile layout must render edge stack before depth expand",
+        };
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "Ref profile tables use data-table-num on market impact splits",
+    run: () =>
+      auditFileContains(
+        "src/components/ref-profile/RefProfileMarketImpactPanel.tsx",
+        /data-table-num/,
+        "market impact table numeric class",
+      ),
+  },
 ];
 
 function main(): void {

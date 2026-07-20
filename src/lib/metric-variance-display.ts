@@ -1,3 +1,5 @@
+import { STATE_COLOR_CLASS } from "@/constants/colors";
+
 /** Percent delta vs a league/baseline average for insight stat cards. */
 export function variancePercent(delta: number, baseline: number): number {
   if (!Number.isFinite(delta) || !Number.isFinite(baseline) || baseline === 0) {
@@ -21,7 +23,7 @@ export function varianceToneFromDelta(delta: number): MetricVarianceTone {
 }
 
 export const METRIC_VARIANCE_TONE_CLASS: Record<MetricVarianceTone, string> = {
-  positive: "text-emerald-400",
-  negative: "text-rose-400",
-  neutral: "text-slate-300",
+  positive: STATE_COLOR_CLASS.stable,
+  negative: STATE_COLOR_CLASS.risk,
+  neutral: STATE_COLOR_CLASS.neutral,
 };

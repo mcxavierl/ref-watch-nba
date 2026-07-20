@@ -68,6 +68,115 @@
   padding-bottom: 0.3125rem;
 }
 
+/* ── State color utilities (see src/constants/colors.ts) ───────────────── */
+
+.state-color-volatile {
+  color: var(--state-volatile);
+}
+
+.state-color-stable {
+  color: var(--state-stable);
+}
+
+.state-color-neutral {
+  color: var(--state-neutral);
+}
+
+.state-color-caution {
+  color: var(--state-caution);
+}
+
+.state-color-risk {
+  color: var(--state-risk);
+}
+
+/* ── Ref profile table density ───────────────────────────────────────── */
+
+.ref-data-table th.data-table-num,
+.ref-data-table td.data-table-num,
+.ref-data-table .data-table-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.ref-data-table thead th:not(:first-child),
+.ref-data-table tbody td:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ref-data-table .ref-table-section-body,
+.ref-market-impact-panel {
+  display: grid;
+  gap: var(--space-2);
+}
+
+@media (min-width: 48rem) {
+  .ref-market-impact-panel {
+    gap: var(--space-4);
+  }
+}
+
+/* ── Ref profile mobile depth expand ──────────────────────────────────── */
+
+.ref-profile-depth-expand {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.ref-profile-depth-expand-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--state-neutral) 35%, var(--border-subtle));
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--bg-surface-2) 90%, transparent);
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--state-neutral);
+  cursor: pointer;
+}
+
+.ref-profile-depth-expand-panel {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+@media (max-width: 47.99rem) {
+  .ref-profile-depth-expand-panel:not(.is-expanded) {
+    display: none;
+  }
+}
+
+@media (min-width: 48rem) {
+  .ref-profile-depth-expand-toggle {
+    display: none;
+  }
+
+  .ref-profile-depth-expand-panel {
+    display: grid;
+  }
+}
+
+.ref-profile-edge-stack {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+@media (min-width: 48rem) {
+  .ref-profile-edge-stack {
+    gap: var(--space-4);
+  }
+}
+
 /* Dev layout audit - toggle with html[data-pill-debug="true"] */
 html[data-pill-debug="true"] .matrix-table-head,
 html[data-pill-debug="true"] .team-ref-matrix-row-main,

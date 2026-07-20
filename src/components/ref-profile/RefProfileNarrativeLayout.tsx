@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
+import { RefProfileDepthExpand } from "@/components/ref-profile/RefProfileDepthExpand";
 import { RefProfileOfficiatingBiasSection } from "@/components/ref-profile/RefProfileOfficiatingBiasSection";
 import { RefProfileMarketImpactPanel } from "@/components/ref-profile/RefProfileMarketImpactPanel";
-import { ScoutingReport } from "@/components/ref-profile/ScoutingReport";
+import {
+  ScoutingReportDepth,
+  ScoutingReportEdge,
+} from "@/components/ref-profile/ScoutingReport";
 import { RefProfileTeamTrends } from "@/components/ref-profile/RefProfileTeamTrends";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import { buildRefTeamPerformanceTrends } from "@/lib/ref-team-performance-trends";
@@ -18,7 +22,7 @@ type StatGridLabels = {
   overLabel?: string;
 };
 
-/** Four-row narrative layout: bias, market impact, and team context. */
+/** Four-row narrative layout: edge-first on mobile, depth behind expand toggle. */
 export function RefProfileNarrativeLayout({
   leagueId,
   profile,
@@ -51,51 +55,57 @@ export function RefProfileNarrativeLayout({
       whistleAnalytics,
   );
 
+  const scoutingProps = {
+    leagueId,
+    profile,
+    stats,
+    qualified,
+  };
+
   return (
     <div className="ref-narrative-layout">
-      <div className="ref-narrative-outcome-grid">
-        <RefProfileOfficiatingBiasSection
-          profile={profile}
-          leagueId={leagueId}
-          stats={stats}
-          qualified={qualified}
-          gsniMetrics={gsniMetrics}
-          closeGameMetrics={closeGameMetrics}
-          closeGameLeague={closeGameLeague}
-          whistleAnalytics={whistleAnalytics}
-        />
+      <ScoutingReportEdge {...scoutingProps} />
 
-        {showBettingProfile && profile.bettingStats ? (
-          <RefProfileMarketImpactPanel
+      <RefProfileDepthExpand label="Expand officiating and market depth">
+        <div className="ref-narrative-outcome-grid">
+          <RefProfileOfficiatingBiasSection
             profile={profile}
-            stats={profile.bettingStats}
             leagueId={leagueId}
-            showMetrics={qualified}
-            hideWhistleMetrics={hideWhistleMetrics}
+            stats={stats}
+            qualified={qualified}
+            gsniMetrics={gsniMetrics}
+            closeGameMetrics={closeGameMetrics}
+            closeGameLeague={closeGameLeague}
+            whistleAnalytics={whistleAnalytics}
           />
-        ) : (
-          <section className="ref-profile-section ref-market-impact">
-            <h2 className="ref-profile-section-title">Market Impact</h2>
-            <RefStatGrid
+
+          {showBettingProfile && profile.bettingStats ? (
+            <RefProfileMarketImpactPanel
               profile={profile}
-              overBaseline={stats.meta.leagueOverBaseline}
-              foulLabel={statGridLabels?.foulLabel}
-              scoreLabel={statGridLabels?.scoreLabel}
-              overLabel={statGridLabels?.overLabel}
+              stats={profile.bettingStats}
+              leagueId={leagueId}
               showMetrics={qualified}
+              hideWhistleMetrics={hideWhistleMetrics}
             />
-          </section>
-        )}
-      </div>
+          ) : (
+            <section className="ref-profile-section ref-market-impact">
+              <h2 className="ref-profile-section-title">Market Impact</h2>
+              <RefStatGrid
+                profile={profile}
+                overBaseline={stats.meta.leagueOverBaseline}
+                foulLabel={statGridLabels?.foulLabel}
+                scoreLabel={statGridLabels?.scoreLabel}
+                overLabel={statGridLabels?.overLabel}
+                showMetrics={qualified}
+              />
+            </section>
+          )}
+        </div>
 
-      <ScoutingReport
-        leagueId={leagueId}
-        profile={profile}
-        stats={stats}
-        qualified={qualified}
-      />
+        <ScoutingReportDepth {...scoutingProps} />
 
-      <RefProfileTeamTrends best={teamTrends.best} worst={teamTrends.worst} leagueId={leagueId} />
+        <RefProfileTeamTrends best={teamTrends.best} worst={teamTrends.worst} leagueId={leagueId} />
+      </RefProfileDepthExpand>
     </div>
   );
 }

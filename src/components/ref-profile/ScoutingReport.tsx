@@ -7,6 +7,7 @@ import {
   type GameScoutingMetadata,
 } from "@/lib/analytics/generate-scouting-report";
 import type { ResolvedOfficialProfile } from "@/lib/analytics/resolve-official-profile";
+import type { ScoutingReport as ScoutingReportData } from "@/lib/analytics/scouting-report-types";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 import "./scouting-report.css";
@@ -23,15 +24,15 @@ function strictnessPosition(strictnessScore: number): string {
   return `${Math.max(4, Math.min(96, strictnessScore))}%`;
 }
 
-export function ScoutingReport({
+function resolveReport({
   leagueId,
   profile,
   stats,
   qualified,
   gameMetadata,
-}: ScoutingReportProps) {
+}: ScoutingReportProps): ScoutingReportData | null {
   const resolved: ResolvedOfficialProfile = { profile, stats, qualified };
-  const report = generateScoutingReport(
+  return generateScoutingReport(
     profile.slug,
     {
       leagueId,
@@ -41,27 +42,40 @@ export function ScoutingReport({
     },
     resolved,
   );
+}
 
+/** Edge-first block: archetype + handicapper summary for mobile priority. */
+export function ScoutingReportEdge(props: ScoutingReportProps) {
+  const report = resolveReport(props);
   if (!report) return null;
 
-  const { styleProfile } = report;
-
   return (
-    <>
+    <div className="ref-profile-edge-stack">
       <ArchetypeCard
         displayName={report.archetypeDisplayName}
         blurb={report.archetypeBlurb}
         consistencyScore={report.consistencyScore}
         officialStats={report.officialStats}
       />
+      <HandicappersInsight report={report} />
+    </div>
+  );
+}
 
+/** Secondary scouting depth: leverage gauge and detailed style breakdown. */
+export function ScoutingReportDepth(props: ScoutingReportProps) {
+  const report = resolveReport(props);
+  if (!report) return null;
+
+  const { styleProfile } = report;
+
+  return (
+    <>
       <PressureGauge
         state={report.pressureGauge}
         leverageIndex={report.leverageSensitivityIndex}
         insight={report.leverageInsight}
       />
-
-      <HandicappersInsight report={report} />
 
       <ClinicalCard
         as="section"
@@ -149,9 +163,18 @@ export function ScoutingReport({
         <p className="scouting-report-footnote">
           Predictive profile from the last {report.sampleWindow} officiated games using{" "}
           {report.eventBackedGames > 0 ? "event-tagged" : "taxonomy-weighted"} officiating
-          style data. {!qualified ? "Sample gate not met for full profile metrics." : ""}
+          style data. {!props.qualified ? "Sample gate not met for full profile metrics." : ""}
         </p>
       </ClinicalCard>
+    </>
+  );
+}
+
+export function ScoutingReport(props: ScoutingReportProps) {
+  return (
+    <>
+      <ScoutingReportEdge {...props} />
+      <ScoutingReportDepth {...props} />
     </>
   );
 }

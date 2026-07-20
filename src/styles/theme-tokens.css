@@ -62,6 +62,12 @@ html.dark {
   --line: var(--border-default);
   --metric-positive-ink: var(--accent-positive);
   --metric-negative-ink: var(--accent-negative);
+
+  --state-volatile: var(--accent-negative);
+  --state-stable: var(--accent-positive);
+  --state-neutral: var(--accent-brand);
+  --state-caution: #fbbf24;
+  --state-risk: var(--state-volatile);
 }
 
 /* ── Light ─────────────────────────────────────────────────────────────────── */
@@ -116,6 +122,12 @@ html[data-color="light"]:not([data-contrast="high"]) {
   --line: var(--border-default);
   --metric-positive-ink: var(--accent-positive);
   --metric-negative-ink: var(--accent-negative);
+
+  --state-volatile: #be123c;
+  --state-stable: #047857;
+  --state-neutral: #1d4ed8;
+  --state-caution: #b45309;
+  --state-risk: var(--state-volatile);
 }
 
 /* High-contrast overrides */

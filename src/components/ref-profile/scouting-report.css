@@ -43,8 +43,8 @@
 }
 
 .scouting-report-badge--pressure {
-  border-color: color-mix(in srgb, var(--header-sapphire) 35%, var(--border));
-  color: color-mix(in srgb, var(--header-sapphire) 88%, var(--text-primary));
+  border-color: color-mix(in srgb, var(--state-caution) 35%, var(--border));
+  color: var(--state-caution);
 }
 
 .scouting-report-summary {
@@ -135,6 +135,8 @@
   font-size: 0.82rem;
   line-height: 1.45;
   color: var(--text-secondary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .handicappers-insight-footnote {
@@ -297,17 +299,18 @@
 }
 
 .pressure-gauge-badge--tightens-up {
-  border-color: color-mix(in srgb, #f59e0b 40%, var(--border-subtle));
-  color: color-mix(in srgb, #f59e0b 90%, var(--text-primary));
+  border-color: color-mix(in srgb, var(--state-caution) 40%, var(--border-subtle));
+  color: var(--state-caution);
 }
 
 .pressure-gauge-badge--swallows-whistle {
-  border-color: color-mix(in srgb, #34d399 40%, var(--border-subtle));
-  color: color-mix(in srgb, #34d399 90%, var(--text-primary));
+  border-color: color-mix(in srgb, var(--state-stable) 40%, var(--border-subtle));
+  color: var(--state-stable);
 }
 
 .pressure-gauge-badge--neutral {
-  color: var(--text-secondary);
+  border-color: color-mix(in srgb, var(--state-neutral) 35%, var(--border-subtle));
+  color: var(--state-neutral);
 }
 
 .pressure-gauge-track-wrap {

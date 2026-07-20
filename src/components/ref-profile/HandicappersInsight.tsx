@@ -1,5 +1,6 @@
 import { PRESSURE_GAUGE_LABELS } from "@/lib/analytics/leverage-sensitivity";
 import type { ScoutingReport } from "@/lib/analytics/scouting-report-types";
+import { consistencyStateClass, STATE_COLOR_CLASS } from "@/constants/colors";
 import "./scouting-report.css";
 
 type HandicappersInsightProps = {
@@ -33,6 +34,14 @@ function edgeSignal(report: HandicappersInsightProps["report"]): string {
   return "No strong directional edge from leverage profile alone.";
 }
 
+function leverageStateClass(
+  profile: HandicappersInsightProps["report"]["leverageProfile"],
+): string {
+  if (profile === "high-leverage-sensitivity") return STATE_COLOR_CLASS.caution;
+  if (profile === "swallows-whistle") return STATE_COLOR_CLASS.stable;
+  return STATE_COLOR_CLASS.neutral;
+}
+
 export function HandicappersInsight({ report }: HandicappersInsightProps) {
   const leverageLabel =
     report.leverageSensitivityIndex !== null
@@ -53,18 +62,24 @@ export function HandicappersInsight({ report }: HandicappersInsightProps) {
       <dl className="handicappers-insight-grid">
         <div className="handicappers-insight-stat">
           <dt>Edge</dt>
-          <dd>{edgeSignal(report)}</dd>
+          <dd className="tabular-nums text-right">{edgeSignal(report)}</dd>
         </div>
         <div className="handicappers-insight-stat">
           <dt>Volatility</dt>
-          <dd className="tabular-nums">
+          <dd
+            className={`tabular-nums text-right ${consistencyStateClass(report.consistencyScore)}`}
+          >
             {volatilityLabel(report.consistencyScore)} · Consistency{" "}
             {report.consistencyScore}/10
           </dd>
         </div>
         <div className="handicappers-insight-stat">
           <dt>Leverage Sensitivity</dt>
-          <dd className="tabular-nums">{leverageLabel}</dd>
+          <dd
+            className={`tabular-nums text-right ${leverageStateClass(report.leverageProfile)}`}
+          >
+            {leverageLabel}
+          </dd>
         </div>
       </dl>
 

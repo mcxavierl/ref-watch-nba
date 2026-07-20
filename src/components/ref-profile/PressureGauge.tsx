@@ -49,7 +49,7 @@ export function PressureGauge({ state, leverageIndex, insight }: PressureGaugePr
           />
         </div>
         {leverageIndex !== null ? (
-          <p className="pressure-gauge-index">
+          <p className="pressure-gauge-index tabular-nums text-right">
             Leverage Index: {leverageIndex > 0 ? "+" : ""}
             {(leverageIndex * 100).toFixed(0)}%
           </p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
+import { consistencyStateClass, STATE_COLOR_CLASS } from "@/constants/colors";
 import type { OfficialStats } from "@/lib/types";
 import "./archetype-card.css";
 
@@ -34,7 +35,9 @@ export function ArchetypeCard({
                 [{displayName}]
               </h3>
             </MetricInfoHint>
-            <span className="archetype-terminal-badge tabular-nums">
+            <span
+              className={`archetype-terminal-badge tabular-nums ${consistencyStateClass(consistencyScore)}`}
+            >
               Consistency: {consistencyScore}/10
             </span>
           </div>
@@ -50,7 +53,15 @@ export function ArchetypeCard({
         </div>
         <div className="archetype-terminal-stat">
           <dt>Close-game pressure</dt>
-          <dd>{officialStats.pressure_sensitive ? "Sensitive" : "Stable"}</dd>
+          <dd
+            className={
+              officialStats.pressure_sensitive
+                ? STATE_COLOR_CLASS.caution
+                : STATE_COLOR_CLASS.stable
+            }
+          >
+            {officialStats.pressure_sensitive ? "Sensitive" : "Stable"}
+          </dd>
         </div>
         <div className="archetype-terminal-stat">
           <dt>Sample window</dt>

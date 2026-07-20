@@ -1,4 +1,5 @@
 import type { CloseGameMetrics } from "@/lib/close-game";
+import { STATE_COLOR_CLASS } from "@/constants/colors";
 
 function deltaTone(delta: string): "positive" | "negative" | "neutral" {
   const trimmed = delta.trim();
@@ -16,9 +17,9 @@ function deltaTone(delta: string): "positive" | "negative" | "neutral" {
 
 function deltaClassName(delta: string): string {
   const tone = deltaTone(delta);
-  if (tone === "positive") return "text-emerald-400";
-  if (tone === "negative") return "text-rose-400";
-  return "text-slate-400";
+  if (tone === "positive") return STATE_COLOR_CLASS.stable;
+  if (tone === "negative") return STATE_COLOR_CLASS.risk;
+  return STATE_COLOR_CLASS.neutral;
 }
 
 export function CloseGameSection({
@@ -73,23 +74,23 @@ export function CloseGameSection({
                     <thead>
                       <tr className="data-table-head">
                         <th>Metric</th>
-                        <th>Late-game avg</th>
-                        <th>Season avg</th>
-                        <th>Pressure impact Δ</th>
+                        <th className="data-table-num">Late-game avg</th>
+                        <th className="data-table-num">Season avg</th>
+                        <th className="data-table-num">Pressure impact Δ</th>
                       </tr>
                     </thead>
                     <tbody>
                       {m.compareRows.map((row) => (
                         <tr key={row.label}>
                           <td className="text-sm font-normal text-slate-300">{row.label}</td>
-                          <td className="font-tabular text-sm tabular-nums text-slate-50">
+                          <td className="data-table-num font-tabular tabular-nums text-slate-50">
                             {row.windowValue}
                           </td>
-                          <td className="font-tabular text-sm tabular-nums text-slate-400">
+                          <td className="data-table-num font-tabular tabular-nums text-slate-400">
                             {row.fullGameValue}
                           </td>
                           <td
-                            className={`font-tabular text-sm font-medium tabular-nums ${deltaClassName(row.delta)}`}
+                            className={`data-table-num font-tabular text-sm font-medium tabular-nums ${deltaClassName(row.delta)}`}
                           >
                             {row.delta}
                           </td>
