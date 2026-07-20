@@ -105,6 +105,21 @@
 }
 
 /* Dev-only layout audit — toggle with html[data-pill-debug="true"] */
+.foul-breakdown-badge,
+.foul-view-toggle-btn,
+.ref-profile-trend-rate-pill,
+.ref-profile-team-rate-badge {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.foul-breakdown-badge,
+.foul-view-toggle-btn {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 html[data-pill-debug="true"] .pill-constrain,
 html[data-pill-debug="true"] .ref-master-insight-pill,
 html[data-pill-debug="true"] .finding-meta-pill,
@@ -118,7 +133,11 @@ html[data-pill-debug="true"] .ou-lean-badge,
 html[data-pill-debug="true"] .overview-pace-audit-pill,
 html[data-pill-debug="true"] .highlight-stat-card-head-copy,
 html[data-pill-debug="true"] .ref-card-head,
-html[data-pill-debug="true"] .finding-angle-category {
+html[data-pill-debug="true"] .finding-angle-category,
+html[data-pill-debug="true"] .foul-breakdown-badge,
+html[data-pill-debug="true"] .foul-view-toggle-btn,
+html[data-pill-debug="true"] .ref-profile-trend-rate-pill,
+html[data-pill-debug="true"] .ref-profile-team-rate-badge {
   outline: 1px dashed color-mix(in srgb, var(--accent-brand, #d4a017) 55%, transparent);
   outline-offset: 1px;
 }

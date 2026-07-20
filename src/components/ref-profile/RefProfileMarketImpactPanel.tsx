@@ -37,10 +37,10 @@ function MarketWlPanel({ stats }: { stats: RefBettingStats }) {
           <header className="ref-profile-trend-card-head">
             <TermHelp id="home-team-wl">Home team W/L</TermHelp>
           </header>
-          <p className="ref-profile-trend-record tabular-nums">
+          <p className="ref-profile-trend-record text-right tabular-nums">
             {games === 0 ? "-" : formatWlp(record.wins, record.losses, record.pushes)}
           </p>
-          <p className="ref-market-impact-meta text-slate-400">{rate}% home win rate</p>
+          <p className="ref-market-impact-meta text-right tabular-nums text-slate-400">{rate}% home win rate</p>
         </article>
       </div>
     </div>
@@ -61,10 +61,10 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
           <header className="ref-profile-trend-card-head">
             <TermHelp id="ats">Home team ATS</TermHelp>
           </header>
-          <p className="ref-profile-trend-record tabular-nums">
+          <p className="ref-profile-trend-record text-right tabular-nums">
             {games === 0 ? "-" : formatWlp(record.wins, record.losses, record.pushes)}
           </p>
-          <p className="ref-market-impact-meta text-slate-400">{rate}% ATS cover rate</p>
+          <p className="ref-market-impact-meta text-right tabular-nums text-slate-400">{rate}% ATS cover rate</p>
         </article>
       </div>
       <div className="ref-table-section-body mt-4 overflow-x-auto stat-data-container master-table-scroll">
@@ -72,10 +72,10 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
           <thead>
             <tr className="data-table-head">
               <th>Spread</th>
-              <th>
+              <th className="text-right tabular-nums">
                 <TermHelp id="home-fav">Home fav</TermHelp>
               </th>
-              <th>
+              <th className="text-right tabular-nums">
                 <TermHelp id="home-dog">Home dog</TermHelp>
               </th>
             </tr>
@@ -87,7 +87,7 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
               return (
                 <tr key={bucket.label}>
                   <td className="text-sm text-zinc-800">{bucket.label}</td>
-                  <td className="font-tabular tabular-nums text-zinc-800">
+                  <td className="text-right font-tabular tabular-nums text-zinc-800">
                     {favGames < bucketGate
                       ? "-"
                       : formatWlp(
@@ -96,7 +96,7 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
                           bucket.homeFavorite.pushes,
                         )}
                   </td>
-                  <td className="font-tabular tabular-nums text-zinc-800">
+                  <td className="text-right font-tabular tabular-nums text-zinc-800">
                     {dogGames < bucketGate
                       ? "-"
                       : formatWlp(
@@ -128,8 +128,8 @@ function MarketOuPanel({ stats }: { stats: RefBettingStats }) {
               <th>
                 <TermHelp id="ou-bucket">Line range</TermHelp>
               </th>
-              <th>Record</th>
-              <th>
+              <th className="text-right tabular-nums">Record</th>
+              <th className="text-right tabular-nums">
                 <TermHelp id="hit-rate">Hit rate</TermHelp>
               </th>
             </tr>
@@ -137,10 +137,10 @@ function MarketOuPanel({ stats }: { stats: RefBettingStats }) {
           <tbody>
             <tr>
               <td className="text-sm font-medium text-zinc-800">Overall</td>
-              <td className="font-tabular tabular-nums text-zinc-800">
+              <td className="text-right font-tabular tabular-nums text-zinc-800">
                 {formatWlp(ou.overall.wins, ou.overall.losses, ou.overall.pushes)}
               </td>
-              <td className="font-tabular tabular-nums text-zinc-600">
+              <td className="text-right font-tabular tabular-nums text-zinc-600">
                 {formatPctFromWlp(
                   ou.overall.wins,
                   ou.overall.losses,
@@ -154,7 +154,7 @@ function MarketOuPanel({ stats }: { stats: RefBettingStats }) {
               return (
                 <tr key={bucket.label}>
                   <td className="text-sm text-zinc-800">{bucket.label}</td>
-                  <td className="font-tabular tabular-nums text-zinc-800">
+                  <td className="text-right font-tabular tabular-nums text-zinc-800">
                     {belowGate
                       ? "-"
                       : formatWlp(
@@ -163,7 +163,7 @@ function MarketOuPanel({ stats }: { stats: RefBettingStats }) {
                           bucket.record.pushes,
                         )}
                   </td>
-                  <td className="font-tabular tabular-nums text-zinc-600">
+                  <td className="text-right font-tabular tabular-nums text-zinc-600">
                     {belowGate
                       ? "-"
                       : formatPctFromWlp(
@@ -212,7 +212,7 @@ export function RefProfileMarketImpactPanel({
 
   return (
     <section className="ref-profile-section ref-market-impact" aria-labelledby="ref-market-impact-title">
-      <div className="ref-table-section-header flex min-w-0 flex-wrap items-center justify-between gap-3">
+      <div className="ref-table-section-header flex min-w-0 flex-wrap items-center justify-between gap-4">
         <h2 id="ref-market-impact-title" className="ref-profile-section-title m-0">
           Market Impact
         </h2>
@@ -223,6 +223,7 @@ export function RefProfileMarketImpactPanel({
             active={tab === "wl"}
             onClick={() => setTab("wl")}
             aria-pressed={tab === "wl"}
+            className="whitespace-nowrap px-3"
           >
             Team W/L
           </Pill>
@@ -232,6 +233,7 @@ export function RefProfileMarketImpactPanel({
             active={tab === "ats"}
             onClick={() => setTab("ats")}
             aria-pressed={tab === "ats"}
+            className="whitespace-nowrap px-3"
           >
             ATS
           </Pill>
@@ -241,6 +243,7 @@ export function RefProfileMarketImpactPanel({
             active={tab === "ou"}
             onClick={() => setTab("ou")}
             aria-pressed={tab === "ou"}
+            className="whitespace-nowrap px-3"
           >
             Over/Under
           </Pill>

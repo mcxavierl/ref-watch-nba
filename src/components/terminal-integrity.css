@@ -1,0 +1,398 @@
+/**
+ * Terminal Integrity — spacing, pill alignment, tabular data columns, and
+ * responsive layout guardrails for ref-profile and matrix surfaces.
+ */
+
+/* ── Foul breakdown (ref profile) ─────────────────────────────────────── */
+
+.foul-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.foul-breakdown-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.foul-breakdown-head-copy {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.foul-breakdown-lead {
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.foul-breakdown-toggle {
+  flex: 0 0 auto;
+}
+
+.foul-breakdown-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.foul-breakdown-count {
+  margin: 0;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.foul-breakdown-empty {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.foul-breakdown-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.foul-breakdown-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 88%, transparent);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--bg-surface-1) 94%, transparent);
+  padding: var(--space-2) var(--space-4);
+  min-width: 0;
+}
+
+.foul-breakdown-row-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.foul-breakdown-label {
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.foul-breakdown-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.foul-breakdown-badge--admin {
+  border: 1px solid color-mix(in srgb, var(--header-sapphire) 40%, transparent);
+  background: color-mix(in srgb, var(--header-sapphire) 12%, transparent);
+  color: color-mix(in srgb, var(--header-sapphire) 88%, #fff);
+}
+
+.foul-breakdown-badge--subjective {
+  border: 1px solid color-mix(in srgb, var(--header-gold) 40%, transparent);
+  background: color-mix(in srgb, var(--header-gold) 12%, transparent);
+  color: color-mix(in srgb, var(--header-gold) 88%, #fff);
+}
+
+.foul-breakdown-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.foul-breakdown-row-meta > span {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .foul-breakdown-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .foul-breakdown-toggle {
+    align-self: flex-start;
+  }
+}
+
+/* ── Foul view toggle ─────────────────────────────────────────────────── */
+
+.foul-view-toggle {
+  display: inline-flex;
+  min-width: 0;
+}
+
+.foul-view-toggle-track {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: var(--space-1);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0.1875rem;
+}
+
+.foul-view-toggle-btn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+
+.foul-view-toggle-btn:hover {
+  color: var(--ink-secondary);
+}
+
+.foul-view-toggle-btn-active {
+  color: var(--ink-secondary);
+}
+
+.foul-view-toggle-indicator {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--header-sapphire) 10%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--header-sapphire) 30%, var(--border));
+}
+
+.foul-view-toggle-label {
+  position: relative;
+  min-width: 0;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .foul-view-toggle-track {
+  border-color: var(--card-border-light, #e2e8f0);
+  background: #ffffff;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .foul-view-toggle-indicator {
+  background: #f1f5f9;
+  box-shadow: inset 0 0 0 1px #e2e8f0;
+}
+
+/* ── Matrix table foul columns ────────────────────────────────────────── */
+
+.matrix-table {
+  min-width: 0;
+}
+
+.matrix-table-head {
+  min-width: 0;
+}
+
+.matrix-table-head--fouls,
+.matrix-table-row--fouls .team-ref-matrix-row-main {
+  grid-template-columns:
+    1.5rem 1.75rem minmax(6rem, 1.4fr) minmax(4rem, 0.85fr) minmax(4.5rem, 0.9fr)
+    minmax(4rem, 0.75fr) minmax(4rem, 0.8fr) minmax(3.5rem, 0.65fr) minmax(3.5rem, 0.65fr)
+    minmax(5rem, 0.85fr);
+  gap: var(--space-2);
+  min-width: 28rem;
+}
+
+.matrix-table-head--fouls > .team-ref-matrix-head-stat:nth-child(8),
+.team-ref-matrix-stat--subjective {
+  grid-column: 8;
+}
+
+.matrix-table-head--fouls > .team-ref-matrix-head-stat:nth-child(9),
+.team-ref-matrix-stat--admin {
+  grid-column: 9;
+}
+
+.matrix-table-head--fouls > .team-ref-matrix-head-stat:nth-child(10),
+.team-ref-matrix-stat--ratio {
+  grid-column: 10;
+}
+
+.matrix-table-head-ratio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.matrix-table-head-ratio-label {
+  min-width: 0;
+}
+
+.matrix-table-sort-group {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: var(--space-1);
+}
+
+.matrix-table-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 80%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--bg-surface-2) 80%, transparent);
+  padding: 0;
+  font-size: 0.65rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.matrix-table-sort-btn--active {
+  border-color: color-mix(in srgb, var(--header-sapphire) 45%, var(--border));
+  background: color-mix(in srgb, var(--header-sapphire) 12%, var(--surface));
+  color: var(--text-primary);
+}
+
+.matrix-table-ratio-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.matrix-foul-ratio-bar {
+  display: block;
+  width: 100%;
+  max-width: 3.5rem;
+  height: 0.25rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border-subtle) 70%, transparent);
+}
+
+.matrix-foul-ratio-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--header-sapphire) 75%, #fff),
+    var(--header-sapphire)
+  );
+}
+
+.team-ref-matrix-head > .team-ref-matrix-head-stat,
+.team-ref-matrix-stat {
+  text-align: right;
+}
+
+@media (max-width: 1100px) {
+  .matrix-table-head--fouls {
+    min-width: 32rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .matrix-table-head--fouls,
+  .matrix-table-row--fouls .team-ref-matrix-row-main {
+    grid-template-columns: 1.25rem 1.75rem minmax(0, 1fr) minmax(4rem, auto);
+    min-width: 0;
+  }
+
+  .matrix-table-head--fouls > .team-ref-matrix-head-stat:nth-child(n + 8),
+  .team-ref-matrix-stat--subjective,
+  .team-ref-matrix-stat--admin,
+  .team-ref-matrix-stat--ratio {
+    display: none;
+  }
+}
+
+/* ── Ref profile pill alignment overrides ─────────────────────────────── */
+
+.ref-profile-trend-rate-pill {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  white-space: nowrap;
+}
+
+.ref-profile-team-rate-badge {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.ref-profile-team-trend-logo {
+  flex-shrink: 0;
+}
+
+.ref-profile-trend-rate-row {
+  gap: var(--space-2);
+}
+
+.ref-market-impact-tabs {
+  gap: var(--space-2);
+}
+
+.team-ref-filter-bar.analytics-matrix-filter {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0.1875rem;
+}
+
+.team-ref-filter-btn {
+  border-radius: 999px;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+}
+
+/* Dev layout audit — toggle with html[data-pill-debug="true"] */
+html[data-pill-debug="true"] .foul-breakdown,
+html[data-pill-debug="true"] .foul-breakdown-head,
+html[data-pill-debug="true"] .foul-breakdown-row,
+html[data-pill-debug="true"] .foul-view-toggle-track,
+html[data-pill-debug="true"] .matrix-table-head,
+html[data-pill-debug="true"] .team-ref-matrix-row-main,
+html[data-pill-debug="true"] .ref-profile-trend-rate-pill,
+html[data-pill-debug="true"] .ref-profile-team-rate-badge {
+  outline: 1px dashed color-mix(in srgb, var(--accent-brand, #d4a017) 55%, transparent);
+  outline-offset: 1px;
+}
