@@ -41,12 +41,16 @@ describe("ship guardrail scripts", () => {
     }
   });
 
-  it("pre-push hook runs css-syntax before full check:ci", () => {
+  it("pre-push hook runs preflight and css-syntax before full check:ci", () => {
     const hook = readFileSync(".githooks/pre-push", "utf8");
+    const preflightIndex = hook.indexOf("check:preflight");
     const cssIndex = hook.indexOf("check:css-syntax");
     const ciIndex = hook.indexOf("check:ci");
-    if (cssIndex < 0 || ciIndex < 0 || cssIndex > ciIndex) {
-      throw new Error("pre-push hook must run check:css-syntax before check:ci");
+    if (preflightIndex < 0 || cssIndex < 0 || ciIndex < 0) {
+      throw new Error("pre-push hook must run check:preflight, check:css-syntax, and check:ci");
+    }
+    if (!(preflightIndex < cssIndex && cssIndex < ciIndex)) {
+      throw new Error("pre-push hook must run check:preflight before css-syntax before check:ci");
     }
   });
 

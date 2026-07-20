@@ -38,6 +38,9 @@ jobs:
       - name: Client import boundary check
         run: npm run check:client-imports
 
+      - name: Merge conflict marker check
+        run: npm run check:no-conflict-markers
+
       - name: Typecheck
         run: npm run typecheck
 

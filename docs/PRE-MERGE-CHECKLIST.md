@@ -4,6 +4,14 @@ Run this before opening or merging a PR. It mirrors the GitHub **validate** job 
 
 ## One command (recommended)
 
+Fast preflight (~30s) before push:
+
+```bash
+npm run check:preflight
+```
+
+Full CI mirror before merge:
+
 ```bash
 npm run check:ci
 ```
@@ -16,25 +24,26 @@ Do not merge until this passes locally **and** the GitHub **validate** check is 
 | --- | --- | --- |
 | 1 | `npm run check:refactor-safety` | Refactor safety checks |
 | 2 | `npm run check:client-imports` | Client import boundary check |
-| 3 | `npm run typecheck` | Typecheck |
-| 4 | `npm run check:artifact-freshness` | Generated artifact freshness |
-| 5 | `npm run check:validation-freshness` | Validation artifact freshness |
-| 6 | `npm run check:coupled-tests` | Coupled test change gate |
-| 7 | `npm run check:volume` | Volume regression gate |
-| 8 | `npm run check:deploy` | Generate deploy data artifacts |
-| 9 | `npm run check:css-syntax` | CSS syntax check |
-| 10 | `npm run build:next` | Next.js production build |
-| 11 | `npm run audit:theme-matrix` | Theme matrix contrast audit |
-| 12 | `npm run audit:color-drift` | Color drift audit |
-| 13 | `npm run audit:design-tokens` | Design token parity audit |
-| 14 | `npm run audit:card-consistency` | Clinical card consistency audit |
-| 15 | `npm run audit:metric-semantics` | Metric semantics audit |
-| 16 | `npm run check:no-em-dashes` | Em dash copy audit |
-| 17 | `npm run audit:terminal-integrity` | Terminal integrity audit |
-| 18 | `npm run audit:insight-first` | Insight-first audit |
-| 19 | `npm run audit:overlay-portals` | Overlay portal audit |
-| 20 | `npm run test` | Unit tests |
-| 21 | `npm run honesty-audit` | Honesty audit |
+| 3 | `npm run check:no-conflict-markers` | Merge conflict marker check |
+| 4 | `npm run typecheck` | Typecheck |
+| 5 | `npm run check:artifact-freshness` | Generated artifact freshness |
+| 6 | `npm run check:validation-freshness` | Validation artifact freshness |
+| 7 | `npm run check:coupled-tests` | Coupled test change gate |
+| 8 | `npm run check:volume` | Volume regression gate |
+| 9 | `npm run check:deploy` | Generate deploy data artifacts |
+| 10 | `npm run check:css-syntax` | CSS syntax check |
+| 11 | `npm run build:next` | Next.js production build |
+| 12 | `npm run audit:theme-matrix` | Theme matrix contrast audit |
+| 13 | `npm run audit:color-drift` | Color drift audit |
+| 14 | `npm run audit:design-tokens` | Design token parity audit |
+| 15 | `npm run audit:card-consistency` | Clinical card consistency audit |
+| 16 | `npm run audit:metric-semantics` | Metric semantics audit |
+| 17 | `npm run check:no-em-dashes` | Em dash copy audit |
+| 18 | `npm run audit:terminal-integrity` | Terminal integrity audit |
+| 19 | `npm run audit:insight-first` | Insight-first audit |
+| 20 | `npm run audit:overlay-portals` | Overlay portal audit |
+| 21 | `npm run test` | Unit tests |
+| 22 | `npm run honesty-audit` | Honesty audit |
 
 ## When overview snapshot sources change
 
