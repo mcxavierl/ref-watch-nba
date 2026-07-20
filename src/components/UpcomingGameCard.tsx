@@ -5,7 +5,11 @@ import { Users } from "lucide-react";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
-import { selectUpcomingCardHeroInsight } from "@/lib/upcoming-card-hero-insight";
+import {
+  hasUpcomingCardAssignedCrew,
+  selectUpcomingCardHeroInsight,
+  upcomingCardInsightFallback,
+} from "@/lib/upcoming-card-hero-insight";
 import {
   formatSlateDateTimeLabel,
   resolveSlateTeam,
@@ -39,10 +43,10 @@ export function UpcomingGameCard({
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
-  const heroInsight = selectUpcomingCardHeroInsight(game);
+  const crewAssigned = hasUpcomingCardAssignedCrew(game);
+  const heroInsight = crewAssigned ? selectUpcomingCardHeroInsight(game) : undefined;
   const crewLabel = upcomingCardCrewLabel(game);
   const showCrewCount = game.crewCount > 1 && Boolean(game.headRef) && game.status !== "scheduled";
-  const showFooter = Boolean(crewLabel || showCrewCount || onOpenPreview);
 
   const handleActivate = () => {
     onOpenPreview?.();
@@ -68,6 +72,7 @@ export function UpcomingGameCard({
       className={`upcoming-game-card${onOpenPreview ? " upcoming-game-card--interactive" : ""}`}
       data-league={game.leagueId}
       data-status={game.status}
+      data-crew-assigned={crewAssigned ? "true" : "false"}
       style={{ "--upcoming-i": index } as CSSProperties}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
@@ -111,43 +116,51 @@ export function UpcomingGameCard({
           </div>
         </div>
 
-        {heroInsight ? (
-          <p className="upcoming-game-card__hero-insight" title={heroInsight}>
-            {heroInsight}
-          </p>
-        ) : null}
+        <div className="upcoming-game-card__context-slot">
+          {crewAssigned && heroInsight ? (
+            <p className="upcoming-game-card__hero-insight line-clamp-1" title={heroInsight}>
+              {heroInsight}
+            </p>
+          ) : (
+            <p className="upcoming-game-card__hero-fallback">
+              {upcomingCardInsightFallback(game)}
+            </p>
+          )}
+        </div>
       </div>
 
-      {showFooter ? (
-        <footer className="upcoming-game-card__footer">
-          <div className="upcoming-game-card__crew-meta">
-            {crewLabel ? (
-              game.headRef && game.status !== "scheduled" ? (
-                <>
-                  <span className="upcoming-game-card__crew-role">Head ref</span>
-                  <strong className="upcoming-game-card__crew-name">{game.headRef}</strong>
-                </>
-              ) : (
-                <span className="upcoming-game-card__crew-pending">{crewLabel}</span>
-              )
-            ) : null}
-            {showCrewCount ? (
-              <span
-                className="upcoming-game-card__crew-count"
-                aria-label={`${game.crewCount}-person crew`}
-              >
-                <Users size={12} strokeWidth={2.25} aria-hidden />
-                <span aria-hidden>{game.crewCount}</span>
-              </span>
-            ) : null}
-          </div>
-          {onOpenPreview ? (
-            <span className="upcoming-game-card__cta upcoming-game-card__cta--footer">
-              Preview refs
+      <footer className="upcoming-game-card__footer">
+        <div className="upcoming-game-card__crew-meta">
+          {crewLabel ? (
+            crewAssigned && game.headRef ? (
+              <>
+                <span className="upcoming-game-card__crew-role">Head ref</span>
+                <strong className="upcoming-game-card__crew-name">{game.headRef}</strong>
+              </>
+            ) : (
+              <span className="upcoming-game-card__crew-pending">{crewLabel}</span>
+            )
+          ) : (
+            <span className="upcoming-game-card__crew-pending">
+              {upcomingCardInsightFallback(game).split(" · ")[0]}
+            </span>
+          )}
+          {showCrewCount ? (
+            <span
+              className="upcoming-game-card__crew-count"
+              aria-label={`${game.crewCount}-person crew`}
+            >
+              <Users size={12} strokeWidth={2.25} aria-hidden />
+              <span aria-hidden>{game.crewCount}</span>
             </span>
           ) : null}
-        </footer>
-      ) : null}
+        </div>
+        {onOpenPreview ? (
+          <span className="upcoming-game-card__cta upcoming-game-card__cta--footer">
+            Preview refs
+          </span>
+        ) : null}
+      </footer>
     </article>
   );
 }
