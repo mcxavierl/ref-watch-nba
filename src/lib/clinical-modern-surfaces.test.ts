@@ -189,13 +189,19 @@ describe("Clinical Modern priority #11 surfaces", () => {
     );
     assert.match(
       css,
-      /\.upcoming-game-card__date-pill[\s\S]*0 0 16px color-mix/,
+      /\.upcoming-game-card__date-pill[\s\S]*var\(--upcoming-pill-shadow\)/,
     );
     assert.match(css, /\[data-league="nfl"\][\s\S]*--upcoming-matchup-glow-accent: #1e4fd4/);
     assert.match(css, /\[data-league="epl"\][\s\S]*--upcoming-matchup-glow-accent: #6b3fa8/);
     assert.match(css, /\[data-league="laliga"\][\s\S]*--upcoming-matchup-glow-accent: #c9a227/);
-    assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*background: transparent/);
+    assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*var\(--upcoming-logo-plate-bg\)/);
     assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*overflow: hidden/);
+    assert.match(css, /--upcoming-card-bg/);
+    assert.match(
+      css,
+      /html\[data-color="light"\][\s\S]*--upcoming-card-bg: #ffffff/,
+    );
+    assert.match(css, /\.upcoming-game-card__team-abbr[\s\S]*var\(--upcoming-ink-strong\)/);
     assert.match(css, /container-type: inline-size/);
     assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*align-items: center/);
     assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*justify-content: center/);
