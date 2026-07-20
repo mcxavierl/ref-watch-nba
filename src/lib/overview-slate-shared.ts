@@ -27,6 +27,8 @@ export type OverviewSlateEntry = {
   metadataLine?: string;
   seasonStageNote?: string;
   preview?: GameSlatePreviewPayload;
+  /** Top ref-preview insights for compact upcoming cards when crew is assigned. */
+  previewCardInsights?: string[];
 };
 
 export type OverviewLeagueNote = {

@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { buildGameSlatePreview } from "@/lib/game-slate-preview";
+import {
+  buildGameSlatePreview,
+  selectGameSlatePreviewCardInsights,
+} from "@/lib/game-slate-preview";
 import { getAssignments as getWnbaAssignments } from "@/lib/wnba/data";
 import { getOdds as getWnbaOdds } from "@/lib/wnba/odds";
 
@@ -41,6 +44,55 @@ describe("game slate preview", () => {
     const preview = buildGameSlatePreview("wnba", game, getWnbaOdds());
     assert.ok(preview);
     assert.ok(Array.isArray(preview.refTeamRows));
-    assert.ok(Array.isArray(preview.outlierNotes));
+    assert.ok(Array.isArray(preview.teamImpacts));
+  });
+
+  it("groups team impacts by matchup side", () => {
+    const assignments = getWnbaAssignments();
+    const game = assignments.games.find((entry) => entry.crew.length >= 2);
+    assert.ok(game);
+
+    const preview = buildGameSlatePreview("wnba", game, getWnbaOdds());
+    assert.ok(preview);
+    if (preview.teamImpacts.length > 0) {
+      const impact = preview.teamImpacts[0];
+      assert.ok(impact.teamAbbr);
+      assert.ok(impact.teamLabel);
+      assert.ok(Array.isArray(impact.insights));
+    }
+  });
+
+  it("selects the strongest preview insights for upcoming cards", () => {
+    const preview = buildGameSlatePreview(
+      "wnba",
+      {
+        id: "wnba-preview-insight",
+        matchup: "LVA @ CON",
+        awayTeam: "LVA",
+        homeTeam: "CON",
+        league: "WNBA",
+        crew: [{ name: "Dee Kantor", number: 10, role: "referee" }],
+      },
+      getWnbaOdds(),
+    );
+    assert.ok(preview);
+
+    const insights = selectGameSlatePreviewCardInsights(
+      {
+        ...preview,
+        homeBiasHeadline: "Home teams cover more often with this crew.",
+        storylines: [
+          {
+            headline: "High-scoring crew",
+            summary: "This crew has cleared the total in 7 of the last 10 games.",
+          },
+        ],
+      },
+      2,
+    );
+
+    assert.ok(insights.length >= 1);
+    assert.match(insights[0] ?? "", /Home teams cover|High-scoring crew/);
+    assert.ok(insights.every((line) => !line.includes("Last met")));
   });
 });

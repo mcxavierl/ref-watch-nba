@@ -14,7 +14,7 @@ import {
 } from "@/lib/overview-matchup-insight";
 import type { AssignmentsFile, AssignmentGame, OddsFile, RefOfficial } from "@/lib/types";
 import { isSlatePreviewLeague } from "@/lib/game-slate-preview-adapters";
-import { buildGameSlatePreview } from "@/lib/game-slate-preview";
+import { buildGameSlatePreview, selectGameSlatePreviewCardInsights } from "@/lib/game-slate-preview";
 import { resolveWnbaTeamAbbr } from "@/lib/wnba/teams";
 
 export type {
@@ -252,6 +252,9 @@ function pushEntry(
     officialsLine: buildOverviewOfficialsLine(leagueId, game.crew, status),
     seasonStageNote,
     preview,
+    previewCardInsights: preview
+      ? selectGameSlatePreviewCardInsights(preview)
+      : undefined,
   });
 }
 

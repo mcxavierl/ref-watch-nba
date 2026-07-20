@@ -9,12 +9,12 @@ import {
   useState,
   type MouseEvent,
 } from "react";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, TrendingDown, TrendingUp, X } from "lucide-react";
 import { ModalPortal } from "@/components/ModalPortal";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { OuLeanBadge } from "@/components/OuLeanBadge";
 import { RefAvatar } from "@/components/RefAvatar";
-import { StandoutMetricValue } from "@/components/StandoutMetric";
+import { TeamImpactCard } from "@/components/TeamImpactCard";
 import { TeamLogo } from "@/components/TeamLogo";
 import { STATE_COLOR_CLASS } from "@/constants/colors";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
@@ -30,6 +30,18 @@ type GameSlatePreviewDrawerProps = {
   open: boolean;
   onClose: () => void;
 };
+
+function crewImpactToneClass(tone: "positive" | "negative" | "neutral"): string {
+  if (tone === "positive") return STATE_COLOR_CLASS.stable;
+  if (tone === "negative") return STATE_COLOR_CLASS.risk;
+  return STATE_COLOR_CLASS.neutral;
+}
+
+function foulsDeltaClass(delta: number): string {
+  if (delta > 0) return STATE_COLOR_CLASS.caution;
+  if (delta < 0) return STATE_COLOR_CLASS.stable;
+  return "";
+}
 
 export function GameSlatePreviewDrawer({
   preview,
@@ -91,6 +103,14 @@ export function GameSlatePreviewDrawer({
     : null;
   const sport = slateTeamLogoSport(preview.leagueId);
   const slateHref = `${preview.basePath}#slate-game-${preview.gameId}`;
+  const scoringTone = signedDeltaTone(preview.totalPointsDelta);
+  const whistleTone = signedDeltaTone(preview.foulsDelta);
+  const rowsByTeam = new Map(
+    preview.teamImpacts.map((impact) => [
+      impact.teamAbbr,
+      preview.refTeamRows.filter((row) => row.teamAbbr === impact.teamAbbr),
+    ]),
+  );
 
   return (
     <ModalPortal>
@@ -172,58 +192,176 @@ export function GameSlatePreviewDrawer({
               <p className="ref-preview-drawer-empty">Crew not assigned yet.</p>
             )}
 
-            {preview.insufficientSample ? (
-              <p className="ref-preview-drawer-summary-copy">
-                Not enough qualified crew history to show composite tendencies yet.
-              </p>
-            ) : (
-              <dl className="ref-preview-drawer-stats">
-                <div className="ref-preview-drawer-stat">
-                  <dt>{preview.scoringLabel}</dt>
-                  <dd className="font-tabular tabular-nums">
-                    <StandoutMetricValue tone="neutral" size="md">
-                      {formatSigned(preview.totalPointsDelta)}
-                    </StandoutMetricValue>
-                    <span className="game-slate-preview-stat-meta">
-                      {preview.avgTotalPoints} avg · {formatPct(preview.overRate)} over
-                    </span>
-                  </dd>
-                </div>
-                <div className="ref-preview-drawer-stat">
-                  <dt>{preview.whistleLabel}</dt>
-                  <dd className="font-tabular tabular-nums">
-                    <StandoutMetricValue tone="neutral" size="md">
-                      {formatSigned(preview.foulsDelta)}
-                    </StandoutMetricValue>
-                    <span className="game-slate-preview-stat-meta">
-                      {preview.avgFouls} avg
-                    </span>
-                  </dd>
-                </div>
-                {preview.premiumGap !== undefined ? (
-                  <div className="ref-preview-drawer-stat">
-                    <dt>Vs benchmark</dt>
-                    <dd className="font-tabular tabular-nums">
-                      <StandoutMetricValue
-                        tone={signedDeltaTone(preview.premiumGap)}
-                        size="md"
-                      >
-                        {formatSigned(preview.premiumGap)}
-                      </StandoutMetricValue>
-                      {preview.premiumLabel ? (
-                        <span className="game-slate-preview-stat-meta">
-                          {preview.premiumLabel}
-                        </span>
+            <div className="flex flex-col gap-6">
+              {preview.insufficientSample ? (
+                <p className="ref-preview-drawer-summary-copy">
+                  Not enough qualified crew history to show composite tendencies yet.
+                </p>
+              ) : (
+                <section className="game-slate-preview-crew-impact" aria-label="Crew impact">
+                  <h3 className="ref-preview-drawer-section-title">Crew impact</h3>
+                  <div className="game-slate-preview-crew-impact-chips">
+                    <div
+                      className={`game-slate-preview-crew-impact-chip ${crewImpactToneClass(scoringTone)}`}
+                    >
+                      <span className="game-slate-preview-crew-impact-label">
+                        {preview.scoringLabel}
+                      </span>
+                      <span className="game-slate-preview-crew-impact-metric font-tabular tabular-nums">
+                        {formatSigned(preview.totalPointsDelta)} impact
+                      </span>
+                      {scoringTone === "positive" ? (
+                        <TrendingUp size={14} aria-hidden className="game-slate-preview-crew-impact-trend" />
+                      ) : scoringTone === "negative" ? (
+                        <TrendingDown size={14} aria-hidden className="game-slate-preview-crew-impact-trend" />
                       ) : null}
-                    </dd>
+                      <span className="game-slate-preview-crew-impact-meta font-tabular tabular-nums">
+                        {preview.avgTotalPoints} avg · {formatPct(preview.overRate)} over
+                      </span>
+                    </div>
+                    <div
+                      className={`game-slate-preview-crew-impact-chip ${crewImpactToneClass(whistleTone)}`}
+                    >
+                      <span className="game-slate-preview-crew-impact-label">
+                        {preview.whistleLabel}
+                      </span>
+                      <span className="game-slate-preview-crew-impact-metric font-tabular tabular-nums">
+                        {formatSigned(preview.foulsDelta)} impact
+                      </span>
+                      {whistleTone === "positive" ? (
+                        <TrendingUp size={14} aria-hidden className="game-slate-preview-crew-impact-trend" />
+                      ) : whistleTone === "negative" ? (
+                        <TrendingDown size={14} aria-hidden className="game-slate-preview-crew-impact-trend" />
+                      ) : null}
+                      <span className="game-slate-preview-crew-impact-meta font-tabular tabular-nums">
+                        {preview.avgFouls} avg
+                      </span>
+                    </div>
+                    {preview.premiumGap !== undefined ? (
+                      <div
+                        className={`game-slate-preview-crew-impact-chip ${crewImpactToneClass(signedDeltaTone(preview.premiumGap))}`}
+                      >
+                        <span className="game-slate-preview-crew-impact-label">Vs benchmark</span>
+                        <span className="game-slate-preview-crew-impact-metric font-tabular tabular-nums">
+                          {formatSigned(preview.premiumGap)}
+                        </span>
+                        {preview.premiumLabel ? (
+                          <span className="game-slate-preview-crew-impact-meta">
+                            {preview.premiumLabel}
+                          </span>
+                        ) : null}
+                      </div>
+                    ) : null}
                   </div>
-                ) : null}
-                <div className="ref-preview-drawer-stat">
-                  <dt>Sample</dt>
-                  <dd className="font-tabular tabular-nums">{preview.sampleGames} games</dd>
-                </div>
-              </dl>
-            )}
+                  <p className="game-slate-preview-crew-impact-sample font-tabular tabular-nums">
+                    {preview.sampleGames} games in sample
+                  </p>
+                </section>
+              )}
+
+              {preview.teamImpacts.length > 0 ? (
+                <section
+                  className="game-slate-preview-team-impact-grid"
+                  aria-label="Team impact by side"
+                >
+                  {preview.teamImpacts.map((impact) => {
+                    const team = resolveSlateTeam(preview.leagueId, impact.teamAbbr);
+                    if (!team) return null;
+                    return (
+                      <TeamImpactCard
+                        key={impact.teamAbbr}
+                        team={team}
+                        sport={sport}
+                        teamAbbr={impact.teamAbbr}
+                        teamLabel={impact.teamLabel}
+                        insights={impact.insights}
+                        basePath={preview.basePath}
+                      />
+                    );
+                  })}
+                </section>
+              ) : null}
+
+              {preview.refTeamRows.length > 0 ? (
+                <section className="ref-preview-drawer-section" aria-label="Ref team splits">
+                  <h3 className="ref-preview-drawer-section-title">Ref × team history</h3>
+                  <div className="ref-preview-drawer-table-wrap">
+                    <table className="ref-preview-drawer-table data-table game-slate-preview-team-table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Official</th>
+                          <th scope="col" className="data-table-num">
+                            Record
+                          </th>
+                          <th scope="col" className="data-table-num">
+                            Over
+                          </th>
+                          <th scope="col" className="data-table-num">
+                            Fouls Δ
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {preview.teamImpacts.flatMap((impact) => {
+                          const rows = rowsByTeam.get(impact.teamAbbr) ?? [];
+                          if (rows.length === 0) return [];
+                          const team = resolveSlateTeam(preview.leagueId, impact.teamAbbr);
+                          return [
+                            <tr
+                              key={`header-${impact.teamAbbr}`}
+                              className="game-slate-preview-team-table-header"
+                            >
+                              <th scope="rowgroup" colSpan={4}>
+                                <span className="game-slate-preview-team-table-header-inner">
+                                  {team ? (
+                                    <TeamLogo team={team} sport={sport} size="sm" />
+                                  ) : null}
+                                  <span>{impact.teamAbbr}</span>
+                                  <span className="game-slate-preview-team-table-header-name">
+                                    {impact.teamLabel}
+                                  </span>
+                                </span>
+                              </th>
+                            </tr>,
+                            ...rows.map((row) => (
+                              <tr
+                                key={`${row.refSlug}-${row.teamAbbr}`}
+                                className={[
+                                  "game-slate-preview-team-table-row",
+                                  row.isOutlier ? "game-slate-preview-row--outlier" : "",
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")}
+                              >
+                                <td>
+                                  <Link
+                                    href={`${preview.basePath}/refs/${row.refSlug}`}
+                                    className="font-medium hover:underline"
+                                  >
+                                    {row.refName}
+                                  </Link>
+                                </td>
+                                <td className="data-table-num font-tabular tabular-nums">
+                                  {row.record}
+                                </td>
+                                <td className="data-table-num font-tabular tabular-nums">
+                                  {formatPct(row.overRate)}
+                                </td>
+                                <td
+                                  className={`data-table-num font-tabular tabular-nums game-slate-preview-fouls-delta ${foulsDeltaClass(row.foulsDelta)}`}
+                                >
+                                  {formatSigned(row.foulsDelta)}
+                                </td>
+                              </tr>
+                            )),
+                          ];
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+              ) : null}
+            </div>
 
             {preview.homeBiasHeadline ? (
               <section className="ref-preview-drawer-summary" aria-label="Home bias">
@@ -243,73 +381,6 @@ export function GameSlatePreviewDrawer({
                     </li>
                   ))}
                 </ul>
-              </section>
-            ) : null}
-
-            {preview.outlierNotes.length > 0 ? (
-              <section className="ref-preview-drawer-section" aria-label="Crew team outliers">
-                <h3 className="ref-preview-drawer-section-title">Crew vs teams</h3>
-                <ul className="game-slate-preview-outliers">
-                  {preview.outlierNotes.map((note) => (
-                    <li key={note} className={STATE_COLOR_CLASS.caution}>
-                      {note}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
-
-            {preview.refTeamRows.length > 0 ? (
-              <section className="ref-preview-drawer-section" aria-label="Ref team splits">
-                <h3 className="ref-preview-drawer-section-title">Ref × team history</h3>
-                <div className="ref-preview-drawer-table-wrap">
-                  <table className="ref-preview-drawer-table data-table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Official</th>
-                        <th scope="col">Team</th>
-                        <th scope="col" className="data-table-num">
-                          Record
-                        </th>
-                        <th scope="col" className="data-table-num">
-                          Over
-                        </th>
-                        <th scope="col" className="data-table-num">
-                          Fouls Δ
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {preview.refTeamRows.map((row) => (
-                        <tr
-                          key={`${row.refSlug}-${row.teamAbbr}`}
-                          className={row.isOutlier ? "game-slate-preview-row--outlier" : undefined}
-                        >
-                          <td>
-                            <Link
-                              href={`${preview.basePath}/refs/${row.refSlug}`}
-                              className="font-medium hover:underline"
-                            >
-                              {row.refName}
-                            </Link>
-                          </td>
-                          <td className="font-tabular tabular-nums">{row.teamAbbr}</td>
-                          <td className="data-table-num font-tabular tabular-nums">
-                            {row.record}
-                          </td>
-                          <td className="data-table-num font-tabular tabular-nums">
-                            {formatPct(row.overRate)}
-                          </td>
-                          <td
-                            className={`data-table-num font-tabular tabular-nums ${row.foulsDelta > 0 ? STATE_COLOR_CLASS.caution : row.foulsDelta < 0 ? STATE_COLOR_CLASS.stable : ""}`}
-                          >
-                            {formatSigned(row.foulsDelta)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
               </section>
             ) : null}
           </div>

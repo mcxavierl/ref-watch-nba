@@ -39,6 +39,21 @@ export type GameSlatePreviewStoryline = {
   summary: string;
 };
 
+export type GameSlatePreviewTeamInsight = {
+  refSlug: string;
+  refName: string;
+  winRate: number;
+  foulsDelta: number;
+  winRateCritical: boolean;
+  foulsDeltaCritical: boolean;
+};
+
+export type GameSlatePreviewTeamImpact = {
+  teamAbbr: string;
+  teamLabel: string;
+  insights: GameSlatePreviewTeamInsight[];
+};
+
 export type GameSlatePreviewPayload = {
   gameId: string;
   leagueId: SlatePreviewLeagueId;
@@ -70,8 +85,8 @@ export type GameSlatePreviewPayload = {
     role?: RefRole;
   }>;
   refTeamRows: GameSlatePreviewRefRow[];
+  teamImpacts: GameSlatePreviewTeamImpact[];
   storylines: GameSlatePreviewStoryline[];
-  outlierNotes: string[];
 };
 
 const MIN_REF_TEAM_GAMES = 5;
@@ -162,6 +177,148 @@ function buildRefTeamRows(
   return rows.sort((a, b) => Number(b.isOutlier) - Number(a.isOutlier) || b.games - a.games);
 }
 
+function isWinRateCritical(winRate: number, games: number): boolean {
+  return games >= MIN_REF_TEAM_GAMES && (winRate >= 0.62 || winRate <= 0.38);
+}
+
+function isFoulsDeltaCritical(foulsDelta: number): boolean {
+  return Math.abs(foulsDelta) >= MIN_FOUL_OUTLIER;
+}
+
+function buildTeamImpacts(
+  refTeamRows: GameSlatePreviewRefRow[],
+  teamOrder: Array<{ abbr: string; name: string }>,
+): GameSlatePreviewTeamImpact[] {
+  const byTeam = new Map<string, GameSlatePreviewRefRow[]>();
+  for (const row of refTeamRows) {
+    const list = byTeam.get(row.teamAbbr) ?? [];
+    list.push(row);
+    byTeam.set(row.teamAbbr, list);
+  }
+
+  const impacts: GameSlatePreviewTeamImpact[] = [];
+  for (const team of teamOrder) {
+    const rows = byTeam.get(team.abbr);
+    if (!rows?.length) continue;
+    impacts.push({
+      teamAbbr: team.abbr,
+      teamLabel: team.name,
+      insights: rows
+        .sort((a, b) => Number(b.isOutlier) - Number(a.isOutlier) || b.games - a.games)
+        .map((row) => ({
+          refSlug: row.refSlug,
+          refName: row.refName,
+          winRate: row.winRate,
+          foulsDelta: row.foulsDelta,
+          winRateCritical: isWinRateCritical(row.winRate, row.games),
+          foulsDeltaCritical: isFoulsDeltaCritical(row.foulsDelta),
+        })),
+    });
+  }
+  return impacts;
+}
+
+type PreviewCardInsightCandidate = {
+  score: number;
+  text: string;
+};
+
+function previewInsightScoreForRow(row: GameSlatePreviewRefRow): number {
+  let score = 70;
+  if (row.isOutlier) score += 8;
+  if (isFoulsDeltaCritical(row.foulsDelta)) score += 6;
+  if (isWinRateCritical(row.winRate, row.games)) score += 5;
+  score += Math.abs(row.winRate - 0.5) * 20;
+  score += Math.min(Math.abs(row.foulsDelta), 4) * 2;
+  return score;
+}
+
+function previewInsightTextForTeamInsight(
+  impact: GameSlatePreviewTeamImpact,
+  insight: GameSlatePreviewTeamInsight,
+): string | undefined {
+  const parts: string[] = [];
+  if (insight.winRateCritical) {
+    parts.push(`${formatPct(insight.winRate)} win rate with ${impact.teamAbbr}`);
+  }
+  if (insight.foulsDeltaCritical) {
+    parts.push(`${formatSigned(insight.foulsDelta)} fouls on ${impact.teamAbbr}`);
+  }
+  if (parts.length === 0) return undefined;
+  return `${insight.refName}: ${parts.join(" · ")}`;
+}
+
+/** Pick the strongest ref-preview insights for compact upcoming-game cards. */
+export function selectGameSlatePreviewCardInsights(
+  preview: GameSlatePreviewPayload,
+  limit = 2,
+): string[] {
+  const candidates: PreviewCardInsightCandidate[] = [];
+
+  if (preview.homeBiasHeadline) {
+    candidates.push({ score: 96, text: preview.homeBiasHeadline });
+  }
+
+  for (const story of preview.storylines) {
+    const text = story.summary?.trim()
+      ? `${story.headline}. ${story.summary.trim()}`
+      : story.headline;
+    candidates.push({ score: 92, text });
+  }
+
+  for (const row of preview.refTeamRows) {
+    if (!row.outlierNote) continue;
+    candidates.push({
+      score: previewInsightScoreForRow(row),
+      text: `${row.refName} · ${row.teamAbbr}: ${row.outlierNote}`,
+    });
+  }
+
+  for (const impact of preview.teamImpacts) {
+    for (const insight of impact.insights) {
+      if (!insight.winRateCritical && !insight.foulsDeltaCritical) continue;
+      const text = previewInsightTextForTeamInsight(impact, insight);
+      if (!text) continue;
+      let score = 74;
+      if (insight.foulsDeltaCritical) score += 7;
+      if (insight.winRateCritical) score += 4;
+      candidates.push({ score, text });
+    }
+  }
+
+  if (!preview.insufficientSample) {
+    if (Math.abs(preview.totalPointsDelta) >= 3) {
+      candidates.push({
+        score: 48,
+        text: `Crew trends ${formatSigned(preview.totalPointsDelta)} ${preview.scoringLabel.toLowerCase()} vs average`,
+      });
+    }
+    if (Math.abs(preview.foulsDelta) >= 1.5) {
+      candidates.push({
+        score: 44,
+        text: `Crew trends ${formatSigned(preview.foulsDelta)} ${preview.whistleLabel.toLowerCase()} vs average`,
+      });
+    }
+    if (preview.premiumLabel && preview.premiumGap !== undefined && Math.abs(preview.premiumGap) >= 2) {
+      candidates.push({
+        score: 42,
+        text: `${formatSigned(preview.premiumGap)} vs benchmark · ${preview.premiumLabel}`,
+      });
+    }
+  }
+
+  const seen = new Set<string>();
+  return candidates
+    .sort((a, b) => b.score - a.score)
+    .filter((candidate) => {
+      if (seen.has(candidate.text)) return false;
+      seen.add(candidate.text);
+      return true;
+    })
+    .slice(0, limit)
+    .map((candidate) => candidate.text);
+}
+
 export function buildGameSlatePreview(
   leagueId: SlatePreviewLeagueId,
   game: AssignmentGame,
@@ -185,9 +342,7 @@ export function buildGameSlatePreview(
     })) ?? [];
 
   const refTeamRows = buildRefTeamRows(game, leagueId, stats);
-  const outlierNotes = refTeamRows
-    .filter((row) => row.isOutlier && row.outlierNote)
-    .map((row) => `${row.refName} · ${row.teamAbbr}: ${row.outlierNote}`);
+  const teamImpacts = buildTeamImpacts(refTeamRows, teams);
 
   return {
     gameId: game.id,
@@ -221,7 +376,7 @@ export function buildGameSlatePreview(
       role: official.role,
     })),
     refTeamRows,
+    teamImpacts,
     storylines,
-    outlierNotes,
   };
 }
