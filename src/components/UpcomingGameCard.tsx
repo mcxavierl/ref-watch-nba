@@ -75,7 +75,7 @@ export function UpcomingGameCard({
             <LeagueNavMark league={game.leagueId} active={false} />
           </span>
           {dateLabel ? (
-            <time className="upcoming-game-card__date-pill" dateTime={game.slateDate}>
+            <time className="upcoming-game-card__date-label" dateTime={game.slateDate}>
               {dateLabel}
             </time>
           ) : null}
@@ -106,10 +106,10 @@ export function UpcomingGameCard({
         {(insightLine || secondaryInsight || game.officialsLine) && (
           <div className="upcoming-game-card__footer">
             {insightLine ? (
-              <p className="upcoming-game-card__insight-pill">{insightLine}</p>
+              <p className="upcoming-game-card__insight-line">{insightLine}</p>
             ) : null}
             {secondaryInsight ? (
-              <p className="upcoming-game-card__insight-pill upcoming-game-card__insight-pill--meta">
+              <p className="upcoming-game-card__insight-line upcoming-game-card__insight-line--meta">
                 {secondaryInsight}
               </p>
             ) : null}

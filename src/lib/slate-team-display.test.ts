@@ -42,7 +42,7 @@ describe("slate-team-display", () => {
   });
 
   it("formats slate dates consistently", () => {
-    assert.equal(formatSlateDateLabel("2026-07-18"), "Jul 18");
+    assert.equal(formatSlateDateLabel("2026-07-18"), "JUL 18");
     assert.equal(formatSlateDateLabel(undefined), null);
   });
 });

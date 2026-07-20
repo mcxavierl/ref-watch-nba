@@ -124,8 +124,10 @@ export function resolveSlateTeam(leagueId: LeagueId, abbr: string): SlateTeamLik
 
 export function formatSlateDateLabel(slateDate: string | undefined): string | null {
   if (!slateDate) return null;
-  return new Date(`${slateDate}T12:00:00`).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+  return new Date(`${slateDate}T12:00:00`)
+    .toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })
+    .toUpperCase();
 }
