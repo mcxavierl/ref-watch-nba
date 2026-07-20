@@ -12,7 +12,7 @@ const CBB_ACTION_TILES = [
   },
   {
     href: leagueHref("cbb", "/matrix"),
-    title: "Crew matrix",
+    title: "Ref matrix",
     description: "Game-by-game crew coverage grid for tracked conferences.",
   },
   {

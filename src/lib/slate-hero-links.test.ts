@@ -21,6 +21,7 @@ describe("slate-hero-links", () => {
     const nba = slateHeroActions("nba");
     assert.equal(nba[0]?.href, "/nba/research/tendencies");
     assert.equal(nba[1]?.href, "/nba/matrix");
+    assert.equal(nba[1]?.label, "Ref matrix");
 
     const laliga = slateHeroActions("laliga");
     assert.equal(laliga[0]?.href, "/laliga/research/tendencies");

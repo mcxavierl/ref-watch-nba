@@ -565,6 +565,34 @@ html[data-contrast="high"] .upcoming-game-card__date-pill {
   margin-top: 0.45rem;
 }
 
+.upcoming-game-card__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.upcoming-game-card__insight-pill {
+  margin: 0;
+  padding: 0.45rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--upcoming-matchup-glow) var(--upcoming-pill-accent-border), var(--upcoming-pill-border-base));
+  background: color-mix(in srgb, var(--upcoming-matchup-glow-accent) var(--upcoming-pill-accent-bg), var(--upcoming-pill-bg-base));
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  color: var(--upcoming-pill-ink);
+  text-align: center;
+  box-shadow: var(--upcoming-pill-shadow);
+}
+
+.upcoming-game-card__insight-pill--meta {
+  font-weight: 500;
+  color: var(--upcoming-ink-muted);
+}
+
 .upcoming-game-card__context {
   margin: 0;
   min-width: 0;
