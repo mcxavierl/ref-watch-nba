@@ -14,6 +14,7 @@ import { fetchInsightDrilldown } from "@/lib/insight-drilldown-fetch";
 import {
   hiddenInsightDrilldownGameCount,
   insightDrilldownExpandLabel,
+  insightDrilldownHasSpreadData,
   visibleInsightDrilldownGames,
 } from "@/lib/insight-drilldown-preview";
 import type {
@@ -164,6 +165,10 @@ export function InsightDrilldownModal({
     filteredGames,
     gamesExpanded,
   );
+  const showSpreadColumn = payload
+    ? insightDrilldownHasSpreadData(payload.games)
+    : false;
+  const gameTableColumnCount = showSpreadColumn ? 6 : 5;
 
   const handleBackdropClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
@@ -336,18 +341,20 @@ export function InsightDrilldownModal({
                           tooltip={FOULS_COLUMN_TOOLTIP}
                         />
                       </th>
-                      <th
-                        scope="col"
-                        className="insight-drilldown-col--spread hidden tracking-tight px-2 py-2 md:table-cell sm:px-3 sm:py-2.5"
-                      >
-                        Spread
-                      </th>
+                      {showSpreadColumn ? (
+                        <th
+                          scope="col"
+                          className="insight-drilldown-col--spread hidden tracking-tight px-2 py-2 md:table-cell sm:px-3 sm:py-2.5"
+                        >
+                          Spread
+                        </th>
+                      ) : null}
                     </tr>
                   </thead>
                   <tbody>
                     {filteredGames.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="insight-drilldown-empty">
+                        <td colSpan={gameTableColumnCount} className="insight-drilldown-empty">
                           No games in this venue filter.
                         </td>
                       </tr>
@@ -392,9 +399,11 @@ export function InsightDrilldownModal({
                               ) : null}
                             </span>
                           </td>
-                          <td className="insight-drilldown-col--spread hidden tracking-tight px-2 py-2 md:table-cell sm:px-3 sm:py-2.5">
-                            {formatSpreadResult(game.spreadCovered)}
-                          </td>
+                          {showSpreadColumn ? (
+                            <td className="insight-drilldown-col--spread hidden tracking-tight px-2 py-2 md:table-cell sm:px-3 sm:py-2.5">
+                              {formatSpreadResult(game.spreadCovered)}
+                            </td>
+                          ) : null}
                         </tr>
                       ))
                     )}
