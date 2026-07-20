@@ -1,43 +1,30 @@
 "use client";
 
 import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
+import { Users } from "lucide-react";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
-import { SlateOfficialsLine } from "@/components/SlateOfficialsLine";
+import { selectUpcomingCardHeroInsight } from "@/lib/upcoming-card-hero-insight";
 import {
   formatSlateDateTimeLabel,
   resolveSlateTeam,
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
 
-function upcomingCardInsightLines(game: OverviewSlateEntry): {
-  primary?: string;
-  secondary?: string;
-} {
-  if (game.previewCardInsights && game.previewCardInsights.length > 0) {
-    return {
-      primary: game.previewCardInsights[0],
-      secondary: game.previewCardInsights[1],
-    };
-  }
-
-  if (game.preview && game.crewCount > 0) {
-    if (game.matchupInsight) {
-      return { primary: game.matchupInsight };
+function upcomingCardCrewLabel(game: OverviewSlateEntry): string | undefined {
+  if (game.crewCount === 0 || game.status === "scheduled") {
+    if (game.officialsLine && /TBD|not assigned/i.test(game.officialsLine)) {
+      return game.officialsLine;
     }
-    return {};
+    return undefined;
   }
 
-  const primary =
-    game.gameContextLine ??
-    game.lastMeetingLine ??
-    game.teamContextLine ??
-    game.matchupInsight ??
-    game.seasonStageNote;
-  const secondary =
-    primary && primary !== game.matchupInsight ? game.matchupInsight : undefined;
-  return { primary, secondary };
+  if (game.headRef) {
+    return game.headRef;
+  }
+
+  return undefined;
 }
 
 export function UpcomingGameCard({
@@ -52,8 +39,10 @@ export function UpcomingGameCard({
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
-  const { primary: insightLine, secondary: secondaryInsight } = upcomingCardInsightLines(game);
-  const showFooter = Boolean(insightLine || secondaryInsight || game.officialsLine || onOpenPreview);
+  const heroInsight = selectUpcomingCardHeroInsight(game);
+  const crewLabel = upcomingCardCrewLabel(game);
+  const showCrewCount = game.crewCount > 1 && Boolean(game.headRef) && game.status !== "scheduled";
+  const showFooter = Boolean(crewLabel || showCrewCount || onOpenPreview);
 
   const handleActivate = () => {
     onOpenPreview?.();
@@ -89,19 +78,19 @@ export function UpcomingGameCard({
       }
     >
       <header className="upcoming-game-card__header">
-        <div className="upcoming-game-card__header-start">
-          <span className="upcoming-game-card__league-mark" aria-hidden>
-            <LeagueNavMark league={game.leagueId} active={false} />
-          </span>
-          {dateTimeLabel ? (
-            <time
-              className="upcoming-game-card__date-label"
-              dateTime={game.slateStartAt ?? game.slateDate}
-            >
-              {dateTimeLabel}
-            </time>
-          ) : null}
-        </div>
+        <span className="upcoming-game-card__league-mark" aria-hidden>
+          <LeagueNavMark league={game.leagueId} active={false} />
+        </span>
+        {dateTimeLabel ? (
+          <time
+            className="upcoming-game-card__date-label upcoming-game-card__date-label--corner"
+            dateTime={game.slateStartAt ?? game.slateDate}
+          >
+            {dateTimeLabel}
+          </time>
+        ) : (
+          <span className="upcoming-game-card__header-spacer" aria-hidden />
+        )}
       </header>
 
       <div className="upcoming-game-card__body">
@@ -122,35 +111,43 @@ export function UpcomingGameCard({
           </div>
         </div>
 
-        {showFooter ? (
-          <div className="upcoming-game-card__footer">
-            {insightLine ? (
-              <p className="upcoming-game-card__insight-line">{insightLine}</p>
-            ) : null}
-            {secondaryInsight ? (
-              <p className="upcoming-game-card__insight-line upcoming-game-card__insight-line--meta">
-                {secondaryInsight}
-              </p>
-            ) : null}
-            <div className="upcoming-game-card__footer-bar">
-              {game.officialsLine ? (
-                <SlateOfficialsLine
-                  line={game.officialsLine}
-                  headRef={game.headRef}
-                  className="upcoming-game-card__meta"
-                />
-              ) : (
-                <span className="upcoming-game-card__meta-spacer" aria-hidden />
-              )}
-              {onOpenPreview ? (
-                <span className="upcoming-game-card__cta upcoming-game-card__cta--footer">
-                  Preview refs
-                </span>
-              ) : null}
-            </div>
-          </div>
+        {heroInsight ? (
+          <p className="upcoming-game-card__hero-insight" title={heroInsight}>
+            {heroInsight}
+          </p>
         ) : null}
       </div>
+
+      {showFooter ? (
+        <footer className="upcoming-game-card__footer">
+          <div className="upcoming-game-card__crew-meta">
+            {crewLabel ? (
+              game.headRef && game.status !== "scheduled" ? (
+                <>
+                  <span className="upcoming-game-card__crew-role">Head ref</span>
+                  <strong className="upcoming-game-card__crew-name">{game.headRef}</strong>
+                </>
+              ) : (
+                <span className="upcoming-game-card__crew-pending">{crewLabel}</span>
+              )
+            ) : null}
+            {showCrewCount ? (
+              <span
+                className="upcoming-game-card__crew-count"
+                aria-label={`${game.crewCount}-person crew`}
+              >
+                <Users size={12} strokeWidth={2.25} aria-hidden />
+                <span aria-hidden>{game.crewCount}</span>
+              </span>
+            ) : null}
+          </div>
+          {onOpenPreview ? (
+            <span className="upcoming-game-card__cta upcoming-game-card__cta--footer">
+              Preview refs
+            </span>
+          ) : null}
+        </footer>
+      ) : null}
     </article>
   );
 }

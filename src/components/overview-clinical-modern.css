@@ -325,17 +325,14 @@
 
 .upcoming-game-card__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
   min-width: 0;
 }
 
-.upcoming-game-card__header-start {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.55rem;
+.upcoming-game-card__header-spacer {
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -347,6 +344,19 @@
   text-transform: uppercase;
   color: rgb(148 163 184);
   white-space: nowrap;
+}
+
+.upcoming-game-card__date-label--corner {
+  flex-shrink: 0;
+  margin-left: auto;
+  max-width: 58%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--upcoming-ink-muted);
+  text-align: right;
 }
 
 .upcoming-game-card__league-mark {
@@ -473,11 +483,11 @@
 .upcoming-game-card__team-abbr {
   width: 100%;
   font-family: var(--font-data, ui-monospace, monospace);
-  font-size: clamp(1rem, 5cqi, 1.125rem);
-  font-weight: 700;
+  font-size: clamp(1.125rem, 6cqi, 1.375rem);
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.05em;
-  line-height: 1.1;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
   text-align: center;
   white-space: nowrap;
   color: var(--upcoming-ink-strong);
@@ -556,53 +566,71 @@ html[data-contrast="high"] .upcoming-game-card__date-label {
   margin-top: 0.45rem;
 }
 
-.upcoming-game-card__footer {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.3rem;
-  margin-top: 0.55rem;
-}
-
-.upcoming-game-card__footer-bar {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 0.5rem;
+.upcoming-game-card__hero-insight {
+  margin: 0.45rem 0 0;
   min-width: 0;
-}
-
-.upcoming-game-card__meta-spacer {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.upcoming-game-card__footer-bar .upcoming-game-card__meta {
-  flex: 1 1 auto;
-  min-width: 0;
-  text-align: left;
-}
-
-.upcoming-game-card__cta--footer {
-  flex-shrink: 0;
-  margin-left: auto;
-  align-self: flex-end;
-}
-
-.upcoming-game-card__insight-line {
-  margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 1.35;
   letter-spacing: 0.01em;
   color: var(--upcoming-ink-body);
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.upcoming-game-card__insight-line--meta {
+.upcoming-game-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.55rem;
+  min-width: 0;
+}
+
+.upcoming-game-card__crew-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 0.6875rem;
-  font-weight: 400;
-  color: var(--upcoming-ink-muted);
+  font-weight: 500;
+  line-height: 1.3;
+  color: rgb(100 116 139);
+}
+
+.upcoming-game-card__crew-role {
+  flex-shrink: 0;
+}
+
+.upcoming-game-card__crew-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  color: rgb(148 163 184);
+}
+
+.upcoming-game-card__crew-pending {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upcoming-game-card__crew-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: rgb(100 116 139);
 }
 
 .upcoming-game-card__context {
@@ -622,12 +650,17 @@ html[data-contrast="high"] .upcoming-game-card__date-label {
 
 .upcoming-game-card__meta {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: 0.01em;
-  color: var(--upcoming-ink-muted);
-  text-align: center;
+  color: rgb(100 116 139);
+  text-align: left;
+}
+
+.upcoming-game-card__cta--footer {
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .upcoming-game-card__meta strong {
