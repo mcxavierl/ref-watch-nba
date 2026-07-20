@@ -110,6 +110,32 @@ async function captureScreenshot(
   await page.screenshot({ path: outputPath, fullPage: true });
 }
 
+async function waitForReadySelector(
+  page: import("playwright").Page,
+  selector: string,
+  timeoutMs = 45_000,
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  let lastError: unknown;
+
+  while (Date.now() < deadline) {
+    try {
+      await page.waitForSelector(selector, { state: "attached", timeout: 5_000 });
+      const target = page.locator(selector).first();
+      await target.scrollIntoViewIfNeeded();
+      await target.waitFor({ state: "visible", timeout: 5_000 });
+      return;
+    } catch (error) {
+      lastError = error;
+      await page.waitForTimeout(750);
+    }
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`Timed out waiting for visible selector: ${selector}`);
+}
+
 async function runAudit(browser: Browser, options: CliOptions): Promise<ProbeFailure[]> {
   const failures: ProbeFailure[] = [];
   const reportLines: string[] = [
@@ -135,7 +161,7 @@ async function runAudit(browser: Browser, options: CliOptions): Promise<ProbeFai
       });
       await applyThemeMatrixVariant(page, variant);
       await page.reload({ waitUntil: "networkidle" });
-      await page.waitForSelector(pageConfig.readySelector, { timeout: 30_000 });
+      await waitForReadySelector(page, pageConfig.readySelector);
 
       const screenshotPath = join(
         options.outputDir,

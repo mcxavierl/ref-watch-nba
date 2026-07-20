@@ -68,7 +68,7 @@ export const THEME_MATRIX_PAGES: ThemeMatrixPage[] = [
   {
     path: "/nba",
     name: "nba-hub",
-    readySelector: ".league-slate-hero",
+    readySelector: "#nba-slate-heading",
     screenshotSelector: ".league-slate-hero",
     probes: [
       {

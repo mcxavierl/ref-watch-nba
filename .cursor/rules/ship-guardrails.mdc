@@ -9,17 +9,18 @@ When moving fast on dashboard or slate work, **never skip validation**.
 
 ## Before push or merge
 
-Run the full CI mirror locally:
+Run the fast preflight first (~30s), then the full CI mirror before merging:
 
 ```bash
+npm run check:preflight
 npm run check:ci
 ```
 
+`check:preflight` catches the failures that most often break main: unresolved merge conflict markers, type errors, stale overview snapshots, and em dashes in copy.
+
 `check:ci` runs artifact freshness **before** `check:volume`, because volume refresh rewrites `data/baselines.json` and would falsely fail a later snapshot check.
 
-The pre-push hook runs `check:css-syntax` first (~1s) so broken CSS fails before the full CI mirror. `check:ci` also runs CSS syntax + `build:next` before tests.
-
-GitHub validate jobs use a **20-minute** timeout to accommodate the production build step.
+The pre-push hook runs `check:preflight` and `check:css-syntax` first so broken merges and CSS fail before the full CI mirror (~7m). GitHub validate jobs use a **20-minute** timeout to accommodate the production build step.
 
 Remove untracked local dev artifacts before shipping if freshness fails unexpectedly:
 
@@ -54,6 +55,7 @@ git add data/overview-snapshot.json
 
 | Symptom | Fix |
 |--------|-----|
+| `Merge conflict marker encountered` in typecheck | Run `npm run check:no-conflict-markers`, resolve `<<<<<<<` / `>>>>>>>`, commit fix |
 | Stale `overview-snapshot.json` | Run `build-overview-snapshot.ts` and commit |
 | PR green but deploy on main fails freshness | League stats or overview inputs changed without snapshot refresh — PR CI skipped because only UI changed; rebuild snapshot and merge, or ensure automated data workflows refresh it |
 | PR green but deploy fails on CSS/webpack | Run `npm run check:css-syntax` and `npm run build:next` locally — CI now runs both before merge |
@@ -62,6 +64,8 @@ git add data/overview-snapshot.json
 | Slate metadata test mismatch | Update `overview-upcoming-slate.test.ts` or use flexible assertions |
 | Merged PR but nothing on production | Deploy validate failed — fix tests and merge a green PR |
 | Pre-push hook blocks push | Fix failures or `SKIP_SHIP_CHECK=1` only in emergencies |
+| Theme matrix audit timeout | Re-run `npm run audit:theme-matrix`; hero visibility can lag after theme reload |
+| Merged with red CI | Do not merge until validate is green; deploy on main re-runs the full gate |
 
 ## Avoid
 

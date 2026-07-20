@@ -45,6 +45,7 @@ type WorkflowContract = {
 const PRE_MERGE_CHECKLIST: Array<{ step: string; command: string; ciStep: string }> = [
   { step: "Refactor safety", command: "npm run check:refactor-safety", ciStep: "Refactor safety checks" },
   { step: "Client import boundary", command: "npm run check:client-imports", ciStep: "Client import boundary check" },
+  { step: "Merge conflict markers", command: "npm run check:no-conflict-markers", ciStep: "Merge conflict marker check" },
   { step: "Typecheck", command: "npm run typecheck", ciStep: "Typecheck" },
   { step: "Generated artifact freshness", command: "npm run check:artifact-freshness", ciStep: "Generated artifact freshness" },
   { step: "Validation artifact freshness", command: "npm run check:validation-freshness", ciStep: "Validation artifact freshness" },
