@@ -2485,6 +2485,47 @@ p {
     color: var(--muted);
   }
 
+  .ref-initials-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 9999px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-secondary);
+    background:
+      radial-gradient(
+        ellipse 120% 90% at 50% 0%,
+        color-mix(in srgb, var(--ref-initials-accent, var(--muted)) 18%, transparent),
+        transparent 70%
+      ),
+      var(--surface-raised);
+  }
+
+  .ref-initials-badge__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .ref-initials-badge__label {
+    position: relative;
+    z-index: 1;
+    line-height: 1;
+  }
+
+  .ref-initials-badge--nba { --ref-initials-accent: var(--raptors); }
+  .ref-initials-badge--nfl { --ref-initials-accent: var(--nfl-green); }
+  .ref-initials-badge--nhl { --ref-initials-accent: var(--nhl-blue); }
+  .ref-initials-badge--soccer { --ref-initials-accent: #8b6bb5; }
+  .ref-initials-badge--college { --ref-initials-accent: var(--cbb-gold); }
+  .ref-initials-badge--wnba { --ref-initials-accent: var(--wnba-orange); }
+
   .crew-chip--pending {
     border-style: dashed;
     border-color: color-mix(in srgb, var(--state-caution) 42%, var(--border));

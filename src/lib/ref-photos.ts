@@ -3,17 +3,19 @@ import { nhlRefPhotoUrl } from "@/lib/nhl/ref-photos";
 import { nflRefPhotoUrl } from "@/lib/nfl/ref-photos";
 import { eplRefPhotoUrl } from "@/lib/epl/ref-photos";
 import { laligaRefPhotoUrl } from "@/lib/laliga/ref-photos";
+import { cbbRefPhotoUrl } from "@/lib/cbb/ref-photos";
 
 export function refPhotoUrl(
   slug: string,
-  sport: "nba" | "nhl" | "nfl" | "epl" | "laliga",
+  sport: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "wnba" | "cfb",
   size: "thumb" | "headshot" = "thumb",
 ): string | null {
   if (sport === "nba") return nbaRefPhotoUrl(slug, size);
   if (sport === "nhl") return nhlRefPhotoUrl(slug, size);
   if (sport === "nfl") return nflRefPhotoUrl(slug, size);
   if (sport === "epl") return eplRefPhotoUrl(slug, size);
-  if (sport === "laliga") return laligaRefPhotoUrl(slug, size) ?? null;
+  if (sport === "laliga") return laligaRefPhotoUrl(slug, size);
+  if (sport === "cbb") return cbbRefPhotoUrl(slug, size);
   return null;
 }
 

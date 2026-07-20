@@ -1,4 +1,4 @@
-import refPhotosData from "../../../data/laliga/ref-photos.json";
+import refPhotosData from "../../../data/cbb/ref-photos.json";
 
 export interface RefPhotoEntry {
   thumbUrl: string;
@@ -7,7 +7,7 @@ export interface RefPhotoEntry {
 
 const photos = (refPhotosData as { photos?: Record<string, RefPhotoEntry> }).photos ?? {};
 
-export function laligaRefPhotoUrl(
+export function cbbRefPhotoUrl(
   slug: string,
   size: "thumb" | "headshot" = "thumb",
 ): string | null {
@@ -17,6 +17,6 @@ export function laligaRefPhotoUrl(
   return entry.thumbUrl ?? null;
 }
 
-export function laligaRefPhotoCount(): number {
+export function cbbRefPhotoCount(): number {
   return Object.keys(photos).length;
 }

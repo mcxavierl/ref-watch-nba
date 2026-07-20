@@ -28,7 +28,7 @@ export function titleMatchesOfficial(name: string, title: string): boolean {
   return titleMatchesSportOfficial(name, title, "nfl");
 }
 
-export type OfficialSport = "nfl" | "nhl" | "epl" | "nba";
+export type OfficialSport = "nfl" | "nhl" | "epl" | "nba" | "laliga" | "cbb";
 
 /** Dataset display name → Wikipedia / Commons search name. */
 export const OFFICIAL_DISPLAY_ALIASES: Record<OfficialSport, Record<string, string>> = {
@@ -42,6 +42,20 @@ export const OFFICIAL_DISPLAY_ALIASES: Record<OfficialSport, Record<string, stri
     "Michael Jones": "Mike Jones",
   },
   nba: {},
+  laliga: {
+    "Antonio Miguel Mateu Lahoz": "Mateu Lahoz",
+    "Carlos Del Cerro Grande": "Carlos del Cerro Grande",
+    "José María Sánchez Martínez": "José María Sánchez Martínez",
+    "José Luis Munuera Montero": "José Luis Munuera",
+    "Miguel Ángel Ortiz Arias": "Miguel Ángel Ortiz Arias",
+    "Alejandro José Hernández Hernández": "Alejandro Hernández Hernández",
+    "César Soto Grado": "César Soto Grado",
+    "Pablo González Fuertes": "Pablo González Fuertes",
+    "Mario Melero López": "Mario Melero López",
+    "Javier Alberola Rojas": "Javier Alberola Rojas",
+    "Isidro Díaz De Mera Escuderos": "Isidro Díaz de Mera",
+  },
+  cbb: {},
 };
 
 /** Collapse punctuation and initials for category-index lookup. */
@@ -134,6 +148,26 @@ export function titleMatchesSportOfficial(
       t.includes("uefa")
     );
   }
+  if (sport === "laliga") {
+    return (
+      t.includes("referee") ||
+      t.includes("football") ||
+      t.includes("soccer") ||
+      t.includes("la liga") ||
+      t.includes("spanish") ||
+      t.includes("fifa") ||
+      t.includes("uefa")
+    );
+  }
+  if (sport === "cbb") {
+    return (
+      t.includes("basketball") ||
+      t.includes("referee") ||
+      t.includes("official") ||
+      t.includes("ncaa") ||
+      t.includes("college")
+    );
+  }
   // nba
   return (
     t.includes("basketball") ||
@@ -188,6 +222,19 @@ export async function isSportOfficialPage(
   }
   if (sport === "epl") {
     return /premier league|football referee|fifa|uefa|english football|soccer referee/.test(
+      blob,
+    );
+  }
+  if (sport === "laliga") {
+    return /la liga|spanish football|football referee|fifa|uefa|soccer referee/.test(
+      blob,
+    );
+  }
+  if (sport === "cbb") {
+    if (/nba referee|national basketball association/.test(blob) && !/college|ncaa/.test(blob)) {
+      return false;
+    }
+    return /basketball referee|basketball official|ncaa|college basketball/.test(
       blob,
     );
   }
@@ -262,8 +309,11 @@ export async function wikiPageImages(title: string): Promise<{
   };
 }
 
-export async function wikiSearchTitles(query: string): Promise<string[]> {
-  const url = new URL("https://en.wikipedia.org/w/api.php");
+export async function wikiSearchTitles(
+  query: string,
+  lang: "en" | "es" = "en",
+): Promise<string[]> {
+  const url = new URL(`https://${lang}.wikipedia.org/w/api.php`);
   url.searchParams.set("action", "query");
   url.searchParams.set("list", "search");
   url.searchParams.set("srsearch", query);
@@ -277,6 +327,48 @@ export async function wikiSearchTitles(query: string): Promise<string[]> {
     query?: { search?: { title: string }[] };
   };
   return body.query?.search?.map((s) => s.title) ?? [];
+}
+
+export async function wikiPageImagesForLang(
+  title: string,
+  lang: "en" | "es" = "en",
+): Promise<{
+  thumbUrl: string;
+  headshotUrl?: string;
+} | null> {
+  const url = new URL(`https://${lang}.wikipedia.org/w/api.php`);
+  url.searchParams.set("action", "query");
+  url.searchParams.set("titles", title);
+  url.searchParams.set("prop", "pageimages");
+  url.searchParams.set("pithumbsize", "250");
+  url.searchParams.set("format", "json");
+  const requestUrl = `${url.toString()}&piprop=thumbnail%7Coriginal`;
+
+  const res = await fetch(requestUrl, { headers: WIKI_HEADERS });
+  if (!res.ok) return null;
+
+  const contentType = res.headers.get("content-type") ?? "";
+  if (!contentType.includes("json")) return null;
+
+  const body = (await res.json()) as {
+    query?: {
+      pages?: Record<
+        string,
+        {
+          title?: string;
+          missing?: string;
+          thumbnail?: { source: string };
+          original?: { source: string };
+        }
+      >;
+    };
+  };
+  const page = Object.values(body.query?.pages ?? {})[0];
+  if (!page || page.missing || !page.thumbnail?.source) return null;
+  return {
+    thumbUrl: page.thumbnail.source,
+    headshotUrl: page.original?.source ?? page.thumbnail.source,
+  };
 }
 
 /** @deprecated Use wikiSearchTitles */
@@ -644,6 +736,164 @@ export async function commonsPhotoForEplOfficial(
       ) {
         continue;
       }
+      const details = await commonsFileDetails(file);
+      if (!details) continue;
+      return {
+        thumbUrl: details.thumbUrl,
+        headshotUrl: details.headshotUrl,
+        source: `commons:${file}`,
+      };
+    }
+    await sleep(80);
+  }
+  return null;
+}
+
+function normalizeAsciiName(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function namePartsInFile(file: string, name: string): boolean {
+  const f = normalizeAsciiName(file.replace(/^file:/i, ""));
+  const parts = normalizeAsciiName(name)
+    .split(" ")
+    .filter((part) => part.length >= 2);
+  if (parts.length === 0) return false;
+  return parts.every((part) => f.includes(part));
+}
+
+function commonsFileLooksBasketballOfficial(file: string, name: string): boolean {
+  const f = file.toLowerCase();
+  if (!namePartsInFile(file, name)) return false;
+  if (/\b_hc_|\bhead.?coach\b|player|draft|rookie/i.test(f)) return false;
+
+  const base = f.replace(/^file:/, "").replace(/\.(jpe?g|png|webp)$/i, "");
+  const normalizedName = normalizeAsciiName(name).replace(/\s+/g, "_");
+  if (
+    base === normalizedName ||
+    base === `${normalizedName}_(cropped)` ||
+    base.startsWith(`${normalizedName}_`)
+  ) {
+    return true;
+  }
+
+  return /referee|basketball|nba|official|wnba|cropped|calls_/i.test(f);
+}
+
+function commonsFileLooksLaLigaOfficial(file: string, name: string): boolean {
+  const f = file.toLowerCase();
+  if (!namePartsInFile(file, name)) return false;
+  if (/\b_hc_|\bhead.?coach\b|manager|player/i.test(f)) return false;
+
+  const parts = normalizeAsciiName(name).split(" ").filter((p) => p.length >= 2);
+  const surname = parts[parts.length - 1] ?? "";
+  if (
+    surname.length >= 4 &&
+    f.includes(surname) &&
+    /referee|football|liga|fifa|uefa|cropped/i.test(f)
+  ) {
+    return true;
+  }
+
+  return /referee|football|liga|fifa|uefa|cropped|arbitro/i.test(f);
+}
+
+/** Commons search for NBA / CBB / WNBA basketball officials. */
+export async function commonsPhotoForBasketballOfficial(
+  name: string,
+): Promise<WikiPhotoEntry | null> {
+  for (const query of [
+    `"${name}" referee`,
+    `"${name}" NBA referee`,
+    `${name} basketball referee`,
+    `${name} NBA official`,
+    `intitle:"${name}" referee`,
+    `${name} cropped referee`,
+  ]) {
+    const url = new URL("https://commons.wikimedia.org/w/api.php");
+    url.searchParams.set("action", "query");
+    url.searchParams.set("list", "search");
+    url.searchParams.set("srsearch", query);
+    url.searchParams.set("srnamespace", "6");
+    url.searchParams.set("srlimit", "12");
+    url.searchParams.set("format", "json");
+
+    const res = await fetch(url, { headers: WIKI_HEADERS });
+    if (!res.ok) continue;
+
+    const body = (await res.json()) as {
+      query?: { search?: { title: string }[] };
+    };
+    const files =
+      body.query?.search
+        ?.map((s) => s.title)
+        .filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f))
+        .sort((a, b) => {
+          const aCrop = a.toLowerCase().includes("cropped") ? 0 : 1;
+          const bCrop = b.toLowerCase().includes("cropped") ? 0 : 1;
+          return aCrop - bCrop;
+        }) ?? [];
+
+    for (const file of files) {
+      if (!commonsFileLooksBasketballOfficial(file, name)) continue;
+      const details = await commonsFileDetails(file);
+      if (!details) continue;
+      return {
+        thumbUrl: details.thumbUrl,
+        headshotUrl: details.headshotUrl,
+        source: `commons:${file}`,
+      };
+    }
+    await sleep(80);
+  }
+  return null;
+}
+
+/** Commons search for La Liga / Spanish football referees. */
+export async function commonsPhotoForLaLigaOfficial(
+  name: string,
+): Promise<WikiPhotoEntry | null> {
+  const parts = normalizeAsciiName(name).split(" ").filter((p) => p.length >= 2);
+  const surname = parts[parts.length - 1] ?? name;
+  const queries = [
+    `"${name}" referee`,
+    `${name} football referee`,
+    `${name} La Liga referee`,
+    `${name} Spanish referee`,
+    `intitle:"${name}"`,
+    `"${surname}" referee La Liga`,
+    `${surname} árbitro`,
+    `intitle:"${surname}" referee`,
+  ];
+
+  for (const query of queries) {
+    const url = new URL("https://commons.wikimedia.org/w/api.php");
+    url.searchParams.set("action", "query");
+    url.searchParams.set("list", "search");
+    url.searchParams.set("srsearch", query);
+    url.searchParams.set("srnamespace", "6");
+    url.searchParams.set("srlimit", "12");
+    url.searchParams.set("format", "json");
+
+    const res = await fetch(url, { headers: WIKI_HEADERS });
+    if (!res.ok) continue;
+
+    const body = (await res.json()) as {
+      query?: { search?: { title: string }[] };
+    };
+    const files =
+      body.query?.search
+        ?.map((s) => s.title)
+        .filter((f) => /\.(jpg|jpeg|png|webp)$/i.test(f)) ?? [];
+
+    for (const file of files) {
+      if (!commonsFileLooksLaLigaOfficial(file, name)) continue;
       const details = await commonsFileDetails(file);
       if (!details) continue;
       return {

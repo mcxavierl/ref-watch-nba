@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-20T09:56:41.286Z",
+    "source": "wikipedia + commons",
+    "count": 6,
+    "missed": 27,
+    "newlyResolved": 1
+  },
+  "photos": {
+    "ricardo-de-burgos-bengoetxea-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/Ricardo-De-Burgos.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/Ricardo-De-Burgos.jpg",
+      "source": "wikipedia:Ricardo de Burgos Bengoetxea"
+    },
+    "jes-s-gil-manzano-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Gil_Manzano.jpg/250px-Gil_Manzano.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Gil_Manzano.jpg",
+      "source": "wikipedia:Jesús Gil Manzano"
+    },
+    "guillermo-cuadra-fern-ndez-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Cuadra_Fern%C3%A1ndez_2018.jpg/250px-Cuadra_Fern%C3%A1ndez_2018.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Cuadra_Fern%C3%A1ndez_2018.jpg",
+      "source": "wikipedia:Guillermo Cuadra Fernández"
+    },
+    "juan-mart-nez-munuera-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Mart%C3%ADnez_Munuera_2018.jpg/250px-Mart%C3%ADnez_Munuera_2018.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/6/63/Mart%C3%ADnez_Munuera_2018.jpg",
+      "source": "wikipedia:Juan Martínez Munuera"
+    },
+    "carlos-del-cerro-grande-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/2020-03-10_Fu%C3%9Fball%2C_M%C3%A4nner%2C_UEFA_Champions_League_Achtelfinale%2C_RB_Leipzig_-_Tottenham_Hotspur_1DX_3658_by_Stepro.jpg/250px-2020-03-10_Fu%C3%9Fball%2C_M%C3%A4nner%2C_UEFA_Champions_League_Achtelfinale%2C_RB_Leipzig_-_Tottenham_Hotspur_1DX_3658_by_Stepro.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e9/2020-03-10_Fu%C3%9Fball%2C_M%C3%A4nner%2C_UEFA_Champions_League_Achtelfinale%2C_RB_Leipzig_-_Tottenham_Hotspur_1DX_3658_by_Stepro.jpg",
+      "source": "wikipedia:Carlos del Cerro Grande"
+    },
+    "jos-luis-munuera-montero-0": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Jos%C3%A9_Luis_Munuera-Strasbulles_2009.jpg/250px-Jos%C3%A9_Luis_Munuera-Strasbulles_2009.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Jos%C3%A9_Luis_Munuera-Strasbulles_2009.jpg",
+      "source": "wikipedia:en:José Luis Munuera"
+    }
+  }
+}

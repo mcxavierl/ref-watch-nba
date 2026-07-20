@@ -65,6 +65,8 @@
     "generate-ref-seed": "tsx scripts/generate-comprehensive-seed.ts",
     "fetch-nhl-ref-photos": "tsx scripts/nhl/fetch-ref-photos.ts",
     "fetch-nba-ref-photos": "tsx scripts/nba/fetch-ref-photos.ts",
+    "fetch-laliga-ref-photos": "tsx scripts/laliga/fetch-ref-photos.ts",
+    "fetch-cbb-ref-photos": "tsx scripts/cbb/fetch-ref-photos.ts",
     "fetch-nhl-assignments": "tsx scripts/nhl/fetch-assignments.ts",
     "fetch-nhl-odds": "tsx scripts/nhl/fetch-odds.ts",
     "fetch-nhl-team-special-teams": "tsx scripts/nhl/fetch-team-special-teams.ts",
