@@ -50,14 +50,14 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
           aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
         >
           <div className="upcoming-game-card__team">
-            <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+            <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
             <span className="upcoming-game-card__team-abbr">{awayTeam.abbr}</span>
           </div>
           <span className="upcoming-game-card__at" aria-hidden>
             @
           </span>
           <div className="upcoming-game-card__team">
-            <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+            <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
             <span className="upcoming-game-card__team-abbr">{homeTeam.abbr}</span>
           </div>
         </div>

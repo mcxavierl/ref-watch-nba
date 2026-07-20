@@ -9,9 +9,15 @@ import {
 describe("slate-team-display", () => {
   it("resolves NBA teams and maps logo sport", () => {
     assert.equal(slateTeamLogoSport("nba"), "nba");
-    assert.equal(slateTeamLogoSport("wnba"), "nba");
+    assert.equal(slateTeamLogoSport("wnba"), "wnba");
     const team = resolveSlateTeam("nba", "LAL");
     assert.equal(team.abbr, "LAL");
+  });
+
+  it("normalizes WNBA ESPN abbreviations", () => {
+    const team = resolveSlateTeam("wnba", "LV");
+    assert.equal(team.abbr, "LVA");
+    assert.match(team.logoUrl ?? "", /\/lv\.png$/);
   });
 
   it("formats slate dates consistently", () => {
