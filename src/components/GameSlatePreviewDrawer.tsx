@@ -9,7 +9,7 @@ import {
   useState,
   type MouseEvent,
 } from "react";
-import { ArrowRight, TrendingDown, TrendingUp, X } from "lucide-react";
+import { TrendingDown, TrendingUp, X } from "lucide-react";
 import { ModalPortal } from "@/components/ModalPortal";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { OuLeanBadge } from "@/components/OuLeanBadge";
@@ -102,7 +102,6 @@ export function GameSlatePreviewDrawer({
     ? resolveSlateTeam(preview.leagueId, preview.homeAbbr)
     : null;
   const sport = slateTeamLogoSport(preview.leagueId);
-  const slateHref = `${preview.basePath}#slate-game-${preview.gameId}`;
   const scoringTone = signedDeltaTone(preview.totalPointsDelta);
   const whistleTone = signedDeltaTone(preview.foulsDelta);
   const rowsByTeam = new Map(
@@ -384,13 +383,6 @@ export function GameSlatePreviewDrawer({
               </section>
             ) : null}
           </div>
-
-          <footer className="ref-preview-drawer-footer">
-            <Link href={slateHref} className="ref-preview-drawer-profile-link">
-              Open full slate card
-              <ArrowRight size={16} aria-hidden />
-            </Link>
-          </footer>
         </aside>
       </div>
     </ModalPortal>
