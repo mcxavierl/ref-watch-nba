@@ -1,6 +1,6 @@
 # CI and artifact contract audit
 
-Generated: 2026-07-18T19:44:22.102Z
+Generated: 2026-07-20T03:57:57.834Z
 
 ## Pre-merge checklist (mirrors GitHub validate)
 
@@ -22,8 +22,9 @@ Or step-by-step:
 8. **Deploy data artifacts** (`npm run check:deploy`) - CI step: Generate deploy data artifacts
 9. **CSS syntax** (`npm run check:css-syntax`) - CI step: CSS syntax check
 10. **Next.js build** (`npm run build:next`) - CI step: Next.js production build
-11. **Unit tests** (`npm run test`) - CI step: Unit tests
-12. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
+11. **Theme matrix contrast** (`npm run audit:theme-matrix`) - CI step: Theme matrix contrast audit
+12. **Unit tests** (`npm run test`) - CI step: Unit tests
+13. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
 
 When overview snapshot sources change, also run:
 
@@ -35,8 +36,8 @@ npx tsx scripts/build-overview-snapshot.ts && git add data/overview-snapshot.jso
 
 | Workflow | Push to git | Permissions | Checkout token | Concurrency | Follow-up on data change |
 | --- | --- | --- | --- | --- | --- |
-| CI | no | default | no | ci-${{ github.ref }} | npm run check:artifact-freshness (rebuild snapshot if stale) |
-| Deploy to Cloudflare | no | default | no | cloudflare-deploy | npm run check:artifact-freshness (rebuild snapshot if stale) |
+| CI | no | default | no | ci-${{ github.ref }} | npx tsx scripts/build-overview-snapshot.ts && git add data/overview-snapshot.json |
+| Deploy to Cloudflare | no | default | no | cloudflare-deploy | npx tsx scripts/build-overview-snapshot.ts && git add data/overview-snapshot.json |
 | Nightly slate refresh | yes | write | yes | none | npm run nightly-slate && git add data/overview-snapshot.json data/overview-insights.json |
 | Refresh sports data | yes | write | yes | refresh-sports-data | npx tsx scripts/build-overview-snapshot.ts && git add data/overview-snapshot.json |
 | Volume regression | no | default | no | volume-regression | none |

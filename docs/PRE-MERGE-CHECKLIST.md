@@ -24,8 +24,9 @@ Do not merge until this passes locally **and** the GitHub **validate** check is 
 | 8 | `npm run check:deploy` | Generate deploy data artifacts |
 | 9 | `npm run check:css-syntax` | CSS syntax check |
 | 10 | `npm run build:next` | Next.js production build |
-| 11 | `npm run test` | Unit tests |
-| 12 | `npm run honesty-audit` | Honesty audit |
+| 11 | `npm run audit:theme-matrix` | Theme matrix contrast audit |
+| 12 | `npm run test` | Unit tests |
+| 13 | `npm run honesty-audit` | Honesty audit |
 
 ## When overview snapshot sources change
 
@@ -46,8 +47,15 @@ If you change files guarded by `scripts/check-coupled-test-changes.ts`, update t
 ```bash
 npm run audit:card-consistency
 npm run audit:metric-semantics
+npm run audit:theme-matrix
 npm run audit:ci-artifact-contract
 npm run check:no-em-dashes
+```
+
+First-time setup for theme matrix screenshots (Playwright Chromium):
+
+```bash
+npx playwright install chromium
 ```
 
 ## Contract audit report

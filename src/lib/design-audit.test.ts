@@ -119,4 +119,15 @@ describe("design audit guardrails", () => {
     assert.match(gsni, /<Pill variant="category"/);
     assert.match(readSrc("src/components/ConfidenceTierBadge.tsx"), /pill-constrain-text/);
   });
+
+  it("theme matrix contrast audit is wired for CI", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:theme-matrix"] ?? "", /audit-theme-matrix/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:theme-matrix/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Theme matrix contrast audit/);
+    assert.match(readSrc("src/app/theme-matrix/page.tsx"), /WorldCupFinalSection/);
+    assert.match(readSrc("src/app/robots.ts"), /\/theme-matrix/);
+  });
 });
