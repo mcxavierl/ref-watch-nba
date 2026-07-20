@@ -19,16 +19,21 @@ import {
   matrixTeamMetricRate,
   matrixTeamMetricRecord,
   MATRIX_DEFAULT_REF_SORT,
+  MATRIX_DEFAULT_TEAM_COLUMN_SORT,
   MATRIX_DEFAULT_TEAM_PANEL_SORT,
   MATRIX_EXTREME_DELTA_PTS,
   MATRIX_REF_SORT_OPTIONS,
   MATRIX_STANDOUT_SORT_EXPLAINER,
+  MATRIX_TEAM_COLUMN_SORT_OPTIONS,
   MATRIX_TONE_DELTA_PTS,
+  matrixTeamColumnMatchesSearch,
   sortMatrixRefs,
+  sortMatrixTeamColumns,
   TEAM_MATRIX_REF_PANEL_LIMIT,
   bottomRefsBelowBaselineForTeam,
   topRefsBeatingBaselineForTeam,
   type MatrixRefSort,
+  type MatrixTeamColumnSort,
   type MatrixTeamPanelSort,
   type MatrixViewMode,
   type RefTeamMatrix,
@@ -77,6 +82,9 @@ type RefTeamMatrixProps = {
   layout?: RefTeamMatrixLayout;
   /** Shown in matrix-first footer beside methodology link. */
   footerProvenanceNote?: string;
+  /** Enables team column search and conference/alphabetical sort (CBB, CFB). */
+  teamConferenceByAbbr?: Record<string, string>;
+  teamConferenceOrder?: readonly string[];
 };
 
 const MATRIX_ATS_VIEW_TOOLTIP =
@@ -401,8 +409,12 @@ export function RefTeamMatrix({
   initialViewMode = "wl",
   layout = "default",
   footerProvenanceNote,
+  teamConferenceByAbbr,
+  teamConferenceOrder,
 }: RefTeamMatrixProps) {
   const { refs, teams, cells, minGames, qualifiedCellCount } = matrix;
+  const teamColumnControls =
+    teamConferenceByAbbr != null && teamConferenceOrder != null;
   const matrixFirst = layout === "matrix-first";
   const router = useRouter();
   const pathname = usePathname();
@@ -426,7 +438,12 @@ export function RefTeamMatrix({
   const teamPanelRef = useRef<HTMLElement>(null);
   const deepLinkScrolledRef = useRef(false);
   const [refSearch, setRefSearch] = useState("");
+  const [teamSearch, setTeamSearch] = useState("");
+  const [teamColumnSort, setTeamColumnSort] = useState<MatrixTeamColumnSort>(
+    MATRIX_DEFAULT_TEAM_COLUMN_SORT,
+  );
   const searchQuery = refSearch.trim().toLowerCase();
+  const teamSearchQuery = teamSearch.trim();
   const sortedRefs = useMemo(
     () => sortMatrixRefs(refs, matrix, refSort),
     [refs, matrix, refSort],
@@ -438,6 +455,30 @@ export function RefTeamMatrix({
         : null,
     [selectedTeamAbbr, teams],
   );
+  const displayTeams = useMemo(() => {
+    if (!teamColumnControls) return teams;
+    const sorted = sortMatrixTeamColumns(
+      teams,
+      teamColumnSort,
+      teamConferenceByAbbr,
+      teamConferenceOrder,
+    );
+    if (!teamSearchQuery) return sorted;
+    return sorted.filter(
+      (team) =>
+        matrixTeamColumnMatchesSearch(team, teamSearchQuery, teamConferenceByAbbr) ||
+        team.abbr === selectedTeamAbbr,
+    );
+  }, [
+    selectedTeamAbbr,
+    teamColumnControls,
+    teamColumnSort,
+    teamConferenceByAbbr,
+    teamConferenceOrder,
+    teamSearchQuery,
+    teams,
+  ]);
+  const teamSearchMatchCount = displayTeams.length;
   const topRefsForTeam = useMemo(
     () =>
       selectedTeamAbbr
@@ -704,8 +745,11 @@ export function RefTeamMatrix({
       >
         {!matrixFirst ? (
           <p className="ref-matrix-meta">
-            {refs.length} {officialNounPlural} × {teams.length} teams ·{" "}
-            {qualifiedCellCount} qualified cells
+            {refs.length} {officialNounPlural} ×{" "}
+            {teamSearchQuery && teamColumnControls
+              ? `${teamSearchMatchCount} of ${teams.length}`
+              : teams.length}{" "}
+            teams · {qualifiedCellCount} qualified cells
           </p>
         ) : null}
         <div className="ref-matrix-toolbar-actions">
@@ -771,6 +815,60 @@ export function RefTeamMatrix({
               </p>
             ) : null}
           </div>
+          {teamColumnControls ? (
+            <>
+              <div className="ref-matrix-search">
+                <label
+                  htmlFor="ref-matrix-team-search"
+                  className="ref-matrix-search-label"
+                >
+                  Find team
+                </label>
+                <input
+                  id="ref-matrix-team-search"
+                  type="search"
+                  value={teamSearch}
+                  onChange={(e) => setTeamSearch(e.target.value)}
+                  placeholder="e.g. Duke or ACC"
+                  className="ref-matrix-search-input"
+                  aria-describedby="ref-matrix-team-search-hint"
+                />
+                <p
+                  id="ref-matrix-team-search-hint"
+                  className={`ref-matrix-search-hint${matrixFirst ? " ref-matrix-toolbar-hint--compact" : ""}`}
+                >
+                  {teamSearchQuery
+                    ? teamSearchMatchCount > 0
+                      ? `${teamSearchMatchCount} team column${teamSearchMatchCount === 1 ? "" : "s"} match`
+                      : "No teams match. Try abbr, school name, or conference"
+                    : "Filter columns by abbr, school, or conference"}
+                </p>
+              </div>
+              <div className="ref-matrix-sort">
+                <label
+                  htmlFor="ref-matrix-team-sort"
+                  className="ref-matrix-sort-label"
+                >
+                  Sort columns
+                </label>
+                <select
+                  id="ref-matrix-team-sort"
+                  value={teamColumnSort}
+                  onChange={(e) =>
+                    setTeamColumnSort(e.target.value as MatrixTeamColumnSort)
+                  }
+                  className="ref-matrix-sort-select"
+                  aria-label="Sort team columns"
+                >
+                  {MATRIX_TEAM_COLUMN_SORT_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          ) : null}
           {atsAvailable ? (
             <div className="ref-matrix-view-mode">
               <span className="ref-matrix-view-mode-label" id="ref-matrix-view-mode-label">
@@ -823,7 +921,7 @@ export function RefTeamMatrix({
               <th scope="col" className="ref-matrix-corner">
                 {officialLabel}
               </th>
-              {teams.map((team) => {
+              {displayTeams.map((team) => {
                 const isSelected = selectedTeamAbbr === team.abbr;
                 return (
                   <th
@@ -859,7 +957,7 @@ export function RefTeamMatrix({
               <th scope="row" className="ref-matrix-baseline-corner">
                 {viewMode === "ats" ? "Team ATS baseline" : "Team baseline"}
               </th>
-              {teams.map((team) => {
+              {displayTeams.map((team) => {
                 const isSelected = selectedTeamAbbr === team.abbr;
                 const baselineGames = matrixTeamMetricGames(team, viewMode);
                 const baselineRate = matrixTeamMetricRate(team, viewMode);
@@ -887,7 +985,7 @@ export function RefTeamMatrix({
             {visibleRefs.length === 0 ? (
               <tr>
                 <td
-                  colSpan={teams.length + 1}
+                  colSpan={displayTeams.length + 1}
                   className="ref-matrix-empty-search"
                 >
                   No {officialNounPlural} found for &ldquo;{refSearch.trim()}&rdquo;.
@@ -930,7 +1028,7 @@ export function RefTeamMatrix({
                       <span className="ref-matrix-ref-name">{ref.name}</span>
                     </Link>
                   </th>
-                  {teams.map((team) => {
+                  {displayTeams.map((team) => {
                     const isSelected = selectedTeamAbbr === team.abbr;
                     const colActive = crosshair?.teamAbbr === team.abbr;
                     const isCrosshairCell =

@@ -138,6 +138,54 @@ export const MATRIX_REF_SORT_OPTIONS: {
   { value: "name-asc", label: "Alphabetical" },
 ];
 
+export type MatrixTeamColumnSort = "conference" | "alphabetical";
+
+export const MATRIX_DEFAULT_TEAM_COLUMN_SORT: MatrixTeamColumnSort = "conference";
+
+export const MATRIX_TEAM_COLUMN_SORT_OPTIONS: {
+  value: MatrixTeamColumnSort;
+  label: string;
+}[] = [
+  { value: "conference", label: "Conference" },
+  { value: "alphabetical", label: "Alphabetical" },
+];
+
+export function matrixTeamColumnMatchesSearch(
+  team: RefTeamMatrixTeam,
+  query: string,
+  conferenceByAbbr?: Record<string, string>,
+): boolean {
+  const trimmed = query.trim().toLowerCase();
+  if (!trimmed) return true;
+  if (team.abbr.toLowerCase().includes(trimmed)) return true;
+  if (team.label.toLowerCase().includes(trimmed)) return true;
+  if (team.name.toLowerCase().includes(trimmed)) return true;
+  const conference = conferenceByAbbr?.[team.abbr];
+  if (conference?.toLowerCase().includes(trimmed)) return true;
+  return false;
+}
+
+export function sortMatrixTeamColumns(
+  teams: RefTeamMatrixTeam[],
+  sort: MatrixTeamColumnSort,
+  conferenceByAbbr: Record<string, string>,
+  conferenceOrder: readonly string[],
+): RefTeamMatrixTeam[] {
+  const copy = [...teams];
+  if (sort === "alphabetical") {
+    return copy.sort((a, b) => a.label.localeCompare(b.label));
+  }
+  const orderIndex = new Map(conferenceOrder.map((conf, index) => [conf, index]));
+  return copy.sort((a, b) => {
+    const confA = conferenceByAbbr[a.abbr] ?? "Other";
+    const confB = conferenceByAbbr[b.abbr] ?? "Other";
+    const idxA = orderIndex.get(confA) ?? conferenceOrder.length;
+    const idxB = orderIndex.get(confB) ?? conferenceOrder.length;
+    if (idxA !== idxB) return idxA - idxB;
+    return a.label.localeCompare(b.label);
+  });
+}
+
 function matrixTeamBaseline(
   matrix: RefTeamMatrix,
   teamAbbr: string,

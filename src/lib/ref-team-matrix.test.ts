@@ -12,6 +12,8 @@ import {
   refMatrixQualifiedGames,
   refMatrixStandoutCount,
   sortMatrixRefs,
+  sortMatrixTeamColumns,
+  matrixTeamColumnMatchesSearch,
   teamRecordFromStat,
   TEAM_MATRIX_REF_PANEL_LIMIT,
   topRefsBeatingBaselineForTeam,
@@ -425,5 +427,34 @@ describe("matrix view mode helpers", () => {
     const style = matrixCellStyle(cell, 0.5, 0, "ats");
     assert.equal(style.tone, "neutral");
     assert.equal(style.deltaPts, 0);
+  });
+});
+
+describe("matrix team column controls", () => {
+  it("sorts columns by conference order then label", () => {
+    const teams = [
+      { abbr: "ILL", label: "Illinois Fighting Illini", name: "Fighting Illini", baselineWins: 0, baselineLosses: 0, baselineGames: 0, baselineWinRate: 0 },
+      { abbr: "DUKE", label: "Duke Blue Devils", name: "Blue Devils", baselineWins: 0, baselineLosses: 0, baselineGames: 0, baselineWinRate: 0 },
+      { abbr: "GONZ", label: "Gonzaga Bulldogs", name: "Bulldogs", baselineWins: 0, baselineLosses: 0, baselineGames: 0, baselineWinRate: 0 },
+    ];
+    const conferenceByAbbr = { ILL: "Big Ten", DUKE: "ACC", GONZ: "WCC" };
+    const order = ["ACC", "Big Ten", "WCC"] as const;
+    const sorted = sortMatrixTeamColumns(teams, "conference", conferenceByAbbr, order);
+    assert.deepEqual(sorted.map((team) => team.abbr), ["DUKE", "ILL", "GONZ"]);
+  });
+
+  it("matches team search by abbr, label, or conference", () => {
+    const team = {
+      abbr: "DUKE",
+      label: "Duke Blue Devils",
+      name: "Blue Devils",
+      baselineWins: 0,
+      baselineLosses: 0,
+      baselineGames: 0,
+      baselineWinRate: 0,
+    };
+    assert.equal(matrixTeamColumnMatchesSearch(team, "duke", { DUKE: "ACC" }), true);
+    assert.equal(matrixTeamColumnMatchesSearch(team, "acc", { DUKE: "ACC" }), true);
+    assert.equal(matrixTeamColumnMatchesSearch(team, "zzz", { DUKE: "ACC" }), false);
   });
 });
