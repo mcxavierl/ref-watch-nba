@@ -278,6 +278,11 @@ html.dark .team-index-link .team-logo-plate[data-sport="nfl"] .team-logo-plate__
   transform: scale(1.1);
 }
 
+html[data-color="dark"]:not([data-contrast="high"]) .team-index-link .team-logo-plate[data-sport="wnba"] .team-logo-plate__img,
+html.dark .team-index-link .team-logo-plate[data-sport="wnba"] .team-logo-plate__img {
+  transform: scale(1.1);
+}
+
 .insight-editorial-league {
   color: color-mix(in srgb, var(--insight-accent, var(--header-gold)) 78%, var(--text-muted));
 }

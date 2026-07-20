@@ -39,7 +39,7 @@ export default function TeamsIndexPage() {
                       className="team-index-link flex items-center gap-3 rounded-lg border px-3 py-2.5"
                       data-league="nba"
                     >
-                      <TeamLogo team={team} size="md" />
+                      <TeamLogo team={team} size="md" plateTone="light" />
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-base font-medium text-zinc-900">
                           {teamFullName(team)}

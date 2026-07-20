@@ -61,7 +61,7 @@ export default function CbbTeamsIndexPage() {
                       className="team-index-link flex items-center gap-3 rounded-lg border px-3 py-2.5"
                       data-league="cbb"
                     >
-                      <TeamLogo team={team} size="md" sport="cbb" />
+                      <TeamLogo team={team} size="md" sport="cbb" plateTone="light" />
                       <div className="min-w-0 flex-1">
                         <p className="team-index-name truncate text-base font-medium">
                           {teamFullName(team)}

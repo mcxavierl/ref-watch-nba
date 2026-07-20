@@ -4,7 +4,7 @@ import { TeamLogo } from "@/components/TeamLogo";
 import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";
 import { getTeamSplits } from "@/lib/wnba/data";
 import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
-import { teamFullName, teamLogoUrl, teamsByConference } from "@/lib/wnba/teams";
+import { teamFullName, teamsByConference } from "@/lib/wnba/teams";
 import { hubPageMetadata } from "@/lib/seo";
 
 export const metadata = hubPageMetadata("wnba", "teams");
@@ -40,7 +40,7 @@ export default function WnbaTeamsIndexPage() {
                       data-league="wnba"
                       className="team-index-link flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2.5"
                     >
-                      <TeamLogo team={{ ...team, logoUrl: teamLogoUrl(team.abbr) }} size="md" sport="wnba" />
+                      <TeamLogo team={team} size="md" sport="wnba" plateTone="light" />
                       <div className="min-w-0 flex-1">
                         <p className="team-index-name truncate text-base font-medium">
                           {teamFullName(team)}
