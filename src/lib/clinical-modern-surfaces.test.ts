@@ -179,12 +179,18 @@ describe("Clinical Modern priority #11 surfaces", () => {
     );
     assert.match(css, /upcoming-game-card__insight-line/);
     assert.match(css, /upcoming-game-card__footer/);
+    assert.doesNotMatch(css, /upcoming-game-card__insight-pill/);
+    assert.doesNotMatch(card, /upcoming-game-card__insight-pill/);
     assert.match(card, /size="xl"/);
     assert.match(css, /upcoming-game-card/);
     assert.match(readSrc("src/components/overview-slate-shared.css"), /upcoming-games-grid/);
     assert.match(css, /upcoming-game-card__matchup/);
     assert.match(css, /upcoming-game-card__date-label[\s\S]*text-transform: uppercase/);
-    assert.match(css, /upcoming-game-card__footer[\s\S]*border-top: 1px solid rgb\(30 41 59\)/);
+    assert.match(
+      css,
+      /\.upcoming-game-card__matchup[\s\S]*border-radius: 1rem[\s\S]*--upcoming-matchup-shadow/,
+    );
+    assert.doesNotMatch(css, /upcoming-game-card__footer[\s\S]*border-top:/);
     assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*var\(--upcoming-logo-plate-bg\)/);
     assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*align-items: center/);
     assert.match(css, /\.upcoming-game-card__matchup \.team-logo-plate[\s\S]*justify-content: center/);
