@@ -13460,6 +13460,66 @@ html.dark .overview-league-chooser-card {
   border-color: rgb(30 41 59);
 }
 
+/* League hub cards — light mode surfaces (unlayered; beats base hardcoded navy) */
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card {
+  background: #ffffff;
+  border-color: var(--card-border-light, #e2e8f0);
+  color: var(--text-primary);
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card:hover {
+  border-color: color-mix(in srgb, var(--chooser-accent) 34%, var(--card-border-light, #e2e8f0));
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-label {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-meta,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-metric-label,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-estimated-mark,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-scope,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-pending,
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-pending {
+  color: var(--text-secondary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-metric strong {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-cta {
+  color: color-mix(in srgb, var(--chooser-accent) 88%, var(--text-primary));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="nfl"] .overview-league-chooser-cta {
+  color: #047857;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="nhl"] .overview-league-chooser-cta {
+  color: #0369a1;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-card[data-league="epl"] .overview-league-chooser-cta {
+  color: #6d28d9;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card {
+  background: #ffffff;
+  border-color: color-mix(in srgb, var(--pace-accent) 22%, var(--card-border-light, #e2e8f0));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-label {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-meta,
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-scope {
+  color: var(--text-secondary);
+}
+
 html[data-color="dark"]:not([data-contrast="high"]) .overview-sidebar-block,
 html.dark .overview-sidebar-block {
   background: var(--bg-surface-1);
@@ -15411,13 +15471,28 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-status--a
   border: 1px solid var(--pill-border);
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-soon {
-  background: var(--surface-raised);
-}
-
 html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-block,
 html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card {
   box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-card:hover {
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser--primary .overview-league-chooser-card {
+  background: #ffffff;
+  border-color: var(--card-border-light, #e2e8f0);
+  box-shadow: var(--card-shadow-light);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser--primary .overview-league-chooser-card:hover {
+  border-color: color-mix(in srgb, var(--chooser-accent) 34%, var(--card-border-light, #e2e8f0));
+  box-shadow: var(--card-shadow-light-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-expansion-soon {
+  background: var(--surface-raised);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-count {
@@ -15428,6 +15503,94 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-sidebar-count {
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-catalog-summary-hint {
   color: var(--muted);
+}
+
+/* Light mode: hide decorative metric bars (numeric labels remain) */
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-bar,
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-bar-track,
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-trend-progress,
+html[data-color="light"]:not([data-contrast="high"]) .insight-metric-comparison-track,
+html[data-color="light"]:not([data-contrast="high"]) .insight-metric-comparison-dual-track,
+html[data-color="light"]:not([data-contrast="high"]) .metric-delight-bar-track,
+html[data-color="light"]:not([data-contrast="high"]) .ncaa-integrity-audit-progress {
+  display: none;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-trend-rate-pill {
+  color: var(--text-primary);
+  border-color: var(--card-border-light, #e2e8f0);
+  background: #f8fafc;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--high {
+  color: #047857;
+  border-color: color-mix(in srgb, #059669 38%, #e2e8f0);
+  background: color-mix(in srgb, #059669 10%, #fff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--mid {
+  color: #92400e;
+  border-color: color-mix(in srgb, #d97706 35%, #e2e8f0);
+  background: color-mix(in srgb, #f59e0b 12%, #fff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--low {
+  color: #b91c1c;
+  border-color: color-mix(in srgb, #ef4444 35%, #e2e8f0);
+  background: color-mix(in srgb, #ef4444 10%, #fff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--neutral {
+  color: #475569;
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-pace-metric-head strong {
+  color: #0f172a;
+}
+
+/* Dark mode: stronger metric and badge contrast */
+html[data-color="dark"]:not([data-contrast="high"]) .overview-pace-metric-head,
+html.dark .overview-pace-metric-head {
+  color: #94a3b8;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-pace-metric-head strong,
+html.dark .overview-pace-metric-head strong {
+  color: #f8fafc;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .overview-pace-meta,
+html.dark .overview-pace-meta {
+  color: #cbd5e1;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .ref-profile-trend-rate-pill,
+html.dark .ref-profile-trend-rate-pill {
+  color: #e2e8f0;
+  border-color: color-mix(in srgb, var(--pill-glow) 32%, #475569);
+  background: color-mix(in srgb, var(--pill-glow) 10%, #1e293b);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--high,
+html.dark .ref-profile-team-rate-badge--high {
+  color: #bbf7d0;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .ref-profile-team-rate-badge--low,
+html.dark .ref-profile-team-rate-badge--low {
+  color: #fecaca;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .team-ref-matrix-stat--positive,
+html.dark .team-ref-matrix-stat--positive {
+  color: #86efac;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .team-ref-matrix-stat--negative,
+html.dark .team-ref-matrix-stat--negative {
+  color: #fca5a5;
 }
 
 /* ── Compare officials + matrix share ── */

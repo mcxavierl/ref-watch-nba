@@ -240,17 +240,25 @@ describe("Clinical Modern priority #11 surfaces", () => {
 
   it("homepage contrast fixes keep muted copy readable", () => {
     const overviewCss = readSrc("src/components/overview-dashboard.css");
+    const globalsCss = readSrc("src/app/globals.css");
     const quicklistsCss = readSrc("src/components/overview-quicklists.css");
     const insightCss = readSrc("src/components/insight-card.css");
     assert.match(overviewCss, /Homepage contrast/);
     assert.match(overviewCss, /overview-slate-row/);
     assert.match(overviewCss, /overview-league-chooser-card\[data-league="nfl"\]/);
+    assert.match(overviewCss, /html\[data-color="light"\][\s\S]*overview-league-chooser-card/);
+    assert.match(globalsCss, /League hub cards — light mode surfaces/);
+    assert.match(globalsCss, /html\[data-color="light"\][\s\S]*overview-league-chooser-card[\s\S]*background: #ffffff/);
     assert.match(overviewCss, /overview-section--secondary .overview-section-lead/);
     assert.match(quicklistsCss, /overview-quicklists-step-label/);
     assert.match(quicklistsCss, /overview-quicklists-context/);
     assert.match(overviewCss, /Explore bento: equal-height catalog \+ analytics columns/);
     assert.match(overviewCss, /overview-secondary-tabs/);
     assert.match(insightCss, /insight-editorial-kicker/);
+    assert.match(globalsCss, /hide decorative metric bars/);
+    assert.match(globalsCss, /\.overview-pace-bar/);
+    assert.match(insightCss, /insight-metric-comparison-value--rate/);
+    assert.match(insightCss, /var\(--text-primary\)/);
   });
 
   it("pill glow tokens are centralized in kpi-data-pill.css", () => {
