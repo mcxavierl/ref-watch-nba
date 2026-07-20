@@ -43,6 +43,9 @@ export type ScoutingReport = {
   leverageProfile: import("@/lib/types").LeveragePressureProfile;
   pressureGauge: import("@/lib/analytics/leverage-sensitivity").PressureGaugeState;
   leverageInsight: string;
+  /** Alias for B2B Elite feed consumers. */
+  leverageSensitivityIndex: number | null;
+  edgeNote: string;
   styleProfile: ScoutingStyleProfile;
   pressureSensitive: boolean;
   pressureDeltaPct: number | null;

@@ -44,6 +44,9 @@
   font-weight: 650;
   letter-spacing: -0.02em;
   color: var(--text-primary);
+  text-decoration: underline dotted color-mix(in srgb, var(--text-muted) 55%, transparent);
+  text-underline-offset: 0.2em;
+  cursor: help;
 }
 
 .archetype-terminal-badge {

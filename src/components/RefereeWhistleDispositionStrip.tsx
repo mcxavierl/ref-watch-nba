@@ -102,10 +102,10 @@ export function RefereeWhistleDispositionStrip({
 
   return (
     <div className={`ref-whistle-disposition-strip ${className}`.trim()}>
-      <p className="ref-whistle-disposition-strip__lead">
-        Whistle disposition - administrative rate (frequency) vs leverage-weighted
-        impact score (LWIS = Σ(|ΔWPA| × LeverageWeight) on subjective calls).
-      </p>
+          <p className="ref-whistle-disposition-strip__lead">
+            Officiating style - administrative rate (frequency) vs leverage-weighted
+            game-flow impact (LWIS = Σ(|ΔWPA| × LeverageWeight) on subjective calls).
+          </p>
       <DispositionMetrics metrics={metrics} />
     </div>
   );

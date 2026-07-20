@@ -20,6 +20,7 @@ import {
   whistleCoefficientOfVariation,
   type ArchetypeGameInput,
 } from "@/lib/analytics/referee-archetypes";
+import { buildEdgeNote } from "@/lib/analytics/build-edge-note";
 import {
   buildLeverageInsight,
   computeLeverageIndex,
@@ -280,11 +281,19 @@ function resolveOfficialStats(
 }
 
 function leverageReportFields(officialStats: OfficialStats) {
+  const leverageIndex = officialStats.leverage_index;
   return {
-    leverageIndex: officialStats.leverage_index,
+    leverageIndex,
+    leverageSensitivityIndex: leverageIndex,
     leverageProfile: officialStats.leverage_profile,
     pressureGauge: pressureGaugeState(officialStats.leverage_profile),
     leverageInsight: buildLeverageInsight(officialStats.leverage_profile),
+    edgeNote: buildEdgeNote({
+      consistencyScore: officialStats.consistency_score,
+      leverageProfile: officialStats.leverage_profile,
+      leverageIndex,
+      archetype: officialStats.primary_archetype,
+    }),
   };
 }
 

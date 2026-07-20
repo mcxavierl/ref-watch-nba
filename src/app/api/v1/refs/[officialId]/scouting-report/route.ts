@@ -68,16 +68,22 @@ export async function GET(
     );
   }
 
+  const elite = {
+    archetype: report.archetype,
+    consistencyScore: report.consistencyScore,
+    leverageSensitivityIndex: report.leverageSensitivityIndex,
+    edge_note: report.edgeNote,
+  };
+
   return NextResponse.json({
     data: report,
+    ...elite,
     meta: {
       version: "v1",
       officialId,
       leagueId,
       generatedAt: report.generatedAt,
-      archetype: report.archetype,
-      leverageIndex: report.leverageIndex,
-      consistencyScore: report.consistencyScore,
+      ...elite,
     },
   });
 }

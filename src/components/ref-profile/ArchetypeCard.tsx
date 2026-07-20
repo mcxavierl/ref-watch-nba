@@ -1,5 +1,11 @@
+"use client";
+
+import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import type { OfficialStats } from "@/lib/types";
 import "./archetype-card.css";
+
+const ARCHETYPE_TOOLTIP =
+  "This archetype is derived from the official's Admin-to-Subjective ratio, representing their impact on total-game volatility.";
 
 type ArchetypeCardProps = {
   displayName: string;
@@ -20,14 +26,18 @@ export function ArchetypeCard({
       aria-labelledby="ref-archetype-card-title"
     >
       <div className="archetype-terminal-head">
-        <p className="archetype-terminal-eyebrow">Ref-Intelligence terminal</p>
-        <div className="archetype-terminal-title-row">
-          <h3 id="ref-archetype-card-title" className="archetype-terminal-title">
-            [{displayName}]
-          </h3>
-          <span className="archetype-terminal-badge">
-            Consistency: {consistencyScore}/10
-          </span>
+        <div>
+          <p className="archetype-terminal-eyebrow">Ref-Intelligence terminal</p>
+          <div className="archetype-terminal-title-row">
+            <MetricInfoHint hint={ARCHETYPE_TOOLTIP}>
+              <h3 id="ref-archetype-card-title" className="archetype-terminal-title">
+                [{displayName}]
+              </h3>
+            </MetricInfoHint>
+            <span className="archetype-terminal-badge tabular-nums">
+              Consistency: {consistencyScore}/10
+            </span>
+          </div>
         </div>
       </div>
 
@@ -36,7 +46,7 @@ export function ArchetypeCard({
       <dl className="archetype-terminal-grid">
         <div className="archetype-terminal-stat">
           <dt>Admin ratio</dt>
-          <dd>{officialStats.admin_ratio.toFixed(2)}</dd>
+          <dd className="tabular-nums">{officialStats.admin_ratio.toFixed(2)}</dd>
         </div>
         <div className="archetype-terminal-stat">
           <dt>Close-game pressure</dt>
@@ -44,7 +54,7 @@ export function ArchetypeCard({
         </div>
         <div className="archetype-terminal-stat">
           <dt>Sample window</dt>
-          <dd>{officialStats.sample_games} games</dd>
+          <dd className="tabular-nums">{officialStats.sample_games} games</dd>
         </div>
       </dl>
     </section>
