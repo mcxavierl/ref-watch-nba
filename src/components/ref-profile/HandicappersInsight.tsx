@@ -11,6 +11,7 @@ type HandicappersInsightProps = {
     | "leverageSensitivityIndex"
     | "leverageProfile"
     | "leverageInsight"
+    | "leverageStrategyNote"
     | "pressureGauge"
   >;
 };
@@ -83,7 +84,11 @@ export function HandicappersInsight({ report }: HandicappersInsightProps) {
         </div>
       </dl>
 
-      <p className="handicappers-insight-footnote">{report.leverageInsight}</p>
+      {report.leverageStrategyNote ? (
+        <p className="handicappers-insight-strategy-note">{report.leverageStrategyNote}</p>
+      ) : (
+        <p className="handicappers-insight-footnote">{report.leverageInsight}</p>
+      )}
     </section>
   );
 }

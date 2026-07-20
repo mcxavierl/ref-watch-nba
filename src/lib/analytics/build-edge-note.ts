@@ -1,4 +1,5 @@
 import { ARCHETYPE_DISPLAY_NAMES } from "@/lib/analytics/referee-archetypes";
+import { HIGH_LEVERAGE_SENSITIVITY_INSIGHT } from "@/lib/analytics/leverage-sensitivity";
 import type { LeveragePressureProfile, RefereeArchetypeId } from "@/lib/types";
 
 export type EdgeNoteInput = {
@@ -16,7 +17,7 @@ export function buildEdgeNote(input: EdgeNoteInput): string {
   }
 
   if (leverageProfile === "high-leverage-sensitivity") {
-    return "High leverage sensitivity. Expect late foul spikes that can add edge to live Over tickets.";
+    return HIGH_LEVERAGE_SENSITIVITY_INSIGHT;
   }
 
   if (leverageProfile === "swallows-whistle") {

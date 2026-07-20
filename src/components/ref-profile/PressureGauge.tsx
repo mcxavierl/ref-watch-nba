@@ -8,6 +8,7 @@ type PressureGaugeProps = {
   state: PressureGaugeState;
   leverageIndex: number | null;
   insight: string;
+  strategyNote?: string | null;
 };
 
 function gaugePosition(leverageIndex: number | null): string {
@@ -17,7 +18,12 @@ function gaugePosition(leverageIndex: number | null): string {
   return `${Math.max(8, Math.min(92, pct))}%`;
 }
 
-export function PressureGauge({ state, leverageIndex, insight }: PressureGaugeProps) {
+export function PressureGauge({
+  state,
+  leverageIndex,
+  insight,
+  strategyNote = null,
+}: PressureGaugeProps) {
   return (
     <section
       className="pressure-gauge-card"
@@ -57,6 +63,9 @@ export function PressureGauge({ state, leverageIndex, insight }: PressureGaugePr
       </div>
 
       <p className="pressure-gauge-insight">{insight}</p>
+      {strategyNote ? (
+        <p className="pressure-gauge-strategy-note">{strategyNote}</p>
+      ) : null}
     </section>
   );
 }

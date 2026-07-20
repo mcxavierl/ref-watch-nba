@@ -374,3 +374,11 @@
   line-height: 1.55;
   color: var(--text-secondary);
 }
+
+.pressure-gauge-strategy-note,
+.handicappers-insight-strategy-note {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}

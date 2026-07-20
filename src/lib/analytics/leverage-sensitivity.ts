@@ -65,6 +65,14 @@ export const PRESSURE_GAUGE_LABELS: Record<PressureGaugeState, string> = {
   neutral: "Neutral",
 };
 
+/** Sharps-first leverage copy distinguishing officiating bias from tactical fouling. */
+export const HIGH_LEVERAGE_SENSITIVITY_INSIGHT =
+  "High Leverage Sensitivity: This official shows an elevated foul-calling rate in the final 2 minutes. While this can reflect tactical late-game fouling, our data indicates this official's whistle frequency exceeds typical league-average baselines, suggesting a propensity to tighten the game during crunch time.";
+
+/** CYA sub-note: late-game totals may reflect intentional fouling, not whistle bias alone. */
+export const HIGH_LEVERAGE_STRATEGY_NOTE =
+  "Note: Late-game totals may be skewed by intentional fouling strategies.";
+
 function round3(value: number): number {
   return Math.round(value * 1000) / 1000;
 }
@@ -194,12 +202,21 @@ export function pressureGaugeState(
 
 export function buildLeverageInsight(profile: LeveragePressureProfile): string {
   if (profile === "high-leverage-sensitivity") {
-    return "High Leverage Sensitivity: Expect increased foul-calling in the final minutes, affecting Over/Under totals.";
+    return HIGH_LEVERAGE_SENSITIVITY_INSIGHT;
   }
   if (profile === "swallows-whistle") {
     return "Swallows The Whistle: Foul frequency drops in late close-game minutes, which can suppress Over/Under totals.";
   }
   return "Neutral leverage profile: Late-period foul pace tracks early-quarter baselines in close games.";
+}
+
+export function buildLeverageStrategyNote(
+  profile: LeveragePressureProfile,
+): string | null {
+  if (profile === "high-leverage-sensitivity") {
+    return HIGH_LEVERAGE_STRATEGY_NOTE;
+  }
+  return null;
 }
 
 export function computeLeverageIndex(

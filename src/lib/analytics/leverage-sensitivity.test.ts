@@ -2,8 +2,11 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   buildLeverageInsight,
+  buildLeverageStrategyNote,
   classifyLeverageProfile,
   computeLeverageIndex,
+  HIGH_LEVERAGE_SENSITIVITY_INSIGHT,
+  HIGH_LEVERAGE_STRATEGY_NOTE,
   LEVERAGE_INDEX_THRESHOLD,
   pressureGaugeState,
 } from "@/lib/analytics/leverage-sensitivity";
@@ -77,6 +80,14 @@ describe("leverage-sensitivity", () => {
     assert.equal(result.leverage_profile, "high-leverage-sensitivity");
     assert.equal(pressureGaugeState(result.leverage_profile), "tightens-up");
     assert.match(buildLeverageInsight(result.leverage_profile), /High Leverage Sensitivity/);
+    assert.equal(
+      buildLeverageInsight(result.leverage_profile),
+      HIGH_LEVERAGE_SENSITIVITY_INSIGHT,
+    );
+    assert.equal(
+      buildLeverageStrategyNote(result.leverage_profile),
+      HIGH_LEVERAGE_STRATEGY_NOTE,
+    );
   });
 
   it("classifies swallows the whistle when late close-game rate drops more than 20%", () => {

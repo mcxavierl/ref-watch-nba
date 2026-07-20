@@ -14,13 +14,15 @@ describe("build-edge-note", () => {
     assert.match(note, /Over\/Under/);
   });
 
-  it("surfaces leverage sensitivity for high-pressure refs", () => {
+  it("surfaces sharps-first leverage sensitivity copy for high-pressure refs", () => {
     const note = buildEdgeNote({
       consistencyScore: 6,
       leverageProfile: "high-leverage-sensitivity",
       leverageIndex: 0.28,
       archetype: "procedural-stickler",
     });
-    assert.match(note, /leverage sensitivity/i);
+    assert.match(note, /High Leverage Sensitivity/);
+    assert.match(note, /final 2 minutes/);
+    assert.match(note, /league-average baselines/);
   });
 });
