@@ -15,6 +15,7 @@ import {
 import type { AssignmentsFile, AssignmentGame, OddsFile, RefOfficial } from "@/lib/types";
 import { isSlatePreviewLeague } from "@/lib/game-slate-preview-adapters";
 import { buildGameSlatePreview } from "@/lib/game-slate-preview";
+import { resolveWnbaTeamAbbr } from "@/lib/wnba/teams";
 
 export type {
   OverviewLeagueNote,
@@ -300,18 +301,22 @@ function pushEntry(
 ): void {
   const league = LEAGUES[leagueId];
   const slateDate = slateDateOverride ?? game.slateDate ?? file.date;
+  const awayTeam =
+    leagueId === "wnba" ? resolveWnbaTeamAbbr(game.awayTeam) : game.awayTeam;
+  const homeTeam =
+    leagueId === "wnba" ? resolveWnbaTeamAbbr(game.homeTeam) : game.homeTeam;
   const headRef =
     game.crew.find((o) => o.role === "referee")?.name ?? game.crew[0]?.name;
   const teamContextLine = buildOverviewTeamRecentContextLine(
     leagueId,
-    game.awayTeam,
-    game.homeTeam,
+    awayTeam,
+    homeTeam,
   );
-  const lastMeetingLine = buildOverviewLastMeetingLine(leagueId, game.awayTeam, game.homeTeam);
+  const lastMeetingLine = buildOverviewLastMeetingLine(leagueId, awayTeam, homeTeam);
   const gameContextLine = buildOverviewRecentGameContextLine(
     leagueId,
-    game.awayTeam,
-    game.homeTeam,
+    awayTeam,
+    homeTeam,
   );
   const seasonStageNote = buildSeasonStageNote(leagueId, game, slateDate);
   const preview =
@@ -324,14 +329,15 @@ function pushEntry(
     leagueShortLabel: league.shortLabel,
     href: leagueHubHref(leagueId),
     gameId: game.id,
-    matchup: game.matchup,
-    awayTeam: game.awayTeam,
-    homeTeam: game.homeTeam,
+    matchup:
+      leagueId === "wnba" ? `${awayTeam} @ ${homeTeam}` : game.matchup,
+    awayTeam,
+    homeTeam,
     headRef,
     crewCount: game.crew.length,
     status,
     slateDate,
-    matchupInsight: buildOverviewMatchupInsight(leagueId, game.awayTeam, game.homeTeam),
+    matchupInsight: buildOverviewMatchupInsight(leagueId, awayTeam, homeTeam),
     lastMeetingLine,
     gameContextLine,
     teamContextLine,

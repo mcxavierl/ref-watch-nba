@@ -168,6 +168,7 @@ export function buildGameSlatePreview(
   odds: OddsFile,
 ): GameSlatePreviewPayload | null {
   if (!isSlatePreviewLeague(leagueId)) return null;
+  if (game.crew.length === 0) return null;
 
   const adapter = SLATE_PREVIEW_ADAPTERS[leagueId];
   const { stats } = loadLeagueStats(leagueId);

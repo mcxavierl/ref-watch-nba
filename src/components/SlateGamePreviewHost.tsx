@@ -11,7 +11,7 @@ type GameSlateCardProps = ComponentProps<typeof GameSlateCard>;
 export type SlateGamePreviewBundle = {
   gameId: string;
   card: GameSlateCardProps;
-  preview: GameSlatePreviewPayload;
+  preview?: GameSlatePreviewPayload;
 };
 
 export function SlateGamePreviewHost({ games }: { games: SlateGamePreviewBundle[] }) {
@@ -23,7 +23,7 @@ export function SlateGamePreviewHost({ games }: { games: SlateGamePreviewBundle[
         <div key={gameId} id={`slate-game-${gameId}`}>
           <GameSlateCard
             {...card}
-            onOpenPreview={() => setSelected(preview)}
+            onOpenPreview={preview ? () => setSelected(preview) : undefined}
           />
         </div>
       ))}

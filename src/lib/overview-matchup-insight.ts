@@ -8,7 +8,7 @@ import type { LeagueId } from "@/lib/leagues";
 import { getTeam as getNflTeam } from "@/lib/nfl/teams";
 import { getTeam as getNhlTeam } from "@/lib/nhl/teams";
 import { getTeam as getNbaTeam } from "@/lib/teams";
-import { getTeam as getWnbaTeam } from "@/lib/wnba/teams";
+import { getTeam as getWnbaTeam, resolveWnbaTeamAbbr } from "@/lib/wnba/teams";
 import { normalizeWnbaAbbr, wnbaAbbrAliases } from "@/lib/wnba/abbr";
 
 const LEAGUE_TO_DATA: Partial<Record<LeagueId, DataLeague>> = {
@@ -25,9 +25,9 @@ const LEAGUE_TO_DATA: Partial<Record<LeagueId, DataLeague>> = {
 const RECENT_SEASON_WINDOW = 5;
 
 function teamAliases(leagueId: LeagueId, abbr: string): string[] {
-  const key = abbr.toUpperCase();
+  const key = leagueId === "wnba" ? resolveWnbaTeamAbbr(abbr) : abbr.toUpperCase();
   if (leagueId === "nfl" && (key === "LAC" || key === "SD")) return ["LAC", "SD"];
-  if (leagueId === "wnba") return wnbaAbbrAliases(abbr);
+  if (leagueId === "wnba") return wnbaAbbrAliases(key);
   return [key];
 }
 
@@ -99,7 +99,8 @@ function formatShortDate(date: string): string {
 }
 
 function teamDisplayName(leagueId: LeagueId, abbr: string): string {
-  const key = normalizeWnbaAbbr(abbr);
+  const key =
+    leagueId === "wnba" ? resolveWnbaTeamAbbr(abbr) : normalizeWnbaAbbr(abbr);
   const team =
     leagueId === "epl"
       ? getEplTeam(key)

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { normalizeWnbaAbbr, wnbaAbbrAliases } from "@/lib/wnba/abbr";
-import { teamLogoUrl } from "@/lib/wnba/teams";
+import { resolveWnbaTeamAbbr, teamLogoUrl } from "@/lib/wnba/teams";
 import {
   buildOverviewRecentGameContextLine,
   buildOverviewTeamRecentContextLine,
@@ -13,6 +13,14 @@ describe("wnba abbr", () => {
     assert.equal(normalizeWnbaAbbr("NY"), "NYL");
     assert.equal(normalizeWnbaAbbr("WSH"), "WAS");
     assert.equal(normalizeWnbaAbbr("GS"), "GSV");
+  });
+
+  it("resolves official city names to canonical abbreviations", () => {
+    assert.equal(resolveWnbaTeamAbbr("Las Vegas"), "LVA");
+    assert.equal(resolveWnbaTeamAbbr("New York"), "NYL");
+    assert.equal(resolveWnbaTeamAbbr("Golden State"), "GSV");
+    assert.equal(resolveWnbaTeamAbbr("Washington"), "WAS");
+    assert.equal(resolveWnbaTeamAbbr("Toronto"), "TOR");
   });
 
   it("expands aliases for head-to-head matching", () => {

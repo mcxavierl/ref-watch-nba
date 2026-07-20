@@ -5,9 +5,9 @@
   "games": [
     {
       "id": "wnba-new-york-0-dallas-0-1",
-      "matchup": "New York @ Dallas",
-      "awayTeam": "New York",
-      "homeTeam": "Dallas",
+      "matchup": "NYL @ DAL",
+      "awayTeam": "NYL",
+      "homeTeam": "DAL",
       "league": "WNBA",
       "crew": [
         {
@@ -29,9 +29,9 @@
     },
     {
       "id": "wnba-las-vegas-0-toronto-0-2",
-      "matchup": "Las Vegas @ Toronto",
-      "awayTeam": "Las Vegas",
-      "homeTeam": "Toronto",
+      "matchup": "LVA @ TOR",
+      "awayTeam": "LVA",
+      "homeTeam": "TOR",
       "league": "WNBA",
       "crew": [
         {
@@ -53,9 +53,9 @@
     },
     {
       "id": "wnba-washington-0-golden-state-0-3",
-      "matchup": "Washington @ Golden State",
-      "awayTeam": "Washington",
-      "homeTeam": "Golden State",
+      "matchup": "WAS @ GSV",
+      "awayTeam": "WAS",
+      "homeTeam": "GSV",
       "league": "WNBA",
       "crew": [
         {
@@ -77,9 +77,9 @@
     },
     {
       "id": "wnba-minnesota-0-seattle-0-4",
-      "matchup": "Minnesota @ Seattle",
-      "awayTeam": "Minnesota",
-      "homeTeam": "Seattle",
+      "matchup": "MIN @ SEA",
+      "awayTeam": "MIN",
+      "homeTeam": "SEA",
       "league": "WNBA",
       "crew": [
         {

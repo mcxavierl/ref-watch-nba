@@ -54,8 +54,8 @@ export const THEME_MATRIX_PAGES: ThemeMatrixPage[] = [
         name: "catalog league name",
       },
       {
-        selector: ".upcoming-game-card__team-abbr",
-        name: "upcoming card team abbr",
+        selector: ".upcoming-game-card__team-name",
+        name: "upcoming card team name",
         optional: true,
       },
       {

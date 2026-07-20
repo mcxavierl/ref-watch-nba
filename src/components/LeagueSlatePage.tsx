@@ -156,29 +156,26 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
   });
 
   const slatePreviewBundles: SlateGamePreviewBundle[] = isSlatePreviewLeague(leagueId)
-    ? sortedGames.flatMap((game, index) => {
-        const preview = buildGameSlatePreview(leagueId, game, odds);
-        if (!preview) return [];
-        return [
-          {
+    ? sortedGames.map((game, index) => {
+        const preview = buildGameSlatePreview(leagueId, game, odds) ?? undefined;
+        return {
+          gameId: game.id,
+          preview,
+          card: {
+            slateIndex: index,
             gameId: game.id,
-            preview,
-            card: {
-              slateIndex: index,
-              gameId: game.id,
-              matchup: game.matchup,
-              awayTeam: game.awayTeam,
-              homeTeam: game.homeTeam,
-              metrics: computeLeagueCrewMetrics(leagueId, game.crew, activeRefStats),
-              premium: computeCrewWhistlePremium(game, refStats, odds),
-              homeBias: computeCrewHomeBias(game, refStats),
-              sport,
-              basePath: pathPrefix,
-              storylines: computeGameStorylines(game, refStats, 1),
-              overBenchmark: refStats.meta.leagueOverBaseline,
-            },
+            matchup: game.matchup,
+            awayTeam: game.awayTeam,
+            homeTeam: game.homeTeam,
+            metrics: computeLeagueCrewMetrics(leagueId, game.crew, activeRefStats),
+            premium: computeCrewWhistlePremium(game, refStats, odds),
+            homeBias: computeCrewHomeBias(game, refStats),
+            sport,
+            basePath: pathPrefix,
+            storylines: computeGameStorylines(game, refStats, 1),
+            overBenchmark: refStats.meta.leagueOverBaseline,
           },
-        ];
+        };
       })
     : [];
 
@@ -335,7 +332,7 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
               </p>
             )}
             <div className="slate-stack mt-4">
-              {slatePreviewBundles.length > 0 ? (
+              {isSlatePreviewLeague(leagueId) ? (
                 <SlateGamePreviewHost games={slatePreviewBundles} />
               ) : (
                 sortedGames.map((game, index) => (

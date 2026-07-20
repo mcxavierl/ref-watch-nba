@@ -444,7 +444,7 @@
 
 .upcoming-game-card__matchup {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   gap: clamp(0.45rem, 4cqi, 0.85rem);
   width: 100%;
@@ -463,7 +463,6 @@
     ),
     color-mix(in srgb, var(--upcoming-matchup-bg-top) 88%, var(--upcoming-matchup-bg-bottom));
   box-shadow: var(--upcoming-matchup-shadow);
-  overflow: hidden;
 }
 
 .upcoming-game-card__team {
@@ -471,9 +470,23 @@
   flex: 1 1 0;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   gap: clamp(0.3rem, 2cqi, 0.55rem);
   min-width: 0;
-  max-width: 4.75rem;
+  max-width: none;
+}
+
+.upcoming-game-card__team-abbr {
+  width: 100%;
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: clamp(0.75rem, 4cqi, 0.9375rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--upcoming-ink-strong);
 }
 
 html[data-contrast="high"] .upcoming-game-card__matchup {
@@ -518,8 +531,10 @@ html[data-contrast="high"] .upcoming-game-card__date-pill {
 .upcoming-game-card__matchup .team-logo-plate__fallback {
   font-size: 0.625rem;
   font-weight: 800;
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
   text-align: center;
+  white-space: nowrap;
 }
 
 .upcoming-game-card__matchup .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
@@ -537,17 +552,6 @@ html[data-contrast="high"] .upcoming-game-card__date-pill {
   font-weight: 800;
   line-height: 1;
   color: var(--upcoming-ink-muted);
-}
-
-.upcoming-game-card__team-abbr {
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: clamp(0.875rem, 4.5cqi, 1.125rem);
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-align: center;
-  color: var(--upcoming-ink-strong);
 }
 
 .upcoming-game-card__context-slot {
