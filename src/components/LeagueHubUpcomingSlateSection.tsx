@@ -26,7 +26,7 @@ export function LeagueHubUpcomingSlateSection({
 
   return (
     <section
-      className="overview-editorial-section overview-editorial-section--slate section-block"
+      className="overview-editorial-section overview-editorial-section--slate section-block section-block--compact"
       aria-labelledby="league-hub-upcoming-heading"
     >
       <div className="overview-section-header overview-section-header--primary">
@@ -53,7 +53,7 @@ export function LeagueHubUpcomingSlateSection({
         </ul>
       ) : null}
 
-      <div className="upcoming-games-grid">
+      <div className="upcoming-games-grid upcoming-games-grid--hub">
         {group.games.map((game) => (
           <UpcomingGameCard key={`${game.leagueId}-${game.gameId}`} game={game} />
         ))}

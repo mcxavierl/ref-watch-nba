@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-07-20T03:23:02.440Z",
+  "lastUpdated": "2026-07-20T03:37:26.774Z",
   "date": "2026-07-20",
   "source": "official.nba.com",
   "games": [
     {
       "id": "401857083",
-      "matchup": "LV @ TOR",
-      "awayTeam": "LV",
+      "matchup": "LVA @ TOR",
+      "awayTeam": "LVA",
       "homeTeam": "TOR",
       "league": "WNBA",
       "slateDate": "2026-07-20",
@@ -14,8 +14,8 @@
     },
     {
       "id": "401892393",
-      "matchup": "NY @ DAL",
-      "awayTeam": "NY",
+      "matchup": "NYL @ DAL",
+      "awayTeam": "NYL",
       "homeTeam": "DAL",
       "league": "WNBA",
       "slateDate": "2026-07-20",
@@ -23,9 +23,9 @@
     },
     {
       "id": "401857084",
-      "matchup": "WSH @ GS",
-      "awayTeam": "WSH",
-      "homeTeam": "GS",
+      "matchup": "WAS @ GSV",
+      "awayTeam": "WAS",
+      "homeTeam": "GSV",
       "league": "WNBA",
       "slateDate": "2026-07-20",
       "crew": []
@@ -41,9 +41,9 @@
     },
     {
       "id": "401857086",
-      "matchup": "PHX @ LA",
-      "awayTeam": "PHX",
-      "homeTeam": "LA",
+      "matchup": "PHO @ LAS",
+      "awayTeam": "PHO",
+      "homeTeam": "LAS",
       "league": "WNBA",
       "slateDate": "2026-07-22",
       "crew": []
@@ -59,18 +59,18 @@
     },
     {
       "id": "401857088",
-      "matchup": "CHI @ NY",
+      "matchup": "CHI @ NYL",
       "awayTeam": "CHI",
-      "homeTeam": "NY",
+      "homeTeam": "NYL",
       "league": "WNBA",
       "slateDate": "2026-07-22",
       "crew": []
     },
     {
       "id": "401857089",
-      "matchup": "LV @ WSH",
-      "awayTeam": "LV",
-      "homeTeam": "WSH",
+      "matchup": "LVA @ WAS",
+      "awayTeam": "LVA",
+      "homeTeam": "WAS",
       "league": "WNBA",
       "slateDate": "2026-07-22",
       "crew": []

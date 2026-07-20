@@ -3,6 +3,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { AssignmentGame, AssignmentsFile } from "../../src/lib/types";
 import { fetchWnbaAssignments } from "../lib/parse-assignments";
+import { normalizeWnbaAbbr } from "../../src/lib/wnba/abbr";
 import { fetchWnbaScoreboard, sleep, yyyymmdd } from "./lib/espn";
 
 const outPath = path.join(process.cwd(), "data", "wnba", "assignments.json");
@@ -41,9 +42,9 @@ async function collectUpcomingEvents(startDate: string) {
       seen.add(event.id);
       collected.push({
         id: event.id,
-        matchup: `${event.awayAbbr} @ ${event.homeAbbr}`,
-        awayTeam: event.awayAbbr,
-        homeTeam: event.homeAbbr,
+        matchup: `${normalizeWnbaAbbr(event.awayAbbr)} @ ${normalizeWnbaAbbr(event.homeAbbr)}`,
+        awayTeam: normalizeWnbaAbbr(event.awayAbbr),
+        homeTeam: normalizeWnbaAbbr(event.homeAbbr),
         league: "WNBA",
         slateDate,
         crew: [],
