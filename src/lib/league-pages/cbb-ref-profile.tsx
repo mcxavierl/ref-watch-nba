@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { JsonLd } from "@/components/JsonLd";
+import { RefProfileJsonLd } from "@/components/RefProfileJsonLd";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
@@ -17,8 +17,7 @@ import {
   enrichBettingStats,
   refProfileCoreProvenance,
 } from "@/lib/provenance";
-import { refProfileDatasetJsonLd } from "@/lib/syndication";
-import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
+import { entityNotFoundMetadata, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote, refTeamDataNote } from "@/lib/user-language";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeProfileSignals } from "@/lib/profile-signals";
@@ -81,21 +80,14 @@ export default async function RefProfilePage({
 
   return (
     <div className="page-shell">
-      <JsonLd
-        data={[
-          refProfileDatasetJsonLd(
-          profile.name,
-          profile.slug,
-          "CBB",
-          profile.games,
-          stats.meta.lastUpdated,
-        ),
-          refProfileBreadcrumbJsonLd(
-            "cbb",
-            profile.name,
-            profile.slug,
-          ),
-        ]}
+      <RefProfileJsonLd
+        leagueId="cbb"
+        dataLeague="CBB"
+        name={profile.name}
+        slug={profile.slug}
+        number={profile.number}
+        games={profile.games}
+        lastUpdated={stats.meta.lastUpdated}
       />
       <Link
         href="/cbb"

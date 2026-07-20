@@ -7,6 +7,8 @@ export type ResearchArticleSection = {
 
 export type ResearchArticle = {
   slug: string;
+  canonicalPath: string;
+  description: string;
   title: string;
   subtitle: string;
   readMinutes: number;
@@ -18,6 +20,9 @@ export type ResearchArticle = {
 
 export const LEVERAGE_SPIKE_ANOMALY_ARTICLE: ResearchArticle = {
   slug: "leverage-spike-anomaly",
+  canonicalPath: "/research/leverage-spike-anomaly",
+  description:
+    "A concise Ref Watch research brief on historical high-leverage penalty frequency: why volume metrics miss pressure-state behavior, and how the Game-State Index and LWIS surface the gap.",
   title: "The Leverage-Spike Anomaly",
   subtitle: "Historical high-leverage penalty frequency when game state matters most",
   readMinutes: 5,

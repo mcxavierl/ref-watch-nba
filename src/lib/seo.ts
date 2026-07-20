@@ -388,6 +388,108 @@ export function webPageJsonLd({
   };
 }
 
+export function refProfilePersonJsonLd({
+  leagueId,
+  name,
+  slug,
+  number,
+}: {
+  leagueId: LeagueId;
+  name: string;
+  slug: string;
+  number?: string | number | null;
+}): Record<string, unknown> {
+  const league = LEAGUES[leagueId];
+  const jobTitle =
+    leagueId === "epl" || leagueId === "laliga"
+      ? "Football referee"
+      : `${league.officialNoun.charAt(0).toUpperCase()}${league.officialNoun.slice(1)}`;
+  const numberSuffix =
+    number != null && String(number).trim() !== "" ? ` (#${number})` : "";
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name,
+    ...(numberSuffix ? { alternateName: `${name}${numberSuffix}` } : {}),
+    jobTitle,
+    url: absoluteUrl(leagueHref(leagueId, `/refs/${slug}`)),
+    worksFor: {
+      "@type": "SportsOrganization",
+      name: league.label,
+    },
+  };
+}
+
+export function teamProfileBreadcrumbJsonLd(
+  leagueId: LeagueId,
+  teamName: string,
+  abbr: string,
+): Record<string, unknown> {
+  const league = LEAGUES[leagueId];
+  return breadcrumbJsonLd([
+    { name: `${league.shortLabel} home`, path: leagueHref(leagueId, "/") },
+    { name: "Teams", path: leagueHref(leagueId, "/teams") },
+    { name: teamName, path: leagueHref(leagueId, `/teams/${abbr}`) },
+  ]);
+}
+
+export function teamProfileSportsTeamJsonLd(
+  leagueId: LeagueId,
+  teamName: string,
+  abbr: string,
+): Record<string, unknown> {
+  const league = LEAGUES[leagueId];
+  return {
+    "@context": "https://schema.org",
+    "@type": "SportsTeam",
+    name: teamName,
+    sport: league.label,
+    url: absoluteUrl(leagueHref(leagueId, `/teams/${abbr}`)),
+    memberOf: {
+      "@type": "SportsOrganization",
+      name: league.label,
+    },
+  };
+}
+
+export function techArticleJsonLd({
+  headline,
+  description,
+  path,
+  datePublished,
+}: {
+  headline: string;
+  description: string;
+  path: string;
+  datePublished?: string;
+}): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline,
+    description,
+    url: absoluteUrl(path),
+    datePublished: datePublished ?? "2026-07-01",
+    author: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+    publisher: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+    isAccessibleForFree: true,
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+  };
+}
+
+export function homepageWebPageJsonLd(): Record<string, unknown> {
+  return webPageJsonLd({
+    name: "Ref Watch - verified officiating analytics",
+    description: DEFAULT_SITE_DESCRIPTION,
+    path: "/",
+  });
+}
+
 export function websiteJsonLd(): Record<string, unknown> {
   return {
     "@context": "https://schema.org",

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { JsonLd } from "@/components/JsonLd";
+import { RefProfileJsonLd } from "@/components/RefProfileJsonLd";
 import { NflRefAnalyticsSection } from "@/components/NflRefAnalyticsSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
@@ -19,8 +19,7 @@ import {
   nflRefAnalyticsProvenance,
   refProfileCoreProvenance,
 } from "@/lib/provenance";
-import { refProfileDatasetJsonLd } from "@/lib/syndication";
-import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
+import { entityNotFoundMetadata, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote } from "@/lib/user-language";
 import { isNflSimulatedData } from "@/lib/nfl/data-source";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
@@ -100,21 +99,14 @@ export default async function NflRefProfilePage({
 
   return (
     <div className="page-shell">
-      <JsonLd
-        data={[
-          refProfileDatasetJsonLd(
-          profile.name,
-          profile.slug,
-          "NFL",
-          profile.games,
-          stats.meta.lastUpdated,
-        ),
-          refProfileBreadcrumbJsonLd(
-            "nfl",
-            profile.name,
-            profile.slug,
-          ),
-        ]}
+      <RefProfileJsonLd
+        leagueId="nfl"
+        dataLeague="NFL"
+        name={profile.name}
+        slug={profile.slug}
+        number={profile.number}
+        games={profile.games}
+        lastUpdated={stats.meta.lastUpdated}
       />
       <Link
         href="/nfl"

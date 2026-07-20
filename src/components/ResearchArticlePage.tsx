@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 import type { ResearchArticle } from "@/lib/research-articles/leverage-spike-anomaly";
+import { techArticleJsonLd } from "@/lib/seo";
 import "@/components/research-article.css";
 
 type ResearchArticlePageProps = {
@@ -9,6 +11,13 @@ type ResearchArticlePageProps = {
 export function ResearchArticlePage({ article }: ResearchArticlePageProps) {
   return (
     <div className="page-shell research-article-shell overview-shell--clinical">
+      <JsonLd
+        data={techArticleJsonLd({
+          headline: article.title,
+          description: article.description,
+          path: article.canonicalPath,
+        })}
+      />
       <Link href="/" className="back-link">
         ← Home
       </Link>

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { JsonLd } from "@/components/JsonLd";
+import { RefProfileJsonLd } from "@/components/RefProfileJsonLd";
 import { EplRefAnalyticsSection } from "@/components/EplRefAnalyticsSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
@@ -19,8 +19,7 @@ import {
   eplRefAnalyticsProvenance,
   refProfileCoreProvenance,
 } from "@/lib/provenance";
-import { refProfileDatasetJsonLd } from "@/lib/syndication";
-import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
+import { entityNotFoundMetadata, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote } from "@/lib/user-language";
 import { isLaligaSimulatedData } from "@/lib/laliga/data-source";
 import { formatRefNameWithNumber } from "@/lib/ref-number";
@@ -95,21 +94,14 @@ export default async function EplRefProfilePage({
 
   return (
     <div className="page-shell">
-      <JsonLd
-        data={[
-          refProfileDatasetJsonLd(
-          profile.name,
-          profile.slug,
-          "LALIGA",
-          profile.games,
-          stats.meta.lastUpdated,
-        ),
-          refProfileBreadcrumbJsonLd(
-            "laliga",
-            profile.name,
-            profile.slug,
-          ),
-        ]}
+      <RefProfileJsonLd
+        leagueId="laliga"
+        dataLeague="LALIGA"
+        name={profile.name}
+        slug={profile.slug}
+        number={profile.number}
+        games={profile.games}
+        lastUpdated={stats.meta.lastUpdated}
       />
       <Link
         href="/laliga"

@@ -4,7 +4,13 @@ import { describe, it } from "node:test";
 import { buildLlmsTxt } from "@/lib/llms-txt";
 import { REFWATCH_GEO_FAQ } from "@/lib/geo-faq";
 import { buildSitemapEntries } from "@/lib/sitemap-data";
-import { faqPageJsonLd } from "@/lib/seo";
+import {
+  faqPageJsonLd,
+  homepageWebPageJsonLd,
+  refProfilePersonJsonLd,
+  teamProfileSportsTeamJsonLd,
+  techArticleJsonLd,
+} from "@/lib/seo";
 
 describe("SEO and GEO guardrails", () => {
   it("sitemap includes homepage, about, La Liga, WNBA, and canonical research hubs", () => {
@@ -52,5 +58,54 @@ describe("SEO and GEO guardrails", () => {
     const about = readFileSync("src/app/about/page.tsx", "utf8");
     assert.match(about, /REFWATCH_GEO_FAQ/);
     assert.match(about, /faqPageJsonLd/);
+  });
+
+  it("homepage emits WebPage structured data", () => {
+    const home = readFileSync("src/app/page.tsx", "utf8");
+    assert.match(home, /homepageWebPageJsonLd/);
+    const schema = homepageWebPageJsonLd() as { "@type": string; url: string };
+    assert.equal(schema["@type"], "WebPage");
+    assert.match(schema.url, /refwatch\.ca\/?$/);
+  });
+
+  it("ref profiles emit Person structured data", () => {
+    const nbaRef = readFileSync("src/lib/league-pages/nba-ref-profile.tsx", "utf8");
+    assert.match(nbaRef, /RefProfileJsonLd/);
+    const schema = refProfilePersonJsonLd({
+      leagueId: "nba",
+      name: "Scott Foster",
+      slug: "scott-foster",
+      number: 48,
+    }) as { "@type": string; jobTitle: string; url: string };
+    assert.equal(schema["@type"], "Person");
+    assert.equal(schema.jobTitle, "Referee");
+    assert.match(schema.url, /\/nba\/refs\/scott-foster/);
+  });
+
+  it("team profiles emit SportsTeam structured data", () => {
+    const teamPage = readFileSync("src/components/TeamCrewPage.tsx", "utf8");
+    assert.match(teamPage, /TeamProfileJsonLd/);
+    const schema = teamProfileSportsTeamJsonLd("nba", "Boston Celtics", "BOS") as {
+      "@type": string;
+      name: string;
+      url: string;
+    };
+    assert.equal(schema["@type"], "SportsTeam");
+    assert.equal(schema.name, "Boston Celtics");
+    assert.match(schema.url, /\/nba\/teams\/BOS/);
+  });
+
+  it("research articles emit TechArticle structured data", () => {
+    const article = readFileSync("src/components/ResearchArticlePage.tsx", "utf8");
+    assert.match(article, /techArticleJsonLd/);
+    const validation = readFileSync("src/app/research/validation/page.tsx", "utf8");
+    assert.match(validation, /techArticleJsonLd/);
+    const schema = techArticleJsonLd({
+      headline: "Closing-line validation",
+      description: "Walk-forward backtest results.",
+      path: "/research/validation",
+    }) as { "@type": string; headline: string };
+    assert.equal(schema["@type"], "TechArticle");
+    assert.equal(schema.headline, "Closing-line validation");
   });
 });

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
-import { JsonLd } from "@/components/JsonLd";
+import { RefProfileJsonLd } from "@/components/RefProfileJsonLd";
 import { NhlRefAnalyticsSection } from "@/components/NhlRefAnalyticsSection";
 import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
@@ -19,8 +19,7 @@ import {
   nhlRefAnalyticsProvenance,
   refProfileCoreProvenance,
 } from "@/lib/provenance";
-import { refProfileDatasetJsonLd } from "@/lib/syndication";
-import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
+import { entityNotFoundMetadata, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote } from "@/lib/user-language";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
 import { computeRefGsniMetrics } from "@/lib/ref-gsni";
@@ -99,21 +98,14 @@ export default async function NhlRefProfilePage({
 
   return (
     <div className="page-shell">
-      <JsonLd
-        data={[
-          refProfileDatasetJsonLd(
-          profile.name,
-          profile.slug,
-          "NHL",
-          profile.games,
-          stats.meta.lastUpdated,
-        ),
-          refProfileBreadcrumbJsonLd(
-            "nhl",
-            profile.name,
-            profile.slug,
-          ),
-        ]}
+      <RefProfileJsonLd
+        leagueId="nhl"
+        dataLeague="NHL"
+        name={profile.name}
+        slug={profile.slug}
+        number={profile.number}
+        games={profile.games}
+        lastUpdated={stats.meta.lastUpdated}
       />
       <Link
         href="/nhl"

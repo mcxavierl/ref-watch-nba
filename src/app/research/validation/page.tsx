@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 import { ValidationReportContent } from "@/components/ValidationReportContent";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, techArticleJsonLd } from "@/lib/seo";
 import "@/components/methodology-page.css";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -20,6 +21,14 @@ export const metadata: Metadata = buildPageMetadata({
 export default function ValidationPage() {
   return (
     <div className="page-shell clinical-doc-shell">
+      <JsonLd
+        data={techArticleJsonLd({
+          headline: "Closing-line validation",
+          description:
+            "Walk-forward backtest results for RefWatch signals against external closing lines. Empirical validation with honest coverage reporting.",
+          path: "/research/validation",
+        })}
+      />
       <Link href="/" className="back-link">
         ← Home
       </Link>
