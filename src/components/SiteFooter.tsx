@@ -4,13 +4,51 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
-import { footerConfigForLeague } from "@/lib/footer-config";
+import {
+  footerConfigForLeague,
+  type FooterDisclaimerLink,
+  type FooterExploreLink,
+} from "@/lib/footer-config";
 import {
   footerLeagueForPath,
   type FooterLeague,
 } from "@/lib/footer-league";
 
 export type { FooterLeague };
+
+function FooterLinkList({
+  items,
+  className,
+}: {
+  items: Array<FooterExploreLink | FooterDisclaimerLink>;
+  className: string;
+}) {
+  return (
+    <ul className={className}>
+      {items.map((item) => {
+        const className = "site-footer-link";
+
+        if (item.external) {
+          return (
+            <li key={item.key}>
+              <a href={item.href} className={className}>
+                {item.label}
+              </a>
+            </li>
+          );
+        }
+
+        return (
+          <li key={item.key}>
+            <Link href={item.href} className={className}>
+              {item.label}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
 
 export function SiteFooter({ league }: { league?: FooterLeague }) {
   const pathname = usePathname() ?? "/";
@@ -20,8 +58,8 @@ export function SiteFooter({ league }: { league?: FooterLeague }) {
   return (
     <footer className="site-footer">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="grid gap-8 sm:grid-cols-3">
-          <div>
+        <div className="site-footer-grid grid gap-8 sm:grid-cols-3">
+          <div className="site-footer-column">
             <p className="site-footer-heading">Data sources</p>
             <p className="site-footer-body">
               Not affiliated with {config.affiliationLabel}. {config.sourceLead}
@@ -44,47 +82,28 @@ export function SiteFooter({ league }: { league?: FooterLeague }) {
               Historical stats cover {config.historyRange}.
             </p>
           </div>
-          <div>
+          <div className="site-footer-column">
             <p className="site-footer-heading site-footer-heading--explore">Explore</p>
-            <ul className="site-footer-explore space-y-1.5">
-              {config.exploreLinks.map((item) => {
-                const className = "site-footer-link";
-
-                if (item.external) {
-                  return (
-                    <li key={item.key}>
-                      <a href={item.href} className={className}>
-                        {item.label}
-                      </a>
-                    </li>
-                  );
-                }
-
-                return (
-                  <li key={item.key}>
-                    <Link href={item.href} className={className}>
-                      {item.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+            <FooterLinkList
+              items={config.exploreLinks}
+              className="site-footer-links site-footer-explore"
+            />
           </div>
-          <div>
+          <div className="site-footer-column">
             <p className="site-footer-heading">Disclaimer</p>
             <p className="site-footer-body">
               Patterns from past games, not predictions. For research and
               entertainment only. Not betting advice. ATS/O-U uses nflverse
               historical closing lines on matched games only, not live
               sportsbook prices. Treat as exploratory historical context, not
-              picks.{" "}
-              <Link href="/methodology" className="site-footer-inline-link">
-                Methodology
-              </Link>
-              .
+              picks.
             </p>
+            <FooterLinkList
+              items={config.disclaimerLinks}
+              className="site-footer-links site-footer-disclaimer-links"
+            />
             {config.notifyLeague ? (
-              <p className="mt-3 site-footer-body">
+              <p className="site-footer-body site-footer-notify">
                 <SeasonNotifyCta league={config.notifyLeague} variant="link" />
               </p>
             ) : null}

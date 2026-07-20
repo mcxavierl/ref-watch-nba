@@ -10,6 +10,13 @@ export type FooterExploreLink = {
   external?: boolean;
 };
 
+export type FooterDisclaimerLink = {
+  key: string;
+  label: string;
+  href: string;
+  external?: boolean;
+};
+
 type FooterLeagueConfig = {
   affiliationLabel: string;
   sourceHref?: string;
@@ -18,6 +25,7 @@ type FooterLeagueConfig = {
   historyRange: string;
   notifyLeague?: "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
   exploreLinks: FooterExploreLink[];
+  disclaimerLinks: FooterDisclaimerLink[];
 };
 
 const LEAGUE_HISTORY_RANGE: Record<
@@ -56,19 +64,23 @@ function leagueExploreLinks(leagueId: HubHeroLeagueId): FooterExploreLink[] {
       label: "Matrix",
       href: prefix ? `${prefix}/matrix` : "/matrix",
     },
-    {
-      key: "methodology",
-      label: "Methodology",
-      href: "/methodology",
-    },
-    {
-      key: "contact",
-      label: "Contact Me",
-      href: "mailto:mcxl55@gmail.com",
-      external: true,
-    },
   ];
 }
+
+const FOOTER_DISCLAIMER_LINKS: FooterDisclaimerLink[] = [
+  { key: "methodology", label: "Methodology", href: "/methodology" },
+  {
+    key: "validation",
+    label: "Closing-line validation",
+    href: "/research/validation",
+  },
+  {
+    key: "contact",
+    label: "Contact",
+    href: "mailto:mcxl55@gmail.com",
+    external: true,
+  },
+];
 
 const OVERVIEW_EXPLORE: FooterExploreLink[] = [
   { key: "nba", label: "NBA hub", href: "/nba" },
@@ -77,14 +89,6 @@ const OVERVIEW_EXPLORE: FooterExploreLink[] = [
   { key: "epl", label: "Premier League hub", href: "/epl" },
   { key: "laliga", label: "La Liga hub", href: "/laliga" },
   { key: "about", label: "About", href: "/about" },
-  { key: "methodology", label: "Methodology", href: "/methodology" },
-  { key: "validation", label: "Closing-line validation", href: "/research/validation" },
-  {
-    key: "contact",
-    label: "Contact Me",
-    href: "mailto:mcxl55@gmail.com",
-    external: true,
-  },
 ];
 
 const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
@@ -94,6 +98,7 @@ const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
       "Independent multi-league referee research. No sportsbook affiliate links. Assignment sources vary by sport - open a league hub for specifics.",
     historyRange: "2016 – present",
     exploreLinks: OVERVIEW_EXPLORE,
+    disclaimerLinks: FOOTER_DISCLAIMER_LINKS,
   },
   nba: {
     affiliationLabel: "the NBA",
@@ -104,6 +109,7 @@ const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
     historyRange: LEAGUE_HISTORY_RANGE.nba,
     notifyLeague: "NBA",
     exploreLinks: leagueExploreLinks("nba"),
+    disclaimerLinks: FOOTER_DISCLAIMER_LINKS,
   },
   nhl: {
     affiliationLabel: "the NHL",
@@ -114,6 +120,7 @@ const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
     historyRange: LEAGUE_HISTORY_RANGE.nhl,
     notifyLeague: "NHL",
     exploreLinks: leagueExploreLinks("nhl"),
+    disclaimerLinks: FOOTER_DISCLAIMER_LINKS,
   },
   nfl: {
     affiliationLabel: "the NFL",
@@ -124,6 +131,7 @@ const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
     historyRange: LEAGUE_HISTORY_RANGE.nfl,
     notifyLeague: "NFL",
     exploreLinks: leagueExploreLinks("nfl"),
+    disclaimerLinks: FOOTER_DISCLAIMER_LINKS,
   },
   epl: {
     affiliationLabel: "the Premier League",
@@ -134,6 +142,7 @@ const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
     historyRange: LEAGUE_HISTORY_RANGE.epl,
     notifyLeague: "EPL",
     exploreLinks: leagueExploreLinks("epl"),
+    disclaimerLinks: FOOTER_DISCLAIMER_LINKS,
   },
   laliga: {
     affiliationLabel: "La Liga",
@@ -144,6 +153,7 @@ const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
     historyRange: LEAGUE_HISTORY_RANGE.laliga,
     notifyLeague: "LALIGA",
     exploreLinks: leagueExploreLinks("laliga"),
+    disclaimerLinks: FOOTER_DISCLAIMER_LINKS,
   },
   cbb: {
     affiliationLabel: "NCAA men's basketball",
@@ -154,6 +164,7 @@ const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
     historyRange: LEAGUE_HISTORY_RANGE.cbb,
     notifyLeague: "CBB",
     exploreLinks: leagueExploreLinks("cbb"),
+    disclaimerLinks: FOOTER_DISCLAIMER_LINKS,
   },
   cfb: {
     affiliationLabel: "NCAA football",
@@ -164,6 +175,7 @@ const FOOTER_CONFIG: Record<FooterLeague, FooterLeagueConfig> = {
     historyRange: LEAGUE_HISTORY_RANGE.cfb,
     notifyLeague: "CFB",
     exploreLinks: leagueExploreLinks("cfb"),
+    disclaimerLinks: FOOTER_DISCLAIMER_LINKS,
   },
 };
 
