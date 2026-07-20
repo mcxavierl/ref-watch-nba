@@ -4,17 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { A11ySettingsPanel } from "@/components/A11ySettingsPanel";
+import { LeagueSectionNav } from "@/components/LeagueSectionNav";
 import { Whistle } from "@/components/icons/Whistle";
 import {
-  leagueFromPathname,
+  headerActiveLeague,
   SITE_HOME_PATH,
 } from "@/lib/leagues";
+import { LEAGUE_MANIFEST } from "@/lib/league-manifest";
 import { LeagueNav } from "./SiteNav";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const resolvedPath = pathname ?? "/";
-  const leagueId = leagueFromPathname(resolvedPath);
+  const sectionLeagueId = headerActiveLeague(resolvedPath);
+  const showSectionNav = Boolean(
+    sectionLeagueId && LEAGUE_MANIFEST[sectionLeagueId]?.routed,
+  );
   const homeHref = SITE_HOME_PATH;
   const [scrolled, setScrolled] = useState(false);
 
@@ -28,7 +33,7 @@ export function SiteHeader() {
   return (
     <div
       className={`site-chrome${scrolled ? " site-chrome--scrolled" : ""}`}
-      data-league={leagueId}
+      data-league={sectionLeagueId ?? undefined}
     >
       <header className="site-header">
         <div className="site-header-inner">
@@ -51,6 +56,12 @@ export function SiteHeader() {
           <div className="site-header-util">
             <A11ySettingsPanel />
           </div>
+
+          {showSectionNav && sectionLeagueId ? (
+            <div className="site-header-nav">
+              <LeagueSectionNav leagueId={sectionLeagueId} />
+            </div>
+          ) : null}
         </div>
       </header>
     </div>

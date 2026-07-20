@@ -67,6 +67,23 @@ jobs:
       - name: Next.js production build
         run: npm run build:next
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Theme matrix contrast audit
+        run: npm run audit:theme-matrix
+        env:
+          THEME_MATRIX_BASE_URL: http://127.0.0.1:3099
+
+      - name: Color drift audit
+        run: npm run audit:color-drift
+
+      - name: Design token parity audit
+        run: npm run audit:design-tokens
+
+      - name: Clinical card consistency audit
+        run: npm run audit:card-consistency
+
       - name: Unit tests
         run: npm run test
 

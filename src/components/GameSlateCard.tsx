@@ -238,7 +238,7 @@ export function GameSlateCard({
 
       <div className="space-y-2.5 px-4 py-5 sm:px-5">
         {metrics.insufficientSample ? (
-          <p className="text-sm text-zinc-600">
+          <p className="text-sm text-muted">
             Not enough qualified crew history ({metrics.crew.length} official
             {metrics.crew.length === 1 ? "" : "s"}, need 2+ refs at sample
             gate). No crew averages shown.
@@ -328,7 +328,7 @@ export function GameSlateCard({
         </summary>
         <div className="border-t border-border-subtle bg-zinc-50/40">
           {metrics.insufficientSample ? (
-            <p className="px-4 py-4 text-sm text-zinc-600 sm:px-5">
+            <p className="px-4 py-4 text-sm text-muted sm:px-5">
               Crew metrics require at least two officials above the sample gate.
             </p>
           ) : (

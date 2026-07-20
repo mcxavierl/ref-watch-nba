@@ -494,11 +494,12 @@
 .overview-top-story-meta-pill .league-nav-mark--epl,
 .overview-top-story-meta-pill .league-nav-mark[data-league="epl"] {
   height: 1.35rem;
-  width: auto;
+  width: 1.35rem;
   max-width: 1.5rem;
+  max-height: 1.5rem;
   object-fit: contain;
   object-position: center;
-  transform: translateX(1px);
+  transform: none;
 }
 
 .overview-lead--stories {
@@ -1237,12 +1238,13 @@
 .overview-catalog-mark .league-nav-mark--epl,
 .overview-catalog-mark .league-nav-mark[data-league="epl"] {
   height: 1.25rem;
-  width: auto;
+  width: 1.25rem;
   max-width: 1.35rem;
+  max-height: 1.35rem;
   object-fit: contain;
   object-position: center;
-  margin-inline: auto;
-  transform: translateX(1px);
+  margin: 0;
+  transform: none;
 }
 
 .overview-catalog-mark .league-nav-mark--cbb,
@@ -1502,12 +1504,13 @@ html.dark .overview-catalog-mark {
 .overview-slate-league-mark .league-nav-mark--epl,
 .overview-slate-league-mark .league-nav-mark[data-league="epl"] {
   height: 1.25rem;
-  width: auto;
+  width: 1.25rem;
   max-width: 1.35rem;
+  max-height: 1.35rem;
   object-fit: contain;
   object-position: center;
-  margin-inline: auto;
-  transform: translateX(1px);
+  margin: 0;
+  transform: none;
 }
 
 .overview-slate-league-mark .league-nav-mark--laliga,

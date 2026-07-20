@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { CollegeLeagueGate } from "@/components/CollegeLeagueGate";
 import { LocalOnlyLeagueGate } from "@/components/LocalOnlyLeagueGate";
-import { LeagueSectionNav } from "@/components/LeagueSectionNav";
 import { PageContentFadeIn } from "@/components/PageContentFadeIn";
 import { preloadLeagueRefStatsForPath } from "@/lib/edge-preload";
 import {
@@ -29,12 +28,7 @@ export default async function LeagueHubLayout({ children, params }: LayoutProps)
   const pathname = (await headers()).get("x-pathname") ?? LEAGUE_MANIFEST[league].pathPrefix;
   await preloadLeagueRefStatsForPath(SITE_URL, league as Parameters<typeof preloadLeagueRefStatsForPath>[1], pathname);
 
-  const content = (
-    <>
-      <LeagueSectionNav leagueId={league} />
-      <PageContentFadeIn>{children}</PageContentFadeIn>
-    </>
-  );
+  const content = <PageContentFadeIn>{children}</PageContentFadeIn>;
 
   if (league === "cbb" || league === "cfb") {
     return (

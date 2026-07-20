@@ -119,4 +119,57 @@ describe("design audit guardrails", () => {
     assert.match(gsni, /<Pill variant="category"/);
     assert.match(readSrc("src/components/ConfidenceTierBadge.tsx"), /pill-constrain-text/);
   });
+
+  it("theme matrix contrast audit is wired for CI", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:theme-matrix"] ?? "", /audit-theme-matrix/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:theme-matrix/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Theme matrix contrast audit/);
+    assert.match(readSrc("src/app/theme-matrix/page.tsx"), /WorldCupFinalSection/);
+    assert.match(readSrc("src/app/robots.ts"), /\/theme-matrix/);
+  });
+
+  it("color drift audit guards clinical surfaces and hex allowlists", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:color-drift"] ?? "", /audit-color-drift/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:color-drift/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Color drift audit/);
+    assert.match(readSrc("src/components/hub/ClinicalCard.tsx"), /border-subtle/);
+    assert.doesNotMatch(readSrc("src/components/hub/ClinicalCard.tsx"), /border-\[#/);
+  });
+
+  it("design token parity audit guards clinical, accent, and wc tokens", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:design-tokens"] ?? "", /audit-design-tokens/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:design-tokens/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Design token parity audit/);
+    assert.match(readSrc("src/app/globals.css"), /--wc-gold:\s*var\(--wc-research-accent\)/);
+    assert.match(readSrc("figma/design-tokens.json"), /"semantic"/);
+  });
+
+  it("clinical card consistency audit guards hub primitives and ref-card wiring", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:card-consistency"] ?? "", /audit-card-consistency/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:card-consistency/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Clinical card consistency audit/);
+    assert.match(readSrc("src/components/hub/RefCard.tsx"), /CLINICAL MODERN STANDARD/);
+    assert.match(readSrc("src/components/hub/ClinicalCard.tsx"), /backdrop-blur-md/);
+  });
+
+  it("renders league section nav inside sticky site header", () => {
+    const header = readSrc("src/components/SiteHeader.tsx");
+    const layout = readSrc("src/app/[league]/layout.tsx");
+    assert.match(header, /site-header-nav/);
+    assert.match(header, /LeagueSectionNav/);
+    assert.doesNotMatch(layout, /LeagueSectionNav/);
+    assert.match(readSrc("src/app/globals.css"), /\.site-header-inner:has\(\.site-header-nav:not\(:empty\)\)/);
+  });
 });

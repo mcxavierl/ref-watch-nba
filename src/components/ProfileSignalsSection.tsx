@@ -87,8 +87,8 @@ function SignalCard({
       : "min-w-0 flex-1 text-base font-semibold text-zinc-900";
   const bodyClass =
     variant === "sidebar"
-      ? "mt-2 text-xs leading-relaxed text-zinc-600"
-      : "mt-2 text-sm leading-relaxed text-zinc-600";
+      ? "mt-2 text-xs leading-relaxed text-muted"
+      : "mt-2 text-sm leading-relaxed text-muted";
 
   return (
     <div id={STAT_CARD_ANCHOR.profileSignal(signal.kind)} data-stat-card="true" className="profile-signal-card stat-card">

@@ -7,7 +7,7 @@ import type { ElementType, ReactNode } from "react";
  * Glass-morphism card shell: backdrop-blur-md, thin 1px border, monochromatic frame.
  */
 export const CLINICAL_CARD_CLASS =
-  "clinical-card backdrop-blur-md border border-[#E5E7EB]";
+  "clinical-card backdrop-blur-md border border-subtle";
 
 export function ClinicalCard<T extends ElementType = "div">({
   as,
