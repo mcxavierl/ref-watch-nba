@@ -10,10 +10,17 @@ import {
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
 
+function primaryInsightLine(game: OverviewSlateEntry): string | undefined {
+  return game.gameContextLine ?? game.lastMeetingLine ?? game.teamContextLine ?? game.matchupInsight;
+}
+
 export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateLabel = formatSlateDateLabel(game.slateDate);
+  const insightLine = primaryInsightLine(game);
+  const secondaryLine =
+    insightLine !== game.matchupInsight ? game.matchupInsight : undefined;
 
   return (
     <article
@@ -33,7 +40,7 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
           ) : null}
         </div>
         <Link href={game.href} className="upcoming-game-card__cta rw-focus-ring">
-          Open slate
+          Slate
         </Link>
       </header>
 
@@ -54,11 +61,21 @@ export function UpcomingGameCard({ game }: { game: OverviewSlateEntry }) {
             <span className="upcoming-game-card__team-abbr">{homeTeam.abbr}</span>
           </div>
         </div>
-        <div className="upcoming-game-card__context-slot">
-          {game.gameContextLine ? (
-            <p className="upcoming-game-card__context">{game.gameContextLine}</p>
-          ) : null}
-        </div>
+        {(insightLine || game.officialsLine || secondaryLine) && (
+          <div className="upcoming-game-card__context-slot">
+            {insightLine ? (
+              <p className="upcoming-game-card__context">{insightLine}</p>
+            ) : null}
+            {secondaryLine ? (
+              <p className="upcoming-game-card__context upcoming-game-card__context--meta">
+                {secondaryLine}
+              </p>
+            ) : null}
+            {game.officialsLine ? (
+              <p className="upcoming-game-card__meta">{game.officialsLine}</p>
+            ) : null}
+          </div>
+        )}
       </div>
     </article>
   );

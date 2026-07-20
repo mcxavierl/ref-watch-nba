@@ -8,6 +8,8 @@ import type { LeagueId } from "@/lib/leagues";
 import { getTeam as getNflTeam } from "@/lib/nfl/teams";
 import { getTeam as getNhlTeam } from "@/lib/nhl/teams";
 import { getTeam as getNbaTeam } from "@/lib/teams";
+import { getTeam as getWnbaTeam } from "@/lib/wnba/teams";
+import { normalizeWnbaAbbr, wnbaAbbrAliases } from "@/lib/wnba/abbr";
 
 const LEAGUE_TO_DATA: Partial<Record<LeagueId, DataLeague>> = {
   nba: "NBA",
@@ -17,6 +19,7 @@ const LEAGUE_TO_DATA: Partial<Record<LeagueId, DataLeague>> = {
   laliga: "LALIGA",
   cbb: "CBB",
   cfb: "CFB",
+  wnba: "WNBA",
 };
 
 const RECENT_SEASON_WINDOW = 5;
@@ -24,6 +27,7 @@ const RECENT_SEASON_WINDOW = 5;
 function teamAliases(leagueId: LeagueId, abbr: string): string[] {
   const key = abbr.toUpperCase();
   if (leagueId === "nfl" && (key === "LAC" || key === "SD")) return ["LAC", "SD"];
+  if (leagueId === "wnba") return wnbaAbbrAliases(abbr);
   return [key];
 }
 
@@ -95,13 +99,15 @@ function formatShortDate(date: string): string {
 }
 
 function teamDisplayName(leagueId: LeagueId, abbr: string): string {
-  const key = abbr.toUpperCase();
+  const key = normalizeWnbaAbbr(abbr);
   const team =
     leagueId === "epl"
       ? getEplTeam(key)
       : leagueId === "laliga"
         ? getLaligaTeam(key)
-        : undefined;
+        : leagueId === "wnba"
+          ? getWnbaTeam(key)
+          : undefined;
   return team?.abbr ?? key;
 }
 
@@ -161,7 +167,13 @@ function formatTeamRecentOrMissing(leagueId: LeagueId, teamAbbr: string): string
 
   const label = teamDisplayName(leagueId, teamAbbr);
   const leagueLabel =
-    leagueId === "epl" ? "EPL" : leagueId === "laliga" ? "La Liga" : "league";
+    leagueId === "epl"
+      ? "EPL"
+      : leagueId === "laliga"
+        ? "La Liga"
+        : leagueId === "wnba"
+          ? "WNBA"
+          : "league";
   return `${label}: no recent ${leagueLabel} log on file`;
 }
 
@@ -171,7 +183,7 @@ export function buildOverviewTeamRecentContextLine(
   awayTeam: string,
   homeTeam: string,
 ): string | undefined {
-  if (leagueId !== "epl" && leagueId !== "laliga") return undefined;
+  if (leagueId !== "epl" && leagueId !== "laliga" && leagueId !== "wnba") return undefined;
 
   const awayLine = formatTeamRecentOrMissing(leagueId, awayTeam);
   const homeLine = formatTeamRecentOrMissing(leagueId, homeTeam);
@@ -195,7 +207,9 @@ function teamCityForLeague(leagueId: LeagueId, abbr: string): string | undefined
                 ? getCbbTeam(key)
                 : leagueId === "cfb"
                   ? getCfbTeam(key)
-                  : undefined;
+                  : leagueId === "wnba"
+                    ? getWnbaTeam(normalizeWnbaAbbr(key))
+                    : undefined;
   return team?.city;
 }
 
@@ -216,7 +230,9 @@ function teamNameForLeague(leagueId: LeagueId, abbr: string): string | undefined
                 ? getCbbTeam(key)
                 : leagueId === "cfb"
                   ? getCfbTeam(key)
-                  : undefined;
+                  : leagueId === "wnba"
+                    ? getWnbaTeam(normalizeWnbaAbbr(key))
+                    : undefined;
   return team?.name;
 }
 

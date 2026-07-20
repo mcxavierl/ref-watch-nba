@@ -22,6 +22,8 @@ export const WNBA_TEAMS: WnbaTeam[] = [
   { abbr: "MIN", name: "Lynx", city: "Minnesota", conference: "West" },
   { abbr: "PHO", name: "Mercury", city: "Phoenix", conference: "West" },
   { abbr: "SEA", name: "Storm", city: "Seattle", conference: "West" },
+  { abbr: "TOR", name: "Tempo", city: "Toronto", conference: "East" },
+  { abbr: "POR", name: "Fire", city: "Portland", conference: "West" },
 ];
 
 export const WNBA_TEAM_ABBRS = WNBA_TEAMS.map((t) => t.abbr);
@@ -50,8 +52,10 @@ export function teamWithArticle(team: WnbaTeam): string {
   return `the ${team.name}`;
 }
 
+import { wnbaLogoAbbr } from "@/lib/wnba/abbr";
+
 export function teamLogoUrl(abbr: string): string {
-  return `https://a.espncdn.com/i/teamlogos/wnba/500/scoreboard/${abbr.toLowerCase()}.png`;
+  return `https://a.espncdn.com/i/teamlogos/wnba/500/scoreboard/${wnbaLogoAbbr(abbr)}.png`;
 }
 
 /** Match assignment strings like "Las Vegas", "LVA", "Aces", etc. */
