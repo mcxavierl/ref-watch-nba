@@ -42,39 +42,39 @@ export function LeagueTrendsTable({
 
   return (
     <div className="data-card overflow-x-auto stat-data-container master-table-scroll">
-      <table className={`w-full ${minWidth} text-sm`}>
+      <table className={`data-table w-full ${minWidth}`}>
         <thead>
-          <tr className="border-b border-border-subtle bg-surface-raised/60 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
-            <th className="px-4 py-3 sm:px-5">Season</th>
-            <th className="data-table-num px-4 py-3 master-table-head-secondary">
+          <tr className="data-table-head">
+            <th className="px-4 py-2 sm:px-4">Season</th>
+            <th className="data-table-num px-4 py-2 master-table-head-secondary">
               {config.metrics.gamesColumn}
             </th>
-            <th className="data-table-num px-4 py-3">{scoringHeader(leagueId)}</th>
-            <th className="data-table-num px-4 py-3 master-table-head-secondary">
+            <th className="data-table-num px-4 py-2">{scoringHeader(leagueId)}</th>
+            <th className="data-table-num px-4 py-2 master-table-head-secondary">
               {whistleHeader(leagueId)}
             </th>
             {showOtRate && (
-              <th className="data-table-num px-4 py-3 master-table-head-secondary">OT rate</th>
+              <th className="data-table-num px-4 py-2 master-table-head-secondary">OT rate</th>
             )}
           </tr>
         </thead>
         <tbody className="divide-y divide-border-subtle">
           {rows.map((row) => (
             <tr key={row.season} className="hover:bg-zinc-50">
-              <td className="px-4 py-3 font-medium text-zinc-900 sm:px-5">
+              <td className="px-4 py-2 font-medium text-zinc-900 sm:px-4">
                 {row.season}
               </td>
-              <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-700 master-table-metric-secondary">
+              <td className="data-table-num px-4 py-2 text-zinc-700 master-table-metric-secondary">
                 {row.gameCount.toLocaleString()}
               </td>
-              <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800">
+              <td className="data-table-num px-4 py-2 text-zinc-800">
                 {row.leagueAvgTotal}
               </td>
-              <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800 master-table-metric-secondary">
+              <td className="data-table-num px-4 py-2 text-zinc-800 master-table-metric-secondary">
                 {formatWhistle(row, leagueId)}
               </td>
               {showOtRate && (
-                <td className="data-table-num px-4 py-3 font-mono tabular-nums text-zinc-800 master-table-metric-secondary">
+                <td className="data-table-num px-4 py-2 text-zinc-800 master-table-metric-secondary">
                   {row.leagueOvertimeRate !== undefined
                     ? formatPct(row.leagueOvertimeRate)
                     : formatPct(0)}

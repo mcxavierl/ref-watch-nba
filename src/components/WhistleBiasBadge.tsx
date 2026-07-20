@@ -1,9 +1,10 @@
+import { STATE_CHIP_CLASS } from "@/constants/colors";
 import { formatSigned } from "@/lib/data";
 import type { WhistleBias } from "@/lib/types";
 
 const teamTones = {
   raptors: {
-    chip: "border-red-200 bg-red-50 text-red-800",
+    chip: STATE_CHIP_CLASS.risk,
   },
   lakers: {
     chip: "border-purple-200 bg-purple-50 text-purple-900",
@@ -12,11 +13,11 @@ const teamTones = {
 
 const neutralStyles = {
   opponent: {
-    chip: "border-sky-300 bg-sky-50 text-sky-800",
+    chip: STATE_CHIP_CLASS.neutral,
     label: "More fouls on opponents",
   },
   neutral: {
-    chip: "border-zinc-300 bg-zinc-100 text-zinc-700",
+    chip: STATE_CHIP_CLASS.neutral,
     label: "Roughly even fouls",
   },
 } as const;

@@ -34,3 +34,22 @@ export function deltaStateClass(delta: number): StateColorClass {
   if (delta < 0) return STATE_COLOR_CLASS.risk;
   return STATE_COLOR_CLASS.neutral;
 }
+
+export type KpiTone = "positive" | "negative" | "neutral";
+
+/** Maps KPI / delta tone labels to terminal state color classes. */
+export function kpiToneStateClass(tone: KpiTone): StateColorClass {
+  if (tone === "positive") return STATE_COLOR_CLASS.stable;
+  if (tone === "negative") return STATE_COLOR_CLASS.risk;
+  return STATE_COLOR_CLASS.neutral;
+}
+
+/** Status chip surfaces for risk / stable / neutral badges. */
+export const STATE_CHIP_CLASS = {
+  risk: "state-chip-risk",
+  stable: "state-chip-stable",
+  neutral: "state-chip-neutral",
+  caution: "state-chip-caution",
+} as const;
+
+export type StateChipClass = (typeof STATE_CHIP_CLASS)[keyof typeof STATE_CHIP_CLASS];

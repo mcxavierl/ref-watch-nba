@@ -1,17 +1,12 @@
 import type { ReactNode } from "react";
 import { inferKpiTone, type KpiDataPillTone } from "@/components/ui/KpiDataPill";
+import { kpiToneStateClass } from "@/constants/colors";
 
 const SIZE_CLASS = {
   sm: "text-lg font-bold",
   md: "text-2xl font-bold",
   lg: "text-3xl font-bold",
 } as const;
-
-const TONE_CLASS: Record<KpiDataPillTone, string> = {
-  positive: "text-green-400",
-  negative: "text-red-400",
-  neutral: "text-white",
-};
 
 function directionIcon(tone: KpiDataPillTone): string | null {
   if (tone === "positive") return "▲";
@@ -41,7 +36,7 @@ export function DirectionalDeltaValue({
 
   return (
     <span
-      className={`insight-split-delta-value insight-split-delta-value--${resolvedTone} inline-flex items-baseline gap-1 tabular-nums tracking-tight ${SIZE_CLASS[size]} ${TONE_CLASS[resolvedTone]} ${className}`.trim()}
+      className={`insight-split-delta-value insight-split-delta-value--${resolvedTone} inline-flex items-baseline gap-2 tabular-nums tracking-tight ${SIZE_CLASS[size]} ${kpiToneStateClass(resolvedTone)} ${className}`.trim()}
       aria-label={
         resolvedTone === "positive"
           ? `${value}, positive change`

@@ -90,6 +90,30 @@
   color: var(--state-risk);
 }
 
+.state-chip-risk {
+  border: 1px solid color-mix(in srgb, var(--state-risk) 35%, var(--border-subtle));
+  background: color-mix(in srgb, var(--state-risk) 12%, var(--bg-surface-2));
+  color: var(--state-risk);
+}
+
+.state-chip-stable {
+  border: 1px solid color-mix(in srgb, var(--state-stable) 35%, var(--border-subtle));
+  background: color-mix(in srgb, var(--state-stable) 12%, var(--bg-surface-2));
+  color: var(--state-stable);
+}
+
+.state-chip-neutral {
+  border: 1px solid color-mix(in srgb, var(--state-neutral) 30%, var(--border-subtle));
+  background: color-mix(in srgb, var(--state-neutral) 10%, var(--bg-surface-2));
+  color: var(--state-neutral);
+}
+
+.state-chip-caution {
+  border: 1px solid color-mix(in srgb, var(--state-caution) 35%, var(--border-subtle));
+  background: color-mix(in srgb, var(--state-caution) 12%, var(--bg-surface-2));
+  color: var(--state-caution);
+}
+
 /* ── Ref profile table density ───────────────────────────────────────── */
 
 .ref-data-table th.data-table-num,
@@ -153,6 +177,10 @@
   .ref-profile-depth-expand-panel:not(.is-expanded) {
     display: none;
   }
+
+  .ref-master-insight-pills {
+    display: none;
+  }
 }
 
 @media (min-width: 48rem) {
@@ -174,6 +202,26 @@
 @media (min-width: 48rem) {
   .ref-profile-edge-stack {
     gap: var(--space-4);
+  }
+}
+
+/* Mobile sharp view: archetype stays above the fold */
+@media (max-width: 47.99rem) {
+  .page-profile-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .ref-dashboard-grid {
+    gap: var(--space-4);
+  }
+
+  .ref-dashboard-main {
+    gap: var(--space-4);
+  }
+
+  .ref-profile-meta {
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
   }
 }
 

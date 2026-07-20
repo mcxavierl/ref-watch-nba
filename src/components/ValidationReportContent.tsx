@@ -35,20 +35,28 @@ function SignalReportSection({ report }: { report: ValidationSignalReport }) {
             <thead>
               <tr>
                 <th scope="col">Bucket</th>
-                <th scope="col">n</th>
-                <th scope="col">O/U hit rate</th>
-                <th scope="col">ATS hit rate</th>
-                <th scope="col">ROI (-110)</th>
+                <th scope="col" className="data-table-num">n</th>
+                <th scope="col" className="data-table-num">O/U hit rate</th>
+                <th scope="col" className="data-table-num">ATS hit rate</th>
+                <th scope="col" className="data-table-num">ROI (-110)</th>
               </tr>
             </thead>
             <tbody>
               {report.buckets.map((bucket) => (
                 <tr key={bucket.label}>
                   <td data-label="Bucket">{bucket.label}</td>
-                  <td data-label="n">{bucket.sampleSize}</td>
-                  <td data-label="O/U hit rate">{formatHitRate(bucket.ouHitRate)}</td>
-                  <td data-label="ATS hit rate">{formatHitRate(bucket.atsHitRate)}</td>
-                  <td data-label="ROI (-110)">{formatRoiPct(bucket.roiPct)}</td>
+                  <td data-label="n" className="data-table-num tabular-nums">
+                    {bucket.sampleSize}
+                  </td>
+                  <td data-label="O/U hit rate" className="data-table-num tabular-nums">
+                    {formatHitRate(bucket.ouHitRate)}
+                  </td>
+                  <td data-label="ATS hit rate" className="data-table-num tabular-nums">
+                    {formatHitRate(bucket.atsHitRate)}
+                  </td>
+                  <td data-label="ROI (-110)" className="data-table-num tabular-nums">
+                    {formatRoiPct(bucket.roiPct)}
+                  </td>
                 </tr>
               ))}
             </tbody>

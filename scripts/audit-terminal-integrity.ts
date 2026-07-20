@@ -194,6 +194,46 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "market impact table numeric class",
       ),
   },
+  {
+    name: "DirectionalDeltaValue uses shared KPI tone state colors",
+    run: () =>
+      auditFileContains(
+        "src/components/shared/DirectionalDeltaValue.tsx",
+        /kpiToneStateClass/,
+        "directional delta state colors",
+      ),
+  },
+  {
+    name: "GsniDeltaValue uses shared KPI tone state colors",
+    run: () =>
+      auditFileContains(
+        "src/components/GsniDeltaValue.tsx",
+        /kpiToneStateClass/,
+        "gsni delta state colors",
+      ),
+  },
+  {
+    name: "LeagueTrendsTable uses data-table and data-table-num",
+    run: () => {
+      const content = read("src/components/LeagueTrendsTable.tsx");
+      if (!content.includes("data-table") || !content.includes("data-table-num")) {
+        return {
+          ok: false,
+          message: "LeagueTrendsTable missing data-table or data-table-num",
+        };
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "Mobile ref profile hides master insight pills below md",
+    run: () =>
+      auditFileContains(
+        "src/components/terminal-integrity.css",
+        /\.ref-master-insight-pills/,
+        "mobile insight pill collapse",
+      ),
+  },
 ];
 
 function main(): void {
