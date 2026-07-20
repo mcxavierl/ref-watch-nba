@@ -3,6 +3,13 @@
   flex-direction: column;
   gap: var(--space-4);
   min-width: 0;
+  padding: var(--space-6);
+}
+
+@media (max-width: 639px) {
+  .scouting-report-card {
+    padding: var(--space-4);
+  }
 }
 
 .scouting-report-head {

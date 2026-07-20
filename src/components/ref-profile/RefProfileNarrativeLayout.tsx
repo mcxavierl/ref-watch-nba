@@ -91,16 +91,25 @@ export function RefProfileNarrativeLayout({
               hideWhistleMetrics={hideWhistleMetrics}
             />
           ) : (
-            <section className="ref-profile-section ref-market-impact">
-              <h2 className="ref-profile-section-title">Market Impact</h2>
-              <RefStatGrid
-                profile={profile}
-                overBaseline={stats.meta.leagueOverBaseline}
-                foulLabel={statGridLabels?.foulLabel}
-                scoreLabel={statGridLabels?.scoreLabel}
-                overLabel={statGridLabels?.overLabel}
-                showMetrics={qualified}
-              />
+            <section
+              className="ref-profile-section ref-market-impact"
+              aria-labelledby="ref-market-impact-fallback-title"
+            >
+              <div className="ref-table-section-header">
+                <h2 id="ref-market-impact-fallback-title" className="ref-profile-section-title m-0">
+                  Market Impact
+                </h2>
+              </div>
+              <div className="ref-table-section-body">
+                <RefStatGrid
+                  profile={profile}
+                  overBaseline={stats.meta.leagueOverBaseline}
+                  foulLabel={statGridLabels?.foulLabel}
+                  scoreLabel={statGridLabels?.scoreLabel}
+                  overLabel={statGridLabels?.overLabel}
+                  showMetrics={qualified}
+                />
+              </div>
             </section>
           )}
         </div>

@@ -30,17 +30,15 @@ export function RefStatGrid({
 
   if (!showMetrics) {
     return (
-      <section className="ref-profile-section px-6 py-6">
-        <p className="text-sm font-normal text-slate-400">
-          Not enough games for reliable metrics yet ({profile.games} logged).
-          Check back after this official clears the sample gate.
-        </p>
-      </section>
+      <p className="text-sm font-normal text-slate-400">
+        Not enough games for reliable metrics yet ({profile.games.toLocaleString()} logged).
+        Check back after this official clears the sample gate.
+      </p>
     );
   }
 
   return (
-    <section className="ref-profile-section">
+    <>
       <div className="ref-table-section-header">
         <h2 className="font-semibold tracking-tight">General stats</h2>
       </div>
@@ -73,7 +71,7 @@ export function RefStatGrid({
           />
         </RefDashboardStatGrid>
       </div>
-    </section>
+    </>
   );
 }
 

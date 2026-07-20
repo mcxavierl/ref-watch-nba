@@ -11,7 +11,7 @@ import type { SeasonOfficialStatsEntry } from "@/lib/types";
 
 const okEntry = (
   overrides: Partial<Extract<SeasonOfficialStatsEntry, { status: "ok" }>> = {},
-): SeasonOfficialStatsEntry => ({
+): Extract<SeasonOfficialStatsEntry, { status: "ok" }> => ({
   status: "ok",
   primary_archetype: "procedural-stickler",
   consistency_score: 6,
