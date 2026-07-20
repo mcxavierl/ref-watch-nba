@@ -57,6 +57,7 @@ const PRE_MERGE_CHECKLIST: Array<{ step: string; command: string; ciStep: string
   { step: "Color drift", command: "npm run audit:color-drift", ciStep: "Color drift audit" },
   { step: "Design token parity", command: "npm run audit:design-tokens", ciStep: "Design token parity audit" },
   { step: "Clinical card consistency", command: "npm run audit:card-consistency", ciStep: "Clinical card consistency audit" },
+  { step: "Metric semantics", command: "npm run audit:metric-semantics", ciStep: "Metric semantics audit" },
   { step: "Unit tests", command: "npm run test", ciStep: "Unit tests" },
   { step: "Honesty audit", command: "npm run honesty-audit", ciStep: "Honesty audit" },
 ];
