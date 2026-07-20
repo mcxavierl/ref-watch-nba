@@ -78,38 +78,33 @@ export function CloseGameSection({
             ) : (
               <>
                 <div className="ref-table-section-body">
-                  <div className="pressure-matrix-table-scroll">
-                    <table className="ref-data-table data-table pressure-matrix-table">
-                      <thead>
-                        <tr className="data-table-head">
-                          <th className="whitespace-nowrap">Metric</th>
-                          <th className="data-table-num whitespace-nowrap">Late-game avg</th>
-                          <th className="data-table-num whitespace-nowrap">Season avg</th>
-                          <th className="data-table-num whitespace-nowrap">Pressure impact Δ</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {m.compareRows.map((row) => (
-                          <tr key={row.label}>
-                            <td className="whitespace-nowrap text-sm font-normal text-slate-300">
-                              {row.label}
-                            </td>
-                            <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-slate-50">
-                              {row.windowValue}
-                            </td>
-                            <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-slate-400">
+                  <ul className="pressure-matrix-metrics">
+                    {m.compareRows.map((row) => (
+                      <li key={row.label} className="pressure-matrix-metric">
+                        <p className="pressure-matrix-metric-label">{row.label}</p>
+                        <dl className="pressure-matrix-metric-values">
+                          <div className="pressure-matrix-metric-value">
+                            <dt>Late-game avg</dt>
+                            <dd className="font-tabular tabular-nums text-slate-50">{row.windowValue}</dd>
+                          </div>
+                          <div className="pressure-matrix-metric-value">
+                            <dt>Season avg</dt>
+                            <dd className="font-tabular tabular-nums text-slate-400">
                               {row.fullGameValue}
-                            </td>
-                            <td
-                              className={`data-table-num whitespace-nowrap font-tabular text-sm font-medium tabular-nums ${deltaClassName(row.delta)}`}
+                            </dd>
+                          </div>
+                          <div className="pressure-matrix-metric-value">
+                            <dt>Pressure impact</dt>
+                            <dd
+                              className={`font-tabular text-sm font-medium tabular-nums ${deltaClassName(row.delta)}`}
                             >
                               {row.delta}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                            </dd>
+                          </div>
+                        </dl>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
                 <div className="border-t border-border-subtle px-4 py-3 sm:px-5">
                   <p className="text-xs font-normal text-slate-500">

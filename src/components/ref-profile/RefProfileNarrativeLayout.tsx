@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CloseGameSection } from "@/components/CloseGameSection";
 import { RefProfileDepthExpand } from "@/components/ref-profile/RefProfileDepthExpand";
 import { RefProfileOfficiatingBiasSection } from "@/components/ref-profile/RefProfileOfficiatingBiasSection";
 import { RefProfileMarketImpactPanel } from "@/components/ref-profile/RefProfileMarketImpactPanel";
@@ -77,8 +78,6 @@ export function RefProfileNarrativeLayout({
             stats={stats}
             qualified={qualified}
             gsniMetrics={gsniMetrics}
-            closeGameMetrics={closeGameMetrics}
-            closeGameLeague={closeGameLeague}
             whistleAnalytics={whistleAnalytics}
           />
 
@@ -113,6 +112,15 @@ export function RefProfileNarrativeLayout({
             </section>
           )}
         </div>
+
+        {closeGameMetrics.length > 0 ? (
+          <CloseGameSection
+            metrics={closeGameMetrics}
+            subjectLabel={profile.name}
+            league={closeGameLeague}
+            embedded
+          />
+        ) : null}
 
         <ScoutingReportDepth {...scoutingProps} />
 

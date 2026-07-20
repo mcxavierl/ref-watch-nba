@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { Sparkles } from "lucide-react";
-import { CloseGameSection } from "@/components/CloseGameSection";
 import { RefereeWhistleDispositionStrip } from "@/components/RefereeWhistleDispositionStrip";
 import { RefGsniSection } from "@/components/RefGsniSection";
 import { GsniGauge } from "@/components/GsniGauge";
@@ -8,13 +7,10 @@ import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { gsniShrinkageFromProfile } from "@/lib/gsni-display";
 import { isWhistleTaxonomyLeague } from "@/config/penalty-types";
-import type { CloseGameMetrics } from "@/lib/close-game";
 import type { LeagueId } from "@/lib/leagues";
 import { whistleIndexFromRefProfile } from "@/lib/whistle-index";
 import type { RefGsniMetrics } from "@/lib/ref-gsni";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
-
-type CloseGameLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB" | "WNBA";
 
 /** Consolidated whistle index, analytics, and GSNI with gauge-first layout. */
 export function RefProfileOfficiatingBiasSection({
@@ -23,8 +19,6 @@ export function RefProfileOfficiatingBiasSection({
   stats,
   qualified,
   gsniMetrics,
-  closeGameMetrics,
-  closeGameLeague,
   whistleAnalytics,
 }: {
   profile: RefProfile;
@@ -32,8 +26,6 @@ export function RefProfileOfficiatingBiasSection({
   stats: RefStatsFile;
   qualified: boolean;
   gsniMetrics?: RefGsniMetrics | null;
-  closeGameMetrics?: CloseGameMetrics[];
-  closeGameLeague?: CloseGameLeague;
   whistleAnalytics?: ReactNode;
 }) {
   const whistleIndex = qualified ? whistleIndexFromRefProfile(profile) : null;
@@ -42,7 +34,7 @@ export function RefProfileOfficiatingBiasSection({
   const hasGsni = gsniMetrics !== undefined && gsniMetrics !== null;
   const hasWhistleBlock = whistleIndex !== null || whistleAnalytics || isWhistleTaxonomyLeague(leagueId);
 
-  if (!hasWhistleBlock && !hasGsni && !closeGameMetrics?.length) {
+  if (!hasWhistleBlock && !hasGsni) {
     return null;
   }
 
@@ -112,15 +104,6 @@ export function RefProfileOfficiatingBiasSection({
             </div>
           ) : null}
         </div>
-
-        {closeGameMetrics && closeGameMetrics.length > 0 && closeGameLeague ? (
-          <CloseGameSection
-            metrics={closeGameMetrics}
-            subjectLabel={profile.name}
-            league={closeGameLeague}
-            embedded
-          />
-        ) : null}
       </div>
     </section>
   );
