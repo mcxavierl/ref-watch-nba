@@ -81,6 +81,9 @@ jobs:
       - name: Design token parity audit
         run: npm run audit:design-tokens
 
+      - name: Clinical card consistency audit
+        run: npm run audit:card-consistency
+
       - name: Unit tests
         run: npm run test
 

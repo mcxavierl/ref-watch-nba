@@ -27,8 +27,9 @@ Do not merge until this passes locally **and** the GitHub **validate** check is 
 | 11 | `npm run audit:theme-matrix` | Theme matrix contrast audit |
 | 12 | `npm run audit:color-drift` | Color drift audit |
 | 13 | `npm run audit:design-tokens` | Design token parity audit |
-| 14 | `npm run test` | Unit tests |
-| 15 | `npm run honesty-audit` | Honesty audit |
+| 14 | `npm run audit:card-consistency` | Clinical card consistency audit |
+| 15 | `npm run test` | Unit tests |
+| 16 | `npm run honesty-audit` | Honesty audit |
 
 ## When overview snapshot sources change
 

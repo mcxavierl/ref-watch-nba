@@ -152,4 +152,15 @@ describe("design audit guardrails", () => {
     assert.match(readSrc("src/app/globals.css"), /--wc-gold:\s*var\(--wc-research-accent\)/);
     assert.match(readSrc("figma/design-tokens.json"), /"semantic"/);
   });
+
+  it("clinical card consistency audit guards hub primitives and ref-card wiring", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:card-consistency"] ?? "", /audit-card-consistency/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:card-consistency/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Clinical card consistency audit/);
+    assert.match(readSrc("src/components/hub/RefCard.tsx"), /CLINICAL MODERN STANDARD/);
+    assert.match(readSrc("src/components/hub/ClinicalCard.tsx"), /backdrop-blur-md/);
+  });
 });
