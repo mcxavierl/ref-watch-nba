@@ -43,6 +43,9 @@ async function main(): Promise<void> {
   execSync("npx tsx scripts/build-overview-snapshot.ts", { stdio: "inherit" });
   execSync("npx tsx scripts/build-overview-insights.ts", { stdio: "inherit" });
 
+  console.log("\n--- Ref-Intelligence archetypes ---");
+  execSync("npx tsx scripts/rebuild-ref-archetypes.ts", { stdio: "inherit" });
+
   console.log("\nNightly slate refresh complete.");
 }
 

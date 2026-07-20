@@ -9,12 +9,20 @@ import {
   SCOUTING_REPORT_SAMPLE_WINDOW,
 } from "@/lib/analytics/scouting-report-types";
 import { resolveOfficialProfile, type ResolvedOfficialProfile } from "@/lib/analytics/resolve-official-profile";
+import {
+  ARCHETYPE_BLURBS,
+  ARCHETYPE_DISPLAY_NAMES,
+  classifyAdminRatio,
+  computeRefereeArchetype,
+  type ArchetypeGameInput,
+} from "@/lib/analytics/referee-archetypes";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import { classifyMarqueeGame } from "@/lib/marquee-games";
 import type { LeagueId } from "@/lib/leagues";
 import { refSlug } from "@/lib/ref-slug";
 import { computeGameDispositionCounts } from "@/lib/whistle-disposition";
+import type { OfficialStats } from "@/lib/types";
 
 export type { GameScoutingMetadata, ScoutingReport, ScoutingStyleProfile } from "@/lib/analytics/scouting-report-types";
 export { FOUL_CLASSIFICATION_MAP } from "@/config/penalty-types";
@@ -183,6 +191,62 @@ function buildInsights(
   return insights;
 }
 
+function toArchetypeGameInput(game: RuntimeGameLogEntry): ArchetypeGameInput {
+  return {
+    homeScore: game.homeScore,
+    awayScore: game.awayScore,
+    totalFouls: game.totalFouls,
+    homeFlags: game.homeFlags,
+    awayFlags: game.awayFlags,
+    homeMinors: game.homeMinors,
+    awayMinors: game.awayMinors,
+    subjectiveFlags: game.subjectiveFlags,
+    administrativeFlags: game.administrativeFlags,
+    penaltyEvents: game.penaltyEvents,
+  };
+}
+
+function resolveOfficialStats(
+  leagueId: LeagueId,
+  sampleGames: RuntimeGameLogEntry[],
+  profile: ResolvedOfficialProfile["profile"],
+  subjectiveTotal: number,
+  administrativeTotal: number,
+  pressureSensitive: boolean,
+  pressureDeltaPct: number | null,
+): OfficialStats {
+  const computed = computeRefereeArchetype(
+    leagueId,
+    sampleGames.map(toArchetypeGameInput),
+  );
+  if (computed) {
+    return {
+      primaryArchetype: computed.primaryArchetype,
+      adminRatio: computed.adminRatio,
+      pressureSensitive: computed.pressureSensitive,
+      pressureDeltaPct: computed.pressureDeltaPct,
+      consistencyScore: computed.consistencyScore,
+      sampleGames: computed.sampleGames,
+      lastCalculated: computed.lastCalculated,
+    };
+  }
+
+  if (profile.officialStats) return profile.officialStats;
+
+  const subjective = subjectiveTotal || 1;
+  const adminRatio = round3(administrativeTotal / subjective);
+  return {
+    primaryArchetype: classifyAdminRatio(adminRatio),
+    adminRatio,
+    pressureSensitive,
+    pressureDeltaPct:
+      pressureDeltaPct !== null ? round3(pressureDeltaPct) : null,
+    consistencyScore: 5,
+    sampleGames: sampleGames.length,
+    lastCalculated: new Date().toISOString(),
+  };
+}
+
 function buildAnalyticsFallbackReport(
   profile: ResolvedOfficialProfile["profile"],
   gameMetadata: GameScoutingMetadata,
@@ -217,6 +281,17 @@ function buildAnalyticsFallbackReport(
     SCOUTING_REPORT_SAMPLE_WINDOW,
   );
 
+  const adminRatio = round3(administrative / subjective);
+  const officialStats: OfficialStats = profile.officialStats ?? {
+    primaryArchetype: classifyAdminRatio(adminRatio),
+    adminRatio,
+    pressureSensitive,
+    pressureDeltaPct,
+    consistencyScore: 6,
+    sampleGames,
+    lastCalculated: new Date().toISOString(),
+  };
+
   return {
     officialId: profile.slug,
     officialName: profile.name,
@@ -225,6 +300,11 @@ function buildAnalyticsFallbackReport(
     sampleGames,
     sampleWindow: SCOUTING_REPORT_SAMPLE_WINDOW,
     qualified: context.qualified,
+    archetype: officialStats.primaryArchetype,
+    archetypeDisplayName: ARCHETYPE_DISPLAY_NAMES[officialStats.primaryArchetype],
+    archetypeBlurb: ARCHETYPE_BLURBS[officialStats.primaryArchetype],
+    consistencyScore: officialStats.consistencyScore,
+    officialStats,
     styleProfile,
     pressureSensitive,
     pressureDeltaPct,
@@ -392,6 +472,16 @@ export function generateScoutingReport(
     sampleGames.length,
   );
 
+  const officialStats = resolveOfficialStats(
+    leagueId,
+    sampleGames,
+    profile,
+    subjectiveTotal,
+    administrativeTotal,
+    pressureSensitive,
+    pressureDeltaPct,
+  );
+
   return {
     officialId: profile.slug,
     officialName: profile.name,
@@ -400,6 +490,11 @@ export function generateScoutingReport(
     sampleGames: sampleGames.length,
     sampleWindow: SCOUTING_REPORT_SAMPLE_WINDOW,
     qualified,
+    archetype: officialStats.primaryArchetype,
+    archetypeDisplayName: ARCHETYPE_DISPLAY_NAMES[officialStats.primaryArchetype],
+    archetypeBlurb: ARCHETYPE_BLURBS[officialStats.primaryArchetype],
+    consistencyScore: officialStats.consistencyScore,
+    officialStats,
     styleProfile,
     pressureSensitive,
     pressureDeltaPct:

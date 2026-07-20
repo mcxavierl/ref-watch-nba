@@ -12,6 +12,7 @@ import {
   syncRefGameCountsFromLogs,
   type SyncRefGameCountsResult,
 } from "./fix-ref-game-counts";
+import { rebuildRefArchetypes } from "./rebuild-ref-archetypes";
 
 export interface SyncRefStatsFromLogsResult {
   nba: SyncNbaRefStatsResult;
@@ -22,6 +23,7 @@ export function syncRefStatsFromLogs(root?: string): SyncRefStatsFromLogsResult 
   const r = root ?? process.cwd();
   const nba = syncNbaRefStatsFromLogs(r);
   const otherLeagues = syncRefGameCountsFromLogs(r, { skipLeagues: ["nba"] });
+  rebuildRefArchetypes(r);
   return { nba, otherLeagues };
 }
 

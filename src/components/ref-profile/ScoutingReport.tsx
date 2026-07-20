@@ -1,4 +1,5 @@
 import { ClinicalCard } from "@/components/hub/ClinicalCard";
+import { ArchetypeCard } from "@/components/ref-profile/ArchetypeCard";
 import {
   generateScoutingReport,
   type GameScoutingMetadata,
@@ -44,7 +45,15 @@ export function ScoutingReport({
   const { styleProfile } = report;
 
   return (
-    <ClinicalCard
+    <>
+      <ArchetypeCard
+        displayName={report.archetypeDisplayName}
+        blurb={report.archetypeBlurb}
+        consistencyScore={report.consistencyScore}
+        officialStats={report.officialStats}
+      />
+
+      <ClinicalCard
       as="section"
       className="scouting-report-card ref-profile-section"
       aria-labelledby="ref-scouting-report-title"
@@ -127,5 +136,6 @@ export function ScoutingReport({
         classification. {!qualified ? "Sample gate not met for full profile metrics." : ""}
       </p>
     </ClinicalCard>
+    </>
   );
 }

@@ -319,6 +319,24 @@ export interface RefGeographyEntry {
   region?: string;
 }
 
+/** Referee intelligence persona derived from foul categorization ratios. */
+export type RefereeArchetypeId =
+  | "procedural-stickler"
+  | "game-manager"
+  | "balanced";
+
+/** Persisted archetype intelligence attached during nightly ingest rebuilds. */
+export interface OfficialStats {
+  primaryArchetype: RefereeArchetypeId;
+  adminRatio: number;
+  pressureSensitive: boolean;
+  pressureDeltaPct: number | null;
+  /** 1 (volatile) to 10 (highly consistent) whistle-volume profile. */
+  consistencyScore: number;
+  sampleGames: number;
+  lastCalculated: string;
+}
+
 export interface RefProfile {
   slug: string;
   name: string;
@@ -363,6 +381,8 @@ export interface RefProfile {
   nflAnalytics?: NflRefAnalytics;
   cfbAnalytics?: CfbRefAnalytics;
   eplAnalytics?: EplRefAnalytics;
+  /** Ref-Intelligence archetype persona recalculated from game-log foul taxonomy. */
+  officialStats?: OfficialStats;
   provenance?: {
     avgTotalPoints: MetricProvenance;
     overRate: MetricProvenance;

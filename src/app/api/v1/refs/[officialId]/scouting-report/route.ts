@@ -75,6 +75,8 @@ export async function GET(
       officialId,
       leagueId,
       generatedAt: report.generatedAt,
+      archetype: report.archetype,
+      consistencyScore: report.consistencyScore,
     },
   });
 }
