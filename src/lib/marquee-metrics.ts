@@ -37,6 +37,7 @@ const LEAGUE_TO_DATA: Record<(typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number], D
   nfl: "NFL",
   epl: "EPL",
   laliga: "LALIGA",
+  wnba: "WNBA",
 };
 
 function refSlug(name: string, number: number): string {

@@ -91,7 +91,8 @@ export function LeagueSlateHero({
           config.dataLeague === "NHL" ||
           config.dataLeague === "NFL" ||
           config.dataLeague === "CBB" ||
-          config.dataLeague === "CFB"
+          config.dataLeague === "CFB" ||
+          config.dataLeague === "WNBA"
             ? config.dataLeague
             : undefined
         }

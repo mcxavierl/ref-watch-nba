@@ -18,7 +18,7 @@ type OverviewInsightLeagueId = (typeof OVERVIEW_INSIGHT_LEAGUE_IDS)[number];
 export type LeagueCardBuildSetup = {
   teams: { abbr: string; label: string; name: string; nbaId?: number }[];
   getTeamSplits: (abbr: string) => TeamCrewSplit[];
-  matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba";
 };
 
 function leaguePrefix(leagueId: LeagueId): string {
