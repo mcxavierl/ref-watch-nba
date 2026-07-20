@@ -26,6 +26,7 @@ import {
 } from "@/lib/analytics/sample-size";
 import {
   buildLeverageInsight,
+  buildLeverageStrategyNote,
   computeLeverageIndex,
   leverageFieldsFromResult,
   pressureGaugeState,
@@ -291,6 +292,7 @@ function leverageReportFields(officialStats: OfficialStats) {
     leverageProfile: officialStats.leverage_profile,
     pressureGauge: pressureGaugeState(officialStats.leverage_profile),
     leverageInsight: buildLeverageInsight(officialStats.leverage_profile),
+    leverageStrategyNote: buildLeverageStrategyNote(officialStats.leverage_profile),
     edgeNote: buildEdgeNote({
       consistencyScore: officialStats.consistency_score,
       leverageProfile: officialStats.leverage_profile,

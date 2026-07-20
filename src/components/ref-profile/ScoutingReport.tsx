@@ -75,6 +75,7 @@ export function ScoutingReportDepth(props: ScoutingReportProps) {
         state={report.pressureGauge}
         leverageIndex={report.leverageSensitivityIndex}
         insight={report.leverageInsight}
+        strategyNote={report.leverageStrategyNote}
       />
 
       <ClinicalCard

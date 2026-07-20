@@ -73,6 +73,8 @@ export async function GET(
     archetype: report.archetype,
     consistencyScore: report.consistencyScore,
     leverageSensitivityIndex: report.leverageSensitivityIndex,
+    leverage_insight: report.leverageInsight,
+    leverage_strategy_note: report.leverageStrategyNote,
     edge_note: report.edgeNote,
   };
 
