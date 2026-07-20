@@ -87,7 +87,9 @@ describe("generate-scouting-report", () => {
     assert.ok(report!.styleProfile.strictnessScore >= 0);
     assert.ok(report!.styleProfile.gameFlowScore >= 0);
     assert.match(report!.summary, /Official Adrian Hill/);
-    assert.ok(report!.insights.length >= 2);
+    assert.ok(report!.gameFlowImpact.length > 40);
+    assert.match(report!.gameFlowImpact, /Performance Stability/);
+    assert.match(report!.gameFlowImpact, /Leverage Sensitivity/);
   });
 
   it("returns null when sample history is too thin and no analytics fallback exists", () => {

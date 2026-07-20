@@ -36,7 +36,7 @@ import { classifyMarqueeGame } from "@/lib/marquee-games";
 import type { LeagueId } from "@/lib/leagues";
 import { refSlug } from "@/lib/ref-slug";
 import { computeGameDispositionCounts } from "@/lib/whistle-disposition";
-import type { OfficialStats } from "@/lib/types";
+import type { OfficialStats, LeveragePressureProfile } from "@/lib/types";
 
 export type { GameScoutingMetadata, ScoutingReport, ScoutingStyleProfile } from "@/lib/analytics/scouting-report-types";
 export { FOUL_CLASSIFICATION_MAP } from "@/config/penalty-types";
@@ -177,32 +177,37 @@ function buildSummary(
   return parts.join(" ");
 }
 
-function buildInsights(
+function buildGameFlowImpact(
   styleProfile: ScoutingStyleProfile,
   pressureSensitive: boolean,
   pressureDeltaPct: number | null,
-  eventBackedGames: number,
   sampleGames: number,
-): string[] {
-  const insights: string[] = [
-    `${styleProfile.gameFlowScore}% subjective vs ${styleProfile.strictnessScore}% procedural whistle mix.`,
-  ];
+  consistencyScore: number,
+  leverageProfile: LeveragePressureProfile,
+): string {
+  const performanceStability =
+    consistencyScore >= 7
+      ? "strong Performance Stability"
+      : consistencyScore <= 4
+        ? "limited Performance Stability"
+        : "moderate Performance Stability";
 
-  if (eventBackedGames > 0) {
-    insights.push(
-      `${eventBackedGames} of ${sampleGames} sample games use event-level foul classification tags.`,
-    );
-  }
+  const styleClause = `Whistle mix runs ${styleProfile.gameFlowScore}% Subjective and ${styleProfile.strictnessScore}% Procedural`;
 
+  let leverageClause: string;
   if (pressureSensitive && pressureDeltaPct !== null) {
-    insights.push(
-      `Pressure-sensitive: +${Math.round(pressureDeltaPct * 100)}% whistle volume in marquee or playoff contexts.`,
-    );
+    leverageClause = `Leverage Sensitivity spikes in high-stakes minutes (+${Math.round(pressureDeltaPct * 100)}%), which can widen late-game total variance.`;
+  } else if (leverageProfile === "high-leverage-sensitivity") {
+    leverageClause =
+      "Leverage Sensitivity trends high: expect a tighter whistle when the game stays within one possession.";
+  } else if (leverageProfile === "swallows-whistle") {
+    leverageClause =
+      "Leverage Sensitivity trends low: this crew tends to swallow the whistle in tight finishes.";
   } else {
-    insights.push("Not pressure-sensitive in the last 50 games.");
+    leverageClause = `Leverage Sensitivity stays neutral across the ${SCOUTING_REPORT_SAMPLE_WINDOW}-game sample.`;
   }
 
-  return insights;
+  return `${styleClause}, signaling ${performanceStability} over the last ${sampleGames} games. ${leverageClause}`;
 }
 
 function toArchetypeGameInput(game: RuntimeGameLogEntry): ArchetypeGameInput {
@@ -394,12 +399,13 @@ function buildAnalyticsFallbackReport(
       gameMetadata,
       pressureSensitive ? 12 : null,
     ),
-    insights: buildInsights(
+    gameFlowImpact: buildGameFlowImpact(
       styleProfile,
       pressureSensitive,
       pressureDeltaPct,
-      analytics.dispositionEventBackedGames ?? 0,
       sampleGames,
+      officialStats.consistency_score,
+      officialStats.leverage_profile,
     ),
     eventBackedGames: analytics.dispositionEventBackedGames ?? 0,
   };
@@ -540,14 +546,6 @@ export function generateScoutingReport(
     subjectiveDeltaPct,
   );
 
-  const insights = buildInsights(
-    styleProfile,
-    pressureSensitive,
-    pressureDeltaPct,
-    eventBackedGames,
-    sampleGames.length,
-  );
-
   const officialStats = resolveOfficialStats(
     leagueId,
     sampleGames,
@@ -556,6 +554,15 @@ export function generateScoutingReport(
     administrativeTotal,
     pressureSensitive,
     pressureDeltaPct,
+  );
+
+  const gameFlowImpact = buildGameFlowImpact(
+    styleProfile,
+    pressureSensitive,
+    pressureDeltaPct,
+    sampleGames.length,
+    officialStats.consistency_score,
+    officialStats.leverage_profile,
   );
 
   const perGameWhistles = sampleGames.map((game) => gameWhistleTotal(leagueId, game));
@@ -584,7 +591,7 @@ export function generateScoutingReport(
         ? round1(pressureWhistlesPerGame)
         : null,
     summary,
-    insights,
+    gameFlowImpact,
     eventBackedGames,
   };
 }

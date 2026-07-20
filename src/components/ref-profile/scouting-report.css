@@ -242,14 +242,26 @@
   font-variant-numeric: tabular-nums;
 }
 
-.scouting-report-insights {
+.scouting-report-narrative {
   margin: 0;
-  padding-left: 1.1rem;
-  display: grid;
-  gap: var(--space-2);
   font-size: var(--text-sm);
-  line-height: 1.45;
+  line-height: 1.55;
   color: var(--text-secondary);
+}
+
+.scouting-report-metric-value--insufficient {
+  color: rgb(100 116 139);
+  font-weight: 600;
+}
+
+.scouting-whistle-tooltip-label {
+  text-decoration: underline dotted color-mix(in srgb, var(--text-muted) 55%, transparent);
+  text-underline-offset: 0.18em;
+  cursor: help;
+}
+
+.scouting-style-profile-label .scouting-whistle-tooltip-label {
+  font-weight: 700;
 }
 
 .scouting-report-footnote {
