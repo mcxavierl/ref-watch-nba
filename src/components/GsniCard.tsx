@@ -11,10 +11,8 @@ export function GsniCard({
 }) {
   return (
     <div
-      className={`gsni-card rounded-xl border bg-slate-900 p-4 ${
-        variant === "soft-lock"
-          ? "gsni-card--soft-lock border-dashed border-indigo-900/50 bg-indigo-950/20"
-          : "border-slate-800"
+      className={`gsni-card rounded-xl border p-4 ${
+        variant === "soft-lock" ? "gsni-card--soft-lock border-dashed" : ""
       } ${className}`.trim()}
     >
       {children}

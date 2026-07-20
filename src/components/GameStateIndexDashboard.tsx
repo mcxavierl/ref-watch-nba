@@ -26,7 +26,7 @@ function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
       </div>
       <Link
         href={finding.href}
-        className="mt-2 block truncate text-base font-semibold text-white hover:underline"
+        className="gsni-official-link mt-2 block truncate text-base font-semibold hover:underline"
       >
         {finding.refName}
       </Link>
@@ -36,7 +36,7 @@ function HighlightCard({ finding }: { finding: GsniResearchHighlight }) {
       >
         <GsniScoreBlock score={finding.gsni!} compact showPill={false} />
       </Link>
-      <p className="gsni-sub-text mt-2 text-slate-400">
+      <p className="gsni-sub-text mt-2">
         N={finding.sampleGames} games ·{" "}
         {Math.round(finding.highLeverageMinutes)} high-leverage min
       </p>

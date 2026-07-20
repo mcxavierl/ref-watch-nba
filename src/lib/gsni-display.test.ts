@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import {
   explainGsni,
@@ -137,5 +138,15 @@ describe("gsni display", () => {
     assert.match(gsniHighLeverageStatesCopy("nba"), /foul rate/);
     assert.match(gsniIndexScoreExplainer("nfl"), /Index score 0 is league average/);
     assert.match(gsniIndexScoreExplainer("nba"), /more fouls than peers/);
+  });
+
+  it("keeps GSNI panel numerics readable in light mode on dark cards", () => {
+    const css = readFileSync("src/app/globals.css", "utf8");
+    assert.match(css, /\.gsni-card \.gsni-sample-count[\s\S]*--gsni-ink-strong/);
+    assert.match(
+      css,
+      /html\[data-color="light"\][\s\S]*\.gsni-card \.gsni-sample-count[\s\S]*--gsni-ink-strong/,
+    );
+    assert.match(css, /\.gsni-correlation-pill--suppressed[\s\S]*rgb\(253 164 175\)/);
   });
 });

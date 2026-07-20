@@ -23,7 +23,7 @@ export function GsniScoreBlock({
   return (
     <div className={`gsni-score-block ${compact ? "gsni-score-block--compact" : ""} ${className}`.trim()}>
       <div className="gsni-score-block-value-wrap">
-        <p className={`gsni-diagnostic-header tabular-nums font-semibold text-white ${compact ? "text-base" : "text-lg"}`}>
+        <p className={`gsni-score-headline tabular-nums font-semibold ${compact ? "text-base" : "text-lg"}`}>
           {header}
         </p>
         <p className="gsni-scale-hint">{GSNI_SCALE_LEGEND}</p>

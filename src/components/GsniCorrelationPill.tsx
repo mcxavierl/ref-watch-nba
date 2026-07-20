@@ -22,10 +22,10 @@ export function GsniCorrelationPill({
 
   const toneClass =
     label === "Elevated"
-      ? "border-emerald-900/50 bg-emerald-900/50 text-emerald-400"
+      ? "gsni-correlation-pill gsni-correlation-pill--elevated"
       : label === "Suppressed"
-        ? "border-rose-900/50 bg-rose-900/50 text-rose-400"
-        : "border-slate-800 bg-slate-800 text-slate-300";
+        ? "gsni-correlation-pill gsni-correlation-pill--suppressed"
+        : "gsni-correlation-pill gsni-correlation-pill--neutral";
 
   return (
     <span
