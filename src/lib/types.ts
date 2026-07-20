@@ -25,6 +25,8 @@ export interface AssignmentGame {
   crew: RefOfficial[];
   /** ISO date for multi-day upcoming schedules (defaults to assignments file date). */
   slateDate?: string;
+  /** ISO datetime for scheduled start (ESPN / schedule APIs). */
+  slateStartAt?: string;
   /** Pre-season or exhibition/friendly; omitted for regular-season games. */
   seasonStage?: "preseason" | "exhibition";
 }

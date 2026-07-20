@@ -35,6 +35,7 @@ export function inferLaligaSeason(espnSeasonYear: number): string {
 export interface LaligaScoreboardEvent {
   id: string;
   date: string;
+  startsAt?: string;
   name: string;
   status: string;
   awayAbbr: string;
@@ -78,6 +79,7 @@ export async function fetchLaligaScoreboard(
     events.push({
       id: event.id,
       date: (event.date ?? "").slice(0, 10),
+      startsAt: event.date || undefined,
       name: event.name,
       status: event.status?.type?.name ?? "",
       awayAbbr,

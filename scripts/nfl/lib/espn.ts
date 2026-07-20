@@ -43,6 +43,7 @@ export function mapEspnRole(positionName: string): RefRole {
 export interface EspnScoreboardEvent {
   id: string;
   date: string;
+  startsAt?: string;
   name: string;
   status: string;
   awayAbbr: string;
@@ -130,6 +131,7 @@ export async function fetchEspnScoreboard(
     events.push({
       id: event.id,
       date: event.date.slice(0, 10),
+      startsAt: event.date,
       name: event.name,
       status: event.status?.type?.name ?? "UNKNOWN",
       awayAbbr,

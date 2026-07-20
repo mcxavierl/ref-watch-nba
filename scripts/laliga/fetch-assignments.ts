@@ -33,6 +33,7 @@ type SlateEvent = {
   awayAbbr: string;
   homeAbbr: string;
   slateDate: string;
+  slateStartAt?: string;
 };
 
 async function collectUpcomingScheduledEvents(
@@ -52,7 +53,8 @@ async function collectUpcomingScheduledEvents(
         id: event.id,
         awayAbbr: event.awayAbbr,
         homeAbbr: event.homeAbbr,
-        slateDate,
+        slateDate: event.date,
+        slateStartAt: event.startsAt,
       });
       if (collected.length >= UPCOMING_LIMIT) break;
     }
@@ -80,6 +82,7 @@ async function main() {
       homeTeam: event.homeAbbr,
       league: "LALIGA",
       slateDate: event.slateDate,
+      ...(event.slateStartAt ? { slateStartAt: event.slateStartAt } : {}),
       crew: [],
     };
     scheduledGames.push(baseGame);

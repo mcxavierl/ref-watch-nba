@@ -533,6 +533,11 @@ html[data-contrast="high"] .upcoming-game-card__date-label {
   text-align: center;
 }
 
+.upcoming-game-card__meta strong {
+  font-weight: 700;
+  color: var(--upcoming-ink-strong);
+}
+
 .upcoming-game-card__metadata {
   margin: 0;
   font-size: 0.75rem;

@@ -41,6 +41,7 @@ export function inferEplSeason(espnSeasonYear: number): string {
 export interface EplScoreboardEvent {
   id: string;
   date: string;
+  startsAt?: string;
   name: string;
   status: string;
   awayAbbr: string;
@@ -159,7 +160,8 @@ export async function fetchEplScoreboard(
     }
     events.push({
       id: event.id,
-      date: event.date,
+      date: (event.date ?? "").slice(0, 10),
+      startsAt: event.date,
       name: event.name,
       status: event.status?.type?.name ?? "",
       awayAbbr,

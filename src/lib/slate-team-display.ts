@@ -131,3 +131,27 @@ export function formatSlateDateLabel(slateDate: string | undefined): string | nu
     })
     .toUpperCase();
 }
+
+export function formatSlateStartTime(
+  slateStartAt: string | undefined,
+  timeZone = "America/Toronto",
+): string | null {
+  if (!slateStartAt) return null;
+  const parsed = new Date(slateStartAt);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone,
+  });
+}
+
+export function formatSlateDateTimeLabel(
+  slateDate: string | undefined,
+  slateStartAt?: string,
+): string | null {
+  const dateLabel = formatSlateDateLabel(slateDate);
+  const timeLabel = formatSlateStartTime(slateStartAt);
+  if (dateLabel && timeLabel) return `${dateLabel} · ${timeLabel}`;
+  return dateLabel ?? timeLabel;
+}

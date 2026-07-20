@@ -22,6 +22,7 @@ export function normalizeOfficialName(name: string): string {
 export interface WnbaScoreboardEvent {
   id: string;
   date: string;
+  startsAt?: string;
   status: string;
   awayAbbr: string;
   homeAbbr: string;
@@ -65,6 +66,7 @@ export async function fetchWnbaScoreboard(
     events.push({
       id: event.id,
       date: (event.date ?? "").slice(0, 10),
+      startsAt: event.date || undefined,
       status: event.status?.type?.name ?? "",
       awayAbbr,
       homeAbbr,

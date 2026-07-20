@@ -17,6 +17,7 @@ export type OverviewSlateEntry = {
   crewCount: number;
   status: OverviewSlateStatus;
   slateDate?: string;
+  slateStartAt?: string;
   matchupInsight?: string;
   lastMeetingLine?: string;
   /** Narrative H2H note for upcoming cards (recent meetings only). */
@@ -67,6 +68,34 @@ export function formatLeagueSlateCounts(liveCount: number, scheduledCount: numbe
   return parts.join(" · ");
 }
 
+function slateChronologyMs(entry: OverviewSlateEntry): number {
+  if (entry.slateStartAt) {
+    const parsed = Date.parse(entry.slateStartAt);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  if (entry.slateDate) {
+    const parsed = Date.parse(`${entry.slateDate}T12:00:00`);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return Number.MAX_SAFE_INTEGER;
+}
+
+/** Live first, then soonest start time, then matchup label. */
+export function compareSlateChronology(
+  a: OverviewSlateEntry,
+  b: OverviewSlateEntry,
+): number {
+  const liveDelta = (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1);
+  if (liveDelta !== 0) return liveDelta;
+  const timeDelta = slateChronologyMs(a) - slateChronologyMs(b);
+  if (timeDelta !== 0) return timeDelta;
+  return a.matchup.localeCompare(b.matchup);
+}
+
+export function sortSlateChronology(games: OverviewSlateEntry[]): OverviewSlateEntry[] {
+  return [...games].sort(compareSlateChronology);
+}
+
 function leagueSortOrder(): Map<LeagueId, number> {
   return new Map<LeagueId, number>(
     activeLiveLeagueIds().map((id, index) => [id, index]),
@@ -90,11 +119,7 @@ export function groupOverviewSlateByLeague(games: OverviewSlateEntry[]): Overvie
       const league = LEAGUES[leagueId];
       const liveCount = leagueGames.filter((game) => game.status === "live").length;
       const scheduledCount = leagueGames.filter((game) => game.status === "scheduled").length;
-      const sortedGames = [...leagueGames].sort(
-        (a, b) =>
-          (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1) ||
-          a.matchup.localeCompare(b.matchup),
-      );
+      const sortedGames = sortSlateChronology(leagueGames);
 
       return {
         leagueId,

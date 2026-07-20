@@ -4,8 +4,9 @@ import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
+import { SlateOfficialsLine } from "@/components/SlateOfficialsLine";
 import {
-  formatSlateDateLabel,
+  formatSlateDateTimeLabel,
   resolveSlateTeam,
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
@@ -31,7 +32,7 @@ export function UpcomingGameCard({
 }) {
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
-  const dateLabel = formatSlateDateLabel(game.slateDate);
+  const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
   const insightLine = insightPillText(game);
   const secondaryInsight =
     insightLine && insightLine !== game.matchupInsight ? game.matchupInsight : undefined;
@@ -74,9 +75,12 @@ export function UpcomingGameCard({
           <span className="upcoming-game-card__league-mark" aria-hidden>
             <LeagueNavMark league={game.leagueId} active={false} />
           </span>
-          {dateLabel ? (
-            <time className="upcoming-game-card__date-label" dateTime={game.slateDate}>
-              {dateLabel}
+          {dateTimeLabel ? (
+            <time
+              className="upcoming-game-card__date-label"
+              dateTime={game.slateStartAt ?? game.slateDate}
+            >
+              {dateTimeLabel}
             </time>
           ) : null}
         </div>
@@ -114,7 +118,11 @@ export function UpcomingGameCard({
               </p>
             ) : null}
             {game.officialsLine ? (
-              <p className="upcoming-game-card__meta">{game.officialsLine}</p>
+              <SlateOfficialsLine
+                line={game.officialsLine}
+                headRef={game.headRef}
+                className="upcoming-game-card__meta"
+              />
             ) : null}
           </div>
         )}
