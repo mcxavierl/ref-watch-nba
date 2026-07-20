@@ -47,7 +47,12 @@ export function teamIndexGameCount(
   if (fromLogs !== undefined && fromLogs > 0) return fromLogs;
   const rows = gameLogRowsForLeague(leagueId);
   if (rows.length > 0) {
-    return countTeamGamesFromLogs(rows, key, leagueTenSeasons(leagueId));
+    const fromLogCount = countTeamGamesFromLogs(
+      rows,
+      key,
+      leagueTenSeasons(leagueId),
+    );
+    if (fromLogCount > 0) return fromLogCount;
   }
   return gameCountFromCrewSplits(splits);
 }
