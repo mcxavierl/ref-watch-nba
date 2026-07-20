@@ -56,3 +56,14 @@ export function teamIndexGameCount(
   }
   return gameCountFromCrewSplits(splits);
 }
+
+/** Distinct officials who have worked this team (not unique crew combinations). */
+export function countUniqueOfficialsFromSplits(splits: TeamCrewSplit[]): number {
+  const officials = new Set<string>();
+  for (const split of splits) {
+    for (const name of split.crewNames) {
+      officials.add(name);
+    }
+  }
+  return officials.size;
+}

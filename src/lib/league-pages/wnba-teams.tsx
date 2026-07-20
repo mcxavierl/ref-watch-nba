@@ -3,7 +3,8 @@ import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";
 import { getTeamSplits } from "@/lib/wnba/data";
-import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
+import { loadTeamIndexGameCounts, teamIndexGameCount, countUniqueOfficialsFromSplits } from "@/lib/team-index-game-counts";
+import { LEAGUES } from "@/lib/leagues";
 import { teamFullName, teamLogoUrl, teamsByConference } from "@/lib/wnba/teams";
 import { hubPageMetadata } from "@/lib/seo";
 
@@ -47,8 +48,9 @@ export default function WnbaTeamsIndexPage() {
                         </p>
                         <p className="team-index-meta text-sm">
                           <TeamIndexSubtitle
-                            splitsCount={splits.length}
+                            officialsCount={countUniqueOfficialsFromSplits(splits)}
                             games={games}
+                            officialLabel={LEAGUES.wnba.officialNounPlural}
                           />
                         </p>
                       </div>

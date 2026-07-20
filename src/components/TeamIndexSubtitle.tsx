@@ -1,22 +1,22 @@
 import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
 
 type TeamIndexSubtitleProps = {
-  splitsCount: number;
+  officialsCount: number;
   games: number;
-  crewLabel?: string;
+  officialLabel?: string;
   gamesLabel?: string;
 };
 
 export function TeamIndexSubtitle({
-  splitsCount,
+  officialsCount,
   games,
-  crewLabel = "crews",
+  officialLabel = "officials",
   gamesLabel = "games",
 }: TeamIndexSubtitleProps) {
-  if (splitsCount > 0) {
+  if (officialsCount > 0) {
     return (
       <>
-        {splitsCount} {crewLabel} ·{" "}
+        {officialsCount} {officialLabel} ·{" "}
         <VerifiedGamesHint>
           {games} {gamesLabel}
         </VerifiedGamesHint>

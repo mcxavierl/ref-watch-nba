@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { TeamCrewSplit } from "@/lib/types";
-import { teamIndexGameCount } from "@/lib/team-index-game-counts";
+import { teamIndexGameCount, countUniqueOfficialsFromSplits } from "@/lib/team-index-game-counts";
 
 describe("teamIndexGameCount", () => {
   it("falls back to crew-split totals when logs exist but return zero games", () => {
@@ -24,5 +24,24 @@ describe("teamIndexGameCount", () => {
       10,
       "prefer crew-split W-L when indexed log count is zero",
     );
+  });
+});
+
+describe("countUniqueOfficialsFromSplits", () => {
+  it("counts distinct officials across crew combinations", () => {
+    const splits: TeamCrewSplit[] = [
+      {
+        crewKey: "a",
+        crewNames: ["Alice", "Bob"],
+        games: 3,
+      } as TeamCrewSplit,
+      {
+        crewKey: "b",
+        crewNames: ["Bob", "Carol"],
+        games: 2,
+      } as TeamCrewSplit,
+    ];
+
+    assert.equal(countUniqueOfficialsFromSplits(splits), 3);
   });
 });
