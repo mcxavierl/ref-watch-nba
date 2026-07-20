@@ -63,61 +63,66 @@ export function RefProfileNarrativeLayout({
     qualified,
   };
 
+  const marketImpactPanel =
+    showBettingProfile && profile.bettingStats ? (
+      <RefProfileMarketImpactPanel
+        profile={profile}
+        stats={profile.bettingStats}
+        leagueId={leagueId}
+        showMetrics={qualified}
+        hideWhistleMetrics={hideWhistleMetrics}
+      />
+    ) : (
+      <section
+        className="ref-profile-section ref-market-impact"
+        aria-labelledby="ref-market-impact-fallback-title"
+      >
+        <div className="ref-table-section-header">
+          <h2 id="ref-market-impact-fallback-title" className="ref-profile-section-title m-0">
+            Market Impact
+          </h2>
+        </div>
+        <div className="ref-table-section-body">
+          <RefStatGrid
+            profile={profile}
+            overBaseline={stats.meta.leagueOverBaseline}
+            foulLabel={statGridLabels?.foulLabel}
+            scoreLabel={statGridLabels?.scoreLabel}
+            overLabel={statGridLabels?.overLabel}
+            showMetrics={qualified}
+          />
+        </div>
+      </section>
+    );
+
   return (
     <div className="ref-narrative-layout">
-      <ScoutingReportEdge {...scoutingProps} />
+      <div className="ref-profile-primary-grid">
+        <div className="ref-profile-intelligence-panel">
+          <ScoutingReportEdge {...scoutingProps} />
 
-      <RefProfileCareerEvolution profile={profile} />
+          <RefProfileCareerEvolution profile={profile} />
 
-      <RefProfileDepthExpand label="Expand officiating and market depth">
-        <div className="ref-narrative-outcome-grid">
-          <RefProfileOfficiatingBiasSection
-            profile={profile}
-            leagueId={leagueId}
-            stats={stats}
-            qualified={qualified}
-            gsniMetrics={gsniMetrics}
-            closeGameMetrics={closeGameMetrics}
-            closeGameLeague={closeGameLeague}
-            whistleAnalytics={whistleAnalytics}
-          />
-
-          {showBettingProfile && profile.bettingStats ? (
-            <RefProfileMarketImpactPanel
+          <RefProfileDepthExpand label="Expand officiating and market depth">
+            <RefProfileOfficiatingBiasSection
               profile={profile}
-              stats={profile.bettingStats}
               leagueId={leagueId}
-              showMetrics={qualified}
-              hideWhistleMetrics={hideWhistleMetrics}
+              stats={stats}
+              qualified={qualified}
+              gsniMetrics={gsniMetrics}
+              closeGameMetrics={closeGameMetrics}
+              closeGameLeague={closeGameLeague}
+              whistleAnalytics={whistleAnalytics}
             />
-          ) : (
-            <section
-              className="ref-profile-section ref-market-impact"
-              aria-labelledby="ref-market-impact-fallback-title"
-            >
-              <div className="ref-table-section-header">
-                <h2 id="ref-market-impact-fallback-title" className="ref-profile-section-title m-0">
-                  Market Impact
-                </h2>
-              </div>
-              <div className="ref-table-section-body">
-                <RefStatGrid
-                  profile={profile}
-                  overBaseline={stats.meta.leagueOverBaseline}
-                  foulLabel={statGridLabels?.foulLabel}
-                  scoreLabel={statGridLabels?.scoreLabel}
-                  overLabel={statGridLabels?.overLabel}
-                  showMetrics={qualified}
-                />
-              </div>
-            </section>
-          )}
+
+            <ScoutingReportDepth {...scoutingProps} />
+
+            <RefProfileTeamTrends best={teamTrends.best} worst={teamTrends.worst} leagueId={leagueId} />
+          </RefProfileDepthExpand>
         </div>
 
-        <ScoutingReportDepth {...scoutingProps} />
-
-        <RefProfileTeamTrends best={teamTrends.best} worst={teamTrends.worst} leagueId={leagueId} />
-      </RefProfileDepthExpand>
+        <div className="ref-profile-market-panel">{marketImpactPanel}</div>
+      </div>
     </div>
   );
 }

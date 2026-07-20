@@ -1329,30 +1329,57 @@ p {
     min-width: 0;
   }
 
-  .ref-narrative-outcome-grid {
+  .ref-profile-primary-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
-    min-width: 0;
     align-items: stretch;
+    min-width: 0;
   }
 
-  @media (min-width: 1280px) {
-    .ref-narrative-outcome-grid {
-      grid-template-columns: repeat(2, minmax(18rem, 1fr));
+  @media (min-width: 1024px) {
+    .ref-profile-primary-grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
     }
   }
 
-  .ref-narrative-outcome-grid > .ref-officiating-bias,
-  .ref-narrative-outcome-grid > .ref-market-impact {
+  .ref-profile-intelligence-panel {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--space-6);
+    grid-column: span 12 / span 12;
+  }
+
+  @media (min-width: 1024px) {
+    .ref-profile-intelligence-panel {
+      grid-column: span 8 / span 8;
+    }
+  }
+
+  .ref-profile-market-panel {
     display: flex;
     min-width: 0;
     min-height: 100%;
     flex-direction: column;
+    grid-column: span 12 / span 12;
   }
 
-  .ref-narrative-outcome-grid > .ref-officiating-bias .ref-table-section-body,
-  .ref-narrative-outcome-grid > .ref-market-impact .ref-table-section-body {
+  @media (min-width: 1024px) {
+    .ref-profile-market-panel {
+      grid-column: span 4 / span 4;
+    }
+  }
+
+  .ref-profile-market-panel > .ref-market-impact {
+    display: flex;
+    min-width: 0;
+    min-height: 100%;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+
+  .ref-profile-market-panel > .ref-market-impact .ref-table-section-body {
     flex: 1 1 auto;
   }
 
@@ -1674,29 +1701,36 @@ p {
 
   .ref-stat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-    gap: var(--space-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
     min-width: 0;
     width: 100%;
   }
 
-  @media (max-width: 639px) {
+  @media (min-width: 768px) {
     .ref-stat-grid {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+  }
 
+  .ref-stat-grid--gsni {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 768px) {
     .ref-stat-grid--gsni {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
   .ref-whistle-analytics-embedded .ref-stat-grid {
-    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
   }
 
   @media (min-width: 768px) {
     .ref-whistle-analytics-embedded .ref-stat-grid {
-      grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
