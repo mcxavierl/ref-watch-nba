@@ -39,4 +39,9 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: stretch;
   }
+
+  .upcoming-games-grid--homepage {
+    max-width: 72rem;
+    margin-inline: auto;
+  }
 }

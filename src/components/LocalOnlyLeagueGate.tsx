@@ -9,26 +9,27 @@ export function LocalOnlyLeagueGate({
   leagueId: LeagueId;
   children: React.ReactNode;
 }) {
-  if (isLocalOnlyLeague(leagueId) && !canAccessLocalOnlyLeagues()) {
+  const localOnly = isLocalOnlyLeague(leagueId);
+  if (localOnly && !canAccessLocalOnlyLeagues()) {
     notFound();
   }
 
-  if (!isLocalOnlyLeague(leagueId)) {
-    return <>{children}</>;
+  if (localOnly && canAccessLocalOnlyLeagues()) {
+    const label = LEAGUES[leagueId as LeagueId].label;
+
+    return (
+      <>
+        <div
+          className="border-b border-amber-500/30 bg-amber-500/10 px-4 py-2 text-center text-xs text-amber-100"
+          role="status"
+        >
+          {label} preview is local only. Full league pages ship after NBA-parity
+          build-out.
+        </div>
+        {children}
+      </>
+    );
   }
 
-  const league = LEAGUES[leagueId];
-
-  return (
-    <>
-      <div
-        className="border-b border-amber-500/30 bg-amber-500/10 px-4 py-2 text-center text-xs text-amber-100"
-        role="status"
-      >
-        {league.label} preview is local only. Full league pages ship after NBA-parity
-        build-out.
-      </div>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

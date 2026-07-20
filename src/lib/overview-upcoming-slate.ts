@@ -40,6 +40,67 @@ export type LeagueUpcomingSlate = {
   lastUpdated: string | null;
 };
 
+/** Max upcoming cards on a league hub (confirmed crews first). */
+export const LEAGUE_UPCOMING_SLATE_LIMIT = 10;
+
+/** Homepage grid: 3×3 with legacy bottom row pinned. */
+export const HOMEPAGE_SLATE_GRID_SIZE = 9;
+
+/** Bottom row on homepage — long-dated offseason fixtures stay anchored. */
+export const HOMEPAGE_BOTTOM_PIN_LEAGUE_IDS = [
+  "nfl",
+  "epl",
+  "laliga",
+] as const satisfies readonly LeagueId[];
+
+function slateEntryKey(entry: OverviewSlateEntry): string {
+  return `${entry.leagueId}:${entry.gameId}`;
+}
+
+function slateRecencyMs(entry: OverviewSlateEntry): number {
+  if (entry.slateDate) {
+    const parsed = Date.parse(entry.slateDate);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return 0;
+}
+
+function compareSlateRecency(a: OverviewSlateEntry, b: OverviewSlateEntry): number {
+  const liveDelta = (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1);
+  if (liveDelta !== 0) return liveDelta;
+  return slateRecencyMs(b) - slateRecencyMs(a);
+}
+
+function limitLeagueSlateGames(games: OverviewSlateEntry[]): OverviewSlateEntry[] {
+  return [...games].sort(compareSlateRecency).slice(0, LEAGUE_UPCOMING_SLATE_LIMIT);
+}
+
+/** Homepage 3×3: newest confirmed games in row 2, legacy slate fixtures pinned on row 3. */
+export function selectHomepageSlateGrid(
+  games: OverviewSlateEntry[],
+): OverviewSlateEntry[] {
+  const pinned: OverviewSlateEntry[] = [];
+  const pinnedKeys = new Set<string>();
+
+  for (const leagueId of HOMEPAGE_BOTTOM_PIN_LEAGUE_IDS) {
+    const match = games.find((game) => game.leagueId === leagueId);
+    if (!match) continue;
+    pinned.push(match);
+    pinnedKeys.add(slateEntryKey(match));
+  }
+
+  const fillPool = games
+    .filter((game) => !pinnedKeys.has(slateEntryKey(game)))
+    .sort(compareSlateRecency);
+
+  const fillCapacity = Math.max(0, HOMEPAGE_SLATE_GRID_SIZE - pinned.length);
+  const fill = fillPool.slice(0, fillCapacity);
+
+  const row2 = fill.slice(0, 3);
+  const row1 = fill.slice(3, 6);
+  return [...row1, ...row2, ...pinned];
+}
+
 function collectLeagueSlateEntries(
   leagueId: LeagueId,
   file: AssignmentsFile,
@@ -59,7 +120,8 @@ function collectLeagueSlateEntries(
   for (const game of file.scheduledGames ?? []) {
     if (seenIds.has(game.id)) continue;
     seenIds.add(game.id);
-    pushEntry(games, leagueId, file, game, "scheduled");
+    const status: OverviewSlateStatus = game.crew.length > 0 ? "live" : "scheduled";
+    pushEntry(games, leagueId, file, game, status);
   }
 
   return games;
@@ -70,7 +132,7 @@ export function buildLeagueUpcomingSlateFromAssignments(
   leagueId: LeagueId,
   file: AssignmentsFile,
 ): LeagueUpcomingSlate {
-  const games = collectLeagueSlateEntries(leagueId, file);
+  const games = limitLeagueSlateGames(collectLeagueSlateEntries(leagueId, file));
   const groups = groupOverviewSlateByLeague(games);
   const leagueNote = file.note
     ? {
@@ -235,6 +297,7 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
   const liveGames = games.filter((game) => game.status === "live");
   const scheduledGames = games.filter((game) => game.status === "scheduled");
   const leagueGroups = groupOverviewSlateByLeague(games);
+  const homepageGames = selectHomepageSlateGrid(games);
 
   return {
     inSeason: games.length > 0,
@@ -242,7 +305,7 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
     totalGames: liveGames.length,
     totalScheduled: scheduledGames.length,
     lastUpdated,
-    games,
+    games: homepageGames,
     leagueGroups,
     leagueNotes,
   };

@@ -5,5 +5,6 @@ export const PRODUCTION_LIVE_HEADER_LEAGUE_IDS = [
   "nfl",
   "epl",
   "laliga",
+  "wnba",
   "cbb"
 ] as const;

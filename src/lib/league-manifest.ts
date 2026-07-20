@@ -163,7 +163,7 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
     dataLeague: "WNBA",
     officialNoun: "referee",
     officialNounPlural: "referees",
-    seasonStatus: "offseason",
+    seasonStatus: "in-season",
     showOtRate: false,
     whistleFromMinors: false,
     metrics: NBA_METRICS,

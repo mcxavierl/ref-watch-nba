@@ -11,7 +11,7 @@ export const LEAGUE_IDS = LEAGUE_MANIFEST_IDS;
 export type LeagueId = LeagueManifestId;
 
 /** Candidate leagues for the header sport switcher (filtered by verification in production). */
-export const HEADER_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl", "laliga", "cbb"] as const satisfies readonly LeagueId[];
+export const HEADER_LEAGUE_IDS = ["nba", "nhl", "nfl", "epl", "laliga", "wnba", "cbb"] as const satisfies readonly LeagueId[];
 
 export type LeagueMetricCopy = {
   scoreUnit: string;

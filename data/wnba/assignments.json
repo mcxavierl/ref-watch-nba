@@ -1,6 +1,79 @@
 {
-  "lastUpdated": "2026-07-19T21:52:57.689Z",
-  "date": "2026-07-19",
-  "source": "seeded",
-  "games": []
+  "lastUpdated": "2026-07-20T00:52:51.343Z",
+  "date": "2026-07-20",
+  "source": "official.nba.com",
+  "games": [
+    {
+      "id": "wnba-los-angeles-0-dallas-0-1",
+      "matchup": "Los Angeles @ Dallas",
+      "awayTeam": "Los Angeles",
+      "homeTeam": "Dallas",
+      "league": "WNBA",
+      "crew": [
+        {
+          "name": "Kevin Fahy",
+          "number": 43,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Catherine Chang",
+          "number": 35,
+          "role": "referee"
+        },
+        {
+          "name": "Tyler Mirkovich",
+          "number": 27,
+          "role": "umpire"
+        }
+      ]
+    },
+    {
+      "id": "wnba-chicago-0-atlanta-0-2",
+      "matchup": "Chicago @ Atlanta",
+      "awayTeam": "Chicago",
+      "homeTeam": "Atlanta",
+      "league": "WNBA",
+      "crew": [
+        {
+          "name": "Clare Simmons",
+          "number": 28,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Angel Kent",
+          "number": 26,
+          "role": "referee"
+        },
+        {
+          "name": "Jason Alabanza",
+          "number": 29,
+          "role": "umpire"
+        }
+      ]
+    },
+    {
+      "id": "wnba-connecticut-0-phoenix-0-3",
+      "matchup": "Connecticut @ Phoenix",
+      "awayTeam": "Connecticut",
+      "homeTeam": "Phoenix",
+      "league": "WNBA",
+      "crew": [
+        {
+          "name": "Tiara Cruse",
+          "number": 5,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Charles Watson",
+          "number": 6,
+          "role": "referee"
+        },
+        {
+          "name": "Kelly Broomfield",
+          "number": 25,
+          "role": "umpire"
+        }
+      ]
+    }
+  ]
 }
