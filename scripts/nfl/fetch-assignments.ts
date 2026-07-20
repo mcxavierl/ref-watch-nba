@@ -63,6 +63,7 @@ type SlateEvent = {
   seasonType?: number;
   seasonSlug?: string;
   slateDate: string;
+  slateStartAt?: string;
 };
 
 async function collectUpcomingPreseasonEvents(
@@ -90,6 +91,7 @@ async function collectUpcomingPreseasonEvents(
         seasonType: event.seasonType,
         seasonSlug: event.seasonSlug,
         slateDate,
+        slateStartAt: event.startsAt,
       });
       if (collected.length >= UPCOMING_LIMIT) break;
     }
@@ -125,6 +127,7 @@ async function main() {
       homeTeam: event.homeAbbr,
       league: "NFL" as const,
       slateDate: event.slateDate,
+      ...(event.slateStartAt ? { slateStartAt: event.slateStartAt } : {}),
       ...(seasonStage ? { seasonStage } : {}),
     };
     if (!summary || summary.officials.length === 0) {

@@ -4,8 +4,9 @@ import Link from "next/link";
 import type { KeyboardEvent, MouseEvent } from "react";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
+import { SlateOfficialsLine } from "@/components/SlateOfficialsLine";
 import {
-  formatSlateDateLabel,
+  formatSlateDateTimeLabel,
   resolveSlateTeam,
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
@@ -21,7 +22,7 @@ export function OverviewSlateRow({
 }) {
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
-  const dateLabel = formatSlateDateLabel(game.slateDate);
+  const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
 
   const handleActivate = () => {
     onOpenPreview?.();
@@ -80,11 +81,15 @@ export function OverviewSlateRow({
           <span className="overview-slate-row-team-context">{game.teamContextLine}</span>
         ) : null}
         {game.officialsLine ? (
-          <span className="overview-slate-row-officials">{game.officialsLine}</span>
+          <SlateOfficialsLine
+            line={game.officialsLine}
+            headRef={game.headRef}
+            className="overview-slate-row-officials"
+          />
         ) : null}
       </div>
-        {game.status === "scheduled" && dateLabel ? (
-          <span className="overview-slate-date">{dateLabel}</span>
+        {game.status === "scheduled" && dateTimeLabel ? (
+          <span className="overview-slate-date">{dateTimeLabel}</span>
         ) : null}
         {showHubLink ? (
           onOpenPreview ? (

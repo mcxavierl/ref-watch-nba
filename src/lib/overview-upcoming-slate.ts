@@ -26,12 +26,16 @@ export type {
 } from "@/lib/overview-slate-shared";
 
 export {
+  compareSlateChronology,
   formatLeagueSlateCounts,
   groupOverviewSlateByLeague,
+  sortSlateChronology,
 } from "@/lib/overview-slate-shared";
 
 import {
   groupOverviewSlateByLeague,
+  sortSlateChronology,
+  compareSlateChronology,
   type OverviewLeagueSlateGroup,
   type OverviewSlateEntry,
   type OverviewLeagueNote,
@@ -49,110 +53,18 @@ export type LeagueUpcomingSlate = {
 /** Max upcoming cards on a league hub (confirmed crews first). */
 export const LEAGUE_UPCOMING_SLATE_LIMIT = 6;
 
-/** Homepage grid: 3×3 with legacy bottom row pinned. */
+/** Homepage grid: 3×3 upcoming cards. */
 export const HOMEPAGE_SLATE_GRID_SIZE = 9;
 
-/** Leagues guaranteed at least one card on the homepage upcoming grid when games exist. */
-export const HOMEPAGE_FEATURE_LEAGUE_IDS = ["wnba"] as const satisfies readonly LeagueId[];
-
-/** Bottom row on homepage — long-dated offseason fixtures stay anchored. */
-export const HOMEPAGE_BOTTOM_PIN_LEAGUE_IDS = [
-  "nfl",
-  "epl",
-  "laliga",
-] as const satisfies readonly LeagueId[];
-
-function torontoToday(): string {
-  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Toronto" });
-}
-
-function addDaysIso(isoDate: string, days: number): string {
-  const d = new Date(`${isoDate}T12:00:00`);
-  d.setDate(d.getDate() + days);
-  return d.toISOString().slice(0, 10);
-}
-
-function tomorrowToronto(): string {
-  return addDaysIso(torontoToday(), 1);
-}
-
-function slateEntryKey(entry: OverviewSlateEntry): string {
-  return `${entry.leagueId}:${entry.gameId}`;
-}
-
-function slateRecencyMs(entry: OverviewSlateEntry): number {
-  if (entry.slateDate) {
-    const parsed = Date.parse(entry.slateDate);
-    if (Number.isFinite(parsed)) return parsed;
-  }
-  return 0;
-}
-
-function compareSlateRecency(a: OverviewSlateEntry, b: OverviewSlateEntry): number {
-  const liveDelta = (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1);
-  if (liveDelta !== 0) return liveDelta;
-  return slateRecencyMs(b) - slateRecencyMs(a);
-}
-
 function limitLeagueSlateGames(games: OverviewSlateEntry[]): OverviewSlateEntry[] {
-  return [...games].sort(compareSlateRecency).slice(0, LEAGUE_UPCOMING_SLATE_LIMIT);
+  return sortSlateChronology(games).slice(0, LEAGUE_UPCOMING_SLATE_LIMIT);
 }
 
-/** Homepage 3×3: feature WNBA + tomorrow slate, then legacy bottom-row pins. */
+/** Homepage grid: soonest upcoming games across leagues. */
 export function selectHomepageSlateGrid(
   games: OverviewSlateEntry[],
 ): OverviewSlateEntry[] {
-  const tomorrow = tomorrowToronto();
-  const featured: OverviewSlateEntry[] = [];
-  const featuredKeys = new Set<string>();
-
-  for (const leagueId of HOMEPAGE_FEATURE_LEAGUE_IDS) {
-    const tomorrowGames = games
-      .filter((game) => game.leagueId === leagueId && game.slateDate === tomorrow)
-      .sort(compareSlateRecency);
-    const fallbackGames = games
-      .filter((game) => game.leagueId === leagueId)
-      .sort(compareSlateRecency);
-    const picks =
-      tomorrowGames.length > 0
-        ? tomorrowGames
-        : fallbackGames[0]
-          ? [fallbackGames[0]]
-          : [];
-    for (const pick of picks) {
-      if (featuredKeys.has(slateEntryKey(pick))) continue;
-      featured.push(pick);
-      featuredKeys.add(slateEntryKey(pick));
-    }
-  }
-
-  const pinned: OverviewSlateEntry[] = [];
-  const pinnedKeys = new Set(featuredKeys);
-
-  for (const leagueId of HOMEPAGE_BOTTOM_PIN_LEAGUE_IDS) {
-    const match = games.find(
-      (game) => game.leagueId === leagueId && !pinnedKeys.has(slateEntryKey(game)),
-    );
-    if (!match) continue;
-    pinned.push(match);
-    pinnedKeys.add(slateEntryKey(match));
-  }
-
-  const fillPool = games
-    .filter((game) => !pinnedKeys.has(slateEntryKey(game)))
-    .sort((a, b) => {
-      const aTomorrow = a.slateDate === tomorrow ? 0 : 1;
-      const bTomorrow = b.slateDate === tomorrow ? 0 : 1;
-      if (aTomorrow !== bTomorrow) return aTomorrow - bTomorrow;
-      return compareSlateRecency(a, b);
-    });
-
-  const fillCapacity = Math.max(0, HOMEPAGE_SLATE_GRID_SIZE - pinned.length - featured.length);
-  const fill = fillPool.slice(0, fillCapacity);
-
-  const row2 = fill.slice(0, 3);
-  const row1 = fill.slice(3, 6);
-  return [...featured, ...row1, ...row2, ...pinned].slice(0, HOMEPAGE_SLATE_GRID_SIZE);
+  return sortSlateChronology(games).slice(0, HOMEPAGE_SLATE_GRID_SIZE);
 }
 
 function collectLeagueSlateEntries(
@@ -230,12 +142,6 @@ export function buildLeagueUpcomingSlate(leagueId: LeagueId): LeagueUpcomingSlat
   }
 }
 
-function leagueSortOrder(): Map<LeagueId, number> {
-  return new Map<LeagueId, number>(
-    activeLiveLeagueIds().map((id, index) => [id, index]),
-  );
-}
-
 function assignmentsPath(leagueId: LeagueId): string {
   const root = process.cwd();
   if (leagueId === "nba") return path.join(root, "data/assignments.json");
@@ -301,6 +207,7 @@ function pushEntry(
 ): void {
   const league = LEAGUES[leagueId];
   const slateDate = slateDateOverride ?? game.slateDate ?? file.date;
+  const slateStartAt = game.slateStartAt;
   const awayTeam =
     leagueId === "wnba" ? resolveWnbaTeamAbbr(game.awayTeam) : game.awayTeam;
   const homeTeam =
@@ -337,6 +244,7 @@ function pushEntry(
     crewCount: game.crew.length,
     status,
     slateDate,
+    slateStartAt,
     matchupInsight: buildOverviewMatchupInsight(leagueId, awayTeam, homeTeam),
     lastMeetingLine,
     gameContextLine,
@@ -399,12 +307,7 @@ export function buildLeagueHubUpcomingSchedule(
     return buildLeagueUpcomingSlateFromAssignments(leagueId, file);
   }
 
-  entries.sort(
-    (a, b) =>
-      (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1) ||
-      (a.slateDate ?? "").localeCompare(b.slateDate ?? "") ||
-      a.matchup.localeCompare(b.matchup),
-  );
+  entries.sort(compareSlateChronology);
 
   const limited = entries.slice(0, limit);
   const groups = groupOverviewSlateByLeague(limited);
@@ -450,13 +353,7 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
     }
   }
 
-  const order = leagueSortOrder();
-  games.sort(
-    (a, b) =>
-      (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1) ||
-      (order.get(a.leagueId) ?? 0) - (order.get(b.leagueId) ?? 0) ||
-      a.matchup.localeCompare(b.matchup),
-  );
+  games.sort(compareSlateChronology);
 
   const liveGames = games.filter((game) => game.status === "live");
   const scheduledGames = games.filter((game) => game.status === "scheduled");

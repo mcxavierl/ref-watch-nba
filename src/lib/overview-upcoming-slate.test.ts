@@ -267,66 +267,49 @@ describe("overview-upcoming-slate", () => {
     assert.equal(slate.leagueGroup?.games[0]?.preview, undefined);
   });
 
-  it("features all tomorrow WNBA games ahead of other leagues on the homepage grid", () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowIso = tomorrow.toLocaleDateString("en-CA", {
-      timeZone: "America/Toronto",
-    });
-
+  it("features soonest upcoming games on the homepage grid", () => {
     const games: OverviewSlateEntry[] = [
       slateEntry({
         leagueId: "wnba",
-        gameId: "w-t1",
+        gameId: "w-later",
         status: "scheduled",
-        slateDate: tomorrowIso,
-      }),
-      slateEntry({
-        leagueId: "wnba",
-        gameId: "w-t2",
-        status: "scheduled",
-        slateDate: tomorrowIso,
-      }),
-      slateEntry({
-        leagueId: "wnba",
-        gameId: "w-old",
-        status: "scheduled",
-        slateDate: "2020-01-01",
+        slateDate: "2026-08-01",
+        slateStartAt: "2026-08-01T23:00:00.000Z",
       }),
       slateEntry({
         leagueId: "nba",
-        gameId: "n1",
+        gameId: "n-live",
         status: "live",
-        slateDate: tomorrowIso,
+        slateDate: "2026-07-20",
+      }),
+      slateEntry({
+        leagueId: "wnba",
+        gameId: "w-soon",
+        status: "scheduled",
+        slateDate: "2026-07-21",
+        slateStartAt: "2026-07-21T23:30:00.000Z",
       }),
     ];
 
     const grid = selectHomepageSlateGrid(games);
     assert.deepEqual(
-      grid.slice(0, 2).map((game) => game.gameId),
-      ["w-t1", "w-t2"],
+      grid.map((game) => game.gameId),
+      ["n-live", "w-soon", "w-later"],
     );
   });
 
-  it("orders homepage grid with newest fill in row two and pinned bottom leagues", () => {
+  it("orders homepage grid chronologically across leagues", () => {
     const games: OverviewSlateEntry[] = [
+      slateEntry({ leagueId: "laliga", gameId: "l1", status: "live", slateDate: "2026-08-15" }),
       slateEntry({ leagueId: "wnba", gameId: "w1", status: "live", slateDate: "2026-07-20" }),
-      slateEntry({ leagueId: "wnba", gameId: "w2", status: "live", slateDate: "2026-07-20" }),
-      slateEntry({ leagueId: "wnba", gameId: "w3", status: "live", slateDate: "2026-07-20" }),
       slateEntry({ leagueId: "nfl", gameId: "n1", status: "scheduled", slateDate: "2026-08-06" }),
       slateEntry({ leagueId: "epl", gameId: "e1", status: "scheduled", slateDate: "2026-08-09" }),
-      slateEntry({ leagueId: "laliga", gameId: "l1", status: "live", slateDate: "2026-08-15" }),
     ];
 
     const grid = selectHomepageSlateGrid(games);
-    assert.equal(grid.length, 6);
     assert.deepEqual(
-      grid.slice(-3).map((game) => game.leagueId),
-      ["nfl", "epl", "laliga"],
-    );
-    assert.deepEqual(
-      grid.slice(0, 3).map((game) => game.leagueId),
-      ["wnba", "wnba", "wnba"],
+      grid.map((game) => game.gameId),
+      ["w1", "l1", "n1", "e1"],
     );
   });
 });

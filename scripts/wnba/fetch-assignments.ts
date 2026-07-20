@@ -48,6 +48,7 @@ async function collectUpcomingEvents(startDate: string) {
         homeTeam: normalizeWnbaAbbr(event.homeAbbr),
         league: "WNBA",
         slateDate,
+        slateStartAt: event.startsAt,
         crew: [],
       });
       if (collected.length >= UPCOMING_LIMIT) break;

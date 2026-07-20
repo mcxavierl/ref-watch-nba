@@ -1,38 +1,16 @@
 {
-  "lastUpdated": "2026-07-20T16:28:00.832Z",
+  "lastUpdated": "2026-07-20T19:42:08.349Z",
   "date": "2026-07-20",
   "source": "official.nba.com",
   "games": [
     {
-      "id": "wnba-new-york-0-dallas-0-1",
-      "matchup": "NYL @ DAL",
-      "awayTeam": "NYL",
-      "homeTeam": "DAL",
-      "league": "WNBA",
-      "crew": [
-        {
-          "name": "Isaac Barnett",
-          "number": 16,
-          "role": "crew_chief"
-        },
-        {
-          "name": "Sarah Williams",
-          "number": 44,
-          "role": "referee"
-        },
-        {
-          "name": "Jason Alabanza",
-          "number": 29,
-          "role": "umpire"
-        }
-      ]
-    },
-    {
-      "id": "wnba-las-vegas-0-toronto-0-2",
+      "id": "401857083",
       "matchup": "LVA @ TOR",
       "awayTeam": "LVA",
       "homeTeam": "TOR",
       "league": "WNBA",
+      "slateDate": "2026-07-20",
+      "slateStartAt": "2026-07-21T00:00Z",
       "crew": [
         {
           "name": "Timothy Greene",
@@ -52,11 +30,39 @@
       ]
     },
     {
-      "id": "wnba-washington-0-golden-state-0-3",
+      "id": "401892393",
+      "matchup": "NYL @ DAL",
+      "awayTeam": "NYL",
+      "homeTeam": "DAL",
+      "league": "WNBA",
+      "slateDate": "2026-07-20",
+      "slateStartAt": "2026-07-21T00:00Z",
+      "crew": [
+        {
+          "name": "Isaac Barnett",
+          "number": 16,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Sarah Williams",
+          "number": 44,
+          "role": "referee"
+        },
+        {
+          "name": "Jason Alabanza",
+          "number": 29,
+          "role": "umpire"
+        }
+      ]
+    },
+    {
+      "id": "401857084",
       "matchup": "WAS @ GSV",
       "awayTeam": "WAS",
       "homeTeam": "GSV",
       "league": "WNBA",
+      "slateDate": "2026-07-20",
+      "slateStartAt": "2026-07-21T02:00Z",
       "crew": [
         {
           "name": "Roy Gulbeyan",
@@ -76,11 +82,13 @@
       ]
     },
     {
-      "id": "wnba-minnesota-0-seattle-0-4",
+      "id": "401857085",
       "matchup": "MIN @ SEA",
       "awayTeam": "MIN",
       "homeTeam": "SEA",
       "league": "WNBA",
+      "slateDate": "2026-07-20",
+      "slateStartAt": "2026-07-21T02:00Z",
       "crew": [
         {
           "name": "Amy Bonner",
@@ -98,6 +106,84 @@
           "role": "umpire"
         }
       ]
+    },
+    {
+      "id": "401857086",
+      "matchup": "PHO @ LAS",
+      "awayTeam": "PHO",
+      "homeTeam": "LAS",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "slateStartAt": "2026-07-22T19:00Z",
+      "crew": []
+    },
+    {
+      "id": "401857087",
+      "matchup": "MIN @ SEA",
+      "awayTeam": "MIN",
+      "homeTeam": "SEA",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "slateStartAt": "2026-07-22T19:00Z",
+      "crew": [
+        {
+          "name": "Amy Bonner",
+          "number": 31,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Kevin Fahy",
+          "number": 43,
+          "role": "referee"
+        },
+        {
+          "name": "Toni Patillo",
+          "number": 76,
+          "role": "umpire"
+        }
+      ]
+    },
+    {
+      "id": "401857088",
+      "matchup": "CHI @ NYL",
+      "awayTeam": "CHI",
+      "homeTeam": "NYL",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "slateStartAt": "2026-07-22T23:00Z",
+      "crew": []
+    },
+    {
+      "id": "401857089",
+      "matchup": "LVA @ WAS",
+      "awayTeam": "LVA",
+      "homeTeam": "WAS",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "slateStartAt": "2026-07-22T23:30Z",
+      "crew": []
+    },
+    {
+      "id": "401857090",
+      "matchup": "CON @ IND",
+      "awayTeam": "CON",
+      "homeTeam": "IND",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "slateStartAt": "2026-07-23T00:00Z",
+      "crew": []
+    },
+    {
+      "id": "401857091",
+      "matchup": "DAL @ POR",
+      "awayTeam": "DAL",
+      "homeTeam": "POR",
+      "league": "WNBA",
+      "slateDate": "2026-07-22",
+      "slateStartAt": "2026-07-23T02:00Z",
+      "crew": []
     }
-  ]
+  ],
+  "nextSlateDate": "2026-07-20",
+  "note": "Next 10 WNBA games (2026-07-20 onward). Crews from official.nba.com when published."
 }
