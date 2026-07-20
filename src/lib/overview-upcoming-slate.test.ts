@@ -218,6 +218,70 @@ describe("overview-upcoming-slate", () => {
     assert.equal(slate.leagueGroup?.liveCount, LEAGUE_UPCOMING_SLATE_LIMIT);
   });
 
+  it("uses refs-not-assigned copy for WNBA scheduled games", () => {
+    const file: AssignmentsFile = {
+      lastUpdated: "2026-07-20T00:00:00.000Z",
+      date: "2026-07-21",
+      source: "espn",
+      games: [
+        {
+          id: "401857083",
+          matchup: "LVA @ TOR",
+          awayTeam: "LVA",
+          homeTeam: "TOR",
+          league: "WNBA",
+          slateDate: "2026-07-21",
+          crew: [],
+        },
+      ],
+    };
+
+    const slate = buildLeagueHubUpcomingSchedule("wnba", file, 5);
+    assert.equal(slate.leagueGroup?.games[0]?.officialsLine, "Refs not assigned yet");
+    assert.equal(slate.leagueGroup?.games[0]?.status, "scheduled");
+  });
+
+  it("features all tomorrow WNBA games ahead of other leagues on the homepage grid", () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowIso = tomorrow.toLocaleDateString("en-CA", {
+      timeZone: "America/Toronto",
+    });
+
+    const games: OverviewSlateEntry[] = [
+      slateEntry({
+        leagueId: "wnba",
+        gameId: "w-t1",
+        status: "scheduled",
+        slateDate: tomorrowIso,
+      }),
+      slateEntry({
+        leagueId: "wnba",
+        gameId: "w-t2",
+        status: "scheduled",
+        slateDate: tomorrowIso,
+      }),
+      slateEntry({
+        leagueId: "wnba",
+        gameId: "w-old",
+        status: "scheduled",
+        slateDate: "2020-01-01",
+      }),
+      slateEntry({
+        leagueId: "nba",
+        gameId: "n1",
+        status: "live",
+        slateDate: tomorrowIso,
+      }),
+    ];
+
+    const grid = selectHomepageSlateGrid(games);
+    assert.deepEqual(
+      grid.slice(0, 2).map((game) => game.gameId),
+      ["w-t1", "w-t2"],
+    );
+  });
+
   it("orders homepage grid with newest fill in row two and pinned bottom leagues", () => {
     const games: OverviewSlateEntry[] = [
       slateEntry({ leagueId: "wnba", gameId: "w1", status: "live", slateDate: "2026-07-20" }),

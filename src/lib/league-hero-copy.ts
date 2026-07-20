@@ -128,12 +128,15 @@ export const LEAGUE_HERO_COPY: Record<
   },
   wnba: {
     kicker: "WNBA officiating desk",
-    liveTitle: "Crew assignments and tonight's whistle slate.",
-    offseasonTitle: "WNBA refereeing stats, in local preview.",
+    liveTitle: "Tonight's whistle slate and betting edge context.",
+    pendingTitle: "Upcoming WNBA games are on the board.",
+    offseasonTitle: "WNBA refereeing stats, analyzed.",
     liveLead:
-      "Official crew assignments and upcoming matchups from official.nba.com, with historical ingest coming in Phase 2.",
+      "Upcoming matchups with whistle-pace context. Referee assignments publish closer to tipoff.",
+    pendingLead:
+      "Games are scheduled but referees have not been assigned yet. Matchup edges and historical pace context stay live below.",
     offseasonLead:
-      "Phase 1 local preview. Run npm run fetch-wnba-assignments when the schedule is live.",
+      "Official profiles and whistle tendencies load from verified game data.",
     statLabels: {
       officials: "Refs indexed",
       games: "Games logged",

@@ -177,7 +177,7 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
       conferenceCoverage: false,
       slateFeatureShowcase: true,
       slateQuickLookup: true,
-      pendingCrewNotice: false,
+      pendingCrewNotice: true,
       ppOtSignals: false,
       seasonScopeOnSlate: true,
       seasonScopeOnFindings: true,

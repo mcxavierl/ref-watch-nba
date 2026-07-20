@@ -1,6 +1,6 @@
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
 
-type OffseasonLeague = "NBA" | "NHL" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+type OffseasonLeague = "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
 
 const COLLEGE_LEAGUES = new Set<OffseasonLeague>(["CBB", "CFB"]);
 
@@ -10,6 +10,9 @@ const OFFSEASON_COPY: Record<OffseasonLeague, { status: string; detail?: string 
   },
   NHL: {
     status: "Live crew assignments return when the NHL schedule resumes.",
+  },
+  WNBA: {
+    status: "Live crew assignments return when the WNBA schedule resumes.",
   },
   NFL: {
     status: "Live crew assignments return when the NFL week publishes.",

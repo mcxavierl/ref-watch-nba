@@ -19,7 +19,7 @@ function LeagueHomeInsightGrid({
   basePath: string;
   gridClassName: string;
   notable?: boolean;
-  avatarSport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  avatarSport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba";
 }) {
   if (insights.length === 0) return null;
 
@@ -63,7 +63,7 @@ export function LeagueHomeInsightSections({
   spotlights: RankingsInsight[];
   leagueId: LeagueId;
   basePath: string;
-  sport: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  sport: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba";
 }) {
   const hasContent =
     pulse.length > 0 || matchups.length > 0 || spotlights.length > 0;

@@ -31,6 +31,12 @@ import {
   detectTeamsInGame as detectCfbTeams,
   refSlug as cfbRefSlug,
 } from "@/lib/cfb/data";
+import {
+  detectTeamsInGame as detectWnbaTeams,
+  teamFullName as wnbaTeamFullName,
+  type WnbaTeam,
+} from "@/lib/wnba/teams";
+import { refSlug as wnbaRefSlug } from "@/lib/wnba/data";
 import type { GrudgeStoryline } from "@/lib/grudge-match";
 import type {
   CrewHomeBias,
@@ -72,6 +78,7 @@ import { TeamLogo } from "./TeamLogo";
 
 const SPORT_BENCHMARK = {
   nba: "225",
+  wnba: "165",
   cbb: "145",
   nhl: "6.0",
   nfl: "46",
@@ -104,7 +111,7 @@ export function GameSlateCard({
   storylines?: GrudgeStoryline[];
   premium: CrewWhistlePremium;
   homeBias?: CrewHomeBias | null;
-  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  sport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba";
   basePath?: string;
   ppPremium?: NhlPpPremiumSignal | null;
   otSignal?: NhlOtRateSignal | null;
@@ -116,7 +123,9 @@ export function GameSlateCard({
   const benchmarkLabelValue =
     overBenchmark !== undefined ? String(overBenchmark) : defaultBenchmark;
   const detectTeams =
-    sport === "laliga"
+    sport === "wnba"
+      ? detectWnbaTeams
+      : sport === "laliga"
       ? detectLaligaTeams
       : sport === "epl"
       ? detectEplTeams
@@ -129,7 +138,10 @@ export function GameSlateCard({
           : sport === "nhl"
             ? detectNhlTeams
             : detectNbaTeams;
-  const displayTeamName = (team: NbaTeam | NhlTeam | NflTeam | CbbTeam | CfbTeam | EplTeam | LaligaTeam) => {
+  const displayTeamName = (
+    team: NbaTeam | NhlTeam | NflTeam | CbbTeam | CfbTeam | EplTeam | LaligaTeam | WnbaTeam,
+  ) => {
+    if (sport === "wnba") return wnbaTeamFullName(team as WnbaTeam);
     if (sport === "laliga") return laligaTeamFullName(team as LaligaTeam);
     if (sport === "epl") return eplTeamFullName(team as EplTeam);
     if (sport === "cfb") return cfbTeamFullName(team as CfbTeam);
@@ -139,7 +151,9 @@ export function GameSlateCard({
     return nbaTeamFullName(team as NbaTeam);
   };
   const refSlug =
-    sport === "laliga"
+    sport === "wnba"
+      ? wnbaRefSlug
+      : sport === "laliga"
       ? laligaRefSlug
       : sport === "epl"
       ? eplRefSlug
@@ -215,6 +229,11 @@ export function GameSlateCard({
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
+          {metrics.crew.length === 0 && sport === "wnba" ? (
+            <span className="crew-chip crew-chip--pending text-sm text-muted">
+              Refs not assigned yet
+            </span>
+          ) : null}
           {metrics.crew.map((official, index) => (
             <Link
               key={`${official.name}-${official.number}`}
@@ -237,7 +256,13 @@ export function GameSlateCard({
       </div>
 
       <div className="space-y-2.5 px-4 py-5 sm:px-5">
-        {metrics.insufficientSample ? (
+        {metrics.crew.length === 0 ? (
+          <p className="text-sm text-muted">
+            {sport === "wnba"
+              ? "Refs not assigned yet. Crew metrics and totals edges publish once official assignments drop."
+              : "Crew not assigned yet. Metrics publish once the officiating crew is confirmed."}
+          </p>
+        ) : metrics.insufficientSample ? (
           <p className="text-sm text-muted">
             Not enough qualified crew history ({metrics.crew.length} official
             {metrics.crew.length === 1 ? "" : "s"}, need 2+ refs at sample

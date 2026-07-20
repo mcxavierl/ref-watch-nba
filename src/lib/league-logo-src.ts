@@ -1,7 +1,7 @@
 import { getLeagueConfigEntry } from "@/config/leagueConfig";
 import type { LeagueId } from "@/lib/leagues";
 
-type LeagueNavId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+type LeagueNavId = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba";
 
 type LeagueLogoSet = {
   onDark: string;
@@ -29,6 +29,10 @@ const PRO_LEAGUE_LOGOS: Record<Exclude<LeagueNavId, "cbb" | "cfb">, LeagueLogoSe
     onDark: "/logos/laliga-white.png",
     onLight: "/logos/laliga-red.png",
   },
+  wnba: {
+    onDark: "/logos/wnba-logo.svg",
+    onLight: "/logos/wnba-logo.svg",
+  },
 };
 
 function leagueLogoForTheme(
@@ -48,7 +52,9 @@ export function leagueLogoSrc(
   const registryLogo = leagueLogoForTheme(league, colorMode);
   if (registryLogo) return registryLogo;
 
-  const proLogos = PRO_LEAGUE_LOGOS[league as Exclude<LeagueNavId, "cbb" | "cfb">];
+  if (league === "cbb" || league === "cfb" || league === "mlb") return undefined;
+
+  const proLogos = PRO_LEAGUE_LOGOS[league as keyof typeof PRO_LEAGUE_LOGOS];
   if (!proLogos) return undefined;
   return colorMode === "light" ? proLogos.onLight : proLogos.onDark;
 }
@@ -72,6 +78,8 @@ export function leagueNavMarkDimensions(league: LeagueId): { width: number; heig
       return { width: 24, height: 24 };
     case "laliga":
       return { width: 22, height: 18 };
+    case "wnba":
+      return { width: 36, height: 18 };
     case "nhl":
       return { width: 28, height: 18 };
     case "nba":
@@ -89,6 +97,8 @@ export function leagueHeroLogoDimensions(league: LeagueId): { width: number; hei
       return { width: 56, height: 56 };
     case "laliga":
       return { width: 56, height: 40 };
+    case "wnba":
+      return { width: 56, height: 28 };
     case "nhl":
       return { width: 52, height: 40 };
     case "nba":

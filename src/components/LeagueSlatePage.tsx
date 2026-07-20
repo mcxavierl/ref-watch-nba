@@ -29,9 +29,12 @@ import type { LiveNcaaConferenceId } from "@/lib/ncaa-conference-gate";
 import { LEAGUE_MANIFEST, type LeagueManifestId } from "@/lib/league-manifest";
 import { buildTonightEdgeSummary } from "@/lib/edge-summary";
 import {
-  computeCrewMetrics,
+  computeCrewMetrics as computeNbaCrewMetrics,
   ouLeanSortWeight,
 } from "@/lib/data";
+import {
+  computeCrewMetrics as computeWnbaCrewMetrics,
+} from "@/lib/wnba/data";
 import {
   computeGameStorylines,
   computeSlateStorylines,
@@ -61,10 +64,24 @@ import {
 } from "@/lib/whistle-premium";
 import type { AssignmentGame, RefStatsFile } from "@/lib/types";
 
-function sortSlateGames(games: AssignmentGame[], refStats: RefStatsFile) {
+function computeLeagueCrewMetrics(
+  leagueId: LeagueManifestId,
+  crew: AssignmentGame["crew"],
+  refStats: RefStatsFile,
+) {
+  return leagueId === "wnba"
+    ? computeWnbaCrewMetrics(crew, refStats)
+    : computeNbaCrewMetrics(crew, refStats);
+}
+
+function sortSlateGames(
+  leagueId: LeagueManifestId,
+  games: AssignmentGame[],
+  refStats: RefStatsFile,
+) {
   return [...games].sort((a, b) => {
-    const aMetrics = computeCrewMetrics(a.crew, refStats);
-    const bMetrics = computeCrewMetrics(b.crew, refStats);
+    const aMetrics = computeLeagueCrewMetrics(leagueId, a.crew, refStats);
+    const bMetrics = computeLeagueCrewMetrics(leagueId, b.crew, refStats);
     const leanDiff =
       ouLeanSortWeight(bMetrics.ouLean) - ouLeanSortWeight(aMetrics.ouLean);
     if (leanDiff !== 0) return leanDiff;
@@ -79,8 +96,8 @@ type LeagueSlatePageProps = {
 
 function slateCardSport(
   leagueId: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba",
-): "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" {
-  return leagueId === "wnba" ? "nba" : leagueId;
+): "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba" {
+  return leagueId;
 }
 
 export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePageProps) {
@@ -116,7 +133,7 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
   });
   const upcomingSlate = buildLeagueHubUpcomingSchedule(leagueId, assignments, 10);
   const { games: slateGames, isPreview: slateIsPreview } = resolveSlateGames(assignments);
-  const sortedGames = sortSlateGames(slateGames, refStats);
+  const sortedGames = sortSlateGames(leagueId, slateGames, activeRefStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
   const alertPremiums = paceAlerts(premiums);
   const homeBiasSignals = computeSlateHomeBias(sortedGames, refStats);
@@ -142,7 +159,8 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
     | "EPL"
     | "LALIGA"
     | "CBB"
-    | "CFB";
+    | "CFB"
+    | "WNBA";
   const footerLeague = findingLeague;
 
   return (
@@ -295,7 +313,7 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
                     matchup={game.matchup}
                     awayTeam={game.awayTeam}
                     homeTeam={game.homeTeam}
-                    metrics={computeCrewMetrics(game.crew, refStats)}
+                    metrics={computeLeagueCrewMetrics(leagueId, game.crew, activeRefStats)}
                     premium={computeCrewWhistlePremium(game, refStats, odds)}
                     homeBias={computeCrewHomeBias(game, refStats)}
                     sport={sport}

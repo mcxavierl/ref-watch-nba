@@ -70,7 +70,7 @@ export function HighlightStatCard({
   statValue?: string;
   statLabel?: string;
   body: string;
-  avatarSport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  avatarSport?: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba";
   refMeta?: string;
   sampleGames?: number;
   rawDeltaPp?: number;

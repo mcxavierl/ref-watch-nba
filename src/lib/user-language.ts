@@ -2,7 +2,7 @@ import type { SampleQuality } from "@/lib/types";
 
 export type ConfidenceTier = "Strong" | "Moderate" | "Thin";
 
-export type Sport = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+export type Sport = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba";
 
 const SPORT_COPY = {
   nba: {
@@ -71,6 +71,16 @@ const SPORT_COPY = {
     pointsAboveAverage: "Points above average",
     scoringLabel: "Scoring",
     whistleLabel: "Flags",
+    overLeanLabel: "Historical over-rate tendency",
+    lineComparisonLabel: "Total vs benchmark",
+    homeBiasLabel: "Home/road pattern",
+  },
+  wnba: {
+    scoringUnit: "pts",
+    whistleUnit: "fouls",
+    pointsAboveAverage: "Points above average",
+    scoringLabel: "Scoring",
+    whistleLabel: "Whistle",
     overLeanLabel: "Historical over-rate tendency",
     lineComparisonLabel: "Total vs benchmark",
     homeBiasLabel: "Home/road pattern",

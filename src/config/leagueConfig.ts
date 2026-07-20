@@ -83,6 +83,18 @@ export const LEAGUE_CONFIG: Partial<Record<LeagueId, LeagueRegistryEntry>> = {
     },
     dataVerified: true,
   },
+  wnba: {
+    id: "wnba",
+    name: "WNBA",
+    slug: "wnba",
+    seasonStartMonth: 5,
+    seasonStartDay: 14,
+    themeColor: "#FA4D00",
+    logos: {
+      light: "/logos/wnba-logo.svg",
+      dark: "/logos/wnba-logo.svg",
+    },
+  },
 };
 
 export function getLeagueConfigEntry(

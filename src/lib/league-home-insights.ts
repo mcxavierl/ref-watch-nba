@@ -6,6 +6,7 @@ import {
   buildTopMatrixSplitCardForLeague,
   type LeagueInsightCard,
 } from "@/lib/league-overview-insights";
+import { buildWnbaSlateInsights } from "@/lib/wnba/slate-insights";
 import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
 import {
   buildRankingsSynthesis,
@@ -141,12 +142,18 @@ export function buildKeyMatchupTargets(
     const crewLabel =
       game.crew.length > 0
         ? game.crew.map((official) => official.name).join(", ")
-        : "Crew TBD";
+        : leagueId === "wnba"
+          ? "Refs not assigned yet"
+          : "Crew TBD";
     const lean = metrics?.ouLean ?? "neutral";
+    const edgeSuffix =
+      leagueId === "wnba"
+        ? " Edge window opens once referee assignments publish."
+        : " High-leverage slate target for split tracking.";
     return {
       id: `marquee-matchup-${game.id}`,
       title: PULSE_SLOT_TITLES["marquee-matchup"]!,
-      body: `${game.matchup} · ${formatOuLeanLabel(lean)} with ${crewLabel}. High-leverage slate target for split tracking.`,
+      body: `${game.matchup} · ${formatOuLeanLabel(lean)} with ${crewLabel}.${edgeSuffix}`,
       statLabel: "O/U lean",
       statValue: formatOuLeanLabel(lean),
       categoryHref: `${basePath}/#slate-game-${game.id}`,
@@ -182,6 +189,11 @@ export function buildLeagueHomeInsights({
   assignments: AssignmentsFile;
 }): LeagueHomeInsights {
   const league = LEAGUES[leagueId];
+
+  if (leagueId === "wnba") {
+    return buildWnbaSlateInsights(assignments, league.pathPrefix);
+  }
+
   const pulse = buildLeaguePulseInsights(refStats, league);
   const pulseSlugs = new Set(
     pulse.map((insight) => insight.refSlug).filter(Boolean) as string[],
