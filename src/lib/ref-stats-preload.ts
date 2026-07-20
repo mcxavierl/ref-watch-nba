@@ -18,10 +18,9 @@ type League = "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
 
 function hasGameLogOnlyIngest(stats: RefStatsFile | null | undefined): boolean {
   if (!stats) return false;
-  return (
-    (stats.meta.totalGamesProcessed ?? 0) > 0 &&
-    stats.meta.source === "espn"
-  );
+  if ((stats.meta.totalGamesProcessed ?? 0) <= 0) return false;
+  const source = stats.meta.source ?? "";
+  return source === "espn" || source === "wnba-stats-api";
 }
 
 const REF_STATS_CACHE_KEYS = freezeWorkerConfig({
@@ -73,7 +72,13 @@ export function getCachedRefStats(league: League): RefStatsFile | null {
 /** SSR-hydrated stats from ASSETS — skip Node fs re-parses on Workers. */
 export function getPreferHydratedRefStats(league: League): RefStatsFile | null {
   const cached = getCachedRefStats(league);
-  if (!cached?.refs?.length) return null;
+  if (!cached) return null;
+  if (!cached.refs?.length) {
+    if (hasGameLogOnlyIngest(cached) && cached.meta.data_verified === true) {
+      return cached;
+    }
+    return null;
+  }
   if (hasGameLogOnlyIngest(cached)) {
     return cached;
   }

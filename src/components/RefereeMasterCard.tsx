@@ -6,7 +6,7 @@ import { buildRefMasterInsights } from "@/lib/ref-master-insights";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
-type RefAvatarSport = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+type RefAvatarSport = "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb" | "wnba";
 type FavoritesLeague = RefAvatarSport;
 
 export type RefereeMasterCardProps = {

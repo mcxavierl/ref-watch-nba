@@ -16,4 +16,10 @@ test("bundled ref-stats core has hero counts for compact leagues", () => {
     assert.ok(stats.meta.totalGamesProcessed, `${league} games`);
     assert.equal(stats.meta.data_verified, true, `${league} verified`);
   }
+
+  const wnba = getBundledLeagueRefStatsCore("wnba");
+  assert.ok(wnba, "wnba bundled core");
+  assert.equal(wnba?.refs?.length ?? 0, 0, "wnba refs pending officials");
+  assert.ok((wnba?.meta.totalGamesProcessed ?? 0) > 0, "wnba games");
+  assert.equal(wnba?.meta.data_verified, true, "wnba verified");
 });

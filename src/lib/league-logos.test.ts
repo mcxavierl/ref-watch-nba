@@ -26,6 +26,8 @@ describe("league logos", () => {
   it("resolves themed EPL logo src for nav and chooser marks", () => {
     assert.equal(leagueLogoSrc("epl", "dark"), "/logos/epl-lion.svg");
     assert.equal(leagueLogoSrc("epl", "light"), "/logos/epl-lion-dark.svg");
+    assert.equal(leagueLogoSrc("wnba", "dark"), "/logos/wnba-logo.svg");
+    assert.equal(leagueLogoSrc("wnba", "light"), "/logos/wnba-logo-light.svg");
   });
 
   it("uses square intrinsic dimensions for the EPL lion mark", () => {

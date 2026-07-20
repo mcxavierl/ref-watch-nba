@@ -69,7 +69,7 @@ type RefTeamMatrixProps = {
   leagueLabel: string;
   officialNounPlural: string;
   whistleDiffLabel: string;
-  sport: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  sport: "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
   teamSosByAbbr?: Record<string, TeamStrengthOfSchedule>;
   siteUrl: string;
   leagueId: LeagueId;

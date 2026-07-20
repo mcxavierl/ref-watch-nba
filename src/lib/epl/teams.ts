@@ -5,19 +5,21 @@ export interface EplTeam {
   espnId: number;
 }
 
-/** 2024-25 Premier League clubs. espnId maps to ESPN CDN logos. */
+/** 2025-26 Premier League clubs. espnId maps to ESPN CDN logos. */
 export const EPL_TEAMS: EplTeam[] = [
   { abbr: "ARS", name: "Arsenal", city: "Arsenal", espnId: 359 },
   { abbr: "AVL", name: "Aston Villa", city: "Aston Villa", espnId: 362 },
   { abbr: "BOU", name: "Bournemouth", city: "Bournemouth", espnId: 349 },
   { abbr: "BRE", name: "Brentford", city: "Brentford", espnId: 337 },
   { abbr: "BHA", name: "Brighton", city: "Brighton", espnId: 331 },
+  { abbr: "BUR", name: "Burnley", city: "Burnley", espnId: 379 },
   { abbr: "CHE", name: "Chelsea", city: "Chelsea", espnId: 363 },
   { abbr: "COV", name: "Coventry City", city: "Coventry", espnId: 388 },
   { abbr: "CRY", name: "Crystal Palace", city: "Crystal Palace", espnId: 384 },
   { abbr: "EVE", name: "Everton", city: "Everton", espnId: 368 },
   { abbr: "FUL", name: "Fulham", city: "Fulham", espnId: 370 },
   { abbr: "IPS", name: "Ipswich Town", city: "Ipswich", espnId: 373 },
+  { abbr: "LEE", name: "Leeds United", city: "Leeds", espnId: 357 },
   { abbr: "LEI", name: "Leicester City", city: "Leicester", espnId: 375 },
   { abbr: "LIV", name: "Liverpool", city: "Liverpool", espnId: 364 },
   { abbr: "MCI", name: "Manchester City", city: "Man City", espnId: 382 },
@@ -25,6 +27,7 @@ export const EPL_TEAMS: EplTeam[] = [
   { abbr: "NEW", name: "Newcastle United", city: "Newcastle", espnId: 361 },
   { abbr: "NFO", name: "Nottingham Forest", city: "Nott'm Forest", espnId: 393 },
   { abbr: "SOU", name: "Southampton", city: "Southampton", espnId: 376 },
+  { abbr: "SUN", name: "Sunderland", city: "Sunderland", espnId: 366 },
   { abbr: "TOT", name: "Tottenham Hotspur", city: "Spurs", espnId: 367 },
   { abbr: "WHU", name: "West Ham United", city: "West Ham", espnId: 371 },
   { abbr: "WOL", name: "Wolverhampton Wanderers", city: "Wolves", espnId: 380 },
@@ -61,7 +64,7 @@ export function teamLogoUrl(abbr: string): string {
 export function matchTeamString(team: string): EplTeam | undefined {
   const n = team.trim().toLowerCase();
   if (!n) return undefined;
-  const aliases: Record<string, string> = { man: "MUN", mnc: "MCI" };
+  const aliases: Record<string, string> = { man: "MUN", mnc: "MCI", leeds: "LEE" };
   const alias = aliases[n];
   const direct = teamByAbbr.get((alias ?? n).toUpperCase());
   if (direct) return direct;

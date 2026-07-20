@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
-import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
+import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";
 import { getTeamSplits } from "@/lib/cfb/data";
 import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
 import { teamFullName, teamsByConference, type CfbTeam } from "@/lib/cfb/teams";
@@ -47,14 +47,10 @@ export default function CfbTeamsIndexPage() {
                           {teamFullName(team)}
                         </p>
                         <p className="text-sm text-zinc-600">
-                          {splits.length > 0
-                            ? (
-                              <>
-                                {splits.length} crews ·{" "}
-                                <VerifiedGamesHint>{games} games</VerifiedGamesHint>
-                              </>
-                            )
-                            : "No data yet"}
+                          <TeamIndexSubtitle
+                            splitsCount={splits.length}
+                            games={games}
+                          />
                         </p>
                       </div>
                       <span className="font-mono text-sm text-zinc-500">

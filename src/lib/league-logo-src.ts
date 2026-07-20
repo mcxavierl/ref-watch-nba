@@ -31,7 +31,7 @@ const PRO_LEAGUE_LOGOS: Record<Exclude<LeagueNavId, "cbb" | "cfb">, LeagueLogoSe
   },
   wnba: {
     onDark: "/logos/wnba-logo.svg",
-    onLight: "/logos/wnba-logo.svg",
+    onLight: "/logos/wnba-logo-light.svg",
   },
 };
 

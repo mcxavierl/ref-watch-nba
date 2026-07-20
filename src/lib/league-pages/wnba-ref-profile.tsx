@@ -97,7 +97,7 @@ export default async function WnbaRefProfilePage({
         profile={profile}
         leagueId="wnba"
         stats={stats}
-        sport="nba"
+        sport="wnba"
         qualified={qualified}
         sampleGateMessage={
           <>

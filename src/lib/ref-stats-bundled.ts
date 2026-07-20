@@ -22,7 +22,15 @@ const BUNDLED_CORE: Record<BundledLeague, RefStatsFile> = {
 
 function loadBundledCore(league: BundledLeague): RefStatsFile | null {
   const data = BUNDLED_CORE[league];
-  return data?.refs?.length ? data : null;
+  if (!data) return null;
+  if (data.refs?.length) return data;
+  if (
+    data.meta.data_verified === true &&
+    (data.meta.totalGamesProcessed ?? 0) > 0
+  ) {
+    return data;
+  }
+  return null;
 }
 
 /** Prefer disk when it has refs; otherwise fall back to build-time bundled core. */

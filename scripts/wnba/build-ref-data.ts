@@ -119,7 +119,7 @@ function buildStatsFromLogs(games: GameLogEntry[]): RefStatsFile {
   };
 
   stats = rebuildRefGamesFromLogs(stats, logs, { useCanonicalKey: true, seasons });
-  const teamSplits = rebuildTeamSplitsFromGameLogs(logs, WNBA_TEAM_ABBRS);
+  const teamSplits = rebuildTeamSplitsFromGameLogs("wnba", stats, logs);
   stats.teamSplits = teamSplits;
 
   const gameCount = games.length;

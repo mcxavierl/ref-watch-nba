@@ -466,6 +466,7 @@ export interface RefStatsFile {
     minSampleSize: number;
     source:
       | "nba-stats-api"
+      | "wnba-stats-api"
       | "nhl-api"
       | "espn"
       | "football-data"

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { leagueGamesUnit } from "@/lib/leagues";
-import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
+import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";
 import { getTeamSplits } from "@/lib/epl/data";
 import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
 import { EPL_TEAMS, teamFullName } from "@/lib/epl/teams";
@@ -44,14 +44,12 @@ export default function EplTeamsIndexPage() {
                       {teamFullName(team)}
                     </p>
                     <p className="text-sm text-zinc-600">
-                      {splits.length > 0
-                        ? (
-                          <>
-                            {splits.length} refs ·{" "}
-                            <VerifiedGamesHint>{games} {leagueGamesUnit("epl")}</VerifiedGamesHint>
-                          </>
-                        )
-                        : "No data yet"}
+                      <TeamIndexSubtitle
+                        splitsCount={splits.length}
+                        games={games}
+                        crewLabel="refs"
+                        gamesLabel={leagueGamesUnit("epl")}
+                      />
                     </p>
                   </div>
                   <span className="font-mono text-sm text-zinc-500">

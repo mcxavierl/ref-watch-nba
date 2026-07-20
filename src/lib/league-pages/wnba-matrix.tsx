@@ -93,7 +93,7 @@ export default async function WnbaMatrixPage({ searchParams }: PageProps) {
               leagueLabel={league.label}
               officialNounPlural={league.officialNounPlural}
               whistleDiffLabel={matrixWhistleDiffShortLabel(league.metrics)}
-              sport="nba"
+              sport="wnba"
               siteUrl={SITE_URL}
               leagueId="wnba"
               scopeMode={scopeMode}
