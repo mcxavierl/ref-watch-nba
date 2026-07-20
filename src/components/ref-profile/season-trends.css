@@ -29,6 +29,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: 0.75rem;
   background: color-mix(in srgb, var(--surface-raised) 70%, transparent);
+  min-width: 0;
 }
 
 .ref-season-trends-chip {

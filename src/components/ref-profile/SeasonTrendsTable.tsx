@@ -14,19 +14,23 @@ export function SeasonTrendsTable({ rows }: { rows: SeasonTrendRow[] }) {
   }
 
   return (
-    <div className="ref-season-trends-table-wrap overflow-x-auto">
-      <table className="ref-data-table data-table ref-season-trends-table min-w-[36rem] w-full">
+    <div className="ref-season-trends-table-wrap ref-table-scroll">
+      <table className="ref-data-table data-table ref-season-trends-table ref-profile-fluid-table min-w-[31.25rem] w-full">
         <thead className="data-table-head">
           <tr>
-            <th scope="col">Season</th>
-            <th scope="col">Archetype</th>
-            <th scope="col" className="data-table-num">
+            <th scope="col" className="whitespace-nowrap">
+              Season
+            </th>
+            <th scope="col" className="whitespace-nowrap">
+              Archetype
+            </th>
+            <th scope="col" className="data-table-num whitespace-nowrap">
               Foul_Ratio
             </th>
-            <th scope="col" className="data-table-num">
+            <th scope="col" className="data-table-num whitespace-nowrap">
               Leverage_Sensitivity
             </th>
-            <th scope="col" className="data-table-num">
+            <th scope="col" className="data-table-num whitespace-nowrap">
               Consistency
             </th>
           </tr>
@@ -56,9 +60,9 @@ export function SeasonTrendsTable({ rows }: { rows: SeasonTrendRow[] }) {
                     {row.archetypeLabel}
                   </span>
                 </td>
-                <td className="data-table-num tabular-nums">{row.foulRatio.toFixed(2)}</td>
-                <td className="data-table-num tabular-nums">{row.leverageSensitivity}</td>
-                <td className="data-table-num tabular-nums">{row.consistency}/10</td>
+                <td className="data-table-num whitespace-nowrap tabular-nums">{row.foulRatio.toFixed(2)}</td>
+                <td className="data-table-num whitespace-nowrap tabular-nums">{row.leverageSensitivity}</td>
+                <td className="data-table-num whitespace-nowrap tabular-nums">{row.consistency}/10</td>
               </tr>
             ),
           )}

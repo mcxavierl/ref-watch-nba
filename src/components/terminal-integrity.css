@@ -136,6 +136,33 @@
   gap: var(--space-2);
 }
 
+.ref-table-scroll,
+.pressure-matrix-table-scroll {
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ref-profile-fluid-table {
+  min-width: 31.25rem;
+  width: 100%;
+}
+
+.ref-profile-fluid-table th,
+.ref-profile-fluid-table td.data-table-num,
+.ref-profile-fluid-table td.font-tabular {
+  white-space: nowrap;
+}
+
+.ref-close-game-section--embedded {
+  margin-top: var(--space-6);
+  min-width: 0;
+}
+
+.ref-close-game-section-lead {
+  max-width: none;
+}
+
 @media (min-width: 48rem) {
   .ref-market-impact-panel {
     gap: var(--space-4);
@@ -169,7 +196,7 @@
 
 .ref-profile-depth-expand-panel {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-6);
   min-width: 0;
 }
 
