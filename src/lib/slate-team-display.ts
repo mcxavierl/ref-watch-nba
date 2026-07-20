@@ -15,9 +15,33 @@ import {
 export type SlateTeamLike = {
   abbr: string;
   name: string;
+  displayName: string;
   nbaId?: number;
   logoUrl?: string;
 };
+
+function slateTeamDisplayName(
+  team: { abbr: string; name: string; city?: string },
+  leagueId: LeagueId,
+): string {
+  if (leagueId === "epl" || leagueId === "laliga") {
+    return team.name;
+  }
+  if (team.city) {
+    return team.city;
+  }
+  return team.name || team.abbr;
+}
+
+function withDisplayName<T extends { abbr: string; name: string; city?: string }>(
+  team: T,
+  leagueId: LeagueId,
+): T & { displayName: string } {
+  return {
+    ...team,
+    displayName: slateTeamDisplayName(team, leagueId),
+  };
+}
 
 export type SlateTeamLogoSport =
   | "nba"
@@ -41,13 +65,17 @@ export function resolveSlateTeam(leagueId: LeagueId, abbr: string): SlateTeamLik
     const canonical = resolveWnbaTeamAbbr(abbr);
     const team = getWnbaTeam(canonical);
     if (team) {
-      return {
-        abbr: canonical,
-        name: team.name,
-        logoUrl: wnbaTeamLogoUrl(canonical),
-      };
+      return withDisplayName(
+        { ...team, logoUrl: wnbaTeamLogoUrl(canonical) },
+        leagueId,
+      );
     }
-    return { abbr: canonical, name: canonical, logoUrl: wnbaTeamLogoUrl(canonical) };
+    return {
+      abbr: canonical,
+      name: canonical,
+      displayName: canonical,
+      logoUrl: wnbaTeamLogoUrl(canonical),
+    };
   }
 
   const team =
@@ -65,7 +93,9 @@ export function resolveSlateTeam(leagueId: LeagueId, abbr: string): SlateTeamLik
                 ? getCbbTeam(key)
                 : getCfbTeam(key);
 
-  return team ?? { abbr: key, name: key };
+  return team
+    ? withDisplayName(team, leagueId)
+    : { abbr: key, name: key, displayName: key };
 }
 
 export function formatSlateDateLabel(slateDate: string | undefined): string | null {

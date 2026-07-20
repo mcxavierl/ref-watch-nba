@@ -206,7 +206,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
       css,
       /html\[data-color="light"\][\s\S]*--upcoming-card-bg: #ffffff/,
     );
-    assert.match(css, /\.upcoming-game-card__team-abbr[\s\S]*var\(--upcoming-ink-strong\)/);
+    assert.match(css, /\.upcoming-game-card__team-name[\s\S]*var\(--upcoming-ink-strong\)/);
     assert.match(css, /container-type: inline-size/);
     assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*align-items: center/);
     assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*justify-content: center/);
