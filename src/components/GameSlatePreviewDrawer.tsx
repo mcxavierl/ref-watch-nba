@@ -110,6 +110,10 @@ export function GameSlatePreviewDrawer({
       preview.refTeamRows.filter((row) => row.teamAbbr === impact.teamAbbr),
     ]),
   );
+  const outlierNotes = preview.refTeamRows
+    .filter((row) => row.isOutlier && row.outlierNote)
+    .map((row) => `${row.refName} · ${row.teamAbbr}: ${row.outlierNote}`);
+  const refVsTeamsLabel = preview.crew.length === 1 ? "Ref vs teams" : "Crew vs teams";
 
   return (
     <ModalPortal>
@@ -278,6 +282,22 @@ export function GameSlatePreviewDrawer({
                       />
                     );
                   })}
+                </section>
+              ) : null}
+
+              {outlierNotes.length > 0 ? (
+                <section
+                  className="ref-preview-drawer-section"
+                  aria-label={refVsTeamsLabel}
+                >
+                  <h3 className="ref-preview-drawer-section-title">{refVsTeamsLabel}</h3>
+                  <ul className="game-slate-preview-outliers">
+                    {outlierNotes.map((note) => (
+                      <li key={note} className={STATE_COLOR_CLASS.caution}>
+                        {note}
+                      </li>
+                    ))}
+                  </ul>
                 </section>
               ) : null}
 
