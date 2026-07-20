@@ -4,7 +4,7 @@ export interface CbbTeam {
   abbr: string;
   name: string;
   city: string;
-  conference: "ACC" | "Big Ten" | "Big 12" | "SEC" | "Big East" | "Pac-12" | "Other";
+  conference: "ACC" | "Big Ten" | "Big 12" | "SEC" | "Big East" | "Pac-12" | "WCC" | "Other";
   division: string;
 }
 
@@ -89,8 +89,18 @@ export const CBB_TEAMS: CbbTeam[] = [
   { abbr: "SJU", name: "Red Storm", city: "St. John's", conference: "Big East", division: "-" },
   { abbr: "VILL", name: "Wildcats", city: "Villanova", conference: "Big East", division: "-" },
   { abbr: "XAV", name: "Musketeers", city: "Xavier", conference: "Big East", division: "-" },
-  { abbr: "GONZ", name: "Bulldogs", city: "Gonzaga", conference: "Other", division: "WCC" },
+  { abbr: "GONZ", name: "Bulldogs", city: "Gonzaga", conference: "WCC", division: "-" },
 ];
+
+/** Hub teams index section order (power conferences, then supplemental leagues). */
+export const CBB_CONFERENCE_DISPLAY_ORDER = [
+  "ACC",
+  "Big Ten",
+  "Big 12",
+  "SEC",
+  "Big East",
+  "WCC",
+] as const satisfies readonly CbbTeam["conference"][];
 
 export const CBB_TEAM_ABBRS = CBB_TEAMS.map((t) => t.abbr);
 

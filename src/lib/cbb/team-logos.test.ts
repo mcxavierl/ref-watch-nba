@@ -44,5 +44,19 @@ describe("cbb team logos", () => {
     assert.match(source, /NcaaConferenceLogo/);
     assert.match(source, /isLiveNcaaConference/);
     assert.match(source, /team-index-link/);
+    assert.match(source, /CBB_CONFERENCE_DISPLAY_ORDER/);
+  });
+
+  it("places Gonzaga in the WCC hub section", () => {
+    const gonz = CBB_TEAMS.find((team) => team.abbr === "GONZ");
+    assert.equal(gonz?.conference, "WCC");
+    const order = readFileSync("src/lib/cbb/teams.ts", "utf8");
+    assert.match(order, /"WCC"/);
+  });
+
+  it("uses light logo plates on team index cards in dark mode", () => {
+    const css = readFileSync("src/components/site-delight.css", "utf8");
+    assert.match(css, /\.team-index-link \.team-logo-plate[\s\S]*--logo-plate-matrix/);
+    assert.match(css, /data-sport="cbb"/);
   });
 });

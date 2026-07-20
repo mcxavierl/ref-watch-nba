@@ -18,6 +18,7 @@ const CONFERENCE_TO_REGION: Record<NcaaConferenceTerritory, NcaaPrimaryRegion> =
   "Big 12": "Central",
   "Big East": "Northeast",
   "Pac-12": "West",
+  WCC: "West",
   Other: "National",
 };
 

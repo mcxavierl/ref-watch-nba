@@ -243,6 +243,33 @@
   color: color-mix(in srgb, var(--league-accent, var(--raptors)) 70%, var(--muted));
 }
 
+.team-index-name {
+  color: var(--text-primary);
+}
+
+.team-index-meta {
+  color: var(--text-muted);
+}
+
+/* College and NFL marks often use dark or red fills — lift plates on team index cards. */
+html[data-color="dark"]:not([data-contrast="high"]) .team-index-link .team-logo-plate,
+html.dark .team-index-link .team-logo-plate {
+  background: var(--logo-plate-matrix);
+  border-color: var(--logo-plate-matrix-border);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.72),
+    0 1px 2px rgb(0 0 0 / 0.14);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .team-index-link .team-logo-plate[data-sport="cbb"] .team-logo-plate__img,
+html[data-color="dark"]:not([data-contrast="high"]) .team-index-link .team-logo-plate[data-sport="cfb"] .team-logo-plate__img,
+html[data-color="dark"]:not([data-contrast="high"]) .team-index-link .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
+html.dark .team-index-link .team-logo-plate[data-sport="cbb"] .team-logo-plate__img,
+html.dark .team-index-link .team-logo-plate[data-sport="cfb"] .team-logo-plate__img,
+html.dark .team-index-link .team-logo-plate[data-sport="nfl"] .team-logo-plate__img {
+  transform: scale(1.1);
+}
+
 .insight-editorial-league {
   color: color-mix(in srgb, var(--insight-accent, var(--header-gold)) 78%, var(--text-muted));
 }
