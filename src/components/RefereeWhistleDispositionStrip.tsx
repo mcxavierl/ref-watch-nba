@@ -17,16 +17,23 @@ type RefereeWhistleDispositionStripProps = {
   scopedSeasons: string[];
   showMetrics?: boolean;
   className?: string;
+  layout?: "strip" | "grid";
 };
 
 function DispositionMetrics({
   metrics,
+  layout = "strip",
 }: {
   metrics: WhistleDispositionMetrics;
+  layout?: "strip" | "grid";
 }) {
-  return (
-    <div className="whistle-disposition-dual whistle-disposition-dual--profile">
-      <div className="whistle-disposition-metric whistle-disposition-metric--admin">
+  const gridCellClass =
+    layout === "grid" ? " whistle-disposition-metric--grid-cell" : "";
+
+  const adminMetric = (
+    <div
+      className={`whistle-disposition-metric whistle-disposition-metric--admin${gridCellClass}`}
+    >
         <span className="whistle-disposition-metric-label">
           Administrative rate (freq)
         </span>
@@ -36,15 +43,17 @@ function DispositionMetrics({
         <span className="whistle-disposition-metric-delta">
           {formatSigned(metrics.administrativeDelta)} vs avg
         </span>
-      </div>
-      <div className="whistle-disposition-divider" aria-hidden />
-      <div
-        className={`whistle-disposition-metric whistle-disposition-metric--lwis${
-          metrics.isHighImpactOutlier
-            ? " whistle-disposition-metric--lwis-high-impact"
-            : ""
-        }`}
-      >
+    </div>
+  );
+
+  const lwisMetric = (
+    <div
+      className={`whistle-disposition-metric whistle-disposition-metric--lwis${
+        metrics.isHighImpactOutlier
+          ? " whistle-disposition-metric--lwis-high-impact"
+          : ""
+      }${gridCellClass}`}
+    >
         <span className="whistle-disposition-metric-label">
           Impact score (leverage-weighted)
           {metrics.isHighImpactOutlier ? (
@@ -72,7 +81,23 @@ function DispositionMetrics({
             subjective events ({metrics.highLeverageEventCount} recorded)
           </span>
         )}
-      </div>
+    </div>
+  );
+
+  if (layout === "grid") {
+    return (
+      <>
+        {adminMetric}
+        {lwisMetric}
+      </>
+    );
+  }
+
+  return (
+    <div className="whistle-disposition-dual whistle-disposition-dual--profile">
+      {adminMetric}
+      <div className="whistle-disposition-divider" aria-hidden />
+      {lwisMetric}
     </div>
   );
 }
@@ -84,6 +109,7 @@ export function RefereeWhistleDispositionStrip({
   scopedSeasons,
   showMetrics = true,
   className = "",
+  layout = "strip",
 }: RefereeWhistleDispositionStripProps) {
   if (!showMetrics || !isWhistleTaxonomyLeague(leagueId)) return null;
 
@@ -100,13 +126,17 @@ export function RefereeWhistleDispositionStrip({
     rawMetrics,
   );
 
+  if (layout === "grid") {
+    return <DispositionMetrics metrics={metrics} layout="grid" />;
+  }
+
   return (
     <div className={`ref-whistle-disposition-strip ${className}`.trim()}>
-          <p className="ref-whistle-disposition-strip__lead">
-            Officiating style - administrative rate (frequency) vs leverage-weighted
-            game-flow impact (LWIS = Σ(|ΔWPA| × LeverageWeight) on subjective calls).
-          </p>
-      <DispositionMetrics metrics={metrics} />
+      <p className="ref-whistle-disposition-strip__lead">
+        Officiating style - administrative rate (frequency) vs leverage-weighted
+        game-flow impact (LWIS = Σ(|ΔWPA| × LeverageWeight) on subjective calls).
+      </p>
+      <DispositionMetrics metrics={metrics} layout="strip" />
     </div>
   );
 }

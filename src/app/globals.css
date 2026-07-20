@@ -1372,13 +1372,64 @@ p {
   .ref-narrative-outcome-grid > .ref-market-impact {
     display: flex;
     min-width: 0;
-    min-height: 100%;
     flex-direction: column;
   }
 
-  .ref-narrative-outcome-grid > .ref-officiating-bias .ref-table-section-body,
+  .ref-narrative-outcome-grid > .ref-officiating-bias {
+    height: fit-content;
+  }
+
+  .ref-narrative-outcome-grid > .ref-market-impact {
+    min-height: 100%;
+  }
+
+  .ref-narrative-outcome-grid > .ref-officiating-bias .ref-table-section-body {
+    flex: 0 0 auto;
+  }
+
   .ref-narrative-outcome-grid > .ref-market-impact .ref-table-section-body {
     flex: 1 1 auto;
+  }
+
+  .ref-officiating-bias {
+    padding: var(--space-6);
+  }
+
+  .ref-officiating-bias .ref-table-section-header,
+  .ref-officiating-bias .ref-table-section-body {
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .ref-officiating-bias .ref-table-section-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .ref-officiating-bias .ref-table-section-body {
+    margin-bottom: 0;
+  }
+
+  .ref-officiating-bias-secondary-grid .ref-officiating-bias-analytics-slot .ref-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .ref-officiating-bias-analytics-slot .ref-whistle-metric-toggle {
+    margin-bottom: var(--space-4);
+  }
+
+  @media (max-width: 639px) {
+    .ref-officiating-bias {
+      padding: var(--space-4);
+    }
+
+    .ref-officiating-bias-secondary-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ref-officiating-bias-secondary-grid .ref-officiating-bias-analytics-slot .ref-stat-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   .ref-officiating-gauge-row {
@@ -1409,6 +1460,19 @@ p {
 
   .ref-officiating-bias-col {
     min-width: 0;
+  }
+
+  .whistle-disposition-metric--grid-cell {
+    min-width: 0;
+    padding: var(--space-4);
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--clinical-card-border, #1e293b) 88%, var(--border));
+    background: color-mix(in srgb, var(--surface) 90%, #020617);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .whistle-disposition-metric--grid-cell {
+    border-color: #e2e8f0;
+    background: #ffffff;
   }
 
   .ref-whistle-analytics-embedded,

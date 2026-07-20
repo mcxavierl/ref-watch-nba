@@ -33,16 +33,17 @@ export function RefProfileOfficiatingBiasSection({
   const gameStateIndex = gsniDisplay?.display ?? null;
   const hasGsni = gsniMetrics !== undefined && gsniMetrics !== null;
   const hasWhistleBlock = whistleIndex !== null || whistleAnalytics || isWhistleTaxonomyLeague(leagueId);
+  const showDispositionGrid =
+    qualified && isWhistleTaxonomyLeague(leagueId);
+  const showSecondaryGrid = showDispositionGrid || Boolean(whistleAnalytics);
 
   if (!hasWhistleBlock && !hasGsni) {
     return null;
   }
 
-  const splitAnalyticsAndGsni = Boolean(whistleAnalytics && hasGsni);
-
   return (
     <section
-      className="ref-profile-section ref-officiating-bias"
+      className="ref-profile-section ref-officiating-bias flex h-fit flex-col"
       aria-labelledby="ref-officiating-bias-title"
     >
       <div className="ref-table-section-header">
@@ -58,52 +59,49 @@ export function RefProfileOfficiatingBiasSection({
         </p>
       </div>
 
-      <div className="ref-table-section-body">
-        {(whistleIndex !== null || gameStateIndex !== null) && (
-          <div className="ref-officiating-gauge-row">
-            {whistleIndex !== null ? (
-              <WhistleIndexGauge index={whistleIndex} size="lg" className="min-w-0 flex-1" />
-            ) : null}
-            {gameStateIndex !== null ? (
-              gsniDisplay?.tooltip ? (
-                <MetricInfoHint hint={gsniDisplay.tooltip}>
-                  <GsniGauge index={gameStateIndex} size="lg" className="min-w-0 flex-1" />
-                </MetricInfoHint>
-              ) : (
-                <GsniGauge index={gameStateIndex} size="lg" className="min-w-0 flex-1" />
-              )
-            ) : null}
-          </div>
-        )}
-
-        {isWhistleTaxonomyLeague(leagueId) ? (
-          <RefereeWhistleDispositionStrip
-            profile={profile}
-            leagueId={leagueId}
-            stats={stats}
-            scopedSeasons={stats.meta.seasons}
-            showMetrics={qualified}
-            className="mt-4"
-          />
+      <div className="ref-table-section-body flex flex-col">
+        {whistleIndex !== null ? (
+          <WhistleIndexGauge index={whistleIndex} size="lg" className="w-full" />
+        ) : gameStateIndex !== null ? (
+          gsniDisplay?.tooltip ? (
+            <MetricInfoHint hint={gsniDisplay.tooltip}>
+              <GsniGauge index={gameStateIndex} size="lg" className="w-full" />
+            </MetricInfoHint>
+          ) : (
+            <GsniGauge index={gameStateIndex} size="lg" className="w-full" />
+          )
         ) : null}
 
-        <div
-          className={`ref-officiating-bias-grid${splitAnalyticsAndGsni ? " ref-officiating-bias-grid--split" : ""}`}
-        >
-          {whistleAnalytics ? (
-            <div className="ref-officiating-bias-col">{whistleAnalytics}</div>
-          ) : null}
-          {hasGsni ? (
-            <div className="ref-officiating-bias-col">
-              <RefGsniSection
-                metrics={gsniMetrics ?? null}
-                refName={profile.name}
+        {showSecondaryGrid ? (
+          <div className="grid grid-cols-2 gap-4 mt-6 ref-officiating-bias-secondary-grid">
+            {showDispositionGrid ? (
+              <RefereeWhistleDispositionStrip
+                profile={profile}
+                leagueId={leagueId}
+                stats={stats}
+                scopedSeasons={stats.meta.seasons}
                 showMetrics={qualified}
-                embedded
+                layout="grid"
               />
-            </div>
-          ) : null}
-        </div>
+            ) : null}
+            {whistleAnalytics ? (
+              <div className="col-span-2 min-w-0 ref-officiating-bias-analytics-slot">
+                {whistleAnalytics}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {hasGsni ? (
+          <div className="mt-6">
+            <RefGsniSection
+              metrics={gsniMetrics ?? null}
+              refName={profile.name}
+              showMetrics={qualified}
+              embedded
+            />
+          </div>
+        ) : null}
       </div>
     </section>
   );
