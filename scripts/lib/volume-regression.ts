@@ -29,6 +29,7 @@ import { getRefStats as getLaligaRefStats, getTeamSplits as getLaligaTeamSplits 
 import { getRefStats as getNbaRefStats, getTeamSplits as getNbaTeamSplits } from "../../src/lib/data";
 import { getRefStats as getNflRefStats, getTeamSplits as getNflTeamSplits } from "../../src/lib/nfl/data";
 import { getRefStats as getNhlRefStats, getTeamSplits as getNhlTeamSplits } from "../../src/lib/nhl/data";
+import { getRefStats as getWnbaRefStats } from "../../src/lib/wnba/data";
 import { nhlAnalyticsRefStats } from "../../src/lib/nhl/officials";
 import { EPL_TEAMS, teamFullName as eplTeamFullName } from "../../src/lib/epl/teams";
 import { LALIGA_TEAMS, teamFullName as laligaTeamFullName } from "../../src/lib/laliga/teams";
@@ -51,6 +52,7 @@ export const MIN_TOTAL_GAMES_FOR_CLAIMED_SEASONS: Record<
   cfb: { minTotal: 400, minPerSeason: 80 },
   epl: { minTotal: 3_500, minPerSeason: 300 },
   laliga: { minTotal: 1_200, minPerSeason: 90 },
+  wnba: { minTotal: 400, minPerSeason: 200 },
 };
 
 const SAMPLE_TEAMS: Record<LiveLeague, string> = {
@@ -61,6 +63,7 @@ const SAMPLE_TEAMS: Record<LiveLeague, string> = {
   cfb: "ALA",
   epl: "ARS",
   laliga: "BAR",
+  wnba: "LVA",
 };
 
 const LIVE_DATA_LEAGUE_LABELS = {
@@ -205,15 +208,26 @@ export function checkReverseNameGhosts(
   return ghosts.length;
 }
 
+export function isWnbaOfficialsPending(stats: RefStatsFile): boolean {
+  return stats.meta.data_verified === true && stats.refs.length === 0;
+}
+
 export function checkMatrixBaselines(
   league: LiveLeague,
   failures: string[],
+  source?: RefStatsFile | null,
 ): {
   baselineGames: number;
   topPanel: number;
   bottomPanel: number;
 } {
   if (league === "cfb" && isCfbOfficialsPending(getCfbRefStats())) {
+    return { baselineGames: 0, topPanel: 0, bottomPanel: 0 };
+  }
+  if (
+    league === "wnba" &&
+    isWnbaOfficialsPending(source ?? getWnbaRefStats())
+  ) {
     return { baselineGames: 0, topPanel: 0, bottomPanel: 0 };
   }
 
@@ -418,7 +432,7 @@ export function runVolumeRegressionChecks(root = process.cwd()): VolumeRegressio
 
     const coverage = checkSeasonGameCoverage(root, league, source, failures);
     const ghosts = checkReverseNameGhosts(league, source, failures);
-    const matrix = checkMatrixBaselines(league, failures);
+    const matrix = checkMatrixBaselines(league, failures, source);
 
     summaries.push({
       league,

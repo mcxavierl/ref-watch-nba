@@ -24,6 +24,7 @@ import {
   isCfbOfficialsPending,
   isCfbSimulatedData,
 } from "../src/lib/cfb/data-source";
+import { isWnbaOfficialsPending } from "./lib/volume-regression";
 
 const ROOT = process.cwd();
 
@@ -104,7 +105,9 @@ function checkDeployArtifacts(league: LiveLeague): void {
     ((isCfbSimulatedData(source?.meta?.source) &&
       (source?.refs?.length ?? 0) === 0) ||
       isCfbOfficialsPending(source));
-  if (skipCfbDeployArtifactGate) {
+  const skipWnbaDeployArtifactGate =
+    league === "wnba" && source != null && isWnbaOfficialsPending(source);
+  if (skipCfbDeployArtifactGate || skipWnbaDeployArtifactGate) {
     console.log(
       `  ⏭ ${league}: game-log-only ingest (officials pending) — skipping ref/matrix deploy gate`,
     );
