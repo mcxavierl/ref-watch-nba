@@ -7,6 +7,7 @@ import {
   ScoutingReportEdge,
 } from "@/components/ref-profile/ScoutingReport";
 import { RefProfileTeamTrends } from "@/components/ref-profile/RefProfileTeamTrends";
+import { RefProfileCareerEvolution } from "@/components/ref-profile/RefProfile";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import { buildRefTeamPerformanceTrends } from "@/lib/ref-team-performance-trends";
 import type { CloseGameMetrics } from "@/lib/close-game";
@@ -66,6 +67,8 @@ export function RefProfileNarrativeLayout({
     <div className="ref-narrative-layout">
       <ScoutingReportEdge {...scoutingProps} />
 
+      <RefProfileCareerEvolution profile={profile} />
+
       <RefProfileDepthExpand label="Expand officiating and market depth">
         <div className="ref-narrative-outcome-grid">
           <RefProfileOfficiatingBiasSection
@@ -88,16 +91,25 @@ export function RefProfileNarrativeLayout({
               hideWhistleMetrics={hideWhistleMetrics}
             />
           ) : (
-            <section className="ref-profile-section ref-market-impact">
-              <h2 className="ref-profile-section-title">Market Impact</h2>
-              <RefStatGrid
-                profile={profile}
-                overBaseline={stats.meta.leagueOverBaseline}
-                foulLabel={statGridLabels?.foulLabel}
-                scoreLabel={statGridLabels?.scoreLabel}
-                overLabel={statGridLabels?.overLabel}
-                showMetrics={qualified}
-              />
+            <section
+              className="ref-profile-section ref-market-impact"
+              aria-labelledby="ref-market-impact-fallback-title"
+            >
+              <div className="ref-table-section-header">
+                <h2 id="ref-market-impact-fallback-title" className="ref-profile-section-title m-0">
+                  Market Impact
+                </h2>
+              </div>
+              <div className="ref-table-section-body">
+                <RefStatGrid
+                  profile={profile}
+                  overBaseline={stats.meta.leagueOverBaseline}
+                  foulLabel={statGridLabels?.foulLabel}
+                  scoreLabel={statGridLabels?.scoreLabel}
+                  overLabel={statGridLabels?.overLabel}
+                  showMetrics={qualified}
+                />
+              </div>
             </section>
           )}
         </div>

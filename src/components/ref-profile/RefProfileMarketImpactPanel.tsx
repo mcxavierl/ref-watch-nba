@@ -200,12 +200,21 @@ export function RefProfileMarketImpactPanel({
 
   if (!showMetrics) {
     return (
-      <section className="ref-profile-section ref-market-impact px-6 py-6">
-        <h2 className="ref-profile-section-title">Market Impact</h2>
-        <p className="text-sm font-normal text-slate-400">
-          Not enough games for reliable metrics yet (N={profile.games}). Market splits appear
-          after the sample gate clears.
-        </p>
+      <section
+        className="ref-profile-section ref-market-impact"
+        aria-labelledby="ref-market-impact-gate-title"
+      >
+        <div className="ref-table-section-header">
+          <h2 id="ref-market-impact-gate-title" className="ref-profile-section-title m-0">
+            Market Impact
+          </h2>
+        </div>
+        <div className="ref-table-section-body">
+          <p className="text-sm font-normal text-slate-400">
+            Not enough games for reliable metrics yet (N={profile.games.toLocaleString()}). Market
+            splits appear after the sample gate clears.
+          </p>
+        </div>
       </section>
     );
   }

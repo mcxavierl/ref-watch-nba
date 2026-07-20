@@ -1,0 +1,58 @@
+.ref-career-evolution {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.ref-career-evolution-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.ref-career-evolution-lead {
+  margin-top: var(--space-2);
+  max-width: 42rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.ref-career-evolution-toggle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ref-season-trends-table-wrap {
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--surface-raised) 70%, transparent);
+}
+
+.ref-season-trends-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  white-space: nowrap;
+}
+
+.ref-season-trends-row--insufficient {
+  opacity: 0.62;
+  color: var(--text-muted);
+}
+
+.ref-season-trends-insufficient-copy {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.ref-season-trends-empty {
+  padding: var(--space-4);
+}

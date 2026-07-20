@@ -128,8 +128,9 @@ export function whistleCoefficientOfVariation(perGameWhistles: number[]): number
 
 export function consistencyScoreFromWhistleRates(
   perGameWhistles: number[],
+  minSampleGames: number = SAMPLE_SIZE_THRESHOLD,
 ): number | null {
-  if (!meetsSampleSizeThreshold(perGameWhistles.length)) return null;
+  if (perGameWhistles.length < minSampleGames) return null;
 
   const coefficientOfVariation = whistleCoefficientOfVariation(perGameWhistles);
   const raw = 10 - (coefficientOfVariation / 0.5) * 9;
@@ -213,11 +214,12 @@ export function toOfficialStats(
 export function computeRefereeArchetype(
   leagueId: LeagueId,
   games: ArchetypeGameInput[],
-  options?: { sampleWindow?: number; generatedAt?: string },
+  options?: { sampleWindow?: number; generatedAt?: string; minSampleGames?: number },
 ): RefereeArchetypeResult | null {
   const sampleWindow = options?.sampleWindow ?? ARCHETYPE_SAMPLE_WINDOW;
+  const minSampleGames = options?.minSampleGames ?? SAMPLE_SIZE_THRESHOLD;
   const sampleGames = games.slice(-sampleWindow);
-  if (!meetsSampleSizeThreshold(sampleGames.length)) return null;
+  if (sampleGames.length < minSampleGames) return null;
 
   let subjectiveTotal = 0;
   let administrativeTotal = 0;
@@ -260,7 +262,10 @@ export function computeRefereeArchetype(
     pressureDeltaPct > CLOSE_GAME_PRESSURE_DELTA_THRESHOLD;
 
   const coefficientOfVariation = whistleCoefficientOfVariation(perGameWhistles);
-  const consistencyScore = consistencyScoreFromWhistleRates(perGameWhistles);
+  const consistencyScore =
+    sampleGames.length >= minSampleGames
+      ? consistencyScoreFromWhistleRates(perGameWhistles, minSampleGames)
+      : null;
   if (consistencyScore === null) return null;
 
   const { volatilityLabel, handicappingSignal } = volatilityFromConsistencyScore(
@@ -289,7 +294,7 @@ export function computeRefereeArchetype(
       consistencyScore,
       coefficientOfVariation,
     ),
-    data_quality: dataQualityFromSampleSize(sampleGames.length),
+    data_quality: sampleGames.length >= minSampleGames ? "ok" : "insufficient",
   };
 }
 

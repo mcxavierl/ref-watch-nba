@@ -1,7 +1,5 @@
 import type { LeagueId } from "@/lib/leagues";
 import {
-  dataQualityFromSampleSize,
-  meetsSampleSizeThreshold,
   SAMPLE_SIZE_THRESHOLD,
   type DataQualityState,
 } from "@/lib/analytics/sample-size";
@@ -207,9 +205,10 @@ export function buildLeverageInsight(profile: LeveragePressureProfile): string {
 export function computeLeverageIndex(
   leagueId: LeagueId,
   games: LeverageGameInput[],
-  options?: { sampleWindow?: number },
+  options?: { sampleWindow?: number; minSampleGames?: number },
 ): LeverageIndexResult {
   const sampleWindow = options?.sampleWindow ?? LEVERAGE_SAMPLE_WINDOW;
+  const minSampleGames = options?.minSampleGames ?? SAMPLE_SIZE_THRESHOLD;
   const sampleGames = games.slice(-sampleWindow);
 
   let earlyRateSum = 0;
@@ -234,7 +233,7 @@ export function computeLeverageIndex(
     }
   }
 
-  if (!meetsSampleSizeThreshold(earlyRateCount)) {
+  if (earlyRateCount < minSampleGames) {
     return insufficientLeverageResult(earlyRateCount, closeGameSample, splitBackedGames);
   }
 
@@ -260,7 +259,7 @@ export function computeLeverageIndex(
     leverage_sample_games: earlyRateCount,
     close_game_sample: closeGameSample,
     split_backed_games: splitBackedGames,
-    data_quality: dataQualityFromSampleSize(earlyRateCount),
+    data_quality: earlyRateCount >= minSampleGames ? "ok" : "insufficient",
   };
 }
 

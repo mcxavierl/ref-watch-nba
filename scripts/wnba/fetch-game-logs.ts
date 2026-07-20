@@ -3,7 +3,8 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import type { RuntimeGameLogEntry } from "../../src/lib/game-logs-preload";
 import { normalizeWnbaAbbr } from "../../src/lib/wnba/abbr";
-import { sleep } from "./lib/espn";
+import { sleep, fetchWnbaSummaryOfficials, toWnbaOfficials } from "./lib/espn";
+import { loadWnbaOfficialRoster } from "./enrich-game-log-officials";
 
 const outPath = path.join(process.cwd(), "data", "wnba", "game-logs.json");
 const CORE_EVENTS_BASE =
@@ -119,6 +120,9 @@ async function fetchGameSummary(
   const homeFouls = parseStat(statsByAbbr.get(homeAbbr), "fouls");
   const awayFouls = parseStat(statsByAbbr.get(awayAbbr), "fouls");
   const date = (comp.date ?? "").slice(0, 10);
+  const roster = loadWnbaOfficialRoster();
+  const summaryOfficials = await fetchWnbaSummaryOfficials(eventId);
+  const officials = toWnbaOfficials(summaryOfficials, roster);
 
   return {
     gameId: eventId,
@@ -136,7 +140,7 @@ async function fetchGameSummary(
     closingTotal: 165,
     homeSpread: 0,
     lineSource: "synthetic",
-    officials: [],
+    officials,
   };
 }
 
