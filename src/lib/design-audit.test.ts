@@ -125,10 +125,15 @@ describe("design audit guardrails", () => {
       scripts?: Record<string, string>;
     };
     assert.match(pkg.scripts?.["audit:theme-matrix"] ?? "", /audit-theme-matrix/);
-    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:theme-matrix/);
-    assert.match(readSrc(".github/workflows/ci.yml"), /Theme matrix contrast audit/);
+    assert.match(pkg.scripts?.["audit:design-ship"] ?? "", /audit-design-ship/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:design-ship/);
+    assert.match(readSrc("scripts/audit-design-ship.ts"), /audit:theme-matrix/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Design ship audit/);
     assert.match(readSrc("src/app/theme-matrix/page.tsx"), /WorldCupFinalSection/);
     assert.match(readSrc("src/app/robots.ts"), /\/theme-matrix/);
+    assert.match(readSrc("scripts/lib/theme-matrix-config.ts"), /name: "homepage"/);
+    assert.match(readSrc("scripts/lib/theme-matrix-config.ts"), /name: "nba-hub"/);
+    assert.match(readSrc("scripts/lib/theme-matrix-config.ts"), /name: "theme-matrix-fixture"/);
   });
 
   it("color drift audit guards clinical surfaces and hex allowlists", () => {
@@ -136,10 +141,22 @@ describe("design audit guardrails", () => {
       scripts?: Record<string, string>;
     };
     assert.match(pkg.scripts?.["audit:color-drift"] ?? "", /audit-color-drift/);
-    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:color-drift/);
-    assert.match(readSrc(".github/workflows/ci.yml"), /Color drift audit/);
+    assert.match(readSrc("scripts/audit-design-ship.ts"), /audit:color-drift/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Design ship audit/);
     assert.match(readSrc("src/components/hub/ClinicalCard.tsx"), /border-subtle/);
     assert.doesNotMatch(readSrc("src/components/hub/ClinicalCard.tsx"), /border-\[#/);
+  });
+
+  it("brand surface audit guards header, OG accents, and league logos", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:brand-surfaces"] ?? "", /audit-brand-surfaces/);
+    assert.match(readSrc("scripts/audit-design-ship.ts"), /audit:brand-surfaces/);
+    assert.match(readSrc("src/components/SiteHeader.tsx"), /site-header-brand/);
+    assert.match(readSrc("src/lib/og-brand.ts"), /OG_LEAGUE_ACCENTS/);
+    assert.match(readSrc("src/components/LeagueHeroLogo.tsx"), /leagueLogoSrc/);
+    assert.match(readSrc("src/lib/league-logo-src.ts"), /\/logos\/nba-logo\.svg/);
   });
 
   it("design token parity audit guards clinical, accent, and wc tokens", () => {
