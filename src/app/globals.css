@@ -4523,11 +4523,12 @@ p {
   .league-nav-mark--epl,
   .league-nav-mark[data-league="epl"] {
     height: 1.35rem;
-    width: auto;
+    width: 1.35rem;
     max-width: 1.75rem;
+    max-height: 1.75rem;
     object-fit: contain;
     object-position: center;
-    margin-inline: auto;
+    margin: 0;
     filter: none;
     opacity: 1;
   }
@@ -4535,13 +4536,15 @@ p {
   .league-nav-link .league-nav-mark--epl,
   .league-nav-link .league-nav-mark[data-league="epl"] {
     height: 1.4rem;
+    width: 1.4rem;
     max-width: 1.85rem;
-    transform: translateX(1px);
+    max-height: 1.85rem;
+    transform: none;
   }
 
   .league-nav-link--active .league-nav-mark--epl,
   .league-nav-link--active .league-nav-mark[data-league="epl"] {
-    transform: translateX(1px) scale(1.02);
+    transform: scale(1.02);
   }
 
   .league-nav-mark--laliga,
@@ -8524,11 +8527,12 @@ p {
   .league-hero-logo.league-nav-mark--epl,
   .league-hero-logo[data-league="epl"] {
     height: 3rem;
-    width: auto;
-    max-width: 2.85rem;
+    width: 3rem;
+    max-width: 3rem;
+    max-height: 3rem;
     object-fit: contain;
     object-position: center;
-    margin-inline: auto;
+    margin: 0;
   }
 
   .league-hero-logo.league-nav-mark--laliga,
@@ -12633,13 +12637,13 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
 }
 
 .overview-league-chooser-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
   width: 4rem;
   height: 4rem;
   aspect-ratio: 1 / 1;
+  overflow: hidden;
   border-radius: 0.9375rem;
   border: 1px solid var(--chooser-mark-border);
   background: color-mix(in srgb, var(--chooser-accent) 5%, rgba(0, 0, 0, 0.2));
@@ -12651,6 +12655,7 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   height: 85%;
   max-width: 85%;
   max-height: 85%;
+  margin: 0;
   object-fit: contain;
   object-position: center;
   opacity: 1;
@@ -12693,13 +12698,13 @@ html[data-color="light"] .overview-league-chooser-mark .league-nav-mark[data-lea
 
 .overview-league-chooser-mark .league-nav-mark--epl,
 .overview-league-chooser-mark .league-nav-mark[data-league="epl"] {
-  width: auto;
-  height: 92%;
-  max-width: 88%;
-  max-height: 92%;
+  width: 82%;
+  height: 82%;
+  max-width: 82%;
+  max-height: 82%;
+  margin: 0;
   object-fit: contain;
   object-position: center;
-  margin-inline: auto;
   transform: none;
   filter: none;
 }

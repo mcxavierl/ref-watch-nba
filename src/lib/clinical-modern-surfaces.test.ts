@@ -209,7 +209,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /\.upcoming-game-card__league-mark[\s\S]*overflow: hidden/);
     assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark[\s\S]*object-fit: contain/);
     assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark[\s\S]*object-position: center/);
-    assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark--epl[\s\S]*transform: translate\(1px, 0\)/);
+    assert.match(css, /\.upcoming-game-card__league-mark \.league-nav-mark--epl[\s\S]*transform: none/);
     assert.match(row, /overview-slate-row-game-context/);
   });
 
@@ -261,7 +261,12 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(overviewCss, /Explore bento: equal-height catalog \+ analytics columns/);
     assert.match(overviewCss, /overview-secondary-tabs/);
     assert.match(insightCss, /insight-editorial-kicker/);
-    assert.match(globalsCss, /hide decorative metric bars/);
+    assert.match(globalsCss, /\.overview-league-chooser-mark[\s\S]*display: grid/);
+    assert.match(globalsCss, /\.overview-league-chooser-mark[\s\S]*place-items: center/);
+    assert.match(
+      globalsCss,
+      /\.overview-league-chooser-mark \.league-nav-mark--epl[\s\S]*transform: none/,
+    );
     assert.match(globalsCss, /\.overview-pace-bar/);
     assert.match(insightCss, /insight-metric-comparison-value--rate/);
     assert.match(insightCss, /var\(--text-primary\)/);
