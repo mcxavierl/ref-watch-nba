@@ -5802,7 +5802,18 @@ p {
   .data-table tbody tr:hover{background:color-mix(in srgb,var(--header-sapphire) 6%,var(--surface-raised));}
 
   .data-table-head th {
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .data-table tbody td {
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .data-table tbody td.data-table-num,
+  .data-table-head th.data-table-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
   }
 
   .data-table-head th:first-child {

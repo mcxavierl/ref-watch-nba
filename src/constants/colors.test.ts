@@ -3,6 +3,8 @@ import { describe, it } from "node:test";
 import {
   consistencyStateClass,
   deltaStateClass,
+  kpiToneStateClass,
+  STATE_CHIP_CLASS,
   STATE_COLOR_CLASS,
   STATE_COLORS,
 } from "@/constants/colors";
@@ -25,5 +27,16 @@ describe("constants/colors", () => {
     assert.equal(deltaStateClass(1.2), STATE_COLOR_CLASS.stable);
     assert.equal(deltaStateClass(-0.5), STATE_COLOR_CLASS.risk);
     assert.equal(deltaStateClass(0), STATE_COLOR_CLASS.neutral);
+  });
+
+  it("maps KPI tones to shared state color classes", () => {
+    assert.equal(kpiToneStateClass("positive"), STATE_COLOR_CLASS.stable);
+    assert.equal(kpiToneStateClass("negative"), STATE_COLOR_CLASS.risk);
+    assert.equal(kpiToneStateClass("neutral"), STATE_COLOR_CLASS.neutral);
+  });
+
+  it("exposes state chip surfaces for badges", () => {
+    assert.equal(STATE_CHIP_CLASS.risk, "state-chip-risk");
+    assert.equal(STATE_CHIP_CLASS.stable, "state-chip-stable");
   });
 });

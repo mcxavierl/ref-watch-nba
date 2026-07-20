@@ -64,7 +64,9 @@ export function RefereeMasterCard({
               label={profile.name}
             />
           </div>
-          <DynamicInsightPillRow insights={insights} />
+          <div className="ref-master-insight-pills">
+            <DynamicInsightPillRow insights={insights} />
+          </div>
         </div>
       </div>
 
