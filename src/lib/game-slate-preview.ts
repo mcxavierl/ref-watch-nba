@@ -94,9 +94,7 @@ const MIN_WIN_RATE_OUTLIER = 0.1;
 const MIN_FOUL_OUTLIER = 1.5;
 
 /** Section title for ref×team outlier notes in the game preview drawer. */
-export function refVsTeamsSectionLabel(crewCount: number): string {
-  return crewCount === 1 ? "Ref vs teams" : "Crew vs teams";
-}
+export { refVsTeamsSectionLabel } from "@/lib/game-slate-matchup-insights";
 
 export function buildRefTeamOutlierNotes(
   refTeamRows: GameSlatePreviewRefRow[],

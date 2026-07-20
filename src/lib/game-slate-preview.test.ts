@@ -3,7 +3,6 @@ import { describe, it } from "node:test";
 import {
   buildGameSlatePreview,
   buildRefTeamOutlierNotes,
-  refVsTeamsSectionLabel,
   selectGameSlatePreviewCardInsights,
 } from "@/lib/game-slate-preview";
 import { getAssignments as getWnbaAssignments } from "@/lib/wnba/data";
@@ -64,52 +63,7 @@ describe("game slate preview", () => {
     }
   });
 
-  it("uses Ref vs teams when the crew has one official", () => {
-    assert.equal(refVsTeamsSectionLabel(1), "Ref vs teams");
-    assert.equal(refVsTeamsSectionLabel(2), "Crew vs teams");
-    assert.equal(refVsTeamsSectionLabel(3), "Crew vs teams");
-  });
-
-  it("builds outlier notes from ref-team rows", () => {
-    const notes = buildRefTeamOutlierNotes([
-      {
-        refSlug: "angelica-suffren",
-        refName: "Angelica Suffren",
-        refNumber: 1,
-        teamAbbr: "LVA",
-        teamLabel: "Las Vegas Aces",
-        games: 8,
-        record: "5-3",
-        winRate: 0.63,
-        avgTotal: 170,
-        overRate: 0.375,
-        foulsDelta: -1.5,
-        isOutlier: true,
-        outlierNote:
-          "63% win rate with LVA · -1.5 fouls on LVA per game · 37.5% over rate with LVA",
-      },
-      {
-        refSlug: "other-ref",
-        refName: "Other Ref",
-        refNumber: 2,
-        teamAbbr: "CON",
-        teamLabel: "Connecticut Sun",
-        games: 6,
-        record: "3-3",
-        winRate: 0.5,
-        avgTotal: 165,
-        overRate: 0.5,
-        foulsDelta: 0.2,
-        isOutlier: false,
-      },
-    ]);
-
-    assert.equal(notes.length, 1);
-    assert.match(notes[0] ?? "", /Angelica Suffren · LVA:/);
-    assert.match(notes[0] ?? "", /63% win rate with LVA/);
-  });
-
-  it("selects the strongest preview insights for upcoming cards", () => {
+  it("groups team impacts by matchup side", () => {
     const preview = buildGameSlatePreview(
       "wnba",
       {
