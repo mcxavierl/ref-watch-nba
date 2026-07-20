@@ -238,4 +238,16 @@ describe("design audit guardrails", () => {
     assert.match(readSrc("src/lib/anomaly-surface.ts"), /ANOMALY_VARIANCE_THRESHOLD/);
     assert.match(readSrc("src/components/RefRankingsTable.tsx"), /Anomalies only/);
   });
+
+  it("overlay portal audit guards ModalPortal usage on full-screen overlays", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:overlay-portals"] ?? "", /audit-overlay-portals/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:overlay-portals/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Overlay portal audit/);
+    assert.match(readSrc("src/components/ModalPortal.tsx"), /document\.body/);
+    assert.match(readSrc("src/components/CommandPalette.tsx"), /<ModalPortal>/);
+    assert.match(readSrc("src/components/InsightDrilldownModal.tsx"), /<ModalPortal>/);
+  });
 });
