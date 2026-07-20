@@ -250,7 +250,19 @@
   padding: 0.8rem 0.85rem 0.9rem;
   border-radius: 0.75rem;
   container-type: inline-size;
+  --upcoming-matchup-glow-accent: rgb(148 163 184);
+  --upcoming-matchup-glow: color-mix(
+    in srgb,
+    var(--upcoming-matchup-glow-accent) 72%,
+    rgb(248 250 252)
+  );
   --upcoming-matchup-logo-size: clamp(1.85rem, 28cqi, 2.5rem);
+  --upcoming-matchup-border-base: rgb(30 41 59);
+  --upcoming-matchup-bg-top: rgb(15 23 42);
+  --upcoming-matchup-bg-bottom: rgb(2 6 23);
+  --upcoming-matchup-glow-strength: 9%;
+  --upcoming-matchup-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow) 12%, transparent),
+    0 0 26px color-mix(in srgb, var(--upcoming-matchup-glow) 18%, transparent);
   --upcoming-card-border: rgb(30 41 59);
   --upcoming-card-bg: rgb(2 6 23);
   --upcoming-card-shadow: inset 0 1px 0 rgb(255 255 255 / 0.02);
@@ -267,29 +279,60 @@
   box-shadow: var(--upcoming-card-shadow);
   transition:
     transform var(--duration-normal) var(--ease-out-quint),
-    box-shadow var(--duration-normal) var(--ease-out-quint);
+    box-shadow var(--duration-normal) var(--ease-out-quint),
+    border-color var(--duration-normal) ease;
+}
+
+.upcoming-game-card[data-league="nfl"] {
+  --upcoming-matchup-glow-accent: #1e4fd4;
+}
+
+.upcoming-game-card[data-league="epl"] {
+  --upcoming-matchup-glow-accent: #6b3fa8;
+}
+
+.upcoming-game-card[data-league="laliga"] {
+  --upcoming-matchup-glow-accent: #c9a227;
+}
+
+.upcoming-game-card[data-league="nba"] {
+  --upcoming-matchup-glow-accent: var(--raptors);
+}
+
+.upcoming-game-card[data-league="nhl"] {
+  --upcoming-matchup-glow-accent: var(--nhl-blue);
+}
+
+.upcoming-game-card[data-league="cbb"] {
+  --upcoming-matchup-glow-accent: var(--cbb-gold);
+}
+
+.upcoming-game-card[data-league="cfb"] {
+  --upcoming-matchup-glow-accent: var(--cfb-bronze);
+}
+
+.upcoming-game-card[data-league="wnba"] {
+  --upcoming-matchup-glow-accent: var(--wnba-orange);
 }
 
 .upcoming-game-card:hover {
   transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--upcoming-matchup-glow-accent) 28%, var(--upcoming-card-border));
   box-shadow:
     var(--upcoming-card-shadow),
-    0 8px 20px rgb(2 6 23 / 0.35);
+    0 8px 20px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 14%, transparent);
 }
 
 .upcoming-game-card__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
   min-width: 0;
 }
 
-.upcoming-game-card__header-start {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.55rem;
+.upcoming-game-card__header-spacer {
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -301,6 +344,19 @@
   text-transform: uppercase;
   color: rgb(148 163 184);
   white-space: nowrap;
+}
+
+.upcoming-game-card__date-label--corner {
+  flex-shrink: 0;
+  margin-left: auto;
+  max-width: 58%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--upcoming-ink-muted);
+  text-align: right;
 }
 
 .upcoming-game-card__league-mark {
@@ -399,7 +455,18 @@
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  padding: 0.15rem 0.1rem 0;
+  padding: clamp(0.5rem, 4cqi, 0.75rem) clamp(0.45rem, 3cqi, 0.85rem)
+    clamp(0.55rem, 4cqi, 0.75rem);
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--upcoming-matchup-glow) 32%, var(--upcoming-matchup-border-base));
+  background:
+    radial-gradient(
+      ellipse 120% 90% at 50% 0%,
+      color-mix(in srgb, var(--upcoming-matchup-glow) var(--upcoming-matchup-glow-strength), transparent),
+      transparent 68%
+    ),
+    color-mix(in srgb, var(--upcoming-matchup-bg-top) 88%, var(--upcoming-matchup-bg-bottom));
+  box-shadow: var(--upcoming-matchup-shadow);
 }
 
 .upcoming-game-card__team {
@@ -416,18 +483,20 @@
 .upcoming-game-card__team-abbr {
   width: 100%;
   font-family: var(--font-data, ui-monospace, monospace);
-  font-size: clamp(1rem, 5cqi, 1.125rem);
-  font-weight: 700;
+  font-size: clamp(1.125rem, 6cqi, 1.375rem);
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.05em;
-  line-height: 1.1;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
   text-align: center;
   white-space: nowrap;
   color: var(--upcoming-ink-strong);
 }
 
 html[data-contrast="high"] .upcoming-game-card__matchup {
-  background: transparent;
+  box-shadow: none;
+  border-color: rgb(51 65 85);
+  background: rgb(15 23 42);
 }
 
 html[data-contrast="high"] .upcoming-game-card__date-label {
@@ -497,56 +566,71 @@ html[data-contrast="high"] .upcoming-game-card__date-label {
   margin-top: 0.45rem;
 }
 
-.upcoming-game-card__footer {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.3rem;
-  margin-top: 0.65rem;
-  padding-top: 0.65rem;
-  border-top: 1px solid rgb(30 41 59);
-  background: rgb(15 23 42 / 0.5);
-}
-
-.upcoming-game-card__footer-bar {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 0.5rem;
+.upcoming-game-card__hero-insight {
+  margin: 0.45rem 0 0;
   min-width: 0;
-}
-
-.upcoming-game-card__meta-spacer {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.upcoming-game-card__footer-bar .upcoming-game-card__meta {
-  flex: 1 1 auto;
-  min-width: 0;
-  text-align: left;
-}
-
-.upcoming-game-card__cta--footer {
-  flex-shrink: 0;
-  margin-left: auto;
-  align-self: flex-end;
-}
-
-.upcoming-game-card__insight-line {
-  margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 1.35;
   letter-spacing: 0.01em;
   color: var(--upcoming-ink-body);
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.upcoming-game-card__insight-line--meta {
+.upcoming-game-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.55rem;
+  min-width: 0;
+}
+
+.upcoming-game-card__crew-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 0.6875rem;
-  font-weight: 400;
-  color: var(--upcoming-ink-muted);
+  font-weight: 500;
+  line-height: 1.3;
+  color: rgb(100 116 139);
+}
+
+.upcoming-game-card__crew-role {
+  flex-shrink: 0;
+}
+
+.upcoming-game-card__crew-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  color: rgb(148 163 184);
+}
+
+.upcoming-game-card__crew-pending {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upcoming-game-card__crew-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: rgb(100 116 139);
 }
 
 .upcoming-game-card__context {
@@ -566,12 +650,17 @@ html[data-contrast="high"] .upcoming-game-card__date-label {
 
 .upcoming-game-card__meta {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: 0.01em;
-  color: var(--upcoming-ink-muted);
-  text-align: center;
+  color: rgb(100 116 139);
+  text-align: left;
+}
+
+.upcoming-game-card__cta--footer {
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .upcoming-game-card__meta strong {
@@ -592,6 +681,11 @@ html.light:not([data-contrast="high"]) .upcoming-game-card {
   --upcoming-card-border: #e2e8f0;
   --upcoming-card-bg: #ffffff;
   --upcoming-card-shadow: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --upcoming-matchup-border-base: #e2e8f0;
+  --upcoming-matchup-bg-top: #f8fafc;
+  --upcoming-matchup-bg-bottom: #f8fafc;
+  --upcoming-matchup-glow-strength: 8%;
+  --upcoming-matchup-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 10%, transparent);
   --upcoming-cta: #64748b;
   --upcoming-cta-hover: #334155;
   --upcoming-ink-strong: #0f172a;
@@ -607,12 +701,6 @@ html.light:not([data-contrast="high"]) .upcoming-game-card {
 html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__date-label,
 html.light:not([data-contrast="high"]) .upcoming-game-card__date-label {
   color: #64748b;
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__footer,
-html.light:not([data-contrast="high"]) .upcoming-game-card__footer {
-  border-top-color: #e2e8f0;
-  background: rgb(248 250 252 / 0.8);
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__league-mark .league-nav-mark,
