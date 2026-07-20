@@ -598,6 +598,28 @@ export interface ProvenanceBundle {
   sampleGate: SampleGateStatus;
 }
 
+/** Aggregated crew stats for a slate game card or preview drawer. */
+export interface CrewMetrics {
+  crew: RefOfficial[];
+  qualifiedRefs: RefProfile[];
+  sampleGames: number;
+  avgTotalPoints: number;
+  totalPointsDelta: number;
+  overRate: number;
+  avgFouls: number;
+  foulsDelta: number;
+  homeCoverRate: number | null;
+  ouLean: "over" | "under" | "neutral";
+  insufficientSample: boolean;
+  provenance: {
+    aggregate: MetricProvenance;
+    scoring: MetricProvenance;
+    fouls: MetricProvenance;
+    overRate: MetricProvenance;
+    sampleGate: SampleGateStatus;
+  };
+}
+
 /** Crew scoring/foul premium vs league baseline for tonight's assignment. */
 export interface CrewWhistlePremium {
   gameId: string;

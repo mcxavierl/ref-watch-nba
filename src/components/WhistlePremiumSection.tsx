@@ -6,10 +6,9 @@ import { TermHelp } from "@/components/TermHelp";
 import { ProvenanceMarker } from "@/components/ProvenanceMarker";
 import { SampleGateBadge } from "@/components/SampleGateBadge";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
-import { formatSigned } from "@/lib/data";
+import { formatPremiumLabel, formatSigned } from "@/lib/stats-utils";
 import { signedDeltaTone } from "@/lib/metric-delight";
 import type { CrewHomeBias, CrewWhistlePremium } from "@/lib/types";
-import { formatPremiumLabel } from "@/lib/whistle-premium";
 
 /**
  * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
