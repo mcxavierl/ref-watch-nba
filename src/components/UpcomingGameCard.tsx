@@ -10,8 +10,14 @@ import {
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
 
-function primaryInsightLine(game: OverviewSlateEntry): string | undefined {
-  return game.gameContextLine ?? game.lastMeetingLine ?? game.teamContextLine ?? game.matchupInsight;
+function insightPillText(game: OverviewSlateEntry): string | undefined {
+  return (
+    game.gameContextLine ??
+    game.lastMeetingLine ??
+    game.teamContextLine ??
+    game.matchupInsight ??
+    game.seasonStageNote
+  );
 }
 
 export function UpcomingGameCard({
@@ -26,9 +32,9 @@ export function UpcomingGameCard({
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateLabel = formatSlateDateLabel(game.slateDate);
-  const insightLine = primaryInsightLine(game);
-  const secondaryLine =
-    insightLine !== game.matchupInsight ? game.matchupInsight : undefined;
+  const insightLine = insightPillText(game);
+  const secondaryInsight =
+    insightLine && insightLine !== game.matchupInsight ? game.matchupInsight : undefined;
 
   const handleActivate = () => {
     onOpenPreview?.();
@@ -96,14 +102,15 @@ export function UpcomingGameCard({
             <span className="upcoming-game-card__team-abbr">{homeTeam.abbr}</span>
           </div>
         </div>
-        {(insightLine || game.officialsLine || secondaryLine) && (
-          <div className="upcoming-game-card__context-slot">
+
+        {(insightLine || secondaryInsight || game.officialsLine) && (
+          <div className="upcoming-game-card__footer">
             {insightLine ? (
-              <p className="upcoming-game-card__context">{insightLine}</p>
+              <p className="upcoming-game-card__insight-pill">{insightLine}</p>
             ) : null}
-            {secondaryLine ? (
-              <p className="upcoming-game-card__context upcoming-game-card__context--meta">
-                {secondaryLine}
+            {secondaryInsight ? (
+              <p className="upcoming-game-card__insight-pill upcoming-game-card__insight-pill--meta">
+                {secondaryInsight}
               </p>
             ) : null}
             {game.officialsLine ? (

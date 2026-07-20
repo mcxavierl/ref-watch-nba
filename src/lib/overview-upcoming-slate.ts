@@ -47,7 +47,7 @@ export type LeagueUpcomingSlate = {
 };
 
 /** Max upcoming cards on a league hub (confirmed crews first). */
-export const LEAGUE_UPCOMING_SLATE_LIMIT = 10;
+export const LEAGUE_UPCOMING_SLATE_LIMIT = 6;
 
 /** Homepage grid: 3×3 with legacy bottom row pinned. */
 export const HOMEPAGE_SLATE_GRID_SIZE = 9;

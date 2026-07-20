@@ -117,11 +117,11 @@ describe("overview-upcoming-slate", () => {
       })),
     };
 
-    const slate = buildLeagueHubUpcomingSchedule("nfl", file, 10);
+    const slate = buildLeagueHubUpcomingSchedule("nfl", file, 6);
 
-    assert.equal(slate.leagueGroup?.games.length, 10);
+    assert.equal(slate.leagueGroup?.games.length, 6);
     assert.equal(slate.leagueGroup?.games[0]?.slateDate, "2026-08-06");
-    assert.equal(slate.leagueGroup?.games[9]?.slateDate, "2026-08-15");
+    assert.equal(slate.leagueGroup?.games[5]?.slateDate, "2026-08-11");
   });
 
   it("builds EPL slate with team context and officials status", () => {
@@ -198,7 +198,7 @@ describe("overview-upcoming-slate", () => {
     );
   });
 
-  it("caps league hub slates at ten games with confirmed crews first", () => {
+  it("caps league hub slates at six games with confirmed crews first", () => {
     const file: AssignmentsFile = {
       lastUpdated: "2026-07-20T00:00:00.000Z",
       date: "2026-07-20",

@@ -45,7 +45,7 @@ import { computeCrewHomeBias, computeSlateHomeBias } from "@/lib/home-bias";
 import { isSlateLeagueId, loadLeagueSlateBundle } from "@/lib/league-slate-data";
 import { loadScopedLeagueStats } from "@/lib/load-league-stats";
 import { upcomingMatchups } from "@/lib/offseason";
-import { buildLeagueHubUpcomingSchedule } from "@/lib/overview-upcoming-slate";
+import { buildLeagueHubUpcomingSchedule, LEAGUE_UPCOMING_SLATE_LIMIT } from "@/lib/overview-upcoming-slate";
 import { readSeasonScopeParam } from "@/lib/season-scope";
 import {
   buildShareText,
@@ -134,7 +134,11 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
     refStats: cbbConferenceStats ?? activeRefStats,
     assignments,
   });
-  const upcomingSlate = buildLeagueHubUpcomingSchedule(leagueId, assignments, 10);
+  const upcomingSlate = buildLeagueHubUpcomingSchedule(
+    leagueId,
+    assignments,
+    LEAGUE_UPCOMING_SLATE_LIMIT,
+  );
   const { games: slateGames, isPreview: slateIsPreview } = resolveSlateGames(assignments);
   const sortedGames = sortSlateGames(leagueId, slateGames, activeRefStats);
   const premiums = computeSlatePremiums(sortedGames, refStats, odds);
