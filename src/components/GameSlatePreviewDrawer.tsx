@@ -10,6 +10,7 @@ import {
   type MouseEvent,
 } from "react";
 import { TrendingDown, TrendingUp, X } from "lucide-react";
+import { MatchupInsightCard } from "@/components/MatchupInsightCard";
 import { ModalPortal } from "@/components/ModalPortal";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { OuLeanBadge } from "@/components/OuLeanBadge";
@@ -18,6 +19,10 @@ import { TeamImpactCard } from "@/components/TeamImpactCard";
 import { TeamLogo } from "@/components/TeamLogo";
 import { STATE_COLOR_CLASS } from "@/constants/colors";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
+import {
+  buildGameSlateMatchupInsights,
+  refVsTeamsSectionLabel,
+} from "@/lib/game-slate-matchup-insights";
 import type { RefRole } from "@/lib/types";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { signedDeltaTone } from "@/lib/metric-delight";
@@ -110,10 +115,8 @@ export function GameSlatePreviewDrawer({
       preview.refTeamRows.filter((row) => row.teamAbbr === impact.teamAbbr),
     ]),
   );
-  const outlierNotes = preview.refTeamRows
-    .filter((row) => row.isOutlier && row.outlierNote)
-    .map((row) => `${row.refName} · ${row.teamAbbr}: ${row.outlierNote}`);
-  const refVsTeamsLabel = preview.crew.length === 1 ? "Ref vs teams" : "Crew vs teams";
+  const matchupInsights = buildGameSlateMatchupInsights(preview.refTeamRows);
+  const refVsTeamsLabel = refVsTeamsSectionLabel(preview.crew.length);
 
   return (
     <ModalPortal>
@@ -285,19 +288,17 @@ export function GameSlatePreviewDrawer({
                 </section>
               ) : null}
 
-              {outlierNotes.length > 0 ? (
+              {matchupInsights.length > 0 ? (
                 <section
                   className="ref-preview-drawer-section"
                   aria-label={refVsTeamsLabel}
                 >
                   <h3 className="ref-preview-drawer-section-title">{refVsTeamsLabel}</h3>
-                  <ul className="game-slate-preview-outliers">
-                    {outlierNotes.map((note) => (
-                      <li key={note} className={STATE_COLOR_CLASS.caution}>
-                        {note}
-                      </li>
+                  <div className="matchup-insight-card-grid gap-4">
+                    {matchupInsights.map((insight) => (
+                      <MatchupInsightCard key={insight.id} insight={insight} />
                     ))}
-                  </ul>
+                  </div>
                 </section>
               ) : null}
 
