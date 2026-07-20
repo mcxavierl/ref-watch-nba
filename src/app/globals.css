@@ -7161,6 +7161,86 @@ p {
 
   .gsni-card {
     min-width: 0;
+    --gsni-ink-strong: rgb(248 250 252);
+    --gsni-ink-body: rgb(226 232 240);
+    --gsni-ink-muted: rgb(148 163 184);
+    --gsni-ink-faint: rgb(100 116 139);
+    --gsni-panel-bg: color-mix(in srgb, rgb(15 23 42) 90%, var(--surface-raised));
+    --gsni-panel-border: color-mix(in srgb, rgb(51 65 85) 72%, var(--border-subtle));
+    background: var(--gsni-panel-bg);
+    border-color: var(--gsni-panel-border);
+    color: var(--gsni-ink-body);
+  }
+
+  .gsni-card--soft-lock {
+    background: color-mix(in srgb, rgb(49 46 129) 22%, var(--gsni-panel-bg));
+    border-color: color-mix(in srgb, rgb(99 102 241) 34%, var(--gsni-panel-border));
+  }
+
+  .gsni-card .gsni-sample-count,
+  .gsni-card .gsni-score-value,
+  .gsni-card .gsni-score-value--table,
+  .gsni-card .gsni-official-link,
+  .gsni-card .gsni-score-headline {
+    color: var(--gsni-ink-strong);
+  }
+
+  .gsni-card .gsni-sub-text,
+  .gsni-card .gsni-gauge-label,
+  .gsni-card .gsni-soft-lock-card-copy,
+  .gsni-card .gsni-scale-hint,
+  .gsni-card .gsni-insight-summary {
+    color: var(--gsni-ink-muted);
+  }
+
+  .gsni-card .gsni-table-metric {
+    color: var(--gsni-ink-body);
+    font-weight: 600;
+  }
+
+  .gsni-card .data-table td,
+  .gsni-card .data-table td a {
+    color: var(--gsni-ink-body);
+  }
+
+  .gsni-card .data-table td a.gsni-official-link:hover {
+    color: var(--gsni-ink-strong);
+  }
+
+  .gsni-card .data-table-head th,
+  .gsni-card .ranking-sort-btn {
+    color: var(--gsni-ink-muted);
+  }
+
+  .gsni-card .ranking-sort-btn-active {
+    color: var(--gsni-ink-strong);
+  }
+
+  .gsni-correlation-pill {
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  .gsni-correlation-pill--elevated {
+    border-color: color-mix(in srgb, rgb(52 211 153) 42%, transparent);
+    background: color-mix(in srgb, rgb(6 78 59) 55%, transparent);
+    color: rgb(110 231 183);
+  }
+
+  .gsni-correlation-pill--suppressed {
+    border-color: color-mix(in srgb, rgb(251 113 133) 42%, transparent);
+    background: color-mix(in srgb, rgb(136 19 55) 48%, transparent);
+    color: rgb(253 164 175);
+  }
+
+  .gsni-correlation-pill--neutral {
+    border-color: color-mix(in srgb, rgb(100 116 139) 45%, transparent);
+    background: color-mix(in srgb, rgb(51 65 85) 55%, transparent);
+    color: rgb(203 213 225);
+  }
+
+  .gsni-card .gsni-sample-count {
+    font-weight: 600;
   }
 
   .gsni-profile-active {
@@ -7492,6 +7572,26 @@ p {
 
   html[data-color="light"]:not([data-contrast="high"]) .gsni-sample-count {
     color: rgb(15 23 42);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-sub-text,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-gauge-label,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-soft-lock-card-copy,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-relative-gauge-label,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-scale-hint,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-insight-summary {
+    color: var(--gsni-ink-muted);
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-sample-count,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-score-value,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-score-value--table,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-official-link,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-score-headline,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .gsni-table-metric,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .data-table td,
+  html[data-color="light"]:not([data-contrast="high"]) .gsni-card .data-table td a {
+    color: var(--gsni-ink-strong);
   }
 
   html[data-contrast="high"] .insight-badge,

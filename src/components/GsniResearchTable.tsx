@@ -121,7 +121,7 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
           {sorted.map((row) => (
             <tr key={row.refSlug}>
               <td>
-                <Link href={row.href} className="font-medium hover:underline">
+                <Link href={row.href} className="gsni-official-link font-medium hover:underline">
                   {row.refName}
                 </Link>
               </td>
@@ -158,7 +158,7 @@ export function GsniResearchTable({ rows }: { rows: GsniResearchRow[] }) {
                 {row.volatility !== null ? (
                   <GsniSampleCount>{row.volatility.toFixed(1)}</GsniSampleCount>
                 ) : (
-                  "-"
+                  <span className="gsni-table-metric">-</span>
                 )}
               </td>
               <td className="data-table-num">

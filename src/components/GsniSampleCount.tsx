@@ -10,7 +10,7 @@ export function GsniSampleCount({
 }) {
   return (
     <span
-      className={`gsni-sample-count font-semibold tabular-nums text-white ${className}`.trim()}
+      className={`gsni-sample-count tabular-nums ${className}`.trim()}
     >
       {children}
     </span>

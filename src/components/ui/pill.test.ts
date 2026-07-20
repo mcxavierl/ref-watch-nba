@@ -63,8 +63,8 @@ test("GsniCorrelationPill renders high-correlation diagnostic tones", () => {
   const source = readFileSync("src/components/GsniCorrelationPill.tsx", "utf8");
   assert.match(source, /gsniCorrelationLabel/);
   assert.match(source, /Sparkles/);
-  assert.match(source, /bg-emerald-900\/50/);
-  assert.match(source, /bg-rose-900\/50/);
+  assert.match(source, /gsni-correlation-pill--elevated/);
+  assert.match(source, /gsni-correlation-pill--suppressed/);
 });
 
 test("GsniDiagnosticGauge renders a full-width 4px diagnostic track", () => {
