@@ -4,7 +4,7 @@ import { leagueHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const DEFAULT_SITE_DESCRIPTION =
-  "Referee and official analytics for the NBA, NHL, NFL, Premier League, and college hoops: historical scoring and whistle tendencies, ref profiles, and transparent methodology.";
+  "Referee and official analytics for the NBA, NHL, NFL, Premier League, La Liga, WNBA, and college hoops: historical scoring and whistle tendencies, ref profiles, and transparent methodology.";
 
 export type HubPage =
   | "refs"
@@ -328,8 +328,64 @@ export function researchFindingMetadata({
     title: headline,
     description: summary,
     path,
-    keywords: [leagueShort, "referee research", "historical pattern"],
+    keywords: [leagueShort, "referee research", "historical pattern", "officiating analytics"],
   });
+}
+
+export function faqPageJsonLd(
+  items: Array<{ question: string; answer: string }>,
+): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+export function aboutPageJsonLd(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "About Ref Watch",
+    url: absoluteUrl("/about"),
+    description:
+      "Officiating intelligence for research, media, and league-adjacent products. Radical transparency, process-driven analytics, and empirical validation.",
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+  };
+}
+
+export function webPageJsonLd({
+  name,
+  description,
+  path,
+}: {
+  name: string;
+  description: string;
+  path: string;
+}): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name,
+    description,
+    url: absoluteUrl(path),
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+  };
 }
 
 export function websiteJsonLd(): Record<string, unknown> {

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 import { MethodologyPageContent } from "@/components/MethodologyPageContent";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, webPageJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Methodology",
@@ -23,6 +24,14 @@ export default function MethodologyPage() {
 
   return (
     <div className="page-shell clinical-doc-shell">
+      <JsonLd
+        data={webPageJsonLd({
+          name: "Ref Watch methodology",
+          description:
+            "How Ref Watch computes officiating intelligence, applies sample gates, labels confidence tiers, and documents data limits.",
+          path: "/methodology",
+        })}
+      />
       <Link href="/" className="back-link">
         ← Home
       </Link>

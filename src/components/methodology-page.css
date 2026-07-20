@@ -117,3 +117,31 @@
 .methodology-quick-link:hover {
   text-decoration: underline;
 }
+
+.methodology-faq {
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.methodology-faq-item {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--methodology-capsule-border);
+  border-radius: 0.75rem;
+  background: var(--methodology-capsule-bg);
+}
+
+.methodology-faq-question {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--methodology-ink);
+}
+
+.methodology-faq-answer {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--methodology-muted);
+}
