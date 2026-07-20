@@ -46,7 +46,7 @@ export function slateHeroActions(leagueId: SlateHeroLeagueId): SlateHeroAction[]
     return [];
   }
 
-  const matrixLabel = leagueId === "cbb" || leagueId === "cfb" ? "Ref matrix" : "Crew matrix";
+  const matrixLabel = "Ref matrix";
 
   return [
     {
