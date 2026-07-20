@@ -61,8 +61,10 @@ export function resolveWnbaTeamAbbr(team: string): string {
   return normalizeWnbaAbbr(team.trim().toUpperCase());
 }
 
-export function teamLogoUrl(abbr: string): string {
-  return `https://a.espncdn.com/i/teamlogos/wnba/500/${wnbaLogoAbbr(abbr)}.png`;
+export function teamLogoUrl(abbr: string, uiSurface: "dark" | "light" = "dark"): string {
+  const slug = wnbaLogoAbbr(abbr);
+  const folder = uiSurface === "dark" ? "500-dark" : "500";
+  return `https://a.espncdn.com/i/teamlogos/wnba/${folder}/${slug}.png`;
 }
 
 /** Match assignment strings like "Las Vegas", "LVA", "Aces", etc. */

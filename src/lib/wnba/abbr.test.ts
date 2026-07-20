@@ -28,12 +28,25 @@ describe("wnba abbr", () => {
     assert.ok(wnbaAbbrAliases("LVA").includes("LV"));
   });
 
-  it("uses ESPN primary logo paths for all franchises", () => {
+  it("uses ESPN logo paths for all franchises", () => {
     for (const team of ["LVA", "NYL", "WAS", "LAS", "PHO", "GSV", "TOR", "POR", "MIN", "SEA"]) {
-      const url = teamLogoUrl(team);
-      assert.match(url, /\/teamlogos\/wnba\/500\/[a-z0-9]+\.png$/);
-      assert.doesNotMatch(url, /\/scoreboard\//);
+      const darkUrl = teamLogoUrl(team, "dark");
+      const lightUrl = teamLogoUrl(team, "light");
+      assert.match(darkUrl, /\/teamlogos\/wnba\/500-dark\/[a-z0-9]+\.png$/);
+      assert.match(lightUrl, /\/teamlogos\/wnba\/500\/[a-z0-9]+\.png$/);
+      assert.doesNotMatch(darkUrl, /\/scoreboard\//);
     }
+  });
+
+  it("serves a lighter Toronto mark for dark UI surfaces", () => {
+    assert.equal(
+      teamLogoUrl("TOR", "dark"),
+      "https://a.espncdn.com/i/teamlogos/wnba/500-dark/tor.png",
+    );
+    assert.equal(
+      teamLogoUrl("TOR", "light"),
+      "https://a.espncdn.com/i/teamlogos/wnba/500/tor.png",
+    );
   });
 });
 
