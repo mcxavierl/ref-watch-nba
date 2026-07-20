@@ -20,8 +20,6 @@ import "@/components/conference-coverage.css";
 export const metadata = hubPageMetadata("cbb", "teams");
 
 
-export const dynamic = "force-static";
-
 export default function CbbTeamsIndexPage() {
   const byConference = teamsByConference();
   const conferences = CBB_CONFERENCE_DISPLAY_ORDER.filter(

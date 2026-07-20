@@ -9,8 +9,6 @@ import { hubPageMetadata } from "@/lib/seo";
 export const metadata = hubPageMetadata("nfl", "teams");
 
 
-export const dynamic = "force-static";
-
 export default function NflTeamsIndexPage() {
   const { AFC, NFC } = teamsByConference();
   const gameCounts = loadTeamIndexGameCounts("nfl");

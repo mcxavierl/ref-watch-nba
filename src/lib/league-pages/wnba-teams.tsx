@@ -9,7 +9,6 @@ import { hubPageMetadata } from "@/lib/seo";
 
 export const metadata = hubPageMetadata("wnba", "teams");
 
-export const dynamic = "force-static";
 
 export default function WnbaTeamsIndexPage() {
   const { East, West } = teamsByConference();

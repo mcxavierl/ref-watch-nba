@@ -10,8 +10,6 @@ import { hubPageMetadata } from "@/lib/seo";
 export const metadata = hubPageMetadata("epl", "teams");
 
 
-export const dynamic = "force-static";
-
 export default function EplTeamsIndexPage() {
   const teams = [...EPL_TEAMS].sort((a, b) => a.name.localeCompare(b.name));
   const gameCounts = loadTeamIndexGameCounts("epl");
