@@ -350,6 +350,15 @@ export interface OfficialStats {
   split_backed_games: number;
 }
 
+/** Season-scoped elite metrics from analytics backfill (2021-2026 window). */
+export type SeasonOfficialStatsEntry =
+  | ({ status: "ok" } & OfficialStats)
+  | {
+      status: "INSUFFICIENT_DATA";
+      sample_games: number;
+      last_calculated: string;
+    };
+
 export interface RefProfile {
   slug: string;
   name: string;
@@ -396,6 +405,8 @@ export interface RefProfile {
   eplAnalytics?: EplRefAnalytics;
   /** Ref-Intelligence archetype persona recalculated from game-log foul taxonomy. */
   officialStats?: OfficialStats;
+  /** Era-specific elite metrics keyed by season label (e.g. 2023-24). */
+  officialStatsBySeason?: Record<string, SeasonOfficialStatsEntry>;
   provenance?: {
     avgTotalPoints: MetricProvenance;
     overRate: MetricProvenance;
