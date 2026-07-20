@@ -3899,6 +3899,16 @@ p {
     position: relative;
     min-width: 0;
     width: 100%;
+    padding-top: 0.2rem;
+  }
+
+  .site-header-nav .league-section-nav {
+    width: 100%;
+  }
+
+  .site-header-inner:has(.site-header-nav:not(:empty)) {
+    gap: 0.55rem 0.65rem;
+    padding-bottom: 0.65rem;
   }
 
   .site-header-nav:empty {
@@ -3934,6 +3944,12 @@ p {
       justify-content: center;
       min-width: 0;
       width: 100%;
+      padding-top: 0.25rem;
+    }
+
+    .site-header-inner:has(.site-header-nav:not(:empty)) {
+      gap: 0.6rem 1rem;
+      padding-bottom: 0.55rem;
     }
 
     .site-header-league .league-nav {

@@ -163,4 +163,13 @@ describe("design audit guardrails", () => {
     assert.match(readSrc("src/components/hub/RefCard.tsx"), /CLINICAL MODERN STANDARD/);
     assert.match(readSrc("src/components/hub/ClinicalCard.tsx"), /backdrop-blur-md/);
   });
+
+  it("renders league section nav inside sticky site header", () => {
+    const header = readSrc("src/components/SiteHeader.tsx");
+    const layout = readSrc("src/app/[league]/layout.tsx");
+    assert.match(header, /site-header-nav/);
+    assert.match(header, /LeagueSectionNav/);
+    assert.doesNotMatch(layout, /LeagueSectionNav/);
+    assert.match(readSrc("src/app/globals.css"), /\.site-header-inner:has\(\.site-header-nav:not\(:empty\)\)/);
+  });
 });
