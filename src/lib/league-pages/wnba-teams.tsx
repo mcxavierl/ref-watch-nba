@@ -3,14 +3,9 @@ import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";
 import { getTeamSplits } from "@/lib/wnba/data";
-<<<<<<< HEAD
 import { loadTeamIndexGameCounts, teamIndexGameCount, countUniqueOfficialsFromSplits } from "@/lib/team-index-game-counts";
 import { LEAGUES } from "@/lib/leagues";
-import { teamFullName, teamLogoUrl, teamsByConference } from "@/lib/wnba/teams";
-=======
-import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
 import { teamFullName, teamsByConference } from "@/lib/wnba/teams";
->>>>>>> origin/main
 import { hubPageMetadata } from "@/lib/seo";
 
 export const metadata = hubPageMetadata("wnba", "teams");

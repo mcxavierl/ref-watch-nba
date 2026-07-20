@@ -69,6 +69,8 @@
     "fetch-nba-ref-photos": "tsx scripts/nba/fetch-ref-photos.ts",
     "fetch-laliga-ref-photos": "tsx scripts/laliga/fetch-ref-photos.ts",
     "fetch-cbb-ref-photos": "tsx scripts/cbb/fetch-ref-photos.ts",
+    "fetch-wnba-ref-photos": "tsx scripts/wnba/fetch-ref-photos.ts",
+    "fetch-cfb-ref-photos": "tsx scripts/cfb/fetch-ref-photos.ts",
     "fetch-nhl-assignments": "tsx scripts/nhl/fetch-assignments.ts",
     "fetch-nhl-odds": "tsx scripts/nhl/fetch-odds.ts",
     "fetch-nhl-team-special-teams": "tsx scripts/nhl/fetch-team-special-teams.ts",
