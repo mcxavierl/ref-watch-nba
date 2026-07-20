@@ -11,6 +11,7 @@ import {
   LEAGUE_UPCOMING_SLATE_LIMIT,
   selectHomepageSlateGrid,
 } from "@/lib/overview-upcoming-slate";
+import { getAssignments as getWnbaAssignments } from "@/lib/wnba/data";
 import type { AssignmentsFile } from "@/lib/types";
 
 function slateEntry(
@@ -265,6 +266,27 @@ describe("overview-upcoming-slate", () => {
     assert.equal(slate.leagueGroup?.games[0]?.officialsLine, "Refs not assigned yet");
     assert.equal(slate.leagueGroup?.games[0]?.status, "scheduled");
     assert.equal(slate.leagueGroup?.games[0]?.preview, undefined);
+  });
+
+  it("attaches preview card insights when a crew is assigned", () => {
+    const file = getWnbaAssignments();
+    const game = file.games.find((entry) => entry.crew.length >= 2);
+    assert.ok(game, "expected at least one assigned WNBA game");
+
+    const slate = buildLeagueUpcomingSlateFromAssignments("wnba", {
+      ...file,
+      games: [game],
+      scheduledGames: [],
+    });
+    const entry = slate.leagueGroup?.games[0];
+
+    assert.ok(entry?.preview);
+    assert.ok(Array.isArray(entry?.previewCardInsights));
+    if (entry?.previewCardInsights && entry.previewCardInsights.length > 0) {
+      assert.ok(
+        entry.previewCardInsights.every((line) => !line.startsWith("Last met")),
+      );
+    }
   });
 
   it("features soonest upcoming games on the homepage grid", () => {

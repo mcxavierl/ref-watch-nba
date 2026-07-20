@@ -11,14 +11,33 @@ import {
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
 
-function insightPillText(game: OverviewSlateEntry): string | undefined {
-  return (
+function upcomingCardInsightLines(game: OverviewSlateEntry): {
+  primary?: string;
+  secondary?: string;
+} {
+  if (game.previewCardInsights && game.previewCardInsights.length > 0) {
+    return {
+      primary: game.previewCardInsights[0],
+      secondary: game.previewCardInsights[1],
+    };
+  }
+
+  if (game.preview && game.crewCount > 0) {
+    if (game.matchupInsight) {
+      return { primary: game.matchupInsight };
+    }
+    return {};
+  }
+
+  const primary =
     game.gameContextLine ??
     game.lastMeetingLine ??
     game.teamContextLine ??
     game.matchupInsight ??
-    game.seasonStageNote
-  );
+    game.seasonStageNote;
+  const secondary =
+    primary && primary !== game.matchupInsight ? game.matchupInsight : undefined;
+  return { primary, secondary };
 }
 
 export function UpcomingGameCard({
@@ -33,9 +52,8 @@ export function UpcomingGameCard({
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
-  const insightLine = insightPillText(game);
-  const secondaryInsight =
-    insightLine && insightLine !== game.matchupInsight ? game.matchupInsight : undefined;
+  const { primary: insightLine, secondary: secondaryInsight } = upcomingCardInsightLines(game);
+  const showFooter = Boolean(insightLine || secondaryInsight || game.officialsLine || onOpenPreview);
 
   const handleActivate = () => {
     onOpenPreview?.();
@@ -84,9 +102,6 @@ export function UpcomingGameCard({
             </time>
           ) : null}
         </div>
-        {onOpenPreview ? (
-          <span className="upcoming-game-card__cta">Preview refs</span>
-        ) : null}
       </header>
 
       <div className="upcoming-game-card__body">
@@ -107,7 +122,7 @@ export function UpcomingGameCard({
           </div>
         </div>
 
-        {(insightLine || secondaryInsight || game.officialsLine) && (
+        {showFooter ? (
           <div className="upcoming-game-card__footer">
             {insightLine ? (
               <p className="upcoming-game-card__insight-line">{insightLine}</p>
@@ -117,15 +132,24 @@ export function UpcomingGameCard({
                 {secondaryInsight}
               </p>
             ) : null}
-            {game.officialsLine ? (
-              <SlateOfficialsLine
-                line={game.officialsLine}
-                headRef={game.headRef}
-                className="upcoming-game-card__meta"
-              />
-            ) : null}
+            <div className="upcoming-game-card__footer-bar">
+              {game.officialsLine ? (
+                <SlateOfficialsLine
+                  line={game.officialsLine}
+                  headRef={game.headRef}
+                  className="upcoming-game-card__meta"
+                />
+              ) : (
+                <span className="upcoming-game-card__meta-spacer" aria-hidden />
+              )}
+              {onOpenPreview ? (
+                <span className="upcoming-game-card__cta upcoming-game-card__cta--footer">
+                  Preview refs
+                </span>
+              ) : null}
+            </div>
           </div>
-        )}
+        ) : null}
       </div>
     </article>
   );

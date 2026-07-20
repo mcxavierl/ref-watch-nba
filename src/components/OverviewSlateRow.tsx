@@ -11,6 +11,31 @@ import {
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
 
+function slateRowContextLines(game: OverviewSlateEntry): {
+  primary?: string;
+  secondary?: string;
+  teamContext?: string;
+} {
+  if (game.previewCardInsights && game.previewCardInsights.length > 0) {
+    return {
+      primary: game.previewCardInsights[0],
+      secondary: game.previewCardInsights[1],
+    };
+  }
+
+  if (game.preview && game.crewCount > 0) {
+    if (game.matchupInsight) {
+      return { primary: game.matchupInsight };
+    }
+    return {};
+  }
+
+  return {
+    primary: game.gameContextLine ?? game.lastMeetingLine,
+    teamContext: !game.gameContextLine ? game.teamContextLine : undefined,
+  };
+}
+
 export function OverviewSlateRow({
   game,
   showHubLink = true,
@@ -23,6 +48,8 @@ export function OverviewSlateRow({
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
+  const { primary: contextLine, secondary: secondaryContext, teamContext } =
+    slateRowContextLines(game);
 
   const handleActivate = () => {
     onOpenPreview?.();
@@ -72,13 +99,14 @@ export function OverviewSlateRow({
         {game.seasonStageNote ? (
           <span className="overview-slate-row-season-stage">{game.seasonStageNote}</span>
         ) : null}
-        {game.gameContextLine ? (
-          <span className="overview-slate-row-game-context">{game.gameContextLine}</span>
-        ) : game.lastMeetingLine ? (
-          <span className="overview-slate-row-last-meeting">{game.lastMeetingLine}</span>
+        {contextLine ? (
+          <span className="overview-slate-row-game-context">{contextLine}</span>
         ) : null}
-        {!game.gameContextLine && game.teamContextLine ? (
-          <span className="overview-slate-row-team-context">{game.teamContextLine}</span>
+        {secondaryContext ? (
+          <span className="overview-slate-row-team-context">{secondaryContext}</span>
+        ) : null}
+        {!contextLine && teamContext ? (
+          <span className="overview-slate-row-team-context">{teamContext}</span>
         ) : null}
         {game.officialsLine ? (
           <SlateOfficialsLine
@@ -101,7 +129,7 @@ export function OverviewSlateRow({
           )
         ) : null}
       </div>
-      {game.matchupInsight ? (
+      {game.preview && game.crewCount > 0 ? null : game.matchupInsight ? (
         <p className="overview-slate-insight">{game.matchupInsight}</p>
       ) : null}
       <p className="overview-slate-crew">

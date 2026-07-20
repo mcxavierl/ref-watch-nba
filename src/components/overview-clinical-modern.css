@@ -508,6 +508,31 @@ html[data-contrast="high"] .upcoming-game-card__date-label {
   background: rgb(15 23 42 / 0.5);
 }
 
+.upcoming-game-card__footer-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.upcoming-game-card__meta-spacer {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.upcoming-game-card__footer-bar .upcoming-game-card__meta {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+
+.upcoming-game-card__cta--footer {
+  flex-shrink: 0;
+  margin-left: auto;
+  align-self: flex-end;
+}
+
 .upcoming-game-card__insight-line {
   margin: 0;
   font-size: 0.75rem;
