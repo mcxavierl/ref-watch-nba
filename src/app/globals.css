@@ -1224,12 +1224,6 @@ p {
     }
   }
 
-  @media (min-width: 1024px) {
-    .pressure-matrix-bento {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
   .pressure-matrix-card {
     display: flex;
     min-width: 0;
@@ -1237,33 +1231,64 @@ p {
     height: 100%;
   }
 
-  .pressure-matrix-table-scroll {
+  .pressure-matrix-metrics {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pressure-matrix-metric {
+    display: grid;
+    gap: var(--space-2);
     min-width: 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.625rem;
+    background: color-mix(in srgb, var(--bg-surface-2) 72%, transparent);
+    padding: var(--space-3) var(--space-4);
   }
 
-  .pressure-matrix-table {
-    min-width: 31.25rem;
-    width: 100%;
+  .pressure-matrix-metric-label {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--text-primary) 82%, var(--text-muted));
   }
 
-  .pressure-matrix-table th,
-  .pressure-matrix-table td.data-table-num,
-  .pressure-matrix-table td.font-tabular {
-    white-space: nowrap;
+  .pressure-matrix-metric-values {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    min-width: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .pressure-matrix-table th {
-    font-size: 0.68rem;
+  @media (max-width: 39.99rem) {
+    .pressure-matrix-metric-values {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .pressure-matrix-metric-value {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .pressure-matrix-metric-value dt {
+    margin: 0;
+    font-size: 0.64rem;
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--text-muted);
   }
 
-  .pressure-matrix-table td:first-child {
-    color: color-mix(in srgb, var(--text-primary) 78%, var(--text-muted));
+  .pressure-matrix-metric-value dd {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.2;
   }
 
   .ref-profile-quick-stats {

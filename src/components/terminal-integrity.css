@@ -137,12 +137,6 @@
 }
 
 .ref-table-scroll,
-.pressure-matrix-table-scroll {
-  min-width: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
 .ref-profile-fluid-table {
   min-width: 31.25rem;
   width: 100%;
@@ -157,6 +151,7 @@
 .ref-close-game-section--embedded {
   margin-top: var(--space-6);
   min-width: 0;
+  width: 100%;
 }
 
 .ref-close-game-section-lead {
