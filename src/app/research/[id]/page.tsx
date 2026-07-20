@@ -5,7 +5,9 @@ import {
   researchFindingCanonicalPath,
 } from "@/components/ResearchFindingDetail";
 import { getResearchFindingById } from "@/lib/research";
-import { absoluteUrl } from "@/lib/site";
+import { inferFindingLeague } from "@/lib/findings-shared";
+import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { researchFindingMetadata } from "@/lib/seo";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -18,11 +20,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!finding) {
     return { title: "Finding not found" };
   }
-  return {
-    title: finding.headline,
-    description: finding.summary,
-    alternates: { canonical: absoluteUrl(researchFindingCanonicalPath(finding)) },
-  };
+  const leagueId = inferFindingLeague(finding).toLowerCase() as LeagueId;
+  return researchFindingMetadata({
+    headline: finding.headline,
+    summary: finding.summary,
+    path: researchFindingCanonicalPath(finding),
+    leagueShort: LEAGUES[leagueId]?.shortLabel ?? inferFindingLeague(finding),
+  });
 }
 
 export default async function LegacyNbaResearchFindingPage({ params }: PageProps) {

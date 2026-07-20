@@ -25,6 +25,16 @@ import {
   getAssignments as getCfbAssignments,
   getRefStats as getCfbRefStats,
 } from "@/lib/cfb/data";
+import {
+  getAllRefSlugs as getLaligaRefSlugs,
+  getAssignments as getLaligaAssignments,
+  getRefStats as getLaligaRefStats,
+} from "@/lib/laliga/data";
+import {
+  getAllRefSlugs as getWnbaRefSlugs,
+  getAssignments as getWnbaAssignments,
+  getRefStats as getWnbaRefStats,
+} from "@/lib/wnba/data";
 import { researchFindingHref } from "@/lib/findings-shared";
 import { getAllResearchFindingIds, getResearchFindingById } from "@/lib/research";
 import { absoluteUrl } from "@/lib/site";
@@ -34,6 +44,8 @@ import { NFL_TEAMS } from "@/lib/nfl/teams";
 import { EPL_TEAMS } from "@/lib/epl/teams";
 import { CBB_TEAMS } from "@/lib/cbb/teams";
 import { CFB_TEAMS } from "@/lib/cfb/teams";
+import { LALIGA_TEAMS } from "@/lib/laliga/teams";
+import { WNBA_TEAMS } from "@/lib/wnba/teams";
 import type { LeagueId } from "@/lib/leagues";
 import { leagueHref } from "@/lib/leagues";
 
@@ -53,14 +65,15 @@ type LeagueSitemapConfig = {
   includeFeeds?: boolean;
 };
 
+/** Canonical hub paths (legacy /insights, /rankings, /trends redirect to research). */
 const SHARED_HUB_PAGES = [
   "refs",
   "matrix",
   "teams",
-  "insights",
-  "rankings",
-  "trends",
-  "research",
+  "research/tendencies",
+  "research/trends",
+  "research/findings",
+  "research/game-state",
 ];
 
 function leagueSitemapEntries(config: LeagueSitemapConfig): MetadataRoute.Sitemap {
@@ -83,7 +96,7 @@ function leagueSitemapEntries(config: LeagueSitemapConfig): MetadataRoute.Sitema
       url: absoluteUrl(leagueHref(config.id, `/${hub}`)),
       lastModified: stats.meta.lastUpdated,
       changeFrequency: "weekly",
-      priority: hub === "matrix" ? 0.72 : 0.7,
+      priority: hub.includes("matrix") ? 0.72 : hub.startsWith("research") ? 0.68 : 0.7,
     });
   }
 
@@ -187,9 +200,37 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
       teams: CFB_TEAMS,
       hubPages: SHARED_HUB_PAGES,
     },
+    {
+      id: "laliga",
+      getAssignments: getLaligaAssignments,
+      getRefStats: getLaligaRefStats,
+      getRefSlugs: getLaligaRefSlugs,
+      teams: LALIGA_TEAMS,
+      hubPages: SHARED_HUB_PAGES,
+    },
+    {
+      id: "wnba",
+      getAssignments: getWnbaAssignments,
+      getRefStats: getWnbaRefStats,
+      getRefSlugs: getWnbaRefSlugs,
+      teams: WNBA_TEAMS,
+      hubPages: SHARED_HUB_PAGES,
+    },
   ];
 
   const entries: MetadataRoute.Sitemap = [
+    {
+      url: absoluteUrl("/"),
+      lastModified: globalLastMod,
+      changeFrequency: "daily",
+      priority: 1,
+    },
+    {
+      url: absoluteUrl("/about"),
+      lastModified: globalLastMod,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
     ...leagueConfigs.flatMap((config) => leagueSitemapEntries(config)),
     {
       url: absoluteUrl("/compare"),
@@ -204,10 +245,16 @@ export function buildSitemapEntries(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
     {
-      url: absoluteUrl("/partners"),
+      url: absoluteUrl("/research/validation"),
       lastModified: globalLastMod,
       changeFrequency: "monthly",
-      priority: 0.4,
+      priority: 0.58,
+    },
+    {
+      url: absoluteUrl("/research/leverage-spike-anomaly"),
+      lastModified: globalLastMod,
+      changeFrequency: "monthly",
+      priority: 0.58,
     },
   ];
 

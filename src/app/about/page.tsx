@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 import {
   ABOUT_NOT_LIST,
   ABOUT_PAGE_LEAD,
@@ -7,7 +8,8 @@ import {
   REFWATCH_MISSION,
   TRUST_CHARTER_PRINCIPLES,
 } from "@/lib/about-content";
-import { buildPageMetadata } from "@/lib/seo";
+import { REFWATCH_GEO_FAQ } from "@/lib/geo-faq";
+import { aboutPageJsonLd, buildPageMetadata, faqPageJsonLd } from "@/lib/seo";
 import "@/components/methodology-page.css";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -26,6 +28,7 @@ export const metadata: Metadata = buildPageMetadata({
 export default function AboutPage() {
   return (
     <div className="page-shell clinical-doc-shell">
+      <JsonLd data={[aboutPageJsonLd(), faqPageJsonLd(REFWATCH_GEO_FAQ)]} />
       <Link href="/" className="back-link">
         ← Home
       </Link>
@@ -34,6 +37,20 @@ export default function AboutPage() {
         <h1 className="page-title">About RefWatch</h1>
         <p className="page-lead">{ABOUT_PAGE_LEAD}</p>
         <p className="page-lead">{REFWATCH_MISSION}</p>
+      </section>
+
+      <section className="methodology-grid clinical-doc-section" aria-labelledby="about-faq-heading">
+        <h2 id="about-faq-heading" className="section-title">
+          Frequently asked questions
+        </h2>
+        <dl className="methodology-faq">
+          {REFWATCH_GEO_FAQ.map((item) => (
+            <div key={item.question} className="methodology-faq-item">
+              <dt className="methodology-faq-question">{item.question}</dt>
+              <dd className="methodology-faq-answer">{item.answer}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       <section className="methodology-grid clinical-doc-section">

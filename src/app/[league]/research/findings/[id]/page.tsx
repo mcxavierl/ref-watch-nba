@@ -9,7 +9,8 @@ import {
   getResearchFindingIdsForLeague,
 } from "@/lib/research";
 import { isLeagueManifestId, LEAGUE_MANIFEST } from "@/lib/league-manifest";
-import { absoluteUrl } from "@/lib/site";
+import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { researchFindingMetadata } from "@/lib/seo";
 
 const DATA_LEAGUE_BY_ID = Object.fromEntries(
   Object.entries(LEAGUE_MANIFEST).map(([id, entry]) => [id, entry.dataLeague]),
@@ -39,13 +40,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!finding || !isLeagueManifestId(league)) {
     return { title: "Finding not found" };
   }
-  return {
-    title: finding.headline,
-    description: finding.summary,
-    alternates: {
-      canonical: absoluteUrl(researchFindingCanonicalPath(finding)),
-    },
-  };
+  const leagueShort = LEAGUES[league as LeagueId]?.shortLabel ?? league.toUpperCase();
+  return researchFindingMetadata({
+    headline: finding.headline,
+    summary: finding.summary,
+    path: researchFindingCanonicalPath(finding),
+    leagueShort,
+  });
 }
 
 export default async function LeagueResearchFindingDetailPage({ params }: PageProps) {

@@ -54,6 +54,8 @@ export const metadata: Metadata = {
     "NHL officials",
     "NFL officials",
     "Premier League referees",
+    "La Liga referees",
+    "WNBA refs",
     "officiating tendencies",
     "referee crew",
   ],
@@ -62,6 +64,8 @@ export const metadata: Metadata = {
       "application/rss+xml": [
         { url: "/feed/nba/rss", title: "Ref Watch NBA signals" },
         { url: "/feed/nhl/rss", title: "Ref Watch NHL signals" },
+        { url: "/feed/nfl/rss", title: "Ref Watch NFL signals" },
+        { url: "/feed/epl/rss", title: "Ref Watch EPL signals" },
       ],
     },
   },
