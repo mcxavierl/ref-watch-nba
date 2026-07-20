@@ -161,3 +161,17 @@ export function teamsByConference(): Record<CbbTeam["conference"], CbbTeam[]> {
   }
   return groups;
 }
+
+/** Matrix and hub column order: conference blocks, A–Z within each. */
+export function cbbTeamsInDisplayOrder(): CbbTeam[] {
+  const byConf = teamsByConference();
+  return CBB_CONFERENCE_DISPLAY_ORDER.flatMap((conf) =>
+    (byConf[conf] ?? [])
+      .slice()
+      .sort((a, b) => teamFullName(a).localeCompare(teamFullName(b))),
+  );
+}
+
+export function cbbTeamConferenceByAbbr(): Record<string, CbbTeam["conference"]> {
+  return Object.fromEntries(CBB_TEAMS.map((team) => [team.abbr, team.conference]));
+}

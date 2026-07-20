@@ -9,7 +9,7 @@ import { preloadLeagueRefStats } from "@/lib/edge-preload";
 import { LEAGUES } from "@/lib/leagues";
 import { computeMatrixExtremes, matrixWhistleDiffShortLabel } from "@/lib/ref-team-matrix";
 import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
-import { CBB_TEAMS, teamFullName } from "@/lib/cbb/teams";
+import { CBB_CONFERENCE_DISPLAY_ORDER, cbbTeamConferenceByAbbr, cbbTeamsInDisplayOrder, teamFullName } from "@/lib/cbb/teams";
 import { DEFAULT_SEASON_SCOPE_MODE, matrixLeadSeasonPhrase } from "@/lib/season-scope";
 import { refTeamDataNote } from "@/lib/user-language";
 import { hubPageMetadata } from "@/lib/seo";
@@ -32,7 +32,7 @@ export default async function CbbMatrixPage({ searchParams }: PageProps) {
 
   const matrix = computeRefTeamMatrix(
     stats,
-    CBB_TEAMS.map((team) => ({
+    cbbTeamsInDisplayOrder().map((team) => ({
       abbr: team.abbr,
       label: teamFullName(team),
       name: team.name,
@@ -85,6 +85,8 @@ export default async function CbbMatrixPage({ searchParams }: PageProps) {
               scopeLabel={seasonSpan}
               initialTeamAbbr={team}
               initialRefSlug={ref}
+              teamConferenceByAbbr={cbbTeamConferenceByAbbr()}
+              teamConferenceOrder={CBB_CONFERENCE_DISPLAY_ORDER}
             />
           </Suspense>
         </div>

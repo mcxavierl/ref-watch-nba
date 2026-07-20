@@ -54,6 +54,16 @@ describe("cbb team logos", () => {
     assert.match(order, /"WCC"/);
   });
 
+  it("CBB matrix wires team column search and conference sort", () => {
+    const matrixPage = readFileSync("src/lib/league-pages/cbb-matrix.tsx", "utf8");
+    const matrixComponent = readFileSync("src/components/RefTeamMatrix.tsx", "utf8");
+    assert.match(matrixPage, /cbbTeamsInDisplayOrder\(\)/);
+    assert.match(matrixPage, /teamConferenceByAbbr=\{cbbTeamConferenceByAbbr\(\)\}/);
+    assert.match(matrixComponent, /Find team/);
+    assert.match(matrixComponent, /Sort columns/);
+    assert.match(matrixComponent, /sortMatrixTeamColumns/);
+  });
+
   it("uses light logo plates on team index cards in dark mode", () => {
     const css = readFileSync("src/components/site-delight.css", "utf8");
     assert.match(css, /\.team-index-link \.team-logo-plate[\s\S]*--logo-plate-matrix/);
