@@ -11,12 +11,12 @@ import cbbCore from "../../data/cbb/ref-stats-core.json";
 type BundledLeague = "nba" | "nfl" | "nhl" | "epl" | "laliga" | "wnba" | "cbb";
 
 const BUNDLED_CORE: Record<BundledLeague, RefStatsFile> = {
-  nba: nbaCore as RefStatsFile,
-  nfl: nflCore as RefStatsFile,
-  nhl: nhlCore as RefStatsFile,
-  epl: eplCore as RefStatsFile,
-  laliga: laligaCore as RefStatsFile,
-  wnba: wnbaCore as RefStatsFile,
+  nba: nbaCore as unknown as RefStatsFile,
+  nfl: nflCore as unknown as RefStatsFile,
+  nhl: nhlCore as unknown as RefStatsFile,
+  epl: eplCore as unknown as RefStatsFile,
+  laliga: laligaCore as unknown as RefStatsFile,
+  wnba: wnbaCore as unknown as RefStatsFile,
   cbb: cbbCore as unknown as RefStatsFile,
 };
 
