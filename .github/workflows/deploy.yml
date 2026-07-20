@@ -75,6 +75,9 @@ jobs:
         env:
           THEME_MATRIX_BASE_URL: http://127.0.0.1:3099
 
+      - name: Color drift audit
+        run: npm run audit:color-drift
+
       - name: Unit tests
         run: npm run test
 

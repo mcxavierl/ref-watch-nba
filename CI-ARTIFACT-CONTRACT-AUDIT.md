@@ -1,6 +1,6 @@
 # CI and artifact contract audit
 
-Generated: 2026-07-20T03:57:57.834Z
+Generated: 2026-07-20T04:03:17.765Z
 
 ## Pre-merge checklist (mirrors GitHub validate)
 
@@ -23,8 +23,9 @@ Or step-by-step:
 9. **CSS syntax** (`npm run check:css-syntax`) - CI step: CSS syntax check
 10. **Next.js build** (`npm run build:next`) - CI step: Next.js production build
 11. **Theme matrix contrast** (`npm run audit:theme-matrix`) - CI step: Theme matrix contrast audit
-12. **Unit tests** (`npm run test`) - CI step: Unit tests
-13. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
+12. **Color drift** (`npm run audit:color-drift`) - CI step: Color drift audit
+13. **Unit tests** (`npm run test`) - CI step: Unit tests
+14. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
 
 When overview snapshot sources change, also run:
 

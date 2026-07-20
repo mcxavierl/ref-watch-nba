@@ -54,6 +54,7 @@ const PRE_MERGE_CHECKLIST: Array<{ step: string; command: string; ciStep: string
   { step: "CSS syntax", command: "npm run check:css-syntax", ciStep: "CSS syntax check" },
   { step: "Next.js build", command: "npm run build:next", ciStep: "Next.js production build" },
   { step: "Theme matrix contrast", command: "npm run audit:theme-matrix", ciStep: "Theme matrix contrast audit" },
+  { step: "Color drift", command: "npm run audit:color-drift", ciStep: "Color drift audit" },
   { step: "Unit tests", command: "npm run test", ciStep: "Unit tests" },
   { step: "Honesty audit", command: "npm run honesty-audit", ciStep: "Honesty audit" },
 ];

@@ -130,4 +130,15 @@ describe("design audit guardrails", () => {
     assert.match(readSrc("src/app/theme-matrix/page.tsx"), /WorldCupFinalSection/);
     assert.match(readSrc("src/app/robots.ts"), /\/theme-matrix/);
   });
+
+  it("color drift audit guards clinical surfaces and hex allowlists", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:color-drift"] ?? "", /audit-color-drift/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:color-drift/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Color drift audit/);
+    assert.match(readSrc("src/components/hub/ClinicalCard.tsx"), /border-subtle/);
+    assert.doesNotMatch(readSrc("src/components/hub/ClinicalCard.tsx"), /border-\[#/);
+  });
 });
