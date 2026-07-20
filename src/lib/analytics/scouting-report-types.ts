@@ -39,6 +39,10 @@ export type ScoutingReport = {
   /** 1 (volatile) to 10 (highly consistent) whistle-volume profile. */
   consistencyScore: number;
   officialStats: OfficialStats;
+  leverageIndex: number | null;
+  leverageProfile: import("@/lib/types").LeveragePressureProfile;
+  pressureGauge: import("@/lib/analytics/leverage-sensitivity").PressureGaugeState;
+  leverageInsight: string;
   styleProfile: ScoutingStyleProfile;
   pressureSensitive: boolean;
   pressureDeltaPct: number | null;

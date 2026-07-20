@@ -159,6 +159,25 @@ function isCloseGame(game: ArchetypeGameInput): boolean {
   return Math.abs(game.homeScore - game.awayScore) < CLOSE_GAME_SCORE_DIFF_THRESHOLD;
 }
 
+export const DEFAULT_LEVERAGE_STATS: Pick<
+  OfficialStats,
+  | "leverage_index"
+  | "leverage_profile"
+  | "early_period_foul_rate"
+  | "high_pressure_foul_rate"
+  | "leverage_sample_games"
+  | "close_game_sample"
+  | "split_backed_games"
+> = {
+  leverage_index: null,
+  leverage_profile: "neutral",
+  early_period_foul_rate: null,
+  high_pressure_foul_rate: null,
+  leverage_sample_games: 0,
+  close_game_sample: 0,
+  split_backed_games: 0,
+};
+
 export function toOfficialStats(
   result: Omit<RefereeArchetypeResult, "blurb" | "displayName">,
 ): OfficialStats {
@@ -170,6 +189,7 @@ export function toOfficialStats(
     pressure_delta_pct: result.pressure_delta_pct,
     sample_games: result.sample_games,
     last_calculated: result.last_calculated,
+    ...DEFAULT_LEVERAGE_STATS,
   };
 }
 
@@ -239,6 +259,7 @@ export function computeRefereeArchetype(
     consistency_score: consistencyScore,
     sample_games: sampleGames.length,
     last_calculated: generatedAt,
+    ...DEFAULT_LEVERAGE_STATS,
     displayName: ARCHETYPE_DISPLAY_NAMES[primaryArchetype],
     primaryFoulType: ARCHETYPE_PRIMARY_FOUL_TYPE[primaryArchetype],
     coefficientOfVariation: round3(coefficientOfVariation),
@@ -293,6 +314,52 @@ export function normalizeOfficialStats(raw: unknown): OfficialStats | null {
         : typeof value.lastCalculated === "string"
           ? value.lastCalculated
           : new Date().toISOString(),
+    leverage_index:
+      typeof value.leverage_index === "number"
+        ? value.leverage_index
+        : typeof value.leverageIndex === "number"
+          ? value.leverageIndex
+          : null,
+    leverage_profile:
+      value.leverage_profile === "high-leverage-sensitivity" ||
+      value.leverage_profile === "swallows-whistle" ||
+      value.leverage_profile === "neutral"
+        ? value.leverage_profile
+        : value.leverageProfile === "high-leverage-sensitivity" ||
+            value.leverageProfile === "swallows-whistle" ||
+            value.leverageProfile === "neutral"
+          ? value.leverageProfile
+          : "neutral",
+    early_period_foul_rate:
+      typeof value.early_period_foul_rate === "number"
+        ? value.early_period_foul_rate
+        : typeof value.earlyPeriodFoulRate === "number"
+          ? value.earlyPeriodFoulRate
+          : null,
+    high_pressure_foul_rate:
+      typeof value.high_pressure_foul_rate === "number"
+        ? value.high_pressure_foul_rate
+        : typeof value.highPressureFoulRate === "number"
+          ? value.highPressureFoulRate
+          : null,
+    leverage_sample_games:
+      typeof value.leverage_sample_games === "number"
+        ? value.leverage_sample_games
+        : typeof value.leverageSampleGames === "number"
+          ? value.leverageSampleGames
+          : 0,
+    close_game_sample:
+      typeof value.close_game_sample === "number"
+        ? value.close_game_sample
+        : typeof value.closeGameSample === "number"
+          ? value.closeGameSample
+          : 0,
+    split_backed_games:
+      typeof value.split_backed_games === "number"
+        ? value.split_backed_games
+        : typeof value.splitBackedGames === "number"
+          ? value.splitBackedGames
+          : 0,
   };
 }
 

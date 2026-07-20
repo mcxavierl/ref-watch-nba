@@ -325,6 +325,11 @@ export type RefereeArchetypeId =
   | "game-flow-manager"
   | "balanced";
 
+export type LeveragePressureProfile =
+  | "high-leverage-sensitivity"
+  | "swallows-whistle"
+  | "neutral";
+
 /** Persisted archetype intelligence attached during nightly ingest rebuilds. */
 export interface OfficialStats {
   primary_archetype: RefereeArchetypeId;
@@ -335,6 +340,14 @@ export interface OfficialStats {
   pressure_delta_pct: number | null;
   sample_games: number;
   last_calculated: string;
+  /** Late close-game vs early-period foul frequency delta. */
+  leverage_index: number | null;
+  leverage_profile: LeveragePressureProfile;
+  early_period_foul_rate: number | null;
+  high_pressure_foul_rate: number | null;
+  leverage_sample_games: number;
+  close_game_sample: number;
+  split_backed_games: number;
 }
 
 export interface RefProfile {

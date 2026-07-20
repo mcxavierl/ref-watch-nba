@@ -14,11 +14,18 @@ import {
   buildArchetypeTerminalBlurb,
   classifyAdminRatio,
   computeRefereeArchetype,
+  DEFAULT_LEVERAGE_STATS,
   officialStatsFromProfile,
   toOfficialStats,
   whistleCoefficientOfVariation,
   type ArchetypeGameInput,
 } from "@/lib/analytics/referee-archetypes";
+import {
+  buildLeverageInsight,
+  computeLeverageIndex,
+  leverageFieldsFromResult,
+  pressureGaugeState,
+} from "@/lib/analytics/leverage-sensitivity";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import { classifyMarqueeGame } from "@/lib/marquee-games";
@@ -209,6 +216,20 @@ function toArchetypeGameInput(game: RuntimeGameLogEntry): ArchetypeGameInput {
   };
 }
 
+function toLeverageGameInput(game: RuntimeGameLogEntry) {
+  return {
+    homeScore: game.homeScore,
+    awayScore: game.awayScore,
+    totalFouls: game.totalFouls,
+    homeFlags: game.homeFlags,
+    awayFlags: game.awayFlags,
+    homeMinors: game.homeMinors,
+    awayMinors: game.awayMinors,
+    wentToOvertime: game.wentToOvertime,
+    whistlePeriodSplits: game.whistlePeriodSplits,
+  };
+}
+
 function resolveOfficialStats(
   leagueId: LeagueId,
   sampleGames: RuntimeGameLogEntry[],
@@ -218,16 +239,29 @@ function resolveOfficialStats(
   pressureSensitive: boolean,
   pressureDeltaPct: number | null,
 ): OfficialStats {
+  const leverage = computeLeverageIndex(
+    leagueId,
+    sampleGames.map(toLeverageGameInput),
+  );
+
   const computed = computeRefereeArchetype(
     leagueId,
     sampleGames.map(toArchetypeGameInput),
   );
   if (computed) {
-    return toOfficialStats(computed);
+    return {
+      ...toOfficialStats(computed),
+      ...leverageFieldsFromResult(leverage),
+    };
   }
 
   const persisted = officialStatsFromProfile(profile);
-  if (persisted) return persisted;
+  if (persisted) {
+    return {
+      ...persisted,
+      ...leverageFieldsFromResult(leverage),
+    };
+  }
 
   const subjective = subjectiveTotal || 1;
   const adminRatio = round3(administrativeTotal / subjective);
@@ -240,6 +274,17 @@ function resolveOfficialStats(
     consistency_score: 5,
     sample_games: sampleGames.length,
     last_calculated: new Date().toISOString(),
+    ...DEFAULT_LEVERAGE_STATS,
+    ...leverageFieldsFromResult(leverage),
+  };
+}
+
+function leverageReportFields(officialStats: OfficialStats) {
+  return {
+    leverageIndex: officialStats.leverage_index,
+    leverageProfile: officialStats.leverage_profile,
+    pressureGauge: pressureGaugeState(officialStats.leverage_profile),
+    leverageInsight: buildLeverageInsight(officialStats.leverage_profile),
   };
 }
 
@@ -293,8 +338,8 @@ function buildAnalyticsFallbackReport(
   );
 
   const adminRatio = round3(administrative / subjective);
-  const officialStats: OfficialStats =
-    officialStatsFromProfile(profile) ?? {
+  const officialStats: OfficialStats = {
+    ...(officialStatsFromProfile(profile) ?? {
       primary_archetype: classifyAdminRatio(adminRatio),
       admin_ratio: adminRatio,
       pressure_sensitive: pressureSensitive,
@@ -302,7 +347,9 @@ function buildAnalyticsFallbackReport(
       consistency_score: 6,
       sample_games: sampleGames,
       last_calculated: new Date().toISOString(),
-    };
+      ...DEFAULT_LEVERAGE_STATS,
+    }),
+  };
 
   return {
     officialId: profile.slug,
@@ -321,6 +368,7 @@ function buildAnalyticsFallbackReport(
     ),
     consistencyScore: officialStats.consistency_score,
     officialStats,
+    ...leverageReportFields(officialStats),
     styleProfile,
     pressureSensitive,
     pressureDeltaPct,
@@ -513,6 +561,7 @@ export function generateScoutingReport(
     archetypeBlurb: archetypeBlurbForStats(officialStats, perGameWhistles),
     consistencyScore: officialStats.consistency_score,
     officialStats,
+    ...leverageReportFields(officialStats),
     styleProfile,
     pressureSensitive,
     pressureDeltaPct:

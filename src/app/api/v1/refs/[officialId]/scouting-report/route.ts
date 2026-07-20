@@ -76,6 +76,7 @@ export async function GET(
       leagueId,
       generatedAt: report.generatedAt,
       archetype: report.archetype,
+      leverageIndex: report.leverageIndex,
       consistencyScore: report.consistencyScore,
     },
   });

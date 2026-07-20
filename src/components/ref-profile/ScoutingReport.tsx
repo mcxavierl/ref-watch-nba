@@ -1,5 +1,6 @@
 import { ClinicalCard } from "@/components/hub/ClinicalCard";
 import { ArchetypeCard } from "@/components/ref-profile/ArchetypeCard";
+import { PressureGauge } from "@/components/ref-profile/PressureGauge";
 import {
   generateScoutingReport,
   type GameScoutingMetadata,
@@ -51,6 +52,12 @@ export function ScoutingReport({
         blurb={report.archetypeBlurb}
         consistencyScore={report.consistencyScore}
         officialStats={report.officialStats}
+      />
+
+      <PressureGauge
+        state={report.pressureGauge}
+        leverageIndex={report.leverageIndex}
+        insight={report.leverageInsight}
       />
 
       <ClinicalCard
