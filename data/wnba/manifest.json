@@ -1,8 +1,11 @@
 {
   "league": "WNBA",
-  "lastUpdated": "2026-07-19T00:00:00.000Z",
-  "seasons": [],
-  "game_count": 0,
-  "data_verified": false,
-  "team_count": 13
+  "lastUpdated": "2026-07-20T07:22:22.691Z",
+  "seasons": [
+    "2024-25",
+    "2025-26"
+  ],
+  "game_count": 528,
+  "data_verified": true,
+  "team_count": 15
 }

@@ -136,7 +136,7 @@ export const LEAGUE_HERO_COPY: Record<
     pendingLead:
       "Games are scheduled but referees have not been assigned yet. Matchup edges and historical pace context stay live below.",
     offseasonLead:
-      "Official profiles and whistle tendencies load from verified game data.",
+      "Live slate, matchup pace context, and referee insights from ESPN game logs.",
     statLabels: {
       officials: "Refs indexed",
       games: "Games logged",

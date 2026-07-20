@@ -20,11 +20,12 @@ const LEAGUES = [
   { id: "nfl", prefix: "/nfl", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
   { id: "epl", prefix: "/epl", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
   { id: "laliga", prefix: "/laliga", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
+  { id: "wnba", prefix: "/wnba", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
   { id: "cbb", prefix: "/cbb", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
   { id: "cfb", prefix: "/cfb", hubs: ["rankings", "trends", "research", "insights", "matrix", "refs", "teams"] },
 ];
 
-const COMING_SOON = ["/wnba", "/wnba/rankings", "/mlb", "/mlb/rankings"];
+const COMING_SOON = ["/mlb", "/mlb/rankings"];
 
 const DYNAMIC = [
   "/refs/jacyn-goble-68",

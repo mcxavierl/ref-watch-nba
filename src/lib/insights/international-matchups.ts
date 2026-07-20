@@ -12,7 +12,7 @@ import {
   teamNationForLeague,
 } from "@/lib/insights/team-nation";
 import type { LeagueId } from "@/lib/leagues";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import { formatPct } from "@/lib/stats-utils";
 import type { RefProfile } from "@/lib/types";
 
@@ -105,7 +105,7 @@ export function scanInternationalMatchupOutliers(): InsightOutlierCandidate[] {
 
       const confederation = nationConfederation(top.refNation);
       candidates.push({
-        leagueId: leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number],
+        leagueId: leagueId as (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number],
         kind: "international-origin",
         significance: internationalSignificance(
           top.originDistance,

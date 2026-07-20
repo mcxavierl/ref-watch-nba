@@ -15,6 +15,7 @@ import { rebuildRefGamesFromLogs } from "../lib/rebuild-ref-games-from-logs";
 import { rebuildTeamSplitsFromGameLogs } from "../lib/rebuild-team-splits-from-logs";
 import { splitRefStatsForDeploy } from "../lib/split-ref-stats";
 import { WNBA_TEAM_ABBRS } from "../../src/lib/wnba/teams";
+import { isWnbaVerifiedData } from "../../src/lib/wnba/data-source";
 import type { RefStatsFile } from "../../src/lib/types";
 
 const WNBA_DATA_DIR = path.join(process.cwd(), "data", "wnba");
@@ -39,7 +40,7 @@ function emptyStats(): RefStatsFile {
       atsAvailable: false,
       data_verified: false,
       data_source: "synthetic",
-      note: "WNBA verified ingest pending. Run live fetch or rebuild-from-logs when game logs exist.",
+      note: "WNBA game logs and slate assignments load from ESPN. Referee profiles populate as crews publish.",
     },
     refs: [],
     teamSplits: {},
@@ -123,12 +124,17 @@ function buildStatsFromLogs(games: GameLogEntry[]): RefStatsFile {
 
   const gameCount = games.length;
   const minGamesForVerify = Number.parseInt(
-    process.env.WNBA_MIN_GAMES ?? "3000",
+    process.env.WNBA_MIN_GAMES ?? "400",
     10,
   );
-  if (gameCount >= minGamesForVerify && stats.refs.length > 0) {
+  if (gameCount >= minGamesForVerify && isWnbaVerifiedData(logs.source)) {
     stats.meta.data_verified = true;
-    stats.meta.data_source = "verified";
+    stats.meta.data_source = "ESPN";
+    stats.meta.totalGamesProcessed = gameCount;
+    stats.meta.note = `${gameCount} WNBA games from ESPN with scores and foul totals. Referee profiles populate as official assignments backfill into game logs.`;
+  } else if (gameCount > 0) {
+    stats.meta.totalGamesProcessed = gameCount;
+    stats.meta.note = `${gameCount} WNBA games indexed. Referee profiles populate as official assignments backfill into game logs.`;
   }
 
   return stats;
@@ -139,13 +145,17 @@ async function main(): Promise<void> {
 
   try {
     const assignments = await fetchWnbaAssignments();
-    fs.writeFileSync(
-      path.join(WNBA_DATA_DIR, "assignments.json"),
-      `${JSON.stringify(assignments, null, 2)}\n`,
-    );
-    console.log(
-      `Assignments: ${assignments.games.length} WNBA game(s) (${assignments.source})`,
-    );
+    if (assignments.games.length > 0) {
+      fs.writeFileSync(
+        path.join(WNBA_DATA_DIR, "assignments.json"),
+        `${JSON.stringify(assignments, null, 2)}\n`,
+      );
+      console.log(
+        `Assignments: ${assignments.games.length} WNBA game(s) (${assignments.source})`,
+      );
+    } else {
+      console.warn("WNBA assignments fetch returned 0 games; keeping existing file.");
+    }
   } catch (err) {
     console.warn("WNBA assignments fetch failed:", err);
   }

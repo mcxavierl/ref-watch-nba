@@ -10,11 +10,11 @@ import {
 } from "./generator";
 import { applyClinicalTone, isClinicalTone } from "./tone-filter";
 import { EVERGREEN_TOP_STORIES } from "./evergreen";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 
 describe("insight generator", () => {
-  it("scans verified live leagues including college when data exists", () => {
-    for (const leagueId of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
+  it("scans matrix analytics leagues and excludes WNBA until ref profiles ingest", () => {
+    for (const leagueId of PRO_MATRIX_ANALYTICS_LEAGUE_IDS) {
       assert.equal(isAllowedInsightLeague(leagueId), true);
     }
     assert.equal(isAllowedInsightLeague("wnba"), false);

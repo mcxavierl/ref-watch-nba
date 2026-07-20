@@ -3,7 +3,8 @@ import { NCAA_LIVE_LEAGUE_IDS } from "@/lib/ncaa-live-leagues.generated";
 import type { LeagueId } from "@/lib/leagues";
 
 /** Verified live leagues with full dashboard + insight pipeline coverage. */
-export const PRO_VERIFIED_LIVE_LEAGUE_IDS = [
+/** Pro leagues with full matrix, friction, and ref-profile analytics. */
+export const PRO_MATRIX_ANALYTICS_LEAGUE_IDS = [
   "nba",
   "nhl",
   "nfl",
@@ -11,10 +12,13 @@ export const PRO_VERIFIED_LIVE_LEAGUE_IDS = [
   "laliga",
 ] as const satisfies readonly LeagueId[];
 
-/** Pro leagues with live slate and assignments before ref-stats ingest is verified. */
-export const PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS = [
+export const PRO_VERIFIED_LIVE_LEAGUE_IDS = [
+  ...PRO_MATRIX_ANALYTICS_LEAGUE_IDS,
   "wnba",
 ] as const satisfies readonly LeagueId[];
+
+/** Pro leagues with live slate and assignments before ref-stats ingest is verified. */
+export const PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS = [] as const satisfies readonly LeagueId[];
 
 /** Pro leagues in overview chooser, scorecard, and catalog (excludes college). */
 export const PRO_ONLY_LIVE_LEAGUE_IDS = [
@@ -33,7 +37,7 @@ export const OVERVIEW_HUB_LEAGUE_IDS = [
 
 /** Leagues with matrix insight cards on the overview dashboard. */
 export const OVERVIEW_INSIGHT_LEAGUE_IDS = [
-  ...PRO_VERIFIED_LIVE_LEAGUE_IDS,
+  ...PRO_MATRIX_ANALYTICS_LEAGUE_IDS,
   ...LAUNCHED_NCAA_LEAGUE_IDS,
 ] as const satisfies readonly LeagueId[];
 

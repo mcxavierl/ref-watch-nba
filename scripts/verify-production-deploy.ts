@@ -54,6 +54,12 @@ const ROUTES: RouteCheck[] = [
     mustIncludeOne: ["Official A", "Compare officials", "ref-compare"],
   },
   {
+    path: "/wnba",
+    maxStatus: 299,
+    mustNotInclude: ["local only", "local preview", "1102", "Error 1102"],
+    mustIncludeOne: ["WNBA", "Upcoming", "matchup", "whistle"],
+  },
+  {
     path: "/cfb",
     maxStatus: 299,
     mustNotInclude: ["1102", "Error 1102", "Worker exceeded"],

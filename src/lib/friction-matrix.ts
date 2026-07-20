@@ -5,7 +5,7 @@ import {
   type RuntimeGameLogEntry,
 } from "@/lib/game-logs-preload";
 import type { LeagueId } from "@/lib/leagues";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import {
   coachForTeamSeason,
   FRICTION_MATRIX_LEAGUE_IDS,
@@ -84,7 +84,7 @@ export interface FrictionMatrixDataset {
 
 export const LWIS_HIGH_IMPACT_Z_THRESHOLD = 2;
 
-const LEAGUE_TO_DATA: Record<(typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number], DataLeague> = {
+const LEAGUE_TO_DATA: Record<(typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number], DataLeague> = {
   nba: "NBA",
   nhl: "NHL",
   nfl: "NFL",
@@ -531,7 +531,7 @@ function aggregateFrictionFindings(
   stats: RefStatsFile,
   allGames: RuntimeGameLogEntry[],
 ): FrictionGrudgeFinding[] {
-  const dataLeague = LEAGUE_TO_DATA[leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number]];
+  const dataLeague = LEAGUE_TO_DATA[leagueId as (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number]];
   const profiles = loadPersonnelProfiles(leagueId);
 
   const refBaselines = new Map<
@@ -638,7 +638,7 @@ export function computeFrictionMatrix(
   stats: RefStatsFile,
   gameLogs?: RuntimeGameLogEntry[] | null,
 ): FrictionGrudgeFinding[] {
-  if (!(PRO_VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
+  if (!(PRO_MATRIX_ANALYTICS_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
     return [];
   }
 
@@ -647,7 +647,7 @@ export function computeFrictionMatrix(
   const cached = cache.get(cacheKey);
   if (cached) return cached as FrictionGrudgeFinding[];
 
-  const dataLeague = LEAGUE_TO_DATA[leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number]];
+  const dataLeague = LEAGUE_TO_DATA[leagueId as (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number]];
   let allGames: RuntimeGameLogEntry[] | null =
     gameLogs ??
     getCachedGameLogs(dataLeague)?.games ??
@@ -675,7 +675,7 @@ export function filterHighImpactLwisOfficials(
   leagueId: LeagueId,
   scopedSeasons: string[],
 ): LwisOfficialOutlier[] {
-  if (!(PRO_VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
+  if (!(PRO_MATRIX_ANALYTICS_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId)) {
     return [];
   }
   return identifyHighImpactLwisOutliers(stats, leagueId, scopedSeasons);

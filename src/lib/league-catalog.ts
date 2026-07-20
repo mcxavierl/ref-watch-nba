@@ -57,7 +57,7 @@ export function catalogLeagueDisplayLabel(entry: CatalogLeagueEntry): string {
 export const LEAGUE_CATALOG: CatalogLeagueEntry[] = [
   { id: "nba", label: "NBA", region: "USA", sport: "basketball", status: "live", leagueId: "nba", href: "/nba", sort: 1 },
   { id: "cbb", label: "NCAA Basketball", region: "USA", sport: "basketball", status: "live", leagueId: "cbb", href: "/cbb", sort: 2 },
-  { id: "wnba", label: "WNBA", region: "USA", sport: "basketball", status: "live", href: "/wnba", sort: 3 },
+  { id: "wnba", label: "WNBA", region: "USA", sport: "basketball", status: "live", leagueId: "wnba", href: "/wnba", sort: 3 },
   { id: "nhl", label: "NHL", region: "North America", sport: "hockey", status: "live", leagueId: "nhl", href: "/nhl", sort: 10 },
   { id: "nfl", label: "NFL", region: "USA", sport: "football", status: "live", leagueId: "nfl", href: "/nfl", sort: 20 },
   { id: "cfb", label: "NCAA Football", region: "USA", sport: "football", status: "coming-soon", sort: 21 },

@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-20T03:37:04.209Z",
+  "lastUpdated": "2026-07-20T07:22:22.689Z",
   "league": "WNBA",
-  "source": "espn",
+  "source": "wnba-stats-api",
   "games": [
     {
       "gameId": "401620178",

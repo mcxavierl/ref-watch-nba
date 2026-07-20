@@ -110,7 +110,7 @@ const EMPTY_REF_STATS: RefStatsFile = (() => {
       data_verified: false,
       data_source: "synthetic",
       atsAvailable: false,
-      note: "WNBA verified ingest pending. No synthetic numbers in production.",
+      note: "WNBA game logs and slate assignments load from ESPN. Referee profiles populate as crews publish.",
     },
     refs: [],
     teamSplits: {},

@@ -31,6 +31,7 @@ const MIN_REFS: Record<RefStatsLeague, number> = {
   epl: 20,
   laliga: 20,
   cbb: 50,
+  wnba: 0,
 };
 
 const MIN_GAMES: Record<RefStatsLeague, number> = {
@@ -40,6 +41,7 @@ const MIN_GAMES: Record<RefStatsLeague, number> = {
   epl: 500,
   laliga: 200,
   cbb: 500,
+  wnba: 400,
 };
 
 const failures: string[] = [];

@@ -9,7 +9,7 @@ import {
 import { loadInsightsBundle } from "@/lib/insights/insights-query";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import type { LeagueId } from "@/lib/leagues";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 
 export const TEAM_PAGE_INSIGHT_LIMIT = 3;
 
@@ -72,7 +72,7 @@ function runtimeTeamInsightCards(
 
   const abbr = teamAbbr.toUpperCase();
   const outliers = scanLeagueOutliers(
-    leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number],
+    leagueId as (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number],
   )
     .filter((candidate) => candidate.teamAbbr?.toUpperCase() === abbr)
     .sort((a, b) => b.significance - a.significance);

@@ -1,5 +1,5 @@
 import { loadLeagueStats } from "@/lib/load-league-stats";
-import { PRO_VERIFIED_LIVE_LEAGUE_IDS } from "@/lib/league-verification";
+import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import { getTeamSplits as getEplTeamSplits } from "@/lib/epl/data";
 import { EPL_TEAMS, teamFullName as eplTeamFullName } from "@/lib/epl/teams";
 import { getTeamSplits as getLaligaTeamSplits } from "@/lib/laliga/data";
@@ -50,7 +50,7 @@ export type {
 } from "@/lib/insights/generator-core";
 
 const LEAGUE_SETUP: Record<
-  (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number],
+  (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number],
   LeagueGeneratorSetup
 > = {
   nba: {
@@ -114,7 +114,7 @@ function statsToSlim(stats: RefStatsFile): SlimLeagueStats {
 }
 
 export function scanLeagueOutliers(
-  leagueId: (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number],
+  leagueId: (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number],
 ): InsightOutlierCandidate[] {
   const setup = LEAGUE_SETUP[leagueId];
   const { stats } = loadLeagueStats(leagueId);
@@ -123,7 +123,7 @@ export function scanLeagueOutliers(
 
 export function scanAllProLeagueOutliers(): InsightOutlierCandidate[] {
   const all: InsightOutlierCandidate[] = [];
-  for (const leagueId of PRO_VERIFIED_LIVE_LEAGUE_IDS) {
+  for (const leagueId of PRO_MATRIX_ANALYTICS_LEAGUE_IDS) {
     all.push(...scanLeagueOutliers(leagueId));
   }
   return all.sort((a, b) => b.significance - a.significance);
@@ -150,7 +150,7 @@ export function generateOverviewInsightsPayload(): OverviewInsightsPayload {
 
 /** Pro-league scope guard for ingest + generator pipelines. */
 export function isAllowedInsightLeague(leagueId: LeagueId): boolean {
-  return (PRO_VERIFIED_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
+  return (PRO_MATRIX_ANALYTICS_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
 }
 
 export type TeamTopFinding = {
@@ -232,7 +232,7 @@ export function findTeamTopFinding(
 
   if (isAllowedInsightLeague(leagueId)) {
     const outliers = scanLeagueOutliers(
-      leagueId as (typeof PRO_VERIFIED_LIVE_LEAGUE_IDS)[number],
+      leagueId as (typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number],
     )
       .filter((candidate) => candidate.teamAbbr?.toUpperCase() === abbr)
       .sort((a, b) => b.significance - a.significance);
