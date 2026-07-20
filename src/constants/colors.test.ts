@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  consistencyIndexStateClass,
   consistencyStateClass,
   deltaStateClass,
   kpiToneStateClass,
@@ -21,6 +22,9 @@ describe("constants/colors", () => {
     assert.equal(consistencyStateClass(3), STATE_COLOR_CLASS.volatile);
     assert.equal(consistencyStateClass(8), STATE_COLOR_CLASS.stable);
     assert.equal(consistencyStateClass(6), STATE_COLOR_CLASS.neutral);
+    assert.equal(consistencyIndexStateClass(30), STATE_COLOR_CLASS.volatile);
+    assert.equal(consistencyIndexStateClass(80), STATE_COLOR_CLASS.stable);
+    assert.equal(consistencyIndexStateClass(55), STATE_COLOR_CLASS.neutral);
   });
 
   it("maps signed deltas to risk/stable classes", () => {

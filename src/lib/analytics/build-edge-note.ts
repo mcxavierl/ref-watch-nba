@@ -3,15 +3,26 @@ import type { LeveragePressureProfile, RefereeArchetypeId } from "@/lib/types";
 
 export type EdgeNoteInput = {
   consistencyScore: number;
+  consistencyIndex?: number | null;
   leverageProfile: LeveragePressureProfile;
   leverageIndex: number | null;
   archetype: RefereeArchetypeId;
 };
 
 export function buildEdgeNote(input: EdgeNoteInput): string {
-  const { consistencyScore, leverageProfile, leverageIndex, archetype } = input;
+  const { consistencyScore, consistencyIndex, leverageProfile, leverageIndex, archetype } =
+    input;
 
-  if (consistencyScore <= 4) {
+  const volatile =
+    consistencyIndex !== null && consistencyIndex !== undefined
+      ? consistencyIndex < 40
+      : consistencyScore <= 4;
+  const stable =
+    consistencyIndex !== null && consistencyIndex !== undefined
+      ? consistencyIndex >= 70
+      : consistencyScore >= 8;
+
+  if (volatile) {
     return "Volatile ref. Use caution on Over/Under bets.";
   }
 
@@ -23,7 +34,7 @@ export function buildEdgeNote(input: EdgeNoteInput): string {
     return "Swallows the whistle in tight finishes. Unders gain edge when this ref works close games.";
   }
 
-  if (consistencyScore >= 8 && leverageIndex !== null && Math.abs(leverageIndex) <= 0.1) {
+  if (stable && leverageIndex !== null && Math.abs(leverageIndex) <= 0.1) {
     return "Stable whistle profile. Totals track closer to market expectation.";
   }
 

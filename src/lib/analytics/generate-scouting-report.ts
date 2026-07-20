@@ -20,6 +20,10 @@ import {
   whistleCoefficientOfVariation,
   type ArchetypeGameInput,
 } from "@/lib/analytics/referee-archetypes";
+import {
+  consistencyClassificationDisplayLabel,
+  leagueWhistleStdDevFromGameTotals,
+} from "@/lib/analytics/consistency-variance";
 import { buildEdgeNote } from "@/lib/analytics/build-edge-note";
 import {
   meetsSampleSizeThreshold,
@@ -235,6 +239,16 @@ function toLeverageGameInput(game: RuntimeGameLogEntry) {
   };
 }
 
+function loadLeagueWhistleTotals(leagueId: LeagueId): number[] {
+  const dataLeague = DATA_LEAGUE_BY_ID[leagueId];
+  if (!dataLeague) return [];
+
+  const logs = loadRuntimeGameLogs(dataLeague);
+  if (!logs?.games?.length) return [];
+
+  return logs.games.map((game) => gameWhistleTotal(leagueId, game));
+}
+
 function resolveOfficialStats(
   leagueId: LeagueId,
   sampleGames: RuntimeGameLogEntry[],
@@ -248,10 +262,14 @@ function resolveOfficialStats(
     leagueId,
     sampleGames.map(toLeverageGameInput),
   );
+  const leagueWhistleStdDev = leagueWhistleStdDevFromGameTotals(
+    loadLeagueWhistleTotals(leagueId),
+  );
 
   const computed = computeRefereeArchetype(
     leagueId,
     sampleGames.map(toArchetypeGameInput),
+    { leagueWhistleStdDev },
   );
   if (computed) {
     return {
@@ -277,10 +295,26 @@ function resolveOfficialStats(
     pressure_delta_pct:
       pressureDeltaPct !== null ? round3(pressureDeltaPct) : null,
     consistency_score: 5,
+    consistency_index: null,
+    consistency_classification_label: "insufficient-sample",
+    whistle_std_dev: null,
+    league_whistle_std_dev: null,
     sample_games: sampleGames.length,
     last_calculated: new Date().toISOString(),
     ...DEFAULT_LEVERAGE_STATS,
     ...leverageFieldsFromResult(leverage),
+  };
+}
+
+function consistencyReportFields(officialStats: OfficialStats) {
+  return {
+    consistencyIndex: officialStats.consistency_index ?? null,
+    consistencyClassificationLabel:
+      officialStats.consistency_classification_label ?? "insufficient-sample",
+    consistencyClassificationDisplay: consistencyClassificationDisplayLabel(
+      (officialStats.consistency_classification_label as import("@/lib/analytics/consistency-variance").ConsistencyClassificationLabel) ??
+        "insufficient-sample",
+    ),
   };
 }
 
@@ -299,6 +333,7 @@ function leverageReportFields(officialStats: OfficialStats) {
       "Adjusted Leverage Sensitivity filters intentional-foul noise in the final two minutes of regulation.",
     edgeNote: buildEdgeNote({
       consistencyScore: officialStats.consistency_score,
+      consistencyIndex: officialStats.consistency_index ?? null,
       leverageProfile: officialStats.leverage_profile,
       leverageIndex,
       archetype: officialStats.primary_archetype,
@@ -386,6 +421,7 @@ function buildAnalyticsFallbackReport(
     ),
     consistencyScore: officialStats.consistency_score,
     officialStats,
+    ...consistencyReportFields(officialStats),
     ...leverageReportFields(officialStats),
     styleProfile,
     pressureSensitive,
@@ -579,6 +615,7 @@ export function generateScoutingReport(
     archetypeBlurb: archetypeBlurbForStats(officialStats, perGameWhistles),
     consistencyScore: officialStats.consistency_score,
     officialStats,
+    ...consistencyReportFields(officialStats),
     ...leverageReportFields(officialStats),
     styleProfile,
     pressureSensitive,

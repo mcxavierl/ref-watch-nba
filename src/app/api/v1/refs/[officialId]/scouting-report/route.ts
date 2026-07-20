@@ -72,6 +72,9 @@ export async function GET(
   const elite = {
     archetype: report.archetype,
     consistencyScore: report.consistencyScore,
+    consistencyIndex: report.consistencyIndex,
+    consistencyClassificationLabel: report.consistencyClassificationLabel,
+    consistencyClassificationDisplay: report.consistencyClassificationDisplay,
     leverageSensitivityIndex: report.leverageSensitivityIndex,
     edge_note: report.edgeNote,
   };

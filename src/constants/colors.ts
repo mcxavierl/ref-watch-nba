@@ -29,6 +29,13 @@ export function consistencyStateClass(score: number): StateColorClass {
   return STATE_COLOR_CLASS.neutral;
 }
 
+/** 0-100 consistency index where higher means more predictable whistle volume. */
+export function consistencyIndexStateClass(index: number): StateColorClass {
+  if (index < 40) return STATE_COLOR_CLASS.volatile;
+  if (index >= 70) return STATE_COLOR_CLASS.stable;
+  return STATE_COLOR_CLASS.neutral;
+}
+
 export function deltaStateClass(delta: number): StateColorClass {
   if (delta > 0) return STATE_COLOR_CLASS.stable;
   if (delta < 0) return STATE_COLOR_CLASS.risk;

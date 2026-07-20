@@ -62,7 +62,14 @@ export function SeasonTrendsTable({ rows }: { rows: SeasonTrendRow[] }) {
                 </td>
                 <td className="data-table-num whitespace-nowrap tabular-nums">{row.foulRatio.toFixed(2)}</td>
                 <td className="data-table-num whitespace-nowrap tabular-nums">{row.leverageSensitivity}</td>
-                <td className="data-table-num whitespace-nowrap tabular-nums">{row.consistency}/10</td>
+                <td className="data-table-num whitespace-nowrap tabular-nums">
+                  {row.consistencyIndex !== null
+                    ? `${row.consistencyIndex}/100`
+                    : `${row.consistency}/10`}
+                  <span className="block text-xs text-primary-muted">
+                    {row.consistencyClassification}
+                  </span>
+                </td>
               </tr>
             ),
           )}
