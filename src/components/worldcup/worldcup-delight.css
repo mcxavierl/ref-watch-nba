@@ -70,11 +70,38 @@ html[data-color="light"] .wc-data-capsule .wc-match-headline,
 html[data-color="light"] .wc-data-capsule h2,
 html[data-color="light"] .wc-data-capsule h3,
 html[data-color="light"] .wc-data-capsule .text-slate-50,
+html[data-theme="light"] .wc-data-capsule .wc-match-headline,
+html[data-theme="light"] .wc-data-capsule h2,
+html[data-theme="light"] .wc-data-capsule h3,
+html[data-theme="light"] .wc-data-capsule .text-slate-50,
 html[data-color="dark"] .wc-data-capsule .wc-match-headline,
 html[data-color="dark"] .wc-data-capsule h2,
 html[data-color="dark"] .wc-data-capsule h3,
-html[data-color="dark"] .wc-data-capsule .text-slate-50 {
+html[data-color="dark"] .wc-data-capsule .text-slate-50,
+html[data-theme="dark"] .wc-data-capsule .wc-match-headline,
+html[data-theme="dark"] .wc-data-capsule h2,
+html[data-theme="dark"] .wc-data-capsule h3,
+html[data-theme="dark"] .wc-data-capsule .text-slate-50 {
   color: var(--wc-capsule-ink);
+}
+
+/* Beat light-mode global heading ink on always-dark capsules */
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule h2,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule h2,
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule .wc-match-headline,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule .wc-match-headline,
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule--referee h3,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule--referee h3,
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule .text-slate-50,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule .text-slate-50 {
+  color: var(--wc-capsule-ink);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule .text-slate-400,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule .text-slate-400,
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule h3.text-slate-400,
+html[data-theme="light"]:not([data-contrast="high"]) .wc-data-capsule h3.text-slate-400 {
+  color: var(--wc-capsule-ink-muted);
 }
 
 .wc-data-capsule--referee h3 {

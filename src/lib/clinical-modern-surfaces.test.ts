@@ -141,8 +141,8 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /wc-data-grid--bento/);
     assert.match(css, /wc-flag-avatar/);
     assert.match(css, /--wc-capsule-ink/);
-    assert.match(css, /html\[data-color="light"\] .wc-data-capsule h3/);
-    assert.match(css, /html\[data-color="dark"\] .wc-data-capsule h3/);
+    assert.match(css, /html\[data-color="light"\]:not\(\[data-contrast="high"\]\) .wc-data-capsule h2/);
+    assert.match(css, /html\[data-color="light"\]:not\(\[data-contrast="high"\]\) .wc-data-capsule .text-slate-400/);
     assert.doesNotMatch(css, /wc-data-capsule__pills/);
     assert.doesNotMatch(css, /bfa86a/i);
     assert.doesNotMatch(css, /prestige/i);
