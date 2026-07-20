@@ -1,6 +1,6 @@
 # CI and artifact contract audit
 
-Generated: 2026-07-20T04:48:56.300Z
+Generated: 2026-07-20T05:10:42.665Z
 
 ## Pre-merge checklist (mirrors GitHub validate)
 
@@ -28,8 +28,9 @@ Or step-by-step:
 14. **Clinical card consistency** (`npm run audit:card-consistency`) - CI step: Clinical card consistency audit
 15. **Metric semantics** (`npm run audit:metric-semantics`) - CI step: Metric semantics audit
 16. **Em dash copy** (`npm run check:no-em-dashes`) - CI step: Em dash copy audit
-17. **Unit tests** (`npm run test`) - CI step: Unit tests
-18. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
+17. **Terminal integrity** (`npm run audit:terminal-integrity`) - CI step: Terminal integrity audit
+18. **Unit tests** (`npm run test`) - CI step: Unit tests
+19. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
 
 When overview snapshot sources change, also run:
 

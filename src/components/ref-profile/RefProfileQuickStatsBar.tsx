@@ -46,9 +46,9 @@ export function RefProfileQuickStatsBar({
       {items.map((item) => (
         <div key={String(item.label)} className="ref-profile-quick-stat">
           <span className="ref-profile-quick-stat-label">{item.label}</span>
-          <span className="ref-profile-quick-stat-value tabular-nums">{item.value}</span>
+          <span className="ref-profile-quick-stat-value text-right tabular-nums">{item.value}</span>
           {item.detail ? (
-            <span className="ref-profile-quick-stat-detail tabular-nums">{item.detail}</span>
+            <span className="ref-profile-quick-stat-detail text-right tabular-nums">{item.detail}</span>
           ) : null}
         </div>
       ))}
@@ -103,9 +103,9 @@ export function RefProfileSecondaryStats({
       {items.map((item) => (
         <div key={String(item.label)} className="ref-profile-quick-stat">
           <span className="ref-profile-quick-stat-label">{item.label}</span>
-          <span className="ref-profile-quick-stat-value tabular-nums">{item.value}</span>
+          <span className="ref-profile-quick-stat-value text-right tabular-nums">{item.value}</span>
           {item.detail ? (
-            <span className="ref-profile-quick-stat-detail tabular-nums">{item.detail}</span>
+            <span className="ref-profile-quick-stat-detail text-right tabular-nums">{item.detail}</span>
           ) : null}
         </div>
       ))}

@@ -193,4 +193,37 @@ describe("design audit guardrails", () => {
     assert.match(readSrc(".github/workflows/ci.yml"), /Em dash copy audit/);
     assert.match(readSrc(".cursor/rules/no-em-dashes.mdc"), /Never use em dashes/);
   });
+
+  it("terminal integrity CSS is loaded for ref-profile and matrix surfaces", () => {
+    const globals = readSrc("src/app/globals.css");
+    const integrity = readSrc("src/components/terminal-integrity.css");
+    assert.match(globals, /terminal-integrity\.css/);
+    assert.match(integrity, /\.ref-profile-trend-rate-pill/);
+    assert.match(integrity, /\.team-ref-matrix-head > \.team-ref-matrix-head-stat/);
+    assert.match(integrity, /var\(--space-2\)/);
+  });
+
+  it("matrix and ref-profile components enforce pill padding and tabular alignment", () => {
+    const matrixRow = readSrc("src/components/analytics/MatrixRow.tsx");
+    const matrixView = readSrc("src/components/analytics/MatrixView.tsx");
+    const teamTrends = readSrc("src/components/ref-profile/RefProfileTeamTrends.tsx");
+    const trendCards = readSrc("src/components/ref-profile/RefProfileTrendCards.tsx");
+
+    assert.match(matrixRow, /tabular-nums text-right/);
+    assert.match(matrixRow, /shrink-0/);
+    assert.match(matrixRow, /truncate/);
+    assert.match(matrixView, /whitespace-nowrap px-3/);
+    assert.match(teamTrends, /whitespace-nowrap px-3/);
+    assert.match(teamTrends, /shrink-0/);
+    assert.match(trendCards, /whitespace-nowrap px-3/);
+  });
+
+  it("terminal integrity audit is wired for CI", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:terminal-integrity"] ?? "", /audit-terminal-integrity/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:terminal-integrity/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Terminal integrity audit/);
+  });
 });

@@ -1,0 +1,78 @@
+/**
+ * Terminal Integrity - spacing, pill alignment, tabular data columns, and
+ * responsive layout guardrails for ref-profile and matrix surfaces.
+ */
+
+/* ── Matrix table alignment ───────────────────────────────────────────── */
+
+.matrix-table {
+  min-width: 0;
+}
+
+.matrix-table-head {
+  min-width: 0;
+}
+
+.team-ref-matrix-head > .team-ref-matrix-head-stat,
+.team-ref-matrix-stat {
+  text-align: right;
+}
+
+.team-ref-matrix-ref-link {
+  min-width: 0;
+}
+
+.team-ref-matrix-ref-name {
+  min-width: 0;
+}
+
+/* ── Ref profile pill alignment overrides ─────────────────────────────── */
+
+.ref-profile-trend-rate-pill {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  white-space: nowrap;
+}
+
+.ref-profile-team-rate-badge {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.ref-profile-team-trend-logo {
+  flex-shrink: 0;
+}
+
+.ref-profile-trend-rate-row {
+  gap: var(--space-2);
+}
+
+.ref-profile-quick-stat-value,
+.ref-profile-quick-stat-detail {
+  text-align: right;
+}
+
+.team-ref-filter-bar.analytics-matrix-filter {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0.1875rem;
+}
+
+.team-ref-filter-btn {
+  border-radius: 999px;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+}
+
+/* Dev layout audit - toggle with html[data-pill-debug="true"] */
+html[data-pill-debug="true"] .matrix-table-head,
+html[data-pill-debug="true"] .team-ref-matrix-row-main,
+html[data-pill-debug="true"] .ref-profile-trend-rate-pill,
+html[data-pill-debug="true"] .ref-profile-team-rate-badge {
+  outline: 1px dashed color-mix(in srgb, var(--accent-brand, #d4a017) 55%, transparent);
+  outline-offset: 1px;
+}

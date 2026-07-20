@@ -29,7 +29,7 @@ export function MatrixFilterBar({
         <button
           key={mode}
           type="button"
-          className={`team-ref-filter-btn${value === mode ? " team-ref-filter-btn--active" : ""}`}
+          className={`team-ref-filter-btn whitespace-nowrap px-3${value === mode ? " team-ref-filter-btn--active" : ""}`}
           aria-pressed={value === mode}
           onClick={() => onChange(mode)}
         >

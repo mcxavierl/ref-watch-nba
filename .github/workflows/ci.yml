@@ -88,6 +88,9 @@ jobs:
       - name: Em dash copy audit
         run: npm run check:no-em-dashes
 
+      - name: Terminal integrity audit
+        run: npm run audit:terminal-integrity
+
       - name: Unit tests
         run: npm run test
 

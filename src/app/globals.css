@@ -4,6 +4,7 @@
 @import "../styles/clinical-doc-tokens.css";
 @import "../styles/kpi-data-pill.css";
 @import "../styles/pill-constraints.css";
+@import "../components/terminal-integrity.css";
 @import "../styles/season-highlights-delight.css";
 
 @custom-variant dark (&:where([data-color="dark"], [data-color="dark"] *));
