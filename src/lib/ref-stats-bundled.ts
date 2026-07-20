@@ -6,8 +6,9 @@ import eplCore from "../../data/epl/ref-stats-core.json";
 import laligaCore from "../../data/laliga/ref-stats-core.json";
 
 import wnbaCore from "../../data/wnba/ref-stats-core.json";
+import cbbCore from "../../data/cbb/ref-stats-core.json";
 
-type BundledLeague = "nba" | "nfl" | "nhl" | "epl" | "laliga" | "wnba";
+type BundledLeague = "nba" | "nfl" | "nhl" | "epl" | "laliga" | "wnba" | "cbb";
 
 const BUNDLED_CORE: Record<BundledLeague, RefStatsFile> = {
   nba: nbaCore as RefStatsFile,
@@ -16,6 +17,7 @@ const BUNDLED_CORE: Record<BundledLeague, RefStatsFile> = {
   epl: eplCore as RefStatsFile,
   laliga: laligaCore as RefStatsFile,
   wnba: wnbaCore as RefStatsFile,
+  cbb: cbbCore as unknown as RefStatsFile,
 };
 
 function loadBundledCore(league: BundledLeague): RefStatsFile | null {
