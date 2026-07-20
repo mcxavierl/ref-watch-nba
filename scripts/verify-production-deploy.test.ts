@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
-import { isWnbaOfficialsPending } from "./lib/volume-regression";
+import { validateRefStatsAsset } from "./lib/verify-ref-stats-asset";
 import type { RefStatsFile } from "../src/lib/types";
 
 describe("production deploy verify guardrails", () => {
@@ -22,12 +22,15 @@ describe("production deploy verify guardrails", () => {
       refs: [],
       teamSplits: {},
     };
-    assert.equal(isWnbaOfficialsPending(stats), true);
+    assert.deepEqual(
+      validateRefStatsAsset("/data/wnba/ref-stats.json", stats),
+      [],
+    );
   });
 
-  it("verify-production-deploy.ts exempts WNBA officials-pending payloads", () => {
+  it("verify-production-deploy.ts uses shared ref-stats asset validator", () => {
     const source = readFileSync("scripts/verify-production-deploy.ts", "utf8");
-    assert.match(source, /isWnbaOfficialsPending/);
-    assert.match(source, /wnbaOfficialsPending/);
+    assert.match(source, /validateRefStatsAsset/);
+    assert.match(source, /isRefStatsOfficialsPending/);
   });
 });

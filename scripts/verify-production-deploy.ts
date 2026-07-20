@@ -8,7 +8,10 @@ import {
   PRO_VERIFIED_LIVE_LEAGUE_IDS,
 } from "../src/lib/league-verification";
 import { isCfbSimulatedData } from "../src/lib/cfb/data-source";
-import { isWnbaOfficialsPending } from "./lib/volume-regression";
+import {
+  isRefStatsOfficialsPending,
+  validateRefStatsAsset,
+} from "./lib/verify-ref-stats-asset";
 import type { RefStatsFile } from "../src/lib/types";
 
 const ORIGIN = (process.env.REFWATCH_DEPLOY_URL ?? "https://refwatch.ca").replace(
@@ -181,15 +184,12 @@ async function main(): Promise<void> {
       const data = (await res.json()) as RefStatsFile;
       const refs = data.refs?.length ?? 0;
       const games = data.meta?.totalGamesProcessed ?? 0;
-      const wnbaOfficialsPending =
-        assetPath === "/data/wnba/ref-stats.json" && isWnbaOfficialsPending(data);
-      if (refs === 0 && !wnbaOfficialsPending) {
-        fail(`${assetPath}: refs array is empty`);
+      const officialsPending = isRefStatsOfficialsPending(assetPath, data);
+      for (const msg of validateRefStatsAsset(assetPath, data)) {
+        fail(msg);
       }
-      if (games === 0) fail(`${assetPath}: totalGamesProcessed is 0`);
-      if (!data.meta?.data_verified) fail(`${assetPath}: data_verified is false`);
       console.log(
-        `  ✓ ${assetPath} ${wnbaOfficialsPending ? `officials pending, games=${games}` : `refs=${refs} games=${games}`}`,
+        `  ✓ ${assetPath} ${officialsPending ? `officials pending, games=${games}` : `refs=${refs} games=${games}`}`,
       );
     } catch (err) {
       fail(`${assetPath}: ${err instanceof Error ? err.message : err}`);
