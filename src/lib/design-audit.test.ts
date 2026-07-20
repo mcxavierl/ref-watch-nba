@@ -141,4 +141,15 @@ describe("design audit guardrails", () => {
     assert.match(readSrc("src/components/hub/ClinicalCard.tsx"), /border-subtle/);
     assert.doesNotMatch(readSrc("src/components/hub/ClinicalCard.tsx"), /border-\[#/);
   });
+
+  it("design token parity audit guards clinical, accent, and wc tokens", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:design-tokens"] ?? "", /audit-design-tokens/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:design-tokens/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Design token parity audit/);
+    assert.match(readSrc("src/app/globals.css"), /--wc-gold:\s*var\(--wc-research-accent\)/);
+    assert.match(readSrc("figma/design-tokens.json"), /"semantic"/);
+  });
 });

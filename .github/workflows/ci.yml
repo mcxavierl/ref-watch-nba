@@ -76,6 +76,9 @@ jobs:
       - name: Color drift audit
         run: npm run audit:color-drift
 
+      - name: Design token parity audit
+        run: npm run audit:design-tokens
+
       - name: Unit tests
         run: npm run test
 

@@ -26,8 +26,9 @@ Do not merge until this passes locally **and** the GitHub **validate** check is 
 | 10 | `npm run build:next` | Next.js production build |
 | 11 | `npm run audit:theme-matrix` | Theme matrix contrast audit |
 | 12 | `npm run audit:color-drift` | Color drift audit |
-| 13 | `npm run test` | Unit tests |
-| 14 | `npm run honesty-audit` | Honesty audit |
+| 13 | `npm run audit:design-tokens` | Design token parity audit |
+| 14 | `npm run test` | Unit tests |
+| 15 | `npm run honesty-audit` | Honesty audit |
 
 ## When overview snapshot sources change
 
@@ -50,6 +51,7 @@ npm run audit:card-consistency
 npm run audit:metric-semantics
 npm run audit:theme-matrix
 npm run audit:color-drift
+npm run audit:design-tokens
 npm run audit:ci-artifact-contract
 npm run check:no-em-dashes
 ```

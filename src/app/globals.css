@@ -71,6 +71,7 @@
     #9a8a55 100%
   );
   --wc-research-accent: #bfa86a;
+  --wc-gold: var(--wc-research-accent);
   --wc-research-accent-muted: color-mix(in srgb, var(--wc-research-accent) 22%, transparent);
   --wc-research-surface: color-mix(in srgb, var(--wc-research-accent) 8%, var(--bg-surface-1));
 
