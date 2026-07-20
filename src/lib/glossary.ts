@@ -10,6 +10,7 @@ export type GlossaryId =
   | "whistle-premium"
   | "line-gap"
   | "foul-edge"
+  | "foul-ratio"
   | "grudge-match"
   | "home-bias"
   | "crew-reunion"
@@ -88,6 +89,10 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   "foul-edge": {
     label: "Foul edge",
     text: "Opponent whistle volume minus team volume per game. Positive means your team is whistled less (or the opponent more), a favorable minors/flags edge.",
+  },
+  "foul-ratio": {
+    label: "Ratio",
+    text: "Ratio of administrative fouls (e.g. delay of game) to subjective calls (e.g. holding). Higher values indicate more pedantic whistle patterns.",
   },
   "grudge-match": {
     label: "Crew history spotlight",

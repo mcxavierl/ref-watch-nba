@@ -32,7 +32,54 @@ export type MatrixRowData = {
   whistleDiff: string;
   whistleTone: "positive" | "negative" | "neutral";
   refProfileLink: string;
+  /** Raw games in sample (for foul-ratio gates). */
+  games?: number;
+  subjectiveFouls?: number | null;
+  adminFouls?: number | null;
+  /** Admin / subjective; null when sample is below significance gate. */
+  foulRatio?: number | null;
 };
+
+export type MatrixTableSort =
+  | "default"
+  | "foulRatio-desc"
+  | "foulRatio-asc";
+
+export const MATRIX_FOUL_RATIO_MIN_GAMES = 30;
+
+export const MATRIX_FOUL_RATIO_TOOLTIP =
+  "Ratio of administrative fouls (e.g. delay of game) to subjective calls (e.g. holding). Higher values indicate more pedantic whistle patterns.";
+
+/** Format admin:subjective ratio for display. */
+export function formatMatrixFoulRatio(ratio: number | null | undefined): string {
+  if (ratio == null || !Number.isFinite(ratio)) return "n/a";
+  return ratio.toFixed(2);
+}
+
+export function sortMatrixTableRows(
+  rows: MatrixRowData[],
+  sort: MatrixTableSort,
+): MatrixRowData[] {
+  if (sort === "default") return rows;
+  const sorted = [...rows];
+  sorted.sort((a, b) => {
+    const aRatio = a.foulRatio ?? -1;
+    const bRatio = b.foulRatio ?? -1;
+    if (aRatio < 0 && bRatio < 0) return 0;
+    if (aRatio < 0) return 1;
+    if (bRatio < 0) return -1;
+    return sort === "foulRatio-desc" ? bRatio - aRatio : aRatio - bRatio;
+  });
+  return sorted;
+}
+
+export function matrixRowHasFoulMetrics(row: MatrixRowData): boolean {
+  return (
+    row.subjectiveFouls != null ||
+    row.adminFouls != null ||
+    row.foulRatio != null
+  );
+}
 
 export function leagueMatrixFilterLabel(mode: LeagueMatrixFilter): string {
   switch (mode) {

@@ -119,4 +119,36 @@ describe("design audit guardrails", () => {
     assert.match(gsni, /<Pill variant="category"/);
     assert.match(readSrc("src/components/ConfidenceTierBadge.tsx"), /pill-constrain-text/);
   });
+
+  it("terminal integrity CSS is loaded for ref-profile and matrix surfaces", () => {
+    const globals = readSrc("src/app/globals.css");
+    const integrity = readSrc("src/components/terminal-integrity.css");
+    assert.match(globals, /terminal-integrity\.css/);
+    assert.match(integrity, /\.foul-breakdown-head/);
+    assert.match(integrity, /\.matrix-table-head--fouls/);
+    assert.match(integrity, /var\(--space-2\)/);
+    assert.match(integrity, /var\(--space-4\)/);
+  });
+
+  it("matrix and foul components enforce pill padding and tabular alignment", () => {
+    const matrixRow = readSrc("src/components/analytics/MatrixRow.tsx");
+    const matrixTable = readSrc("src/components/Matrix/MatrixTable.tsx");
+    const foulToggle = readSrc("src/components/ref-profile/FoulViewToggle.tsx");
+    const foulBreakdown = readSrc("src/components/ref-profile/FoulBreakdown.tsx");
+    const teamTrends = readSrc("src/components/ref-profile/RefProfileTeamTrends.tsx");
+
+    assert.match(matrixRow, /tabular-nums text-right/);
+    assert.match(matrixRow, /shrink-0/);
+    assert.match(matrixRow, /truncate/);
+    assert.match(matrixTable, /text-right tabular-nums/);
+    assert.match(foulToggle, /whitespace-nowrap px-3/);
+    assert.match(foulBreakdown, /whitespace-nowrap px-3/);
+    assert.match(teamTrends, /whitespace-nowrap px-3/);
+    assert.match(teamTrends, /shrink-0/);
+  });
+
+  it("matrix filter bar uses px-3 whitespace-nowrap pills", () => {
+    const matrixView = readSrc("src/components/analytics/MatrixView.tsx");
+    assert.match(matrixView, /whitespace-nowrap px-3/);
+  });
 });
