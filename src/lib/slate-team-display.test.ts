@@ -20,6 +20,20 @@ describe("slate-team-display", () => {
     assert.match(team.logoUrl ?? "", /\/lv\.png$/);
   });
 
+  it("resolves WNBA city names to canonical abbreviations and logos", () => {
+    const vegas = resolveSlateTeam("wnba", "Las Vegas");
+    assert.equal(vegas.abbr, "LVA");
+    assert.match(vegas.logoUrl ?? "", /\/lv\.png$/);
+
+    const toronto = resolveSlateTeam("wnba", "Toronto");
+    assert.equal(toronto.abbr, "TOR");
+    assert.match(toronto.logoUrl ?? "", /\/tor\.png$/);
+
+    const goldenState = resolveSlateTeam("wnba", "Golden State");
+    assert.equal(goldenState.abbr, "GSV");
+    assert.match(goldenState.logoUrl ?? "", /\/gs\.png$/);
+  });
+
   it("formats slate dates consistently", () => {
     assert.equal(formatSlateDateLabel("2026-07-18"), "Jul 18");
     assert.equal(formatSlateDateLabel(undefined), null);

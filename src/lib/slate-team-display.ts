@@ -6,8 +6,11 @@ import type { LeagueId } from "@/lib/leagues";
 import { getTeam as getNflTeam } from "@/lib/nfl/teams";
 import { getTeam as getNhlTeam } from "@/lib/nhl/teams";
 import { getTeam as getNbaTeam } from "@/lib/teams";
-import { normalizeWnbaAbbr } from "@/lib/wnba/abbr";
-import { getTeam as getWnbaTeam, teamLogoUrl as wnbaTeamLogoUrl } from "@/lib/wnba/teams";
+import {
+  getTeam as getWnbaTeam,
+  resolveWnbaTeamAbbr,
+  teamLogoUrl as wnbaTeamLogoUrl,
+} from "@/lib/wnba/teams";
 
 export type SlateTeamLike = {
   abbr: string;
@@ -35,7 +38,7 @@ export function slateTeamLogoSport(leagueId: LeagueId): SlateTeamLogoSport {
 export function resolveSlateTeam(leagueId: LeagueId, abbr: string): SlateTeamLike {
   const key = abbr.toUpperCase();
   if (leagueId === "wnba") {
-    const canonical = normalizeWnbaAbbr(key);
+    const canonical = resolveWnbaTeamAbbr(abbr);
     const team = getWnbaTeam(canonical);
     if (team) {
       return {

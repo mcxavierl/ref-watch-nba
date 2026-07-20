@@ -52,7 +52,14 @@ export function teamWithArticle(team: WnbaTeam): string {
   return `the ${team.name}`;
 }
 
-import { wnbaLogoAbbr } from "@/lib/wnba/abbr";
+import { normalizeWnbaAbbr, wnbaLogoAbbr } from "@/lib/wnba/abbr";
+
+/** Resolve official city names, nicknames, or ESPN keys to canonical 3-letter abbrs. */
+export function resolveWnbaTeamAbbr(team: string): string {
+  const matched = matchTeamString(team);
+  if (matched) return matched.abbr;
+  return normalizeWnbaAbbr(team.trim().toUpperCase());
+}
 
 export function teamLogoUrl(abbr: string): string {
   return `https://a.espncdn.com/i/teamlogos/wnba/500/${wnbaLogoAbbr(abbr)}.png`;
