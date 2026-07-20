@@ -23,6 +23,7 @@ import { refProfileDatasetJsonLd } from "@/lib/syndication";
 import { entityNotFoundMetadata, refProfileBreadcrumbJsonLd, refProfileMetadata } from "@/lib/seo";
 import { userFacingDataNote } from "@/lib/user-language";
 import { computeRefCloseGameMetrics } from "@/lib/close-game";
+import { computeRefGsniMetrics } from "@/lib/ref-gsni";
 import { computeProfileSignals } from "@/lib/profile-signals";
 
 export function generateStaticParams() {
@@ -89,6 +90,12 @@ export default async function NhlRefProfilePage({
     stats.meta,
     "NHL",
   );
+  const gsniMetrics = computeRefGsniMetrics(
+    profile.slug,
+    stats.meta,
+    "NHL",
+    profile,
+  );
 
   return (
     <div className="page-shell">
@@ -146,6 +153,7 @@ export default async function NhlRefProfilePage({
             qualified={qualified}
             closeGameMetrics={closeGameMetrics}
             closeGameLeague="NHL"
+            gsniMetrics={gsniMetrics}
             showBettingProfile={Boolean(profile.bettingStats)}
             statGridLabels={{
               foulLabel: "PIM per game",

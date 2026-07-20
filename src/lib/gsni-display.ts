@@ -254,21 +254,38 @@ const GSNI_GAP_CLOSE_POINTS = 5;
 const GSNI_CLOCK_LATE_MINUTES = 5;
 
 export function gsniMinHighLeverageMinutesForLeague(
-  leagueId: "nfl" | "nba",
+  leagueId: "nfl" | "nba" | "nhl",
 ): number {
   return leagueId === "nfl"
     ? GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL
     : GSNI_MIN_HIGH_LEVERAGE_MINUTES;
 }
 
-/** Plain-language definition of high-leverage game states for the research page. */
-export function gsniHighLeverageStatesCopy(leagueId: "nfl" | "nba"): string {
-  const gate = gsniMinHighLeverageMinutesForLeague(leagueId);
-  const eventNoun = leagueId === "nfl" ? "penalty" : "foul";
-  return `High-leverage states are close, late-game minutes: score within ${GSNI_GAP_CLOSE_POINTS} points and under ${GSNI_CLOCK_LATE_MINUTES}:00 on the clock (overtime at full weight). We bucket plays by score gap and time, then compare each official's ${eventNoun} rate to the league in the same buckets. ${gate}+ high-leverage minutes are required before we publish an index score.`;
+function gsniScoreUnitLabel(leagueId: "nfl" | "nba" | "nhl"): string {
+  return leagueId === "nhl" ? "goals" : "points";
 }
 
-export function gsniIndexScoreExplainer(leagueId: "nfl" | "nba"): string {
-  const eventNoun = leagueId === "nfl" ? "penalties" : "fouls";
-  return `Index score 0 is league average in those states. Negative means more ${eventNoun} than peers; positive means fewer. ${GSNI_SCALE_LEGEND}`;
+function gsniEventNoun(leagueId: "nfl" | "nba" | "nhl"): string {
+  if (leagueId === "nfl") return "penalty";
+  if (leagueId === "nhl") return "minor penalty";
+  return "foul";
+}
+
+function gsniEventNounPlural(leagueId: "nfl" | "nba" | "nhl"): string {
+  if (leagueId === "nfl") return "penalties";
+  if (leagueId === "nhl") return "minor penalties";
+  return "fouls";
+}
+
+/** Plain-language definition of high-leverage game states for the research page. */
+export function gsniHighLeverageStatesCopy(leagueId: "nfl" | "nba" | "nhl"): string {
+  const gate = gsniMinHighLeverageMinutesForLeague(leagueId);
+  const scoreUnit = gsniScoreUnitLabel(leagueId);
+  const eventNoun = gsniEventNoun(leagueId);
+  return `High-leverage states are close, late-game minutes: score within ${GSNI_GAP_CLOSE_POINTS} ${scoreUnit} and under ${GSNI_CLOCK_LATE_MINUTES}:00 on the clock (overtime at full weight). We bucket plays by score gap and time, then compare each official's ${eventNoun} rate to the league in the same buckets. ${gate}+ high-leverage minutes are required before we publish an index score.`;
+}
+
+export function gsniIndexScoreExplainer(leagueId: "nfl" | "nba" | "nhl"): string {
+  const eventNounPlural = gsniEventNounPlural(leagueId);
+  return `Index score 0 is league average in those states. Negative means more ${eventNounPlural} than peers; positive means fewer. ${GSNI_SCALE_LEGEND}`;
 }

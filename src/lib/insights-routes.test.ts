@@ -33,6 +33,7 @@ test("insightsViewHref maps tabs to unified research routes", () => {
   assert.equal(insightsViewHref("nfl", "findings"), "/nfl/research/findings");
   assert.equal(insightsViewHref("nfl", "game-state"), "/nfl/research/game-state");
   assert.equal(insightsViewHref("nba", "game-state"), "/nba/research/game-state");
+  assert.equal(insightsViewHref("nhl", "game-state"), "/nhl/research/game-state");
 });
 
 test("insightsViewFromPathname resolves active tab from URL", () => {
@@ -68,12 +69,11 @@ test("research view pages use research-route-page factory", () => {
   }
 });
 
-test("game-state is manifest-gated for NFL and NBA only", () => {
-  const gsniLeagues: InsightsLeagueId[] = ["nfl", "nba"];
+test("game-state is manifest-gated for NFL, NBA, and NHL", () => {
+  const gsniLeagues: InsightsLeagueId[] = ["nfl", "nba", "nhl"];
   for (const league of gsniLeagues) {
     assert.equal(leagueHasResearchView(league, "game-state"), true);
   }
-  assert.equal(leagueHasResearchView("nhl", "game-state"), false);
   assert.equal(leagueHasResearchView("epl", "game-state"), false);
 });
 

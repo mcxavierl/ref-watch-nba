@@ -13,10 +13,10 @@ import { gsniResearchConfigForLeague } from "../src/lib/gsni-research";
 import type { RefProfile } from "../src/lib/types";
 
 const ROOT = process.cwd();
-const GSNI_LEAGUES: InsightsLeagueId[] = ["nfl", "nba"];
+const GSNI_LEAGUES: InsightsLeagueId[] = ["nfl", "nba", "nhl"];
 
-function dataLeagueForManifest(leagueId: InsightsLeagueId): "NBA" | "NFL" {
-  return leagueId.toUpperCase() as "NBA" | "NFL";
+function dataLeagueForManifest(leagueId: InsightsLeagueId): "NBA" | "NFL" | "NHL" {
+  return leagueId.toUpperCase() as "NBA" | "NFL" | "NHL";
 }
 
 function statsPathForLeague(leagueId: InsightsLeagueId): string {

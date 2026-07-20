@@ -70,6 +70,11 @@ const GSNI_LEAGUE_CONFIG: Partial<Record<InsightsLeagueId, GsniLeagueResearchCon
     basePath: "/nba",
     minHighLeverageMinutes: GSNI_MIN_HIGH_LEVERAGE_MINUTES,
   },
+  nhl: {
+    leagueId: "nhl",
+    basePath: "/nhl",
+    minHighLeverageMinutes: GSNI_MIN_HIGH_LEVERAGE_MINUTES,
+  },
 };
 
 function round1(value: number): number {

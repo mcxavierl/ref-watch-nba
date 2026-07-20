@@ -25,7 +25,7 @@ import type {
   SampleGateStatus,
 } from "@/lib/types";
 
-const GSNI_DATA_LEAGUES: DataLeague[] = ["NFL", "NBA"];
+const GSNI_DATA_LEAGUES: DataLeague[] = ["NFL", "NBA", "NHL"];
 
 function gsniGateForLeague(league: DataLeague): number {
   if (league === "NFL") return GSNI_MIN_HIGH_LEVERAGE_MINUTES_NFL;

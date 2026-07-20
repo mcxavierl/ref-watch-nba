@@ -499,6 +499,13 @@ const NBA_PERIOD_MID_SECONDS: Record<number, number> = {
   4: 360,
 };
 
+/** Late-period clock seconds remaining for NHL (20-minute periods, 5:00 left in period). */
+const NHL_PERIOD_MID_SECONDS: Record<number, number> = {
+  1: 2700,
+  2: 1500,
+  3: 300,
+};
+
 export function observationsFromWhistlePeriodSplits(
   splits: WhistlePeriodSplits,
   scoreDifferential: number,
@@ -530,15 +537,55 @@ export function observationsFromGameTotals(input: {
   homeScore: number;
   awayScore: number;
   minutesPlayed?: number;
+  periodCount?: number;
 }): GsniObservation[] {
   const minutes = input.minutesPlayed ?? 48;
+  const periodCount = input.periodCount ?? 4;
   if (minutes <= 0 || input.totalFouls <= 0) return [];
+  if (periodCount === 3) {
+    return observationsFromDistributedPeriodFouls({
+      totalFouls: input.totalFouls,
+      homeScore: input.homeScore,
+      awayScore: input.awayScore,
+      minutesPerPeriod: minutes / 3,
+      periodMidSeconds: NHL_PERIOD_MID_SECONDS,
+      periods: [1, 2, 3],
+    });
+  }
   return observationsFromDistributedQuarterFouls({
     totalFouls: input.totalFouls,
     homeScore: input.homeScore,
     awayScore: input.awayScore,
     minutesPerPeriod: minutes / 4,
   });
+}
+
+/**
+ * Approximate period-level foul observations from game totals when period splits
+ * are unavailable. Uses final score differential at mid-period clock anchors.
+ */
+export function observationsFromDistributedPeriodFouls(input: {
+  totalFouls: number;
+  homeScore: number;
+  awayScore: number;
+  minutesPerPeriod: number;
+  periodMidSeconds: Record<number, number>;
+  periods: number[];
+}): GsniObservation[] {
+  if (input.totalFouls <= 0 || input.minutesPerPeriod <= 0) return [];
+  if (input.periods.length <= 0) return [];
+
+  const foulsPerPeriod = input.totalFouls / input.periods.length;
+  const scoreDifferential = input.homeScore - input.awayScore;
+  const defaultMidSeconds =
+    input.periodMidSeconds[input.periods[0]!] ?? 1440;
+
+  return input.periods.map((period) => ({
+    scoreDifferential,
+    timeRemainingSeconds: input.periodMidSeconds[period] ?? defaultMidSeconds,
+    fouls: foulsPerPeriod,
+    minutes: input.minutesPerPeriod,
+  }));
 }
 
 /**
@@ -552,17 +599,14 @@ export function observationsFromDistributedQuarterFouls(input: {
   minutesPerPeriod?: number;
 }): GsniObservation[] {
   const minutesPerPeriod = input.minutesPerPeriod ?? 12;
-  if (input.totalFouls <= 0 || minutesPerPeriod <= 0) return [];
-
-  const foulsPerPeriod = input.totalFouls / 4;
-  const scoreDifferential = input.homeScore - input.awayScore;
-
-  return [1, 2, 3, 4].map((period) => ({
-    scoreDifferential,
-    timeRemainingSeconds: NBA_PERIOD_MID_SECONDS[period] ?? 1440,
-    fouls: foulsPerPeriod,
-    minutes: minutesPerPeriod,
-  }));
+  return observationsFromDistributedPeriodFouls({
+    totalFouls: input.totalFouls,
+    homeScore: input.homeScore,
+    awayScore: input.awayScore,
+    minutesPerPeriod,
+    periodMidSeconds: NBA_PERIOD_MID_SECONDS,
+    periods: [1, 2, 3, 4],
+  });
 }
 
 export type GsniGameLogLike = {
@@ -575,6 +619,8 @@ export type GsniGameLogLike = {
   penaltyEvents?: NflPenaltyEvent[];
   homeFlags?: number;
   awayFlags?: number;
+  homeMinors?: number;
+  awayMinors?: number;
 };
 
 export function extractGsniObservations(
@@ -589,6 +635,16 @@ export function extractGsniObservations(
       game.whistlePeriodSplits,
       game.homeScore - game.awayScore,
     );
+  }
+
+  if (game.homeMinors !== undefined && game.awayMinors !== undefined) {
+    return observationsFromGameTotals({
+      totalFouls: game.homeMinors + game.awayMinors,
+      homeScore: game.homeScore,
+      awayScore: game.awayScore,
+      minutesPlayed: 60,
+      periodCount: 3,
+    });
   }
 
   const totalFouls =

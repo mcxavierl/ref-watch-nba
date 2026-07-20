@@ -136,8 +136,11 @@ describe("gsni display", () => {
     assert.match(gsniHighLeverageStatesCopy("nfl"), /25\+ high-leverage minutes/);
     assert.match(gsniHighLeverageStatesCopy("nba"), /50\+ high-leverage minutes/);
     assert.match(gsniHighLeverageStatesCopy("nba"), /foul rate/);
+    assert.match(gsniHighLeverageStatesCopy("nhl"), /within 5 goals/);
+    assert.match(gsniHighLeverageStatesCopy("nhl"), /minor penalty rate/);
     assert.match(gsniIndexScoreExplainer("nfl"), /Index score 0 is league average/);
     assert.match(gsniIndexScoreExplainer("nba"), /more fouls than peers/);
+    assert.match(gsniIndexScoreExplainer("nhl"), /more minor penalties than peers/);
   });
 
   it("keeps GSNI panel numerics readable in light mode on dark cards", () => {

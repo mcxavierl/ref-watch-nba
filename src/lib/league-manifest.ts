@@ -140,7 +140,7 @@ export const LEAGUE_MANIFEST: Record<LeagueManifestId, LeagueManifestEntry> = {
     },
     routed: true,
     sectionNav: ["slate", "teams", "matrix", "refs", "research"],
-    researchViews: ["tendencies", "trends", "findings"],
+    researchViews: ["tendencies", "trends", "findings", "game-state"],
     slate: {
       upcomingSlateSection: true,
       analyticsLeaders: null,
