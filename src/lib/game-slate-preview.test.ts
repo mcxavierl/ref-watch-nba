@@ -41,6 +41,21 @@ describe("game slate preview", () => {
     const preview = buildGameSlatePreview("wnba", game, getWnbaOdds());
     assert.ok(preview);
     assert.ok(Array.isArray(preview.refTeamRows));
-    assert.ok(Array.isArray(preview.outlierNotes));
+    assert.ok(Array.isArray(preview.teamImpacts));
+  });
+
+  it("groups team impacts by matchup side", () => {
+    const assignments = getWnbaAssignments();
+    const game = assignments.games.find((entry) => entry.crew.length >= 2);
+    assert.ok(game);
+
+    const preview = buildGameSlatePreview("wnba", game, getWnbaOdds());
+    assert.ok(preview);
+    if (preview.teamImpacts.length > 0) {
+      const impact = preview.teamImpacts[0];
+      assert.ok(impact.teamAbbr);
+      assert.ok(impact.teamLabel);
+      assert.ok(Array.isArray(impact.insights));
+    }
   });
 });

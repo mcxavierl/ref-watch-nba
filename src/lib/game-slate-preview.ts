@@ -39,6 +39,21 @@ export type GameSlatePreviewStoryline = {
   summary: string;
 };
 
+export type GameSlatePreviewTeamInsight = {
+  refSlug: string;
+  refName: string;
+  winRate: number;
+  foulsDelta: number;
+  winRateCritical: boolean;
+  foulsDeltaCritical: boolean;
+};
+
+export type GameSlatePreviewTeamImpact = {
+  teamAbbr: string;
+  teamLabel: string;
+  insights: GameSlatePreviewTeamInsight[];
+};
+
 export type GameSlatePreviewPayload = {
   gameId: string;
   leagueId: SlatePreviewLeagueId;
@@ -70,8 +85,8 @@ export type GameSlatePreviewPayload = {
     role?: RefRole;
   }>;
   refTeamRows: GameSlatePreviewRefRow[];
+  teamImpacts: GameSlatePreviewTeamImpact[];
   storylines: GameSlatePreviewStoryline[];
-  outlierNotes: string[];
 };
 
 const MIN_REF_TEAM_GAMES = 5;
@@ -162,6 +177,47 @@ function buildRefTeamRows(
   return rows.sort((a, b) => Number(b.isOutlier) - Number(a.isOutlier) || b.games - a.games);
 }
 
+function isWinRateCritical(winRate: number, games: number): boolean {
+  return games >= MIN_REF_TEAM_GAMES && (winRate >= 0.62 || winRate <= 0.38);
+}
+
+function isFoulsDeltaCritical(foulsDelta: number): boolean {
+  return Math.abs(foulsDelta) >= MIN_FOUL_OUTLIER;
+}
+
+function buildTeamImpacts(
+  refTeamRows: GameSlatePreviewRefRow[],
+  teamOrder: Array<{ abbr: string; name: string }>,
+): GameSlatePreviewTeamImpact[] {
+  const byTeam = new Map<string, GameSlatePreviewRefRow[]>();
+  for (const row of refTeamRows) {
+    const list = byTeam.get(row.teamAbbr) ?? [];
+    list.push(row);
+    byTeam.set(row.teamAbbr, list);
+  }
+
+  const impacts: GameSlatePreviewTeamImpact[] = [];
+  for (const team of teamOrder) {
+    const rows = byTeam.get(team.abbr);
+    if (!rows?.length) continue;
+    impacts.push({
+      teamAbbr: team.abbr,
+      teamLabel: team.name,
+      insights: rows
+        .sort((a, b) => Number(b.isOutlier) - Number(a.isOutlier) || b.games - a.games)
+        .map((row) => ({
+          refSlug: row.refSlug,
+          refName: row.refName,
+          winRate: row.winRate,
+          foulsDelta: row.foulsDelta,
+          winRateCritical: isWinRateCritical(row.winRate, row.games),
+          foulsDeltaCritical: isFoulsDeltaCritical(row.foulsDelta),
+        })),
+    });
+  }
+  return impacts;
+}
+
 export function buildGameSlatePreview(
   leagueId: SlatePreviewLeagueId,
   game: AssignmentGame,
@@ -185,9 +241,7 @@ export function buildGameSlatePreview(
     })) ?? [];
 
   const refTeamRows = buildRefTeamRows(game, leagueId, stats);
-  const outlierNotes = refTeamRows
-    .filter((row) => row.isOutlier && row.outlierNote)
-    .map((row) => `${row.refName} · ${row.teamAbbr}: ${row.outlierNote}`);
+  const teamImpacts = buildTeamImpacts(refTeamRows, teams);
 
   return {
     gameId: game.id,
@@ -221,7 +275,7 @@ export function buildGameSlatePreview(
       role: official.role,
     })),
     refTeamRows,
+    teamImpacts,
     storylines,
-    outlierNotes,
   };
 }
