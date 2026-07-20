@@ -51,20 +51,20 @@ function TeamTrendList({
                   href={refProfileTeamPath(leagueId, row.abbr)}
                   className="ref-profile-team-trend-row"
                 >
-                  <span className="ref-profile-team-trend-team">
+                  <span className="ref-profile-team-trend-team gap-2">
                     <TeamLogo
                       team={team}
                       sport={sport}
                       size="sm"
-                      className="ref-profile-team-trend-logo"
+                      className="ref-profile-team-trend-logo shrink-0"
                     />
-                    <span className="ref-profile-team-trend-name">{team.name}</span>
+                    <span className="ref-profile-team-trend-name truncate">{team.name}</span>
                   </span>
-                  <span className="ref-profile-team-trend-record tabular-nums">
+                  <span className="ref-profile-team-trend-record tabular-nums text-right">
                     {row.recordLabel}
                   </span>
                   <span
-                    className={`ref-profile-team-rate-badge tabular-nums ${rateBadgeClass(row.rate, variant)}`}
+                    className={`ref-profile-team-rate-badge whitespace-nowrap px-3 tabular-nums ${rateBadgeClass(row.rate, variant)}`}
                   >
                     {row.rateLabel}
                   </span>

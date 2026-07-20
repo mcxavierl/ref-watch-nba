@@ -66,11 +66,13 @@ function TrendCard({
         <TermHelp id={termId}>{title}</TermHelp>
         <StatCardShareButton hashId={shareId} label={title} />
       </header>
-      <p className="ref-profile-trend-record tabular-nums">
+      <p className="ref-profile-trend-record text-right tabular-nums">
         {games === 0 ? "-" : formatWlp(record.wins, record.losses, record.pushes)}
       </p>
-      <div className="ref-profile-trend-rate-row">
-        <span className="ref-profile-trend-rate-pill tabular-nums">{rateLabel}</span>
+      <div className="ref-profile-trend-rate-row gap-2">
+        <span className="ref-profile-trend-rate-pill whitespace-nowrap px-3 tabular-nums">
+          {rateLabel}
+        </span>
       </div>
       <TrendProgressBar rate={rate} tone={tone} />
     </article>
