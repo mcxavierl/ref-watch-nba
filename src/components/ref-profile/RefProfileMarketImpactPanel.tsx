@@ -67,15 +67,15 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
           <p className="ref-market-impact-meta tabular-nums text-right text-slate-400">{rate}% ATS cover rate</p>
         </article>
       </div>
-      <div className="ref-table-section-body mt-4 overflow-x-auto stat-data-container master-table-scroll">
-        <table className="ref-data-table data-table min-w-[28rem] w-full">
+      <div className="ref-table-scroll mt-4">
+        <table className="ref-data-table data-table ref-profile-fluid-table min-w-[31.25rem] w-full">
           <thead>
             <tr className="data-table-head">
-              <th>Spread</th>
-              <th className="data-table-num">
+              <th className="whitespace-nowrap">Spread</th>
+              <th className="data-table-num whitespace-nowrap">
                 <TermHelp id="home-fav">Home fav</TermHelp>
               </th>
-              <th className="data-table-num">
+              <th className="data-table-num whitespace-nowrap">
                 <TermHelp id="home-dog">Home dog</TermHelp>
               </th>
             </tr>
@@ -86,8 +86,8 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
               const dogGames = bucketGames(bucket.homeUnderdog);
               return (
                 <tr key={bucket.label}>
-                  <td className="text-sm text-zinc-800">{bucket.label}</td>
-                  <td className="data-table-num font-tabular tabular-nums text-zinc-800">
+                  <td className="whitespace-nowrap text-sm text-zinc-800">{bucket.label}</td>
+                  <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-zinc-800">
                     {favGames < bucketGate
                       ? "-"
                       : formatWlp(
@@ -96,7 +96,7 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
                           bucket.homeFavorite.pushes,
                         )}
                   </td>
-                  <td className="data-table-num font-tabular tabular-nums text-zinc-800">
+                  <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-zinc-800">
                     {dogGames < bucketGate
                       ? "-"
                       : formatWlp(
@@ -121,26 +121,26 @@ function MarketOuPanel({ stats }: { stats: RefBettingStats }) {
 
   return (
     <div className="ref-market-impact-panel">
-      <div className="ref-table-section-body overflow-x-auto">
-        <table className="ref-data-table data-table min-w-[28rem] w-full">
+      <div className="ref-table-scroll">
+        <table className="ref-data-table data-table ref-profile-fluid-table min-w-[31.25rem] w-full">
           <thead>
             <tr className="data-table-head">
-              <th>
+              <th className="whitespace-nowrap">
                 <TermHelp id="ou-bucket">Line range</TermHelp>
               </th>
-              <th className="data-table-num">Record</th>
-              <th className="data-table-num">
+              <th className="data-table-num whitespace-nowrap">Record</th>
+              <th className="data-table-num whitespace-nowrap">
                 <TermHelp id="hit-rate">Hit rate</TermHelp>
               </th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className="text-sm font-medium text-zinc-800">Overall</td>
-              <td className="data-table-num font-tabular tabular-nums text-zinc-800">
+              <td className="whitespace-nowrap text-sm font-medium text-zinc-800">Overall</td>
+              <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-zinc-800">
                 {formatWlp(ou.overall.wins, ou.overall.losses, ou.overall.pushes)}
               </td>
-              <td className="data-table-num font-tabular tabular-nums text-zinc-600">
+              <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-zinc-600">
                 {formatPctFromWlp(
                   ou.overall.wins,
                   ou.overall.losses,
@@ -153,8 +153,8 @@ function MarketOuPanel({ stats }: { stats: RefBettingStats }) {
               const belowGate = games < bucketGate;
               return (
                 <tr key={bucket.label}>
-                  <td className="text-sm text-zinc-800">{bucket.label}</td>
-                  <td className="data-table-num font-tabular tabular-nums text-zinc-800">
+                  <td className="whitespace-nowrap text-sm text-zinc-800">{bucket.label}</td>
+                  <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-zinc-800">
                     {belowGate
                       ? "-"
                       : formatWlp(
@@ -163,7 +163,7 @@ function MarketOuPanel({ stats }: { stats: RefBettingStats }) {
                           bucket.record.pushes,
                         )}
                   </td>
-                  <td className="data-table-num font-tabular tabular-nums text-zinc-600">
+                  <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-zinc-600">
                     {belowGate
                       ? "-"
                       : formatPctFromWlp(

@@ -39,15 +39,21 @@ export function CloseGameSection({
     league === "NBA" || league === "CBB" ? "points" : league === "NHL" ? "goals" : "points";
   const sectionTitle =
     league === "NBA" || league === "CBB" ? "Tight-game proxy" : "Late-game proxy";
-  const sectionClass = embedded ? "" : "section-block";
+  const sectionClass = embedded ? "ref-close-game-section ref-close-game-section--embedded" : "section-block";
 
   return (
     <section id="close-game" className={sectionClass}>
-      <div className={embedded ? "mb-4" : "mb-5"}>
-        <h2 className={embedded ? "font-semibold tracking-tight" : "section-title"}>
+      <div className={embedded ? "ref-close-game-section-intro" : "mb-5"}>
+        <h2 className={embedded ? "ref-profile-section-title m-0" : "section-title"}>
           {sectionTitle}
         </h2>
-        <p className={embedded ? "mt-1 text-sm font-normal text-slate-400" : "section-lead"}>
+        <p
+          className={
+            embedded
+              ? "ref-close-game-section-lead mt-1 text-sm font-normal text-slate-400"
+              : "section-lead"
+          }
+        >
           How {subjectLabel} compares in competitive late-game windows vs full games. (Based on
           official box scores, not L2M reports).
         </p>
@@ -57,8 +63,10 @@ export function CloseGameSection({
         {metrics.map((m) => (
           <article key={m.window.id} className="ref-profile-section pressure-matrix-card">
             <div className="ref-table-section-header">
-              <h3 className="font-semibold tracking-tight">{m.window.label}</h3>
-              <p className="mt-1 text-xs font-normal text-slate-500">{m.coverageNote}</p>
+              <h3 className="ref-profile-section-title m-0">{m.window.label}</h3>
+              <p className="ref-close-game-window-note mt-1 text-xs font-normal text-slate-500">
+                {m.coverageNote}
+              </p>
             </div>
 
             {m.gameCount === 0 ? (
@@ -69,35 +77,39 @@ export function CloseGameSection({
               </div>
             ) : (
               <>
-                <div className="ref-table-section-body overflow-x-auto">
-                  <table className="ref-data-table data-table pressure-matrix-table min-w-[480px] w-full">
-                    <thead>
-                      <tr className="data-table-head">
-                        <th>Metric</th>
-                        <th className="data-table-num">Late-game avg</th>
-                        <th className="data-table-num">Season avg</th>
-                        <th className="data-table-num">Pressure impact Δ</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {m.compareRows.map((row) => (
-                        <tr key={row.label}>
-                          <td className="text-sm font-normal text-slate-300">{row.label}</td>
-                          <td className="data-table-num font-tabular tabular-nums text-slate-50">
-                            {row.windowValue}
-                          </td>
-                          <td className="data-table-num font-tabular tabular-nums text-slate-400">
-                            {row.fullGameValue}
-                          </td>
-                          <td
-                            className={`data-table-num font-tabular text-sm font-medium tabular-nums ${deltaClassName(row.delta)}`}
-                          >
-                            {row.delta}
-                          </td>
+                <div className="ref-table-section-body">
+                  <div className="pressure-matrix-table-scroll">
+                    <table className="ref-data-table data-table pressure-matrix-table">
+                      <thead>
+                        <tr className="data-table-head">
+                          <th className="whitespace-nowrap">Metric</th>
+                          <th className="data-table-num whitespace-nowrap">Late-game avg</th>
+                          <th className="data-table-num whitespace-nowrap">Season avg</th>
+                          <th className="data-table-num whitespace-nowrap">Pressure impact Δ</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {m.compareRows.map((row) => (
+                          <tr key={row.label}>
+                            <td className="whitespace-nowrap text-sm font-normal text-slate-300">
+                              {row.label}
+                            </td>
+                            <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-slate-50">
+                              {row.windowValue}
+                            </td>
+                            <td className="data-table-num whitespace-nowrap font-tabular tabular-nums text-slate-400">
+                              {row.fullGameValue}
+                            </td>
+                            <td
+                              className={`data-table-num whitespace-nowrap font-tabular text-sm font-medium tabular-nums ${deltaClassName(row.delta)}`}
+                            >
+                              {row.delta}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div className="border-t border-border-subtle px-4 py-3 sm:px-5">
                   <p className="text-xs font-normal text-slate-500">
