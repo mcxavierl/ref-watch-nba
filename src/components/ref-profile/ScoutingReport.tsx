@@ -2,6 +2,7 @@ import { ClinicalCard } from "@/components/hub/ClinicalCard";
 import { ArchetypeCard } from "@/components/ref-profile/ArchetypeCard";
 import { HandicappersInsight } from "@/components/ref-profile/HandicappersInsight";
 import { PressureGauge } from "@/components/ref-profile/PressureGauge";
+import { PressureIndexCard } from "@/components/ref-profile/PressureIndexCard";
 import {
   generateScoutingReport,
   type GameScoutingMetadata,
@@ -75,6 +76,13 @@ export function ScoutingReportDepth(props: ScoutingReportProps) {
         state={report.pressureGauge}
         leverageIndex={report.leverageSensitivityIndex}
         insight={report.leverageInsight}
+      />
+
+      <PressureIndexCard
+        pressureIndex={report.pressureIndex}
+        pressureTendencyLabel={report.pressureTendencyLabel}
+        baselineWhistleRate={report.pressureBaselineWhistleRate}
+        pressureWhistleRate={report.pressureContextWhistleRate}
       />
 
       <ClinicalCard

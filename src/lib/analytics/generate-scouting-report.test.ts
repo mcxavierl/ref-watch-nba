@@ -88,6 +88,10 @@ describe("generate-scouting-report", () => {
     assert.ok(report!.styleProfile.gameFlowScore >= 0);
     assert.match(report!.summary, /Official Adrian Hill/);
     assert.ok(report!.insights.length >= 2);
+    assert.ok("pressureIndex" in report!);
+    assert.ok("pressureTendencyLabel" in report!);
+    assert.ok("pressureBaselineWhistleRate" in report!);
+    assert.ok("pressureContextWhistleRate" in report!);
   });
 
   it("returns null when sample history is too thin and no analytics fallback exists", () => {

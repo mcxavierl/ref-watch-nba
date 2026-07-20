@@ -6,8 +6,12 @@ import type { ArchetypeGameInput } from "../../src/lib/analytics/referee-archety
 import {
   computeLeverageIndex,
   leverageFieldsFromResult,
+  type LeverageGameInput,
 } from "../../src/lib/analytics/leverage-sensitivity";
-import type { LeverageGameInput } from "../../src/lib/analytics/leverage-sensitivity";
+import {
+  computePressureIndex,
+  pressureFieldsFromResult,
+} from "../../src/lib/analytics/pressure-index";
 import {
   resolveRefProfileFoulCategory,
   type FoulCategoryGameInput,
@@ -204,6 +208,17 @@ export function buildSeasonOfficialStatsEntry(
     sampleWindow: games.length,
     minSampleGames: BACKFILL_MIN_SAMPLE_GAMES,
   });
+  const pressure = computePressureIndex(
+    leagueId,
+    games.map((game) => ({
+      homeScore: game.homeScore,
+      awayScore: game.awayScore,
+      date: game.date,
+      season: game.season,
+      whistlePeriodSplits: game.whistlePeriodSplits,
+      whistleTotal: whistleTotalForGame(leagueId, game),
+    })),
+  );
 
   if (!archetype) {
     return {
@@ -217,6 +232,7 @@ export function buildSeasonOfficialStatsEntry(
     status: "ok",
     ...toOfficialStats(archetype),
     ...leverageFieldsFromResult(leverage),
+    ...pressureFieldsFromResult(pressure),
   };
 }
 

@@ -353,6 +353,13 @@ export interface OfficialStats {
   tactical_event_backed_games?: number;
   intentional_foul_noise_filtered?: boolean;
   leverage_method_note?: string;
+  /** 100 = neutral whistle rate under pressure vs baseline. */
+  pressure_index?: number | null;
+  pressure_tendency_label?: string;
+  /** Whistle rate in non-pressure regular-season sample games. */
+  pressure_baseline_whistle_rate?: number | null;
+  /** Whistle rate in pressure-flagged games. */
+  pressure_context_whistle_rate?: number | null;
 }
 
 /** Season-scoped elite metrics from analytics backfill (2021-2026 window). */
