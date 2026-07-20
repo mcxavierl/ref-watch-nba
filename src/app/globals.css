@@ -7181,6 +7181,9 @@ p {
     background: color-mix(in srgb, var(--semantic-caution) 10%, var(--pill-bg));
     color: color-mix(in srgb, var(--semantic-caution) 88%, var(--pill-ink));
     box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+    font-size: 0.625rem;
+    padding: 0.25rem 0.625rem;
+    letter-spacing: 0.01em;
   }
 
   .ranking-signal-pill--high-variance {
@@ -7189,6 +7192,9 @@ p {
     background: color-mix(in srgb, var(--header-gold) 10%, var(--pill-bg));
     color: color-mix(in srgb, var(--header-gold) 88%, var(--pill-ink));
     box-shadow: var(--pill-glow-ring), var(--pill-glow-halo);
+    font-size: 0.625rem;
+    padding: 0.25rem 0.625rem;
+    letter-spacing: 0.01em;
   }
 
   .ranking-signal-pill--link:hover {
