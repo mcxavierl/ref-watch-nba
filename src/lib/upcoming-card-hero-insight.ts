@@ -23,11 +23,6 @@ export function upcomingCardInsightFallback(game: OverviewSlateEntry): string {
   return "Crews TBD · Matchup data loads on click";
 }
 
-type HeroInsightCandidate = {
-  score: number;
-  text: string;
-};
-
 function summarizeInsightLine(line: string, maxLength = HERO_INSIGHT_MAX_LENGTH): string {
   const trimmed = line.trim();
   if (!trimmed) return trimmed;
