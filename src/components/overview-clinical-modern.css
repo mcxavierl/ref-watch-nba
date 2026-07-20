@@ -87,6 +87,14 @@
   transform: none;
 }
 
+.overview-slate-capsule-mark .league-nav-mark--wnba,
+.overview-slate-capsule-mark .league-nav-mark[data-league="wnba"] {
+  height: 72%;
+  max-width: 42%;
+  max-height: 72%;
+  object-position: center;
+}
+
 .overview-slate-capsule-copy {
   display: flex;
   flex-direction: column;
@@ -324,6 +332,14 @@
   height: 68%;
   max-width: 52%;
   max-height: 68%;
+}
+
+.upcoming-game-card__league-mark .league-nav-mark--wnba,
+.upcoming-game-card__league-mark .league-nav-mark[data-league="wnba"] {
+  height: 82%;
+  max-width: 46%;
+  max-height: 82%;
+  object-position: center;
 }
 
 .upcoming-game-card__league-mark .league-nav-mark--epl,

@@ -4702,6 +4702,17 @@ p {
     filter: brightness(1.35) saturate(1.1);
   }
 
+  .league-nav-mark--wnba,
+  .league-nav-mark[data-league="wnba"] {
+    height: 1.3rem;
+    width: auto;
+    max-width: 0.85rem;
+    object-fit: contain;
+    object-position: center;
+    filter: none;
+    opacity: 1;
+  }
+
   .league-nav-mark--nba {
     height: 1rem;
     max-width: 1.55rem;
@@ -8718,6 +8729,12 @@ p {
       max-width: 2rem;
     }
 
+    .league-hero-logo.league-nav-mark--wnba,
+    .league-hero-logo[data-league="wnba"] {
+      height: 2.45rem;
+      max-width: 1.15rem;
+    }
+
     .league-hero-logo.league-nav-mark--laliga,
     .league-hero-logo[data-league="laliga"] {
       max-width: 3.5rem;
@@ -8740,6 +8757,14 @@ p {
   .league-hero-logo[data-league="cfb"] {
     height: 2.75rem;
     max-width: 2.35rem;
+  }
+
+  .league-hero-logo.league-nav-mark--wnba,
+  .league-hero-logo[data-league="wnba"] {
+    height: 2.85rem;
+    max-width: 1.35rem;
+    object-position: center;
+    filter: none;
   }
 
   .league-hero-logo.league-nav-mark--nhl,
@@ -8813,6 +8838,12 @@ p {
     .league-hero-logo[data-league="cfb"] {
       height: 3.1rem;
       max-width: 2.65rem;
+    }
+
+    .league-hero-logo.league-nav-mark--wnba,
+    .league-hero-logo[data-league="wnba"] {
+      height: 3.2rem;
+      max-width: 1.45rem;
     }
 
     .league-hub-hero {

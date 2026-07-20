@@ -30,6 +30,23 @@ describe("league logos", () => {
     assert.equal(leagueLogoSrc("wnba", "light"), "/logos/wnba-logo-light.svg");
   });
 
+  it("uses portrait WNBA player silhouette marks instead of the wide wordmark", () => {
+    const onDark = readLogo("wnba-logo.svg");
+    const onLight = readLogo("wnba-logo-light.svg");
+
+    assert.match(onDark, /viewBox="6 0 40 88"/);
+    assert.match(onDark, /fill="#ffffff"/);
+    assert.match(onLight, /fill="#fa4d00"/);
+    assert.doesNotMatch(onDark, /H148V47\.8/);
+    assert.doesNotMatch(onLight, /H148V47\.8/);
+
+    const wnba = leagueNavMarkDimensions("wnba");
+    const nba = leagueNavMarkDimensions("nba");
+    assert.ok(wnba.height > wnba.width, "WNBA silhouette mark should be portrait");
+    assert.ok(nba.width > nba.height, "NBA mark remains landscape");
+    assert.equal(leagueHeroLogoDimensions("wnba").height, 48);
+  });
+
   it("uses square intrinsic dimensions for the EPL lion mark", () => {
     const onDark = readLogo("epl-lion.svg");
     assert.match(onDark, /width="92" height="91"/);
