@@ -48,6 +48,27 @@ export const LIVE_NCAA_CONFERENCES = [
 
 export type LiveNcaaConferenceId = (typeof LIVE_NCAA_CONFERENCES)[number];
 
+/** Tracked programs outside power conferences with verified crew coverage. */
+export const LIVE_NCAA_SUPPLEMENTAL_TEAMS: Record<
+  NcaaRouteLeague,
+  readonly string[]
+> = {
+  cbb: ["GONZ"],
+  cfb: [],
+};
+
+const SUPPLEMENTAL_TEAM_SET: Record<NcaaRouteLeague, Set<string>> = {
+  cbb: new Set(LIVE_NCAA_SUPPLEMENTAL_TEAMS.cbb),
+  cfb: new Set(LIVE_NCAA_SUPPLEMENTAL_TEAMS.cfb),
+};
+
+export function isSupplementalLiveNcaaTeam(
+  league: NcaaRouteLeague,
+  teamAbbr: string,
+): boolean {
+  return SUPPLEMENTAL_TEAM_SET[league].has(teamAbbr.toUpperCase());
+}
+
 export const NCAA_CONFERENCE_GATED_LEAGUE_IDS = ["cbb", "cfb"] as const satisfies readonly LeagueId[];
 
 const LIVE_CONFERENCE_SET = new Set<string>(LIVE_NCAA_CONFERENCES);
@@ -100,7 +121,10 @@ export function teamInLiveNcaaConference(
   league: NcaaRouteLeague,
   teamAbbr: string,
 ): boolean {
-  return isLiveNcaaConference(resolveTeamConference(league, teamAbbr));
+  return (
+    isLiveNcaaConference(resolveTeamConference(league, teamAbbr)) ||
+    isSupplementalLiveNcaaTeam(league, teamAbbr)
+  );
 }
 
 /** Ingestion gate — discard games outside the live conference allowlist. */
@@ -109,7 +133,11 @@ export function shouldIngestNcaaGame(
   homeTeam: string,
   awayTeam: string,
 ): boolean {
-  return gameTouchesLiveNcaaConference(league, homeTeam, awayTeam);
+  if (gameTouchesLiveNcaaConference(league, homeTeam, awayTeam)) return true;
+  return (
+    isSupplementalLiveNcaaTeam(league, homeTeam) ||
+    isSupplementalLiveNcaaTeam(league, awayTeam)
+  );
 }
 
 export function filterNcaaGameLogs<T extends NcaaGameLogRow>(

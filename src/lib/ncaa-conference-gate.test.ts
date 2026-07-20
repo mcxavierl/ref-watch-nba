@@ -28,15 +28,19 @@ test("shouldIngestNcaaGame accepts power-conference matchups", () => {
   assert.equal(shouldIngestNcaaGame("cbb", "UCONN", "VILL"), true);
 });
 
+test("shouldIngestNcaaGame accepts supplemental tracked programs", () => {
+  assert.equal(shouldIngestNcaaGame("cbb", "GONZ", "BYU"), true);
+  assert.equal(shouldIngestNcaaGame("cbb", "GONZ", "SFPA"), true);
+});
+
 test("shouldIngestNcaaGame rejects games outside the live conference gate", () => {
-  assert.equal(shouldIngestNcaaGame("cbb", "GONZ", "BYU"), false);
-  assert.equal(shouldIngestNcaaGame("cbb", "GONZ", "SFPA"), false);
+  assert.equal(shouldIngestNcaaGame("cbb", "SFPA", "PORT"), false);
 });
 
 test("teamInLiveNcaaConference maps registry conferences", () => {
   assert.equal(teamInLiveNcaaConference("cbb", "MICH"), true);
   assert.equal(teamInLiveNcaaConference("cbb", "DUKE"), true);
-  assert.equal(teamInLiveNcaaConference("cbb", "GONZ"), false);
+  assert.equal(teamInLiveNcaaConference("cbb", "GONZ"), true);
 });
 
 test("filterNcaaRefStats drops refs without live-conference team stats", () => {
@@ -133,7 +137,7 @@ test("filterNcaaRefStats drops refs without live-conference team stats", () => {
   };
 
   const filtered = filterNcaaRefStats(stats, "cbb");
-  assert.equal(filtered.refs.length, 1);
-  assert.equal(filtered.refs[0]?.slug, "big-ten-ref");
+  assert.equal(filtered.refs.length, 2);
+  assert.equal(filtered.refs.some((ref) => ref.slug === "other-ref"), true);
   assert.equal(gameTouchesLiveNcaaConference("cbb", "MICH", "OSU"), true);
 });
