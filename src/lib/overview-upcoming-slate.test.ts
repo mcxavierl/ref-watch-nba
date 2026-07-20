@@ -5,7 +5,11 @@ import {
   groupOverviewSlateByLeague,
   type OverviewSlateEntry,
 } from "@/lib/overview-slate-shared";
-import { buildLeagueUpcomingSlateFromAssignments } from "@/lib/overview-upcoming-slate";
+import {
+  buildLeagueUpcomingSlateFromAssignments,
+  LEAGUE_UPCOMING_SLATE_LIMIT,
+  selectHomepageSlateGrid,
+} from "@/lib/overview-upcoming-slate";
 import type { AssignmentsFile } from "@/lib/types";
 
 function slateEntry(
@@ -150,7 +154,10 @@ describe("overview-upcoming-slate", () => {
     const slate = buildLeagueUpcomingSlateFromAssignments("laliga", file);
 
     assert.equal(slate.inSeason, true);
+    assert.equal(slate.leagueGroup?.liveCount, 1);
+    assert.equal(slate.leagueGroup?.scheduledCount, 0);
     assert.equal(slate.leagueGroup?.games[0]?.matchup, "OVI @ VIL");
+    assert.equal(slate.leagueGroup?.games[0]?.status, "live");
     assert.equal(
       slate.leagueGroup?.games[0]?.officialsLine,
       "Referee: Alejandro Muñiz Ruiz",
@@ -162,6 +169,48 @@ describe("overview-upcoming-slate", () => {
     assert.equal(
       slate.leagueGroup?.games[0]?.gameContextLine,
       "Villarreal beat Real Oviedo in 2025 at Villarreal, 2-0.",
+    );
+  });
+
+  it("caps league hub slates at ten games with confirmed crews first", () => {
+    const file: AssignmentsFile = {
+      lastUpdated: "2026-07-20T00:00:00.000Z",
+      date: "2026-07-20",
+      source: "seeded",
+      games: Array.from({ length: 12 }, (_, index) => ({
+        id: `wnba-${index}`,
+        matchup: `TEAM${index} @ HOST${index}`,
+        awayTeam: `TEAM${index}`,
+        homeTeam: `HOST${index}`,
+        league: "WNBA",
+        crew: [{ name: `Ref ${index}`, number: index, role: "referee" }],
+      })),
+    };
+
+    const slate = buildLeagueUpcomingSlateFromAssignments("wnba", file);
+    assert.equal(slate.leagueGroup?.games.length, LEAGUE_UPCOMING_SLATE_LIMIT);
+    assert.equal(slate.leagueGroup?.liveCount, LEAGUE_UPCOMING_SLATE_LIMIT);
+  });
+
+  it("orders homepage grid with newest fill in row two and pinned bottom leagues", () => {
+    const games: OverviewSlateEntry[] = [
+      slateEntry({ leagueId: "wnba", gameId: "w1", status: "live", slateDate: "2026-07-20" }),
+      slateEntry({ leagueId: "wnba", gameId: "w2", status: "live", slateDate: "2026-07-20" }),
+      slateEntry({ leagueId: "wnba", gameId: "w3", status: "live", slateDate: "2026-07-20" }),
+      slateEntry({ leagueId: "nfl", gameId: "n1", status: "scheduled", slateDate: "2026-08-06" }),
+      slateEntry({ leagueId: "epl", gameId: "e1", status: "scheduled", slateDate: "2026-08-09" }),
+      slateEntry({ leagueId: "laliga", gameId: "l1", status: "live", slateDate: "2026-08-15" }),
+    ];
+
+    const grid = selectHomepageSlateGrid(games);
+    assert.equal(grid.length, 6);
+    assert.deepEqual(
+      grid.slice(-3).map((game) => game.leagueId),
+      ["nfl", "epl", "laliga"],
+    );
+    assert.deepEqual(
+      grid.slice(0, 3).map((game) => game.leagueId),
+      ["wnba", "wnba", "wnba"],
     );
   });
 });

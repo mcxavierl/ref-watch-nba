@@ -6,15 +6,14 @@ import {
 } from "@/lib/local-only-leagues";
 
 describe("local-only leagues", () => {
-  it("treats WNBA as local-only", () => {
-    assert.equal(isLocalOnlyLeague("wnba"), true);
+  it("has no production-gated league routes by default", () => {
+    assert.equal(isLocalOnlyLeague("wnba"), false);
     assert.equal(isLocalOnlyLeague("nba"), false);
   });
 
-  it("redirects WNBA paths only when preview access is disabled", () => {
-    assert.equal(shouldRedirectLocalOnlyLeagueForAccess("/wnba", false), true);
-    assert.equal(shouldRedirectLocalOnlyLeagueForAccess("/wnba/teams", false), true);
-    assert.equal(shouldRedirectLocalOnlyLeagueForAccess("/wnba", true), false);
+  it("does not redirect league paths when the local-only list is empty", () => {
+    assert.equal(shouldRedirectLocalOnlyLeagueForAccess("/wnba", false), false);
+    assert.equal(shouldRedirectLocalOnlyLeagueForAccess("/wnba/teams", false), false);
     assert.equal(shouldRedirectLocalOnlyLeagueForAccess("/mlb", false), false);
   });
 });

@@ -29,6 +29,9 @@ const nextConfig: NextConfig = {
       "./data/cbb/ref-stats-core.json",
       "./data/cbb/team-splits.json",
       "./data/cbb/game-logs.json",
+      "./data/wnba/ref-stats-core.json",
+      "./data/wnba/team-splits.json",
+      "./data/wnba/assignments.json",
     ],
   },
   experimental: {

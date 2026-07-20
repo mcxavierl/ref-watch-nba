@@ -397,6 +397,64 @@
   --upcoming-matchup-glow-accent: var(--cfb-bronze);
 }
 
+.upcoming-game-card[data-league="wnba"] {
+  --upcoming-matchup-glow-accent: var(--cbb-gold);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card {
+  border-color: var(--card-border-light, #e2e8f0);
+  background: #ffffff;
+  box-shadow: var(--card-shadow-light, 0 1px 2px 0 rgb(15 23 42 / 0.05));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__league-mark {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__date-pill {
+  border-color: color-mix(in srgb, var(--upcoming-matchup-glow-accent) 28%, #e2e8f0);
+  background: color-mix(in srgb, var(--upcoming-matchup-glow-accent) 10%, #fff);
+  color: #0f172a;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 12%, transparent);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__cta {
+  color: #475569;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__cta:hover {
+  color: #0f172a;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__matchup {
+  border-color: color-mix(in srgb, var(--upcoming-matchup-glow-accent) 24%, #e2e8f0);
+  background:
+    radial-gradient(
+      ellipse 120% 90% at 50% 0%,
+      color-mix(in srgb, var(--upcoming-matchup-glow-accent) 8%, transparent),
+      transparent 68%
+    ),
+    #f8fafc;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 10%, transparent);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__team-abbr,
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__at,
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__context {
+  color: #334155;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .upcoming-game-card__team-abbr,
+html.dark .upcoming-game-card__team-abbr {
+  color: #f1f5f9;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .upcoming-game-card__context,
+html.dark .upcoming-game-card__context {
+  color: #cbd5e1;
+}
+
 .upcoming-game-card__matchup {
   display: flex;
   align-items: center;

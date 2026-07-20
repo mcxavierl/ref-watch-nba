@@ -11,13 +11,15 @@ export const PRO_VERIFIED_LIVE_LEAGUE_IDS = [
   "laliga",
 ] as const satisfies readonly LeagueId[];
 
+/** Pro leagues with live slate and assignments before ref-stats ingest is verified. */
+export const PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS = [
+  "wnba",
+] as const satisfies readonly LeagueId[];
+
 /** Pro leagues in overview chooser, scorecard, and catalog (excludes college). */
 export const PRO_ONLY_LIVE_LEAGUE_IDS = [
-  "nba",
-  "nhl",
-  "nfl",
-  "epl",
-  "laliga",
+  ...PRO_VERIFIED_LIVE_LEAGUE_IDS,
+  ...PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS,
 ] as const satisfies readonly LeagueId[];
 
 /** NCAA hubs on the overview dashboard - CBB live with power-conference gate. */
@@ -44,6 +46,7 @@ export const COLLEGE_LIVE_LEAGUE_IDS = LAUNCHED_NCAA_LEAGUE_IDS;
 /** Product catalog includes pro leagues plus launched NCAA hubs. */
 export const VERIFIED_LIVE_LEAGUE_IDS = [
   ...PRO_VERIFIED_LIVE_LEAGUE_IDS,
+  ...PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS,
   ...LAUNCHED_NCAA_LEAGUE_IDS,
 ] as const satisfies readonly LeagueId[];
 
@@ -53,6 +56,10 @@ export function isProVerifiedLiveLeague(leagueId: LeagueId): boolean {
 
 export function isProOnlyLiveLeague(leagueId: LeagueId): boolean {
   return (PRO_ONLY_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
+}
+
+export function isProAssignmentsLiveLeague(leagueId: LeagueId): boolean {
+  return (PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS as readonly LeagueId[]).includes(leagueId);
 }
 
 export function isCollegeLiveLeague(leagueId: LeagueId): boolean {
@@ -67,7 +74,11 @@ export function isNcaaConferenceGatedLive(leagueId: LeagueId): boolean {
 
 /** League is visible in production surfaces (pro leagues + launched NCAA hubs). */
 export function isVerifiedLiveLeague(leagueId: LeagueId): boolean {
-  return isProVerifiedLiveLeague(leagueId) || isCollegeLiveLeague(leagueId);
+  return (
+    isProVerifiedLiveLeague(leagueId) ||
+    isProAssignmentsLiveLeague(leagueId) ||
+    isCollegeLiveLeague(leagueId)
+  );
 }
 
 /** Leagues currently exposed in overview grids, chooser, and sidebar. */
