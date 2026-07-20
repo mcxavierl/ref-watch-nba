@@ -93,6 +93,9 @@ jobs:
       - name: Terminal integrity audit
         run: npm run audit:terminal-integrity
 
+      - name: Insight-first audit
+        run: npm run audit:insight-first
+
       - name: Unit tests
         run: npm run test
 
