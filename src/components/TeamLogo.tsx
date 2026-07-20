@@ -91,6 +91,7 @@ export function TeamLogo({
         width={sizePixels[size]}
         height={sizePixels[size]}
         className="team-logo-plate__img"
+        referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
       />
     </span>

@@ -86,14 +86,14 @@ export function UpcomingGameCard({
         >
           <div className="upcoming-game-card__team">
             <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
-            <span className="upcoming-game-card__team-name">{awayTeam.displayName}</span>
+            <span className="upcoming-game-card__team-abbr">{awayTeam.abbr}</span>
           </div>
           <span className="upcoming-game-card__at" aria-hidden>
             @
           </span>
           <div className="upcoming-game-card__team">
             <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
-            <span className="upcoming-game-card__team-name">{homeTeam.displayName}</span>
+            <span className="upcoming-game-card__team-abbr">{homeTeam.abbr}</span>
           </div>
         </div>
         {(insightLine || game.officialsLine || secondaryLine) && (

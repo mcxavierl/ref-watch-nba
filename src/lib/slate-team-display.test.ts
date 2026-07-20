@@ -23,18 +23,22 @@ describe("slate-team-display", () => {
   it("resolves WNBA city names to canonical abbreviations and logos", () => {
     const vegas = resolveSlateTeam("wnba", "Las Vegas");
     assert.equal(vegas.abbr, "LVA");
-    assert.equal(vegas.displayName, "Las Vegas");
     assert.match(vegas.logoUrl ?? "", /\/lv\.png$/);
 
     const toronto = resolveSlateTeam("wnba", "Toronto");
     assert.equal(toronto.abbr, "TOR");
-    assert.equal(toronto.displayName, "Toronto");
     assert.match(toronto.logoUrl ?? "", /\/tor\.png$/);
 
     const goldenState = resolveSlateTeam("wnba", "Golden State");
     assert.equal(goldenState.abbr, "GSV");
-    assert.equal(goldenState.displayName, "Golden State");
     assert.match(goldenState.logoUrl ?? "", /\/gs\.png$/);
+  });
+
+  it("attaches logo URLs for major league teams", () => {
+    assert.match(resolveSlateTeam("nfl", "LV").logoUrl ?? "", /\/LV$/);
+    assert.match(resolveSlateTeam("epl", "CHE").logoUrl ?? "", /\/363\.png$/);
+    assert.match(resolveSlateTeam("laliga", "ALA").logoUrl ?? "", /\/96\.png$/);
+    assert.match(resolveSlateTeam("nba", "NYK").logoUrl ?? "", /1610612752/);
   });
 
   it("formats slate dates consistently", () => {
