@@ -55,7 +55,7 @@ export function teamWithArticle(team: WnbaTeam): string {
 import { wnbaLogoAbbr } from "@/lib/wnba/abbr";
 
 export function teamLogoUrl(abbr: string): string {
-  return `https://a.espncdn.com/i/teamlogos/wnba/500/scoreboard/${wnbaLogoAbbr(abbr)}.png`;
+  return `https://a.espncdn.com/i/teamlogos/wnba/500/${wnbaLogoAbbr(abbr)}.png`;
 }
 
 /** Match assignment strings like "Las Vegas", "LVA", "Aces", etc. */
