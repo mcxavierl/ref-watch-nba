@@ -337,6 +337,13 @@ export interface OfficialStats {
   primary_archetype: RefereeArchetypeId;
   /** 1 (volatile) to 10 (highly consistent) whistle-volume profile. */
   consistency_score: number;
+  /** 0-100 whistle predictability score vs league variance baseline. */
+  consistency_index?: number | null;
+  consistency_classification_label?: string;
+  /** Official σ of per-game whistle totals in the rolling sample. */
+  whistle_std_dev?: number | null;
+  /** League σ of per-game whistle totals for the same sport sample. */
+  league_whistle_std_dev?: number | null;
   admin_ratio: number;
   pressure_sensitive: boolean;
   pressure_delta_pct: number | null;

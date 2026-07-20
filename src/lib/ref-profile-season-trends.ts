@@ -1,4 +1,5 @@
 import { PRESSURE_GAUGE_LABELS, pressureGaugeState } from "@/lib/analytics/leverage-sensitivity";
+import { consistencyClassificationDisplayLabel } from "@/lib/analytics/consistency-variance";
 import { STATE_CHIP_CLASS, type StateChipClass } from "@/constants/colors";
 import type {
   RefereeArchetypeId,
@@ -25,6 +26,8 @@ export type SeasonTrendRow =
       foulRatio: number;
       leverageSensitivity: string;
       consistency: number;
+      consistencyIndex: number | null;
+      consistencyClassification: string;
       sampleGames: number;
     }
   | {
@@ -80,6 +83,13 @@ function toSeasonTrendRow(season: string, entry: SeasonOfficialStatsEntry): Seas
     foulRatio: entry.admin_ratio,
     leverageSensitivity: formatLeverageSensitivity(entry),
     consistency: entry.consistency_score,
+    consistencyIndex: entry.consistency_index ?? null,
+    consistencyClassification:
+      entry.consistency_classification_label !== undefined
+        ? consistencyClassificationDisplayLabel(
+            entry.consistency_classification_label as import("@/lib/analytics/consistency-variance").ConsistencyClassificationLabel,
+          )
+        : "Insufficient whistle sample",
     sampleGames: entry.sample_games,
   };
 }

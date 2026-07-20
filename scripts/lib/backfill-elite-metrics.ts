@@ -1,3 +1,4 @@
+import { leagueWhistleStdDevFromGameTotals } from "../../src/lib/analytics/consistency-variance";
 import {
   computeRefereeArchetype,
   toOfficialStats,
@@ -184,6 +185,7 @@ export function buildSeasonOfficialStatsEntry(
   seasonLabel: string,
   games: GameLogEntry[],
   generatedAt: string,
+  leagueWhistleStdDev?: number,
 ): SeasonOfficialStatsEntry | null {
   if (games.length < BACKFILL_MIN_SAMPLE_GAMES) {
     return {
@@ -199,6 +201,11 @@ export function buildSeasonOfficialStatsEntry(
     sampleWindow: games.length,
     generatedAt,
     minSampleGames: BACKFILL_MIN_SAMPLE_GAMES,
+    leagueWhistleStdDev:
+      leagueWhistleStdDev ??
+      leagueWhistleStdDevFromGameTotals(
+        games.map((game) => whistleTotalForGame(leagueId, game)),
+      ),
   });
   const leverage = computeLeverageIndex(leagueId, leverageGames, {
     sampleWindow: games.length,

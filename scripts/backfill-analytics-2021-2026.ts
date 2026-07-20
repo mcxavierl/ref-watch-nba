@@ -16,7 +16,9 @@ import {
   indexOfficialGamesBySeason,
   type BackfillErrorRecord,
   verifyFoulIntegrity,
+  whistleTotalForGame,
 } from "./lib/backfill-elite-metrics";
+import { leagueWhistleStdDevFromGameTotals } from "../src/lib/analytics/consistency-variance";
 import { loadGameLogs } from "./lib/game-logs";
 import type { LeagueId } from "../src/lib/leagues";
 import type { RefProfile, RefStatsFile } from "../src/lib/types";
@@ -138,6 +140,10 @@ export function runBackfillAnalytics2021To2026(root = ROOT): {
         const generatedAt = new Date().toISOString();
         let progress = 0;
 
+        const leagueWhistleStdDev = leagueWhistleStdDevFromGameTotals(
+          seasonGames.map((game) => whistleTotalForGame(leagueId, game)),
+        );
+
         const updatedRefs = stats.refs.map((profile) => {
           const officialSeasonGames = gamesByOfficial.get(profile.slug)?.get(seasonLabel) ?? [];
           if (officialSeasonGames.length === 0) return profile;
@@ -186,6 +192,7 @@ export function runBackfillAnalytics2021To2026(root = ROOT): {
             seasonLabel,
             officialSeasonGames,
             generatedAt,
+            leagueWhistleStdDev,
           );
           if (!entry) return profile;
 

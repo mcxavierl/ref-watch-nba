@@ -1,4 +1,9 @@
 import {
+  computeConsistencyVariance,
+  consistencyFieldsFromResult,
+  legacyConsistencyScoreFromIndex,
+} from "@/lib/analytics/consistency-variance";
+import {
   archetypeThresholdsForLeague,
 } from "@/lib/analytics/archetype-thresholds";
 import {
@@ -208,6 +213,11 @@ export function toOfficialStats(
   return {
     primary_archetype: result.primary_archetype,
     consistency_score: result.consistency_score,
+    consistency_index: result.consistency_index ?? null,
+    consistency_classification_label:
+      result.consistency_classification_label ?? "insufficient-sample",
+    whistle_std_dev: result.whistle_std_dev ?? null,
+    league_whistle_std_dev: result.league_whistle_std_dev ?? null,
     admin_ratio: result.admin_ratio,
     pressure_sensitive: result.pressure_sensitive,
     pressure_delta_pct: result.pressure_delta_pct,
@@ -220,7 +230,12 @@ export function toOfficialStats(
 export function computeRefereeArchetype(
   leagueId: LeagueId,
   games: ArchetypeGameInput[],
-  options?: { sampleWindow?: number; generatedAt?: string; minSampleGames?: number },
+  options?: {
+    sampleWindow?: number;
+    generatedAt?: string;
+    minSampleGames?: number;
+    leagueWhistleStdDev?: number;
+  },
 ): RefereeArchetypeResult | null {
   const sampleWindow = options?.sampleWindow ?? ARCHETYPE_SAMPLE_WINDOW;
   const minSampleGames = options?.minSampleGames ?? SAMPLE_SIZE_THRESHOLD;
@@ -268,10 +283,18 @@ export function computeRefereeArchetype(
     pressureDeltaPct > CLOSE_GAME_PRESSURE_DELTA_THRESHOLD;
 
   const coefficientOfVariation = whistleCoefficientOfVariation(perGameWhistles);
-  const consistencyScore =
-    sampleGames.length >= minSampleGames
-      ? consistencyScoreFromWhistleRates(perGameWhistles, minSampleGames)
+  const consistencyVariance =
+    typeof options?.leagueWhistleStdDev === "number"
+      ? computeConsistencyVariance(perGameWhistles, options.leagueWhistleStdDev, {
+          minSampleGames,
+        })
       : null;
+
+  const consistencyScore =
+    consistencyVariance !== null
+      ? legacyConsistencyScoreFromIndex(consistencyVariance.consistency_index) ??
+        consistencyScoreFromWhistleRates(perGameWhistles, minSampleGames)
+      : consistencyScoreFromWhistleRates(perGameWhistles, minSampleGames);
   if (consistencyScore === null) return null;
 
   const { volatilityLabel, handicappingSignal } = volatilityFromConsistencyScore(
@@ -287,6 +310,14 @@ export function computeRefereeArchetype(
     pressure_sensitive: pressureSensitive,
     pressure_delta_pct: pressureDeltaPct,
     consistency_score: consistencyScore,
+    ...(consistencyVariance
+      ? consistencyFieldsFromResult(consistencyVariance)
+      : {
+          consistency_index: null,
+          consistency_classification_label: "insufficient-sample",
+          whistle_std_dev: null,
+          league_whistle_std_dev: null,
+        }),
     sample_games: sampleGames.length,
     last_calculated: generatedAt,
     ...DEFAULT_LEVERAGE_STATS,
@@ -391,6 +422,30 @@ export function normalizeOfficialStats(raw: unknown): OfficialStats | null {
         : typeof value.splitBackedGames === "number"
           ? value.splitBackedGames
           : 0,
+    consistency_index:
+      typeof value.consistency_index === "number"
+        ? value.consistency_index
+        : typeof value.consistencyIndex === "number"
+          ? value.consistencyIndex
+          : null,
+    consistency_classification_label:
+      typeof value.consistency_classification_label === "string"
+        ? value.consistency_classification_label
+        : typeof value.consistencyClassificationLabel === "string"
+          ? value.consistencyClassificationLabel
+          : "insufficient-sample",
+    whistle_std_dev:
+      typeof value.whistle_std_dev === "number"
+        ? value.whistle_std_dev
+        : typeof value.whistleStdDev === "number"
+          ? value.whistleStdDev
+          : null,
+    league_whistle_std_dev:
+      typeof value.league_whistle_std_dev === "number"
+        ? value.league_whistle_std_dev
+        : typeof value.leagueWhistleStdDev === "number"
+          ? value.leagueWhistleStdDev
+          : null,
   };
 }
 

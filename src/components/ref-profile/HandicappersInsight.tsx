@@ -1,6 +1,10 @@
 import { PRESSURE_GAUGE_LABELS } from "@/lib/analytics/leverage-sensitivity";
 import type { ScoutingReport } from "@/lib/analytics/scouting-report-types";
-import { consistencyStateClass, STATE_COLOR_CLASS } from "@/constants/colors";
+import {
+  consistencyIndexStateClass,
+  consistencyStateClass,
+  STATE_COLOR_CLASS,
+} from "@/constants/colors";
 import "./scouting-report.css";
 
 type HandicappersInsightProps = {
@@ -8,6 +12,8 @@ type HandicappersInsightProps = {
     ScoutingReport,
     | "edgeNote"
     | "consistencyScore"
+    | "consistencyIndex"
+    | "consistencyClassificationDisplay"
     | "leverageSensitivityIndex"
     | "leverageProfile"
     | "leverageInsight"
@@ -15,10 +21,20 @@ type HandicappersInsightProps = {
   >;
 };
 
-function volatilityLabel(consistencyScore: number): string {
-  if (consistencyScore <= 4) return "High volatility";
-  if (consistencyScore >= 7) return "Low volatility";
+function volatilityLabel(report: HandicappersInsightProps["report"]): string {
+  if (report.consistencyIndex !== null) {
+    return report.consistencyClassificationDisplay;
+  }
+  if (report.consistencyScore <= 4) return "High volatility";
+  if (report.consistencyScore >= 7) return "Low volatility";
   return "Moderate volatility";
+}
+
+function consistencyDisplay(report: HandicappersInsightProps["report"]): string {
+  if (report.consistencyIndex !== null) {
+    return `${volatilityLabel(report)} · Consistency ${report.consistencyIndex}/100`;
+  }
+  return `${volatilityLabel(report)} · Consistency ${report.consistencyScore}/10`;
 }
 
 function edgeSignal(report: HandicappersInsightProps["report"]): string {
@@ -28,7 +44,11 @@ function edgeSignal(report: HandicappersInsightProps["report"]): string {
   if (report.leverageProfile === "swallows-whistle") {
     return "Late-game Under lean when this ref works a tight finish.";
   }
-  if (report.consistencyScore <= 4) {
+  const volatile =
+    report.consistencyIndex !== null
+      ? report.consistencyIndex < 40
+      : report.consistencyScore <= 4;
+  if (volatile) {
     return "Totals market carries extra variance. Size down or wait for live numbers.";
   }
   return "No strong directional edge from leverage profile alone.";
@@ -67,10 +87,13 @@ export function HandicappersInsight({ report }: HandicappersInsightProps) {
         <div className="handicappers-insight-stat">
           <dt>Volatility</dt>
           <dd
-            className={`tabular-nums text-right ${consistencyStateClass(report.consistencyScore)}`}
+            className={`tabular-nums text-right ${
+              report.consistencyIndex !== null
+                ? consistencyIndexStateClass(report.consistencyIndex)
+                : consistencyStateClass(report.consistencyScore)
+            }`}
           >
-            {volatilityLabel(report.consistencyScore)} · Consistency{" "}
-            {report.consistencyScore}/10
+            {consistencyDisplay(report)}
           </dd>
         </div>
         <div className="handicappers-insight-stat">

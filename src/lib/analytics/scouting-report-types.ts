@@ -38,6 +38,10 @@ export type ScoutingReport = {
   archetypeBlurb: string;
   /** 1 (volatile) to 10 (highly consistent) whistle-volume profile. */
   consistencyScore: number;
+  /** 0-100 whistle predictability score vs league variance baseline. */
+  consistencyIndex: number | null;
+  consistencyClassificationLabel: string;
+  consistencyClassificationDisplay: string;
   officialStats: OfficialStats;
   leverageIndex: number | null;
   leverageProfile: import("@/lib/types").LeveragePressureProfile;
