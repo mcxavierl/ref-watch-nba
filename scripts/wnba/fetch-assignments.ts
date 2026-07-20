@@ -4,6 +4,7 @@ import * as path from "node:path";
 import type { AssignmentGame, AssignmentsFile } from "../../src/lib/types";
 import { fetchWnbaAssignments } from "../lib/parse-assignments";
 import { normalizeWnbaAbbr } from "../../src/lib/wnba/abbr";
+import { crewMatchupKey } from "./lib/crew-matchup";
 import { fetchWnbaScoreboard, sleep, yyyymmdd } from "./lib/espn";
 
 const outPath = path.join(process.cwd(), "data", "wnba", "assignments.json");
@@ -72,7 +73,10 @@ async function main() {
 
   const crewByMatchup = new Map<string, AssignmentGame["crew"]>();
   for (const game of official?.games ?? []) {
-    crewByMatchup.set(matchupKey(game.awayTeam, game.homeTeam), game.crew);
+    const key = crewMatchupKey(game.awayTeam, game.homeTeam);
+    if (key && game.crew.length > 0) {
+      crewByMatchup.set(key, game.crew);
+    }
   }
 
   const events = await collectUpcomingEvents(start);
