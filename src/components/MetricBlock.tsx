@@ -56,7 +56,7 @@ export function MetricBlock({
     .join(" ");
 
   return (
-    <div className="clinical-metric-card flex flex-col gap-2 bg-surface px-4 py-4 backdrop-blur-md sm:px-5">
+    <div className="clinical-metric-card flex h-fit flex-col gap-2 bg-surface px-4 py-4 backdrop-blur-md sm:px-5">
       <div className="clinical-metric-card-head flex flex-wrap items-center gap-x-2 gap-y-1">
         {Icon && (
           <Icon

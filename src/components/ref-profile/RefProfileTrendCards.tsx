@@ -60,7 +60,7 @@ function TrendCard({
     <article
       id={shareId}
       data-stat-card="true"
-      className="ref-profile-trend-card stat-card"
+      className="ref-profile-trend-card stat-card h-fit"
     >
       <header className="ref-profile-trend-card-head">
         <TermHelp id={termId}>{title}</TermHelp>

@@ -748,7 +748,8 @@ html.dark .dashboard-insight-card:hover {
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-primary);
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .whistle-disposition-metric-delta {
