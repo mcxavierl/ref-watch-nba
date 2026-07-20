@@ -22,6 +22,9 @@ import {
 } from "@/lib/analytics/referee-archetypes";
 import { buildEdgeNote } from "@/lib/analytics/build-edge-note";
 import {
+  meetsSampleSizeThreshold,
+} from "@/lib/analytics/sample-size";
+import {
   buildLeverageInsight,
   computeLeverageIndex,
   leverageFieldsFromResult,
@@ -267,7 +270,7 @@ function resolveOfficialStats(
   const subjective = subjectiveTotal || 1;
   const adminRatio = round3(administrativeTotal / subjective);
   return {
-    primary_archetype: classifyAdminRatio(adminRatio),
+    primary_archetype: classifyAdminRatio(adminRatio, leagueId),
     admin_ratio: adminRatio,
     pressure_sensitive: pressureSensitive,
     pressure_delta_pct:
@@ -349,7 +352,7 @@ function buildAnalyticsFallbackReport(
   const adminRatio = round3(administrative / subjective);
   const officialStats: OfficialStats = {
     ...(officialStatsFromProfile(profile) ?? {
-      primary_archetype: classifyAdminRatio(adminRatio),
+      primary_archetype: classifyAdminRatio(adminRatio, gameMetadata.leagueId),
       admin_ratio: adminRatio,
       pressure_sensitive: pressureSensitive,
       pressure_delta_pct: pressureDeltaPct,
@@ -437,7 +440,7 @@ export function generateScoutingReport(
   const crewGames = loadOfficialGames(officialId, leagueId);
   const sampleGames = crewGames.slice(-SCOUTING_REPORT_SAMPLE_WINDOW);
 
-  if (sampleGames.length < 5) {
+  if (!meetsSampleSizeThreshold(sampleGames.length)) {
     const analyticsFallback = buildAnalyticsFallbackReport(
       profile,
       gameMetadata,

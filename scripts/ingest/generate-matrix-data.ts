@@ -5,6 +5,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { filterGamesForMatrixGeneration } from "./lib/matrix-record-schema";
 import { attachRefArchetypesFromGames } from "../lib/attach-ref-archetypes";
 import { loadGameLogs } from "../lib/game-logs";
 import { refSlug } from "../lib/slug";
@@ -94,9 +95,21 @@ export function generateMatrixDataForLeague(
     return 0;
   }
 
+  const { games: validatedGames, excludedGames, excludedRecords } =
+    filterGamesForMatrixGeneration(logs.games, leagueId);
+  if (excludedGames > 0) {
+    console.error(
+      `${leagueId}: excluded ${excludedGames} game(s) and ${excludedRecords} invalid matrix record(s)`,
+    );
+  }
+  if (!validatedGames.length) {
+    console.log(`skip ${leagueId}: no valid matrix games after schema validation`);
+    return 0;
+  }
+
   const stats = JSON.parse(fs.readFileSync(statsPath, "utf8")) as RefStatsFile;
-  const withFoulAggregates = refreshAggregateFoulStats(stats.refs, logs.games, leagueId);
-  const updatedRefs = attachRefArchetypesFromGames(withFoulAggregates, logs.games, leagueId);
+  const withFoulAggregates = refreshAggregateFoulStats(stats.refs, validatedGames, leagueId);
+  const updatedRefs = attachRefArchetypesFromGames(withFoulAggregates, validatedGames, leagueId);
   const tagged = updatedRefs.filter((ref) => ref.officialStats !== undefined).length;
 
   const nextStats: RefStatsFile = {

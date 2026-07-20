@@ -79,7 +79,7 @@ export function attachRefArchetypesFromGames(
     const leverageGames = leverageGamesByOfficial.get(profile.slug) ?? [];
     const leverage = computeLeverageIndex(leagueId, leverageGames);
 
-    if (!archetype && leverage.leverage_sample_games < 5) return profile;
+    if (!archetype && leverage.data_quality === "insufficient") return profile;
 
     const baseStats = archetype
       ? toOfficialStats(archetype)

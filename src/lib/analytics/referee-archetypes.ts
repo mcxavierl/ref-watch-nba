@@ -1,4 +1,13 @@
 import {
+  archetypeThresholdsForLeague,
+} from "@/lib/analytics/archetype-thresholds";
+import {
+  dataQualityFromSampleSize,
+  meetsSampleSizeThreshold,
+  SAMPLE_SIZE_THRESHOLD,
+  type DataQualityState,
+} from "@/lib/analytics/sample-size";
+import {
   isWhistleTaxonomyLeague,
   splitAggregateWhistleCount,
   type WhistleTaxonomyLeague,
@@ -9,7 +18,8 @@ import type { OfficialStats, RefereeArchetypeId } from "@/lib/types";
 import { computeGameDispositionCounts } from "@/lib/whistle-disposition";
 
 export const ARCHETYPE_SAMPLE_WINDOW = 50;
-export const ARCHETYPE_MIN_SAMPLE_GAMES = 5;
+/** @deprecated Use SAMPLE_SIZE_THRESHOLD for professional gatekeeping. */
+export const ARCHETYPE_MIN_SAMPLE_GAMES = SAMPLE_SIZE_THRESHOLD;
 export const ADMIN_RATIO_PROCEDURAL_THRESHOLD = 1.5;
 export const ADMIN_RATIO_GAME_MANAGER_THRESHOLD = 0.7;
 export const CLOSE_GAME_SCORE_DIFF_THRESHOLD = 5;
@@ -37,6 +47,7 @@ export type RefereeArchetypeResult = OfficialStats & {
   primaryFoulType: string;
   volatilityLabel: "High" | "Low";
   handicappingSignal: "Risk" | "Stability";
+  data_quality: DataQualityState;
 };
 
 export const ARCHETYPE_DISPLAY_NAMES: Record<RefereeArchetypeId, string> = {
@@ -97,9 +108,13 @@ function dispositionCounts(
   return { subjective: split.subjective, administrative: split.administrative };
 }
 
-export function classifyAdminRatio(adminRatio: number): RefereeArchetypeId {
-  if (adminRatio > ADMIN_RATIO_PROCEDURAL_THRESHOLD) return "procedural-stickler";
-  if (adminRatio < ADMIN_RATIO_GAME_MANAGER_THRESHOLD) return "game-flow-manager";
+export function classifyAdminRatio(
+  adminRatio: number,
+  leagueId: LeagueId = "nba",
+): RefereeArchetypeId {
+  const thresholds = archetypeThresholdsForLeague(leagueId);
+  if (adminRatio > thresholds.procedural) return "procedural-stickler";
+  if (adminRatio < thresholds.gameManager) return "game-flow-manager";
   return "balanced";
 }
 
@@ -111,8 +126,10 @@ export function whistleCoefficientOfVariation(perGameWhistles: number[]): number
   return populationStdDev(perGameWhistles) / mean;
 }
 
-export function consistencyScoreFromWhistleRates(perGameWhistles: number[]): number {
-  if (perGameWhistles.length < ARCHETYPE_MIN_SAMPLE_GAMES) return 5;
+export function consistencyScoreFromWhistleRates(
+  perGameWhistles: number[],
+): number | null {
+  if (!meetsSampleSizeThreshold(perGameWhistles.length)) return null;
 
   const coefficientOfVariation = whistleCoefficientOfVariation(perGameWhistles);
   const raw = 10 - (coefficientOfVariation / 0.5) * 9;
@@ -200,7 +217,7 @@ export function computeRefereeArchetype(
 ): RefereeArchetypeResult | null {
   const sampleWindow = options?.sampleWindow ?? ARCHETYPE_SAMPLE_WINDOW;
   const sampleGames = games.slice(-sampleWindow);
-  if (sampleGames.length < ARCHETYPE_MIN_SAMPLE_GAMES) return null;
+  if (!meetsSampleSizeThreshold(sampleGames.length)) return null;
 
   let subjectiveTotal = 0;
   let administrativeTotal = 0;
@@ -229,7 +246,7 @@ export function computeRefereeArchetype(
 
   const subjective = subjectiveTotal || 1;
   const adminRatio = round3(administrativeTotal / subjective);
-  const primaryArchetype = classifyAdminRatio(adminRatio);
+  const primaryArchetype = classifyAdminRatio(adminRatio, leagueId);
 
   let pressureDeltaPct: number | null = null;
   if (closeGameCount >= 3 && openGameCount >= 3 && openWhistleSum > 0) {
@@ -244,6 +261,8 @@ export function computeRefereeArchetype(
 
   const coefficientOfVariation = whistleCoefficientOfVariation(perGameWhistles);
   const consistencyScore = consistencyScoreFromWhistleRates(perGameWhistles);
+  if (consistencyScore === null) return null;
+
   const { volatilityLabel, handicappingSignal } = volatilityFromConsistencyScore(
     consistencyScore,
     coefficientOfVariation,
@@ -270,6 +289,7 @@ export function computeRefereeArchetype(
       consistencyScore,
       coefficientOfVariation,
     ),
+    data_quality: dataQualityFromSampleSize(sampleGames.length),
   };
 }
 

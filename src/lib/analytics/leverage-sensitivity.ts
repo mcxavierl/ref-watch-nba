@@ -1,4 +1,10 @@
 import type { LeagueId } from "@/lib/leagues";
+import {
+  dataQualityFromSampleSize,
+  meetsSampleSizeThreshold,
+  SAMPLE_SIZE_THRESHOLD,
+  type DataQualityState,
+} from "@/lib/analytics/sample-size";
 import type { LeveragePressureProfile } from "@/lib/types";
 import {
   hasWhistlePeriodSplits,
@@ -7,7 +13,8 @@ import {
 } from "@/lib/whistle-period-splits";
 
 export const LEVERAGE_SAMPLE_WINDOW = 50;
-export const LEVERAGE_MIN_SAMPLE_GAMES = 5;
+/** @deprecated Use SAMPLE_SIZE_THRESHOLD for professional gatekeeping. */
+export const LEVERAGE_MIN_SAMPLE_GAMES = SAMPLE_SIZE_THRESHOLD;
 export const LEVERAGE_MIN_CLOSE_GAMES = 3;
 export const LEVERAGE_INDEX_THRESHOLD = 0.2;
 export const CLOSE_GAME_SCORE_DIFF = 5;
@@ -32,7 +39,25 @@ export type LeverageIndexResult = {
   leverage_sample_games: number;
   close_game_sample: number;
   split_backed_games: number;
+  data_quality: DataQualityState;
 };
+
+function insufficientLeverageResult(
+  earlyRateCount: number,
+  closeGameSample: number,
+  splitBackedGames: number,
+): LeverageIndexResult {
+  return {
+    leverage_index: null,
+    leverage_profile: "neutral",
+    early_period_foul_rate: null,
+    high_pressure_foul_rate: null,
+    leverage_sample_games: earlyRateCount,
+    close_game_sample: closeGameSample,
+    split_backed_games: splitBackedGames,
+    data_quality: "insufficient",
+  };
+}
 
 export type PressureGaugeState = "tightens-up" | "swallows-whistle" | "neutral";
 
@@ -209,16 +234,8 @@ export function computeLeverageIndex(
     }
   }
 
-  if (earlyRateCount < LEVERAGE_MIN_SAMPLE_GAMES) {
-    return {
-      leverage_index: null,
-      leverage_profile: "neutral",
-      early_period_foul_rate: null,
-      high_pressure_foul_rate: null,
-      leverage_sample_games: earlyRateCount,
-      close_game_sample: closeGameSample,
-      split_backed_games: splitBackedGames,
-    };
+  if (!meetsSampleSizeThreshold(earlyRateCount)) {
+    return insufficientLeverageResult(earlyRateCount, closeGameSample, splitBackedGames);
   }
 
   const earlyPeriodFoulRate = earlyRateSum / earlyRateCount;
@@ -243,6 +260,7 @@ export function computeLeverageIndex(
     leverage_sample_games: earlyRateCount,
     close_game_sample: closeGameSample,
     split_backed_games: splitBackedGames,
+    data_quality: dataQualityFromSampleSize(earlyRateCount),
   };
 }
 

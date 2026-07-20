@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { SAMPLE_SIZE_THRESHOLD } from "@/lib/analytics/sample-size";
 import {
   generateScoutingReport,
   type GameScoutingMetadata,
@@ -62,7 +63,7 @@ export async function GET(
         error: "Insufficient game history to generate scouting report.",
         officialId,
         leagueId,
-        minimumGames: 5,
+        minimumGames: SAMPLE_SIZE_THRESHOLD,
       },
       { status: 422 },
     );
