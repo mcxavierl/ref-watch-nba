@@ -94,6 +94,9 @@ jobs:
       - name: Insight-first audit
         run: npm run audit:insight-first
 
+      - name: Overlay portal audit
+        run: npm run audit:overlay-portals
+
       - name: Unit tests
         run: npm run test
 
