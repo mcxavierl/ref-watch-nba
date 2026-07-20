@@ -144,6 +144,7 @@ function toLeverageInput(game: GameLogEntry): LeverageGameInput {
     awayMinors: game.awayMinors,
     wentToOvertime: game.wentToOvertime,
     whistlePeriodSplits: game.whistlePeriodSplits,
+    penaltyEvents: game.penaltyEvents,
   };
 }
 

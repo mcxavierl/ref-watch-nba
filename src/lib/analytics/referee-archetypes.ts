@@ -186,6 +186,9 @@ export const DEFAULT_LEVERAGE_STATS: Pick<
   | "leverage_sample_games"
   | "close_game_sample"
   | "split_backed_games"
+  | "tactical_event_backed_games"
+  | "intentional_foul_noise_filtered"
+  | "leverage_method_note"
 > = {
   leverage_index: null,
   leverage_profile: "neutral",
@@ -194,6 +197,9 @@ export const DEFAULT_LEVERAGE_STATS: Pick<
   leverage_sample_games: 0,
   close_game_sample: 0,
   split_backed_games: 0,
+  tactical_event_backed_games: 0,
+  intentional_foul_noise_filtered: true,
+  leverage_method_note: "",
 };
 
 export function toOfficialStats(

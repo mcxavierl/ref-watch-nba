@@ -45,6 +45,8 @@ export type ScoutingReport = {
   leverageInsight: string;
   /** Alias for B2B Elite feed consumers. */
   leverageSensitivityIndex: number | null;
+  intentionalFoulNoiseFiltered: boolean;
+  leverageMethodNote: string;
   edgeNote: string;
   styleProfile: ScoutingStyleProfile;
   pressureSensitive: boolean;

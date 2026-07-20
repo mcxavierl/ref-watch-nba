@@ -31,7 +31,7 @@ function makeCloseHighLeverageGame(): LeverageGameInput {
         { period: 1, home: 5, away: 5 },
         { period: 2, home: 5, away: 5 },
         { period: 3, home: 5, away: 5 },
-        { period: 4, home: 10, away: 9 },
+        { period: 4, home: 18, away: 17 },
       ],
     },
   });
@@ -76,7 +76,9 @@ describe("leverage-sensitivity", () => {
     assert.ok((result.leverage_index ?? 0) > LEVERAGE_INDEX_THRESHOLD);
     assert.equal(result.leverage_profile, "high-leverage-sensitivity");
     assert.equal(pressureGaugeState(result.leverage_profile), "tightens-up");
-    assert.match(buildLeverageInsight(result.leverage_profile), /High Leverage Sensitivity/);
+    assert.equal(result.intentional_foul_noise_filtered, true);
+    assert.match(result.leverage_method_note, /intentional-foul noise/i);
+    assert.match(buildLeverageInsight(result.leverage_profile), /Adjusted High Leverage Sensitivity/);
   });
 
   it("classifies swallows the whistle when late close-game rate drops more than 20%", () => {
