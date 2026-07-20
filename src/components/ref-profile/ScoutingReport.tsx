@@ -2,12 +2,18 @@ import { ClinicalCard } from "@/components/hub/ClinicalCard";
 import { ArchetypeCard } from "@/components/ref-profile/ArchetypeCard";
 import { HandicappersInsight } from "@/components/ref-profile/HandicappersInsight";
 import { PressureGauge } from "@/components/ref-profile/PressureGauge";
+import { ScoutingWhistleTooltipLabel } from "@/components/ref-profile/ScoutingWhistleTooltipLabel";
 import {
   generateScoutingReport,
   type GameScoutingMetadata,
 } from "@/lib/analytics/generate-scouting-report";
 import type { ResolvedOfficialProfile } from "@/lib/analytics/resolve-official-profile";
 import type { ScoutingReport as ScoutingReportData } from "@/lib/analytics/scouting-report-types";
+import {
+  PROCEDURAL_WHISTLE_TOOLTIP,
+  SCOUTING_METRIC_DISPLAY_MIN_GAMES,
+  SUBJECTIVE_WHISTLE_TOOLTIP,
+} from "@/lib/analytics/scouting-report-types";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 import "./scouting-report.css";
@@ -22,6 +28,19 @@ type ScoutingReportProps = {
 
 function strictnessPosition(strictnessScore: number): string {
   return `${Math.max(4, Math.min(96, strictnessScore))}%`;
+}
+
+function formatHighStakesRate(
+  sampleGames: number,
+  pressureWhistlesPerGame: number | null,
+): { label: string; insufficient: boolean } {
+  if (
+    sampleGames < SCOUTING_METRIC_DISPLAY_MIN_GAMES ||
+    pressureWhistlesPerGame === null
+  ) {
+    return { label: "Insufficient Data", insufficient: true };
+  }
+  return { label: `${pressureWhistlesPerGame}/game`, insufficient: false };
 }
 
 function resolveReport({
@@ -68,6 +87,10 @@ export function ScoutingReportDepth(props: ScoutingReportProps) {
   if (!report) return null;
 
   const { styleProfile } = report;
+  const highStakesRate = formatHighStakesRate(
+    report.sampleGames,
+    report.pressureWhistlesPerGame,
+  );
 
   return (
     <>
@@ -116,8 +139,14 @@ export function ScoutingReportDepth(props: ScoutingReportProps) {
               />
             </div>
             <p className="scouting-style-profile-label tabular-nums">
-              {styleProfile.gameFlowScore}% subjective, {styleProfile.strictnessScore}%
-              procedural
+              {styleProfile.gameFlowScore}%{" "}
+              <ScoutingWhistleTooltipLabel hint={SUBJECTIVE_WHISTLE_TOOLTIP}>
+                Subjective
+              </ScoutingWhistleTooltipLabel>
+              , {styleProfile.strictnessScore}%{" "}
+              <ScoutingWhistleTooltipLabel hint={PROCEDURAL_WHISTLE_TOOLTIP}>
+                Procedural
+              </ScoutingWhistleTooltipLabel>
             </p>
           </div>
         </div>
@@ -136,28 +165,28 @@ export function ScoutingReportDepth(props: ScoutingReportProps) {
             </span>
           </div>
           <div className="scouting-report-metric">
-            <span className="scouting-report-metric-label">Subjective share</span>
+            <span className="scouting-report-metric-label">
+              <ScoutingWhistleTooltipLabel hint={SUBJECTIVE_WHISTLE_TOOLTIP}>
+                Subjective share
+              </ScoutingWhistleTooltipLabel>
+            </span>
             <span className="scouting-report-metric-value tabular-nums">
               {(styleProfile.subjectiveShare * 100).toFixed(1)}%
             </span>
           </div>
           <div className="scouting-report-metric">
             <span className="scouting-report-metric-label">High-stakes rate</span>
-            <span className="scouting-report-metric-value tabular-nums">
-              {report.pressureWhistlesPerGame !== null
-                ? `${report.pressureWhistlesPerGame}/game`
-                : "n/a"}
+            <span
+              className={`scouting-report-metric-value tabular-nums${highStakesRate.insufficient ? " scouting-report-metric-value--insufficient" : ""}`}
+            >
+              {highStakesRate.label}
             </span>
           </div>
         </div>
 
         <div className="scouting-report-subsection">
           <h3 className="scouting-report-subsection-title">Game-Flow Impact</h3>
-          <ul className="scouting-report-insights">
-            {report.insights.map((insight) => (
-              <li key={insight}>{insight}</li>
-            ))}
-          </ul>
+          <p className="scouting-report-narrative">{report.gameFlowImpact}</p>
         </div>
 
         <p className="scouting-report-footnote">

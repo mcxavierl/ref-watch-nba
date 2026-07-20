@@ -3,6 +3,14 @@ import type { OfficialStats, RefereeArchetypeId } from "@/lib/types";
 
 export const SCOUTING_REPORT_SAMPLE_WINDOW = 50;
 
+export const SCOUTING_METRIC_DISPLAY_MIN_GAMES = 10;
+
+export const SUBJECTIVE_WHISTLE_TOOLTIP =
+  "Fouls based on interpretation (e.g., reaching, holding). High frequency correlates with high game-flow variance.";
+
+export const PROCEDURAL_WHISTLE_TOOLTIP =
+  "Fouls based on black-and-white rules (e.g., traveling, out-of-bounds). High frequency indicates a strict, rule-based approach.";
+
 export const PRESSURE_SENSITIVITY_THRESHOLD = 0.1;
 
 export type ScoutingStyleArchetype = "game-flow" | "rule-enforcer" | "balanced";
@@ -52,6 +60,6 @@ export type ScoutingReport = {
   baselineWhistlesPerGame: number;
   pressureWhistlesPerGame: number | null;
   summary: string;
-  insights: string[];
+  gameFlowImpact: string;
   eventBackedGames: number;
 };
