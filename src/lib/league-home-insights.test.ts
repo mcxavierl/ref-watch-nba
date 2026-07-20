@@ -6,6 +6,7 @@ import {
   LEAGUE_PULSE_LIMIT,
 } from "@/lib/league-home-insights";
 import { LEAGUES } from "@/lib/leagues";
+import { loadLeagueStats } from "@/lib/load-league-stats";
 import type { AssignmentsFile, RefProfile, RefStatsFile } from "@/lib/types";
 
 function makeRef(overrides: Partial<RefProfile> = {}): RefProfile {
@@ -115,5 +116,34 @@ describe("league-home-insights", () => {
         assert.equal(pulseSlugs.has(spotlight.refSlug), false);
       }
     }
+  });
+
+  it("builds verified WNBA home insights from ref stats like other pro leagues", () => {
+    const { stats } = loadLeagueStats("wnba");
+    const bundle = buildLeagueHomeInsights({
+      leagueId: "wnba",
+      refStats: stats,
+      assignments: {
+        ...emptyAssignments,
+        games: [
+          {
+            id: "401857083",
+            matchup: "LVA @ TOR",
+            awayTeam: "LVA",
+            homeTeam: "TOR",
+            league: "WNBA",
+            slateDate: "2026-07-21",
+            crew: [],
+          },
+        ],
+      },
+    });
+
+    assert.ok(bundle.pulse.length > 0);
+    assert.ok(bundle.matchups.length > 0);
+    assert.ok(bundle.spotlights.length > 0);
+    assert.match(bundle.pulse[0]?.title ?? "", /whistle|divergence|split|bias/i);
+    assert.match(bundle.matchups[0]?.body ?? "", /Refs not assigned yet/);
+    assert.ok(bundle.spotlights[0]?.refSlug);
   });
 });

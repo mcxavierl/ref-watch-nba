@@ -45,6 +45,7 @@ const LEAGUE_TO_DATA: Record<(typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number], D
   nfl: "NFL",
   epl: "EPL",
   laliga: "LALIGA",
+  wnba: "WNBA",
 };
 
 const METRIC_LABELS: Partial<Record<LeagueId, string>> = {
@@ -52,6 +53,7 @@ const METRIC_LABELS: Partial<Record<LeagueId, string>> = {
   nhl: "minors",
   epl: "fouls",
   laliga: "fouls",
+  wnba: "fouls",
 };
 
 function refSlug(name: string, number: number): string {

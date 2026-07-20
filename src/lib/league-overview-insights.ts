@@ -34,6 +34,9 @@ import { formatBaselinePct, formatPct } from "@/lib/stats-utils";
 import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
+import { getTeamSplits as getWnbaTeamSplits } from "@/lib/wnba/data";
+import { computeFindings as computeWnbaFindings } from "@/lib/wnba/findings";
+import { WNBA_TEAMS, teamFullName as wnbaTeamFullName } from "@/lib/wnba/teams";
 
 import { buildLeagueStandoutCardsForLeague } from "@/lib/insights/league-card-from-stats";
 import { heroToneFromWinRateDelta } from "@/lib/metric-significance";
@@ -79,7 +82,7 @@ type LeagueInsightConfig = {
   teams: { abbr: string; label: string; name: string; nbaId?: number }[];
   getTeamSplits: (abbr: string) => import("@/lib/types").TeamCrewSplit[];
   computeFindings: (limit?: number) => Finding[];
-  matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga";
+  matrixLeague: "nba" | "nhl" | "nfl" | "epl" | "laliga" | "wnba";
 };
 
 const LEAGUE_CONFIG: Record<(typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number], LeagueInsightConfig> = {
@@ -138,6 +141,17 @@ const LEAGUE_CONFIG: Record<(typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[number], Le
     getTeamSplits: getLaligaTeamSplits,
     computeFindings: computeLaligaFindings,
     matrixLeague: "laliga",
+  },
+  wnba: {
+    leagueId: "wnba",
+    teams: WNBA_TEAMS.map((team) => ({
+      abbr: team.abbr,
+      label: wnbaTeamFullName(team),
+      name: team.name,
+    })),
+    getTeamSplits: getWnbaTeamSplits,
+    computeFindings: computeWnbaFindings,
+    matrixLeague: "wnba",
   },
 };
 

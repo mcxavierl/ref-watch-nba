@@ -10,6 +10,8 @@ import { getTeamSplits as getNhlTeamSplits } from "@/lib/nhl/data";
 import { NHL_TEAMS, teamFullName as nhlTeamFullName } from "@/lib/nhl/teams";
 import { getTeamSplits as getNbaTeamSplits } from "@/lib/data";
 import { NBA_TEAMS, teamFullName as nbaTeamFullName } from "@/lib/teams";
+import { getTeamSplits as getWnbaTeamSplits } from "@/lib/wnba/data";
+import { WNBA_TEAMS, teamFullName as wnbaTeamFullName } from "@/lib/wnba/teams";
 import type { LeagueId } from "@/lib/leagues";
 import { formatPct } from "@/lib/stats-utils";
 import { applyClinicalTone } from "@/lib/insights/tone-filter";
@@ -102,6 +104,16 @@ const LEAGUE_SETUP: Record<
     })),
     getTeamSplits: getLaligaTeamSplits,
     matrixLeague: "laliga",
+  },
+  wnba: {
+    leagueId: "wnba",
+    teams: WNBA_TEAMS.map((team) => ({
+      abbr: team.abbr,
+      label: wnbaTeamFullName(team),
+      name: team.name,
+    })),
+    getTeamSplits: getWnbaTeamSplits,
+    matrixLeague: "wnba",
   },
 };
 

@@ -11,6 +11,7 @@ import { NFL_TEAMS } from "@/lib/nfl/teams";
 import { NHL_TEAMS } from "@/lib/nhl/teams";
 import { EPL_TEAMS } from "@/lib/epl/teams";
 import { LALIGA_TEAMS } from "@/lib/laliga/teams";
+import { WNBA_TEAMS } from "@/lib/wnba/teams";
 import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
@@ -82,6 +83,7 @@ const LEAGUE_ID_TO_FINDING: Record<(typeof PRO_MATRIX_ANALYTICS_LEAGUE_IDS)[numb
   nfl: "NFL",
   epl: "EPL",
   laliga: "LALIGA",
+  wnba: "WNBA",
 };
 
 const TEAMS_BY_LEAGUE: Record<FindingLeague, TeamGeo[]> = {
@@ -92,7 +94,7 @@ const TEAMS_BY_LEAGUE: Record<FindingLeague, TeamGeo[]> = {
   LALIGA: LALIGA_TEAMS,
   CBB: [],
   CFB: [],
-  WNBA: [],
+  WNBA: WNBA_TEAMS.map((team) => ({ abbr: team.abbr, city: team.city })),
 };
 
 const CITY_ALIASES: Record<string, string[]> = {

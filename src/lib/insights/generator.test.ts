@@ -13,11 +13,11 @@ import { EVERGREEN_TOP_STORIES } from "./evergreen";
 import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 
 describe("insight generator", () => {
-  it("scans matrix analytics leagues and excludes WNBA until ref profiles ingest", () => {
+  it("scans matrix analytics leagues including verified WNBA ref profiles", () => {
     for (const leagueId of PRO_MATRIX_ANALYTICS_LEAGUE_IDS) {
       assert.equal(isAllowedInsightLeague(leagueId), true);
     }
-    assert.equal(isAllowedInsightLeague("wnba"), false);
+    assert.equal(isAllowedInsightLeague("wnba"), true);
   });
 
   it("applies clinical tone filter to sensational copy", () => {

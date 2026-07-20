@@ -6,7 +6,6 @@ import {
   buildTopMatrixSplitCardForLeague,
   type LeagueInsightCard,
 } from "@/lib/league-overview-insights";
-import { buildWnbaSlateInsights } from "@/lib/wnba/slate-insights";
 import { PRO_MATRIX_ANALYTICS_LEAGUE_IDS } from "@/lib/league-verification";
 import {
   buildRankingsSynthesis,
@@ -189,10 +188,6 @@ export function buildLeagueHomeInsights({
   assignments: AssignmentsFile;
 }): LeagueHomeInsights {
   const league = LEAGUES[leagueId];
-
-  if (leagueId === "wnba") {
-    return buildWnbaSlateInsights(assignments, league.pathPrefix);
-  }
 
   const pulse = buildLeaguePulseInsights(refStats, league);
   const pulseSlugs = new Set(

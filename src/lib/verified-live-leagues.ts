@@ -10,6 +10,7 @@ export const PRO_MATRIX_ANALYTICS_LEAGUE_IDS = [
   "nfl",
   "epl",
   "laliga",
+  "wnba",
 ] as const satisfies readonly LeagueId[];
 
 export const PRO_VERIFIED_LIVE_LEAGUE_IDS = [
