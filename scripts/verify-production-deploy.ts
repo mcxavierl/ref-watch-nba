@@ -2,7 +2,11 @@
 /**
  * Post-deploy smoke test — fails loudly on 1102 or zero-data regressions.
  */
-import { VERIFIED_LIVE_LEAGUE_IDS } from "../src/lib/league-verification";
+import {
+  LAUNCHED_NCAA_LEAGUE_IDS,
+  PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS,
+  PRO_VERIFIED_LIVE_LEAGUE_IDS,
+} from "../src/lib/league-verification";
 import { isCfbSimulatedData } from "../src/lib/cfb/data-source";
 
 const ORIGIN = (process.env.REFWATCH_DEPLOY_URL ?? "https://refwatch.ca").replace(
@@ -63,10 +67,13 @@ const ROUTES: RouteCheck[] = [
   },
 ];
 
-const JSON_ASSETS = VERIFIED_LIVE_LEAGUE_IDS.filter((league) => league !== "cfb").map((league) =>
-  league === "nba"
-    ? "/data/nba/ref-stats.json"
-    : `/data/${league}/ref-stats.json`,
+const JSON_ASSETS = [...PRO_VERIFIED_LIVE_LEAGUE_IDS, ...LAUNCHED_NCAA_LEAGUE_IDS].map(
+  (league) =>
+    league === "nba" ? "/data/nba/ref-stats.json" : `/data/${league}/ref-stats.json`,
+);
+
+const ASSIGNMENTS_ASSETS = PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS.map(
+  (league) => `/data/${league}/assignments.json`,
 );
 
 const failures: string[] = [];
@@ -135,6 +142,23 @@ async function main(): Promise<void> {
       console.log(`  ✓ ${route.path} HTTP ${status}`);
     } catch (err) {
       fail(`${route.path}: fetch failed (${err instanceof Error ? err.message : err})`);
+    }
+  }
+
+  for (const assetPath of ASSIGNMENTS_ASSETS) {
+    const url = `${ORIGIN}${assetPath}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        fail(`${assetPath}: HTTP ${res.status}`);
+        continue;
+      }
+      const data = (await res.json()) as { games?: unknown[] };
+      const games = data.games?.length ?? 0;
+      if (games < 1) fail(`${assetPath}: games array is empty`);
+      console.log(`  ✓ ${assetPath} games=${games}`);
+    } catch (err) {
+      fail(`${assetPath}: ${err instanceof Error ? err.message : err}`);
     }
   }
 
