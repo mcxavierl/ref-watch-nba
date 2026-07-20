@@ -21,7 +21,7 @@ export function RankingSignalPill({
 
   if (pattern.kind === "stable") {
     return (
-      <Pill variant="signal" className={className}>
+      <Pill variant="signal" className={className} title={pattern.label}>
         {pattern.label}
       </Pill>
     );
@@ -31,6 +31,7 @@ export function RankingSignalPill({
     <PrefetchLink
       href={`${profileHref}#profile-signals`}
       prefetch={true}
+      title={pattern.label}
       className={`pill-constrain ranking-signal-pill ${className} ranking-signal-pill--link`}
     >
       <span className="pill-constrain-text">{pattern.label}</span>

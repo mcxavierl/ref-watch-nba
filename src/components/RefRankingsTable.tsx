@@ -345,28 +345,36 @@ export function RefRankingsTable({
                         sport={sport}
                         size="sm"
                       />
-                      <div className="flex min-w-0 flex-1 items-center gap-2">
-                        <div className="min-w-0">
+                      <div className="flex min-w-0 flex-1 flex-col gap-1">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <div className="min-w-0">
+                            <PrefetchLink
+                              href={profileHref}
+                              prefetch={true}
+                              className="ranking-table-row-link font-medium text-zinc-900 hover:text-raptors hover:underline"
+                            >
+                              {ref.name}
+                            </PrefetchLink>
+                            <RefJerseyNumber
+                              number={ref.number}
+                              className="ml-2 whitespace-nowrap font-tabular text-xs text-zinc-500"
+                            />
+                          </div>
                           <PrefetchLink
                             href={profileHref}
                             prefetch={true}
-                            className="ranking-table-row-link font-medium text-zinc-900 hover:text-raptors hover:underline"
+                            className="ranking-table-row-profile-arrow shrink-0"
+                            aria-label={`Open ${ref.name} profile`}
                           >
-                            {ref.name}
+                            <ArrowRight className="h-4 w-4" aria-hidden />
                           </PrefetchLink>
-                          <RefJerseyNumber
-                            number={ref.number}
-                            className="ml-2 whitespace-nowrap font-tabular text-xs text-zinc-500"
-                          />
                         </div>
-                        <PrefetchLink
-                          href={profileHref}
-                          prefetch={true}
-                          className="ranking-table-row-profile-arrow"
-                          aria-label={`Open ${ref.name} profile`}
-                        >
-                          <ArrowRight className="h-4 w-4" aria-hidden />
-                        </PrefetchLink>
+                        <RankingSignalPill
+                          officialRef={ref}
+                          leagueId={leagueId}
+                          signalCount={signalCount}
+                          profileHref={profileHref}
+                        />
                       </div>
                     </div>
                   </td>
