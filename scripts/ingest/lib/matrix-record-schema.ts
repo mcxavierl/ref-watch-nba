@@ -1,12 +1,14 @@
 import { z } from "zod";
 import { classifyNflPenaltySlug } from "../../../src/config/penalty-types";
 import type { LeagueId } from "../../../src/lib/leagues";
+import { crewIdFromOfficials } from "../../../src/lib/schema/foul-events";
 import { refSlug } from "../../lib/slug";
 import type { GameLogEntry } from "../../lib/game-logs";
 
 export const matrixWhistleRecordSchema = z.object({
   category: z.string().min(1, "category is required"),
   officialId: z.string().min(1, "officialId is required"),
+  crewId: z.string().min(1, "crewId is required"),
   gameTimestamp: z.string().min(1, "gameTimestamp is required"),
   gameId: z.string().optional(),
   league: z.string().optional(),
@@ -29,11 +31,13 @@ export function expandGameToMatrixRecords(
 ): unknown[] {
   const gameTimestamp = toGameTimestamp(game.date);
   const records: unknown[] = [];
+  const crewId = crewIdFromOfficials(game.officials);
 
   for (const official of game.officials) {
     records.push({
       category: "game-officiating",
       officialId: refSlug(official.name, official.number),
+      crewId,
       gameTimestamp,
       gameId: game.gameId,
       league: leagueId,
@@ -46,6 +50,7 @@ export function expandGameToMatrixRecords(
         records.push({
           category: classifyNflPenaltySlug(event.type),
           officialId: refSlug(official.name, official.number),
+          crewId,
           gameTimestamp,
           gameId: game.gameId,
           league: leagueId,
