@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { RefProfileOfficiatingBiasSection } from "@/components/ref-profile/RefProfileOfficiatingBiasSection";
 import { RefProfileMarketImpactPanel } from "@/components/ref-profile/RefProfileMarketImpactPanel";
+import { ScoutingReport } from "@/components/ref-profile/ScoutingReport";
 import { RefProfileTeamTrends } from "@/components/ref-profile/RefProfileTeamTrends";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import { buildRefTeamPerformanceTrends } from "@/lib/ref-team-performance-trends";
@@ -86,6 +87,13 @@ export function RefProfileNarrativeLayout({
           </section>
         )}
       </div>
+
+      <ScoutingReport
+        leagueId={leagueId}
+        profile={profile}
+        stats={stats}
+        qualified={qualified}
+      />
 
       <RefProfileTeamTrends best={teamTrends.best} worst={teamTrends.worst} leagueId={leagueId} />
     </div>

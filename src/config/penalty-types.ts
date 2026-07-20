@@ -374,3 +374,10 @@ export function buildPenaltyLeverageWeight(
     wpa_proxy: estimateWpaMovement(input),
   };
 }
+
+/** Shared subjective vs administrative taxonomy used by scouting and disposition audits. */
+export const FOUL_CLASSIFICATION_MAP = {
+  subjective: SUBJECTIVE_PENALTY_CODES,
+  administrative: ADMINISTRATIVE_PENALTY_CODES,
+  defaultSubjectiveShare: LEAGUE_DEFAULT_SUBJECTIVE_SHARE,
+} as const;
