@@ -91,7 +91,7 @@ export const LEAGUE_CONFIG: Partial<Record<LeagueId, LeagueRegistryEntry>> = {
     seasonStartDay: 14,
     themeColor: "#FA4D00",
     logos: {
-      light: "/logos/wnba-logo.svg",
+      light: "/logos/wnba-logo-light.svg",
       dark: "/logos/wnba-logo.svg",
     },
   },

@@ -4,6 +4,7 @@ import { getTeam as getEplTeam } from "@/lib/epl/teams";
 import { getTeam as getLaligaTeam } from "@/lib/laliga/teams";
 import { getTeam as getNflTeam, teamFullName as nflTeamFullName } from "@/lib/nfl/teams";
 import { getTeam as getNhlTeam } from "@/lib/nhl/teams";
+import { getTeam as getWnbaTeam, teamFullName as wnbaTeamFullName } from "@/lib/wnba/teams";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { getTeam as getNbaTeam } from "@/lib/teams";
 
@@ -21,10 +22,11 @@ export type RefProfileTeamLogoSport =
   | "epl"
   | "laliga"
   | "cbb"
-  | "cfb";
+  | "cfb"
+  | "wnba";
 
 export function refProfileTeamLogoSport(leagueId: LeagueId): RefProfileTeamLogoSport {
-  if (leagueId === "wnba" || leagueId === "mlb") return "nba";
+  if (leagueId === "mlb") return "nba";
   return leagueId;
 }
 
@@ -36,6 +38,8 @@ export function resolveRefProfileTeam(
   const team =
     leagueId === "nba"
       ? getNbaTeam(key)
+      : leagueId === "wnba"
+        ? getWnbaTeam(key)
       : leagueId === "nhl"
         ? getNhlTeam(key)
         : leagueId === "nfl"
@@ -49,6 +53,12 @@ export function resolveRefProfileTeam(
                 : getCfbTeam(key);
 
   if (!team) return { abbr: key, name: key };
+  if (leagueId === "wnba" && "city" in team) {
+    return {
+      abbr: team.abbr,
+      name: wnbaTeamFullName(team as Parameters<typeof wnbaTeamFullName>[0]),
+    };
+  }
   if (leagueId === "nfl" && "city" in team) {
     return {
       abbr: team.abbr,

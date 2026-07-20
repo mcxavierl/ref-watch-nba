@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
-import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
+import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";
 import { getTeamSplits } from "@/lib/wnba/data";
 import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
 import { teamFullName, teamLogoUrl, teamsByConference } from "@/lib/wnba/teams";
@@ -47,14 +47,10 @@ export default function WnbaTeamsIndexPage() {
                           {teamFullName(team)}
                         </p>
                         <p className="team-index-meta text-sm">
-                          {splits.length > 0
-                            ? (
-                              <>
-                                {splits.length} crews ·{" "}
-                                <VerifiedGamesHint>{games} games</VerifiedGamesHint>
-                              </>
-                            )
-                            : "No data yet"}
+                          <TeamIndexSubtitle
+                            splitsCount={splits.length}
+                            games={games}
+                          />
                         </p>
                       </div>
                       <span className="team-index-abbr font-mono text-sm">

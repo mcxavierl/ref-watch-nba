@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { leagueGamesUnit } from "@/lib/leagues";
-import { VerifiedGamesHint } from "@/components/VerifiedGamesHint";
+import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";
 import { getTeamSplits } from "@/lib/laliga/data";
 import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
 import { LALIGA_TEAMS, teamFullName } from "@/lib/laliga/teams";
@@ -22,8 +22,7 @@ export default function LaligaTeamsIndexPage() {
         <h1 className="page-title">All La Liga teams</h1>
         <p className="page-lead">
           Pick a club to see how they&apos;ve performed under different referees:
-          goals, fouls, cards, and home/away splits. 2025-26 roster includes Leeds,
-          Burnley, and Sunderland.
+          goals, fouls, cards, and home/away splits.
         </p>
       </LeagueHubHero>
 
@@ -44,14 +43,12 @@ export default function LaligaTeamsIndexPage() {
                       {teamFullName(team)}
                     </p>
                     <p className="text-sm text-zinc-600">
-                      {splits.length > 0
-                        ? (
-                          <>
-                            {splits.length} refs ·{" "}
-                            <VerifiedGamesHint>{games} {leagueGamesUnit("laliga")}</VerifiedGamesHint>
-                          </>
-                        )
-                        : "No data yet"}
+                      <TeamIndexSubtitle
+                        splitsCount={splits.length}
+                        games={games}
+                        crewLabel="refs"
+                        gamesLabel={leagueGamesUnit("laliga")}
+                      />
                     </p>
                   </div>
                   <span className="font-mono text-sm text-zinc-500">

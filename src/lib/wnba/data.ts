@@ -153,24 +153,39 @@ function applyBaselines(stats: RefStatsFile): RefStatsFile {
 
 let resolvedRefStats: RefStatsFile | null = null;
 
+function finalizeWnbaStats(stats: RefStatsFile): RefStatsFile {
+  return gateUnverifiedWnbaStats(applyBaselines(normalizeRefStats(stats)));
+}
+
+function hasVerifiedGameLogStats(stats: RefStatsFile): boolean {
+  return (
+    stats.meta.data_verified === true &&
+    (stats.meta.totalGamesProcessed ?? 0) > 0
+  );
+}
+
 export function getRefStats(): RefStatsFile {
   try {
     const hydrated = getPreferHydratedRefStats("wnba");
-    if (hydrated?.refs?.length) {
-      resolvedRefStats = gateUnverifiedWnbaStats(
-        applyBaselines(normalizeRefStats(hydrated)),
-      );
+    if (hydrated) {
+      resolvedRefStats = finalizeWnbaStats(hydrated);
       return resolvedRefStats;
     }
-    if (resolvedRefStats?.refs?.length) {
-      resolvedRefStats = gateUnverifiedWnbaStats(
-        applyBaselines(normalizeRefStats(resolvedRefStats)),
-      );
+    if (resolvedRefStats) {
+      resolvedRefStats = finalizeWnbaStats(resolvedRefStats);
       return resolvedRefStats;
     }
     const raw = loadRefStatsRaw();
-    if (!raw?.refs?.length) return EMPTY_REF_STATS;
-    const stats = gateUnverifiedWnbaStats(applyBaselines(normalizeRefStats(raw)));
+    if (!raw) return EMPTY_REF_STATS;
+
+    const stats = finalizeWnbaStats(raw);
+    if (!raw.refs?.length) {
+      if (hasVerifiedGameLogStats(stats)) {
+        resolvedRefStats = stats;
+        return resolvedRefStats;
+      }
+      return EMPTY_REF_STATS;
+    }
     resolvedRefStats = stats;
     return resolvedRefStats;
   } catch {

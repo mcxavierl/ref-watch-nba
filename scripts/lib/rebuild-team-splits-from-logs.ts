@@ -13,6 +13,7 @@ const SCRIPT_LEAGUE_TO_ID: Record<string, LeagueId> = {
   laliga: "laliga",
   cbb: "cbb",
   cfb: "cfb",
+  wnba: "wnba",
 };
 
 /** Rebuild team crew splits from game logs for the league ten-season window. */

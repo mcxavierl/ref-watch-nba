@@ -1,99 +1,103 @@
 {
-  "lastUpdated": "2026-07-20T07:23:03.790Z",
+  "lastUpdated": "2026-07-20T14:44:58.574Z",
   "date": "2026-07-20",
   "source": "official.nba.com",
   "games": [
     {
-      "id": "401857083",
-      "matchup": "LVA @ TOR",
-      "awayTeam": "LVA",
-      "homeTeam": "TOR",
+      "id": "wnba-new-york-0-dallas-0-1",
+      "matchup": "New York @ Dallas",
+      "awayTeam": "New York",
+      "homeTeam": "Dallas",
       "league": "WNBA",
-      "slateDate": "2026-07-20",
-      "crew": []
+      "crew": [
+        {
+          "name": "Isaac Barnett",
+          "number": 16,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Sarah Williams",
+          "number": 44,
+          "role": "referee"
+        },
+        {
+          "name": "Jason Alabanza",
+          "number": 29,
+          "role": "umpire"
+        }
+      ]
     },
     {
-      "id": "401892393",
-      "matchup": "NYL @ DAL",
-      "awayTeam": "NYL",
-      "homeTeam": "DAL",
+      "id": "wnba-las-vegas-0-toronto-0-2",
+      "matchup": "Las Vegas @ Toronto",
+      "awayTeam": "Las Vegas",
+      "homeTeam": "Toronto",
       "league": "WNBA",
-      "slateDate": "2026-07-20",
-      "crew": []
+      "crew": [
+        {
+          "name": "Timothy Greene",
+          "number": 9,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Angelica Suffren",
+          "number": 7,
+          "role": "referee"
+        },
+        {
+          "name": "Josh Reed",
+          "number": 46,
+          "role": "umpire"
+        }
+      ]
     },
     {
-      "id": "401857084",
-      "matchup": "WAS @ GSV",
-      "awayTeam": "WAS",
-      "homeTeam": "GSV",
+      "id": "wnba-washington-0-golden-state-0-3",
+      "matchup": "Washington @ Golden State",
+      "awayTeam": "Washington",
+      "homeTeam": "Golden State",
       "league": "WNBA",
-      "slateDate": "2026-07-20",
-      "crew": []
+      "crew": [
+        {
+          "name": "Roy Gulbeyan",
+          "number": 42,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Agon Abazi",
+          "number": 32,
+          "role": "referee"
+        },
+        {
+          "name": "Marcy Williams",
+          "number": 40,
+          "role": "umpire"
+        }
+      ]
     },
     {
-      "id": "401857085",
-      "matchup": "MIN @ SEA",
-      "awayTeam": "MIN",
-      "homeTeam": "SEA",
+      "id": "wnba-minnesota-0-seattle-0-4",
+      "matchup": "Minnesota @ Seattle",
+      "awayTeam": "Minnesota",
+      "homeTeam": "Seattle",
       "league": "WNBA",
-      "slateDate": "2026-07-20",
-      "crew": []
-    },
-    {
-      "id": "401857086",
-      "matchup": "PHO @ LAS",
-      "awayTeam": "PHO",
-      "homeTeam": "LAS",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "crew": []
-    },
-    {
-      "id": "401857087",
-      "matchup": "MIN @ SEA",
-      "awayTeam": "MIN",
-      "homeTeam": "SEA",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "crew": []
-    },
-    {
-      "id": "401857088",
-      "matchup": "CHI @ NYL",
-      "awayTeam": "CHI",
-      "homeTeam": "NYL",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "crew": []
-    },
-    {
-      "id": "401857089",
-      "matchup": "LVA @ WAS",
-      "awayTeam": "LVA",
-      "homeTeam": "WAS",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "crew": []
-    },
-    {
-      "id": "401857090",
-      "matchup": "CON @ IND",
-      "awayTeam": "CON",
-      "homeTeam": "IND",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "crew": []
-    },
-    {
-      "id": "401857091",
-      "matchup": "DAL @ POR",
-      "awayTeam": "DAL",
-      "homeTeam": "POR",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "crew": []
+      "crew": [
+        {
+          "name": "Amy Bonner",
+          "number": 31,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Kevin Fahy",
+          "number": 43,
+          "role": "referee"
+        },
+        {
+          "name": "Toni Patillo",
+          "number": 76,
+          "role": "umpire"
+        }
+      ]
     }
-  ],
-  "nextSlateDate": "2026-07-20",
-  "note": "Next 10 WNBA games (2026-07-20 onward). Crews from official.nba.com when published."
+  ]
 }
