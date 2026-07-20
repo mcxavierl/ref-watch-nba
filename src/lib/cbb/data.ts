@@ -21,11 +21,16 @@ import { resolveLeagueBaseline } from "@/lib/baselines";
 import { filterNcaaRefStats } from "@/lib/ncaa-conference-gate";
 import { cbbCrewMetricsProvenance } from "@/lib/provenance";
 import {
-  loadRefStatsRawCachedFirst,
-  resolveRefStatsFromFsOrCache,
-  resolveTeamSplitsForLeague,
   attachTeamSplits,
+  cachedTeamSplitsForLeague,
+  loadRefStatsRawCachedFirst,
+  resolveTeamSplitsForLeague,
 } from "@/lib/ref-stats-preload";
+import {
+  coalesceRefStatsFromDiskAndBundled,
+  getBundledLeagueRefStatsCore,
+} from "@/lib/ref-stats-bundled";
+import { allowNodeDataFs, diskTeamSplitsFallback } from "@/lib/production-data-guard";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data", "cbb");
@@ -53,10 +58,12 @@ function tryReadJson<T>(filename: string): T | null {
 
 function loadRefStatsRaw(): RefStatsFile | null {
   return loadRefStatsRawCachedFirst("cbb", () => {
+    const bundled = getBundledLeagueRefStatsCore("cbb");
+    if (!allowNodeDataFs()) return bundled;
     const fromFs =
       tryReadJson<RefStatsFile>("ref-stats-core.json") ??
       tryReadJson<RefStatsFile>("ref-stats.json");
-    return fromFs;
+    return coalesceRefStatsFromDiskAndBundled(fromFs, bundled);
   });
 }
 
@@ -117,7 +124,15 @@ function loadTeamSplitsFromDisk(): Record<string, TeamCrewSplit[]> {
 function resolveTeamSplits(
   embedded: Record<string, TeamCrewSplit[]>,
 ): Record<string, TeamCrewSplit[]> {
-  return resolveTeamSplitsForLeague("cbb", embedded, loadTeamSplitsFromDisk());
+  const cached = cachedTeamSplitsForLeague("cbb");
+  if (Object.keys(cached).length > 0) {
+    return resolveTeamSplitsForLeague("cbb", embedded, cached);
+  }
+  return resolveTeamSplitsForLeague(
+    "cbb",
+    embedded,
+    diskTeamSplitsFallback(loadTeamSplitsFromDisk),
+  );
 }
 
 function normalizeRefStats(data: RefStatsFile): RefStatsFile {
