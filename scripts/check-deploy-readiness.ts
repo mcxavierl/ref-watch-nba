@@ -25,6 +25,7 @@ import {
   isCfbSimulatedData,
 } from "../src/lib/cfb/data-source";
 import { isWnbaOfficialsPending } from "./lib/volume-regression";
+import { validateRefStatsAsset } from "./lib/verify-ref-stats-asset";
 
 const ROOT = process.cwd();
 
@@ -111,6 +112,20 @@ function checkDeployArtifacts(league: LiveLeague): void {
     console.log(
       `  ⏭ ${league}: game-log-only ingest (officials pending) — skipping ref/matrix deploy gate`,
     );
+    const publicCoreStats = readJson<RefStatsFile>(publicCore);
+    for (const rel of [sourceStats, publicCore]) {
+      const stats = readJson<RefStatsFile>(rel);
+      if (!stats) {
+        fail(`${league}: missing ${rel} for officials-pending deploy verify`);
+        continue;
+      }
+      for (const msg of validateRefStatsAsset(rel, stats)) {
+        fail(msg);
+      }
+    }
+    if (publicCoreStats && !publicCoreStats.meta?.data_verified) {
+      fail(`${league}: ${publicCore} meta.data_verified is false`);
+    }
     return;
   }
   if (!source?.meta?.data_verified) {

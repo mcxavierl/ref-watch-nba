@@ -35,6 +35,18 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
     ],
   },
   {
+    label: "deploy ref-stats asset verify",
+    sources: [
+      "scripts/verify-production-deploy.ts",
+      "scripts/check-deploy-readiness.ts",
+      "scripts/lib/verify-ref-stats-asset.ts",
+    ],
+    tests: [
+      "scripts/lib/verify-ref-stats-asset.test.ts",
+      "scripts/verify-production-deploy.test.ts",
+    ],
+  },
+  {
     label: "homepage insight methodology gates",
     sources: [
       "src/lib/homepage-insight-gates.ts",
