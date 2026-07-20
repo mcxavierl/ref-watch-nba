@@ -10,10 +10,13 @@ import {
 } from "@/lib/analytics/scouting-report-types";
 import { resolveOfficialProfile, type ResolvedOfficialProfile } from "@/lib/analytics/resolve-official-profile";
 import {
-  ARCHETYPE_BLURBS,
   ARCHETYPE_DISPLAY_NAMES,
+  buildArchetypeTerminalBlurb,
   classifyAdminRatio,
   computeRefereeArchetype,
+  officialStatsFromProfile,
+  toOfficialStats,
+  whistleCoefficientOfVariation,
   type ArchetypeGameInput,
 } from "@/lib/analytics/referee-archetypes";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
@@ -220,31 +223,39 @@ function resolveOfficialStats(
     sampleGames.map(toArchetypeGameInput),
   );
   if (computed) {
-    return {
-      primaryArchetype: computed.primaryArchetype,
-      adminRatio: computed.adminRatio,
-      pressureSensitive: computed.pressureSensitive,
-      pressureDeltaPct: computed.pressureDeltaPct,
-      consistencyScore: computed.consistencyScore,
-      sampleGames: computed.sampleGames,
-      lastCalculated: computed.lastCalculated,
-    };
+    return toOfficialStats(computed);
   }
 
-  if (profile.officialStats) return profile.officialStats;
+  const persisted = officialStatsFromProfile(profile);
+  if (persisted) return persisted;
 
   const subjective = subjectiveTotal || 1;
   const adminRatio = round3(administrativeTotal / subjective);
   return {
-    primaryArchetype: classifyAdminRatio(adminRatio),
-    adminRatio,
-    pressureSensitive,
-    pressureDeltaPct:
+    primary_archetype: classifyAdminRatio(adminRatio),
+    admin_ratio: adminRatio,
+    pressure_sensitive: pressureSensitive,
+    pressure_delta_pct:
       pressureDeltaPct !== null ? round3(pressureDeltaPct) : null,
-    consistencyScore: 5,
-    sampleGames: sampleGames.length,
-    lastCalculated: new Date().toISOString(),
+    consistency_score: 5,
+    sample_games: sampleGames.length,
+    last_calculated: new Date().toISOString(),
   };
+}
+
+function archetypeBlurbForStats(
+  officialStats: OfficialStats,
+  perGameWhistles: number[],
+): string {
+  const cv =
+    perGameWhistles.length > 0
+      ? whistleCoefficientOfVariation(perGameWhistles)
+      : 0.25;
+  return buildArchetypeTerminalBlurb(
+    officialStats.primary_archetype,
+    officialStats.consistency_score,
+    cv,
+  );
 }
 
 function buildAnalyticsFallbackReport(
@@ -282,15 +293,16 @@ function buildAnalyticsFallbackReport(
   );
 
   const adminRatio = round3(administrative / subjective);
-  const officialStats: OfficialStats = profile.officialStats ?? {
-    primaryArchetype: classifyAdminRatio(adminRatio),
-    adminRatio,
-    pressureSensitive,
-    pressureDeltaPct,
-    consistencyScore: 6,
-    sampleGames,
-    lastCalculated: new Date().toISOString(),
-  };
+  const officialStats: OfficialStats =
+    officialStatsFromProfile(profile) ?? {
+      primary_archetype: classifyAdminRatio(adminRatio),
+      admin_ratio: adminRatio,
+      pressure_sensitive: pressureSensitive,
+      pressure_delta_pct: pressureDeltaPct,
+      consistency_score: 6,
+      sample_games: sampleGames,
+      last_calculated: new Date().toISOString(),
+    };
 
   return {
     officialId: profile.slug,
@@ -300,10 +312,14 @@ function buildAnalyticsFallbackReport(
     sampleGames,
     sampleWindow: SCOUTING_REPORT_SAMPLE_WINDOW,
     qualified: context.qualified,
-    archetype: officialStats.primaryArchetype,
-    archetypeDisplayName: ARCHETYPE_DISPLAY_NAMES[officialStats.primaryArchetype],
-    archetypeBlurb: ARCHETYPE_BLURBS[officialStats.primaryArchetype],
-    consistencyScore: officialStats.consistencyScore,
+    archetype: officialStats.primary_archetype,
+    archetypeDisplayName: ARCHETYPE_DISPLAY_NAMES[officialStats.primary_archetype],
+    archetypeBlurb: buildArchetypeTerminalBlurb(
+      officialStats.primary_archetype,
+      officialStats.consistency_score,
+      0.2,
+    ),
+    consistencyScore: officialStats.consistency_score,
     officialStats,
     styleProfile,
     pressureSensitive,
@@ -482,6 +498,8 @@ export function generateScoutingReport(
     pressureDeltaPct,
   );
 
+  const perGameWhistles = sampleGames.map((game) => gameWhistleTotal(leagueId, game));
+
   return {
     officialId: profile.slug,
     officialName: profile.name,
@@ -490,10 +508,10 @@ export function generateScoutingReport(
     sampleGames: sampleGames.length,
     sampleWindow: SCOUTING_REPORT_SAMPLE_WINDOW,
     qualified,
-    archetype: officialStats.primaryArchetype,
-    archetypeDisplayName: ARCHETYPE_DISPLAY_NAMES[officialStats.primaryArchetype],
-    archetypeBlurb: ARCHETYPE_BLURBS[officialStats.primaryArchetype],
-    consistencyScore: officialStats.consistencyScore,
+    archetype: officialStats.primary_archetype,
+    archetypeDisplayName: ARCHETYPE_DISPLAY_NAMES[officialStats.primary_archetype],
+    archetypeBlurb: archetypeBlurbForStats(officialStats, perGameWhistles),
+    consistencyScore: officialStats.consistency_score,
     officialStats,
     styleProfile,
     pressureSensitive,

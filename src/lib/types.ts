@@ -322,19 +322,19 @@ export interface RefGeographyEntry {
 /** Referee intelligence persona derived from foul categorization ratios. */
 export type RefereeArchetypeId =
   | "procedural-stickler"
-  | "game-manager"
+  | "game-flow-manager"
   | "balanced";
 
 /** Persisted archetype intelligence attached during nightly ingest rebuilds. */
 export interface OfficialStats {
-  primaryArchetype: RefereeArchetypeId;
-  adminRatio: number;
-  pressureSensitive: boolean;
-  pressureDeltaPct: number | null;
+  primary_archetype: RefereeArchetypeId;
   /** 1 (volatile) to 10 (highly consistent) whistle-volume profile. */
-  consistencyScore: number;
-  sampleGames: number;
-  lastCalculated: string;
+  consistency_score: number;
+  admin_ratio: number;
+  pressure_sensitive: boolean;
+  pressure_delta_pct: number | null;
+  sample_games: number;
+  last_calculated: string;
 }
 
 export interface RefProfile {

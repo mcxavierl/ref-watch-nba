@@ -1,5 +1,6 @@
 import {
   computeRefereeArchetype,
+  toOfficialStats,
   type ArchetypeGameInput,
 } from "../../src/lib/analytics/referee-archetypes";
 import type { LeagueId } from "../../src/lib/leagues";
@@ -51,15 +52,7 @@ export function attachRefArchetypesFromGames(
 
     return {
       ...profile,
-      officialStats: {
-        primaryArchetype: archetype.primaryArchetype,
-        adminRatio: archetype.adminRatio,
-        pressureSensitive: archetype.pressureSensitive,
-        pressureDeltaPct: archetype.pressureDeltaPct,
-        consistencyScore: archetype.consistencyScore,
-        sampleGames: archetype.sampleGames,
-        lastCalculated: archetype.lastCalculated,
-      },
+      officialStats: toOfficialStats(archetype),
     };
   });
 }

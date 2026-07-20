@@ -39,6 +39,7 @@ import {
 } from "./validate";
 import { writeSeasonShards } from "./write";
 import { buildRefStatsFromLogs } from "./build-ref-stats-from-logs";
+import { generateMatrixDataForLeague } from "./generate-matrix-data";
 import { NBA_SEASON_OPENERS } from "../../src/lib/nba-team-season-records";
 
 function gameMatchKey(date: string, home: string, away: string): string {
@@ -285,6 +286,7 @@ async function main() {
     const stats = buildRefStatsFromLogs();
     const statsPath = path.join(process.cwd(), "data", "ref-stats.json");
     fs.writeFileSync(statsPath, `${JSON.stringify(stats, null, 2)}\n`);
+    generateMatrixDataForLeague("nba", "NBA");
   } else {
     console.log("\n--logs-only: skipped ref-stats.json rebuild (preserving BBR merge)");
   }

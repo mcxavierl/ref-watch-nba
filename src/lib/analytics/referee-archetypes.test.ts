@@ -3,9 +3,11 @@ import { describe, it } from "node:test";
 import {
   ADMIN_RATIO_GAME_MANAGER_THRESHOLD,
   ADMIN_RATIO_PROCEDURAL_THRESHOLD,
+  buildArchetypeTerminalBlurb,
   classifyAdminRatio,
   computeRefereeArchetype,
   consistencyScoreFromWhistleRates,
+  whistleCoefficientOfVariation,
 } from "@/lib/analytics/referee-archetypes";
 import type { ArchetypeGameInput } from "@/lib/analytics/referee-archetypes";
 
@@ -28,9 +30,12 @@ describe("referee-archetypes", () => {
     assert.equal(classifyAdminRatio(ADMIN_RATIO_PROCEDURAL_THRESHOLD + 0.1), "procedural-stickler");
   });
 
-  it("classifies game manager when admin ratio is below 0.7", () => {
-    assert.equal(classifyAdminRatio(0.5), "game-manager");
-    assert.equal(classifyAdminRatio(ADMIN_RATIO_GAME_MANAGER_THRESHOLD - 0.1), "game-manager");
+  it("classifies game-flow manager when admin ratio is below 0.7", () => {
+    assert.equal(classifyAdminRatio(0.5), "game-flow-manager");
+    assert.equal(
+      classifyAdminRatio(ADMIN_RATIO_GAME_MANAGER_THRESHOLD - 0.1),
+      "game-flow-manager",
+    );
   });
 
   it("classifies balanced whistle mix in the middle band", () => {
@@ -68,16 +73,24 @@ describe("referee-archetypes", () => {
 
     const result = computeRefereeArchetype("nfl", games);
     assert.ok(result);
-    assert.equal(result!.primaryArchetype, "procedural-stickler");
-    assert.equal(result!.pressureSensitive, true);
-    assert.ok((result!.pressureDeltaPct ?? 0) > 0.2);
+    assert.equal(result!.primary_archetype, "procedural-stickler");
+    assert.equal(result!.pressure_sensitive, true);
+    assert.ok((result!.pressure_delta_pct ?? 0) > 0.2);
   });
 
-  it("maps low whistle-volume variance to a higher consistency score", () => {
-    const steady = consistencyScoreFromWhistleRates([20, 20, 21, 19, 20, 20]);
-    const volatile = consistencyScoreFromWhistleRates([10, 30, 12, 28, 11, 29]);
-    assert.ok(steady > volatile);
-    assert.ok(steady >= 7);
-    assert.ok(volatile <= 4);
+  it("maps low coefficient of variation to a higher consistency score", () => {
+    const steady = [20, 20, 21, 19, 20, 20];
+    const volatile = [10, 30, 12, 28, 11, 29];
+    assert.ok(whistleCoefficientOfVariation(steady) < whistleCoefficientOfVariation(volatile));
+    assert.ok(consistencyScoreFromWhistleRates(steady) > consistencyScoreFromWhistleRates(volatile));
+    assert.ok(consistencyScoreFromWhistleRates(steady) >= 7);
+    assert.ok(consistencyScoreFromWhistleRates(volatile) <= 4);
+  });
+
+  it("builds terminal blurbs with volatility and handicapping signal", () => {
+    const blurb = buildArchetypeTerminalBlurb("procedural-stickler", 8, 0.12);
+    assert.match(blurb, /Procedural Stickler/);
+    assert.match(blurb, /Volatility is Low/);
+    assert.match(blurb, /Stability for total-game handicapping/);
   });
 });

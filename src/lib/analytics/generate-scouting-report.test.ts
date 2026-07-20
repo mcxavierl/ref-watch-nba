@@ -80,7 +80,7 @@ describe("generate-scouting-report", () => {
     assert.ok(report);
     assert.equal(report?.officialId, "adrian-hill-29");
     assert.ok(["game-flow", "rule-enforcer", "balanced"].includes(report!.styleProfile.archetype));
-    assert.ok(["procedural-stickler", "game-manager", "balanced"].includes(report!.archetype));
+    assert.ok(["procedural-stickler", "game-flow-manager", "balanced"].includes(report!.archetype));
     assert.ok(report!.consistencyScore >= 1 && report!.consistencyScore <= 10);
     assert.ok(report!.archetypeBlurb.length > 0);
     assert.ok(report!.styleProfile.strictnessScore >= 0);

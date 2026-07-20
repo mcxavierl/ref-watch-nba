@@ -1,5 +1,5 @@
 import type { OfficialStats } from "@/lib/types";
-import "./scouting-report.css";
+import "./archetype-card.css";
 
 type ArchetypeCardProps = {
   displayName: string;
@@ -16,44 +16,37 @@ export function ArchetypeCard({
 }: ArchetypeCardProps) {
   return (
     <section
-      className="archetype-card"
+      className="archetype-terminal-card"
       aria-labelledby="ref-archetype-card-title"
     >
-      <div className="archetype-card-head">
-        <div>
-          <p className="archetype-card-kicker">Ref-Intelligence</p>
-          <h3 id="ref-archetype-card-title" className="archetype-card-title">
-            {displayName}
+      <div className="archetype-terminal-head">
+        <p className="archetype-terminal-eyebrow">Ref-Intelligence terminal</p>
+        <div className="archetype-terminal-title-row">
+          <h3 id="ref-archetype-card-title" className="archetype-terminal-title">
+            [{displayName}]
           </h3>
-        </div>
-        <div className="archetype-consistency">
-          <span className="archetype-consistency-label">Consistency</span>
-          <span className="archetype-consistency-value">{consistencyScore}/10</span>
-        </div>
-      </div>
-
-      <p className="archetype-card-blurb">{blurb}</p>
-
-      <div className="archetype-card-metrics">
-        <div className="archetype-card-metric">
-          <span className="archetype-card-metric-label">Admin ratio</span>
-          <span className="archetype-card-metric-value">
-            {officialStats.adminRatio.toFixed(2)}
-          </span>
-        </div>
-        <div className="archetype-card-metric">
-          <span className="archetype-card-metric-label">Close-game pressure</span>
-          <span className="archetype-card-metric-value">
-            {officialStats.pressureSensitive ? "Sensitive" : "Stable"}
-          </span>
-        </div>
-        <div className="archetype-card-metric">
-          <span className="archetype-card-metric-label">Sample</span>
-          <span className="archetype-card-metric-value">
-            {officialStats.sampleGames} games
+          <span className="archetype-terminal-badge">
+            Consistency: {consistencyScore}/10
           </span>
         </div>
       </div>
+
+      <p className="archetype-terminal-blurb">{blurb}</p>
+
+      <dl className="archetype-terminal-grid">
+        <div className="archetype-terminal-stat">
+          <dt>Admin ratio</dt>
+          <dd>{officialStats.admin_ratio.toFixed(2)}</dd>
+        </div>
+        <div className="archetype-terminal-stat">
+          <dt>Close-game pressure</dt>
+          <dd>{officialStats.pressure_sensitive ? "Sensitive" : "Stable"}</dd>
+        </div>
+        <div className="archetype-terminal-stat">
+          <dt>Sample window</dt>
+          <dd>{officialStats.sample_games} games</dd>
+        </div>
+      </dl>
     </section>
   );
 }
