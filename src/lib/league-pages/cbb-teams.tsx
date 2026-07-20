@@ -4,7 +4,8 @@ import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";
 import { getTeamSplits } from "@/lib/cbb/data";
-import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
+import { loadTeamIndexGameCounts, teamIndexGameCount, countUniqueOfficialsFromSplits } from "@/lib/team-index-game-counts";
+import { LEAGUES } from "@/lib/leagues";
 import {
   CBB_CONFERENCE_DISPLAY_ORDER,
   teamFullName,
@@ -68,8 +69,9 @@ export default function CbbTeamsIndexPage() {
                         </p>
                         <p className="team-index-meta text-sm">
                           <TeamIndexSubtitle
-                            splitsCount={splits.length}
+                            officialsCount={countUniqueOfficialsFromSplits(splits)}
                             games={games}
+                            officialLabel={LEAGUES.cbb.officialNounPlural}
                           />
                         </p>
                       </div>

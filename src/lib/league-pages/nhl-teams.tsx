@@ -3,7 +3,8 @@ import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";
 import { getTeamSplits } from "@/lib/nhl/data";
-import { loadTeamIndexGameCounts, teamIndexGameCount } from "@/lib/team-index-game-counts";
+import { loadTeamIndexGameCounts, teamIndexGameCount, countUniqueOfficialsFromSplits } from "@/lib/team-index-game-counts";
+import { LEAGUES } from "@/lib/leagues";
 import { teamFullName, teamsByConference } from "@/lib/nhl/teams";
 import { hubPageMetadata } from "@/lib/seo";
 export const metadata = hubPageMetadata("nhl", "teams");
@@ -45,8 +46,9 @@ export default function NhlTeamsIndexPage() {
                         </p>
                         <p className="text-sm text-zinc-600">
                           <TeamIndexSubtitle
-                            splitsCount={splits.length}
+                            officialsCount={countUniqueOfficialsFromSplits(splits)}
                             games={games}
+                            officialLabel={LEAGUES.nhl.officialNounPlural}
                           />
                         </p>
                       </div>
