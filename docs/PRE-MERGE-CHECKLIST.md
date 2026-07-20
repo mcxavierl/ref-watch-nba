@@ -31,8 +31,9 @@ Do not merge until this passes locally **and** the GitHub **validate** check is 
 | 15 | `npm run audit:metric-semantics` | Metric semantics audit |
 | 16 | `npm run check:no-em-dashes` | Em dash copy audit |
 | 17 | `npm run audit:terminal-integrity` | Terminal integrity audit |
-| 18 | `npm run test` | Unit tests |
-| 19 | `npm run honesty-audit` | Honesty audit |
+| 18 | `npm run audit:insight-first` | Insight-first audit |
+| 19 | `npm run test` | Unit tests |
+| 20 | `npm run honesty-audit` | Honesty audit |
 
 ## When overview snapshot sources change
 
@@ -59,6 +60,7 @@ npm run audit:design-tokens
 npm run audit:ci-artifact-contract
 npm run check:no-em-dashes
 npm run audit:terminal-integrity
+npm run audit:insight-first
 ```
 
 First-time setup for theme matrix screenshots (Playwright Chromium):

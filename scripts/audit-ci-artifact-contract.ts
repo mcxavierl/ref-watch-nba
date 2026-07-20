@@ -60,6 +60,7 @@ const PRE_MERGE_CHECKLIST: Array<{ step: string; command: string; ciStep: string
   { step: "Metric semantics", command: "npm run audit:metric-semantics", ciStep: "Metric semantics audit" },
   { step: "Em dash copy", command: "npm run check:no-em-dashes", ciStep: "Em dash copy audit" },
   { step: "Terminal integrity", command: "npm run audit:terminal-integrity", ciStep: "Terminal integrity audit" },
+  { step: "Insight-first", command: "npm run audit:insight-first", ciStep: "Insight-first audit" },
   { step: "Unit tests", command: "npm run test", ciStep: "Unit tests" },
   { step: "Honesty audit", command: "npm run honesty-audit", ciStep: "Honesty audit" },
 ];

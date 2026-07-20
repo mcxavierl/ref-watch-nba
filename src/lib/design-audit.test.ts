@@ -226,4 +226,16 @@ describe("design audit guardrails", () => {
     assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:terminal-integrity/);
     assert.match(readSrc(".github/workflows/ci.yml"), /Terminal integrity audit/);
   });
+
+  it("insight-first audit guards narrative layout and anomaly gates", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:insight-first"] ?? "", /audit-insight-first/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:insight-first/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Insight-first audit/);
+    assert.match(readSrc("src/components/ref-profile/RefProfileNarrativeLayout.tsx"), /ref-narrative-layout/);
+    assert.match(readSrc("src/lib/anomaly-surface.ts"), /ANOMALY_VARIANCE_THRESHOLD/);
+    assert.match(readSrc("src/components/RefRankingsTable.tsx"), /Anomalies only/);
+  });
 });
