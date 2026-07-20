@@ -1,7 +1,7 @@
 "use client";
 
-import { useId, useState } from "react";
-import { refPhotoUrl } from "@/lib/ref-photos";
+import { useState } from "react";
+import { refInitials, refPhotoUrl } from "@/lib/ref-photos";
 
 const sizeClasses = {
   sm: "h-8 w-8",
@@ -17,7 +17,44 @@ const sizePixels = {
   xl: 96,
 } as const;
 
-function RefStripesBadge({
+const textSizeClasses = {
+  sm: "text-[10px]",
+  md: "text-xs",
+  lg: "text-sm",
+  xl: "text-base",
+} as const;
+
+type RefAvatarSport = "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+
+function sportRingClass(sport?: RefAvatarSport): string {
+  if (sport === "nfl") {
+    return "ring-[color:color-mix(in_srgb,var(--nfl-green)_45%,transparent)]";
+  }
+  if (sport === "nhl") {
+    return "ring-[color:color-mix(in_srgb,var(--nhl-blue)_45%,transparent)]";
+  }
+  if (sport === "epl" || sport === "laliga") {
+    return "ring-[color:color-mix(in_srgb,#3d195b_45%,transparent)]";
+  }
+  if (sport === "cbb" || sport === "cfb") {
+    return "ring-[color:color-mix(in_srgb,var(--cbb-gold)_45%,transparent)]";
+  }
+  if (sport === "wnba") {
+    return "ring-[color:color-mix(in_srgb,var(--wnba-orange)_45%,transparent)]";
+  }
+  return "ring-zinc-200/80";
+}
+
+function sportInitialsClass(sport?: RefAvatarSport): string {
+  if (sport === "nfl") return "ref-initials-badge--nfl";
+  if (sport === "nhl") return "ref-initials-badge--nhl";
+  if (sport === "epl" || sport === "laliga") return "ref-initials-badge--soccer";
+  if (sport === "cbb" || sport === "cfb") return "ref-initials-badge--college";
+  if (sport === "wnba") return "ref-initials-badge--wnba";
+  return "ref-initials-badge--nba";
+}
+
+function RefInitialsBadge({
   name,
   size,
   sport,
@@ -26,46 +63,19 @@ function RefStripesBadge({
 }: {
   name: string;
   size: keyof typeof sizeClasses;
-  sport?: "nhl" | "nfl" | "epl" | "laliga";
+  sport?: RefAvatarSport;
   className?: string;
   decorative?: boolean;
 }) {
-  const patternId = `ref-stripes-${useId().replace(/:/g, "")}`;
-  const ringClass =
-    sport === "nfl"
-      ? "ring-[color:color-mix(in_srgb,var(--nfl-green)_45%,transparent)]"
-      : sport === "nhl"
-        ? "ring-[color:color-mix(in_srgb,var(--nhl-blue)_45%,transparent)]"
-        : sport === "epl" || sport === "laliga"
-          ? "ring-[color:color-mix(in_srgb,#3d195b_45%,transparent)]"
-          : "ring-zinc-200/80";
-
   return (
     <span
-      className={`inline-flex shrink-0 overflow-hidden rounded-full ring-2 ${ringClass} ${sizeClasses[size]} ${className}`}
+      className={`ref-initials-badge ${sportInitialsClass(sport)} ${sizeClasses[size]} ${textSizeClasses[size]} ${className}`}
       aria-hidden={decorative || undefined}
       aria-label={decorative ? undefined : `${name} avatar`}
       role={decorative ? undefined : "img"}
     >
-      <svg
-        viewBox="0 0 32 32"
-        className="h-full w-full"
-        aria-hidden
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <defs>
-          <pattern
-            id={patternId}
-            width="8"
-            height="8"
-            patternUnits="userSpaceOnUse"
-          >
-            <rect width="4" height="8" fill="#171717" />
-            <rect x="4" width="4" height="8" fill="#fafafa" />
-          </pattern>
-        </defs>
-        <rect width="32" height="32" fill={`url(#${patternId})`} />
-      </svg>
+      <span className={`ref-initials-badge__ring ring-2 ${sportRingClass(sport)}`} aria-hidden />
+      <span className="ref-initials-badge__label">{refInitials(name)}</span>
     </span>
   );
 }
@@ -80,7 +90,7 @@ export function RefAvatar({
 }: {
   name: string;
   slug: string;
-  sport: "nba" | "nhl" | "wnba" | "nfl" | "epl" | "laliga" | "cbb" | "cfb";
+  sport: RefAvatarSport;
   size?: keyof typeof sizeClasses;
   className?: string;
   /** When true (default), name is exposed by an adjacent label/link — image is decorative. */
@@ -88,28 +98,18 @@ export function RefAvatar({
 }) {
   const [failed, setFailed] = useState(false);
 
-  if (sport === "cbb" || sport === "cfb" || sport === "wnba") {
-    return (
-      <RefStripesBadge
-        name={name}
-        size={size}
-        className={className}
-        decorative={decorative}
-      />
-    );
-  }
-
-  const photoSrc =
-    sport === "nba" || sport === "nhl" || sport === "nfl" || sport === "epl" || sport === "laliga"
-      ? refPhotoUrl(slug, sport, size === "lg" || size === "xl" ? "headshot" : "thumb")
-      : null;
+  const photoSrc = refPhotoUrl(
+    slug,
+    sport,
+    size === "lg" || size === "xl" ? "headshot" : "thumb",
+  );
 
   if (failed || !photoSrc) {
     return (
-      <RefStripesBadge
+      <RefInitialsBadge
         name={name}
         size={size}
-        sport={sport === "nfl" || sport === "nhl" || sport === "epl" || sport === "laliga" ? sport : undefined}
+        sport={sport}
         className={className}
         decorative={decorative}
       />
@@ -123,10 +123,14 @@ export function RefAvatar({
         ? "ring-2 ring-[color:color-mix(in_srgb,var(--nhl-blue)_40%,transparent)]"
         : sport === "epl" || sport === "laliga"
           ? "ring-2 ring-[color:color-mix(in_srgb,#3d195b_40%,transparent)]"
-          : "ring-1 ring-zinc-200/80";
+          : sport === "cbb" || sport === "cfb"
+            ? "ring-2 ring-[color:color-mix(in_srgb,var(--cbb-gold)_40%,transparent)]"
+            : sport === "wnba"
+              ? "ring-2 ring-[color:color-mix(in_srgb,var(--wnba-orange)_40%,transparent)]"
+              : "ring-1 ring-zinc-200/80";
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- onError fallback to striped ref badge
+    // eslint-disable-next-line @next/next/no-img-element -- onError fallback to initials badge
     <img
       src={photoSrc}
       alt={decorative ? "" : `Photo of ${name}`}

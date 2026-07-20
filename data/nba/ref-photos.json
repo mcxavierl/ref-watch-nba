@@ -1,10 +1,10 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-11T00:05:17.174Z",
-    "source": "wikipedia Category:NBA referees",
-    "count": 11,
-    "found": 11,
-    "missed": 98
+    "lastUpdated": "2026-07-20T10:05:54.079Z",
+    "source": "wikipedia Category:NBA referees + commons",
+    "count": 8,
+    "missed": 45,
+    "newlyResolved": 4
   },
   "photos": {
     "curtis-blair-74": {
@@ -22,45 +22,30 @@
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Michael_Smith_calls_2011_Pacers-Clippers_game.jpg",
       "source": "wikipedia:Michael Smith (basketball, born 1965)"
     },
-    "eric-lewis-42": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Eric_Lewis_NBA.jpg/250px-Eric_Lewis_NBA.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/3/35/Eric_Lewis_NBA.jpg",
-      "source": "wikipedia:Eric Lewis (basketball)"
-    },
     "ashley-moyer-gleich-13": {
       "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/1_Ashley_Moyer-Gleich.jpg/250px-1_Ashley_Moyer-Gleich.jpg",
       "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/1_Ashley_Moyer-Gleich.jpg",
       "source": "wikipedia:Ashley Moyer-Gleich"
     },
-    "ken-mauer-41": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Ken_Mauer_%28cropped%29.jpg/250px-Ken_Mauer_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Ken_Mauer_%28cropped%29.jpg",
-      "source": "wikipedia:Ken Mauer"
+    "tony-brothers-25": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Tony_Brothers_%2851688442700%29_%28cropped%29.jpg/250px-Tony_Brothers_%2851688442700%29_%28cropped%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Tony_Brothers_%2851688442700%29_%28cropped%29.jpg",
+      "source": "commons:File:Tony Brothers (51688442700) (cropped).jpg"
     },
-    "tony-brown-6": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Tony_Brown_Wizards.jpg/250px-Tony_Brown_Wizards.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/7/70/Tony_Brown_Wizards.jpg",
-      "source": "wikipedia:Tony Brown (basketball)"
+    "eric-lewis-84": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Eric_Lewis_NBA.jpg/250px-Eric_Lewis_NBA.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/3/35/Eric_Lewis_NBA.jpg",
+      "source": "curated:wikipedia:Eric Lewis (basketball)"
     },
-    "lauren-holtkamp-7": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Lauren_Holtkamp_%2815316492703%29_%28cropped%29.jpg/250px-Lauren_Holtkamp_%2815316492703%29_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Lauren_Holtkamp_%2815316492703%29_%28cropped%29.jpg",
-      "source": "wikipedia:Lauren Holtkamp"
+    "tre-maddox-23": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Tre_Maddox%2C_NBA_referee.jpg/250px-Tre_Maddox%2C_NBA_referee.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/7/71/Tre_Maddox%2C_NBA_referee.jpg",
+      "source": "commons:File:Tre Maddox, NBA referee.jpg"
     },
-    "haywoode-workman-66": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Haywoode_Workman_cropped.jpg/250px-Haywoode_Workman_cropped.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Haywoode_Workman_cropped.jpg",
-      "source": "wikipedia:Haywoode Workman"
-    },
-    "bennie-adams-47": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Ben_Gordon1.jpg/250px-Ben_Gordon1.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/6/60/Ben_Gordon1.jpg",
-      "source": "wikipedia:Bennie Adams"
-    },
-    "monty-mccutchen-13": {
-      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Monty_McCutchen_on_March_30%2C_2011_%28cropped%29.jpg/250px-Monty_McCutchen_on_March_30%2C_2011_%28cropped%29.jpg",
-      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Monty_McCutchen_on_March_30%2C_2011_%28cropped%29.jpg",
-      "source": "wikipedia:Monty McCutchen"
+    "brett-nansel-44": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Brett_Nansel_%28referee%29.jpg/250px-Brett_Nansel_%28referee%29.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/4/49/Brett_Nansel_%28referee%29.jpg",
+      "source": "commons:File:Brett Nansel (referee).jpg"
     }
   }
 }

@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "lastUpdated": "2026-07-20T10:38:02.124Z",
+    "source": "wikipedia + commons",
+    "count": 1,
+    "missed": 54,
+    "newlyResolved": 1,
+    "minGames": 200
+  },
+  "photos": {
+    "ted-valentine-11": {
+      "thumbUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Ted_Valentine.jpg/250px-Ted_Valentine.jpg",
+      "headshotUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Ted_Valentine.jpg",
+      "source": "curated:wikipedia:Ted Valentine"
+    }
+  }
+}

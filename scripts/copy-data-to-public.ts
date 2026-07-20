@@ -316,6 +316,8 @@ copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "game-
 writeCbbConferenceCoverageSnapshot(root);
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "game-logs");
 copyPair(path.join(root, "data/epl"), path.join(root, "public/data/epl"), "ref-photos");
+copyPair(path.join(root, "data/laliga"), path.join(root, "public/data/laliga"), "ref-photos");
+copyPair(path.join(root, "data/cbb"), path.join(root, "public/data/cbb"), "ref-photos");
 copyPair(path.join(root, "data/laliga"), path.join(root, "public/data/laliga"), "game-logs");
 
 const nhlAssignments = path.join(root, "data/nhl/assignments.json");
