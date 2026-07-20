@@ -52,9 +52,9 @@ describe("design audit guardrails", () => {
     assert.match(css, /attr\(data-label\)/);
   });
 
-  it("league hub upcoming slate uses UpcomingGameCard grid", () => {
+  it("league hub upcoming slate uses interactive upcoming game cards", () => {
     const hub = readSrc("src/components/LeagueHubUpcomingSlateSection.tsx");
-    assert.match(hub, /UpcomingGameCard/);
+    assert.match(hub, /OverviewSlateGamesInteractive/);
     assert.match(hub, /upcoming-games-grid/);
     assert.doesNotMatch(hub, /LeagueSlateGamesList/);
   });
