@@ -121,3 +121,30 @@ test("getPreferHydratedRefStats serves ESPN ingest before verification gate", ()
   assert.equal(getPreferHydratedRefStats("cbb")?.refs.length, 1);
   assert.equal(getCachedRefStats("cbb")?.refs.length, 1);
 });
+
+test("coalesceRefStatsFromDiskAndBundled prefers bundled when disk core is empty", async () => {
+  const { coalesceRefStatsFromDiskAndBundled } = await import(
+    "@/lib/ref-stats-bundled"
+  );
+  const { getBundledNbaRefStatsCore } = await import("@/lib/ref-stats-bundled");
+  const bundled = getBundledNbaRefStatsCore();
+  assert.ok(bundled && bundled.refs.length > 0);
+
+  const emptyDisk: RefStatsFile = {
+    refs: [],
+    teamSplits: {},
+    meta: {
+      lastUpdated: "2026-01-01",
+      seasons: [],
+      leagueAvgTotal: 220,
+      leagueAvgFouls: 40,
+      leagueOverBaseline: 220,
+      minSampleSize: 30,
+      source: "seeded",
+      atsAvailable: false,
+    },
+  };
+
+  const merged = coalesceRefStatsFromDiskAndBundled(emptyDisk, bundled);
+  assert.equal(merged?.refs.length, bundled!.refs.length);
+});

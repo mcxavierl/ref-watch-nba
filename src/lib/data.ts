@@ -25,7 +25,10 @@ import {
   loadRefStatsRawCachedFirst,
 } from "@/lib/ref-stats-preload";
 import { allowNodeDataFs, diskTeamSplitsFallback } from "@/lib/production-data-guard";
-import { getBundledNbaRefStatsCore } from "@/lib/ref-stats-bundled";
+import {
+  coalesceRefStatsFromDiskAndBundled,
+  getBundledNbaRefStatsCore,
+} from "@/lib/ref-stats-bundled";
 import type { MetricProvenance, SampleGateStatus } from "@/lib/types";
 
 const dataDir = path.join(process.cwd(), "data");
@@ -69,11 +72,12 @@ function loadTeamSplitsRaw(): Record<string, TeamCrewSplit[]> {
 
 function loadRefStatsRaw(): RefStatsFile | null {
   return loadRefStatsRawCachedFirst("nba", () => {
-    if (!allowNodeDataFs()) return getBundledNbaRefStatsCore();
+    const bundled = getBundledNbaRefStatsCore();
+    if (!allowNodeDataFs()) return bundled;
     const fromFs =
       tryReadJson<RefStatsFile>("ref-stats-core.json") ??
       tryReadJson<RefStatsFile>("ref-stats.json");
-    return fromFs ?? getBundledNbaRefStatsCore();
+    return coalesceRefStatsFromDiskAndBundled(fromFs, bundled);
   });
 }
 
@@ -194,7 +198,16 @@ export function getRefStats(): RefStatsFile {
     }
     if (resolvedRefStats?.refs?.length) return resolvedRefStats;
     const raw = loadRefStatsRaw();
-    if (!raw?.refs?.length) return EMPTY_REF_STATS;
+    if (!raw?.refs?.length) {
+      const bundled = getBundledNbaRefStatsCore();
+      if (bundled?.refs?.length) {
+        resolvedRefStats = applyBaselines(
+          applyVerificationMeta(normalizeRefStats(bundled)),
+        );
+        return resolvedRefStats;
+      }
+      return EMPTY_REF_STATS;
+    }
     resolvedRefStats = applyBaselines(
       applyVerificationMeta(normalizeRefStats(raw)),
     );
