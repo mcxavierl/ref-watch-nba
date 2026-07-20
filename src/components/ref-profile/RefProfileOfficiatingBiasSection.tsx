@@ -46,6 +46,8 @@ export function RefProfileOfficiatingBiasSection({
     return null;
   }
 
+  const splitAnalyticsAndGsni = Boolean(whistleAnalytics && hasGsni);
+
   return (
     <section
       className="ref-profile-section ref-officiating-bias"
@@ -93,12 +95,14 @@ export function RefProfileOfficiatingBiasSection({
           />
         ) : null}
 
-        <div className="ref-officiating-bias-grid">
+        <div
+          className={`ref-officiating-bias-grid${splitAnalyticsAndGsni ? " ref-officiating-bias-grid--split" : ""}`}
+        >
           {whistleAnalytics ? (
-            <div className="ref-officiating-bias-col min-w-0">{whistleAnalytics}</div>
+            <div className="ref-officiating-bias-col">{whistleAnalytics}</div>
           ) : null}
           {hasGsni ? (
-            <div className="ref-officiating-bias-col min-w-0">
+            <div className="ref-officiating-bias-col">
               <RefGsniSection
                 metrics={gsniMetrics ?? null}
                 refName={profile.name}

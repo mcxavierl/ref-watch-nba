@@ -1337,9 +1337,9 @@ p {
     align-items: stretch;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
     .ref-narrative-outcome-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(18rem, 1fr));
     }
   }
 
@@ -1373,12 +1373,23 @@ p {
     gap: var(--space-6);
     margin-top: var(--space-6);
     min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  @media (min-width: 768px) {
-    .ref-officiating-bias-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (min-width: 1280px) {
+    .ref-officiating-bias-grid.ref-officiating-bias-grid--split {
+      grid-template-columns: repeat(2, minmax(16rem, 1fr));
     }
+  }
+
+  .ref-officiating-bias-col {
+    min-width: 0;
+  }
+
+  .ref-whistle-analytics-embedded,
+  .ref-gsni-embedded {
+    min-width: 0;
+    width: 100%;
   }
 
   .ref-officiating-bias-lead {
@@ -1663,13 +1674,15 @@ p {
 
   .ref-stat-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
     gap: var(--space-3);
+    min-width: 0;
+    width: 100%;
   }
 
   @media (max-width: 639px) {
     .ref-stat-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .ref-stat-grid--gsni {
@@ -1677,9 +1690,20 @@ p {
     }
   }
 
+  .ref-whistle-analytics-embedded .ref-stat-grid {
+    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  }
+
+  @media (min-width: 768px) {
+    .ref-whistle-analytics-embedded .ref-stat-grid {
+      grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr));
+    }
+  }
+
   .ref-stat-card {
     min-width: 0;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
+    word-break: normal;
     padding: var(--space-6);
     border-radius: 1rem;
     border: 1px solid color-mix(in srgb, var(--clinical-card-border, #1e293b) 88%, var(--border));
@@ -1694,13 +1718,16 @@ p {
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: #94a3b8;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
   }
 
   html[data-color="light"]:not([data-contrast="high"]) .ref-stat-label {
     color: #64748b;
   }
 
-  .ref-stat-value {
+.ref-stat-value {
     margin-top: var(--space-2);
     font-family: var(--font-data);
     font-size: var(--text-2xl);
@@ -1708,6 +1735,7 @@ p {
     font-variant-numeric: tabular-nums;
     line-height: var(--leading-tight);
     color: var(--ink-secondary);
+    white-space: nowrap;
   }
 
   @media (min-width: 640px) {
@@ -1743,7 +1771,7 @@ p {
   }
 
   .clinical-metric-card-head .ref-stat-label {
-    flex: 1 1 8rem;
+    flex: 1 1 auto;
     min-width: 0;
   }
 
