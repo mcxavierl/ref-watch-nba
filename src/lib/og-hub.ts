@@ -2,6 +2,7 @@ import { getRefStats as getCbbRefStats } from "@/lib/cbb/data";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
 import { LEAGUE_HERO_STATS } from "@/lib/league-hero-stats.generated";
 import { LIVE_NCAA_CONFERENCES } from "@/lib/ncaa-conference-gate";
+import { OG_LEAGUE_ACCENTS } from "@/lib/og-brand";
 import { formatSeasonScope } from "@/lib/season-scope";
 import type { SlateHubLeagueId } from "@/lib/seo";
 
@@ -56,7 +57,7 @@ export function cbbHubOgContent(): HubOgContent {
     ],
     tags: [...LIVE_NCAA_CONFERENCES],
     footer: "Historical referee analytics · Not betting advice · refwatch.ca",
-    accent: "#009CDE",
+    accent: OG_LEAGUE_ACCENTS.cbb!,
   };
 }
 
