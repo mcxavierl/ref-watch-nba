@@ -88,6 +88,15 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
     ],
   },
   {
+    label: "rankings table",
+    sources: [
+      "src/lib/rankings.ts",
+      "src/lib/ranking-signal-pattern.ts",
+      "src/components/RefRankingsTable.tsx",
+    ],
+    tests: ["src/lib/rankings.test.ts", "src/lib/anomaly-surface.test.ts"],
+  },
+  {
     label: "broadcast export",
     sources: ["src/lib/media/on-air-copy.ts"],
     tests: ["src/lib/media/media-card-content.test.ts"],

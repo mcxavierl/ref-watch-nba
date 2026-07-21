@@ -11,7 +11,6 @@ import { Pill } from "@/components/ui/Pill";
 import {
   NO_ANOMALIES_DETECTED_COPY,
   qualifiesRefAnomaly,
-  sortRefsByInterestingness,
 } from "@/lib/anomaly-surface";
 import type { LeagueId } from "@/lib/leagues";
 import { signedDeltaTone } from "@/lib/metric-delight";
@@ -134,7 +133,7 @@ export function RefRankingsTable({
   useEffect(() => {
     setSort(defaultSort);
     setShowAllRows(false);
-  }, [defaultSort, filterSlugs, preserveOrder, refs]);
+  }, [defaultSort, filterSlugs, preserveOrder]);
 
   const sorted = useMemo(() => {
     const pool = showLowSample ? refs : qualifiedRefs(refs, minSampleSize);
@@ -148,8 +147,7 @@ export function RefRankingsTable({
         )
       : filteredBySlug;
     if (preserveOrder) return filtered;
-    if (anomaliesOnly) return sortRefsByInterestingness(filtered, leagueId);
-    return sortRefRankings(filtered, sort);
+    return sortRefRankings(filtered, sort, leagueId);
   }, [
     refs,
     sort,
