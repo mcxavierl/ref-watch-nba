@@ -10,6 +10,7 @@ import { execSync } from "node:child_process";
 const steps: { label: string; command: string }[] = [
   { label: "Merge conflict markers", command: "npm run check:no-conflict-markers" },
   { label: "Typecheck", command: "npm run typecheck" },
+  { label: "Enterprise API route contracts", command: "npm run check:enterprise-api-routes" },
   { label: "Generated artifact freshness", command: "npm run check:artifact-freshness" },
   { label: "Em dash copy", command: "npm run check:no-em-dashes" },
 ];

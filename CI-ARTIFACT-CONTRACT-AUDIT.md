@@ -1,6 +1,6 @@
 # CI and artifact contract audit
 
-Generated: 2026-07-20T10:46:17.154Z
+Generated: 2026-07-21T01:56:02.713Z
 
 ## Pre-merge checklist (mirrors GitHub validate)
 
@@ -14,24 +14,28 @@ Or step-by-step:
 
 1. **Refactor safety** (`npm run check:refactor-safety`) - CI step: Refactor safety checks
 2. **Client import boundary** (`npm run check:client-imports`) - CI step: Client import boundary check
-3. **Typecheck** (`npm run typecheck`) - CI step: Typecheck
-4. **Generated artifact freshness** (`npm run check:artifact-freshness`) - CI step: Generated artifact freshness
-5. **Validation artifact freshness** (`npm run check:validation-freshness`) - CI step: Validation artifact freshness
-6. **Coupled test gate** (`npm run check:coupled-tests`) - CI step: Coupled test change gate
-7. **Volume regression** (`npm run check:volume`) - CI step: Volume regression gate
-8. **Deploy data artifacts** (`npm run check:deploy`) - CI step: Generate deploy data artifacts
-9. **CSS syntax** (`npm run check:css-syntax`) - CI step: CSS syntax check
-10. **Next.js build** (`npm run build:next`) - CI step: Next.js production build
-11. **Design ship** (`npm run audit:design-ship`) - CI step: Design ship audit
-12. **Design token parity** (`npm run audit:design-tokens`) - CI step: Design token parity audit
-13. **Clinical card consistency** (`npm run audit:card-consistency`) - CI step: Clinical card consistency audit
-14. **Metric semantics** (`npm run audit:metric-semantics`) - CI step: Metric semantics audit
-15. **Em dash copy** (`npm run check:no-em-dashes`) - CI step: Em dash copy audit
-16. **Terminal integrity** (`npm run audit:terminal-integrity`) - CI step: Terminal integrity audit
-17. **Insight-first** (`npm run audit:insight-first`) - CI step: Insight-first audit
-18. **Overlay portals** (`npm run audit:overlay-portals`) - CI step: Overlay portal audit
-19. **Unit tests** (`npm run test`) - CI step: Unit tests
-20. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
+3. **Merge conflict markers** (`npm run check:no-conflict-markers`) - CI step: Merge conflict marker check
+4. **Typecheck** (`npm run typecheck`) - CI step: Typecheck
+5. **Enterprise API route contracts** (`npm run check:enterprise-api-routes`) - CI step: Enterprise API route contracts
+6. **Generated artifact freshness** (`npm run check:artifact-freshness`) - CI step: Generated artifact freshness
+7. **Validation artifact freshness** (`npm run check:validation-freshness`) - CI step: Validation artifact freshness
+8. **Coupled test gate** (`npm run check:coupled-tests`) - CI step: Coupled test change gate
+9. **Volume regression** (`npm run check:volume`) - CI step: Volume regression gate
+10. **Deploy data artifacts** (`npm run check:deploy`) - CI step: Generate deploy data artifacts
+11. **CSS syntax** (`npm run check:css-syntax`) - CI step: CSS syntax check
+12. **Next.js build** (`npm run build:next`) - CI step: Next.js production build
+13. **Post-build typecheck** (`npm run typecheck`) - CI step: Post-build typecheck
+14. **Design ship** (`npm run audit:design-ship`) - CI step: Design ship audit
+15. **Design token parity** (`npm run audit:design-tokens`) - CI step: Design token parity audit
+16. **Clinical card consistency** (`npm run audit:card-consistency`) - CI step: Clinical card consistency audit
+17. **Metric semantics** (`npm run audit:metric-semantics`) - CI step: Metric semantics audit
+18. **Em dash copy** (`npm run check:no-em-dashes`) - CI step: Em dash copy audit
+19. **Terminal integrity** (`npm run audit:terminal-integrity`) - CI step: Terminal integrity audit
+20. **Insight-first** (`npm run audit:insight-first`) - CI step: Insight-first audit
+21. **Overlay portals** (`npm run audit:overlay-portals`) - CI step: Overlay portal audit
+22. **Integrity monitor** (`npm run audit:integrity-monitor`) - CI step: Integrity monitor audit
+23. **Unit tests** (`npm run test`) - CI step: Unit tests
+24. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
 
 When overview snapshot sources change, also run:
 

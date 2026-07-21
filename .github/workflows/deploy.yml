@@ -44,6 +44,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Enterprise API route contracts
+        run: npm run check:enterprise-api-routes
+
       - name: Regenerate overview snapshot
         run: npx tsx scripts/build-overview-snapshot.ts
 
@@ -69,6 +72,9 @@ jobs:
 
       - name: Next.js production build
         run: npm run build:next
+
+      - name: Post-build typecheck
+        run: npm run typecheck
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium

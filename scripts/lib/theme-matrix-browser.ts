@@ -87,6 +87,17 @@ export async function measureProbe(page: Page, selector: string): Promise<Browse
       current = current.parentElement;
     }
 
+    if (!background) {
+      for (const fallback of [document.body, document.documentElement]) {
+        const fallbackStyle = window.getComputedStyle(fallback);
+        const bg = fallbackStyle.backgroundColor;
+        if (bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent") {
+          background = bg;
+          break;
+        }
+      }
+    }
+
     const text = (element.textContent ?? "").replace(/\s+/g, " ").trim();
 
     return {
