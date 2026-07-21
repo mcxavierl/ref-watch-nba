@@ -133,12 +133,30 @@ html[data-color="light"]:not([data-contrast="high"]) {
 /* High-contrast overrides */
 html[data-contrast="high"][data-color="light"],
 html[data-contrast="high"][data-theme="light"] {
+  color-scheme: light;
+
+  --bg-surface-0: #ffffff;
+  --bg-surface-1: #ffffff;
+  --bg-surface-2: #f8fafc;
+  --bg-surface-3: #f1f5f9;
+
   --text-primary: #000000;
   --text-secondary: #1f2937;
   --text-muted: #374151;
   --border-default: #111827;
   --border-subtle: #374151;
   --focus-ring: #000000;
+
+  --background: var(--bg-surface-0);
+  --foreground: var(--text-primary);
+  --surface: var(--bg-surface-1);
+  --surface-raised: var(--bg-surface-2);
+  --border: var(--border-default);
+  --muted: var(--text-muted);
+  --muted-strong: var(--text-secondary);
+  --ink: var(--text-primary);
+  --ink-secondary: var(--text-secondary);
+  --line: var(--border-default);
 }
 
 html[data-contrast="high"][data-color="dark"],

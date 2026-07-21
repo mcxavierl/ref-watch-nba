@@ -13769,6 +13769,34 @@ html.dark .overview-league-chooser-card[data-league="epl"] .overview-league-choo
   white-space: nowrap;
 }
 
+html[data-color="dark"] a.overview-catalog-row,
+html.dark a.overview-catalog-row,
+html[data-color="dark"] .overview-catalog-name,
+html.dark .overview-catalog-name,
+html[data-color="dark"] .overview-league-chooser-label,
+html.dark .overview-league-chooser-label {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"] .insight-editorial-kicker,
+html.dark .insight-editorial-kicker {
+  color: var(--text-secondary);
+}
+
+html[data-color="dark"] .page-hero-slate .page-title,
+html.dark .page-hero-slate .page-title,
+html[data-color="dark"] .league-slate-hero .page-title,
+html.dark .league-slate-hero .page-title {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"] .page-hero-slate .league-slate-kicker,
+html.dark .page-hero-slate .league-slate-kicker,
+html[data-color="dark"] .league-slate-hero .league-slate-kicker,
+html.dark .league-slate-hero .league-slate-kicker {
+  color: var(--text-secondary);
+}
+
 .overview-catalog-meta {
   display: inline-flex;
   align-items: center;
@@ -14267,6 +14295,19 @@ html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-ca
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-label {
   color: var(--text-primary);
+}
+
+html[data-contrast="high"][data-color="light"] .overview-league-chooser-card,
+html[data-contrast="high"][data-theme="light"] .overview-league-chooser-card {
+  background: #ffffff;
+  border-color: #111827;
+  color: #000000;
+  box-shadow: none;
+}
+
+html[data-contrast="high"][data-color="light"] .overview-league-chooser-label,
+html[data-contrast="high"][data-theme="light"] .overview-league-chooser-label {
+  color: #000000;
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser-meta,

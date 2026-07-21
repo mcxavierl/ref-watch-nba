@@ -15,16 +15,29 @@ export type EnterpriseApiContext = {
   apiKey: ValidatedApiKey;
 };
 
-type EnterpriseRouteHandler<TContext = Record<string, never>> = (
+export type EnterpriseRouteContext<
+  TParams extends Record<string, string> = Record<string, never>,
+> = {
+  params: Promise<TParams>;
+};
+
+type EnterpriseRouteHandler<
+  TParams extends Record<string, string> = Record<string, never>,
+> = (
   request: Request,
-  context: EnterpriseApiContext & TContext,
+  context: EnterpriseApiContext & EnterpriseRouteContext<TParams>,
 ) => Promise<NextResponse> | NextResponse;
 
-export function withEnterpriseApi<TContext = Record<string, never>>(
+export function withEnterpriseApi<
+  TParams extends Record<string, string> = Record<string, never>,
+>(
   endpoint: string,
-  handler: EnterpriseRouteHandler<TContext>,
+  handler: EnterpriseRouteHandler<TParams>,
 ) {
-  return async (request: Request, routeContext: TContext): Promise<NextResponse> => {
+  return async (
+    request: Request,
+    routeContext: EnterpriseRouteContext<TParams>,
+  ): Promise<NextResponse> => {
     const startedAt = Date.now();
     const plaintext = extractApiKeyFromRequest(request);
 
@@ -62,7 +75,7 @@ export function withEnterpriseApi<TContext = Record<string, never>>(
 
     let response: NextResponse;
     try {
-      response = await handler(request, { apiKey, ...(routeContext as TContext) });
+      response = await handler(request, { apiKey, ...routeContext });
     } catch (error) {
       response = apiError(
         500,

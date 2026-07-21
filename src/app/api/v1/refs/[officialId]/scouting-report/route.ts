@@ -17,7 +17,7 @@ function parseBooleanFlag(value: string | null): boolean | undefined {
   return undefined;
 }
 
-export const GET = withEnterpriseApi<{ params: Promise<{ officialId: string }> }>(
+export const GET = withEnterpriseApi<{ officialId: string }>(
   "/api/v1/refs/:officialId/scouting-report",
   async (request, { apiKey, params }) => {
     const { officialId } = await params;

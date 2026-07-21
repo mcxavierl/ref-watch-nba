@@ -5,7 +5,7 @@ import { apiError, apiSuccess } from "@/lib/api/v1/response";
 
 export const dynamic = "force-dynamic";
 
-export const GET = withEnterpriseApi<{ params: Promise<{ id: string }> }>(
+export const GET = withEnterpriseApi<{ id: string }>(
   "/api/v1/referees/:id/archetype",
   async (request, { apiKey, params }) => {
     const { id } = await params;
