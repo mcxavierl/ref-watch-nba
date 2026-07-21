@@ -5,6 +5,9 @@ import type { RefProfile } from "@/lib/types";
 /** Primary variance gate: |score| must exceed 1.0 to surface as an anomaly. */
 export const ANOMALY_VARIANCE_THRESHOLD = GSNI_THRESHOLD;
 
+/** Stronger gate for rankings and briefing alerts (roughly 2σ-style vs league averages). */
+export const ANOMALY_STRONG_SCORE_THRESHOLD = ANOMALY_VARIANCE_THRESHOLD * 2;
+
 export const NO_ANOMALIES_DETECTED_COPY =
   "No anomalies detected. Broaden your filter to see league-average profiles.";
 
@@ -62,6 +65,10 @@ export function qualifiesRefAnomaly(
   leagueId: LeagueId,
   notableSignalCount = 0,
 ): boolean {
-  if (notableSignalCount > 0) return true;
-  return refInterestingnessScore(ref, leagueId) >= ANOMALY_VARIANCE_THRESHOLD;
+  const score = refInterestingnessScore(ref, leagueId);
+  if (notableSignalCount >= 2) return true;
+  if (notableSignalCount >= 1 && score >= ANOMALY_STRONG_SCORE_THRESHOLD) {
+    return true;
+  }
+  return score >= ANOMALY_STRONG_SCORE_THRESHOLD * 1.25;
 }

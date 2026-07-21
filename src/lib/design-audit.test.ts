@@ -14,10 +14,53 @@ describe("design audit guardrails", () => {
     assert.match(globals, /--page-max: 72rem/);
   });
 
-  it("avoids raw slate text utilities on homepage hero and about page", () => {
-    const hero = readSrc("src/components/OverviewHero.tsx");
+  it("homepage intelligence hero leads with briefing and proof bar hierarchy", () => {
+    const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
+    const banner = readSrc("src/components/dashboard/IntelligenceHero.tsx");
+    const dashboard = readSrc("src/components/OverviewDashboard.tsx");
+    const page = readSrc("src/app/page.tsx");
+    assert.match(hero, /IntelligenceHero/);
+    assert.match(hero, /buildIntelligenceHeroView/);
+    assert.match(banner, /OFFICIATING DECISION INTELLIGENCE/);
+    assert.match(banner, /Today.*Intelligence/);
+    assert.match(banner, /statistical anomaly/i);
+    assert.match(banner, /Platform proof metrics/);
+    assert.match(page, /OverviewIntelligenceHero/);
+    assert.doesNotMatch(dashboard, /GoldMineProofBar/);
+    assert.match(dashboard, /OverviewFeaturedSignal/);
+    assert.match(dashboard, /OverviewUpcomingSlateSection/);
+    assert.match(dashboard, /OverviewIntelligenceFeed/);
+    assert.match(dashboard, /OverviewResearchFooter/);
+  });
+
+  it("ref profile narrative surfaces officiating fingerprint at the top", () => {
+    const layout = readSrc("src/components/ref-profile/RefProfileNarrativeLayout.tsx");
+    const visual = readSrc("src/components/visuals/OfficiatingFingerprint.tsx");
+    assert.match(layout, /RefProfileFingerprintSection/);
+    assert.match(visual, /Officiating Fingerprint/);
+    assert.match(visual, /officiating-fingerprint-data/);
+  });
+
+  it("dashboard intelligence components power featured signal and live feed", () => {
+    const topSignal = readSrc("src/components/dashboard/TopSignal.tsx");
+    const feed = readSrc("src/components/dashboard/IntelligenceFeed.tsx");
+    const overview = readSrc("src/components/OverviewFeaturedSignal.tsx");
+    assert.match(topSignal, /top-signal-percentile-label/);
+    assert.match(topSignal, /Open Intelligence/);
+    assert.match(feed, /intelligence-feed-filter/);
+    assert.match(feed, /Streaming/);
+    assert.match(overview, /TopSignal/);
+  });
+
+  it("game preview drawer exposes fingerprint visual tab", () => {
+    const drawer = readSrc("src/components/GameSlatePreviewDrawer.tsx");
+    const preview = readSrc("src/lib/game-slate-preview.ts");
+    assert.match(drawer, /GameSlateFingerprintPanel/);
+    assert.match(drawer, /Officiating fingerprint/);
+    assert.match(preview, /crewFingerprints/);
+  });
+  it("avoids raw slate text utilities on about page", () => {
     const about = readSrc("src/app/about/page.tsx");
-    assert.doesNotMatch(hero, /text-slate-/);
     assert.doesNotMatch(about, /text-slate-/);
     assert.doesNotMatch(about, /\bmt-\d+/);
     assert.match(about, /clinical-doc-section/);

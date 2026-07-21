@@ -27,7 +27,7 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
     >
       <div className="overview-section-header overview-section-header--primary overview-upcoming-header">
         <h2 className="overview-section-title" id="overview-upcoming-heading">
-          Upcoming games
+          Live Slate
         </h2>
         <p className="overview-section-lead overview-upcoming-lead">
           {upcomingSlate.inSeason
