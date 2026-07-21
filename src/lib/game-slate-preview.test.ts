@@ -21,7 +21,7 @@ describe("game slate preview", () => {
     assert.ok(preview.scoringLabel.length > 0);
   });
 
-  it("returns null when the crew has not been assigned yet", () => {
+  it("builds a matchup sheet when the crew has not been assigned yet", () => {
     const preview = buildGameSlatePreview(
       "wnba",
       {
@@ -34,7 +34,11 @@ describe("game slate preview", () => {
       },
       getWnbaOdds(),
     );
-    assert.equal(preview, null);
+    assert.ok(preview);
+    assert.equal(preview.awaitingCrew, true);
+    assert.equal(preview.crew.length, 0);
+    assert.ok(preview.matchupBriefing);
+    assert.ok(preview.matchupBriefing.lines.length > 0);
   });
 
   it("includes ref-team rows when crew has team history", () => {

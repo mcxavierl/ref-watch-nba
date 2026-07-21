@@ -75,7 +75,28 @@ export function collectUpcomingCardRefInsights(game: OverviewSlateEntry): string
   const seen = new Set<string>();
 
   if (!hasUpcomingCardAssignedCrew(game)) {
-    pushUniqueInsight(lines, seen, upcomingCardInsightFallback(game));
+    if (game.preview?.matchupBriefing) {
+      const briefing = game.preview.matchupBriefing;
+      for (const line of briefing.lines.slice(0, 4)) {
+        pushUniqueInsight(lines, seen, line);
+      }
+      if (briefing.h2hGames > 0) {
+        pushUniqueInsight(
+          lines,
+          seen,
+          `H2H: ${formatPct(briefing.overRate)} over · ${briefing.avgTotalPoints} avg ${game.preview.scoringLabel.toLowerCase()}`,
+        );
+      }
+    }
+
+    pushUniqueInsight(lines, seen, game.matchupInsight);
+    pushUniqueInsight(lines, seen, game.lastMeetingLine);
+    pushUniqueInsight(lines, seen, game.gameContextLine);
+    pushUniqueInsight(lines, seen, game.teamContextLine);
+
+    if (lines.length === 0) {
+      pushUniqueInsight(lines, seen, upcomingCardInsightFallback(game));
+    }
     return lines;
   }
 

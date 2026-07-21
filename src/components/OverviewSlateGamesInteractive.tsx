@@ -24,7 +24,7 @@ export function OverviewSlateGamesInteractive({
     liveGames
       .filter(
         (game): game is OverviewSlateEntry & { preview: GameSlatePreviewPayload } =>
-          game.crewCount > 0 && Boolean(game.preview),
+          Boolean(game.preview),
       )
       .map((game) => [`${game.leagueId}:${game.gameId}`, game.preview]),
   );

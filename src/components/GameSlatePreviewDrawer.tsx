@@ -120,6 +120,18 @@ export function GameSlatePreviewDrawer({
   const matchupInsights = buildGameSlateMatchupInsights(preview.refTeamRows);
   const refVsTeamsLabel = refVsTeamsSectionLabel(preview.crew.length);
   const projectionEvidence = buildProjectionEvidence(preview);
+  const awaitingCrew = preview.awaitingCrew ?? preview.crew.length === 0;
+  const briefing = preview.matchupBriefing;
+  const drawerKicker = awaitingCrew
+    ? `${preview.leagueLabel} · Matchup sheet`
+    : `${preview.leagueLabel} · Game preview`;
+  const impactSectionTitle = awaitingCrew ? "Head-to-head profile" : "Crew impact";
+  const impactSampleLabel = awaitingCrew
+    ? `${preview.sampleGames} head-to-head meetings`
+    : `${preview.sampleGames} games in sample`;
+  const insufficientCopy = awaitingCrew
+    ? "Limited head-to-head history for this pairing. Context below uses recent team form and slate notes."
+    : "Not enough qualified crew history to show composite tendencies yet.";
 
   return (
     <ModalPortal>
@@ -140,7 +152,7 @@ export function GameSlatePreviewDrawer({
           <header className="ref-preview-drawer-header">
             <div className="ref-preview-drawer-header-copy">
               <p className="ref-preview-drawer-kicker">
-                {preview.leagueLabel} · Game preview
+                {drawerKicker}
               </p>
               <div className="ref-preview-drawer-title-row">
                 <div className="game-slate-preview-matchup">
@@ -172,7 +184,27 @@ export function GameSlatePreviewDrawer({
           </header>
 
           <div className="ref-preview-drawer-body">
-            {preview.crew.length > 0 ? (
+            {awaitingCrew ? (
+              <section
+                className="ref-preview-drawer-section game-slate-preview-matchup-briefing"
+                aria-label="Matchup briefing"
+              >
+                <h3 className="ref-preview-drawer-section-title">
+                  {briefing?.headline ?? "Matchup briefing"}
+                </h3>
+                <p className="game-slate-preview-matchup-briefing-note">
+                  Officiating crew not assigned yet. Ref intelligence unlocks when the slate is
+                  published.
+                </p>
+                {briefing?.lines.length ? (
+                  <ul className="game-slate-preview-matchup-briefing-lines">
+                    {briefing.lines.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </section>
+            ) : (
               <section className="ref-preview-drawer-section" aria-label="Officiating crew">
                 <h3 className="ref-preview-drawer-section-title">Crew</h3>
                 <div className="game-slate-preview-crew-row">
@@ -197,18 +229,14 @@ export function GameSlatePreviewDrawer({
                   ))}
                 </div>
               </section>
-            ) : (
-              <p className="ref-preview-drawer-empty">Crew not assigned yet.</p>
             )}
 
             <div className="flex flex-col gap-6">
               {preview.insufficientSample ? (
-                <p className="ref-preview-drawer-summary-copy">
-                  Not enough qualified crew history to show composite tendencies yet.
-                </p>
+                <p className="ref-preview-drawer-summary-copy">{insufficientCopy}</p>
               ) : (
-                <section className="game-slate-preview-crew-impact" aria-label="Crew impact">
-                  <h3 className="ref-preview-drawer-section-title">Crew impact</h3>
+                <section className="game-slate-preview-crew-impact" aria-label={impactSectionTitle}>
+                  <h3 className="ref-preview-drawer-section-title">{impactSectionTitle}</h3>
                   <div className="game-slate-preview-crew-impact-chips">
                     <div
                       className={`game-slate-preview-crew-impact-chip ${crewImpactToneClass(scoringTone)}`}
@@ -263,12 +291,14 @@ export function GameSlatePreviewDrawer({
                     ) : null}
                   </div>
                   <p className="game-slate-preview-crew-impact-sample font-tabular tabular-nums">
-                    {preview.sampleGames} games in sample
+                    {impactSampleLabel}
                   </p>
                 </section>
               )}
 
-              <EvidenceDrawer evidence={projectionEvidence} className="game-slate-preview-evidence" />
+              {!awaitingCrew ? (
+                <EvidenceDrawer evidence={projectionEvidence} className="game-slate-preview-evidence" />
+              ) : null}
 
               {preview.teamImpacts.length > 0 ? (
                 <section

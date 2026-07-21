@@ -77,6 +77,9 @@ function previewHeroTrendCandidates(preview: GameSlatePreviewPayload): HeroInsig
 }
 
 function selectPreviewHeroInsight(preview: GameSlatePreviewPayload): string | undefined {
+  if (preview.awaitingCrew && preview.matchupBriefing?.lines[0]) {
+    return summarizeInsightLine(preview.matchupBriefing.lines[0]);
+  }
   if (preview.insufficientSample || preview.crew.length === 0) return undefined;
   const candidates = previewHeroTrendCandidates(preview);
   if (candidates.length === 0) return undefined;
@@ -85,7 +88,12 @@ function selectPreviewHeroInsight(preview: GameSlatePreviewPayload): string | un
 
 /** Pick one compact hero insight for upcoming game cards. */
 export function selectUpcomingCardHeroInsight(game: OverviewSlateEntry): string | undefined {
-  if (!hasUpcomingCardAssignedCrew(game)) return undefined;
+  if (!hasUpcomingCardAssignedCrew(game)) {
+    if (game.preview?.matchupBriefing?.lines[0]) {
+      return summarizeInsightLine(game.preview.matchupBriefing.lines[0]);
+    }
+    return game.matchupInsight ? summarizeInsightLine(game.matchupInsight) : undefined;
+  }
 
   if (game.preview) {
     const previewTrend = selectPreviewHeroInsight(game.preview);

@@ -5,6 +5,14 @@ import {
   SLATE_PREVIEW_ADAPTERS,
   type SlatePreviewLeagueId,
 } from "@/lib/game-slate-preview-adapters";
+import { loadRuntimeGameLogs } from "@/lib/game-logs";
+import type { RuntimeGameLogEntry } from "@/lib/game-logs-preload";
+import {
+  buildOverviewLastMeetingLine,
+  buildOverviewMatchupInsight,
+  buildOverviewRecentGameContextLine,
+  buildOverviewTeamRecentContextLine,
+} from "@/lib/overview-matchup-insight";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { sportCopy } from "@/lib/user-language";
@@ -54,6 +62,16 @@ export type GameSlatePreviewTeamImpact = {
   insights: GameSlatePreviewTeamInsight[];
 };
 
+export type GameSlateMatchupBriefing = {
+  headline: string;
+  lines: string[];
+  h2hGames: number;
+  avgTotalPoints: number;
+  avgFouls: number;
+  overRate: number;
+  lastMeeting?: string;
+};
+
 export type GameSlatePreviewPayload = {
   gameId: string;
   leagueId: SlatePreviewLeagueId;
@@ -78,6 +96,8 @@ export type GameSlatePreviewPayload = {
   premiumGap?: number;
   premiumLabel?: string;
   homeBiasHeadline?: string;
+  awaitingCrew?: boolean;
+  matchupBriefing?: GameSlateMatchupBriefing;
   crew: Array<{
     name: string;
     number: number;
@@ -330,13 +350,178 @@ export function selectGameSlatePreviewCardInsights(
     .map((candidate) => candidate.text);
 }
 
+const LEAGUE_TO_DATA: Partial<Record<SlatePreviewLeagueId, RuntimeGameLogEntry["league"]>> = {
+  nba: "NBA",
+  wnba: "WNBA",
+  nhl: "NHL",
+  nfl: "NFL",
+  epl: "EPL",
+  laliga: "LALIGA",
+  cbb: "CBB",
+  cfb: "CFB",
+};
+
+function teamAliasesForLeague(
+  leagueId: SlatePreviewLeagueId,
+  abbr: string,
+): string[] {
+  const key = abbr.toUpperCase();
+  if (leagueId === "nfl" && (key === "LAC" || key === "SD")) return ["LAC", "SD"];
+  return [key];
+}
+
+function isHeadToHeadMeeting(
+  game: RuntimeGameLogEntry,
+  awayTeam: string,
+  homeTeam: string,
+  leagueId: SlatePreviewLeagueId,
+): boolean {
+  const away = new Set(teamAliasesForLeague(leagueId, awayTeam));
+  const home = new Set(teamAliasesForLeague(leagueId, homeTeam));
+  const gameAway = game.awayTeam.toUpperCase();
+  const gameHome = game.homeTeam.toUpperCase();
+  return (
+    (away.has(gameAway) && home.has(gameHome)) ||
+    (away.has(gameHome) && home.has(gameAway))
+  );
+}
+
+function headToHeadMeetings(
+  leagueId: SlatePreviewLeagueId,
+  awayTeam: string,
+  homeTeam: string,
+): RuntimeGameLogEntry[] {
+  const dataLeague = LEAGUE_TO_DATA[leagueId];
+  if (!dataLeague) return [];
+  const logs = loadRuntimeGameLogs(dataLeague);
+  if (!logs?.games?.length) return [];
+
+  return logs.games
+    .filter((game) => isHeadToHeadMeeting(game, awayTeam, homeTeam, leagueId))
+    .sort((a, b) => b.date.localeCompare(a.date) || b.gameId.localeCompare(a.gameId));
+}
+
+function average(values: number[]): number {
+  if (values.length === 0) return 0;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function overRateFromGames(games: RuntimeGameLogEntry[], closingTotal?: number): number {
+  if (games.length === 0) return 0.5;
+  const threshold = closingTotal ?? average(games.map((game) => game.closingTotal));
+  const overs = games.filter((game) => game.totalPoints > threshold).length;
+  return overs / games.length;
+}
+
+function buildMatchupSlatePreview(
+  leagueId: SlatePreviewLeagueId,
+  game: AssignmentGame,
+  odds: OddsFile,
+): GameSlatePreviewPayload | null {
+  const adapter = SLATE_PREVIEW_ADAPTERS[leagueId];
+  const teams = adapter.detectTeams(game.awayTeam, game.homeTeam);
+  const copy = sportCopy(leagueId);
+  const manifest = LEAGUE_MANIFEST[leagueId];
+  const awayAbbr = teams[0]?.abbr ?? game.awayTeam;
+  const homeAbbr = teams[1]?.abbr ?? game.homeTeam;
+  const meetings = headToHeadMeetings(leagueId, awayAbbr, homeAbbr);
+  const { stats } = loadLeagueStats(leagueId);
+  const oddsLine =
+    odds.lines.find((line) => line.gameId === game.id) ??
+    odds.lines.find(
+      (line) =>
+        line.awayTeam.toUpperCase() === game.awayTeam.toUpperCase() &&
+        line.homeTeam.toUpperCase() === game.homeTeam.toUpperCase(),
+    );
+  const closingTotal = oddsLine?.total;
+
+  const avgTotalPoints = average(meetings.map((entry) => entry.totalPoints));
+  const avgFouls = average(meetings.map((entry) => entry.totalFouls));
+  const leagueAvgTotal = stats.meta.leagueOverBaseline;
+  const leagueAvgFouls =
+    stats.refs.length > 0
+      ? stats.refs.reduce((sum, ref) => sum + ref.avgFouls, 0) / stats.refs.length
+      : avgFouls;
+  const overRate = overRateFromGames(meetings, closingTotal);
+  const matchupInsight = buildOverviewMatchupInsight(leagueId, awayAbbr, homeAbbr);
+  const lastMeeting = buildOverviewLastMeetingLine(leagueId, awayAbbr, homeAbbr);
+  const recentContext = buildOverviewRecentGameContextLine(leagueId, awayAbbr, homeAbbr);
+  const teamContext = buildOverviewTeamRecentContextLine(leagueId, awayAbbr, homeAbbr);
+
+  const briefingLines = [
+    matchupInsight,
+    lastMeeting,
+    recentContext,
+    teamContext,
+    closingTotal !== undefined
+      ? `Closing total: ${closingTotal} · H2H over rate ${formatPct(overRate)}`
+      : meetings.length > 0
+        ? `Head-to-head over rate: ${formatPct(overRate)} across ${meetings.length} meetings`
+        : undefined,
+  ].filter((line): line is string => Boolean(line));
+
+  const ouLean: GameSlatePreviewPayload["ouLean"] =
+    overRate >= 0.55 ? "over" : overRate <= 0.45 ? "under" : "neutral";
+
+  return {
+    gameId: game.id,
+    leagueId,
+    leagueLabel: LEAGUES[leagueId].label,
+    sport: leagueId,
+    basePath: manifest.pathPrefix,
+    matchup: game.matchup,
+    awayTeam: game.awayTeam,
+    homeTeam: game.homeTeam,
+    awayAbbr,
+    homeAbbr,
+    ouLean,
+    awaitingCrew: true,
+    insufficientSample: meetings.length < 3,
+    sampleGames: meetings.length,
+    scoringLabel: copy.scoringLabel,
+    whistleLabel: copy.whistleLabel,
+    avgTotalPoints: round1(avgTotalPoints),
+    totalPointsDelta: round1(avgTotalPoints - leagueAvgTotal),
+    overRate,
+    avgFouls: round1(avgFouls),
+    foulsDelta: round1(avgFouls - leagueAvgFouls),
+    premiumGap:
+      closingTotal !== undefined ? round1(avgTotalPoints - closingTotal) : undefined,
+    premiumLabel:
+      closingTotal !== undefined && avgTotalPoints > closingTotal
+        ? "Above closing total"
+        : closingTotal !== undefined && avgTotalPoints < closingTotal
+          ? "Below closing total"
+          : undefined,
+    matchupBriefing: {
+      headline: `${awayAbbr} at ${homeAbbr} matchup sheet`,
+      lines: briefingLines,
+      h2hGames: meetings.length,
+      avgTotalPoints: round1(avgTotalPoints),
+      avgFouls: round1(avgFouls),
+      overRate,
+      lastMeeting,
+    },
+    crew: [],
+    refTeamRows: [],
+    teamImpacts: [],
+    storylines: [],
+  };
+}
+
+function round1(value: number): number {
+  return Math.round(value * 10) / 10;
+}
+
 export function buildGameSlatePreview(
   leagueId: SlatePreviewLeagueId,
   game: AssignmentGame,
   odds: OddsFile,
 ): GameSlatePreviewPayload | null {
   if (!isSlatePreviewLeague(leagueId)) return null;
-  if (game.crew.length === 0) return null;
+  if (game.crew.length === 0) {
+    return buildMatchupSlatePreview(leagueId, game, odds);
+  }
 
   const adapter = SLATE_PREVIEW_ADAPTERS[leagueId];
   const { stats } = loadLeagueStats(leagueId);
