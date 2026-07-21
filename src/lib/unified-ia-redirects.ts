@@ -64,7 +64,7 @@ export function nbaRootLegacyRedirects(): LegacyRedirect[] {
 }
 
 export function unifiedIALegacyRedirects(): LegacyRedirect[] {
-  const leagues = ["nba", "nhl", "nfl", "epl", "laliga", "cbb", "cfb"];
+  const leagues = ["nba", "nhl", "nfl", "epl", "laliga", "wnba", "cbb", "cfb"];
   const redirects: LegacyRedirect[] = [...nbaRootLegacyRedirects()];
 
   for (const league of leagues) {
