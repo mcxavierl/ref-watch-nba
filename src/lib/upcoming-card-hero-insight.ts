@@ -2,8 +2,6 @@ import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 
-const HERO_INSIGHT_MAX_LENGTH = 72;
-
 type HeroInsightCandidate = {
   score: number;
   text: string;
@@ -23,12 +21,8 @@ export function upcomingCardInsightFallback(game: OverviewSlateEntry): string {
   return "Crews TBD · Matchup data loads on click";
 }
 
-function summarizeInsightLine(line: string, maxLength = HERO_INSIGHT_MAX_LENGTH): string {
-  const trimmed = line.trim();
-  if (!trimmed) return trimmed;
-  const firstSentence = trimmed.split(/[.!?](?:\s|$)/)[0]?.trim() ?? trimmed;
-  if (firstSentence.length <= maxLength) return firstSentence;
-  return `${firstSentence.slice(0, maxLength - 1).trimEnd()}…`;
+function summarizeInsightLine(line: string): string {
+  return line.trim().replace(/\s+/g, " ");
 }
 
 function previewHeroTrendCandidates(preview: GameSlatePreviewPayload): HeroInsightCandidate[] {

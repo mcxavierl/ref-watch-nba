@@ -153,8 +153,7 @@ export function UpcomingGameCard({
       </div>
 
       <p
-        className={`upcoming-game-card__trend line-clamp-2 shrink-0 min-h-[2.75rem] rounded-lg border px-3 py-2 text-center text-[0.6875rem] font-medium leading-snug ${trendToneClass(signals.tone)}`}
-        title={signals.primaryTrend}
+        className={`upcoming-game-card__trend shrink-0 rounded-lg border px-3 py-2 text-center text-[0.6875rem] font-medium leading-snug ${trendToneClass(signals.tone)}`}
       >
         {signals.primaryTrend}
       </p>
