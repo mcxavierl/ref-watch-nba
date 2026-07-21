@@ -30,7 +30,9 @@ import type { RefRole } from "@/lib/types";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { signedDeltaTone } from "@/lib/metric-delight";
 import { IntelligenceCard } from "@/components/intelligence/IntelligenceCard";
+import { GameSlatePreviewErrorBoundary } from "@/components/GameSlatePreviewErrorBoundary";
 import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
+import { normalizeGameSlatePreview } from "@/lib/normalize-game-slate-preview";
 
 const DRAWER_TRANSITION_MS = 220;
 
@@ -103,43 +105,51 @@ export function GameSlatePreviewDrawer({
     [onClose],
   );
 
-  if (!rendered || !preview) return null;
-
-  const awayTeam = preview.awayAbbr
-    ? resolveSlateTeam(preview.leagueId, preview.awayAbbr)
-    : null;
-  const homeTeam = preview.homeAbbr
-    ? resolveSlateTeam(preview.leagueId, preview.homeAbbr)
-    : null;
-  const sport = slateTeamLogoSport(preview.leagueId);
-  const scoringTone = signedDeltaTone(preview.totalPointsDelta);
-  const whistleTone = signedDeltaTone(preview.foulsDelta);
-  const rowsByTeam = new Map(
-    preview.teamImpacts.map((impact) => [
-      impact.teamAbbr,
-      preview.refTeamRows.filter((row) => row.teamAbbr === impact.teamAbbr),
-    ]),
-  );
-  const matchupInsights = buildGameSlateMatchupInsights(preview.refTeamRows);
-  const refVsTeamsLabel = refVsTeamsSectionLabel(preview.crew.length);
-  const projectionEvidence = buildProjectionEvidence(preview);
-  const awaitingCrew = preview.awaitingCrew ?? preview.crew.length === 0;
-  const briefing = preview.matchupBriefing;
-  const drawerKicker = awaitingCrew
-    ? `${preview.leagueLabel} · Matchup sheet`
-    : `${preview.leagueLabel} · Game preview`;
-  const impactSectionTitle = awaitingCrew ? "Head-to-head profile" : "Crew impact";
-  const impactSampleLabel = awaitingCrew
-    ? `${preview.sampleGames} head-to-head meetings`
-    : `${preview.sampleGames} games in sample`;
-  const insufficientCopy = awaitingCrew
-    ? "Limited head-to-head history for this pairing. Context below uses recent team form and slate notes."
-    : "Not enough qualified crew history to show composite tendencies yet.";
-  const intelligenceCard = preview.intelligenceCard ?? null;
-
   const scrollToEvidence = useCallback(() => {
     evidenceSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
+
+  if (!rendered) return null;
+
+  const safePreview = normalizeGameSlatePreview(preview);
+  if (!safePreview) return null;
+
+  const awayTeam = safePreview.awayAbbr
+    ? resolveSlateTeam(safePreview.leagueId, safePreview.awayAbbr)
+    : null;
+  const homeTeam = safePreview.homeAbbr
+    ? resolveSlateTeam(safePreview.leagueId, safePreview.homeAbbr)
+    : null;
+  const sport = slateTeamLogoSport(safePreview.leagueId);
+  const scoringTone = signedDeltaTone(safePreview.totalPointsDelta);
+  const whistleTone = signedDeltaTone(safePreview.foulsDelta);
+  const rowsByTeam = new Map(
+    safePreview.teamImpacts.map((impact) => [
+      impact.teamAbbr,
+      safePreview.refTeamRows.filter((row) => row.teamAbbr === impact.teamAbbr),
+    ]),
+  );
+  const matchupInsights = buildGameSlateMatchupInsights(safePreview.refTeamRows);
+  const refVsTeamsLabel = refVsTeamsSectionLabel(safePreview.crew.length);
+  let projectionEvidence = null;
+  try {
+    projectionEvidence = buildProjectionEvidence(safePreview);
+  } catch {
+    projectionEvidence = null;
+  }
+  const awaitingCrew = safePreview.awaitingCrew ?? safePreview.crew.length === 0;
+  const briefing = safePreview.matchupBriefing;
+  const drawerKicker = awaitingCrew
+    ? `${safePreview.leagueLabel} · Matchup sheet`
+    : `${safePreview.leagueLabel} · Game preview`;
+  const impactSectionTitle = awaitingCrew ? "Head-to-head profile" : "Crew impact";
+  const impactSampleLabel = awaitingCrew
+    ? `${safePreview.sampleGames} head-to-head meetings`
+    : `${safePreview.sampleGames} games in sample`;
+  const insufficientCopy = awaitingCrew
+    ? "Limited head-to-head history for this pairing. Context below uses recent team form and slate notes."
+    : "Not enough qualified crew history to show composite tendencies yet.";
+  const intelligenceCard = safePreview.intelligenceCard ?? null;
 
   return (
     <ModalPortal>
@@ -154,7 +164,7 @@ export function GameSlatePreviewDrawer({
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
-          data-league={preview.leagueId}
+          data-league={safePreview.leagueId}
           onClick={(event) => event.stopPropagation()}
         >
           <header className="ref-preview-drawer-header">
@@ -174,16 +184,16 @@ export function GameSlatePreviewDrawer({
                     </>
                   ) : null}
                   <h2 className="ref-preview-drawer-title" id={titleId}>
-                    {preview.matchup}
+                    {safePreview.matchup}
                   </h2>
                 </div>
-                <OuLeanBadge lean={preview.ouLean} />
+                <OuLeanBadge lean={safePreview.ouLean} />
               </div>
             </div>
             <div className="ref-preview-drawer-header-actions">
-              {preview.broadcastExport ? (
+              {safePreview.broadcastExport ? (
                 <ExportOnAirGraphicTrigger
-                  broadcastExport={preview.broadcastExport}
+                  broadcastExport={safePreview.broadcastExport}
                   className="game-slate-preview-broadcast-kit"
                 />
               ) : null}
@@ -199,7 +209,8 @@ export function GameSlatePreviewDrawer({
             </div>
           </header>
 
-          <div className="ref-preview-drawer-body">
+          <GameSlatePreviewErrorBoundary onReset={onClose}>
+            <div className="ref-preview-drawer-body">
             {intelligenceCard ? (
               <IntelligenceCard
                 content={intelligenceCard}
@@ -219,7 +230,7 @@ export function GameSlatePreviewDrawer({
                   Officiating crew not assigned yet. Ref intelligence unlocks when the slate is
                   published.
                 </p>
-                {briefing?.lines.length ? (
+                {briefing?.lines?.length ? (
                   <ul className="game-slate-preview-matchup-briefing-lines">
                     {briefing.lines.map((line) => (
                       <li key={line}>{line}</li>
@@ -231,21 +242,21 @@ export function GameSlatePreviewDrawer({
               <section className="ref-preview-drawer-section" aria-label="Officiating crew">
                 <h3 className="ref-preview-drawer-section-title">Crew</h3>
                 <div className="game-slate-preview-crew-row">
-                  {preview.crew.map((official) => (
+                  {safePreview.crew.map((official) => (
                     <Link
                       key={official.slug}
-                      href={`${preview.basePath}/refs/${official.slug}`}
+                      href={`${safePreview.basePath}/refs/${official.slug}`}
                       className="crew-chip"
                     >
                       <RefAvatar
                         name={official.name}
                         slug={official.slug}
-                        sport={preview.sport}
+                        sport={safePreview.sport}
                         size="sm"
                         className="h-6 w-6 text-[9px]"
                       />
                       {official.name}
-                      {preview.sport === "nhl" && official.role ? (
+                      {safePreview.sport === "nhl" && official.role ? (
                         <OfficialRoleBadge role={official.role as RefRole} />
                       ) : null}
                     </Link>
@@ -255,7 +266,7 @@ export function GameSlatePreviewDrawer({
             )}
 
             <div className="flex flex-col gap-6">
-              {preview.insufficientSample ? (
+              {safePreview.insufficientSample ? (
                 <p className="ref-preview-drawer-summary-copy">{insufficientCopy}</p>
               ) : (
                 <section className="game-slate-preview-crew-impact" aria-label={impactSectionTitle}>
@@ -265,10 +276,10 @@ export function GameSlatePreviewDrawer({
                       className={`game-slate-preview-crew-impact-chip ${crewImpactToneClass(scoringTone)}`}
                     >
                       <span className="game-slate-preview-crew-impact-label">
-                        {preview.scoringLabel}
+                        {safePreview.scoringLabel}
                       </span>
                       <span className="game-slate-preview-crew-impact-metric font-tabular tabular-nums">
-                        {formatSigned(preview.totalPointsDelta)} impact
+                        {formatSigned(safePreview.totalPointsDelta)} impact
                       </span>
                       {scoringTone === "positive" ? (
                         <TrendingUp size={14} aria-hidden className="game-slate-preview-crew-impact-trend" />
@@ -276,17 +287,17 @@ export function GameSlatePreviewDrawer({
                         <TrendingDown size={14} aria-hidden className="game-slate-preview-crew-impact-trend" />
                       ) : null}
                       <span className="game-slate-preview-crew-impact-meta font-tabular tabular-nums">
-                        {preview.avgTotalPoints} avg · {formatPct(preview.overRate)} over
+                        {safePreview.avgTotalPoints} avg · {formatPct(safePreview.overRate)} over
                       </span>
                     </div>
                     <div
                       className={`game-slate-preview-crew-impact-chip ${crewImpactToneClass(whistleTone)}`}
                     >
                       <span className="game-slate-preview-crew-impact-label">
-                        {preview.whistleLabel}
+                        {safePreview.whistleLabel}
                       </span>
                       <span className="game-slate-preview-crew-impact-metric font-tabular tabular-nums">
-                        {formatSigned(preview.foulsDelta)} impact
+                        {formatSigned(safePreview.foulsDelta)} impact
                       </span>
                       {whistleTone === "positive" ? (
                         <TrendingUp size={14} aria-hidden className="game-slate-preview-crew-impact-trend" />
@@ -294,20 +305,20 @@ export function GameSlatePreviewDrawer({
                         <TrendingDown size={14} aria-hidden className="game-slate-preview-crew-impact-trend" />
                       ) : null}
                       <span className="game-slate-preview-crew-impact-meta font-tabular tabular-nums">
-                        {preview.avgFouls} avg
+                        {safePreview.avgFouls} avg
                       </span>
                     </div>
-                    {preview.premiumGap !== undefined ? (
+                    {safePreview.premiumGap !== undefined ? (
                       <div
-                        className={`game-slate-preview-crew-impact-chip ${crewImpactToneClass(signedDeltaTone(preview.premiumGap))}`}
+                        className={`game-slate-preview-crew-impact-chip ${crewImpactToneClass(signedDeltaTone(safePreview.premiumGap))}`}
                       >
                         <span className="game-slate-preview-crew-impact-label">Vs benchmark</span>
                         <span className="game-slate-preview-crew-impact-metric font-tabular tabular-nums">
-                          {formatSigned(preview.premiumGap)}
+                          {formatSigned(safePreview.premiumGap)}
                         </span>
-                        {preview.premiumLabel ? (
+                        {safePreview.premiumLabel ? (
                           <span className="game-slate-preview-crew-impact-meta">
-                            {preview.premiumLabel}
+                            {safePreview.premiumLabel}
                           </span>
                         ) : null}
                       </div>
@@ -319,7 +330,7 @@ export function GameSlatePreviewDrawer({
                 </section>
               )}
 
-              {!awaitingCrew ? (
+              {!awaitingCrew && projectionEvidence ? (
                 <section ref={evidenceSectionRef}>
                   <EvidenceDrawer
                     evidence={projectionEvidence}
@@ -328,13 +339,13 @@ export function GameSlatePreviewDrawer({
                 </section>
               ) : null}
 
-              {preview.teamImpacts.length > 0 ? (
+              {safePreview.teamImpacts.length > 0 ? (
                 <section
                   className="game-slate-preview-team-impact-grid"
                   aria-label="Team impact by side"
                 >
-                  {preview.teamImpacts.map((impact) => {
-                    const team = resolveSlateTeam(preview.leagueId, impact.teamAbbr);
+                  {safePreview.teamImpacts.map((impact) => {
+                    const team = resolveSlateTeam(safePreview.leagueId, impact.teamAbbr);
                     if (!team) return null;
                     return (
                       <TeamImpactCard
@@ -344,7 +355,7 @@ export function GameSlatePreviewDrawer({
                         teamAbbr={impact.teamAbbr}
                         teamLabel={impact.teamLabel}
                         insights={impact.insights}
-                        basePath={preview.basePath}
+                        basePath={safePreview.basePath}
                       />
                     );
                   })}
@@ -365,7 +376,7 @@ export function GameSlatePreviewDrawer({
                 </section>
               ) : null}
 
-              {preview.refTeamRows.length > 0 ? (
+              {safePreview.refTeamRows.length > 0 ? (
                 <section className="ref-preview-drawer-section" aria-label="Ref team splits">
                   <h3 className="ref-preview-drawer-section-title">Ref × team history</h3>
                   <div className="ref-preview-drawer-table-wrap">
@@ -385,10 +396,10 @@ export function GameSlatePreviewDrawer({
                         </tr>
                       </thead>
                       <tbody>
-                        {preview.teamImpacts.flatMap((impact) => {
+                        {safePreview.teamImpacts.flatMap((impact) => {
                           const rows = rowsByTeam.get(impact.teamAbbr) ?? [];
                           if (rows.length === 0) return [];
-                          const team = resolveSlateTeam(preview.leagueId, impact.teamAbbr);
+                          const team = resolveSlateTeam(safePreview.leagueId, impact.teamAbbr);
                           return [
                             <tr
                               key={`header-${impact.teamAbbr}`}
@@ -418,7 +429,7 @@ export function GameSlatePreviewDrawer({
                               >
                                 <td>
                                   <Link
-                                    href={`${preview.basePath}/refs/${row.refSlug}`}
+                                    href={`${safePreview.basePath}/refs/${row.refSlug}`}
                                     className="font-medium hover:underline"
                                   >
                                     {row.refName}
@@ -446,18 +457,18 @@ export function GameSlatePreviewDrawer({
               ) : null}
             </div>
 
-            {preview.homeBiasHeadline ? (
+            {safePreview.homeBiasHeadline ? (
               <section className="ref-preview-drawer-summary" aria-label="Home bias">
                 <h3 className="ref-preview-drawer-section-title">Home bias</h3>
-                <p className="ref-preview-drawer-summary-copy">{preview.homeBiasHeadline}</p>
+                <p className="ref-preview-drawer-summary-copy">{safePreview.homeBiasHeadline}</p>
               </section>
             ) : null}
 
-            {preview.storylines.length > 0 ? (
+            {safePreview.storylines.length > 0 ? (
               <section className="ref-preview-drawer-section" aria-label="Ref history flags">
                 <h3 className="ref-preview-drawer-section-title">Outlier flags</h3>
                 <ul className="game-slate-preview-storylines">
-                  {preview.storylines.map((story) => (
+                  {safePreview.storylines.map((story) => (
                     <li key={story.headline}>
                       <strong>{story.headline}</strong>
                       <p>{story.summary}</p>
@@ -467,6 +478,7 @@ export function GameSlatePreviewDrawer({
               </section>
             ) : null}
           </div>
+          </GameSlatePreviewErrorBoundary>
         </aside>
       </div>
     </ModalPortal>
