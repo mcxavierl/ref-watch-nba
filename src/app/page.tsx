@@ -14,12 +14,12 @@ export const revalidate = 86400;
 export const metadata = buildPageMetadata({
   title: "Officiating intelligence",
   description:
-    "Real-time behavioral modeling, crew friction analytics, and anomaly detection across NBA, NHL, NFL, EPL, La Liga, WNBA, and NCAA basketball.",
+    "Referee and official analytics, crew assignments, and anomaly detection across NBA, NHL, NFL, EPL, La Liga, WNBA, and NCAA basketball.",
   path: SITE_HOME_PATH,
   keywords: [
     "officiating intelligence",
     "referee analytics",
-    "crew friction",
+    "crew assignments",
     "anomaly detection",
     "multi-league refs",
   ],
