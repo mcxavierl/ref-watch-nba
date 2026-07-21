@@ -9,6 +9,7 @@ import {
 } from "./lib/espn";
 
 import { postAssignmentIngest } from "../lib/post-assignment-ingest";
+const outPath = path.join(process.cwd(), "data", "laliga", "assignments.json");
 const SCAN_DAYS = 45;
 const UPCOMING_LIMIT = 10;
 const SLATE_STATUSES = new Set([
