@@ -56,4 +56,8 @@ export type ScoutingReport = {
   summary: string;
   insights: string[];
   eventBackedGames: number;
+  runStoppageRate: number | null;
+  momentumKillerScore: number | null;
+  momentumKillerLabel: string | null;
+  scoringRunBackedGames: number;
 };

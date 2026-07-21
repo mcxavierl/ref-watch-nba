@@ -34,6 +34,8 @@ export interface GameLogEntry {
   officials: RefOfficial[];
   whistlePeriodSplits?: import("../../src/lib/whistle-period-splits").WhistlePeriodSplits;
   penaltyEvents?: import("../../src/lib/types").NflPenaltyEvent[];
+  scoringPlays?: import("../../src/lib/types").ScoringPlayEvent[];
+  crewStoppages?: import("../../src/lib/types").CrewStoppageEvent[];
 }
 
 export interface GameLogFile {

@@ -42,6 +42,10 @@ export interface RuntimeGameLogEntry {
   personnel?: GamePersonnelSnapshot;
   /** Play-level NFL penalties with leverage scoring when ingested. */
   penaltyEvents?: import("@/lib/types").NflPenaltyEvent[];
+  /** Play-level scoring timeline for momentum run detection (basketball). */
+  scoringPlays?: import("@/lib/types").ScoringPlayEvent[];
+  /** Crew-initiated stoppages aligned to the scoring timeline. */
+  crewStoppages?: import("@/lib/types").CrewStoppageEvent[];
   highLeverageImpact?: number;
   highLeverageFlagRate?: number;
   subjectiveFlags?: number;

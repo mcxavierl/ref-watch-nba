@@ -202,6 +202,25 @@ export const DEFAULT_LEVERAGE_STATS: Pick<
   leverage_method_note: "",
 };
 
+export const DEFAULT_MOMENTUM_STATS: Pick<
+  OfficialStats,
+  | "run_stoppage_rate"
+  | "momentum_killer_score"
+  | "momentum_killer_label"
+  | "scoring_run_backed_games"
+  | "opponent_scoring_runs"
+  | "run_interruptions"
+  | "momentum_method_note"
+> = {
+  run_stoppage_rate: null,
+  momentum_killer_score: null,
+  momentum_killer_label: null,
+  scoring_run_backed_games: 0,
+  opponent_scoring_runs: 0,
+  run_interruptions: 0,
+  momentum_method_note: "",
+};
+
 export function toOfficialStats(
   result: Omit<RefereeArchetypeResult, "blurb" | "displayName">,
 ): OfficialStats {
@@ -214,6 +233,7 @@ export function toOfficialStats(
     sample_games: result.sample_games,
     last_calculated: result.last_calculated,
     ...DEFAULT_LEVERAGE_STATS,
+    ...DEFAULT_MOMENTUM_STATS,
   };
 }
 
@@ -391,6 +411,48 @@ export function normalizeOfficialStats(raw: unknown): OfficialStats | null {
         : typeof value.splitBackedGames === "number"
           ? value.splitBackedGames
           : 0,
+    run_stoppage_rate:
+      typeof value.run_stoppage_rate === "number"
+        ? value.run_stoppage_rate
+        : typeof value.runStoppageRate === "number"
+          ? value.runStoppageRate
+          : null,
+    momentum_killer_score:
+      typeof value.momentum_killer_score === "number"
+        ? value.momentum_killer_score
+        : typeof value.momentumKillerScore === "number"
+          ? value.momentumKillerScore
+          : null,
+    momentum_killer_label:
+      typeof value.momentum_killer_label === "string"
+        ? (value.momentum_killer_label as OfficialStats["momentum_killer_label"])
+        : typeof value.momentumKillerLabel === "string"
+          ? (value.momentumKillerLabel as OfficialStats["momentum_killer_label"])
+          : null,
+    scoring_run_backed_games:
+      typeof value.scoring_run_backed_games === "number"
+        ? value.scoring_run_backed_games
+        : typeof value.scoringRunBackedGames === "number"
+          ? value.scoringRunBackedGames
+          : 0,
+    opponent_scoring_runs:
+      typeof value.opponent_scoring_runs === "number"
+        ? value.opponent_scoring_runs
+        : typeof value.opponentScoringRuns === "number"
+          ? value.opponentScoringRuns
+          : 0,
+    run_interruptions:
+      typeof value.run_interruptions === "number"
+        ? value.run_interruptions
+        : typeof value.runInterruptions === "number"
+          ? value.runInterruptions
+          : 0,
+    momentum_method_note:
+      typeof value.momentum_method_note === "string"
+        ? value.momentum_method_note
+        : typeof value.momentumMethodNote === "string"
+          ? value.momentumMethodNote
+          : "",
   };
 }
 

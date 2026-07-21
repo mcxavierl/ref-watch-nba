@@ -1,4 +1,4 @@
-import { MetricTermLabel } from "@/components/shared/MetricTermLabel";
+import { GlossaryMetricLabel, MetricTermLabel } from "@/components/shared/MetricTermLabel";
 import { PRESSURE_GAUGE_LABELS } from "@/lib/analytics/leverage-sensitivity";
 import type { ScoutingReport } from "@/lib/analytics/scouting-report-types";
 import { consistencyStateClass, STATE_COLOR_CLASS } from "@/constants/colors";
@@ -14,6 +14,9 @@ type HandicappersInsightProps = {
     | "leverageProfile"
     | "leverageInsight"
     | "pressureGauge"
+    | "momentumKillerScore"
+    | "momentumKillerLabel"
+    | "runStoppageRate"
   >;
 };
 
@@ -99,6 +102,25 @@ export function HandicappersInsight({ report }: HandicappersInsightProps) {
             {leverageLabel}
           </dd>
         </div>
+        {report.momentumKillerScore !== null && report.momentumKillerLabel ? (
+          <div className="handicappers-insight-stat">
+            <dt>
+              <GlossaryMetricLabel id="momentum-killer-score">
+                Momentum Killer
+              </GlossaryMetricLabel>
+            </dt>
+            <dd
+              className={`tabular-nums text-right ${semanticImpactTextClass(report.momentumKillerScore - 50, {
+                minAbsDelta: 8,
+              })}`}
+            >
+              {Math.round(report.momentumKillerScore)}/100 · {report.momentumKillerLabel}
+              {report.runStoppageRate !== null
+                ? ` · ${Math.round(report.runStoppageRate * 100)}% run stops`
+                : ""}
+            </dd>
+          </div>
+        ) : null}
       </dl>
 
       <p className="handicappers-insight-footnote">{report.leverageInsight}</p>

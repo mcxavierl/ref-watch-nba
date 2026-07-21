@@ -9,6 +9,14 @@ import {
 } from "../../src/lib/analytics/leverage-sensitivity";
 import type { LeverageGameInput } from "../../src/lib/analytics/leverage-sensitivity";
 import {
+  computeRawRunStoppageRate,
+  finalizeMomentumKillerScores,
+  isBasketballMomentumLeague,
+  momentumFieldsFromResult,
+  MOMENTUM_KILLER_METHOD_NOTE,
+  type MomentumKillerGameInput,
+} from "../../src/lib/analytics/momentum-killer-score";
+import {
   resolveRefProfileFoulCategory,
   type FoulCategoryGameInput,
 } from "../../src/lib/analytics/resolve-ref-profile-foul-category";
@@ -148,6 +156,15 @@ function toLeverageInput(game: GameLogEntry): LeverageGameInput {
   };
 }
 
+function toMomentumInput(game: GameLogEntry): MomentumKillerGameInput {
+  return {
+    homeTeam: game.homeTeam,
+    awayTeam: game.awayTeam,
+    scoringPlays: game.scoringPlays,
+    crewStoppages: game.crewStoppages,
+  };
+}
+
 export function databaseWhistleTotalsForSeason(
   leagueId: LeagueId,
   profile: RefProfile,
@@ -195,6 +212,7 @@ export function buildSeasonOfficialStatsEntry(
 
   const archetypeGames = games.map((game) => toArchetypeInput(leagueId, game, seasonLabel));
   const leverageGames = games.map(toLeverageInput);
+  const momentumGames = games.map(toMomentumInput);
   const archetype = computeRefereeArchetype(leagueId, archetypeGames, {
     sampleWindow: games.length,
     generatedAt,
@@ -204,6 +222,20 @@ export function buildSeasonOfficialStatsEntry(
     sampleWindow: games.length,
     minSampleGames: BACKFILL_MIN_SAMPLE_GAMES,
   });
+  const momentumRaw = computeRawRunStoppageRate(momentumGames, {
+    sampleWindow: games.length,
+  });
+  const momentumFinal = isBasketballMomentumLeague(leagueId)
+    ? finalizeMomentumKillerScores([
+        {
+          slug: "season",
+          rawRate: momentumRaw.run_stoppage_rate,
+          backedGames: momentumRaw.scoring_run_backed_games,
+          runs: momentumRaw.opponent_scoring_runs,
+          interruptions: momentumRaw.run_interruptions,
+        },
+      ]).get("season")
+    : undefined;
 
   if (!archetype) {
     return {
@@ -217,6 +249,20 @@ export function buildSeasonOfficialStatsEntry(
     status: "ok",
     ...toOfficialStats(archetype),
     ...leverageFieldsFromResult(leverage),
+    ...momentumFieldsFromResult({
+      run_stoppage_rate: momentumFinal?.run_stoppage_rate ?? momentumRaw.run_stoppage_rate,
+      momentum_killer_score: momentumFinal?.momentum_killer_score ?? null,
+      momentum_killer_label: momentumFinal?.momentum_killer_label ?? null,
+      scoring_run_backed_games: momentumRaw.scoring_run_backed_games,
+      opponent_scoring_runs: momentumRaw.opponent_scoring_runs,
+      run_interruptions: momentumRaw.run_interruptions,
+      momentum_method_note: MOMENTUM_KILLER_METHOD_NOTE,
+      data_quality:
+        momentumRaw.scoring_run_backed_games >= BACKFILL_MIN_SAMPLE_GAMES &&
+        momentumRaw.opponent_scoring_runs >= 8
+          ? "ok"
+          : "insufficient",
+    }),
   };
 }
 

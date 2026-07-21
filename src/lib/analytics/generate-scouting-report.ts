@@ -15,6 +15,7 @@ import {
   classifyAdminRatio,
   computeRefereeArchetype,
   DEFAULT_LEVERAGE_STATS,
+  DEFAULT_MOMENTUM_STATS,
   officialStatsFromProfile,
   toOfficialStats,
   whistleCoefficientOfVariation,
@@ -30,6 +31,13 @@ import {
   leverageFieldsFromResult,
   pressureGaugeState,
 } from "@/lib/analytics/leverage-sensitivity";
+import {
+  computeMomentumKillerIndex,
+  DEFAULT_LEAGUE_RUN_STOPPAGE_RATE,
+  MOMENTUM_KILLER_LABELS,
+  momentumFieldsFromResult,
+  type MomentumKillerGameInput,
+} from "@/lib/analytics/momentum-killer-score";
 import { loadRuntimeGameLogs } from "@/lib/game-logs";
 import type { RuntimeGameLogEntry } from "@/lib/game-logs-preload";
 import { classifyMarqueeGame } from "@/lib/marquee-games";
@@ -183,6 +191,8 @@ function buildInsights(
   pressureDeltaPct: number | null,
   eventBackedGames: number,
   sampleGames: number,
+  momentumLabel: string | null,
+  runStoppageRate: number | null,
 ): string[] {
   const insights: string[] = [
     `${styleProfile.gameFlowScore}% subjective vs ${styleProfile.strictnessScore}% procedural whistle mix.`,
@@ -191,6 +201,12 @@ function buildInsights(
   if (eventBackedGames > 0) {
     insights.push(
       `${eventBackedGames} of ${sampleGames} sample games use event-level foul classification tags.`,
+    );
+  }
+
+  if (momentumLabel && runStoppageRate !== null) {
+    insights.push(
+      `${momentumLabel}: ${Math.round(runStoppageRate * 100)}% of opponent scoring runs ended on a non-mandatory crew stoppage.`,
     );
   }
 
@@ -235,6 +251,15 @@ function toLeverageGameInput(game: RuntimeGameLogEntry) {
   };
 }
 
+function toMomentumGameInput(game: RuntimeGameLogEntry): MomentumKillerGameInput {
+  return {
+    homeTeam: game.homeTeam,
+    awayTeam: game.awayTeam,
+    scoringPlays: game.scoringPlays,
+    crewStoppages: game.crewStoppages,
+  };
+}
+
 function resolveOfficialStats(
   leagueId: LeagueId,
   sampleGames: RuntimeGameLogEntry[],
@@ -248,6 +273,11 @@ function resolveOfficialStats(
     leagueId,
     sampleGames.map(toLeverageGameInput),
   );
+  const momentum = computeMomentumKillerIndex(
+    leagueId,
+    sampleGames.map(toMomentumGameInput),
+    { leagueBaselineRate: DEFAULT_LEAGUE_RUN_STOPPAGE_RATE },
+  );
 
   const computed = computeRefereeArchetype(
     leagueId,
@@ -257,6 +287,7 @@ function resolveOfficialStats(
     return {
       ...toOfficialStats(computed),
       ...leverageFieldsFromResult(leverage),
+      ...momentumFieldsFromResult(momentum),
     };
   }
 
@@ -265,6 +296,7 @@ function resolveOfficialStats(
     return {
       ...persisted,
       ...leverageFieldsFromResult(leverage),
+      ...momentumFieldsFromResult(momentum),
     };
   }
 
@@ -280,7 +312,9 @@ function resolveOfficialStats(
     sample_games: sampleGames.length,
     last_calculated: new Date().toISOString(),
     ...DEFAULT_LEVERAGE_STATS,
+    ...DEFAULT_MOMENTUM_STATS,
     ...leverageFieldsFromResult(leverage),
+    ...momentumFieldsFromResult(momentum),
   };
 }
 
@@ -406,8 +440,18 @@ function buildAnalyticsFallbackReport(
       pressureDeltaPct,
       analytics.dispositionEventBackedGames ?? 0,
       sampleGames,
+      officialStats.momentum_killer_label
+        ? MOMENTUM_KILLER_LABELS[officialStats.momentum_killer_label]
+        : null,
+      officialStats.run_stoppage_rate ?? null,
     ),
     eventBackedGames: analytics.dispositionEventBackedGames ?? 0,
+    runStoppageRate: officialStats.run_stoppage_rate ?? null,
+    momentumKillerScore: officialStats.momentum_killer_score ?? null,
+    momentumKillerLabel: officialStats.momentum_killer_label
+      ? MOMENTUM_KILLER_LABELS[officialStats.momentum_killer_label]
+      : null,
+    scoringRunBackedGames: officialStats.scoring_run_backed_games ?? 0,
   };
 }
 
@@ -546,14 +590,6 @@ export function generateScoutingReport(
     subjectiveDeltaPct,
   );
 
-  const insights = buildInsights(
-    styleProfile,
-    pressureSensitive,
-    pressureDeltaPct,
-    eventBackedGames,
-    sampleGames.length,
-  );
-
   const officialStats = resolveOfficialStats(
     leagueId,
     sampleGames,
@@ -562,6 +598,22 @@ export function generateScoutingReport(
     administrativeTotal,
     pressureSensitive,
     pressureDeltaPct,
+  );
+
+  const momentumLabel =
+    officialStats.momentum_killer_label !== null &&
+    officialStats.momentum_killer_label !== undefined
+      ? MOMENTUM_KILLER_LABELS[officialStats.momentum_killer_label]
+      : null;
+
+  const insights = buildInsights(
+    styleProfile,
+    pressureSensitive,
+    pressureDeltaPct,
+    eventBackedGames,
+    sampleGames.length,
+    momentumLabel,
+    officialStats.run_stoppage_rate ?? null,
   );
 
   const perGameWhistles = sampleGames.map((game) => gameWhistleTotal(leagueId, game));
@@ -592,5 +644,9 @@ export function generateScoutingReport(
     summary,
     insights,
     eventBackedGames,
+    runStoppageRate: officialStats.run_stoppage_rate ?? null,
+    momentumKillerScore: officialStats.momentum_killer_score ?? null,
+    momentumKillerLabel: momentumLabel,
+    scoringRunBackedGames: officialStats.scoring_run_backed_games ?? 0,
   };
 }
