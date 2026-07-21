@@ -14,14 +14,18 @@ describe("design audit guardrails", () => {
     assert.match(globals, /--page-max: 72rem/);
   });
 
-  it("homepage intelligence hero leads with briefing and proof bar hierarchy", () => {
+  it("homepage intelligence hero leads with a minimal title only", () => {
     const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
     const banner = readSrc("src/components/dashboard/IntelligenceHero.tsx");
     const dashboard = readSrc("src/components/OverviewDashboard.tsx");
     const page = readSrc("src/app/page.tsx");
     assert.match(hero, /IntelligenceHero/);
     assert.match(banner, /Officiating Intelligence/);
+    assert.match(banner, /overview-hero-minimal/);
     assert.match(banner, /intelligence-hero-heading/);
+    assert.doesNotMatch(banner, /intelligence-hero-surface/);
+    assert.doesNotMatch(banner, /OFFICIATING DECISION/);
+    assert.doesNotMatch(dashboard, /TopSignal/);
     assert.match(page, /OverviewIntelligenceHero/);
     assert.match(dashboard, /OverviewUpcomingSlateSection/);
     assert.match(dashboard, /OverviewResearchFooter/);
