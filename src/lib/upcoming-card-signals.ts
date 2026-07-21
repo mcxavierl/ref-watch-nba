@@ -1,4 +1,9 @@
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
+import {
+  meetsOverRateHighlightThreshold,
+  meetsScoringHighlightThreshold,
+  meetsWhistleHighlightThreshold,
+} from "@/lib/highlight-badge";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import {
@@ -15,7 +20,7 @@ export type UpcomingCardSignals = {
 };
 
 function whistleTrend(preview: GameSlatePreviewPayload): UpcomingCardSignals | null {
-  if (Math.abs(preview.foulsDelta) < 1) return null;
+  if (!meetsWhistleHighlightThreshold(preview.foulsDelta, preview.leagueId)) return null;
   const tone: UpcomingCardSignalTone =
     preview.foulsDelta >= 1.5 ? "caution" : preview.foulsDelta <= -1.5 ? "positive" : "neutral";
   return {
@@ -25,7 +30,7 @@ function whistleTrend(preview: GameSlatePreviewPayload): UpcomingCardSignals | n
 }
 
 function overRateTrend(preview: GameSlatePreviewPayload): UpcomingCardSignals | null {
-  if (preview.overRate < 0.58 && preview.overRate > 0.42) return null;
+  if (!meetsOverRateHighlightThreshold(preview.overRate)) return null;
   return {
     primaryTrend: `${formatPct(preview.overRate)} over rate with this crew`,
     tone: preview.overRate >= 0.58 ? "positive" : "neutral",
@@ -33,7 +38,7 @@ function overRateTrend(preview: GameSlatePreviewPayload): UpcomingCardSignals | 
 }
 
 function scoringTrend(preview: GameSlatePreviewPayload): UpcomingCardSignals | null {
-  if (Math.abs(preview.totalPointsDelta) < 2) return null;
+  if (!meetsScoringHighlightThreshold(preview.totalPointsDelta)) return null;
   const tone: UpcomingCardSignalTone =
     Math.abs(preview.totalPointsDelta) >= 4 ? "caution" : "neutral";
   return {

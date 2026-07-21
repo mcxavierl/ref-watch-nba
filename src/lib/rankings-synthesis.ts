@@ -5,10 +5,16 @@ import { formatScoringDeltaStat } from "@/lib/scoring-metrics";
 import { filterNhlReferees } from "@/lib/nhl/officials";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import {
-  scoringPaceRankTitle,
+  createHighlightBadgeRegistry,
+  HIGHLIGHT_SCORING_DELTA_MIN,
+  meetsOverRateHighlightThreshold,
+  meetsScoringHighlightThreshold,
+  meetsWhistleHighlightThreshold,
+  type HighlightBadgeRegistry,
+} from "@/lib/highlight-badge";
+import {
   thirdPersonScoringPaceBody,
   thirdPersonWhistlePaceBody,
-  whistlePaceRankTitle,
 } from "@/lib/finding-copy";
 import { formatSigned, bettingAtsRate, bettingOuRate, formatPct } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
@@ -51,16 +57,7 @@ export type RankingsSynthesisOptions = {
 /** Maximum highlight cards on Insights Hub / league index hero strips. */
 export const MAX_RANKINGS_HIGHLIGHT_CARDS = 6;
 
-const SCORING_ASSOCIATION_THRESHOLD = 0.3;
-const OVER_RATE_HIGH_CONFIDENCE = 0.54;
-const OVER_RATE_LOW_CONFIDENCE = 0.46;
 const BETTING_RATE_HIGH_CONFIDENCE = 0.54;
-
-const WHISTLE_HIGH_CONFIDENCE: Partial<Record<LeagueId, number>> = {
-  nhl: 0.8,
-  nfl: 2,
-  cfb: 2,
-};
 
 function whistleDelta(ref: RefProfile, league: LeagueConfig): number {
   if (league.whistleFromMinors) return ref.nhlAnalytics?.minorsDelta ?? ref.foulsDelta;
@@ -106,8 +103,7 @@ function pickTopUniqueRef(
 }
 
 function whistleQualifies(ref: RefProfile, league: LeagueConfig): boolean {
-  const threshold = WHISTLE_HIGH_CONFIDENCE[league.id] ?? 2;
-  return Math.abs(whistleDelta(ref, league)) >= threshold;
+  return meetsWhistleHighlightThreshold(whistleDelta(ref, league), league.id);
 }
 
 type AnomalySlot = {
@@ -129,6 +125,7 @@ type BuildContext = {
   byAts: RefProfile[];
   byOuBetting: RefProfile[];
   excludeOfficialKeys?: ReadonlySet<string>;
+  badges: HighlightBadgeRegistry;
 };
 
 function anomalySlots(ctx: BuildContext): AnomalySlot[] {
@@ -139,14 +136,14 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
       pick: (_ctx, usedSlugs) =>
         pickTopUniqueRef(ctx.byScoring, usedSlugs, {
           excludeOfficialKeys: ctx.excludeOfficialKeys,
-          qualifies: (ref) =>
-            Math.abs(ref.totalPointsDelta) >= SCORING_ASSOCIATION_THRESHOLD,
+          qualifies: (ref) => meetsScoringHighlightThreshold(ref.totalPointsDelta),
         }),
-      build: (ref) => {
+      build: (ref, ctx) => {
         const delta = ref.totalPointsDelta;
+        const badge = ctx.badges.scoringBadge(delta)!;
         return {
           id: "top-scoring",
-          title: scoringPaceRankTitle(delta),
+          title: badge.label,
           body: thirdPersonScoringPaceBody(
             delta,
             ctx.unit,
@@ -165,11 +162,11 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
       pick: (_ctx, usedSlugs) =>
         pickTopUniqueRef(ctx.byOver, usedSlugs, {
           excludeOfficialKeys: ctx.excludeOfficialKeys,
-          qualifies: (ref) => ref.overRate >= OVER_RATE_HIGH_CONFIDENCE,
+          qualifies: (ref) => meetsOverRateHighlightThreshold(ref.overRate),
         }),
-      build: (ref) => ({
+      build: (ref, ctx) => ({
         id: "top-over",
-        title: "Highest historical over-rate vs baseline",
+        title: ctx.badges.overRateBadge(ref.overRate)!.label,
         body: `Line benchmark is ${ctx.baseline} combined ${ctx.unit}; clears it more often than peers in this sample.`,
         refSlug: ref.slug,
         refName: ref.name,
@@ -187,9 +184,9 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           qualifies: (ref) =>
             (bettingAtsRate(ref.bettingStats) ?? 0) >= BETTING_RATE_HIGH_CONFIDENCE,
         }),
-      build: (ref) => ({
+      build: (ref, ctx) => ({
         id: "top-ats",
-        title: "Strongest home ATS track record",
+        title: ctx.badges.atsBadge().label,
         body: `Home teams cover the spread most often in this sample. Descriptive history only, not a pick signal.`,
         refSlug: ref.slug,
         refName: ref.name,
@@ -209,7 +206,7 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
         }),
       build: (ref, ctx) => ({
         id: "top-ou-betting",
-        title: "Highest O/U hit rate vs closing total",
+        title: ctx.badges.ouBettingBadge().label,
         body: `${
           leagueGameUnit(ctx.league.id) === "match" ? "Matches" : "Games"
         } with this official most often finish over the listed total. Past tendency, not a forecast.`,
@@ -227,12 +224,17 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           excludeOfficialKeys: ctx.excludeOfficialKeys,
           qualifies: (ref) => whistleQualifies(ref, ctx.league),
         }),
-      build: (ref) => {
+      build: (ref, ctx) => {
         if (ctx.league.id === "nfl" && ref.nflAnalytics) {
           const perGame = leaguePerGamePhrase(ctx.league.id);
+          const badge = ctx.badges.whistleBadge(
+            ref.nflAnalytics.flagsDelta,
+            ctx.league.metrics.whistleShort,
+            ctx.league.id,
+          )!;
           return {
             id: "top-whistle",
-            title: `Most flags ${perGame}`,
+            title: badge.label,
             body: `${ref.nflAnalytics.avgFlagsPerGame} flags/${leagueGameUnit(ctx.league.id)}, ${formatSigned(ref.nflAnalytics.flagsDelta)} vs league average.`,
             refSlug: ref.slug,
             refName: ref.name,
@@ -241,9 +243,14 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           };
         }
         const wd = whistleDelta(ref, ctx.league);
+        const badge = ctx.badges.whistleBadge(
+          wd,
+          ctx.league.metrics.whistleShort,
+          ctx.league.id,
+        )!;
         return {
           id: "top-whistle",
-          title: whistlePaceRankTitle(wd, ctx.league.metrics.whistleShort),
+          title: badge.label,
           body: thirdPersonWhistlePaceBody(
             wd,
             ctx.league.metrics.whistlePlain,
@@ -265,14 +272,17 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           usedSlugs,
           {
             excludeOfficialKeys: ctx.excludeOfficialKeys,
-            qualifies: (ref) => ref.totalPointsDelta <= -SCORING_ASSOCIATION_THRESHOLD,
+            qualifies: (ref) =>
+              meetsScoringHighlightThreshold(ref.totalPointsDelta) &&
+              ref.totalPointsDelta < 0,
           },
         ),
-      build: (ref) => {
+      build: (ref, ctx) => {
         const delta = ref.totalPointsDelta;
+        const badge = ctx.badges.scoringBadge(delta)!;
         return {
           id: "bottom-scoring",
-          title: scoringPaceRankTitle(delta),
+          title: badge.label,
           body: thirdPersonScoringPaceBody(
             delta,
             ctx.unit,
@@ -294,12 +304,13 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
           usedSlugs,
           {
             excludeOfficialKeys: ctx.excludeOfficialKeys,
-            qualifies: (ref) => ref.overRate <= OVER_RATE_LOW_CONFIDENCE,
+            qualifies: (ref) =>
+              meetsOverRateHighlightThreshold(ref.overRate) && ref.overRate < 0.5,
           },
         ),
-      build: (ref) => ({
+      build: (ref, ctx) => ({
         id: "top-under",
-        title: "Lowest historical over-rate vs baseline",
+        title: ctx.badges.overRateBadge(ref.overRate)!.label,
         body: `Line benchmark is ${ctx.baseline} combined ${ctx.unit}; games with this official finish under the benchmark more often than peers.`,
         refSlug: ref.slug,
         refName: ref.name,
@@ -321,11 +332,16 @@ function anomalySlots(ctx: BuildContext): AnomalySlot[] {
             qualifies: (ref) => whistleQualifies(ref, ctx.league),
           },
         ),
-      build: (ref) => {
+      build: (ref, ctx) => {
         const wd = whistleDelta(ref, ctx.league);
+        const badge = ctx.badges.whistleBadge(
+          wd,
+          ctx.league.metrics.whistleShort,
+          ctx.league.id,
+        )!;
         return {
           id: "light-whistle",
-          title: whistlePaceRankTitle(wd, ctx.league.metrics.whistleShort),
+          title: badge.label,
           body: thirdPersonWhistlePaceBody(
             wd,
             ctx.league.metrics.whistlePlain,
@@ -389,13 +405,14 @@ export function buildRankingsSynthesis(
       (a, b) => (bettingOuRate(b.bettingStats) ?? -1) - (bettingOuRate(a.bettingStats) ?? -1),
     ),
     excludeOfficialKeys: options.excludeOfficialKeys,
+    badges: createHighlightBadgeRegistry(),
   };
 
   const highScoring = qualified.filter(
-    (r) => r.totalPointsDelta >= SCORING_ASSOCIATION_THRESHOLD,
+    (r) => r.totalPointsDelta >= HIGHLIGHT_SCORING_DELTA_MIN,
   );
   const lowScoring = qualified.filter(
-    (r) => r.totalPointsDelta <= -SCORING_ASSOCIATION_THRESHOLD,
+    (r) => r.totalPointsDelta <= -HIGHLIGHT_SCORING_DELTA_MIN,
   );
 
   const usedSlugs = new Set<string>();
@@ -422,51 +439,58 @@ export function buildRankingsSynthesis(
       if (isAlreadyFeatured(ref, usedSlugs, ctx.excludeOfficialKeys)) continue;
 
       let insight: RankingsInsight | null = null;
-      if (Math.abs(ref.totalPointsDelta) >= 0.15) {
-        insight = {
-          id: "scoring-depth",
-          title: scoringPaceRankTitle(ref.totalPointsDelta),
-          body: thirdPersonScoringPaceBody(
-            ref.totalPointsDelta,
-            ctx.unit,
-            leaguePerGamePhrase(ctx.league.id),
-          ),
-          refSlug: ref.slug,
-          refName: ref.name,
-          statLabel: "Scoring delta vs avg",
-          statValue: formatScoringDeltaStat(ref.totalPointsDelta, ctx.league),
-        };
-      } else if (
-        ref.overRate >= 0.52 ||
-        ref.overRate <= 0.48
-      ) {
-        insight = {
-          id: "over-depth",
-          title:
-            ref.overRate >= 0.5
-              ? "Elevated over-rate vs baseline"
-              : "Lower over-rate vs baseline",
-          body: `Line benchmark is ${ctx.baseline} combined ${ctx.unit}; this official clears it ${formatPct(ref.overRate)} of the time in the sample.`,
-          refSlug: ref.slug,
-          refName: ref.name,
-          statLabel: "Over rate",
-          statValue: `${(ref.overRate * 100).toFixed(1)}%`,
-        };
-      } else if (Math.abs(whistleDelta(ref, ctx.league)) >= 1) {
+      if (meetsScoringHighlightThreshold(ref.totalPointsDelta)) {
+        const badge = ctx.badges.scoringBadge(ref.totalPointsDelta);
+        if (badge) {
+          insight = {
+            id: "scoring-depth",
+            title: badge.label,
+            body: thirdPersonScoringPaceBody(
+              ref.totalPointsDelta,
+              ctx.unit,
+              leaguePerGamePhrase(ctx.league.id),
+            ),
+            refSlug: ref.slug,
+            refName: ref.name,
+            statLabel: "Scoring delta vs avg",
+            statValue: formatScoringDeltaStat(ref.totalPointsDelta, ctx.league),
+          };
+        }
+      } else if (meetsOverRateHighlightThreshold(ref.overRate)) {
+        const badge = ctx.badges.overRateBadge(ref.overRate);
+        if (badge) {
+          insight = {
+            id: "over-depth",
+            title: badge.label,
+            body: `Line benchmark is ${ctx.baseline} combined ${ctx.unit}; this official clears it ${formatPct(ref.overRate)} of the time in the sample.`,
+            refSlug: ref.slug,
+            refName: ref.name,
+            statLabel: "Over rate",
+            statValue: `${(ref.overRate * 100).toFixed(1)}%`,
+          };
+        }
+      } else if (whistleQualifies(ref, ctx.league)) {
         const wd = whistleDelta(ref, ctx.league);
-        insight = {
-          id: "whistle-depth",
-          title: whistlePaceRankTitle(wd, ctx.league.metrics.whistleShort),
-          body: thirdPersonWhistlePaceBody(
-            wd,
-            ctx.league.metrics.whistlePlain,
-            leaguePerGamePhrase(ctx.league.id),
-          ),
-          refSlug: ref.slug,
-          refName: ref.name,
-          statLabel: "Whistle delta vs avg",
-          statValue: formatSigned(wd),
-        };
+        const badge = ctx.badges.whistleBadge(
+          wd,
+          ctx.league.metrics.whistleShort,
+          ctx.league.id,
+        );
+        if (badge) {
+          insight = {
+            id: "whistle-depth",
+            title: badge.label,
+            body: thirdPersonWhistlePaceBody(
+              wd,
+              ctx.league.metrics.whistlePlain,
+              leaguePerGamePhrase(ctx.league.id),
+            ),
+            refSlug: ref.slug,
+            refName: ref.name,
+            statLabel: "Whistle delta vs avg",
+            statValue: formatSigned(wd),
+          };
+        }
       } else {
         insight = {
           id: "sample-depth",
@@ -478,6 +502,8 @@ export function buildRankingsSynthesis(
           statValue: String(ref.games),
         };
       }
+
+      if (!insight) continue;
 
       usedSlugs.add(ref.slug);
       insights.push(insight);

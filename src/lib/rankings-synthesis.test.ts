@@ -90,7 +90,7 @@ describe("buildRankingsSynthesis", () => {
     const refs = [
       makeRef("carter-sandlak", {
         name: "Carter Sandlak",
-        totalPointsDelta: 0.3,
+        totalPointsDelta: 0.5,
       }),
       hiff,
       makeRef("mike-leggo", {
@@ -252,19 +252,22 @@ describe("buildRankingsSynthesis", () => {
     assert.equal(synthesis.insights[0]?.refSlug, "other-ref");
   });
 
-  it("counts officials at the scoring threshold in the league summary", () => {
+  it("does not assign biggest scoring badges below materiality thresholds", () => {
     const refs = [
-      makeRef("carter-sandlak", {
-        name: "Carter Sandlak",
-        totalPointsDelta: 0.3,
-      }),
-      makeRef("low-scorer", { totalPointsDelta: -0.4 }),
-      makeRef("neutral", { totalPointsDelta: 0.1 }),
+      makeRef("noise-dip", { name: "Noise Dip", totalPointsDelta: -0.2 }),
+      makeRef("real-dip", { name: "Real Dip", totalPointsDelta: -1.1 }),
+      makeRef("second-dip", { name: "Second Dip", totalPointsDelta: -0.8 }),
     ];
 
-    const synthesis = buildRankingsSynthesis(makeStats(refs), LEAGUES.nhl);
-    assert.match(synthesis.leagueSummary, /^1 of 3/);
-    assert.match(synthesis.leagueSummary, /1 trend lower/);
+    const synthesis = buildRankingsSynthesis(makeStats(refs), LEAGUES.nhl, {
+      maxCards: 3,
+    });
+    const titles = synthesis.insights.map((insight) => insight.title);
+    assert.ok(!titles.some((title) => title.toLowerCase().includes("noise")));
+    assert.equal(
+      titles.filter((title) => /biggest scoring dip/i.test(title)).length,
+      1,
+    );
   });
 
   it("aligns whistle highlight stat value and body for negative deltas", () => {
