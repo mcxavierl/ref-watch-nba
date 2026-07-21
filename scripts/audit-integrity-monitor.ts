@@ -79,12 +79,39 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       if (!dispatch.includes("computeWebhookBackoffMs")) {
         return { ok: false, message: "webhookDispatch.ts missing computeWebhookBackoffMs" };
       }
-      if (!dispatch.includes("X-RefWatch-Signature")) {
-        return { ok: false, message: "webhookDispatch.ts missing X-RefWatch-Signature header" };
+      if (!dispatch.includes("WEBHOOK_SIGNATURE_HEADER")) {
+        return { ok: false, message: "webhookDispatch.ts missing WEBHOOK_SIGNATURE_HEADER" };
+      }
+      if (!dispatch.includes("WEBHOOK_TIMESTAMP_HEADER")) {
+        return { ok: false, message: "webhookDispatch.ts missing WEBHOOK_TIMESTAMP_HEADER" };
+      }
+      const signature = read("src/lib/services/webhookSignature.ts");
+      if (!signature.includes("verifyWebhookSignature")) {
+        return { ok: false, message: "webhookSignature.ts missing verifyWebhookSignature" };
+      }
+      if (!signature.includes("WEBHOOK_SIGNATURE_MAX_SKEW_MS")) {
+        return { ok: false, message: "webhookSignature.ts missing replay skew window" };
       }
       const queue = read("src/lib/services/webhookQueue.ts");
-      if (!queue.includes("sha256=")) {
-        return { ok: false, message: "webhookQueue.ts missing sha256= signature prefix" };
+      if (!queue.includes("signWebhookPayload")) {
+        return { ok: false, message: "webhookQueue.ts missing signWebhookPayload export" };
+      }
+      if (!signature.includes("sha256=")) {
+        return { ok: false, message: "webhookSignature.ts missing sha256= signature prefix" };
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "webhook subscriber secrets are sealed at rest",
+    run: () => {
+      const secret = read("src/lib/services/webhookSecret.ts");
+      if (!secret.includes("sealWebhookSecret")) {
+        return { ok: false, message: "webhookSecret.ts missing sealWebhookSecret" };
+      }
+      const queue = read("src/lib/services/webhookQueue.ts");
+      if (!queue.includes("normalizeWebhookSecretForStorage")) {
+        return { ok: false, message: "webhookQueue.ts missing normalizeWebhookSecretForStorage on upsert" };
       }
       return { ok: true };
     },

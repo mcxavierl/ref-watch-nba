@@ -2,12 +2,17 @@ import type { WebhookQueueJob } from "@/lib/services/webhookQueue";
 import {
   enqueueEnterpriseWebhookPayloads,
   getWebhookStore,
-  signWebhookPayload,
   WEBHOOK_MAX_ATTEMPTS,
   type WebhookStore,
 } from "@/lib/services/webhookQueue";
 import type { AnomalyDetectedEvent } from "@/lib/services/anomalyMonitor";
 import type { EnterpriseWebhookPayload } from "@/lib/services/webhookPayload";
+import { openWebhookSecret } from "@/lib/services/webhookSecret";
+import {
+  signWebhookPayload,
+  WEBHOOK_SIGNATURE_HEADER,
+  WEBHOOK_TIMESTAMP_HEADER,
+} from "@/lib/services/webhookSignature";
 
 export type WebhookDispatchSummary = {
   enqueued: number;
@@ -38,17 +43,19 @@ function parseEventType(payload: string): string {
 async function deliverWebhookJob(
   job: WebhookQueueJob,
   url: string,
-  secret: string,
+  storedSecret: string,
 ): Promise<{ ok: boolean; statusCode: number | null; error?: string; latencyMs: number }> {
   const startedAt = Date.now();
   try {
-    const signature = signWebhookPayload(secret, job.payload);
+    const secret = openWebhookSecret(storedSecret);
+    const { signature, timestamp } = signWebhookPayload(secret, job.payload);
     const eventType = parseEventType(job.payload);
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "X-RefWatch-Signature": signature,
+        [WEBHOOK_SIGNATURE_HEADER]: signature,
+        [WEBHOOK_TIMESTAMP_HEADER]: String(timestamp),
         "x-refwatch-event": eventType,
         "user-agent": "RefWatch-Webhook-Dispatcher/1.0",
       },
