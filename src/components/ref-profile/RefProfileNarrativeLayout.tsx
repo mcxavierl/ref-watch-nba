@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CloseGameSection } from "@/components/CloseGameSection";
+import { RefProfileFingerprintSection } from "@/components/ref-profile/RefProfileFingerprintSection";
 import { RefProfileDepthExpand } from "@/components/ref-profile/RefProfileDepthExpand";
 import { RefProfileOfficiatingBiasSection } from "@/components/ref-profile/RefProfileOfficiatingBiasSection";
 import { RefProfileMarketImpactPanel } from "@/components/ref-profile/RefProfileMarketImpactPanel";
@@ -72,6 +73,12 @@ export function RefProfileNarrativeLayout({
 
   return (
     <div className="ref-narrative-layout">
+      <RefProfileFingerprintSection
+        leagueId={leagueId}
+        profile={profile}
+        stats={stats}
+        qualified={qualified}
+      />
       <ScoutingReportEdge {...scoutingProps} />
       {starDeference ? <StarDeferenceBadge analytics={starDeference} /> : null}
 

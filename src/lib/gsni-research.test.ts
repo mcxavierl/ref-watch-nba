@@ -147,4 +147,21 @@ describe("shared GSNI research", () => {
       assert.match(card.headline, /^[+-]?\d+\.\d:/);
     }
   });
+
+  it("mixes sub-threshold officials into default hub highlights", () => {
+    const config = gsniResearchConfigForLeague("nba");
+    assert.ok(config);
+    const stats = makeStats([
+      makeRef({ slug: "extreme", name: "Extreme Ref", referee_gsni: 2.1 }),
+      makeRef({ slug: "high", name: "High Ref", referee_gsni: 1.4 }),
+      makeRef({ slug: "typical", name: "Typical Ref", referee_gsni: 0.35 }),
+      makeRef({ slug: "mild", name: "Mild Ref", referee_gsni: 0.55 }),
+    ]);
+    const highlights = buildGsniResearchHighlights(stats, config!, {
+      highVarianceOnly: false,
+      limit: 4,
+    });
+    assert.ok(highlights.some((card) => card.highVariance));
+    assert.ok(highlights.some((card) => !card.highVariance));
+  });
 });

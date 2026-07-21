@@ -260,41 +260,58 @@ export function buildGsniResearchHighlights(
 ): GsniResearchHighlight[] {
   const { highVarianceOnly = true, limit = GSNI_RESEARCH_HIGHLIGHT_LIMIT } =
     options;
-  const eligible = stats.refs.filter((ref) =>
-    isHighlightEligible(ref, config.minHighLeverageMinutes, highVarianceOnly),
-  );
-  eligible.sort((a, b) => {
-    const aDisplay = gsniShrinkageFromProfile(a)?.display;
-    const bDisplay = gsniShrinkageFromProfile(b)?.display;
-    const absDiff = compareGsniByAbsDesc(aDisplay, bDisplay);
-    if (absDiff !== 0) return absDiff;
-    return (b.gsniSampleGames ?? b.games) - (a.gsniSampleGames ?? a.games);
-  });
+  const eligible = stats.refs
+    .filter((ref) =>
+      isHighlightEligible(ref, config.minHighLeverageMinutes, false),
+    )
+    .sort((a, b) => {
+      const aDisplay = gsniShrinkageFromProfile(a)?.display;
+      const bDisplay = gsniShrinkageFromProfile(b)?.display;
+      const absDiff = compareGsniByAbsDesc(aDisplay, bDisplay);
+      if (absDiff !== 0) return absDiff;
+      return (b.gsniSampleGames ?? b.games) - (a.gsniSampleGames ?? a.games);
+    });
 
-  const quiet = eligible.filter((ref) => {
-    const display = gsniShrinkageFromProfile(ref)?.display;
-    return display !== undefined && gsniBand(display) === "quiet";
-  });
-  const heavy = eligible.filter((ref) => {
-    const display = gsniShrinkageFromProfile(ref)?.display;
-    return display !== undefined && gsniBand(display) === "heavy";
-  });
+  const pool = highVarianceOnly
+    ? eligible.filter((ref) =>
+        gsniQualifiesHighVariance(gsniShrinkageFromProfile(ref)?.display),
+      )
+    : pickGsniHighlightMix(eligible, limit);
 
-  const picked: RefProfile[] = [];
-  if (quiet[0]) picked.push(quiet[0]);
-  if (heavy[0]) picked.push(heavy[0]);
-  if (picked.length < limit && quiet[1]) picked.push(quiet[1]);
-  if (picked.length < limit && heavy[1]) picked.push(heavy[1]);
-  for (const ref of eligible) {
-    if (picked.length >= limit) break;
-    if (!picked.some((row) => row.slug === ref.slug)) picked.push(ref);
-  }
-
-  return picked
+  return pool
     .slice(0, limit)
     .map((ref) =>
       toHighlight(toRow(ref, config.basePath, config.minHighLeverageMinutes)),
     );
+}
+
+/** Default hub highlights: top movers plus a few sub-threshold refs so the anomalies toggle narrows visibly. */
+function pickGsniHighlightMix(
+  eligible: RefProfile[],
+  limit: number,
+): RefProfile[] {
+  const highVar = eligible.filter((ref) =>
+    gsniQualifiesHighVariance(gsniShrinkageFromProfile(ref)?.display),
+  );
+  const typical = eligible.filter(
+    (ref) => !gsniQualifiesHighVariance(gsniShrinkageFromProfile(ref)?.display),
+  );
+  const picked: RefProfile[] = [];
+  const reserveTypical = Math.min(2, Math.max(0, limit - 2));
+
+  for (const ref of highVar) {
+    if (picked.length >= limit - reserveTypical) break;
+    picked.push(ref);
+  }
+  for (const ref of typical) {
+    if (picked.length >= limit) break;
+    if (!picked.some((row) => row.slug === ref.slug)) picked.push(ref);
+  }
+  for (const ref of highVar) {
+    if (picked.length >= limit) break;
+    if (!picked.some((row) => row.slug === ref.slug)) picked.push(ref);
+  }
+  return picked;
 }
 
 export function gsniResearchBasePath(leagueId: InsightsLeagueId): string {

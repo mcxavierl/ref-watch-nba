@@ -17,7 +17,11 @@ describe("audit-homepage-product", () => {
     const source = readFileSync(join(ROOT, "src/components/OverviewDashboard.tsx"), "utf8");
     assert.doesNotMatch(source, /TodaysBiggestEdge/);
     assert.doesNotMatch(source, /IntelligenceFeedTicker/);
+    assert.match(source, /GoldMineProofBar/);
+    assert.match(source, /OverviewFeaturedSignal/);
     assert.match(source, /OverviewUpcomingSlateSection/);
+    assert.match(source, /OverviewIntelligenceFeed/);
+    assert.match(source, /OverviewResearchFooter/);
   });
 });
 

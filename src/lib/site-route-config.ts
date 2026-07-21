@@ -105,6 +105,45 @@ export function routePathToPageModule(routePath: string): string {
   return `src/app/${segments.join("/")}/page.tsx`;
 }
 
+/** Candidate App Router modules for a URL (includes dynamic [league]/[slug] patterns). */
+export function appRouteModuleCandidates(routePath: string): string[] {
+  const normalized = routePath.replace(/\/$/, "") || "/";
+  if (normalized === "/") return ["src/app/page.tsx"];
+
+  const segments = normalized.split("/").filter(Boolean);
+  const candidates = new Set<string>([routePathToPageModule(normalized)]);
+
+  const leagueId = segments[0] as LeagueId;
+  if (segments.length >= 1 && LEAGUE_MANIFEST[leagueId]?.routed) {
+    const rest = segments.slice(1);
+    if (rest.length === 0) {
+      candidates.add("src/app/[league]/page.tsx");
+    } else if (rest.length === 1) {
+      candidates.add(`src/app/[league]/${rest[0]}/page.tsx`);
+    } else if (rest.length === 2) {
+      if (rest[0] === "refs") candidates.add("src/app/[league]/refs/[slug]/page.tsx");
+      else if (rest[0] === "teams") candidates.add("src/app/[league]/teams/[abbr]/page.tsx");
+      else if (rest[0] === "research") {
+        candidates.add(`src/app/[league]/research/${rest[1]}/page.tsx`);
+        candidates.add("src/app/[league]/research/[legacyFindingId]/page.tsx");
+      } else {
+        candidates.add(`src/app/[league]/${rest.join("/")}/page.tsx`);
+      }
+    } else if (rest.length === 3 && rest[0] === "research" && rest[1] === "findings") {
+      candidates.add("src/app/[league]/research/findings/[id]/page.tsx");
+    } else if (rest.length === 3 && rest[0] === "research") {
+      candidates.add("src/app/[league]/research/[legacyFindingId]/page.tsx");
+    }
+  } else if (segments.length >= 2) {
+    const prefix = segments.slice(0, -1).join("/");
+    candidates.add(`src/app/${prefix}/[slug]/page.tsx`);
+    candidates.add(`src/app/${prefix}/[id]/page.tsx`);
+    candidates.add(`src/app/${prefix}/[abbr]/page.tsx`);
+  }
+
+  return [...candidates];
+}
+
 /** Nav hrefs from league section nav that must resolve (page or redirect). */
 export function siteNavHrefPaths(): string[] {
   const paths: string[] = [];

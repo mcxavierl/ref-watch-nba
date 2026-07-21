@@ -1,3 +1,5 @@
+import type { OfficiatingFingerprintData } from "@/lib/analytics/officiating-fingerprint";
+import { buildCrewOfficiatingFingerprints } from "@/lib/analytics/officiating-fingerprint";
 import { LEAGUE_MANIFEST } from "@/lib/league-manifest";
 import { LEAGUES } from "@/lib/leagues";
 import {
@@ -114,6 +116,12 @@ export type GameSlatePreviewPayload = {
   storylines: GameSlatePreviewStoryline[];
   broadcastExport?: MediaBroadcastExport;
   intelligenceCard?: IntelligenceCardContent;
+  crewFingerprints?: Array<{
+    slug: string;
+    name: string;
+    role?: RefRole;
+    fingerprint: OfficiatingFingerprintData;
+  }>;
 };
 
 const MIN_REF_TEAM_GAMES = 5;
@@ -546,6 +554,15 @@ export function buildGameSlatePreview(
 
   const refTeamRows = buildRefTeamRows(game, leagueId, stats);
   const teamImpacts = buildTeamImpacts(refTeamRows, teams);
+  const crewFingerprints = buildCrewOfficiatingFingerprints(
+    leagueId,
+    game.crew.map((official) => ({
+      slug: adapter.refSlug(official.name, official.number),
+      name: official.name,
+      role: official.role,
+    })),
+    stats,
+  );
 
   const preview: GameSlatePreviewPayload = {
     gameId: game.id,
@@ -581,6 +598,7 @@ export function buildGameSlatePreview(
     refTeamRows,
     teamImpacts,
     storylines,
+    crewFingerprints,
   };
 
   const evidence = buildProjectionEvidence(preview);

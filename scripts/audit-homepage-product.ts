@@ -1,7 +1,7 @@
 #!/usr/bin/env npx tsx
 /**
- * Homepage product-surface audit — enforces the current slate-first dashboard
- * and prevents accidental partial imports of deferred dual-narrative PR work.
+ * Homepage product-surface audit — enforces the intelligence-first dashboard
+ * hierarchy and prevents accidental partial imports of deferred dual-narrative PR work.
  *
  * Usage: npm run audit:homepage-product
  */
@@ -18,22 +18,38 @@ const DEFERRED_DUAL_NARRATIVE_IMPORTS = [
   "WhyRefWatchExplainability",
 ] as const;
 
+const INTELLIGENCE_FIRST_SECTIONS = [
+  "GoldMineProofBar",
+  "OverviewFeaturedSignal",
+  "OverviewUpcomingSlateSection",
+  "OverviewIntelligenceFeed",
+  "OverviewResearchFooter",
+] as const;
+
 function read(relPath: string): string {
   return readFileSync(join(ROOT, relPath), "utf8");
 }
 
 type AuditResult = { ok: true } | { ok: false; message: string };
 
+function sectionOrder(source: string, symbols: readonly string[]): number[] {
+  const renderStart = source.indexOf("return (");
+  const renderBody = renderStart >= 0 ? source.slice(renderStart) : source;
+  return symbols.map((symbol) => renderBody.indexOf(`<${symbol}`));
+}
+
 const checks: Array<{ name: string; run: () => AuditResult }> = [
   {
-    name: "OverviewDashboard keeps slate-first homepage surface",
+    name: "OverviewDashboard keeps intelligence-first homepage hierarchy",
     run: () => {
       const source = read("src/components/OverviewDashboard.tsx");
-      if (!source.includes("OverviewUpcomingSlateSection")) {
-        return { ok: false, message: "OverviewDashboard missing OverviewUpcomingSlateSection" };
-      }
-      if (!source.includes('placement="primary"')) {
-        return { ok: false, message: "OverviewDashboard missing primary LeagueChooser placement" };
+      for (const symbol of INTELLIGENCE_FIRST_SECTIONS) {
+        if (!source.includes(symbol)) {
+          return {
+            ok: false,
+            message: `OverviewDashboard missing intelligence-first section ${symbol}`,
+          };
+        }
       }
       for (const symbol of DEFERRED_DUAL_NARRATIVE_IMPORTS) {
         if (source.includes(symbol)) {
@@ -43,15 +59,37 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
           };
         }
       }
+      const positions = sectionOrder(source, INTELLIGENCE_FIRST_SECTIONS);
+      if (positions.some((index) => index < 0)) {
+        return {
+          ok: false,
+          message: "OverviewDashboard missing one or more intelligence-first sections in render tree",
+        };
+      }
+      for (let index = 1; index < positions.length; index += 1) {
+        if (positions[index]! <= positions[index - 1]!) {
+          return {
+            ok: false,
+            message:
+              "OverviewDashboard section order must be proof bar, featured signal, slate, feed, research footer",
+          };
+        }
+      }
       return { ok: true };
     },
   },
   {
-    name: "homepage entry uses OverviewDashboard shell",
+    name: "homepage entry uses intelligence hero and OverviewDashboard shell",
     run: () => {
       const page = read("src/app/page.tsx");
       if (!page.includes("OverviewDashboard")) {
         return { ok: false, message: "src/app/page.tsx must render OverviewDashboard" };
+      }
+      if (!page.includes("OverviewIntelligenceHero")) {
+        return {
+          ok: false,
+          message: "src/app/page.tsx must render OverviewIntelligenceHero as the homepage hero",
+        };
       }
       for (const symbol of DEFERRED_DUAL_NARRATIVE_IMPORTS) {
         if (page.includes(symbol)) {
@@ -60,6 +98,25 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
             message: `src/app/page.tsx must not import deferred dual-narrative component ${symbol}`,
           };
         }
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "homepage intelligence briefing uses strict anomaly gate",
+    run: () => {
+      const lib = read("src/lib/homepage-intelligence.ts");
+      if (!lib.includes("qualifiesRefAnomaly")) {
+        return {
+          ok: false,
+          message: "homepage-intelligence.ts must gate anomaly alerts with qualifiesRefAnomaly",
+        };
+      }
+      if (!lib.includes("countRefAnomalyAlerts")) {
+        return {
+          ok: false,
+          message: "homepage-intelligence.ts missing countRefAnomalyAlerts",
+        };
       }
       return { ok: true };
     },

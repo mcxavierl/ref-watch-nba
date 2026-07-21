@@ -46,11 +46,14 @@ describe("anomaly-surface", () => {
 
   it("ranks refs by interestingness and anomaly gate", () => {
     const quiet = makeRef({ slug: "quiet", name: "Quiet", totalPointsDelta: 0.2, foulsDelta: 0.1 });
+    const warm = makeRef({ slug: "warm", name: "Warm", totalPointsDelta: 1.2, foulsDelta: 0.4 });
     const hot = makeRef({ slug: "hot", name: "Hot", totalPointsDelta: 4.2, foulsDelta: 0.5 });
-    const sorted = sortRefsByInterestingness([quiet, hot], "nba");
+    const sorted = sortRefsByInterestingness([quiet, hot, warm], "nba");
     assert.equal(sorted[0]?.slug, "hot");
     assert.equal(qualifiesRefAnomaly(hot, "nba", 0), true);
+    assert.equal(qualifiesRefAnomaly(warm, "nba", 0), false);
     assert.equal(qualifiesRefAnomaly(quiet, "nba", 0), false);
+    assert.equal(qualifiesRefAnomaly(warm, "nba", 2), true);
     assert.ok(refInterestingnessScore(hot, "nba") > refInterestingnessScore(quiet, "nba"));
   });
 });
