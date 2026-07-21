@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { DynamicInsightPillRow } from "@/components/DynamicInsightPill";
 import { FavoritesStar } from "@/components/FavoritesStar";
+import { RefProfileBroadcastKit } from "@/components/media/RefProfileBroadcastKit";
 import { RefAvatar } from "@/components/RefAvatar";
 import { buildRefMasterInsights } from "@/lib/ref-master-insights";
 import type { LeagueId } from "@/lib/leagues";
@@ -67,6 +68,13 @@ export function RefereeMasterCard({
           <div className="ref-master-insight-pills">
             <DynamicInsightPillRow insights={insights} />
           </div>
+          <RefProfileBroadcastKit
+            leagueId={leagueId}
+            profile={profile}
+            stats={stats}
+            qualified={qualified}
+            className="mt-3"
+          />
         </div>
       </div>
 

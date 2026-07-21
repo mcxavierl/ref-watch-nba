@@ -12,7 +12,7 @@ import {
 import { TrendingDown, TrendingUp, X } from "lucide-react";
 import { MatchupInsightCard } from "@/components/MatchupInsightCard";
 import { EvidenceDrawer } from "@/components/evidence/EvidenceDrawer";
-import { BroadcasterExportPanel } from "@/components/media/BroadcasterExportPanel";
+import { MediaBroadcastKitTrigger } from "@/components/media/MediaBroadcastKitDrawer";
 import { ModalPortal } from "@/components/ModalPortal";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { OuLeanBadge } from "@/components/OuLeanBadge";
@@ -173,15 +173,22 @@ export function GameSlatePreviewDrawer({
                 <OuLeanBadge lean={preview.ouLean} />
               </div>
             </div>
-            <button
-              ref={closeButtonRef}
-              type="button"
-              className="ref-preview-drawer-close"
-              onClick={onClose}
-              aria-label="Close game preview"
-            >
-              <X size={18} aria-hidden />
-            </button>
+            <div className="ref-preview-drawer-header-actions">
+              <MediaBroadcastKitTrigger
+                preview={preview}
+                evidence={projectionEvidence}
+                className="game-slate-preview-broadcast-kit"
+              />
+              <button
+                ref={closeButtonRef}
+                type="button"
+                className="ref-preview-drawer-close"
+                onClick={onClose}
+                aria-label="Close game preview"
+              >
+                <X size={18} aria-hidden />
+              </button>
+            </div>
           </header>
 
           <div className="ref-preview-drawer-body">
@@ -300,11 +307,6 @@ export function GameSlatePreviewDrawer({
               {!awaitingCrew ? (
                 <EvidenceDrawer evidence={projectionEvidence} className="game-slate-preview-evidence" />
               ) : null}
-
-              <BroadcasterExportPanel
-                preview={preview}
-                evidence={projectionEvidence}
-              />
 
               {preview.teamImpacts.length > 0 ? (
                 <section

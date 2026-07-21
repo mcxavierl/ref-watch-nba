@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
+import { RefAvatar } from "@/components/RefAvatar";
 import { WHISTLE_PATHS } from "@/lib/brand-colors";
 import type { ProjectionEvidencePayload } from "@/lib/analytics/evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
@@ -11,29 +12,32 @@ import {
 import "./media-card.css";
 
 export type MediaCardProps = {
-  preview: GameSlatePreviewPayload;
-  evidence: ProjectionEvidencePayload;
+  preview?: GameSlatePreviewPayload;
+  evidence?: ProjectionEvidencePayload;
   content?: MediaCardContent;
   className?: string;
 };
 
-function statToneClass(headline: string): string {
-  if (headline.includes("Above")) return "media-card-stat-headline--positive";
-  if (headline.includes("Below")) return "media-card-stat-headline--neutral";
-  return "media-card-stat-headline--neutral";
+function heroToneClass(tone: MediaCardContent["heroMetricTone"]): string {
+  if (tone === "positive") return "media-card-hero-metric--positive";
+  if (tone === "negative") return "media-card-hero-metric--negative";
+  return "media-card-hero-metric--neutral";
 }
 
 export const MediaCard = forwardRef<HTMLDivElement, MediaCardProps>(
   function MediaCard({ preview, evidence, content, className = "" }, ref) {
-    const card = content ?? buildMediaCardContent(preview, evidence);
-    const { whistleProfile, evidenceSummary } = card;
+    if (!content && (!preview || !evidence)) {
+      throw new Error("MediaCard requires content or preview+evidence");
+    }
+
+    const card = content ?? buildMediaCardContent(preview!, evidence!);
 
     return (
       <div
         ref={ref}
         className={`media-card ${className}`.trim()}
         role="img"
-        aria-label={`Broadcast graphic for ${whistleProfile.matchup}`}
+        aria-label={`Broadcast graphic for ${card.matchupBadge}`}
       >
         <div className="media-card-inner">
           <header className="media-card-header">
@@ -56,50 +60,65 @@ export const MediaCard = forwardRef<HTMLDivElement, MediaCardProps>(
               </div>
               <div className="media-card-brand-copy">
                 <p className="media-card-kicker">Ref Watch</p>
-                <h1 className="media-card-title">Broadcaster Export</h1>
+                <h1 className="media-card-title">Officiating Insight</h1>
               </div>
             </div>
-            <span className="media-card-league-pill">{whistleProfile.leagueLabel}</span>
+            <div className="media-card-header-badges">
+              <span className="media-card-league-pill">{card.leagueLabel}</span>
+              <span className="media-card-matchup-pill">{card.matchupBadge}</span>
+            </div>
           </header>
+
+          <div className="media-card-hero">
+            <p className="media-card-hero-label">Hero Metric</p>
+            <p className={`media-card-hero-metric ${heroToneClass(card.heroMetricTone)}`}>
+              {card.heroMetric}
+            </p>
+          </div>
 
           <div className="media-card-body">
             <section
               className="media-card-panel media-card-panel--profile"
-              aria-label="The Whistle Profile"
+              aria-label="Referee fingerprint and whistle profile"
             >
-              <p className="media-card-panel-label">The Whistle Profile</p>
-              <h2 className="media-card-official">{whistleProfile.officialName}</h2>
-              <p className="media-card-matchup">{whistleProfile.matchup}</p>
-              <div className="media-card-stat-block">
-                <p
-                  className={`media-card-stat-headline ${statToneClass(
-                    whistleProfile.keyStatHeadline,
-                  )}`}
-                >
-                  {whistleProfile.keyStatHeadline}
-                </p>
-                <p className="media-card-stat-detail">{whistleProfile.keyStatDetail}</p>
+              <p className="media-card-panel-label">Whistle Profile</p>
+              <div className="media-card-profile-row">
+                <RefAvatar
+                  name={card.primaryRef.name}
+                  slug={card.primaryRef.slug}
+                  sport={card.primaryRef.sport}
+                  size="xl"
+                  decorative
+                  className="media-card-avatar"
+                />
+                <div className="media-card-profile-copy">
+                  <h2 className="media-card-official">{card.primaryRef.name}</h2>
+                  <p className="media-card-crew">{card.crewLabel}</p>
+                  <span className="media-card-archetype-tag">{card.archetypeTag}</span>
+                </div>
               </div>
+              <p className="media-card-stat-detail">
+                {card.sampleGames} games in sample · {card.metricLabel} focus
+              </p>
             </section>
 
-            <section className="media-card-panel" aria-label="Evidence Summary">
-              <p className="media-card-panel-label">Evidence Summary</p>
-              <ol className="media-card-evidence-list">
-                {evidenceSummary.bullets.map((bullet, index) => (
+            <section className="media-card-panel" aria-label="On-air evidence summary">
+              <p className="media-card-panel-label">On-Air Evidence Summary</p>
+              <ul className="media-card-evidence-list">
+                {card.evidenceBullets.map((bullet, index) => (
                   <li key={`${index}-${bullet}`} className="media-card-evidence-item">
-                    <span className="media-card-evidence-index" aria-hidden>
-                      {index + 1}
+                    <span className="media-card-evidence-bullet" aria-hidden>
+                      •
                     </span>
                     <span>{bullet}</span>
                   </li>
                 ))}
-              </ol>
+              </ul>
               <div className="media-card-evidence-meta">
-                <span>{evidenceSummary.confidencePct}% confidence</span>
+                <span>{card.confidencePct}% confidence</span>
                 <span>
-                  {evidenceSummary.evidenceStrength.toFixed(1)} / 10 evidence strength
+                  {card.evidenceStrength.toFixed(1)} / 10 evidence strength
                 </span>
-                <span>{evidenceSummary.metricLabel} focus</span>
               </div>
             </section>
           </div>

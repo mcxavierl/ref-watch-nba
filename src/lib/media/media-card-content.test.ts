@@ -3,11 +3,15 @@ import { describe, it } from "node:test";
 import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
-  buildKeyStatHeadline,
+  buildBroadcastEvidenceBullets,
+  buildHeroMetric,
   buildMediaCardContent,
+  buildRefMediaCardContent,
+  formatMatchupBadge,
   topEvidenceBullets,
 } from "@/lib/media/media-card-content";
 import { buildOnAirCopy } from "@/lib/media/on-air-copy";
+import { getRefBySlug, getRefStats } from "@/lib/data";
 
 function previewFixture(
   overrides: Partial<GameSlatePreviewPayload> = {},
@@ -42,9 +46,14 @@ function previewFixture(
 }
 
 describe("media card content", () => {
-  it("builds whistle profile key stat above league average", () => {
-    const headline = buildKeyStatHeadline(previewFixture());
-    assert.match(headline, /\+4\.2 Fouls Above League Avg/);
+  it("builds hero metric above league average in broadcast uppercase", () => {
+    const hero = buildHeroMetric(previewFixture());
+    assert.match(hero.headline, /\+4\.2 FOULS ABOVE LEAGUE AVG/);
+    assert.equal(hero.tone, "positive");
+  });
+
+  it("formats matchup badge from team abbreviations", () => {
+    assert.equal(formatMatchupBadge(previewFixture()), "LAL @ BOS");
   });
 
   it("returns top three evidence bullets for broadcast summary", () => {
@@ -68,34 +77,50 @@ describe("media card content", () => {
       ],
     });
     const evidence = buildProjectionEvidence(preview);
-    const bullets = topEvidenceBullets(evidence, 3);
+    const bullets = buildBroadcastEvidenceBullets(preview, evidence, 3);
     assert.ok(bullets.length <= 3);
     assert.ok(bullets.length > 0);
     assert.match(bullets[0]!, /crew|foul|league/i);
   });
 
-  it("builds combined media card content for both broadcast panels", () => {
+  it("builds combined media card content for broadcast graphic", () => {
     const preview = previewFixture();
     const evidence = buildProjectionEvidence(preview);
     const content = buildMediaCardContent(preview, evidence);
 
-    assert.equal(content.whistleProfile.officialName, "Scott Foster");
-    assert.equal(content.whistleProfile.matchup, "LAL @ BOS");
-    assert.ok(content.evidenceSummary.bullets.length > 0);
-    assert.equal(content.evidenceSummary.metricLabel, "Fouls");
+    assert.equal(content.primaryRef.name, "Scott Foster");
+    assert.equal(content.matchupBadge, "LAL @ BOS");
+    assert.ok(content.evidenceBullets.length > 0);
+    assert.equal(content.metricLabel, "Fouls");
+    assert.ok(content.archetypeTag.length > 0);
+  });
+
+  it("builds ref profile media card content", () => {
+    const profile = getRefBySlug("scott-foster-48");
+    assert.ok(profile);
+    const stats = getRefStats();
+    const content = buildRefMediaCardContent("nba", profile, stats, true);
+    assert.equal(content.primaryRef.name, profile.name);
+    assert.ok(content.heroMetric.length > 0);
+    assert.ok(content.evidenceBullets.length > 0);
+  });
+
+  it("keeps legacy topEvidenceBullets export", () => {
+    const evidence = buildProjectionEvidence(previewFixture());
+    const bullets = topEvidenceBullets(evidence, 3);
+    assert.ok(bullets.length > 0);
   });
 });
 
 describe("on-air copy", () => {
-  it("formats teleprompter copy with whistle profile and evidence sections", () => {
+  it("formats teleprompter copy with on-air storyline", () => {
     const preview = previewFixture();
     const evidence = buildProjectionEvidence(preview);
     const copy = buildOnAirCopy(preview, evidence);
 
-    assert.match(copy, /REF WATCH \| BROADCAST EXPORT/);
-    assert.match(copy, /THE WHISTLE PROFILE/);
+    assert.match(copy, /ON-AIR STORYLINE:/);
+    assert.match(copy, /Scott Foster/);
     assert.match(copy, /EVIDENCE SUMMARY/);
-    assert.match(copy, /Official: Scott Foster/);
     assert.match(copy, /• /);
     assert.match(copy, /Not betting advice/);
   });
