@@ -9,6 +9,7 @@ import {
 } from "@/lib/services/anomalyMonitor";
 import { computeWebhookBackoffMs } from "@/lib/services/webhookDispatch";
 import { signWebhookPayload } from "@/lib/services/webhookQueue";
+import { verifyWebhookSignature } from "@/lib/services/webhookSignature";
 
 function metric(
   id: string,
@@ -101,10 +102,25 @@ describe("webhook dispatch", () => {
 
   it("signs webhook payloads with sha256 prefix", () => {
     const payload = JSON.stringify({ event: "ANOMALY_DETECTED", gameId: "g1" });
-    const a = signWebhookPayload("secret", payload);
-    const b = signWebhookPayload("secret", payload);
+    const timestamp = 1_700_000_000;
+    const a = signWebhookPayload("secret", payload, timestamp);
+    const b = signWebhookPayload("secret", payload, timestamp);
     assert.equal(a, b);
     assert.match(a, /^sha256=[a-f0-9]{64}$/);
-    assert.notEqual(a, signWebhookPayload("other", payload));
+    assert.notEqual(a, signWebhookPayload("other", payload, timestamp));
+  });
+
+  it("rejects replayed webhook signatures outside the skew window", () => {
+    const payload = JSON.stringify({ event: "ANOMALY_DETECTED", gameId: "g1" });
+    const timestamp = 1_700_000_000;
+    const signature = signWebhookPayload("secret", payload, timestamp);
+    const result = verifyWebhookSignature({
+      secret: "secret",
+      payload,
+      signature,
+      timestamp,
+      nowMs: timestamp * 1000 + 6 * 60 * 1000,
+    });
+    assert.equal(result.ok, false);
   });
 });

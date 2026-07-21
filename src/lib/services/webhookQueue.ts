@@ -1,7 +1,14 @@
-import { createHmac, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { AnomalyDetectedEvent } from "@/lib/services/anomalyMonitor";
+import { normalizeWebhookSecretForStorage } from "@/lib/services/webhookSecret";
+import {
+  signWebhookPayload as signWebhookPayloadWithTimestamp,
+  verifyWebhookSignature,
+  WEBHOOK_SIGNATURE_HEADER,
+  WEBHOOK_TIMESTAMP_HEADER,
+} from "@/lib/services/webhookSignature";
 
 export type WebhookSubscriber = {
   id: string;
@@ -202,6 +209,7 @@ function createSqliteStore(db: WebhookDatabase): WebhookStore {
     },
     async upsertSubscriber(input) {
       const now = input.createdAt ?? new Date().toISOString();
+      const sealedSecret = normalizeWebhookSecretForStorage(input.secret);
       db.prepare(
         `INSERT INTO webhook_subscribers
           (id, client_id, label, url, secret, active, event_kinds, created_at)
@@ -218,13 +226,14 @@ function createSqliteStore(db: WebhookDatabase): WebhookStore {
         input.clientId,
         input.label,
         input.url,
-        input.secret,
+        sealedSecret,
         input.active ? 1 : 0,
         JSON.stringify(input.eventKinds),
         now,
       );
       return {
         ...input,
+        secret: sealedSecret,
         createdAt: now,
       };
     },
@@ -336,7 +345,8 @@ function createJsonStore(): WebhookStore {
     async upsertSubscriber(input) {
       const store = readJsonStore();
       const now = input.createdAt ?? new Date().toISOString();
-      const next: WebhookSubscriber = { ...input, createdAt: now };
+      const sealedSecret = normalizeWebhookSecretForStorage(input.secret);
+      const next: WebhookSubscriber = { ...input, secret: sealedSecret, createdAt: now };
       const index = store.subscribers.findIndex((row) => row.id === input.id);
       if (index >= 0) store.subscribers[index] = next;
       else store.subscribers.push(next);
@@ -457,10 +467,23 @@ export async function getWebhookStore(): Promise<WebhookStore> {
   return storePromise;
 }
 
-export function signWebhookPayload(secret: string, payload: string): string {
-  const hash = createHmac("sha256", secret).update(payload).digest("hex");
-  return `sha256=${hash}`;
+export function signWebhookPayload(
+  secret: string,
+  payload: string,
+  timestampSeconds?: number,
+): string {
+  const signed =
+    timestampSeconds === undefined
+      ? signWebhookPayloadWithTimestamp(secret, payload)
+      : signWebhookPayloadWithTimestamp(secret, payload, timestampSeconds);
+  return signed.signature;
 }
+
+export {
+  verifyWebhookSignature,
+  WEBHOOK_SIGNATURE_HEADER,
+  WEBHOOK_TIMESTAMP_HEADER,
+} from "@/lib/services/webhookSignature";
 
 export async function enqueueEnterpriseWebhookPayloads(
   payloads: Array<{ event: string; [key: string]: unknown }>,
