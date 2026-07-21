@@ -15,6 +15,7 @@ import {
 } from "@/lib/ref-compare";
 import { COMPARE_GHOST_METRIC_ROWS } from "@/lib/ref-compare-client";
 import type { LeagueId } from "@/lib/leagues";
+import { semanticImpactTextClass } from "@/lib/semantic-impact";
 
 function sportForLeague(leagueId: LeagueId) {
   if (leagueId === "nba") return "nba" as const;
@@ -62,14 +63,25 @@ function CompareRefHeader({ bundle }: { bundle: CompareRefBundle }) {
 function MetricValueCell({
   value,
   detail,
+  detailDelta,
+  sampleGames,
 }: {
   value: string;
   detail?: string;
+  detailDelta?: number;
+  sampleGames?: number;
 }) {
+  const detailClass =
+    detailDelta !== undefined
+      ? semanticImpactTextClass(detailDelta, { sampleGames })
+      : "text-slate-400";
+
   return (
     <>
       <span className="ref-compare-value">{value}</span>
-      {detail ? <span className="ref-compare-detail">{detail}</span> : null}
+      {detail ? (
+        <span className={`ref-compare-detail ${detailClass}`.trim()}>{detail}</span>
+      ) : null}
     </>
   );
 }
@@ -123,11 +135,21 @@ function CompareMetricRowDesktop({
         />
       </th>
       <td>
-        <MetricValueCell value={row.valueA} detail={row.detailA} />
+        <MetricValueCell
+          value={row.valueA}
+          detail={row.detailA}
+          detailDelta={row.detailDeltaA}
+          sampleGames={row.sampleGamesA}
+        />
         <CompareLeagueSignalBar signal={row.signalA} tone="a" className="ref-compare-signal--cell" />
       </td>
       <td>
-        <MetricValueCell value={row.valueB} detail={row.detailB} />
+        <MetricValueCell
+          value={row.valueB}
+          detail={row.detailB}
+          detailDelta={row.detailDeltaB}
+          sampleGames={row.sampleGamesB}
+        />
         <CompareLeagueSignalBar signal={row.signalB} tone="b" className="ref-compare-signal--cell" />
       </td>
     </tr>
@@ -169,7 +191,12 @@ function CompareMetricRowVersus({
     <article className="ref-compare-versus-row">
       <div className="ref-compare-versus-side ref-compare-versus-side--a">
         <span className="ref-compare-versus-side-label">Official A</span>
-        <MetricValueCell value={row.valueA} detail={row.detailA} />
+        <MetricValueCell
+          value={row.valueA}
+          detail={row.detailA}
+          detailDelta={row.detailDeltaA}
+          sampleGames={row.sampleGamesA}
+        />
         <CompareLeagueSignalBar signal={row.signalA} tone="a" />
       </div>
 
@@ -180,7 +207,12 @@ function CompareMetricRowVersus({
 
       <div className="ref-compare-versus-side ref-compare-versus-side--b">
         <span className="ref-compare-versus-side-label">Official B</span>
-        <MetricValueCell value={row.valueB} detail={row.detailB} />
+        <MetricValueCell
+          value={row.valueB}
+          detail={row.detailB}
+          detailDelta={row.detailDeltaB}
+          sampleGames={row.sampleGamesB}
+        />
         <CompareLeagueSignalBar signal={row.signalB} tone="b" />
       </div>
     </article>

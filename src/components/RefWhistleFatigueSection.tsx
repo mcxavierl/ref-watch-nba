@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import type { RefWhistleFatigueProfile } from "@/lib/whistle-fatigue";
-import { formatSigned } from "@/lib/stats-utils";
+import { GlossaryMetricLabel } from "@/components/shared/MetricTermLabel";
 import {
   RefDashboardStatCell,
   RefDashboardStatGrid,
 } from "@/components/RefDashboardStatGrid";
+import type { RefWhistleFatigueProfile } from "@/lib/whistle-fatigue";
+import { formatSigned } from "@/lib/stats-utils";
+import { semanticImpactTextClass } from "@/lib/semantic-impact";
 
 function patternLabel(pattern: RefWhistleFatigueProfile["pattern"]): string {
   if (pattern === "fatigue") return "Whistle fatigue";
@@ -41,7 +43,9 @@ export function RefWhistleFatigueSection({
       <div className="ref-table-section-header flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="font-semibold tracking-tight">
-            Late-Game Whistle Drift
+            <GlossaryMetricLabel id="whistle-drift">
+              Late-Game Whistle Drift
+            </GlossaryMetricLabel>
           </h2>
           <p className="mt-1 text-sm font-normal text-slate-400">
             Second-half melt tracking: how this official&apos;s{" "}
@@ -78,11 +82,15 @@ export function RefWhistleFatigueSection({
               label={`${profile.latePeriodLabel} avg`}
               value={profile.lateAvgPerPeriod.toFixed(1)}
               detail={`${formatSigned(profile.lateVsEarlyPct)}% vs early baseline`}
+              detailDelta={profile.lateVsEarlyPct}
+              sampleGames={profile.gamesWithSplits}
             />
             <RefDashboardStatCell
               label="Period trend slope"
               value={formatSigned(profile.trendSlope, 2)}
               detail="Negative = easing; positive = tightening"
+              detailDelta={profile.trendSlope}
+              sampleGames={profile.gamesWithSplits}
             />
           </RefDashboardStatGrid>
 

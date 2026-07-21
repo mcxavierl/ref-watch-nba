@@ -1,6 +1,8 @@
+import { MetricTermLabel } from "@/components/shared/MetricTermLabel";
 import { PRESSURE_GAUGE_LABELS } from "@/lib/analytics/leverage-sensitivity";
 import type { ScoutingReport } from "@/lib/analytics/scouting-report-types";
 import { consistencyStateClass, STATE_COLOR_CLASS } from "@/constants/colors";
+import { semanticImpactTextClass } from "@/lib/semantic-impact";
 import "./scouting-report.css";
 
 type HandicappersInsightProps = {
@@ -65,7 +67,12 @@ export function HandicappersInsight({ report }: HandicappersInsightProps) {
           <dd className="tabular-nums text-right">{edgeSignal(report)}</dd>
         </div>
         <div className="handicappers-insight-stat">
-          <dt>Volatility</dt>
+          <dt>
+            <MetricTermLabel
+              label="Volatility"
+              hint="How predictable this official's whistle volume is game to game. Lower volatility can mean steadier totals markets."
+            />
+          </dt>
           <dd
             className={`tabular-nums text-right ${consistencyStateClass(report.consistencyScore)}`}
           >
@@ -74,9 +81,20 @@ export function HandicappersInsight({ report }: HandicappersInsightProps) {
           </dd>
         </div>
         <div className="handicappers-insight-stat">
-          <dt>Leverage Sensitivity</dt>
+          <dt>
+            <MetricTermLabel
+              label="Leverage Sensitivity"
+              hint="How much an official's whistle rate shifts in close, late-game situations compared with the rest of the game."
+            />
+          </dt>
           <dd
-            className={`tabular-nums text-right ${leverageStateClass(report.leverageProfile)}`}
+            className={`tabular-nums text-right ${
+              report.leverageSensitivityIndex !== null
+                ? semanticImpactTextClass(report.leverageSensitivityIndex * 100, {
+                    minAbsDelta: 5,
+                  })
+                : leverageStateClass(report.leverageProfile)
+            }`}
           >
             {leverageLabel}
           </dd>

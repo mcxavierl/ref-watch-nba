@@ -6,6 +6,7 @@ import { ProvenanceIndicator } from "@/components/hub/ProvenanceIndicator";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
 import { StatCardShareButton } from "@/components/StatCardShareButton";
 import { STAT_CARD_ANCHOR } from "@/lib/stat-card-id";
+import { semanticImpactTextClass } from "@/lib/semantic-impact";
 
 /**
  * CLINICAL MODERN STANDARD: Must use tabular-nums, icon-paired status badges,
@@ -26,6 +27,8 @@ export function RefDashboardStatCell({
   value,
   detail,
   detailMuted = false,
+  detailDelta,
+  sampleGames,
   provenance,
   sampleSize,
   source,
@@ -37,6 +40,9 @@ export function RefDashboardStatCell({
   value: string;
   detail?: string;
   detailMuted?: boolean;
+  /** Signed delta used to color the detail line (emerald/rose/slate). */
+  detailDelta?: number;
+  sampleGames?: number;
   provenance?: MetricProvenance;
   sampleSize?: number;
   source?: string;
@@ -58,6 +64,13 @@ export function RefDashboardStatCell({
       {hidden ? "-" : value}
     </dd>
   );
+
+  const detailToneClass =
+    detailDelta !== undefined
+      ? semanticImpactTextClass(detailDelta, { sampleGames })
+      : detailMuted
+        ? ""
+        : "";
 
   return (
     <div
@@ -92,9 +105,9 @@ export function RefDashboardStatCell({
       {detail && !hidden && (
         <dd
           className={
-            detailMuted
+            detailMuted && detailDelta === undefined
               ? "ref-stat-detail ref-stat-detail--muted tabular-nums"
-              : "ref-stat-detail tabular-nums"
+              : `ref-stat-detail tabular-nums ${detailToneClass}`.trim()
           }
         >
           {detail}

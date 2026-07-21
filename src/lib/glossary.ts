@@ -35,7 +35,12 @@ export type GlossaryId =
   | "sample-gate"
   | "close-game-proxy"
   | "profile-signals"
-  | "gsni";
+  | "gsni"
+  | "whistle-index"
+  | "leverage-sensitivity"
+  | "consistency-score"
+  | "archetype"
+  | "whistle-drift";
 
 export interface GlossaryEntry {
   /** Visible label when none passed as children. */
@@ -192,5 +197,25 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   gsni: {
     label: "Game-State Index",
     text: "High-leverage penalty frequency metric for NFL and NBA. We group plays by score gap and clock, weight close late-game minutes higher, and compare this official's penalty frequency to the league in those same buckets. Labeled Below-Average Frequency, Above-Average Frequency, or Typical Frequency. Reported as an Index Score: positive is below-average frequency, negative is above-average frequency. NBA requires 50+ high-leverage minutes; NFL requires 25+ before we publish a score.",
+  },
+  "whistle-index": {
+    label: "Whistle Index",
+    text: "0-100 scale for how often this crew whistles relative to league average. 50 is typical; higher means more fouls/penalties than average, lower means a quieter whistle.",
+  },
+  "leverage-sensitivity": {
+    label: "Leverage Sensitivity",
+    text: "How much an official's whistle rate shifts in close, late-game situations compared with the rest of the game. Positive values suggest they tighten up under pressure.",
+  },
+  "consistency-score": {
+    label: "Consistency Score",
+    text: "1-10 rating of how predictable this official's whistle volume is game to game. Higher scores mean steadier pacing; lower scores flag more volatile totals markets.",
+  },
+  archetype: {
+    label: "Archetype",
+    text: "Style bucket derived from procedural vs. subjective foul mix and game-flow impact. Helps frame whether this ref tends to let play breathe or enforce structure.",
+  },
+  "whistle-drift": {
+    label: "Whistle Drift",
+    text: "Measures how much an official's foul frequency changes in the 2nd half compared to the 1st half. Negative drift means fewer whistles late; positive drift means they tighten up.",
   },
 };
