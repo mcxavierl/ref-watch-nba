@@ -320,7 +320,8 @@ describe("overview-upcoming-slate", () => {
     const slate = buildLeagueHubUpcomingSchedule("wnba", file, 5);
     assert.equal(slate.leagueGroup?.games[0]?.officialsLine, "Refs not assigned yet");
     assert.equal(slate.leagueGroup?.games[0]?.status, "scheduled");
-    assert.equal(slate.leagueGroup?.games[0]?.preview, undefined);
+    assert.equal(slate.leagueGroup?.games[0]?.preview?.awaitingCrew, true);
+    assert.equal(slate.leagueGroup?.games[0]?.preview?.crew.length, 0);
   });
 
   it("attaches preview card insights when a crew is assigned", () => {
