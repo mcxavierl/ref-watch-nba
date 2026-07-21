@@ -9,10 +9,12 @@ import "./officiating-fingerprint.css";
 
 const AXIS_COUNT = 8;
 const GRID_LEVELS = [25, 50, 75, 100];
-const VIEW_SIZE = 360;
+const LABEL_PADDING = 56;
+const CHART_SIZE = 272;
+const VIEW_SIZE = CHART_SIZE + LABEL_PADDING * 2;
 const CENTER = VIEW_SIZE / 2;
-const MAX_RADIUS = 128;
-const LABEL_RADIUS = 150;
+const MAX_RADIUS = 102;
+const LABEL_RADIUS = 124;
 
 type OfficiatingFingerprintProps = {
   data: OfficiatingFingerprintData;
@@ -52,6 +54,30 @@ function labelPoint(index: number): { x: number; y: number } {
     x: CENTER + LABEL_RADIUS * Math.cos(angle),
     y: CENTER + LABEL_RADIUS * Math.sin(angle),
   };
+}
+
+function labelPlacement(index: number): {
+  textAnchor: "start" | "middle" | "end";
+  dx: number;
+  dy: number;
+} {
+  const angle = axisAngle(index);
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+
+  if (sin < -0.45) {
+    return { textAnchor: "middle", dx: 0, dy: -5 };
+  }
+  if (sin > 0.45) {
+    return { textAnchor: "middle", dx: 0, dy: 8 };
+  }
+  if (cos > 0.35) {
+    return { textAnchor: "start", dx: 8, dy: 3 };
+  }
+  if (cos < -0.35) {
+    return { textAnchor: "end", dx: -8, dy: 3 };
+  }
+  return { textAnchor: "middle", dx: 0, dy: 0 };
 }
 
 function ActiveTooltip({
@@ -152,8 +178,7 @@ export function OfficiatingFingerprint({
           {data.axes.map((axis, index) => {
             const point = pointAt(index, axis.percentile);
             const label = labelPoint(index);
-            const textAnchor =
-              label.x < CENTER - 8 ? "end" : label.x > CENTER + 8 ? "start" : "middle";
+            const placement = labelPlacement(index);
 
             return (
               <g key={axis.id}>
@@ -173,11 +198,13 @@ export function OfficiatingFingerprint({
                 <text
                   x={label.x}
                   y={label.y}
-                  textAnchor={textAnchor}
+                  dx={placement.dx}
+                  dy={placement.dy}
+                  textAnchor={placement.textAnchor}
                   dominantBaseline="middle"
                   className="officiating-fingerprint-label"
                 >
-                  {compact ? axis.shortLabel : axis.label}
+                  {axis.shortLabel}
                 </text>
               </g>
             );

@@ -1,3 +1,7 @@
+.ref-profile-fingerprint {
+  overflow: visible;
+}
+
 .officiating-fingerprint {
   display: flex;
   flex-direction: column;
@@ -42,14 +46,16 @@
 
 .officiating-fingerprint-chart-wrap {
   position: relative;
-  width: min(100%, 24rem);
+  width: min(100%, 26rem);
   margin-inline: auto;
+  overflow: visible;
 }
 
 .officiating-fingerprint-chart {
   display: block;
   width: 100%;
   height: auto;
+  overflow: visible;
 }
 
 .officiating-fingerprint-grid {
@@ -91,8 +97,9 @@
 
 .officiating-fingerprint-label {
   fill: rgb(148 163 184);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .officiating-fingerprint-tooltip {
@@ -163,8 +170,12 @@
   margin-top: 0.75rem;
 }
 
+.officiating-fingerprint--compact .officiating-fingerprint-label {
+  font-size: 10px;
+}
+
 @media (max-width: 640px) {
   .officiating-fingerprint-label {
-    font-size: 8px;
+    font-size: 10px;
   }
 }
