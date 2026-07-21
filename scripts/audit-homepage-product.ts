@@ -15,6 +15,9 @@ const DEFERRED_DUAL_NARRATIVE_IMPORTS = [
   "IntelligenceFeedTicker",
   "TheDatasetMoat",
   "TopStatisticalSignals",
+  "TopSignal",
+  "OverviewFeaturedSignal",
+  "GoldMineProofBar",
   "WhyRefWatchExplainability",
 ] as const;
 
@@ -130,6 +133,32 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
           ok: false,
           message: "homepage-dual-narrative.ts missing buildHomepageIntelligenceTickerItems",
         };
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "homepage hero stays minimal without top signal surfaces",
+    run: () => {
+      const dashboard = read("src/components/OverviewDashboard.tsx");
+      const hero = read("src/components/dashboard/IntelligenceHero.tsx");
+      for (const symbol of [
+        "TopSignal",
+        "OverviewFeaturedSignal",
+        "GoldMineProofBar",
+        "intelligence-hero-surface",
+        "OFFICIATING DECISION",
+        "Top Signal Today",
+      ]) {
+        if (dashboard.includes(symbol) || hero.includes(symbol)) {
+          return {
+            ok: false,
+            message: `Homepage must not render removed surface ${symbol}`,
+          };
+        }
+      }
+      if (!hero.includes("overview-hero-minimal")) {
+        return { ok: false, message: "IntelligenceHero must use overview-hero-minimal layout" };
       }
       return { ok: true };
     },
