@@ -51,26 +51,51 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
+    name: "rolling anomaly engine defines types and severity model",
+    run: () => {
+      const engine = read("src/lib/analytics/anomalyEngine.ts");
+      if (!engine.includes("CREW_FOUL_DEVIATION")) {
+        return { ok: false, message: "anomalyEngine.ts missing CREW_FOUL_DEVIATION" };
+      }
+      if (!engine.includes("computeSeverityScore")) {
+        return { ok: false, message: "anomalyEngine.ts missing computeSeverityScore" };
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "anomaly evidence store schema exists",
+    run: () =>
+      auditFileContains(
+        "src/lib/services/anomaly-schema.sql",
+        /anomaly_evidence_store/,
+        "anomaly_evidence_store table",
+      ),
+  },
+  {
     name: "webhook dispatch signs payloads and applies backoff",
     run: () => {
       const dispatch = read("src/lib/services/webhookDispatch.ts");
       if (!dispatch.includes("computeWebhookBackoffMs")) {
         return { ok: false, message: "webhookDispatch.ts missing computeWebhookBackoffMs" };
       }
+      if (!dispatch.includes("X-RefWatch-Signature")) {
+        return { ok: false, message: "webhookDispatch.ts missing X-RefWatch-Signature header" };
+      }
       const queue = read("src/lib/services/webhookQueue.ts");
-      if (!queue.includes("signWebhookPayload")) {
-        return { ok: false, message: "webhookQueue.ts missing signWebhookPayload" };
+      if (!queue.includes("sha256=")) {
+        return { ok: false, message: "webhookQueue.ts missing sha256= signature prefix" };
       }
       return { ok: true };
     },
   },
   {
-    name: "integrity monitor pipeline writes anomaly artifact",
+    name: "anomaly monitor persists evidence before webhook dispatch",
     run: () =>
       auditFileContains(
         "src/lib/services/anomalyMonitor.ts",
-        /writeAnomalyMonitorArtifact/,
-        "writeAnomalyMonitorArtifact call",
+        /persistAnomalyEvidence/,
+        "persistAnomalyEvidence call",
       ),
   },
   {
@@ -97,6 +122,9 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       const schema = read("src/lib/services/webhook-schema.sql");
       if (!schema.includes("webhook_subscribers") || !schema.includes("webhook_queue")) {
         return { ok: false, message: "webhook-schema.sql missing queue tables" };
+      }
+      if (!schema.includes("webhook_events")) {
+        return { ok: false, message: "webhook-schema.sql missing webhook_events table" };
       }
       return { ok: true };
     },

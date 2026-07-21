@@ -23,6 +23,10 @@ export type AnomalyEvidence = {
     number: number;
     slug: string;
   }>;
+  anomalyType?: string;
+  severityScore?: number;
+  rollingWindowUsed?: string;
+  summary?: string;
 };
 
 export type AnomalyDetectedEvent = {
@@ -229,22 +233,29 @@ export async function onAssignmentsIngested(
     artifactPath?: string;
   },
 ): Promise<AnomalyMonitorWorkerResult> {
-  const { runAnomalyMonitorForLeague, writeAnomalyMonitorArtifact } = await import(
-    "@/lib/services/run-anomaly-monitor"
-  );
-  const { dispatchAnomalyWebhookEvents } = await import("@/lib/services/webhookDispatch");
+  const {
+    runAnomalyMonitorForLeague,
+    runRollingAnomalyEngineForLeague,
+    writeAnomalyMonitorArtifact,
+  } = await import("@/lib/services/run-anomaly-monitor");
+  const { persistAnomalyEvidence } = await import("@/lib/services/anomalyEvidenceStore");
+  const { buildAnomalyWebhookPayloads } = await import("@/lib/services/webhookPayload");
+  const { dispatchEnterpriseWebhookPayloads } = await import("@/lib/services/webhookDispatch");
 
   const monitor = runAnomalyMonitorForLeague(leagueId, assignments);
+  const rollingAnomalies = runRollingAnomalyEngineForLeague(leagueId, assignments);
+  await persistAnomalyEvidence(rollingAnomalies);
+
   const events = monitor?.events ?? [];
+  const enterprisePayloads = buildAnomalyWebhookPayloads(rollingAnomalies);
+  const webhook = await dispatchEnterpriseWebhookPayloads(enterprisePayloads, {
+    processImmediately: options?.dispatchWebhooks ?? true,
+    maxPasses: 4,
+  });
 
   if (options?.writeArtifact !== false && monitor) {
     writeAnomalyMonitorArtifact([monitor], options?.artifactPath);
   }
-
-  const webhook = await dispatchAnomalyWebhookEvents(events, {
-    processImmediately: options?.dispatchWebhooks ?? true,
-    maxPasses: 4,
-  });
 
   return {
     leagueId,

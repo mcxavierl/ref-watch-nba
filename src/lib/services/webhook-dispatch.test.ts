@@ -97,6 +97,9 @@ function createMemoryStore(subscriber: WebhookSubscriber): WebhookStore {
     async logDelivery(input) {
       store.deliveryLogs.push(input);
     },
+    async logWebhookEvent() {
+      /* no-op for memory store */
+    },
   };
 }
 
@@ -153,7 +156,7 @@ describe("webhook dispatch queue", () => {
 
       const retryAt = new Date(memoryStore.queue[0]!.nextAttemptAt).getTime();
       const expectedDelay = computeWebhookBackoffMs(1);
-      assert.ok(retryAt >= Date.now() + expectedDelay - 5_000);
+      assert.ok(retryAt >= Date.now() + expectedDelay - 2_000);
 
       globalThis.fetch = async () =>
         ({
