@@ -174,7 +174,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(card, /upcoming-game-card__matchup/);
     assert.match(card, /upcoming-game-card__trend/);
     assert.doesNotMatch(card, /line-clamp-2/);
-    assert.doesNotMatch(card, /min-h-\[2\.75rem\]/);
+    assert.match(card, /min-h-\[2\.5rem\]/);
     assert.match(card, /min-h-\[260px\]/);
     assert.match(card, /gap-2\.5/);
     assert.doesNotMatch(card, /h-\[280px\]/);
