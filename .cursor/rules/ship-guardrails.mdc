@@ -39,6 +39,17 @@ npm run setup:hooks
 
 ## Merge policy
 
+**Before every merge (mandatory for agents):**
+
+1. Run `npm run check:preflight` locally.
+2. Run `npm run check:ci` locally (or confirm the PR **validate** job already passed the same gate).
+3. Wait for GitHub **validate** to be green on the PR branch.
+4. If overview/slate sources or `data/**` assignments changed, rebuild `data/overview-snapshot.json` in the same PR.
+5. Resolve any merge conflict markers (`npm run check:no-conflict-markers`) before pushing.
+6. Only then merge. Never merge with red CI or unverified conflict resolution.
+
+Standing rules:
+
 1. **Do not merge** a PR until GitHub **validate** is green.
 2. **Do not merge** if `npm run check:ci` fails locally.
 3. PR CI can **skip** snapshot freshness when a diff touches no overview sources or league data inputs, but **deploy on main always forces it**. If you change insight gates, methodology, overview builders, or committed `data/**` stats/logs/assignments, refresh the snapshot in the same PR.
