@@ -8,10 +8,16 @@ test("TouchPopover exposes accessible trigger and dismiss handlers", () => {
   const source = readFileSync("src/components/ui/TouchPopover.tsx", "utf8");
   assert.match(source, /aria-expanded=\{open\}/);
   assert.match(source, /aria-controls=\{panelId\}/);
-  assert.match(source, /role="tooltip"/);
+  assert.match(source, /PortaledHintPanel/);
   assert.match(source, /addEventListener\("pointerdown"/);
   assert.match(source, /event\.key === "Escape"/);
   assert.match(source, /onClick=\{\(\) => setOpen/);
+});
+
+test("TermHelp renders glossary hints through a portaled panel", () => {
+  const source = readFileSync("src/components/TermHelp.tsx", "utf8");
+  assert.match(source, /PortaledHintPanel/);
+  assert.match(source, /term-help-mobile/);
 });
 
 test("ProvenanceIndicator uses TouchPopover instead of native title tooltips", () => {

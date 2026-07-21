@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { PortaledHintPanel } from "@/components/ui/PortaledHintPanel";
 
 export interface TouchPopoverProps {
   trigger: ReactNode;
@@ -35,6 +36,8 @@ export function TouchPopover({
 
     function onPointerDown(event: PointerEvent) {
       if (!rootRef.current?.contains(event.target as Node)) {
+        const panel = document.getElementById(panelId);
+        if (panel?.contains(event.target as Node)) return;
         setOpen(false);
       }
     }
@@ -49,7 +52,7 @@ export function TouchPopover({
       document.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, panelId]);
 
   const rootClass = [
     "touch-popover",
@@ -61,7 +64,16 @@ export function TouchPopover({
     .join(" ");
 
   return (
-    <span ref={rootRef} className={rootClass}>
+    <span
+      ref={rootRef}
+      className={rootClass}
+      onMouseEnter={() => {
+        if (desktopHover) setOpen(true);
+      }}
+      onMouseLeave={() => {
+        if (desktopHover) setOpen(false);
+      }}
+    >
       <button
         type="button"
         className="touch-popover-trigger rw-focus-ring"
@@ -72,13 +84,14 @@ export function TouchPopover({
       >
         {trigger}
       </button>
-      <span
+      <PortaledHintPanel
+        anchorRef={rootRef}
+        open={open}
         id={panelId}
-        role="tooltip"
         className={`touch-popover-panel ${panelClassName}`.trim()}
       >
         {children}
-      </span>
+      </PortaledHintPanel>
     </span>
   );
 }

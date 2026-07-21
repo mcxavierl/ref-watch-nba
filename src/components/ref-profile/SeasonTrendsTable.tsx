@@ -3,6 +3,7 @@ import {
   archetypeChipClass,
   INSUFFICIENT_SEASON_SAMPLE_GAMES,
 } from "@/lib/ref-profile-season-trends";
+import { DataTableScrollWrap } from "@/components/shared/DataTableScrollWrap";
 import { GlossaryMetricLabel } from "@/components/shared/MetricTermLabel";
 
 export function SeasonTrendsTable({ rows }: { rows: SeasonTrendRow[] }) {
@@ -15,7 +16,7 @@ export function SeasonTrendsTable({ rows }: { rows: SeasonTrendRow[] }) {
   }
 
   return (
-    <div className="ref-season-trends-table-wrap ref-table-scroll">
+    <DataTableScrollWrap className="ref-season-trends-table-wrap ref-table-scroll">
       <table className="ref-data-table data-table ref-season-trends-table ref-profile-fluid-table min-w-[31.25rem] w-full">
         <thead className="data-table-head">
           <tr>
@@ -23,18 +24,16 @@ export function SeasonTrendsTable({ rows }: { rows: SeasonTrendRow[] }) {
               Season
             </th>
             <th scope="col" className="whitespace-nowrap">
-              <GlossaryMetricLabel id="archetype">Archetype</GlossaryMetricLabel>
+              <GlossaryMetricLabel id="archetype" />
             </th>
             <th scope="col" className="data-table-num whitespace-nowrap">
-              Foul_Ratio
+              Foul Ratio
             </th>
             <th scope="col" className="data-table-num whitespace-nowrap">
-              <GlossaryMetricLabel id="leverage-sensitivity">
-                Leverage_Sensitivity
-              </GlossaryMetricLabel>
+              <GlossaryMetricLabel id="leverage-sensitivity" />
             </th>
             <th scope="col" className="data-table-num whitespace-nowrap">
-              <GlossaryMetricLabel id="consistency-score">Consistency</GlossaryMetricLabel>
+              <GlossaryMetricLabel id="consistency-score" />
             </th>
           </tr>
         </thead>
@@ -71,6 +70,6 @@ export function SeasonTrendsTable({ rows }: { rows: SeasonTrendRow[] }) {
           )}
         </tbody>
       </table>
-    </div>
+    </DataTableScrollWrap>
   );
 }

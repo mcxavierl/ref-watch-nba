@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { RoutedSiteFooter } from "@/components/RoutedSiteFooter";
 import { VerifiedAnalyticsBar } from "@/components/VerifiedAnalyticsBar";
 import { SiteHeader } from "@/components/SiteHeader";
+import { AppTooltipProvider } from "@/components/ui/AppTooltipProvider";
 import { A11Y_BLOCKING_SCRIPT } from "@/lib/a11y/a11yBootstrap";
 import { DEFAULT_SITE_DESCRIPTION, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { AFFILIATION_DISCLAIMER, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -105,6 +106,7 @@ export default async function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${atkinson.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
       >
+        <AppTooltipProvider>
         <a href="#main-content" className="skip-to-main">
           Skip to content
         </a>
@@ -117,6 +119,7 @@ export default async function RootLayout({
         </main>
         <VerifiedAnalyticsBar />
         <RoutedSiteFooter />
+        </AppTooltipProvider>
       </body>
     </html>
   );

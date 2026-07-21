@@ -7,6 +7,7 @@ import {
   MATRIX_TONE_DELTA_PTS,
   TEAM_MATRIX_REF_PANEL_LIMIT,
 } from "@/lib/ref-team-matrix";
+import { PortaledHintPanel } from "@/components/ui/PortaledHintPanel";
 
 type MatrixHowToReadPopoverProps = {
   minGames: number;
@@ -26,6 +27,8 @@ export function MatrixHowToReadPopover({
 
     function onPointerDown(event: MouseEvent) {
       if (!rootRef.current?.contains(event.target as Node)) {
+        const panel = document.getElementById(panelId);
+        if (panel?.contains(event.target as Node)) return;
         setOpen(false);
       }
     }
@@ -40,7 +43,7 @@ export function MatrixHowToReadPopover({
       document.removeEventListener("mousedown", onPointerDown);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, panelId]);
 
   return (
     <div
@@ -59,34 +62,34 @@ export function MatrixHowToReadPopover({
         <span>How to read</span>
       </button>
 
-      {open ? (
-        <div
-          id={panelId}
-          role="tooltip"
-          className="matrix-how-to-read-panel"
-        >
-          <p>
-            Each cell is that official&apos;s ref×team split (not the team&apos;s overall
-            record). The baseline row under each logo is the team sample for coloring only.
-            Qualified cells need {minGames}+ games; thinner samples stay muted. Heat intensity
-            reflects win-rate delta vs baseline (±{MATRIX_TONE_DELTA_PTS} pts for tint; ±
-            {MATRIX_EXTREME_DELTA_PTS} pts for standout outliers). Hover a cell for the exact
-            delta. Click a team logo to drill into favorable and unfavorable officials (top{" "}
-            {TEAM_MATRIX_REF_PANEL_LIMIT} each). Historical splits only - not picks.
-          </p>
-          <div className="matrix-how-to-read-swatches" aria-hidden>
-            <span className="matrix-how-to-read-swatch matrix-how-to-read-swatch--positive">
-              Above baseline
-            </span>
-            <span className="matrix-how-to-read-swatch matrix-how-to-read-swatch--neutral">
-              Near baseline
-            </span>
-            <span className="matrix-how-to-read-swatch matrix-how-to-read-swatch--negative">
-              Below baseline
-            </span>
-          </div>
+      <PortaledHintPanel
+        anchorRef={rootRef}
+        open={open}
+        id={panelId}
+        className="matrix-how-to-read-panel"
+        placement="bottom"
+      >
+        <p>
+          Each cell is that official&apos;s ref×team split (not the team&apos;s overall
+          record). The baseline row under each logo is the team sample for coloring only.
+          Qualified cells need {minGames}+ games; thinner samples stay muted. Heat intensity
+          reflects win-rate delta vs baseline (±{MATRIX_TONE_DELTA_PTS} pts for tint; ±
+          {MATRIX_EXTREME_DELTA_PTS} pts for standout outliers). Hover a cell for the exact
+          delta. Click a team logo to drill into favorable and unfavorable officials (top{" "}
+          {TEAM_MATRIX_REF_PANEL_LIMIT} each). Historical splits only - not picks.
+        </p>
+        <div className="matrix-how-to-read-swatches" aria-hidden>
+          <span className="matrix-how-to-read-swatch matrix-how-to-read-swatch--positive">
+            Above baseline
+          </span>
+          <span className="matrix-how-to-read-swatch matrix-how-to-read-swatch--neutral">
+            Near baseline
+          </span>
+          <span className="matrix-how-to-read-swatch matrix-how-to-read-swatch--negative">
+            Below baseline
+          </span>
         </div>
-      ) : null}
+      </PortaledHintPanel>
     </div>
   );
 }
