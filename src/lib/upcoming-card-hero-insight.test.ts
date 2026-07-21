@@ -82,19 +82,17 @@ describe("upcoming card hero insight", () => {
     assert.ok(insights.every((line) => line.length === line.trim().length));
   });
 
-  it("summarizes long fallback context to a single line", () => {
+  it("preserves full fallback context on one line", () => {
+    const longLine =
+      "Last met Apr 12, 2025 at Scotiabank Arena. Toronto won 112-108 in overtime with a late whistle swing.";
     const insight = selectUpcomingCardHeroInsight(
       baseEntry({
         crewCount: 3,
         status: "live",
-        gameContextLine:
-          "Last met Apr 12, 2025 at Scotiabank Arena. Toronto won 112-108 in overtime with a late whistle swing.",
+        gameContextLine: longLine,
       }),
     );
-    assert.ok(insight);
-    assert.ok(!insight.includes("\n"));
-    assert.ok(insight.length <= 72);
-    assert.match(insight, /^Last met Apr 12, 2025 at Scotiabank Arena/);
+    assert.equal(insight, longLine);
   });
 
   it("uses matchup briefing context when crews are not assigned", () => {
@@ -118,6 +116,6 @@ describe("upcoming card hero insight", () => {
           "Last met Apr 12, 2025 at Scotiabank Arena. Toronto won 112-108 in overtime with a late whistle swing.",
       }),
     );
-    assert.equal(insight, "Raptors and Celtics split their last four meetings");
+    assert.equal(insight, "Raptors and Celtics split their last four meetings.");
   });
 });
