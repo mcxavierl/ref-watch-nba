@@ -185,9 +185,9 @@
 }
 
 .overview-slate-row-at {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: var(--clinical-ink-label);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--clinical-ink);
 }
 
 .overview-slate-row-last-meeting,
@@ -555,10 +555,10 @@ html[data-contrast="high"] .upcoming-game-card__cta {
 .upcoming-game-card__at {
   flex: 0 0 auto;
   align-self: center;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
   line-height: 1;
-  color: var(--upcoming-ink-muted);
+  color: var(--upcoming-ink);
 }
 
 .upcoming-game-card__context-slot {

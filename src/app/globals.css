@@ -10265,6 +10265,13 @@ p {
     outline-offset: 2px;
   }
 
+  .game-slate-card-at {
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--foreground);
+  }
+
   .game-slate-preview-drawer .ref-preview-drawer-title-row {
     align-items: flex-start;
     justify-content: space-between;
@@ -10280,9 +10287,33 @@ p {
   }
 
   .game-slate-preview-at {
-    color: var(--muted);
+    color: var(--foreground);
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+
+  .game-slate-preview-matchup-briefing {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .game-slate-preview-matchup-briefing-note {
+    margin: 0;
     font-size: var(--text-sm);
-    font-weight: 600;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .game-slate-preview-matchup-briefing-lines {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    line-height: 1.45;
+    color: var(--foreground);
   }
 
   .game-slate-preview-crew-row {

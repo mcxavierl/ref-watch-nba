@@ -12,6 +12,10 @@ import {
 } from "@/lib/slate-team-display";
 import { SlateScoreboard } from "@/components/SlateScoreboard";
 
+function previewCtaLabel(game: OverviewSlateEntry): string {
+  return game.crewCount > 0 ? "Preview refs" : "View matchup";
+}
+
 function slateRowContextLines(game: OverviewSlateEntry): {
   primary?: string;
   secondary?: string;
@@ -21,6 +25,14 @@ function slateRowContextLines(game: OverviewSlateEntry): {
     return {
       primary: game.previewCardInsights[0],
       secondary: game.previewCardInsights[1],
+    };
+  }
+
+  if (game.preview?.awaitingCrew && game.preview.matchupBriefing) {
+    const briefing = game.preview.matchupBriefing;
+    return {
+      primary: briefing.lines[0] ?? game.matchupInsight,
+      secondary: briefing.lastMeeting ?? briefing.lines[1],
     };
   }
 
@@ -81,7 +93,13 @@ export function OverviewSlateRow({
       onKeyDown={handleKeyDown}
       tabIndex={onOpenPreview ? 0 : undefined}
       role={onOpenPreview ? "button" : undefined}
-      aria-label={onOpenPreview ? `Open ${awayTeam.abbr} at ${homeTeam.abbr} ref preview` : undefined}
+      aria-label={
+        onOpenPreview
+          ? game.crewCount > 0
+            ? `Open ${awayTeam.abbr} at ${homeTeam.abbr} ref preview`
+            : `Open ${awayTeam.abbr} at ${homeTeam.abbr} matchup sheet`
+          : undefined
+      }
     >
       <div className="overview-slate-row-inner">
       <div className="overview-slate-row-matchup-block">
@@ -124,7 +142,7 @@ export function OverviewSlateRow({
         ) : null}
         {showHubLink ? (
           onOpenPreview ? (
-            <span className="overview-slate-row-link">Preview refs</span>
+            <span className="overview-slate-row-link">{previewCtaLabel(game)}</span>
           ) : (
             <Link href={game.href} className="overview-slate-row-link">
               Open slate

@@ -97,15 +97,27 @@ describe("upcoming card hero insight", () => {
     assert.match(insight, /^Last met Apr 12, 2025 at Scotiabank Arena/);
   });
 
-  it("skips historical fallback context when crews are not assigned", () => {
+  it("uses matchup briefing context when crews are not assigned", () => {
     const insight = selectUpcomingCardHeroInsight(
       baseEntry({
         crewCount: 0,
         status: "scheduled",
+        preview: preview({
+          awaitingCrew: true,
+          crew: [],
+          matchupBriefing: {
+            headline: "TOR at BOS matchup sheet",
+            lines: ["Raptors and Celtics split their last four meetings."],
+            h2hGames: 4,
+            avgTotalPoints: 218,
+            avgFouls: 41,
+            overRate: 0.5,
+          },
+        }),
         gameContextLine:
           "Last met Apr 12, 2025 at Scotiabank Arena. Toronto won 112-108 in overtime with a late whistle swing.",
       }),
     );
-    assert.equal(insight, undefined);
+    assert.equal(insight, "Raptors and Celtics split their last four meetings");
   });
 });

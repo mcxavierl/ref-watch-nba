@@ -16,6 +16,16 @@ import {
 } from "@/lib/slate-team-display";
 import { SlateScoreboard } from "@/components/SlateScoreboard";
 
+function previewCtaLabel(game: OverviewSlateEntry): string {
+  return game.crewCount > 0 ? "Preview refs" : "View matchup";
+}
+
+function previewAriaLabel(awayAbbr: string, homeAbbr: string, game: OverviewSlateEntry): string {
+  return game.crewCount > 0
+    ? `Open ${awayAbbr} at ${homeAbbr} ref preview`
+    : `Open ${awayAbbr} at ${homeAbbr} matchup sheet`;
+}
+
 function upcomingCardCrewLabel(game: OverviewSlateEntry): string | undefined {
   if (game.crewCount === 0) {
     if (game.officialsLine && /TBD|not assigned/i.test(game.officialsLine)) {
@@ -81,7 +91,7 @@ export function UpcomingGameCard({
       tabIndex={onOpenPreview ? 0 : undefined}
       role={onOpenPreview ? "button" : undefined}
       aria-label={
-        onOpenPreview ? `Open ${awayTeam.abbr} at ${homeTeam.abbr} ref preview` : undefined
+        onOpenPreview ? previewAriaLabel(awayTeam.abbr, homeTeam.abbr, game) : undefined
       }
     >
       <header className="upcoming-game-card__header">
@@ -173,7 +183,7 @@ export function UpcomingGameCard({
         </div>
         {onOpenPreview ? (
           <span className="upcoming-game-card__cta upcoming-game-card__cta--footer">
-            Preview refs
+            {previewCtaLabel(game)}
           </span>
         ) : null}
       </footer>
