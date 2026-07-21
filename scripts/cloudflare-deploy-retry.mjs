@@ -5,6 +5,7 @@ const retryDelaySeconds = [5, 15, 30, 45];
 
 function isTransientCloudflareError(output) {
   const text = output.toLowerCase();
+  if (text.includes("[code: 10181]")) return false;
   return (
     text.includes("[code: 10013]") ||
     text.includes("assets-upload-session") ||

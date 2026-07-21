@@ -85,6 +85,9 @@ describe("ship guardrail scripts", () => {
       scripts?: { deploy?: string };
     };
     const deployScript = pkg.scripts?.deploy ?? "";
+    if (!deployScript.includes("ensure-cloudflare-d1-binding.mjs")) {
+      throw new Error("package.json deploy must run scripts/ensure-cloudflare-d1-binding.mjs");
+    }
     if (!deployScript.includes("cloudflare-deploy-retry.mjs")) {
       throw new Error("package.json deploy must use scripts/cloudflare-deploy-retry.mjs");
     }
