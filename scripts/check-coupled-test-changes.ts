@@ -13,6 +13,21 @@ type CouplingRule = {
 
 export const COUPLED_TEST_RULES: CouplingRule[] = [
   {
+    label: "profile recalibration pipeline",
+    sources: [
+      "src/lib/cron/recalibrateProfiles.ts",
+      "src/lib/cron/rolling-ref-metrics.ts",
+      "src/lib/cron/ref-team-history-recalibrator.ts",
+      "src/lib/cron/autopsy-recalibrate-subscriber.ts",
+      "src/lib/services/autopsyRecordStore.ts",
+    ],
+    tests: [
+      "src/lib/cron/recalibrateProfiles.test.ts",
+      "src/lib/cron/rolling-ref-metrics.test.ts",
+      "src/lib/cron/autopsy-recalibrate-subscriber.test.ts",
+    ],
+  },
+  {
     label: "upcoming slate metadata",
     sources: [
       "src/lib/overview-matchup-insight.ts",

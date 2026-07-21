@@ -230,6 +230,18 @@ html.light:not([data-contrast="high"]) .bg-slate-950 {
   background-color: var(--bg-surface-1);
 }
 
+/* Always-dark broadcast and narrative capsules keep terminal ink in light mode */
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule.bg-slate-950,
+html.light:not([data-contrast="high"]) .wc-data-capsule.bg-slate-950,
+html[data-color="light"]:not([data-contrast="high"]) .wc-data-capsule,
+html.light:not([data-contrast="high"]) .wc-data-capsule,
+html[data-color="light"]:not([data-contrast="high"]) .media-card-preview-shell,
+html.light:not([data-contrast="high"]) .media-card-preview-shell,
+html[data-color="light"]:not([data-contrast="high"]) .media-card.bg-slate-950,
+html.light:not([data-contrast="high"]) .media-card.bg-slate-950 {
+  background-color: rgb(2 6 23);
+}
+
 html[data-color="light"]:not([data-contrast="high"]) .bg-slate-800,
 html.light:not([data-contrast="high"]) .bg-slate-800 {
   background-color: var(--bg-surface-2);
