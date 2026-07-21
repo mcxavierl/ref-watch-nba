@@ -1,4 +1,8 @@
 import type { ReactNode } from "react";
+import {
+  semanticBadgeSurfaceClass,
+  type SemanticBadgeRole,
+} from "@/lib/semantic-badge-colors";
 
 type RefProfileBadgeRowProps = {
   children: ReactNode;
@@ -22,6 +26,16 @@ export function RefProfileBadgeRow({
   );
 }
 
+const TONE_TO_ROLE: Record<
+  "neutral" | "positive" | "negative" | "caution",
+  SemanticBadgeRole | "negative"
+> = {
+  positive: "confidence",
+  negative: "negative",
+  caution: "anomaly",
+  neutral: "baseline",
+};
+
 export function RefProfileBadgePill({
   children,
   tone = "neutral",
@@ -31,9 +45,15 @@ export function RefProfileBadgePill({
   tone?: "neutral" | "positive" | "negative" | "caution";
   className?: string;
 }) {
+  const role = TONE_TO_ROLE[tone];
+  const surfaceClass =
+    role === "negative"
+      ? "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+      : semanticBadgeSurfaceClass(role);
+
   return (
     <span
-      className={`ref-profile-badge-pill text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${tone === "positive" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : tone === "negative" ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" : tone === "caution" ? "bg-amber-500/10 text-amber-300 border border-amber-500/20" : "bg-slate-800/50 text-slate-300 border border-slate-700/50"} ${className}`.trim()}
+      className={`ref-profile-badge-pill text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${surfaceClass} ${className}`.trim()}
     >
       {children}
     </span>
