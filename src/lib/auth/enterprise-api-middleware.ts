@@ -9,6 +9,7 @@ import { apiError } from "@/lib/api/v1/response";
 import {
   checkRateLimit,
   rateLimitHeaders,
+  unauthenticatedRateLimitHeaders,
 } from "@/lib/api/v1/rate-limit";
 
 export type EnterpriseApiContext = {
@@ -44,16 +45,22 @@ export function withEnterpriseApi<
     if (!plaintext) {
       return apiError(401, "Missing API key. Provide x-api-key or Authorization: Bearer.", {
         docs: "https://refwatch.ca/methodology",
+      }, {
+        headers: unauthenticatedRateLimitHeaders(request),
       });
     }
 
     if (!isApiKeyFormat(plaintext)) {
-      return apiError(401, "Invalid API key format.");
+      return apiError(401, "Invalid API key format.", undefined, {
+        headers: unauthenticatedRateLimitHeaders(request),
+      });
     }
 
     const apiKey = await validateStoredApiKey(plaintext);
     if (!apiKey) {
-      return apiError(401, "Invalid or inactive API key.");
+      return apiError(401, "Invalid or inactive API key.", undefined, {
+        headers: unauthenticatedRateLimitHeaders(request),
+      });
     }
 
     const rateLimit = checkRateLimit(apiKey.id, apiKey.tier);

@@ -7,7 +7,7 @@ import {
   isApiKeyFormat,
   verifyApiKey,
 } from "@/lib/auth/apikey";
-import { checkRateLimit } from "@/lib/api/v1/rate-limit";
+import { checkRateLimit, unauthenticatedRateLimitHeaders } from "@/lib/api/v1/rate-limit";
 
 describe("api key auth", () => {
   it("hashes and verifies API keys", () => {
@@ -50,5 +50,15 @@ describe("rate limiting", () => {
       const result = checkRateLimit(keyId, "enterprise");
       assert.equal(result.allowed, true);
     }
+  });
+
+  it("tracks unauthenticated clients with standard tier limits", () => {
+    const request = new Request("https://refwatch.ca/api/v1/games/upcoming", {
+      headers: { "x-forwarded-for": "203.0.113.10" },
+    });
+    const headers = unauthenticatedRateLimitHeaders(request);
+    assert.equal(headers["X-RateLimit-Limit"], "100");
+    assert.ok(Number(headers["X-RateLimit-Remaining"]) >= 0);
+    assert.ok(Number(headers["X-RateLimit-Reset"]) > 0);
   });
 });

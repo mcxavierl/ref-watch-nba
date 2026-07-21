@@ -108,6 +108,9 @@ jobs:
       - name: Integrity monitor audit
         run: npm run audit:integrity-monitor
 
+      - name: Homepage product audit
+        run: npm run audit:homepage-product
+
       - name: Unit tests
         run: npm run test
 
