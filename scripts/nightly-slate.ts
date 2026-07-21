@@ -6,6 +6,7 @@
  * Intended ~9:05 AM ET via cron or GitHub Actions.
  */
 import { execSync } from "node:child_process";
+import { runIntegrityMonitorPipeline } from "../src/lib/services/integrityMonitor";
 
 const STEPS: { label: string; command: string; optional?: boolean }[] = [
   { label: "NBA assignments", command: "npm run fetch-assignments" },
@@ -45,6 +46,12 @@ async function main(): Promise<void> {
 
   console.log("\n--- Ref-Intelligence archetypes ---");
   execSync("npx tsx scripts/ingest/generate-matrix-data.ts", { stdio: "inherit" });
+
+  console.log("\n--- Anomaly & integrity monitor ---");
+  const integrity = await runIntegrityMonitorPipeline({ processWebhooks: true });
+  console.log(
+    `Integrity monitor: ${integrity.monitor.anomaliesDetected} anomalies across ${integrity.monitor.gamesScanned} games; ${integrity.webhook.enqueued} webhook jobs enqueued.`,
+  );
 
   console.log("\nNightly slate refresh complete.");
 }

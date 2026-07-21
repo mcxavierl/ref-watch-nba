@@ -61,6 +61,8 @@ next-env.d.ts
 # enterprise API key storage (local sqlite/json fallback — never commit)
 /data/api-keys.db
 /data/api-keys.json
+/data/webhook-queue.json
+/data/anomaly-events.json
 
 # nflverse raw PBP CSV cache and penalty index (rebuild via npm run rebuild-nfl-gsni)
 /data/nfl/pbp-cache/

@@ -62,6 +62,7 @@ const PRE_MERGE_CHECKLIST: Array<{ step: string; command: string; ciStep: string
   { step: "Terminal integrity", command: "npm run audit:terminal-integrity", ciStep: "Terminal integrity audit" },
   { step: "Insight-first", command: "npm run audit:insight-first", ciStep: "Insight-first audit" },
   { step: "Overlay portals", command: "npm run audit:overlay-portals", ciStep: "Overlay portal audit" },
+  { step: "Integrity monitor", command: "npm run audit:integrity-monitor", ciStep: "Integrity monitor audit" },
   { step: "Unit tests", command: "npm run test", ciStep: "Unit tests" },
   { step: "Honesty audit", command: "npm run honesty-audit", ciStep: "Honesty audit" },
 ];
