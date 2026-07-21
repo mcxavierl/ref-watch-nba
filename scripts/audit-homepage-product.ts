@@ -22,7 +22,6 @@ const INTELLIGENCE_FIRST_SECTIONS = [
   "GoldMineProofBar",
   "OverviewFeaturedSignal",
   "OverviewUpcomingSlateSection",
-  "OverviewIntelligenceFeed",
   "OverviewResearchFooter",
 ] as const;
 
@@ -71,7 +70,7 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
           return {
             ok: false,
             message:
-              "OverviewDashboard section order must be proof bar, featured signal, slate, feed, research footer",
+              "OverviewDashboard section order must be proof bar, featured signal, slate, research footer",
           };
         }
       }
