@@ -80,6 +80,16 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
       "scripts/audit-integrity-monitor.test.ts",
     ],
   },
+  {
+    label: "knowledge graph engine",
+    sources: [
+      "src/lib/graph/schema.ts",
+      "src/lib/graph/index.ts",
+      "src/lib/graph/queryEngine.ts",
+      "src/lib/graph/cache.ts",
+    ],
+    tests: ["src/lib/graph/graph.test.ts"],
+  },
 ];
 
 function gitLines(args: string): string[] {
