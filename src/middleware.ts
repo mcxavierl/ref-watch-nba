@@ -43,7 +43,10 @@ function isGatedCollegePath(pathname: string): boolean {
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  if (pathname.startsWith("/api/v1/")) {
+  if (
+    pathname.startsWith("/api/v1/") &&
+    !pathname.startsWith("/api/v1/analytics/citation")
+  ) {
     const hasApiKey =
       Boolean(request.headers.get("x-api-key")?.trim()) ||
       request.headers.get("authorization")?.toLowerCase().startsWith("bearer ");

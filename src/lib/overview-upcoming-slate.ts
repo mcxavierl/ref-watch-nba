@@ -15,7 +15,6 @@ import {
 import type { AssignmentsFile, AssignmentGame, OddsFile, RefOfficial } from "@/lib/types";
 import { isSlatePreviewLeague } from "@/lib/game-slate-preview-adapters";
 import { buildGameSlatePreview, selectGameSlatePreviewCardInsights } from "@/lib/game-slate-preview";
-import { collectUpcomingCardRefInsights } from "@/lib/upcoming-card-ref-insights";
 import { resolveWnbaTeamAbbr } from "@/lib/wnba/teams";
 import {
   isEspnGameLive,
@@ -287,10 +286,9 @@ function pushEntry(
     seasonStageNote,
     preview,
     previewCardInsights: preview
-      ? selectGameSlatePreviewCardInsights(preview, 6)
+      ? selectGameSlatePreviewCardInsights(preview, 3)
       : undefined,
   };
-  entry.upcomingCardRefInsights = collectUpcomingCardRefInsights(entry);
   games.push(entry);
 }
 

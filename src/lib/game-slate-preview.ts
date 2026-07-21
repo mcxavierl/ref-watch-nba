@@ -27,6 +27,8 @@ import type {
 import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
 import { buildGameSlateBroadcastExport } from "@/lib/media/media-card-content";
 import type { MediaBroadcastExport } from "@/lib/media/media-card-types";
+import { buildIntelligenceCardContent } from "@/lib/intelligence/build-intelligence-card";
+import type { IntelligenceCardContent } from "@/lib/intelligence/intelligence-card-types";
 
 export type GameSlatePreviewRefRow = {
   refSlug: string;
@@ -111,6 +113,7 @@ export type GameSlatePreviewPayload = {
   teamImpacts: GameSlatePreviewTeamImpact[];
   storylines: GameSlatePreviewStoryline[];
   broadcastExport?: MediaBroadcastExport;
+  intelligenceCard?: IntelligenceCardContent;
 };
 
 const MIN_REF_TEAM_GAMES = 5;
@@ -582,6 +585,9 @@ export function buildGameSlatePreview(
 
   const evidence = buildProjectionEvidence(preview);
   preview.broadcastExport = buildGameSlateBroadcastExport(preview, evidence);
+  if (!preview.insufficientSample && preview.crew.length > 0) {
+    preview.intelligenceCard = buildIntelligenceCardContent(preview);
+  }
 
   return preview;
 }

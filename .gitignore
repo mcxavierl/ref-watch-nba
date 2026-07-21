@@ -62,6 +62,7 @@ next-env.d.ts
 /data/api-keys.db
 /data/api-keys.json
 /data/webhook-queue.json
+/data/citation-events.json
 /data/anomaly-events.json
 
 # nflverse raw PBP CSV cache and penalty index (rebuild via npm run rebuild-nfl-gsni)
