@@ -5,14 +5,12 @@ import {
   buildRefTeamOutlierNotes,
   selectGameSlatePreviewCardInsights,
 } from "@/lib/game-slate-preview";
-import { getAssignments as getWnbaAssignments } from "@/lib/wnba/data";
+import { ASSIGNED_WNBA_GAME_FIXTURE } from "@/lib/wnba/test-fixtures";
 import { getOdds as getWnbaOdds } from "@/lib/wnba/odds";
 
 describe("game slate preview", () => {
   it("builds a preview payload for an assigned slate game", () => {
-    const assignments = getWnbaAssignments();
-    const game = assignments.games.find((entry) => entry.crew.length >= 2);
-    assert.ok(game, "expected at least one WNBA game with a crew");
+    const game = ASSIGNED_WNBA_GAME_FIXTURE;
 
     const preview = buildGameSlatePreview("wnba", game, getWnbaOdds());
     assert.ok(preview);
@@ -42,9 +40,7 @@ describe("game slate preview", () => {
   });
 
   it("includes ref-team rows when crew has team history", () => {
-    const assignments = getWnbaAssignments();
-    const game = assignments.games.find((entry) => entry.crew.length >= 2);
-    assert.ok(game);
+    const game = ASSIGNED_WNBA_GAME_FIXTURE;
 
     const preview = buildGameSlatePreview("wnba", game, getWnbaOdds());
     assert.ok(preview);
@@ -53,21 +49,7 @@ describe("game slate preview", () => {
   });
 
   it("groups team impacts by matchup side", () => {
-    const assignments = getWnbaAssignments();
-    const game = assignments.games.find((entry) => entry.crew.length >= 2);
-    assert.ok(game);
-
-    const preview = buildGameSlatePreview("wnba", game, getWnbaOdds());
-    assert.ok(preview);
-    if (preview.teamImpacts.length > 0) {
-      const impact = preview.teamImpacts[0];
-      assert.ok(impact.teamAbbr);
-      assert.ok(impact.teamLabel);
-      assert.ok(Array.isArray(impact.insights));
-    }
-  });
-
-  it("groups team impacts by matchup side", () => {
+    const game = ASSIGNED_WNBA_GAME_FIXTURE;
     const preview = buildGameSlatePreview(
       "wnba",
       {

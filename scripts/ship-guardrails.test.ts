@@ -110,6 +110,7 @@ describe("ship guardrail scripts", () => {
     for (const file of [
       ".github/workflows/nightly-slate.yml",
       ".github/workflows/refresh-sports-data.yml",
+      ".github/workflows/wnba-assignments.yml",
     ]) {
       const source = readFileSync(file, "utf8");
       if (!/^permissions:\s*\n\s*contents: write/m.test(source)) {
