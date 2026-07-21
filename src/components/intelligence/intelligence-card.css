@@ -94,6 +94,10 @@
   font-size: 0.875rem;
   line-height: 1.45;
   color: rgb(241 245 249);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .intelligence-card-sample {

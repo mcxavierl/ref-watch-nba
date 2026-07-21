@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { GameSlateCard } from "@/components/GameSlateCard";
 import { GameSlatePreviewDrawer } from "@/components/GameSlatePreviewDrawer";
-import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
+import { safeBuildProjectionEvidence } from "@/lib/safe-build-projection-evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import { normalizeGameSlatePreview } from "@/lib/normalize-game-slate-preview";
 import type { ComponentProps } from "react";
@@ -27,9 +27,7 @@ export function SlateGamePreviewHost({ games }: { games: SlateGamePreviewBundle[
         <div key={gameId} id={`slate-game-${gameId}`}>
           <GameSlateCard
             {...card}
-            projectionEvidence={
-              safePreview ? buildProjectionEvidence(safePreview) : null
-            }
+            projectionEvidence={safeBuildProjectionEvidence(safePreview)}
             onOpenPreview={safePreview ? () => setSelected(safePreview) : undefined}
           />
         </div>

@@ -28,7 +28,7 @@ function ChooserCard({ card }: { card: LeagueOverviewCard }) {
   return (
     <PrefetchLink
       href={pending ? (card.auditHref ?? card.href) : card.href}
-      className={`overview-league-chooser-card rw-focus-ring flex h-full min-h-[8.5rem] flex-col justify-between overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40 p-4 transition-colors hover:border-slate-700${
+      className={`overview-league-chooser-card rw-focus-ring flex h-full flex-col justify-between overflow-hidden${
         collegeTier ? " overview-league-chooser-card--college-tier" : ""
       }${pending ? " overview-league-chooser-card--pending" : ""}`}
       data-league={card.leagueId}
@@ -114,7 +114,7 @@ export function LeagueChooser({ cards, placement = "default" }: LeagueChooserPro
         </h2>
       </div>
 
-      <div className="overview-league-chooser-grid grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="overview-league-chooser-grid">
         {sortedCards.map((card) => (
           <ChooserCard key={card.leagueId} card={card} />
         ))}

@@ -13,6 +13,7 @@
  *   --no-screenshots
  */
 import { spawn, type ChildProcess } from "node:child_process";
+import { execSync } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { chromium, type Browser } from "playwright";
@@ -103,24 +104,52 @@ async function assertStylesheetsHealthy(baseUrl: string): Promise<void> {
   }
 }
 
+async function killListeningPort(port: string): Promise<void> {
+  try {
+    execSync(`fuser -k ${port}/tcp`, { stdio: "ignore" });
+  } catch {
+    try {
+      execSync(`lsof -ti:${port} | xargs -r kill -9`, {
+        stdio: "ignore",
+        shell: "/bin/bash",
+      });
+    } catch {
+      /* port already free */
+    }
+  }
+  await new Promise((resolve) => setTimeout(resolve, 400));
+}
+
 async function startServerIfNeeded(baseUrl: string): Promise<{
   child: ChildProcess | null;
 }> {
+  const url = new URL(baseUrl);
+  const port = url.port || (url.protocol === "https:" ? "443" : "80");
+
   try {
     const response = await fetch(baseUrl, { redirect: "follow" });
     if (response.ok || response.status < 500) {
-      await assertStylesheetsHealthy(baseUrl);
-      return { child: null };
+      try {
+        await assertStylesheetsHealthy(baseUrl);
+        return { child: null };
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.includes("broken CSS bundles")
+        ) {
+          await killListeningPort(port);
+        } else {
+          throw error;
+        }
+      }
     }
   } catch (error) {
     if (error instanceof Error && error.message.includes("broken CSS bundles")) {
-      throw error;
+      await killListeningPort(port);
     }
     // start local server below
   }
 
-  const url = new URL(baseUrl);
-  const port = url.port || (url.protocol === "https:" ? "443" : "80");
   const child = spawn("npm", ["run", "start", "--", "-p", port], {
     cwd: process.cwd(),
     stdio: "ignore",

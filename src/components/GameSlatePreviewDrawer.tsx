@@ -20,7 +20,7 @@ import { RefAvatar } from "@/components/RefAvatar";
 import { TeamImpactCard } from "@/components/TeamImpactCard";
 import { TeamLogo } from "@/components/TeamLogo";
 import { STATE_COLOR_CLASS } from "@/constants/colors";
-import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
+import { safeBuildProjectionEvidence } from "@/lib/safe-build-projection-evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
   buildGameSlateMatchupInsights,
@@ -131,12 +131,7 @@ export function GameSlatePreviewDrawer({
   );
   const matchupInsights = buildGameSlateMatchupInsights(safePreview.refTeamRows);
   const refVsTeamsLabel = refVsTeamsSectionLabel(safePreview.crew.length);
-  let projectionEvidence = null;
-  try {
-    projectionEvidence = buildProjectionEvidence(safePreview);
-  } catch {
-    projectionEvidence = null;
-  }
+  const projectionEvidence = safeBuildProjectionEvidence(safePreview);
   const awaitingCrew = safePreview.awaitingCrew ?? safePreview.crew.length === 0;
   const briefing = safePreview.matchupBriefing;
   const drawerKicker = awaitingCrew
