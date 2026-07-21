@@ -42,10 +42,6 @@ export function slateHeroStatHref(
 }
 
 export function slateHeroActions(leagueId: SlateHeroLeagueId): SlateHeroAction[] {
-  if (leagueId === "wnba") {
-    return [];
-  }
-
   const matrixLabel = "Ref matrix";
 
   return [

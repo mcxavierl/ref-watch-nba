@@ -39,7 +39,7 @@ test("CBB opengraph uses dashboard hero renderer with league focus", () => {
   assert.match(ogPage, /renderDashboardOgImage/);
   assert.match(ogPage, /dashboardOgContent/);
   const heroCopy = readFileSync("src/lib/league-hero-copy.ts", "utf8");
-  assert.match(heroCopy, /College basketball officiating analytics/);
+  assert.match(heroCopy, /College basketball refereeing stats, analyzed/);
 });
 
 test("CBB hub page uses standard league slate layout", () => {

@@ -20,7 +20,7 @@ export const LEAGUE_HERO_COPY: Record<
   LeagueHeroCopy
 > = {
   nba: {
-    kicker: "NBA officiating desk",
+    kicker: "NBA whistle desk",
     liveTitle: "Crew assignments and leverage-weighted whistle context.",
     offseasonTitle: "NBA refereeing stats, analyzed.",
     liveLead:
@@ -34,7 +34,7 @@ export const LEAGUE_HERO_COPY: Record<
     },
   },
   nhl: {
-    kicker: "NHL penalty desk",
+    kicker: "NHL whistle desk",
     liveTitle: "Penalty environment and crew leverage profiles.",
     offseasonTitle: "NHL refereeing stats, analyzed.",
     liveLead:
@@ -48,10 +48,10 @@ export const LEAGUE_HERO_COPY: Record<
     },
   },
   nfl: {
-    kicker: "NFL flag desk",
+    kicker: "NFL whistle desk",
     liveTitle: "Crew context and high-leverage whistle variance.",
     pendingTitle: "Next NFL week is on the board.",
-    offseasonTitle: "NFL officiating stats, analyzed.",
+    offseasonTitle: "NFL refereeing stats, analyzed.",
     liveLead:
       "Crew assignments, penalty-yard tendencies, and official×team splits before kickoff.",
     pendingLead:
@@ -99,9 +99,9 @@ export const LEAGUE_HERO_COPY: Record<
     },
   },
   cbb: {
-    kicker: "Men's college hoops",
+    kicker: "CBB whistle desk",
     liveTitle: "Crew assignments and whistle context across D-I.",
-    offseasonTitle: "College basketball officiating analytics.",
+    offseasonTitle: "College basketball refereeing stats, analyzed.",
     liveLead:
       "Referee assignments and whistle tendencies across D-I, with conference context on every team page.",
     offseasonLead:
@@ -113,9 +113,9 @@ export const LEAGUE_HERO_COPY: Record<
     },
   },
   cfb: {
-    kicker: "College football",
+    kicker: "CFB whistle desk",
     liveTitle: "Crew context and penalty variance this week.",
-    offseasonTitle: "College football officials, kickoff pending.",
+    offseasonTitle: "College football refereeing stats, analyzed.",
     liveLead:
       "Crew assignments, flag rates, and official×team splits before kickoff, with conference rivalries included.",
     offseasonLead:
@@ -127,7 +127,7 @@ export const LEAGUE_HERO_COPY: Record<
     },
   },
   wnba: {
-    kicker: "WNBA officiating desk",
+    kicker: "WNBA whistle desk",
     liveTitle: "Tonight's whistle slate and betting edge context.",
     pendingTitle: "Upcoming WNBA games are on the board.",
     offseasonTitle: "WNBA refereeing stats, analyzed.",
