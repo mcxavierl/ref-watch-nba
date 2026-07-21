@@ -84,7 +84,7 @@ function auditFileContains(relPath: string, pattern: RegExp, label: string): Aud
 }
 
 function parseWorkflowContracts(): WorkflowContract[] {
-  const files = ["ci.yml", "deploy.yml", "nightly-slate.yml", "refresh-sports-data.yml", "volume-regression.yml"];
+  const files = ["ci.yml", "deploy.yml", "morning-slate-poller.yml", "nightly-slate.yml", "refresh-sports-data.yml", "volume-regression.yml"];
   return files.map((file) => {
     const source = read(join(".github/workflows", file));
     const nameMatch = source.match(/^name: (.+)$/m);

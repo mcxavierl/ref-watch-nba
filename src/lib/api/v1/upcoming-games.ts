@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
+import { getCachedProjection } from "@/lib/cron/slate-projection-cache";
 import { buildGameSlatePreview } from "@/lib/game-slate-preview";
 import { isSlatePreviewLeague } from "@/lib/game-slate-preview-adapters";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
@@ -54,6 +55,7 @@ function loadLeagueOdds(leagueId: LeagueId): OddsFile {
 
 function toApiEntry(entry: OverviewSlateEntry): UpcomingGameApiEntry {
   const preview = entry.preview;
+  const cached = preview ? getCachedProjection(entry.leagueId, entry.gameId) : null;
   return {
     gameId: entry.gameId,
     leagueId: entry.leagueId,
@@ -71,7 +73,9 @@ function toApiEntry(entry: OverviewSlateEntry): UpcomingGameApiEntry {
         slug: official.slug,
         role: official.role,
       })) ?? [],
-    projectionEvidence: preview ? buildProjectionEvidence(preview) : null,
+    projectionEvidence:
+      cached?.projectionEvidence ??
+      (preview ? buildProjectionEvidence(preview) : null),
   };
 }
 

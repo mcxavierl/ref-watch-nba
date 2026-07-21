@@ -108,6 +108,7 @@ describe("ship guardrail scripts", () => {
 
   it("git push workflows declare contents: write and checkout token", () => {
     for (const file of [
+      ".github/workflows/morning-slate-poller.yml",
       ".github/workflows/nightly-slate.yml",
       ".github/workflows/refresh-sports-data.yml",
     ]) {

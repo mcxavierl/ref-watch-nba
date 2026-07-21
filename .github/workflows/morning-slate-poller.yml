@@ -1,0 +1,82 @@
+name: Morning slate poller
+
+# Polls every 10 minutes during the 8:00 AM - 11:50 AM ET assignment release window.
+# Outside that window, runSlatePoll exits early with status "skipped".
+
+on:
+  schedule:
+    # 8:00-11:50 AM EDT (12:00-15:50 UTC)
+    - cron: "0,10,20,30,40,50 12,13,14,15 * * *"
+    # 8:00-11:50 AM EST (13:00-16:50 UTC)
+    - cron: "0,10,20,30,40,50 13,14,15,16 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Run outside the assignment window
+        type: boolean
+        default: false
+      integrity:
+        description: Run integrity monitor after ingest
+        type: boolean
+        default: false
+      alerts:
+        description: Write NBA slate alerts artifact
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run morning slate poller
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
+          if [ "${{ github.event.inputs.integrity }}" = "true" ]; then ARGS="$ARGS --integrity"; fi
+          if [ "${{ github.event.inputs.alerts }}" = "true" ]; then ARGS="$ARGS --alerts"; fi
+          npx tsx scripts/run-slate-poller.ts $ARGS
+
+      - name: Commit refreshed slate data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/assignments.json \
+            data/wnba/assignments.json \
+            data/nhl/assignments.json \
+            data/nfl/assignments.json \
+            data/epl/assignments.json \
+            data/laliga/assignments.json \
+            data/odds.json \
+            data/nhl/odds.json \
+            data/nfl/odds.json \
+            data/slate-projection-cache.json \
+            data/overview-snapshot.json \
+            data/overview-insights.json \
+            2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No slate changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: morning slate poller refresh"
+          git push
