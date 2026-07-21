@@ -36,6 +36,10 @@ export type CompareMetricRow = {
   valueB: string;
   detailA?: string;
   detailB?: string;
+  detailDeltaA?: number;
+  detailDeltaB?: number;
+  sampleGamesA?: number;
+  sampleGamesB?: number;
   /** Normalized league-relative position for Official A in [-1, 1]. */
   signalA?: number | null;
   /** Normalized league-relative position for Official B in [-1, 1]. */
@@ -104,25 +108,27 @@ function scoringValue(
   profile: RefProfile,
   meta: RefStatsFile["meta"],
   config: (typeof LEAGUES)[LeagueId],
-): { value: string; detail: string } {
+): { value: string; detail: string; detailDelta?: number } {
   const leagueAvg = meta.leagueAvgTotal;
   if (leagueAvg && prefersPctScoringDelta(leagueAvg)) {
     const display = directoryScoringDisplay(profile, leagueAvg);
     return {
       value: display.formatted,
       detail: `vs ${leagueAvg.toFixed(1)} ${config.metrics.scoreUnitPlural}/game`,
+      detailDelta: profile.totalPointsDelta,
     };
   }
   return {
     value: formatSigned(profile.totalPointsDelta),
     detail: `vs league avg ${config.metrics.scoreUnitPlural}`,
+    detailDelta: profile.totalPointsDelta,
   };
 }
 
 function whistleValue(
   profile: RefProfile,
   config: (typeof LEAGUES)[LeagueId],
-): { value: string; detail: string } {
+): { value: string; detail: string; detailDelta: number } {
   const delta =
     config.whistleFromMinors
       ? profile.nhlAnalytics?.minorsDelta ?? profile.foulsDelta
@@ -132,6 +138,7 @@ function whistleValue(
   return {
     value: formatSigned(delta),
     detail: config.metrics.whistleColumn.toLowerCase(),
+    detailDelta: delta,
   };
 }
 
@@ -140,6 +147,7 @@ type BundleMetric = {
   label: string;
   value: string;
   detail?: string;
+  detailDelta?: number;
   signal?: number | null;
 };
 
@@ -188,6 +196,7 @@ function bundleMetrics(bundle: CompareRefBundle): BundleMetric[] {
       label: config.metrics.scoringColumn,
       value: scoring.value,
       detail: scoring.detail,
+      detailDelta: scoring.detailDelta,
       signal: normalizeSignal(profile.totalPointsDelta, 5),
     },
     {
@@ -202,14 +211,8 @@ function bundleMetrics(bundle: CompareRefBundle): BundleMetric[] {
       label: config.metrics.whistleColumn,
       value: whistle.value,
       detail: whistle.detail,
-      signal: normalizeSignal(
-        config.whistleFromMinors
-          ? profile.nhlAnalytics?.minorsDelta ?? profile.foulsDelta
-          : config.id === "nfl"
-            ? profile.nflAnalytics?.flagsDelta ?? profile.foulsDelta
-            : profile.foulsDelta,
-        3,
-      ),
+      detailDelta: whistle.detailDelta,
+      signal: normalizeSignal(whistle.detailDelta, 3),
     },
   ];
 
@@ -257,6 +260,8 @@ function metricRowFromBundlePair(
   rightRow: BundleMetric | undefined,
   leftGsni: number | null,
   rightGsni: number | null,
+  leftGames: number,
+  rightGames: number,
 ): CompareMetricRow {
   const isGsni = leftRow.id === "gsni";
   return {
@@ -266,6 +271,10 @@ function metricRowFromBundlePair(
     valueB: rightRow?.value ?? EMPTY_DISPLAY,
     detailA: leftRow.detail,
     detailB: rightRow?.detail,
+    detailDeltaA: leftRow.detailDelta,
+    detailDeltaB: rightRow?.detailDelta,
+    sampleGamesA: leftGames,
+    sampleGamesB: rightGames,
     signalA: leftRow.signal ?? null,
     signalB: rightRow?.signal ?? null,
     gsniA: isGsni ? leftGsni : null,
@@ -296,7 +305,14 @@ export function buildCompareMetricRows(
       const rightRow = rightById.get(leftRow.id);
       if (!rightRow) continue;
       shared.push(
-        metricRowFromBundlePair(leftRow, rightRow, leftGsni, rightGsni),
+        metricRowFromBundlePair(
+          leftRow,
+          rightRow,
+          leftGsni,
+          rightGsni,
+          left.profile.games,
+          right.profile.games,
+        ),
       );
     }
 
@@ -316,12 +332,28 @@ export function buildCompareMetricRows(
   for (const leftRow of leftMetrics) {
     seen.add(leftRow.id);
     const rightRow = rightById.get(leftRow.id);
-    merged.push(metricRowFromBundlePair(leftRow, rightRow, leftGsni, rightGsni));
+    merged.push(
+      metricRowFromBundlePair(
+        leftRow,
+        rightRow,
+        leftGsni,
+        rightGsni,
+        left.profile.games,
+        right.profile.games,
+      ),
+    );
   }
 
   for (const rightRow of rightMetrics) {
     if (seen.has(rightRow.id)) continue;
-    const row = metricRowFromBundlePair(rightRow, rightRow, leftGsni, rightGsni);
+    const row = metricRowFromBundlePair(
+      rightRow,
+      rightRow,
+      leftGsni,
+      rightGsni,
+      right.profile.games,
+      right.profile.games,
+    );
     merged.push({
       ...row,
       valueA: EMPTY_DISPLAY,

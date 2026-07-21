@@ -4,11 +4,13 @@ import { TermHelp } from "@/components/TermHelp";
 import type { RefBettingStats, RefProfile } from "@/lib/types";
 import { formatPct } from "@/lib/stats-utils";
 import { formatSigned } from "@/lib/stats-utils";
+import { semanticImpactTextClass } from "@/lib/semantic-impact";
 
 type QuickStat = {
   label: ReactNode;
   value: string;
   detail?: string;
+  detailDelta?: number;
 };
 
 export function RefProfileQuickStatsBar({
@@ -48,7 +50,17 @@ export function RefProfileQuickStatsBar({
           <span className="ref-profile-quick-stat-label">{item.label}</span>
           <span className="ref-profile-quick-stat-value text-right tabular-nums">{item.value}</span>
           {item.detail ? (
-            <span className="ref-profile-quick-stat-detail text-right tabular-nums">{item.detail}</span>
+            <span
+              className={`ref-profile-quick-stat-detail text-right tabular-nums ${
+                item.detailDelta !== undefined
+                  ? semanticImpactTextClass(item.detailDelta, {
+                      sampleGames: profile.games,
+                    })
+                  : "text-slate-400"
+              }`.trim()}
+            >
+              {item.detail}
+            </span>
           ) : null}
         </div>
       ))}
@@ -77,6 +89,7 @@ export function RefProfileSecondaryStats({
       label: "Avg total score",
       value: String(profile.avgTotalPoints),
       detail: `${formatSigned(profile.totalPointsDelta)} vs league`,
+      detailDelta: profile.totalPointsDelta,
     },
     ...(hideWhistleMetrics
       ? []
@@ -85,6 +98,7 @@ export function RefProfileSecondaryStats({
             label: foulLabel,
             value: String(profile.avgFouls),
             detail: `${formatSigned(profile.foulsDelta)} vs league`,
+            detailDelta: profile.foulsDelta,
           },
         ]),
     {
@@ -105,7 +119,17 @@ export function RefProfileSecondaryStats({
           <span className="ref-profile-quick-stat-label">{item.label}</span>
           <span className="ref-profile-quick-stat-value text-right tabular-nums">{item.value}</span>
           {item.detail ? (
-            <span className="ref-profile-quick-stat-detail text-right tabular-nums">{item.detail}</span>
+            <span
+              className={`ref-profile-quick-stat-detail text-right tabular-nums ${
+                item.detailDelta !== undefined
+                  ? semanticImpactTextClass(item.detailDelta, {
+                      sampleGames: profile.games,
+                    })
+                  : "text-slate-400"
+              }`.trim()}
+            >
+              {item.detail}
+            </span>
           ) : null}
         </div>
       ))}

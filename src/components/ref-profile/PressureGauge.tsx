@@ -1,3 +1,4 @@
+import { MetricTermLabel } from "@/components/shared/MetricTermLabel";
 import {
   PRESSURE_GAUGE_LABELS,
   type PressureGaugeState,
@@ -25,7 +26,12 @@ export function PressureGauge({ state, leverageIndex, insight }: PressureGaugePr
     >
       <div className="pressure-gauge-head">
         <div>
-          <p className="pressure-gauge-kicker">Leverage sensitivity</p>
+          <p className="pressure-gauge-kicker">
+            <MetricTermLabel
+              label="Leverage sensitivity"
+              hint="How much an official's whistle rate shifts in close, late-game situations compared with the rest of the game."
+            />
+          </p>
           <h3 id="ref-pressure-gauge-title" className="pressure-gauge-title">
             Pressure Gauge
           </h3>

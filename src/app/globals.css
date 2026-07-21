@@ -4003,11 +4003,12 @@ p {
 
   .term-help-trigger {
     border: 0;
+    border-bottom: 1px dotted color-mix(in srgb, #64748b 85%, transparent);
     background: transparent;
     padding: 0;
     font: inherit;
     color: inherit;
-    cursor: pointer;
+    cursor: help;
     outline-offset: 2px;
   }
 
@@ -4016,11 +4017,9 @@ p {
   }
 
   .term-help-tooltip {
-    @apply pointer-events-none absolute left-0 top-full hidden w-[min(18rem,calc(100vw-2rem))] rounded-md border border-border bg-surface p-3 shadow-md;
-    font-size: var(--text-sm);
+    @apply pointer-events-none absolute left-0 top-full hidden w-[min(18rem,calc(100vw-2rem))] rounded-lg border border-slate-700 bg-slate-900 p-2 text-xs text-slate-200 shadow-xl;
     font-weight: 400;
     line-height: var(--leading-relaxed);
-    color: var(--muted);
     z-index: var(--z-tooltip);
   }
 
@@ -6768,19 +6767,21 @@ p {
     max-width: min(16rem, calc(100vw - 2rem));
     flex-direction: column;
     gap: 0.15rem;
-    border-radius: 0.375rem;
-    border: 1px solid var(--clinical-card-border, #e5e7eb);
-    background: color-mix(in srgb, var(--surface) 96%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    padding: 0.45rem 0.55rem;
-    font-size: 0.6875rem;
-    font-weight: 500;
-    line-height: 1.35;
-    color: var(--text-primary-muted);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    border-radius: 0.5rem;
+    border: 1px solid rgb(51 65 85);
+    background: rgb(15 23 42);
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: rgb(226 232 240);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     white-space: normal;
     text-align: left;
+  }
+
+  .metric-info-hint-panel {
+    z-index: var(--z-tooltip);
   }
 
   .touch-popover--open .touch-popover-panel {

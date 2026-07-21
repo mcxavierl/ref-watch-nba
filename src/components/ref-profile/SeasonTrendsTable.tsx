@@ -3,6 +3,7 @@ import {
   archetypeChipClass,
   INSUFFICIENT_SEASON_SAMPLE_GAMES,
 } from "@/lib/ref-profile-season-trends";
+import { GlossaryMetricLabel } from "@/components/shared/MetricTermLabel";
 
 export function SeasonTrendsTable({ rows }: { rows: SeasonTrendRow[] }) {
   if (rows.length === 0) {
@@ -22,16 +23,18 @@ export function SeasonTrendsTable({ rows }: { rows: SeasonTrendRow[] }) {
               Season
             </th>
             <th scope="col" className="whitespace-nowrap">
-              Archetype
+              <GlossaryMetricLabel id="archetype">Archetype</GlossaryMetricLabel>
             </th>
             <th scope="col" className="data-table-num whitespace-nowrap">
               Foul_Ratio
             </th>
             <th scope="col" className="data-table-num whitespace-nowrap">
-              Leverage_Sensitivity
+              <GlossaryMetricLabel id="leverage-sensitivity">
+                Leverage_Sensitivity
+              </GlossaryMetricLabel>
             </th>
             <th scope="col" className="data-table-num whitespace-nowrap">
-              Consistency
+              <GlossaryMetricLabel id="consistency-score">Consistency</GlossaryMetricLabel>
             </th>
           </tr>
         </thead>

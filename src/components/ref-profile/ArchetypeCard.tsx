@@ -1,18 +1,20 @@
 "use client";
 
-import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
-import { consistencyStateClass, STATE_COLOR_CLASS } from "@/constants/colors";
+import { GlossaryMetricLabel } from "@/components/shared/MetricTermLabel";
+import {
+  RefProfileBadgePill,
+  RefProfileBadgeRow,
+} from "@/components/ref-profile/RefProfileBadgeRow";
+import { consistencyStateClass } from "@/constants/colors";
 import type { OfficialStats } from "@/lib/types";
 import "./archetype-card.css";
-
-const ARCHETYPE_TOOLTIP =
-  "This archetype is derived from the official's Admin-to-Subjective ratio, representing their impact on total-game volatility.";
 
 type ArchetypeCardProps = {
   displayName: string;
   blurb: string;
   consistencyScore: number;
   officialStats: OfficialStats;
+  leagueLabel?: string;
 };
 
 export function ArchetypeCard({
@@ -20,28 +22,44 @@ export function ArchetypeCard({
   blurb,
   consistencyScore,
   officialStats,
+  leagueLabel,
 }: ArchetypeCardProps) {
+  const consistencyClass = consistencyStateClass(consistencyScore);
+
   return (
     <section
       className="archetype-terminal-card"
       aria-labelledby="ref-archetype-card-title"
     >
       <div className="archetype-terminal-head">
-        <div>
-          <p className="archetype-terminal-eyebrow">Ref-Intelligence terminal</p>
-          <div className="archetype-terminal-title-row">
-            <MetricInfoHint hint={ARCHETYPE_TOOLTIP}>
-              <h3 id="ref-archetype-card-title" className="archetype-terminal-title">
-                [{displayName}]
-              </h3>
-            </MetricInfoHint>
-            <span
-              className={`archetype-terminal-badge tabular-nums ${consistencyStateClass(consistencyScore)}`}
+        <p className="archetype-terminal-eyebrow">Ref-Intelligence terminal</p>
+        <RefProfileBadgeRow aria-label="Official profile tags">
+          <GlossaryMetricLabel id="archetype">
+            <RefProfileBadgePill tone="neutral">
+              <span id="ref-archetype-card-title">[{displayName}]</span>
+            </RefProfileBadgePill>
+          </GlossaryMetricLabel>
+          <GlossaryMetricLabel id="consistency-score">
+            <RefProfileBadgePill
+              tone={
+                consistencyClass.includes("volatile")
+                  ? "negative"
+                  : consistencyClass.includes("stable")
+                    ? "positive"
+                    : "neutral"
+              }
+              className="tabular-nums"
             >
               Consistency: {consistencyScore}/10
-            </span>
-          </div>
-        </div>
+            </RefProfileBadgePill>
+          </GlossaryMetricLabel>
+          {leagueLabel ? (
+            <RefProfileBadgePill tone="neutral">{leagueLabel}</RefProfileBadgePill>
+          ) : null}
+          {officialStats.pressure_sensitive ? (
+            <RefProfileBadgePill tone="caution">Pressure-sensitive</RefProfileBadgePill>
+          ) : null}
+        </RefProfileBadgeRow>
       </div>
 
       <p className="archetype-terminal-blurb">{blurb}</p>
@@ -53,13 +71,7 @@ export function ArchetypeCard({
         </div>
         <div className="archetype-terminal-stat">
           <dt>Close-game pressure</dt>
-          <dd
-            className={
-              officialStats.pressure_sensitive
-                ? STATE_COLOR_CLASS.caution
-                : STATE_COLOR_CLASS.stable
-            }
-          >
+          <dd className="tabular-nums">
             {officialStats.pressure_sensitive ? "Sensitive" : "Stable"}
           </dd>
         </div>

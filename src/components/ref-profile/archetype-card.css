@@ -21,6 +21,16 @@
   gap: var(--space-2);
 }
 
+.ref-profile-badge-row {
+  min-width: 0;
+}
+
+.ref-profile-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
+}
+
 .archetype-terminal-eyebrow {
   margin: 0;
   font-size: 0.68rem;

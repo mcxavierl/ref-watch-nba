@@ -49,7 +49,8 @@ export function RefStatGrid({
             label={scoreLabel}
             value={String(profile.avgTotalPoints)}
             detail={`${totalDelta} vs league avg`}
-            detailMuted
+            detailDelta={profile.totalPointsDelta}
+            sampleGames={profile.games}
             provenance={prov?.avgTotalPoints}
           />
           <RefDashboardStatCell
@@ -62,7 +63,8 @@ export function RefStatGrid({
             label={foulLabel}
             value={String(profile.avgFouls)}
             detail={`${foulsDelta} vs league avg`}
-            detailMuted
+            detailDelta={profile.foulsDelta}
+            sampleGames={profile.games}
             provenance={prov?.avgFouls}
           />
           <RefDashboardStatCell

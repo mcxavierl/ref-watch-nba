@@ -3,6 +3,7 @@ import {
   whistleIndexCaption,
   whistleIndexVisualTone,
 } from "@/lib/whistle-index";
+import { MetricTermLabel } from "@/components/shared/MetricTermLabel";
 import "@/components/whistle-index-gauge.css";
 
 type WhistleIndexGaugeProps = {
@@ -30,7 +31,14 @@ export function WhistleIndexGauge({
       aria-label={`Whistle Index ${formatWhistleIndex(clamped)} out of 100. ${caption}.`}
     >
       <p className="whistle-index-gauge__label">
-        Whistle Index<span aria-hidden>™</span>
+        <MetricTermLabel
+          label={
+            <>
+              Whistle Index<span aria-hidden>™</span>
+            </>
+          }
+          hint="0-100 scale for how often this crew whistles relative to league average. 50 is typical; higher means more fouls than average."
+        />
       </p>
 
       <p className="whistle-index-gauge__value">{formatWhistleIndex(clamped)}</p>

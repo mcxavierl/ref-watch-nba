@@ -3,6 +3,10 @@ import { ArchetypeCard } from "@/components/ref-profile/ArchetypeCard";
 import { HandicappersInsight } from "@/components/ref-profile/HandicappersInsight";
 import { PressureGauge } from "@/components/ref-profile/PressureGauge";
 import {
+  RefProfileBadgePill,
+  RefProfileBadgeRow,
+} from "@/components/ref-profile/RefProfileBadgeRow";
+import {
   generateScoutingReport,
   type GameScoutingMetadata,
 } from "@/lib/analytics/generate-scouting-report";
@@ -56,6 +60,7 @@ export function ScoutingReportEdge(props: ScoutingReportProps) {
         blurb={report.archetypeBlurb}
         consistencyScore={report.consistencyScore}
         officialStats={report.officialStats}
+        leagueLabel={props.leagueId.toUpperCase()}
       />
       <HandicappersInsight report={report} />
     </div>
@@ -82,21 +87,22 @@ export function ScoutingReportDepth(props: ScoutingReportProps) {
         className="scouting-report-card ref-profile-section"
         aria-labelledby="ref-scouting-report-title"
       >
-        <div className="scouting-report-head">
+          <div className="scouting-report-head">
           <div>
             <p className="scouting-report-kicker">Key Insights</p>
             <h2 id="ref-scouting-report-title" className="scouting-report-title">
               Ref-Scouting Report
             </h2>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="scouting-report-badge">{styleProfile.label}</span>
+          <RefProfileBadgeRow aria-label="Scouting profile tags">
+            <RefProfileBadgePill tone="neutral">{styleProfile.label}</RefProfileBadgePill>
+            <RefProfileBadgePill tone="neutral">
+              {props.leagueId.toUpperCase()}
+            </RefProfileBadgePill>
             {report.pressureSensitive ? (
-              <span className="scouting-report-badge scouting-report-badge--pressure">
-                Pressure-sensitive
-              </span>
+              <RefProfileBadgePill tone="caution">Pressure-sensitive</RefProfileBadgePill>
             ) : null}
-          </div>
+          </RefProfileBadgeRow>
         </div>
 
         <p className="scouting-report-summary">{report.summary}</p>

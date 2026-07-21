@@ -45,6 +45,7 @@ import { RefAvatar } from "@/components/RefAvatar";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
 import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import { signedDeltaTone } from "@/lib/metric-delight";
+import { semanticImpactTextClass } from "@/lib/semantic-impact";
 import { GameGrudgeStorylines } from "./GrudgeMatchSection";
 import { NhlSlateSignalBadges } from "./NhlSlateSignalBadges";
 import { OuLeanBadge } from "./OuLeanBadge";
@@ -133,6 +134,12 @@ export function GameSlateCard({
 
   const totalDelta = formatSigned(metrics.totalPointsDelta);
   const foulsDelta = formatSigned(metrics.foulsDelta);
+  const scoringToneClass = semanticImpactTextClass(metrics.totalPointsDelta, {
+    sampleGames: metrics.sampleGames,
+  });
+  const whistleToneClass = semanticImpactTextClass(metrics.foulsDelta, {
+    sampleGames: metrics.sampleGames,
+  });
 
   const tier = confidenceTier(
     premium.sampleQuality,
@@ -265,8 +272,11 @@ export function GameSlateCard({
             <div className="game-slate-composite" aria-label="Crew composite tendencies">
               <div className="game-slate-composite-stat">
                 <span className="game-slate-composite-label">{copy.scoringLabel}</span>
-                <span className="game-slate-composite-value">
-                  <StandoutMetricValue tone="neutral" size="lg">
+                <span className={`game-slate-composite-value ${scoringToneClass}`}>
+                  <StandoutMetricValue
+                    tone={signedDeltaTone(metrics.totalPointsDelta)}
+                    size="lg"
+                  >
                     {totalDelta}
                   </StandoutMetricValue>
                 </span>
@@ -276,8 +286,11 @@ export function GameSlateCard({
               </div>
               <div className="game-slate-composite-stat">
                 <span className="game-slate-composite-label">{copy.whistleLabel}</span>
-                <span className="game-slate-composite-value">
-                  <StandoutMetricValue tone="neutral" size="lg">
+                <span className={`game-slate-composite-value ${whistleToneClass}`}>
+                  <StandoutMetricValue
+                    tone={signedDeltaTone(metrics.foulsDelta)}
+                    size="lg"
+                  >
                     {foulsDelta}
                   </StandoutMetricValue>
                 </span>
