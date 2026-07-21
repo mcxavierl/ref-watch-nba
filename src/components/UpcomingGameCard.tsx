@@ -107,8 +107,8 @@ export function UpcomingGameCard({
         onOpenPreview ? previewAriaLabel(awayTeam.abbr, homeTeam.abbr, game) : undefined
       }
     >
-      <div className="flex min-h-0 flex-1 flex-col gap-3">
-        <header className="upcoming-game-card__header shrink-0">
+      <div className="upcoming-game-card__body shrink-0">
+        <header className="upcoming-game-card__header">
           <span className="upcoming-game-card__league-mark" aria-hidden>
             <LeagueNavMark league={game.leagueId} active={false} />
           </span>
@@ -152,14 +152,14 @@ export function UpcomingGameCard({
             ) : null}
           </div>
         </div>
-
-        <p
-          className={`upcoming-game-card__trend line-clamp-2 shrink-0 min-h-[2.75rem] rounded-lg border px-2.5 py-2 text-center text-[0.6875rem] font-medium leading-snug ${trendToneClass(signals.tone)}`}
-          title={signals.primaryTrend}
-        >
-          {signals.primaryTrend}
-        </p>
       </div>
+
+      <p
+        className={`upcoming-game-card__trend line-clamp-2 shrink-0 min-h-[2.75rem] rounded-lg border px-2.5 py-2 text-center text-[0.6875rem] font-medium leading-snug ${trendToneClass(signals.tone)}`}
+        title={signals.primaryTrend}
+      >
+        {signals.primaryTrend}
+      </p>
 
       <footer className="upcoming-game-card__footer mt-auto shrink-0">
         <div className="upcoming-game-card__crew-meta">
