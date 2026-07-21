@@ -170,11 +170,15 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(section, /overview-slate-notes/);
     assert.doesNotMatch(section, /overview-slate-updated/);
     assert.match(card, /buildUpcomingCardSignals/);
-    assert.match(card, /upcoming-game-card__body/);
+    assert.match(card, /upcoming-game-card__header/);
+    assert.match(card, /upcoming-game-card__matchup/);
     assert.match(card, /upcoming-game-card__trend/);
     assert.match(card, /line-clamp-2/);
     assert.match(card, /min-h-\[2\.75rem\]/);
-    assert.match(card, /h-\[280px\]/);
+    assert.match(card, /min-h-\[260px\]/);
+    assert.match(card, /gap-2\.5/);
+    assert.doesNotMatch(card, /h-\[280px\]/);
+    assert.doesNotMatch(card, /overflow-hidden/);
     assert.match(card, /upcoming-game-card__footer/);
     assert.match(card, /upcoming-game-card__cta--footer/);
     assert.match(card, /upcoming-game-card__crew-meta/);
@@ -184,7 +188,6 @@ describe("Clinical Modern priority #11 surfaces", () => {
       /upcoming-game-card__league-mark[\s\S]*upcoming-game-card__date-label--corner/,
     );
     assert.match(css, /upcoming-game-card__footer/);
-    assert.match(card, /h-\[280px\]/);
     assert.match(css, /upcoming-game-card__footer[\s\S]*margin-top: auto/);
     assert.match(css, /upcoming-game-card__crew-meta/);
     assert.doesNotMatch(card, /upcoming-game-card__insight-line/);
