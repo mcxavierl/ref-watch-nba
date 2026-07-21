@@ -200,3 +200,118 @@ export function summarizeAnomalyMonitor(results: AnomalyMonitorResult[]): {
     results,
   };
 }
+
+export type AnomalyMonitorWorkerResult = {
+  leagueId: LeagueId;
+  monitor: AnomalyMonitorResult | null;
+  events: AnomalyDetectedEvent[];
+  webhook: {
+    enqueued: number;
+    dispatch: {
+      processed: number;
+      delivered: number;
+      retried: number;
+      dead: number;
+    };
+  };
+};
+
+/**
+ * Background worker entry point: run after referee assignment ingestion for a league.
+ * Scans the slate, emits ANOMALY_DETECTED events, and enqueues B2B webhook deliveries.
+ */
+export async function onAssignmentsIngested(
+  leagueId: LeagueId,
+  assignments: AssignmentsFile,
+  options?: {
+    dispatchWebhooks?: boolean;
+    writeArtifact?: boolean;
+    artifactPath?: string;
+  },
+): Promise<AnomalyMonitorWorkerResult> {
+  const { runAnomalyMonitorForLeague, writeAnomalyMonitorArtifact } = await import(
+    "@/lib/services/run-anomaly-monitor"
+  );
+  const { dispatchAnomalyWebhookEvents } = await import("@/lib/services/webhookDispatch");
+
+  const monitor = runAnomalyMonitorForLeague(leagueId, assignments);
+  const events = monitor?.events ?? [];
+
+  if (options?.writeArtifact !== false && monitor) {
+    writeAnomalyMonitorArtifact([monitor], options?.artifactPath);
+  }
+
+  const webhook = await dispatchAnomalyWebhookEvents(events, {
+    processImmediately: options?.dispatchWebhooks ?? true,
+    maxPasses: 4,
+  });
+
+  return {
+    leagueId,
+    monitor,
+    events,
+    webhook: {
+      enqueued: webhook.enqueued,
+      dispatch: {
+        processed: webhook.dispatch.processed,
+        delivered: webhook.dispatch.delivered,
+        retried: webhook.dispatch.retried,
+        dead: webhook.dispatch.dead,
+      },
+    },
+  };
+}
+
+/**
+ * Scan all live leagues after a batch assignment ingest (nightly/morning slate).
+ */
+export async function onBatchAssignmentsIngested(
+  leagueIds: LeagueId[],
+  options?: {
+    dispatchWebhooks?: boolean;
+    writeArtifact?: boolean;
+    artifactPath?: string;
+  },
+): Promise<{
+  summary: ReturnType<typeof summarizeAnomalyMonitor>;
+  webhook: {
+    enqueued: number;
+    dispatch: {
+      processed: number;
+      delivered: number;
+      retried: number;
+      dead: number;
+    };
+  };
+}> {
+  const results: AnomalyMonitorResult[] = [];
+  let enqueued = 0;
+  const dispatch = { processed: 0, delivered: 0, retried: 0, dead: 0 };
+
+  for (const leagueId of leagueIds) {
+    const { loadAssignmentsForLeague } = await import("@/lib/services/run-anomaly-monitor");
+    const assignments = loadAssignmentsForLeague(leagueId);
+    if (!assignments) continue;
+
+    const worker = await onAssignmentsIngested(leagueId, assignments, {
+      ...options,
+      writeArtifact: false,
+    });
+    if (worker.monitor) results.push(worker.monitor);
+    enqueued += worker.webhook.enqueued;
+    dispatch.processed += worker.webhook.dispatch.processed;
+    dispatch.delivered += worker.webhook.dispatch.delivered;
+    dispatch.retried += worker.webhook.dispatch.retried;
+    dispatch.dead += worker.webhook.dispatch.dead;
+  }
+
+  if (options?.writeArtifact !== false) {
+    const { writeAnomalyMonitorArtifact } = await import("@/lib/services/run-anomaly-monitor");
+    writeAnomalyMonitorArtifact(results, options?.artifactPath);
+  }
+
+  return {
+    summary: summarizeAnomalyMonitor(results),
+    webhook: { enqueued, dispatch },
+  };
+}

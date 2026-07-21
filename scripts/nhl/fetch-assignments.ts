@@ -7,6 +7,7 @@ import type {
   RefOfficial,
   RefRole,
 } from "../../src/lib/types";
+import { postAssignmentIngest } from "../lib/post-assignment-ingest";
 
 const outPath = path.join(process.cwd(), "data", "nhl", "assignments.json");
 
@@ -196,6 +197,7 @@ async function main() {
   console.log(
     `Wrote ${games.length} NHL game(s) to ${outPath} (${date})`,
   );
+  await postAssignmentIngest("nhl", data);
 }
 
 main().catch((err) => {

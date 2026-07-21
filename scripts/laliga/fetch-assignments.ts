@@ -8,7 +8,7 @@ import {
   yyyymmdd,
 } from "./lib/espn";
 
-const outPath = path.join(process.cwd(), "data", "laliga", "assignments.json");
+import { postAssignmentIngest } from "../lib/post-assignment-ingest";
 const SCAN_DAYS = 45;
 const UPCOMING_LIMIT = 10;
 const SLATE_STATUSES = new Set([
@@ -110,6 +110,7 @@ async function main() {
     `La Liga assignments: ${scheduledGames.length} scheduled on ${file.date} (${file.source})`,
   );
   console.log(note);
+  await postAssignmentIngest("laliga", file);
 }
 
 main().catch((err) => {

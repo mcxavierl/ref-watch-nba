@@ -2,6 +2,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { fetchAssignments } from "./lib/parse-assignments";
+import { postAssignmentIngest } from "./lib/post-assignment-ingest";
 
 const outPath = path.join(process.cwd(), "data", "assignments.json");
 
@@ -13,6 +14,7 @@ async function main() {
   console.log(
     `Wrote ${data.games.length} NBA game(s) to ${outPath} (${data.date})`,
   );
+  await postAssignmentIngest("nba", data);
 }
 
 main().catch((err) => {

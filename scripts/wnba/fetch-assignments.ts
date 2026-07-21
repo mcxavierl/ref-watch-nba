@@ -6,6 +6,7 @@ import { fetchWnbaAssignments } from "../lib/parse-assignments";
 import { normalizeWnbaAbbr } from "../../src/lib/wnba/abbr";
 import { crewMatchupKey } from "./lib/crew-matchup";
 import { fetchWnbaScoreboard, sleep, yyyymmdd } from "./lib/espn";
+import { postAssignmentIngest } from "../lib/post-assignment-ingest";
 
 const outPath = path.join(process.cwd(), "data", "wnba", "assignments.json");
 const SCAN_DAYS = 21;
@@ -114,6 +115,7 @@ async function main() {
   fs.writeFileSync(outPath, `${JSON.stringify(data, null, 2)}\n`);
   console.log(`Wrote ${games.length} WNBA game(s) to ${outPath} (${data.date})`);
   console.log(note);
+  await postAssignmentIngest("wnba", data);
 }
 
 main().catch((err) => {

@@ -11,6 +11,7 @@ import {
   torontoDate,
   yyyymmdd,
 } from "./lib/espn";
+import { postAssignmentIngest } from "../lib/post-assignment-ingest";
 
 const outPath = path.join(process.cwd(), "data", "nfl", "assignments.json");
 const SCAN_DAYS = 45;
@@ -173,6 +174,7 @@ async function main() {
     `Wrote ${games.length} live + ${scheduledGames.length} scheduled NFL game(s) to ${outPath}`,
   );
   if (note) console.log(note);
+  await postAssignmentIngest("nfl", data);
 }
 
 main().catch((err) => {

@@ -66,6 +66,8 @@ type WebhookStore = {
   }): Promise<void>;
 };
 
+export type { WebhookStore };
+
 function mapSubscriber(row: Record<string, unknown>): WebhookSubscriber {
   const eventKindsRaw = row.event_kinds ?? row.eventKinds ?? '["ANOMALY_DETECTED"]';
   let eventKinds: string[] = ["ANOMALY_DETECTED"];
@@ -251,7 +253,7 @@ function createSqliteStore(db: WebhookDatabase): WebhookStore {
         `UPDATE webhook_queue
          SET status = 'failed', attempt_count = ?, last_error = ?, next_attempt_at = ?
          WHERE id = ?`,
-      ).run(job.attemptCount + 1, error, nextAttemptAt, job.id);
+      ).run(job.attemptCount, error, nextAttemptAt, job.id);
     },
     async markDead(jobId, error) {
       db.prepare(
@@ -345,7 +347,7 @@ function createJsonStore(): WebhookStore {
       store.queue[index] = {
         ...job,
         status: "failed",
-        attemptCount: job.attemptCount + 1,
+        attemptCount: job.attemptCount,
         lastError: error,
         nextAttemptAt,
       };
