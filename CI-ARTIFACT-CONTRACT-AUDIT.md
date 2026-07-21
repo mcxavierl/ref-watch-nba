@@ -1,6 +1,6 @@
 # CI and artifact contract audit
 
-Generated: 2026-07-21T01:56:02.713Z
+Generated: 2026-07-21T20:25:28.469Z
 
 ## Pre-merge checklist (mirrors GitHub validate)
 
@@ -34,8 +34,10 @@ Or step-by-step:
 20. **Insight-first** (`npm run audit:insight-first`) - CI step: Insight-first audit
 21. **Overlay portals** (`npm run audit:overlay-portals`) - CI step: Overlay portal audit
 22. **Integrity monitor** (`npm run audit:integrity-monitor`) - CI step: Integrity monitor audit
-23. **Unit tests** (`npm run test`) - CI step: Unit tests
-24. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
+23. **Homepage product surface** (`npm run audit:homepage-product`) - CI step: Homepage product audit
+24. **Ship hygiene** (`npm run audit:ship-hygiene`) - CI step: Ship hygiene audit
+25. **Unit tests** (`npm run test`) - CI step: Unit tests
+26. **Honesty audit** (`npm run honesty-audit`) - CI step: Honesty audit
 
 When overview snapshot sources change, also run:
 
@@ -52,6 +54,7 @@ npx tsx scripts/build-overview-snapshot.ts && git add data/overview-snapshot.jso
 | Nightly slate refresh | yes | write | yes | none | npm run nightly-slate && git add data/overview-snapshot.json data/overview-insights.json |
 | Refresh sports data | yes | write | yes | refresh-sports-data | npx tsx scripts/build-overview-snapshot.ts && git add data/overview-snapshot.json |
 | Volume regression | no | default | no | volume-regression | none |
+| WNBA assignments refresh | yes | write | yes | wnba-assignments-refresh | none |
 
 ## Summary
 

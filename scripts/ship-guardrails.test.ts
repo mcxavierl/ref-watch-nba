@@ -93,6 +93,23 @@ describe("ship guardrail scripts", () => {
     }
   });
 
+  it("WNBA assignments workflow refreshes slate and commits artifacts", () => {
+    const workflow = readFileSync(".github/workflows/wnba-assignments.yml", "utf8");
+    if (!workflow.includes("refresh-wnba-slate")) {
+      throw new Error("wnba-assignments.yml must run refresh-wnba-slate");
+    }
+    if (!workflow.includes("data/wnba/assignments.json")) {
+      throw new Error("wnba-assignments.yml must commit WNBA assignment artifacts");
+    }
+  });
+
+  it("nightly slate workflow commits WNBA assignment artifacts", () => {
+    const workflow = readFileSync(".github/workflows/nightly-slate.yml", "utf8");
+    if (!workflow.includes("data/wnba/assignments.json")) {
+      throw new Error("nightly-slate.yml must commit data/wnba/assignments.json");
+    }
+  });
+
   it("daily sports data refresh rebuilds overview snapshot", () => {
     const refresh = readFileSync(".github/workflows/refresh-sports-data.yml", "utf8");
     if (!refresh.includes("build-overview-snapshot")) {
@@ -110,6 +127,7 @@ describe("ship guardrail scripts", () => {
     for (const file of [
       ".github/workflows/nightly-slate.yml",
       ".github/workflows/refresh-sports-data.yml",
+      ".github/workflows/wnba-assignments.yml",
     ]) {
       const source = readFileSync(file, "utf8");
       if (!/^permissions:\s*\n\s*contents: write/m.test(source)) {
