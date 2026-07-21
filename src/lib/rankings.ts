@@ -1,5 +1,28 @@
+import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile } from "@/lib/types";
 import { bettingAtsRate, bettingOuRate } from "@/lib/stats-utils";
+
+export function whistleDeltaForRanking(
+  ref: RefProfile,
+  leagueId?: LeagueId,
+): number {
+  if (leagueId === "nhl") {
+    return ref.nhlAnalytics?.minorsDelta ?? ref.foulsDelta;
+  }
+  if (leagueId === "nfl") {
+    return ref.nflAnalytics?.flagsDelta ?? ref.foulsDelta;
+  }
+  if (leagueId === "cfb") {
+    return ref.cfbAnalytics?.flagsDelta ?? ref.foulsDelta;
+  }
+  if (leagueId === "epl") {
+    return ref.eplAnalytics?.foulsDelta ?? ref.foulsDelta;
+  }
+  if (leagueId === "laliga") {
+    return ref.foulsDelta;
+  }
+  return ref.foulsDelta;
+}
 
 export type RefRankingSort =
   | "scoring-desc"
@@ -40,6 +63,7 @@ export function qualifiedRefs(
 export function sortRefRankings(
   refs: RefProfile[],
   sort: RefRankingSort,
+  leagueId?: LeagueId,
 ): RefProfile[] {
   const copy = [...refs];
   const [field, direction] = sort.split("-") as [string, "asc" | "desc"];
@@ -54,8 +78,8 @@ export function sortRefRankings(
         bv = b.totalPointsDelta;
         break;
       case "whistle":
-        av = a.nhlAnalytics?.minorsDelta ?? a.foulsDelta;
-        bv = b.nhlAnalytics?.minorsDelta ?? b.foulsDelta;
+        av = whistleDeltaForRanking(a, leagueId);
+        bv = whistleDeltaForRanking(b, leagueId);
         break;
       case "overRate":
         av = a.overRate;

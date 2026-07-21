@@ -1,3 +1,4 @@
+import { qualifiesRefAnomaly } from "@/lib/anomaly-surface";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile } from "@/lib/types";
 
@@ -20,22 +21,6 @@ const HOME_ROAD_ASYMMETRIC_THRESHOLD: Partial<Record<LeagueId, number>> = {
   laliga: 0.35,
 };
 
-const SCORING_HIGH_VARIANCE_THRESHOLD: Partial<Record<LeagueId, number>> = {
-  nhl: 0.5,
-  nfl: 2,
-  cfb: 2,
-  epl: 0.4,
-  laliga: 0.4,
-  cbb: 2,
-  nba: 2,
-};
-
-const WHISTLE_HIGH_VARIANCE_THRESHOLD: Partial<Record<LeagueId, number>> = {
-  nhl: 0.8,
-  nfl: 2,
-  cfb: 2,
-};
-
 function balanceKindFor(
   ref: RefProfile,
 ): "balancer" | "asymmetric" | "neutral" | undefined {
@@ -52,17 +37,6 @@ function homeRoadGap(ref: RefProfile): number {
   return Math.abs(ref.bettingStats.avgHomeScore - ref.bettingStats.avgRoadScore);
 }
 
-function whistleDeltaFor(ref: RefProfile, leagueId: LeagueId): number {
-  if (leagueId === "nhl") return ref.nhlAnalytics?.minorsDelta ?? ref.foulsDelta;
-  if (leagueId === "nfl" || leagueId === "cfb") {
-    return ref.nflAnalytics?.flagsDelta ?? ref.cfbAnalytics?.flagsDelta ?? ref.foulsDelta;
-  }
-  if (leagueId === "epl" || leagueId === "laliga") {
-    return ref.eplAnalytics?.foulsDelta ?? ref.foulsDelta;
-  }
-  return ref.foulsDelta;
-}
-
 /**
  * Classify an official's ranking-table row into one primary visual pattern:
  * asymmetric (home/road or team-balance skew), high-variance (large deltas or
@@ -73,6 +47,10 @@ export function classifyRankingSignalPattern(
   leagueId: LeagueId,
   signalCount: number,
 ): RankingSignalPattern {
+  if (!qualifiesRefAnomaly(ref, leagueId, signalCount)) {
+    return { kind: "stable", label: "Stable", tone: "neutral" };
+  }
+
   const balanceKind = balanceKindFor(ref);
   const homeRoadThreshold = HOME_ROAD_ASYMMETRIC_THRESHOLD[leagueId] ?? 3;
   const isAsymmetric =
@@ -82,16 +60,5 @@ export function classifyRankingSignalPattern(
     return { kind: "asymmetric", label: "Asymmetric", tone: "warning" };
   }
 
-  const scoringThreshold = SCORING_HIGH_VARIANCE_THRESHOLD[leagueId] ?? 1.5;
-  const whistleThreshold = WHISTLE_HIGH_VARIANCE_THRESHOLD[leagueId] ?? 2;
-  const isHighVariance =
-    Math.abs(ref.totalPointsDelta) >= scoringThreshold ||
-    Math.abs(whistleDeltaFor(ref, leagueId)) >= whistleThreshold ||
-    signalCount >= 2;
-
-  if (isHighVariance) {
-    return { kind: "high-variance", label: "High Variance", tone: "notable" };
-  }
-
-  return { kind: "stable", label: "Stable", tone: "neutral" };
+  return { kind: "high-variance", label: "Anomaly", tone: "notable" };
 }
