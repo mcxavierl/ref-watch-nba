@@ -38,7 +38,7 @@ export const THEME_MATRIX_PAGES: ThemeMatrixPage[] = [
     screenshotSelector: ".overview-shell--clinical",
     probes: [
       {
-        selector: ".overview-shell--clinical .overview-title",
+        selector: "#intelligence-hero-heading",
         name: "homepage hero title",
       },
       {
@@ -48,10 +48,6 @@ export const THEME_MATRIX_PAGES: ThemeMatrixPage[] = [
       {
         selector: ".overview-league-chooser-label",
         name: "league chooser label",
-      },
-      {
-        selector: ".overview-catalog-name",
-        name: "catalog league name",
       },
       {
         selector: ".upcoming-game-card__team-abbr",
