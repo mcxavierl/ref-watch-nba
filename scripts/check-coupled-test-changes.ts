@@ -56,6 +56,23 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
     tests: ["src/lib/homepage-insight-gates.test.ts"],
   },
   {
+    label: "morning slate poller",
+    sources: [
+      "src/lib/cron/slatePoller.ts",
+      "src/lib/cron/slate-projection-cache.ts",
+      "src/lib/cron/assignment-window.ts",
+      "src/lib/cron/revalidate-slate-paths.ts",
+      "src/lib/services/slateIngestionLogStore.ts",
+      "src/app/api/cron/slate-poll/route.ts",
+      "scripts/run-slate-poller.ts",
+    ],
+    tests: [
+      "src/lib/cron/slatePoller.test.ts",
+      "src/lib/cron/slate-projection-cache.test.ts",
+      "src/lib/cron/assignment-window.test.ts",
+    ],
+  },
+  {
     label: "integrity monitor pipeline",
     sources: [
       "src/lib/analytics/anomalyEngine.ts",
@@ -70,8 +87,6 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
       "src/lib/services/webhook-schema.sql",
       "scripts/lib/post-assignment-ingest.ts",
       "scripts/fetch-assignments.ts",
-      "scripts/morning-slate.ts",
-      "scripts/nightly-slate.ts",
     ],
     tests: [
       "src/lib/analytics/anomalyEngine.test.ts",
