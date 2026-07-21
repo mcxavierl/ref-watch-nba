@@ -12,6 +12,7 @@ import {
 import { TrendingDown, TrendingUp, X } from "lucide-react";
 import { MatchupInsightCard } from "@/components/MatchupInsightCard";
 import { EvidenceDrawer } from "@/components/evidence/EvidenceDrawer";
+import { BroadcasterExportPanel } from "@/components/media/BroadcasterExportPanel";
 import { ModalPortal } from "@/components/ModalPortal";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { OuLeanBadge } from "@/components/OuLeanBadge";
@@ -299,6 +300,11 @@ export function GameSlatePreviewDrawer({
               {!awaitingCrew ? (
                 <EvidenceDrawer evidence={projectionEvidence} className="game-slate-preview-evidence" />
               ) : null}
+
+              <BroadcasterExportPanel
+                preview={preview}
+                evidence={projectionEvidence}
+              />
 
               {preview.teamImpacts.length > 0 ? (
                 <section
