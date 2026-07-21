@@ -2,6 +2,10 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { randomUUID } from "node:crypto";
 import type { CitationEventPayload } from "@/lib/intelligence/intelligence-card-types";
+import {
+  isCitationEventAction,
+  isIntelligenceMetricType,
+} from "@/lib/intelligence/intelligence-card-types";
 
 export type CitationEventRecord = CitationEventPayload & {
   id: string;
@@ -41,12 +45,18 @@ const MAX_EVENTS = 10_000;
 let storePromise: Promise<CitationStore> | null = null;
 
 function mapRecord(row: Record<string, unknown>): CitationEventRecord {
+  const metricType = row.metric_type ?? row.metricType;
+  const action = row.action;
+  if (!isIntelligenceMetricType(metricType) || !isCitationEventAction(action)) {
+    throw new Error("Invalid citation event row");
+  }
+
   return {
     id: String(row.id),
     gameId: String(row.game_id ?? row.gameId),
     refCrew: String(row.ref_crew ?? row.refCrew),
-    metricType: String(row.metric_type ?? row.metricType),
-    action: String(row.action),
+    metricType,
+    action,
     createdAt: String(row.created_at ?? row.createdAt),
   };
 }
@@ -231,8 +241,7 @@ export function isCitationEventPayload(value: unknown): value is CitationEventPa
     row.gameId.trim().length > 0 &&
     typeof row.refCrew === "string" &&
     row.refCrew.trim().length > 0 &&
-    typeof row.metricType === "string" &&
-    typeof row.action === "string" &&
-    row.action === "COPY_CITATION"
+    isIntelligenceMetricType(row.metricType) &&
+    isCitationEventAction(row.action)
   );
 }
