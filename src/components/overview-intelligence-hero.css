@@ -1,5 +1,37 @@
 /* Homepage intelligence hero + proof bar + featured signal */
 
+.intelligence-hero-surface {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgb(30 41 59);
+  background: color-mix(in srgb, rgb(2 6 23) 80%, transparent);
+  padding: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  backdrop-filter: blur(12px);
+}
+
+.intelligence-hero-heading,
+.intelligence-hero-matchup,
+.intelligence-hero-stat-value {
+  color: rgb(255 255 255);
+}
+
+.intelligence-hero-subcopy {
+  color: rgb(148 163 184);
+}
+
+@media (min-width: 768px) {
+  .intelligence-hero-surface {
+    padding: 2rem;
+  }
+
+  .intelligence-hero-heading {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+
 .overview-intelligence-hero {
   display: flex;
   flex-direction: column;
