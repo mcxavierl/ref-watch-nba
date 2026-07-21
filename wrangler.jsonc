@@ -18,6 +18,13 @@
       "service": "refwatch"
     }
   ],
+  "d1_databases": [
+    {
+      "binding": "API_KEYS_DB",
+      "database_name": "refwatch-api-keys",
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ],
   "routes": [
     {
       "pattern": "refwatch.ca",
