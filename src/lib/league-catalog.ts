@@ -1,11 +1,13 @@
 import type { LeagueId } from "@/lib/leagues";
-import { formatLeagueSeasonStart } from "@/config/leagueConfig";
+import { formatLeagueSeasonStart, getLeagueConfigEntry } from "@/config/leagueConfig";
 import { isCatalogSlugVisible } from "@/config/leagues";
+import {
+  isLeagueManifestId,
+  leagueManifestEntry,
+} from "@/lib/league-manifest";
 import {
   isProOnlyLiveLeague,
   isVerifiedLiveLeague,
-  PRIMARY_LIVE_LEAGUE_IDS,
-  PRO_ONLY_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/league-verification";
 
@@ -37,6 +39,67 @@ export const LIVE_CATALOG_LEAGUE_IDS = VERIFIED_LIVE_LEAGUE_IDS;
 /** Short season-start labels for overview hub badges (MM/DD). */
 export function leagueSeasonStartBadge(leagueId: LeagueId): string | undefined {
   return formatLeagueSeasonStart(leagueId);
+}
+
+function catalogLeagueSeasonStartInYear(leagueId: LeagueId, year: number): Date {
+  const config = getLeagueConfigEntry(leagueId);
+  if (!config) return new Date(Number.MAX_SAFE_INTEGER);
+  return new Date(year, config.seasonStartMonth - 1, config.seasonStartDay);
+}
+
+/** Next season opener used for catalog chronological ordering. */
+export function catalogLeagueSortStartDate(
+  entry: CatalogLeagueEntry,
+  referenceDate: Date,
+): Date {
+  const leagueId = entry.leagueId;
+  if (!leagueId) return new Date(Number.MAX_SAFE_INTEGER);
+
+  const year = referenceDate.getFullYear();
+  const thisYearStart = catalogLeagueSeasonStartInYear(leagueId, year);
+  if (referenceDate < thisYearStart) return thisYearStart;
+  return catalogLeagueSeasonStartInYear(leagueId, year + 1);
+}
+
+/** True when the league is in-season on the reference date (live/active). */
+export function isCatalogLeagueLive(
+  entry: CatalogLeagueEntry,
+  referenceDate: Date,
+): boolean {
+  const leagueId = entry.leagueId;
+  if (!leagueId || !isLeagueManifestId(leagueId)) return false;
+
+  const seasonStart = catalogLeagueSeasonStartInYear(
+    leagueId,
+    referenceDate.getFullYear(),
+  );
+  if (referenceDate < seasonStart) return false;
+
+  return leagueManifestEntry(leagueId).seasonStatus === "in-season";
+}
+
+export function compareCatalogLeagues(
+  a: CatalogLeagueEntry,
+  b: CatalogLeagueEntry,
+  referenceDate: Date = new Date(),
+): number {
+  const aLive = isCatalogLeagueLive(a, referenceDate);
+  const bLive = isCatalogLeagueLive(b, referenceDate);
+  if (aLive !== bLive) return aLive ? -1 : 1;
+
+  const dateCmp =
+    catalogLeagueSortStartDate(a, referenceDate).getTime() -
+    catalogLeagueSortStartDate(b, referenceDate).getTime();
+  if (dateCmp !== 0) return dateCmp;
+
+  return a.sort - b.sort;
+}
+
+function sortCatalogEntries(
+  entries: CatalogLeagueEntry[],
+  referenceDate: Date = new Date(),
+): CatalogLeagueEntry[] {
+  return [...entries].sort((a, b) => compareCatalogLeagues(a, b, referenceDate));
 }
 
 export function catalogStatusLabel(entry: CatalogLeagueEntry): string {
@@ -105,35 +168,31 @@ export function catalogComingSoonEntries(): CatalogLeagueEntry[] {
   );
 }
 
-/** Verified live competitions in overview hub order (all six leagues). */
-export function catalogLiveCompetitionEntries(): CatalogLeagueEntry[] {
-  const order = new Map<LeagueId, number>(
-    PRIMARY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
+/** Verified live competitions in dynamic hub order (in-season first, then by start date). */
+export function catalogLiveCompetitionEntries(
+  referenceDate: Date = new Date(),
+): CatalogLeagueEntry[] {
+  return sortCatalogEntries(
+    catalogEntriesForDisplay().filter(
+      (entry) => entry.leagueId && entry.status === "live",
+    ),
+    referenceDate,
   );
-  return catalogEntriesForDisplay()
-    .filter((entry) => entry.leagueId && entry.status === "live")
-    .sort(
-      (a, b) =>
-        (order.get(a.leagueId!) ?? 99) - (order.get(b.leagueId!) ?? 99),
-    );
 }
 
-/** Pro leagues only — sidebar and chooser primary tier. */
-export function catalogProLiveEntries(): CatalogLeagueEntry[] {
-  const order = new Map<LeagueId, number>(
-    PRO_ONLY_LIVE_LEAGUE_IDS.map((id, index) => [id, index]),
-  );
-  return catalogEntriesForDisplay()
-    .filter(
+/** Pro leagues only - sidebar and chooser primary tier. */
+export function catalogProLiveEntries(
+  referenceDate: Date = new Date(),
+): CatalogLeagueEntry[] {
+  return sortCatalogEntries(
+    catalogEntriesForDisplay().filter(
       (entry) =>
         entry.leagueId &&
         entry.status === "live" &&
         isProOnlyLiveLeague(entry.leagueId),
-    )
-    .sort(
-      (a, b) =>
-        (order.get(a.leagueId!) ?? 99) - (order.get(b.leagueId!) ?? 99),
-    );
+    ),
+    referenceDate,
+  );
 }
 
 /** @deprecated College leagues appear in catalogComingSoonEntries. */
@@ -146,7 +205,9 @@ export function catalogCollegeLiveEntries(): CatalogLeagueEntry[] {
   return [];
 }
 
-export function catalogBySport(): { sport: CatalogSportGroup; label: string; entries: CatalogLeagueEntry[] }[] {
+export function catalogBySport(
+  referenceDate: Date = new Date(),
+): { sport: CatalogSportGroup; label: string; entries: CatalogLeagueEntry[] }[] {
   const groups = new Map<CatalogSportGroup, CatalogLeagueEntry[]>();
   for (const entry of catalogEntriesForDisplay()) {
     const list = groups.get(entry.sport) ?? [];
@@ -156,7 +217,7 @@ export function catalogBySport(): { sport: CatalogSportGroup; label: string; ent
   return (Object.keys(CATALOG_SPORT_LABELS) as CatalogSportGroup[]).map((sport) => ({
     sport,
     label: CATALOG_SPORT_LABELS[sport],
-    entries: (groups.get(sport) ?? []).sort((a, b) => a.sort - b.sort),
+    entries: sortCatalogEntries(groups.get(sport) ?? [], referenceDate),
   })).filter((g) => g.entries.length > 0);
 }
 
