@@ -1,3 +1,7 @@
+import {
+  HIGHLIGHT_MATRIX_WIN_RATE_DELTA_MIN,
+  meetsMatrixWinRateExtremeThreshold,
+} from "@/lib/highlight-badge";
 import type { LeagueMetricCopy } from "@/lib/leagues";
 import {
   displayWinRateDelta,
@@ -121,7 +125,7 @@ export function sortMatrixRefsByName(
 /** Win-rate delta (percentage points) above/below team baseline for text tint. */
 export const MATRIX_TONE_DELTA_PTS = 2;
 /** Win-rate delta (percentage points) for standout split emphasis. */
-export const MATRIX_EXTREME_DELTA_PTS = 12;
+export const MATRIX_EXTREME_DELTA_PTS = HIGHLIGHT_MATRIX_WIN_RATE_DELTA_MIN;
 
 export type MatrixRefSort = "name-asc" | "standout-desc" | "total-delta-desc";
 
@@ -592,9 +596,8 @@ export function matrixCellStyle(
 export function matrixCellExtremeFromDelta(
   deltaPts: number,
 ): MatrixCellExtreme | null {
-  if (deltaPts >= MATRIX_EXTREME_DELTA_PTS) return "high";
-  if (deltaPts <= -MATRIX_EXTREME_DELTA_PTS) return "low";
-  return null;
+  if (!meetsMatrixWinRateExtremeThreshold(deltaPts)) return null;
+  return deltaPts > 0 ? "high" : "low";
 }
 
 export function matrixCellExtreme(
@@ -704,7 +707,11 @@ export function computeMatrixExtremes(
   }
 
   return highlights
-    .filter((highlight) => highlight.baselineGames > 0)
+    .filter(
+      (highlight) =>
+        highlight.baselineGames > 0 &&
+        meetsMatrixWinRateExtremeThreshold(highlight.deltaPts),
+    )
     .sort((a, b) => Math.abs(b.deltaPts) - Math.abs(a.deltaPts))
     .slice(0, limit);
 }

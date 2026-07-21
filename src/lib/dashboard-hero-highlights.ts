@@ -1,4 +1,10 @@
 import type { LeagueId } from "@/lib/leagues";
+import { LEAGUES } from "@/lib/leagues";
+import { loadLeagueStats } from "@/lib/load-league-stats";
+import {
+  buildRankingsSynthesis,
+  type RankingsInsight,
+} from "@/lib/rankings-synthesis";
 
 export type HeroHighlightTone = "positive" | "negative";
 
@@ -16,64 +22,49 @@ export type DashboardHeroHighlight = {
   parts: HeroHighlightPart[];
 };
 
-/** Curated high-confidence outlier patterns for the overview hero strip. */
-export const DASHBOARD_HERO_HIGHLIGHTS: DashboardHeroHighlight[] = [
-  {
-    id: "nba-foster-kings",
-    leagueId: "nba",
-    leagueLabel: "NBA",
-    tone: "positive",
-    official: "Scott Foster",
-    parts: [
-      { type: "text", value: "Over bettors hit " },
-      { type: "metric", value: "72.1%" },
-      { type: "text", value: " in Kings matches (vs. " },
-      { type: "metric", value: "54.1%" },
-      { type: "text", value: " baseline across " },
-      { type: "metric", value: "61" },
-      { type: "text", value: " matches." },
-    ],
-  },
-  {
-    id: "nfl-allen-under",
-    leagueId: "nfl",
-    leagueLabel: "NFL",
-    tone: "negative",
-    official: "Brad Allen",
-    parts: [
-      { type: "text", value: "Under bettors hit " },
-      { type: "metric", value: "65.4%" },
-      { type: "text", value: " across " },
-      { type: "metric", value: "30" },
-      { type: "text", value: " matches (vs. " },
-      { type: "metric", value: "48.2%" },
-      { type: "text", value: " baseline)." },
-    ],
-  },
-  {
-    id: "epl-oliver-cards",
-    leagueId: "epl",
-    leagueLabel: "EPL",
-    tone: "positive",
-    official: "Michael Oliver",
-    parts: [
-      { type: "text", value: "Cards run " },
-      { type: "metric", value: "+1.2" },
-      { type: "text", value: " per match vs. league baseline." },
-    ],
-  },
-  {
-    id: "laliga-hernandez-home",
-    leagueId: "laliga",
-    leagueLabel: "La Liga",
-    tone: "negative",
-    official: "Alejandro J. H.",
-    parts: [
-      { type: "text", value: "Home teams score " },
-      { type: "metric", value: "-0.9" },
-      { type: "text", value: " goals vs. baseline in " },
-      { type: "metric", value: "10" },
-      { type: "text", value: " recent matches." },
-    ],
-  },
-];
+const HERO_LEAGUE_ORDER: LeagueId[] = ["nba", "nfl", "epl", "laliga"];
+
+function heroToneForInsight(insight: RankingsInsight): HeroHighlightTone {
+  if (/under|light|dip|lowest/i.test(insight.title)) return "negative";
+  return "positive";
+}
+
+function heroPartsFromInsight(insight: RankingsInsight): HeroHighlightPart[] {
+  if (insight.statValue) {
+    return [
+      { type: "text", value: `${insight.body} ` },
+      { type: "metric", value: insight.statValue },
+      { type: "text", value: "." },
+    ];
+  }
+  return [{ type: "text", value: `${insight.title}. ${insight.body}` }];
+}
+
+/** Build gated hero highlights from live league rankings synthesis. */
+export function buildDashboardHeroHighlights(limit = 4): DashboardHeroHighlight[] {
+  const highlights: DashboardHeroHighlight[] = [];
+
+  for (const leagueId of HERO_LEAGUE_ORDER) {
+    if (highlights.length >= limit) break;
+    const league = LEAGUES[leagueId];
+    const { stats } = loadLeagueStats(leagueId);
+    const synthesis = buildRankingsSynthesis(stats, league, { maxCards: 1 });
+    const insight = synthesis.insights.find((entry) => entry.refSlug && entry.refName);
+    if (!insight?.refSlug || !insight.refName) continue;
+
+    highlights.push({
+      id: `hero-${leagueId}-${insight.refSlug}`,
+      leagueId,
+      leagueLabel: league.shortLabel,
+      tone: heroToneForInsight(insight),
+      official: insight.refName,
+      href: `/${leagueId}/refs/${insight.refSlug}`,
+      parts: heroPartsFromInsight(insight),
+    });
+  }
+
+  return highlights;
+}
+
+/** Gated overview hero strip — derived from rankings synthesis, not static copy. */
+export const DASHBOARD_HERO_HIGHLIGHTS = buildDashboardHeroHighlights();

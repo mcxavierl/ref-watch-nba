@@ -24,6 +24,9 @@ export const HIGHLIGHT_NHL_MINORS_DELTA_MIN = 0.8;
 /** Minimum |Δ NHL minors| for primary whistle labels. */
 export const HIGHLIGHT_NHL_MINORS_DELTA_TOP_TIER = 1.2;
 
+/** Minimum ref×team win-rate delta (percentage points) for matrix standout highlights. */
+export const HIGHLIGHT_MATRIX_WIN_RATE_DELTA_MIN = 12;
+
 export type HighlightSuperlativeKind =
   | "scoring-bump"
   | "scoring-dip"
@@ -82,6 +85,10 @@ export function meetsWhistleTopTierThreshold(
   leagueId: LeagueId,
 ): boolean {
   return Math.abs(delta) >= whistleHighlightTopTierMinDelta(leagueId);
+}
+
+export function meetsMatrixWinRateExtremeThreshold(deltaPts: number): boolean {
+  return Math.abs(deltaPts) >= HIGHLIGHT_MATRIX_WIN_RATE_DELTA_MIN;
 }
 
 export type HighlightBadgeRegistry = {
