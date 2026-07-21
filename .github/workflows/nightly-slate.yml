@@ -39,7 +39,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/assignments.json data/nhl/assignments.json data/nfl/assignments.json data/epl/assignments.json data/laliga/assignments.json data/overview-snapshot.json data/overview-insights.json 2>/dev/null || true
+          git add data/assignments.json data/nhl/assignments.json data/nfl/assignments.json data/epl/assignments.json data/laliga/assignments.json data/wnba/assignments.json public/data/wnba/assignments.json data/overview-snapshot.json public/data/overview/snapshot.json data/overview-insights.json 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "No assignment changes to commit."
             exit 0
