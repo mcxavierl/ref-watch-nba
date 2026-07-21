@@ -245,7 +245,7 @@ html.light:not([data-contrast="high"]) .media-card.bg-slate-950 {
 html[data-color="light"] .todays-biggest-edge,
 html.light .todays-biggest-edge {
   background-color: rgb(2 6 23);
-  background: linear-gradient(145deg, rgb(2 6 23) 0%, rgb(15 23 42) 55%, rgb(2 6 23) 100%);
+  background-image: linear-gradient(145deg, rgb(2 6 23) 0%, rgb(15 23 42) 55%, rgb(2 6 23) 100%);
   border-color: rgb(30 41 59);
 }
 
