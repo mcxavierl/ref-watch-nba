@@ -7,8 +7,6 @@ import {
   isCitationEventPayload,
   persistCitationEvent,
 } from "@/lib/services/citation-event-store";
-import * as fs from "node:fs";
-import * as path from "node:path";
 
 function previewFixture(
   overrides: Partial<GameSlatePreviewPayload> = {},
@@ -73,8 +71,6 @@ describe("formatIntelligenceCitation", () => {
 });
 
 describe("citation event store", () => {
-  const storePath = path.join(process.cwd(), "data/citation-events.json");
-
   it("validates citation payloads", () => {
     assert.equal(
       isCitationEventPayload({
@@ -88,28 +84,15 @@ describe("citation event store", () => {
     assert.equal(isCitationEventPayload({ gameId: "g1" }), false);
   });
 
-  it("persists citation events to json store", () => {
-    const previous = fs.existsSync(storePath)
-      ? fs.readFileSync(storePath, "utf8")
-      : null;
-
-    try {
-      const record = persistCitationEvent({
-        gameId: "test-game",
-        refCrew: "Smith/Johnson",
-        metricType: "Whistle Acceleration",
-        action: "COPY_CITATION",
-      });
-      assert.ok(record.id);
-      assert.equal(record.action, "COPY_CITATION");
-      const raw = fs.readFileSync(storePath, "utf8");
-      assert.match(raw, /test-game/);
-    } finally {
-      if (previous === null) {
-        if (fs.existsSync(storePath)) fs.unlinkSync(storePath);
-      } else {
-        fs.writeFileSync(storePath, previous);
-      }
-    }
+  it("persists citation events to durable store", async () => {
+    const record = await persistCitationEvent({
+      gameId: "test-game",
+      refCrew: "Smith/Johnson",
+      metricType: "Whistle Acceleration",
+      action: "COPY_CITATION",
+    });
+    assert.ok(record.id);
+    assert.equal(record.action, "COPY_CITATION");
+    assert.equal(record.gameId, "test-game");
   });
 });
