@@ -30,6 +30,21 @@ describe("design audit guardrails", () => {
     assert.match(dashboard, /OverviewResearchFooter/);
   });
 
+  it("ref profile narrative surfaces officiating fingerprint at the top", () => {
+    const layout = readSrc("src/components/ref-profile/RefProfileNarrativeLayout.tsx");
+    const visual = readSrc("src/components/visuals/OfficiatingFingerprint.tsx");
+    assert.match(layout, /RefProfileFingerprintSection/);
+    assert.match(visual, /Officiating Fingerprint/);
+    assert.match(visual, /officiating-fingerprint-data/);
+  });
+
+  it("game preview drawer exposes fingerprint visual tab", () => {
+    const drawer = readSrc("src/components/GameSlatePreviewDrawer.tsx");
+    const preview = readSrc("src/lib/game-slate-preview.ts");
+    assert.match(drawer, /GameSlateFingerprintPanel/);
+    assert.match(drawer, /Officiating fingerprint/);
+    assert.match(preview, /crewFingerprints/);
+  });
   it("avoids raw slate text utilities on about page", () => {
     const about = readSrc("src/app/about/page.tsx");
     assert.doesNotMatch(about, /text-slate-/);

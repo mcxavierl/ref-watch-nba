@@ -1,0 +1,170 @@
+.officiating-fingerprint {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgb(30 41 59);
+  background: color-mix(in srgb, rgb(15 23 42) 92%, transparent);
+}
+
+.officiating-fingerprint-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.officiating-fingerprint-kicker {
+  margin: 0 0 0.2rem;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgb(34 211 238);
+}
+
+.officiating-fingerprint-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgb(226 232 240);
+}
+
+.officiating-fingerprint-meta {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgb(148 163 184);
+  font-variant-numeric: tabular-nums;
+}
+
+.officiating-fingerprint-chart-wrap {
+  position: relative;
+  width: min(100%, 24rem);
+  margin-inline: auto;
+}
+
+.officiating-fingerprint-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.officiating-fingerprint-grid {
+  fill: none;
+  stroke: rgb(30 41 59);
+  stroke-width: 1;
+}
+
+.officiating-fingerprint-spoke {
+  stroke: rgb(30 41 59);
+  stroke-width: 1;
+}
+
+.officiating-fingerprint-league {
+  fill: rgb(51 65 85 / 0.12);
+  stroke: rgb(100 116 139 / 0.45);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.officiating-fingerprint-data {
+  fill: rgb(16 185 129 / 0.2);
+  stroke: rgb(52 211 153);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 10px rgb(16 185 129 / 0.35));
+}
+
+.officiating-fingerprint-vertex {
+  fill: rgb(52 211 153);
+  stroke: rgb(15 23 42);
+  stroke-width: 1.5;
+  cursor: pointer;
+}
+
+.officiating-fingerprint-vertex:focus-visible {
+  outline: 2px solid rgb(34 211 238);
+  outline-offset: 2px;
+}
+
+.officiating-fingerprint-label {
+  fill: rgb(148 163 184);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.officiating-fingerprint-tooltip {
+  position: absolute;
+  z-index: 2;
+  max-width: 16rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgb(51 65 85);
+  background: rgb(15 23 42 / 96);
+  box-shadow: 0 10px 30px rgb(2 6 23 / 0.45);
+  transform: translate(-50%, calc(-100% - 0.65rem));
+  pointer-events: none;
+}
+
+.officiating-fingerprint-tooltip-title {
+  margin: 0 0 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgb(52 211 153);
+}
+
+.officiating-fingerprint-tooltip-copy {
+  margin: 0;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: rgb(203 213 225);
+}
+
+.officiating-fingerprint-note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgb(251 191 36);
+}
+
+.officiating-fingerprint--compact {
+  padding: 1rem;
+}
+
+.officiating-fingerprint--compact .officiating-fingerprint-title {
+  font-size: 1rem;
+}
+
+.officiating-fingerprint-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.officiating-fingerprint-tab {
+  border: 1px solid rgb(51 65 85);
+  background: rgb(15 23 42);
+  color: rgb(148 163 184);
+  border-radius: 9999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.officiating-fingerprint-tab--active {
+  border-color: rgb(52 211 153 / 0.45);
+  color: rgb(52 211 153);
+  background: rgb(16 185 129 / 0.12);
+}
+
+.officiating-fingerprint-tabpanel {
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .officiating-fingerprint-label {
+    font-size: 8px;
+  }
+}
