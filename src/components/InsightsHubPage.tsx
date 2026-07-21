@@ -303,13 +303,13 @@ export function InsightsHubPage({
       />
     ) : null;
 
-  const tendenciesPanel: ReactNode = rankingsHook;
+  const tendenciesPanel: ReactNode =
+    activeView === "tendencies" ? rankingsHook : null;
 
   let trendsPanel: ReactNode = null;
   if (activeView === "trends") {
     trendsPanel = (
       <>
-        {rankingsHook}
         {narrative ? (
           <section className="section-block-tight mb-4">
             <div className="insights-trends-panel panel-inset px-4 py-4 sm:px-5">
