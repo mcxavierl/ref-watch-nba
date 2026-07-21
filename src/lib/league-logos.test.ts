@@ -67,13 +67,14 @@ describe("league logos", () => {
     assert.equal(leagueHeroLogoDimensions("wnba").height, 48);
   });
 
-  it("uses square intrinsic dimensions for the EPL lion mark", () => {
+  it("uses portrait intrinsic dimensions for the EPL lion mark", () => {
     const onDark = readLogo("epl-lion.svg");
-    assert.match(onDark, /width="92" height="91"/);
+    assert.match(onDark, /viewBox="-3 -3 78 95"/);
+    assert.match(onDark, /width="78" height="95"/);
 
     const epl = leagueNavMarkDimensions("epl");
     const nba = leagueNavMarkDimensions("nba");
-    assert.equal(epl.width, epl.height, "EPL lion mark should use a square intrinsic box");
+    assert.ok(epl.height > epl.width, "EPL lion mark should be portrait to match the vector viewBox");
     assert.ok(nba.width > nba.height, "NBA mark remains landscape");
     assert.equal(leagueHeroLogoDimensions("epl").width, leagueHeroLogoDimensions("epl").height);
   });
