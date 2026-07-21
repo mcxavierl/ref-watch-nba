@@ -169,10 +169,9 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(section, /upcoming-games-grid/);
     assert.doesNotMatch(section, /overview-slate-notes/);
     assert.doesNotMatch(section, /overview-slate-updated/);
-    assert.match(card, /upcomingCardRefInsights/);
-    assert.match(card, /upcoming-game-card__hero-insight/);
-    assert.match(card, /upcoming-game-card__hero-fallback/);
-    assert.match(card, /upcoming-game-card__context-slot/);
+    assert.match(card, /buildUpcomingCardSignals/);
+    assert.match(card, /line-clamp-2/);
+    assert.match(card, /h-\[280px\]/);
     assert.match(card, /upcoming-game-card__footer/);
     assert.match(card, /upcoming-game-card__cta--footer/);
     assert.match(card, /upcoming-game-card__crew-meta/);
@@ -181,24 +180,17 @@ describe("Clinical Modern priority #11 surfaces", () => {
       card,
       /upcoming-game-card__league-mark[\s\S]*upcoming-game-card__date-label--corner/,
     );
-    assert.match(css, /upcoming-game-card__hero-insight/);
-    assert.match(css, /upcoming-game-card__hero-fallback/);
-    assert.match(css, /upcoming-game-card__context-slot/);
     assert.match(css, /upcoming-game-card__footer/);
-    assert.match(css, /\.upcoming-game-card \{[\s\S]*min-height: 13\.75rem/);
-    assert.doesNotMatch(css, /\.upcoming-game-card \{[\s\S]*\n  height: 13\.75rem/);
+    assert.match(card, /h-\[280px\]/);
     assert.match(css, /upcoming-game-card__footer[\s\S]*margin-top: auto/);
     assert.match(css, /upcoming-game-card__crew-meta/);
-    assert.doesNotMatch(css, /upcoming-game-card__insight-pill/);
-    assert.doesNotMatch(card, /upcoming-game-card__insight-pill/);
     assert.doesNotMatch(card, /upcoming-game-card__insight-line/);
-    assert.match(card, /size="xl"/);
+    assert.match(card, /size="lg"/);
     assert.match(css, /upcoming-game-card/);
     assert.match(readSrc("src/components/overview-slate-shared.css"), /upcoming-games-grid/);
     assert.match(css, /upcoming-game-card__matchup/);
     assert.match(css, /upcoming-game-card__date-label--corner[\s\S]*text-align: right/);
-    const heroInsightBlock =
-      css.match(/\.upcoming-game-card__hero-insight\s*\{[\s\S]*?\}/)?.[0] ?? "";
+    const heroInsightBlock = "";
     assert.doesNotMatch(heroInsightBlock, /white-space:\s*nowrap/);
     assert.match(
       css,

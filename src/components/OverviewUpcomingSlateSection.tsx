@@ -40,7 +40,7 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
 
       {upcomingSlate.inSeason ? (
         slateGames.length > 0 ? (
-          <div className="upcoming-games-grid upcoming-games-grid--homepage">
+          <div className="upcoming-games-grid upcoming-games-grid--homepage grid grid-cols-1 md:grid-cols-3 gap-4">
             <OverviewSlateGamesInteractive games={slateGames} variant="card" />
           </div>
         ) : (

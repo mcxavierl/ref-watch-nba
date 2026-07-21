@@ -29,6 +29,7 @@ import {
 import type { RefRole } from "@/lib/types";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { signedDeltaTone } from "@/lib/metric-delight";
+import { IntelligenceCard } from "@/components/intelligence/IntelligenceCard";
 import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
 
 const DRAWER_TRANSITION_MS = 220;
@@ -59,6 +60,7 @@ export function GameSlatePreviewDrawer({
   const titleId = useId();
   const panelRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const evidenceSectionRef = useRef<HTMLElement>(null);
   const [rendered, setRendered] = useState(open);
   const [visible, setVisible] = useState(false);
 
@@ -133,6 +135,11 @@ export function GameSlatePreviewDrawer({
   const insufficientCopy = awaitingCrew
     ? "Limited head-to-head history for this pairing. Context below uses recent team form and slate notes."
     : "Not enough qualified crew history to show composite tendencies yet.";
+  const intelligenceCard = preview.intelligenceCard ?? null;
+
+  const scrollToEvidence = useCallback(() => {
+    evidenceSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   return (
     <ModalPortal>
@@ -193,6 +200,13 @@ export function GameSlatePreviewDrawer({
           </header>
 
           <div className="ref-preview-drawer-body">
+            {intelligenceCard ? (
+              <IntelligenceCard
+                content={intelligenceCard}
+                onViewEvidence={scrollToEvidence}
+              />
+            ) : null}
+
             {awaitingCrew ? (
               <section
                 className="ref-preview-drawer-section game-slate-preview-matchup-briefing"
@@ -306,7 +320,12 @@ export function GameSlatePreviewDrawer({
               )}
 
               {!awaitingCrew ? (
-                <EvidenceDrawer evidence={projectionEvidence} className="game-slate-preview-evidence" />
+                <section ref={evidenceSectionRef}>
+                  <EvidenceDrawer
+                    evidence={projectionEvidence}
+                    className="game-slate-preview-evidence"
+                  />
+                </section>
               ) : null}
 
               {preview.teamImpacts.length > 0 ? (

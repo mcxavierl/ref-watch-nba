@@ -240,17 +240,9 @@
   display: none;
 }
 
-/* Upcoming games — dense match cards */
+/* Upcoming games — dense match cards (shell uses Tailwind for bounds) */
 .upcoming-game-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 0.75rem;
-  min-height: 13.75rem;
-  height: auto;
   min-width: 0;
-  padding: 0.8rem 0.85rem 0.9rem;
-  border-radius: 0.75rem;
   container-type: inline-size;
   --upcoming-matchup-glow-accent: rgb(148 163 184);
   --upcoming-matchup-glow: color-mix(
@@ -276,9 +268,6 @@
   --upcoming-logo-plate-bg: var(--logo-plate);
   --upcoming-logo-plate-border: var(--logo-plate-border);
   --upcoming-logo-plate-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
-  border: 1px solid var(--upcoming-card-border);
-  background: var(--upcoming-card-bg);
-  box-shadow: var(--upcoming-card-shadow);
   transition:
     transform var(--duration-normal) var(--ease-out-quint),
     box-shadow var(--duration-normal) var(--ease-out-quint),
@@ -319,10 +308,8 @@
 
 .upcoming-game-card:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--upcoming-matchup-glow-accent) 28%, var(--upcoming-card-border));
-  box-shadow:
-    var(--upcoming-card-shadow),
-    0 8px 20px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--upcoming-matchup-glow-accent) 28%, rgb(51 65 85));
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 14%, transparent);
 }
 
 .upcoming-game-card__header {
@@ -566,10 +553,11 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  flex: 0 0 auto;
-  gap: 0.28rem;
-  min-height: 1.35rem;
+  flex: 1 1 auto;
+  gap: 0.4rem;
+  min-height: 0;
   margin-top: 0.45rem;
+  overflow: hidden;
 }
 
 .upcoming-game-card__hero-insight {
@@ -577,25 +565,56 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   min-width: 0;
   font-size: 0.6875rem;
   font-weight: 500;
-  line-height: 1.45;
+  line-height: 1.4;
   letter-spacing: 0.01em;
   color: var(--upcoming-ink-body);
   text-align: center;
-  overflow: visible;
-  text-wrap: pretty;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
-.upcoming-game-card__hero-fallback {
-  margin: 0;
-  min-width: 0;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  line-height: 1.45;
-  letter-spacing: 0.01em;
-  color: var(--upcoming-ink-muted);
-  text-align: center;
-  overflow: visible;
-  text-wrap: pretty;
+.upcoming-game-card__signal-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 1.35rem;
+}
+
+.upcoming-game-card__signal-pill {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upcoming-game-card__signal-pill--positive {
+  border-color: rgb(16 185 129 / 0.25);
+  background: rgb(16 185 129 / 0.1);
+  color: rgb(52 211 153);
+}
+
+.upcoming-game-card__signal-pill--caution {
+  border-color: rgb(245 158 11 / 0.28);
+  background: rgb(245 158 11 / 0.1);
+  color: rgb(251 191 36);
+}
+
+.upcoming-game-card__signal-pill--neutral {
+  border-color: rgb(51 65 85);
+  background: rgb(15 23 42 / 0.75);
+  color: rgb(148 163 184);
 }
 
 .upcoming-game-card__footer {
