@@ -83,8 +83,12 @@ export function BroadcasterExportPanel({
   const resolvedCopy =
     teleprompterCopy ??
     (preview && evidence
-      ? buildOnAirCopy(preview, evidence)
-      : buildOnAirCopyFromContent(resolvedContent, resolvedContent.crewLabel));
+      ? buildOnAirCopy(preview, evidence, "storyline")
+      : buildOnAirCopyFromContent(
+          resolvedContent,
+          resolvedContent.crewLabel,
+          "storyline",
+        ));
 
   const filename =
     exportFilename ?? broadcastGraphicFilename(resolvedContent.matchupBadge);

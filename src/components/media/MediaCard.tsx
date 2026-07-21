@@ -7,6 +7,7 @@ import type { ProjectionEvidencePayload } from "@/lib/analytics/evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
   buildMediaCardContent,
+  formatCrewRole,
   type MediaCardContent,
 } from "@/lib/media/media-card-content";
 import "./media-card.css";
@@ -31,15 +32,16 @@ export const MediaCard = forwardRef<HTMLDivElement, MediaCardProps>(
     }
 
     const card = content ?? buildMediaCardContent(preview!, evidence!);
+    const crewRole = formatCrewRole(card.primaryRef.role);
 
     return (
       <div
         ref={ref}
-        className={`media-card ${className}`.trim()}
+        className={`media-card bg-slate-950 border-2 border-slate-800 text-white relative overflow-hidden ${className}`.trim()}
         role="img"
         aria-label={`Broadcast graphic for ${card.matchupBadge}`}
       >
-        <div className="media-card-inner">
+        <div className="media-card-inner p-8">
           <header className="media-card-header">
             <div className="media-card-brand">
               <div className="media-card-mark" aria-hidden>
@@ -58,19 +60,15 @@ export const MediaCard = forwardRef<HTMLDivElement, MediaCardProps>(
                   ))}
                 </svg>
               </div>
-              <div className="media-card-brand-copy">
-                <p className="media-card-kicker">Ref Watch</p>
-                <h1 className="media-card-title">Officiating Insight</h1>
-              </div>
+              <p className="media-card-brand-name">RefWatch</p>
             </div>
             <div className="media-card-header-badges">
-              <span className="media-card-league-pill">{card.leagueLabel}</span>
+              <span className="media-card-storyline-badge">Officiating Storyline</span>
               <span className="media-card-matchup-pill">{card.matchupBadge}</span>
             </div>
           </header>
 
           <div className="media-card-hero">
-            <p className="media-card-hero-label">Hero Metric</p>
             <p className={`media-card-hero-metric ${heroToneClass(card.heroMetricTone)}`}>
               {card.heroMetric}
             </p>
@@ -79,10 +77,9 @@ export const MediaCard = forwardRef<HTMLDivElement, MediaCardProps>(
           <div className="media-card-body">
             <section
               className="media-card-panel media-card-panel--profile"
-              aria-label="Referee fingerprint and whistle profile"
+              aria-label="Referee profile"
             >
-              <p className="media-card-panel-label">Whistle Profile</p>
-              <div className="media-card-profile-row">
+              <div className="media-card-profile-pill">
                 <RefAvatar
                   name={card.primaryRef.name}
                   slug={card.primaryRef.slug}
@@ -93,17 +90,16 @@ export const MediaCard = forwardRef<HTMLDivElement, MediaCardProps>(
                 />
                 <div className="media-card-profile-copy">
                   <h2 className="media-card-official">{card.primaryRef.name}</h2>
-                  <p className="media-card-crew">{card.crewLabel}</p>
+                  <p className="media-card-crew">
+                    {crewRole ? `${crewRole} · ${card.crewLabel}` : card.crewLabel}
+                  </p>
                   <span className="media-card-archetype-tag">{card.archetypeTag}</span>
                 </div>
               </div>
-              <p className="media-card-stat-detail">
-                {card.sampleGames} games in sample · {card.metricLabel} focus
-              </p>
             </section>
 
-            <section className="media-card-panel" aria-label="On-air evidence summary">
-              <p className="media-card-panel-label">On-Air Evidence Summary</p>
+            <section className="media-card-panel" aria-label="On-air evidence bullets">
+              <p className="media-card-panel-label">On-Air Evidence</p>
               <ul className="media-card-evidence-list">
                 {card.evidenceBullets.map((bullet, index) => (
                   <li key={`${index}-${bullet}`} className="media-card-evidence-item">
@@ -114,20 +110,14 @@ export const MediaCard = forwardRef<HTMLDivElement, MediaCardProps>(
                   </li>
                 ))}
               </ul>
-              <div className="media-card-evidence-meta">
-                <span>{card.confidencePct}% confidence</span>
-                <span>
-                  {card.evidenceStrength.toFixed(1)} / 10 evidence strength
-                </span>
-              </div>
             </section>
           </div>
 
           <footer className="media-card-footer">
             <span>
-              <strong>Ref Watch</strong> officiating intelligence for broadcast partners
+              <strong>RefWatch</strong> officiating intelligence for broadcast partners
             </span>
-            <span>Historical tendencies only. Not betting advice.</span>
+            <span>{card.leagueLabel} · Historical tendencies only</span>
           </footer>
         </div>
       </div>

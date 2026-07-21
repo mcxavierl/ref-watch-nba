@@ -12,7 +12,7 @@ import {
 import { TrendingDown, TrendingUp, X } from "lucide-react";
 import { MatchupInsightCard } from "@/components/MatchupInsightCard";
 import { EvidenceDrawer } from "@/components/evidence/EvidenceDrawer";
-import { MediaBroadcastKitTrigger } from "@/components/media/MediaBroadcastKitDrawer";
+import { ExportOnAirGraphicTrigger } from "@/components/media/MediaCardModal";
 import { ModalPortal } from "@/components/ModalPortal";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { OuLeanBadge } from "@/components/OuLeanBadge";
@@ -174,7 +174,7 @@ export function GameSlatePreviewDrawer({
               </div>
             </div>
             <div className="ref-preview-drawer-header-actions">
-              <MediaBroadcastKitTrigger
+              <ExportOnAirGraphicTrigger
                 preview={preview}
                 evidence={projectionEvidence}
                 className="game-slate-preview-broadcast-kit"
