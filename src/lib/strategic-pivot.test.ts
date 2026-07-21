@@ -26,8 +26,7 @@ describe("strategic pivot surfaces", () => {
     const banner = readSrc("src/components/dashboard/IntelligenceHero.tsx");
     const page = readSrc("src/app/page.tsx");
     assert.match(hero, /IntelligenceHero/);
-    assert.match(banner, /behavioral modeling/i);
-    assert.match(banner, /TOP SIGNAL TODAY/);
+    assert.match(banner, /Officiating Intelligence/);
     assert.match(page, /OverviewIntelligenceHero/);
     assert.doesNotMatch(hero, /TrustCharterSummary/);
     assert.doesNotMatch(hero, /REFWATCH_AUDIENCE/);

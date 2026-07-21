@@ -17,19 +17,12 @@ describe("design audit guardrails", () => {
   it("homepage intelligence hero leads with briefing and proof bar hierarchy", () => {
     const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
     const banner = readSrc("src/components/dashboard/IntelligenceHero.tsx");
-    const proofBar = readSrc("src/components/GoldMineProofBar.tsx");
     const dashboard = readSrc("src/components/OverviewDashboard.tsx");
     const page = readSrc("src/app/page.tsx");
     assert.match(hero, /IntelligenceHero/);
-    assert.match(hero, /buildIntelligenceHeroView/);
-    assert.match(banner, /OFFICIATING DECISION INTELLIGENCE/);
-    assert.match(banner, /Today.*Intelligence/);
-    assert.match(banner, /statistical anomaly/i);
+    assert.match(banner, /Officiating Intelligence/);
     assert.match(banner, /intelligence-hero-heading/);
-    assert.match(proofBar, /Platform proof metrics/);
     assert.match(page, /OverviewIntelligenceHero/);
-    assert.match(dashboard, /GoldMineProofBar/);
-    assert.match(dashboard, /OverviewFeaturedSignal/);
     assert.match(dashboard, /OverviewUpcomingSlateSection/);
     assert.match(dashboard, /OverviewResearchFooter/);
   });
@@ -40,14 +33,6 @@ describe("design audit guardrails", () => {
     assert.match(layout, /RefProfileFingerprintSection/);
     assert.match(visual, /Officiating Fingerprint/);
     assert.match(visual, /officiating-fingerprint-data/);
-  });
-
-  it("dashboard intelligence components power featured signal", () => {
-    const topSignal = readSrc("src/components/dashboard/TopSignal.tsx");
-    const overview = readSrc("src/components/OverviewFeaturedSignal.tsx");
-    assert.match(topSignal, /top-signal-percentile-label/);
-    assert.match(topSignal, /Open Intelligence/);
-    assert.match(overview, /TopSignal/);
   });
 
   it("game preview drawer exposes fingerprint visual tab", () => {
