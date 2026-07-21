@@ -156,11 +156,6 @@
   text-decoration: underline;
 }
 
-.intelligence-card-copy-btn {
-  width: 100%;
-  justify-content: center;
-}
-
 @media (max-width: 430px) {
   .intelligence-card-crew-pill {
     white-space: normal;

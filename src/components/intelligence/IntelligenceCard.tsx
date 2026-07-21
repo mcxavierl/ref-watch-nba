@@ -1,10 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
-import { trackCitationEvent } from "@/lib/analytics/trackCitation";
 import type { IntelligenceCardContent } from "@/lib/intelligence/intelligence-card-types";
-import { formatIntelligenceCitation } from "@/lib/intelligence/format-intelligence-citation";
 import "./intelligence-card.css";
 
 export type IntelligenceCardProps = {
@@ -15,34 +12,12 @@ export type IntelligenceCardProps = {
   className?: string;
 };
 
-type CopyState = "idle" | "copied" | "error";
-
 export function IntelligenceCard({
   content,
   isPremiumUnlocked = false,
   onViewEvidence,
   className = "",
 }: IntelligenceCardProps) {
-  const [copyState, setCopyState] = useState<CopyState>("idle");
-
-  const handleCopyCitation = useCallback(async () => {
-    const citation = formatIntelligenceCitation(content);
-    try {
-      await navigator.clipboard.writeText(citation);
-      setCopyState("copied");
-      void trackCitationEvent({
-        gameId: content.gameId,
-        refCrew: content.crewCitation,
-        metricType: content.metricType,
-        action: "COPY_CITATION",
-      });
-      window.setTimeout(() => setCopyState("idle"), 2000);
-    } catch {
-      setCopyState("error");
-      window.setTimeout(() => setCopyState("idle"), 2200);
-    }
-  }, [content]);
-
   return (
     <article
       className={`intelligence-card ${className}`.trim()}
@@ -88,19 +63,6 @@ export function IntelligenceCard({
           </button>
         </section>
       ) : null}
-
-      <button
-        type="button"
-        className="btn-primary intelligence-card-copy-btn"
-        onClick={handleCopyCitation}
-        aria-live="polite"
-      >
-        {copyState === "copied"
-          ? "✓ Citation Copied with Link!"
-          : copyState === "error"
-            ? "Clipboard blocked - try again"
-            : "[ Copy Citation ]"}
-      </button>
     </article>
   );
 }
