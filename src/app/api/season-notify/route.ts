@@ -2,6 +2,7 @@ import {
   parseSeasonNotifyPayload,
   SEASON_NOTIFY_DESTINATION,
 } from "@/lib/notify";
+import type { SeasonNotifyLeague } from "@/lib/season-notify-leagues";
 import { SITE_NAME } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 async function sendViaResend(
   apiKey: string,
   email: string,
-  league: "NBA" | "NHL",
+  league: SeasonNotifyLeague,
 ): Promise<Response> {
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -52,7 +53,7 @@ async function sendViaResend(
 
 async function sendViaFormSubmit(
   email: string,
-  league: "NBA" | "NHL",
+  league: SeasonNotifyLeague,
 ): Promise<Response> {
   try {
     const res = await fetch(

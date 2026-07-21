@@ -1,3 +1,7 @@
+import {
+  isSeasonNotifyLeague,
+  type SeasonNotifyLeague,
+} from "@/lib/season-notify-leagues";
 import { SITE_NAME } from "@/lib/site";
 
 /** Server-side only, never import from client components. */
@@ -32,7 +36,7 @@ export function proWaitlistMailto(league?: "NBA" | "NHL"): string {
 
 export type SeasonNotifyPayload = {
   email: string;
-  league: "NBA" | "NHL";
+  league: SeasonNotifyLeague;
 };
 
 export function parseSeasonNotifyPayload(
@@ -41,6 +45,6 @@ export function parseSeasonNotifyPayload(
   if (!body || typeof body !== "object") return null;
   const { email, league } = body as Record<string, unknown>;
   if (typeof email !== "string" || !isValidNotifyEmail(email)) return null;
-  if (league !== "NBA" && league !== "NHL") return null;
+  if (!isSeasonNotifyLeague(league)) return null;
   return { email: email.trim().toLowerCase(), league };
 }

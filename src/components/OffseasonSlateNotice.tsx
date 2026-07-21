@@ -1,6 +1,7 @@
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
+import type { SeasonNotifyLeague } from "@/lib/season-notify-leagues";
 
-type OffseasonLeague = "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+type OffseasonLeague = SeasonNotifyLeague;
 
 const COLLEGE_LEAGUES = new Set<OffseasonLeague>(["CBB", "CFB"]);
 
