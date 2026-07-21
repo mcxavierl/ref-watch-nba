@@ -6,6 +6,7 @@ import { refreshBaselinesFromGameLogs } from "./lib/baselines";
 import { mergeMarketLinesForActiveLeagues } from "./lib/game-logs";
 import { writeCbbConferenceCoverageSnapshot } from "./lib/build-cbb-conference-coverage";
 import { syncRefStatsFromLogs } from "./sync-ref-stats-from-logs";
+import { rebuildAllGsniFromLogs } from "./rebuild-gsni-all";
 import { NBA_TEN_SEASONS, NHL_TEN_SEASONS } from "./lib/ten-season-policy";
 import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
 import { PRO_ONLY_LIVE_LEAGUE_IDS, LAUNCHED_NCAA_LEAGUE_IDS } from "../src/lib/verified-live-leagues";
@@ -257,6 +258,7 @@ function copyNhlVerifiedIngest(root: string): boolean {
 const root = process.cwd();
 mergeMarketLinesForActiveLeagues(root);
 syncRefStatsFromLogs(root);
+rebuildAllGsniFromLogs(root);
 copyRefStatsCore(root);
 const usedVerifiedNba = copyNbaVerifiedIngest(root);
 if (!usedVerifiedNba) {

@@ -18,6 +18,7 @@ import {
   leagueTenSeasons,
 } from "../src/lib/league-seasons";
 import type { LeagueId } from "../src/lib/leagues";
+import { leagueHasResearchView } from "../src/lib/league-manifest";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "../src/lib/types";
 import { auditRefIdentity } from "./lib/audit-ref-identity";
 import { REF_GAME_COUNT_LEAGUES } from "./fix-ref-game-counts";
@@ -350,6 +351,46 @@ function checkFoulDifferentialCoverage(): void {
   }
 }
 
+function coreStatsPathForLeague(leagueId: LeagueId): string {
+  if (leagueId === "nba") {
+    return path.join(ROOT, "data", "ref-stats-core.json");
+  }
+  return path.join(ROOT, "data", leagueId, "ref-stats-core.json");
+}
+
+function checkGsniCoverage(): void {
+  const gsniLeagues: LeagueId[] = ["nba", "nfl", "nhl"];
+  for (const leagueId of gsniLeagues) {
+    if (!leagueHasResearchView(leagueId, "game-state")) continue;
+
+    const statsPath = coreStatsPathForLeague(leagueId);
+    if (!fs.existsSync(statsPath)) {
+      warn(`${leagueId.toUpperCase()} GSNI: missing ${statsPath}`);
+      continue;
+    }
+
+    const stats = JSON.parse(fs.readFileSync(statsPath, "utf8")) as RefStatsFile;
+    const withGsni = stats.refs.filter((ref) => ref.referee_gsni !== undefined).length;
+    const withHighLeverage = stats.refs.filter(
+      (ref) => (ref.gsniHighLeverageMinutes ?? 0) > 0,
+    ).length;
+
+    console.log(
+      `${leagueId.toUpperCase()} GSNI: ${withGsni}/${stats.refs.length} refs rated · ${withHighLeverage} with high-leverage minutes`,
+    );
+
+    if (withGsni === 0 && stats.refs.length > 0) {
+      fail(
+        `${leagueId.toUpperCase()}: game-state research is enabled but no refs have referee_gsni - run npm run rebuild-gsni:all`,
+      );
+    } else if (withGsni < Math.min(5, stats.refs.length)) {
+      warn(
+        `${leagueId.toUpperCase()}: only ${withGsni} refs have GSNI scores - review rebuild-gsni pipeline`,
+      );
+    }
+  }
+}
+
 function checkBbrFixtureCoverage(): void {
   const result = verifyBbrCoverage(ROOT);
   console.log(
@@ -383,6 +424,9 @@ function main(): void {
 
   console.log("");
   checkFoulDifferentialCoverage();
+
+  console.log("");
+  checkGsniCoverage();
 
   console.log("");
   const identityAudit = auditRefIdentity(ROOT);

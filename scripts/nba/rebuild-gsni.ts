@@ -6,6 +6,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { attachGsniFieldsFromGames } from "../lib/attach-gsni";
 import { loadGameLogs } from "../lib/game-logs";
+import { splitRefStatsForDeploy } from "../lib/split-ref-stats";
 import { GSNI_MIN_HIGH_LEVERAGE_MINUTES } from "../../src/lib/gsni";
 import type { RefStatsFile } from "../../src/lib/types";
 
@@ -17,7 +18,8 @@ function writeStats(stats: RefStatsFile): void {
   const payload = `${JSON.stringify(stats, null, 2)}\n`;
   fs.writeFileSync(STATS_PATH, payload);
   if (fs.existsSync(CORE_PATH)) {
-    fs.writeFileSync(CORE_PATH, payload);
+    const { core } = splitRefStatsForDeploy(stats);
+    fs.writeFileSync(CORE_PATH, `${JSON.stringify(core, null, 2)}\n`);
   }
 }
 

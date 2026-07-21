@@ -6,6 +6,7 @@ import {
 import type { InsightsLeagueId } from "@/lib/league-manifest";
 import type { RefStatsFile } from "@/lib/types";
 import { GameStateIndexDashboard } from "@/components/GameStateIndexDashboard";
+import { GsniResearchIntro } from "@/components/GsniResearchIntro";
 
 export function GameStateIndexResearchSection({
   stats,
@@ -28,7 +29,22 @@ export function GameStateIndexResearchSection({
   const rows = buildGsniResearchRows(stats, resolvedConfig, {
     highVarianceOnly: false,
   });
-  if (rows.length === 0) return null;
+
+  if (rows.length === 0) {
+    return (
+      <>
+        <GsniResearchIntro
+          leagueId={leagueId}
+          ratedCount={0}
+          trackedCount={stats.refs.length}
+        />
+        <p className="gsni-sub-text section-lead">
+          No officials meet the high-leverage sample gate yet. Game-State Index
+          metrics refresh when officiating logs are rebuilt.
+        </p>
+      </>
+    );
+  }
 
   return (
     <GameStateIndexDashboard

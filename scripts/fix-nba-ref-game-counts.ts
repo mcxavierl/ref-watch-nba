@@ -200,6 +200,11 @@ export function rebuildNbaRefStatsFromLogs(
       bettingStats: preserved?.bettingStats,
       marketExpectation: preserved?.marketExpectation,
       provenance: preserved?.provenance,
+      referee_gsni: preserved?.referee_gsni,
+      referee_gsni_volatility: preserved?.referee_gsni_volatility,
+      gsniHighLeverageMinutes: preserved?.gsniHighLeverageMinutes,
+      gsniSampleGames: preserved?.gsniSampleGames,
+      officialStatsBySeason: preserved?.officialStatsBySeason,
     });
   }
 
