@@ -17,7 +17,6 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { chromium, type Browser } from "playwright";
 import {
-  applyThemeMatrixVariant,
   evaluateProbeMeasurement,
   measureProbe,
   summarizeMeasurements,
@@ -27,6 +26,8 @@ import {
   THEME_MATRIX_PAGES,
   THEME_MATRIX_VARIANTS,
 } from "./lib/theme-matrix-config";
+
+const REFWATCH_A11Y_STORAGE_KEY = "refwatch-a11y";
 
 type CliOptions = {
   baseUrl: string;
@@ -73,15 +74,48 @@ async function waitForServer(baseUrl: string, timeoutMs = 120_000): Promise<void
   throw new Error(`Timed out waiting for ${baseUrl}`);
 }
 
+async function assertStylesheetsHealthy(baseUrl: string): Promise<void> {
+  const response = await fetch(baseUrl, { redirect: "follow" });
+  if (!response.ok) {
+    throw new Error(`Theme matrix audit could not load ${baseUrl} (${response.status})`);
+  }
+
+  const html = await response.text();
+  const stylesheets = [...html.matchAll(/href="(\/_next\/static\/css\/[^"]+\.css)"/g)].map(
+    (match) => match[1],
+  );
+  if (stylesheets.length === 0) {
+    throw new Error("Theme matrix audit found no stylesheet links in HTML");
+  }
+
+  const broken = [];
+  for (const href of stylesheets) {
+    const cssResponse = await fetch(new URL(href, baseUrl), { redirect: "follow" });
+    if (!cssResponse.ok) {
+      broken.push(`${href} (${cssResponse.status})`);
+    }
+  }
+
+  if (broken.length > 0) {
+    throw new Error(
+      `Theme matrix audit detected broken CSS bundles (${broken.join(", ")}). Rebuild with npm run build:next and restart the server.`,
+    );
+  }
+}
+
 async function startServerIfNeeded(baseUrl: string): Promise<{
   child: ChildProcess | null;
 }> {
   try {
     const response = await fetch(baseUrl, { redirect: "follow" });
     if (response.ok || response.status < 500) {
+      await assertStylesheetsHealthy(baseUrl);
       return { child: null };
     }
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("broken CSS bundles")) {
+      throw error;
+    }
     // start local server below
   }
 
@@ -94,7 +128,31 @@ async function startServerIfNeeded(baseUrl: string): Promise<{
   });
 
   await waitForServer(baseUrl);
+  await assertStylesheetsHealthy(baseUrl);
   return { child };
+}
+
+const THEME_MATRIX_VISIBILITY_CSS = [
+  "*, *::before, *::after {",
+  "  animation: none !important;",
+  "  transition: none !important;",
+  "}",
+  ".page-content-fade-in,",
+  ".page-content-fade-in * {",
+  "  opacity: 1 !important;",
+  "  visibility: visible !important;",
+  "}",
+].join("\n");
+
+async function ensureAuditVisibility(page: import("playwright").Page): Promise<void> {
+  await page.addStyleTag({ content: THEME_MATRIX_VISIBILITY_CSS });
+  await page.evaluate(() => {
+    for (const element of document.querySelectorAll<HTMLElement>(".page-content-fade-in")) {
+      element.style.opacity = "1";
+      element.style.visibility = "visible";
+      element.style.animation = "none";
+    }
+  });
 }
 
 async function captureScreenshot(
@@ -104,8 +162,11 @@ async function captureScreenshot(
 ): Promise<void> {
   if (selector) {
     const target = page.locator(selector).first();
-    await target.screenshot({ path: outputPath });
-    return;
+    const visible = await target.isVisible().catch(() => false);
+    if (visible) {
+      await target.screenshot({ path: outputPath });
+      return;
+    }
   }
   await page.screenshot({ path: outputPath, fullPage: true });
 }
@@ -115,25 +176,25 @@ async function waitForReadySelector(
   selector: string,
   timeoutMs = 45_000,
 ): Promise<void> {
-  const deadline = Date.now() + timeoutMs;
-  let lastError: unknown;
+  await page.waitForSelector(selector, { state: "attached", timeout: timeoutMs });
+}
 
-  while (Date.now() < deadline) {
-    try {
-      await page.waitForSelector(selector, { state: "attached", timeout: 5_000 });
-      const target = page.locator(selector).first();
-      await target.scrollIntoViewIfNeeded();
-      await target.waitFor({ state: "visible", timeout: 5_000 });
-      return;
-    } catch (error) {
-      lastError = error;
-      await page.waitForTimeout(750);
-    }
-  }
-
-  throw lastError instanceof Error
-    ? lastError
-    : new Error(`Timed out waiting for visible selector: ${selector}`);
+async function waitForHydratedTheme(
+  page: import("playwright").Page,
+  variant: { color: "light" | "dark"; contrast: "default" | "high" },
+): Promise<void> {
+  await page.waitForFunction(
+    (expected) => {
+      const root = document.documentElement;
+      return (
+        root.dataset.color === expected.color &&
+        root.dataset.contrast === expected.contrast
+      );
+    },
+    variant,
+    { timeout: 15_000 },
+  );
+  await page.waitForTimeout(750);
 }
 
 async function runAudit(browser: Browser, options: CliOptions): Promise<ProbeFailure[]> {
@@ -154,14 +215,37 @@ async function runAudit(browser: Browser, options: CliOptions): Promise<ProbeFai
       const context = await browser.newContext({
         viewport: { width: 1440, height: 1200 },
       });
+      await context.addInitScript((css) => {
+        const STYLE_ID = "theme-matrix-audit-overrides";
+        const inject = () => {
+          if (document.getElementById(STYLE_ID)) return;
+          const style = document.createElement("style");
+          style.id = STYLE_ID;
+          style.textContent = css;
+          (document.head ?? document.documentElement).appendChild(style);
+        };
+        inject();
+        document.addEventListener("DOMContentLoaded", inject, { once: true });
+      }, THEME_MATRIX_VISIBILITY_CSS);
+      await context.addInitScript((payload) => {
+        localStorage.setItem(payload.key, payload.value);
+      }, {
+        key: REFWATCH_A11Y_STORAGE_KEY,
+        value: JSON.stringify({
+          contrast: variant.contrast,
+          colorMode: variant.color,
+          textSize: "default",
+          font: "default",
+        }),
+      });
       const page = await context.newPage();
 
       await page.goto(`${options.baseUrl}${pageConfig.path}`, {
         waitUntil: "networkidle",
       });
-      await applyThemeMatrixVariant(page, variant);
-      await page.reload({ waitUntil: "networkidle" });
       await waitForReadySelector(page, pageConfig.readySelector);
+      await waitForHydratedTheme(page, variant);
+      await ensureAuditVisibility(page);
 
       const screenshotPath = join(
         options.outputDir,

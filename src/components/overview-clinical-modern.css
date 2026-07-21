@@ -772,6 +772,20 @@ html[data-color="dark"] .overview-shell--clinical .overview-slate-row-names {
   font-size: 0.8125rem;
 }
 
+html[data-color="dark"] .overview-shell--clinical .overview-title,
+html.dark .overview-shell--clinical .overview-title,
+html[data-color="dark"] .overview-shell--clinical .overview-section-title,
+html.dark .overview-shell--clinical .overview-section-title {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"] .overview-shell--clinical .overview-section-lead,
+html.dark .overview-shell--clinical .overview-section-lead,
+html[data-color="dark"] .overview-shell--clinical .overview-hero-minimal-bridge,
+html.dark .overview-shell--clinical .overview-hero-minimal-bridge {
+  color: var(--text-secondary);
+}
+
 .section-block--compact .overview-slate-notes {
   margin-bottom: 0.55rem;
 }

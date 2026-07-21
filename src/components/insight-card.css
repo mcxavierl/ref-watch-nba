@@ -1036,6 +1036,13 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box-
   font-style: italic;
 }
 
+html[data-color="dark"] .insight-editorial-kicker,
+html.dark .insight-editorial-kicker,
+html[data-color="dark"]:not([data-contrast="high"]) .insight-editorial-kicker,
+html.dark:not([data-contrast="high"]) .insight-editorial-kicker {
+  color: var(--text-secondary);
+}
+
 html[data-color="light"]:not([data-contrast="high"]) .insight-editorial-kicker,
 html[data-color="light"]:not([data-contrast="high"]) .insight-editorial-league,
 html[data-color="light"]:not([data-contrast="high"]) .insight-editorial-metric-label,

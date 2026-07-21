@@ -98,6 +98,12 @@ export async function measureProbe(page: Page, selector: string): Promise<Browse
       }
     }
 
+    if (!background) {
+      const colorMode = document.documentElement.dataset.color ?? "dark";
+      background =
+        colorMode === "light" ? "rgb(248, 250, 252)" : "rgb(11, 15, 25)";
+    }
+
     const text = (element.textContent ?? "").replace(/\s+/g, " ").trim();
 
     return {

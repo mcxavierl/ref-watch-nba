@@ -169,11 +169,10 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(section, /upcoming-games-grid/);
     assert.doesNotMatch(section, /overview-slate-notes/);
     assert.doesNotMatch(section, /overview-slate-updated/);
-    assert.match(card, /selectUpcomingCardHeroInsight/);
-    assert.match(card, /upcoming-game-card__hero-insight/);
+    assert.match(card, /buildProjectionEvidence/);
+    assert.match(card, /EvidenceTeaser/);
     assert.match(card, /upcoming-game-card__hero-fallback/);
     assert.match(card, /upcoming-game-card__context-slot/);
-    assert.match(card, /line-clamp-1/);
     assert.match(card, /upcoming-game-card__footer/);
     assert.match(card, /upcoming-game-card__cta--footer/);
     assert.match(card, /upcoming-game-card__crew-meta/);
