@@ -10052,6 +10052,28 @@ p {
     background: color-mix(in srgb, var(--surface-raised) 55%, transparent);
   }
 
+  .game-slate-preview-error-fallback {
+    margin: var(--space-4) var(--space-5);
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--surface-raised) 70%, transparent);
+  }
+
+  .game-slate-preview-error-title {
+    margin: 0 0 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--ink-strong);
+  }
+
+  .game-slate-preview-error-copy {
+    margin: 0 0 1rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--ink-muted);
+  }
+
   .ref-preview-drawer-summary-copy {
     margin: 0.45rem 0 0;
     font-size: var(--text-sm);

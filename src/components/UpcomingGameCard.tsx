@@ -154,7 +154,7 @@ export function UpcomingGameCard({
         </div>
 
         <p
-          className={`line-clamp-2 rounded-lg border px-2.5 py-1.5 text-center text-[0.6875rem] font-medium leading-snug ${trendToneClass(signals.tone)}`}
+          className={`upcoming-game-card__trend line-clamp-2 shrink-0 min-h-[2.75rem] rounded-lg border px-2.5 py-2 text-center text-[0.6875rem] font-medium leading-snug ${trendToneClass(signals.tone)}`}
           title={signals.primaryTrend}
         >
           {signals.primaryTrend}

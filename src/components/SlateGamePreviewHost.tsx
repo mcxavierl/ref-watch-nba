@@ -5,6 +5,7 @@ import { GameSlateCard } from "@/components/GameSlateCard";
 import { GameSlatePreviewDrawer } from "@/components/GameSlatePreviewDrawer";
 import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
+import { normalizeGameSlatePreview } from "@/lib/normalize-game-slate-preview";
 import type { ComponentProps } from "react";
 
 type GameSlateCardProps = ComponentProps<typeof GameSlateCard>;
@@ -20,15 +21,20 @@ export function SlateGamePreviewHost({ games }: { games: SlateGamePreviewBundle[
 
   return (
     <>
-      {games.map(({ gameId, card, preview }) => (
+      {games.map(({ gameId, card, preview }) => {
+        const safePreview = normalizeGameSlatePreview(preview);
+        return (
         <div key={gameId} id={`slate-game-${gameId}`}>
           <GameSlateCard
             {...card}
-            projectionEvidence={preview ? buildProjectionEvidence(preview) : null}
-            onOpenPreview={preview ? () => setSelected(preview) : undefined}
+            projectionEvidence={
+              safePreview ? buildProjectionEvidence(safePreview) : null
+            }
+            onOpenPreview={safePreview ? () => setSelected(safePreview) : undefined}
           />
         </div>
-      ))}
+        );
+      })}
       <GameSlatePreviewDrawer
         preview={selected}
         open={selected !== null}

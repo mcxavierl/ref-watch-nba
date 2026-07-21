@@ -5,8 +5,18 @@ import { GameSlatePreviewDrawer } from "@/components/GameSlatePreviewDrawer";
 import { OverviewSlateRow } from "@/components/OverviewSlateRow";
 import { UpcomingGameCard } from "@/components/UpcomingGameCard";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
+import { normalizeGameSlatePreview } from "@/lib/normalize-game-slate-preview";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { useSlateLiveScores } from "@/lib/use-slate-live-scores";
+
+function resolvePreviewForGame(
+  game: OverviewSlateEntry,
+  previewByKey: Map<string, GameSlatePreviewPayload>,
+): GameSlatePreviewPayload | null {
+  const raw =
+    previewByKey.get(`${game.leagueId}:${game.gameId}`) ?? game.preview ?? null;
+  return normalizeGameSlatePreview(raw);
+}
 
 export function OverviewSlateGamesInteractive({
   games,
@@ -20,19 +30,21 @@ export function OverviewSlateGamesInteractive({
   const [selected, setSelected] = useState<GameSlatePreviewPayload | null>(null);
   const liveGames = useSlateLiveScores(games);
 
-  const previewByKey = new Map(
-    liveGames
-      .filter(
-        (game): game is OverviewSlateEntry & { preview: GameSlatePreviewPayload } =>
-          Boolean(game.preview),
-      )
-      .map((game) => [`${game.leagueId}:${game.gameId}`, game.preview]),
-  );
+  const previewByKey = new Map<string, GameSlatePreviewPayload>();
+  for (const game of liveGames) {
+    const preview = normalizeGameSlatePreview(game.preview);
+    if (preview) {
+      previewByKey.set(`${game.leagueId}:${game.gameId}`, preview);
+    }
+  }
 
   const openPreview = (game: OverviewSlateEntry) => {
-    const preview = previewByKey.get(`${game.leagueId}:${game.gameId}`);
+    const preview = resolvePreviewForGame(game, previewByKey);
     if (preview) setSelected(preview);
   };
+
+  const hasPreview = (game: OverviewSlateEntry) =>
+    resolvePreviewForGame(game, previewByKey) !== null;
 
   return (
     <>
@@ -42,22 +54,14 @@ export function OverviewSlateGamesInteractive({
             key={`${game.leagueId}-${game.gameId}`}
             game={game}
             index={index}
-            onOpenPreview={
-              previewByKey.has(`${game.leagueId}:${game.gameId}`)
-                ? () => openPreview(game)
-                : undefined
-            }
+            onOpenPreview={hasPreview(game) ? () => openPreview(game) : undefined}
           />
         ) : (
           <OverviewSlateRow
             key={`${game.leagueId}-${game.gameId}`}
             game={game}
             showHubLink={showHubLink}
-            onOpenPreview={
-              previewByKey.has(`${game.leagueId}:${game.gameId}`)
-                ? () => openPreview(game)
-                : undefined
-            }
+            onOpenPreview={hasPreview(game) ? () => openPreview(game) : undefined}
           />
         ),
       )}
