@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 import { useColorMode } from "@/lib/a11y/useColorMode";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { leagueLogoNavClass, leagueLogoSrc, leagueHeroLogoDimensions } from "@/lib/league-logo-src";
@@ -21,10 +21,11 @@ export function LeagueHeroLogo({
   priority = false,
 }: LeagueHeroLogoProps) {
   const colorMode = useColorMode();
+  const [failed, setFailed] = useState(false);
   const src = leagueLogoSrc(leagueId, colorMode);
   const label = LEAGUES[leagueId].label;
 
-  if (!src) {
+  if (!src || failed) {
     return (
       <span
         className={`league-hero-logo-fallback ${className}`.trim()}
@@ -38,16 +39,18 @@ export function LeagueHeroLogo({
   const { width, height } = leagueHeroLogoDimensions(leagueId);
 
   return (
-    <Image
+    // eslint-disable-next-line @next/next/no-img-element -- onError fallback to short label
+    <img
       src={src}
       alt={`${label} logo`}
       width={width}
       height={height}
       className={`league-hero-logo ${leagueLogoNavClass(leagueId)} ${className}`.trim()}
       data-league={leagueId}
-      priority={priority}
+      fetchPriority={priority ? "high" : "auto"}
       decoding="async"
       referrerPolicy="no-referrer"
+      onError={() => setFailed(true)}
     />
   );
 }

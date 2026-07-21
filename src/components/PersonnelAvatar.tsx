@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useColorMode } from "@/lib/a11y/useColorMode";
 import { leagueLogoSrc } from "@/lib/league-logo-src";
 
@@ -28,6 +29,7 @@ export function PersonnelAvatar({
   className?: string;
 }) {
   const colorMode = useColorMode();
+  const [nhlLogoFailed, setNhlLogoFailed] = useState(false);
   const nhlLogoSrc =
     sport === "nhl" ? leagueLogoSrc("nhl", colorMode === "light" ? "light" : "dark") : null;
 
@@ -48,10 +50,15 @@ export function PersonnelAvatar({
       >
         {initials(name)}
       </span>
-      {sport === "nhl" && nhlLogoSrc ? (
+      {sport === "nhl" && nhlLogoSrc && !nhlLogoFailed ? (
         <span className="personnel-avatar-badge personnel-avatar-badge--nhl-logo" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element -- league mark overlay */}
-          <img src={nhlLogoSrc} alt="" className="personnel-avatar-nhl-logo" />
+          <img
+            src={nhlLogoSrc}
+            alt=""
+            className="personnel-avatar-nhl-logo"
+            onError={() => setNhlLogoFailed(true)}
+          />
         </span>
       ) : null}
     </span>

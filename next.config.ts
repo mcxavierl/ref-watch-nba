@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import {
+  DATA_JSON_CACHE_CONTROL,
+  STATIC_ASSET_CACHE_CONTROL,
+} from "./src/lib/cache-control";
 import { unifiedIALegacyRedirects } from "./src/lib/unified-ia-redirects";
 
 const nextConfig: NextConfig = {
@@ -82,6 +86,28 @@ const nextConfig: NextConfig = {
         has: [{ type: "query", key: "league", value: "nhl" }],
         destination: "/nhl/research/tendencies",
         permanent: false,
+      },
+    ];
+  },
+  async headers() {
+    return [
+      {
+        source: "/data/:path*",
+        headers: [
+          { key: "Cache-Control", value: DATA_JSON_CACHE_CONTROL },
+        ],
+      },
+      {
+        source: "/logos/:path*",
+        headers: [
+          { key: "Cache-Control", value: STATIC_ASSET_CACHE_CONTROL },
+        ],
+      },
+      {
+        source: "/assets/:path*",
+        headers: [
+          { key: "Cache-Control", value: STATIC_ASSET_CACHE_CONTROL },
+        ],
       },
     ];
   },
