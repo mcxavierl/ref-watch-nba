@@ -14,7 +14,7 @@ export function MatchupInsightCard({ insight, className = "" }: MatchupInsightCa
 
   return (
     <article
-      className={`matchup-insight-card border border-slate-800 bg-slate-900/40${className ? ` ${className}` : ""}`}
+      className={`matchup-insight-card${className ? ` ${className}` : ""}`}
       aria-label={`${insight.contextPill}: ${insight.title}`}
     >
       <span className="matchup-insight-card__pill">{insight.contextPill}</span>

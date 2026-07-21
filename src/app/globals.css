@@ -5,7 +5,7 @@
 @import "../styles/kpi-data-pill.css";
 @import "../styles/pill-constraints.css";
 @import "../components/terminal-integrity.css";
-@import "../styles/season-highlights-delight.css";
+@import "../styles/light-mode-surfaces.css";
 
 @custom-variant dark (&:where([data-color="dark"], [data-color="dark"] *));
 
@@ -6281,7 +6281,9 @@ p {
   .clinical-insight-matrix-card {
     position: relative;
     gap: var(--space-3);
-    background-color: rgb(2 6 23);
+    background-color: var(--bg-surface-1);
+    border-color: var(--border-default);
+    color: var(--text-primary);
   }
 
   .clinical-insight-matrix-header {
@@ -6828,13 +6830,13 @@ p {
     flex-direction: column;
     gap: 0.15rem;
     border-radius: 0.5rem;
-    border: 1px solid rgb(51 65 85);
-    background: rgb(15 23 42);
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface-1);
     padding: 0.5rem;
     font-size: 0.75rem;
     font-weight: 400;
     line-height: 1.45;
-    color: rgb(226 232 240);
+    color: var(--text-secondary);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     white-space: normal;
     text-align: left;
@@ -7709,6 +7711,9 @@ p {
 
   .insight-badge {
     max-width: 100%;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface-1);
+    color: var(--text-secondary);
   }
 
   .gsni-soft-lock-card-head {
@@ -16714,11 +16719,11 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 .ref-compare-combobox-input {
   width: 100%;
   border-radius: 0.625rem;
-  border: 1px solid rgb(51 65 85);
-  background: rgb(15 23 42);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface-1);
   padding: 0.65rem 2.25rem 0.65rem 0.75rem;
   font-size: var(--text-sm);
-  color: rgb(248 250 252);
+  color: var(--text-primary);
 }
 
 .ref-compare-combobox-input:focus {
@@ -16760,8 +16765,8 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
   padding: 0.3rem;
   list-style: none;
   border-radius: 0.625rem;
-  border: 1px solid rgb(51 65 85);
-  background: rgb(15 23 42);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface-1);
   box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
 }
 
@@ -16776,7 +16781,7 @@ html[data-color="light"]:not([data-contrast="high"]) .matrix-split-share.panel-i
 
 .ref-compare-combobox-option--active,
 .ref-compare-combobox-option:hover {
-  background: rgb(30 41 59);
+  background: var(--bg-surface-2);
 }
 
 .ref-compare-combobox-option--selected {

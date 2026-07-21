@@ -524,17 +524,12 @@ html.dark .insight-card--inline {
 
 .insight-split-metrics-box--sample .insight-split-sample-value,
 .insight-split-metrics-box--sample {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .insight-split-metrics-box--delta {
-  border-color: rgb(30 41 59);
-  background: rgb(15 23 42);
-}
-
-html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box--delta {
-  background: rgb(2 6 23);
-  border-color: rgb(51 65 85);
+  border-color: var(--border-default);
+  background: var(--bg-surface-2);
 }
 
 .insight-split-delta-inner {
@@ -563,7 +558,7 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box-
   font-size: 1.15rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: #fff;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
@@ -575,7 +570,7 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box-
   font-size: 0.72rem;
   font-weight: 400;
   line-height: 1.35;
-  color: rgb(148 163 184);
+  color: var(--text-muted);
 }
 
 .insight-split-delta-value {
@@ -602,7 +597,7 @@ html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box-
 
 .insight-card[data-tone="positive"] .insight-split-metrics-box--sample .insight-split-sample-value,
 .insight-card[data-tone="negative"] .insight-split-metrics-box--sample .insight-split-sample-value {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .clinical-insight-matrix-card .insight-split-delta-value--positive {
