@@ -47,6 +47,8 @@ import { WhistleIndexGauge } from "@/components/WhistleIndexGauge";
 import { signedDeltaTone } from "@/lib/metric-delight";
 import { semanticImpactTextClass } from "@/lib/semantic-impact";
 import { GameGrudgeStorylines } from "./GrudgeMatchSection";
+import { EvidenceTeaser } from "@/components/evidence/EvidenceTeaser";
+import type { ProjectionEvidencePayload } from "@/lib/analytics/evidence";
 import { NhlSlateSignalBadges } from "./NhlSlateSignalBadges";
 import { OuLeanBadge } from "./OuLeanBadge";
 import { SampleGateBadge } from "./SampleGateBadge";
@@ -81,6 +83,7 @@ export function GameSlateCard({
   overBenchmark,
   slateIndex = 0,
   onOpenPreview,
+  projectionEvidence,
 }: {
   gameId: string;
   matchup: string;
@@ -97,6 +100,7 @@ export function GameSlateCard({
   overBenchmark?: number;
   slateIndex?: number;
   onOpenPreview?: () => void;
+  projectionEvidence?: ProjectionEvidencePayload | null;
 }) {
   const copy = sportCopy(sport);
   const defaultBenchmark = SPORT_BENCHMARK[sport];
@@ -313,21 +317,27 @@ export function GameSlateCard({
                 </span>
               </div>
             </div>
-            <p className="game-signal-line game-signal-line--detail">
-              <span className="game-signal-label">Crew read:</span>{" "}
-              {formatPremiumLabel(premium.scoringPremium)} {copy.pointsAboveAverage.toLowerCase()}{" "}
-              ({formatSigned(premium.gapVsBenchmark)} vs {bench}) ·{" "}
-              {metrics.avgFouls} {copy.whistleUnit} whistle avg ({foulsDelta} vs league)
-            </p>
+            {projectionEvidence ? (
+              <div className="game-slate-evidence-teaser">
+                <EvidenceTeaser evidence={projectionEvidence} />
+              </div>
+            ) : (
+              <p className="game-signal-line game-signal-line--detail">
+                <span className="game-signal-label">Crew read:</span>{" "}
+                {formatPremiumLabel(premium.scoringPremium)} {copy.pointsAboveAverage.toLowerCase()}{" "}
+                ({formatSigned(premium.gapVsBenchmark)} vs {bench}) ·{" "}
+                {metrics.avgFouls} {copy.whistleUnit} whistle avg ({foulsDelta} vs league)
+              </p>
+            )}
           </>
         )}
-        {homeBias && homeBias.kind !== "neutral" && (
+        {!projectionEvidence && homeBias && homeBias.kind !== "neutral" && (
           <p className="game-signal-line">
             <span className="game-signal-label">{copy.homeBiasLabel}:</span>{" "}
             {homeBias.headline}
           </p>
         )}
-        {grudgeHeadline && (
+        {!projectionEvidence && grudgeHeadline && (
           <p className="game-signal-line text-zinc-700">
             <span className="game-signal-label">Ref history flag:</span>{" "}
             {grudgeHeadline}

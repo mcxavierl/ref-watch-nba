@@ -268,6 +268,8 @@ export function GameSlatePreviewDrawer({
                 </section>
               )}
 
+              <EvidenceDrawer evidence={projectionEvidence} className="game-slate-preview-evidence" />
+
               {preview.teamImpacts.length > 0 ? (
                 <section
                   className="game-slate-preview-team-impact-grid"
@@ -392,8 +394,6 @@ export function GameSlatePreviewDrawer({
                 <p className="ref-preview-drawer-summary-copy">{preview.homeBiasHeadline}</p>
               </section>
             ) : null}
-
-            <EvidenceDrawer evidence={projectionEvidence} />
 
             {preview.storylines.length > 0 ? (
               <section className="ref-preview-drawer-section" aria-label="Ref history flags">

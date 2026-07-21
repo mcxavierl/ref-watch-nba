@@ -1,0 +1,84 @@
+.evidence-teaser {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem 0.65rem;
+  width: 100%;
+}
+
+.evidence-teaser-strength {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.evidence-teaser-strength-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgb(100 116 139);
+}
+
+.evidence-teaser-strength-meter {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.12rem;
+  height: 0.7rem;
+}
+
+.evidence-teaser-strength-bar {
+  display: block;
+  width: 0.22rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgb(51 65 85);
+}
+
+.evidence-teaser-strength-bar--filled {
+  background: linear-gradient(180deg, rgb(16 185 129), rgb(52 211 153));
+}
+
+.evidence-teaser-strength-bar:nth-child(2).evidence-teaser-strength-bar--filled {
+  height: 0.45rem;
+}
+
+.evidence-teaser-strength-bar:nth-child(3).evidence-teaser-strength-bar--filled {
+  height: 0.55rem;
+}
+
+.evidence-teaser-strength-bar:nth-child(4).evidence-teaser-strength-bar--filled {
+  height: 0.7rem;
+}
+
+.evidence-teaser-strength-score {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: rgb(226 232 240);
+}
+
+.evidence-teaser-confidence {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid rgb(71 85 105 / 0.65);
+  background: rgb(30 41 59 / 0.55);
+  padding: 0.12rem 0.45rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: rgb(203 213 225);
+}
+
+.evidence-teaser--compact .evidence-teaser-strength-label {
+  display: none;
+}
+
+.game-slate-evidence-teaser {
+  margin-top: 0.35rem;
+}
+
+.game-slate-preview-evidence {
+  margin-top: 0.25rem;
+}

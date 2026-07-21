@@ -1,8 +1,12 @@
 "use client";
 
 import { useId } from "react";
-import { MetricInfoHint } from "@/components/shared/MetricInfoHint";
-import { TooltipProvider, useTooltipPanelClassName } from "@/components/ui/TooltipProvider";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type {
   EvidenceDriver,
   EvidenceImpact,
@@ -33,6 +37,18 @@ const CONTRIBUTION_COLORS: Record<ModelContribution["factor"], string> = {
   Venue: "evidence-contribution-segment--venue",
 };
 
+const CONTRIBUTION_LABELS: Record<ModelContribution["factor"], string> = {
+  Crew: "Crew Weight",
+  Teams: "Team Weight",
+  "Historical Matchups": "Matchup History",
+  "Rest/Travel": "Rest/Travel",
+  Venue: "Venue",
+};
+
+function impactLabel(impact: EvidenceImpact): string {
+  return impact === "MEDIUM" ? "MED" : impact;
+}
+
 function EvidenceMetricTooltip({
   hint,
   children,
@@ -40,11 +56,15 @@ function EvidenceMetricTooltip({
   hint: string;
   children: React.ReactNode;
 }) {
-  const panelClassName = useTooltipPanelClassName();
   return (
-    <MetricInfoHint hint={hint} panelClassName={panelClassName}>
-      {children}
-    </MetricInfoHint>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button type="button" className="evidence-tooltip-trigger">
+          {children}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>{hint}</TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -77,7 +97,7 @@ function DriverColumn({
                 >
                   <div className="evidence-driver-card-head">
                     <span className={IMPACT_BADGE_CLASS[driver.impact]}>
-                      {driver.impact}
+                      {impactLabel(driver.impact)}
                     </span>
                     <span className="evidence-driver-feature">{driver.feature}</span>
                   </div>
@@ -106,7 +126,7 @@ function ModelContributionBar({
             key={row.factor}
             className={`evidence-contribution-segment ${CONTRIBUTION_COLORS[row.factor]}`}
             style={{ width: `${row.percentage}%` }}
-            title={`${row.factor}: ${row.percentage}%`}
+            title={`${CONTRIBUTION_LABELS[row.factor]}: ${row.percentage}%`}
           />
         ))}
       </div>
@@ -114,13 +134,13 @@ function ModelContributionBar({
         {contributions.map((row) => (
           <li key={row.factor}>
             <EvidenceMetricTooltip
-              hint={`${row.factor} contributed ${row.percentage}% of the projection weight for this matchup profile.`}
+              hint={`${CONTRIBUTION_LABELS[row.factor]} contributed ${row.percentage}% of the projection weight for this matchup profile.`}
             >
               <span className="evidence-contribution-legend-item">
                 <span
                   className={`evidence-contribution-swatch ${CONTRIBUTION_COLORS[row.factor]}`}
                 />
-                {row.factor} · {row.percentage}%
+                {CONTRIBUTION_LABELS[row.factor]} · {row.percentage}%
               </span>
             </EvidenceMetricTooltip>
           </li>
@@ -136,10 +156,7 @@ function EvidenceDrawerBody({ evidence }: { evidence: ProjectionEvidencePayload 
   const titleId = useId();
 
   return (
-    <section
-      className="evidence-drawer-card"
-      aria-labelledby={titleId}
-    >
+    <section className="evidence-drawer-card" aria-labelledby={titleId}>
       <header className="evidence-drawer-header">
         <div>
           <p className="evidence-drawer-kicker">Evidence Engine</p>
@@ -168,11 +185,13 @@ function EvidenceDrawerBody({ evidence }: { evidence: ProjectionEvidencePayload 
             hint={`Confidence reflects historical model accuracy for similar matchup clusters. Current estimate: ${evidence.confidencePct}%.`}
           >
             <span className="evidence-confidence-badge tabular-nums">
-              Confidence {evidence.confidencePct}%
+              {evidence.confidencePct}% Confidence
             </span>
           </EvidenceMetricTooltip>
         </div>
       </header>
+
+      <ModelContributionBar contributions={evidence.modelContribution} />
 
       <div className="evidence-driver-grid">
         <DriverColumn
@@ -186,8 +205,6 @@ function EvidenceDrawerBody({ evidence }: { evidence: ProjectionEvidencePayload 
           drivers={evidence.factorsReducing}
         />
       </div>
-
-      <ModelContributionBar contributions={evidence.modelContribution} />
     </section>
   );
 }
@@ -197,7 +214,7 @@ export function EvidenceDrawer({
   className = "",
 }: EvidenceDrawerProps) {
   return (
-    <TooltipProvider panelClassName="evidence-tooltip-panel">
+    <TooltipProvider delayDuration={120} skipDelayDuration={0}>
       <div className={`evidence-drawer ${className}`.trim()}>
         <EvidenceDrawerBody evidence={evidence} />
       </div>

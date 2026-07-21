@@ -5,9 +5,10 @@ import { Users } from "lucide-react";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
+import { EvidenceTeaser } from "@/components/evidence/EvidenceTeaser";
+import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
 import {
   hasUpcomingCardAssignedCrew,
-  selectUpcomingCardHeroInsight,
   upcomingCardInsightFallback,
 } from "@/lib/upcoming-card-hero-insight";
 import {
@@ -44,7 +45,8 @@ export function UpcomingGameCard({
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
   const crewAssigned = hasUpcomingCardAssignedCrew(game);
-  const heroInsight = crewAssigned ? selectUpcomingCardHeroInsight(game) : undefined;
+  const projectionEvidence =
+    crewAssigned && game.preview ? buildProjectionEvidence(game.preview) : null;
   const crewLabel = upcomingCardCrewLabel(game);
   const showCrewCount = game.crewCount > 1 && Boolean(game.headRef) && game.status !== "scheduled";
 
@@ -117,10 +119,8 @@ export function UpcomingGameCard({
         </div>
 
         <div className="upcoming-game-card__context-slot">
-          {crewAssigned && heroInsight ? (
-            <p className="upcoming-game-card__hero-insight line-clamp-1" title={heroInsight}>
-              {heroInsight}
-            </p>
+          {projectionEvidence ? (
+            <EvidenceTeaser evidence={projectionEvidence} compact />
           ) : (
             <p className="upcoming-game-card__hero-fallback">
               {upcomingCardInsightFallback(game)}
