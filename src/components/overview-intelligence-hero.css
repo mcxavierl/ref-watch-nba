@@ -1,0 +1,204 @@
+/* Homepage intelligence hero + proof bar + featured signal */
+
+.overview-intelligence-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.overview-intelligence-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--clinical-ink-muted);
+}
+
+.overview-intelligence-subtitle {
+  margin: 0.65rem 0 0;
+  max-width: 42rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--clinical-ink-muted);
+}
+
+.overview-intelligence-briefing {
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--border-default) 80%, transparent);
+  background: color-mix(in srgb, var(--bg-surface-2) 88%, transparent);
+}
+
+.overview-intelligence-briefing-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--clinical-ink-muted);
+}
+
+.overview-intelligence-briefing-copy {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--clinical-ink);
+}
+
+.overview-intelligence-briefing-stat strong {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-intelligence-briefing-sep {
+  color: color-mix(in srgb, var(--clinical-ink-muted) 70%, transparent);
+}
+
+.overview-intelligence-briefing-stat--confidence strong {
+  color: rgb(52 211 153);
+}
+
+.overview-intelligence-briefing-stat--anomaly strong {
+  color: rgb(251 191 36);
+}
+
+.overview-intelligence-briefing-stat--signal strong {
+  color: rgb(34 211 238);
+}
+
+.gold-mine-proof-bar {
+  margin-inline: calc(-1 * clamp(1rem, 3vw, 1.5rem));
+  width: calc(100% + 2 * clamp(1rem, 3vw, 1.5rem));
+}
+
+.gold-mine-proof-bar-inner {
+  max-width: var(--page-max, 72rem);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.75rem;
+}
+
+.gold-mine-proof-bar-item {
+  white-space: nowrap;
+}
+
+.gold-mine-proof-bar-value {
+  font-weight: 700;
+  color: rgb(226 232 240);
+}
+
+.gold-mine-proof-bar-sep {
+  margin-left: 0.75rem;
+  color: rgb(71 85 105);
+}
+
+.overview-featured-signal-header,
+.overview-intelligence-feed-header,
+.overview-research-footer-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.overview-featured-signal-badge,
+.overview-intelligence-feed-badge,
+.overview-research-footer-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.overview-featured-signal-card {
+  margin-top: var(--space-4);
+}
+
+.overview-featured-signal-cta {
+  margin: var(--space-3) 0 0;
+}
+
+.overview-featured-signal-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--clinical-ink-muted);
+  text-decoration: none;
+}
+
+.overview-featured-signal-link:hover {
+  color: var(--clinical-ink);
+  text-decoration: underline;
+}
+
+.overview-featured-signal-link-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.overview-intelligence-feed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.overview-research-footer {
+  margin-top: var(--space-10);
+  padding-top: var(--space-8);
+  border-top: 1px solid color-mix(in srgb, var(--border-default) 70%, transparent);
+}
+
+.overview-research-footer-explore {
+  margin-top: var(--space-6);
+}
+
+.overview-research-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+}
+
+.overview-research-footer-link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--clinical-ink-muted);
+  text-decoration: none;
+}
+
+.overview-research-footer-link:hover {
+  color: var(--clinical-ink);
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .overview-intelligence-briefing-copy {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .overview-intelligence-briefing-sep {
+    display: none;
+  }
+
+  .gold-mine-proof-bar-inner {
+    justify-content: flex-start;
+  }
+}

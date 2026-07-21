@@ -14,10 +14,24 @@ describe("design audit guardrails", () => {
     assert.match(globals, /--page-max: 72rem/);
   });
 
-  it("avoids raw slate text utilities on homepage hero and about page", () => {
-    const hero = readSrc("src/components/OverviewHero.tsx");
-    const about = readSrc("src/app/about/page.tsx");
+  it("homepage intelligence hero leads with briefing and proof bar hierarchy", () => {
+    const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
+    const dashboard = readSrc("src/components/OverviewDashboard.tsx");
+    const page = readSrc("src/app/page.tsx");
+    assert.match(hero, /Officiating Intelligence/);
+    assert.match(hero, /Today.*Intelligence/);
+    assert.match(hero, /anomaly detection/i);
     assert.doesNotMatch(hero, /text-slate-/);
+    assert.match(page, /OverviewIntelligenceHero/);
+    assert.match(dashboard, /GoldMineProofBar/);
+    assert.match(dashboard, /OverviewFeaturedSignal/);
+    assert.match(dashboard, /OverviewUpcomingSlateSection/);
+    assert.match(dashboard, /OverviewIntelligenceFeed/);
+    assert.match(dashboard, /OverviewResearchFooter/);
+  });
+
+  it("avoids raw slate text utilities on about page", () => {
+    const about = readSrc("src/app/about/page.tsx");
     assert.doesNotMatch(about, /text-slate-/);
     assert.doesNotMatch(about, /\bmt-\d+/);
     assert.match(about, /clinical-doc-section/);
