@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 import { leagueHeroLogoDimensions, leagueLogoSrc, leagueNavMarkDimensions } from "@/lib/league-logo-src";
@@ -11,6 +11,26 @@ function readLogo(name: string): string {
 }
 
 describe("league logos", () => {
+  it("ships every self-hosted league logo asset on disk", () => {
+    const localPaths = [
+      "/logos/nba-logo.svg",
+      "/logos/nba-logo-light.svg",
+      "/logos/nfl-shield.svg",
+      "/logos/epl-lion.svg",
+      "/logos/epl-lion-dark.svg",
+      "/logos/laliga-white.png",
+      "/logos/laliga-red.png",
+      "/logos/wnba-logo.svg",
+      "/logos/wnba-logo-light.svg",
+      "/assets/logos/ncaa.svg",
+    ];
+
+    for (const assetPath of localPaths) {
+      const diskPath = join(process.cwd(), "public", assetPath.slice(1));
+      assert.ok(existsSync(diskPath), `missing logo asset: ${assetPath}`);
+    }
+  });
+
   it("uses official Premier League vector lion, not simplified placeholder icon", () => {
     const onDark = readLogo("epl-lion.svg");
     const onLight = readLogo("epl-lion-dark.svg");
