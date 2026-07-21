@@ -9,25 +9,19 @@ import {
   type RefObject,
 } from "react";
 import { MediaCard } from "@/components/media/MediaCard";
-import type { ProjectionEvidencePayload } from "@/lib/analytics/evidence";
-import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
   broadcastGraphicFilename,
   exportBroadcastGraphicPng,
 } from "@/lib/media/export-broadcast-graphic";
 import {
-  buildMediaCardContent,
   MEDIA_CARD_HEIGHT,
   MEDIA_CARD_WIDTH,
   type MediaCardContent,
-} from "@/lib/media/media-card-content";
-import { buildOnAirCopy, buildOnAirCopyFromContent } from "@/lib/media/on-air-copy";
+} from "@/lib/media/media-card-types";
 
 type BroadcasterExportPanelProps = {
-  preview?: GameSlatePreviewPayload;
-  evidence?: ProjectionEvidencePayload;
-  content?: MediaCardContent;
-  teleprompterCopy?: string;
+  content: MediaCardContent;
+  teleprompterCopy: string;
   exportFilename?: string;
   className?: string;
 };
@@ -59,8 +53,6 @@ function usePreviewScale(
 }
 
 export function BroadcasterExportPanel({
-  preview,
-  evidence,
   content,
   teleprompterCopy,
   exportFilename,
@@ -72,26 +64,8 @@ export function BroadcasterExportPanel({
   const [status, setStatus] = useState<ExportStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const resolvedContent =
-    content ??
-    (preview && evidence ? buildMediaCardContent(preview, evidence) : null);
-
-  if (!resolvedContent) {
-    return null;
-  }
-
-  const resolvedCopy =
-    teleprompterCopy ??
-    (preview && evidence
-      ? buildOnAirCopy(preview, evidence, "storyline")
-      : buildOnAirCopyFromContent(
-          resolvedContent,
-          resolvedContent.crewLabel,
-          "storyline",
-        ));
-
   const filename =
-    exportFilename ?? broadcastGraphicFilename(resolvedContent.matchupBadge);
+    exportFilename ?? broadcastGraphicFilename(content.matchupBadge);
 
   const handleExport = useCallback(async () => {
     const node = exportNodeRef.current;
@@ -117,14 +91,14 @@ export function BroadcasterExportPanel({
   const handleCopy = useCallback(async () => {
     setErrorMessage(null);
     try {
-      await navigator.clipboard.writeText(resolvedCopy);
+      await navigator.clipboard.writeText(teleprompterCopy);
       setStatus("copied");
       window.setTimeout(() => setStatus("idle"), 2200);
     } catch {
       setStatus("error");
       setErrorMessage("Clipboard access failed. Check browser permissions.");
     }
-  }, [resolvedCopy]);
+  }, [teleprompterCopy]);
 
   return (
     <section
@@ -179,11 +153,7 @@ export function BroadcasterExportPanel({
               transform: `scale(${previewScale})`,
             }}
           >
-            <MediaCard
-              preview={preview}
-              evidence={evidence}
-              content={resolvedContent}
-            />
+            <MediaCard content={content} />
           </div>
         </div>
       </div>
@@ -204,12 +174,7 @@ export function BroadcasterExportPanel({
       </p>
 
       <div className="broadcaster-export-offscreen" aria-hidden>
-        <MediaCard
-          ref={exportNodeRef}
-          preview={preview}
-          evidence={evidence}
-          content={resolvedContent}
-        />
+        <MediaCard ref={exportNodeRef} content={content} />
       </div>
     </section>
   );

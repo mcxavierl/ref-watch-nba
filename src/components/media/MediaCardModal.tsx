@@ -11,31 +11,21 @@ import {
 import { Radio, X } from "lucide-react";
 import { ModalPortal } from "@/components/ModalPortal";
 import { BroadcasterExportPanel } from "@/components/media/BroadcasterExportPanel";
-import type { ProjectionEvidencePayload } from "@/lib/analytics/evidence";
-import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
-import type { MediaCardContent } from "@/lib/media/media-card-content";
+import type { MediaBroadcastExport } from "@/lib/media/media-card-types";
 
 const MODAL_TRANSITION_MS = 200;
 
 type MediaCardModalProps = {
   open: boolean;
   onClose: () => void;
-  preview?: GameSlatePreviewPayload;
-  evidence?: ProjectionEvidencePayload;
-  content?: MediaCardContent;
-  teleprompterCopy?: string;
-  exportFilename?: string;
+  broadcastExport: MediaBroadcastExport;
   title?: string;
 };
 
 export function MediaCardModal({
   open,
   onClose,
-  preview,
-  evidence,
-  content,
-  teleprompterCopy,
-  exportFilename,
+  broadcastExport,
   title = "Broadcaster Export",
 }: MediaCardModalProps) {
   const titleId = useId();
@@ -124,11 +114,9 @@ export function MediaCardModal({
 
           <div className="media-card-modal-body">
             <BroadcasterExportPanel
-              preview={preview}
-              evidence={evidence}
-              content={content}
-              teleprompterCopy={teleprompterCopy}
-              exportFilename={exportFilename}
+              content={broadcastExport.content}
+              teleprompterCopy={broadcastExport.teleprompterCopy}
+              exportFilename={broadcastExport.exportFilename}
             />
           </div>
         </div>
@@ -138,22 +126,14 @@ export function MediaCardModal({
 }
 
 type ExportOnAirGraphicTriggerProps = {
-  preview?: GameSlatePreviewPayload;
-  evidence?: ProjectionEvidencePayload;
-  content?: MediaCardContent;
-  teleprompterCopy?: string;
-  exportFilename?: string;
+  broadcastExport: MediaBroadcastExport;
   title?: string;
   className?: string;
   label?: string;
 };
 
 export function ExportOnAirGraphicTrigger({
-  preview,
-  evidence,
-  content,
-  teleprompterCopy,
-  exportFilename,
+  broadcastExport,
   title,
   className = "",
   label = "Export On-Air Graphic",
@@ -173,11 +153,7 @@ export function ExportOnAirGraphicTrigger({
       <MediaCardModal
         open={open}
         onClose={() => setOpen(false)}
-        preview={preview}
-        evidence={evidence}
-        content={content}
-        teleprompterCopy={teleprompterCopy}
-        exportFilename={exportFilename}
+        broadcastExport={broadcastExport}
         title={title}
       />
     </>

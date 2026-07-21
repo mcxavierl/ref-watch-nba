@@ -174,11 +174,12 @@ export function GameSlatePreviewDrawer({
               </div>
             </div>
             <div className="ref-preview-drawer-header-actions">
-              <ExportOnAirGraphicTrigger
-                preview={preview}
-                evidence={projectionEvidence}
-                className="game-slate-preview-broadcast-kit"
-              />
+              {preview.broadcastExport ? (
+                <ExportOnAirGraphicTrigger
+                  broadcastExport={preview.broadcastExport}
+                  className="game-slate-preview-broadcast-kit"
+                />
+              ) : null}
               <button
                 ref={closeButtonRef}
                 type="button"

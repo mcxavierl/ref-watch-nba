@@ -2,7 +2,7 @@ import { toPng } from "html-to-image";
 import {
   MEDIA_CARD_HEIGHT,
   MEDIA_CARD_WIDTH,
-} from "@/lib/media/media-card-content";
+} from "@/lib/media/media-card-types";
 
 export type ExportBroadcastGraphicOptions = {
   filename?: string;

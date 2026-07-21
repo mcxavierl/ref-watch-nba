@@ -3,40 +3,27 @@ import type { EvidenceDriver, EvidenceImpact, ProjectionEvidencePayload } from "
 import { resolveOfficialProfile } from "@/lib/analytics/resolve-official-profile";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import type { LeagueId } from "@/lib/leagues";
+import { broadcastGraphicFilename } from "@/lib/media/export-broadcast-graphic";
+import {
+  MEDIA_CARD_HEIGHT,
+  MEDIA_CARD_WIDTH,
+  type MediaBroadcastExport,
+  type MediaCardContent,
+  type MediaCardRefProfile,
+} from "@/lib/media/media-card-types";
+import { buildOnAirCopyFromContent } from "@/lib/media/on-air-copy";
 import { slateTeamLogoSport } from "@/lib/slate-team-display";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
-export const MEDIA_CARD_WIDTH = 1920;
-export const MEDIA_CARD_HEIGHT = 1080;
-
-const IMPACT_RANK: Record<EvidenceImpact, number> = {
-  HIGH: 0,
-  MEDIUM: 1,
-  LOW: 2,
-};
-
-export type MediaCardRefProfile = {
-  name: string;
-  slug: string;
-  sport: ReturnType<typeof slateTeamLogoSport>;
-  role?: string;
-};
-
-export type MediaCardContent = {
-  leagueLabel: string;
-  matchupBadge: string;
-  heroMetric: string;
-  heroMetricTone: "positive" | "negative" | "neutral";
-  primaryRef: MediaCardRefProfile;
-  crewLabel: string;
-  archetypeTag: string;
-  evidenceBullets: string[];
-  confidencePct: number;
-  evidenceStrength: number;
-  metricLabel: string;
-  sampleGames: number;
-};
+export {
+  MEDIA_CARD_HEIGHT,
+  MEDIA_CARD_WIDTH,
+  type MediaBroadcastExport,
+  type MediaCardContent,
+  type MediaCardRefProfile,
+} from "@/lib/media/media-card-types";
+export { formatCrewRole } from "@/lib/media/media-card-types";
 
 export function formatMatchupBadge(preview: GameSlatePreviewPayload): string {
   if (preview.awayAbbr && preview.homeAbbr) {
@@ -96,23 +83,11 @@ export function formatCrewLabel(preview: GameSlatePreviewPayload): string {
   return preview.crew.map((member) => member.name).join(" · ");
 }
 
-const CREW_ROLE_LABELS: Record<string, string> = {
-  crew_chief: "Crew Chief",
-  referee: "Referee",
-  umpire: "Umpire",
-  linesman: "Linesman",
-  line_judge: "Line Judge",
-  back_judge: "Back Judge",
-  side_judge: "Side Judge",
-  field_judge: "Field Judge",
-  head_linesman: "Head Linesman",
-  down_judge: "Down Judge",
+const IMPACT_RANK: Record<EvidenceImpact, number> = {
+  HIGH: 0,
+  MEDIUM: 1,
+  LOW: 2,
 };
-
-export function formatCrewRole(role?: string): string | undefined {
-  if (!role) return undefined;
-  return CREW_ROLE_LABELS[role] ?? role.replace(/_/g, " ");
-}
 
 function deriveArchetypeTag(
   leagueId: LeagueId,
@@ -320,4 +295,34 @@ export function topEvidenceBullets(
 /** @deprecated Use buildHeroMetric */
 export function buildKeyStatHeadline(preview: GameSlatePreviewPayload): string {
   return buildHeroMetric(preview).headline;
+}
+
+export function buildGameSlateBroadcastExport(
+  preview: GameSlatePreviewPayload,
+  evidence: ProjectionEvidencePayload,
+): MediaBroadcastExport {
+  const content = buildMediaCardContent(preview, evidence);
+  return {
+    content,
+    teleprompterCopy: buildOnAirCopyFromContent(
+      content,
+      formatCrewLabel(preview),
+      "storyline",
+    ),
+    exportFilename: broadcastGraphicFilename(content.matchupBadge),
+  };
+}
+
+export function buildRefBroadcastExport(
+  leagueId: LeagueId,
+  profile: RefProfile,
+  stats: RefStatsFile,
+  qualified: boolean,
+): MediaBroadcastExport {
+  const content = buildRefMediaCardContent(leagueId, profile, stats, qualified);
+  return {
+    content,
+    teleprompterCopy: buildOnAirCopyFromContent(content, profile.name, "storyline"),
+    exportFilename: `ref-watch-${profile.slug}.png`,
+  };
 }

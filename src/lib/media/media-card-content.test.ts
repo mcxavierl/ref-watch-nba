@@ -10,7 +10,7 @@ import {
   formatMatchupBadge,
   topEvidenceBullets,
 } from "@/lib/media/media-card-content";
-import { buildOnAirCopy } from "@/lib/media/on-air-copy";
+import { buildOnAirCopy } from "@/lib/media/on-air-copy.server";
 import { getRefBySlug, getRefStats } from "@/lib/data";
 
 function previewFixture(
