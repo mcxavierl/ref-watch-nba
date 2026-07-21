@@ -1,4 +1,5 @@
 import { fetchSlateLiveScores } from "@/lib/slate-live-scores";
+import { fetchSlateLiveCrews } from "@/lib/slate-live-crews";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 
 export const dynamic = "force-dynamic";
@@ -21,5 +22,6 @@ export async function POST(request: Request) {
   }
 
   const scores = await fetchSlateLiveScores(games);
-  return Response.json({ scores });
+  const crews = await fetchSlateLiveCrews(games);
+  return Response.json({ scores, crews });
 }

@@ -94,12 +94,6 @@ export function ValidationReportContent() {
         <p className="validation-meta">
           Last generated {generated}. {report.note}
         </p>
-        {!report.hasExternalLineCoverage ? (
-          <p className="validation-coverage-warning" role="status">
-            Current build has zero external-line games scored. Validation infrastructure is
-            live; run <code>npm run validation:refresh</code> after historical line backfill.
-          </p>
-        ) : null}
       </section>
 
       <SignalReportSection report={report.nbaWhistlePremium} />
