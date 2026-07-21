@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-20T20:49:15.726Z",
+    "lastUpdated": "2026-07-21T18:35:48.778Z",
     "seasons": [
       "2016-17",
       "2017-18",
@@ -534,7 +534,11 @@
           "close_game_sample": 99,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.7,
+      "referee_gsni_volatility": 25.02,
+      "gsniHighLeverageMinutes": 15492,
+      "gsniSampleGames": 1542
     },
     {
       "slug": "jenna-schroeder-20",
@@ -1039,7 +1043,11 @@
           "close_game_sample": 76,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.5,
+      "referee_gsni_volatility": 24.55,
+      "gsniHighLeverageMinutes": 12264,
+      "gsniSampleGames": 1210
     },
     {
       "slug": "matt-myers-43",
@@ -1544,7 +1552,11 @@
           "close_game_sample": 84,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.4,
+      "referee_gsni_volatility": 24.33,
+      "gsniHighLeverageMinutes": 12420,
+      "gsniSampleGames": 1208
     },
     {
       "slug": "eric-dalen-37",
@@ -2049,7 +2061,11 @@
           "close_game_sample": 81,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.1,
+      "referee_gsni_volatility": 24.38,
+      "gsniHighLeverageMinutes": 12144,
+      "gsniSampleGames": 1202
     },
     {
       "slug": "brian-forte-45",
@@ -2554,7 +2570,11 @@
           "close_game_sample": 76,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.2,
+      "referee_gsni_volatility": 23.84,
+      "gsniHighLeverageMinutes": 11988,
+      "gsniSampleGames": 1201
     },
     {
       "slug": "pat-fraher-26",
@@ -3059,7 +3079,11 @@
           "close_game_sample": 88,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 1.2,
+      "referee_gsni_volatility": 25.01,
+      "gsniHighLeverageMinutes": 11832,
+      "gsniSampleGames": 1181
     },
     {
       "slug": "bill-kennedy-55",
@@ -3564,7 +3588,11 @@
           "close_game_sample": 70,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.6,
+      "referee_gsni_volatility": 25.08,
+      "gsniHighLeverageMinutes": 11436,
+      "gsniSampleGames": 1149
     },
     {
       "slug": "biniam-maru-94",
@@ -4069,7 +4097,11 @@
           "close_game_sample": 70,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0,
+      "referee_gsni_volatility": 24,
+      "gsniHighLeverageMinutes": 11688,
+      "gsniSampleGames": 1148
     },
     {
       "slug": "james-williams-60",
@@ -4574,7 +4606,11 @@
           "close_game_sample": 81,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 1.1,
+      "referee_gsni_volatility": 24.82,
+      "gsniHighLeverageMinutes": 11676,
+      "gsniSampleGames": 1145
     },
     {
       "slug": "ben-taylor-46",
@@ -5079,7 +5115,11 @@
           "close_game_sample": 73,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.5,
+      "referee_gsni_volatility": 24.49,
+      "gsniHighLeverageMinutes": 11112,
+      "gsniSampleGames": 1108
     },
     {
       "slug": "jenna-reneau-93",
@@ -5584,7 +5624,11 @@
           "close_game_sample": 82,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.5,
+      "referee_gsni_volatility": 24.73,
+      "gsniHighLeverageMinutes": 10944,
+      "gsniSampleGames": 1101
     },
     {
       "slug": "scott-foster-48",
@@ -6089,7 +6133,11 @@
           "close_game_sample": 59,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.9,
+      "referee_gsni_volatility": 25.1,
+      "gsniHighLeverageMinutes": 8268,
+      "gsniSampleGames": 819
     },
     {
       "slug": "sha-rae-mitchell-98",
@@ -6577,7 +6625,11 @@
           "close_game_sample": 51,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.2,
+      "referee_gsni_volatility": 24.76,
+      "gsniHighLeverageMinutes": 8148,
+      "gsniSampleGames": 803
     },
     {
       "slug": "james-capers-19",
@@ -7065,7 +7117,11 @@
           "close_game_sample": 62,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0,
+      "referee_gsni_volatility": 24.94,
+      "gsniHighLeverageMinutes": 8160,
+      "gsniSampleGames": 799
     },
     {
       "slug": "curtis-blair-74",
@@ -7553,7 +7609,11 @@
           "close_game_sample": 58,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.7,
+      "referee_gsni_volatility": 24.45,
+      "gsniHighLeverageMinutes": 8148,
+      "gsniSampleGames": 794
     },
     {
       "slug": "tony-brothers-25",
@@ -8058,7 +8118,11 @@
           "close_game_sample": 63,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 2.1,
+      "referee_gsni_volatility": 25.17,
+      "gsniHighLeverageMinutes": 8100,
+      "gsniSampleGames": 792
     },
     {
       "slug": "josh-tiven-58",
@@ -8546,7 +8610,11 @@
           "close_game_sample": 57,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.2,
+      "referee_gsni_volatility": 24.14,
+      "gsniHighLeverageMinutes": 7716,
+      "gsniSampleGames": 787
     },
     {
       "slug": "justin-van-duyne-64",
@@ -9051,7 +9119,11 @@
           "close_game_sample": 55,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0,
+      "referee_gsni_volatility": 24.08,
+      "gsniHighLeverageMinutes": 8112,
+      "gsniSampleGames": 782
     },
     {
       "slug": "brandon-adair-67",
@@ -9539,7 +9611,11 @@
           "close_game_sample": 57,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -1.1,
+      "referee_gsni_volatility": 24.54,
+      "gsniHighLeverageMinutes": 7956,
+      "gsniSampleGames": 777
     },
     {
       "slug": "dedric-taylor-21",
@@ -10027,7 +10103,11 @@
           "close_game_sample": 44,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -1.5,
+      "referee_gsni_volatility": 24.51,
+      "gsniHighLeverageMinutes": 7848,
+      "gsniSampleGames": 776
     },
     {
       "slug": "gediminas-petraitis-50",
@@ -10532,7 +10612,11 @@
           "close_game_sample": 62,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.5,
+      "referee_gsni_volatility": 24.66,
+      "gsniHighLeverageMinutes": 7836,
+      "gsniSampleGames": 768
     },
     {
       "slug": "che-flores-91",
@@ -11037,7 +11121,11 @@
           "close_game_sample": 61,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.1,
+      "referee_gsni_volatility": 23.96,
+      "gsniHighLeverageMinutes": 7728,
+      "gsniSampleGames": 768
     },
     {
       "slug": "karl-lane-77",
@@ -11525,7 +11613,11 @@
           "close_game_sample": 57,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.4,
+      "referee_gsni_volatility": 23.89,
+      "gsniHighLeverageMinutes": 7668,
+      "gsniSampleGames": 765
     },
     {
       "slug": "brent-barnaky-36",
@@ -12013,7 +12105,11 @@
           "close_game_sample": 58,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -1,
+      "referee_gsni_volatility": 24.4,
+      "gsniHighLeverageMinutes": 7812,
+      "gsniSampleGames": 761
     },
     {
       "slug": "courtney-kirkland-61",
@@ -12518,7 +12614,11 @@
           "close_game_sample": 55,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0,
+      "referee_gsni_volatility": 24.67,
+      "gsniHighLeverageMinutes": 7620,
+      "gsniSampleGames": 752
     },
     {
       "slug": "eric-lewis-84",
@@ -13006,7 +13106,11 @@
           "close_game_sample": 46,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0,
+      "referee_gsni_volatility": 24.13,
+      "gsniHighLeverageMinutes": 7488,
+      "gsniSampleGames": 747
     },
     {
       "slug": "tre-maddox-23",
@@ -13494,7 +13598,11 @@
           "close_game_sample": 54,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.9,
+      "referee_gsni_volatility": 24.5,
+      "gsniHighLeverageMinutes": 7440,
+      "gsniSampleGames": 743
     },
     {
       "slug": "andy-nagy-83",
@@ -13982,7 +14090,11 @@
           "close_game_sample": 56,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -1.1,
+      "referee_gsni_volatility": 23.92,
+      "gsniHighLeverageMinutes": 7560,
+      "gsniSampleGames": 739
     },
     {
       "slug": "mark-lindsay-29",
@@ -14470,7 +14582,11 @@
           "close_game_sample": 40,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -1.1,
+      "referee_gsni_volatility": 23.66,
+      "gsniHighLeverageMinutes": 7548,
+      "gsniSampleGames": 732
     },
     {
       "slug": "phenizee-ransom-70",
@@ -14958,7 +15074,11 @@
           "close_game_sample": 66,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.4,
+      "referee_gsni_volatility": 24.4,
+      "gsniHighLeverageMinutes": 7260,
+      "gsniSampleGames": 718
     },
     {
       "slug": "kevin-cutler-34",
@@ -15446,7 +15566,11 @@
           "close_game_sample": 42,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.8,
+      "referee_gsni_volatility": 23.32,
+      "gsniHighLeverageMinutes": 7164,
+      "gsniSampleGames": 706
     },
     {
       "slug": "pat-o-connell-90",
@@ -15934,7 +16058,11 @@
           "close_game_sample": 35,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0,
+      "referee_gsni_volatility": 24.66,
+      "gsniHighLeverageMinutes": 4176,
+      "gsniSampleGames": 424
     },
     {
       "slug": "ray-acosta-54",
@@ -16422,7 +16550,11 @@
           "close_game_sample": 29,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.6,
+      "referee_gsni_volatility": 24.32,
+      "gsniHighLeverageMinutes": 4092,
+      "gsniSampleGames": 400
     },
     {
       "slug": "robert-hussey-85",
@@ -16910,7 +17042,11 @@
           "close_game_sample": 29,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -1.1,
+      "referee_gsni_volatility": 24.94,
+      "gsniHighLeverageMinutes": 4104,
+      "gsniSampleGames": 400
     },
     {
       "slug": "michael-smith-38",
@@ -17398,7 +17534,11 @@
           "close_game_sample": 33,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 1,
+      "referee_gsni_volatility": 24.92,
+      "gsniHighLeverageMinutes": 4056,
+      "gsniSampleGames": 399
     },
     {
       "slug": "brett-nansel-44",
@@ -17886,7 +18026,11 @@
           "close_game_sample": 23,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.4,
+      "referee_gsni_volatility": 23.49,
+      "gsniHighLeverageMinutes": 4164,
+      "gsniSampleGames": 398
     },
     {
       "slug": "natalie-sago-9",
@@ -18374,7 +18518,11 @@
           "close_game_sample": 15,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 2.3,
+      "referee_gsni_volatility": 25.02,
+      "gsniHighLeverageMinutes": 4020,
+      "gsniSampleGames": 391
     },
     {
       "slug": "rodney-mott-71",
@@ -18862,7 +19010,11 @@
           "close_game_sample": 31,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.8,
+      "referee_gsni_volatility": 25.36,
+      "gsniHighLeverageMinutes": 3996,
+      "gsniSampleGames": 389
     },
     {
       "slug": "cj-washington-12",
@@ -19350,7 +19502,11 @@
           "close_game_sample": 27,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.3,
+      "referee_gsni_volatility": 24.9,
+      "gsniHighLeverageMinutes": 3960,
+      "gsniSampleGames": 386
     },
     {
       "slug": "nick-buchert-3",
@@ -19838,7 +19994,11 @@
           "close_game_sample": 27,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.3,
+      "referee_gsni_volatility": 24.9,
+      "gsniHighLeverageMinutes": 3960,
+      "gsniSampleGames": 386
     },
     {
       "slug": "evan-scott-78",
@@ -20326,7 +20486,11 @@
           "close_game_sample": 28,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -1.2,
+      "referee_gsni_volatility": 24.15,
+      "gsniHighLeverageMinutes": 3852,
+      "gsniSampleGames": 377
     },
     {
       "slug": "marat-kogut-32",
@@ -20814,7 +20978,11 @@
           "close_game_sample": 21,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.8,
+      "referee_gsni_volatility": 25.22,
+      "gsniHighLeverageMinutes": 3636,
+      "gsniSampleGames": 374
     },
     {
       "slug": "john-butler-30",
@@ -21302,7 +21470,11 @@
           "close_game_sample": 24,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.6,
+      "referee_gsni_volatility": 25.71,
+      "gsniHighLeverageMinutes": 3720,
+      "gsniSampleGames": 373
     },
     {
       "slug": "dannica-baroody-89",
@@ -21790,7 +21962,11 @@
           "close_game_sample": 27,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -2.7,
+      "referee_gsni_volatility": 23.26,
+      "gsniHighLeverageMinutes": 3816,
+      "gsniSampleGames": 372
     },
     {
       "slug": "tyler-ricks-95",
@@ -22278,7 +22454,11 @@
           "close_game_sample": 17,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.1,
+      "referee_gsni_volatility": 23.21,
+      "gsniHighLeverageMinutes": 3660,
+      "gsniSampleGames": 372
     },
     {
       "slug": "mousa-dagher-28",
@@ -22766,7 +22946,11 @@
           "close_game_sample": 17,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.1,
+      "referee_gsni_volatility": 23.21,
+      "gsniHighLeverageMinutes": 3660,
+      "gsniSampleGames": 372
     },
     {
       "slug": "jd-ralls-80",
@@ -23254,7 +23438,11 @@
           "close_game_sample": 25,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.2,
+      "referee_gsni_volatility": 22.82,
+      "gsniHighLeverageMinutes": 3780,
+      "gsniSampleGames": 372
     },
     {
       "slug": "marc-davis-8",
@@ -23742,7 +23930,11 @@
           "close_game_sample": 20,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.7,
+      "referee_gsni_volatility": 24.08,
+      "gsniHighLeverageMinutes": 3684,
+      "gsniSampleGames": 370
     },
     {
       "slug": "john-conley-56",
@@ -24230,7 +24422,11 @@
           "close_game_sample": 29,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 0.6,
+      "referee_gsni_volatility": 24.53,
+      "gsniHighLeverageMinutes": 3696,
+      "gsniSampleGames": 368
     },
     {
       "slug": "aaron-smith-51",
@@ -24718,7 +24914,11 @@
           "close_game_sample": 20,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": 1.8,
+      "referee_gsni_volatility": 25.3,
+      "gsniHighLeverageMinutes": 3636,
+      "gsniSampleGames": 366
     },
     {
       "slug": "scott-twardoski-52",
@@ -25206,7 +25406,11 @@
           "close_game_sample": 28,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -0.2,
+      "referee_gsni_volatility": 23.44,
+      "gsniHighLeverageMinutes": 3576,
+      "gsniSampleGames": 365
     },
     {
       "slug": "ashley-moyer-gleich-13",
@@ -25694,7 +25898,11 @@
           "close_game_sample": 24,
           "split_backed_games": 0
         }
-      }
+      },
+      "referee_gsni": -2.4,
+      "referee_gsni_volatility": 25.85,
+      "gsniHighLeverageMinutes": 3540,
+      "gsniSampleGames": 362
     },
     {
       "slug": "brandon-schwab-86",
@@ -26003,7 +26211,9 @@
           "sample_games": 1,
           "last_calculated": "2026-07-20T20:49:15.726Z"
         }
-      }
+      },
+      "gsniHighLeverageMinutes": 12,
+      "gsniSampleGames": 1
     }
   ],
   "teamSplits": {}

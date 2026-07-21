@@ -8,9 +8,10 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { attachGsniFieldsFromGames } from "./lib/attach-gsni";
 import { loadGameLogs } from "./lib/game-logs";
+import { splitRefStatsForDeploy } from "./lib/split-ref-stats";
 import type { InsightsLeagueId } from "../src/lib/league-manifest";
 import { gsniResearchConfigForLeague } from "../src/lib/gsni-research";
-import type { RefProfile } from "../src/lib/types";
+import type { RefProfile, RefStatsFile } from "../src/lib/types";
 
 const ROOT = process.cwd();
 const GSNI_LEAGUES: InsightsLeagueId[] = ["nfl", "nba", "nhl"];
@@ -96,7 +97,11 @@ function rebuildLeagueGsni(leagueId: InsightsLeagueId): void {
   fs.writeFileSync(statsPath, payload);
   const corePath = corePathForLeague(leagueId);
   if (corePath && fs.existsSync(corePath)) {
-    fs.writeFileSync(corePath, payload);
+    const { core } = splitRefStatsForDeploy({
+      ...raw,
+      refs: updated,
+    } as RefStatsFile);
+    fs.writeFileSync(corePath, `${JSON.stringify(core, null, 2)}\n`);
   }
   console.log(`${leagueId}: attached GSNI to ${withGsni}/${updated.length} refs`);
 }
@@ -107,4 +112,20 @@ function main(): void {
   }
 }
 
-main();
+export function rebuildAllGsniFromLogs(root = ROOT): void {
+  const previousRoot = process.cwd();
+  process.chdir(root);
+  try {
+    main();
+  } finally {
+    process.chdir(previousRoot);
+  }
+}
+
+if (import.meta.url.startsWith("file:")) {
+  const executed = path.resolve(process.argv[1] ?? "");
+  const modulePath = path.resolve(new URL(import.meta.url).pathname);
+  if (executed === modulePath) {
+    main();
+  }
+}
