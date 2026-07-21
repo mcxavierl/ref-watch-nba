@@ -6,6 +6,7 @@ import {
   RefProfileQuickStatsBar,
   RefProfileSecondaryStats,
 } from "@/components/ref-profile/RefProfileQuickStatsBar";
+import { DataTableScrollWrap } from "@/components/shared/DataTableScrollWrap";
 import { TermHelp } from "@/components/TermHelp";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefBettingStats, RefProfile } from "@/lib/types";
@@ -67,7 +68,7 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
           <p className="ref-market-impact-meta tabular-nums text-right text-slate-400">{rate}% ATS cover rate</p>
         </article>
       </div>
-      <div className="ref-table-scroll mt-4">
+      <DataTableScrollWrap className="ref-table-scroll mt-4">
         <table className="ref-data-table data-table ref-profile-fluid-table min-w-[31.25rem] w-full">
           <thead>
             <tr className="data-table-head">
@@ -110,7 +111,7 @@ function MarketAtsPanel({ stats }: { stats: RefBettingStats }) {
             })}
           </tbody>
         </table>
-      </div>
+      </DataTableScrollWrap>
     </div>
   );
 }
@@ -121,7 +122,7 @@ function MarketOuPanel({ stats }: { stats: RefBettingStats }) {
 
   return (
     <div className="ref-market-impact-panel">
-      <div className="ref-table-scroll">
+      <DataTableScrollWrap className="ref-table-scroll">
         <table className="ref-data-table data-table ref-profile-fluid-table min-w-[31.25rem] w-full">
           <thead>
             <tr className="data-table-head">
@@ -177,7 +178,7 @@ function MarketOuPanel({ stats }: { stats: RefBettingStats }) {
             })}
           </tbody>
         </table>
-      </div>
+      </DataTableScrollWrap>
     </div>
   );
 }

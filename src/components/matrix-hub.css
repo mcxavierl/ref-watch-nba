@@ -33,10 +33,6 @@
 }
 
 .matrix-how-to-read-panel {
-  position: absolute;
-  z-index: 30;
-  top: calc(100% + 0.45rem);
-  left: 0;
   width: min(22rem, calc(100vw - 2rem));
   padding: 0.85rem 1rem;
   border-radius: 0.75rem;
@@ -46,6 +42,9 @@
   font-size: 0.82rem;
   line-height: 1.5;
   color: var(--text-muted);
+  white-space: normal;
+  overflow-wrap: break-word;
+  pointer-events: auto;
 }
 
 .matrix-how-to-read-swatches {

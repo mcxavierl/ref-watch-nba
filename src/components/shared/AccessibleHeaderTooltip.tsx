@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { CircleHelp } from "lucide-react";
+import { PortaledHintPanel } from "@/components/ui/PortaledHintPanel";
 
 type AccessibleHeaderTooltipProps = {
   label: string;
@@ -26,6 +27,8 @@ export function AccessibleHeaderTooltip({
 
     function onPointerDown(event: MouseEvent) {
       if (!rootRef.current?.contains(event.target as Node)) {
+        const panel = document.getElementById(panelId);
+        if (panel?.contains(event.target as Node)) return;
         setOpen(false);
       }
     }
@@ -40,12 +43,14 @@ export function AccessibleHeaderTooltip({
       document.removeEventListener("mousedown", onPointerDown);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, panelId]);
 
   return (
     <span
       ref={rootRef}
       className={`accessible-header-tooltip${className ? ` ${className}` : ""}`}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
     >
       <span>{label}</span>
       <button
@@ -58,11 +63,14 @@ export function AccessibleHeaderTooltip({
       >
         <CircleHelp aria-hidden />
       </button>
-      {open ? (
-        <span id={panelId} role="tooltip" className="accessible-header-tooltip-panel">
-          {tooltip}
-        </span>
-      ) : null}
+      <PortaledHintPanel
+        anchorRef={rootRef}
+        open={open}
+        id={panelId}
+        className="accessible-header-tooltip-panel"
+      >
+        {tooltip}
+      </PortaledHintPanel>
     </span>
   );
 }

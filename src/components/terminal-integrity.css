@@ -142,6 +142,15 @@
   width: 100%;
 }
 
+.data-table-scroll-wrap,
+.ref-table-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 1rem;
+  scrollbar-width: thin;
+}
+
 .ref-profile-fluid-table th,
 .ref-profile-fluid-table td.data-table-num,
 .ref-profile-fluid-table td.font-tabular {

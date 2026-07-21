@@ -4017,10 +4017,12 @@ p {
   }
 
   .term-help-tooltip {
-    @apply pointer-events-none absolute left-0 top-full hidden w-[min(18rem,calc(100vw-2rem))] rounded-lg border border-slate-700 bg-slate-900 p-2 text-xs text-slate-200 shadow-xl;
+    @apply w-[min(18rem,calc(100vw-2rem))] rounded-lg border border-slate-700 bg-slate-900 p-2 text-xs text-slate-200 shadow-xl;
     font-weight: 400;
     line-height: var(--leading-relaxed);
-    z-index: var(--z-tooltip);
+    white-space: normal;
+    overflow-wrap: break-word;
+    pointer-events: auto;
   }
 
   .term-help-tooltip-open {
@@ -6425,7 +6427,20 @@ p {
 
   .master-table-scroll {
     overflow-x: auto;
+    max-width: 100%;
     -webkit-overflow-scrolling: touch;
+    padding-right: 1rem;
+    scrollbar-width: thin;
+  }
+
+  .data-table-scroll-wrap,
+  .ranking-table-wrap,
+  .insight-drilldown-table-wrap {
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 1rem;
+    scrollbar-width: thin;
   }
 
   .team-ref-matrix-head,
@@ -6819,16 +6834,11 @@ p {
   }
 
   .touch-popover-panel {
-    position: absolute;
-    z-index: var(--z-tooltip);
-    left: 50%;
-    bottom: calc(100% + 0.4rem);
-    transform: translateX(-50%);
-    display: none;
-    min-width: 10rem;
-    max-width: min(16rem, calc(100vw - 2rem));
+    display: flex;
     flex-direction: column;
     gap: 0.15rem;
+    min-width: 10rem;
+    max-width: min(16rem, calc(100vw - 2rem));
     border-radius: 0.5rem;
     border: 1px solid var(--border-default);
     background: var(--bg-surface-1);
@@ -6839,22 +6849,13 @@ p {
     color: var(--text-secondary);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     white-space: normal;
+    overflow-wrap: break-word;
     text-align: left;
+    pointer-events: auto;
   }
 
   .metric-info-hint-panel {
-    z-index: var(--z-tooltip);
-  }
-
-  .touch-popover--open .touch-popover-panel {
-    display: flex;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .touch-popover--hoverable:hover .touch-popover-panel,
-    .touch-popover--hoverable:focus-within .touch-popover-panel {
-      display: flex;
-    }
+    z-index: 120;
   }
 
   .provenance-indicator-dot {
@@ -8105,7 +8106,10 @@ p {
   .ranking-table-wrap {
     padding-top: var(--space-1);
     overflow-x: auto;
+    max-width: 100%;
     -webkit-overflow-scrolling: touch;
+    padding-right: 1rem;
+    scrollbar-width: thin;
   }
 
   /* Mobile-first table density: hide secondary metrics below md */
@@ -15258,7 +15262,10 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 
 .insight-drilldown-table-wrap {
   overflow-x: auto;
+  max-width: 100%;
   -webkit-overflow-scrolling: touch;
+  padding-right: 1rem;
+  scrollbar-width: thin;
   border: 1px solid #27272a;
   border-radius: 0.65rem;
 }
@@ -15311,6 +15318,13 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   gap: 0.25rem;
 }
 
+.portaled-hint-panel {
+  max-width: min(18rem, calc(100vw - 2rem));
+  white-space: normal;
+  overflow-wrap: break-word;
+  pointer-events: auto;
+}
+
 .accessible-header-tooltip-trigger {
   display: inline-flex;
   align-items: center;
@@ -15336,10 +15350,6 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
 }
 
 .accessible-header-tooltip-panel {
-  position: absolute;
-  z-index: 30;
-  top: calc(100% + 0.35rem);
-  right: 0;
   width: min(16rem, 70vw);
   padding: 0.55rem 0.65rem;
   border: 1px solid #27272a;
@@ -15352,6 +15362,8 @@ html[data-color="light"]:not([data-contrast="high"]) .league-season-start-badge 
   text-transform: none;
   letter-spacing: normal;
   white-space: normal;
+  overflow-wrap: break-word;
+  pointer-events: auto;
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
 }
 
