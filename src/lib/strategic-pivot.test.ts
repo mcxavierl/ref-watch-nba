@@ -21,10 +21,12 @@ describe("strategic pivot surfaces", () => {
     assert.match(REFWATCH_AUDIENCE, /not unvalidated trader alpha/i);
   });
 
-  it("homepage hero stays minimal with title only", () => {
-    const hero = readSrc("src/components/OverviewHero.tsx");
-    assert.match(hero, /Verified Officiating Analytics/);
-    assert.doesNotMatch(hero, /HOMEPAGE_METHODOLOGY_BLURB/);
+  it("homepage hero prioritizes intelligence briefing over navigation", () => {
+    const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
+    const page = readSrc("src/app/page.tsx");
+    assert.match(hero, /Officiating Intelligence/);
+    assert.match(hero, /behavioral modeling/i);
+    assert.match(page, /OverviewIntelligenceHero/);
     assert.doesNotMatch(hero, /TrustCharterSummary/);
     assert.doesNotMatch(hero, /REFWATCH_AUDIENCE/);
   });
@@ -44,7 +46,7 @@ describe("strategic pivot surfaces", () => {
 
   it("user-facing pivot copy avoids em dashes", () => {
     const files = [
-      "src/components/OverviewHero.tsx",
+      "src/components/OverviewIntelligenceHero.tsx",
       "src/lib/about-content.ts",
       "src/components/ValidationReportContent.tsx",
     ];
