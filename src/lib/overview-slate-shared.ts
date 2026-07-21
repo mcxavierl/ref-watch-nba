@@ -29,6 +29,8 @@ export type OverviewSlateEntry = {
   preview?: GameSlatePreviewPayload;
   /** Top ref-preview insights for compact upcoming cards when crew is assigned. */
   previewCardInsights?: string[];
+  /** Full ref-intelligence copy for upcoming game cards (server-built, no truncation). */
+  upcomingCardRefInsights?: string[];
 };
 
 export type OverviewLeagueNote = {

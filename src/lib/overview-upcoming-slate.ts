@@ -15,6 +15,7 @@ import {
 import type { AssignmentsFile, AssignmentGame, OddsFile, RefOfficial } from "@/lib/types";
 import { isSlatePreviewLeague } from "@/lib/game-slate-preview-adapters";
 import { buildGameSlatePreview, selectGameSlatePreviewCardInsights } from "@/lib/game-slate-preview";
+import { collectUpcomingCardRefInsights } from "@/lib/upcoming-card-ref-insights";
 import { resolveWnbaTeamAbbr } from "@/lib/wnba/teams";
 
 export type {
@@ -230,7 +231,7 @@ function pushEntry(
     isSlatePreviewLeague(leagueId)
       ? buildGameSlatePreview(leagueId, game, loadLeagueOdds(leagueId)) ?? undefined
       : undefined;
-  games.push({
+  const entry: OverviewSlateEntry = {
     leagueId,
     leagueLabel: league.label,
     leagueShortLabel: league.shortLabel,
@@ -253,9 +254,11 @@ function pushEntry(
     seasonStageNote,
     preview,
     previewCardInsights: preview
-      ? selectGameSlatePreviewCardInsights(preview)
+      ? selectGameSlatePreviewCardInsights(preview, 6)
       : undefined,
-  });
+  };
+  entry.upcomingCardRefInsights = collectUpcomingCardRefInsights(entry);
+  games.push(entry);
 }
 
 const HUB_PRESEASON_STAGES: Partial<
