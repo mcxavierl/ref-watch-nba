@@ -8,11 +8,14 @@ import {
   ScoutingReportDepth,
   ScoutingReportEdge,
 } from "@/components/ref-profile/ScoutingReport";
+import { RefHistoricalImpactSection } from "@/components/ref-profile/RefHistoricalImpactSection";
+import { RefObservedTendencies } from "@/components/ref-profile/RefObservedTendencies";
 import { RefProfileTeamTrends } from "@/components/ref-profile/RefProfileTeamTrends";
 import { RefProfileCareerEvolution } from "@/components/ref-profile/RefProfile";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import { buildRefTeamPerformanceTrends } from "@/lib/ref-team-performance-trends";
 import { computeRefStarDeference, supportsStarDeferenceLeague } from "@/lib/ref-star-deference";
+import type { RefIntelligenceProfile } from "@/lib/ref-intelligence-profile";
 import type { CloseGameMetrics } from "@/lib/close-game";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefGsniMetrics } from "@/lib/ref-gsni";
@@ -38,6 +41,7 @@ export function RefProfileNarrativeLayout({
   whistleAnalytics,
   showBettingProfile,
   statGridLabels,
+  intelligenceProfile,
 }: {
   leagueId: LeagueId;
   profile: RefProfile;
@@ -49,6 +53,7 @@ export function RefProfileNarrativeLayout({
   whistleAnalytics?: ReactNode;
   showBettingProfile: boolean;
   statGridLabels?: StatGridLabels;
+  intelligenceProfile?: RefIntelligenceProfile | null;
 }) {
   const teamTrends = buildRefTeamPerformanceTrends(profile);
   const hideWhistleMetrics = Boolean(
@@ -73,7 +78,14 @@ export function RefProfileNarrativeLayout({
   return (
     <div className="ref-narrative-layout">
       <ScoutingReportEdge {...scoutingProps} />
+      {intelligenceProfile ? (
+        <RefObservedTendencies tendencies={intelligenceProfile.tendencies} />
+      ) : null}
       {starDeference ? <StarDeferenceBadge analytics={starDeference} /> : null}
+
+      {intelligenceProfile ? (
+        <RefHistoricalImpactSection profile={intelligenceProfile} leagueId={leagueId} />
+      ) : null}
 
       <RefProfileCareerEvolution profile={profile} />
 

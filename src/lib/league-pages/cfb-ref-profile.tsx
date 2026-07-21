@@ -5,9 +5,9 @@ import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefProfileJsonLd } from "@/components/RefProfileJsonLd";
 import { CfbRefAnalyticsSection } from "@/components/CfbRefAnalyticsSection";
-import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
+import { resolveRefIntelligenceProfile } from "@/lib/league-pages/ref-profile-intelligence";
 import {
   formatPct,
   getAllRefSlugs,
@@ -90,6 +90,13 @@ export default async function CfbRefProfilePage({
     "CFB",
   );
 
+  const intelligenceProfile = resolveRefIntelligenceProfile({
+    leagueId: "cfb",
+    profile,
+    stats,
+    qualified,
+  });
+
   return (
     <div className="page-shell">
       <RefProfileJsonLd
@@ -114,6 +121,7 @@ export default async function CfbRefProfilePage({
         stats={stats}
         sport="cfb"
         qualified={qualified}
+        intelligenceFingerprint={intelligenceProfile.fingerprint}
         avatarSize="xl"
         avatarClassName="ring-2 ring-zinc-200 shadow-md"
         sampleGateMessage={
@@ -123,14 +131,6 @@ export default async function CfbRefProfilePage({
           </>
         }
       >
-        <RefProfileMetadataBar
-          seasons={profile.seasons}
-          games={profile.games}
-          lastUpdated={stats.meta.lastUpdated}
-          seeded={isCfbSimulatedData(stats.meta.source)}
-          leagueId="cfb"
-          slug={profile.slug}
-        />
       </RefereeMasterCard>
 
       <div className="ref-dashboard-grid">
@@ -159,6 +159,7 @@ export default async function CfbRefProfilePage({
                 />
               ) : undefined
             }
+            intelligenceProfile={intelligenceProfile}
           />
         </div>
 

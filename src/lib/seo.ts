@@ -267,7 +267,7 @@ export function refProfileMetadata({
   const path = leagueHref(leagueId, `/refs/${slug}`);
   const numberSuffix =
     number != null && String(number).trim() !== "" ? ` (#${number})` : "";
-  const title = `${name}${numberSuffix}`;
+  const title = `Officiating Intelligence Profile: ${name}${numberSuffix}`;
   const atsPart = atsLabel ? `, ${atsLabel}` : "";
   const description = `${name}: ${games} ${league.metrics.gamesColumn.toLowerCase()}, ${overRateFormatted} over ${overBaseline}${atsPart}. Historical ${league.label} ${league.officialNoun} analytics: scoring, ${league.metrics.whistlePlain}, ATS/O-U splits, and close-game tendencies.`;
 

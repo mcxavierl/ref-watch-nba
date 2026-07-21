@@ -5,9 +5,9 @@ import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefProfileJsonLd } from "@/components/RefProfileJsonLd";
 import { NhlRefAnalyticsSection } from "@/components/NhlRefAnalyticsSection";
-import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
+import { resolveRefIntelligenceProfile } from "@/lib/league-pages/ref-profile-intelligence";
 import {
   formatPct,
   getAllRefSlugs,
@@ -96,6 +96,13 @@ export default async function NhlRefProfilePage({
     profile,
   );
 
+  const intelligenceProfile = resolveRefIntelligenceProfile({
+    leagueId: "nhl",
+    profile,
+    stats,
+    qualified,
+  });
+
   return (
     <div className="page-shell">
       <RefProfileJsonLd
@@ -120,6 +127,7 @@ export default async function NhlRefProfilePage({
         stats={stats}
         sport="nhl"
         qualified={qualified}
+        intelligenceFingerprint={intelligenceProfile.fingerprint}
         sampleGateMessage={
           <>
             Below {stats.meta.minSampleSize}-game minimum, metrics hidden until
@@ -127,13 +135,6 @@ export default async function NhlRefProfilePage({
           </>
         }
       >
-        <RefProfileMetadataBar
-          seasons={profile.seasons}
-          games={profile.games}
-          lastUpdated={stats.meta.lastUpdated}
-          leagueId="nhl"
-          slug={profile.slug}
-        />
       </RefereeMasterCard>
 
       <div className="ref-dashboard-grid">
@@ -163,6 +164,7 @@ export default async function NhlRefProfilePage({
                 />
               ) : undefined
             }
+            intelligenceProfile={intelligenceProfile}
           />
         </div>
 

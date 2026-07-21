@@ -1,0 +1,180 @@
+.ref-fingerprint-grid {
+  margin-top: 0.75rem;
+}
+
+.ref-fingerprint-badge-row {
+  gap: 0.5rem;
+}
+
+.ref-fingerprint-pill {
+  font-size: 0.72rem;
+  letter-spacing: 0.01em;
+}
+
+.ref-fingerprint-pill--primary {
+  font-weight: 600;
+}
+
+.ref-fingerprint-sample-meta {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted-foreground, #94a3b8);
+}
+
+.ref-intelligence-profile-title {
+  font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+  line-height: 1.25;
+}
+
+.ref-intelligence-profile-eyebrow {
+  margin: 0 0 0.2rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground, #94a3b8);
+}
+
+.ref-observed-tendencies-list {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.ref-observed-tendency-item {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.ref-observed-tendency-check {
+  color: #34d399;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ref-historical-impact-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 960px) {
+  .ref-historical-impact-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.ref-crew-partners-list {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.ref-crew-partner-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.65rem;
+  align-items: start;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--border, #334155) 70%, transparent);
+  border-radius: 0.55rem;
+}
+
+.ref-crew-partner-rank {
+  font-size: 0.75rem;
+  color: var(--muted-foreground, #94a3b8);
+}
+
+.ref-crew-partner-name {
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+}
+
+.ref-crew-partner-name:hover {
+  text-decoration: underline;
+}
+
+.ref-crew-partner-meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted-foreground, #94a3b8);
+}
+
+.ref-team-impact-search-label {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--muted-foreground, #94a3b8);
+}
+
+.ref-team-impact-input {
+  margin-top: 0.35rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--border, #334155) 80%, transparent);
+  background: color-mix(in srgb, var(--background, #0f172a) 92%, #1e293b);
+  color: inherit;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.9rem;
+}
+
+.ref-team-impact-options {
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+  max-height: 11rem;
+  overflow: auto;
+}
+
+.ref-team-impact-option {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  text-align: left;
+  border-radius: 0.45rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  padding: 0.45rem 0.55rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.ref-team-impact-option:hover,
+.ref-team-impact-option.is-selected {
+  border-color: color-mix(in srgb, #38bdf8 35%, transparent);
+  background: color-mix(in srgb, #38bdf8 8%, transparent);
+}
+
+.ref-team-impact-result {
+  margin: 0.85rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.ref-team-impact-result dt {
+  font-size: 0.72rem;
+  color: var(--muted-foreground, #94a3b8);
+}
+
+.ref-team-impact-result dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.ref-team-impact-hint {
+  margin-top: 0.75rem;
+}

@@ -87,8 +87,18 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
       "src/lib/graph/index.ts",
       "src/lib/graph/queryEngine.ts",
       "src/lib/graph/cache.ts",
+      "src/lib/graph/crew-partners.ts",
     ],
     tests: ["src/lib/graph/graph.test.ts"],
+  },
+  {
+    label: "officiating intelligence profile",
+    sources: [
+      "src/lib/ref-intelligence-profile.ts",
+      "src/components/RefereeMasterCard.tsx",
+      "src/components/ref-profile/RefProfileNarrativeLayout.tsx",
+    ],
+    tests: ["src/lib/ref-intelligence-profile.test.ts"],
   },
 ];
 

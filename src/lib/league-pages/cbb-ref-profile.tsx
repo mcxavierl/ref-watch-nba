@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefProfileJsonLd } from "@/components/RefProfileJsonLd";
-import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
+import { resolveRefIntelligenceProfile } from "@/lib/league-pages/ref-profile-intelligence";
 import {
   formatPct,
   getAllRefSlugs,
@@ -78,6 +78,13 @@ export default async function RefProfilePage({
     "CBB",
   );
 
+  const intelligenceProfile = resolveRefIntelligenceProfile({
+    leagueId: "cbb",
+    profile,
+    stats,
+    qualified,
+  });
+
   return (
     <div className="page-shell">
       <RefProfileJsonLd
@@ -102,6 +109,7 @@ export default async function RefProfilePage({
         stats={stats}
         sport="cbb"
         qualified={qualified}
+        intelligenceFingerprint={intelligenceProfile.fingerprint}
         sampleGateMessage={
           <>
             Below {stats.meta.minSampleSize}-game minimum, metrics hidden until
@@ -109,14 +117,6 @@ export default async function RefProfilePage({
           </>
         }
       >
-        <RefProfileMetadataBar
-          seasons={profile.seasons}
-          games={profile.games}
-          lastUpdated={stats.meta.lastUpdated}
-          seeded={stats.meta.source === "seeded"}
-          leagueId="cbb"
-          slug={profile.slug}
-        />
         {bbrTeamNote && (
           <p className="mt-3 text-sm text-amber-800">{bbrTeamNote}</p>
         )}
@@ -132,6 +132,7 @@ export default async function RefProfilePage({
             closeGameMetrics={closeGameMetrics}
             closeGameLeague="CBB"
             showBettingProfile={Boolean(profile.bettingStats)}
+            intelligenceProfile={intelligenceProfile}
           />
         </div>
 

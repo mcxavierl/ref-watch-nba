@@ -5,9 +5,9 @@ import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefProfileJsonLd } from "@/components/RefProfileJsonLd";
 import { EplRefAnalyticsSection } from "@/components/EplRefAnalyticsSection";
-import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
+import { resolveRefIntelligenceProfile } from "@/lib/league-pages/ref-profile-intelligence";
 import {
   formatPct,
   getAllRefSlugs,
@@ -92,6 +92,13 @@ export default async function EplRefProfilePage({
     "EPL",
   );
 
+  const intelligenceProfile = resolveRefIntelligenceProfile({
+    leagueId: "epl",
+    profile,
+    stats,
+    qualified,
+  });
+
   return (
     <div className="page-shell">
       <RefProfileJsonLd
@@ -116,6 +123,7 @@ export default async function EplRefProfilePage({
         stats={stats}
         sport="epl"
         qualified={qualified}
+        intelligenceFingerprint={intelligenceProfile.fingerprint}
         avatarSize="xl"
         avatarClassName="ring-2 ring-zinc-200 shadow-md"
         numberSlot={
@@ -131,14 +139,6 @@ export default async function EplRefProfilePage({
           </>
         }
       >
-        <RefProfileMetadataBar
-          seasons={profile.seasons}
-          games={profile.games}
-          lastUpdated={stats.meta.lastUpdated}
-          seeded={isEplSimulatedData(stats.meta.source)}
-          leagueId="epl"
-          slug={profile.slug}
-        />
       </RefereeMasterCard>
 
       <div className="ref-dashboard-grid">
@@ -169,6 +169,7 @@ export default async function EplRefProfilePage({
                 />
               ) : undefined
             }
+            intelligenceProfile={intelligenceProfile}
           />
         </div>
 

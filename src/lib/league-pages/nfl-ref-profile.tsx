@@ -5,9 +5,9 @@ import { RefereeMasterCard } from "@/components/RefereeMasterCard";
 import { ProfileSignalsSection } from "@/components/ProfileSignalsSection";
 import { RefProfileJsonLd } from "@/components/RefProfileJsonLd";
 import { NflRefAnalyticsSection } from "@/components/NflRefAnalyticsSection";
-import { RefProfileMetadataBar } from "@/components/RefProfileMetadataBar";
 import { RefProfileNarrativeLayout } from "@/components/ref-profile/RefProfileNarrativeLayout";
 import { TermHelp } from "@/components/TermHelp";
+import { resolveRefIntelligenceProfile } from "@/lib/league-pages/ref-profile-intelligence";
 import {
   formatPct,
   getAllRefSlugs,
@@ -97,6 +97,13 @@ export default async function NflRefProfilePage({
     profile,
   );
 
+  const intelligenceProfile = resolveRefIntelligenceProfile({
+    leagueId: "nfl",
+    profile,
+    stats,
+    qualified,
+  });
+
   return (
     <div className="page-shell">
       <RefProfileJsonLd
@@ -121,6 +128,7 @@ export default async function NflRefProfilePage({
         stats={stats}
         sport="nfl"
         qualified={qualified}
+        intelligenceFingerprint={intelligenceProfile.fingerprint}
         avatarSize="xl"
         avatarClassName="ring-2 ring-zinc-200 shadow-md"
         sampleGateMessage={
@@ -130,14 +138,6 @@ export default async function NflRefProfilePage({
           </>
         }
       >
-        <RefProfileMetadataBar
-          seasons={profile.seasons}
-          games={profile.games}
-          lastUpdated={stats.meta.lastUpdated}
-          seeded={isNflSimulatedData(stats.meta.source)}
-          leagueId="nfl"
-          slug={profile.slug}
-        />
       </RefereeMasterCard>
 
       <div className="ref-dashboard-grid">
@@ -168,6 +168,7 @@ export default async function NflRefProfilePage({
                 />
               ) : undefined
             }
+            intelligenceProfile={intelligenceProfile}
           />
         </div>
 

@@ -2,7 +2,11 @@ import type { ReactNode } from "react";
 import { DynamicInsightPillRow } from "@/components/DynamicInsightPill";
 import { FavoritesStar } from "@/components/FavoritesStar";
 import { RefAvatar } from "@/components/RefAvatar";
+import { RefCompareLink } from "@/components/RefCompareLink";
+import { RefFingerprintBadgeGrid } from "@/components/ref-profile/RefFingerprintBadgeGrid";
+import "@/components/ref-profile/officiating-intelligence-profile.css";
 import { buildRefMasterInsights } from "@/lib/ref-master-insights";
+import type { RefIntelligenceFingerprint } from "@/lib/ref-intelligence-profile";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
@@ -19,6 +23,7 @@ export type RefereeMasterCardProps = {
   avatarSize?: "lg" | "xl";
   avatarClassName?: string;
   numberSlot?: ReactNode;
+  intelligenceFingerprint?: RefIntelligenceFingerprint;
   children?: ReactNode;
 };
 
@@ -36,9 +41,11 @@ export function RefereeMasterCard({
   avatarSize = "lg",
   avatarClassName,
   numberSlot,
+  intelligenceFingerprint,
   children,
 }: RefereeMasterCardProps) {
   const insights = buildRefMasterInsights(leagueId, profile, stats, qualified);
+  const intelligenceMode = Boolean(intelligenceFingerprint);
 
   return (
     <header className="page-profile-header">
@@ -53,7 +60,13 @@ export function RefereeMasterCard({
         />
         <div className="page-hero-head-copy">
           <div className="page-hero-head-title-row">
-            <h1 className="page-title">{profile.name}</h1>
+            {intelligenceMode ? (
+              <h1 className="page-title ref-intelligence-profile-title">
+                Officiating Intelligence Profile: {profile.name}
+              </h1>
+            ) : (
+              <h1 className="page-title">{profile.name}</h1>
+            )}
             {numberSlot ?? (
               <span className="font-tabular text-sm text-muted">#{profile.number}</span>
             )}
@@ -63,10 +76,21 @@ export function RefereeMasterCard({
               league={leagueId as FavoritesLeague}
               label={profile.name}
             />
+            {intelligenceMode ? (
+              <RefCompareLink
+                leagueId={leagueId}
+                slug={profile.slug}
+                className="ref-profile-meta-item ref-compare-entry-link text-sm"
+              />
+            ) : null}
           </div>
-          <div className="ref-master-insight-pills">
-            <DynamicInsightPillRow insights={insights} />
-          </div>
+          {intelligenceFingerprint ? (
+            <RefFingerprintBadgeGrid fingerprint={intelligenceFingerprint} />
+          ) : (
+            <div className="ref-master-insight-pills">
+              <DynamicInsightPillRow insights={insights} />
+            </div>
+          )}
         </div>
       </div>
 
