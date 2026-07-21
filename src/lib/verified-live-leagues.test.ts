@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { NCAA_LIVE_LEAGUE_IDS } from "@/lib/ncaa-live-leagues.generated";
 import {
+  activeLiveLeagueIds,
   COLLEGE_LIVE_LEAGUE_IDS,
   isCollegeLiveLeague,
   isNcaaConferenceGatedLive,
@@ -11,11 +12,44 @@ import {
   LAUNCHED_NCAA_LEAGUE_IDS,
   OVERVIEW_HUB_LEAGUE_IDS,
   PRO_ASSIGNMENTS_LIVE_LEAGUE_IDS,
+  PRO_MATRIX_ANALYTICS_LEAGUE_IDS,
   PRO_ONLY_LIVE_LEAGUE_IDS,
+  PRO_VERIFIED_LIVE_LEAGUE_IDS,
   VERIFIED_LIVE_LEAGUE_IDS,
 } from "@/lib/verified-live-leagues";
 
+function assertNoDuplicateLeagueIds(
+  label: string,
+  leagueIds: readonly string[],
+): void {
+  const seen = new Set<string>();
+  for (const leagueId of leagueIds) {
+    assert.equal(
+      seen.has(leagueId),
+      false,
+      `${label} lists ${leagueId} more than once`,
+    );
+    seen.add(leagueId);
+  }
+}
+
 describe("verified live leagues", () => {
+  it("never lists the same league id twice in catalog arrays", () => {
+    assertNoDuplicateLeagueIds(
+      "PRO_MATRIX_ANALYTICS_LEAGUE_IDS",
+      PRO_MATRIX_ANALYTICS_LEAGUE_IDS,
+    );
+    assertNoDuplicateLeagueIds(
+      "PRO_VERIFIED_LIVE_LEAGUE_IDS",
+      PRO_VERIFIED_LIVE_LEAGUE_IDS,
+    );
+    assertNoDuplicateLeagueIds(
+      "VERIFIED_LIVE_LEAGUE_IDS",
+      VERIFIED_LIVE_LEAGUE_IDS,
+    );
+    assertNoDuplicateLeagueIds("activeLiveLeagueIds()", activeLiveLeagueIds());
+  });
+
   it("launches CBB on the overview with CFB still gated", () => {
     assert.deepEqual([...LAUNCHED_NCAA_LEAGUE_IDS], ["cbb"]);
     assert.deepEqual([...COLLEGE_LIVE_LEAGUE_IDS], ["cbb"]);
