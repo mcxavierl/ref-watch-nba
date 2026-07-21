@@ -93,6 +93,7 @@ describe("citation event store", () => {
     });
     assert.ok(record.id);
     assert.equal(record.action, "COPY_CITATION");
+    assert.equal(record.metricType, "Whistle Acceleration");
     assert.equal(record.gameId, "test-game");
   });
 });
