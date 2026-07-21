@@ -1,33 +1,34 @@
 import {
-  dispatchAnomalyWebhookEvents,
-  processWebhookQueue,
-} from "@/lib/services/webhookDispatch";
-import {
-  runAnomalyMonitorForIngestedAssignments,
-  writeAnomalyMonitorArtifact,
-} from "@/lib/services/run-anomaly-monitor";
-import { summarizeAnomalyMonitor } from "@/lib/services/anomalyMonitor";
+  onBatchAssignmentsIngested,
+  summarizeAnomalyMonitor,
+} from "@/lib/services/anomalyMonitor";
+import { activeLiveLeagueIds } from "@/lib/league-verification";
+import { processWebhookQueue } from "@/lib/services/webhookDispatch";
 
 export type IntegrityMonitorRunResult = {
   monitor: ReturnType<typeof summarizeAnomalyMonitor>;
-  webhook: Awaited<ReturnType<typeof dispatchAnomalyWebhookEvents>>;
+  webhook: Awaited<ReturnType<typeof onBatchAssignmentsIngested>>["webhook"];
 };
 
 export async function runIntegrityMonitorPipeline(options?: {
   processWebhooks?: boolean;
+  leagueIds?: ReturnType<typeof activeLiveLeagueIds>;
 }): Promise<IntegrityMonitorRunResult> {
-  const results = runAnomalyMonitorForIngestedAssignments();
-  writeAnomalyMonitorArtifact(results);
+  const batch = await onBatchAssignmentsIngested(
+    options?.leagueIds ?? activeLiveLeagueIds(),
+    {
+      dispatchWebhooks: options?.processWebhooks ?? true,
+      writeArtifact: true,
+    },
+  );
 
-  const events = results.flatMap((row) => row.events);
-  const webhook = await dispatchAnomalyWebhookEvents(events, {
-    processImmediately: options?.processWebhooks ?? true,
-    maxPasses: 4,
-  });
+  if (options?.processWebhooks ?? true) {
+    await drainWebhookQueue();
+  }
 
   return {
-    monitor: summarizeAnomalyMonitor(results),
-    webhook,
+    monitor: batch.summary,
+    webhook: batch.webhook,
   };
 }
 

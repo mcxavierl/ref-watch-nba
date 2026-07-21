@@ -83,6 +83,13 @@ describe("anomaly monitor", () => {
   });
 });
 
+describe("anomaly monitor worker", () => {
+  it("exposes onAssignmentsIngested entry point for assignment ingest hooks", async () => {
+    const { onAssignmentsIngested } = await import("@/lib/services/anomalyMonitor");
+    assert.equal(typeof onAssignmentsIngested, "function");
+  });
+});
+
 describe("webhook dispatch", () => {
   it("computes exponential backoff", () => {
     assert.equal(computeWebhookBackoffMs(0), 2000);

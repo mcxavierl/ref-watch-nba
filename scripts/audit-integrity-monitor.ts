@@ -68,7 +68,7 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
     name: "integrity monitor pipeline writes anomaly artifact",
     run: () =>
       auditFileContains(
-        "src/lib/services/integrityMonitor.ts",
+        "src/lib/services/anomalyMonitor.ts",
         /writeAnomalyMonitorArtifact/,
         "writeAnomalyMonitorArtifact call",
       ),
@@ -108,6 +108,33 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "src/lib/services/anomaly-monitor.test.ts",
         /detectAnomaliesFromSlateMetrics/,
         "anomaly monitor unit test",
+      ),
+  },
+  {
+    name: "assignment fetch scripts trigger anomaly monitor on ingest",
+    run: () => {
+      for (const relPath of [
+        "scripts/fetch-assignments.ts",
+        "scripts/wnba/fetch-assignments.ts",
+        "scripts/nfl/fetch-assignments.ts",
+      ]) {
+        const result = auditFileContains(
+          relPath,
+          /postAssignmentIngest/,
+          "postAssignmentIngest hook",
+        );
+        if (!result.ok) return result;
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "anomaly monitor exposes onAssignmentsIngested worker",
+    run: () =>
+      auditFileContains(
+        "src/lib/services/anomalyMonitor.ts",
+        /onAssignmentsIngested/,
+        "onAssignmentsIngested worker",
       ),
   },
   {

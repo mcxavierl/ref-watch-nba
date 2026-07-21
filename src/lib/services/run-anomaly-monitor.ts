@@ -105,7 +105,7 @@ function oddsPath(leagueId: LeagueId): string | null {
   return fs.existsSync(leagueOdds) ? leagueOdds : null;
 }
 
-function loadAssignments(leagueId: LeagueId): AssignmentsFile | null {
+export function loadAssignmentsForLeague(leagueId: LeagueId): AssignmentsFile | null {
   const filePath = assignmentsPath(leagueId);
   if (!fs.existsSync(filePath)) return null;
   try {
@@ -113,6 +113,10 @@ function loadAssignments(leagueId: LeagueId): AssignmentsFile | null {
   } catch {
     return null;
   }
+}
+
+function loadAssignments(leagueId: LeagueId): AssignmentsFile | null {
+  return loadAssignmentsForLeague(leagueId);
 }
 
 function loadOdds(leagueId: LeagueId): OddsFile {

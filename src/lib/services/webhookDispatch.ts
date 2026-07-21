@@ -3,6 +3,7 @@ import {
   enqueueAnomalyWebhookEvents,
   getWebhookStore,
   signWebhookPayload,
+  type WebhookStore,
 } from "@/lib/services/webhookQueue";
 import type { AnomalyDetectedEvent } from "@/lib/services/anomalyMonitor";
 
@@ -64,8 +65,9 @@ async function deliverWebhookJob(
 export async function processWebhookQueue(options?: {
   batchSize?: number;
   now?: Date;
+  store?: WebhookStore;
 }): Promise<WebhookDispatchSummary> {
-  const store = await getWebhookStore();
+  const store = options?.store ?? (await getWebhookStore());
   const subscribers = await store.listActiveSubscribers();
   const subscriberById = new Map(subscribers.map((row) => [row.id, row]));
   const nowIso = (options?.now ?? new Date()).toISOString();
