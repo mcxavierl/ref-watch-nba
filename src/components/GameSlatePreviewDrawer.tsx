@@ -11,6 +11,7 @@ import {
 } from "react";
 import { TrendingDown, TrendingUp, X } from "lucide-react";
 import { MatchupInsightCard } from "@/components/MatchupInsightCard";
+import { GameSlateFingerprintPanel } from "@/components/visuals/GameSlateFingerprintPanel";
 import { EvidenceDrawer } from "@/components/evidence/EvidenceDrawer";
 import { ModalPortal } from "@/components/ModalPortal";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
@@ -58,6 +59,9 @@ export function GameSlatePreviewDrawer({
   const titleId = useId();
   const panelRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [drawerVisualTab, setDrawerVisualTab] = useState<"impact" | "fingerprint">(
+    "impact",
+  );
   const [rendered, setRendered] = useState(open);
   const [visible, setVisible] = useState(false);
 
@@ -132,6 +136,8 @@ export function GameSlatePreviewDrawer({
   const insufficientCopy = awaitingCrew
     ? "Limited head-to-head history for this pairing. Context below uses recent team form and slate notes."
     : "Not enough qualified crew history to show composite tendencies yet.";
+  const hasFingerprint =
+    !awaitingCrew && (preview.crewFingerprints?.length ?? 0) > 0;
 
   return (
     <ModalPortal>
@@ -232,9 +238,50 @@ export function GameSlatePreviewDrawer({
             )}
 
             <div className="flex flex-col gap-6">
-              {preview.insufficientSample ? (
+              {hasFingerprint ? (
+                <div
+                  className="game-slate-preview-visual-tabs"
+                  role="tablist"
+                  aria-label="Game preview visuals"
+                >
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={drawerVisualTab === "impact"}
+                    className={`officiating-fingerprint-tab${
+                      drawerVisualTab === "impact"
+                        ? " officiating-fingerprint-tab--active"
+                        : ""
+                    }`}
+                    onClick={() => setDrawerVisualTab("impact")}
+                  >
+                    Crew impact
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={drawerVisualTab === "fingerprint"}
+                    className={`officiating-fingerprint-tab${
+                      drawerVisualTab === "fingerprint"
+                        ? " officiating-fingerprint-tab--active"
+                        : ""
+                    }`}
+                    onClick={() => setDrawerVisualTab("fingerprint")}
+                  >
+                    Officiating fingerprint
+                  </button>
+                </div>
+              ) : null}
+
+              {hasFingerprint && drawerVisualTab === "fingerprint" ? (
+                <GameSlateFingerprintPanel
+                  crewFingerprints={preview.crewFingerprints ?? []}
+                />
+              ) : null}
+
+              {drawerVisualTab === "impact" && preview.insufficientSample ? (
                 <p className="ref-preview-drawer-summary-copy">{insufficientCopy}</p>
-              ) : (
+              ) : drawerVisualTab === "impact" ? (
                 <section className="game-slate-preview-crew-impact" aria-label={impactSectionTitle}>
                   <h3 className="ref-preview-drawer-section-title">{impactSectionTitle}</h3>
                   <div className="game-slate-preview-crew-impact-chips">
@@ -294,7 +341,7 @@ export function GameSlatePreviewDrawer({
                     {impactSampleLabel}
                   </p>
                 </section>
-              )}
+              ) : null}
 
               {!awaitingCrew ? (
                 <EvidenceDrawer evidence={projectionEvidence} className="game-slate-preview-evidence" />
