@@ -1,3 +1,4 @@
+import { FEED_CACHE_CONTROL } from "@/lib/cache-control";
 import { buildNhlNightlyFeed } from "@/lib/syndication";
 import { nightlyFeedToRss } from "@/lib/rss";
 
@@ -8,7 +9,7 @@ export async function GET() {
   return new Response(nightlyFeedToRss(feed), {
     headers: {
       "Content-Type": "application/rss+xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      "Cache-Control": FEED_CACHE_CONTROL,
     },
   });
 }

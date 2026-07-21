@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { leagueLogoNavClass, leagueLogoSrc, leagueNavMarkDimensions } from "@/lib/league-logo-src";
 import { useColorMode } from "@/lib/a11y/useColorMode";
@@ -53,9 +54,10 @@ type LeagueNavMarkProps = {
 
 export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
   const colorMode = useColorMode();
+  const [failed, setFailed] = useState(false);
   const src = leagueLogoSrc(league, colorMode);
   const proLogos = PRO_LEAGUE_LOGOS[league as Exclude<LeagueNavId, "cbb" | "cfb">];
-  if (!src) {
+  if (!src || failed) {
     return (
       <span className="league-nav-mark-fallback" aria-hidden>
         {LEAGUES[league].shortLabel}
@@ -77,6 +79,7 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
       height={height}
       decoding="async"
       referrerPolicy="no-referrer"
+      onError={() => setFailed(true)}
     />
   );
 }
