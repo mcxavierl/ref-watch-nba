@@ -3,8 +3,10 @@ import { describe, it } from "node:test";
 import {
   createHighlightBadgeRegistry,
   meetsOverRateHighlightThreshold,
+  meetsOverRateTopTierThreshold,
   meetsScoringHighlightThreshold,
   meetsWhistleHighlightThreshold,
+  meetsWhistleTopTierThreshold,
 } from "@/lib/highlight-badge";
 
 describe("highlight-badge materiality gates", () => {
@@ -24,9 +26,27 @@ describe("highlight-badge materiality gates", () => {
     assert.equal(meetsWhistleHighlightThreshold(1.4, "nba"), false);
     assert.equal(meetsWhistleHighlightThreshold(1.5, "nba"), true);
   });
+
+  it("requires 8 percentage points from neutral over rate for primary over badges", () => {
+    assert.equal(meetsOverRateTopTierThreshold(0.57), false);
+    assert.equal(meetsOverRateTopTierThreshold(0.59), true);
+    assert.equal(meetsOverRateTopTierThreshold(0.41), true);
+  });
+
+  it("requires 2.5 whistle delta for primary NBA whistle badges", () => {
+    assert.equal(meetsWhistleTopTierThreshold(2.4, "nba"), false);
+    assert.equal(meetsWhistleTopTierThreshold(2.5, "nba"), true);
+  });
 });
 
 describe("highlight-badge registry deduplication", () => {
+  it("downgrades modest over-rate deltas to secondary labels", () => {
+    const registry = createHighlightBadgeRegistry();
+    const badge = registry.overRateBadge(0.56);
+    assert.match(badge?.label ?? "", /Notable over-rate vs baseline/i);
+    assert.doesNotMatch(badge?.label ?? "", /Highest/i);
+  });
+
   it("assigns only one primary Biggest scoring dip per grid", () => {
     const registry = createHighlightBadgeRegistry();
     const first = registry.scoringBadge(-1.2);

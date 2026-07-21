@@ -81,10 +81,15 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
   },
   {
     label: "highlight badges",
-    sources: ["src/lib/highlight-badge.ts", "src/lib/rankings-synthesis.ts"],
+    sources: [
+      "src/lib/highlight-badge.ts",
+      "src/lib/rankings-synthesis.ts",
+      "src/lib/highlight-integrity-audit.ts",
+    ],
     tests: [
       "src/lib/highlight-badge.test.ts",
       "src/lib/rankings-synthesis.test.ts",
+      "scripts/audit-highlight-integrity.test.ts",
     ],
   },
   {

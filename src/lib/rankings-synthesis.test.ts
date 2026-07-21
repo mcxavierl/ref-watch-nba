@@ -276,7 +276,7 @@ describe("buildRankingsSynthesis", () => {
       makeRef("over-king", { name: "Over King", overRate: 0.72 }),
       makeRef("intae-hwang-73", {
         name: "Intae Hwang",
-        foulsDelta: -2,
+        foulsDelta: -2.6,
         avgFouls: 37.5,
       }),
     ]);
@@ -285,7 +285,7 @@ describe("buildRankingsSynthesis", () => {
     const synthesis = buildRankingsSynthesis(stats, LEAGUES.nba);
     const whistleCard = synthesis.insights.find((insight) => insight.id === "top-whistle");
     assert.ok(whistleCard);
-    assert.equal(whistleCard?.statValue, "-2.0");
+    assert.equal(whistleCard?.statValue, "-2.6");
     assert.match(whistleCard?.body ?? "", /below average/i);
     assert.doesNotMatch(whistleCard?.body ?? "", /above average/i);
     assert.match(whistleCard?.title ?? "", /lightest/i);
