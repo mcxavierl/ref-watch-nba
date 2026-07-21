@@ -3,8 +3,10 @@
 import { Bell, Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 
+import type { SeasonNotifyLeague } from "@/lib/season-notify-leagues";
+
 type SeasonNotifyCtaProps = {
-  league: "NBA" | "NHL" | "WNBA" | "NFL" | "EPL" | "LALIGA" | "CBB" | "CFB";
+  league: SeasonNotifyLeague;
   variant?: "button" | "link";
   triggerLabel?: string;
 };
