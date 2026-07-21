@@ -23,9 +23,11 @@ describe("strategic pivot surfaces", () => {
 
   it("homepage hero prioritizes intelligence briefing over navigation", () => {
     const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
+    const banner = readSrc("src/components/dashboard/IntelligenceHero.tsx");
     const page = readSrc("src/app/page.tsx");
-    assert.match(hero, /Officiating Intelligence/);
-    assert.match(hero, /behavioral modeling/i);
+    assert.match(hero, /IntelligenceHero/);
+    assert.match(banner, /behavioral modeling/i);
+    assert.match(banner, /TOP SIGNAL TODAY/);
     assert.match(page, /OverviewIntelligenceHero/);
     assert.doesNotMatch(hero, /TrustCharterSummary/);
     assert.doesNotMatch(hero, /REFWATCH_AUDIENCE/);
@@ -46,7 +48,7 @@ describe("strategic pivot surfaces", () => {
 
   it("user-facing pivot copy avoids em dashes", () => {
     const files = [
-      "src/components/OverviewIntelligenceHero.tsx",
+      "src/components/dashboard/IntelligenceHero.tsx",
       "src/lib/about-content.ts",
       "src/components/ValidationReportContent.tsx",
     ];

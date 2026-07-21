@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { GoldMineProofBar } from "@/components/GoldMineProofBar";
 import { OverviewFeaturedSignal } from "@/components/OverviewFeaturedSignal";
 import { OverviewIntelligenceFeed } from "@/components/OverviewIntelligenceFeed";
 import { OverviewResearchFooter } from "@/components/OverviewResearchFooter";
@@ -24,8 +23,6 @@ export function OverviewDashboard({
   return (
     <DashboardShell>
       {hero}
-
-      <GoldMineProofBar data={data} />
 
       <OverviewFeaturedSignal data={data} />
 

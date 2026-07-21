@@ -5,6 +5,7 @@ import {
   buildDailyIntelligenceBriefing,
   buildHomepageProofMetrics,
   buildIntelligenceFeedEvents,
+  buildIntelligenceHeroView,
   buildTopSignalView,
   selectTopSignalInsight,
 } from "@/lib/homepage-intelligence";
@@ -23,6 +24,18 @@ describe("homepage-intelligence", () => {
     const briefing = buildDailyIntelligenceBriefing(data);
     assert.ok(briefing.gamesAnalyzed > 0);
     assert.ok(briefing.topSignalMatchup.length > 0);
+  });
+
+  it("builds intelligence hero view with stats, top signal, and proof metrics", () => {
+    const data = loadOverviewSnapshot();
+    const view = buildIntelligenceHeroView(data);
+    assert.ok(view.gamesAnalyzed > 0);
+    assert.ok(view.topMatchup.length > 0);
+    assert.ok(view.topSignalConfidence > 0);
+    assert.ok(view.modelCertaintyPct > 0);
+    assert.equal(view.proofMetrics.length, 4);
+    assert.match(view.proofMetrics[0]?.label ?? "", /OFFICIALS MODELED/i);
+    assert.match(view.proofMetrics[1]?.value ?? "", /,/);
   });
 
   it("selects a featured top signal insight", () => {

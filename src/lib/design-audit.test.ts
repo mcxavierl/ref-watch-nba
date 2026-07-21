@@ -16,14 +16,17 @@ describe("design audit guardrails", () => {
 
   it("homepage intelligence hero leads with briefing and proof bar hierarchy", () => {
     const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
+    const banner = readSrc("src/components/dashboard/IntelligenceHero.tsx");
     const dashboard = readSrc("src/components/OverviewDashboard.tsx");
     const page = readSrc("src/app/page.tsx");
-    assert.match(hero, /Officiating Intelligence/);
-    assert.match(hero, /Today.*Intelligence/);
-    assert.match(hero, /anomaly detection/i);
-    assert.doesNotMatch(hero, /text-slate-/);
+    assert.match(hero, /IntelligenceHero/);
+    assert.match(hero, /buildIntelligenceHeroView/);
+    assert.match(banner, /OFFICIATING DECISION INTELLIGENCE/);
+    assert.match(banner, /Today.*Intelligence/);
+    assert.match(banner, /statistical anomaly/i);
+    assert.match(banner, /Platform proof metrics/);
     assert.match(page, /OverviewIntelligenceHero/);
-    assert.match(dashboard, /GoldMineProofBar/);
+    assert.doesNotMatch(dashboard, /GoldMineProofBar/);
     assert.match(dashboard, /OverviewFeaturedSignal/);
     assert.match(dashboard, /OverviewUpcomingSlateSection/);
     assert.match(dashboard, /OverviewIntelligenceFeed/);

@@ -18,6 +18,25 @@ export type DailyIntelligenceBriefing = {
   topSignalMatchup: string;
 };
 
+export type IntelligenceHeroProofMetric = {
+  id: string;
+  label: string;
+  value: string;
+  icon: "activity" | "layers" | null;
+};
+
+export type IntelligenceHeroView = {
+  gamesAnalyzed: number;
+  significantCrewEffects: number;
+  anomalyAlerts: number;
+  modelCertaintyPct: number;
+  topMatchup: string;
+  topSignalConfidence: number;
+  topSignalNote: string;
+  topSignalHref: string;
+  proofMetrics: IntelligenceHeroProofMetric[];
+};
+
 export type HomepageProofMetric = {
   id: string;
   value: string;
@@ -57,6 +76,86 @@ function modelConfidencePct(): number {
   if (hitRates.length === 0) return 91.7;
   const avg = hitRates.reduce((sum, rate) => sum + rate, 0) / hitRates.length;
   return Math.round(avg * 1000) / 10;
+}
+
+function slateGamesAnalyzed(data: CrossLeagueOverview): number {
+  const { upcomingSlate } = data;
+  if (upcomingSlate.inSeason) {
+    return Math.max(
+      upcomingSlate.games.length,
+      upcomingSlate.totalGames + upcomingSlate.totalScheduled,
+    );
+  }
+  return Math.max(data.liveLeagueCount, 1);
+}
+
+function heroTopMatchup(data: CrossLeagueOverview, topSignal: LeagueInsightCard | null): string {
+  const slateGame =
+    data.upcomingSlate.games.find((game) => game.crewCount > 0) ??
+    data.upcomingSlate.games[0];
+  if (slateGame) {
+    return slateGame.matchup.replace(/\s+at\s+/i, " @ ");
+  }
+  if (topSignal?.teamLabel && topSignal.entityName) {
+    return `${shortTeamLabel(topSignal.teamLabel)} + ${topSignal.entityName}`;
+  }
+  return topSignalMatchupFromSlate(data);
+}
+
+function heroTopSignalNote(topSignal: LeagueInsightCard | null): string {
+  if (!topSignal) {
+    return "Crew and matchup intelligence updates as assignments publish.";
+  }
+  if (topSignal.story.trim()) {
+    return topSignal.story.trim();
+  }
+  return `${topSignal.heroValue} ${topSignal.heroLabel.toLowerCase()} in the current sample.`;
+}
+
+/** Intelligence hero banner + integrated proof bar view model. */
+export function buildIntelligenceHeroView(data: CrossLeagueOverview): IntelligenceHeroView {
+  const briefing = buildDailyIntelligenceBriefing(data);
+  const topSignalCard = selectTopSignalInsight(data);
+  const topSignal = buildTopSignalView(data);
+
+  return {
+    gamesAnalyzed: slateGamesAnalyzed(data),
+    significantCrewEffects: briefing.significantCrewEffects,
+    anomalyAlerts: briefing.anomalyAlerts,
+    modelCertaintyPct: modelConfidencePct(),
+    topMatchup: heroTopMatchup(data, topSignalCard),
+    topSignalConfidence: topSignalCard
+      ? signalConfidencePct(topSignalCard)
+      : modelConfidencePct(),
+    topSignalNote: heroTopSignalNote(topSignalCard),
+    topSignalHref: topSignal?.href ?? "/",
+    proofMetrics: [
+      {
+        id: "officials",
+        label: "OFFICIALS MODELED",
+        value: `${data.totalRefs.toLocaleString("en-US")} Active`,
+        icon: "activity",
+      },
+      {
+        id: "games",
+        label: "INDEXED GAMES",
+        value: data.totalGames.toLocaleString("en-US"),
+        icon: "layers",
+      },
+      {
+        id: "whistles",
+        label: "HISTORICAL WHISTLES",
+        value: data.whistleEventsLogged.toLocaleString("en-US"),
+        icon: null,
+      },
+      {
+        id: "crews",
+        label: "CREW COMBINATIONS",
+        value: estimateCrewCombinations(data).toLocaleString("en-US"),
+        icon: null,
+      },
+    ],
+  };
 }
 
 /** Gold Mine proof bar metrics derived from the overview snapshot. */
