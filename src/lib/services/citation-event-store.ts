@@ -1,7 +1,10 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { randomUUID } from "node:crypto";
-import type { CitationEventPayload } from "@/lib/intelligence/intelligence-card-types";
+import type {
+  CitationEventPayload,
+  IntelligenceMetricType,
+} from "@/lib/intelligence/intelligence-card-types";
 
 export type CitationEventRecord = CitationEventPayload & {
   id: string;
@@ -45,8 +48,8 @@ function mapRecord(row: Record<string, unknown>): CitationEventRecord {
     id: String(row.id),
     gameId: String(row.game_id ?? row.gameId),
     refCrew: String(row.ref_crew ?? row.refCrew),
-    metricType: String(row.metric_type ?? row.metricType),
-    action: String(row.action),
+    metricType: String(row.metric_type ?? row.metricType) as IntelligenceMetricType,
+    action: String(row.action) as CitationEventPayload["action"],
     createdAt: String(row.created_at ?? row.createdAt),
   };
 }
