@@ -38,6 +38,17 @@ describe("design audit guardrails", () => {
     assert.match(visual, /officiating-fingerprint-data/);
   });
 
+  it("dashboard intelligence components power featured signal and live feed", () => {
+    const topSignal = readSrc("src/components/dashboard/TopSignal.tsx");
+    const feed = readSrc("src/components/dashboard/IntelligenceFeed.tsx");
+    const overview = readSrc("src/components/OverviewFeaturedSignal.tsx");
+    assert.match(topSignal, /top-signal-percentile-label/);
+    assert.match(topSignal, /Open Intelligence/);
+    assert.match(feed, /intelligence-feed-filter/);
+    assert.match(feed, /Streaming/);
+    assert.match(overview, /TopSignal/);
+  });
+
   it("game preview drawer exposes fingerprint visual tab", () => {
     const drawer = readSrc("src/components/GameSlatePreviewDrawer.tsx");
     const preview = readSrc("src/lib/game-slate-preview.ts");

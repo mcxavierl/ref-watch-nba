@@ -4,7 +4,8 @@ import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
 import {
   buildDailyIntelligenceBriefing,
   buildHomepageProofMetrics,
-  buildIntelligenceFeedCards,
+  buildIntelligenceFeedEvents,
+  buildTopSignalView,
   selectTopSignalInsight,
 } from "@/lib/homepage-intelligence";
 
@@ -30,19 +31,31 @@ describe("homepage-intelligence", () => {
     assert.ok(signal === null || signal.headline.length > 0);
   });
 
-  it("builds intelligence feed without duplicating the featured signal", () => {
+  it("builds top signal view with percentile and stat breakdown", () => {
     const data = loadOverviewSnapshot();
-    const featured = selectTopSignalInsight(data);
-    const feed = buildIntelligenceFeedCards(data, 4);
-    if (featured) {
-      const featuredKey = `${featured.leagueId}:${featured.refSlug ?? featured.headline}:${featured.teamAbbr ?? ""}`;
-      assert.ok(
-        !feed.some(
-          (card) =>
-            `${card.leagueId}:${card.refSlug ?? card.headline}:${card.teamAbbr ?? ""}` ===
-            featuredKey,
-        ),
-      );
+    const signal = buildTopSignalView(data);
+    if (!signal) return;
+    assert.match(signal.percentileLabel, /Percentile Signal/);
+    assert.ok(signal.matchupTitle.length > 0);
+    assert.match(signal.statBreakdown, /Game Sample/);
+    assert.match(signal.statBreakdown, /Confidence/);
+  });
+
+  it("builds intelligence feed events with categories", () => {
+    const data = loadOverviewSnapshot();
+    const events = buildIntelligenceFeedEvents(data, 8);
+    assert.ok(events.length > 0);
+    for (const event of events) {
+      assert.ok(event.timeLabel.length > 0);
+      assert.ok(event.message.length > 0);
+      assert.ok(["anomalies", "assignments", "projections"].includes(event.category));
     }
+  });
+
+  it("builds intelligence feed events from slate and insights", () => {
+    const data = loadOverviewSnapshot();
+    const events = buildIntelligenceFeedEvents(data, 6);
+    assert.ok(events.length > 0);
+    assert.ok(events.some((event) => event.category === "projections" || event.category === "anomalies"));
   });
 });
