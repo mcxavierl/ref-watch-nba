@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { NflHistoricalGameLogEntry } from "./nflverse-historical";
+import { tagNflPenaltyEvents } from "./ingest-utils";
 
 export const NFL_GAME_LOGS_DIR = "data/nfl/game-logs";
 export const NFL_MANIFEST_PATH = "data/nfl/manifest.json";
@@ -28,6 +29,14 @@ export function groupGamesBySeason(
   return bySeason;
 }
 
+function prepareGameForShard(game: NflGameLogShardEntry): NflGameLogShardEntry {
+  if (!game.penaltyEvents?.length) return game;
+  return {
+    ...game,
+    penaltyEvents: tagNflPenaltyEvents(game.penaltyEvents),
+  };
+}
+
 export function writeNflSeasonShards(
   games: NflGameLogShardEntry[],
   root = process.cwd(),
@@ -46,7 +55,7 @@ export function writeNflSeasonShards(
         (a, b) =>
           a.date.localeCompare(b.date) || a.gameId.localeCompare(b.gameId),
       )
-      .map((g) => JSON.stringify(g));
+      .map((g) => JSON.stringify(prepareGameForShard(g)));
     const shardPath = path.join(shardDir, `${season}.ndjson`);
     fs.writeFileSync(shardPath, `${lines.join("\n")}\n`);
     shardCount++;
