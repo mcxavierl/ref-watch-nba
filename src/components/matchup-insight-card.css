@@ -6,8 +6,8 @@
   height: fit-content;
   padding: 0.9rem 1rem;
   border-radius: 0.75rem;
-  border: 1px solid rgb(30 41 59);
-  background: rgb(15 23 42 / 0.4);
+  border: 1px solid var(--border-default);
+  background: color-mix(in srgb, var(--bg-surface-2) 88%, transparent);
 }
 
 .matchup-insight-card__pill {
@@ -17,13 +17,13 @@
   max-width: 100%;
   padding: 0.2rem 0.55rem;
   border-radius: 9999px;
-  border: 1px solid rgb(51 65 85);
-  background: rgb(15 23 42 / 0.72);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface-1);
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgb(148 163 184);
+  color: var(--text-muted);
   line-height: 1.35;
 }
 
@@ -32,7 +32,7 @@
   font-size: 0.9375rem;
   font-weight: 650;
   line-height: 1.35;
-  color: rgb(248 250 252);
+  color: var(--text-primary);
   text-wrap: balance;
 }
 
@@ -44,14 +44,14 @@
   line-height: 1;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-  color: rgb(248 250 252);
+  color: var(--text-primary);
 }
 
 .matchup-insight-card__summary {
   margin: 0;
   font-size: 0.8125rem;
   line-height: 1.45;
-  color: rgb(148 163 184);
+  color: var(--text-muted);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;

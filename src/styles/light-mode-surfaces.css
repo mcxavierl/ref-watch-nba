@@ -1,0 +1,326 @@
+/**
+ * Light mode surface corrections — fixes hardcoded dark cells that leak in
+ * html[data-color="light"]. Import after theme-tokens.css.
+ */
+
+html[data-color="light"]:not([data-contrast="high"]),
+html.light:not([data-contrast="high"]) {
+  /* GSNI panels */
+  --gsni-ink-strong: #0f172a;
+  --gsni-ink-body: #334155;
+  --gsni-ink-muted: #64748b;
+  --gsni-ink-faint: #94a3b8;
+  --gsni-panel-bg: #ffffff;
+  --gsni-panel-border: #e2e8f0;
+}
+
+/* ── Insight split metric cells (sample size + delta) ─────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box--delta,
+html.light:not([data-contrast="high"]) .insight-split-metrics-box--delta {
+  background: var(--bg-surface-2);
+  border-color: var(--border-default);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box--sample,
+html.light:not([data-contrast="high"]) .insight-split-metrics-box--sample,
+html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box--sample .insight-split-sample-value,
+html.light:not([data-contrast="high"]) .insight-split-metrics-box--sample .insight-split-sample-value,
+html[data-color="light"]:not([data-contrast="high"])
+  .insight-card[data-tone="positive"]
+  .insight-split-metrics-box--sample
+  .insight-split-sample-value,
+html[data-color="light"]:not([data-contrast="high"])
+  .insight-card[data-tone="negative"]
+  .insight-split-metrics-box--sample
+  .insight-split-sample-value {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-split-sample-value,
+html.light:not([data-contrast="high"]) .insight-split-sample-value {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-label,
+html.light:not([data-contrast="high"]) .insight-split-metrics-label {
+  color: var(--text-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-card--editorial .insight-split-delta-value--positive,
+html.light:not([data-contrast="high"]) .insight-card--editorial .insight-split-delta-value--positive,
+html[data-color="light"]:not([data-contrast="high"]) .overview-page .insight-card--editorial .insight-split-delta-value--positive {
+  color: var(--accent-positive);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-card--editorial .insight-split-delta-value--negative,
+html.light:not([data-contrast="high"]) .insight-card--editorial .insight-split-delta-value--negative,
+html[data-color="light"]:not([data-contrast="high"]) .overview-page .insight-card--editorial .insight-split-delta-value--negative {
+  color: var(--accent-negative);
+}
+
+/* ── Clinical matrix + chooser surfaces ─────────────────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .clinical-insight-matrix-card,
+html.light:not([data-contrast="high"]) .clinical-insight-matrix-card {
+  background-color: var(--bg-surface-1);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-slate-capsule-mark,
+html.light:not([data-contrast="high"]) .overview-slate-capsule-mark {
+  background: var(--bg-surface-2);
+  border-color: var(--border-default);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .live-highlights-ticker,
+html.light:not([data-contrast="high"]) .live-highlights-ticker {
+  background: var(--bg-surface-2);
+  border-bottom-color: var(--border-subtle);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .overview-league-chooser--primary .overview-league-chooser-card,
+html.light:not([data-contrast="high"]) .overview-league-chooser--primary .overview-league-chooser-card {
+  background: var(--bg-surface-1);
+}
+
+/* ── GSNI cards ─────────────────────────────────────────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .gsni-card,
+html.light:not([data-contrast="high"]) .gsni-card {
+  --gsni-ink-strong: #0f172a;
+  --gsni-ink-body: #334155;
+  --gsni-ink-muted: #64748b;
+  --gsni-ink-faint: #94a3b8;
+  --gsni-panel-bg: #ffffff;
+  --gsni-panel-border: #e2e8f0;
+  background: var(--gsni-panel-bg);
+  border-color: var(--gsni-panel-border);
+  color: var(--gsni-ink-body);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .gsni-card--soft-lock,
+html.light:not([data-contrast="high"]) .gsni-card--soft-lock {
+  background: color-mix(in srgb, #6366f1 6%, var(--gsni-panel-bg));
+  border-color: color-mix(in srgb, #6366f1 22%, var(--gsni-panel-border));
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .gsni-correlation-pill--neutral,
+html.light:not([data-contrast="high"]) .gsni-correlation-pill--neutral {
+  border-color: var(--border-default);
+  background: var(--bg-surface-2);
+  color: var(--text-secondary);
+}
+
+/* ── Compare tool + combobox ───────────────────────────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-view,
+html.light:not([data-contrast="high"]) .ref-compare-view,
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-slot,
+html.light:not([data-contrast="high"]) .ref-compare-slot {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-input,
+html.light:not([data-contrast="high"]) .ref-compare-combobox-input {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-list,
+html.light:not([data-contrast="high"]) .ref-compare-combobox-list {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 0.12);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-option--active,
+html.light:not([data-contrast="high"]) .ref-compare-combobox-option--active,
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-combobox-option:hover,
+html.light:not([data-contrast="high"]) .ref-compare-combobox-option:hover {
+  background: var(--bg-surface-2);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-swap-icon-btn,
+html.light:not([data-contrast="high"]) .ref-compare-swap-icon-btn {
+  background: var(--bg-surface-2);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .ref-compare-swap-icon-btn:hover,
+html.light:not([data-contrast="high"]) .ref-compare-swap-icon-btn:hover {
+  background: var(--bg-surface-3);
+}
+
+/* ── Popovers, tooltips, evidence ───────────────────────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .touch-popover-panel,
+html.light:not([data-contrast="high"]) .touch-popover-panel {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.12);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .evidence-drawer,
+html.light:not([data-contrast="high"]) .evidence-drawer {
+  background: color-mix(in srgb, var(--bg-surface-1) 96%, transparent);
+}
+
+/* ── Hub badges + skeletons ─────────────────────────────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .insight-badge,
+html.light:not([data-contrast="high"]) .insight-badge {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .page-skeleton-card,
+html.light:not([data-contrast="high"]) .page-skeleton-card {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .match-status-pill,
+html.light:not([data-contrast="high"]) .match-status-pill {
+  background: var(--bg-surface-2);
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+}
+
+/* ── CBB clinical shell ─────────────────────────────────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .cbb-clinical-shell,
+html.light:not([data-contrast="high"]) .cbb-clinical-shell {
+  background: var(--bg-surface-0);
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .cbb-clinical-panel,
+html.light:not([data-contrast="high"]) .cbb-clinical-panel,
+html[data-color="light"]:not([data-contrast="high"]) .cbb-clinical-stat,
+html.light:not([data-contrast="high"]) .cbb-clinical-stat,
+html[data-color="light"]:not([data-contrast="high"]) .cbb-clinical-table-wrap,
+html.light:not([data-contrast="high"]) .cbb-clinical-table-wrap {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .cbb-clinical-lead,
+html.light:not([data-contrast="high"]) .cbb-clinical-lead,
+html[data-color="light"]:not([data-contrast="high"]) .cbb-clinical-meta,
+html.light:not([data-contrast="high"]) .cbb-clinical-meta,
+html[data-color="light"]:not([data-contrast="high"]) .cbb-clinical-stat-label,
+html.light:not([data-contrast="high"]) .cbb-clinical-stat-label {
+  color: var(--text-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .semantic-impact-pill--neutral,
+html.light:not([data-contrast="high"]) .semantic-impact-pill--neutral {
+  background: var(--bg-surface-2);
+  border-color: var(--border-default);
+  color: var(--text-muted);
+}
+
+
+/* ── Tailwind slate utilities used in TSX (site-wide safety net) ────────── */
+html[data-color="light"]:not([data-contrast="high"]) .bg-slate-900,
+html.light:not([data-contrast="high"]) .bg-slate-900,
+html[data-color="light"]:not([data-contrast="high"]) .bg-slate-950,
+html.light:not([data-contrast="high"]) .bg-slate-950 {
+  background-color: var(--bg-surface-1);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .bg-slate-800,
+html.light:not([data-contrast="high"]) .bg-slate-800 {
+  background-color: var(--bg-surface-2);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .bg-slate-900\/40,
+html.light:not([data-contrast="high"]) .bg-slate-900\/40,
+html[data-color="light"]:not([data-contrast="high"]) .bg-slate-900\/50,
+html.light:not([data-contrast="high"]) .bg-slate-900\/50,
+html[data-color="light"]:not([data-contrast="high"]) .bg-slate-800\/40,
+html.light:not([data-contrast="high"]) .bg-slate-800\/40,
+html[data-color="light"]:not([data-contrast="high"]) .bg-slate-800\/50,
+html.light:not([data-contrast="high"]) .bg-slate-800\/50 {
+  background-color: color-mix(in srgb, var(--bg-surface-2) 88%, transparent);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .border-slate-800,
+html.light:not([data-contrast="high"]) .border-slate-800,
+html[data-color="light"]:not([data-contrast="high"]) .border-slate-700,
+html.light:not([data-contrast="high"]) .border-slate-700 {
+  border-color: var(--border-default);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .text-slate-50,
+html.light:not([data-contrast="high"]) .text-slate-50,
+html[data-color="light"]:not([data-contrast="high"]) .text-slate-100,
+html.light:not([data-contrast="high"]) .text-slate-100,
+html[data-color="light"]:not([data-contrast="high"]) .text-slate-200,
+html.light:not([data-contrast="high"]) .text-slate-200,
+html[data-color="light"]:not([data-contrast="high"]) .text-slate-300,
+html.light:not([data-contrast="high"]) .text-slate-300 {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .text-slate-400,
+html.light:not([data-contrast="high"]) .text-slate-400 {
+  color: var(--text-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .clinical-insight-matrix-vs,
+html.light:not([data-contrast="high"]) .clinical-insight-matrix-vs,
+html[data-color="light"]:not([data-contrast="high"]) .clinical-insight-matrix-subject,
+html.light:not([data-contrast="high"]) .clinical-insight-matrix-subject,
+html[data-color="light"]:not([data-contrast="high"]) .clinical-insight-matrix-record,
+html.light:not([data-contrast="high"]) .clinical-insight-matrix-record,
+html[data-color="light"]:not([data-contrast="high"]) .clinical-insight-matrix-baseline,
+html.light:not([data-contrast="high"]) .clinical-insight-matrix-baseline {
+  color: var(--text-secondary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .research-article-related-link,
+html.light:not([data-contrast="high"]) .research-article-related-link {
+  background: var(--bg-surface-2);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .research-article-related-link:hover,
+html.light:not([data-contrast="high"]) .research-article-related-link:hover {
+  background: var(--bg-surface-3);
+  border-color: var(--border-strong);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .evidence-drawer-card,
+html.light:not([data-contrast="high"]) .evidence-drawer-card {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .evidence-strength-badge,
+html.light:not([data-contrast="high"]) .evidence-strength-badge,
+html[data-color="light"]:not([data-contrast="high"]) .evidence-confidence-badge,
+html.light:not([data-contrast="high"]) .evidence-confidence-badge {
+  background: var(--bg-surface-2);
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .text-emerald-400,
+html.light:not([data-contrast="high"]) .text-emerald-400 {
+  color: var(--accent-positive);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .text-rose-400,
+html.light:not([data-contrast="high"]) .text-rose-400 {
+  color: var(--accent-negative);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__crew-meta,
+html.light:not([data-contrast="high"]) .upcoming-game-card__crew-meta,
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__crew-name,
+html.light:not([data-contrast="high"]) .upcoming-game-card__crew-name {
+  color: var(--text-muted);
+}

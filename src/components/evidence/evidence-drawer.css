@@ -1,7 +1,7 @@
 .evidence-drawer-card {
-  border: 1px solid rgb(51 65 85 / 0.55);
+  border: 1px solid var(--border-default);
   border-radius: 0.9rem;
-  background: rgb(15 23 42 / 0.72);
+  background: color-mix(in srgb, var(--bg-surface-2) 88%, transparent);
   padding: 1rem;
 }
 
@@ -19,14 +19,14 @@
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgb(148 163 184);
+  color: var(--text-muted);
 }
 
 .evidence-drawer-title {
   margin: 0;
   font-size: 1.05rem;
   line-height: 1.35;
-  color: rgb(241 245 249);
+  color: var(--text-primary);
 }
 
 .evidence-drawer-badges {
@@ -41,15 +41,15 @@
   flex-direction: column;
   gap: 0.15rem;
   border-radius: 0.65rem;
-  border: 1px solid rgb(71 85 105 / 0.7);
-  background: rgb(30 41 59 / 0.7);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface-1);
   padding: 0.45rem 0.65rem;
   font-size: 0.75rem;
-  color: rgb(226 232 240);
+  color: var(--text-secondary);
 }
 
 .evidence-strength-label {
-  color: rgb(148 163 184);
+  color: var(--text-muted);
 }
 
 .evidence-strength-bar {
@@ -57,7 +57,7 @@
   width: 7rem;
   height: 0.3rem;
   border-radius: 999px;
-  background: rgb(51 65 85);
+  background: var(--bg-surface-3);
   overflow: hidden;
 }
 
@@ -86,7 +86,7 @@
   margin: 0 0 0.55rem;
   font-size: 0.82rem;
   font-weight: 600;
-  color: rgb(203 213 225);
+  color: var(--text-secondary);
 }
 
 .evidence-driver-list {
@@ -113,19 +113,20 @@
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: rgb(148 163 184);
+  color: var(--text-muted);
 }
 
 .evidence-driver-headline {
   margin: 0;
   font-size: 0.8rem;
   line-height: 1.35;
+  color: var(--text-primary);
 }
 
 .evidence-driver-empty {
   margin: 0;
   font-size: 0.78rem;
-  color: rgb(148 163 184);
+  color: var(--text-muted);
 }
 
 .evidence-impact-badge {
@@ -149,8 +150,8 @@
 }
 
 .evidence-impact-badge--low {
-  background: rgb(71 85 105 / 0.35);
-  color: rgb(203 213 225);
+  background: color-mix(in srgb, var(--text-muted) 18%, transparent);
+  color: var(--text-secondary);
 }
 
 .evidence-contribution-track {
@@ -159,7 +160,7 @@
   height: 0.55rem;
   border-radius: 999px;
   overflow: hidden;
-  background: rgb(30 41 59);
+  background: var(--bg-surface-3);
 }
 
 .evidence-contribution-segment {
@@ -201,7 +202,7 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.74rem;
-  color: rgb(203 213 225);
+  color: var(--text-secondary);
 }
 
 .evidence-contribution-swatch {
@@ -223,7 +224,7 @@
 }
 
 .evidence-tooltip-trigger:focus-visible {
-  outline: 2px solid rgb(52 211 153);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
   border-radius: 0.5rem;
 }

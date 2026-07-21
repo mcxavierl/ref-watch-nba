@@ -144,7 +144,7 @@
   padding: 0.55rem 0.9rem;
   border-radius: 9999px;
   border: 1px solid var(--research-capsule-border);
-  background: rgb(15 23 42);
+  background: var(--bg-surface-2);
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--research-ink);
@@ -153,6 +153,6 @@
 }
 
 .research-article-related-link:hover {
-  border-color: rgb(71 85 105);
-  background: rgb(30 41 59);
+  border-color: var(--border-strong);
+  background: var(--bg-surface-3);
 }
