@@ -20,7 +20,6 @@ describe("audit-homepage-product", () => {
     assert.match(source, /GoldMineProofBar/);
     assert.match(source, /OverviewFeaturedSignal/);
     assert.match(source, /OverviewUpcomingSlateSection/);
-    assert.match(source, /OverviewIntelligenceFeed/);
     assert.match(source, /OverviewResearchFooter/);
   });
 });

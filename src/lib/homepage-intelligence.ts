@@ -12,7 +12,6 @@ import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import { twoProportionZTest } from "@/lib/metric-significance";
-import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { countNotableSignals } from "@/lib/profile-signals";
 import { qualifiedRefs } from "@/lib/rankings";
 import { loadValidationReport } from "@/lib/validation-report";
@@ -287,35 +286,6 @@ export function selectTopSignalInsight(
   return ranked[0] ?? null;
 }
 
-/** Feed cards for the live intelligence strip (deduped, gate-qualified). */
-export function buildIntelligenceFeedCards(
-  data: CrossLeagueOverview,
-  limit = 6,
-): LeagueInsightCard[] {
-  const featured = selectTopSignalInsight(data);
-  const featuredKey = featured ? insightCardKey(featured) : "";
-  const seen = new Set<string>();
-  const pool = filterHomepageInsightCards([
-    ...data.topStories,
-    ...data.insightCards,
-    ...data.standoutSplitCards,
-  ]);
-
-  const result: LeagueInsightCard[] = [];
-  for (const card of pool) {
-    const key = insightCardKey(card);
-    if (key === featuredKey || seen.has(key)) continue;
-    seen.add(key);
-    result.push(card);
-    if (result.length >= limit) break;
-  }
-  return result;
-}
-
-function insightCardKey(card: LeagueInsightCard): string {
-  return `${card.leagueId}:${card.refSlug ?? card.headline}:${card.teamAbbr ?? ""}`;
-}
-
 export type TopSignalView = {
   percentile: number;
   percentileLabel: string;
@@ -324,16 +294,6 @@ export type TopSignalView = {
   href: string;
   leagueLabel: string;
   headline: string;
-};
-
-export type IntelligenceFeedCategory = "all" | "anomalies" | "assignments" | "projections";
-
-export type IntelligenceFeedEvent = {
-  id: string;
-  timeLabel: string;
-  message: string;
-  category: Exclude<IntelligenceFeedCategory, "all">;
-  href?: string;
 };
 
 function shortTeamLabel(teamLabel?: string): string {
@@ -425,128 +385,4 @@ export function buildTopSignalView(data: CrossLeagueOverview): TopSignalView | n
     leagueLabel: card.shortLabel,
     headline: card.headline,
   };
-}
-
-function feedTimeLabel(minutesAgo: number): string {
-  const date = new Date();
-  date.setMinutes(date.getMinutes() - minutesAgo);
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-}
-
-function assignmentEvent(game: OverviewSlateEntry, minutesAgo: number): IntelligenceFeedEvent | null {
-  if (game.crewCount === 0) return null;
-  const official = game.headRef ?? game.officialsLine?.split(",")[0]?.trim();
-  if (!official) return null;
-
-  const paceLine =
-    game.upcomingCardRefInsights?.[0] ??
-    game.matchupInsight ??
-    game.previewCardInsights?.[0] ??
-    `Crew published on ${game.matchup}`;
-
-  return {
-    id: `assignment:${game.gameId}`,
-    timeLabel: feedTimeLabel(minutesAgo),
-    message: `${official} assigned: ${paceLine.replace(/\.$/, "")}.`,
-    category: "assignments",
-    href: game.href,
-  };
-}
-
-function projectionEvent(game: OverviewSlateEntry, minutesAgo: number): IntelligenceFeedEvent | null {
-  const city = shortTeamLabel(game.awayTeam) || shortTeamLabel(game.homeTeam);
-  const insight =
-    game.matchupInsight ??
-    game.gameContextLine ??
-    game.teamContextLine ??
-    game.preview?.homeBiasHeadline;
-
-  if (!insight) return null;
-
-  return {
-    id: `projection:${game.gameId}`,
-    timeLabel: feedTimeLabel(minutesAgo),
-    message: `${city} matchup upgraded: ${insight.replace(/\.$/, "")}.`,
-    category: "projections",
-    href: game.href,
-  };
-}
-
-function anomalyEvent(card: LeagueInsightCard, minutesAgo: number): IntelligenceFeedEvent {
-  const team = shortTeamLabel(card.teamLabel);
-  const sigma = Math.max(2.1, heroValueMagnitude(card.heroValue) / 16 + 2).toFixed(1);
-  const message =
-    homepageInsightCategory(card) === "crew-anomaly"
-      ? `${team} anomaly detected: Crew variance exceeds ${sigma}σ.`
-      : `${team} anomaly detected: ${card.entityName ?? "Crew"} ${card.heroValue} ${card.heroLabel.toLowerCase()}.`;
-
-  return {
-    id: `anomaly:${insightCardKey(card)}`,
-    timeLabel: feedTimeLabel(minutesAgo),
-    message,
-    category: "anomalies",
-    href: card.entityHref ?? card.links[0]?.href,
-  };
-}
-
-function insightProjectionEvent(card: LeagueInsightCard, minutesAgo: number): IntelligenceFeedEvent {
-  const team = shortTeamLabel(card.teamLabel);
-  return {
-    id: `insight-projection:${insightCardKey(card)}`,
-    timeLabel: feedTimeLabel(minutesAgo),
-    message: `${team} projection shift: ${card.entityName ?? "Crew"} ${card.heroValue} ${card.heroLabel.toLowerCase()}.`,
-    category: "projections",
-    href: card.entityHref ?? card.links[0]?.href,
-  };
-}
-
-/** Bloomberg-style live intelligence feed events for the homepage. */
-export function buildIntelligenceFeedEvents(
-  data: CrossLeagueOverview,
-  limit = 12,
-): IntelligenceFeedEvent[] {
-  const featured = selectTopSignalInsight(data);
-  const featuredKey = featured ? insightCardKey(featured) : "";
-  const events: IntelligenceFeedEvent[] = [];
-  let minutesAgo = 2;
-
-  for (const game of data.upcomingSlate.games) {
-    const assignment = assignmentEvent(game, minutesAgo);
-    if (assignment) {
-      events.push(assignment);
-      minutesAgo += 7;
-    }
-    const projection = projectionEvent(game, minutesAgo);
-    if (projection) {
-      events.push(projection);
-      minutesAgo += 6;
-    }
-    if (events.length >= limit) break;
-  }
-
-  const cards = filterHomepageInsightCards([
-    ...data.topStories,
-    ...data.insightCards,
-    ...data.standoutSplitCards,
-  ]);
-
-  for (const card of cards) {
-    if (insightCardKey(card) === featuredKey) continue;
-    if (events.length >= limit) break;
-
-    if (insightCardQualifiesAsAnomalyAlert(card)) {
-      events.push(anomalyEvent(card, minutesAgo));
-      minutesAgo += 5;
-      continue;
-    }
-
-    events.push(insightProjectionEvent(card, minutesAgo));
-    minutesAgo += 4;
-  }
-
-  return events.slice(0, limit);
 }

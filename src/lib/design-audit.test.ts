@@ -31,7 +31,6 @@ describe("design audit guardrails", () => {
     assert.match(dashboard, /GoldMineProofBar/);
     assert.match(dashboard, /OverviewFeaturedSignal/);
     assert.match(dashboard, /OverviewUpcomingSlateSection/);
-    assert.match(dashboard, /OverviewIntelligenceFeed/);
     assert.match(dashboard, /OverviewResearchFooter/);
   });
 
@@ -43,14 +42,11 @@ describe("design audit guardrails", () => {
     assert.match(visual, /officiating-fingerprint-data/);
   });
 
-  it("dashboard intelligence components power featured signal and live feed", () => {
+  it("dashboard intelligence components power featured signal", () => {
     const topSignal = readSrc("src/components/dashboard/TopSignal.tsx");
-    const feed = readSrc("src/components/dashboard/IntelligenceFeed.tsx");
     const overview = readSrc("src/components/OverviewFeaturedSignal.tsx");
     assert.match(topSignal, /top-signal-percentile-label/);
     assert.match(topSignal, /Open Intelligence/);
-    assert.match(feed, /intelligence-feed-filter/);
-    assert.match(feed, /Streaming/);
     assert.match(overview, /TopSignal/);
   });
 

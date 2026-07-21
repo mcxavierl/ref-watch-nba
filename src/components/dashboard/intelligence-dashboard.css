@@ -1,5 +1,4 @@
-.top-signal-header,
-.intelligence-feed-header {
+.top-signal-header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -8,8 +7,7 @@
   margin-bottom: 1rem;
 }
 
-.top-signal-live-badge,
-.intelligence-feed-status {
+.top-signal-live-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -17,30 +15,18 @@
   font-weight: 650;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.top-signal-live-badge {
   color: rgb(52 211 153);
 }
 
-.intelligence-feed-status--emerald {
-  color: rgb(52 211 153);
-}
-
-.intelligence-feed-status--amber {
-  color: rgb(251 191 36);
-}
-
-.top-signal-live-dot,
-.intelligence-feed-status-dot {
+.top-signal-live-dot {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 9999px;
   background: currentColor;
-  animation: intelligence-feed-pulse 1.8s ease-in-out infinite;
+  animation: top-signal-pulse 1.8s ease-in-out infinite;
 }
 
-@keyframes intelligence-feed-pulse {
+@keyframes top-signal-pulse {
   0%,
   100% {
     opacity: 1;
@@ -172,92 +158,6 @@
 .top-signal-cta-icon {
   width: 1rem;
   height: 1rem;
-}
-
-.intelligence-feed-title-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.75rem;
-}
-
-.intelligence-feed-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.intelligence-feed-filter {
-  border: 1px solid rgb(51 65 85);
-  background: rgb(15 23 42);
-  color: rgb(148 163 184);
-  border-radius: 9999px;
-  padding: 0.28rem 0.7rem;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.intelligence-feed-filter--active {
-  border-color: rgb(52 211 153 / 0.45);
-  color: rgb(52 211 153);
-  background: rgb(16 185 129 / 0.12);
-}
-
-.intelligence-feed-terminal {
-  border-radius: 0.85rem;
-  border: 1px solid rgb(30 41 59);
-  background: rgb(2 6 23 / 0.92);
-  padding: 0.85rem 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-}
-
-.intelligence-feed-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.intelligence-feed-item {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.45rem 0.6rem;
-  padding: 0.55rem 1rem;
-  border-bottom: 1px solid rgb(30 41 59 / 0.85);
-  font-size: 0.75rem;
-  line-height: 1.45;
-}
-
-.intelligence-feed-item:last-child {
-  border-bottom: none;
-}
-
-.intelligence-feed-time {
-  flex-shrink: 0;
-  color: rgb(100 116 139);
-  font-variant-numeric: tabular-nums;
-}
-
-.intelligence-feed-sep {
-  color: rgb(51 65 85);
-}
-
-.intelligence-feed-message {
-  color: rgb(203 213 225);
-  text-decoration: none;
-}
-
-a.intelligence-feed-message:hover {
-  color: rgb(52 211 153);
-  text-decoration: underline;
-}
-
-.intelligence-feed-empty {
-  margin: 0;
-  padding: 0.85rem 1rem;
-  font-size: 0.75rem;
-  color: rgb(100 116 139);
 }
 
 @media (max-width: 640px) {
