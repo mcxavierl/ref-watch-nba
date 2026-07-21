@@ -42,6 +42,8 @@ const JSON_STORE_PATH = path.join(process.cwd(), "data/webhook-queue.json");
 
 let storePromise: Promise<WebhookStore> | null = null;
 
+export const WEBHOOK_MAX_ATTEMPTS = 5;
+
 type WebhookStore = {
   listActiveSubscribers(): Promise<WebhookSubscriber[]>;
   upsertSubscriber(input: Omit<WebhookSubscriber, "createdAt"> & { createdAt?: string }): Promise<WebhookSubscriber>;
@@ -50,6 +52,7 @@ type WebhookStore = {
     clientId: string;
     payload: string;
     maxAttempts?: number;
+    eventType?: string;
   }): Promise<WebhookQueueJob>;
   claimDueJobs(limit: number, nowIso: string): Promise<WebhookQueueJob[]>;
   markDelivered(jobId: string, deliveredAt: string): Promise<void>;
@@ -62,6 +65,16 @@ type WebhookStore = {
     statusCode: number | null;
     latencyMs: number;
     success: boolean;
+    errorMessage?: string;
+  }): Promise<void>;
+  logWebhookEvent(input: {
+    subscriberId: string;
+    eventType: string;
+    queueId?: string;
+    responseCode: number | null;
+    attemptCount: number;
+    status: "delivered" | "failed" | "dead";
+    payloadExcerpt?: string;
     errorMessage?: string;
   }): Promise<void>;
 };
@@ -96,7 +109,7 @@ function mapJob(row: Record<string, unknown>): WebhookQueueJob {
     payload: String(row.payload),
     status: String(row.status) as WebhookQueueJob["status"],
     attemptCount: Number(row.attempt_count ?? row.attemptCount ?? 0),
-    maxAttempts: Number(row.max_attempts ?? row.maxAttempts ?? 6),
+    maxAttempts: Number(row.max_attempts ?? row.maxAttempts ?? WEBHOOK_MAX_ATTEMPTS),
     nextAttemptAt: String(row.next_attempt_at ?? row.nextAttemptAt),
     lastError:
       row.last_error === null || row.last_error === undefined
@@ -140,16 +153,34 @@ type JsonWebhookStore = {
     errorMessage?: string;
     createdAt: string;
   }>;
+  webhookEvents: Array<{
+    id: string;
+    subscriberId: string;
+    eventType: string;
+    queueId?: string;
+    responseCode: number | null;
+    attemptCount: number;
+    status: string;
+    payloadExcerpt?: string;
+    errorMessage?: string;
+    createdAt: string;
+  }>;
 };
 
 function readJsonStore(): JsonWebhookStore {
   if (!fs.existsSync(JSON_STORE_PATH)) {
-    return { subscribers: [], queue: [], deliveryLogs: [] };
+    return { subscribers: [], queue: [], deliveryLogs: [], webhookEvents: [] };
   }
   try {
-    return JSON.parse(fs.readFileSync(JSON_STORE_PATH, "utf8")) as JsonWebhookStore;
+    const parsed = JSON.parse(fs.readFileSync(JSON_STORE_PATH, "utf8")) as JsonWebhookStore;
+    return {
+      subscribers: parsed.subscribers ?? [],
+      queue: parsed.queue ?? [],
+      deliveryLogs: parsed.deliveryLogs ?? [],
+      webhookEvents: parsed.webhookEvents ?? [],
+    };
   } catch {
-    return { subscribers: [], queue: [], deliveryLogs: [] };
+    return { subscribers: [], queue: [], deliveryLogs: [], webhookEvents: [] };
   }
 }
 
@@ -206,7 +237,7 @@ function createSqliteStore(db: WebhookDatabase): WebhookStore {
         payload: input.payload,
         status: "pending",
         attemptCount: 0,
-        maxAttempts: input.maxAttempts ?? 6,
+        maxAttempts: input.maxAttempts ?? WEBHOOK_MAX_ATTEMPTS,
         nextAttemptAt: now,
         lastError: null,
         createdAt: now,
@@ -276,6 +307,24 @@ function createSqliteStore(db: WebhookDatabase): WebhookStore {
         new Date().toISOString(),
       );
     },
+    async logWebhookEvent(input) {
+      db.prepare(
+        `INSERT INTO webhook_events
+          (id, subscriber_id, event_type, queue_id, response_code, attempt_count, status, payload_excerpt, error_message, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ).run(
+        randomUUID(),
+        input.subscriberId,
+        input.eventType,
+        input.queueId ?? null,
+        input.responseCode,
+        input.attemptCount,
+        input.status,
+        input.payloadExcerpt ?? null,
+        input.errorMessage ?? null,
+        new Date().toISOString(),
+      );
+    },
   };
 }
 
@@ -304,7 +353,7 @@ function createJsonStore(): WebhookStore {
         payload: input.payload,
         status: "pending",
         attemptCount: 0,
-        maxAttempts: input.maxAttempts ?? 6,
+        maxAttempts: input.maxAttempts ?? WEBHOOK_MAX_ATTEMPTS,
         nextAttemptAt: now,
         lastError: null,
         createdAt: now,
@@ -375,6 +424,25 @@ function createJsonStore(): WebhookStore {
       }
       writeJsonStore(store);
     },
+    async logWebhookEvent(input) {
+      const store = readJsonStore();
+      store.webhookEvents.push({
+        id: randomUUID(),
+        subscriberId: input.subscriberId,
+        eventType: input.eventType,
+        queueId: input.queueId,
+        responseCode: input.responseCode,
+        attemptCount: input.attemptCount,
+        status: input.status,
+        payloadExcerpt: input.payloadExcerpt,
+        errorMessage: input.errorMessage,
+        createdAt: new Date().toISOString(),
+      });
+      if (store.webhookEvents.length > 10_000) {
+        store.webhookEvents = store.webhookEvents.slice(-10_000);
+      }
+      writeJsonStore(store);
+    },
   };
 }
 
@@ -390,30 +458,39 @@ export async function getWebhookStore(): Promise<WebhookStore> {
 }
 
 export function signWebhookPayload(secret: string, payload: string): string {
-  return createHmac("sha256", secret).update(payload).digest("hex");
+  const hash = createHmac("sha256", secret).update(payload).digest("hex");
+  return `sha256=${hash}`;
 }
 
-export async function enqueueAnomalyWebhookEvents(
-  events: AnomalyDetectedEvent[],
+export async function enqueueEnterpriseWebhookPayloads(
+  payloads: Array<{ event: string; [key: string]: unknown }>,
 ): Promise<number> {
-  if (events.length === 0) return 0;
+  if (payloads.length === 0) return 0;
   const store = await getWebhookStore();
   const subscribers = await store.listActiveSubscribers();
   let enqueued = 0;
 
   for (const subscriber of subscribers) {
-    if (!subscriber.eventKinds.includes("ANOMALY_DETECTED")) continue;
-    for (const event of events) {
+    for (const payload of payloads) {
+      const eventType = String(payload.event ?? "ANOMALY_DETECTED");
+      if (!subscriber.eventKinds.includes(eventType)) continue;
       await store.enqueueJob({
         subscriberId: subscriber.id,
         clientId: subscriber.clientId,
-        payload: JSON.stringify(event),
+        payload: JSON.stringify(payload),
+        eventType,
       });
       enqueued += 1;
     }
   }
 
   return enqueued;
+}
+
+export async function enqueueAnomalyWebhookEvents(
+  events: AnomalyDetectedEvent[],
+): Promise<number> {
+  return enqueueEnterpriseWebhookPayloads(events);
 }
 
 export async function upsertWebhookSubscriber(

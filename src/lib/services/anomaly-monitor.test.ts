@@ -91,17 +91,20 @@ describe("anomaly monitor worker", () => {
 });
 
 describe("webhook dispatch", () => {
-  it("computes exponential backoff", () => {
-    assert.equal(computeWebhookBackoffMs(0), 2000);
-    assert.equal(computeWebhookBackoffMs(1), 4000);
-    assert.equal(computeWebhookBackoffMs(5), 64000);
+  it("computes fixed enterprise retry delays", () => {
+    assert.equal(computeWebhookBackoffMs(0), 0);
+    assert.equal(computeWebhookBackoffMs(1), 30_000);
+    assert.equal(computeWebhookBackoffMs(2), 120_000);
+    assert.equal(computeWebhookBackoffMs(3), 600_000);
+    assert.equal(computeWebhookBackoffMs(4), 3_600_000);
   });
 
-  it("signs webhook payloads deterministically", () => {
+  it("signs webhook payloads with sha256 prefix", () => {
     const payload = JSON.stringify({ event: "ANOMALY_DETECTED", gameId: "g1" });
     const a = signWebhookPayload("secret", payload);
     const b = signWebhookPayload("secret", payload);
     assert.equal(a, b);
+    assert.match(a, /^sha256=[a-f0-9]{64}$/);
     assert.notEqual(a, signWebhookPayload("other", payload));
   });
 });

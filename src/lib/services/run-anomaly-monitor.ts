@@ -17,14 +17,27 @@ import { loadLeagueStats } from "@/lib/load-league-stats";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
 import {
+  detectAnomalies,
+  type DetectedAnomaly,
+} from "@/lib/analytics/anomalyEngine";
+import {
   detectAnomaliesFromSlateMetrics,
   resolveSlateGames,
+  type AnomalyDetectedEvent,
   type AnomalyMonitorResult,
   type SlateGameMetrics,
 } from "@/lib/services/anomalyMonitor";
-import type { AssignmentGame, AssignmentsFile, OddsFile, RefStatsFile } from "@/lib/types";
+import type {
+  AssignmentGame,
+  AssignmentsFile,
+  OddsFile,
+  RefOfficial,
+  RefProfile,
+  RefStatsFile,
+} from "@/lib/types";
 
 type LeagueMonitorAdapter = {
+  refSlug: (official: RefOfficial) => string;
   buildMetrics: (
     game: AssignmentGame,
     stats: RefStatsFile,
@@ -32,15 +45,32 @@ type LeagueMonitorAdapter = {
   ) => SlateGameMetrics | null;
 };
 
+function resolveCrewProfiles(
+  crew: RefOfficial[],
+  stats: RefStatsFile,
+  refSlug: (official: RefOfficial) => string,
+): RefProfile[] {
+  const profiles: RefProfile[] = [];
+  for (const official of crew) {
+    const slug = refSlug(official);
+    const profile = stats.refs.find((row) => row.slug === slug);
+    if (profile) profiles.push(profile);
+  }
+  return profiles;
+}
+
 function defaultMetricsBuilder(
+  refSlug: (official: RefOfficial) => string,
   computeCrewMetrics: (crew: AssignmentGame["crew"], stats: RefStatsFile) => ReturnType<typeof computeNbaCrewMetrics>,
   computePremium: (
     game: AssignmentGame,
     stats: RefStatsFile,
     odds: OddsFile,
   ) => ReturnType<typeof computeNbaPremium>,
-): LeagueMonitorAdapter["buildMetrics"] {
-  return (game, stats, odds) => {
+): LeagueMonitorAdapter {
+  return {
+    refSlug,
+    buildMetrics: (game, stats, odds) => {
     if (game.crew.length === 0) return null;
     const metrics = computeCrewMetrics(game.crew, stats);
     const premium = computePremium(game, stats, odds);
@@ -53,26 +83,49 @@ function defaultMetricsBuilder(
       sampleGames: metrics.sampleGames,
       qualifiedRefCount: metrics.qualifiedRefs.length,
     };
+    },
   };
 }
 
 const MONITOR_ADAPTERS: Partial<Record<LeagueId, LeagueMonitorAdapter>> = {
   nba: {
-    buildMetrics: defaultMetricsBuilder(computeNbaCrewMetrics, computeNbaPremium),
+    ...defaultMetricsBuilder(
+      (official) => nbaRefSlug(official.name, official.number),
+      computeNbaCrewMetrics,
+      computeNbaPremium,
+    ),
   },
   nfl: {
-    buildMetrics: defaultMetricsBuilder(computeNflCrewMetrics, computeNflPremium),
+    ...defaultMetricsBuilder(
+      (official) => `${official.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${official.number}`,
+      computeNflCrewMetrics,
+      computeNflPremium,
+    ),
   },
   nhl: {
-    buildMetrics: defaultMetricsBuilder(computeNhlCrewMetrics, computeNhlPremium),
+    ...defaultMetricsBuilder(
+      (official) => `${official.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${official.number}`,
+      computeNhlCrewMetrics,
+      computeNhlPremium,
+    ),
   },
   epl: {
-    buildMetrics: defaultMetricsBuilder(computeEplCrewMetrics, computeEplPremium),
+    ...defaultMetricsBuilder(
+      (official) => `${official.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${official.number}`,
+      computeEplCrewMetrics,
+      computeEplPremium,
+    ),
   },
   laliga: {
-    buildMetrics: defaultMetricsBuilder(computeLaligaCrewMetrics, computeLaligaPremium),
+    ...defaultMetricsBuilder(
+      (official) => `${official.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${official.number}`,
+      computeLaligaCrewMetrics,
+      computeLaligaPremium,
+    ),
   },
   wnba: {
+    refSlug: (official) =>
+      `${official.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${official.number}`,
     buildMetrics: (game, stats) => {
       if (game.crew.length === 0) return null;
       const metrics = computeWnbaCrewMetrics(game.crew, stats);
@@ -88,9 +141,76 @@ const MONITOR_ADAPTERS: Partial<Record<LeagueId, LeagueMonitorAdapter>> = {
     },
   },
   cbb: {
-    buildMetrics: defaultMetricsBuilder(computeCbbCrewMetrics, computeCbbPremium),
+    ...defaultMetricsBuilder(
+      (official) => `${official.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${official.number}`,
+      computeCbbCrewMetrics,
+      computeCbbPremium,
+    ),
   },
 };
+
+function toLegacyEvent(
+  anomaly: DetectedAnomaly,
+  timestamp: string,
+): AnomalyDetectedEvent {
+  return {
+    event: "ANOMALY_DETECTED",
+    timestamp,
+    gameId: anomaly.gameId,
+    severity: anomaly.severityLevel === "CRITICAL" ? "CRITICAL" : "HIGH",
+    evidence: {
+      leagueId: anomaly.leagueId,
+      matchup: String(anomaly.evidence.matchup ?? ""),
+      kinds: [anomaly.type === "LINE_MOVEMENT_DIVERGENCE" ? "line_lag" : "crew_disparity"],
+      crewDelta: Number(anomaly.evidence.crewAverage ?? 0),
+      crewDeltaZScore: anomaly.zScore,
+      lineLag: Number(anomaly.evidence.lineLag ?? 0),
+      crewAvgTotal: Number(anomaly.evidence.crewAverage ?? 0),
+      benchmarkTotal: Number(anomaly.evidence.leagueAverage ?? 0),
+      leagueMeanCrewDelta: 0,
+      leagueStdDevCrewDelta: 0,
+      sampleGames: Number(anomaly.evidence.sampleSize ?? 0),
+      qualifiedRefCount: Number(anomaly.evidence.sampleSize ?? 0),
+      crew: [],
+      anomalyType: anomaly.type,
+      severityScore: anomaly.severityScore,
+      rollingWindowUsed: anomaly.rollingWindowUsed,
+      summary: anomaly.summary,
+    },
+  };
+}
+
+export function runRollingAnomalyEngineForLeague(
+  leagueId: LeagueId,
+  assignments: AssignmentsFile,
+): DetectedAnomaly[] {
+  const adapter = MONITOR_ADAPTERS[leagueId];
+  if (!adapter) return [];
+
+  const stats = loadLeagueStats(leagueId).stats;
+  const odds = loadOdds(leagueId);
+  const games = resolveSlateGames(assignments);
+  const detected: DetectedAnomaly[] = [];
+
+  for (const game of games) {
+    const metrics = adapter.buildMetrics(game, stats, odds);
+    if (!metrics) continue;
+    const crewProfiles = resolveCrewProfiles(game.crew, stats, adapter.refSlug);
+    const anomalies = detectAnomalies({
+      leagueId,
+      game,
+      crewProfiles,
+      leagueAvgTotal: stats.meta.leagueAvgTotal,
+      leagueAvgFouls: stats.meta.leagueAvgFouls,
+      benchmarkTotal: metrics.benchmarkTotal,
+      lineLag: metrics.lineLag,
+      currentSeason: stats.meta.seasons.at(-1),
+    });
+    detected.push(...anomalies);
+  }
+
+  return detected;
+}
 
 function assignmentsPath(leagueId: LeagueId): string {
   const root = process.cwd();
@@ -145,7 +265,11 @@ export function runAnomalyMonitorForLeague(
     .map((game) => adapter.buildMetrics(game, stats, odds))
     .filter((row): row is SlateGameMetrics => row !== null);
 
-  const events = detectAnomaliesFromSlateMetrics(leagueId, metrics);
+  const timestamp = new Date().toISOString();
+  const rolling = runRollingAnomalyEngineForLeague(leagueId, assignments);
+  const legacyFromRolling = rolling.map((anomaly) => toLegacyEvent(anomaly, timestamp));
+  const slateEvents = detectAnomaliesFromSlateMetrics(leagueId, metrics, timestamp);
+  const events = legacyFromRolling.length > 0 ? legacyFromRolling : slateEvents;
   return {
     leagueId,
     generatedAt: new Date().toISOString(),

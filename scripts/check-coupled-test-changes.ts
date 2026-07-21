@@ -58,17 +58,23 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
   {
     label: "integrity monitor pipeline",
     sources: [
+      "src/lib/analytics/anomalyEngine.ts",
       "src/lib/services/anomalyMonitor.ts",
+      "src/lib/services/anomalyEvidenceStore.ts",
+      "src/lib/services/webhookPayload.ts",
       "src/lib/services/run-anomaly-monitor.ts",
       "src/lib/services/integrityMonitor.ts",
       "src/lib/services/webhookDispatch.ts",
       "src/lib/services/webhookQueue.ts",
+      "src/lib/services/anomaly-schema.sql",
+      "src/lib/services/webhook-schema.sql",
       "scripts/lib/post-assignment-ingest.ts",
       "scripts/fetch-assignments.ts",
       "scripts/morning-slate.ts",
       "scripts/nightly-slate.ts",
     ],
     tests: [
+      "src/lib/analytics/anomalyEngine.test.ts",
       "src/lib/services/anomaly-monitor.test.ts",
       "src/lib/services/webhook-dispatch.test.ts",
       "scripts/audit-integrity-monitor.test.ts",
