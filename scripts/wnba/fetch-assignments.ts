@@ -5,7 +5,14 @@ import type { AssignmentGame, AssignmentsFile } from "../../src/lib/types";
 import { fetchWnbaAssignments } from "../lib/parse-assignments";
 import { normalizeWnbaAbbr } from "../../src/lib/wnba/abbr";
 import { crewMatchupKey } from "./lib/crew-matchup";
-import { fetchWnbaScoreboard, sleep, yyyymmdd } from "./lib/espn";
+import {
+  fetchWnbaScoreboard,
+  fetchWnbaSummaryOfficials,
+  sleep,
+  toWnbaOfficials,
+  yyyymmdd,
+} from "./lib/espn";
+import { loadWnbaOfficialRoster } from "./enrich-game-log-officials";
 import { postAssignmentIngest } from "../lib/post-assignment-ingest";
 
 const outPath = path.join(process.cwd(), "data", "wnba", "assignments.json");
@@ -90,9 +97,17 @@ async function main() {
 
   const events = await collectUpcomingEvents(start);
   const games: AssignmentGame[] = [];
+  const roster = loadWnbaOfficialRoster();
 
   for (const event of events) {
-    const crew = crewByMatchup.get(matchupKey(event.awayTeam, event.homeTeam)) ?? [];
+    let crew = crewByMatchup.get(matchupKey(event.awayTeam, event.homeTeam)) ?? [];
+    if (crew.length === 0) {
+      const officials = await fetchWnbaSummaryOfficials(event.id);
+      if (officials.length > 0) {
+        crew = toWnbaOfficials(officials, roster);
+      }
+      await sleep(40);
+    }
     games.push({ ...event, crew });
   }
 
