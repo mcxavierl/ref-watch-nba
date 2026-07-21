@@ -123,8 +123,8 @@ export function ResearchHubFindings({
               <p className="section-lead">
                 {countFeedCards(feed)} official insight card
                 {countFeedCards(feed) === 1 ? "" : "s"} from {refCount} officials.
-                Strong- and moderate-confidence patterns only, ranked by effect
-                size.
+                Strong- and moderate-confidence patterns only, ranked by confidence
+                tier then effect size.
               </p>
             </div>
           </div>

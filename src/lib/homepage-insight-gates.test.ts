@@ -14,7 +14,7 @@ import {
   passesHomepageSampleGate,
 } from "@/lib/homepage-insight-gates";
 import type { LeagueInsightCard, MatrixEdgeSignificance } from "@/lib/league-overview-insights";
-import { editorialInsightView, insightMetricComparison } from "@/lib/insight-editorial";
+import { editorialInsightView, insightCompellingScore, insightMetricComparison } from "@/lib/insight-editorial";
 
 function matrixSignificance(overrides: Partial<MatrixEdgeSignificance> = {}): MatrixEdgeSignificance {
   return {
@@ -163,5 +163,11 @@ describe("homepage insight gates", () => {
     assert.equal(comparison?.teamBaseline, 48);
     assert.equal(comparison?.deltaPp, 45.2);
     assert.ok((comparison?.refWinRate ?? 0) > comparison!.teamBaseline!);
+  });
+
+  it("ranks larger sample-backed splits ahead of thin hero magnitudes", () => {
+    const thinSpike = matrixCard(16, { heroValue: "+40.0pp" });
+    const deepSplit = matrixCard(48, { heroValue: "+28.0pp" });
+    assert.ok(insightCompellingScore(deepSplit) > insightCompellingScore(thinSpike));
   });
 });

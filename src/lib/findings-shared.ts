@@ -169,18 +169,85 @@ export const CONFIDENCE_TIER_RANK: Record<ConfidenceTier, number> = {
   Thin: 2,
 };
 
-function largestSampleFromFinding(finding: Finding): number {
+export function findingLargestSample(finding: Finding): number {
   const gameCounts = finding.stats
     .map((stat) => stat.detail?.match(/(\d+)\s+games/i)?.[1])
-    .filter(Boolean)
-    .map((n) => parseInt(n!, 10));
+    .flatMap((match) => (match ? [parseInt(match, 10)] : []));
+  const directGameStats = finding.stats
+    .filter((stat) => /^games$/i.test(stat.label.trim()))
+    .map((stat) => parseInt(stat.value.replace(/,/g, ""), 10))
+    .filter((n) => Number.isFinite(n));
   const noteNumbers = finding.sampleNote.match(/\d[\d,]*/g);
   const noteLargest =
     noteNumbers
       ?.map((n) => parseInt(n.replace(/,/g, ""), 10))
       .filter((n) => !Number.isNaN(n))
       .sort((a, b) => b - a)[0] ?? 0;
-  return Math.max(noteLargest, ...gameCounts, 0);
+  return Math.max(noteLargest, ...gameCounts, ...directGameStats, 0);
+}
+
+const EFFECT_SIZE_STAT_LABEL =
+  /delta|edge|swing|variance|spread|lean|skew|lift|gap|vs baseline|vs league/i;
+
+function parseNumericMagnitude(value: string): number | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const pctMatch = trimmed.match(/([+-]?\d+(?:\.\d+)?)\s*%/);
+  if (pctMatch) {
+    const parsed = Number.parseFloat(pctMatch[1]!);
+    return Number.isFinite(parsed) ? Math.abs(parsed) / 100 : null;
+  }
+  const ppMatch = trimmed.match(/([+-]?\d+(?:\.\d+)?)\s*pp\b/i);
+  if (ppMatch) {
+    const parsed = Number.parseFloat(ppMatch[1]!);
+    return Number.isFinite(parsed) ? Math.abs(parsed) / 100 : null;
+  }
+  const numeric = Number.parseFloat(trimmed.replace(/[^0-9.+-]/g, ""));
+  return Number.isFinite(numeric) ? Math.abs(numeric) : null;
+}
+
+/** Infer an effect-size proxy from finding stats when the builder score is stripped. */
+export function inferFindingEffectSize(finding: Finding): number {
+  let max = 0;
+
+  for (const stat of finding.stats) {
+    const magnitude = parseNumericMagnitude(stat.value);
+    if (magnitude === null) continue;
+    const label = stat.label.toLowerCase();
+    const normalized =
+      label.includes("edge") || label.includes("delta") || label.includes("lean")
+        ? magnitude
+        : magnitude > 1 && !label.includes("per game")
+          ? magnitude / 100
+          : magnitude;
+    if (EFFECT_SIZE_STAT_LABEL.test(stat.label) || label.includes("edge")) {
+      max = Math.max(max, normalized);
+    }
+  }
+
+  if (max > 0) return max;
+
+  const headlineMatch = finding.headline.match(/([+-]?\d+(?:\.\d+)?)\s*(?:pp|%)/i);
+  if (headlineMatch) {
+    const parsed = Number.parseFloat(headlineMatch[1]!);
+    if (Number.isFinite(parsed)) {
+      return Math.abs(parsed) / 100;
+    }
+  }
+
+  return 0.05;
+}
+
+/** Rank stripped findings by inferred effect size and sample depth. */
+export function findingImpactScore(
+  finding: Finding,
+  sampleGames?: number,
+): number {
+  const games =
+    sampleGames !== undefined && sampleGames > 0
+      ? sampleGames
+      : findingLargestSample(finding);
+  return rankScore(inferFindingEffectSize(finding), games, 30);
 }
 
 /** Map finding sample notes to user-facing confidence tiers. */
@@ -191,7 +258,7 @@ export function findingConfidenceTier(
   const largest =
     sampleGames !== undefined && sampleGames > 0
       ? sampleGames
-      : largestSampleFromFinding(finding);
+      : findingLargestSample(finding);
 
   if (largest >= 100) return "Strong";
   if (largest >= 30) return "Moderate";
@@ -203,15 +270,14 @@ export function sortFindingsByStrength<T extends Finding>(
   sampleGamesById?: Map<string, number>,
 ): T[] {
   return [...findings].sort((a, b) => {
+    const sampleA = sampleGamesById?.get(a.id);
+    const sampleB = sampleGamesById?.get(b.id);
     const tierA =
-      CONFIDENCE_TIER_RANK[
-        findingConfidenceTier(a, sampleGamesById?.get(a.id))
-      ];
+      CONFIDENCE_TIER_RANK[findingConfidenceTier(a, sampleA)];
     const tierB =
-      CONFIDENCE_TIER_RANK[
-        findingConfidenceTier(b, sampleGamesById?.get(b.id))
-      ];
-    return tierA - tierB;
+      CONFIDENCE_TIER_RANK[findingConfidenceTier(b, sampleB)];
+    if (tierA !== tierB) return tierA - tierB;
+    return findingImpactScore(b, sampleB) - findingImpactScore(a, sampleA);
   });
 }
 

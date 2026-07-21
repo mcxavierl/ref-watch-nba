@@ -1,4 +1,5 @@
 import type { Finding } from "@/lib/findings-shared";
+import { sortFindingsByStrength } from "@/lib/findings-shared";
 import type { RefRankingSort } from "@/lib/rankings";
 import {
   buildRankingsSynthesis,
@@ -147,11 +148,12 @@ export function heroSynthesisForView(
   const base = buildRankingsSynthesis(stats, league);
 
   if (view === "findings" && findings.length > 0) {
+    const ranked = sortFindingsByStrength(findings);
     return {
       ...base,
       headline: "Top highlights",
       subhead: "",
-      insights: findingsToRankingsInsights(findings),
+      insights: findingsToRankingsInsights(ranked),
       leagueSummary: "",
     };
   }

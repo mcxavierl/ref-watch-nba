@@ -1,4 +1,5 @@
 import { filterHomepageInsightCards } from "@/lib/homepage-insight-gates";
+import { insightCompellingScore } from "@/lib/insight-editorial";
 import overviewInsightsJson from "../../../data/overview-insights.json";
 import type { LeagueInsightCard } from "@/lib/league-overview-insights";
 import { EVERGREEN_TOP_STORIES } from "@/lib/insights/evergreen";
@@ -31,19 +32,13 @@ function bundledPayload(): InsightsPayload {
   return overviewInsightsJson as InsightsPayload;
 }
 
-function heroValueMagnitude(value: string): number {
-  const match = value.match(/([+-]?\d+(?:\.\d+)?)/);
-  if (!match) return 0;
-  return Math.abs(Number.parseFloat(match[1]));
-}
-
 function insightKey(card: LeagueInsightCard): string {
   return card.drilldownId ?? `${card.leagueId}--${card.refSlug ?? ""}--${card.teamAbbr ?? ""}--${card.headline}`;
 }
 
 function sortBySignificance(cards: LeagueInsightCard[]): LeagueInsightCard[] {
   return [...cards].sort(
-    (a, b) => heroValueMagnitude(b.heroValue) - heroValueMagnitude(a.heroValue),
+    (a, b) => insightCompellingScore(b) - insightCompellingScore(a),
   );
 }
 

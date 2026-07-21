@@ -10,6 +10,7 @@ export const OVERVIEW_SNAPSHOT_REL = "data/overview-snapshot.json";
 /** Logic and config that affect the committed overview snapshot payload. */
 export const OVERVIEW_SNAPSHOT_SOURCES = [
   "src/lib/cross-league-overview.ts",
+  "src/lib/cross-league-top-findings.ts",
   "src/lib/overview-upcoming-slate.ts",
   "src/lib/overview-matchup-insight.ts",
   "src/lib/overview-slate-shared.ts",
