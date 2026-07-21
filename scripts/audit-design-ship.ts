@@ -15,6 +15,7 @@ import { spawnSync } from "node:child_process";
 
 const STEPS: Array<{ label: string; command: string; args: string[] }> = [
   { label: "Theme matrix contrast", command: "npm", args: ["run", "audit:theme-matrix"] },
+  { label: "Mobile viewport layout", command: "npm", args: ["run", "audit:mobile-layout"] },
   { label: "Color drift", command: "npm", args: ["run", "audit:color-drift"] },
   { label: "Brand surfaces", command: "npm", args: ["run", "audit:brand-surfaces"] },
 ];

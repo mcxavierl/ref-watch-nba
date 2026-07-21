@@ -62,3 +62,20 @@ export function rateLimitHeaders(result: RateLimitResult): Record<string, string
     "X-RateLimit-Reset": String(Math.floor(result.resetAt / 1000)),
   };
 }
+
+const UNAUTHENTICATED_BUCKET_PREFIX = "unauthenticated:";
+
+export function resolveUnauthenticatedRateLimitKey(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const realIp = request.headers.get("x-real-ip")?.trim();
+  const clientIp = forwarded || realIp || "unknown";
+  return `${UNAUTHENTICATED_BUCKET_PREFIX}${clientIp}`;
+}
+
+export function checkUnauthenticatedRateLimit(request: Request): RateLimitResult {
+  return checkRateLimit(resolveUnauthenticatedRateLimitKey(request), "standard");
+}
+
+export function unauthenticatedRateLimitHeaders(request: Request): Record<string, string> {
+  return rateLimitHeaders(checkUnauthenticatedRateLimit(request));
+}

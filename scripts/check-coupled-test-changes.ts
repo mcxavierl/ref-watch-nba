@@ -71,6 +71,18 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
     tests: ["src/lib/homepage-insight-gates.test.ts"],
   },
   {
+    label: "enterprise API auth",
+    sources: [
+      "src/lib/auth/enterprise-api-middleware.ts",
+      "src/lib/api/v1/rate-limit.ts",
+      "scripts/seed-api-keys.ts",
+    ],
+    tests: [
+      "src/lib/auth/enterprise-api-middleware.test.ts",
+      "src/lib/auth/apikey.test.ts",
+    ],
+  },
+  {
     label: "integrity monitor pipeline",
     sources: [
       "src/lib/analytics/anomalyEngine.ts",

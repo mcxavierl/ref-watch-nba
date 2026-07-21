@@ -3,9 +3,10 @@ import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 
 describe("design ship audit", () => {
-  it("bundles theme matrix, color drift, and brand surfaces", () => {
+  it("bundles theme matrix, mobile layout, color drift, and brand surfaces", () => {
     const source = readFileSync("scripts/audit-design-ship.ts", "utf8");
     assert.match(source, /audit:theme-matrix/);
+    assert.match(source, /audit:mobile-layout/);
     assert.match(source, /audit:color-drift/);
     assert.match(source, /audit:brand-surfaces/);
   });

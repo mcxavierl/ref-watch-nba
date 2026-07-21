@@ -103,6 +103,23 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
     },
   },
   {
+    name: "enterprise API middleware returns rate-limit headers on 401",
+    run: () => {
+      const middleware = read("src/lib/auth/enterprise-api-middleware.ts");
+      if (!middleware.includes("unauthenticatedRateLimitHeaders")) {
+        return {
+          ok: false,
+          message: "enterprise-api-middleware.ts missing unauthenticatedRateLimitHeaders on 401",
+        };
+      }
+      const seed = read("scripts/seed-api-keys.ts");
+      if (/console\.log\(`\s*standard \(\$\{/.test(seed) || /console\.log\(`\s*enterprise \(\$\{/.test(seed)) {
+        return { ok: false, message: "seed-api-keys.ts still logs plaintext API keys" };
+      }
+      return { ok: true };
+    },
+  },
+  {
     name: "webhook subscriber secrets are sealed at rest",
     run: () => {
       const secret = read("src/lib/services/webhookSecret.ts");
