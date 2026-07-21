@@ -10,7 +10,7 @@ type HeroInsightCandidate = {
 };
 
 export function hasUpcomingCardAssignedCrew(game: OverviewSlateEntry): boolean {
-  return game.crewCount > 0 && game.status !== "scheduled";
+  return game.crewCount > 0;
 }
 
 export function upcomingCardInsightFallback(game: OverviewSlateEntry): string {

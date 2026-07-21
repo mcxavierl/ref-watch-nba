@@ -6,6 +6,7 @@ import { OverviewSlateRow } from "@/components/OverviewSlateRow";
 import { UpcomingGameCard } from "@/components/UpcomingGameCard";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
+import { useSlateLiveScores } from "@/lib/use-slate-live-scores";
 
 export function OverviewSlateGamesInteractive({
   games,
@@ -17,9 +18,10 @@ export function OverviewSlateGamesInteractive({
   variant?: "row" | "card";
 }) {
   const [selected, setSelected] = useState<GameSlatePreviewPayload | null>(null);
+  const liveGames = useSlateLiveScores(games);
 
   const previewByKey = new Map(
-    games
+    liveGames
       .filter(
         (game): game is OverviewSlateEntry & { preview: GameSlatePreviewPayload } =>
           game.crewCount > 0 && Boolean(game.preview),
@@ -34,7 +36,7 @@ export function OverviewSlateGamesInteractive({
 
   return (
     <>
-      {games.map((game, index) =>
+      {liveGames.map((game, index) =>
         variant === "card" ? (
           <UpcomingGameCard
             key={`${game.leagueId}-${game.gameId}`}

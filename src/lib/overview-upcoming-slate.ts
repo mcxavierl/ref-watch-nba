@@ -17,6 +17,11 @@ import { isSlatePreviewLeague } from "@/lib/game-slate-preview-adapters";
 import { buildGameSlatePreview, selectGameSlatePreviewCardInsights } from "@/lib/game-slate-preview";
 import { collectUpcomingCardRefInsights } from "@/lib/upcoming-card-ref-insights";
 import { resolveWnbaTeamAbbr } from "@/lib/wnba/teams";
+import {
+  isEspnGameLive,
+  resolveSlateGamePhase,
+  type SlateGamePhase,
+} from "@/lib/slate-game-phase";
 
 export type {
   OverviewLeagueNote,
@@ -68,6 +73,18 @@ export function selectHomepageSlateGrid(
   return sortSlateChronology(games).slice(0, HOMEPAGE_SLATE_GRID_SIZE);
 }
 
+function resolveAssignmentSlateStatus(
+  game: AssignmentGame,
+  fallback: OverviewSlateStatus,
+): OverviewSlateStatus {
+  const phase = resolveSlateGamePhase(game.gameStatus);
+  if (phase === "live") return "live";
+  if (phase === "final") return "final";
+  if (isEspnGameLive(game.gameStatus)) return "live";
+  if (game.crew.length > 0) return "live";
+  return fallback;
+}
+
 function collectLeagueSlateEntries(
   leagueId: LeagueId,
   file: AssignmentsFile,
@@ -78,17 +95,24 @@ function collectLeagueSlateEntries(
   for (const game of file.games) {
     if (seenIds.has(game.id)) continue;
     seenIds.add(game.id);
-    if (game.crew.length > 0) {
-      pushEntry(games, leagueId, file, game, "live");
-    } else {
-      pushEntry(games, leagueId, file, game, "scheduled");
-    }
+    pushEntry(
+      games,
+      leagueId,
+      file,
+      game,
+      resolveAssignmentSlateStatus(game, "scheduled"),
+    );
   }
   for (const game of file.scheduledGames ?? []) {
     if (seenIds.has(game.id)) continue;
     seenIds.add(game.id);
-    const status: OverviewSlateStatus = game.crew.length > 0 ? "live" : "scheduled";
-    pushEntry(games, leagueId, file, game, status);
+    pushEntry(
+      games,
+      leagueId,
+      file,
+      game,
+      resolveAssignmentSlateStatus(game, "scheduled"),
+    );
   }
 
   return games;
@@ -227,6 +251,9 @@ function pushEntry(
     homeTeam,
   );
   const seasonStageNote = buildSeasonStageNote(leagueId, game, slateDate);
+  const gamePhase: SlateGamePhase | undefined = game.gameStatus
+    ? resolveSlateGamePhase(game.gameStatus)
+    : undefined;
   const preview =
     isSlatePreviewLeague(leagueId)
       ? buildGameSlatePreview(leagueId, game, loadLeagueOdds(leagueId)) ?? undefined
@@ -244,6 +271,12 @@ function pushEntry(
     headRef,
     crewCount: game.crew.length,
     status,
+    gamePhase,
+    awayScore: game.awayScore,
+    homeScore: game.homeScore,
+    gameStatus: game.gameStatus,
+    gameClock: game.gameClock,
+    gamePeriod: game.gamePeriod,
     slateDate,
     slateStartAt,
     matchupInsight: buildOverviewMatchupInsight(leagueId, awayTeam, homeTeam),
@@ -303,10 +336,10 @@ export function buildLeagueHubUpcomingSchedule(
   };
 
   for (const game of file.games) {
-    consider(game, game.crew.length > 0 ? "live" : "scheduled");
+    consider(game, resolveAssignmentSlateStatus(game, "scheduled"));
   }
   for (const game of file.scheduledGames ?? []) {
-    consider(game, game.crew.length > 0 ? "live" : "scheduled");
+    consider(game, resolveAssignmentSlateStatus(game, "scheduled"));
   }
 
   if (entries.length === 0 && HUB_PRESEASON_STAGES[leagueId]) {
@@ -367,8 +400,12 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
 
   games.sort(compareSlateChronology);
 
-  const liveGames = games.filter((game) => game.status === "live");
-  const scheduledGames = games.filter((game) => game.status === "scheduled");
+  const liveGames = games.filter(
+    (game) => game.status === "live" || game.gamePhase === "live",
+  );
+  const scheduledGames = games.filter(
+    (game) => game.status === "scheduled" && game.gamePhase !== "live",
+  );
   const leagueGroups = groupOverviewSlateByLeague(games);
   const homepageGames = selectHomepageSlateGrid(games);
 

@@ -14,6 +14,8 @@ const SLATE_STATUSES = new Set([
   "STATUS_SCHEDULED",
   "STATUS_IN_PROGRESS",
   "STATUS_HALFTIME",
+  "STATUS_END_PERIOD",
+  "STATUS_FINAL",
 ]);
 
 function addDays(isoDate: string, days: number): string {
@@ -49,6 +51,11 @@ async function collectUpcomingEvents(startDate: string) {
         league: "WNBA",
         slateDate,
         slateStartAt: event.startsAt,
+        gameStatus: event.status,
+        awayScore: event.awayScore,
+        homeScore: event.homeScore,
+        gameClock: event.gameClock,
+        gamePeriod: event.gamePeriod,
         crew: [],
       });
       if (collected.length >= UPCOMING_LIMIT) break;
