@@ -237,6 +237,12 @@ export function RefRankingsTable({
           >
             Anomalies only
           </Pill>
+          {anomaliesOnly ? (
+            <span className="text-sm text-zinc-600">
+              {sorted.length} official{sorted.length === 1 ? "" : "s"} with multi-axis
+              or strong single-axis deviation
+            </span>
+          ) : null}
         </div>
       </div>
 
