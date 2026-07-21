@@ -373,6 +373,13 @@ export function InsightsHubPage({
             ),
           ]}
         />
+        <Suspense fallback={<p className="insights-loading-copy">Loading findings…</p>}>
+          <ResearchHubFindings
+            findings={findingsForView}
+            league={dataLeague}
+            refCount={stats.refs.length}
+          />
+        </Suspense>
         {cbbWhistleDataset ? (
           <CbbWhistleMatrixSection
             outliers={cbbWhistleDataset.outliers}
@@ -397,13 +404,6 @@ export function InsightsHubPage({
           scopedSeasons={scopedSeasons}
           basePath={league.pathPrefix}
         />
-        <Suspense fallback={<p className="insights-loading-copy">Loading findings…</p>}>
-          <ResearchHubFindings
-            findings={findingsForView}
-            league={dataLeague}
-            refCount={stats.refs.length}
-          />
-        </Suspense>
       </>
     );
   }

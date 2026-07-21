@@ -235,11 +235,20 @@ function heroValueMagnitude(value: string): number {
   return Math.abs(Number.parseFloat(match[1]));
 }
 
+/** Composite rank for homepage and research insight cards (sample depth + effect size). */
+export function insightCompellingScore(card: LeagueInsightCard): number {
+  const sampleGames = parseGamesFromCard(card);
+  const magnitude = heroValueMagnitude(card.heroValue);
+  const sampleWeight = Math.min(1, sampleGames / 60);
+  const kindBoost = card.kind === "matrix-edge" ? 1.15 : 1;
+  return magnitude * Math.sqrt(Math.max(sampleGames, 1)) * sampleWeight * kindBoost;
+}
+
 /** Pick the strongest card for the full-width featured insight slot. */
 export function pickTopInsightCard(cards: LeagueInsightCard[]): LeagueInsightCard | null {
   if (cards.length === 0) return null;
   return [...cards].sort(
-    (a, b) => heroValueMagnitude(b.heroValue) - heroValueMagnitude(a.heroValue),
+    (a, b) => insightCompellingScore(b) - insightCompellingScore(a),
   )[0]!;
 }
 
@@ -331,7 +340,7 @@ export function trendInsightCards(cards: LeagueInsightCard[]): LeagueInsightCard
 /** Compact quick-insight row (up to three cards). */
 export function quickInsightCards(cards: LeagueInsightCard[], limit = 3): LeagueInsightCard[] {
   return filterHomepageInsightCards(cards)
-    .sort((a, b) => heroValueMagnitude(b.heroValue) - heroValueMagnitude(a.heroValue))
+    .sort((a, b) => insightCompellingScore(b) - insightCompellingScore(a))
     .slice(0, limit);
 }
 

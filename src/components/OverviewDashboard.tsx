@@ -111,6 +111,7 @@ export function OverviewDashboard({
           <OverviewQuickInsights
             insightCards={data.insightCards}
             topStories={data.topStories}
+            topFindingCards={data.topFindingCards}
           />
 
           <DashboardBodyLayout

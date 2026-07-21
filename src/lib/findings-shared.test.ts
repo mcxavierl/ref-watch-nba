@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { collectRefTeamScoringExtremes } from "@/lib/findings-shared";
+import {
+  collectRefTeamScoringExtremes,
+  findingImpactScore,
+  sortFindingsByStrength,
+  type Finding,
+} from "@/lib/findings-shared";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
 
 function makeRef(
@@ -101,5 +106,52 @@ describe("collectRefTeamScoringExtremes", () => {
     ]);
 
     assert.equal(collectRefTeamScoringExtremes(stats, 8), null);
+  });
+});
+
+function makeFinding(
+  id: string,
+  sampleGames: number,
+  effectLabel: string,
+  effectValue: string,
+): Finding {
+  return {
+    id,
+    category: "ou-edge",
+    headline: `${id} headline`,
+    summary: "summary",
+    stats: [
+      { label: effectLabel, value: effectValue, detail: `${sampleGames} games` },
+      { label: "Games", value: String(sampleGames) },
+    ],
+    sampleNote: `Based on ${sampleGames} games`,
+    links: [],
+  };
+}
+
+describe("sortFindingsByStrength", () => {
+  it("ranks by confidence tier then impact score within tier", () => {
+    const strongWeak = makeFinding("strong-weak", 120, "O/U edge", "4.0%");
+    const strongStrong = makeFinding("strong-strong", 120, "O/U edge", "12.0%");
+    const moderateStrong = makeFinding("moderate-strong", 40, "O/U edge", "18.0%");
+
+    const sorted = sortFindingsByStrength([
+      strongWeak,
+      moderateStrong,
+      strongStrong,
+    ]);
+
+    assert.deepEqual(
+      sorted.map((finding) => finding.id),
+      ["strong-strong", "strong-weak", "moderate-strong"],
+    );
+  });
+
+  it("prefers larger inferred effect sizes when confidence matches", () => {
+    const smaller = makeFinding("smaller", 80, "Delta", "+6.0pp");
+    const larger = makeFinding("larger", 80, "Delta", "+14.0pp");
+
+    assert.ok(findingImpactScore(larger) > findingImpactScore(smaller));
+    assert.equal(sortFindingsByStrength([smaller, larger])[0]?.id, "larger");
   });
 });

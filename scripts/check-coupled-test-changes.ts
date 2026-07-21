@@ -42,9 +42,13 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
   },
   {
     label: "cross-league overview cards",
-    sources: ["src/lib/cross-league-overview.ts"],
+    sources: [
+      "src/lib/cross-league-overview.ts",
+      "src/lib/cross-league-top-findings.ts",
+    ],
     tests: [
       "src/lib/soccer-card-metrics.test.ts",
+      "src/lib/cross-league-top-findings.test.ts",
       "src/lib/league-quick-lists.test.ts",
       "src/lib/clinical-modern-surfaces.test.ts",
     ],
