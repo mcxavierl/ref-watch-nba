@@ -4,15 +4,15 @@ import {
   useCallback,
   useEffect,
   useId,
-  useMemo,
   useState,
   type MouseEvent,
 } from "react";
 import { ModalPortal } from "@/components/ModalPortal";
 import { X } from "lucide-react";
 import { InsightDrilldownPanel } from "@/components/InsightDrilldownPanel";
-import { buildClientRefTeamMatchupPayload } from "@/lib/ref-team-matchup-games-client";
+import { fetchRefTeamMatchupPayload } from "@/lib/ref-team-matchup-games-client";
 import type { RefTeamMatchupInput } from "@/lib/ref-team-matchup-games-client";
+import type { InsightDrilldownPayload } from "@/lib/insight-drilldown-types";
 import type { LeagueId } from "@/lib/leagues";
 
 const MODAL_TRANSITION_MS = 200;
@@ -43,6 +43,9 @@ export function RefTeamMatchupGamesModal({
   const titleId = useId();
   const [rendered, setRendered] = useState(open);
   const [visible, setVisible] = useState(false);
+  const [payload, setPayload] = useState<InsightDrilldownPayload | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -57,6 +60,53 @@ export function RefTeamMatchupGamesModal({
     const timer = window.setTimeout(() => setRendered(false), MODAL_TRANSITION_MS);
     return () => window.clearTimeout(timer);
   }, [open]);
+
+  useEffect(() => {
+    if (!open || !target) return;
+
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    setPayload(null);
+
+    const input: RefTeamMatchupInput = {
+      leagueId: target.leagueId,
+      refSlug: target.refSlug,
+      refName: target.refName,
+      teamAbbr: target.teamAbbr,
+      teamLabel: target.teamLabel,
+      recordWins: target.recordWins,
+      recordLosses: target.recordLosses,
+      baselineWinRate: target.baselineWinRate,
+      leagueAvgFouls: target.leagueAvgFouls,
+    };
+
+    fetchRefTeamMatchupPayload(input)
+      .then((data) => {
+        if (cancelled) return;
+        if (!data) {
+          setError(
+            "No verified games found for this ref×team pair in the current sample.",
+          );
+          setPayload(null);
+          return;
+        }
+        setPayload(data);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setError("Could not load matchup history.");
+          setPayload(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open, target]);
 
   useEffect(() => {
     if (!rendered) return;
@@ -74,22 +124,6 @@ export function RefTeamMatchupGamesModal({
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [rendered, onClose]);
-
-  const payload = useMemo(() => {
-    if (!target) return null;
-    const input: RefTeamMatchupInput = {
-      leagueId: target.leagueId,
-      refSlug: target.refSlug,
-      refName: target.refName,
-      teamAbbr: target.teamAbbr,
-      teamLabel: target.teamLabel,
-      recordWins: target.recordWins,
-      recordLosses: target.recordLosses,
-      baselineWinRate: target.baselineWinRate,
-      leagueAvgFouls: target.leagueAvgFouls,
-    };
-    return buildClientRefTeamMatchupPayload(input);
-  }, [target]);
 
   const handleBackdropClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
@@ -138,17 +172,19 @@ export function RefTeamMatchupGamesModal({
           </button>
         </header>
 
-        {!payload ? (
-          <p className="insight-drilldown-status">
-            No verified games found for this ref×team pair in the current sample.
+        {loading ? (
+          <p className="insight-drilldown-status">Loading matchup history…</p>
+        ) : error ? (
+          <p className="insight-drilldown-status insight-drilldown-status--error">
+            {error}
           </p>
-        ) : (
+        ) : payload ? (
           <InsightDrilldownPanel
             payload={payload}
             titleId={titleId}
             gamesSectionTitle={`All ${payload.games.length} games`}
           />
-        )}
+        ) : null}
       </div>
     </div>
   );
