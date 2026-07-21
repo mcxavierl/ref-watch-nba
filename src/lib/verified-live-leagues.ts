@@ -15,7 +15,6 @@ export const PRO_MATRIX_ANALYTICS_LEAGUE_IDS = [
 
 export const PRO_VERIFIED_LIVE_LEAGUE_IDS = [
   ...PRO_MATRIX_ANALYTICS_LEAGUE_IDS,
-  "wnba",
 ] as const satisfies readonly LeagueId[];
 
 /** Pro leagues with live slate and assignments before ref-stats ingest is verified. */

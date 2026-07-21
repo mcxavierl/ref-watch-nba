@@ -8,6 +8,7 @@ import {
 import {
   buildLeagueHubUpcomingSchedule,
   buildLeagueUpcomingSlateFromAssignments,
+  buildOverviewUpcomingSlate,
   LEAGUE_UPCOMING_SLATE_LIMIT,
   selectHomepageSlateGrid,
 } from "@/lib/overview-upcoming-slate";
@@ -332,6 +333,28 @@ describe("overview-upcoming-slate", () => {
     assert.deepEqual(
       grid.map((game) => game.gameId),
       ["w1", "l1", "n1", "e1"],
+    );
+  });
+
+  it("does not duplicate WNBA games in the cross-league overview slate", () => {
+    const slate = buildOverviewUpcomingSlate();
+    const wnbaGames = slate.games.filter((game) => game.leagueId === "wnba");
+    const wnbaIds = wnbaGames.map((game) => game.gameId);
+    assert.equal(
+      new Set(wnbaIds).size,
+      wnbaIds.length,
+      `duplicate WNBA game ids in homepage slate: ${wnbaIds.join(", ")}`,
+    );
+
+    const lvaTorCount = slate.games.filter(
+      (game) =>
+        game.leagueId === "wnba" &&
+        game.awayTeam === "LVA" &&
+        game.homeTeam === "TOR",
+    ).length;
+    assert.ok(
+      lvaTorCount <= 1,
+      `expected at most one LVA @ TOR card, found ${lvaTorCount}`,
     );
   });
 });

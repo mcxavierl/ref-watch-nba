@@ -334,6 +334,7 @@ export function buildLeagueHubUpcomingSchedule(
 /** Aggregate tonight's assignments across live leagues (build-time / snapshot). */
 export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
   const games: OverviewSlateEntry[] = [];
+  const seenGameKeys = new Set<string>();
   const leagueNotes: OverviewLeagueNote[] = [];
   let lastUpdated: string | null = null;
 
@@ -350,7 +351,12 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
       if (leagueSlate.leagueNote) {
         leagueNotes.push(leagueSlate.leagueNote);
       }
-      games.push(...(leagueSlate.leagueGroup?.games ?? []));
+      for (const game of leagueSlate.leagueGroup?.games ?? []) {
+        const key = `${leagueId}:${game.gameId}`;
+        if (seenGameKeys.has(key)) continue;
+        seenGameKeys.add(key);
+        games.push(game);
+      }
     } catch {
       /* skip malformed assignments */
     }
