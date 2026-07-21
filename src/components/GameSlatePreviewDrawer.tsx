@@ -11,6 +11,7 @@ import {
 } from "react";
 import { TrendingDown, TrendingUp, X } from "lucide-react";
 import { MatchupInsightCard } from "@/components/MatchupInsightCard";
+import { EvidenceDrawer } from "@/components/evidence/EvidenceDrawer";
 import { ModalPortal } from "@/components/ModalPortal";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { OuLeanBadge } from "@/components/OuLeanBadge";
@@ -18,6 +19,7 @@ import { RefAvatar } from "@/components/RefAvatar";
 import { TeamImpactCard } from "@/components/TeamImpactCard";
 import { TeamLogo } from "@/components/TeamLogo";
 import { STATE_COLOR_CLASS } from "@/constants/colors";
+import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
   buildGameSlateMatchupInsights,
@@ -117,6 +119,7 @@ export function GameSlatePreviewDrawer({
   );
   const matchupInsights = buildGameSlateMatchupInsights(preview.refTeamRows);
   const refVsTeamsLabel = refVsTeamsSectionLabel(preview.crew.length);
+  const projectionEvidence = buildProjectionEvidence(preview);
 
   return (
     <ModalPortal>
@@ -389,6 +392,8 @@ export function GameSlatePreviewDrawer({
                 <p className="ref-preview-drawer-summary-copy">{preview.homeBiasHeadline}</p>
               </section>
             ) : null}
+
+            <EvidenceDrawer evidence={projectionEvidence} />
 
             {preview.storylines.length > 0 ? (
               <section className="ref-preview-drawer-section" aria-label="Ref history flags">
