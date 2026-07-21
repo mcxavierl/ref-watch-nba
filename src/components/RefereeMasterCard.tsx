@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import { DynamicInsightPillRow } from "@/components/DynamicInsightPill";
 import { FavoritesStar } from "@/components/FavoritesStar";
+import { RefProfileBroadcastKit } from "@/components/media/RefProfileBroadcastKit";
 import { RefAvatar } from "@/components/RefAvatar";
+import { buildRefBroadcastExport } from "@/lib/media/media-card-content";
 import { buildRefMasterInsights } from "@/lib/ref-master-insights";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
@@ -39,6 +41,7 @@ export function RefereeMasterCard({
   children,
 }: RefereeMasterCardProps) {
   const insights = buildRefMasterInsights(leagueId, profile, stats, qualified);
+  const broadcastExport = buildRefBroadcastExport(leagueId, profile, stats, qualified);
 
   return (
     <header className="page-profile-header">
@@ -67,6 +70,10 @@ export function RefereeMasterCard({
           <div className="ref-master-insight-pills">
             <DynamicInsightPillRow insights={insights} />
           </div>
+          <RefProfileBroadcastKit
+            broadcastExport={broadcastExport}
+            className="mt-3"
+          />
         </div>
       </div>
 

@@ -24,6 +24,9 @@ import type {
   RefRole,
   RefTeamStat,
 } from "@/lib/types";
+import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
+import { buildGameSlateBroadcastExport } from "@/lib/media/media-card-content";
+import type { MediaBroadcastExport } from "@/lib/media/media-card-types";
 
 export type GameSlatePreviewRefRow = {
   refSlug: string;
@@ -107,6 +110,7 @@ export type GameSlatePreviewPayload = {
   refTeamRows: GameSlatePreviewRefRow[];
   teamImpacts: GameSlatePreviewTeamImpact[];
   storylines: GameSlatePreviewStoryline[];
+  broadcastExport?: MediaBroadcastExport;
 };
 
 const MIN_REF_TEAM_GAMES = 5;
@@ -540,7 +544,7 @@ export function buildGameSlatePreview(
   const refTeamRows = buildRefTeamRows(game, leagueId, stats);
   const teamImpacts = buildTeamImpacts(refTeamRows, teams);
 
-  return {
+  const preview: GameSlatePreviewPayload = {
     gameId: game.id,
     leagueId,
     leagueLabel: LEAGUES[leagueId].label,
@@ -575,4 +579,9 @@ export function buildGameSlatePreview(
     teamImpacts,
     storylines,
   };
+
+  const evidence = buildProjectionEvidence(preview);
+  preview.broadcastExport = buildGameSlateBroadcastExport(preview, evidence);
+
+  return preview;
 }
