@@ -81,8 +81,8 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
   },
   {
     label: "broadcast export",
-    sources: ["src/lib/media/export-broadcast-graphic.ts"],
-    tests: ["src/lib/media/export-broadcast-graphic.test.ts"],
+    sources: ["src/lib/media/on-air-copy.ts"],
+    tests: ["src/lib/media/media-card-content.test.ts"],
   },
   {
     label: "theme matrix contrast math",

@@ -4,6 +4,7 @@ import { buildProjectionEvidence } from "@/lib/analytics/build-projection-eviden
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
   buildBroadcastEvidenceBullets,
+  buildGameSlateBroadcastExport,
   buildHeroMetric,
   buildMediaCardContent,
   buildRefMediaCardContent,
@@ -11,6 +12,7 @@ import {
   topEvidenceBullets,
 } from "@/lib/media/media-card-content";
 import { buildOnAirCopy } from "@/lib/media/on-air-copy.server";
+import { buildProducerCopyFromContent } from "@/lib/media/on-air-copy";
 import { getRefBySlug, getRefStats } from "@/lib/data";
 
 function previewFixture(
@@ -123,5 +125,41 @@ describe("on-air copy", () => {
     assert.match(copy, /EVIDENCE SUMMARY/);
     assert.match(copy, /• /);
     assert.match(copy, /Not betting advice/);
+  });
+
+  it("builds structured producer copy sections for broadcast export", () => {
+    const preview = previewFixture();
+    const evidence = buildProjectionEvidence(preview);
+    const broadcastExport = buildGameSlateBroadcastExport(preview, evidence);
+    const { producerCopy } = broadcastExport;
+
+    assert.match(producerCopy.lowerThird, /FOULS/);
+    assert.match(producerCopy.lowerThird, /Scott Foster/);
+    assert.match(producerCopy.teleprompter, /Tonight's NBA crew/);
+    assert.match(producerCopy.producerBullets, /• /);
+    assert.match(producerCopy.all, /LOWER-THIRD \/ BANNER TEXT/);
+    assert.match(producerCopy.all, /TELEPROMPTER \/ COMMENTARY SCRIPT/);
+    assert.match(producerCopy.all, /PRODUCER BULLET POINTS \/ STAT BREAKDOWN/);
+  });
+
+  it("merges producer sections into a single rundown-ready string", () => {
+    const preview = previewFixture();
+    const evidence = buildProjectionEvidence(preview);
+    const content = buildMediaCardContent(preview, evidence);
+    const producerCopy = buildProducerCopyFromContent(content, "Scott Foster");
+
+    assert.equal(
+      producerCopy.all,
+      [
+        "LOWER-THIRD / BANNER TEXT",
+        producerCopy.lowerThird,
+        "",
+        "TELEPROMPTER / COMMENTARY SCRIPT",
+        producerCopy.teleprompter,
+        "",
+        "PRODUCER BULLET POINTS / STAT BREAKDOWN",
+        producerCopy.producerBullets,
+      ].join("\n"),
+    );
   });
 });

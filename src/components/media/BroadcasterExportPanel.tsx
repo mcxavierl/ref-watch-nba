@@ -1,181 +1,134 @@
 "use client";
 
-import { Check, Copy, Download } from "lucide-react";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type RefObject,
-} from "react";
-import { MediaCard } from "@/components/media/MediaCard";
-import {
-  broadcastGraphicFilename,
-  exportBroadcastGraphicPng,
-} from "@/lib/media/export-broadcast-graphic";
-import {
-  MEDIA_CARD_HEIGHT,
-  MEDIA_CARD_WIDTH,
-  type MediaCardContent,
-} from "@/lib/media/media-card-types";
+import { Check, Copy } from "lucide-react";
+import { useCallback, useState } from "react";
+import type { ProducerCopySections } from "@/lib/media/media-card-types";
 
 type BroadcasterExportPanelProps = {
-  content: MediaCardContent;
-  teleprompterCopy: string;
-  exportFilename?: string;
+  producerCopy: ProducerCopySections;
   className?: string;
 };
 
-type ExportStatus = "idle" | "exporting" | "copied" | "error";
+type CopySectionId = "all" | "lowerThird" | "teleprompter" | "producerBullets";
 
-function usePreviewScale(
-  viewportRef: RefObject<HTMLDivElement | null>,
-): number {
-  const [scale, setScale] = useState(0.35);
+type CopySectionConfig = {
+  id: CopySectionId;
+  title: string;
+  text: string;
+};
 
-  useEffect(() => {
-    const node = viewportRef.current;
-    if (!node) return;
-
-    const updateScale = () => {
-      const width = node.clientWidth;
-      if (width <= 0) return;
-      setScale(width / MEDIA_CARD_WIDTH);
-    };
-
-    updateScale();
-    const observer = new ResizeObserver(updateScale);
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [viewportRef]);
-
-  return scale;
+function CopySection({
+  title,
+  text,
+  copied,
+  onCopy,
+}: {
+  title: string;
+  text: string;
+  copied: boolean;
+  onCopy: () => void;
+}) {
+  return (
+    <section className="producer-copy-section" aria-label={title}>
+      <div className="producer-copy-section-header">
+        <h3 className="producer-copy-section-title">{title}</h3>
+        <button
+          type="button"
+          className={`btn-secondary inline-flex items-center gap-1.5 producer-copy-section-button${
+            copied ? " btn-success" : ""
+          }`}
+          onClick={onCopy}
+          aria-live="polite"
+        >
+          {copied ? (
+            <Check size={16} aria-hidden className="text-emerald-700" />
+          ) : (
+            <Copy size={16} aria-hidden />
+          )}
+          {copied ? "Copied!" : "Copy to Clipboard"}
+        </button>
+      </div>
+      <pre className="producer-copy-block">{text}</pre>
+    </section>
+  );
 }
 
 export function BroadcasterExportPanel({
-  content,
-  teleprompterCopy,
-  exportFilename,
+  producerCopy,
   className = "",
 }: BroadcasterExportPanelProps) {
-  const previewViewportRef = useRef<HTMLDivElement>(null);
-  const exportNodeRef = useRef<HTMLDivElement>(null);
-  const previewScale = usePreviewScale(previewViewportRef);
-  const [status, setStatus] = useState<ExportStatus>("idle");
+  const [copiedSection, setCopiedSection] = useState<CopySectionId | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const filename =
-    exportFilename ?? broadcastGraphicFilename(content.matchupBadge);
+  const sections: CopySectionConfig[] = [
+    {
+      id: "lowerThird",
+      title: "Lower-Third / Banner Text",
+      text: producerCopy.lowerThird,
+    },
+    {
+      id: "teleprompter",
+      title: "Teleprompter / Commentary Script",
+      text: producerCopy.teleprompter,
+    },
+    {
+      id: "producerBullets",
+      title: "Producer Bullet Points / Stat Breakdown",
+      text: producerCopy.producerBullets,
+    },
+  ];
 
-  const handleExport = useCallback(async () => {
-    const node = exportNodeRef.current;
-    if (!node) return;
-
-    setStatus("exporting");
-    setErrorMessage(null);
-
-    try {
-      await exportBroadcastGraphicPng(node, {
-        filename,
-        pixelRatio: 1,
-      });
-      setStatus("idle");
-    } catch (error) {
-      setStatus("error");
-      setErrorMessage(
-        error instanceof Error ? error.message : "Export failed. Try again.",
-      );
-    }
-  }, [filename]);
-
-  const handleCopy = useCallback(async () => {
+  const copyText = useCallback(async (sectionId: CopySectionId, text: string) => {
     setErrorMessage(null);
     try {
-      await navigator.clipboard.writeText(teleprompterCopy);
-      setStatus("copied");
-      window.setTimeout(() => setStatus("idle"), 2200);
+      await navigator.clipboard.writeText(text);
+      setCopiedSection(sectionId);
+      window.setTimeout(() => setCopiedSection(null), 2200);
     } catch {
-      setStatus("error");
       setErrorMessage("Clipboard access failed. Check browser permissions.");
     }
-  }, [teleprompterCopy]);
+  }, []);
 
   return (
     <section
       className={`broadcaster-export-panel ${className}`.trim()}
-      aria-label="Broadcaster export tools"
+      aria-label="Producer on-air copy"
     >
-      <div className="broadcaster-export-panel-header">
-        <div>
-          <h3 className="broadcaster-export-panel-title">Broadcaster export</h3>
-          <p className="broadcaster-export-panel-lead">
-            Generate a 1920×1080 broadcast graphic or copy teleprompter-ready on-air
-            copy for producers.
-          </p>
-        </div>
-        <div className="broadcaster-export-actions">
-          <button
-            type="button"
-            className="btn-secondary inline-flex items-center gap-1.5"
-            onClick={handleExport}
-            disabled={status === "exporting"}
-          >
-            <Download size={16} aria-hidden />
-            {status === "exporting"
-              ? "Exporting..."
-              : "Export Broadcast Graphic (1080p PNG)"}
-          </button>
-          <button
-            type="button"
-            className={`btn-secondary inline-flex items-center gap-1.5 ${
-              status === "copied" ? "btn-success" : ""
-            }`}
-            onClick={handleCopy}
-            aria-live="polite"
-          >
-            {status === "copied" ? (
-              <Check size={16} aria-hidden className="text-emerald-700" />
-            ) : (
-              <Copy size={16} aria-hidden />
-            )}
-            {status === "copied" ? "Copied" : "Copy On-Air Teleprompter Copy"}
-          </button>
-        </div>
+      <div className="producer-copy-quick-action">
+        <button
+          type="button"
+          className={`btn-primary inline-flex items-center gap-1.5${
+            copiedSection === "all" ? " btn-success" : ""
+          }`}
+          onClick={() => copyText("all", producerCopy.all)}
+          aria-live="polite"
+        >
+          {copiedSection === "all" ? (
+            <Check size={16} aria-hidden className="text-emerald-700" />
+          ) : (
+            <Copy size={16} aria-hidden />
+          )}
+          {copiedSection === "all" ? "Copied!" : "Copy All Producer Notes"}
+        </button>
       </div>
 
-      <div className="media-card-preview-shell" ref={previewViewportRef}>
-        <div className="media-card-preview-viewport">
-          <div
-            className="media-card-preview-scaler"
-            style={{
-              width: MEDIA_CARD_WIDTH,
-              height: MEDIA_CARD_HEIGHT,
-              transform: `scale(${previewScale})`,
-            }}
-          >
-            <MediaCard content={content} />
-          </div>
-        </div>
+      <div className="producer-copy-sections">
+        {sections.map((section) => (
+          <CopySection
+            key={section.id}
+            title={section.title}
+            text={section.text}
+            copied={copiedSection === section.id}
+            onCopy={() => copyText(section.id, section.text)}
+          />
+        ))}
       </div>
 
-      <p
-        className={`broadcaster-export-status${
-          status === "copied"
-            ? " broadcaster-export-status--success"
-            : status === "error"
-              ? " broadcaster-export-status--error"
-              : ""
-        }`}
-        role={status === "error" ? "alert" : "status"}
-      >
-        {status === "copied"
-          ? "On-air teleprompter copy copied to clipboard."
-          : errorMessage ?? "PNG exports at full 1920×1080 resolution."}
-      </p>
-
-      <div className="broadcaster-export-offscreen" aria-hidden>
-        <MediaCard ref={exportNodeRef} content={content} />
-      </div>
+      {errorMessage ? (
+        <p className="broadcaster-export-status broadcaster-export-status--error" role="alert">
+          {errorMessage}
+        </p>
+      ) : null}
     </section>
   );
 }

@@ -11,6 +11,7 @@ import {
 import { Radio, X } from "lucide-react";
 import { ModalPortal } from "@/components/ModalPortal";
 import { BroadcasterExportPanel } from "@/components/media/BroadcasterExportPanel";
+import "@/components/media/media-card.css";
 import type { MediaBroadcastExport } from "@/lib/media/media-card-types";
 
 const MODAL_TRANSITION_MS = 200;
@@ -20,15 +21,18 @@ type MediaCardModalProps = {
   onClose: () => void;
   broadcastExport: MediaBroadcastExport;
   title?: string;
+  subtitle?: string;
 };
 
 export function MediaCardModal({
   open,
   onClose,
   broadcastExport,
-  title = "Broadcaster Export",
+  title = "Producer On-Air Copy",
+  subtitle = "Teleprompter scripts, talking points, and graphic lower-third text formatted for live production.",
 }: MediaCardModalProps) {
   const titleId = useId();
+  const subtitleId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [rendered, setRendered] = useState(open);
   const [visible, setVisible] = useState(false);
@@ -92,6 +96,7 @@ export function MediaCardModal({
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
+          aria-describedby={subtitleId}
           onClick={(event) => event.stopPropagation()}
         >
           <header className="insight-drilldown-header">
@@ -100,24 +105,23 @@ export function MediaCardModal({
               <h2 className="insight-drilldown-title" id={titleId}>
                 {title}
               </h2>
+              <p className="media-card-modal-subtitle" id={subtitleId}>
+                {subtitle}
+              </p>
             </div>
             <button
               ref={closeButtonRef}
               type="button"
               className="insight-drilldown-close"
               onClick={onClose}
-              aria-label="Close broadcaster export"
+              aria-label="Close producer on-air copy"
             >
               <X size={18} aria-hidden />
             </button>
           </header>
 
           <div className="media-card-modal-body">
-            <BroadcasterExportPanel
-              content={broadcastExport.content}
-              teleprompterCopy={broadcastExport.teleprompterCopy}
-              exportFilename={broadcastExport.exportFilename}
-            />
+            <BroadcasterExportPanel producerCopy={broadcastExport.producerCopy} />
           </div>
         </div>
       </div>
@@ -128,6 +132,7 @@ export function MediaCardModal({
 type ExportOnAirGraphicTriggerProps = {
   broadcastExport: MediaBroadcastExport;
   title?: string;
+  subtitle?: string;
   className?: string;
   label?: string;
 };
@@ -135,8 +140,9 @@ type ExportOnAirGraphicTriggerProps = {
 export function ExportOnAirGraphicTrigger({
   broadcastExport,
   title,
+  subtitle,
   className = "",
-  label = "Export On-Air Graphic",
+  label = "Producer On-Air Copy",
 }: ExportOnAirGraphicTriggerProps) {
   const [open, setOpen] = useState(false);
 
@@ -155,6 +161,7 @@ export function ExportOnAirGraphicTrigger({
         onClose={() => setOpen(false)}
         broadcastExport={broadcastExport}
         title={title}
+        subtitle={subtitle}
       />
     </>
   );

@@ -23,10 +23,16 @@ export type MediaCardContent = {
   sampleGames: number;
 };
 
+export type ProducerCopySections = {
+  lowerThird: string;
+  teleprompter: string;
+  producerBullets: string;
+  all: string;
+};
+
 export type MediaBroadcastExport = {
   content: MediaCardContent;
-  teleprompterCopy: string;
-  exportFilename: string;
+  producerCopy: ProducerCopySections;
 };
 
 const CREW_ROLE_LABELS: Record<string, string> = {
