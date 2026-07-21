@@ -361,6 +361,47 @@
   min-width: 0;
 }
 
+.league-hubs-grid {
+  grid-auto-rows: 1fr;
+}
+
+.overview-league-chooser-card--hub-layout {
+  min-height: 16.25rem;
+  padding: 0;
+  justify-content: space-between;
+  border-radius: 0.75rem;
+}
+
+.overview-league-chooser-card--hub-layout::before {
+  display: none;
+}
+
+.league-hub-card-ribbon {
+  background: var(
+    --chooser-rainbow,
+    linear-gradient(90deg, #06b6d4 0%, #6366f1 50%, #ec4899 100%)
+  );
+}
+
+.league-hub-card-ribbon--wnba {
+  background: linear-gradient(90deg, #f97316 0%, #f43f5e 50%, #d946ef 100%);
+}
+
+.overview-league-chooser-card--hub-layout .overview-league-chooser-metrics {
+  margin-top: 0;
+  gap: 0.5rem;
+}
+
+.overview-league-chooser-card--hub-layout .overview-league-chooser-cta {
+  margin-top: 0;
+  width: auto;
+}
+
+.overview-league-chooser--segmented .overview-league-chooser-card--hub-layout {
+  min-height: 16.25rem;
+  padding: 0;
+}
+
 .overview-league-chooser-metric {
   display: flex;
   align-items: baseline;
