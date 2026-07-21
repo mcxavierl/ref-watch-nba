@@ -5,8 +5,6 @@ import { Users } from "lucide-react";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
-import { EvidenceTeaser } from "@/components/evidence/EvidenceTeaser";
-import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
 import {
   hasUpcomingCardAssignedCrew,
   upcomingCardInsightFallback,
@@ -45,8 +43,7 @@ export function UpcomingGameCard({
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
   const crewAssigned = hasUpcomingCardAssignedCrew(game);
-  const projectionEvidence =
-    crewAssigned && game.preview ? buildProjectionEvidence(game.preview) : null;
+  const refInsights = game.upcomingCardRefInsights ?? [];
   const crewLabel = upcomingCardCrewLabel(game);
   const showCrewCount = game.crewCount > 1 && Boolean(game.headRef) && game.status !== "scheduled";
 
@@ -119,8 +116,12 @@ export function UpcomingGameCard({
         </div>
 
         <div className="upcoming-game-card__context-slot">
-          {projectionEvidence ? (
-            <EvidenceTeaser evidence={projectionEvidence} compact />
+          {refInsights.length > 0 ? (
+            refInsights.map((line) => (
+              <p key={line} className="upcoming-game-card__hero-insight">
+                {line}
+              </p>
+            ))
           ) : (
             <p className="upcoming-game-card__hero-fallback">
               {upcomingCardInsightFallback(game)}

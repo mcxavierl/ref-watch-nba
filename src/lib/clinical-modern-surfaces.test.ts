@@ -169,8 +169,8 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(section, /upcoming-games-grid/);
     assert.doesNotMatch(section, /overview-slate-notes/);
     assert.doesNotMatch(section, /overview-slate-updated/);
-    assert.match(card, /buildProjectionEvidence/);
-    assert.match(card, /EvidenceTeaser/);
+    assert.match(card, /upcomingCardRefInsights/);
+    assert.match(card, /upcoming-game-card__hero-insight/);
     assert.match(card, /upcoming-game-card__hero-fallback/);
     assert.match(card, /upcoming-game-card__context-slot/);
     assert.match(card, /upcoming-game-card__footer/);
@@ -185,8 +185,8 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(css, /upcoming-game-card__hero-fallback/);
     assert.match(css, /upcoming-game-card__context-slot/);
     assert.match(css, /upcoming-game-card__footer/);
-    assert.match(css, /upcoming-game-card[\s\S]*min-height: 13\.75rem/);
-    assert.match(css, /upcoming-game-card[\s\S]*height: 13\.75rem/);
+    assert.match(css, /\.upcoming-game-card \{[\s\S]*min-height: 13\.75rem/);
+    assert.doesNotMatch(css, /\.upcoming-game-card \{[\s\S]*\n  height: 13\.75rem/);
     assert.match(css, /upcoming-game-card__footer[\s\S]*margin-top: auto/);
     assert.match(css, /upcoming-game-card__crew-meta/);
     assert.doesNotMatch(css, /upcoming-game-card__insight-pill/);

@@ -247,7 +247,7 @@
   justify-content: space-between;
   gap: 0.75rem;
   min-height: 13.75rem;
-  height: 13.75rem;
+  height: auto;
   min-width: 0;
   padding: 0.8rem 0.85rem 0.9rem;
   border-radius: 0.75rem;
@@ -268,11 +268,11 @@
   --upcoming-card-border: rgb(30 41 59);
   --upcoming-card-bg: rgb(2 6 23);
   --upcoming-card-shadow: inset 0 1px 0 rgb(255 255 255 / 0.02);
-  --upcoming-cta: rgb(100 116 139);
-  --upcoming-cta-hover: rgb(148 163 184);
+  --upcoming-cta: rgb(186 198 215);
+  --upcoming-cta-hover: rgb(226 232 240);
   --upcoming-ink-strong: rgb(248 250 252);
-  --upcoming-ink-body: rgb(203 213 225);
-  --upcoming-ink-muted: rgb(100 116 139);
+  --upcoming-ink-body: rgb(226 232 240);
+  --upcoming-ink-muted: rgb(148 163 184);
   --upcoming-logo-plate-bg: var(--logo-plate);
   --upcoming-logo-plate-border: var(--logo-plate-border);
   --upcoming-logo-plate-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
@@ -340,24 +340,24 @@
 
 .upcoming-game-card__date-label {
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgb(148 163 184);
+  color: var(--upcoming-ink-body);
   white-space: nowrap;
 }
 
 .upcoming-game-card__date-label--corner {
   flex-shrink: 0;
   margin-left: auto;
-  max-width: 58%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.625rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--upcoming-ink-muted);
+  max-width: 62%;
+  overflow: visible;
+  text-overflow: clip;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  color: var(--upcoming-ink-body);
   text-align: right;
 }
 
@@ -421,9 +421,9 @@
 
 .upcoming-game-card__cta {
   flex-shrink: 0;
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--upcoming-cta);
   text-decoration: none;
@@ -502,7 +502,11 @@ html[data-contrast="high"] .upcoming-game-card__matchup {
 }
 
 html[data-contrast="high"] .upcoming-game-card__date-label {
-  color: rgb(203 213 225);
+  color: rgb(226 232 240);
+}
+
+html[data-contrast="high"] .upcoming-game-card__cta {
+  color: rgb(248 250 252);
 }
 
 .upcoming-game-card__matchup .team-logo-plate {
@@ -563,7 +567,7 @@ html[data-contrast="high"] .upcoming-game-card__date-label {
   align-items: stretch;
   justify-content: flex-start;
   flex: 0 0 auto;
-  gap: 0.2rem;
+  gap: 0.28rem;
   min-height: 1.35rem;
   margin-top: 0.45rem;
 }
@@ -573,11 +577,12 @@ html[data-contrast="high"] .upcoming-game-card__date-label {
   min-width: 0;
   font-size: 0.6875rem;
   font-weight: 500;
-  line-height: 1.35;
+  line-height: 1.45;
   letter-spacing: 0.01em;
   color: var(--upcoming-ink-body);
   text-align: center;
-  overflow: hidden;
+  overflow: visible;
+  text-wrap: pretty;
 }
 
 .upcoming-game-card__hero-fallback {
@@ -585,13 +590,12 @@ html[data-contrast="high"] .upcoming-game-card__date-label {
   min-width: 0;
   font-size: 0.6875rem;
   font-weight: 500;
-  line-height: 1.35;
+  line-height: 1.45;
   letter-spacing: 0.01em;
   color: var(--upcoming-ink-muted);
   text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  text-wrap: pretty;
 }
 
 .upcoming-game-card__footer {
@@ -700,8 +704,8 @@ html.light:not([data-contrast="high"]) .upcoming-game-card {
   --upcoming-matchup-bg-bottom: #f8fafc;
   --upcoming-matchup-glow-strength: 8%;
   --upcoming-matchup-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 10%, transparent);
-  --upcoming-cta: #64748b;
-  --upcoming-cta-hover: #334155;
+  --upcoming-cta: #334155;
+  --upcoming-cta-hover: #0f172a;
   --upcoming-ink-strong: #0f172a;
   --upcoming-ink-body: #334155;
   --upcoming-ink-muted: #64748b;
@@ -714,7 +718,7 @@ html.light:not([data-contrast="high"]) .upcoming-game-card {
 
 html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__date-label,
 html.light:not([data-contrast="high"]) .upcoming-game-card__date-label {
-  color: #64748b;
+  color: #334155;
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__league-mark .league-nav-mark,
