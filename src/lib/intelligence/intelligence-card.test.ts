@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { buildIntelligenceCardContent } from "@/lib/intelligence/build-intelligence-card";
 import { formatIntelligenceCitation } from "@/lib/intelligence/format-intelligence-citation";
+import {
+  isCitationEventAction,
+  isIntelligenceMetricType,
+} from "@/lib/intelligence/intelligence-card-types";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
   isCitationEventPayload,
@@ -71,6 +75,15 @@ describe("formatIntelligenceCitation", () => {
 });
 
 describe("citation event store", () => {
+  it("validates intelligence metric and action unions", () => {
+    assert.equal(isIntelligenceMetricType("Whistle Acceleration"), true);
+    assert.equal(isIntelligenceMetricType("Scoring Pace"), true);
+    assert.equal(isIntelligenceMetricType("Crew Baseline"), true);
+    assert.equal(isIntelligenceMetricType("Unknown Metric"), false);
+    assert.equal(isCitationEventAction("COPY_CITATION"), true);
+    assert.equal(isCitationEventAction("OTHER"), false);
+  });
+
   it("validates citation payloads", () => {
     assert.equal(
       isCitationEventPayload({
@@ -82,6 +95,15 @@ describe("citation event store", () => {
       true,
     );
     assert.equal(isCitationEventPayload({ gameId: "g1" }), false);
+    assert.equal(
+      isCitationEventPayload({
+        gameId: "g1",
+        refCrew: "Smith/Johnson",
+        metricType: "Unknown Metric",
+        action: "COPY_CITATION",
+      }),
+      false,
+    );
   });
 
   it("persists citation events to durable store", async () => {
