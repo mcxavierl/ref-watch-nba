@@ -15,7 +15,7 @@ export function RefProfileBroadcastKit({
   return (
     <ExportOnAirGraphicTrigger
       broadcastExport={broadcastExport}
-      title="Broadcaster Export"
+      title="Producer On-Air Copy"
       className={className}
     />
   );

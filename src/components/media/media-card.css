@@ -277,33 +277,58 @@
     linear-gradient(180deg, color-mix(in srgb, var(--b2b-gold) 5%, var(--surface)), var(--surface));
 }
 
-.broadcaster-export-panel-header {
+.producer-copy-quick-action {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-start;
 }
 
-.broadcaster-export-panel-title {
+.producer-copy-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.producer-copy-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 92%, var(--foreground) 8%);
+}
+
+.producer-copy-section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.producer-copy-section-title {
   margin: 0;
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 700;
   color: var(--foreground);
 }
 
-.broadcaster-export-panel-lead {
-  margin: 4px 0 0;
-  font-size: var(--text-sm);
-  color: var(--muted);
-  line-height: var(--leading-snug);
-  max-width: 42rem;
+.producer-copy-section-button {
+  flex-shrink: 0;
 }
 
-.broadcaster-export-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.producer-copy-block {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  background: var(--surface);
+  color: var(--foreground);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .broadcaster-export-status {
@@ -312,26 +337,22 @@
   color: var(--muted);
 }
 
-.broadcaster-export-status--success {
-  color: var(--state-stable);
-}
-
 .broadcaster-export-status--error {
   color: var(--state-risk);
-}
-
-.broadcaster-export-offscreen {
-  position: fixed;
-  left: -10000px;
-  top: 0;
-  pointer-events: none;
-  opacity: 0;
 }
 
 .media-card-modal {
   width: min(960px, 96vw);
   max-height: min(92vh, 920px);
   overflow: auto;
+}
+
+.media-card-modal-subtitle {
+  margin: 6px 0 0;
+  max-width: 42rem;
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--muted);
 }
 
 .media-card-modal-body {

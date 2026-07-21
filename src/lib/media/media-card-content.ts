@@ -3,7 +3,6 @@ import type { EvidenceDriver, EvidenceImpact, ProjectionEvidencePayload } from "
 import { resolveOfficialProfile } from "@/lib/analytics/resolve-official-profile";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import type { LeagueId } from "@/lib/leagues";
-import { broadcastGraphicFilename } from "@/lib/media/export-broadcast-graphic";
 import {
   MEDIA_CARD_HEIGHT,
   MEDIA_CARD_WIDTH,
@@ -11,7 +10,7 @@ import {
   type MediaCardContent,
   type MediaCardRefProfile,
 } from "@/lib/media/media-card-types";
-import { buildOnAirCopyFromContent } from "@/lib/media/on-air-copy";
+import { buildProducerCopyFromContent } from "@/lib/media/on-air-copy";
 import { slateTeamLogoSport } from "@/lib/slate-team-display";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import type { RefProfile, RefStatsFile } from "@/lib/types";
@@ -304,12 +303,7 @@ export function buildGameSlateBroadcastExport(
   const content = buildMediaCardContent(preview, evidence);
   return {
     content,
-    teleprompterCopy: buildOnAirCopyFromContent(
-      content,
-      formatCrewLabel(preview),
-      "storyline",
-    ),
-    exportFilename: broadcastGraphicFilename(content.matchupBadge),
+    producerCopy: buildProducerCopyFromContent(content, formatCrewLabel(preview)),
   };
 }
 
@@ -322,7 +316,6 @@ export function buildRefBroadcastExport(
   const content = buildRefMediaCardContent(leagueId, profile, stats, qualified);
   return {
     content,
-    teleprompterCopy: buildOnAirCopyFromContent(content, profile.name, "storyline"),
-    exportFilename: `ref-watch-${profile.slug}.png`,
+    producerCopy: buildProducerCopyFromContent(content, profile.name),
   };
 }
