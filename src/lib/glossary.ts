@@ -40,7 +40,10 @@ export type GlossaryId =
   | "leverage-sensitivity"
   | "consistency-score"
   | "archetype"
-  | "whistle-drift";
+  | "whistle-drift"
+  | "momentum-killer-score"
+  | "run-stoppage-rate"
+  | "star-deference";
 
 export interface GlossaryEntry {
   /** Visible label when none passed as children. */
@@ -217,5 +220,17 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   "whistle-drift": {
     label: "Whistle Drift",
     text: "Measures how much an official's foul frequency changes in the 2nd half compared to the 1st half. Negative drift means fewer whistles late; positive drift means they tighten up.",
+  },
+  "momentum-killer-score": {
+    label: "Momentum Killer Score",
+    text: "0-100 index of how often this official's crew ends opponent scoring runs with a non-mandatory whistle. 50 is league average. Higher scores flag refs who halt runs with subjective fouls, technicals, reviews, or admin stoppages. Requires play-by-play scoring timelines.",
+  },
+  "run-stoppage-rate": {
+    label: "Run Stoppage Rate",
+    text: "Share of qualifying opponent scoring runs (8+ unanswered or 10-2 inside three minutes) that ended directly after a non-mandatory crew stoppage. Mandatory shooting fouls are excluded.",
+  },
+  "star-deference": {
+    label: "Star Deference",
+    text: "Measures whether this official awards high-usage stars fouls at a higher rate than their seasonal baseline. Positive values mean stars draw more free throws or fouls per game under this ref than their league-wide average across all officials.",
   },
 };

@@ -116,6 +116,53 @@ export interface NflPenaltyEvent {
   leverageScore: number;
 }
 
+/** Single scoring event on a play-by-play timeline (basketball-first). */
+export interface ScoringPlayEvent {
+  team: string;
+  points: number;
+  /** Seconds elapsed from tip-off / period start aggregate. */
+  gameSecondsElapsed: number;
+  period?: number;
+}
+
+export type CrewStoppageKind =
+  | "subjective-foul"
+  | "administrative"
+  | "technical"
+  | "video-review"
+  | "mandatory-foul";
+
+/** Crew-initiated clock stoppage on the play-by-play timeline. */
+export interface CrewStoppageEvent {
+  kind: CrewStoppageKind;
+  /** Team assessed the foul or otherwise stopped (often the running team). */
+  team: string;
+  gameSecondsElapsed: number;
+  period?: number;
+  /** Mandatory whistles (e.g. shooting fouls) are excluded from run-interruption tallies. */
+  mandatory?: boolean;
+}
+
+/** Detected opponent scoring run with optional crew interruption metadata. */
+export interface ScoringRunEvent {
+  runId: string;
+  runningTeam: string;
+  defendingTeam: string;
+  startSeconds: number;
+  endSeconds: number;
+  runningPoints: number;
+  opposingPoints: number;
+  endedByCrewStoppage: boolean;
+  stoppageKind?: CrewStoppageKind;
+}
+
+export type MomentumKillerLabel =
+  | "high-run-interrupter"
+  | "elevated-run-interrupter"
+  | "neutral-flow"
+  | "flow-enabler"
+  | "high-flow-enabler";
+
 /** NHL-only referee analytics (minors, OT, penalty balance). */
 export interface NhlRefAnalytics {
   avgMinorsPerGame: number;
@@ -353,6 +400,28 @@ export interface OfficialStats {
   tactical_event_backed_games?: number;
   intentional_foul_noise_filtered?: boolean;
   leverage_method_note?: string;
+  /** Share of opponent scoring runs ending on a non-mandatory crew stoppage (0-1). */
+  run_stoppage_rate?: number | null;
+  /** League-normalized run interruption tendency (0-100; 50 = league average). */
+  momentum_killer_score?: number | null;
+  momentum_killer_label?: MomentumKillerLabel | null;
+  /** Games with play-level scoring timelines backing run detection. */
+  scoring_run_backed_games?: number;
+  opponent_scoring_runs?: number;
+  run_interruptions?: number;
+  momentum_method_note?: string;
+}
+
+/** Player-level whistle bias toward high-usage stars vs rotation players. */
+export interface StarTreatmentAnalytics {
+  star_deference_index: number | null;
+  star_deference_display: string | null;
+  star_drawn_rate_delta: number | null;
+  rotation_foul_rate_delta: number | null;
+  star_player_observations: number;
+  star_sample_games: number;
+  star_unique_players: number;
+  method_note: string;
 }
 
 /** Season-scoped elite metrics from analytics backfill (2021-2026 window). */
@@ -408,6 +477,8 @@ export interface RefProfile {
   nflAnalytics?: NflRefAnalytics;
   cfbAnalytics?: CfbRefAnalytics;
   eplAnalytics?: EplRefAnalytics;
+  /** Star-player whistle deference vs league baselines when personnel data is available. */
+  starTreatmentAnalytics?: StarTreatmentAnalytics;
   /** Ref-Intelligence archetype persona recalculated from game-log foul taxonomy. */
   officialStats?: OfficialStats;
   /** Era-specific elite metrics keyed by season label (e.g. 2023-24). */

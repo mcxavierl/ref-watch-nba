@@ -7,6 +7,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { filterGamesForMatrixGeneration } from "./lib/matrix-record-schema";
 import { attachRefArchetypesFromGames } from "../lib/attach-ref-archetypes";
+import { attachStarDeferenceFromGames } from "../lib/attach-star-deference";
 import { loadGameLogs } from "../lib/game-logs";
 import { refSlug } from "../lib/slug";
 import type { LeagueId } from "../../src/lib/leagues";
@@ -114,7 +115,8 @@ export function generateMatrixDataForLeague(
 
   const stats = JSON.parse(fs.readFileSync(statsPath, "utf8")) as RefStatsFile;
   const withFoulAggregates = refreshAggregateFoulStats(stats.refs, validatedGames, leagueId);
-  const updatedRefs = attachRefArchetypesFromGames(withFoulAggregates, validatedGames, leagueId);
+  const withArchetypes = attachRefArchetypesFromGames(withFoulAggregates, validatedGames, leagueId);
+  const updatedRefs = attachStarDeferenceFromGames(withArchetypes, validatedGames, leagueId);
   const tagged = updatedRefs.filter((ref) => ref.officialStats !== undefined).length;
 
   const nextStats: RefStatsFile = {

@@ -5,6 +5,7 @@ import {
   RefProfileBadgePill,
   RefProfileBadgeRow,
 } from "@/components/ref-profile/RefProfileBadgeRow";
+import { MOMENTUM_KILLER_LABELS } from "@/lib/analytics/momentum-killer-score";
 import { consistencyStateClass } from "@/constants/colors";
 import type { OfficialStats } from "@/lib/types";
 import "./archetype-card.css";
@@ -58,6 +59,25 @@ export function ArchetypeCard({
           ) : null}
           {officialStats.pressure_sensitive ? (
             <RefProfileBadgePill tone="caution">Pressure-sensitive</RefProfileBadgePill>
+          ) : null}
+          {officialStats.momentum_killer_label ? (
+            <GlossaryMetricLabel id="momentum-killer-score">
+              <RefProfileBadgePill
+                tone={
+                  officialStats.momentum_killer_score !== null &&
+                  officialStats.momentum_killer_score !== undefined &&
+                  officialStats.momentum_killer_score >= 60
+                    ? "negative"
+                    : officialStats.momentum_killer_score !== null &&
+                        officialStats.momentum_killer_score !== undefined &&
+                        officialStats.momentum_killer_score <= 40
+                      ? "positive"
+                      : "neutral"
+                }
+              >
+                {MOMENTUM_KILLER_LABELS[officialStats.momentum_killer_label]}
+              </RefProfileBadgePill>
+            </GlossaryMetricLabel>
           ) : null}
         </RefProfileBadgeRow>
       </div>

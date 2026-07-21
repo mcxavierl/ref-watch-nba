@@ -43,6 +43,20 @@ function isGatedCollegePath(pathname: string): boolean {
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  if (pathname.startsWith("/api/v1/")) {
+    const hasApiKey =
+      Boolean(request.headers.get("x-api-key")?.trim()) ||
+      request.headers.get("authorization")?.toLowerCase().startsWith("bearer ");
+    if (!hasApiKey) {
+      return NextResponse.json(
+        {
+          error: "Missing API key. Provide x-api-key or Authorization: Bearer.",
+        },
+        { status: 401 },
+      );
+    }
+  }
+
   if (pathname === "/overview" || pathname === "/overview/") {
     const url = request.nextUrl.clone();
     url.pathname = SITE_HOME_PATH;

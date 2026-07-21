@@ -17,6 +17,9 @@ export type SeedStar = {
   season: string;
   usageRank: number;
   seasonAvgFoulsDrawn?: number;
+  usageRate?: number;
+  allStar?: boolean;
+  allNba?: boolean;
 };
 
 function coachIdFromName(name: string): string {

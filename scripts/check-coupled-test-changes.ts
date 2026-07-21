@@ -55,6 +55,22 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
     ],
     tests: ["src/lib/homepage-insight-gates.test.ts"],
   },
+  {
+    label: "integrity monitor pipeline",
+    sources: [
+      "src/lib/services/anomalyMonitor.ts",
+      "src/lib/services/run-anomaly-monitor.ts",
+      "src/lib/services/integrityMonitor.ts",
+      "src/lib/services/webhookDispatch.ts",
+      "src/lib/services/webhookQueue.ts",
+      "scripts/morning-slate.ts",
+      "scripts/nightly-slate.ts",
+    ],
+    tests: [
+      "src/lib/services/anomaly-monitor.test.ts",
+      "scripts/audit-integrity-monitor.test.ts",
+    ],
+  },
 ];
 
 function gitLines(args: string): string[] {

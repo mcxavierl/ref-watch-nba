@@ -97,6 +97,9 @@ jobs:
       - name: Overlay portal audit
         run: npm run audit:overlay-portals
 
+      - name: Integrity monitor audit
+        run: npm run audit:integrity-monitor
+
       - name: Unit tests
         run: npm run test
 
