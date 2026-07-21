@@ -17,6 +17,7 @@ describe("design audit guardrails", () => {
   it("homepage intelligence hero leads with briefing and proof bar hierarchy", () => {
     const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
     const banner = readSrc("src/components/dashboard/IntelligenceHero.tsx");
+    const proofBar = readSrc("src/components/GoldMineProofBar.tsx");
     const dashboard = readSrc("src/components/OverviewDashboard.tsx");
     const page = readSrc("src/app/page.tsx");
     assert.match(hero, /IntelligenceHero/);
@@ -24,9 +25,10 @@ describe("design audit guardrails", () => {
     assert.match(banner, /OFFICIATING DECISION INTELLIGENCE/);
     assert.match(banner, /Today.*Intelligence/);
     assert.match(banner, /statistical anomaly/i);
-    assert.match(banner, /Platform proof metrics/);
+    assert.match(banner, /intelligence-hero-heading/);
+    assert.match(proofBar, /Platform proof metrics/);
     assert.match(page, /OverviewIntelligenceHero/);
-    assert.doesNotMatch(dashboard, /GoldMineProofBar/);
+    assert.match(dashboard, /GoldMineProofBar/);
     assert.match(dashboard, /OverviewFeaturedSignal/);
     assert.match(dashboard, /OverviewUpcomingSlateSection/);
     assert.match(dashboard, /OverviewIntelligenceFeed/);

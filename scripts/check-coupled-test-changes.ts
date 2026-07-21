@@ -85,6 +85,12 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
     tests: ["src/lib/media/export-broadcast-graphic.test.ts"],
   },
   {
+    label: "theme matrix contrast math",
+    sources: ["scripts/lib/contrast-math.ts", "scripts/lib/theme-matrix-browser.ts"],
+    tests: ["scripts/lib/contrast-math.test.ts"],
+  },
+  {
+    label: "enterprise API middleware",
     sources: [
       "src/lib/auth/enterprise-api-middleware.ts",
       "src/lib/api/v1/rate-limit.ts",
