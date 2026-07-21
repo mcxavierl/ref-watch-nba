@@ -38,24 +38,24 @@ export const THEME_MATRIX_PAGES: ThemeMatrixPage[] = [
     screenshotSelector: ".overview-shell--clinical",
     probes: [
       {
-        selector: ".overview-shell--clinical .overview-title",
-        name: "homepage hero title",
+        selector: ".todays-biggest-edge-matchup",
+        name: "homepage hero matchup",
       },
       {
         selector: ".overview-section-lead",
         name: "homepage section lead",
       },
       {
-        selector: ".overview-league-chooser-label",
-        name: "league chooser label",
+        selector: ".dataset-moat-metric-label",
+        name: "dataset moat metric label",
       },
       {
-        selector: ".overview-catalog-name",
-        name: "catalog league name",
+        selector: ".dataset-moat-metric-value",
+        name: "dataset moat metric value",
       },
       {
-        selector: ".upcoming-game-card__team-name",
-        name: "upcoming card team name",
+        selector: ".upcoming-game-card__team-abbr",
+        name: "upcoming card team abbr",
         optional: true,
       },
       {

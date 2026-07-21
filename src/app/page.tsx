@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { HomeHeroPreload } from "@/components/HomeHeroPreload";
 import { JsonLd } from "@/components/JsonLd";
 import { OverviewDashboard } from "@/components/OverviewDashboard";
-import { OverviewHero } from "@/components/OverviewHero";
-import { OverviewSecondaryTabs } from "@/components/OverviewSecondaryTabs";
 import { PageContentFadeIn } from "@/components/PageContentFadeIn";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
 import { buildPageMetadata, homepageWebPageJsonLd } from "@/lib/seo";
@@ -34,11 +32,7 @@ export default function HomePage() {
       <HomeHeroPreload />
       <PageContentFadeIn>
         <div className="page-shell overview-shell overview-shell--clinical">
-          <OverviewDashboard
-            data={data}
-            hero={<OverviewHero />}
-            exploreTabs={<OverviewSecondaryTabs data={data} />}
-          />
+          <OverviewDashboard data={data} />
         </div>
       </PageContentFadeIn>
     </>
