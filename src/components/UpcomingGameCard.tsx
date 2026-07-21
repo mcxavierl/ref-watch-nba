@@ -14,9 +14,10 @@ import {
   resolveSlateTeam,
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
+import { SlateScoreboard } from "@/components/SlateScoreboard";
 
 function upcomingCardCrewLabel(game: OverviewSlateEntry): string | undefined {
-  if (game.crewCount === 0 || game.status === "scheduled") {
+  if (game.crewCount === 0) {
     if (game.officialsLine && /TBD|not assigned/i.test(game.officialsLine)) {
       return game.officialsLine;
     }
@@ -43,9 +44,11 @@ export function UpcomingGameCard({
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
   const crewAssigned = hasUpcomingCardAssignedCrew(game);
+  const showScore = game.gamePhase === "live" || game.gamePhase === "final";
+  const showDateLabel = !showScore && Boolean(dateTimeLabel);
   const refInsights = game.upcomingCardRefInsights ?? [];
   const crewLabel = upcomingCardCrewLabel(game);
-  const showCrewCount = game.crewCount > 1 && Boolean(game.headRef) && game.status !== "scheduled";
+  const showCrewCount = game.crewCount > 1 && Boolean(game.headRef);
 
   const handleActivate = () => {
     onOpenPreview?.();
@@ -85,13 +88,15 @@ export function UpcomingGameCard({
         <span className="upcoming-game-card__league-mark" aria-hidden>
           <LeagueNavMark league={game.leagueId} active={false} />
         </span>
-        {dateTimeLabel ? (
+        {showDateLabel ? (
           <time
             className="upcoming-game-card__date-label upcoming-game-card__date-label--corner"
             dateTime={game.slateStartAt ?? game.slateDate}
           >
             {dateTimeLabel}
           </time>
+        ) : showScore ? (
+          <SlateScoreboard game={game} className="upcoming-game-card__scoreboard" compact />
         ) : (
           <span className="upcoming-game-card__header-spacer" aria-hidden />
         )}
@@ -105,6 +110,11 @@ export function UpcomingGameCard({
           <div className="upcoming-game-card__team">
             <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
             <span className="upcoming-game-card__team-abbr">{awayTeam.abbr}</span>
+            {showScore ? (
+              <span className="upcoming-game-card__team-score">
+                {game.awayScore ?? 0}
+              </span>
+            ) : null}
           </div>
           <span className="upcoming-game-card__at" aria-hidden>
             @
@@ -112,6 +122,11 @@ export function UpcomingGameCard({
           <div className="upcoming-game-card__team">
             <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="xl" />
             <span className="upcoming-game-card__team-abbr">{homeTeam.abbr}</span>
+            {showScore ? (
+              <span className="upcoming-game-card__team-score">
+                {game.homeScore ?? 0}
+              </span>
+            ) : null}
           </div>
         </div>
 

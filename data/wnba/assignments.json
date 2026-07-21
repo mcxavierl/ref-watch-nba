@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-20T19:42:08.349Z",
+  "lastUpdated": "2026-07-21T03:26:35.021Z",
   "date": "2026-07-20",
   "source": "official.nba.com",
   "games": [
@@ -11,6 +11,11 @@
       "league": "WNBA",
       "slateDate": "2026-07-20",
       "slateStartAt": "2026-07-21T00:00Z",
+      "gameStatus": "STATUS_FINAL",
+      "awayScore": 109,
+      "homeScore": 83,
+      "gameClock": "Final",
+      "gamePeriod": "Q4",
       "crew": [
         {
           "name": "Timothy Greene",
@@ -37,6 +42,11 @@
       "league": "WNBA",
       "slateDate": "2026-07-20",
       "slateStartAt": "2026-07-21T00:00Z",
+      "gameStatus": "STATUS_FINAL",
+      "awayScore": 99,
+      "homeScore": 98,
+      "gameClock": "Final",
+      "gamePeriod": "OT1",
       "crew": [
         {
           "name": "Isaac Barnett",
@@ -63,6 +73,11 @@
       "league": "WNBA",
       "slateDate": "2026-07-20",
       "slateStartAt": "2026-07-21T02:00Z",
+      "gameStatus": "STATUS_IN_PROGRESS",
+      "awayScore": 54,
+      "homeScore": 56,
+      "gameClock": "Q3 42.0",
+      "gamePeriod": "Q3",
       "crew": [
         {
           "name": "Roy Gulbeyan",
@@ -89,6 +104,11 @@
       "league": "WNBA",
       "slateDate": "2026-07-20",
       "slateStartAt": "2026-07-21T02:00Z",
+      "gameStatus": "STATUS_IN_PROGRESS",
+      "awayScore": 67,
+      "homeScore": 68,
+      "gameClock": "Q3 4:31",
+      "gamePeriod": "Q3",
       "crew": [
         {
           "name": "Amy Bonner",
@@ -115,6 +135,10 @@
       "league": "WNBA",
       "slateDate": "2026-07-22",
       "slateStartAt": "2026-07-22T19:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
       "crew": []
     },
     {
@@ -125,6 +149,10 @@
       "league": "WNBA",
       "slateDate": "2026-07-22",
       "slateStartAt": "2026-07-22T19:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
       "crew": [
         {
           "name": "Amy Bonner",
@@ -151,6 +179,10 @@
       "league": "WNBA",
       "slateDate": "2026-07-22",
       "slateStartAt": "2026-07-22T23:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
       "crew": []
     },
     {
@@ -161,6 +193,10 @@
       "league": "WNBA",
       "slateDate": "2026-07-22",
       "slateStartAt": "2026-07-22T23:30Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
       "crew": []
     },
     {
@@ -171,6 +207,10 @@
       "league": "WNBA",
       "slateDate": "2026-07-22",
       "slateStartAt": "2026-07-23T00:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
       "crew": []
     },
     {
@@ -181,6 +221,10 @@
       "league": "WNBA",
       "slateDate": "2026-07-22",
       "slateStartAt": "2026-07-23T02:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
       "crew": []
     }
   ],

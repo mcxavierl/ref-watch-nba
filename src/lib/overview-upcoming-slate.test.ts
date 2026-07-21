@@ -245,6 +245,60 @@ describe("overview-upcoming-slate", () => {
     assert.equal(game?.matchup, "LVA @ TOR");
   });
 
+  it("marks in-progress games live and carries scores from assignments", () => {
+    const file: AssignmentsFile = {
+      lastUpdated: "2026-07-21T00:00:00.000Z",
+      date: "2026-07-20",
+      source: "espn",
+      games: [
+        {
+          id: "401857084",
+          matchup: "WAS @ GSV",
+          awayTeam: "WAS",
+          homeTeam: "GSV",
+          league: "WNBA",
+          slateDate: "2026-07-20",
+          gameStatus: "STATUS_IN_PROGRESS",
+          awayScore: 54,
+          homeScore: 52,
+          gameClock: "Q3 5:42",
+          crew: [
+            { name: "Roy Gulbeyan", number: 42, role: "crew_chief" },
+          ],
+        },
+        {
+          id: "401857083",
+          matchup: "LVA @ TOR",
+          awayTeam: "LVA",
+          homeTeam: "TOR",
+          league: "WNBA",
+          slateDate: "2026-07-20",
+          gameStatus: "STATUS_FINAL",
+          awayScore: 109,
+          homeScore: 83,
+          gameClock: "Final",
+          crew: [
+            { name: "Timothy Greene", number: 9, role: "crew_chief" },
+          ],
+        },
+      ],
+    };
+
+    const slate = buildLeagueUpcomingSlateFromAssignments("wnba", file);
+    const liveGame = slate.leagueGroup?.games.find((game) => game.gameId === "401857084");
+    const finalGame = slate.leagueGroup?.games.find((game) => game.gameId === "401857083");
+
+    assert.equal(liveGame?.status, "live");
+    assert.equal(liveGame?.gamePhase, "live");
+    assert.equal(liveGame?.awayScore, 54);
+    assert.equal(liveGame?.homeScore, 52);
+    assert.equal(liveGame?.gameClock, "Q3 5:42");
+    assert.equal(finalGame?.status, "final");
+    assert.equal(finalGame?.gamePhase, "final");
+    assert.equal(finalGame?.awayScore, 109);
+    assert.equal(finalGame?.homeScore, 83);
+  });
+
   it("uses refs-not-assigned copy for WNBA scheduled games", () => {
     const file: AssignmentsFile = {
       lastUpdated: "2026-07-20T00:00:00.000Z",

@@ -26,6 +26,10 @@ export interface WnbaScoreboardEvent {
   status: string;
   awayAbbr: string;
   homeAbbr: string;
+  awayScore?: number;
+  homeScore?: number;
+  gameClock?: string;
+  gamePeriod?: string;
 }
 
 export async function fetchWnbaScoreboard(
@@ -41,10 +45,20 @@ export async function fetchWnbaScoreboard(
     events?: {
       id: string;
       date: string;
-      status?: { type?: { name?: string } };
+      status?: {
+        type?: { name?: string };
+        displayClock?: string;
+        period?: number;
+      };
       competitions?: {
+        status?: {
+          type?: { name?: string };
+          displayClock?: string;
+          period?: number;
+        };
         competitors?: {
           homeAway: string;
+          score?: string;
           team?: { abbreviation?: string };
         }[];
       }[];
@@ -57,19 +71,48 @@ export async function fetchWnbaScoreboard(
     if (!comp) continue;
     let awayAbbr = "";
     let homeAbbr = "";
+    let awayScore: number | undefined;
+    let homeScore: number | undefined;
     for (const team of comp.competitors ?? []) {
       const abbr = (team.team?.abbreviation ?? "").toUpperCase();
-      if (team.homeAway === "home") homeAbbr = abbr;
-      else awayAbbr = abbr;
+      const score = team.score ? Number.parseInt(team.score, 10) : undefined;
+      if (team.homeAway === "home") {
+        homeAbbr = abbr;
+        homeScore = score;
+      } else {
+        awayAbbr = abbr;
+        awayScore = score;
+      }
     }
     if (!awayAbbr || !homeAbbr) continue;
+    const status =
+      comp.status?.type?.name ?? event.status?.type?.name ?? "";
+    const period = comp.status?.period ?? event.status?.period;
+    const gamePeriod = period
+      ? period <= 4
+        ? `Q${period}`
+        : `OT${period - 4}`
+      : undefined;
+    const displayClock = comp.status?.displayClock ?? event.status?.displayClock;
+    const gameClock =
+      status === "STATUS_FINAL"
+        ? "Final"
+        : status === "STATUS_HALFTIME"
+          ? "Halftime"
+          : displayClock && gamePeriod
+            ? `${gamePeriod} ${displayClock}`
+            : displayClock ?? gamePeriod;
     events.push({
       id: event.id,
       date: (event.date ?? "").slice(0, 10),
       startsAt: event.date || undefined,
-      status: event.status?.type?.name ?? "",
+      status,
       awayAbbr,
       homeAbbr,
+      awayScore,
+      homeScore,
+      gameClock,
+      gamePeriod,
     });
   }
   return events;

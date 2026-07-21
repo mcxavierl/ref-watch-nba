@@ -1,8 +1,9 @@
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
+import type { SlateGamePhase } from "@/lib/slate-game-phase";
 
-export type OverviewSlateStatus = "live" | "scheduled";
+export type OverviewSlateStatus = "live" | "scheduled" | "final";
 
 export type OverviewSlateEntry = {
   leagueId: LeagueId;
@@ -16,6 +17,12 @@ export type OverviewSlateEntry = {
   headRef?: string;
   crewCount: number;
   status: OverviewSlateStatus;
+  gamePhase?: SlateGamePhase;
+  awayScore?: number;
+  homeScore?: number;
+  gameStatus?: string;
+  gameClock?: string;
+  gamePeriod?: string;
   slateDate?: string;
   slateStartAt?: string;
   matchupInsight?: string;
@@ -84,12 +91,18 @@ function slateChronologyMs(entry: OverviewSlateEntry): number {
   return Number.MAX_SAFE_INTEGER;
 }
 
+function slateStatusRank(status: OverviewSlateStatus): number {
+  if (status === "live") return 0;
+  if (status === "scheduled") return 1;
+  return 2;
+}
+
 /** Live first, then soonest start time, then matchup label. */
 export function compareSlateChronology(
   a: OverviewSlateEntry,
   b: OverviewSlateEntry,
 ): number {
-  const liveDelta = (a.status === "live" ? 0 : 1) - (b.status === "live" ? 0 : 1);
+  const liveDelta = slateStatusRank(a.status) - slateStatusRank(b.status);
   if (liveDelta !== 0) return liveDelta;
   const timeDelta = slateChronologyMs(a) - slateChronologyMs(b);
   if (timeDelta !== 0) return timeDelta;
@@ -121,8 +134,12 @@ export function groupOverviewSlateByLeague(games: OverviewSlateEntry[]): Overvie
     .sort(([a], [b]) => (order.get(a) ?? 0) - (order.get(b) ?? 0))
     .map(([leagueId, leagueGames]) => {
       const league = LEAGUES[leagueId];
-      const liveCount = leagueGames.filter((game) => game.status === "live").length;
-      const scheduledCount = leagueGames.filter((game) => game.status === "scheduled").length;
+      const liveCount = leagueGames.filter(
+        (game) => game.status === "live" || game.gamePhase === "live",
+      ).length;
+      const scheduledCount = leagueGames.filter(
+        (game) => game.status === "scheduled" && game.gamePhase !== "live",
+      ).length;
       const sortedGames = sortSlateChronology(leagueGames);
 
       return {

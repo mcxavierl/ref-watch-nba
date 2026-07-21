@@ -10,6 +10,7 @@ import {
   resolveSlateTeam,
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
+import { SlateScoreboard } from "@/components/SlateScoreboard";
 
 function slateRowContextLines(game: OverviewSlateEntry): {
   primary?: string;
@@ -48,6 +49,7 @@ export function OverviewSlateRow({
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
+  const showScore = game.gamePhase === "live" || game.gamePhase === "final";
   const { primary: contextLine, secondary: secondaryContext, teamContext } =
     slateRowContextLines(game);
 
@@ -96,6 +98,7 @@ export function OverviewSlateRow({
             {awayTeam.abbr} @ {homeTeam.abbr}
           </span>
         </span>
+        {showScore ? <SlateScoreboard game={game} className="overview-slate-row-scoreboard" /> : null}
         {game.seasonStageNote ? (
           <span className="overview-slate-row-season-stage">{game.seasonStageNote}</span>
         ) : null}
@@ -116,7 +119,7 @@ export function OverviewSlateRow({
           />
         ) : null}
       </div>
-        {game.status === "scheduled" && dateTimeLabel ? (
+        {game.status === "scheduled" && !showScore && dateTimeLabel ? (
           <span className="overview-slate-date">{dateTimeLabel}</span>
         ) : null}
         {showHubLink ? (
@@ -133,7 +136,7 @@ export function OverviewSlateRow({
         <p className="overview-slate-insight">{game.matchupInsight}</p>
       ) : null}
       <p className="overview-slate-crew">
-        {game.status === "scheduled" ? (
+        {game.crewCount === 0 ? (
           "Crews TBD"
         ) : game.headRef ? (
           <>

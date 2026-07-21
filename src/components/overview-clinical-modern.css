@@ -797,3 +797,72 @@ html.dark .overview-shell--clinical .overview-hero-minimal-bridge {
 .section-block--compact .overview-slate-updated {
   margin-top: 0.5rem;
 }
+
+.slate-scoreboard {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.slate-scoreboard--compact {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.slate-scoreboard__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--live-league-date-ink);
+  background: var(--live-league-date-bg);
+  border: 1px solid var(--live-league-date-border);
+}
+
+.slate-scoreboard__badge--final {
+  color: var(--upcoming-ink-muted);
+  background: color-mix(in srgb, var(--upcoming-ink-muted) 12%, transparent);
+  border-color: color-mix(in srgb, var(--upcoming-ink-muted) 28%, transparent);
+}
+
+.slate-scoreboard__score {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--upcoming-ink-strong);
+}
+
+.slate-scoreboard__dash {
+  color: var(--upcoming-ink-muted);
+  font-weight: 600;
+}
+
+.slate-scoreboard__clock {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--upcoming-ink-muted);
+  white-space: nowrap;
+}
+
+.upcoming-game-card__scoreboard {
+  flex-shrink: 0;
+  max-width: 72%;
+}
+
+.upcoming-game-card__team-score {
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--upcoming-ink-strong);
+  line-height: 1;
+}
+
+.overview-slate-row-scoreboard {
+  margin-top: 0.2rem;
+}

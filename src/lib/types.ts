@@ -29,6 +29,12 @@ export interface AssignmentGame {
   slateStartAt?: string;
   /** Pre-season or exhibition/friendly; omitted for regular-season games. */
   seasonStage?: "preseason" | "exhibition";
+  /** ESPN status.type.name when sourced from a scoreboard feed. */
+  gameStatus?: string;
+  awayScore?: number;
+  homeScore?: number;
+  gameClock?: string;
+  gamePeriod?: string;
 }
 
 export interface AssignmentsFile {
