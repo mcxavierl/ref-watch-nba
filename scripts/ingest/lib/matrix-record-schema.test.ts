@@ -35,11 +35,17 @@ describe("matrix-record-schema", () => {
     assert.equal(result.valid.length, 1);
     assert.equal(result.valid[0]?.category, "game-officiating");
     assert.equal(result.valid[0]?.officialId, "scott-foster-48");
+    assert.ok(result.valid[0]?.crewId?.includes("scott-foster-48"));
   });
 
   it("rejects records missing required fields", () => {
     const result = validateMatrixRecords([
-      { category: "", officialId: "ref-1", gameTimestamp: "2026-01-15T00:00:00.000Z" },
+      {
+        category: "",
+        officialId: "ref-1",
+        crewId: "ref-1",
+        gameTimestamp: "2026-01-15T00:00:00.000Z",
+      },
     ]);
     assert.equal(result.valid.length, 0);
     assert.equal(result.invalid.length, 1);
