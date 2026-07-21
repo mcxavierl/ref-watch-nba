@@ -8,6 +8,7 @@
  * Usage:
  *   npm run audit:links
  *   npm run audit:links -- --live
+ *   npm run audit:links -- --logos
  *   npm run audit:links -- --live --origin=https://refwatch.ca
  */
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
@@ -66,9 +67,9 @@ import {
 import { computeRefTeamMatrix } from "@/lib/ref-team-matrix-compute";
 import { getAllResearchFindingIds, getResearchFindingById } from "@/lib/research";
 import {
+  appRouteModuleCandidates,
   canonicalSiteRoutePaths,
   HUB_SEGMENTS,
-  routePathToPageModule,
   ROUTED_LEAGUE_IDS,
   siteNavHrefPaths,
   siteRouteRedirects,
@@ -80,6 +81,15 @@ import { EPL_TEAMS } from "@/lib/epl/teams";
 import { LALIGA_TEAMS } from "@/lib/laliga/teams";
 import { CBB_TEAMS } from "@/lib/cbb/teams";
 import { CFB_TEAMS } from "@/lib/cfb/teams";
+import { teamLogoUrl as cbbTeamLogoUrl } from "@/lib/cbb/teams";
+import { teamLogoUrl as cfbTeamLogoUrl } from "@/lib/cfb/teams";
+import { teamLogoUrl as eplTeamLogoUrl } from "@/lib/epl/teams";
+import { teamLogoUrl as laligaTeamLogoUrl } from "@/lib/laliga/teams";
+import { teamLogoUrl as nflTeamLogoUrl } from "@/lib/nfl/teams";
+import { teamLogoUrl as nhlTeamLogoUrl } from "@/lib/nhl/teams";
+import { teamLogoUrl as nbaTeamLogoUrl } from "@/lib/teams";
+import { teamLogoUrl as wnbaTeamLogoUrl } from "@/lib/wnba/teams";
+import { WNBA_TEAMS } from "@/lib/wnba/teams";
 import type { RefProfile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
 import { refSlug } from "./lib/slug";
 
@@ -93,6 +103,7 @@ const LEAGUE_ID_RE = /^[a-z][a-z0-9]*$/;
 const BAD_LEAGUE_FOLDER_NAMES = new Set(["la-liga", "la_liga", "premier-league", "premier_league"]);
 
 const LIVE = process.argv.includes("--live");
+const LOGOS = process.argv.includes("--logos") || LIVE;
 const VERBOSE = process.argv.includes("--verbose");
 const ORIGIN = (
   process.argv.find((a) => a.startsWith("--origin="))?.split("=")[1] ??
@@ -215,36 +226,13 @@ const LEAGUE_CONFIGS: LeagueAuditConfig[] = [
 ];
 
 function pageModuleExists(routePath: string): boolean {
-  return existsSync(join(ROOT, routePathToPageModule(routePath)));
-}
-
-function dynamicRouteModuleExists(href: string): boolean {
-  const normalized = href.replace(/\/$/, "") || "/";
-  const segments = normalized.split("/").filter(Boolean);
-  if (segments.length === 0) return pageModuleExists("/");
-
-  const candidates: string[] = [];
-  for (let i = segments.length; i >= 0; i--) {
-    const prefix = segments.slice(0, i);
-    const tail = segments.slice(i);
-    if (tail.length === 1) {
-      candidates.push(`src/app/${[...prefix, "[slug]"].join("/")}/page.tsx`);
-      candidates.push(`src/app/${[...prefix, "[abbr]"].join("/")}/page.tsx`);
-      candidates.push(`src/app/${[...prefix, "[id]"].join("/")}/page.tsx`);
-    }
-    if (tail.length === 0 && prefix.length > 0) {
-      candidates.push(`src/app/${prefix.join("/")}/page.tsx`);
-    }
-  }
-  candidates.push(routePathToPageModule(normalized));
-  return candidates.some((rel) => existsSync(join(ROOT, rel)));
+  return appRouteModuleCandidates(routePath).some((rel) => existsSync(join(ROOT, rel)));
 }
 
 function hrefResolves(href: string): boolean {
   const normalized = href.replace(/\/$/, "") || "/";
   if (pageModuleExists(normalized)) return true;
-  if (resolveNavHref(normalized)) return true;
-  return dynamicRouteModuleExists(normalized);
+  return resolveNavHref(normalized) !== null;
 }
 
 function resolveNavHref(href: string): string | null {
@@ -576,7 +564,7 @@ function auditMatrixDefensiveness(): void {
   const requiredSnippets = [
     "ref-matrix-cell--empty",
     "ref-matrix-team-panel-empty",
-    "No matches in this matrix",
+    "Clear search or browse rankings",
     "No qualified",
   ];
   for (const snippet of requiredSnippets) {
@@ -625,10 +613,7 @@ function auditMatrixDefensiveness(): void {
     }
   }
 
-  const matrixPages = [
-    "/matrix",
-    ...ROUTED_LEAGUE_IDS.filter((id) => id !== "nba").map((id) => `${LEAGUES[id].pathPrefix}/matrix`),
-  ];
+  const matrixPages = ROUTED_LEAGUE_IDS.map((id) => `${LEAGUES[id].pathPrefix}/matrix`);
   for (const path of matrixPages) {
     if (!pageModuleExists(path)) {
       record("error", "matrix", `Matrix page missing: ${path}`);
@@ -643,8 +628,121 @@ const ERROR_BODY_PATTERNS = [
   { label: "cf-5xx", re: /<title>\s*5\d\d\b[^<]*cloudflare/i },
 ];
 
+const LOCAL_LEAGUE_LOGOS = [
+  "/logos/nba-logo.svg",
+  "/logos/nba-logo-light.svg",
+  "/logos/nfl-shield.svg",
+  "/logos/epl-lion.svg",
+  "/logos/epl-lion-dark.svg",
+  "/logos/laliga-white.png",
+  "/logos/laliga-red.png",
+  "/logos/wnba-logo.svg",
+  "/logos/wnba-logo-light.svg",
+  "/assets/logos/ncaa.svg",
+] as const;
+
+type TeamLogoCheck = {
+  league: string;
+  abbr: string;
+  url: string;
+};
+
+function collectTeamLogoChecks(): TeamLogoCheck[] {
+  const checks: TeamLogoCheck[] = [];
+
+  for (const team of NBA_TEAMS) {
+    checks.push({ league: "nba", abbr: team.abbr, url: nbaTeamLogoUrl(team.nbaId) });
+  }
+  for (const team of NHL_TEAMS) {
+    checks.push({ league: "nhl", abbr: team.abbr, url: nhlTeamLogoUrl(team.abbr, "dark") });
+    checks.push({ league: "nhl", abbr: team.abbr, url: nhlTeamLogoUrl(team.abbr, "light") });
+  }
+  for (const team of NFL_TEAMS) {
+    checks.push({ league: "nfl", abbr: team.abbr, url: nflTeamLogoUrl(team.abbr) });
+  }
+  for (const team of EPL_TEAMS) {
+    checks.push({ league: "epl", abbr: team.abbr, url: eplTeamLogoUrl(team.abbr) });
+  }
+  for (const team of LALIGA_TEAMS) {
+    checks.push({ league: "laliga", abbr: team.abbr, url: laligaTeamLogoUrl(team.abbr) });
+  }
+  for (const team of CBB_TEAMS) {
+    checks.push({ league: "cbb", abbr: team.abbr, url: cbbTeamLogoUrl(team.abbr) });
+  }
+  for (const team of CFB_TEAMS) {
+    checks.push({ league: "cfb", abbr: team.abbr, url: cfbTeamLogoUrl(team.abbr) });
+  }
+  for (const team of WNBA_TEAMS) {
+    checks.push({ league: "wnba", abbr: team.abbr, url: wnbaTeamLogoUrl(team.abbr, "dark") });
+    checks.push({ league: "wnba", abbr: team.abbr, url: wnbaTeamLogoUrl(team.abbr, "light") });
+  }
+
+  return checks;
+}
+
+function auditLocalLeagueLogos(): void {
+  printHeader("6. League logo assets (local)");
+
+  for (const assetPath of LOCAL_LEAGUE_LOGOS) {
+    const diskPath = join(ROOT, "public", assetPath.slice(1));
+    if (!existsSync(diskPath)) {
+      record("error", "logos", `Missing local league logo: ${assetPath}`);
+    }
+  }
+
+  const checks = collectTeamLogoChecks();
+  let empty = 0;
+  for (const check of checks) {
+    if (!check.url.trim()) {
+      empty += 1;
+      record("error", "logos", `${check.league}: empty team logo URL for ${check.abbr}`);
+    }
+  }
+
+  pass("logos", `Checked ${LOCAL_LEAGUE_LOGOS.length} local league marks and ${checks.length} team logo URLs (${empty} empty)`);
+}
+
+async function auditRemoteTeamLogos(): Promise<void> {
+  printHeader("7. Team logo HTTP availability");
+
+  const checks = collectTeamLogoChecks().filter((check) => check.url.trim());
+  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+  let checked = 0;
+
+  for (const check of checks) {
+    try {
+      let res = await fetch(check.url, {
+        method: "HEAD",
+        redirect: "follow",
+        headers: { "User-Agent": "RefWatch-AuditLinks/1.0" },
+      });
+      if (res.status === 405 || res.status === 403) {
+        res = await fetch(check.url, {
+          method: "GET",
+          redirect: "follow",
+          headers: { "User-Agent": "RefWatch-AuditLinks/1.0" },
+        });
+      }
+      if (res.status === 404) {
+        record("error", "logos", `404 ${check.league}/${check.abbr}: ${check.url}`);
+      } else if (!res.ok) {
+        record("warn", "logos", `${res.status} ${check.league}/${check.abbr}: ${check.url}`);
+      } else if (VERBOSE) {
+        pass("logos", `${check.league}/${check.abbr} OK`);
+      }
+    } catch (err) {
+      record("warn", "logos", `Fetch failed ${check.league}/${check.abbr}: ${err}`);
+    }
+
+    checked += 1;
+    if (checked % 20 === 0) await delay(80);
+  }
+
+  pass("logos", `HTTP-checked ${checks.length} team logo URLs`);
+}
+
 async function auditLiveHttp(urls: string[]): Promise<void> {
-  printHeader(`6. Live HTTP smoke (${ORIGIN})`);
+  printHeader(`8. Live HTTP smoke (${ORIGIN})`);
 
   const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
   let checked = 0;
@@ -764,6 +862,13 @@ async function main(): Promise<void> {
   auditSlugHygiene();
   auditInternalLinks();
   auditMatrixDefensiveness();
+  auditLocalLeagueLogos();
+
+  if (LOGOS) {
+    await auditRemoteTeamLogos();
+  } else {
+    console.log(`\n${c.dim}  Tip: run with --logos to HTTP-check team logo URLs${c.reset}`);
+  }
 
   if (LIVE) {
     const urls = buildLiveSampleUrls();

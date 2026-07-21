@@ -7,6 +7,7 @@ import { getAllRefSlugs as getNhlRefSlugs, getRefBySlug as getNhlRefBySlug, getR
 import { getAllRefSlugs as getNflRefSlugs, getRefBySlug as getNflRefBySlug, getRefStats as getNflRefStats } from "@/lib/nfl/data";
 import { refProfileHref } from "@/lib/leagues";
 import {
+  appRouteModuleCandidates,
   canonicalSiteRoutePaths,
   routePathToPageModule,
   siteNavHrefPaths,
@@ -15,7 +16,7 @@ import {
 } from "@/lib/site-route-config";
 
 function pageModuleExists(routePath: string, root = process.cwd()): boolean {
-  return existsSync(join(root, routePathToPageModule(routePath)));
+  return appRouteModuleCandidates(routePath).some((rel) => existsSync(join(root, rel)));
 }
 
 function resolveNavHref(href: string, redirects: SiteRouteRedirect[]): string | null {
@@ -50,6 +51,18 @@ describe("site link health", () => {
       source,
       /<RefRankingsTable[\s\S]*?basePath=\{league\.pathPrefix\}/,
       "RefRankingsTable must receive basePath",
+    );
+  });
+
+  it("league ref and team routes resolve to dynamic App Router modules", () => {
+    assert.ok(pageModuleExists("/nba/refs/jacyn-goble-68"));
+    assert.ok(pageModuleExists("/nba/teams/ATL"));
+    assert.ok(pageModuleExists("/nhl/research/nhl-whistle-outlier"));
+    assert.ok(pageModuleExists("/nba/research/findings/league-over-skew"));
+    assert.ok(
+      appRouteModuleCandidates("/nba/refs/jacyn-goble-68").includes(
+        "src/app/[league]/refs/[slug]/page.tsx",
+      ),
     );
   });
 
