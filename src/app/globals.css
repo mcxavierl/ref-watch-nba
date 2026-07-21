@@ -4933,6 +4933,66 @@ p {
     line-height: 1;
   }
 
+  @media (min-width: 1024px) {
+    .league-nav-mark {
+      height: 1.15rem;
+      max-width: 2rem;
+    }
+
+    .league-nav-mark--nfl {
+      height: 1.45rem;
+      max-width: 1.1rem;
+    }
+
+    .league-nav-mark--wnba,
+    .league-nav-mark[data-league="wnba"] {
+      height: 1.55rem;
+      max-width: 1rem;
+    }
+
+    .league-nav-mark--nba {
+      height: 1.2rem;
+      max-width: 1.85rem;
+    }
+
+    .league-nav-mark--nhl,
+    .league-nav-mark[data-league="nhl"] {
+      height: 1.35rem;
+      max-width: 2.35rem;
+    }
+
+    .league-nav-mark--epl,
+    .league-nav-mark[data-league="epl"] {
+      height: 1.65rem;
+      width: 1.65rem;
+      max-width: 2.1rem;
+      max-height: 2.1rem;
+    }
+
+    .league-nav-link .league-nav-mark--epl,
+    .league-nav-link .league-nav-mark[data-league="epl"] {
+      height: 1.7rem;
+      width: 1.7rem;
+      max-width: 2.15rem;
+      max-height: 2.15rem;
+    }
+
+    .league-nav-mark--laliga,
+    .league-nav-mark[data-league="laliga"] {
+      height: 1.35rem;
+      max-width: 1.75rem;
+    }
+
+    .league-nav-mark--cbb,
+    .league-nav-mark[data-league="cbb"],
+    .league-nav-mark--cfb,
+    .league-nav-mark[data-league="cfb"] {
+      height: 1.4rem;
+      width: 1.4rem;
+      max-width: 1.4rem;
+    }
+  }
+
   .site-chrome[data-league="nba"] {
     --league-accent: var(--raptors);
   }
@@ -9015,6 +9075,63 @@ p {
   }
 
   @media (min-width: 1024px) {
+    .league-hub-hero-header-block {
+      gap: 2rem;
+    }
+
+    .league-hero-logo {
+      height: 3.35rem;
+      max-width: 5rem;
+    }
+
+    .league-hero-logo.league-nav-mark--nfl,
+    .league-hero-logo[data-league="nfl"],
+    .league-hero-logo.league-nav-mark--cfb,
+    .league-hero-logo[data-league="cfb"] {
+      height: 3.85rem;
+      max-width: 3.25rem;
+    }
+
+    .league-hero-logo.league-nav-mark--wnba,
+    .league-hero-logo[data-league="wnba"] {
+      height: 4rem;
+      max-width: 1.85rem;
+    }
+
+    .league-hero-logo.league-nav-mark--nhl,
+    .league-hero-logo[data-league="nhl"] {
+      height: 2.85rem;
+      max-width: 3.75rem;
+    }
+
+    .league-hero-logo.league-nav-mark--epl,
+    .league-hero-logo[data-league="epl"] {
+      height: 3.75rem;
+      width: 3.75rem;
+      max-width: 3.75rem;
+      max-height: 3.75rem;
+    }
+
+    .league-hero-logo.league-nav-mark--laliga,
+    .league-hero-logo[data-league="laliga"] {
+      height: 2.85rem;
+      max-width: 5.75rem;
+    }
+
+    .league-hero-logo.league-nav-mark--cbb,
+    .league-hero-logo[data-league="cbb"],
+    .league-hero-logo.league-nav-mark--cfb,
+    .league-hero-logo[data-league="cfb"] {
+      height: 2.85rem;
+      max-width: 4.25rem;
+    }
+
+    .league-hero-logo-fallback {
+      min-width: 3.25rem;
+      min-height: 3.25rem;
+      font-size: var(--text-sm);
+    }
+
     .league-hub-hero-inner {
       padding-inline: 2rem;
     }
@@ -13330,6 +13447,14 @@ html.dark .overview-page .kpi-data-pill--negative .kpi-data-pill__value {
   border-radius: 0.9375rem;
   border: 1px solid var(--chooser-mark-border);
   background: color-mix(in srgb, var(--chooser-accent) 5%, rgba(0, 0, 0, 0.2));
+}
+
+@media (min-width: 1024px) {
+  .overview-league-chooser-mark {
+    width: 5.25rem;
+    height: 5.25rem;
+    border-radius: 1.125rem;
+  }
 }
 
 .overview-league-chooser-mark .league-nav-mark {
