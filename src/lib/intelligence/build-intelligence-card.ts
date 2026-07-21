@@ -6,6 +6,7 @@ import type {
   IntelligenceCardContent,
   IntelligenceMetricType,
 } from "@/lib/intelligence/intelligence-card-types";
+import { meetsScoringHighlightThreshold } from "@/lib/highlight-badge";
 import { formatSigned } from "@/lib/stats-utils";
 
 function crewLastNames(crew: GameSlatePreviewPayload["crew"]): string {
@@ -85,7 +86,7 @@ function primarySignalForPreview(preview: GameSlatePreviewPayload): {
     };
   }
 
-  if (Math.abs(preview.totalPointsDelta) >= 1) {
+  if (meetsScoringHighlightThreshold(preview.totalPointsDelta)) {
     const leagueScoringBaseline = preview.avgTotalPoints - preview.totalPointsDelta;
     const scoringPct =
       Math.abs(leagueScoringBaseline) < 0.01

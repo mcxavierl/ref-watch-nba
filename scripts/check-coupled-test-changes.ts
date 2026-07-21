@@ -80,6 +80,14 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
     tests: ["src/lib/intelligence/intelligence-card.test.ts"],
   },
   {
+    label: "highlight badges",
+    sources: ["src/lib/highlight-badge.ts", "src/lib/rankings-synthesis.ts"],
+    tests: [
+      "src/lib/highlight-badge.test.ts",
+      "src/lib/rankings-synthesis.test.ts",
+    ],
+  },
+  {
     label: "broadcast export",
     sources: ["src/lib/media/export-broadcast-graphic.ts"],
     tests: ["src/lib/media/export-broadcast-graphic.test.ts"],

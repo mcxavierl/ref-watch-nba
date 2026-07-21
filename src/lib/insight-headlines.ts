@@ -30,8 +30,8 @@ export function homeAtsSignalHeadline(edge: number): string {
 export function scoringPaceInsight(delta: number): string {
   if (delta >= 1.5) return "Pace Inflation";
   if (delta <= -1.5) return "Scoring Suppression";
-  if (delta >= 0.35) return "Elevated Scoring";
-  if (delta <= -0.35) return "Lower Scoring";
+  if (delta >= 0.5) return "Elevated Scoring";
+  if (delta <= -0.5) return "Lower Scoring";
   return "Typical Scoring";
 }
 

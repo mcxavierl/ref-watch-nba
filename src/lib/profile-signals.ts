@@ -1,3 +1,11 @@
+import {
+  HIGHLIGHT_NHL_MINORS_DELTA_MIN,
+  HIGHLIGHT_OVER_RATE_DEVIATION_MIN,
+  HIGHLIGHT_SCORING_DELTA_MIN,
+  HIGHLIGHT_WHISTLE_DELTA_MIN,
+  meetsScoringHighlightThreshold,
+  meetsWhistleHighlightThreshold,
+} from "@/lib/highlight-badge";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import {
   homeAtsSignalHeadline,
@@ -47,16 +55,18 @@ export interface ProfileSignalsBundle {
   overBaseline: number;
 }
 
-function scoringThreshold(leagueId: LeagueId): number {
-  return leagueId === "nhl" ? 0.35 : 1.5;
+function scoringThreshold(_leagueId: LeagueId): number {
+  return HIGHLIGHT_SCORING_DELTA_MIN;
 }
 
 function whistleThreshold(leagueId: LeagueId): number {
-  return leagueId === "nhl" ? 0.8 : 2;
+  return leagueId === "nhl"
+    ? HIGHLIGHT_NHL_MINORS_DELTA_MIN
+    : HIGHLIGHT_WHISTLE_DELTA_MIN;
 }
 
 function overTiltThreshold(): number {
-  return 0.04;
+  return HIGHLIGHT_OVER_RATE_DEVIATION_MIN;
 }
 
 function homeRoadThreshold(leagueId: LeagueId): number {
@@ -75,9 +85,8 @@ function buildScoringSignal(
   meta: RefStatsFile["meta"],
   leagueId: LeagueId,
 ): ProfileSignal | null {
-  const threshold = scoringThreshold(leagueId);
   const delta = ref.totalPointsDelta;
-  if (Math.abs(delta) < threshold) return null;
+  if (!meetsScoringHighlightThreshold(delta)) return null;
 
   const unit = LEAGUES[leagueId].metrics.scoreUnitPlural;
 
@@ -97,7 +106,7 @@ function buildScoringSignal(
         detail: `${meta.leagueOverBaseline} ${unit} line`,
       },
     ],
-    notable: Math.abs(delta) >= threshold * 1.5,
+    notable: Math.abs(delta) >= scoringThreshold(leagueId) * 2,
   };
 }
 
@@ -107,8 +116,8 @@ function buildWhistleSignal(
   leagueId: LeagueId,
 ): ProfileSignal | null {
   const delta = whistleDelta(ref, leagueId);
+  if (!meetsWhistleHighlightThreshold(delta, leagueId)) return null;
   const threshold = whistleThreshold(leagueId);
-  if (Math.abs(delta) < threshold) return null;
 
   const whistle = LEAGUES[leagueId].metrics.whistlePlain;
 
