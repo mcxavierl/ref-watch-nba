@@ -71,7 +71,20 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
     tests: ["src/lib/homepage-insight-gates.test.ts"],
   },
   {
-    label: "enterprise API auth",
+    label: "citation analytics store",
+    sources: [
+      "src/lib/services/citation-event-store.ts",
+      "src/lib/services/citation-schema.sql",
+      "src/app/api/v1/analytics/citation/route.ts",
+    ],
+    tests: ["src/lib/intelligence/intelligence-card.test.ts"],
+  },
+  {
+    label: "broadcast export",
+    sources: ["src/lib/media/export-broadcast-graphic.ts"],
+    tests: ["src/lib/media/export-broadcast-graphic.test.ts"],
+  },
+  {
     sources: [
       "src/lib/auth/enterprise-api-middleware.ts",
       "src/lib/api/v1/rate-limit.ts",

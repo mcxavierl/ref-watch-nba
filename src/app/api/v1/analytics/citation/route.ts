@@ -23,6 +23,6 @@ export async function POST(request: Request) {
     );
   }
 
-  const record = persistCitationEvent(body);
+  const record = await persistCitationEvent(body);
   return Response.json({ ok: true, id: record.id });
 }

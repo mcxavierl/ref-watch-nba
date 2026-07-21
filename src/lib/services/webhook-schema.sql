@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS webhook_queue (
   payload TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'pending',
   attempt_count INTEGER NOT NULL DEFAULT 0,
-  max_attempts INTEGER NOT NULL DEFAULT 6,
+  max_attempts INTEGER NOT NULL DEFAULT 5,
   next_attempt_at TEXT NOT NULL,
   last_error TEXT,
   created_at TEXT NOT NULL,

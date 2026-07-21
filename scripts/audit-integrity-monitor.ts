@@ -120,6 +120,19 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
     },
   },
   {
+    name: "enterprise webhook docs export verifyWebhookSignature guidance",
+    run: () => {
+      const docs = read("docs/enterprise-webhooks.md");
+      if (!docs.includes("verifyWebhookSignature")) {
+        return { ok: false, message: "docs/enterprise-webhooks.md missing verifyWebhookSignature" };
+      }
+      if (!docs.includes("X-RefWatch-Timestamp")) {
+        return { ok: false, message: "docs/enterprise-webhooks.md missing timestamp header docs" };
+      }
+      return { ok: true };
+    },
+  },
+  {
     name: "webhook subscriber secrets are sealed at rest",
     run: () => {
       const secret = read("src/lib/services/webhookSecret.ts");

@@ -19,6 +19,12 @@ type MemoryWebhookStore = {
     success: boolean;
     errorMessage?: string;
   }>;
+  webhookEvents: Array<{
+    subscriberId: string;
+    eventType: string;
+    queueId?: string;
+    status: string;
+  }>;
 };
 
 function createMemoryStore(subscriber: WebhookSubscriber): WebhookStore {
@@ -26,6 +32,7 @@ function createMemoryStore(subscriber: WebhookSubscriber): WebhookStore {
     subscribers: [subscriber],
     queue: [],
     deliveryLogs: [],
+    webhookEvents: [],
   };
 
   return {
@@ -47,7 +54,7 @@ function createMemoryStore(subscriber: WebhookSubscriber): WebhookStore {
         payload: input.payload,
         status: "pending",
         attemptCount: 0,
-        maxAttempts: input.maxAttempts ?? 6,
+        maxAttempts: input.maxAttempts ?? 5,
         nextAttemptAt: now,
         lastError: null,
         createdAt: now,
@@ -97,8 +104,13 @@ function createMemoryStore(subscriber: WebhookSubscriber): WebhookStore {
     async logDelivery(input) {
       store.deliveryLogs.push(input);
     },
-    async logWebhookEvent() {
-      /* no-op for memory store */
+    async logWebhookEvent(input) {
+      store.webhookEvents.push({
+        subscriberId: input.subscriberId,
+        eventType: input.eventType,
+        queueId: input.queueId,
+        status: input.status,
+      });
     },
   };
 }
@@ -170,6 +182,58 @@ describe("webhook dispatch queue", () => {
       });
       assert.equal(secondPass.delivered, 1);
       assert.equal(memoryStore.queue[0]?.status, "delivered");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("logs webhook_events rows when deliveries succeed", async () => {
+    const subscriber: WebhookSubscriber = {
+      id: "sub_events",
+      clientId: "client_events",
+      label: "Events",
+      url: "https://example.test/webhook",
+      secret: "secret",
+      active: true,
+      eventKinds: ["ANOMALY_DETECTED"],
+      createdAt: new Date().toISOString(),
+    };
+    const store = createMemoryStore(subscriber);
+    const memoryStore = store as WebhookStore & MemoryWebhookStore;
+    const now = new Date().toISOString();
+    memoryStore.queue.push({
+      id: randomUUID(),
+      subscriberId: subscriber.id,
+      clientId: subscriber.clientId,
+      payload: JSON.stringify({
+        event: "ANOMALY_DETECTED",
+        timestamp: now,
+        gameId: "g1",
+        severity: "HIGH",
+        evidence: {},
+      }),
+      status: "pending",
+      attemptCount: 0,
+      maxAttempts: 5,
+      nextAttemptAt: now,
+      lastError: null,
+      createdAt: now,
+      deliveredAt: null,
+    });
+
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async () =>
+      ({
+        ok: true,
+        status: 200,
+      }) as Response;
+
+    try {
+      const summary = await processWebhookQueue({ store, now: new Date() });
+      assert.equal(summary.delivered, 1);
+      assert.equal(memoryStore.webhookEvents.length, 1);
+      assert.equal(memoryStore.webhookEvents[0]?.status, "delivered");
+      assert.equal(memoryStore.webhookEvents[0]?.eventType, "ANOMALY_DETECTED");
     } finally {
       globalThis.fetch = originalFetch;
     }

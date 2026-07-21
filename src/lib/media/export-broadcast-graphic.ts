@@ -4,6 +4,17 @@ import {
   MEDIA_CARD_WIDTH,
 } from "@/lib/media/media-card-types";
 
+const EXPORT_FONT_FAMILIES = [
+  '500 16px "Inter"',
+  '700 32px "Inter"',
+  '800 48px "JetBrains Mono"',
+] as const;
+
+export async function ensureBroadcastExportFontsLoaded(): Promise<void> {
+  if (typeof document === "undefined" || !document.fonts?.load) return;
+  await Promise.all(EXPORT_FONT_FAMILIES.map((spec) => document.fonts.load(spec)));
+}
+
 export type ExportBroadcastGraphicOptions = {
   filename?: string;
   pixelRatio?: number;
@@ -22,6 +33,7 @@ export async function exportBroadcastGraphicPng(
   node: HTMLElement,
   options: ExportBroadcastGraphicOptions = {},
 ): Promise<void> {
+  await ensureBroadcastExportFontsLoaded();
   const pixelRatio = options.pixelRatio ?? 1;
   const dataUrl = await toPng(node, {
     width: MEDIA_CARD_WIDTH,
