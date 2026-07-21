@@ -2,9 +2,11 @@ import {
   Children,
   Fragment,
   isValidElement,
+  type CSSProperties,
   type ReactNode,
 } from "react";
 import { LeagueHeroLogo } from "@/components/LeagueHeroLogo";
+import { leagueHeroGlowTheme } from "@/lib/league-hero-glow-themes";
 import type { LeagueId } from "@/lib/leagues";
 
 type HeroChildRole = "back" | "kicker" | "title" | "head-wrapper" | "other";
@@ -667,13 +669,24 @@ export function LeagueHubHero({
 }: LeagueHubHeroProps) {
   const { before, head, body } = partitionHeroChildren(children);
   const headContent = renderHeroHead(head);
+  const glow = leagueHeroGlowTheme(leagueId);
 
   return (
     <section
       className={["league-hub-hero", className].filter(Boolean).join(" ")}
       data-league={leagueId}
+      style={
+        {
+          "--league-hero-glow-left": glow.left,
+          "--league-hero-glow-right": glow.right,
+        } as CSSProperties
+      }
       {...aria}
     >
+      <div className="league-hub-hero-ambient" aria-hidden>
+        <div className="league-hub-hero-glow league-hub-hero-glow--left" />
+        <div className="league-hub-hero-glow league-hub-hero-glow--right" />
+      </div>
       <div className="league-hub-hero-watermark" aria-hidden>
         <SportWatermark leagueId={leagueId} />
       </div>

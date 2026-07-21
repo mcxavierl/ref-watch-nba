@@ -38,6 +38,16 @@ export function LeagueSlateHero({
     leagueId === "nba" ? nbaSeasonScopeAuditNote(refStats.meta.seasons) : null;
   const useInteractiveStats = isOffseason;
   const heroActions = slateHeroActions(leagueId);
+  const heroTitle = isOffseason
+    ? copy.offseasonTitle
+    : isPending
+      ? (copy.pendingTitle ?? copy.liveTitle)
+      : copy.liveTitle;
+  const heroLead = isOffseason
+    ? copy.offseasonLead
+    : isPending
+      ? (copy.pendingLead ?? copy.liveLead)
+      : copy.liveLead;
 
   return (
     <LeagueHubHero
@@ -47,16 +57,14 @@ export function LeagueSlateHero({
     >
       <p className="league-slate-kicker">{copy.kicker}</p>
       <h1 className="page-title" id={`${leagueId}-slate-heading`}>
-        {isOffseason ? copy.offseasonTitle : isPending ? copy.pendingTitle ?? copy.liveTitle : copy.liveTitle}
+        {heroTitle}
       </h1>
-      <p className="page-lead">
-        {isOffseason ? copy.offseasonLead : isPending ? copy.pendingLead ?? copy.liveLead : copy.liveLead}
-      </p>
+      <p className="page-lead league-slate-hero-banner">{heroLead}</p>
 
-      {useInteractiveStats && (
+      {heroActions.length > 0 && (
         <nav
           className="league-slate-hero-actions"
-          aria-label="Explore historical analytics"
+          aria-label="Explore league analytics"
         >
           {heroActions.map((action) => (
             <Link
@@ -86,6 +94,7 @@ export function LeagueSlateHero({
       <DataFreshnessMeta
         assignments={assignments}
         refStats={refStats}
+        className="league-hub-hero-freshness"
         league={
           config.dataLeague === "NBA" ||
           config.dataLeague === "NHL" ||
