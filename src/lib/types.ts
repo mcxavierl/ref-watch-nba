@@ -412,6 +412,18 @@ export interface OfficialStats {
   momentum_method_note?: string;
 }
 
+/** Player-level whistle bias toward high-usage stars vs rotation players. */
+export interface StarTreatmentAnalytics {
+  star_deference_index: number | null;
+  star_deference_display: string | null;
+  star_drawn_rate_delta: number | null;
+  rotation_foul_rate_delta: number | null;
+  star_player_observations: number;
+  star_sample_games: number;
+  star_unique_players: number;
+  method_note: string;
+}
+
 /** Season-scoped elite metrics from analytics backfill (2021-2026 window). */
 export type SeasonOfficialStatsEntry =
   | ({ status: "ok" } & OfficialStats)
@@ -465,6 +477,8 @@ export interface RefProfile {
   nflAnalytics?: NflRefAnalytics;
   cfbAnalytics?: CfbRefAnalytics;
   eplAnalytics?: EplRefAnalytics;
+  /** Star-player whistle deference vs league baselines when personnel data is available. */
+  starTreatmentAnalytics?: StarTreatmentAnalytics;
   /** Ref-Intelligence archetype persona recalculated from game-log foul taxonomy. */
   officialStats?: OfficialStats;
   /** Era-specific elite metrics keyed by season label (e.g. 2023-24). */

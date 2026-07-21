@@ -42,7 +42,8 @@ export type GlossaryId =
   | "archetype"
   | "whistle-drift"
   | "momentum-killer-score"
-  | "run-stoppage-rate";
+  | "run-stoppage-rate"
+  | "star-deference";
 
 export interface GlossaryEntry {
   /** Visible label when none passed as children. */
@@ -227,5 +228,9 @@ export const GLOSSARY: Record<GlossaryId, GlossaryEntry> = {
   "run-stoppage-rate": {
     label: "Run Stoppage Rate",
     text: "Share of qualifying opponent scoring runs (8+ unanswered or 10-2 inside three minutes) that ended directly after a non-mandatory crew stoppage. Mandatory shooting fouls are excluded.",
+  },
+  "star-deference": {
+    label: "Star Deference",
+    text: "Measures whether this official awards high-usage stars fouls at a higher rate than their seasonal baseline. Positive values mean stars draw more free throws or fouls per game under this ref than their league-wide average across all officials.",
   },
 };

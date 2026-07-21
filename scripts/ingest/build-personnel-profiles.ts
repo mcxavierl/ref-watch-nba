@@ -6,13 +6,11 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import {
-  NBA_STAR_SEEDS,
-  nflPersonnelSeeds,
-  nhlPersonnelSeeds,
   starTierPercentile,
   type SeedCoach,
   type SeedStar,
 } from "./lib/personnel-seeds";
+import { estimatedUsageRateFromRank } from "../../src/lib/analytics/star-deference-index";
 
 const ROOT = process.cwd();
 const BBR_CACHE = path.join(ROOT, "data", "bbr-cache");
@@ -214,6 +212,7 @@ function enrichStarTrends(
     return {
       ...profile,
       starTierPercentile: starTierPercentile(profile.usageRank),
+      usageRate: profile.usageRate ?? estimatedUsageRateFromRank(profile.usageRank),
       seasonAvgFoulsDrawn:
         profile.seasonAvgFoulsDrawn ?? derivedDrawn,
       gamesSampled: teamGames.length > 0 ? teamGames.length : undefined,

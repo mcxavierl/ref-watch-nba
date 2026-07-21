@@ -29,6 +29,12 @@ export interface StarPlayerProfile {
   starTierPercentile?: number;
   /** Seasonal average fouls drawn per game when known. */
   seasonAvgFoulsDrawn?: number;
+  /** Usage share 0-1 when known (stars typically >= 0.28). */
+  usageRate?: number;
+  /** Season All-Star selection when known. */
+  allStar?: boolean;
+  /** All-NBA team selection when known. */
+  allNba?: boolean;
   gamesSampled?: number;
 }
 

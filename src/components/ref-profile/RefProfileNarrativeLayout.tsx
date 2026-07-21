@@ -3,6 +3,7 @@ import { CloseGameSection } from "@/components/CloseGameSection";
 import { RefProfileDepthExpand } from "@/components/ref-profile/RefProfileDepthExpand";
 import { RefProfileOfficiatingBiasSection } from "@/components/ref-profile/RefProfileOfficiatingBiasSection";
 import { RefProfileMarketImpactPanel } from "@/components/ref-profile/RefProfileMarketImpactPanel";
+import { StarDeferenceBadge } from "@/components/ref-profile/StarDeferenceBadge";
 import {
   ScoutingReportDepth,
   ScoutingReportEdge,
@@ -11,6 +12,7 @@ import { RefProfileTeamTrends } from "@/components/ref-profile/RefProfileTeamTre
 import { RefProfileCareerEvolution } from "@/components/ref-profile/RefProfile";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import { buildRefTeamPerformanceTrends } from "@/lib/ref-team-performance-trends";
+import { computeRefStarDeference, supportsStarDeferenceLeague } from "@/lib/ref-star-deference";
 import type { CloseGameMetrics } from "@/lib/close-game";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefGsniMetrics } from "@/lib/ref-gsni";
@@ -63,10 +65,15 @@ export function RefProfileNarrativeLayout({
     stats,
     qualified,
   };
+  const starDeference =
+    supportsStarDeferenceLeague(leagueId)
+      ? computeRefStarDeference(leagueId, profile)
+      : null;
 
   return (
     <div className="ref-narrative-layout">
       <ScoutingReportEdge {...scoutingProps} />
+      {starDeference ? <StarDeferenceBadge analytics={starDeference} /> : null}
 
       <RefProfileCareerEvolution profile={profile} />
 

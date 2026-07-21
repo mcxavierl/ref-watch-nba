@@ -36,6 +36,7 @@ export interface GameLogEntry {
   penaltyEvents?: import("../../src/lib/types").NflPenaltyEvent[];
   scoringPlays?: import("../../src/lib/types").ScoringPlayEvent[];
   crewStoppages?: import("../../src/lib/types").CrewStoppageEvent[];
+  personnel?: import("../../src/lib/personnel-types").GamePersonnelSnapshot;
 }
 
 export interface GameLogFile {
