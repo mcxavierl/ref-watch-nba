@@ -5,6 +5,7 @@ import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import "@/components/overview-dashboard.css";
 import "@/components/overview-clinical-modern.css";
+import "@/components/slate-intelligence.css";
 import "@/components/overview-intelligence-hero.css";
 
 type OverviewDashboardProps = {

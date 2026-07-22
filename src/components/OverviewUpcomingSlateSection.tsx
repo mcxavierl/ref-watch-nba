@@ -14,17 +14,9 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
       className="overview-editorial-section overview-editorial-section--slate section-block"
       aria-labelledby="overview-upcoming-heading"
     >
-      <div className="overview-section-header overview-section-header--primary overview-live-slate-header-wrap">
-        <h2
-          className="overview-live-slate-title text-xl font-semibold text-white"
-          id="overview-upcoming-heading"
-        >
-          Live Slate
-        </h2>
-        <p className="overview-section-lead overview-live-slate-lead">
-          Scores, crews, and assignments refresh as the slate moves.
-        </p>
-      </div>
+      <h2 id="overview-upcoming-heading" className="sr-only">
+        Today&apos;s officiating outlook
+      </h2>
 
       <LiveSlateGrid
         initialSlate={{
@@ -34,6 +26,7 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
         initialGames={upcomingSlate.games}
         limit={HOMEPAGE_SLATE_GRID_SIZE}
         matchupLabel="matchup"
+        showOutlookBanner
       />
     </section>
   );

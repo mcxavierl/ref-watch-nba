@@ -124,7 +124,7 @@ describe("design audit guardrails", () => {
 
   it("slate team display helpers are shared across card and row", () => {
     const shared = readSrc("src/lib/slate-team-display.ts");
-    const card = readSrc("src/components/UpcomingGameCard.tsx");
+    const card = readSrc("src/components/SlateGameCard.tsx");
     const row = readSrc("src/components/OverviewSlateRow.tsx");
     assert.match(shared, /resolveSlateTeam/);
     assert.match(card, /slate-team-display/);
