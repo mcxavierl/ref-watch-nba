@@ -1,0 +1,15 @@
+name = "refwatch-cron-worker"
+main = "src/worker/index.ts"
+compatibility_date = "2026-01-01"
+
+[triggers]
+crons = [
+  "*/5 * * * *",
+  "0 8 * * *",
+]
+
+[vars]
+SITE_URL = "https://refwatch.ca"
+
+# Set secrets before deploy:
+#   wrangler secret put CRON_SECRET --config wrangler.cron.toml

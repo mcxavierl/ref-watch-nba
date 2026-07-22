@@ -2,6 +2,18 @@ import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { leagueHubHref, LEAGUES, type LeagueId } from "@/lib/leagues";
 import type { SlateGamePhase } from "@/lib/slate-game-phase";
+import {
+  ACTIVE_SLATE_LOOKAHEAD_MS,
+  ACTIVE_SLATE_LOOKBACK_MS,
+  activeSlateWindowBounds,
+  resolveGameTimestampMs,
+} from "@/lib/query-windows";
+
+export {
+  ACTIVE_SLATE_LOOKAHEAD_MS as LIVE_SLATE_LOOKAHEAD_MS,
+  ACTIVE_SLATE_LOOKBACK_MS as LIVE_SLATE_LOOKBACK_MS,
+  resolveGameTimestampMs,
+} from "@/lib/query-windows";
 
 export type OverviewSlateStatus = "live" | "scheduled" | "final";
 
@@ -74,27 +86,6 @@ export const LEAGUE_UPCOMING_SLATE_LIMIT = 6;
 /** Homepage grid: 3×3 upcoming cards. */
 export const HOMEPAGE_SLATE_GRID_SIZE = 9;
 
-/** Include live games and finals from the last 6 hours. */
-export const LIVE_SLATE_LOOKBACK_MS = 6 * 60 * 60 * 1000;
-
-/** Include upcoming games starting within the next 30 hours. */
-export const LIVE_SLATE_LOOKAHEAD_MS = 30 * 60 * 60 * 1000;
-
-/** Resolve kickoff timestamp used for rolling window filters. */
-export function resolveGameTimestampMs(
-  entry: Pick<OverviewSlateEntry, "slateStartAt" | "slateDate">,
-): number | null {
-  if (entry.slateStartAt) {
-    const parsed = Date.parse(entry.slateStartAt);
-    if (Number.isFinite(parsed)) return parsed;
-  }
-  if (entry.slateDate) {
-    const parsed = Date.parse(`${entry.slateDate}T12:00:00Z`);
-    if (Number.isFinite(parsed)) return parsed;
-  }
-  return null;
-}
-
 /** Rolling window: now - 6h through now + 30h. Live/final games bypass the upper bound. */
 export function isWithinLiveSlateWindow(
   entry: OverviewSlateEntry,
@@ -103,16 +94,15 @@ export function isWithinLiveSlateWindow(
   if (entry.status === "live" || entry.gamePhase === "live") return true;
 
   const timestampMs = resolveGameTimestampMs(entry);
-  const windowStart = nowMs - LIVE_SLATE_LOOKBACK_MS;
-  const windowEnd = nowMs + LIVE_SLATE_LOOKAHEAD_MS;
+  const { windowStartMs, windowEndMs } = activeSlateWindowBounds(nowMs);
 
   if (entry.status === "final" || entry.gamePhase === "final") {
     if (timestampMs === null) return true;
-    return timestampMs >= windowStart;
+    return timestampMs >= windowStartMs;
   }
 
   if (timestampMs === null) return true;
-  return timestampMs >= windowStart && timestampMs <= windowEnd;
+  return timestampMs >= windowStartMs && timestampMs <= windowEndMs;
 }
 
 function mergeSlateSelections(

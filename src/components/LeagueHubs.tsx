@@ -2,9 +2,9 @@
 
 import { LeagueHubCard } from "@/components/LeagueHubCard";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
+import { getOverviewHubLeagueOrder } from "@/lib/active-leagues-by-season";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
 import type { LeagueId } from "@/lib/leagues";
-import { OVERVIEW_HUB_LEAGUE_IDS } from "@/lib/verified-live-leagues";
 
 type LeagueHubsProps = {
   cards: LeagueOverviewCard[];
@@ -19,7 +19,7 @@ export function LeagueHubs({
   placement = "default",
 }: LeagueHubsProps) {
   const hubOrder = new Map<LeagueId, number>(
-    OVERVIEW_HUB_LEAGUE_IDS.map((id, index) => [id, index]),
+    getOverviewHubLeagueOrder().map((id, index) => [id, index]),
   );
 
   const sortedCards = cards

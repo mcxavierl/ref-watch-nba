@@ -6,17 +6,27 @@ import type { LeagueId } from "@/lib/leagues";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { countNotableSignals } from "@/lib/profile-signals";
+import {
+  isWithinActiveSlateWindow,
+  resolveGameTimestampMs,
+} from "@/lib/query-windows";
 
-function isActiveSlateGame(game: OverviewSlateEntry): boolean {
-  return game.status === "live" || game.status === "scheduled";
+function isActiveSlateGame(game: OverviewSlateEntry, nowMs: number): boolean {
+  if (game.status !== "live" && game.status !== "scheduled") return false;
+  if (game.status === "live" || game.gamePhase === "live") return true;
+  const kickoffMs = resolveGameTimestampMs(game);
+  return isWithinActiveSlateWindow(kickoffMs, nowMs);
 }
 
-function countAnomaliesForSlateGames(games: OverviewSlateEntry[]): number {
+function countAnomaliesForSlateGames(
+  games: OverviewSlateEntry[],
+  nowMs: number = Date.now(),
+): number {
   const seen = new Set<string>();
   let total = 0;
 
   for (const game of games) {
-    if (!isActiveSlateGame(game)) continue;
+    if (!isActiveSlateGame(game, nowMs)) continue;
     const crew = game.preview?.crew ?? [];
     if (crew.length === 0) continue;
 
