@@ -5,12 +5,12 @@ import type { LeagueId } from "@/lib/leagues";
 import {
   buildLeagueUpcomingSlateFromAssignments,
   collectLeagueSlateEntries,
-  selectHomepageSlateGrid,
 } from "@/lib/overview-upcoming-slate";
 import {
   compareSlateChronology,
   groupOverviewSlateByLeague,
   HOMEPAGE_SLATE_GRID_SIZE,
+  selectPublishedHomepageSlateGames,
   type OverviewSlateEntry,
   type OverviewUpcomingSlate,
 } from "@/lib/overview-slate-shared";
@@ -108,12 +108,11 @@ function loadLeagueSlateEntries(leagueId: LeagueId): {
 }
 
 /**
- * Select games for the live slate dashboard using a rolling timestamp window
- * instead of hardcoded daily snapshots.
+ * Select published slate games for the live dashboard.
+ * Homepage grids always surface nine published matchups until noon Eastern the next day.
  */
 export function getLiveSlateGames(options: LiveSlateQueryOptions = {}): LiveSlateResult {
   const now = options.now ?? new Date();
-  const nowMs = now.getTime();
   const leagueIds = options.leagueId
     ? [options.leagueId]
     : activeLiveLeagueIds();
@@ -131,7 +130,6 @@ export function getLiveSlateGames(options: LiveSlateQueryOptions = {}): LiveSlat
     if (leagueNote) leagueNotes.push(leagueNote);
 
     for (const entry of entries) {
-      if (!isWithinLiveSlateWindow(entry, nowMs)) continue;
       const key = `${leagueId}:${entry.gameId}`;
       if (seenGameKeys.has(key)) continue;
       seenGameKeys.add(key);
@@ -146,7 +144,7 @@ export function getLiveSlateGames(options: LiveSlateQueryOptions = {}): LiveSlat
     ? games
     : options.leagueId !== undefined
       ? games.slice(0, limit)
-      : selectHomepageSlateGrid(games);
+      : selectPublishedHomepageSlateGames(games, now, limit);
 
   const liveGames = games.filter(
     (game) => game.status === "live" || game.gamePhase === "live",

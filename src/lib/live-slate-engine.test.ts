@@ -9,6 +9,11 @@ import {
   resolveGameTimestampMs,
 } from "@/lib/live-slate-engine";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
+import {
+  isPublishedSlateGameVisible,
+  selectPublishedHomepageSlateGames,
+  slateRotateAtMs,
+} from "@/lib/overview-slate-shared";
 import { slateHasLiveGames } from "@/lib/use-live-slate";
 
 function entry(
@@ -100,7 +105,27 @@ describe("live-slate-engine", () => {
     );
   });
 
-  it("returns every in-window game when allGames is enabled", () => {
+  it("returns nine published homepage matchups from assignments", () => {
+    const slate = getLiveSlateGames({ now });
+    assert.equal(slate.games.length, 9);
+  });
+
+  it("rotates published slate games after noon Eastern the next day", () => {
+    const game = entry({
+      gameId: "rotate",
+      status: "scheduled",
+      slateDate: "2026-07-21",
+    });
+    const beforeRotate = new Date(slateRotateAtMs("2026-07-21") - 60_000);
+    const afterRotate = new Date(slateRotateAtMs("2026-07-21") + 60_000);
+    assert.equal(isPublishedSlateGameVisible(game, beforeRotate.getTime()), true);
+    assert.equal(isPublishedSlateGameVisible(game, afterRotate.getTime()), false);
+    const selected = selectPublishedHomepageSlateGames([game], beforeRotate, 9);
+    assert.equal(selected.length, 1);
+    assert.equal(selectPublishedHomepageSlateGames([game], afterRotate, 9).length, 0);
+  });
+
+  it("returns every published game when allGames is enabled", () => {
     const slate = getLiveSlateGames({ now, allGames: true });
     const capped = getLiveSlateGames({ now });
     assert.ok(slate.games.length >= capped.games.length);

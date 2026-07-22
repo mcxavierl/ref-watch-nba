@@ -67,7 +67,11 @@ export function useLiveSlate(options?: {
   );
 
   const games =
-    data?.games ?? options?.initialData?.games ?? options?.initialGames ?? [];
+    data?.games && data.games.length > 0
+      ? data.games
+      : options?.initialData?.games && options.initialData.games.length > 0
+        ? options.initialData.games
+        : options?.initialGames ?? [];
   const hasLiveGames = slateHasLiveGames(games);
 
   return {
