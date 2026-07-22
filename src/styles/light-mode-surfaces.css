@@ -329,10 +329,3 @@ html[data-color="light"]:not([data-contrast="high"]) .text-rose-400,
 html.light:not([data-contrast="high"]) .text-rose-400 {
   color: var(--accent-negative);
 }
-
-html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__crew-meta,
-html.light:not([data-contrast="high"]) .upcoming-game-card__crew-meta,
-html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__crew-name,
-html.light:not([data-contrast="high"]) .upcoming-game-card__crew-name {
-  color: var(--text-muted);
-}

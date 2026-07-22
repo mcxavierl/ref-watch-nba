@@ -1,4 +1,5 @@
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { refSlug } from "@/lib/ref-slug";
 import { EMPTY_DISPLAY } from "@/lib/finding-copy";
 import { GSNI_INSUFFICIENT_DATA_LABEL } from "@/lib/gsni-display";
 import { gsniFromRefProfile } from "@/lib/gsni-display";
@@ -86,6 +87,34 @@ export function parseCompareLeagueParam(
 
 export function compareLeagueHref(leagueId: LeagueId): string {
   return `/compare?league=${encodeURIComponent(leagueId)}`;
+}
+
+export function compareSupportsLeague(leagueId: LeagueId): boolean {
+  return COMPARE_LEAGUE_IDS.includes(leagueId);
+}
+
+/** Pre-load the first two assigned officials into /compare (compare-supported leagues only). */
+export function buildCrewCompareHref(
+  leagueId: LeagueId,
+  officials: Array<{ name: string; number: number }>,
+): string | null {
+  if (!compareSupportsLeague(leagueId) || officials.length < 2) {
+    return null;
+  }
+
+  const left = encodeCompareRef(
+    leagueId,
+    refSlug(officials[0].name, officials[0].number),
+  );
+  const right = encodeCompareRef(
+    leagueId,
+    refSlug(officials[1].name, officials[1].number),
+  );
+  const params = new URLSearchParams({
+    a: left,
+    b: right,
+  });
+  return `/compare?${params.toString()}`;
 }
 
 export function encodeCompareRef(leagueId: LeagueId, slug: string): CompareRefKey {

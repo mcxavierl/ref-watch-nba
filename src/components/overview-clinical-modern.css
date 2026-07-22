@@ -240,9 +240,18 @@
   display: none;
 }
 
-/* Upcoming games — dense match cards (shell uses Tailwind for bounds) */
+/* Upcoming games — dense match cards */
 .upcoming-game-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  min-height: 260px;
   min-width: 0;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--upcoming-card-border);
+  background: var(--upcoming-card-bg);
+  box-shadow: var(--upcoming-card-shadow);
   container-type: inline-size;
   --upcoming-matchup-glow-accent: rgb(148 163 184);
   --upcoming-matchup-glow: color-mix(
@@ -258,7 +267,7 @@
   --upcoming-matchup-shadow: 0 0 0 1px color-mix(in srgb, var(--upcoming-matchup-glow) 12%, transparent),
     0 0 26px color-mix(in srgb, var(--upcoming-matchup-glow) 18%, transparent);
   --upcoming-card-border: rgb(30 41 59);
-  --upcoming-card-bg: rgb(2 6 23);
+  --upcoming-card-bg: rgb(15 23 42 / 0.92);
   --upcoming-card-shadow: inset 0 1px 0 rgb(255 255 255 / 0.02);
   --upcoming-cta: rgb(186 198 215);
   --upcoming-cta-hover: rgb(226 232 240);
@@ -306,6 +315,10 @@
   --upcoming-matchup-glow-accent: var(--wnba-orange);
 }
 
+.upcoming-game-card--interactive {
+  cursor: pointer;
+}
+
 .upcoming-game-card:hover {
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--upcoming-matchup-glow-accent) 28%, rgb(51 65 85));
@@ -318,6 +331,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   min-width: 0;
+  flex-shrink: 0;
 }
 
 .upcoming-game-card__header-spacer {
@@ -432,6 +446,7 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  flex-shrink: 0;
   box-sizing: border-box;
   padding: clamp(0.5rem, 4cqi, 0.75rem) clamp(0.45rem, 3cqi, 0.85rem)
     clamp(0.55rem, 4cqi, 0.75rem);
@@ -534,7 +549,7 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1;
-  color: var(--upcoming-ink);
+  color: var(--upcoming-ink-muted);
 }
 
 .upcoming-game-card__context-slot {
@@ -574,7 +589,30 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  padding-bottom: 0.125rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.upcoming-game-card__trend--positive {
+  border-color: rgb(16 185 129 / 0.25);
+  background: rgb(16 185 129 / 0.1);
+  color: rgb(52 211 153);
+}
+
+.upcoming-game-card__trend--caution {
+  border-color: rgb(245 158 11 / 0.28);
+  background: rgb(245 158 11 / 0.1);
+  color: rgb(251 191 36);
+}
+
+.upcoming-game-card__trend--neutral {
+  border-color: rgb(51 65 85);
+  background: rgb(15 23 42 / 0.75);
+  color: rgb(148 163 184);
 }
 
 .upcoming-game-card__signal-row {
@@ -626,6 +664,7 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   gap: 0.5rem;
   margin-top: auto;
   min-width: 0;
+  flex-shrink: 0;
 }
 
 .upcoming-game-card__crew-meta {
@@ -640,7 +679,7 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   font-size: 0.6875rem;
   font-weight: 500;
   line-height: 1.3;
-  color: rgb(100 116 139);
+  color: var(--upcoming-ink-muted);
 }
 
 .upcoming-game-card__crew-role {
@@ -652,13 +691,14 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 600;
-  color: rgb(148 163 184);
+  color: var(--upcoming-ink-body);
 }
 
 .upcoming-game-card__crew-pending {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--upcoming-ink-muted);
 }
 
 .upcoming-game-card__crew-count {
@@ -668,7 +708,7 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   flex-shrink: 0;
   font-size: 0.6875rem;
   font-variant-numeric: tabular-nums;
-  color: rgb(100 116 139);
+  color: var(--upcoming-ink-muted);
 }
 
 .upcoming-game-card__context {
@@ -736,9 +776,64 @@ html.light:not([data-contrast="high"]) .upcoming-game-card {
     0 1px 2px rgb(15 23 42 / 0.06);
 }
 
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card:hover,
+html.light:not([data-contrast="high"]) .upcoming-game-card:hover {
+  border-color: color-mix(in srgb, var(--upcoming-matchup-glow-accent) 24%, #cbd5e1);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--upcoming-matchup-glow-accent) 10%, transparent);
+}
+
 html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__date-label,
-html.light:not([data-contrast="high"]) .upcoming-game-card__date-label {
-  color: #334155;
+html.light:not([data-contrast="high"]) .upcoming-game-card__date-label,
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__date-label--corner,
+html.light:not([data-contrast="high"]) .upcoming-game-card__date-label--corner {
+  color: var(--upcoming-ink-body);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__crew-meta,
+html.light:not([data-contrast="high"]) .upcoming-game-card__crew-meta,
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__crew-name,
+html.light:not([data-contrast="high"]) .upcoming-game-card__crew-name,
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__crew-pending,
+html.light:not([data-contrast="high"]) .upcoming-game-card__crew-pending,
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__crew-count,
+html.light:not([data-contrast="high"]) .upcoming-game-card__crew-count {
+  color: var(--upcoming-ink-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__crew-name,
+html.light:not([data-contrast="high"]) .upcoming-game-card__crew-name {
+  color: var(--upcoming-ink-body);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__cta,
+html.light:not([data-contrast="high"]) .upcoming-game-card__cta {
+  color: var(--upcoming-cta);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__cta:hover,
+html.light:not([data-contrast="high"]) .upcoming-game-card__cta:hover {
+  color: var(--upcoming-cta-hover);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__trend--positive,
+html.light:not([data-contrast="high"]) .upcoming-game-card__trend--positive {
+  border-color: rgb(16 185 129 / 0.22);
+  background: rgb(16 185 129 / 0.08);
+  color: #047857;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__trend--caution,
+html.light:not([data-contrast="high"]) .upcoming-game-card__trend--caution {
+  border-color: rgb(245 158 11 / 0.24);
+  background: rgb(245 158 11 / 0.08);
+  color: #b45309;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__trend--neutral,
+html.light:not([data-contrast="high"]) .upcoming-game-card__trend--neutral {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__league-mark .league-nav-mark,

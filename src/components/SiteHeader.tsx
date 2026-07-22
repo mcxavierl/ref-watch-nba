@@ -51,6 +51,9 @@ export function SiteHeader() {
 
           <div className="site-header-league">
             <LeagueNav />
+            <HeaderNavLink href="/compare" className="site-header-compare-link">
+              Compare
+            </HeaderNavLink>
           </div>
 
           <div className="site-header-util">
