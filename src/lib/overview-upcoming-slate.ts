@@ -84,7 +84,7 @@ function resolveAssignmentSlateStatus(
   return fallback;
 }
 
-function collectLeagueSlateEntries(
+export function collectLeagueSlateEntries(
   leagueId: LeagueId,
   file: AssignmentsFile,
 ): OverviewSlateEntry[] {

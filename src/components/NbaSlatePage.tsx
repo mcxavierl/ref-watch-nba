@@ -123,7 +123,7 @@ export async function NbaSlatePage({
         scopeLabel={scoped.scopeLabel}
       />
 
-      <LeagueHubUpcomingSlateSection slate={upcomingSlate} leagueLabel="NBA" />
+      <LeagueHubUpcomingSlateSection slate={upcomingSlate} leagueLabel="NBA" leagueId="nba" />
 
       {isOffseason && <SlateFeatureShowcase />}
 

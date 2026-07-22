@@ -1,27 +1,28 @@
+"use client";
+
 import { CalendarDays } from "lucide-react";
-import { OverviewSlateGamesInteractive } from "@/components/OverviewSlateGamesInteractive";
+import { LiveSlateGrid } from "@/components/LiveSlateGrid";
 import type { LeagueUpcomingSlate } from "@/lib/overview-upcoming-slate";
 import { formatLeagueSlateCounts } from "@/lib/overview-slate-shared";
+import type { LeagueId } from "@/lib/leagues";
+import { LEAGUE_UPCOMING_SLATE_LIMIT } from "@/lib/overview-upcoming-slate";
 import "@/components/overview-clinical-modern.css";
 import "@/components/overview-dashboard.css";
 
 type LeagueHubUpcomingSlateSectionProps = {
   slate: LeagueUpcomingSlate;
   leagueLabel: string;
+  leagueId: LeagueId;
 };
-
-function formatCount(n: number): string {
-  return n.toLocaleString("en-US");
-}
 
 export function LeagueHubUpcomingSlateSection({
   slate,
   leagueLabel,
+  leagueId,
 }: LeagueHubUpcomingSlateSectionProps) {
   const group = slate.leagueGroup;
   if (!slate.inSeason || !group || group.games.length === 0) return null;
 
-  const matchupCount = group.liveCount + group.scheduledCount;
   const countLabel = formatLeagueSlateCounts(group.liveCount, group.scheduledCount);
 
   return (
@@ -38,9 +39,7 @@ export function LeagueHubUpcomingSlateSection({
           Upcoming games
         </h2>
         <p className="overview-section-lead">
-          {matchupCount > 0
-            ? `${formatCount(matchupCount)} ${leagueLabel} matchup${matchupCount === 1 ? "" : "s"} on the live slate${countLabel ? ` (${countLabel})` : ""}.`
-            : "Live slate updates as assignments publish."}
+          {`${leagueLabel} live slate${countLabel ? ` (${countLabel})` : ""}. Scores and crews refresh automatically.`}
         </p>
       </div>
 
@@ -53,9 +52,14 @@ export function LeagueHubUpcomingSlateSection({
         </ul>
       ) : null}
 
-      <div className="upcoming-games-grid upcoming-games-grid--hub">
-        <OverviewSlateGamesInteractive games={group.games} variant="card" />
-      </div>
+      <LiveSlateGrid
+        initialGames={group.games}
+        leagueId={leagueId}
+        limit={LEAGUE_UPCOMING_SLATE_LIMIT}
+        matchupLabel={`${leagueLabel} matchup`}
+        showHubLink={false}
+        variant="card"
+      />
 
       {slate.lastUpdated ? (
         <p className="overview-slate-updated">
