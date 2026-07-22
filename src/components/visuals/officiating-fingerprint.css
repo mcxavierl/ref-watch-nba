@@ -150,6 +150,8 @@
 }
 
 .officiating-fingerprint-tab {
+  display: inline-flex;
+  align-items: center;
   border: 1px solid rgb(51 65 85);
   background: rgb(15 23 42);
   color: rgb(148 163 184);
@@ -157,6 +159,7 @@
   padding: 0.25rem 0.65rem;
   font-size: 0.6875rem;
   font-weight: 600;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -168,6 +171,22 @@
 
 .officiating-fingerprint-tabpanel {
   margin-top: 0.75rem;
+}
+
+.officiating-fingerprint-profile-link-wrap {
+  margin: 0.75rem 0 0;
+  text-align: center;
+}
+
+.officiating-fingerprint-profile-link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgb(52 211 153);
+  text-decoration: none;
+}
+
+.officiating-fingerprint-profile-link:hover {
+  text-decoration: underline;
 }
 
 .officiating-fingerprint--compact .officiating-fingerprint-label {
