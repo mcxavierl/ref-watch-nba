@@ -42,6 +42,7 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
             fetchedAt: upcomingSlate.lastUpdated ?? new Date().toISOString(),
           }}
           initialGames={upcomingSlate.games}
+          limit={9}
           matchupLabel="matchup"
         />
       ) : (

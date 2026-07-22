@@ -74,6 +74,51 @@ export const LEAGUE_UPCOMING_SLATE_LIMIT = 6;
 /** Homepage grid: 3×3 upcoming cards. */
 export const HOMEPAGE_SLATE_GRID_SIZE = 9;
 
+/** Noon Eastern on the day after `slateDate` (slate rotates forward). */
+export function slateRotateAtMs(slateDate: string): number {
+  const [year, month, day] = slateDate.split("-").map(Number);
+  if (!year || !month || !day) return Number.MAX_SAFE_INTEGER;
+  // Noon Eastern ≈ 16:00 UTC during EDT, 17:00 UTC during EST.
+  return Date.UTC(year, month - 1, day + 1, 16, 0, 0);
+}
+
+/** Published slate games stay visible until noon Eastern the following day. */
+export function isPublishedSlateGameVisible(
+  entry: OverviewSlateEntry,
+  nowMs: number,
+): boolean {
+  if (entry.status === "live" || entry.gamePhase === "live") return true;
+  if (!entry.slateDate) return true;
+  return nowMs < slateRotateAtMs(entry.slateDate);
+}
+
+/**
+ * Pick up to nine published matchups for the homepage grid.
+ * Prefers active slate-day games, then backfills with the next published entries.
+ */
+export function selectPublishedHomepageSlateGames(
+  games: OverviewSlateEntry[],
+  now: Date = new Date(),
+  limit = HOMEPAGE_SLATE_GRID_SIZE,
+): OverviewSlateEntry[] {
+  const nowMs = now.getTime();
+  const visible = sortSlateChronology(games).filter((game) =>
+    isPublishedSlateGameVisible(game, nowMs),
+  );
+  const selected: OverviewSlateEntry[] = [];
+  const seen = new Set<string>();
+
+  for (const game of visible) {
+    const key = `${game.leagueId}:${game.gameId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    selected.push(game);
+    if (selected.length >= limit) break;
+  }
+
+  return selected;
+}
+
 export function formatLeagueSlateCounts(liveCount: number, scheduledCount: number): string {
   const parts: string[] = [];
   if (liveCount > 0) {
