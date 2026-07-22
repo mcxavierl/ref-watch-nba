@@ -132,6 +132,25 @@ describe("live-slate-engine", () => {
     );
   });
 
+  it("expands into upcoming days when the 6-hour lookback has fewer than nine games", () => {
+    const near = entry({
+      gameId: "near",
+      status: "scheduled",
+      slateStartAt: new Date(nowMs + 2 * 60 * 60 * 1000).toISOString(),
+    });
+    const far = entry({
+      gameId: "far",
+      status: "scheduled",
+      slateStartAt: new Date(nowMs + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    });
+
+    const selected = selectPublishedHomepageSlateGames([near, far], now, 9);
+    assert.deepEqual(
+      selected.map((game) => game.gameId),
+      ["near", "far"],
+    );
+  });
+
   it("returns nine published homepage matchups from assignments", () => {
     const slate = buildOverviewUpcomingSlate();
     assert.equal(slate.games.length, 9);

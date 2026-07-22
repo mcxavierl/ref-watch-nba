@@ -9,7 +9,7 @@ type OverviewIntelligenceHeroProps = {
 
 export function OverviewIntelligenceHero({ data }: OverviewIntelligenceHeroProps) {
   const metrics = buildDatasetMoatMetrics(data);
-  const matchupCount = data.upcomingSlate.totalGames + data.upcomingSlate.totalScheduled;
+  const matchupCount = data.upcomingSlate.games.length;
 
   return (
     <div className="overview-intelligence-hero space-y-4">

@@ -5,7 +5,8 @@ import { OverviewIntelligenceHero } from "@/components/OverviewIntelligenceHero"
 import { OverviewSecondaryTabs } from "@/components/OverviewSecondaryTabs";
 import { PageContentFadeIn } from "@/components/PageContentFadeIn";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
-import { buildOverviewUpcomingSlate } from "@/lib/overview-upcoming-slate";
+import { getLiveSlateGames } from "@/lib/live-slate-engine";
+import { HOMEPAGE_SLATE_GRID_SIZE } from "@/lib/overview-slate-shared";
 import { buildPageMetadata, homepageWebPageJsonLd } from "@/lib/seo";
 import { SITE_HOME_PATH } from "@/lib/leagues";
 
@@ -28,7 +29,7 @@ export const metadata = buildPageMetadata({
 
 export default function HomePage() {
   const snapshot = loadOverviewSnapshot();
-  const upcomingSlate = buildOverviewUpcomingSlate();
+  const upcomingSlate = getLiveSlateGames({ limit: HOMEPAGE_SLATE_GRID_SIZE });
   const data = {
     ...snapshot,
     upcomingSlate,

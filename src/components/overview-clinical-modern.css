@@ -570,6 +570,11 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   flex-shrink: 0;
   line-height: 1.45;
   overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  padding-bottom: 0.125rem;
 }
 
 .upcoming-game-card__signal-row {
