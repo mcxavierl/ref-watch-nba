@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   compareLiveSlatePriority,
+  getLiveSlateGames,
   isWithinLiveSlateWindow,
   LIVE_SLATE_LOOKAHEAD_MS,
   LIVE_SLATE_LOOKBACK_MS,
@@ -97,6 +98,12 @@ describe("live-slate-engine", () => {
       games.map((game) => game.gameId),
       ["live", "upcoming", "final"],
     );
+  });
+
+  it("returns every in-window game when allGames is enabled", () => {
+    const slate = getLiveSlateGames({ now, allGames: true });
+    const capped = getLiveSlateGames({ now });
+    assert.ok(slate.games.length >= capped.games.length);
   });
 });
 

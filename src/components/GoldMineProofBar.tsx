@@ -8,19 +8,18 @@ export function GoldMineProofBar({ metrics }: GoldMineProofBarProps) {
   if (metrics.length === 0) return null;
 
   return (
-    <div className="gold-mine-proof-bar" aria-label="Dataset coverage metrics">
-      <div className="gold-mine-proof-bar-inner">
-        {metrics.map((metric, index) => (
-          <span key={metric.id} className="gold-mine-proof-bar-item text-xs text-slate-400">
-            <span className="gold-mine-proof-bar-value">{metric.value}</span> {metric.label}
-            {index < metrics.length - 1 ? (
-              <span className="gold-mine-proof-bar-sep" aria-hidden>
-                |
-              </span>
-            ) : null}
-          </span>
-        ))}
-      </div>
+    <div
+      className="gold-mine-proof-bar grid grid-cols-2 gap-4 border-y border-slate-800/60 py-4 text-center md:grid-cols-4"
+      aria-label="Dataset coverage metrics"
+    >
+      {metrics.map((metric) => (
+        <div key={metric.id} className="gold-mine-proof-bar-metric">
+          <p className="gold-mine-proof-bar-value text-lg font-semibold tabular-nums text-slate-100">
+            {metric.value}
+          </p>
+          <p className="gold-mine-proof-bar-label text-xs text-slate-400">{metric.label}</p>
+        </div>
+      ))}
     </div>
   );
 }

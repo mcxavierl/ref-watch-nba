@@ -4831,23 +4831,6 @@ p {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
-  .league-nav-link--on-slate:not(.league-nav-link--active) {
-    border-color: color-mix(in srgb, rgb(52 211 153) 28%, transparent);
-    box-shadow: 0 0 0 1px color-mix(in srgb, rgb(52 211 153) 12%, transparent);
-  }
-
-  .league-nav-link--on-slate .league-nav-label::after {
-    content: "";
-    display: inline-block;
-    width: 0.35rem;
-    height: 0.35rem;
-    margin-left: 0.35rem;
-    border-radius: 999px;
-    background: rgb(52 211 153);
-    box-shadow: 0 0 8px rgb(52 211 153 / 0.55);
-    vertical-align: middle;
-  }
-
   html[data-color="light"]:not([data-contrast="high"]) .league-nav-link--active {
     background: color-mix(in srgb, var(--header-pill-accent) 10%, #ffffff);
     border-color: color-mix(in srgb, var(--header-pill-accent) 22%, #e2e8f0);

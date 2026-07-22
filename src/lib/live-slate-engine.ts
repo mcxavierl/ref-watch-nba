@@ -26,6 +26,8 @@ export type LiveSlateQueryOptions = {
   now?: Date;
   leagueId?: LeagueId;
   limit?: number;
+  /** When true, return every game in the rolling window (not just the homepage grid). */
+  allGames?: boolean;
 };
 
 export type LiveSlateResult = OverviewUpcomingSlate & {
@@ -140,8 +142,9 @@ export function getLiveSlateGames(options: LiveSlateQueryOptions = {}): LiveSlat
   games.sort(compareLiveSlatePriority);
 
   const limit = options.limit ?? HOMEPAGE_SLATE_GRID_SIZE;
-  const limitedGames =
-    options.leagueId !== undefined
+  const limitedGames = options.allGames
+    ? games
+    : options.leagueId !== undefined
       ? games.slice(0, limit)
       : selectHomepageSlateGrid(games);
 

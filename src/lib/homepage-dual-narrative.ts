@@ -41,9 +41,35 @@ function formatCompactCount(value: number): string {
   }
   if (value >= 1_000) {
     const thousands = value / 1_000;
-    return `${thousands >= 100 ? Math.round(thousands) : Math.round(thousands)}k`;
+    if (thousands >= 100) return `${Math.round(thousands)}k`;
+    return `${thousands.toFixed(1)}k`;
   }
   return value.toLocaleString("en-US");
+}
+
+export function buildDatasetMoatMetrics(data: CrossLeagueOverview): DatasetMoatMetric[] {
+  return [
+    {
+      id: "games",
+      value: formatCompactCount(data.totalGames),
+      label: "Games Indexed (7 Leagues)",
+    },
+    {
+      id: "decisions",
+      value: `${formatCompactCount(data.whistleEventsLogged)}+`,
+      label: "Historical Decisions",
+    },
+    {
+      id: "officials",
+      value: data.totalRefs.toLocaleString("en-US"),
+      label: "Active Officials",
+    },
+    {
+      id: "crews",
+      value: formatCompactCount(estimateCrewCombinations(data.totalRefs)),
+      label: "Crew Combos Modeled",
+    },
+  ];
 }
 
 function edgeCandidateScore(game: OverviewSlateEntry): number {
@@ -119,31 +145,6 @@ export function buildTodaysBiggestEdgeView(
     preview: top.preview,
     evidence,
   };
-}
-
-export function buildDatasetMoatMetrics(data: CrossLeagueOverview): DatasetMoatMetric[] {
-  return [
-    {
-      id: "games",
-      value: data.totalGames.toLocaleString("en-US"),
-      label: "Games Indexed (NBA & NHL)",
-    },
-    {
-      id: "decisions",
-      value: `${formatCompactCount(data.whistleEventsLogged)}+`,
-      label: "Historical Decisions Analyzed",
-    },
-    {
-      id: "officials",
-      value: data.totalRefs.toLocaleString("en-US"),
-      label: "Active Officials Profiled",
-    },
-    {
-      id: "crews",
-      value: `${estimateCrewCombinations(data.totalRefs).toLocaleString("en-US")}+`,
-      label: "Crew Combinations Modeled",
-    },
-  ];
 }
 
 export function buildHomepageIntelligenceTickerItems(data: CrossLeagueOverview) {

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { A11ySettingsPanel } from "@/components/A11ySettingsPanel";
-import { CommandPaletteTrigger } from "@/components/CommandPaletteTrigger";
 import { LeagueSectionNav } from "@/components/LeagueSectionNav";
 import { Whistle } from "@/components/icons/Whistle";
 import {
@@ -55,7 +54,6 @@ export function SiteHeader() {
           </div>
 
           <div className="site-header-util">
-            <CommandPaletteTrigger />
             <A11ySettingsPanel />
           </div>
 
