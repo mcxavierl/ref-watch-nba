@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { preloadAssignmentsForLiveSlate } from "@/lib/assignments-preload";
 import { preloadLeagueDataForPath } from "@/lib/edge-preload";
 import {
   preloadGameLogsFromAssets,
@@ -35,6 +36,11 @@ export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
   // Overview hub reads bundled snapshot JSON — skip multi-league ref-stats preload
   // (cold Workers were 500/1019 when parsing five ref-stats payloads per request).
   if (path === "/" || path.startsWith("/overview")) {
+    try {
+      await preloadAssignmentsForLiveSlate(SITE_URL);
+    } catch (error) {
+      console.error("[refwatch] homepage assignments hydration failed", error);
+    }
     return;
   }
 

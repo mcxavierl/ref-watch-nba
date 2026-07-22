@@ -1,3 +1,4 @@
+import { preloadAssignmentsForLiveSlate } from "@/lib/assignments-preload";
 import { getLiveSlateGames } from "@/lib/live-slate-engine";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
@@ -17,6 +18,9 @@ function parseLeagueId(value: string | null): LeagueId | undefined {
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
+  const origin = new URL(request.url).origin;
+  await preloadAssignmentsForLiveSlate(origin);
+
   const leagueId = parseLeagueId(searchParams.get("league"));
   const limitParam = searchParams.get("limit");
   const limit = limitParam ? Number.parseInt(limitParam, 10) : undefined;
