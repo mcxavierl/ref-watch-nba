@@ -69,18 +69,19 @@ export function LeagueNavMark({ league, active = false }: LeagueNavMarkProps) {
   const { width, height } = leagueNavMarkDimensions(league);
 
   return (
-    <img
-      src={src}
-      alt=""
-      aria-hidden
-      className={`league-nav-mark${className ? ` ${className}` : ""}${active ? " league-nav-mark--on-pill" : ""}`}
-      data-league={league}
-      width={width}
-      height={height}
-      decoding="async"
-      referrerPolicy="no-referrer"
-      onError={() => setFailed(true)}
-    />
+    <span className="league-nav-mark-wrap" data-league={league} aria-hidden>
+      <img
+        src={src}
+        alt=""
+        className={`league-nav-mark${className ? ` ${className}` : ""}${active ? " league-nav-mark--on-pill" : ""}`}
+        data-league={league}
+        width={width}
+        height={height}
+        decoding="async"
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+      />
+    </span>
   );
 }
 
