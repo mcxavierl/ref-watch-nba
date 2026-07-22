@@ -1,8 +1,16 @@
+.evidence-drawer {
+  container-type: inline-size;
+  container-name: evidence-drawer;
+  min-width: 0;
+}
+
 .evidence-drawer-card {
   border: 1px solid var(--border-default);
   border-radius: 0.9rem;
   background: color-mix(in srgb, var(--bg-surface-2) 88%, transparent);
   padding: 1rem;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .evidence-drawer-header {
@@ -70,14 +78,18 @@
 
 .evidence-driver-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.85rem;
   margin-bottom: 1rem;
 }
 
-@media (min-width: 768px) {
+.evidence-driver-column {
+  min-width: 0;
+}
+
+@container evidence-drawer (min-width: 36rem) {
   .evidence-driver-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -100,10 +112,13 @@
 .evidence-driver-card {
   border-radius: 0.65rem;
   padding: 0.55rem 0.65rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .evidence-driver-card-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.45rem;
   margin-bottom: 0.3rem;
@@ -114,6 +129,8 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .evidence-driver-headline {
@@ -121,6 +138,7 @@
   font-size: 0.8rem;
   line-height: 1.35;
   color: var(--text-primary);
+  overflow-wrap: anywhere;
 }
 
 .evidence-driver-empty {
@@ -152,6 +170,10 @@
 .evidence-impact-badge--low {
   background: color-mix(in srgb, var(--text-muted) 18%, transparent);
   color: var(--text-secondary);
+}
+
+.evidence-contribution {
+  min-width: 0;
 }
 
 .evidence-contribution-track {
@@ -214,6 +236,7 @@
 .evidence-tooltip-trigger {
   display: block;
   width: 100%;
+  min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
