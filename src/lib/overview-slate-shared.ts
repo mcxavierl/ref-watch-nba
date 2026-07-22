@@ -74,6 +74,82 @@ export const LEAGUE_UPCOMING_SLATE_LIMIT = 6;
 /** Homepage grid: 3×3 upcoming cards. */
 export const HOMEPAGE_SLATE_GRID_SIZE = 9;
 
+/** Include live games and finals from the last 6 hours. */
+export const LIVE_SLATE_LOOKBACK_MS = 6 * 60 * 60 * 1000;
+
+/** Include upcoming games starting within the next 30 hours. */
+export const LIVE_SLATE_LOOKAHEAD_MS = 30 * 60 * 60 * 1000;
+
+/** Resolve kickoff timestamp used for rolling window filters. */
+export function resolveGameTimestampMs(
+  entry: Pick<OverviewSlateEntry, "slateStartAt" | "slateDate">,
+): number | null {
+  if (entry.slateStartAt) {
+    const parsed = Date.parse(entry.slateStartAt);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  if (entry.slateDate) {
+    const parsed = Date.parse(`${entry.slateDate}T12:00:00Z`);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return null;
+}
+
+/** Rolling window: now - 6h through now + 30h. Live/final games bypass the upper bound. */
+export function isWithinLiveSlateWindow(
+  entry: OverviewSlateEntry,
+  nowMs: number,
+): boolean {
+  if (entry.status === "live" || entry.gamePhase === "live") return true;
+
+  const timestampMs = resolveGameTimestampMs(entry);
+  const windowStart = nowMs - LIVE_SLATE_LOOKBACK_MS;
+  const windowEnd = nowMs + LIVE_SLATE_LOOKAHEAD_MS;
+
+  if (entry.status === "final" || entry.gamePhase === "final") {
+    if (timestampMs === null) return true;
+    return timestampMs >= windowStart;
+  }
+
+  if (timestampMs === null) return true;
+  return timestampMs >= windowStart && timestampMs <= windowEnd;
+}
+
+/**
+ * Pick homepage slate cards from the rolling window.
+ * When nothing is in progress, surfaces upcoming scheduled matchups instead of an empty grid.
+ * Falls back to published assignments when the window is empty.
+ */
+export function selectHomepageLiveSlateGames(
+  games: OverviewSlateEntry[],
+  now: Date = new Date(),
+  limit = HOMEPAGE_SLATE_GRID_SIZE,
+): OverviewSlateEntry[] {
+  const nowMs = now.getTime();
+  const inWindow = sortSlateChronology(
+    games.filter((game) => isWithinLiveSlateWindow(game, nowMs)),
+  );
+
+  const liveGames = inWindow.filter(
+    (game) => game.status === "live" || game.gamePhase === "live",
+  );
+  const upcomingGames = inWindow.filter(
+    (game) => game.status === "scheduled" && game.gamePhase !== "live",
+  );
+
+  let selected: OverviewSlateEntry[];
+  if (liveGames.length > 0) {
+    selected = inWindow.slice(0, limit);
+  } else if (upcomingGames.length > 0) {
+    selected = upcomingGames.slice(0, limit);
+  } else {
+    selected = inWindow.slice(0, limit);
+  }
+
+  if (selected.length > 0) return selected;
+  return selectPublishedHomepageSlateGames(games, now, limit);
+}
+
 /** Noon Eastern on the day after `slateDate` (slate rotates forward). */
 export function slateRotateAtMs(slateDate: string): number {
   const [year, month, day] = slateDate.split("-").map(Number);

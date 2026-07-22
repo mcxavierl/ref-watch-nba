@@ -10,17 +10,22 @@ import {
   compareSlateChronology,
   groupOverviewSlateByLeague,
   HOMEPAGE_SLATE_GRID_SIZE,
-  selectPublishedHomepageSlateGames,
+  isWithinLiveSlateWindow,
+  LIVE_SLATE_LOOKAHEAD_MS,
+  LIVE_SLATE_LOOKBACK_MS,
+  resolveGameTimestampMs,
+  selectHomepageLiveSlateGames,
   type OverviewSlateEntry,
   type OverviewUpcomingSlate,
 } from "@/lib/overview-slate-shared";
 import type { AssignmentsFile } from "@/lib/types";
 
-/** Include live games and finals from the last 6 hours. */
-export const LIVE_SLATE_LOOKBACK_MS = 6 * 60 * 60 * 1000;
-
-/** Include upcoming games starting within the next 30 hours. */
-export const LIVE_SLATE_LOOKAHEAD_MS = 30 * 60 * 60 * 1000;
+export {
+  LIVE_SLATE_LOOKAHEAD_MS,
+  LIVE_SLATE_LOOKBACK_MS,
+  isWithinLiveSlateWindow,
+  resolveGameTimestampMs,
+} from "@/lib/overview-slate-shared";
 
 export type LiveSlateQueryOptions = {
   now?: Date;
@@ -38,41 +43,6 @@ function assignmentsPath(leagueId: LeagueId): string {
   const root = process.cwd();
   if (leagueId === "nba") return path.join(root, "data/assignments.json");
   return path.join(root, "data", leagueId, "assignments.json");
-}
-
-/** Resolve kickoff timestamp used for rolling window filters. */
-export function resolveGameTimestampMs(
-  entry: Pick<OverviewSlateEntry, "slateStartAt" | "slateDate">,
-): number | null {
-  if (entry.slateStartAt) {
-    const parsed = Date.parse(entry.slateStartAt);
-    if (Number.isFinite(parsed)) return parsed;
-  }
-  if (entry.slateDate) {
-    const parsed = Date.parse(`${entry.slateDate}T12:00:00Z`);
-    if (Number.isFinite(parsed)) return parsed;
-  }
-  return null;
-}
-
-/** Rolling window: now - 6h through now + 30h. Live/final games bypass the upper bound. */
-export function isWithinLiveSlateWindow(
-  entry: OverviewSlateEntry,
-  nowMs: number,
-): boolean {
-  if (entry.status === "live" || entry.gamePhase === "live") return true;
-
-  const timestampMs = resolveGameTimestampMs(entry);
-  const windowStart = nowMs - LIVE_SLATE_LOOKBACK_MS;
-  const windowEnd = nowMs + LIVE_SLATE_LOOKAHEAD_MS;
-
-  if (entry.status === "final" || entry.gamePhase === "final") {
-    if (timestampMs === null) return true;
-    return timestampMs >= windowStart;
-  }
-
-  if (timestampMs === null) return true;
-  return timestampMs >= windowStart && timestampMs <= windowEnd;
 }
 
 /** Status priority: LIVE first, UPCOMING second, FINAL third; then kickoff ascending. */
@@ -108,16 +78,17 @@ function loadLeagueSlateEntries(leagueId: LeagueId): {
 }
 
 /**
- * Select published slate games for the live dashboard.
- * Homepage grids always surface nine published matchups until noon Eastern the next day.
+ * Select slate games for the live dashboard using a rolling kickoff window.
+ * Homepage grids surface live crews first, then upcoming scheduled matchups in-window.
  */
 export function getLiveSlateGames(options: LiveSlateQueryOptions = {}): LiveSlateResult {
   const now = options.now ?? new Date();
+  const nowMs = now.getTime();
   const leagueIds = options.leagueId
     ? [options.leagueId]
     : activeLiveLeagueIds();
 
-  const games: OverviewSlateEntry[] = [];
+  const allGames: OverviewSlateEntry[] = [];
   const seenGameKeys = new Set<string>();
   const leagueNotes: OverviewUpcomingSlate["leagueNotes"] = [];
   let lastUpdated: string | null = null;
@@ -133,34 +104,35 @@ export function getLiveSlateGames(options: LiveSlateQueryOptions = {}): LiveSlat
       const key = `${leagueId}:${entry.gameId}`;
       if (seenGameKeys.has(key)) continue;
       seenGameKeys.add(key);
-      games.push(entry);
+      allGames.push(entry);
     }
   }
 
-  games.sort(compareLiveSlatePriority);
+  allGames.sort(compareLiveSlatePriority);
 
+  const windowedGames = allGames.filter((game) => isWithinLiveSlateWindow(game, nowMs));
   const limit = options.limit ?? HOMEPAGE_SLATE_GRID_SIZE;
   const limitedGames = options.allGames
-    ? games
+    ? windowedGames
     : options.leagueId !== undefined
-      ? games.slice(0, limit)
-      : selectPublishedHomepageSlateGames(games, now, limit);
+      ? windowedGames.slice(0, limit)
+      : selectHomepageLiveSlateGames(allGames, now, limit);
 
-  const liveGames = games.filter(
+  const liveGames = windowedGames.filter(
     (game) => game.status === "live" || game.gamePhase === "live",
   );
-  const scheduledGames = games.filter(
+  const scheduledGames = windowedGames.filter(
     (game) => game.status === "scheduled" && game.gamePhase !== "live",
   );
 
   return {
-    inSeason: games.length > 0,
+    inSeason: allGames.length > 0,
     hasLiveCrews: liveGames.length > 0,
     totalGames: liveGames.length,
     totalScheduled: scheduledGames.length,
     lastUpdated,
     games: limitedGames,
-    leagueGroups: groupOverviewSlateByLeague(games),
+    leagueGroups: groupOverviewSlateByLeague(windowedGames),
     leagueNotes,
     fetchedAt: now.toISOString(),
   };

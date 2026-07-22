@@ -3,14 +3,15 @@ import { describe, it } from "node:test";
 import {
   compareLiveSlatePriority,
   getLiveSlateGames,
-  isWithinLiveSlateWindow,
-  LIVE_SLATE_LOOKAHEAD_MS,
-  LIVE_SLATE_LOOKBACK_MS,
-  resolveGameTimestampMs,
 } from "@/lib/live-slate-engine";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import {
   isPublishedSlateGameVisible,
+  isWithinLiveSlateWindow,
+  LIVE_SLATE_LOOKAHEAD_MS,
+  LIVE_SLATE_LOOKBACK_MS,
+  resolveGameTimestampMs,
+  selectHomepageLiveSlateGames,
   selectPublishedHomepageSlateGames,
   slateRotateAtMs,
 } from "@/lib/overview-slate-shared";
@@ -102,6 +103,26 @@ describe("live-slate-engine", () => {
     assert.deepEqual(
       games.map((game) => game.gameId),
       ["live", "upcoming", "final"],
+    );
+  });
+
+  it("surfaces upcoming scheduled matchups when nothing is in progress", () => {
+    const upcoming = [
+      entry({
+        gameId: "soon-1",
+        status: "scheduled",
+        slateStartAt: new Date(nowMs + 2 * 60 * 60 * 1000).toISOString(),
+      }),
+      entry({
+        gameId: "soon-2",
+        status: "scheduled",
+        slateStartAt: new Date(nowMs + 4 * 60 * 60 * 1000).toISOString(),
+      }),
+    ];
+    const selected = selectHomepageLiveSlateGames(upcoming, now, 9);
+    assert.deepEqual(
+      selected.map((game) => game.gameId),
+      ["soon-1", "soon-2"],
     );
   });
 
