@@ -108,4 +108,41 @@ describe("slate intelligence", () => {
     assert.match(intel.verdictHeadline, /high whistle/i);
     assert.ok(intel.confidencePct > 0);
   });
+
+  it("computes real confidence when crew sample gate is partial", () => {
+    const intel = buildSlateGameIntelligence(
+      baseGame({
+        preview: preview({
+          insufficientSample: true,
+          sampleGames: 46,
+          avgFouls: 35.3,
+          foulsDelta: 1.3,
+        }),
+      }),
+    );
+
+    assert.notEqual(intel.confidencePct, 42);
+    assert.notEqual(intel.evidenceScore, 4.2);
+    assert.ok(intel.confidencePct > 0);
+    assert.ok(intel.evidenceScore > 0);
+    assert.equal(intel.expectedWhistles > 0, true);
+  });
+
+  it("returns zeroed fallback when preview has no actionable metrics", () => {
+    const intel = buildSlateGameIntelligence(
+      baseGame({
+        preview: preview({
+          insufficientSample: true,
+          sampleGames: 0,
+          avgFouls: 0,
+          foulsDelta: 0,
+          crew: [],
+          awaitingCrew: true,
+        }),
+      }),
+    );
+
+    assert.equal(intel.confidencePct, 0);
+    assert.equal(intel.evidenceScore, 0);
+  });
 });

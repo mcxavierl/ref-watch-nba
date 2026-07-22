@@ -135,9 +135,21 @@ function resolveCrewChiefName(game: OverviewSlateEntry): string | undefined {
   return chief?.name ?? game.headRef;
 }
 
+function previewHasActionableMetrics(preview: GameSlatePreviewPayload): boolean {
+  if (preview.awaitingCrew && preview.crew.length === 0) {
+    return preview.sampleGames > 0 || Math.abs(preview.foulsDelta) >= 0.05;
+  }
+  return (
+    preview.sampleGames > 0 ||
+    preview.avgFouls > 0 ||
+    Math.abs(preview.foulsDelta) >= 0.05 ||
+    preview.crew.length > 0
+  );
+}
+
 function fallbackIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
   const status = statusForGame(game);
-  const stars = starRatingFromConfidence(42);
+  const stars = starRatingFromConfidence(0);
   return {
     personality: "neutral",
     verdictHeadline: verdictHeadline("neutral"),
@@ -145,8 +157,8 @@ function fallbackIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
     leagueAvgWhistles: 0,
     whistleDelta: 0,
     whistleDeltaLabel: formatSigned(0),
-    confidencePct: 42,
-    evidenceScore: 4.2,
+    confidencePct: 0,
+    evidenceScore: 0,
     starRating: stars.rating,
     starDisplay: stars.display,
     statusLabel: status.label,
@@ -169,7 +181,7 @@ export function buildSlateGameIntelligence(
   game: OverviewSlateEntry,
 ): SlateGameIntelligence {
   const preview = game.preview;
-  if (!preview || preview.insufficientSample) {
+  if (!preview || !previewHasActionableMetrics(preview)) {
     return fallbackIntelligence(game);
   }
 
