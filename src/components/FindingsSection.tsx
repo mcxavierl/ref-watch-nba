@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { Suspense } from "react";
 import { SeasonScopeToggle } from "@/components/SeasonScopeToggle";
 import { SeasonScopeToggleSkeleton } from "@/components/LayoutShiftSkeletons";

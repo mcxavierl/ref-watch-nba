@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { FindingFooterLinks } from "@/components/FindingAccordion";
 import { JsonLd } from "@/components/JsonLd";

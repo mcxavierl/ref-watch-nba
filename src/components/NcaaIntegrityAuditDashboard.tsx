@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { ShieldCheck } from "lucide-react";
 import { CBB_LEAGUE_ENTRY, CFB_LEAGUE_ENTRY } from "@/config/leagues";
 import { ClinicalMetricCard } from "@/components/hub/ClinicalMetricCard";

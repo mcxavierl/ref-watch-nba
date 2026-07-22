@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { RefTrendSparkline } from "@/components/team-hub/RefTrendSparkline";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import type { NextGameWatch, QuickAlert } from "@/lib/team-insight-hub";

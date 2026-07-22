@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { PrefetchLink } from "@/components/PrefetchLink";
+import { navigateToHref } from "@/lib/hard-navigation";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";
@@ -28,7 +28,6 @@ export function OverviewQuickLists({
   leagueCards,
   insightCards,
 }: OverviewQuickListsProps) {
-  const router = useRouter();
   const [activeLeague, setActiveLeague] = useState<LeagueId>(defaultLeagueId);
   const [selectedListId, setSelectedListId] = useState<string>(DEFAULT_LIST_ID);
   const [teamFilter, setTeamFilter] = useState("all");
@@ -61,7 +60,7 @@ export function OverviewQuickLists({
 
   const handleListSelect = (list: OverviewQuickList) => {
     if (selectedListId === list.id) {
-      router.push(list.href);
+      navigateToHref(list.href);
       return;
     }
     setSelectedListId(list.id);
@@ -160,14 +159,14 @@ export function OverviewQuickLists({
               </select>
             </p>
           </div>
-          <Link
+          <PrefetchLink
             href={selectedList.href}
             className="overview-quicklists-open-btn"
             aria-label={`Open ${selectedList.label} for ${league.shortLabel}`}
           >
             Open {selectedList.label}
             <ArrowRight className="overview-quick-list-arrow" aria-hidden />
-          </Link>
+          </PrefetchLink>
         </div>
       ) : null}
     </section>

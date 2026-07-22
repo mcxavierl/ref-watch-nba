@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { memo, useState, type CSSProperties } from "react";
 import {
   ArrowRight,
@@ -204,18 +204,18 @@ function CarouselInsightCard({
 
             <div className="overview-top-story-actions">
               {card.links[0] ? (
-                <Link href={card.links[0].href} className="overview-top-story-link">
+                <PrefetchLink href={card.links[0].href} className="overview-top-story-link">
                   {card.links[0].label}
                   <ArrowRight aria-hidden />
-                </Link>
+                </PrefetchLink>
               ) : null}
               {showHubLink ? (
-                <Link
+                <PrefetchLink
                   href={leagueHubHref(card.leagueId)}
                   className="overview-top-story-link overview-top-story-link--muted"
                 >
                   Open {card.shortLabel} hub
-                </Link>
+                </PrefetchLink>
               ) : null}
             </div>
           </div>
@@ -352,21 +352,21 @@ function EditorialInsightCard({
 
         <footer className="insight-editorial-footer pt-3 border-t border-slate-800/60">
           {primaryLink ? (
-            <Link
+            <PrefetchLink
               href={primaryLink.href}
               className="insight-editorial-link text-xs text-slate-400 hover:text-emerald-400 font-mono transition-colors"
             >
               {primaryLink.label}
               <ArrowRight aria-hidden />
-            </Link>
+            </PrefetchLink>
           ) : null}
           {showHubLink ? (
-            <Link
+            <PrefetchLink
               href={leagueHubHref(card.leagueId)}
               className="insight-editorial-link insight-editorial-link--muted text-xs text-slate-400 hover:text-emerald-400 font-mono transition-colors"
             >
               Open {card.shortLabel} hub
-            </Link>
+            </PrefetchLink>
           ) : null}
         </footer>
       </InsightCardShell>
@@ -490,14 +490,14 @@ function InlineInsightCard({
 
         <footer className="insight-card-footer">
           {card.links.map((link, linkIndex) => (
-            <Link
+            <PrefetchLink
               key={link.href}
               href={link.href}
               className="insight-card-link"
             >
               {link.label}
               {linkIndex === 0 ? <ArrowRight aria-hidden /> : null}
-            </Link>
+            </PrefetchLink>
           ))}
         </footer>
       </InsightCardShell>

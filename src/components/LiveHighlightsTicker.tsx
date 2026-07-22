@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Flame, TrendingDown, TrendingUp } from "lucide-react";
 import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
@@ -31,9 +31,9 @@ function TickerChip({ item }: { item: LiveHighlightTickerItem }) {
 
   if (item.href) {
     return (
-      <Link href={item.href} className="live-highlights-ticker-item rw-focus-ring">
+      <PrefetchLink href={item.href} className="live-highlights-ticker-item rw-focus-ring">
         {body}
-      </Link>
+      </PrefetchLink>
     );
   }
 

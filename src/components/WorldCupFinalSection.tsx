@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import type { ReactNode } from "react";
 import { Trophy } from "lucide-react";
 import { MatchStatusPill } from "@/components/hub/MatchStatusPill";

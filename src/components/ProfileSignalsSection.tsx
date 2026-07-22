@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import type { ProfileSignal, ProfileSignalsBundle } from "@/lib/profile-signals";
 import { NotableInsightBadge } from "@/components/hub/NotableInsightBadge";
 import { StatCardShareButton } from "@/components/StatCardShareButton";

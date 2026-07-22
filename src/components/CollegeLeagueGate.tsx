@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { StatusBadge } from "@/components/hub/StatusBadge";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
 import { NCAA_INTEGRITY_AUDIT_HREF } from "@/lib/ncaa-audit-status-display";

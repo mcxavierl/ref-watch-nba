@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";

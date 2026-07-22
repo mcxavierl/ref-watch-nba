@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { ArrowRight } from "lucide-react";
 import { FindingCategoryPillLabel } from "@/components/FindingCategoryPillLabel";
 import { EdgeFinderCell } from "@/components/EdgeFinderCell";

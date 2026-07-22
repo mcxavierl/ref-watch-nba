@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { ArrowRight } from "lucide-react";
 import { isDashboardLeagueExposed } from "@/config/leagues-dashboard";
 import type { LeagueOverviewCard } from "@/lib/cross-league-overview";

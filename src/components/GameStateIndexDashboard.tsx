@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { useMemo, useState } from "react";
 import { GsniCard } from "@/components/GsniCard";
 import { GsniCorrelationPill } from "@/components/GsniCorrelationPill";

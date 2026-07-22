@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink } from "@/components/SiteNavLink";
 import type { ReactNode } from "react";
 import { LeagueChooser } from "@/components/LeagueChooser";
 import { OverviewTopInsightsSection } from "@/components/OverviewTopInsightsSection";
@@ -43,15 +43,15 @@ export function OverviewResearchFooter({
       <div className="overview-research-footer-explore">{exploreTabs}</div>
 
       <p className="overview-research-footer-links">
-        <Link href="/methodology" className="overview-research-footer-link rw-focus-ring">
+        <SiteNavLink href="/methodology" className="overview-research-footer-link rw-focus-ring">
           Methodology
-        </Link>
-        <Link href="/research/validation" className="overview-research-footer-link rw-focus-ring">
+        </SiteNavLink>
+        <SiteNavLink href="/research/validation" className="overview-research-footer-link rw-focus-ring">
           Validation report
-        </Link>
-        <Link href="/about" className="overview-research-footer-link rw-focus-ring">
+        </SiteNavLink>
+        <SiteNavLink href="/about" className="overview-research-footer-link rw-focus-ring">
           About RefWatch
-        </Link>
+        </SiteNavLink>
       </p>
     </footer>
   );

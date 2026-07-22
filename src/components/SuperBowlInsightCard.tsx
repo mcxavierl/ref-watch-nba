@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import {
   REF_CARD_BODY_CLASS,
   REF_CARD_METRIC_CLASS,

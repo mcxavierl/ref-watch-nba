@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { useRouter } from "next/navigation";
 import type { ConfidenceTier } from "@/lib/user-language";
 import { confidenceTierClass } from "@/lib/user-language";

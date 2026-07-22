@@ -244,6 +244,21 @@ describe("design audit guardrails", () => {
     assert.match(readSrc("src/components/hub/ClinicalCard.tsx"), /backdrop-blur-md/);
   });
 
+  it("site navigation avoids next/link in shared chrome and homepage surfaces", () => {
+    const files = [
+      "src/components/SiteFooter.tsx",
+      "src/components/OverviewResearchFooter.tsx",
+      "src/components/OverviewQuickLists.tsx",
+      "src/components/CommandPalette.tsx",
+      "src/components/PrefetchLink.tsx",
+    ];
+    for (const file of files) {
+      const source = readSrc(file);
+      assert.doesNotMatch(source, /from "next\/link"/, `${file} should use hard anchors`);
+    }
+    assert.match(readSrc("src/components/PrefetchLink.tsx"), /SiteNavLink/);
+  });
+
   it("renders league section nav inside sticky site header", () => {
     const header = readSrc("src/components/SiteHeader.tsx");
     const layout = readSrc("src/app/[league]/layout.tsx");

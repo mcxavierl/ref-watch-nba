@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { FindingExplainer } from "@/components/FindingNameWall";
 import { WorldCupKpiValue, worldCupKpiTone } from "@/components/worldcup/WorldCupKpiValue";
 import { dedupeFindingStats } from "@/lib/finding-grouping";

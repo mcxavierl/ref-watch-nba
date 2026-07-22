@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { CbbRefRankMatrix } from "@/components/cbb/CbbRefRankMatrix";
 import { CbbAnalyticsLeaders } from "@/components/CbbAnalyticsLeaders";
 import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";

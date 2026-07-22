@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { useMemo, useState } from "react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";

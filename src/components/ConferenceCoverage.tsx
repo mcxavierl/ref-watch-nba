@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import type { NcaaRouteLeague } from "@/lib/ncaa-conference-gate";
 import { preloadCbbConferenceCoverageFromAssets } from "@/lib/cbb/conference-coverage-preload";
 import {

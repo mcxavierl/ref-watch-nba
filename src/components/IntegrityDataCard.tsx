@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { ShieldCheck } from "lucide-react";
 import { TRUST_CHARTER_PRINCIPLES } from "@/lib/trust-charter";
 

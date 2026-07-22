@@ -1,7 +1,7 @@
 "use client";
 
+import { navigateToHref } from "@/lib/hard-navigation";
 import { Command } from "cmdk";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Search, UserRound, Users } from "lucide-react";
 import { ModalPortal } from "@/components/ModalPortal";
@@ -25,7 +25,6 @@ function isEditableTarget(target: EventTarget | null): boolean {
 }
 
 export function CommandPalette() {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState<CommandPaletteIndex | null>(null);
   const [loading, setLoading] = useState(false);
@@ -74,13 +73,10 @@ export function CommandPalette() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
-  const navigate = useCallback(
-    (href: string) => {
-      setOpen(false);
-      router.push(href);
-    },
-    [router],
-  );
+  const navigate = useCallback((href: string) => {
+    setOpen(false);
+    navigateToHref(href);
+  }, []);
 
   const refGroups = useMemo(() => {
     if (!index) return [];

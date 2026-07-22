@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { DataFreshnessMeta } from "@/components/DataFreshnessMeta";
 import { LEAGUE_HERO_STATS } from "@/lib/league-hero-stats.generated";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";

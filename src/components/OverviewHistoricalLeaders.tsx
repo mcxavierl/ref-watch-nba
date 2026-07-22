@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 
 type OverviewHistoricalLeadersProps = {
