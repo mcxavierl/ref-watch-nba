@@ -1,4 +1,4 @@
-import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
+import type { AssignmentsFile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
 
 /** Normalize middleware / header pathname before route-scoped preload. */
 export function normalizeAppPathname(
@@ -34,4 +34,10 @@ export function isGameLogsPayload(
 ): value is { games: unknown[]; lastUpdated?: string; league?: string; source?: string } {
   if (typeof value !== "object" || value === null) return false;
   return Array.isArray((value as { games?: unknown }).games);
+}
+
+export function isAssignmentsPayload(value: unknown): value is AssignmentsFile {
+  if (typeof value !== "object" || value === null) return false;
+  const candidate = value as AssignmentsFile;
+  return Array.isArray(candidate.games);
 }

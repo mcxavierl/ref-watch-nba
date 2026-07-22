@@ -54,6 +54,7 @@ describe("header nav routing", () => {
     const grid = readSrc("src/components/LiveSlateGrid.tsx");
 
     assert.match(page, /getLiveSlateGames/);
+    assert.match(page, /preloadAssignmentsForLiveSlate/);
     assert.match(hero, /data\.upcomingSlate\.games\.length/);
     assert.match(grid, /displayGames\.length/);
   });

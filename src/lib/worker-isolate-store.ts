@@ -4,7 +4,8 @@ import type {
   DataLeague,
 } from "@/lib/game-logs-preload";
 import { allowNodeDataFs } from "@/lib/production-data-guard";
-import type { RefStatsFile, TeamCrewSplit } from "@/lib/types";
+import type { AssignmentsFile, RefStatsFile, TeamCrewSplit } from "@/lib/types";
+import type { LeagueId } from "@/lib/leagues";
 
 export type NcaaConferenceMap = Map<string, readonly string[]>;
 export type NcaaGameShardMap = Map<string, RuntimeGameLogEntry[]>;
@@ -80,6 +81,7 @@ export type WorkerIsolateStore = {
   requestActive: boolean;
   refStats: Partial<Record<WorkerDataLeague, RefStatsFile>>;
   teamSplits: Partial<Record<WorkerDataLeague, Record<string, TeamCrewSplit[]>>>;
+  assignments: Partial<Record<LeagueId, AssignmentsFile>>;
   gameLogs: Partial<Record<DataLeague, RuntimeGameLogFile>>;
   /** NCAA basketball conference maps + season game shards (request-scoped). */
   ncaaBasketballComponents?: NcaaSportComponents | null;
@@ -100,6 +102,7 @@ function createEmptyStore(): WorkerIsolateStore {
     requestActive: false,
     refStats: {},
     teamSplits: {},
+    assignments: {},
     gameLogs: {},
     ncaaBasketballComponents: null,
     ncaaFootballComponents: null,
@@ -134,6 +137,7 @@ function clearMutableStore(store: WorkerIsolateStore): void {
   store.requestActive = false;
   store.refStats = {};
   store.teamSplits = {};
+  store.assignments = {};
   store.gameLogs = {};
   clearNcaaSportComponents(store.ncaaBasketballComponents);
   clearNcaaSportComponents(store.ncaaFootballComponents);

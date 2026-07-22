@@ -1,7 +1,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { getCachedAssignments } from "@/lib/assignments-preload";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
+import { allowNodeDataFs } from "@/lib/production-data-guard";
 import {
   buildLeagueUpcomingSlateFromAssignments,
   collectLeagueSlateEntries,
@@ -53,18 +55,34 @@ export function compareLiveSlatePriority(
   return compareSlateChronology(a, b);
 }
 
+function loadAssignmentsFile(leagueId: LeagueId): AssignmentsFile | null {
+  const cached = getCachedAssignments(leagueId);
+  if (cached) return cached;
+  if (!allowNodeDataFs()) return null;
+
+  const filePath = assignmentsPath(leagueId);
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8")) as AssignmentsFile;
+  } catch {
+    return null;
+  }
+}
+
 function loadLeagueSlateEntries(leagueId: LeagueId): {
   entries: OverviewSlateEntry[];
   lastUpdated: string | null;
   leagueNote: OverviewUpcomingSlate["leagueNotes"][number] | null;
 } {
-  const filePath = assignmentsPath(leagueId);
-  if (!fs.existsSync(filePath)) {
+  const file = loadAssignmentsFile(leagueId);
+  if (!file) {
     return { entries: [], lastUpdated: null, leagueNote: null };
   }
 
   try {
-    const file = JSON.parse(fs.readFileSync(filePath, "utf8")) as AssignmentsFile;
     const slate = buildLeagueUpcomingSlateFromAssignments(leagueId, file);
     const entries = collectLeagueSlateEntries(leagueId, file);
     return {
