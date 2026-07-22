@@ -41,16 +41,26 @@ describe("ship guardrail scripts", () => {
     }
   });
 
-  it("pre-push hook runs preflight and css-syntax before full check:ci", () => {
+  it("pre-push hook always runs preflight before optional full check:ci", () => {
     const hook = readFileSync(".githooks/pre-push", "utf8");
     const preflightIndex = hook.indexOf("check:preflight");
     const cssIndex = hook.indexOf("check:css-syntax");
     const ciIndex = hook.indexOf("check:ci");
     if (preflightIndex < 0 || cssIndex < 0 || ciIndex < 0) {
-      throw new Error("pre-push hook must run check:preflight, check:css-syntax, and check:ci");
+      throw new Error("pre-push hook must reference check:preflight, check:css-syntax, and check:ci");
     }
     if (!(preflightIndex < cssIndex && cssIndex < ciIndex)) {
       throw new Error("pre-push hook must run check:preflight before css-syntax before check:ci");
+    }
+    if (!hook.includes("mandatory preflight")) {
+      throw new Error("pre-push hook must always run preflight, even when SKIP_SHIP_CHECK=1");
+    }
+    const preflight = readFileSync("scripts/check-preflight.ts", "utf8");
+    if (!preflight.includes("check:client-imports")) {
+      throw new Error("check-preflight must run check:client-imports");
+    }
+    if (!preflight.includes("design-audit.test.ts")) {
+      throw new Error("check-preflight must run design guardrail tests");
     }
   });
 

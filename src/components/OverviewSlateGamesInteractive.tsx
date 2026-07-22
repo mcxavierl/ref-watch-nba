@@ -22,13 +22,17 @@ export function OverviewSlateGamesInteractive({
   games,
   showHubLink = true,
   variant = "row",
+  liveData = false,
 }: {
   games: OverviewSlateEntry[];
   showHubLink?: boolean;
   variant?: "row" | "card";
+  /** When true, games are already merged from /api/slate and skip score polling. */
+  liveData?: boolean;
 }) {
   const [selected, setSelected] = useState<GameSlatePreviewPayload | null>(null);
-  const liveGames = useSlateLiveScores(games);
+  const polledGames = useSlateLiveScores(liveData ? [] : games);
+  const liveGames = liveData ? games : polledGames;
 
   const previewByKey = new Map<string, GameSlatePreviewPayload>();
   for (const game of liveGames) {

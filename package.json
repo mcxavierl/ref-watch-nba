@@ -19,7 +19,7 @@
     "check:validation-freshness": "tsx scripts/check-validation-artifact-freshness.ts",
     "check:coupled-tests": "tsx scripts/check-coupled-test-changes.ts",
     "check:deploy": "tsx scripts/copy-data-to-public.ts && tsx scripts/build-overview-snapshot.ts && tsx scripts/check-deploy-readiness.ts",
-    "check:refactor-safety": "tsx scripts/check-generated-artifact-tests.ts && tsx --test src/lib/methodology-content.test.ts src/lib/refactor-safety.test.ts src/lib/insights-routes.test.ts src/lib/og-image.test.ts scripts/check-generated-artifact-tests.test.ts scripts/check-enterprise-api-routes.test.ts scripts/ship-guardrails.test.ts",
+    "check:refactor-safety": "tsx scripts/check-generated-artifact-tests.ts && tsx --test src/lib/methodology-content.test.ts src/lib/refactor-safety.test.ts src/lib/insights-routes.test.ts src/lib/og-image.test.ts scripts/check-generated-artifact-tests.test.ts scripts/check-enterprise-api-routes.test.ts scripts/check-hero-theme-tokens.test.ts scripts/ship-guardrails.test.ts",
     "audit:links": "tsx scripts/audit-links.ts",
     "audit:card-consistency": "tsx scripts/audit-card-consistency.ts",
     "audit:metric-semantics": "tsx scripts/audit-metric-semantics.ts",
@@ -151,6 +151,7 @@
     "next": "15.5.20",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "swr": "^2.4.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {

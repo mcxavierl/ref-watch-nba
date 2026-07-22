@@ -3,6 +3,10 @@ import { fetchSlateLiveCrews } from "@/lib/slate-live-crews";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const NO_STORE_CACHE_CONTROL =
+  "no-store, no-cache, must-revalidate, proxy-revalidate";
 
 type SlateScoresRequestBody = {
   games?: OverviewSlateEntry[];
@@ -23,5 +27,12 @@ export async function POST(request: Request) {
 
   const scores = await fetchSlateLiveScores(games);
   const crews = await fetchSlateLiveCrews(games);
-  return Response.json({ scores, crews });
+  return Response.json(
+    { scores, crews },
+    {
+      headers: {
+        "Cache-Control": NO_STORE_CACHE_CONTROL,
+      },
+    },
+  );
 }

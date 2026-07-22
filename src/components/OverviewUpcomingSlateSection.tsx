@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
-import { OverviewSlateGamesInteractive } from "@/components/OverviewSlateGamesInteractive";
+import { LiveSlateGrid } from "@/components/LiveSlateGrid";
 import { LEAGUES } from "@/lib/leagues";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 
@@ -17,8 +17,6 @@ function formatCount(n: number): string {
 export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSectionProps) {
   const { upcomingSlate } = data;
   const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
-  const matchupCount = upcomingSlate.totalGames + upcomingSlate.totalScheduled;
-  const slateGames = upcomingSlate.games;
 
   return (
     <section
@@ -31,23 +29,20 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
         </h2>
         <p className="overview-section-lead overview-upcoming-lead">
           {upcomingSlate.inSeason
-            ? matchupCount > 0
-              ? `${formatCount(matchupCount)} matchup${matchupCount === 1 ? "" : "s"} on the live slate`
-              : "Live slate updates as assignments publish"
+            ? "Live scores, crews, and assignments refresh automatically."
             : "Offseason - historical data stays available in each hub."}
         </p>
       </div>
 
       {upcomingSlate.inSeason ? (
-        slateGames.length > 0 ? (
-          <div className="upcoming-games-grid upcoming-games-grid--homepage grid grid-cols-1 md:grid-cols-3 gap-4">
-            <OverviewSlateGamesInteractive games={slateGames} variant="card" />
-          </div>
-        ) : (
-          <p className="overview-slate-empty overview-slate-empty-panel">
-            No published matchups yet. Check back closer to tip-off.
-          </p>
-        )
+        <LiveSlateGrid
+          initialSlate={{
+            ...upcomingSlate,
+            fetchedAt: upcomingSlate.lastUpdated ?? new Date().toISOString(),
+          }}
+          initialGames={upcomingSlate.games}
+          matchupLabel="matchup"
+        />
       ) : (
         <div className="overview-slate-offseason">
           <div className="overview-slate-offseason-grid">

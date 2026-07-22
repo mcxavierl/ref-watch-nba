@@ -68,6 +68,12 @@ export type OverviewUpcomingSlate = {
   leagueNotes: OverviewLeagueNote[];
 };
 
+/** Max upcoming cards on a league hub (confirmed crews first). */
+export const LEAGUE_UPCOMING_SLATE_LIMIT = 6;
+
+/** Homepage grid: 3×3 upcoming cards. */
+export const HOMEPAGE_SLATE_GRID_SIZE = 9;
+
 export function formatLeagueSlateCounts(liveCount: number, scheduledCount: number): string {
   const parts: string[] = [];
   if (liveCount > 0) {

@@ -212,6 +212,7 @@ export async function LeagueSlatePage({ leagueId, searchParams }: LeagueSlatePag
         <LeagueHubUpcomingSlateSection
           slate={upcomingSlate}
           leagueLabel={entry.shortLabel}
+          leagueId={leagueId}
         />
       )}
 
