@@ -5,11 +5,12 @@ import { OverviewIntelligenceHero } from "@/components/OverviewIntelligenceHero"
 import { OverviewSecondaryTabs } from "@/components/OverviewSecondaryTabs";
 import { PageContentFadeIn } from "@/components/PageContentFadeIn";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
+import { buildOverviewUpcomingSlate } from "@/lib/overview-upcoming-slate";
 import { buildPageMetadata, homepageWebPageJsonLd } from "@/lib/seo";
 import { SITE_HOME_PATH } from "@/lib/leagues";
 
-/** Revalidate daily — homepage reads bundled overview snapshot, not live ref-stats. */
-export const revalidate = 86400;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata = buildPageMetadata({
   title: "Officiating intelligence",
@@ -26,7 +27,12 @@ export const metadata = buildPageMetadata({
 });
 
 export default function HomePage() {
-  const data = loadOverviewSnapshot();
+  const snapshot = loadOverviewSnapshot();
+  const upcomingSlate = buildOverviewUpcomingSlate();
+  const data = {
+    ...snapshot,
+    upcomingSlate,
+  };
 
   return (
     <>

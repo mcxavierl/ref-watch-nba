@@ -115,10 +115,28 @@ export function isWithinLiveSlateWindow(
   return timestampMs >= windowStart && timestampMs <= windowEnd;
 }
 
+function mergeSlateSelections(
+  primary: OverviewSlateEntry[],
+  backfill: OverviewSlateEntry[],
+  limit: number,
+): OverviewSlateEntry[] {
+  const selected: OverviewSlateEntry[] = [];
+  const seen = new Set<string>();
+
+  for (const game of [...primary, ...backfill]) {
+    const key = `${game.leagueId}:${game.gameId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    selected.push(game);
+    if (selected.length >= limit) break;
+  }
+
+  return selected;
+}
+
 /**
  * Pick homepage slate cards from the rolling window.
- * When nothing is in progress, surfaces upcoming scheduled matchups instead of an empty grid.
- * Falls back to published assignments when the window is empty.
+ * Live crews stay in-window first; otherwise show published upcoming matchups (up to nine).
  */
 export function selectHomepageLiveSlateGames(
   games: OverviewSlateEntry[],
@@ -126,6 +144,7 @@ export function selectHomepageLiveSlateGames(
   limit = HOMEPAGE_SLATE_GRID_SIZE,
 ): OverviewSlateEntry[] {
   const nowMs = now.getTime();
+  const published = selectPublishedHomepageSlateGames(games, now, limit);
   const inWindow = sortSlateChronology(
     games.filter((game) => isWithinLiveSlateWindow(game, nowMs)),
   );
@@ -133,21 +152,21 @@ export function selectHomepageLiveSlateGames(
   const liveGames = inWindow.filter(
     (game) => game.status === "live" || game.gamePhase === "live",
   );
+
+  if (liveGames.length > 0) {
+    return mergeSlateSelections(inWindow, published, limit);
+  }
+
+  if (published.length > 0) return published;
+
   const upcomingGames = inWindow.filter(
     (game) => game.status === "scheduled" && game.gamePhase !== "live",
   );
-
-  let selected: OverviewSlateEntry[];
-  if (liveGames.length > 0) {
-    selected = inWindow.slice(0, limit);
-  } else if (upcomingGames.length > 0) {
-    selected = upcomingGames.slice(0, limit);
-  } else {
-    selected = inWindow.slice(0, limit);
+  if (upcomingGames.length > 0) {
+    return upcomingGames.slice(0, limit);
   }
 
-  if (selected.length > 0) return selected;
-  return selectPublishedHomepageSlateGames(games, now, limit);
+  return inWindow.slice(0, limit);
 }
 
 /** Noon Eastern on the day after `slateDate` (slate rotates forward). */

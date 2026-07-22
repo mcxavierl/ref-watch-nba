@@ -33,7 +33,7 @@ export function LiveSlateGrid({
   showHubLink = true,
   variant = "card",
 }: LiveSlateGridProps) {
-  const { games, slate, hasLiveGames, isValidating, refresh } = useLiveSlate({
+  const { games, slate, isValidating, refresh } = useLiveSlate({
     leagueId,
     limit,
     initialData: initialSlate,
@@ -54,12 +54,6 @@ export function LiveSlateGrid({
             : "Slate updates as assignments publish"}
         </p>
         <div className="live-slate-controls">
-          {hasLiveGames ? (
-            <span className="live-slate-pulse" aria-live="polite">
-              <span className="live-slate-pulse-dot" aria-hidden />
-              LIVE - Auto-updating
-            </span>
-          ) : null}
           <button
             type="button"
             className="live-slate-refresh rw-focus-ring"

@@ -106,6 +106,8 @@
 
 .overview-editorial-section--slate {
   position: relative;
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
 }
 
 .overview-editorial-section--slate::before {

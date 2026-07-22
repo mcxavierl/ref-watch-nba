@@ -5,7 +5,7 @@ export function IntelligenceHero() {
       aria-labelledby="intelligence-hero-heading"
     >
       <div
-        className="absolute -top-16 -left-16 w-full max-w-2xl h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"
+        className="absolute -top-16 -left-16 w-full max-w-2xl h-72 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"
         aria-hidden
       />
       <div className="overview-hero-polished-stack">
