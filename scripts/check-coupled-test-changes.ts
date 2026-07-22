@@ -58,6 +58,7 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
       "src/lib/overview-matchup-insight.test.ts",
       "src/lib/overview-upcoming-slate.test.ts",
       "src/lib/live-slate-engine.test.ts",
+      "src/lib/header-nav-routing.test.ts",
       "src/lib/clinical-modern-surfaces.test.ts",
     ],
   },
