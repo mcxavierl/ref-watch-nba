@@ -78,4 +78,16 @@ describe("league logos", () => {
     assert.ok(nba.width > nba.height, "NBA mark remains landscape");
     assert.equal(leagueHeroLogoDimensions("epl").width, leagueHeroLogoDimensions("epl").height);
   });
+
+  it("keeps navbar league marks on object-contain with portrait EPL sizing", () => {
+    const navMark = readFileSync(join(process.cwd(), "src/components/LeagueSwitchMark.tsx"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
+
+    assert.match(navMark, /league-nav-mark-wrap/);
+    assert.match(css, /\.league-nav-mark-wrap[\s\S]*overflow:\s*visible/);
+    assert.match(css, /\.league-nav-mark[\s\S]*object-fit:\s*contain/);
+    assert.match(css, /\.league-nav-mark--epl[\s\S]*width:\s*auto/);
+    assert.match(css, /\.league-nav-link \.league-nav-mark--epl[\s\S]*height:\s*1\.5rem/);
+    assert.match(css, /\.league-nav-link \.league-nav-mark--epl[\s\S]*max-width:\s*1\.25rem/);
+  });
 });
