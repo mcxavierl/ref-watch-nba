@@ -74,7 +74,7 @@
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgb(52 211 153 / 0.9);
+  color: color-mix(in srgb, var(--signal-live, rgb(52 211 153)) 90%, var(--clinical-ink-muted));
 }
 
 .overview-hero-headline {
@@ -83,7 +83,7 @@
   line-height: 1.1;
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: rgb(255 255 255);
+  color: var(--clinical-ink);
 }
 
 .overview-hero-subtitle {
@@ -91,7 +91,7 @@
   max-width: 42rem;
   font-size: 0.875rem;
   line-height: 1.55;
-  color: rgb(148 163 184);
+  color: var(--clinical-ink-muted);
 }
 
 @media (min-width: 768px) {
@@ -121,7 +121,7 @@
   font-size: 1.25rem;
   line-height: 1.2;
   font-weight: 600;
-  color: rgb(226 232 240);
+  color: var(--clinical-ink);
 }
 
 .overview-live-slate-status-pill {
@@ -130,12 +130,12 @@
   gap: 0.35rem;
   padding: 0.25rem 0.625rem;
   border-radius: 9999px;
-  border: 1px solid rgb(16 185 129 / 0.2);
-  background: rgb(16 185 129 / 0.1);
+  border: 1px solid color-mix(in srgb, var(--signal-live, rgb(16 185 129)) 20%, transparent);
+  background: color-mix(in srgb, var(--signal-live, rgb(16 185 129)) 10%, transparent);
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.75rem;
   font-weight: 600;
-  color: rgb(52 211 153);
+  color: color-mix(in srgb, var(--signal-live, rgb(52 211 153)) 88%, var(--clinical-ink));
 }
 
 .overview-live-slate-lead {
