@@ -213,8 +213,8 @@ export function RefComparePageClient({ siteUrl }: { siteUrl: string }) {
   const linkShareText = useMemo(() => {
     if (!left || !right) return shareUrl;
     return [
-      `⚖️ Ref Watch Official Compare (${seasonScopeLabel(scopeMode)})`,
-      `🔗 ${left.profile.name} (${left.config.shortLabel}) vs ${right.profile.name} (${right.config.shortLabel}): ${shareUrl}`,
+      `Ref Watch Official Compare (${seasonScopeLabel(scopeMode)})`,
+      `${left.profile.name} (${left.config.shortLabel}) vs ${right.profile.name} (${right.config.shortLabel}): ${shareUrl}`,
     ].join("\n");
   }, [left, right, scopeMode, shareUrl]);
 

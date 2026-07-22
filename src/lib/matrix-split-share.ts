@@ -56,8 +56,8 @@ export function buildMatrixSplitShareLinkText(
 ): string {
   const url = buildMatrixSplitShareUrl(input);
   return [
-    `⚖️ Ref Watch Split: ${input.ref.name} × ${input.team.abbr.toUpperCase()} (${input.scopeLabel})`,
-    `🔗 Check out the complete whistle trends and historical game logs: ${url}`,
+    `Ref Watch Split: ${input.ref.name} × ${input.team.abbr.toUpperCase()} (${input.scopeLabel})`,
+    `Check out the complete whistle trends and historical game logs: ${url}`,
   ].join("\n");
 }
 
@@ -98,10 +98,10 @@ export function buildMatrixSplitShareText(input: MatrixSplitShareInput): string 
   const url = buildMatrixSplitShareUrl(input);
 
   return [
-    `⚖️ Ref Watch Split: ${input.ref.name} × ${input.team.abbr.toUpperCase()} (${input.scopeLabel})`,
-    `📊 ${record} in ${input.cell.games} games · ${winDelta} · ${whistle}/game (${toneNote})`,
-    `🔗 Check out the complete whistle trends and historical game logs: ${url}`,
-    "ℹ️ Historical splits only. Descriptive, not picks.",
+    `Ref Watch Split: ${input.ref.name} × ${input.team.abbr.toUpperCase()} (${input.scopeLabel})`,
+    `${record} in ${input.cell.games} games · ${winDelta} · ${whistle}/game (${toneNote})`,
+    `Check out the complete whistle trends and historical game logs: ${url}`,
+    "Historical splits only. Descriptive, not picks.",
   ].join("\n");
 }
 
@@ -120,8 +120,8 @@ export function buildMatrixTeamShareLinkText({
 }): string {
   const url = buildMatrixTeamShareUrl(siteUrl, matrixPath, team.abbr, scopeMode);
   return [
-    `⚖️ Ref Watch Team Matrix: ${team.label} (${scopeLabel})`,
-    `🔗 Check out the complete whistle trends and historical game logs: ${url}`,
+    `Ref Watch Team Matrix: ${team.label} (${scopeLabel})`,
+    `Check out the complete whistle trends and historical game logs: ${url}`,
   ].join("\n");
 }
 
@@ -148,9 +148,9 @@ export function buildMatrixTeamShareText({
       : "team baseline unavailable";
   const url = buildMatrixTeamShareUrl(siteUrl, matrixPath, team.abbr, scopeMode);
   return [
-    `⚖️ Ref Watch Team Matrix: ${team.label} (${scopeLabel})`,
-    `📊 ${baseline}. Top and bottom ${officialNounPlural} vs team baseline.`,
-    `🔗 Check out the complete whistle trends and historical game logs: ${url}`,
-    "ℹ️ Descriptive tendencies only, not picks.",
+    `Ref Watch Team Matrix: ${team.label} (${scopeLabel})`,
+    `${baseline}. Top and bottom ${officialNounPlural} vs team baseline.`,
+    `Check out the complete whistle trends and historical game logs: ${url}`,
+    "Descriptive tendencies only, not picks.",
   ].join("\n");
 }
