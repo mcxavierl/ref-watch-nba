@@ -1,0 +1,454 @@
+.slate-outlook-banner {
+  --slate-intel-banner-bg: rgb(15 23 42 / 0.92);
+  --slate-intel-banner-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+  --slate-intel-border: rgb(30 41 59);
+  --slate-intel-accent: rgb(52 211 153);
+  --slate-intel-accent-warm: rgb(251 191 36);
+  --slate-intel-ink-strong: rgb(248 250 252);
+  --slate-intel-ink-body: rgb(226 232 240);
+  --slate-intel-ink-muted: rgb(148 163 184);
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--slate-intel-border);
+  background: var(--slate-intel-banner-bg);
+  box-shadow: var(--slate-intel-banner-shadow);
+}
+
+.slate-outlook-banner__title {
+  margin: 0;
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--slate-intel-accent);
+}
+
+.slate-outlook-banner__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.55rem;
+  margin-top: 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--slate-intel-ink-body);
+}
+
+.slate-outlook-banner__top-signal {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--slate-intel-ink-muted);
+}
+
+.slate-outlook-banner__top-label {
+  color: var(--slate-intel-accent-warm);
+  font-weight: 600;
+}
+
+.slate-outlook-banner__top-signal strong {
+  color: var(--slate-intel-ink-strong);
+}
+
+.slate-outlook-banner__top-signal--empty {
+  font-style: italic;
+}
+
+.slate-game-card {
+  --slate-intel-border: rgb(30 41 59);
+  --slate-intel-bg: rgb(15 23 42 / 0.92);
+  --slate-intel-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+  --slate-intel-ink-strong: rgb(248 250 252);
+  --slate-intel-ink-body: rgb(226 232 240);
+  --slate-intel-ink-muted: rgb(148 163 184);
+  --slate-intel-accent: rgb(52 211 153);
+  --slate-intel-accent-warm: rgb(251 191 36);
+  --slate-intel-positive: rgb(52 211 153);
+  --slate-intel-negative: rgb(251 113 133);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 220px;
+  padding: 0.875rem;
+  border-radius: 0.875rem;
+  border: 1px solid var(--slate-intel-border);
+  background: var(--slate-intel-bg);
+  box-shadow: var(--slate-intel-shadow);
+  transition:
+    transform var(--duration-normal, 180ms) var(--ease-out-quint, ease),
+    box-shadow var(--duration-normal, 180ms) ease,
+    border-color var(--duration-normal, 180ms) ease;
+}
+
+.slate-game-card--high {
+  border-color: rgb(16 185 129 / 0.4);
+  background: color-mix(in srgb, rgb(2 44 34) 18%, var(--slate-intel-bg));
+}
+
+.slate-game-card--defensive {
+  border-color: rgb(244 63 94 / 0.4);
+  background: color-mix(in srgb, rgb(76 5 25) 16%, var(--slate-intel-bg));
+}
+
+.slate-game-card--neutral {
+  border-color: rgb(30 41 59);
+  background: color-mix(in srgb, rgb(15 23 42) 88%, rgb(2 6 23));
+}
+
+.slate-game-card--interactive {
+  cursor: pointer;
+}
+
+.slate-game-card:hover {
+  transform: translateY(-1px);
+}
+
+.slate-game-card__topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.slate-game-card__topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.slate-game-card__league-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
+
+.slate-game-card__matchup-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.slate-game-card__matchup-abbr {
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--slate-intel-ink-strong);
+}
+
+.slate-game-card__stars {
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.slate-game-card__status {
+  flex-shrink: 0;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.slate-game-card__status--live {
+  color: rgb(52 211 153);
+  border-color: rgb(16 185 129 / 0.35);
+  background: rgb(16 185 129 / 0.12);
+  animation: slate-live-pulse 2s ease-in-out infinite;
+}
+
+.slate-game-card__status--pregame {
+  color: var(--slate-intel-ink-muted);
+  border-color: rgb(51 65 85);
+  background: rgb(15 23 42 / 0.65);
+}
+
+.slate-game-card__status--final {
+  color: var(--slate-intel-ink-muted);
+  border-color: rgb(51 65 85 / 0.8);
+  background: rgb(15 23 42 / 0.45);
+}
+
+@keyframes slate-live-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(16 185 129 / 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgb(16 185 129 / 0.08);
+  }
+}
+
+.slate-game-card__verdict {
+  padding: 0.55rem 0.6rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgb(51 65 85 / 0.75);
+  background: rgb(2 6 23 / 0.55);
+}
+
+.slate-game-card__verdict-headline {
+  margin: 0 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.slate-game-card__verdict-headline--high {
+  color: var(--slate-intel-positive);
+}
+
+.slate-game-card__verdict-headline--defensive {
+  color: var(--slate-intel-negative);
+}
+
+.slate-game-card__verdict-headline--neutral {
+  color: var(--slate-intel-ink-body);
+}
+
+.slate-game-card__metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.slate-game-card__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.slate-game-card__metric-label {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate-intel-ink-muted);
+}
+
+.slate-game-card__metric-value {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--slate-intel-ink-strong);
+}
+
+.slate-game-card__metric-meta {
+  font-size: 0.625rem;
+  line-height: 1.35;
+  color: var(--slate-intel-ink-muted);
+}
+
+.slate-game-card__delta-wrap {
+  position: relative;
+  display: inline-flex;
+  vertical-align: baseline;
+}
+
+.slate-game-card__delta-tag {
+  font-weight: 700;
+  color: var(--slate-intel-accent);
+  cursor: help;
+  border-bottom: 1px dotted color-mix(in srgb, var(--slate-intel-accent) 55%, transparent);
+}
+
+.slate-game-card__delta-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.45rem);
+  z-index: 20;
+  display: none;
+  width: max-content;
+  max-width: 14rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.45rem;
+  border: 1px solid rgb(51 65 85);
+  background: rgb(15 23 42);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+  transform: translateX(-50%);
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.625rem;
+  line-height: 1.35;
+  color: var(--slate-intel-ink-body);
+  pointer-events: none;
+}
+
+.slate-game-card__delta-wrap:hover .slate-game-card__delta-tooltip,
+.slate-game-card__delta-wrap:focus-within .slate-game-card__delta-tooltip {
+  display: flex;
+}
+
+.slate-game-card__delta-tooltip-title {
+  font-weight: 700;
+  color: var(--slate-intel-ink-strong);
+}
+
+.slate-game-card__confidence-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.slate-game-card__confidence-track {
+  stroke: rgb(51 65 85);
+}
+
+.slate-game-card__confidence-progress {
+  stroke: var(--slate-intel-accent);
+}
+
+.slate-game-card__confidence-label {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  fill: var(--slate-intel-ink-strong);
+}
+
+.slate-game-card__teams {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.35rem 0.25rem 0;
+}
+
+.slate-game-card__team {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.slate-game-card__team-abbr {
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--slate-intel-ink-strong);
+}
+
+.slate-game-card__team-score {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--slate-intel-ink-body);
+}
+
+.slate-game-card__at {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--slate-intel-ink-muted);
+}
+
+.slate-game-card__crew-footer {
+  margin-top: auto;
+}
+
+.slate-game-card__crew-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  font-size: 0.6875rem;
+  color: var(--slate-intel-ink-muted);
+}
+
+.slate-game-card__crew-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--slate-intel-ink-body);
+}
+
+.slate-game-card__crew-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-left: auto;
+}
+
+.slate-game-card__enterprise-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid rgb(30 41 59 / 0.6);
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.625rem;
+  color: var(--slate-intel-ink-muted);
+}
+
+.slate-game-card__intel-link {
+  color: var(--slate-intel-accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.slate-game-card__intel-link:hover {
+  text-decoration: underline;
+}
+
+.upcoming-games-grid--homepage {
+  gap: 0.75rem;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-outlook-banner,
+html.light:not([data-contrast="high"]) .slate-outlook-banner {
+  --slate-intel-banner-bg: rgb(255 255 255 / 0.95);
+  --slate-intel-banner-shadow: 0 1px 2px rgb(15 23 42 / 0.06);
+  --slate-intel-border: #e2e8f0;
+  --slate-intel-accent: #047857;
+  --slate-intel-accent-warm: #b45309;
+  --slate-intel-ink-strong: #0f172a;
+  --slate-intel-ink-body: #334155;
+  --slate-intel-ink-muted: #64748b;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-game-card,
+html.light:not([data-contrast="high"]) .slate-game-card {
+  --slate-intel-border: #e2e8f0;
+  --slate-intel-bg: #ffffff;
+  --slate-intel-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
+  --slate-intel-ink-strong: #0f172a;
+  --slate-intel-ink-body: #334155;
+  --slate-intel-ink-muted: #64748b;
+  --slate-intel-accent: #047857;
+  --slate-intel-positive: #047857;
+  --slate-intel-negative: #be123c;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-game-card--high,
+html.light:not([data-contrast="high"]) .slate-game-card--high {
+  border-color: rgb(16 185 129 / 0.35);
+  background: color-mix(in srgb, rgb(236 253 245) 72%, #ffffff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-game-card--defensive,
+html.light:not([data-contrast="high"]) .slate-game-card--defensive {
+  border-color: rgb(244 63 94 / 0.35);
+  background: color-mix(in srgb, rgb(255 241 242) 72%, #ffffff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-game-card__verdict,
+html.light:not([data-contrast="high"]) .slate-game-card__verdict {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-game-card__delta-tooltip,
+html.light:not([data-contrast="high"]) .slate-game-card__delta-tooltip {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 0.12);
+}

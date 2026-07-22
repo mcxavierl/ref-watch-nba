@@ -1,12 +1,15 @@
 "use client";
 
 import { RefreshCw } from "lucide-react";
+import { TodaysOfficiatingOutlookBanner } from "@/components/TodaysOfficiatingOutlookBanner";
 import { OverviewSlateGamesInteractive } from "@/components/OverviewSlateGamesInteractive";
 import type { LeagueId } from "@/lib/leagues";
 import type { LiveSlateResult } from "@/lib/live-slate-engine";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
+import { sortSlateGamesBySignal } from "@/lib/slate-intelligence";
 import { useLiveSlate } from "@/lib/use-live-slate";
 import "@/components/overview-slate-shared.css";
+import "@/components/slate-intelligence.css";
 
 type LiveSlateGridProps = {
   initialSlate?: LiveSlateResult;
@@ -19,6 +22,8 @@ type LiveSlateGridProps = {
   variant?: "row" | "card";
   /** When false, render server games and score polling only (avoids SWR router conflicts on league hubs). */
   enableSlatePolling?: boolean;
+  /** Homepage intelligence outlook banner above the grid. */
+  showOutlookBanner?: boolean;
 };
 
 function formatCount(n: number): string {
@@ -35,6 +40,7 @@ export function LiveSlateGrid({
   showHubLink = true,
   variant = "card",
   enableSlatePolling = true,
+  showOutlookBanner = false,
 }: LiveSlateGridProps) {
   const { games, slate, isValidating, refresh } = useLiveSlate({
     leagueId,
@@ -44,11 +50,12 @@ export function LiveSlateGrid({
     enabled: enableSlatePolling,
   });
 
-  const displayGames = games;
+  const displayGames = sortSlateGamesBySignal(games);
   const matchupCount = displayGames.length;
 
   return (
     <>
+      {showOutlookBanner ? <TodaysOfficiatingOutlookBanner games={displayGames} /> : null}
       <div className="live-slate-toolbar">
         <p className="live-slate-counter">
           {matchupCount > 0
@@ -79,7 +86,7 @@ export function LiveSlateGrid({
         <div
           className={
             variant === "card"
-              ? "upcoming-games-grid upcoming-games-grid--homepage grid grid-cols-1 md:grid-cols-3 gap-4"
+              ? "upcoming-games-grid upcoming-games-grid--homepage grid grid-cols-1 md:grid-cols-3 gap-3"
               : "upcoming-games-grid upcoming-games-grid--hub"
           }
         >

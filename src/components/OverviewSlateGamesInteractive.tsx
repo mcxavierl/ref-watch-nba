@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { GameSlatePreviewDrawer } from "@/components/GameSlatePreviewDrawer";
+import { SlateGameCard } from "@/components/SlateGameCard";
 import { OverviewSlateRow } from "@/components/OverviewSlateRow";
-import { UpcomingGameCard } from "@/components/UpcomingGameCard";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import { normalizeGameSlatePreview } from "@/lib/normalize-game-slate-preview";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
@@ -57,7 +57,7 @@ export function OverviewSlateGamesInteractive({
     <>
       {liveGames.map((game, index) =>
         variant === "card" ? (
-          <UpcomingGameCard
+          <SlateGameCard
             key={`${game.leagueId}-${game.gameId}`}
             game={game}
             index={index}

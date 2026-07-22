@@ -162,7 +162,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const css = readSrc("src/components/overview-clinical-modern.css");
     const page = readSrc("src/app/page.tsx");
     const section = readSrc("src/components/OverviewUpcomingSlateSection.tsx");
-    const card = readSrc("src/components/UpcomingGameCard.tsx");
+    const card = readSrc("src/components/SlateGameCard.tsx");
     const row = readSrc("src/components/OverviewSlateRow.tsx");
     assert.match(page, /overview-shell--clinical/);
     assert.match(section, /LiveSlateGrid|OverviewSlateGamesInteractive/);
@@ -174,34 +174,32 @@ describe("Clinical Modern priority #11 surfaces", () => {
     }
     assert.doesNotMatch(section, /overview-slate-notes/);
     assert.doesNotMatch(section, /overview-slate-updated/);
-    assert.match(card, /buildUpcomingCardSignals/);
-    assert.match(card, /upcoming-game-card__header/);
-    assert.match(card, /upcoming-game-card__matchup/);
-    assert.match(card, /upcoming-game-card__trend/);
-    assert.match(card, /upcoming-game-card__trend--positive/);
+    assert.match(card, /buildSlateGameIntelligence/);
+    assert.match(card, /slate-game-card__topbar/);
+    assert.match(card, /slate-game-card__verdict/);
+    assert.match(card, /slate-game-card__metric-grid/);
     assert.doesNotMatch(card, /line-clamp-2/);
-    assert.match(css, /min-height: 260px/);
-    assert.match(css, /gap: 0\.625rem/);
+    assert.match(readSrc("src/components/slate-intelligence.css"), /min-height: 220px/);
+    assert.match(readSrc("src/components/slate-intelligence.css"), /gap: 0\.5rem/);
     assert.doesNotMatch(card, /min-h-\[260px\]/);
     assert.doesNotMatch(card, /bg-slate-900/);
     assert.doesNotMatch(card, /overflow-hidden/);
-    assert.match(card, /upcoming-game-card__footer/);
-    assert.match(card, /upcoming-game-card__cta--footer/);
-    assert.match(card, /upcoming-game-card__crew-meta/);
+    assert.match(card, /slate-game-card__enterprise-footer/);
+    assert.match(card, /Crew chief/);
+    assert.match(card, /Open intelligence/);
     assert.match(card, /Users/);
     assert.match(
       card,
-      /upcoming-game-card__league-mark[\s\S]*upcoming-game-card__date-label--corner/,
+      /slate-game-card__topbar[\s\S]*slate-game-card__matchup-abbr/,
     );
-    assert.match(css, /upcoming-game-card__footer/);
-    assert.match(css, /upcoming-game-card__footer[\s\S]*margin-top: auto/);
-    assert.match(css, /upcoming-game-card__crew-meta/);
+    assert.match(readSrc("src/components/slate-intelligence.css"), /slate-game-card__enterprise-footer/);
+    assert.match(readSrc("src/components/slate-intelligence.css"), /slate-game-card__crew-meta/);
     assert.doesNotMatch(card, /upcoming-game-card__insight-line/);
-    assert.match(card, /size="lg"/);
-    assert.match(css, /upcoming-game-card/);
+    assert.match(card, /size="md"/);
+    assert.match(readSrc("src/components/slate-intelligence.css"), /slate-game-card/);
+    assert.match(section, /showOutlookBanner/);
+    assert.match(readSrc("src/components/LiveSlateGrid.tsx"), /sortSlateGamesBySignal/);
     assert.match(readSrc("src/components/overview-slate-shared.css"), /upcoming-games-grid/);
-    assert.match(css, /upcoming-game-card__matchup/);
-    assert.match(css, /upcoming-game-card__date-label--corner[\s\S]*text-align: right/);
     const heroInsightBlock = "";
     assert.doesNotMatch(heroInsightBlock, /white-space:\s*nowrap/);
     assert.match(
