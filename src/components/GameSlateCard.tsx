@@ -1,3 +1,4 @@
+import { CompareMatchupRefsLink } from "@/components/CompareMatchupRefsLink";
 import { PrefetchLink } from "@/components/PrefetchLink";
 import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
 import { ChevronDown } from "lucide-react";
@@ -22,6 +23,7 @@ import type {
   NhlOtRateSignal,
   NhlPpPremiumSignal,
 } from "@/lib/types";
+import type { LeagueId } from "@/lib/leagues";
 import { teamFullName as nbaTeamFullName, type NbaTeam } from "@/lib/teams";
 import { teamFullName as nhlTeamFullName, type NhlTeam } from "@/lib/nhl/teams";
 import { teamFullName as nflTeamFullName, type NflTeam } from "@/lib/nfl/teams";
@@ -228,7 +230,7 @@ export function GameSlateCard({
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap items-center gap-2">
           {metrics.crew.length === 0 && sport === "wnba" ? (
             <span className="crew-chip crew-chip--pending text-sm text-muted">
               Refs not assigned yet
@@ -252,6 +254,12 @@ export function GameSlateCard({
               {sport === "nhl" && <OfficialRoleBadge role={official.role} />}
             </PrefetchLink>
           ))}
+          {metrics.crew.length >= 2 ? (
+            <CompareMatchupRefsLink
+              leagueId={sport as LeagueId}
+              officials={metrics.crew}
+            />
+          ) : null}
         </div>
       </div>
 

@@ -10,6 +10,7 @@ import {
   ScoutingReportEdge,
 } from "@/components/ref-profile/ScoutingReport";
 import { RefProfileTeamTrends } from "@/components/ref-profile/RefProfileTeamTrends";
+import { RefProfileDiscoveryPanel } from "@/components/ref-profile/RefProfileDiscoveryPanel";
 import { RefProfileCareerEvolution } from "@/components/ref-profile/RefProfile";
 import { RefStatGrid } from "@/components/RefStatGrid";
 import { buildRefTeamPerformanceTrends } from "@/lib/ref-team-performance-trends";
@@ -140,6 +141,8 @@ export function RefProfileNarrativeLayout({
 
         <RefProfileTeamTrends best={teamTrends.best} worst={teamTrends.worst} leagueId={leagueId} />
       </RefProfileDepthExpand>
+
+      <RefProfileDiscoveryPanel leagueId={leagueId} profile={profile} />
     </div>
   );
 }

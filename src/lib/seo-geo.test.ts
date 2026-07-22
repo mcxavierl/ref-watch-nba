@@ -76,10 +76,16 @@ describe("SEO and GEO guardrails", () => {
       name: "Scott Foster",
       slug: "scott-foster",
       number: 48,
-    }) as { "@type": string; jobTitle: string; url: string };
+    }) as {
+      "@type": string;
+      jobTitle: string;
+      url: string;
+      memberOf: { name: string };
+    };
     assert.equal(schema["@type"], "Person");
     assert.equal(schema.jobTitle, "Referee");
     assert.match(schema.url, /\/nba\/refs\/scott-foster/);
+    assert.equal(schema.memberOf.name, "NBA");
   });
 
   it("team profiles emit SportsTeam structured data", () => {

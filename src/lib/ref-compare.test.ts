@@ -78,11 +78,11 @@ describe("ref compare diagnostics", () => {
     assert.equal(compareSupportsGsni("nhl"), false);
   });
 
-  it("keeps compare out of header nav and preserves versus layout", () => {
+  it("surfaces compare in the header and preserves versus layout", () => {
     const header = readFileSync("src/components/SiteHeader.tsx", "utf8");
     const nav = readFileSync("src/components/LeagueSectionNav.tsx", "utf8");
     const view = readFileSync("src/components/RefCompareView.tsx", "utf8");
-    assert.doesNotMatch(header, /\/compare/);
+    assert.match(header, /href="\/compare"/);
     assert.doesNotMatch(nav, /Compare Officials/);
     assert.doesNotMatch(nav, /compareLeagueHref/);
     assert.match(view, /ref-compare-versus/);

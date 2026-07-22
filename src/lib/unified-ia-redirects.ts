@@ -63,9 +63,50 @@ export function nbaRootLegacyRedirects(): LegacyRedirect[] {
   ];
 }
 
+/** Legacy slug segments before unified /refs/ IA (e.g. /ref/, /official/). */
+export function slugLegacyRedirects(): LegacyRedirect[] {
+  const redirects: LegacyRedirect[] = [
+    { source: "/ref/:slug", destination: "/nba/refs/:slug", permanent: true },
+    { source: "/referee/:slug", destination: "/nba/refs/:slug", permanent: true },
+    { source: "/official/:slug", destination: "/nba/refs/:slug", permanent: true },
+    { source: "/officials/:slug", destination: "/nba/refs/:slug", permanent: true },
+  ];
+
+  const leagues = ["nba", "nhl", "nfl", "epl", "laliga", "wnba", "cbb", "cfb"];
+  for (const league of leagues) {
+    redirects.push(
+      {
+        source: `/${league}/ref/:slug`,
+        destination: `/${league}/refs/:slug`,
+        permanent: true,
+      },
+      {
+        source: `/${league}/referee/:slug`,
+        destination: `/${league}/refs/:slug`,
+        permanent: true,
+      },
+      {
+        source: `/${league}/official/:slug`,
+        destination: `/${league}/refs/:slug`,
+        permanent: true,
+      },
+      {
+        source: `/${league}/officials/:slug`,
+        destination: `/${league}/refs/:slug`,
+        permanent: true,
+      },
+    );
+  }
+
+  return redirects;
+}
+
 export function unifiedIALegacyRedirects(): LegacyRedirect[] {
   const leagues = ["nba", "nhl", "nfl", "epl", "laliga", "wnba", "cbb", "cfb"];
-  const redirects: LegacyRedirect[] = [...nbaRootLegacyRedirects()];
+  const redirects: LegacyRedirect[] = [
+    ...nbaRootLegacyRedirects(),
+    ...slugLegacyRedirects(),
+  ];
 
   for (const league of leagues) {
     redirects.push(...leagueLegacyRedirects(league));

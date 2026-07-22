@@ -414,6 +414,10 @@ export function refProfilePersonJsonLd({
     ...(numberSuffix ? { alternateName: `${name}${numberSuffix}` } : {}),
     jobTitle,
     url: absoluteUrl(leagueHref(leagueId, `/refs/${slug}`)),
+    memberOf: {
+      "@type": "SportsOrganization",
+      name: league.label,
+    },
     worksFor: {
       "@type": "SportsOrganization",
       name: league.label,
