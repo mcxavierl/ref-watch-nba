@@ -90,6 +90,7 @@ export function LiveSlateGrid({
             showHubLink={showHubLink}
             variant={variant}
             liveData={enableSlatePolling && Boolean(slate)}
+            disableScorePolling={!enableSlatePolling}
           />
         </div>
       ) : (

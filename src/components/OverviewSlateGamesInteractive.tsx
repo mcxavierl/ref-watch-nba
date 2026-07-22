@@ -23,16 +23,19 @@ export function OverviewSlateGamesInteractive({
   showHubLink = true,
   variant = "row",
   liveData = false,
+  disableScorePolling = false,
 }: {
   games: OverviewSlateEntry[];
   showHubLink?: boolean;
   variant?: "row" | "card";
   /** When true, games are already merged from /api/slate and skip score polling. */
   liveData?: boolean;
+  /** When true, render static server games without background score/crew polling. */
+  disableScorePolling?: boolean;
 }) {
   const [selected, setSelected] = useState<GameSlatePreviewPayload | null>(null);
-  const polledGames = useSlateLiveScores(liveData ? [] : games);
-  const liveGames = liveData ? games : polledGames;
+  const polledGames = useSlateLiveScores(disableScorePolling || liveData ? [] : games);
+  const liveGames = liveData || disableScorePolling ? games : polledGames;
 
   const previewByKey = new Map<string, GameSlatePreviewPayload>();
   for (const game of liveGames) {

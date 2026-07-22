@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-import { PrefetchLink } from "@/components/PrefetchLink";
+import { HeaderNavLink } from "@/components/HeaderNavLink";
 
 import {
   LEAGUE_MANIFEST,
@@ -66,15 +66,14 @@ export function LeagueSectionNav({ leagueId, id = "league-section-nav" }: League
           const href = leagueSectionNavHref(leagueId, section);
           const active = sectionMatch(pathname, leagueId, section);
           return (
-            <PrefetchLink
+            <HeaderNavLink
               key={section}
               href={href}
-              prefetch={true}
               aria-current={active ? "page" : undefined}
               className={`site-nav-link${active ? " site-nav-link--active" : ""}`}
             >
               <span className="site-nav-link-label">{SECTION_LABELS[section]}</span>
-            </PrefetchLink>
+            </HeaderNavLink>
           );
         })}
       </nav>

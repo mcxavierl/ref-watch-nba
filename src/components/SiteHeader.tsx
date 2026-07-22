@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { A11ySettingsPanel } from "@/components/A11ySettingsPanel";
@@ -11,6 +10,7 @@ import {
   SITE_HOME_PATH,
 } from "@/lib/leagues";
 import { LEAGUE_MANIFEST } from "@/lib/league-manifest";
+import { HeaderNavLink } from "@/components/HeaderNavLink";
 import { LeagueNav } from "./SiteNav";
 
 export function SiteHeader() {
@@ -37,7 +37,7 @@ export function SiteHeader() {
     >
       <header className="site-header">
         <div className="site-header-inner">
-          <Link href={homeHref} className="site-header-brand group" aria-label="Ref Watch home">
+          <HeaderNavLink href={homeHref} className="site-header-brand group" aria-label="Ref Watch home">
             <span className="site-header-mark" aria-hidden>
               <span className="site-header-mark-ring" />
               <span className="site-header-mark-icon">
@@ -47,7 +47,7 @@ export function SiteHeader() {
             <span className="site-header-wordmark">
               <span className="site-header-name">REF WATCH</span>
             </span>
-          </Link>
+          </HeaderNavLink>
 
           <div className="site-header-league">
             <LeagueNav />

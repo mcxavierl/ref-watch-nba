@@ -10,12 +10,12 @@ function readSrc(rel: string): string {
 }
 
 describe("app-like responsiveness", () => {
-  it("PrefetchLink warms routes on hover and focus with prefetch enabled", () => {
+  it("PrefetchLink relies on viewport prefetch without hover router warm-up", () => {
     const source = readSrc("src/components/PrefetchLink.tsx");
     assert.match(source, /prefetch = true/);
-    assert.match(source, /onMouseEnter/);
-    assert.match(source, /onFocus/);
-    assert.match(source, /router\.prefetch/);
+    assert.doesNotMatch(source, /useRouter/);
+    assert.doesNotMatch(source, /router\.prefetch/);
+    assert.doesNotMatch(source, /onMouseEnter/);
   });
 
   it("grid and navigation hubs use PrefetchLink for Open hub, Compare, and profiles", () => {
@@ -24,7 +24,6 @@ describe("app-like responsiveness", () => {
       "src/components/OverviewLeaguePaceGrid.tsx",
       "src/components/BrowseActionCards.tsx",
       "src/components/LeaguePrimaryActionGrid.tsx",
-      "src/components/LeagueSectionNav.tsx",
       "src/components/RefCompareLink.tsx",
       "src/components/RefRankingsTable.tsx",
       "src/components/RankingSignalPill.tsx",

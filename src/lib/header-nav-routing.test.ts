@@ -15,6 +15,11 @@ describe("header nav routing", () => {
     assert.match(section, /enableSlatePolling=\{false\}/);
   });
 
+  it("disables league-hub score polling on static slate cards", () => {
+    const grid = readSrc("src/components/LiveSlateGrid.tsx");
+    assert.match(grid, /disableScorePolling=\{!enableSlatePolling\}/);
+  });
+
   it("keeps homepage live slate polling enabled", () => {
     const section = readSrc("src/components/OverviewUpcomingSlateSection.tsx");
     assert.doesNotMatch(section, /enableSlatePolling=\{false\}/);
@@ -25,9 +30,19 @@ describe("header nav routing", () => {
     assert.match(hook, /revalidateOnFocus:\s*false/);
   });
 
-  it("renders league header links with href targets", () => {
+  it("uses full-page header links instead of client router prefetch", () => {
     const nav = readSrc("src/components/SiteNav.tsx");
+    const sectionNav = readSrc("src/components/LeagueSectionNav.tsx");
+    const header = readSrc("src/components/SiteHeader.tsx");
+
+    assert.match(nav, /HeaderNavLink/);
     assert.match(nav, /href=\{leagueHubHref\(id\)\}/);
-    assert.match(nav, /PrefetchLink/);
+    assert.doesNotMatch(nav, /PrefetchLink/);
+
+    assert.match(sectionNav, /HeaderNavLink/);
+    assert.doesNotMatch(sectionNav, /PrefetchLink/);
+
+    assert.match(header, /HeaderNavLink/);
+    assert.doesNotMatch(header, /from "next\/link"/);
   });
 });
