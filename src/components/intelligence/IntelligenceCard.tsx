@@ -50,9 +50,7 @@ export function IntelligenceCard({
           aria-label="Pro Intelligence Preview"
         >
           <p className="intelligence-card-premium-kicker">Pro Intelligence Preview</p>
-          <p className="intelligence-card-premium-teaser">
-            <span aria-hidden>🔒</span> Unlock Drivers: {content.premiumDriverTeaser}
-          </p>
+          <p className="intelligence-card-premium-teaser">{content.premiumDriverTeaser}</p>
           <button
             type="button"
             className="intelligence-card-premium-cta"

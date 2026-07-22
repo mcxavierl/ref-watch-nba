@@ -376,20 +376,20 @@ export function buildCompareShareText(
   if (!left && !right) {
     return "Compare officials side-by-side on Ref Watch.";
   }
-  const lines = [`⚖️ Ref Watch Official Compare (${scopeLabel})`];
+  const lines = [`Ref Watch Official Compare (${scopeLabel})`];
   if (left) {
     const scoring = scoringValue(left.profile, left.meta, left.config);
     lines.push(
-      `📊 ${left.profile.name} (${left.config.shortLabel}): ${left.profile.games} gp · ${scoring.value} scoring · ${formatPct(left.profile.overRate)} over`,
+      `${left.profile.name} (${left.config.shortLabel}): ${left.profile.games} gp · ${scoring.value} scoring · ${formatPct(left.profile.overRate)} over`,
     );
   }
   if (right) {
     const scoring = scoringValue(right.profile, right.meta, right.config);
     lines.push(
-      `📊 ${right.profile.name} (${right.config.shortLabel}): ${right.profile.games} gp · ${scoring.value} scoring · ${formatPct(right.profile.overRate)} over`,
+      `${right.profile.name} (${right.config.shortLabel}): ${right.profile.games} gp · ${scoring.value} scoring · ${formatPct(right.profile.overRate)} over`,
     );
   }
-  lines.push("ℹ️ Descriptive tendencies only, not picks.");
+  lines.push("Descriptive tendencies only, not picks.");
   return lines.join("\n");
 }
 

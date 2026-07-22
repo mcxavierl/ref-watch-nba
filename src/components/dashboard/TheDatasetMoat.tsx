@@ -28,7 +28,7 @@ export function TheDatasetMoat({ metrics }: TheDatasetMoatProps) {
       </div>
 
       <p className="dataset-moat-ticker" role="status">
-        ⚡ New games processed and recalibrated nightly across 8 behavioral dimensions.
+        New games processed and recalibrated nightly across 8 behavioral dimensions.
       </p>
     </section>
   );
