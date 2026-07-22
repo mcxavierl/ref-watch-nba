@@ -74,8 +74,8 @@ export function leagueNavMarkDimensions(league: LeagueId): { width: number; heig
     case "cfb":
       return { width: 18, height: 18 };
     case "epl":
-      // Nearly square — must match epl-lion.svg viewBox (92.27 × 90.89).
-      return { width: 24, height: 24 };
+      // Portrait lion mark — must match epl-lion.svg viewBox (78 × 95).
+      return { width: 22, height: 27 };
     case "laliga":
       return { width: 22, height: 18 };
     case "wnba":
