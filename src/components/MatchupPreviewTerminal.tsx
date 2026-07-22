@@ -1,6 +1,7 @@
 "use client";
 
 import { OverlayNavLink } from "@/components/OverlayNavLink";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import { GameSlateFingerprintPanel } from "@/components/visuals/GameSlateFingerprintPanel";
 import type { ProjectionEvidencePayload } from "@/lib/analytics/evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
@@ -98,11 +99,25 @@ export function MatchupPreviewTerminal({
     <div className="matchup-preview-terminal">
       <section className="matchup-terminal-section matchup-terminal-verdict" aria-label="RefWatch verdict">
         <p className="matchup-terminal-verdict__kicker">Overall verdict</p>
-        <h3
-          className={`matchup-terminal-verdict__headline matchup-terminal-verdict__headline--${verdict.personality}`}
-        >
-          {verdict.label.toUpperCase()}
-        </h3>
+        <div className="matchup-terminal-verdict__badge-wrap">
+          <StatusBadge
+            verdict={
+              verdict.personality === "high"
+                ? "pass"
+                : verdict.personality === "defensive"
+                  ? "fail"
+                  : "caution"
+            }
+            label={
+              verdict.personality === "high"
+                ? "HIGH WHISTLE ENVIRONMENT"
+                : verdict.personality === "defensive"
+                  ? "DEFENSIVE CREW"
+                  : "BASELINE CREW"
+            }
+            compact
+          />
+        </div>
 
         <div className="matchup-terminal-verdict__metrics" aria-label="Key projection metrics">
           {metrics.map((metric) => (

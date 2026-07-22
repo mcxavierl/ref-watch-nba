@@ -317,3 +317,21 @@ export function buildSupplementalContextLines(
   }
   return lines;
 }
+
+export function buildMatchupBriefingClipboardText(
+  preview: GameSlatePreviewPayload,
+  evidence: ProjectionEvidencePayload,
+): string {
+  const verdict = buildMatchupVerdictHeadline(preview);
+  const roster = buildMatchupCrewRoster(preview);
+  const crewLine =
+    roster.length > 0
+      ? roster
+          .map((official) =>
+            official.deltaLabel ? `${official.name} (${official.deltaLabel})` : official.name,
+          )
+          .join(", ")
+      : "Pending";
+  const deltaLabel = formatSigned(preview.foulsDelta);
+  return `RefWatch Briefing: ${preview.matchup} | ${verdict.label} (${deltaLabel} expected whistles) | Model Confidence: ${evidence.confidencePct}% | Crew: ${crewLine} | Source: refwatch.ca`;
+}

@@ -9,6 +9,7 @@ import {
   buildMatchupTerminalMetrics,
   buildMatchupTrustSignalBar,
   buildMatchupVerdictHeadline,
+  buildMatchupBriefingClipboardText,
 } from "@/lib/matchup-preview-terminal";
 
 function previewFixture(
@@ -152,5 +153,15 @@ describe("matchup preview terminal", () => {
     assert.equal(matrix.homeAbbr, "LAS");
     assert.equal(matrix.rows[0]?.away.foulsDeltaLabel, "+0.9");
     assert.equal(matrix.rows[0]?.home.foulsDeltaLabel, "-3.2");
+  });
+
+  it("builds journalist clipboard briefing text", () => {
+    const preview = previewFixture();
+    const evidence = buildProjectionEvidence(preview);
+    const text = buildMatchupBriefingClipboardText(preview, evidence);
+    assert.match(text, /^RefWatch Briefing:/);
+    assert.match(text, /PHO @ LAS/);
+    assert.match(text, /Model Confidence:/);
+    assert.match(text, /Source: refwatch\.ca/);
   });
 });

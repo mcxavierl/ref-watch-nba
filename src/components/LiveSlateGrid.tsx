@@ -56,31 +56,33 @@ export function LiveSlateGrid({
   return (
     <>
       {showOutlookBanner ? <TodaysOfficiatingOutlookBanner games={displayGames} /> : null}
-      <div className="live-slate-toolbar">
-        <p className="live-slate-counter">
-          {matchupCount > 0
-            ? `${formatCount(matchupCount)} ${matchupLabel}${matchupCount === 1 ? "" : "s"} on the slate`
-            : "Slate updates as assignments publish"}
-        </p>
-        <div className="live-slate-controls">
-          {enableSlatePolling ? (
-            <button
-              type="button"
-              className="live-slate-refresh rw-focus-ring"
-              onClick={() => void refresh()}
-              disabled={isValidating}
-              aria-label="Refresh live slate"
-            >
-              <RefreshCw
-                aria-hidden
-                className={isValidating ? "live-slate-refresh-icon--spin" : undefined}
-                size={14}
-              />
-              Refresh
-            </button>
-          ) : null}
+      {!showOutlookBanner ? (
+        <div className="live-slate-toolbar">
+          <p className="live-slate-counter">
+            {matchupCount > 0
+              ? `${formatCount(matchupCount)} ${matchupLabel}${matchupCount === 1 ? "" : "s"} on the slate`
+              : "Slate updates as assignments publish"}
+          </p>
+          <div className="live-slate-controls">
+            {enableSlatePolling ? (
+              <button
+                type="button"
+                className="live-slate-refresh rw-focus-ring"
+                onClick={() => void refresh()}
+                disabled={isValidating}
+                aria-label="Refresh live slate"
+              >
+                <RefreshCw
+                  aria-hidden
+                  className={isValidating ? "live-slate-refresh-icon--spin" : undefined}
+                  size={14}
+                />
+                Refresh
+              </button>
+            ) : null}
+          </div>
         </div>
-      </div>
+      ) : null}
 
       {displayGames.length > 0 ? (
         <div

@@ -175,24 +175,27 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(section, /overview-slate-notes/);
     assert.doesNotMatch(section, /overview-slate-updated/);
     assert.match(card, /buildSlateGameIntelligence/);
+    assert.match(card, /StatusBadge/);
     assert.match(card, /slate-game-card__topbar/);
     assert.match(card, /slate-game-card__verdict/);
     assert.match(card, /slate-game-card__metric-grid/);
+    assert.doesNotMatch(card, /⭐/);
+    assert.doesNotMatch(card, /🟢/);
     assert.doesNotMatch(card, /line-clamp-2/);
     assert.match(readSrc("src/components/slate-intelligence.css"), /min-height: 220px/);
     assert.match(readSrc("src/components/slate-intelligence.css"), /gap: 0\.5rem/);
     assert.doesNotMatch(card, /min-h-\[260px\]/);
     assert.doesNotMatch(card, /bg-slate-900/);
     assert.doesNotMatch(card, /overflow-hidden/);
-    assert.match(card, /slate-game-card__enterprise-footer/);
-    assert.match(card, /Crew chief/);
-    assert.match(card, /Open intelligence/);
+    assert.match(card, /slate-game-card__trust-footer/);
+    assert.match(card, /Methodology/);
+    assert.match(card, /Click card for evidence breakdown/);
     assert.match(card, /Users/);
     assert.match(
       card,
       /slate-game-card__topbar[\s\S]*slate-game-card__matchup-abbr/,
     );
-    assert.match(readSrc("src/components/slate-intelligence.css"), /slate-game-card__enterprise-footer/);
+    assert.match(readSrc("src/components/slate-intelligence.css"), /slate-game-card__trust-footer/);
     assert.match(readSrc("src/components/slate-intelligence.css"), /slate-game-card__crew-meta/);
     assert.doesNotMatch(card, /upcoming-game-card__insight-line/);
     assert.match(card, /size="md"/);

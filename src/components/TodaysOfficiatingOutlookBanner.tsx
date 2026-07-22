@@ -9,33 +9,33 @@ export function TodaysOfficiatingOutlookBanner({
   const outlook = buildSlateOutlookSummary(games);
 
   return (
-    <div className="slate-outlook-banner" aria-labelledby="slate-outlook-title">
+    <header className="slate-outlook-banner" aria-labelledby="slate-outlook-title">
       <p className="slate-outlook-banner__title" id="slate-outlook-title">
         Today&apos;s officiating outlook
       </p>
 
-      <div className="slate-outlook-banner__metrics" aria-label="Slate summary metrics">
-        <span>{outlook.gamesMonitored} games monitored</span>
+      <p className="slate-outlook-banner__metrics" aria-label="Slate summary metrics">
+        <span>{outlook.gamesMonitored} matchups monitored</span>
         <span aria-hidden>·</span>
         <span>{outlook.highWhistleCount} high whistle</span>
         <span aria-hidden>·</span>
-        <span>{outlook.defensiveCrewCount} defensive crews</span>
+        <span>{outlook.defensiveCrewCount} defensive</span>
         <span aria-hidden>·</span>
-        <span>Avg confidence: {outlook.avgConfidencePct}%</span>
-      </div>
+        <span>{outlook.avgConfidencePct}% avg confidence</span>
+      </p>
 
       {outlook.topSignal ? (
         <p className="slate-outlook-banner__top-signal">
           <span className="slate-outlook-banner__top-label">Top signal:</span>{" "}
           <strong>{outlook.topSignal.matchup}</strong> ({outlook.topSignal.whistleDeltaLabel}{" "}
           whistles · {outlook.topSignal.confidencePct}% confidence ·{" "}
-          {outlook.topSignal.starDisplay})
+          {outlook.topSignal.signalTierLabel})
         </p>
       ) : (
         <p className="slate-outlook-banner__top-signal slate-outlook-banner__top-signal--empty">
           Top signal pending as crew assignments and sample gates publish.
         </p>
       )}
-    </div>
+    </header>
   );
 }

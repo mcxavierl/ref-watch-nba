@@ -14,6 +14,8 @@ export type SlateDeltaTooltip = {
   teamSplitPressure: number;
 };
 
+export type SignalTier = "high" | "elevated" | "standard";
+
 export type SlateGameIntelligence = {
   personality: WhistlePersonality;
   verdictHeadline: string;
@@ -23,8 +25,8 @@ export type SlateGameIntelligence = {
   whistleDeltaLabel: string;
   confidencePct: number;
   evidenceScore: number;
-  starRating: number;
-  starDisplay: string;
+  signalTier: SignalTier;
+  signalTierLabel: string;
   statusLabel: string;
   statusKind: "live" | "pregame" | "final";
   deltaTooltip: SlateDeltaTooltip;
@@ -46,7 +48,7 @@ export type SlateOutlookSummary = {
     whistleDelta: number;
     whistleDeltaLabel: string;
     confidencePct: number;
-    starDisplay: string;
+    signalTierLabel: string;
   } | null;
 };
 
@@ -64,6 +66,21 @@ export function whistlePersonality(foulsDelta: number): WhistlePersonality {
   return "neutral";
 }
 
+export function signalTierFromConfidence(
+  confidencePct: number,
+  whistleDelta: number,
+): { tier: SignalTier; label: string } {
+  const absDelta = Math.abs(whistleDelta);
+  if (confidencePct >= 80 || (confidencePct >= 68 && absDelta >= 1.5)) {
+    return { tier: "high", label: "[HIGH SIGNAL]" };
+  }
+  if (confidencePct >= 55 || absDelta >= 1.0) {
+    return { tier: "elevated", label: "[ELEVATED]" };
+  }
+  return { tier: "standard", label: "[STANDARD]" };
+}
+
+/** @deprecated Prefer signalTierFromConfidence for institutional slate surfaces. */
 export function starRatingFromConfidence(confidencePct: number): {
   rating: number;
   display: string;
@@ -137,7 +154,7 @@ function resolveCrewChiefName(game: OverviewSlateEntry): string | undefined {
 
 function fallbackIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
   const status = statusForGame(game);
-  const stars = starRatingFromConfidence(42);
+  const signalTier = signalTierFromConfidence(42, 0);
   return {
     personality: "neutral",
     verdictHeadline: verdictHeadline("neutral"),
@@ -147,8 +164,8 @@ function fallbackIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
     whistleDeltaLabel: formatSigned(0),
     confidencePct: 42,
     evidenceScore: 4.2,
-    starRating: stars.rating,
-    starDisplay: stars.display,
+    signalTier: signalTier.tier,
+    signalTierLabel: signalTier.label,
     statusLabel: status.label,
     statusKind: status.kind,
     deltaTooltip: {
@@ -176,7 +193,7 @@ export function buildSlateGameIntelligence(
   const evidence = buildProjectionEvidence(preview);
   const leagueAvg = round1(preview.avgFouls - preview.foulsDelta);
   const personality = whistlePersonality(preview.foulsDelta);
-  const stars = starRatingFromConfidence(evidence.confidencePct);
+  const signalTier = signalTierFromConfidence(evidence.confidencePct, preview.foulsDelta);
   const status = statusForGame(game);
   const signalScore = Math.abs(preview.foulsDelta) * evidence.confidencePct;
 
@@ -189,8 +206,8 @@ export function buildSlateGameIntelligence(
     whistleDeltaLabel: formatSigned(preview.foulsDelta),
     confidencePct: evidence.confidencePct,
     evidenceScore: evidence.evidenceStrength,
-    starRating: stars.rating,
-    starDisplay: stars.display,
+    signalTier: signalTier.tier,
+    signalTierLabel: signalTier.label,
     statusLabel: status.label,
     statusKind: status.kind,
     deltaTooltip: buildDeltaTooltip(preview.foulsDelta, preview),
@@ -250,7 +267,7 @@ export function buildSlateOutlookSummary(
           whistleDelta: top.intel.whistleDelta,
           whistleDeltaLabel: top.intel.whistleDeltaLabel,
           confidencePct: top.intel.confidencePct,
-          starDisplay: top.intel.starDisplay,
+          signalTierLabel: top.intel.signalTierLabel,
         }
       : null,
   };

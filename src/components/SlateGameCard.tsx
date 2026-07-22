@@ -2,6 +2,7 @@
 
 import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
 import { Users } from "lucide-react";
+import { StatusBadge } from "@/components/hub/StatusBadge";
 import { PrefetchLink } from "@/components/PrefetchLink";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
@@ -10,6 +11,7 @@ import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
 import {
   buildSlateGameIntelligence,
   type SlateGameIntelligence,
+  type WhistlePersonality,
 } from "@/lib/slate-intelligence";
 import { formatSigned } from "@/lib/stats-utils";
 
@@ -84,6 +86,23 @@ function DeltaWhyTooltip({ intel }: { intel: SlateGameIntelligence }) {
   );
 }
 
+function verdictStatusBadge(personality: WhistlePersonality) {
+  if (personality === "high") {
+    return { verdict: "pass" as const, label: "HIGH WHISTLE ENVIRONMENT" };
+  }
+  if (personality === "defensive") {
+    return { verdict: "fail" as const, label: "DEFENSIVE CREW" };
+  }
+  return { verdict: "caution" as const, label: "BASELINE CREW" };
+}
+
+function signalTierStatusBadge(intel: SlateGameIntelligence) {
+  if (intel.signalTier === "high") {
+    return { verdict: "pass" as const, label: intel.signalTierLabel };
+  }
+  return { verdict: "caution" as const, label: intel.signalTierLabel };
+}
+
 export function SlateGameCard({
   game,
   index = 0,
@@ -97,6 +116,8 @@ export function SlateGameCard({
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
   const intel = buildSlateGameIntelligence(game);
   const showScore = game.gamePhase === "live" || game.gamePhase === "final";
+  const verdictBadge = verdictStatusBadge(intel.personality);
+  const tierBadge = signalTierStatusBadge(intel);
 
   const handleActivate = () => {
     onOpenPreview?.();
@@ -145,9 +166,12 @@ export function SlateGameCard({
             <span className="slate-game-card__matchup-abbr">
               {awayTeam.abbr} @ {homeTeam.abbr}
             </span>
-            <span className="slate-game-card__stars" aria-label={`${intel.starRating} of 5 signal`}>
-              {intel.starDisplay}
-            </span>
+            <StatusBadge
+              verdict={tierBadge.verdict}
+              label={tierBadge.label}
+              compact
+              className="slate-game-card__signal-tier"
+            />
           </div>
         </div>
         <span
@@ -158,10 +182,14 @@ export function SlateGameCard({
       </header>
 
       <section className="slate-game-card__verdict" aria-label="RefWatch verdict">
-        <p className={`slate-game-card__verdict-headline slate-game-card__verdict-headline--${intel.personality}`}>
-          {intel.personality === "high" ? "🟢" : intel.personality === "defensive" ? "🔴" : "⚪"}{" "}
-          {intel.verdictHeadline.toUpperCase()}
-        </p>
+        <div className="slate-game-card__verdict-badge-wrap">
+          <StatusBadge
+            verdict={verdictBadge.verdict}
+            label={verdictBadge.label}
+            compact
+            className="slate-game-card__verdict-badge"
+          />
+        </div>
         <div className="slate-game-card__metric-grid">
           <div className="slate-game-card__metric">
             <span className="slate-game-card__metric-label">Expected whistles</span>
@@ -234,12 +262,18 @@ export function SlateGameCard({
         </div>
       </footer>
 
-      <div className="slate-game-card__enterprise-footer">
-        <span>
-          Model v{intel.modelVersion} · {intel.sampleGames > 0 ? intel.sampleGames : "-"} games
+      {onOpenPreview ? (
+        <p className="slate-game-card__interaction-cue">Click card for evidence breakdown</p>
+      ) : null}
+
+      <div className="slate-game-card__trust-footer">
+        <span className="slate-game-card__trust-meta tabular-nums">
+          v{intel.modelVersion} Model ·{" "}
+          {intel.sampleGames > 0 ? intel.sampleGames.toLocaleString("en-US") : "-"}{" "}
+          game sample
         </span>
-        <PrefetchLink href={intel.intelligenceHref} className="slate-game-card__intel-link">
-          Open intelligence →
+        <PrefetchLink href="/methodology" className="slate-game-card__methodology-link">
+          Methodology →
         </PrefetchLink>
       </div>
     </article>
