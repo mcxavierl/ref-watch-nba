@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { LeagueChooser } from "@/components/LeagueChooser";
+import { OverviewTopInsightsSection } from "@/components/OverviewTopInsightsSection";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { semanticBadgeSurfaceClass } from "@/lib/semantic-badge-colors";
 
@@ -36,6 +37,8 @@ export function OverviewResearchFooter({
       </div>
 
       <LeagueChooser cards={data.leagueCards} placement="default" />
+
+      <OverviewTopInsightsSection data={data} />
 
       <div className="overview-research-footer-explore">{exploreTabs}</div>
 

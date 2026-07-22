@@ -26,6 +26,11 @@ const INTELLIGENCE_FIRST_SECTIONS = [
   "OverviewResearchFooter",
 ] as const;
 
+const RESEARCH_FOOTER_SECTIONS = [
+  "LeagueChooser",
+  "OverviewTopInsightsSection",
+] as const;
+
 function read(relPath: string): string {
   return readFileSync(join(ROOT, relPath), "utf8");
 }
@@ -116,6 +121,43 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         return {
           ok: false,
           message: "homepage-intelligence.ts missing countRefAnomalyAlerts",
+        };
+      }
+      return { ok: true };
+    },
+  },
+  {
+    name: "research footer surfaces league hubs then cross-league top insights",
+    run: () => {
+      const footer = read("src/components/OverviewResearchFooter.tsx");
+      for (const symbol of RESEARCH_FOOTER_SECTIONS) {
+        if (!footer.includes(symbol)) {
+          return {
+            ok: false,
+            message: `OverviewResearchFooter missing section ${symbol}`,
+          };
+        }
+      }
+      const positions = sectionOrder(footer, RESEARCH_FOOTER_SECTIONS);
+      if (positions.some((index) => index < 0)) {
+        return {
+          ok: false,
+          message: "OverviewResearchFooter missing league hubs or top insights in render tree",
+        };
+      }
+      for (let index = 1; index < positions.length; index += 1) {
+        if (positions[index]! <= positions[index - 1]!) {
+          return {
+            ok: false,
+            message: "OverviewResearchFooter must render league hubs before top insights",
+          };
+        }
+      }
+      const insights = read("src/components/OverviewTopInsightsSection.tsx");
+      if (!insights.includes("buildTopStatisticalSignalCards")) {
+        return {
+          ok: false,
+          message: "OverviewTopInsightsSection must rank cross-league insights via buildTopStatisticalSignalCards",
         };
       }
       return { ok: true };

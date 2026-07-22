@@ -23,6 +23,16 @@ describe("audit-homepage-product", () => {
     assert.match(source, /OverviewUpcomingSlateSection/);
     assert.match(source, /OverviewResearchFooter/);
   });
+
+  it("research footer renders cross-league top insights after league hubs", () => {
+    const source = readFileSync(join(ROOT, "src/components/OverviewResearchFooter.tsx"), "utf8");
+    const insights = readFileSync(join(ROOT, "src/components/OverviewTopInsightsSection.tsx"), "utf8");
+    assert.match(source, /LeagueChooser/);
+    assert.match(source, /OverviewTopInsightsSection/);
+    assert.ok(source.indexOf("LeagueChooser") < source.indexOf("OverviewTopInsightsSection"));
+    assert.match(insights, /buildTopStatisticalSignalCards/);
+    assert.match(insights, /overview-top-insights-grid/);
+  });
 });
 
 describe("mobile layout config", () => {
