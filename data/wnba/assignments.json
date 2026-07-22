@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-22T04:10:19.292Z",
+  "lastUpdated": "2026-07-22T14:51:34.794Z",
   "date": "2026-07-22",
   "source": "official.nba.com",
   "games": [
@@ -15,7 +15,23 @@
       "awayScore": 0,
       "homeScore": 0,
       "gameClock": "0.0",
-      "crew": []
+      "crew": [
+        {
+          "name": "Roy Gulbeyan",
+          "number": 42,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Marcy Williams",
+          "number": 40,
+          "role": "referee"
+        },
+        {
+          "name": "Blanca Burns",
+          "number": 8,
+          "role": "umpire"
+        }
+      ]
     },
     {
       "id": "401857087",
@@ -31,18 +47,18 @@
       "gameClock": "0.0",
       "crew": [
         {
-          "name": "Amy Bonner",
-          "number": 31,
+          "name": "Agon Abazi",
+          "number": 32,
           "role": "crew_chief"
         },
         {
-          "name": "Kevin Fahy",
-          "number": 43,
+          "name": "Tyler Mirkovich",
+          "number": 27,
           "role": "referee"
         },
         {
-          "name": "Toni Patillo",
-          "number": 76,
+          "name": "RJ Johnson",
+          "number": 41,
           "role": "umpire"
         }
       ]
@@ -59,7 +75,23 @@
       "awayScore": 0,
       "homeScore": 0,
       "gameClock": "0.0",
-      "crew": []
+      "crew": [
+        {
+          "name": "Maj Forsberg",
+          "number": 34,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Angelica Suffren",
+          "number": 7,
+          "role": "referee"
+        },
+        {
+          "name": "Josh Reed",
+          "number": 46,
+          "role": "umpire"
+        }
+      ]
     },
     {
       "id": "401857089",
@@ -73,7 +105,23 @@
       "awayScore": 0,
       "homeScore": 0,
       "gameClock": "0.0",
-      "crew": []
+      "crew": [
+        {
+          "name": "Angel Kent",
+          "number": 26,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Ryan Sassano",
+          "number": 3,
+          "role": "referee"
+        },
+        {
+          "name": "Sarah Williams",
+          "number": 44,
+          "role": "umpire"
+        }
+      ]
     },
     {
       "id": "401857090",
@@ -87,7 +135,23 @@
       "awayScore": 0,
       "homeScore": 0,
       "gameClock": "0.0",
-      "crew": []
+      "crew": [
+        {
+          "name": "Timothy Greene",
+          "number": 9,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Kevin Fahy",
+          "number": 43,
+          "role": "referee"
+        },
+        {
+          "name": "Jason Alabanza",
+          "number": 29,
+          "role": "umpire"
+        }
+      ]
     },
     {
       "id": "401857091",
@@ -101,7 +165,23 @@
       "awayScore": 0,
       "homeScore": 0,
       "gameClock": "0.0",
-      "crew": []
+      "crew": [
+        {
+          "name": "Tiara Cruse",
+          "number": 5,
+          "role": "crew_chief"
+        },
+        {
+          "name": "Randy Richardson",
+          "number": 11,
+          "role": "referee"
+        },
+        {
+          "name": "Toni Patillo",
+          "number": 76,
+          "role": "umpire"
+        }
+      ]
     },
     {
       "id": "401857320",
