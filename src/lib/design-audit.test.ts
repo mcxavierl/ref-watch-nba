@@ -48,25 +48,28 @@ describe("design audit guardrails", () => {
 
   it("game preview drawer exposes fingerprint visual tab", () => {
     const drawer = readSrc("src/components/GameSlatePreviewDrawer.tsx");
+    const terminal = readSrc("src/components/MatchupPreviewTerminal.tsx");
     const panel = readSrc("src/components/visuals/GameSlateFingerprintPanel.tsx");
     const preview = readSrc("src/lib/game-slate-preview.ts");
-    assert.match(drawer, /GameSlateFingerprintPanel/);
-    assert.match(drawer, /Officiating fingerprint/);
-    assert.match(drawer, /OverlayNavLink/);
+    assert.match(drawer, /MatchupPreviewTerminal/);
+    assert.match(terminal, /GameSlateFingerprintPanel/);
+    assert.match(terminal, /Officiating fingerprint/);
+    assert.match(terminal, /OverlayNavLink/);
     assert.doesNotMatch(drawer, /from "next\/link"/);
     assert.match(panel, /OverlayNavLink/);
     assert.match(panel, /basePath/);
     assert.match(preview, /crewFingerprints/);
   });
 
-  it("evidence drawer stacks driver columns inside narrow preview drawer", () => {
-    const css = readSrc("src/components/evidence/evidence-drawer.css");
+  it("matchup preview terminal stacks compact driver lists inside narrow drawer", () => {
+    const css = readSrc("src/components/matchup-preview-terminal.css");
     const drawer = readSrc("src/components/GameSlatePreviewDrawer.tsx");
-    assert.match(css, /container-type:\s*inline-size/);
-    assert.match(css, /@container evidence-drawer/);
-    assert.match(css, /minmax\(0,\s*1fr\)/);
-    assert.doesNotMatch(css, /@media \(min-width: 768px\)/);
-    assert.match(drawer, /EvidenceDrawer/);
+    const terminal = readSrc("src/components/MatchupPreviewTerminal.tsx");
+    assert.match(css, /matchup-terminal-drivers-grid/);
+    assert.match(css, /matchup-terminal-accordions/);
+    assert.match(drawer, /MatchupPreviewTerminal/);
+    assert.match(terminal, /Why the model thinks this/);
+    assert.match(terminal, /details className="matchup-terminal-accordion"/);
   });
 
   it("avoids raw slate text utilities on about page", () => {
