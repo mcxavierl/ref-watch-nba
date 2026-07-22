@@ -51,10 +51,7 @@ export function SiteHeader() {
 
           <div className="site-header-league">
             <LeagueNav />
-            <HeaderNavLink
-              href="/compare"
-              className="hidden items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white sm:inline-flex"
-            >
+            <HeaderNavLink href="/compare" className="site-header-compare-link">
               Compare
             </HeaderNavLink>
           </div>

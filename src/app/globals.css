@@ -4234,9 +4234,37 @@ p {
     position: relative;
     display: flex;
     align-items: center;
+    gap: 0.5rem;
     min-width: 0;
     width: 100%;
     max-width: 100%;
+  }
+
+  .site-header-compare-link {
+    display: none;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition:
+      color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .site-header-compare-link:hover {
+    color: var(--text-primary);
+    background: var(--surface-raised);
+  }
+
+  @media (min-width: 640px) {
+    .site-header-compare-link {
+      display: inline-flex;
+    }
   }
 
   .site-header-nav {
