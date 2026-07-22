@@ -37,6 +37,11 @@ describe("live-slate-engine", () => {
   const now = new Date("2026-07-22T18:00:00.000Z");
   const nowMs = now.getTime();
 
+  it("uses centralized rolling window constants (NOW-relative 6h/30h)", () => {
+    assert.equal(LIVE_SLATE_LOOKBACK_MS, 6 * 60 * 60 * 1000);
+    assert.equal(LIVE_SLATE_LOOKAHEAD_MS, 30 * 60 * 60 * 1000);
+  });
+
   it("resolves kickoff timestamps from slateStartAt", () => {
     assert.equal(
       resolveGameTimestampMs({

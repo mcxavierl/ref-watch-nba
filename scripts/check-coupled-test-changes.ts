@@ -13,9 +13,26 @@ type CouplingRule = {
 
 export const COUPLED_TEST_RULES: CouplingRule[] = [
   {
+    label: "cron automation pipeline",
+    sources: [
+      "src/lib/cron/sync-slate-pipeline.ts",
+      "src/lib/cron/nightly-recalibration.ts",
+      "src/lib/cron/verify-cron-secret.ts",
+      "src/lib/cron/scraper-alert.ts",
+      "src/app/api/cron/sync-slate/route.ts",
+      "src/app/api/cron/recalibrate/route.ts",
+      "src/worker/index.ts",
+    ],
+    tests: [
+      "src/lib/cron/verify-cron-secret.test.ts",
+      "src/lib/cron/sync-slate-pipeline.test.ts",
+      "src/lib/query-windows.test.ts",
+      "src/lib/active-leagues-by-season.test.ts",
+    ],
+  },
+  {
     label: "profile recalibration pipeline",
     sources: [
-      "src/lib/cron/recalibrateProfiles.ts",
       "src/lib/cron/rolling-ref-metrics.ts",
       "src/lib/cron/ref-team-history-recalibrator.ts",
       "src/lib/cron/autopsy-recalibrate-subscriber.ts",
