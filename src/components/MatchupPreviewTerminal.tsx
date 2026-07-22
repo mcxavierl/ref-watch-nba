@@ -224,6 +224,19 @@ export function MatchupPreviewTerminal({
         </p>
       </section>
 
+      {hasFingerprint ? (
+        <section
+          className="matchup-terminal-section matchup-terminal-fingerprint-section"
+          aria-label="Officiating fingerprint"
+        >
+          <h3 className="matchup-terminal-section__title">Officiating fingerprint</h3>
+          <GameSlateFingerprintPanel
+            crewFingerprints={preview.crewFingerprints ?? []}
+            basePath={preview.basePath}
+          />
+        </section>
+      ) : null}
+
       <section className="matchup-terminal-section matchup-terminal-accordions" aria-label="Deep model details">
         <details className="matchup-terminal-accordion">
           <summary className="matchup-terminal-accordion__trigger">
@@ -275,20 +288,6 @@ export function MatchupPreviewTerminal({
             ) : null}
           </div>
         </details>
-
-        {hasFingerprint ? (
-          <details className="matchup-terminal-accordion">
-            <summary className="matchup-terminal-accordion__trigger">
-              Officiating fingerprint
-            </summary>
-            <div className="matchup-terminal-accordion__panel">
-              <GameSlateFingerprintPanel
-                crewFingerprints={preview.crewFingerprints ?? []}
-                basePath={preview.basePath}
-              />
-            </div>
-          </details>
-        ) : null}
       </section>
     </div>
   );

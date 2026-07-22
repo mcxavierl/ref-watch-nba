@@ -179,21 +179,40 @@ export function OfficiatingFingerprint({
             const point = pointAt(index, axis.percentile);
             const label = labelPoint(index);
             const placement = labelPlacement(index);
+            const hitRadius = compact ? 10 : 12;
 
             return (
               <g key={axis.id}>
                 <circle
                   cx={point.x}
                   cy={point.y}
-                  r={compact ? 4 : 5}
-                  className="officiating-fingerprint-vertex"
+                  r={hitRadius}
+                  className="officiating-fingerprint-vertex-hit"
                   tabIndex={0}
                   role="button"
                   aria-label={axis.tooltip}
+                  aria-pressed={activeIndex === index}
                   onMouseEnter={() => setActiveIndex(index)}
                   onMouseLeave={() => setActiveIndex(null)}
                   onFocus={() => setActiveIndex(index)}
                   onBlur={() => setActiveIndex(null)}
+                  onClick={() =>
+                    setActiveIndex((current) => (current === index ? null : index))
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setActiveIndex((current) => (current === index ? null : index));
+                    }
+                  }}
+                />
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r={compact ? 4 : 5}
+                  className="officiating-fingerprint-vertex"
+                  aria-hidden
+                  pointerEvents="none"
                 />
                 <text
                   x={label.x}

@@ -87,12 +87,21 @@
   fill: rgb(52 211 153);
   stroke: rgb(15 23 42);
   stroke-width: 1.5;
+}
+
+.officiating-fingerprint-vertex-hit {
+  fill: transparent;
+  stroke: transparent;
   cursor: pointer;
 }
 
-.officiating-fingerprint-vertex:focus-visible {
-  outline: 2px solid rgb(34 211 238);
-  outline-offset: 2px;
+.officiating-fingerprint-vertex-hit:focus-visible {
+  outline: none;
+}
+
+.officiating-fingerprint-vertex-hit:focus-visible + .officiating-fingerprint-vertex {
+  stroke: rgb(34 211 238);
+  stroke-width: 2;
 }
 
 .officiating-fingerprint-label {
@@ -159,8 +168,13 @@
   padding: 0.25rem 0.65rem;
   font-size: 0.6875rem;
   font-weight: 600;
+  font-family: inherit;
   text-decoration: none;
   cursor: pointer;
+}
+
+button.officiating-fingerprint-tab {
+  appearance: none;
 }
 
 .officiating-fingerprint-tab--active {
