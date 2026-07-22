@@ -19,12 +19,16 @@ describe("homepage-dual-narrative", () => {
     assert.equal(edge.evidenceBullets.length, 3);
   });
 
-  it("builds dataset moat metrics with four infrastructure proof points", () => {
+  it("builds dataset moat metrics with three infrastructure proof points", () => {
     const data = loadOverviewSnapshot();
     const metrics = buildDatasetMoatMetrics(data);
-    assert.equal(metrics.length, 4);
+    assert.equal(metrics.length, 3);
     assert.match(metrics[0]?.label ?? "", /Games Indexed \(7 Leagues\)/i);
     assert.match(metrics[1]?.label ?? "", /Historical Decisions/i);
+    assert.doesNotMatch(
+      metrics.map((metric) => metric.label).join(" "),
+      /Crew Combos Modeled/i,
+    );
   });
 
   it("builds intelligence ticker and top statistical signal cards", () => {
