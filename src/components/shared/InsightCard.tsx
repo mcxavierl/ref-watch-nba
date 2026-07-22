@@ -350,9 +350,12 @@ function EditorialInsightCard({
           </div>
         </button>
 
-        <footer className="insight-editorial-footer">
+        <footer className="insight-editorial-footer pt-3 border-t border-slate-800/60">
           {primaryLink ? (
-            <Link href={primaryLink.href} className="insight-editorial-link">
+            <Link
+              href={primaryLink.href}
+              className="insight-editorial-link text-xs text-slate-400 hover:text-emerald-400 font-mono transition-colors"
+            >
               {primaryLink.label}
               <ArrowRight aria-hidden />
             </Link>
@@ -360,7 +363,7 @@ function EditorialInsightCard({
           {showHubLink ? (
             <Link
               href={leagueHubHref(card.leagueId)}
-              className="insight-editorial-link insight-editorial-link--muted"
+              className="insight-editorial-link insight-editorial-link--muted text-xs text-slate-400 hover:text-emerald-400 font-mono transition-colors"
             >
               Open {card.shortLabel} hub
             </Link>

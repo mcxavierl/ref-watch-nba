@@ -29,9 +29,17 @@ export const PRO_ONLY_LIVE_LEAGUE_IDS = [
 /** NCAA hubs on the overview dashboard - CBB live with power-conference gate. */
 export const LAUNCHED_NCAA_LEAGUE_IDS = ["cbb"] as const satisfies readonly LeagueId[];
 
-/** Overview hub chooser, pace grid, and quick-list order (pro leagues + launched NCAA). */
+/**
+ * Overview hub chooser, pace grid, and quick-list order.
+ * In-season leagues first (WNBA active), then by season start date, then college.
+ */
 export const OVERVIEW_HUB_LEAGUE_IDS = [
-  ...PRO_ONLY_LIVE_LEAGUE_IDS,
+  "wnba",
+  "laliga",
+  "epl",
+  "nfl",
+  "nhl",
+  "nba",
   ...LAUNCHED_NCAA_LEAGUE_IDS,
 ] as const satisfies readonly LeagueId[];
 

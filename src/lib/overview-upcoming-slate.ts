@@ -43,7 +43,7 @@ import {
   compareSlateChronology,
   LEAGUE_UPCOMING_SLATE_LIMIT,
   HOMEPAGE_SLATE_GRID_SIZE,
-  selectPublishedHomepageSlateGames,
+  selectHomepageLiveSlateGames,
   type OverviewLeagueSlateGroup,
   type OverviewSlateEntry,
   type OverviewLeagueNote,
@@ -412,7 +412,7 @@ export function buildOverviewUpcomingSlate(): OverviewUpcomingSlate {
     (game) => game.status === "scheduled" && game.gamePhase !== "live",
   );
   const leagueGroups = groupOverviewSlateByLeague(games);
-  const homepageGames = selectPublishedHomepageSlateGames(games);
+  const homepageGames = selectHomepageLiveSlateGames(games);
 
   return {
     inSeason: games.length > 0,

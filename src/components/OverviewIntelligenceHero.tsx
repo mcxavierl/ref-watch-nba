@@ -3,8 +3,6 @@ import { GoldMineProofBar } from "@/components/GoldMineProofBar";
 import { IntelligenceHero } from "@/components/dashboard/IntelligenceHero";
 import type { CrossLeagueOverview } from "@/lib/cross-league-overview";
 import { buildDatasetMoatMetrics } from "@/lib/homepage-dual-narrative";
-import { countTodayAnomalyAlerts } from "@/lib/homepage-intelligence";
-
 type OverviewIntelligenceHeroProps = {
   data: CrossLeagueOverview;
 };
@@ -20,7 +18,6 @@ export function OverviewIntelligenceHero({ data }: OverviewIntelligenceHeroProps
       <DailyBriefingBanner
         matchupCount={matchupCount}
         liveLeagueCount={data.liveLeagueCount}
-        anomalyCount={countTodayAnomalyAlerts(data)}
       />
     </div>
   );

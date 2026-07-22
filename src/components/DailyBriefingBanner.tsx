@@ -1,7 +1,6 @@
 type DailyBriefingBannerProps = {
   matchupCount: number;
   liveLeagueCount: number;
-  anomalyCount: number;
 };
 
 function formatCount(n: number): string {
@@ -11,7 +10,6 @@ function formatCount(n: number): string {
 export function DailyBriefingBanner({
   matchupCount,
   liveLeagueCount,
-  anomalyCount,
 }: DailyBriefingBannerProps) {
   return (
     <aside className="overview-intelligence-briefing" aria-label="Daily intelligence briefing">
@@ -25,12 +23,6 @@ export function DailyBriefingBanner({
         </span>
         <span className="overview-intelligence-briefing-stat">
           <strong>{formatCount(liveLeagueCount)}</strong> live leagues tracked
-        </span>
-        <span className="overview-intelligence-briefing-sep" aria-hidden>
-          |
-        </span>
-        <span className="overview-intelligence-briefing-stat overview-intelligence-briefing-stat--anomaly">
-          <strong>{formatCount(anomalyCount)}</strong> slate anomaly alerts gated
         </span>
       </p>
     </aside>

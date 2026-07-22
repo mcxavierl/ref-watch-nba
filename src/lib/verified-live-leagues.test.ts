@@ -64,14 +64,14 @@ describe("verified live leagues", () => {
     assert.equal(isVerifiedLiveLeague("cfb"), false);
   });
 
-  it("orders overview hub leagues with WNBA before CBB", () => {
+  it("orders overview hub leagues with in-season leagues before college", () => {
     assert.deepEqual([...OVERVIEW_HUB_LEAGUE_IDS], [
-      "nba",
-      "nhl",
-      "nfl",
-      "epl",
-      "laliga",
       "wnba",
+      "laliga",
+      "epl",
+      "nfl",
+      "nhl",
+      "nba",
       "cbb",
     ]);
   });
