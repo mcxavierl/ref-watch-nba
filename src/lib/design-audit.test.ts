@@ -33,6 +33,9 @@ describe("design audit guardrails", () => {
     assert.match(page, /OverviewIntelligenceHero/);
     assert.match(dashboard, /OverviewUpcomingSlateSection/);
     assert.match(dashboard, /OverviewResearchFooter/);
+    const footer = readSrc("src/components/OverviewResearchFooter.tsx");
+    assert.match(footer, /OverviewTopInsightsSection/);
+    assert.match(footer, /LeagueChooser/);
   });
 
   it("ref profile narrative surfaces officiating fingerprint at the top", () => {
