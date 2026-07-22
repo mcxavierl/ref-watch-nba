@@ -53,9 +53,9 @@ describe("design audit guardrails", () => {
     const preview = readSrc("src/lib/game-slate-preview.ts");
     assert.match(drawer, /MatchupPreviewTerminal/);
     assert.match(terminal, /GameSlateFingerprintPanel/);
+    assert.match(terminal, /matchup-terminal-fingerprint-section/);
     assert.match(terminal, /Officiating fingerprint/);
-    assert.match(terminal, /OverlayNavLink/);
-    assert.doesNotMatch(drawer, /from "next\/link"/);
+    assert.match(panel, /type="button"/);
     assert.match(panel, /OverlayNavLink/);
     assert.match(panel, /basePath/);
     assert.match(preview, /crewFingerprints/);

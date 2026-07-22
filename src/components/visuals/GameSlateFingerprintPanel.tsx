@@ -45,30 +45,18 @@ export function GameSlateFingerprintPanel({
           aria-label="Crew fingerprint selector"
         >
           {crewFingerprints.map((entry) => (
-            <OverlayNavLink
+            <button
               key={entry.slug}
-              href={`${basePath}/refs/${entry.slug}`}
+              type="button"
               role="tab"
               aria-selected={entry.slug === active.slug}
               className={`officiating-fingerprint-tab${
                 entry.slug === active.slug ? " officiating-fingerprint-tab--active" : ""
               }`}
-              onClick={(event) => {
-                if (
-                  event.metaKey ||
-                  event.ctrlKey ||
-                  event.shiftKey ||
-                  event.altKey ||
-                  event.button !== 0
-                ) {
-                  return;
-                }
-                event.preventDefault();
-                setActiveSlug(entry.slug);
-              }}
+              onClick={() => setActiveSlug(entry.slug)}
             >
               {entry.name}
-            </OverlayNavLink>
+            </button>
           ))}
         </div>
       ) : null}

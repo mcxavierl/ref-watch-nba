@@ -11,6 +11,8 @@ describe("OfficiatingFingerprint chart labels", () => {
     assert.match(source, /axis\.shortLabel/);
     assert.doesNotMatch(source, /compact \? axis\.shortLabel : axis\.label/);
     assert.match(source, /labelPlacement/);
+    assert.match(source, /officiating-fingerprint-vertex-hit/);
+    assert.match(source, /onClick=\{\(\) =>/);
     assert.match(css, /overflow:\s*visible/);
   });
 });

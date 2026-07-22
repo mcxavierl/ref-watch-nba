@@ -280,6 +280,14 @@
   color: var(--muted);
 }
 
+.matchup-terminal-fingerprint-section {
+  padding-top: 0.1rem;
+}
+
+.matchup-terminal-fingerprint-section .game-slate-fingerprint-panel {
+  margin-top: 0.15rem;
+}
+
 .matchup-terminal-accordions {
   display: flex;
   flex-direction: column;
