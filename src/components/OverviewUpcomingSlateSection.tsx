@@ -15,7 +15,6 @@ function formatCount(n: number): string {
 export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSectionProps) {
   const { upcomingSlate } = data;
   const leagueCardById = new Map(data.leagueCards.map((card) => [card.leagueId, card]));
-  const matchupCount = upcomingSlate.totalGames + upcomingSlate.totalScheduled;
 
   return (
     <section
@@ -23,16 +22,12 @@ export function OverviewUpcomingSlateSection({ data }: OverviewUpcomingSlateSect
       aria-labelledby="overview-upcoming-heading"
     >
       <div className="overview-section-header overview-section-header--primary overview-live-slate-header-wrap">
-        <div className="overview-live-slate-header">
-          <h2 className="overview-live-slate-title" id="overview-upcoming-heading">
-            Live Slate
-          </h2>
-          {upcomingSlate.inSeason && matchupCount > 0 ? (
-            <span className="overview-live-slate-status-pill">
-              ● {formatCount(matchupCount)} Matchups Live
-            </span>
-          ) : null}
-        </div>
+        <h2
+          className="overview-live-slate-title text-xl font-semibold text-white"
+          id="overview-upcoming-heading"
+        >
+          Live Slate
+        </h2>
         <p className="overview-section-lead overview-live-slate-lead">
           {upcomingSlate.inSeason
             ? "Scores, crews, and assignments refresh as the slate moves."

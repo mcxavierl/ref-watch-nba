@@ -117,10 +117,10 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
           message: "homepage-intelligence.ts must gate anomaly alerts with qualifiesRefAnomaly",
         };
       }
-      if (!lib.includes("countRefAnomalyAlerts")) {
+      if (!lib.includes("countTodayAnomalyAlerts")) {
         return {
           ok: false,
-          message: "homepage-intelligence.ts missing countRefAnomalyAlerts",
+          message: "homepage-intelligence.ts missing countTodayAnomalyAlerts",
         };
       }
       return { ok: true };

@@ -21,16 +21,16 @@ export function DailyBriefingBanner({
           <strong>{formatCount(matchupCount)}</strong> matchups on slate
         </span>
         <span className="overview-intelligence-briefing-sep" aria-hidden>
-          ·
+          |
         </span>
         <span className="overview-intelligence-briefing-stat">
           <strong>{formatCount(liveLeagueCount)}</strong> live leagues tracked
         </span>
         <span className="overview-intelligence-briefing-sep" aria-hidden>
-          ·
+          |
         </span>
         <span className="overview-intelligence-briefing-stat overview-intelligence-briefing-stat--anomaly">
-          <strong>{formatCount(anomalyCount)}</strong> anomaly alerts gated
+          <strong>{formatCount(anomalyCount)}</strong> slate anomaly alerts gated
         </span>
       </p>
     </aside>

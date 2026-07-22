@@ -23,7 +23,7 @@ describe("homepage-dual-narrative", () => {
     const data = loadOverviewSnapshot();
     const metrics = buildDatasetMoatMetrics(data);
     assert.equal(metrics.length, 4);
-    assert.match(metrics[0]?.label ?? "", /Games Indexed/i);
+    assert.match(metrics[0]?.label ?? "", /Games Indexed \(7 Leagues\)/i);
     assert.match(metrics[1]?.label ?? "", /Historical Decisions/i);
   });
 

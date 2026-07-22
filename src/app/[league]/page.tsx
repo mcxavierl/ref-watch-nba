@@ -14,6 +14,9 @@ import {
 import { slateMetadataDescription } from "@/lib/syndication";
 import { SITE_URL } from "@/lib/site";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type PageProps = {
   params: Promise<{ league: string }>;
   searchParams: Promise<{ scope?: string }>;

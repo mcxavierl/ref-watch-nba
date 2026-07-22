@@ -168,19 +168,19 @@
 }
 
 .overview-intelligence-briefing {
-  padding: 0.9rem 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--border-default) 80%, transparent);
-  background: color-mix(in srgb, var(--bg-surface-2) 88%, transparent);
+  padding: 0.35rem 0;
+  border: 0;
+  background: transparent;
 }
 
 .overview-intelligence-briefing-label {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.4rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.6875rem;
-  font-weight: 650;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--clinical-ink-muted);
+  color: rgb(148 163 184);
 }
 
 .overview-intelligence-briefing-copy {
@@ -188,10 +188,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.35rem 0.5rem;
+  gap: 0.5rem 0.75rem;
   font-size: 0.8125rem;
   line-height: 1.45;
-  color: var(--clinical-ink);
+  color: rgb(148 163 184);
 }
 
 .overview-intelligence-briefing-stat strong {
@@ -216,33 +216,23 @@
 }
 
 .gold-mine-proof-bar {
-  margin-inline: calc(-1 * clamp(1rem, 3vw, 1.5rem));
-  width: calc(100% + 2 * clamp(1rem, 3vw, 1.5rem));
+  margin: 0;
+  width: 100%;
 }
 
-.gold-mine-proof-bar-inner {
-  max-width: var(--page-max, 72rem);
-  margin-inline: auto;
-  padding-inline: clamp(1rem, 3vw, 1.5rem);
+.gold-mine-proof-bar-metric {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem 0.75rem;
-}
-
-.gold-mine-proof-bar-item {
-  white-space: nowrap;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
 }
 
 .gold-mine-proof-bar-value {
-  font-weight: 700;
-  color: rgb(226 232 240);
+  margin: 0;
 }
 
-.gold-mine-proof-bar-sep {
-  margin-left: 0.75rem;
-  color: rgb(71 85 105);
+.gold-mine-proof-bar-label {
+  margin: 0;
 }
 
 .overview-featured-signal-header,
@@ -331,9 +321,5 @@
 
   .overview-intelligence-briefing-sep {
     display: none;
-  }
-
-  .gold-mine-proof-bar-inner {
-    justify-content: flex-start;
   }
 }
