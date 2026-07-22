@@ -5,7 +5,14 @@ import type { AssignmentGame, AssignmentsFile } from "../../src/lib/types";
 import { fetchWnbaAssignments } from "../lib/parse-assignments";
 import { normalizeWnbaAbbr } from "../../src/lib/wnba/abbr";
 import { crewMatchupKey } from "./lib/crew-matchup";
-import { fetchWnbaScoreboard, sleep, yyyymmdd } from "./lib/espn";
+import {
+  fetchWnbaScoreboard,
+  fetchWnbaSummaryOfficials,
+  sleep,
+  toWnbaOfficials,
+  yyyymmdd,
+} from "./lib/espn";
+import { loadWnbaOfficialRoster } from "./enrich-game-log-officials";
 import { postAssignmentIngest } from "../lib/post-assignment-ingest";
 
 const outPath = path.join(process.cwd(), "data", "wnba", "assignments.json");
@@ -31,6 +38,21 @@ function torontoDate(): string {
 
 function matchupKey(awayTeam: string, homeTeam: string): string {
   return `${awayTeam.toUpperCase()}@${homeTeam.toUpperCase()}`;
+}
+
+function loadExistingCrewByGameId(): Map<string, AssignmentGame["crew"]> {
+  try {
+    const existing = JSON.parse(fs.readFileSync(outPath, "utf8")) as AssignmentsFile;
+    const map = new Map<string, AssignmentGame["crew"]>();
+    for (const game of existing.games ?? []) {
+      if (game.crew.length > 0) {
+        map.set(game.id, game.crew);
+      }
+    }
+    return map;
+  } catch {
+    return new Map();
+  }
 }
 
 async function collectUpcomingEvents(startDate: string) {
@@ -81,6 +103,7 @@ async function main() {
   }
 
   const crewByMatchup = new Map<string, AssignmentGame["crew"]>();
+  const crewByGameId = loadExistingCrewByGameId();
   for (const game of official?.games ?? []) {
     const key = crewMatchupKey(game.awayTeam, game.homeTeam);
     if (key && game.crew.length > 0) {
@@ -90,13 +113,29 @@ async function main() {
 
   const events = await collectUpcomingEvents(start);
   const games: AssignmentGame[] = [];
+  const roster = loadWnbaOfficialRoster();
 
   for (const event of events) {
-    const crew = crewByMatchup.get(matchupKey(event.awayTeam, event.homeTeam)) ?? [];
+    let crew =
+      crewByMatchup.get(matchupKey(event.awayTeam, event.homeTeam)) ??
+      crewByGameId.get(event.id) ??
+      [];
+    if (crew.length === 0) {
+      const officials = await fetchWnbaSummaryOfficials(event.id);
+      if (officials.length > 0) {
+        crew = toWnbaOfficials(officials, roster);
+      }
+      await sleep(40);
+    }
     games.push({ ...event, crew });
   }
 
-  const firstSlateDate = games[0]?.slateDate ?? start;
+  const firstSlateDate =
+    games.reduce<string | undefined>((earliest, game) => {
+      if (!game.slateDate) return earliest;
+      if (!earliest || game.slateDate < earliest) return game.slateDate;
+      return earliest;
+    }, undefined) ?? start;
   const hasSlate = games.length > 0;
   const note = hasSlate
     ? `Next ${games.length} WNBA games (${firstSlateDate} onward). Crews from official.nba.com when published.`

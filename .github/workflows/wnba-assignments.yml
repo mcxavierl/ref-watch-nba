@@ -1,0 +1,52 @@
+name: WNBA assignments refresh
+
+# Poll official.nba.com WNBA crews a few times per day during the season.
+# Times are UTC: 01:00, 13:00, 17:00, 21:00 (~9 PM, 9 AM, 1 PM, 5 PM America/Toronto in EDT).
+
+on:
+  schedule:
+    - cron: "0 1,13,17,21 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: wnba-assignments-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Refresh WNBA assignments and overview snapshot
+        run: npm run refresh-wnba-slate
+
+      - name: Commit refreshed WNBA slate data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/wnba/assignments.json \
+            data/overview-snapshot.json
+          if git diff --staged --quiet; then
+            echo "No WNBA assignment changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: refresh WNBA assignments"
+          SKIP_SHIP_CHECK=1 git push

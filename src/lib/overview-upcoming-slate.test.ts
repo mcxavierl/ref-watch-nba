@@ -12,7 +12,7 @@ import {
   LEAGUE_UPCOMING_SLATE_LIMIT,
   selectHomepageSlateGrid,
 } from "@/lib/overview-upcoming-slate";
-import { getAssignments as getWnbaAssignments } from "@/lib/wnba/data";
+import { ASSIGNED_WNBA_GAME_FIXTURE } from "@/lib/wnba/test-fixtures";
 import type { AssignmentsFile } from "@/lib/types";
 
 function slateEntry(
@@ -299,6 +299,37 @@ describe("overview-upcoming-slate", () => {
     assert.equal(finalGame?.homeScore, 83);
   });
 
+  it("shows assigned WNBA crews before tipoff", () => {
+    const file: AssignmentsFile = {
+      lastUpdated: "2026-07-22T00:00:00.000Z",
+      date: "2026-07-22",
+      source: "official.nba.com",
+      games: [
+        {
+          id: "401857087",
+          matchup: "MIN @ SEA",
+          awayTeam: "MIN",
+          homeTeam: "SEA",
+          league: "WNBA",
+          slateDate: "2026-07-22",
+          slateStartAt: "2026-07-22T19:00Z",
+          crew: [
+            { name: "Amy Bonner", number: 31, role: "crew_chief" },
+            { name: "Kevin Fahy", number: 43, role: "referee" },
+            { name: "Toni Patillo", number: 76, role: "umpire" },
+          ],
+        },
+      ],
+    };
+
+    const slate = buildLeagueHubUpcomingSchedule("wnba", file, 5);
+    assert.equal(
+      slate.leagueGroup?.games[0]?.officialsLine,
+      "Head ref Kevin Fahy · 3-person crew",
+    );
+    assert.equal(slate.leagueGroup?.games[0]?.crewCount, 3);
+  });
+
   it("uses refs-not-assigned copy for WNBA scheduled games", () => {
     const file: AssignmentsFile = {
       lastUpdated: "2026-07-20T00:00:00.000Z",
@@ -325,12 +356,12 @@ describe("overview-upcoming-slate", () => {
   });
 
   it("attaches preview card insights when a crew is assigned", () => {
-    const file = getWnbaAssignments();
-    const game = file.games.find((entry) => entry.crew.length >= 2);
-    assert.ok(game, "expected at least one assigned WNBA game");
+    const game = ASSIGNED_WNBA_GAME_FIXTURE;
 
     const slate = buildLeagueUpcomingSlateFromAssignments("wnba", {
-      ...file,
+      lastUpdated: "2026-07-22T00:00:00.000Z",
+      date: "2026-07-22",
+      source: "official.nba.com",
       games: [game],
       scheduledGames: [],
     });

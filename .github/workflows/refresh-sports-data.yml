@@ -53,7 +53,7 @@ jobs:
             exit 0
           fi
           git commit -m "chore: daily sports data refresh (CBB + CFB)" -m "Automated ESPN build pipeline update."
-          git push
+          SKIP_SHIP_CHECK=1 git push
 
   notify-failure:
     needs: refresh

@@ -2,13 +2,11 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { recalibrateProfiles } from "@/lib/cron/recalibrateProfiles";
 import { createAutopsyRecord } from "@/lib/services/autopsyRecordStore";
-import { getAssignments as getWnbaAssignments } from "@/lib/wnba/data";
+import { ASSIGNED_WNBA_GAME_FIXTURE } from "@/lib/wnba/test-fixtures";
 
 describe("recalibrateProfiles", () => {
   it("recalibrates metrics for officials attached to an autopsy record", async () => {
-    const assignments = getWnbaAssignments();
-    const game = assignments.games.find((entry) => entry.crew.length >= 2);
-    assert.ok(game, "expected a WNBA game with assigned crew");
+    const game = ASSIGNED_WNBA_GAME_FIXTURE;
 
     const officialSlugs = game.crew.map((official) => {
       const base = official.name

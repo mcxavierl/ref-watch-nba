@@ -208,14 +208,19 @@ function buildOverviewOfficialsLine(
     return headRef ? `Referee: ${headRef}` : "Officials assigned";
   }
 
-  if (status === "scheduled") {
-    return "Crews TBD";
-  }
-
   if (headRef) {
+    if (leagueId === "wnba") {
+      return crew.length > 1
+        ? `Head ref ${headRef} · ${crew.length}-person crew`
+        : `Head ref ${headRef}`;
+    }
     return crew.length > 1
       ? `Head ref ${headRef} · ${crew.length}-person crew`
       : `Head ref ${headRef}`;
+  }
+
+  if (status === "scheduled") {
+    return leagueId === "wnba" ? "Refs not assigned yet" : "Crews TBD";
   }
 
   return `${crew.length}-person crew`;
