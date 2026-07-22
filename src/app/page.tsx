@@ -36,7 +36,7 @@ export default function HomePage() {
         <div className="page-shell overview-shell overview-shell--clinical">
           <OverviewDashboard
             data={data}
-            hero={<OverviewIntelligenceHero />}
+            hero={<OverviewIntelligenceHero data={data} />}
             exploreTabs={<OverviewSecondaryTabs data={data} />}
           />
         </div>

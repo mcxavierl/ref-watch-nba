@@ -11,6 +11,7 @@ import {
   loadCommandPaletteIndex,
   type CommandPaletteIndex,
 } from "@/lib/command-palette-index";
+import { COMMAND_PALETTE_OPEN_EVENT } from "@/lib/command-palette-events";
 
 function isEditableTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -39,6 +40,12 @@ export function CommandPalette() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(COMMAND_PALETTE_OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(COMMAND_PALETTE_OPEN_EVENT, onOpen);
   }, []);
 
   useEffect(() => {
