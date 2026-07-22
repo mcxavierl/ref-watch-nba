@@ -1,5 +1,34 @@
+import type { ReactNode } from "react";
+import {
+  Activity,
+  CheckCircle2,
+  Flame,
+  ShieldAlert,
+  Zap,
+} from "lucide-react";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { buildSlateOutlookSummary } from "@/lib/slate-intelligence";
+
+const BANNER_ICON_SIZE = 14;
+
+function MetricItem({
+  icon,
+  label,
+  iconClassName,
+}: {
+  icon: ReactNode;
+  label: string;
+  iconClassName?: string;
+}) {
+  return (
+    <span className="slate-outlook-banner__metric">
+      <span className={`slate-outlook-banner__metric-icon ${iconClassName ?? ""}`.trim()}>
+        {icon}
+      </span>
+      <span>{label}</span>
+    </span>
+  );
+}
 
 export function TodaysOfficiatingOutlookBanner({
   games,
@@ -15,21 +44,42 @@ export function TodaysOfficiatingOutlookBanner({
       </p>
 
       <div className="slate-outlook-banner__metrics" aria-label="Slate summary metrics">
-        <span>{outlook.gamesMonitored} games monitored</span>
-        <span aria-hidden>·</span>
-        <span>{outlook.highWhistleCount} high whistle</span>
-        <span aria-hidden>·</span>
-        <span>{outlook.defensiveCrewCount} defensive crews</span>
-        <span aria-hidden>·</span>
-        <span>Avg confidence: {outlook.avgConfidencePct}%</span>
+        <MetricItem
+          icon={<Activity aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
+          label={`${outlook.gamesMonitored} games monitored`}
+          iconClassName="slate-outlook-banner__metric-icon--neutral"
+        />
+        <MetricItem
+          icon={<Flame aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
+          label={`${outlook.highWhistleCount} high whistle`}
+          iconClassName="slate-outlook-banner__metric-icon--positive"
+        />
+        <MetricItem
+          icon={<ShieldAlert aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
+          label={`${outlook.defensiveCrewCount} defensive crews`}
+          iconClassName="slate-outlook-banner__metric-icon--negative"
+        />
+        <MetricItem
+          icon={<CheckCircle2 aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
+          label={`Avg confidence: ${outlook.avgConfidencePct}%`}
+          iconClassName="slate-outlook-banner__metric-icon--positive"
+        />
       </div>
 
       {outlook.topSignal ? (
         <p className="slate-outlook-banner__top-signal">
-          <span className="slate-outlook-banner__top-label">Top signal:</span>{" "}
+          <span className="slate-outlook-banner__top-label">
+            <Zap
+              aria-hidden
+              size={BANNER_ICON_SIZE}
+              strokeWidth={2.25}
+              className="slate-outlook-banner__top-signal-icon"
+            />
+            Top signal:
+          </span>{" "}
           <strong>{outlook.topSignal.matchup}</strong> ({outlook.topSignal.whistleDeltaLabel}{" "}
           whistles · {outlook.topSignal.confidencePct}% confidence ·{" "}
-          {outlook.topSignal.starDisplay})
+          {outlook.topSignal.signalTierLabel})
         </p>
       ) : (
         <p className="slate-outlook-banner__top-signal slate-outlook-banner__top-signal--empty">
