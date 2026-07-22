@@ -100,13 +100,8 @@
 
 .overview-hero-minimal {
   position: relative;
-  background:
-    radial-gradient(
-      ellipse 100% 70% at 0% 0%,
-      color-mix(in srgb, var(--header-gold) 9%, transparent),
-      transparent 55%
-    ),
-    transparent;
+  overflow: visible;
+  background: transparent;
 }
 
 .overview-editorial-section--slate {

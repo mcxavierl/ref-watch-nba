@@ -6,6 +6,7 @@ import { PrefetchLink } from "@/components/PrefetchLink";
 
 import { LeagueNavMark, leagueNavLabel } from "@/components/LeagueSwitchMark";
 import { getHeaderLeagueIds } from "@/lib/header-leagues";
+import { useLiveLeagueNavHints } from "@/lib/use-live-league-nav-hints";
 import {
   headerActiveLeague,
   leagueHubHref,
@@ -16,9 +17,11 @@ import {
 function LeagueNavLink({
   id,
   active,
+  onSlate,
 }: {
   id: LeagueId;
   active: boolean;
+  onSlate: boolean;
 }) {
   const config = LEAGUES[id];
   return (
@@ -27,7 +30,7 @@ function LeagueNavLink({
       prefetch={true}
       aria-label={leagueNavLabel(id)}
       aria-current={active ? "page" : undefined}
-      className={`league-nav-link${active ? " league-nav-link--active" : ""}`}
+      className={`league-nav-link${active ? " league-nav-link--active" : ""}${onSlate ? " league-nav-link--on-slate" : ""}`}
       data-league={id}
     >
       <LeagueNavMark league={id} active={active} />
@@ -40,13 +43,19 @@ export function LeagueNav() {
   const pathname = usePathname();
   const league = headerActiveLeague(pathname ?? "/");
   const headerLeagues = getHeaderLeagueIds();
+  const slateLeagueIds = useLiveLeagueNavHints();
 
   return (
     <nav className="league-nav" aria-label="Leagues" data-league={league ?? "overview"}>
       <div className="league-nav-scroll">
         <div className="league-nav-links">
           {headerLeagues.map((id) => (
-            <LeagueNavLink key={id} id={id} active={league === id} />
+            <LeagueNavLink
+              key={id}
+              id={id}
+              active={league === id}
+              onSlate={slateLeagueIds.has(id)}
+            />
           ))}
         </div>
       </div>
