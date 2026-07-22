@@ -26,7 +26,7 @@ describe("design audit guardrails", () => {
     assert.doesNotMatch(banner, /intelligence-hero-surface/);
     assert.doesNotMatch(banner, /OFFICIATING DECISION/);
     if (hero.includes("GoldMineProofBar")) {
-      assert.match(hero, /DailyBriefingBanner/);
+      assert.match(readSrc("src/components/LiveSlateGrid.tsx"), /TodaysOfficiatingOutlookBanner/);
       assert.match(banner, /overview-hero-kicker/);
     }
     assert.doesNotMatch(dashboard, /TopSignal/);
@@ -52,6 +52,8 @@ describe("design audit guardrails", () => {
     const panel = readSrc("src/components/visuals/GameSlateFingerprintPanel.tsx");
     const preview = readSrc("src/lib/game-slate-preview.ts");
     assert.match(drawer, /MatchupPreviewTerminal/);
+    assert.match(drawer, /Copy briefing summary/);
+    assert.match(drawer, /buildMatchupBriefingClipboardText/);
     assert.match(terminal, /GameSlateFingerprintPanel/);
     assert.match(terminal, /matchup-terminal-fingerprint-section/);
     assert.match(terminal, /Officiating fingerprint/);

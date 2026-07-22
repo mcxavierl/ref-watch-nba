@@ -8,7 +8,7 @@ import {
   useState,
   type MouseEvent,
 } from "react";
-import { X } from "lucide-react";
+import { Copy, X } from "lucide-react";
 import { MatchupPreviewTerminal } from "@/components/MatchupPreviewTerminal";
 import { ExportOnAirGraphicTrigger } from "@/components/media/MediaCardModal";
 import { ModalPortal } from "@/components/ModalPortal";
@@ -19,6 +19,7 @@ import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import { GameSlatePreviewErrorBoundary } from "@/components/GameSlatePreviewErrorBoundary";
 import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
 import { normalizeGameSlatePreview } from "@/lib/normalize-game-slate-preview";
+import { buildMatchupBriefingClipboardText } from "@/lib/matchup-preview-terminal";
 import "@/components/matchup-preview-terminal.css";
 
 const DRAWER_TRANSITION_MS = 220;
@@ -39,6 +40,7 @@ export function GameSlatePreviewDrawer({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [rendered, setRendered] = useState(open);
   const [visible, setVisible] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
 
   useEffect(() => {
     if (open) {
@@ -100,6 +102,20 @@ export function GameSlatePreviewDrawer({
   const insufficientCopy = awaitingCrew
     ? "Limited head-to-head history for this pairing. Context below uses recent team form and slate notes."
     : "Not enough qualified crew history to show composite tendencies yet.";
+  const canCopyBriefing = !awaitingCrew && !safePreview.insufficientSample && Boolean(projectionEvidence);
+
+  const handleCopyBriefing = async () => {
+    if (!projectionEvidence) return;
+    const text = buildMatchupBriefingClipboardText(safePreview, projectionEvidence);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 2000);
+    } catch {
+      setCopyState("error");
+      window.setTimeout(() => setCopyState("idle"), 2500);
+    }
+  };
 
   return (
     <ModalPortal>
@@ -139,6 +155,21 @@ export function GameSlatePreviewDrawer({
               </div>
             </div>
             <div className="ref-preview-drawer-header-actions">
+              {canCopyBriefing ? (
+                <button
+                  type="button"
+                  className="game-slate-preview-copy-briefing rw-focus-ring"
+                  onClick={() => void handleCopyBriefing()}
+                  aria-label="Copy briefing summary"
+                >
+                  <Copy size={14} aria-hidden />
+                  {copyState === "copied"
+                    ? "Copied"
+                    : copyState === "error"
+                      ? "Copy failed"
+                      : "Copy briefing summary"}
+                </button>
+              ) : null}
               {safePreview.broadcastExport ? (
                 <ExportOnAirGraphicTrigger
                   broadcastExport={safePreview.broadcastExport}

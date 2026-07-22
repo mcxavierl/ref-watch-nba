@@ -55,6 +55,10 @@
   color: var(--foreground);
 }
 
+.matchup-terminal-verdict__badge-wrap {
+  margin: 0.25rem 0 0.65rem;
+}
+
 .matchup-terminal-verdict__metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -5,6 +5,7 @@ import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
   buildSlateGameIntelligence,
   buildSlateOutlookSummary,
+  signalTierFromConfidence,
   sortSlateGamesBySignal,
   whistlePersonality,
 } from "@/lib/slate-intelligence";
@@ -107,5 +108,14 @@ describe("slate intelligence", () => {
     assert.equal(intel.crewChiefName, "Scott Foster");
     assert.match(intel.verdictHeadline, /high whistle/i);
     assert.ok(intel.confidencePct > 0);
+    assert.match(intel.signalTierLabel, /^\[/);
+  });
+
+  it("maps confidence and delta to explicit signal tiers", () => {
+    const high = signalTierFromConfidence(82, 2.1);
+    assert.equal(high.tier, "high");
+    assert.equal(high.label, "[HIGH SIGNAL]");
+    const standard = signalTierFromConfidence(40, 0.2);
+    assert.equal(standard.tier, "standard");
   });
 });

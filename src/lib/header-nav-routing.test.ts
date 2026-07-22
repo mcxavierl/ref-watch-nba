@@ -52,10 +52,13 @@ describe("header nav routing", () => {
     const page = readSrc("src/app/page.tsx");
     const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
     const grid = readSrc("src/components/LiveSlateGrid.tsx");
+    const outlook = readSrc("src/components/TodaysOfficiatingOutlookBanner.tsx");
 
     assert.match(page, /getLiveSlateGames/);
     assert.match(page, /preloadAssignmentsForLiveSlate/);
-    assert.match(hero, /data\.upcomingSlate\.games\.length/);
+    assert.doesNotMatch(hero, /DailyBriefingBanner/);
+    assert.match(outlook, /buildSlateOutlookSummary/);
+    assert.match(grid, /TodaysOfficiatingOutlookBanner/);
     assert.match(grid, /displayGames\.length/);
   });
 });
