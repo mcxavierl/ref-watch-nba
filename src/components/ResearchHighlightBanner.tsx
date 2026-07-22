@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { BookOpen } from "lucide-react";
 import { RESEARCH_HIGHLIGHT } from "@/config/research-highlight";
 

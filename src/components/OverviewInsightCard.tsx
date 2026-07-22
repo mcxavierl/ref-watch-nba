@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { useState, type CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import { LeagueSeasonStartBadge } from "@/components/LeagueHeader";
@@ -75,13 +75,13 @@ export function OverviewInsightCard({ card, index }: OverviewInsightCardProps) {
             <h3 className="overview-insight-headline">
               {card.entityHref && card.entityName ? (
                 <>
-                  <Link
+                  <PrefetchLink
                     href={card.entityHref}
                     className="overview-insight-entity-link"
                     onClick={(event) => event.stopPropagation()}
                   >
                     {card.entityName}
-                  </Link>
+                  </PrefetchLink>
                   {card.teamLabel ? (
                     <>
                       {" "}
@@ -115,7 +115,7 @@ export function OverviewInsightCard({ card, index }: OverviewInsightCardProps) {
 
         <footer className="overview-insight-footer">
           {card.links.map((link, linkIndex) => (
-            <Link
+            <PrefetchLink
               key={link.href}
               href={link.href}
               className={
@@ -126,15 +126,17 @@ export function OverviewInsightCard({ card, index }: OverviewInsightCardProps) {
             >
               {link.label}
               {linkIndex === 0 ? <ArrowRight aria-hidden /> : null}
-            </Link>
+            </PrefetchLink>
           ))}
         </footer>
 
-        <Link
+        <PrefetchLink
           href={leagueHubHref(card.leagueId)}
           className="overview-insight-card-cover"
           aria-label={`Open ${card.label} hub`}
-        />
+        >
+          <span className="sr-only">Open {card.label} hub</span>
+        </PrefetchLink>
       </article>
 
       {drilldownEnabled ? (

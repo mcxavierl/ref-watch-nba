@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";
 import { TeamLogo } from "@/components/TeamLogo";

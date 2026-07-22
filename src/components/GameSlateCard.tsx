@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
 import { ChevronDown } from "lucide-react";
 import { detectTeamsInGame as detectNbaTeams } from "@/lib/teams";
@@ -235,7 +235,7 @@ export function GameSlateCard({
             </span>
           ) : null}
           {metrics.crew.map((official, index) => (
-            <Link
+            <PrefetchLink
               key={`${official.name}-${official.number}`}
               href={`${basePath}/refs/${refSlug(official.name, official.number)}`}
               className="crew-chip"
@@ -250,7 +250,7 @@ export function GameSlateCard({
               />
               {official.name}
               {sport === "nhl" && <OfficialRoleBadge role={official.role} />}
-            </Link>
+            </PrefetchLink>
           ))}
         </div>
       </div>
@@ -414,13 +414,13 @@ export function GameSlateCard({
           {teams.length > 0 && (
             <div className="flex flex-wrap gap-3 border-t border-border-subtle px-4 py-3 sm:px-5">
               {teams.map((team) => (
-                <Link
+                <PrefetchLink
                   key={team.abbr}
                   href={`${basePath}/teams/${team.abbr}`}
                   className="text-sm font-medium text-zinc-700 hover:text-raptors hover:underline"
                 >
                   {displayTeamName(team)} history →
-                </Link>
+                </PrefetchLink>
               ))}
             </div>
           )}

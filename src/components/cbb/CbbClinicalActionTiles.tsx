@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { ArrowRight } from "lucide-react";
 import { insightsViewHref } from "@/lib/insights-routes";
 import { leagueHref } from "@/lib/leagues";

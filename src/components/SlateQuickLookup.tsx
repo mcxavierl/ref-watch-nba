@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { ArrowRight, Grid3x3, Lightbulb, Search } from "lucide-react";
 import { NBA_TEAMS } from "@/lib/teams";

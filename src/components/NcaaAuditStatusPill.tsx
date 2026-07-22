@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { StatusBadge } from "@/components/hub/StatusBadge";
 import {
   formatNcaaAuditPillLabel,

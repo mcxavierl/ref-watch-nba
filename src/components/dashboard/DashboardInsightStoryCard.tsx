@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { useState, type CSSProperties } from "react";
 import {
   DataCard,
@@ -136,7 +136,9 @@ export function DashboardInsightStoryCard({
           href={leagueHubHref(card.leagueId)}
           className="overview-insight-card-cover rw-focus-ring"
           aria-label={`Open ${card.label} hub`}
-        />
+        >
+          <span className="sr-only">Open {card.label} hub</span>
+        </Link>
       </DataCard>
 
       {drilldownOpen ? (

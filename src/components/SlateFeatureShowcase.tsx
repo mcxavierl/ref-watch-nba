@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import type { CSSProperties } from "react";
 import { ArrowRight, BarChart3, Grid3x3, Users, UsersRound } from "lucide-react";
 import { insightsViewHref } from "@/lib/insights-routes";

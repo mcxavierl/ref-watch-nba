@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { LeagueHubHero } from "@/components/LeagueHubHero";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TeamIndexSubtitle } from "@/components/TeamIndexSubtitle";

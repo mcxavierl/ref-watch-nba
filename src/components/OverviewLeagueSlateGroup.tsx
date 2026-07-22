@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { LeagueSlateGamesList } from "@/components/LeagueSlateGamesList";
 import type { OverviewLeagueSlateGroup as OverviewLeagueSlateGroupData } from "@/lib/overview-slate-shared";
@@ -31,9 +31,9 @@ export function OverviewLeagueSlateGroup({ group }: OverviewLeagueSlateGroupProp
             <span className="overview-slate-capsule-meta">{countLabel}</span>
           ) : null}
         </div>
-        <Link href={group.href} className="overview-slate-capsule-cta rw-focus-ring">
+        <PrefetchLink href={group.href} className="overview-slate-capsule-cta rw-focus-ring">
           Open slate
-        </Link>
+        </PrefetchLink>
       </header>
       <ul className="overview-slate-list">
         <LeagueSlateGamesList

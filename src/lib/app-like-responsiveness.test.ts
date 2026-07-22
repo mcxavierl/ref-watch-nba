@@ -10,9 +10,10 @@ function readSrc(rel: string): string {
 }
 
 describe("app-like responsiveness", () => {
-  it("PrefetchLink relies on viewport prefetch without hover router warm-up", () => {
+  it("PrefetchLink uses full-page SiteNavLink anchors", () => {
     const source = readSrc("src/components/PrefetchLink.tsx");
-    assert.match(source, /prefetch = true/);
+    assert.match(source, /SiteNavLink/);
+    assert.doesNotMatch(source, /from "next\/link"/);
     assert.doesNotMatch(source, /useRouter/);
     assert.doesNotMatch(source, /router\.prefetch/);
     assert.doesNotMatch(source, /onMouseEnter/);
@@ -20,7 +21,7 @@ describe("app-like responsiveness", () => {
 
   it("grid and navigation hubs use PrefetchLink for Open hub, Compare, and profiles", () => {
     const targets = [
-      "src/components/LeagueChooser.tsx",
+      "src/components/LeagueHubCard.tsx",
       "src/components/OverviewLeaguePaceGrid.tsx",
       "src/components/BrowseActionCards.tsx",
       "src/components/LeaguePrimaryActionGrid.tsx",
@@ -42,7 +43,6 @@ describe("app-like responsiveness", () => {
 
     const highlight = readSrc("src/components/HighlightStatCard.tsx");
     assert.match(highlight, /PrefetchLink[\s\S]*highlight-stat-profile/);
-    assert.match(highlight, /prefetch=\{true\}/);
   });
 
   it("exposes route loading skeletons and fade-in wrapper", () => {

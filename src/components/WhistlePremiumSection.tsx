@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { TrendingUp } from "lucide-react";
 import { ClinicalCard } from "@/components/hub/ClinicalCard";
 import { StatusBadge } from "@/components/hub/StatusBadge";

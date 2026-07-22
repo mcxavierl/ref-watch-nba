@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { METHODOLOGY_NAV_LABEL } from "@/lib/trust-charter";
 
 export function MethodologyLink({ className = "" }: { className?: string }) {

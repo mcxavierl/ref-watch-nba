@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { RefAvatar } from "@/components/RefAvatar";
 import { RefTrendSparkline } from "@/components/team-hub/RefTrendSparkline";
 import { formatPct, formatSigned } from "@/lib/stats-utils";

@@ -1,14 +1,21 @@
-"use client";
+import type { AnchorHTMLAttributes, ReactNode } from "react";
+import { SiteNavLink } from "@/components/SiteNavLink";
 
-import Link from "next/link";
-import type { ComponentProps } from "react";
-
-export type PrefetchLinkProps = ComponentProps<typeof Link>;
+export type PrefetchLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
+  href: string;
+  children: ReactNode;
+  /** Ignored: retained for call-site compatibility after switching to full-page nav. */
+  prefetch?: boolean;
+};
 
 /**
- * Navigation link with viewport prefetch. Hover/focus prefetch is intentionally omitted
- * to avoid HTTP/2 contention with live slate polling on Cloudflare/OpenNext.
+ * Internal navigation link. Uses full-page anchors to avoid App Router soft-nav
+ * races on Cloudflare/OpenNext when live slate clients poll in the background.
  */
-export function PrefetchLink({ href, prefetch = true, ...rest }: PrefetchLinkProps) {
-  return <Link href={href} prefetch={prefetch} {...rest} />;
+export function PrefetchLink({ href, prefetch: _prefetch, children, ...rest }: PrefetchLinkProps) {
+  return (
+    <SiteNavLink href={href} {...rest}>
+      {children}
+    </SiteNavLink>
+  );
 }

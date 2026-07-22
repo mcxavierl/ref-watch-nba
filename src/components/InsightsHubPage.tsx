@@ -1,5 +1,5 @@
 import { Suspense, type ReactNode } from "react";
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { redirect } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { CbbConferenceTrendsToggle } from "@/components/CbbConferenceTrendsToggle";

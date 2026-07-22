@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { HeroHighlightsHeader } from "@/components/dashboard/HeroHighlightsHeader";
 import { KpiDataPill } from "@/components/ui/KpiDataPill";
 import {

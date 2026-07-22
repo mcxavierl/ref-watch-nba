@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { PrefetchLink } from "@/components/PrefetchLink";
 import type { KeyboardEvent, MouseEvent } from "react";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
@@ -144,9 +144,9 @@ export function OverviewSlateRow({
           onOpenPreview ? (
             <span className="overview-slate-row-link">{previewCtaLabel(game)}</span>
           ) : (
-            <Link href={game.href} className="overview-slate-row-link">
+            <PrefetchLink href={game.href} className="overview-slate-row-link">
               Open slate
-            </Link>
+            </PrefetchLink>
           )
         ) : null}
       </div>

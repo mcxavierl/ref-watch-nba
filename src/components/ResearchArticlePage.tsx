@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { JsonLd } from "@/components/JsonLd";
 import type { ResearchArticle } from "@/lib/research-articles/leverage-spike-anomaly";
 import { techArticleJsonLd } from "@/lib/seo";

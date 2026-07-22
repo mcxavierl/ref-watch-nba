@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { JsonLd } from "@/components/JsonLd";
 import { MethodologyPageContent } from "@/components/MethodologyPageContent";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";

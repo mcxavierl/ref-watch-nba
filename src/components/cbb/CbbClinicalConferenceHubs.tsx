@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { getConferenceCoverageRows } from "@/lib/ncaa-conference-coverage";
 import { NcaaConferenceLogo } from "@/components/NcaaConferenceLogo";
 import { cbbTrendsConferenceSlug } from "@/lib/cbb/conference-trends-shared";

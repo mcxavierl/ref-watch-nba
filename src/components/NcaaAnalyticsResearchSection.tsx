@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import type { CbbWhistleOutlier } from "@/lib/cbb-whistle-matrix";
 import { CBB_WHISTLE_MATRIX_MIN_GAMES } from "@/lib/cbb-whistle-matrix";
 import type { CfbPenaltyOutlier } from "@/lib/cfb-penalty-engine";

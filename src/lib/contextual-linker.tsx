@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { Fragment, type ReactNode } from "react";
 import { leagueHubHref } from "@/lib/leagues";
 

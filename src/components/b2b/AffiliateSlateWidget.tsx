@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { ArrowUpRight, Radio } from "lucide-react";
 import type { AffiliateSlateMatch } from "@/lib/b2b-widgets";
 import { RefAvatar } from "@/components/RefAvatar";

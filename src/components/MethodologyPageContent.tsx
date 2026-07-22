@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { TermHelp } from "@/components/TermHelp";
 import {
   METHODOLOGY_PAGE_LEAD,

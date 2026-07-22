@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import { InsightCard } from "@/components/shared/InsightCard";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { RefJerseyNumber } from "@/components/RefJerseyNumber";
 import type { RefProfile } from "@/lib/types";
 import { formatPct } from "@/lib/data";

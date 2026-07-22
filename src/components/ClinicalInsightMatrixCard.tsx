@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { RefAvatar } from "@/components/RefAvatar";
 import { PersonnelAvatar } from "@/components/PersonnelAvatar";
 import { TeamLogo } from "@/components/TeamLogo";

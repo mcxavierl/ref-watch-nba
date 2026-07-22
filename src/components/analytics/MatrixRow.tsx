@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { SiteNavLink as Link } from "@/components/SiteNavLink";
 import { Plus } from "lucide-react";
 import { RefAvatar } from "@/components/RefAvatar";
 import { MetricInfoHint } from "@/components/shared/MetricInfoHint";

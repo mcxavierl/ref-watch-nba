@@ -1,15 +1,12 @@
 import type { AnchorHTMLAttributes, ReactNode } from "react";
+import { SiteNavLink } from "@/components/SiteNavLink";
 
 export type OverlayNavLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
   href: string;
   children: ReactNode;
 };
 
-/** Full-page navigation inside modal drawers and overlays (avoids App Router soft-nav races). */
-export function OverlayNavLink({ href, children, ...rest }: OverlayNavLinkProps) {
-  return (
-    <a href={href} {...rest}>
-      {children}
-    </a>
-  );
+/** Full-page navigation inside modal drawers and overlays. */
+export function OverlayNavLink(props: OverlayNavLinkProps) {
+  return <SiteNavLink {...props} />;
 }
