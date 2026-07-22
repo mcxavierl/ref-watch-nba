@@ -58,6 +58,17 @@ describe("design audit guardrails", () => {
     assert.match(panel, /basePath/);
     assert.match(preview, /crewFingerprints/);
   });
+
+  it("evidence drawer stacks driver columns inside narrow preview drawer", () => {
+    const css = readSrc("src/components/evidence/evidence-drawer.css");
+    const drawer = readSrc("src/components/GameSlatePreviewDrawer.tsx");
+    assert.match(css, /container-type:\s*inline-size/);
+    assert.match(css, /@container evidence-drawer/);
+    assert.match(css, /minmax\(0,\s*1fr\)/);
+    assert.doesNotMatch(css, /@media \(min-width: 768px\)/);
+    assert.match(drawer, /EvidenceDrawer/);
+  });
+
   it("avoids raw slate text utilities on about page", () => {
     const about = readSrc("src/app/about/page.tsx");
     assert.doesNotMatch(about, /text-slate-/);

@@ -10266,6 +10266,8 @@ p {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+    min-width: 0;
+    overflow-x: clip;
   }
 
   .ref-preview-drawer-stats {
