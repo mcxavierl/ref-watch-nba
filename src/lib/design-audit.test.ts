@@ -286,6 +286,17 @@ describe("design audit guardrails", () => {
     assert.match(readSrc("src/components/RefRankingsTable.tsx"), /Anomalies only/);
   });
 
+  it("highlight integrity audit guards materiality gates across live leagues", () => {
+    const pkg = JSON.parse(readSrc("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+    assert.match(pkg.scripts?.["audit:highlight-integrity"] ?? "", /audit-highlight-integrity/);
+    assert.match(pkg.scripts?.["check:ci"] ?? "", /audit:highlight-integrity/);
+    assert.match(readSrc(".github/workflows/ci.yml"), /Highlight integrity audit/);
+    assert.match(readSrc("src/lib/highlight-badge.ts"), /HIGHLIGHT_OVER_RATE_DEVIATION_TOP_TIER/);
+    assert.match(readSrc("src/lib/highlight-integrity-audit.ts"), /auditRankingsHighlightGrid/);
+  });
+
   it("overlay portal audit guards ModalPortal usage on full-screen overlays", () => {
     const pkg = JSON.parse(readSrc("package.json")) as {
       scripts?: Record<string, string>;

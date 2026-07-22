@@ -94,9 +94,11 @@ describe("finding-copy", () => {
       thirdPersonWhistlePaceBody(2, "fouls called", "per match"),
       "Runs 2.0 fouls called above average per match.",
     );
-    assert.equal(whistlePaceRankTitle(-2, "Whistle"), "Lightest whistle ref");
-    assert.equal(whistlePaceRankTitle(2, "Whistle"), "Heaviest whistle ref");
-    assert.doesNotMatch(whistlePaceRankTitle(-2, "Whistle"), BANNED_NEGATIVE_DELTA_HEADLINE);
+    assert.equal(whistlePaceRankTitle(-2.6, "Whistle"), "Lightest whistle ref");
+    assert.equal(whistlePaceRankTitle(2.6, "Whistle"), "Heaviest whistle ref");
+    assert.doesNotMatch(whistlePaceRankTitle(-2.6, "Whistle"), BANNED_NEGATIVE_DELTA_HEADLINE);
+    assert.equal(whistlePaceRankTitle(2, "Whistle"), "Notable heavy whistle pace");
+    assert.equal(whistlePaceRankTitle(-2, "Whistle"), "Notable light whistle pace");
   });
 
   it("third-person scoring copy matches signed delta direction", () => {

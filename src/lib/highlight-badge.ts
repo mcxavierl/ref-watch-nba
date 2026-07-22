@@ -9,11 +9,23 @@ export const HIGHLIGHT_SCORING_DELTA_TOP_TIER = 1.0;
 /** Minimum |over rate − 50%| to surface an O/U highlight (5.0 percentage points). */
 export const HIGHLIGHT_OVER_RATE_DEVIATION_MIN = 0.05;
 
+/** Minimum |over rate − 50%| for primary "Highest/Lowest historical over-rate" labels. */
+export const HIGHLIGHT_OVER_RATE_DEVIATION_TOP_TIER = 0.08;
+
 /** Minimum |Δ fouls/flags| for whistle highlights (NBA/NFL). */
 export const HIGHLIGHT_WHISTLE_DELTA_MIN = 1.5;
 
+/** Minimum |Δ fouls/flags| for primary "Heaviest/Lightest …" whistle labels (NBA/NFL). */
+export const HIGHLIGHT_WHISTLE_DELTA_TOP_TIER = 2.5;
+
 /** NHL minors use a lower absolute scale than NBA fouls. */
 export const HIGHLIGHT_NHL_MINORS_DELTA_MIN = 0.8;
+
+/** Minimum |Δ NHL minors| for primary whistle labels. */
+export const HIGHLIGHT_NHL_MINORS_DELTA_TOP_TIER = 1.2;
+
+/** Minimum ref×team win-rate delta (percentage points) for matrix standout highlights. */
+export const HIGHLIGHT_MATRIX_WIN_RATE_DELTA_MIN = 12;
 
 export type HighlightSuperlativeKind =
   | "scoring-bump"
@@ -45,10 +57,20 @@ export function meetsOverRateHighlightThreshold(overRate: number): boolean {
   return Math.abs(overRate - 0.5) >= HIGHLIGHT_OVER_RATE_DEVIATION_MIN;
 }
 
+export function meetsOverRateTopTierThreshold(overRate: number): boolean {
+  return Math.abs(overRate - 0.5) >= HIGHLIGHT_OVER_RATE_DEVIATION_TOP_TIER;
+}
+
 export function whistleHighlightMinDelta(leagueId: LeagueId): number {
   return leagueId === "nhl"
     ? HIGHLIGHT_NHL_MINORS_DELTA_MIN
     : HIGHLIGHT_WHISTLE_DELTA_MIN;
+}
+
+export function whistleHighlightTopTierMinDelta(leagueId: LeagueId): number {
+  return leagueId === "nhl"
+    ? HIGHLIGHT_NHL_MINORS_DELTA_TOP_TIER
+    : HIGHLIGHT_WHISTLE_DELTA_TOP_TIER;
 }
 
 export function meetsWhistleHighlightThreshold(
@@ -56,6 +78,17 @@ export function meetsWhistleHighlightThreshold(
   leagueId: LeagueId,
 ): boolean {
   return Math.abs(delta) >= whistleHighlightMinDelta(leagueId);
+}
+
+export function meetsWhistleTopTierThreshold(
+  delta: number,
+  leagueId: LeagueId,
+): boolean {
+  return Math.abs(delta) >= whistleHighlightTopTierMinDelta(leagueId);
+}
+
+export function meetsMatrixWinRateExtremeThreshold(deltaPts: number): boolean {
+  return Math.abs(deltaPts) >= HIGHLIGHT_MATRIX_WIN_RATE_DELTA_MIN;
 }
 
 export type HighlightBadgeRegistry = {
@@ -130,7 +163,7 @@ export function createHighlightBadgeRegistry(): HighlightBadgeRegistry {
             ? "Notable under-rate vs baseline"
             : "Elevated under-rate vs baseline";
         },
-        true,
+        meetsOverRateTopTierThreshold(overRate),
       );
     },
 
@@ -156,7 +189,7 @@ export function createHighlightBadgeRegistry(): HighlightBadgeRegistry {
             ? `Notable light ${unit} pace`
             : `Elevated light ${unit} pace`;
         },
-        true,
+        meetsWhistleTopTierThreshold(delta, leagueId),
       );
     },
 

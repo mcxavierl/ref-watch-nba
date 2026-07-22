@@ -1,4 +1,8 @@
 import type { ConfidenceTier } from "@/lib/user-language";
+import {
+  createHighlightBadgeRegistry,
+  type HighlightBadgeRegistry,
+} from "@/lib/highlight-badge";
 
 /** Shown when a stat or label has no value (no em dash). */
 export const EMPTY_DISPLAY = "-";
@@ -99,8 +103,19 @@ export function thirdPersonWhistlePaceBody(
   return `Matches league average ${whistlePlain} pace ${perGamePhrase}.`;
 }
 
-/** Ranking card title for whistle outliers; never "heaviest" on negative deltas. */
-export function whistlePaceRankTitle(delta: number, whistleShort: string): string {
+/**
+ * Ranking card title for whistle outliers; never "heaviest" on negative deltas.
+ *
+ * @deprecated Use `createHighlightBadgeRegistry().whistleBadge()` for gated superlative labels.
+ */
+export function whistlePaceRankTitle(
+  delta: number,
+  whistleShort: string,
+  registry: HighlightBadgeRegistry = createHighlightBadgeRegistry(),
+  leagueId: Parameters<HighlightBadgeRegistry["whistleBadge"]>[2] = "nba",
+): string {
+  const badge = registry.whistleBadge(delta, whistleShort, leagueId);
+  if (badge) return badge.label;
   const unit = whistleShort.toLowerCase();
   if (delta >= 0) return `Heaviest ${unit} ref`;
   return `Lightest ${unit} ref`;
@@ -122,8 +137,17 @@ export function thirdPersonScoringPaceBody(
   return `Matches the league baseline for combined ${unit} ${perGamePhrase}.`;
 }
 
-/** Ranking card title for scoring outliers; never "bump" on negative deltas. */
-export function scoringPaceRankTitle(delta: number): string {
+/**
+ * Ranking card title for scoring outliers; never "bump" on negative deltas.
+ *
+ * @deprecated Use `createHighlightBadgeRegistry().scoringBadge()` for gated superlative labels.
+ */
+export function scoringPaceRankTitle(
+  delta: number,
+  registry: HighlightBadgeRegistry = createHighlightBadgeRegistry(),
+): string {
+  const badge = registry.scoringBadge(delta);
+  if (badge) return badge.label;
   if (delta >= 0) return "Biggest scoring bump";
   return "Biggest scoring dip";
 }

@@ -82,4 +82,50 @@ describe("game slate preview", () => {
     assert.match(insights[0] ?? "", /Home teams cover|High-scoring crew/);
     assert.ok(insights.every((line) => !line.includes("Last met")));
   });
+
+  it("surfaces crew scoring trends at the central highlight scoring gate", () => {
+    const preview = buildGameSlatePreview(
+      "wnba",
+      {
+        id: "wnba-scoring-gate",
+        matchup: "LVA @ CON",
+        awayTeam: "LVA",
+        homeTeam: "CON",
+        league: "WNBA",
+        crew: [
+          { name: "Dee Kantor", number: 10, role: "referee" },
+          { name: "Tim Greene", number: 9, role: "crew_chief" },
+        ],
+      },
+      getWnbaOdds(),
+    );
+    assert.ok(preview);
+    if (preview.insufficientSample) return;
+
+    const withSignal = selectGameSlatePreviewCardInsights(
+      {
+        ...preview,
+        totalPointsDelta: 0.6,
+        foulsDelta: 0,
+      },
+      3,
+    );
+    const withoutSignal = selectGameSlatePreviewCardInsights(
+      {
+        ...preview,
+        totalPointsDelta: 0.3,
+        foulsDelta: 0,
+      },
+      3,
+    );
+
+    assert.ok(
+      withSignal.some((line) => line.includes("Crew trends")),
+      "expected scoring trend at 0.6 delta",
+    );
+    assert.ok(
+      !withoutSignal.some((line) => line.includes("Crew trends")),
+      "expected no scoring trend below 0.5 delta gate",
+    );
+  });
 });

@@ -28,6 +28,10 @@ import type {
 } from "@/lib/types";
 import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
 import { buildGameSlateBroadcastExport } from "@/lib/media/media-card-content";
+import {
+  HIGHLIGHT_SCORING_DELTA_MIN,
+  HIGHLIGHT_WHISTLE_DELTA_MIN,
+} from "@/lib/highlight-badge";
 import type { MediaBroadcastExport } from "@/lib/media/media-card-types";
 import { buildIntelligenceCardContent } from "@/lib/intelligence/build-intelligence-card";
 import type { IntelligenceCardContent } from "@/lib/intelligence/intelligence-card-types";
@@ -333,13 +337,14 @@ export function selectGameSlatePreviewCardInsights(
   }
 
   if (!preview.insufficientSample) {
-    if (Math.abs(preview.totalPointsDelta) >= 3) {
+    // Crew trend lines use the same materiality gates as highlight-badge.ts.
+    if (Math.abs(preview.totalPointsDelta) >= HIGHLIGHT_SCORING_DELTA_MIN) {
       candidates.push({
         score: 48,
         text: `Crew trends ${formatSigned(preview.totalPointsDelta)} ${preview.scoringLabel.toLowerCase()} vs average`,
       });
     }
-    if (Math.abs(preview.foulsDelta) >= 1.5) {
+    if (Math.abs(preview.foulsDelta) >= HIGHLIGHT_WHISTLE_DELTA_MIN) {
       candidates.push({
         score: 44,
         text: `Crew trends ${formatSigned(preview.foulsDelta)} ${preview.whistleLabel.toLowerCase()} vs average`,

@@ -81,10 +81,23 @@ export const COUPLED_TEST_RULES: CouplingRule[] = [
   },
   {
     label: "highlight badges",
-    sources: ["src/lib/highlight-badge.ts", "src/lib/rankings-synthesis.ts"],
+    sources: [
+      "src/lib/highlight-badge.ts",
+      "src/lib/rankings-synthesis.ts",
+      "src/lib/highlight-integrity-audit.ts",
+      "src/lib/ref-team-matrix.ts",
+      "src/lib/game-slate-preview.ts",
+      "src/lib/dashboard-hero-highlights.ts",
+      "src/lib/finding-copy.ts",
+    ],
     tests: [
       "src/lib/highlight-badge.test.ts",
       "src/lib/rankings-synthesis.test.ts",
+      "scripts/audit-highlight-integrity.test.ts",
+      "src/lib/ref-team-matrix.test.ts",
+      "src/lib/finding-copy.test.ts",
+      "src/lib/game-slate-preview.test.ts",
+      "src/lib/dashboard-hero-highlights.test.ts",
     ],
   },
   {

@@ -111,6 +111,9 @@ jobs:
       - name: Homepage product audit
         run: npm run audit:homepage-product
 
+      - name: Highlight integrity audit
+        run: npm run audit:highlight-integrity
+
       - name: Ship hygiene audit
         run: npm run audit:ship-hygiene
 
