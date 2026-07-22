@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { OverlayNavLink } from "@/components/OverlayNavLink";
 import {
   useCallback,
   useEffect,
@@ -245,7 +245,7 @@ export function GameSlatePreviewDrawer({
                 <h3 className="ref-preview-drawer-section-title">Crew</h3>
                 <div className="game-slate-preview-crew-row">
                   {safePreview.crew.map((official) => (
-                    <Link
+                    <OverlayNavLink
                       key={official.slug}
                       href={`${safePreview.basePath}/refs/${official.slug}`}
                       className="crew-chip"
@@ -261,7 +261,7 @@ export function GameSlatePreviewDrawer({
                       {safePreview.sport === "nhl" && official.role ? (
                         <OfficialRoleBadge role={official.role as RefRole} />
                       ) : null}
-                    </Link>
+                    </OverlayNavLink>
                   ))}
                 </div>
               </section>
@@ -306,6 +306,7 @@ export function GameSlatePreviewDrawer({
               {hasFingerprint && drawerVisualTab === "fingerprint" ? (
                 <GameSlateFingerprintPanel
                   crewFingerprints={safePreview.crewFingerprints ?? []}
+                  basePath={safePreview.basePath}
                 />
               ) : null}
 
@@ -471,12 +472,12 @@ export function GameSlatePreviewDrawer({
                                   .join(" ")}
                               >
                                 <td>
-                                  <Link
+                                  <OverlayNavLink
                                     href={`${safePreview.basePath}/refs/${row.refSlug}`}
                                     className="font-medium hover:underline"
                                   >
                                     {row.refName}
-                                  </Link>
+                                  </OverlayNavLink>
                                 </td>
                                 <td className="data-table-num font-tabular tabular-nums">
                                   {row.record}

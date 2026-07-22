@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { OverlayNavLink } from "@/components/OverlayNavLink";
 import { TeamLogo } from "@/components/TeamLogo";
 import { STATE_COLOR_CLASS } from "@/constants/colors";
 import type { GameSlatePreviewTeamInsight } from "@/lib/game-slate-preview";
@@ -36,12 +36,12 @@ export function TeamImpactCard({
       <ul className="game-slate-preview-team-impact-list">
         {insights.map((insight) => (
           <li key={`${insight.refSlug}-${teamAbbr}`}>
-            <Link
+            <OverlayNavLink
               href={`${basePath}/refs/${insight.refSlug}`}
               className="game-slate-preview-team-impact-ref"
             >
               {insight.refName}
-            </Link>
+            </OverlayNavLink>
             <span className="game-slate-preview-team-impact-sep" aria-hidden>
               :
             </span>{" "}

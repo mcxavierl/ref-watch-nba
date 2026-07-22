@@ -48,9 +48,14 @@ describe("design audit guardrails", () => {
 
   it("game preview drawer exposes fingerprint visual tab", () => {
     const drawer = readSrc("src/components/GameSlatePreviewDrawer.tsx");
+    const panel = readSrc("src/components/visuals/GameSlateFingerprintPanel.tsx");
     const preview = readSrc("src/lib/game-slate-preview.ts");
     assert.match(drawer, /GameSlateFingerprintPanel/);
     assert.match(drawer, /Officiating fingerprint/);
+    assert.match(drawer, /OverlayNavLink/);
+    assert.doesNotMatch(drawer, /from "next\/link"/);
+    assert.match(panel, /OverlayNavLink/);
+    assert.match(panel, /basePath/);
     assert.match(preview, /crewFingerprints/);
   });
   it("avoids raw slate text utilities on about page", () => {
