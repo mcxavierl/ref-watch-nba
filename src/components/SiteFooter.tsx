@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GamblingDisclaimer } from "@/components/GamblingDisclaimer";
 import { SeasonNotifyCta } from "@/components/SeasonNotifyCta";
@@ -40,9 +39,9 @@ function FooterLinkList({
 
         return (
           <li key={item.key}>
-            <Link href={item.href} className={className}>
+            <a href={item.href} className={className}>
               {item.label}
-            </Link>
+            </a>
           </li>
         );
       })}

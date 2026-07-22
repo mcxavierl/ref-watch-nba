@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-import { PrefetchLink } from "@/components/PrefetchLink";
+import { HeaderNavLink } from "@/components/HeaderNavLink";
 
 import { LeagueNavMark, leagueNavLabel } from "@/components/LeagueSwitchMark";
 import { getHeaderLeagueIds } from "@/lib/header-leagues";
@@ -22,9 +22,8 @@ function LeagueNavLink({
 }) {
   const config = LEAGUES[id];
   return (
-    <PrefetchLink
+    <HeaderNavLink
       href={leagueHubHref(id)}
-      prefetch={true}
       aria-label={leagueNavLabel(id)}
       aria-current={active ? "page" : undefined}
       className={`league-nav-link${active ? " league-nav-link--active" : ""}`}
@@ -32,7 +31,7 @@ function LeagueNavLink({
     >
       <LeagueNavMark league={id} active={active} />
       <span className="league-nav-label">{config.shortLabel}</span>
-    </PrefetchLink>
+    </HeaderNavLink>
   );
 }
 
