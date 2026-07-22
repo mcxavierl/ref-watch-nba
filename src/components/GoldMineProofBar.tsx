@@ -9,7 +9,7 @@ export function GoldMineProofBar({ metrics }: GoldMineProofBarProps) {
 
   return (
     <div
-      className="gold-mine-proof-bar grid grid-cols-2 gap-4 border-y border-slate-800/60 py-4 text-center md:grid-cols-4"
+      className="gold-mine-proof-bar grid grid-cols-1 gap-4 border-y border-slate-800/60 py-4 text-center sm:grid-cols-3"
       aria-label="Dataset coverage metrics"
     >
       {metrics.map((metric) => (

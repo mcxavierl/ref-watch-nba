@@ -29,11 +29,6 @@ export type DatasetMoatMetric = {
   label: string;
 };
 
-function estimateCrewCombinations(totalRefs: number): number {
-  const modeled = Math.max(totalRefs, 1);
-  return Math.round((modeled * (modeled - 1) * (modeled - 2)) / 6);
-}
-
 function formatCompactCount(value: number): string {
   if (value >= 1_000_000) {
     const millions = value / 1_000_000;
@@ -63,11 +58,6 @@ export function buildDatasetMoatMetrics(data: CrossLeagueOverview): DatasetMoatM
       id: "officials",
       value: data.totalRefs.toLocaleString("en-US"),
       label: "Active Officials",
-    },
-    {
-      id: "crews",
-      value: formatCompactCount(estimateCrewCombinations(data.totalRefs)),
-      label: "Crew Combos Modeled",
     },
   ];
 }
