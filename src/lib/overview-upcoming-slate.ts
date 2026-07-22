@@ -41,11 +41,18 @@ import {
   groupOverviewSlateByLeague,
   sortSlateChronology,
   compareSlateChronology,
+  LEAGUE_UPCOMING_SLATE_LIMIT,
+  HOMEPAGE_SLATE_GRID_SIZE,
   type OverviewLeagueSlateGroup,
   type OverviewSlateEntry,
   type OverviewLeagueNote,
   type OverviewUpcomingSlate,
   type OverviewSlateStatus,
+} from "@/lib/overview-slate-shared";
+
+export {
+  LEAGUE_UPCOMING_SLATE_LIMIT,
+  HOMEPAGE_SLATE_GRID_SIZE,
 } from "@/lib/overview-slate-shared";
 
 export type LeagueUpcomingSlate = {
@@ -54,12 +61,6 @@ export type LeagueUpcomingSlate = {
   leagueNote: OverviewLeagueNote | null;
   lastUpdated: string | null;
 };
-
-/** Max upcoming cards on a league hub (confirmed crews first). */
-export const LEAGUE_UPCOMING_SLATE_LIMIT = 6;
-
-/** Homepage grid: 3×3 upcoming cards. */
-export const HOMEPAGE_SLATE_GRID_SIZE = 9;
 
 function limitLeagueSlateGames(games: OverviewSlateEntry[]): OverviewSlateEntry[] {
   return sortSlateChronology(games).slice(0, LEAGUE_UPCOMING_SLATE_LIMIT);

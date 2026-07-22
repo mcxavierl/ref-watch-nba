@@ -5,12 +5,12 @@ import type { LeagueId } from "@/lib/leagues";
 import {
   buildLeagueUpcomingSlateFromAssignments,
   collectLeagueSlateEntries,
-  HOMEPAGE_SLATE_GRID_SIZE,
   selectHomepageSlateGrid,
 } from "@/lib/overview-upcoming-slate";
 import {
   compareSlateChronology,
   groupOverviewSlateByLeague,
+  HOMEPAGE_SLATE_GRID_SIZE,
   type OverviewSlateEntry,
   type OverviewUpcomingSlate,
 } from "@/lib/overview-slate-shared";

@@ -3,9 +3,8 @@
 import { CalendarDays } from "lucide-react";
 import { LiveSlateGrid } from "@/components/LiveSlateGrid";
 import type { LeagueUpcomingSlate } from "@/lib/overview-upcoming-slate";
-import { formatLeagueSlateCounts } from "@/lib/overview-slate-shared";
+import { formatLeagueSlateCounts, LEAGUE_UPCOMING_SLATE_LIMIT } from "@/lib/overview-slate-shared";
 import type { LeagueId } from "@/lib/leagues";
-import { LEAGUE_UPCOMING_SLATE_LIMIT } from "@/lib/overview-upcoming-slate";
 import "@/components/overview-clinical-modern.css";
 import "@/components/overview-dashboard.css";
 
