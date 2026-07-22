@@ -4393,6 +4393,18 @@ p {
   }
 
   @media (max-width: 767px) {
+    .site-header-league::after {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      z-index: 2;
+      width: 1.5rem;
+      background: linear-gradient(270deg, var(--header-chrome-bg) 0%, transparent 100%);
+    }
+
     .site-header-league {
       justify-content: flex-start;
     }

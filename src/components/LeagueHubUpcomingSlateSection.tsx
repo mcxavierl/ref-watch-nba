@@ -58,6 +58,7 @@ export function LeagueHubUpcomingSlateSection({
         matchupLabel={`${leagueLabel} matchup`}
         showHubLink={false}
         variant="card"
+        enableSlatePolling={false}
       />
 
       {slate.lastUpdated ? (

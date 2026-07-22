@@ -60,7 +60,7 @@ export function useLiveSlate(options?: {
       fallbackData: options?.initialData,
       refreshInterval: (latest?: LiveSlatePayload) =>
         slateHasLiveGames(latest?.games ?? options?.initialGames) ? LIVE_POLL_MS : UPCOMING_POLL_MS,
-      revalidateOnFocus: true,
+      revalidateOnFocus: false,
       revalidateOnReconnect: true,
       dedupingInterval: 5_000,
     },
