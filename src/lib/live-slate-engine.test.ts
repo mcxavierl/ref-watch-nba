@@ -4,6 +4,7 @@ import {
   compareLiveSlatePriority,
   getLiveSlateGames,
 } from "@/lib/live-slate-engine";
+import { buildOverviewUpcomingSlate } from "@/lib/overview-upcoming-slate";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import {
   isPublishedSlateGameVisible,
@@ -132,8 +133,10 @@ describe("live-slate-engine", () => {
   });
 
   it("returns nine published homepage matchups from assignments", () => {
-    const slate = getLiveSlateGames({ now });
+    const slate = buildOverviewUpcomingSlate();
     assert.equal(slate.games.length, 9);
+    const engineSlate = getLiveSlateGames({ now });
+    assert.equal(engineSlate.games.length, 9);
   });
 
   it("rotates published slate games after noon Eastern the next day", () => {
@@ -151,10 +154,11 @@ describe("live-slate-engine", () => {
     assert.equal(selectPublishedHomepageSlateGames([game], afterRotate, 9).length, 0);
   });
 
-  it("returns every published game when allGames is enabled", () => {
+  it("returns every in-window game when allGames is enabled", () => {
     const slate = getLiveSlateGames({ now, allGames: true });
     const capped = getLiveSlateGames({ now });
-    assert.ok(slate.games.length >= capped.games.length);
+    assert.ok(slate.games.length >= 1);
+    assert.equal(capped.games.length, 9);
   });
 });
 

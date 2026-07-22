@@ -105,58 +105,16 @@ export function isWithinLiveSlateWindow(
   return timestampMs >= windowStartMs && timestampMs <= windowEndMs;
 }
 
-function mergeSlateSelections(
-  primary: OverviewSlateEntry[],
-  backfill: OverviewSlateEntry[],
-  limit: number,
-): OverviewSlateEntry[] {
-  const selected: OverviewSlateEntry[] = [];
-  const seen = new Set<string>();
-
-  for (const game of [...primary, ...backfill]) {
-    const key = `${game.leagueId}:${game.gameId}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    selected.push(game);
-    if (selected.length >= limit) break;
-  }
-
-  return selected;
-}
-
 /**
- * Pick homepage slate cards from the rolling window.
- * Live crews stay in-window first; otherwise show published upcoming matchups (up to nine).
+ * Pick homepage slate cards from published assignments (up to nine).
+ * Games stay visible until noon Eastern the day after their slate date.
  */
 export function selectHomepageLiveSlateGames(
   games: OverviewSlateEntry[],
   now: Date = new Date(),
   limit = HOMEPAGE_SLATE_GRID_SIZE,
 ): OverviewSlateEntry[] {
-  const nowMs = now.getTime();
-  const published = selectPublishedHomepageSlateGames(games, now, limit);
-  const inWindow = sortSlateChronology(
-    games.filter((game) => isWithinLiveSlateWindow(game, nowMs)),
-  );
-
-  const liveGames = inWindow.filter(
-    (game) => game.status === "live" || game.gamePhase === "live",
-  );
-
-  if (liveGames.length > 0) {
-    return mergeSlateSelections(inWindow, published, limit);
-  }
-
-  if (published.length > 0) return published;
-
-  const upcomingGames = inWindow.filter(
-    (game) => game.status === "scheduled" && game.gamePhase !== "live",
-  );
-  if (upcomingGames.length > 0) {
-    return upcomingGames.slice(0, limit);
-  }
-
-  return inWindow.slice(0, limit);
+  return selectPublishedHomepageSlateGames(games, now, limit);
 }
 
 /** Noon Eastern on the day after `slateDate` (slate rotates forward). */

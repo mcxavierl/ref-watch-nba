@@ -14,7 +14,7 @@ import {
   LIVE_SLATE_LOOKAHEAD_MS,
   LIVE_SLATE_LOOKBACK_MS,
   resolveGameTimestampMs,
-  selectHomepageLiveSlateGames,
+  selectPublishedHomepageSlateGames,
   type OverviewSlateEntry,
   type OverviewUpcomingSlate,
 } from "@/lib/overview-slate-shared";
@@ -116,7 +116,7 @@ export function getLiveSlateGames(options: LiveSlateQueryOptions = {}): LiveSlat
     ? windowedGames
     : options.leagueId !== undefined
       ? windowedGames.slice(0, limit)
-      : selectHomepageLiveSlateGames(allGames, now, limit);
+      : selectPublishedHomepageSlateGames(allGames, now, limit);
 
   const liveGames = windowedGames.filter(
     (game) => game.status === "live" || game.gamePhase === "live",

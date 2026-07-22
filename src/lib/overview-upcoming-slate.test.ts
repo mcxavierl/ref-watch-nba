@@ -424,6 +424,7 @@ describe("overview-upcoming-slate", () => {
 
   it("does not duplicate WNBA games in the cross-league overview slate", () => {
     const slate = buildOverviewUpcomingSlate();
+    assert.equal(slate.games.length, 9);
     const wnbaGames = slate.games.filter((game) => game.leagueId === "wnba");
     const wnbaIds = wnbaGames.map((game) => game.gameId);
     assert.equal(
