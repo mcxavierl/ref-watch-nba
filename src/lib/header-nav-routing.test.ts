@@ -23,6 +23,8 @@ describe("header nav routing", () => {
   it("keeps homepage live slate polling enabled", () => {
     const section = readSrc("src/components/OverviewUpcomingSlateSection.tsx");
     assert.doesNotMatch(section, /enableSlatePolling=\{false\}/);
+    assert.doesNotMatch(section, /overview-slate-offseason/);
+    assert.match(section, /LiveSlateGrid/);
   });
 
   it("does not revalidate live slate on window focus", () => {
@@ -44,5 +46,15 @@ describe("header nav routing", () => {
 
     assert.match(header, /HeaderNavLink/);
     assert.doesNotMatch(header, /from "next\/link"/);
+  });
+
+  it("loads homepage slate from live engine and reflects loaded matchup count", () => {
+    const page = readSrc("src/app/page.tsx");
+    const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
+    const grid = readSrc("src/components/LiveSlateGrid.tsx");
+
+    assert.match(page, /getLiveSlateGames/);
+    assert.match(hero, /data\.upcomingSlate\.games\.length/);
+    assert.match(grid, /displayGames\.length/);
   });
 });

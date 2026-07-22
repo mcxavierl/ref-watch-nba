@@ -135,9 +135,39 @@ export function isPublishedSlateGameVisible(
   return nowMs < slateRotateAtMs(entry.slateDate);
 }
 
+function kickoffTimestampMs(entry: OverviewSlateEntry): number {
+  return resolveGameTimestampMs(entry) ?? Number.MAX_SAFE_INTEGER;
+}
+
+/** Pure kickoff ascending order for homepage slate selection. */
+export function sortSlateKickoffAsc(games: OverviewSlateEntry[]): OverviewSlateEntry[] {
+  return [...games].sort((a, b) => {
+    const timeDelta = kickoffTimestampMs(a) - kickoffTimestampMs(b);
+    if (timeDelta !== 0) return timeDelta;
+    return a.matchup.localeCompare(b.matchup);
+  });
+}
+
+function takeUniqueSlateGames(
+  games: OverviewSlateEntry[],
+  seen: Set<string>,
+  limit: number,
+): OverviewSlateEntry[] {
+  const selected: OverviewSlateEntry[] = [];
+  for (const game of games) {
+    const key = `${game.leagueId}:${game.gameId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    selected.push(game);
+    if (selected.length >= limit) break;
+  }
+  return selected;
+}
+
 /**
- * Pick up to nine published matchups for the homepage grid.
- * Prefers active slate-day games, then backfills with the next published entries.
+ * Pick up to nine upcoming matchups for the homepage grid.
+ * Mirrors: game_timestamp >= NOW() - 6h, ORDER BY game_timestamp ASC, LIMIT 9.
+ * When fewer than nine games fall in the initial window, backfills from upcoming days.
  */
 export function selectPublishedHomepageSlateGames(
   games: OverviewSlateEntry[],
@@ -145,21 +175,41 @@ export function selectPublishedHomepageSlateGames(
   limit = HOMEPAGE_SLATE_GRID_SIZE,
 ): OverviewSlateEntry[] {
   const nowMs = now.getTime();
-  const visible = sortSlateChronology(games).filter((game) =>
-    isPublishedSlateGameVisible(game, nowMs),
-  );
-  const selected: OverviewSlateEntry[] = [];
+  const lookbackStartMs = nowMs - ACTIVE_SLATE_LOOKBACK_MS;
+  const visible = games.filter((game) => isPublishedSlateGameVisible(game, nowMs));
   const seen = new Set<string>();
 
-  for (const game of visible) {
-    const key = `${game.leagueId}:${game.gameId}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    selected.push(game);
-    if (selected.length >= limit) break;
-  }
+  const inLookbackWindow = visible.filter((game) => {
+    if (game.status === "live" || game.gamePhase === "live") return true;
+    const timestampMs = resolveGameTimestampMs(game);
+    if (timestampMs === null) return true;
+    return timestampMs >= lookbackStartMs;
+  });
 
-  return selected;
+  const selected = takeUniqueSlateGames(sortSlateKickoffAsc(inLookbackWindow), seen, limit);
+  if (selected.length >= limit) return selected;
+
+  const upcomingBackfill = visible.filter((game) => {
+    const timestampMs = resolveGameTimestampMs(game);
+    if (timestampMs === null) return true;
+    return timestampMs >= nowMs;
+  });
+
+  const expanded = takeUniqueSlateGames(
+    sortSlateKickoffAsc(upcomingBackfill),
+    seen,
+    limit - selected.length,
+  );
+  const combined = [...selected, ...expanded];
+  if (combined.length >= limit) return combined;
+
+  const publishedBackfill = takeUniqueSlateGames(
+    sortSlateKickoffAsc(visible),
+    seen,
+    limit - combined.length,
+  );
+
+  return [...combined, ...publishedBackfill];
 }
 
 export function formatLeagueSlateCounts(liveCount: number, scheduledCount: number): string {

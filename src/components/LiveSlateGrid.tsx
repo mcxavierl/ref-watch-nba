@@ -45,9 +45,7 @@ export function LiveSlateGrid({
   });
 
   const displayGames = games;
-  const liveCount = slate?.totalGames ?? 0;
-  const scheduledCount = slate?.totalScheduled ?? 0;
-  const matchupCount = liveCount + scheduledCount;
+  const matchupCount = displayGames.length;
 
   return (
     <>
