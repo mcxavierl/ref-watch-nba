@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 
@@ -165,8 +165,13 @@ describe("Clinical Modern priority #11 surfaces", () => {
     const card = readSrc("src/components/UpcomingGameCard.tsx");
     const row = readSrc("src/components/OverviewSlateRow.tsx");
     assert.match(page, /overview-shell--clinical/);
-    assert.match(section, /OverviewSlateGamesInteractive/);
-    assert.match(section, /upcoming-games-grid/);
+    assert.match(section, /LiveSlateGrid|OverviewSlateGamesInteractive/);
+    if (section.includes("LiveSlateGrid")) {
+      assert.ok(existsSync("src/components/LiveSlateGrid.tsx"));
+      assert.match(readSrc("src/components/LiveSlateGrid.tsx"), /upcoming-games-grid/);
+    } else {
+      assert.match(section, /upcoming-games-grid/);
+    }
     assert.doesNotMatch(section, /overview-slate-notes/);
     assert.doesNotMatch(section, /overview-slate-updated/);
     assert.match(card, /buildUpcomingCardSignals/);

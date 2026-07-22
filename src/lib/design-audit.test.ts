@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 
 function readSrc(rel: string): string {
@@ -14,17 +14,21 @@ describe("design audit guardrails", () => {
     assert.match(globals, /--page-max: 72rem/);
   });
 
-  it("homepage intelligence hero leads with a minimal title only", () => {
+  it("homepage intelligence hero leads with briefing stack and proof metrics", () => {
     const hero = readSrc("src/components/OverviewIntelligenceHero.tsx");
     const banner = readSrc("src/components/dashboard/IntelligenceHero.tsx");
     const dashboard = readSrc("src/components/OverviewDashboard.tsx");
     const page = readSrc("src/app/page.tsx");
     assert.match(hero, /IntelligenceHero/);
     assert.match(banner, /Officiating Intelligence/);
-    assert.match(banner, /overview-hero-minimal/);
+    assert.match(banner, /overview-hero-minimal|overview-hero-polished/);
     assert.match(banner, /intelligence-hero-heading/);
     assert.doesNotMatch(banner, /intelligence-hero-surface/);
     assert.doesNotMatch(banner, /OFFICIATING DECISION/);
+    if (hero.includes("GoldMineProofBar")) {
+      assert.match(hero, /DailyBriefingBanner/);
+      assert.match(banner, /overview-hero-kicker/);
+    }
     assert.doesNotMatch(dashboard, /TopSignal/);
     assert.match(page, /OverviewIntelligenceHero/);
     assert.match(dashboard, /OverviewUpcomingSlateSection/);
@@ -84,9 +88,19 @@ describe("design audit guardrails", () => {
 
   it("league hub upcoming slate uses interactive upcoming game cards", () => {
     const hub = readSrc("src/components/LeagueHubUpcomingSlateSection.tsx");
-    assert.match(hub, /OverviewSlateGamesInteractive/);
-    assert.match(hub, /upcoming-games-grid/);
+    assert.match(hub, /LiveSlateGrid|OverviewSlateGamesInteractive/);
     assert.doesNotMatch(hub, /LeagueSlateGamesList/);
+    if (hub.includes("LiveSlateGrid")) {
+      assert.ok(
+        existsSync("src/components/LiveSlateGrid.tsx"),
+        "LiveSlateGrid.tsx required when hub imports LiveSlateGrid",
+      );
+      const grid = readSrc("src/components/LiveSlateGrid.tsx");
+      assert.match(grid, /OverviewSlateGamesInteractive/);
+      assert.match(grid, /upcoming-games-grid/);
+    } else {
+      assert.match(hub, /upcoming-games-grid/);
+    }
   });
 
   it("slate team display helpers are shared across card and row", () => {

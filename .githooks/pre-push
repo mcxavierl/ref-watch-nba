@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ "${SKIP_SHIP_CHECK:-}" == "1" ]]; then
-  echo "pre-push: SKIP_SHIP_CHECK=1 — skipping ship guardrails (emergency bypass only)"
-  exit 0
-fi
-
-echo "pre-push: fast preflight checks..."
+echo "pre-push: mandatory preflight checks..."
 npm run check:preflight
 
 echo "pre-push: fast CSS syntax check..."
 npm run check:css-syntax
 
+if [[ "${SKIP_SHIP_CHECK:-}" == "1" ]]; then
+  echo "pre-push: SKIP_SHIP_CHECK=1 — skipping full check:ci (theme matrix / Playwright)"
+  echo "pre-push: GitHub CI validate must pass before merge"
+  exit 0
+fi
+
 echo "pre-push: running full ship guardrails (npm run check:ci)..."
-echo "pre-push: SKIP_SHIP_CHECK=1 is for emergencies only; CI validate must pass before merge"
 npm run check:ci
