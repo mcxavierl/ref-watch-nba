@@ -89,9 +89,17 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /insight-split-metrics-row/);
     const css = readSrc("src/components/insight-card.css");
     assert.match(css, /insight-split-metrics-box--sample/);
-    assert.match(css, /insight-split-sample-value[\s\S]*color: #fff/);
+    assert.match(css, /insight-split-sample-value[\s\S]*color: var\(--text-primary\)/);
     assert.match(css, /insight-split-metrics-box--delta/);
     assert.match(css, /insight-split-delta-value--positive/);
+    assert.match(
+      css,
+      /\.insight-split-delta-inner\s*\{[^}]*overflow:\s*visible/,
+    );
+    assert.doesNotMatch(
+      css,
+      /\.insight-split-delta-inner \.insight-split-delta-value\s*\{[^}]*text-overflow:\s*ellipsis/,
+    );
   });
 
   it("InsightMetricComparison uses dual-marker win-rate track for baseline splits", () => {

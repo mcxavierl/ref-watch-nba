@@ -522,36 +522,48 @@ html.dark .insight-card--inline {
     color-mix(in srgb, var(--insight-surface) 92%, transparent);
 }
 
-.insight-split-metrics-box--sample .insight-split-sample-value,
 .insight-split-metrics-box--sample {
+  flex: 0.82 1 0;
+  color: var(--text-primary);
+}
+
+.insight-split-metrics-box--sample .insight-split-sample-value {
   color: var(--text-primary);
 }
 
 .insight-split-metrics-box--delta {
+  flex: 1.18 1 0;
+  min-width: 5.75rem;
   border-color: var(--border-default);
   background: var(--bg-surface-2);
+  padding-inline: 0.7rem 0.85rem;
 }
 
 .insight-split-delta-inner {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   min-width: 0;
-  max-width: 100%;
-  padding: 0.1rem 0.15rem;
-  overflow: hidden;
+  width: 100%;
+  overflow: visible;
 }
 
 .insight-split-delta-inner .insight-split-delta-value {
+  flex: 0 1 auto;
+  min-width: 0;
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: clamp(1rem, 3.5vw, 1.5rem);
+  gap: 0.25rem;
+  font-size: clamp(0.9rem, 2.6vw, 1.35rem);
   line-height: 1.15;
 }
 
 .insight-split-metrics--compact .insight-split-delta-inner .insight-split-delta-value {
-  font-size: clamp(0.95rem, 3vw, 1.25rem);
+  gap: 0.15rem;
+  font-size: clamp(0.82rem, 2.2vw, 1.05rem);
+}
+
+.insight-split-delta-inner .insight-split-delta-icon {
+  flex-shrink: 0;
 }
 
 .insight-split-sample-value {
