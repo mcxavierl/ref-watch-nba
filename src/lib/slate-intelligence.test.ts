@@ -3,8 +3,10 @@ import assert from "node:assert/strict";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
+  buildHistoricalMatchupBaseline,
   buildSlateGameIntelligence,
   buildSlateOutlookSummary,
+  hasRefAssignments,
   signalTierFromConfidence,
   sortSlateGamesBySignal,
   whistlePersonality,
@@ -133,6 +135,8 @@ describe("slate intelligence", () => {
   it("returns zeroed fallback when preview has no actionable metrics", () => {
     const intel = buildSlateGameIntelligence(
       baseGame({
+        headRef: undefined,
+        crewCount: 0,
         preview: preview({
           insufficientSample: true,
           sampleGames: 0,
@@ -146,6 +150,72 @@ describe("slate intelligence", () => {
 
     assert.equal(intel.confidencePct, 0);
     assert.equal(intel.evidenceScore, 0);
+    assert.equal(intel.signalTierLabel, "CREW PENDING");
+  });
+
+  it("suppresses whistle model metrics when crew is pending", () => {
+    const intel = buildSlateGameIntelligence(
+      baseGame({
+        crewCount: 0,
+        headRef: undefined,
+        preview: preview({
+          awaitingCrew: true,
+          crew: [],
+          sampleGames: 12,
+          avgFouls: 34.2,
+          foulsDelta: -1.8,
+          avgTotalPoints: 168,
+          totalPointsDelta: 4.5,
+          overRate: 0.58,
+          matchupBriefing: {
+            headline: "PHO at LAS matchup sheet",
+            lines: ["Last meeting: PHO 81, LAS 77"],
+            h2hGames: 4,
+            avgTotalPoints: 165,
+            avgFouls: 33.5,
+            overRate: 0.5,
+            lastMeeting: "Last meeting: PHO 81, LAS 77",
+          },
+        }),
+      }),
+    );
+
+    assert.equal(hasRefAssignments(baseGame({
+      crewCount: 0,
+      headRef: undefined,
+      preview: preview({ awaitingCrew: true, crew: [] }),
+    })), false);
+    assert.equal(intel.expectedWhistles, 0);
+    assert.equal(intel.confidencePct, 0);
+    assert.equal(intel.evidenceScore, 0);
+    assert.equal(intel.whistleDelta, 0);
+    assert.equal(intel.signalTierLabel, "CREW PENDING");
+  });
+
+  it("builds historical matchup baseline from preview briefing", () => {
+    const baseline = buildHistoricalMatchupBaseline(
+      baseGame({
+        awayTeam: "PHO",
+        homeTeam: "LAS",
+        preview: preview({
+          awaitingCrew: true,
+          crew: [],
+          matchupBriefing: {
+            headline: "PHO at LAS matchup sheet",
+            lines: ["Last meeting: PHO 81, LAS 77"],
+            h2hGames: 4,
+            avgTotalPoints: 165,
+            avgFouls: 33.5,
+            overRate: 0.52,
+            lastMeeting: "Last meeting: PHO 81, LAS 77",
+          },
+        }),
+      }),
+    );
+
+    assert.equal(baseline.title, "HISTORICAL TEAM MATCHUP");
+    assert.match(baseline.lines[0]!, /Last 4 meetings:/);
+    assert.match(baseline.lines[1]!, /PHO vs LAS/);
   });
 
   it("maps confidence and delta to explicit signal tiers", () => {
