@@ -6,6 +6,7 @@ import {
   buildOverviewMatchupInsight,
   buildOverviewRecentGameContextLine,
   buildOverviewTeamRecentContextLine,
+  buildOverviewTeamRecentLines,
 } from "@/lib/overview-matchup-insight";
 import type { RuntimeGameLogEntry, RuntimeGameLogFile } from "@/lib/game-logs-preload";
 import { setCachedGameLogs } from "@/lib/game-logs-preload";
@@ -178,5 +179,14 @@ describe("overview-matchup-insight", () => {
     assert.ok(line?.startsWith("Recent form:"));
     assert.match(line ?? "", /LVA/);
     assert.match(line ?? "", /TOR/);
+  });
+
+  it("splits recent-form lines for soccer and WNBA when head-to-head is missing", () => {
+    const wnbaLines = buildOverviewTeamRecentLines("wnba", "LVA", "TOR");
+    assert.equal(wnbaLines.length, 2);
+    assert.match(wnbaLines[0] ?? "", /LVA/);
+    assert.match(wnbaLines[1] ?? "", /TOR/);
+
+    assert.deepEqual(buildOverviewTeamRecentLines("nba", "LAL", "BOS"), []);
   });
 });

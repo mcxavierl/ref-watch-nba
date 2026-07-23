@@ -14,6 +14,7 @@ import {
   buildOverviewMatchupInsight,
   buildOverviewRecentGameContextLine,
   buildOverviewTeamRecentContextLine,
+  buildOverviewTeamRecentLines,
 } from "@/lib/overview-matchup-insight";
 import { loadLeagueStats } from "@/lib/load-league-stats";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
@@ -480,6 +481,20 @@ function buildMatchupSlatePreview(
         : undefined,
   ].filter((line): line is string => Boolean(line));
 
+  if (meetings.length === 0) {
+    for (const line of buildOverviewTeamRecentLines(leagueId, awayAbbr, homeAbbr)) {
+      if (!briefingLines.includes(line)) {
+        briefingLines.push(line);
+      }
+    }
+  }
+
+  if (briefingLines.length === 0) {
+    briefingLines.push(
+      `${awayAbbr} at ${homeAbbr}: no published head-to-head sample yet. Check back when logs refresh.`,
+    );
+  }
+
   const ouLean: GameSlatePreviewPayload["ouLean"] =
     overRate >= 0.55 ? "over" : overRate <= 0.45 ? "under" : "neutral";
 
@@ -614,3 +629,6 @@ export function buildGameSlatePreview(
 
   return preview;
 }
+
+export { resolveMatchupDrawerBriefing } from "@/lib/resolve-matchup-drawer-briefing";
+

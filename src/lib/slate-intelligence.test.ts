@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
+  buildHistoricalMatchupBaseline,
   buildSlateGameIntelligence,
   buildSlateOutlookSummary,
   formatSlateGameStatusLabel,
@@ -289,7 +290,34 @@ describe("slate intelligence", () => {
     assert.equal(high.label, "[HIGH SIGNAL]");
     const pending = pendingCrewSignalTier();
     assert.equal(pending.label, "[CREW PENDING]");
+    const elevated = signalTierFromConfidence(60, 1.4);
+    assert.equal(elevated.tier, "elevated");
+    const lowConfidenceHighDelta = signalTierFromConfidence(35, 1.4);
+    assert.equal(lowConfidenceHighDelta.tier, "standard");
     const standard = signalTierFromConfidence(40, 0.2);
     assert.equal(standard.tier, "standard");
+  });
+
+  it("builds historical matchup baseline from slate entry context", () => {
+    const baseline = buildHistoricalMatchupBaseline(
+      baseGame({
+        matchupInsight: "These teams average 152 points in their last 3 meetings.",
+        preview: preview({
+          awaitingCrew: true,
+          crew: [],
+          matchupBriefing: {
+            headline: "PHO at LAS matchup sheet",
+            lines: [],
+            h2hGames: 3,
+            avgTotalPoints: 152,
+            avgFouls: 34,
+            overRate: 0.58,
+          },
+        }),
+      }),
+    );
+
+    assert.match(baseline.lines[0] ?? "", /Last 3 meetings/);
+    assert.match(baseline.lines[1] ?? "", /Head-to-head record/);
   });
 });

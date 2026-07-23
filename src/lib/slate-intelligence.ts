@@ -4,7 +4,7 @@ import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { resolveGameTimestampMs } from "@/lib/overview-slate-shared";
 import { torontoIsoDate } from "@/lib/slate-game-phase";
 import { formatSlateDateTimeLabel } from "@/lib/slate-team-display";
-import { formatSigned } from "@/lib/stats-utils";
+import { formatPct, formatSigned } from "@/lib/stats-utils";
 
 export const SLATE_MODEL_VERSION = "3.8";
 
@@ -60,6 +60,11 @@ export type HomepageSlatePartition = {
   pendingGames: OverviewSlateEntry[];
 };
 
+export type SlateHistoricalMatchupBaseline = {
+  title: string;
+  lines: string[];
+};
+
 function round1(value: number): number {
   return Math.round(value * 10) / 10;
 }
@@ -82,7 +87,7 @@ export function signalTierFromConfidence(
   if (confidencePct >= 80 || (confidencePct >= 68 && absDelta >= 1.5)) {
     return { tier: "high", label: "[HIGH SIGNAL]" };
   }
-  if (confidencePct >= 55 || absDelta >= 1.0) {
+  if (confidencePct >= 55 && absDelta >= 1.0) {
     return { tier: "elevated", label: "[ELEVATED]" };
   }
   return { tier: "standard", label: "[STANDARD]" };
@@ -164,6 +169,82 @@ function resolveSignalTier(
     return pendingCrewSignalTier();
   }
   return signalTierFromConfidence(confidencePct, whistleDelta);
+}
+
+export function buildHistoricalMatchupBaseline(
+  game: OverviewSlateEntry,
+): SlateHistoricalMatchupBaseline {
+  const preview = game.preview;
+  const briefing = preview?.matchupBriefing;
+  const scoringLabel = preview?.scoringLabel?.toLowerCase() ?? "points";
+  const whistleLabel = preview?.whistleLabel?.toLowerCase() ?? "fouls";
+  const lines: string[] = [];
+
+  if (briefing && briefing.h2hGames > 0) {
+    const window = Math.min(briefing.h2hGames, 5);
+    lines.push(
+      `Last ${window} meeting${window === 1 ? "" : "s"}: ${briefing.avgTotalPoints} avg ${scoringLabel} · ${briefing.avgFouls} avg ${whistleLabel}`,
+    );
+    lines.push(
+      `Head-to-head record: ${game.awayTeam} vs ${game.homeTeam} · ${formatPct(briefing.overRate)} over`,
+    );
+    if (briefing.lastMeeting) {
+      lines.push(briefing.lastMeeting);
+    }
+  } else {
+    for (const candidate of [
+      game.matchupInsight,
+      game.lastMeetingLine,
+      game.gameContextLine,
+      game.teamContextLine,
+      ...(briefing?.lines ?? []),
+    ]) {
+      if (candidate?.trim()) {
+        lines.push(candidate.trim());
+      }
+    }
+  }
+
+  if (lines.length === 0) {
+    lines.push(
+      `${game.awayTeam} at ${game.homeTeam}: matchup history publishes when crew assignments land.`,
+    );
+  }
+
+  return {
+    title: "HISTORICAL TEAM MATCHUP",
+    lines,
+  };
+}
+
+function pendingCrewIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
+  const status = statusForGame(game);
+  const signalTier = pendingCrewSignalTier();
+
+  return {
+    personality: "neutral",
+    verdictHeadline: "Historical team matchup",
+    expectedWhistles: 0,
+    leagueAvgWhistles: 0,
+    whistleDelta: 0,
+    whistleDeltaLabel: formatSigned(0),
+    confidencePct: 0,
+    evidenceScore: 0,
+    signalTier: signalTier.tier,
+    signalTierLabel: signalTier.label,
+    statusLabel: status.label,
+    statusKind: status.kind,
+    deltaTooltip: {
+      crewBaseline: 0,
+      historicalMatchup: 0,
+      teamSplitPressure: 0,
+    },
+    sampleGames: 0,
+    modelVersion: SLATE_MODEL_VERSION,
+    intelligenceHref: `${game.href}#game-${game.gameId}`,
+    signalScore: 0,
+    crewCount: game.crewCount,
+  };
 }
 
 /** @deprecated Prefer signalTierFromConfidence for slate surfaces. */
@@ -273,6 +354,10 @@ function fallbackIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
 export function buildSlateGameIntelligence(
   game: OverviewSlateEntry,
 ): SlateGameIntelligence {
+  if (!hasRefAssignments(game)) {
+    return pendingCrewIntelligence(game);
+  }
+
   const preview = game.preview;
   if (!preview || !previewHasActionableMetrics(preview)) {
     return fallbackIntelligence(game);

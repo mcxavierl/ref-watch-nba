@@ -191,6 +191,20 @@ export function buildOverviewTeamRecentContextLine(
   return `Recent form: ${awayLine} · ${homeLine}`;
 }
 
+/** Split recent-result notes when head-to-head history is unavailable. */
+export function buildOverviewTeamRecentLines(
+  leagueId: LeagueId,
+  awayTeam: string,
+  homeTeam: string,
+): string[] {
+  if (leagueId !== "epl" && leagueId !== "laliga" && leagueId !== "wnba") return [];
+
+  return [
+    formatTeamRecentOrMissing(leagueId, awayTeam),
+    formatTeamRecentOrMissing(leagueId, homeTeam),
+  ];
+}
+
 function teamCityForLeague(leagueId: LeagueId, abbr: string): string | undefined {
   const key = abbr.toUpperCase();
   const team =

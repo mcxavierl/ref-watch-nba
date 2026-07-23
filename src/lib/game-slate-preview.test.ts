@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import {
   buildGameSlatePreview,
   buildRefTeamOutlierNotes,
+  resolveMatchupDrawerBriefing,
   selectGameSlatePreviewCardInsights,
 } from "@/lib/game-slate-preview";
 import { ASSIGNED_WNBA_GAME_FIXTURE } from "@/lib/wnba/test-fixtures";
@@ -17,6 +18,36 @@ describe("game slate preview", () => {
     assert.equal(preview.gameId, game.id);
     assert.ok(preview.crew.length >= 2);
     assert.ok(preview.scoringLabel.length > 0);
+  });
+
+  it("resolves drawer briefing from preview stats when lines are missing", () => {
+    const preview = buildGameSlatePreview(
+      "wnba",
+      {
+        id: "wnba-unassigned",
+        matchup: "LVA @ TOR",
+        awayTeam: "LVA",
+        homeTeam: "TOR",
+        league: "WNBA",
+        crew: [],
+      },
+      getWnbaOdds(),
+    );
+    assert.ok(preview);
+
+    const briefing = resolveMatchupDrawerBriefing({
+      ...preview!,
+      matchupBriefing: {
+        headline: "LVA at TOR matchup sheet",
+        lines: [],
+        h2hGames: preview!.sampleGames,
+        avgTotalPoints: preview!.avgTotalPoints,
+        avgFouls: preview!.avgFouls,
+        overRate: preview!.overRate,
+      },
+    });
+
+    assert.ok(briefing.lines.length > 0);
   });
 
   it("builds a matchup sheet when the crew has not been assigned yet", () => {
