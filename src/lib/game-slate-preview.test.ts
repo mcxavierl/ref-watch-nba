@@ -70,6 +70,29 @@ describe("game slate preview", () => {
     assert.ok(preview.matchupBriefing.lines.length > 0);
   });
 
+  it("labels the WNBA All-Star game instead of franchise head-to-head history", () => {
+    const preview = buildGameSlatePreview(
+      "wnba",
+      {
+        id: "401857320",
+        matchup: "SPO @ COOP",
+        awayTeam: "SPO",
+        homeTeam: "COOP",
+        league: "WNBA",
+        crew: [],
+      },
+      getWnbaOdds(),
+    );
+
+    assert.ok(preview?.matchupBriefing);
+    assert.equal(preview!.matchupBriefing!.headline, "WNBA ALL-STAR GAME");
+    assert.match(preview!.matchupBriefing!.lines.join(" "), /All-Star showcase event/i);
+    assert.doesNotMatch(
+      preview!.matchupBriefing!.lines.join(" "),
+      /No recent head-to-head matchups on file/i,
+    );
+  });
+
   it("includes ref-team rows when crew has team history", () => {
     const game = ASSIGNED_WNBA_GAME_FIXTURE;
 

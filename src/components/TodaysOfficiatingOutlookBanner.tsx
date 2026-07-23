@@ -50,7 +50,11 @@ export function TodaysOfficiatingOutlookBanner({
         />
         <MetricItem
           icon={<CheckCircle2 aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
-          label={`Avg confidence: ${outlook.avgConfidencePct}% (assigned slate)`}
+          label={
+            outlook.avgConfidencePct !== null
+              ? `Avg confidence: ${outlook.avgConfidencePct}% (assigned slate)`
+              : "Avg confidence: pending crew assignments"
+          }
           iconClassName="slate-outlook-banner__metric-icon--positive"
         />
       </div>

@@ -115,7 +115,8 @@ describe("slate intelligence", () => {
     const outlook = buildSlateOutlookSummary([assigned, pending]);
     assert.equal(outlook.liveAndAssignedMonitored, 1);
     assert.equal(outlook.pendingCrewCount, 1);
-    assert.ok(outlook.avgConfidencePct > 0);
+    assert.notEqual(outlook.avgConfidencePct, null);
+    assert.ok((outlook.avgConfidencePct ?? 0) > 0);
   });
 
   it("formats live status without duplicating period labels", () => {
@@ -342,5 +343,107 @@ describe("slate intelligence", () => {
     assert.equal(baseline.isEmptyFallback, false);
     assert.match(baseline.lines[0] ?? "", /Recent form: TOR beat MIN/);
     assert.doesNotMatch(baseline.lines[0] ?? "", /no recent WNBA log on file/);
+  });
+
+  it("uses WNBA All-Star event copy instead of empty head-to-head fallback", () => {
+    const baseline = buildHistoricalMatchupBaseline(
+      baseGame({
+        leagueId: "wnba",
+        leagueLabel: "WNBA",
+        leagueShortLabel: "WNBA",
+        href: "/wnba",
+        matchup: "SPO @ COOP",
+        awayTeam: "SPO",
+        homeTeam: "COOP",
+        preview: preview({
+          leagueId: "wnba",
+          sport: "wnba",
+          basePath: "/wnba",
+          matchup: "SPO @ COOP",
+          awayTeam: "SPO",
+          homeTeam: "COOP",
+          awayAbbr: "SPO",
+          homeAbbr: "COOP",
+          awaitingCrew: true,
+          crew: [],
+          matchupBriefing: {
+            headline: "WNBA ALL-STAR GAME",
+            lines: [
+              "WNBA ALL-STAR GAME · SPO vs COOP exhibition rosters.",
+              "All-Star showcase event - franchise head-to-head history does not apply.",
+            ],
+            h2hGames: 0,
+            avgTotalPoints: 0,
+            avgFouls: 0,
+            overRate: 0.5,
+          },
+        }),
+      }),
+    );
+
+    assert.equal(baseline.title, "WNBA ALL-STAR GAME");
+    assert.equal(baseline.isEmptyFallback, false);
+    assert.doesNotMatch(baseline.lines.join(" "), /No recent head-to-head matchups on file/i);
+  });
+
+  it("returns null average confidence when no assigned slate has model output", () => {
+    const outlook = buildSlateOutlookSummary([
+      baseGame({
+        gameId: "pending-1",
+        crewCount: 0,
+        headRef: undefined,
+        preview: preview({
+          awaitingCrew: true,
+          crew: [],
+          sampleGames: 0,
+          avgFouls: 0,
+          foulsDelta: 0,
+        }),
+      }),
+    ]);
+
+    assert.equal(outlook.avgConfidencePct, null);
+    assert.equal(outlook.pendingCrewCount, 1);
+  });
+
+  it("prefers preview briefing lines before empty head-to-head fallback", () => {
+    const baseline = buildHistoricalMatchupBaseline(
+      baseGame({
+        leagueId: "wnba",
+        leagueLabel: "WNBA",
+        leagueShortLabel: "WNBA",
+        href: "/wnba",
+        matchup: "TOR @ MIN",
+        awayTeam: "TOR",
+        homeTeam: "MIN",
+        teamContextLine:
+          "Recent form: TOR: no recent WNBA log on file · MIN beat GSV 72-53 at home (Sep 12, 2025)",
+        preview: preview({
+          leagueId: "wnba",
+          sport: "wnba",
+          basePath: "/wnba",
+          matchup: "TOR @ MIN",
+          awayTeam: "TOR",
+          homeTeam: "MIN",
+          awayAbbr: "TOR",
+          homeAbbr: "MIN",
+          awaitingCrew: true,
+          crew: [],
+          matchupBriefing: {
+            headline: "TOR at MIN matchup sheet",
+            lines: [
+              "Recent form: TOR: no recent WNBA log on file · MIN beat GSV 72-53 at home (Sep 12, 2025)",
+            ],
+            h2hGames: 0,
+            avgTotalPoints: 0,
+            avgFouls: 0,
+            overRate: 0.5,
+          },
+        }),
+      }),
+    );
+
+    assert.equal(baseline.isEmptyFallback, false);
+    assert.match(baseline.lines[0] ?? "", /MIN beat GSV/);
   });
 });

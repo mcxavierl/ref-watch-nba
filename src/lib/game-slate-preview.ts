@@ -21,6 +21,12 @@ import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { sportCopy } from "@/lib/user-language";
 import { formatPremiumLabel } from "@/lib/whistle-premium";
 import { resolveWnbaRefProfile } from "@/lib/wnba/data";
+import {
+  isWnbaAllStarMatchup,
+  resolveWnbaTeamAbbr,
+  wnbaAllStarEventLabel,
+} from "@/lib/wnba/teams";
+import { wnbaAbbrAliases } from "@/lib/wnba/abbr";
 import type {
   AssignmentGame,
   OddsFile,
@@ -390,6 +396,7 @@ function teamAliasesForLeague(
   abbr: string,
 ): string[] {
   const key = abbr.toUpperCase();
+  if (leagueId === "wnba") return wnbaAbbrAliases(resolveWnbaTeamAbbr(key));
   if (leagueId === "nfl" && (key === "LAC" || key === "SD")) return ["LAC", "SD"];
   return [key];
 }
@@ -492,7 +499,16 @@ function buildMatchupSlatePreview(
     }
   }
 
-  if (briefingLines.length === 0) {
+  const isAllStarEvent =
+    leagueId === "wnba" && isWnbaAllStarMatchup(awayAbbr, homeAbbr);
+
+  if (isAllStarEvent) {
+    briefingLines.length = 0;
+    briefingLines.push(
+      `${wnbaAllStarEventLabel()} · ${awayAbbr} vs ${homeAbbr} exhibition rosters.`,
+      "All-Star showcase event - franchise head-to-head history does not apply.",
+    );
+  } else if (briefingLines.length === 0) {
     briefingLines.push(
       `${awayAbbr} at ${homeAbbr}: no published head-to-head sample yet. Check back when logs refresh.`,
     );
@@ -532,7 +548,9 @@ function buildMatchupSlatePreview(
           ? "Below closing total"
           : undefined,
     matchupBriefing: {
-      headline: `${awayAbbr} at ${homeAbbr} matchup sheet`,
+      headline: isAllStarEvent
+        ? wnbaAllStarEventLabel()
+        : `${awayAbbr} at ${homeAbbr} matchup sheet`,
       lines: briefingLines,
       h2hGames: meetings.length,
       avgTotalPoints: round1(avgTotalPoints),
