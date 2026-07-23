@@ -262,6 +262,7 @@ describe("slate intelligence", () => {
     );
 
     assert.notEqual(intel.confidencePct, 42);
+    assert.notEqual(intel.confidencePct, 68);
     assert.notEqual(intel.evidenceScore, 4.2);
     assert.ok(intel.confidencePct > 0);
     assert.ok(intel.evidenceScore > 0);

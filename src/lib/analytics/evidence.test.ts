@@ -8,7 +8,7 @@ import {
   createEvidenceDriver,
   sanitizeObservationalCopy,
 } from "@/lib/analytics/evidence";
-import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
+import { buildProjectionEvidence, deriveMatchupConfidenceInputs } from "@/lib/analytics/build-projection-evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 
 function previewFixture(
@@ -144,7 +144,43 @@ describe("evidence strength and confidence", () => {
       clusterAccuracyPct: 61,
       clusterSampleGames: 80,
     });
-    assert.ok(confidence >= 50 && confidence <= 92);
+    assert.equal(confidence, 61);
+  });
+
+  it("derives matchup-specific confidence from crew and profile depth", () => {
+    const thin = buildProjectionEvidence(
+      previewFixture({
+        sampleGames: 8,
+        foulsDelta: 0.6,
+        refTeamRows: [],
+        teamImpacts: [],
+      }),
+    );
+    const crewOnly = buildProjectionEvidence(
+      previewFixture({
+        sampleGames: 46,
+        foulsDelta: 1.3,
+        refTeamRows: [],
+        teamImpacts: [],
+      }),
+    );
+    const rich = buildProjectionEvidence(previewFixture());
+
+    assert.ok(thin.confidencePct >= 35 && thin.confidencePct <= 45);
+    assert.ok(crewOnly.confidencePct >= 45 && crewOnly.confidencePct <= 65);
+    assert.ok(rich.confidencePct >= 75 && rich.confidencePct <= 92);
+    assert.notEqual(thin.confidencePct, rich.confidencePct);
+    assert.notEqual(crewOnly.confidencePct, rich.confidencePct);
+  });
+
+  it("weights ref-team history and team insights in confidence inputs", () => {
+    const sparse = deriveMatchupConfidenceInputs(
+      previewFixture({ sampleGames: 46, refTeamRows: [], teamImpacts: [] }),
+      7,
+    );
+    const rich = deriveMatchupConfidenceInputs(previewFixture(), 7.5);
+    assert.ok(rich.clusterAccuracyPct > sparse.clusterAccuracyPct);
+    assert.ok(rich.clusterSampleGames >= sparse.clusterSampleGames);
   });
 });
 
