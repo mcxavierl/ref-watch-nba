@@ -15,23 +15,23 @@ html.light:not([data-contrast="high"]) {
 }
 
 /* ── Insight split metric cells (sample size + delta) ─────────────────────── */
-html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box--delta,
-html.light:not([data-contrast="high"]) .insight-split-metrics-box--delta {
-  background: var(--bg-surface-2);
-  border-color: var(--border-default);
+html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-col--delta,
+html.light:not([data-contrast="high"]) .insight-split-metrics-col--delta {
+  background: transparent;
+  border-color: transparent;
 }
 
-html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box--sample,
-html.light:not([data-contrast="high"]) .insight-split-metrics-box--sample,
-html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-box--sample .insight-split-sample-value,
-html.light:not([data-contrast="high"]) .insight-split-metrics-box--sample .insight-split-sample-value,
+html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-col--sample,
+html.light:not([data-contrast="high"]) .insight-split-metrics-col--sample,
+html[data-color="light"]:not([data-contrast="high"]) .insight-split-metrics-col--sample .insight-split-sample-value,
+html.light:not([data-contrast="high"]) .insight-split-metrics-col--sample .insight-split-sample-value,
 html[data-color="light"]:not([data-contrast="high"])
   .insight-card[data-tone="positive"]
-  .insight-split-metrics-box--sample
+  .insight-split-metrics-col--sample
   .insight-split-sample-value,
 html[data-color="light"]:not([data-contrast="high"])
   .insight-card[data-tone="negative"]
-  .insight-split-metrics-box--sample
+  .insight-split-metrics-col--sample
   .insight-split-sample-value {
   color: var(--text-primary);
 }

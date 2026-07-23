@@ -39,9 +39,7 @@ import {
 } from "@/lib/user-language";
 import { formatPct, formatPremiumLabel, formatSigned } from "@/lib/stats-utils";
 import { whistleIndexFromCrewMetrics } from "@/lib/whistle-index";
-import { ConfidenceTierBadge } from "@/components/ConfidenceTierBadge";
 import { CLINICAL_CARD_CLASS } from "@/components/hub/ClinicalCard";
-import { StatusBadge } from "@/components/hub/StatusBadge";
 import { OfficialRoleBadge } from "@/components/OfficialRoleBadge";
 import { RefAvatar } from "@/components/RefAvatar";
 import { StandoutMetricValue } from "@/components/StandoutMetric";
@@ -202,11 +200,11 @@ export function GameSlateCard({
       <div className="data-card-header">
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">
-            {paceLabel && (
-              <p className="mb-2">
-                <StatusBadge verdict="caution" label={paceLabel} compact />
+            {paceLabel ? (
+              <p className="mb-2 font-mono text-xs uppercase tracking-wider text-slate-400">
+                {paceLabel}
               </p>
-            )}
+            ) : null}
             {teams.length > 0 ? (
               <div className="flex flex-wrap items-center gap-2.5">
                 {teams.map((team, i) => (
@@ -263,7 +261,7 @@ export function GameSlateCard({
         </div>
       </div>
 
-      <div className="space-y-2.5 px-4 py-5 sm:px-5">
+      <div className="space-y-2.5 p-4">
         {metrics.crew.length === 0 ? (
           <p className="text-sm text-muted">
             {sport === "wnba"
@@ -353,14 +351,16 @@ export function GameSlateCard({
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 border-t border-border-subtle px-4 py-2.5 sm:px-5">
-        <span className="text-xs text-zinc-500">
+      <div className="flex flex-wrap items-center gap-2 border-t border-border-subtle p-4">
+        <span className="font-mono text-xs text-slate-400">
           {formatSampleCount(metrics.sampleGames)} sample
         </span>
-        <ConfidenceTierBadge tier={tier} />
-        {metrics.insufficientSample && (
-          <span className="text-xs text-zinc-500">Below usual sample gate</span>
-        )}
+        <span className="font-mono text-xs font-semibold tracking-tight text-slate-300">
+          {tier} confidence
+        </span>
+        {metrics.insufficientSample ? (
+          <span className="font-mono text-xs text-slate-400">Below usual sample gate</span>
+        ) : null}
       </div>
 
       <details className="group border-t border-border-subtle">

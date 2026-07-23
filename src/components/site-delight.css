@@ -106,22 +106,13 @@
 
 .overview-editorial-section--slate {
   position: relative;
-  margin-top: var(--space-8);
-  padding-top: var(--space-6);
+  margin-top: 0;
+  padding-top: var(--space-8);
+  border-top: 1px solid rgb(30 41 59 / 0.6);
 }
 
 .overview-editorial-section--slate::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in srgb, var(--header-gold) 28%, transparent),
-    transparent
-  );
-  pointer-events: none;
+  display: none;
 }
 
 .league-season-start-badge,

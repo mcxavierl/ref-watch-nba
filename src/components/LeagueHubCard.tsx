@@ -42,46 +42,46 @@ export function LeagueHubCard({ card }: LeagueHubCardProps) {
         aria-hidden
       />
 
-      <div className="flex min-h-0 flex-1 flex-col p-5">
+      <div className="flex min-h-0 flex-1 flex-col p-4">
         <div className="overview-league-chooser-top shrink-0">
           <span className="overview-league-chooser-mark shrink-0" aria-hidden>
             <LeagueNavMark league={card.leagueId as LeagueId} active={false} />
           </span>
           <div className="overview-league-chooser-label-row min-w-0">
             {collegeTier ? (
-              <span className="overview-league-chooser-scope truncate text-xs">
+              <span className="overview-league-chooser-scope truncate text-xs text-slate-400">
                 College sports
               </span>
             ) : null}
-            <span className="overview-league-chooser-label truncate text-sm">
+            <span className="overview-league-chooser-label truncate text-sm font-semibold text-white drop-shadow-sm">
               {collegeTier ? card.shortLabel : card.label}
             </span>
           </div>
-          <span className="overview-league-chooser-meta tabular-nums truncate text-xs">
+          <span className="overview-league-chooser-meta tabular-nums truncate font-mono text-xs text-slate-400">
             {formatCount(card.refCount)} refs · {formatCount(card.gameCount)} games
           </span>
         </div>
 
         <div className="overview-league-chooser-metrics mt-4 min-h-0 flex-1 space-y-2 tabular-nums">
           {pending ? (
-            <span className="overview-league-chooser-pending break-words text-xs">
+            <span className="overview-league-chooser-pending break-words text-xs text-slate-400">
               {card.auditPendingLabel ?? "Pending Verification"} - hub locked
             </span>
           ) : (
             <>
               <div className="overview-league-chooser-metric min-w-0">
-                <span className="overview-league-chooser-metric-label whitespace-nowrap text-xs">
+                <span className="overview-league-chooser-metric-label whitespace-nowrap text-xs text-slate-400">
                   {card.whistleLabel}
                 </span>
-                <strong className="shrink-0 font-bold tabular-nums text-sm">
+                <strong className="shrink-0 font-mono text-sm font-bold tracking-tight text-white">
                   {formatLeaguePaceValue(card.whistlePerGame)}
                 </strong>
               </div>
               <div className="overview-league-chooser-metric min-w-0">
-                <span className="overview-league-chooser-metric-label whitespace-nowrap text-xs">
+                <span className="overview-league-chooser-metric-label whitespace-nowrap text-xs text-slate-400">
                   {card.scoreLabel}
                 </span>
-                <strong className="shrink-0 font-bold tabular-nums text-sm">
+                <strong className="shrink-0 font-mono text-sm font-bold tracking-tight text-white">
                   {formatLeaguePaceValue(card.scorePerGame)}
                 </strong>
               </div>
@@ -90,7 +90,7 @@ export function LeagueHubCard({ card }: LeagueHubCardProps) {
         </div>
       </div>
 
-      <span className="overview-league-chooser-cta league-hub-card-cta mx-5 mb-5 mt-auto flex shrink-0 items-center justify-between border-t border-slate-800/60 pt-3 text-xs uppercase tracking-wide">
+      <span className="overview-league-chooser-cta league-hub-card-cta mx-4 mb-4 mt-auto flex shrink-0 items-center justify-between border-t border-slate-800/60 pt-3 text-xs uppercase tracking-wide text-slate-400">
         <span>{pending ? "View audit status" : "Open hub"}</span>
         <ArrowRight aria-hidden className="h-3.5 w-3.5" />
       </span>

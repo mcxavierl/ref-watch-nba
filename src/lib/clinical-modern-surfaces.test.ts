@@ -13,9 +13,10 @@ describe("Clinical Modern priority #11 surfaces", () => {
   it("GameSlateCard uses clinical shell and semantic deltas", () => {
     const source = readSrc("src/components/GameSlateCard.tsx");
     assert.match(source, /CLINICAL_CARD_CLASS/);
-    assert.match(source, /StatusBadge/);
     assert.match(source, /signedDeltaTone/);
     assert.match(source, /StandoutMetricValue/);
+    assert.match(source, /font-mono text-xs text-slate-400/);
+    assert.doesNotMatch(source, /StatusBadge/);
   });
 
   it("TeamSplitView uses matrix reporting for ref splits", () => {
@@ -87,10 +88,11 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(source, /insight-split-sample-value/);
     assert.match(source, /DirectionalDeltaValue/);
     assert.match(source, /insight-split-metrics-row/);
+    assert.match(source, /insight-split-metrics-col--sample/);
     const css = readSrc("src/components/insight-card.css");
-    assert.match(css, /insight-split-metrics-box--sample/);
-    assert.match(css, /insight-split-sample-value[\s\S]*color: #fff/);
-    assert.match(css, /insight-split-metrics-box--delta/);
+    assert.match(css, /insight-split-metrics-col--sample/);
+    assert.match(css, /\.insight-split-sample-value[\s\S]*color: rgb\(255 255 255\)/);
+    assert.match(css, /insight-split-metrics-col--delta/);
     assert.match(css, /insight-split-delta-value--positive/);
   });
 
