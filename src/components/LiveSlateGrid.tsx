@@ -91,11 +91,11 @@ export function LiveSlateGrid({
       ) : null}
 
       {sortedGames.length > 0 ? (
-        <>
+        <div className="overview-slate-grid-stack">
           <div
             className={
               variant === "card"
-                ? "upcoming-games-grid upcoming-games-grid--homepage grid grid-cols-1 md:grid-cols-3 gap-3"
+                ? "upcoming-games-grid upcoming-games-grid--homepage"
                 : "upcoming-games-grid upcoming-games-grid--hub"
             }
           >
@@ -109,12 +109,12 @@ export function LiveSlateGrid({
           </div>
 
           {showOutlookBanner && pendingGames.length > 0 ? (
-            <div className="overview-slate-pending-section section-block">
+            <div className="overview-slate-pending-section">
               <h3 className="overview-slate-pending-heading">Pending crew assignments</h3>
               <div
                 className={
                   variant === "card"
-                    ? "upcoming-games-grid upcoming-games-grid--homepage upcoming-games-grid--pending grid grid-cols-1 md:grid-cols-3 gap-3"
+                    ? "upcoming-games-grid upcoming-games-grid--homepage upcoming-games-grid--pending"
                     : "upcoming-games-grid upcoming-games-grid--hub upcoming-games-grid--pending"
                 }
               >
@@ -128,7 +128,7 @@ export function LiveSlateGrid({
               </div>
             </div>
           ) : null}
-        </>
+        </div>
       ) : (
         <p className="overview-slate-empty overview-slate-empty-panel">{emptyMessage}</p>
       )}

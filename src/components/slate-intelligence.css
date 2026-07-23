@@ -543,8 +543,34 @@
   color: var(--slate-intel-ink-muted);
 }
 
-.upcoming-games-grid--homepage {
-  gap: 0.75rem;
+.upcoming-games-grid--homepage .upcoming-game-card,
+.upcoming-games-grid--homepage .slate-game-card {
+  min-height: 280px;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.slate-game-card__matchup-baseline--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  flex: 1 1 auto;
+}
+
+.slate-game-card__matchup-baseline-empty {
+  margin: 0;
+  padding: 0.5rem 0;
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  text-align: center;
+  color: rgb(148 163 184);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-game-card__matchup-baseline-empty,
+html.light:not([data-contrast="high"]) .slate-game-card__matchup-baseline-empty {
+  color: rgb(100 116 139);
 }
 
 .upcoming-games-grid--homepage .upcoming-game-card {

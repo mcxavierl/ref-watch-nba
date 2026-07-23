@@ -63,7 +63,56 @@ export type HomepageSlatePartition = {
 export type SlateHistoricalMatchupBaseline = {
   title: string;
   lines: string[];
+  isEmptyFallback?: boolean;
 };
+
+export const PENDING_EMPTY_H2H_COPY = "No recent head-to-head matchups on file";
+
+const NO_RECENT_LOG_RE = /no recent .+ log on file/i;
+
+function stripNoRecentLogClauses(line: string): string | null {
+  const trimmed = line.trim();
+  if (!trimmed) return null;
+
+  if (/^Recent form:/i.test(trimmed)) {
+    const body = trimmed.replace(/^Recent form:\s*/i, "");
+    const parts = body
+      .split(" · ")
+      .map((part) => part.trim())
+      .filter((part) => part.length > 0 && !NO_RECENT_LOG_RE.test(part));
+    if (parts.length === 0) return null;
+    return `Recent form: ${parts.join(" · ")}`;
+  }
+
+  if (NO_RECENT_LOG_RE.test(trimmed)) return null;
+  return trimmed;
+}
+
+export function sanitizePendingMatchupLines(lines: string[]): SlateHistoricalMatchupBaseline {
+  const deduped: string[] = [];
+  const seen = new Set<string>();
+
+  for (const raw of lines) {
+    const sanitized = stripNoRecentLogClauses(raw);
+    if (!sanitized || seen.has(sanitized)) continue;
+    seen.add(sanitized);
+    deduped.push(sanitized);
+  }
+
+  if (deduped.length === 0) {
+    return {
+      title: "HISTORICAL TEAM MATCHUP",
+      lines: [PENDING_EMPTY_H2H_COPY],
+      isEmptyFallback: true,
+    };
+  }
+
+  return {
+    title: "HISTORICAL TEAM MATCHUP",
+    lines: deduped,
+    isEmptyFallback: false,
+  };
+}
 
 function round1(value: number): number {
   return Math.round(value * 10) / 10;
@@ -191,30 +240,27 @@ export function buildHistoricalMatchupBaseline(
     if (briefing.lastMeeting) {
       lines.push(briefing.lastMeeting);
     }
-  } else {
-    for (const candidate of [
-      game.matchupInsight,
-      game.lastMeetingLine,
-      game.gameContextLine,
-      game.teamContextLine,
-      ...(briefing?.lines ?? []),
-    ]) {
-      if (candidate?.trim()) {
-        lines.push(candidate.trim());
-      }
+
+    return {
+      title: "HISTORICAL TEAM MATCHUP",
+      lines,
+      isEmptyFallback: false,
+    };
+  }
+
+  for (const candidate of [
+    game.matchupInsight,
+    game.lastMeetingLine,
+    game.gameContextLine,
+    game.teamContextLine,
+    ...(briefing?.lines ?? []),
+  ]) {
+    if (candidate?.trim()) {
+      lines.push(candidate.trim());
     }
   }
 
-  if (lines.length === 0) {
-    lines.push(
-      `${game.awayTeam} at ${game.homeTeam}: matchup history publishes when crew assignments land.`,
-    );
-  }
-
-  return {
-    title: "HISTORICAL TEAM MATCHUP",
-    lines,
-  };
+  return sanitizePendingMatchupLines(lines);
 }
 
 function pendingCrewIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {

@@ -322,12 +322,24 @@ export function SlateGameCard({
               />
               <span>{matchupBaseline?.title ?? "HISTORICAL TEAM MATCHUP"}</span>
             </p>
-            <div className="slate-game-card__matchup-baseline">
-              {matchupBaseline?.lines.map((line) => (
-                <p key={line} className="slate-game-card__matchup-baseline-line">
-                  {line}
+            <div
+              className={
+                matchupBaseline?.isEmptyFallback
+                  ? "slate-game-card__matchup-baseline slate-game-card__matchup-baseline--empty"
+                  : "slate-game-card__matchup-baseline"
+              }
+            >
+              {matchupBaseline?.isEmptyFallback ? (
+                <p className="slate-game-card__matchup-baseline-empty">
+                  {matchupBaseline.lines[0]}
                 </p>
-              ))}
+              ) : (
+                matchupBaseline?.lines.map((line) => (
+                  <p key={line} className="slate-game-card__matchup-baseline-line">
+                    {line}
+                  </p>
+                ))
+              )}
             </div>
           </>
         )}
