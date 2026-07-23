@@ -56,6 +56,6 @@ describe("header nav routing", () => {
     assert.match(page, /getLiveSlateGames/);
     assert.match(page, /preloadAssignmentsForLiveSlate/);
     assert.match(hero, /data\.upcomingSlate\.games\.length/);
-    assert.match(grid, /displayGames\.length/);
+    assert.match(grid, /matchupCount|primaryGames\.length/);
   });
 });
