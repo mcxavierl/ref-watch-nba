@@ -462,20 +462,13 @@
 .slate-game-card__trust-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 0.5rem;
   padding-top: 0.45rem;
   border-top: 1px solid rgb(30 41 59 / 0.6);
   font-family: var(--font-data, ui-monospace, monospace);
   font-size: 0.625rem;
   color: var(--slate-intel-ink-muted);
-}
-
-.slate-game-card__trust-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  min-width: 0;
 }
 
 .slate-game-card__trust-actions {

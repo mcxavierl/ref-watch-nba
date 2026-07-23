@@ -3,7 +3,6 @@
 import type { CSSProperties, KeyboardEvent, MouseEvent, ReactNode } from "react";
 import {
   Activity,
-  CheckCircle2,
   Flame,
   ShieldAlert,
   TrendingUp,
@@ -321,17 +320,6 @@ export function SlateGameCard({
       ) : null}
 
       <div className="slate-game-card__trust-footer">
-        <span className="slate-game-card__trust-meta tabular-nums">
-          <CheckCircle2
-            aria-hidden
-            size={SLATE_ICON_SIZE}
-            strokeWidth={2.25}
-            className="slate-game-card__icon slate-game-card__icon--positive"
-          />
-          v{intel.modelVersion} Model ·{" "}
-          {intel.sampleGames > 0 ? intel.sampleGames.toLocaleString("en-US") : "-"}{" "}
-          game sample
-        </span>
         <div className="slate-game-card__trust-actions">
           {onOpenPreview ? (
             <button
