@@ -79,6 +79,29 @@ describe("game slate preview", () => {
     assert.ok(Array.isArray(preview.teamImpacts));
   });
 
+  it("resolves WNBA ref profiles when assignment numbers are missing", () => {
+    const preview = buildGameSlatePreview(
+      "wnba",
+      {
+        id: "401999999",
+        matchup: "DAL @ POR",
+        awayTeam: "DAL",
+        homeTeam: "POR",
+        league: "WNBA",
+        crew: [
+          { name: "Tiara Cruse", number: 0, role: "crew_chief" },
+          { name: "Randy Richardson", number: 0, role: "referee" },
+          { name: "Toni Patillo", number: 0, role: "umpire" },
+        ],
+      },
+      getWnbaOdds(),
+    );
+
+    assert.ok(preview);
+    assert.ok((preview.avgFouls ?? 0) > 0);
+    assert.ok((preview.refTeamRows ?? []).some((row) => row.teamAbbr === "DAL"));
+  });
+
   it("groups team impacts by matchup side", () => {
     const game = ASSIGNED_WNBA_GAME_FIXTURE;
     const preview = buildGameSlatePreview(

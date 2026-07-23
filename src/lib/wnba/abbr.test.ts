@@ -38,6 +38,16 @@ describe("wnba abbr", () => {
     }
   });
 
+  it("skips CDN URLs for All-Star sides without franchise logos", () => {
+    assert.equal(teamLogoUrl("SPO"), "");
+    assert.equal(teamLogoUrl("COOP"), "");
+  });
+
+  it("resolves All-Star team names from ESPN strings", () => {
+    assert.equal(resolveWnbaTeamAbbr("Team Spoon"), "SPO");
+    assert.equal(resolveWnbaTeamAbbr("Team Coop"), "COOP");
+  });
+
   it("serves a lighter Toronto mark for dark UI surfaces", () => {
     assert.equal(
       teamLogoUrl("TOR", "dark"),

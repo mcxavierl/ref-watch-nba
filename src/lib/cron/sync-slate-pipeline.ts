@@ -6,7 +6,11 @@ import { getLiveSlateGames } from "@/lib/live-slate-engine";
 import type { LeagueId } from "@/lib/leagues";
 import { activeLiveLeagueIds } from "@/lib/league-verification";
 import { runIntegrityMonitorPipeline } from "@/lib/services/integrityMonitor";
-import { fetchSlateLiveCrews, mergeSlateLiveCrews } from "@/lib/slate-live-crews";
+import { mergeSlateLiveCrews } from "@/lib/slate-live-crews";
+import {
+  enrichSlateLiveCrews,
+  fetchSlateLiveCrews,
+} from "@/lib/slate-live-crews-server";
 import { fetchSlateLiveScores, mergeSlateLiveScores } from "@/lib/slate-live-scores";
 import type { AssignmentsFile } from "@/lib/types";
 
@@ -107,7 +111,7 @@ export async function runSyncSlatePipeline(options?: {
   ]);
   const mergedGames = mergeSlateLiveCrews(
     mergeSlateLiveScores(slate.games, scores),
-    crews,
+    enrichSlateLiveCrews(slate.games, crews),
   );
   const liveGames = mergedGames.filter(
     (game) => game.status === "live" || game.gamePhase === "live",

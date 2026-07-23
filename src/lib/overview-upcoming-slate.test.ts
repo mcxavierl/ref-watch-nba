@@ -14,6 +14,8 @@ import {
 } from "@/lib/overview-upcoming-slate";
 import { ASSIGNED_WNBA_GAME_FIXTURE } from "@/lib/wnba/test-fixtures";
 import type { AssignmentsFile } from "@/lib/types";
+import { enrichSlateLiveCrews } from "@/lib/slate-live-crews-server";
+import { mergeSlateLiveCrews } from "@/lib/slate-live-crews";
 
 function slateEntry(
   overrides: Partial<OverviewSlateEntry> & Pick<OverviewSlateEntry, "leagueId" | "gameId" | "status">,
@@ -443,5 +445,41 @@ describe("overview-upcoming-slate", () => {
       lvaTorCount <= 1,
       `expected at most one LVA @ TOR card, found ${lvaTorCount}`,
     );
+  });
+
+  it("accepts server-hydrated preview payloads on slate crew refresh", () => {
+    const game = slateEntry({
+      leagueId: "wnba",
+      gameId: "401999999",
+      status: "scheduled",
+      matchup: "DAL @ POR",
+      awayTeam: "DAL",
+      homeTeam: "POR",
+      crewCount: 0,
+      preview: {
+        awaitingCrew: false,
+        avgFouls: 0,
+        sampleGames: 0,
+        crew: [],
+        refTeamRows: [],
+      } as unknown as OverviewSlateEntry["preview"],
+    });
+
+    const merged = mergeSlateLiveCrews(
+      [game],
+      enrichSlateLiveCrews([game], [
+        {
+          leagueId: "wnba",
+          gameId: "401999999",
+          crew: [
+            { name: "Tiara Cruse", number: 0, role: "crew_chief" },
+            { name: "Randy Richardson", number: 0, role: "referee" },
+            { name: "Toni Patillo", number: 0, role: "umpire" },
+          ],
+        },
+      ]),
+    );
+
+    assert.ok((merged[0]?.preview?.sampleGames ?? 0) > 0);
   });
 });

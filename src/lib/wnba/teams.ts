@@ -1,10 +1,14 @@
+import { normalizeWnbaAbbr, wnbaLogoAbbr } from "@/lib/wnba/abbr";
+
 export interface WnbaTeam {
   abbr: string;
   name: string;
   city: string;
-  conference: "East" | "West";
+  conference?: "East" | "West";
   /** Optional CDN logo override for TeamLogo. */
   logoUrl?: string;
+  /** All-Star roster side without a franchise logo on ESPN CDN. */
+  allStar?: boolean;
 }
 
 /** All WNBA franchises, abbr is the canonical key for routes and data. */
@@ -26,9 +30,18 @@ export const WNBA_TEAMS: WnbaTeam[] = [
   { abbr: "POR", name: "Fire", city: "Portland", conference: "West" },
 ];
 
+/** ESPN All-Star sides (e.g. Team Spoon vs Team Coop) with no franchise CDN logos. */
+export const WNBA_ALLSTAR_TEAMS: WnbaTeam[] = [
+  { abbr: "SPO", name: "Spoon", city: "Team", allStar: true },
+  { abbr: "COOP", name: "Coop", city: "Team", allStar: true },
+];
+
 export const WNBA_TEAM_ABBRS = WNBA_TEAMS.map((t) => t.abbr);
 
-const teamByAbbr = new Map(WNBA_TEAMS.map((t) => [t.abbr, t]));
+const franchiseAbbrs = new Set(WNBA_TEAMS.map((t) => t.abbr));
+const teamByAbbr = new Map(
+  [...WNBA_TEAMS, ...WNBA_ALLSTAR_TEAMS].map((t) => [t.abbr, t]),
+);
 
 export function getTeam(abbr: string): WnbaTeam | undefined {
   return teamByAbbr.get(abbr.toUpperCase());
@@ -41,6 +54,7 @@ export function getTeamOrThrow(abbr: string): WnbaTeam {
 }
 
 export function teamFullName(team: WnbaTeam): string {
+  if (team.allStar) return `${team.city} ${team.name}`;
   if (team.abbr === "NYL") return "New York Liberty";
   if (team.abbr === "LVA") return "Las Vegas Aces";
   if (team.abbr === "LAS") return "Los Angeles Sparks";
@@ -52,8 +66,6 @@ export function teamWithArticle(team: WnbaTeam): string {
   return `the ${team.name}`;
 }
 
-import { normalizeWnbaAbbr, wnbaLogoAbbr } from "@/lib/wnba/abbr";
-
 /** Resolve official city names, nicknames, or ESPN keys to canonical 3-letter abbrs. */
 export function resolveWnbaTeamAbbr(team: string): string {
   const matched = matchTeamString(team);
@@ -62,7 +74,11 @@ export function resolveWnbaTeamAbbr(team: string): string {
 }
 
 export function teamLogoUrl(abbr: string, uiSurface: "dark" | "light" = "dark"): string {
-  const slug = wnbaLogoAbbr(abbr);
+  const canonical = normalizeWnbaAbbr(abbr);
+  const team = getTeam(canonical);
+  if (team?.logoUrl) return team.logoUrl;
+  if (team?.allStar || !franchiseAbbrs.has(canonical)) return "";
+  const slug = wnbaLogoAbbr(canonical);
   const folder = uiSurface === "dark" ? "500-dark" : "500";
   return `https://a.espncdn.com/i/teamlogos/wnba/${folder}/${slug}.png`;
 }
@@ -93,6 +109,12 @@ export function matchTeamString(team: string): WnbaTeam | undefined {
   }
   if (normalized.includes("valkyries") || normalized.includes("golden state")) {
     return getTeam("GSV");
+  }
+  if (normalized.includes("team spoon") || normalized.includes("spoon")) {
+    return getTeam("SPO");
+  }
+  if (normalized.includes("team coop") || normalized === "coop") {
+    return getTeam("COOP");
   }
 
   return undefined;

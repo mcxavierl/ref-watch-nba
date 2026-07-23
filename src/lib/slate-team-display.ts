@@ -41,6 +41,11 @@ export function slateTeamLogoSport(leagueId: LeagueId): SlateTeamLogoSport {
   return leagueId;
 }
 
+/** Slate cards and matrix rows sit on light logo plates even in dark theme. */
+export function slateTeamLogoPlateTone(leagueId: LeagueId): "auto" | "light" {
+  return leagueId === "wnba" || leagueId === "nhl" ? "light" : "auto";
+}
+
 function slateTeamLogoUrl(
   leagueId: LeagueId,
   abbr: string,
@@ -50,7 +55,7 @@ function slateTeamLogoUrl(
   switch (leagueId) {
     case "wnba": {
       const canonical = resolveWnbaTeamAbbr(key);
-      return wnbaTeamLogoUrl(canonical) || undefined;
+      return wnbaTeamLogoUrl(canonical, "light") || undefined;
     }
     case "nfl":
       return nflTeamLogoUrl(key) || undefined;
@@ -59,7 +64,7 @@ function slateTeamLogoUrl(
     case "laliga":
       return laligaTeamLogoUrl(key) || undefined;
     case "nhl":
-      return nhlTeamLogoUrl(key) || undefined;
+      return nhlTeamLogoUrl(key, "light") || undefined;
     case "cbb":
       return cbbTeamLogoUrl(key) || undefined;
     case "cfb":

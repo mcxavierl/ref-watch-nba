@@ -15,7 +15,7 @@ import { PrefetchLink } from "@/components/PrefetchLink";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
-import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
+import { resolveSlateTeam, slateTeamLogoPlateTone, slateTeamLogoSport } from "@/lib/slate-team-display";
 import {
   buildHistoricalMatchupBaseline,
   buildSlateGameIntelligence,
@@ -350,7 +350,12 @@ export function SlateGameCard({
         aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
       >
         <div className="slate-game-card__team upcoming-game-card__team">
-          <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <TeamLogo
+            team={awayTeam}
+            sport={slateTeamLogoSport(game.leagueId)}
+            plateTone={slateTeamLogoPlateTone(game.leagueId)}
+            size="lg"
+          />
           <span className="slate-game-card__team-abbr upcoming-game-card__team-abbr">
             {awayTeam.abbr}
           </span>
@@ -364,7 +369,12 @@ export function SlateGameCard({
           @
         </span>
         <div className="slate-game-card__team upcoming-game-card__team">
-          <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <TeamLogo
+            team={homeTeam}
+            sport={slateTeamLogoSport(game.leagueId)}
+            plateTone={slateTeamLogoPlateTone(game.leagueId)}
+            size="lg"
+          />
           <span className="slate-game-card__team-abbr upcoming-game-card__team-abbr">
             {homeTeam.abbr}
           </span>

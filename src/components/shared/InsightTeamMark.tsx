@@ -2,7 +2,7 @@
 
 import { TeamLogo } from "@/components/TeamLogo";
 import type { LeagueId } from "@/lib/leagues";
-import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
+import { resolveSlateTeam, slateTeamLogoPlateTone, slateTeamLogoSport } from "@/lib/slate-team-display";
 
 /** Team logo anchor for ref×team insight cards (homepage editorial grid). */
 export function InsightTeamMark({
@@ -30,6 +30,7 @@ export function InsightTeamMark({
       <TeamLogo
         team={team}
         sport={slateTeamLogoSport(leagueId)}
+        plateTone={slateTeamLogoPlateTone(leagueId)}
         size={size}
         className="insight-team-mark__logo"
       />

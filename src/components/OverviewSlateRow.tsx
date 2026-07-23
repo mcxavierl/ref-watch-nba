@@ -8,6 +8,7 @@ import { SlateOfficialsLine } from "@/components/SlateOfficialsLine";
 import {
   formatSlateDateTimeLabel,
   resolveSlateTeam,
+  slateTeamLogoPlateTone,
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
 import { SlateScoreboard } from "@/components/SlateScoreboard";
@@ -107,11 +108,21 @@ export function OverviewSlateRow({
           className="overview-slate-row-matchup"
           aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
         >
-          <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <TeamLogo
+            team={awayTeam}
+            sport={slateTeamLogoSport(game.leagueId)}
+            plateTone={slateTeamLogoPlateTone(game.leagueId)}
+            size="lg"
+          />
           <span className="overview-slate-row-at" aria-hidden>
             @
           </span>
-          <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <TeamLogo
+            team={homeTeam}
+            sport={slateTeamLogoSport(game.leagueId)}
+            plateTone={slateTeamLogoPlateTone(game.leagueId)}
+            size="lg"
+          />
           <span className="overview-slate-row-names">
             {awayTeam.abbr} @ {homeTeam.abbr}
           </span>
