@@ -131,3 +131,22 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.overview-slate-pending-section {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.12));
+}
+
+.overview-slate-pending-heading {
+  margin: 0 0 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.upcoming-games-grid--pending {
+  opacity: 0.92;
+}

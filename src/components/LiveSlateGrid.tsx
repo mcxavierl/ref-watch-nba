@@ -6,7 +6,10 @@ import { OverviewSlateGamesInteractive } from "@/components/OverviewSlateGamesIn
 import type { LeagueId } from "@/lib/leagues";
 import type { LiveSlateResult } from "@/lib/live-slate-engine";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
-import { sortSlateGamesBySignal } from "@/lib/slate-intelligence";
+import {
+  partitionHomepageSlateGames,
+  sortSlateGamesBySignal,
+} from "@/lib/slate-intelligence";
 import { useLiveSlate } from "@/lib/use-live-slate";
 import "@/components/overview-slate-shared.css";
 import "@/components/slate-intelligence.css";
@@ -50,12 +53,15 @@ export function LiveSlateGrid({
     enabled: enableSlatePolling,
   });
 
-  const displayGames = sortSlateGamesBySignal(games);
-  const matchupCount = displayGames.length;
+  const sortedGames = sortSlateGamesBySignal(games);
+  const { primaryGames, pendingGames } = showOutlookBanner
+    ? partitionHomepageSlateGames(sortedGames)
+    : { primaryGames: sortedGames, pendingGames: [] as OverviewSlateEntry[] };
+  const matchupCount = sortedGames.length;
 
   return (
     <>
-      {showOutlookBanner ? <TodaysOfficiatingOutlookBanner games={displayGames} /> : null}
+      {showOutlookBanner ? <TodaysOfficiatingOutlookBanner games={sortedGames} /> : null}
       {!showOutlookBanner ? (
         <div className="live-slate-toolbar">
           <p className="live-slate-counter">
@@ -84,22 +90,45 @@ export function LiveSlateGrid({
         </div>
       ) : null}
 
-      {displayGames.length > 0 ? (
-        <div
-          className={
-            variant === "card"
-              ? "upcoming-games-grid upcoming-games-grid--homepage grid grid-cols-1 md:grid-cols-3 gap-3"
-              : "upcoming-games-grid upcoming-games-grid--hub"
-          }
-        >
-          <OverviewSlateGamesInteractive
-            games={displayGames}
-            showHubLink={showHubLink}
-            variant={variant}
-            liveData={enableSlatePolling && Boolean(slate)}
-            disableScorePolling={!enableSlatePolling}
-          />
-        </div>
+      {sortedGames.length > 0 ? (
+        <>
+          <div
+            className={
+              variant === "card"
+                ? "upcoming-games-grid upcoming-games-grid--homepage grid grid-cols-1 md:grid-cols-3 gap-3"
+                : "upcoming-games-grid upcoming-games-grid--hub"
+            }
+          >
+            <OverviewSlateGamesInteractive
+              games={primaryGames}
+              showHubLink={showHubLink}
+              variant={variant}
+              liveData={enableSlatePolling && Boolean(slate)}
+              disableScorePolling={!enableSlatePolling}
+            />
+          </div>
+
+          {showOutlookBanner && pendingGames.length > 0 ? (
+            <div className="overview-slate-pending-section section-block">
+              <h3 className="overview-slate-pending-heading">Pending crew assignments</h3>
+              <div
+                className={
+                  variant === "card"
+                    ? "upcoming-games-grid upcoming-games-grid--homepage upcoming-games-grid--pending grid grid-cols-1 md:grid-cols-3 gap-3"
+                    : "upcoming-games-grid upcoming-games-grid--hub upcoming-games-grid--pending"
+                }
+              >
+                <OverviewSlateGamesInteractive
+                  games={pendingGames}
+                  showHubLink={showHubLink}
+                  variant={variant}
+                  liveData={enableSlatePolling && Boolean(slate)}
+                  disableScorePolling={!enableSlatePolling}
+                />
+              </div>
+            </div>
+          ) : null}
+        </>
       ) : (
         <p className="overview-slate-empty overview-slate-empty-panel">{emptyMessage}</p>
       )}

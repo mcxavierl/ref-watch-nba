@@ -297,6 +297,35 @@
   color: var(--slate-intel-ink-body);
 }
 
+.slate-game-card__icon--pending {
+  color: rgb(251 191 36);
+}
+
+.slate-game-card__signal-tier--pending {
+  color: rgb(251 191 36);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.slate-game-card__matchup-baseline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.slate-game-card__matchup-baseline-line {
+  margin: 0;
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: rgb(203 213 225);
+}
+
+.slate-game-card--crew-pending .slate-game-card__verdict {
+  border-color: rgb(51 65 85 / 0.55);
+  background: rgb(2 6 23 / 0.35);
+}
+
 .slate-game-card__metric-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -516,6 +545,49 @@
 
 .upcoming-games-grid--homepage {
   gap: 0.75rem;
+}
+
+.upcoming-games-grid--homepage .upcoming-game-card {
+  --upcoming-matchup-logo-size: clamp(2.25rem, 34cqi, 3.25rem);
+}
+
+.slate-game-card__topbar {
+  flex-wrap: wrap;
+}
+
+.slate-game-card__trust-footer,
+.slate-game-card__enterprise-footer {
+  flex-wrap: wrap;
+}
+
+.slate-game-card__trust-meta {
+  flex: 1 1 12rem;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .slate-game-card[data-league="wnba"] .upcoming-game-card__matchup .team-logo-plate,
+html.dark .slate-game-card[data-league="wnba"] .upcoming-game-card__matchup .team-logo-plate {
+  background: var(--logo-plate-matrix);
+  border-color: var(--logo-plate-matrix-border);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.72),
+    0 1px 2px rgb(0 0 0 / 0.14);
+}
+
+@media (max-width: 640px) {
+  .slate-game-card__metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .slate-game-card__trust-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .slate-game-card__status {
+    max-width: 100%;
+    white-space: normal;
+    text-align: right;
+  }
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .slate-outlook-banner,

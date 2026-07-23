@@ -216,26 +216,6 @@
   color: rgb(34 211 238);
 }
 
-.gold-mine-proof-bar {
-  margin: 0;
-  width: 100%;
-}
-
-.gold-mine-proof-bar-metric {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  min-width: 0;
-}
-
-.gold-mine-proof-bar-value {
-  margin: 0;
-}
-
-.gold-mine-proof-bar-label {
-  margin: 0;
-}
-
 .overview-featured-signal-header,
 .overview-research-footer-header {
   display: flex;

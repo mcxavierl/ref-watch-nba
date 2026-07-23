@@ -4,6 +4,7 @@ import type { CSSProperties, KeyboardEvent, MouseEvent, ReactNode } from "react"
 import {
   Activity,
   CheckCircle2,
+  Clock,
   Flame,
   ShieldAlert,
   TrendingUp,
@@ -16,7 +17,9 @@ import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
 import {
+  buildHistoricalMatchupBaseline,
   buildSlateGameIntelligence,
+  hasRefAssignments,
   type SlateGameIntelligence,
   type WhistlePersonality,
 } from "@/lib/slate-intelligence";
@@ -127,6 +130,16 @@ function VerdictIcon({ personality }: { personality: WhistlePersonality }) {
 }
 
 function SignalTierIcon({ intel }: { intel: SlateGameIntelligence }) {
+  if (intel.signalTier === "pending") {
+    return (
+      <Clock
+        aria-hidden
+        size={SLATE_ICON_SIZE}
+        strokeWidth={2.25}
+        className="slate-game-card__icon slate-game-card__icon--neutral"
+      />
+    );
+  }
   if (intel.signalTier === "high" || intel.signalTier === "elevated") {
     return (
       <Zap
@@ -178,7 +191,9 @@ export function SlateGameCard({
 }) {
   const awayTeam = resolveSlateTeam(game.leagueId, game.awayTeam);
   const homeTeam = resolveSlateTeam(game.leagueId, game.homeTeam);
+  const hasRefs = hasRefAssignments(game);
   const intel = buildSlateGameIntelligence(game);
+  const matchupBaseline = hasRefs ? null : buildHistoricalMatchupBaseline(game);
   const showScore = game.gamePhase === "live" || game.gamePhase === "final";
 
   const handleActivate = () => {
@@ -202,12 +217,15 @@ export function SlateGameCard({
 
   return (
     <article
-      className={`slate-game-card upcoming-game-card slate-game-card--${intel.personality}${
-        onOpenPreview ? " slate-game-card--interactive upcoming-game-card--interactive" : ""
+      className={`slate-game-card upcoming-game-card slate-game-card--${
+        hasRefs ? intel.personality : "neutral"
+      }${onOpenPreview ? " slate-game-card--interactive upcoming-game-card--interactive" : ""}${
+        hasRefs ? "" : " slate-game-card--crew-pending"
       }`}
       data-league={game.leagueId}
       data-status={game.status}
-      data-signal={intel.personality}
+      data-signal={hasRefs ? intel.personality : "pending"}
+      data-crew-pending={hasRefs ? undefined : "true"}
       style={{ "--upcoming-i": index, "--slate-i": index } as CSSProperties}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
@@ -228,67 +246,116 @@ export function SlateGameCard({
             <span className="slate-game-card__matchup-abbr">
               {awayTeam.abbr} @ {homeTeam.abbr}
             </span>
-            <span className="slate-game-card__signal-tier" aria-label={intel.signalTierLabel}>
-              <SignalTierIcon intel={intel} />
-              <span>{intel.signalTierLabel}</span>
+            <span
+              className={`slate-game-card__signal-tier${
+                hasRefs ? "" : " slate-game-card__signal-tier--pending"
+              }`}
+              aria-label={hasRefs ? intel.signalTierLabel : "Crew pending"}
+            >
+              {hasRefs ? (
+                <>
+                  <SignalTierIcon intel={intel} />
+                  <span>{intel.signalTierLabel}</span>
+                </>
+              ) : (
+                <>
+                  <Clock
+                    aria-hidden
+                    size={SLATE_ICON_SIZE}
+                    strokeWidth={2.25}
+                    className="slate-game-card__icon slate-game-card__icon--pending"
+                  />
+                  <span>{intel.signalTierLabel}</span>
+                </>
+              )}
             </span>
           </div>
         </div>
         <StatusChip statusKind={intel.statusKind} statusLabel={intel.statusLabel} />
       </header>
 
-      <section className="slate-game-card__verdict" aria-label="RefWatch verdict">
-        <p
-          className={`slate-game-card__verdict-headline slate-game-card__verdict-headline--${intel.personality}`}
-        >
-          <VerdictIcon personality={intel.personality} />
-          <span>{intel.verdictHeadline.toUpperCase()}</span>
-        </p>
-        <div className="slate-game-card__metric-grid">
-          <div className="slate-game-card__metric">
-            <span className="slate-game-card__metric-label">Expected whistles</span>
-            <span className="slate-game-card__metric-value tabular-nums">
-              {intel.expectedWhistles > 0 ? intel.expectedWhistles.toFixed(1) : "-"}
-            </span>
-            <span className="slate-game-card__metric-meta tabular-nums">
-              vs {intel.leagueAvgWhistles > 0 ? intel.leagueAvgWhistles.toFixed(1) : "-"} league avg{" "}
-              <DeltaWhyTooltip intel={intel} />
-            </span>
-          </div>
-          <div className="slate-game-card__metric">
-            <span className="slate-game-card__metric-label">Model confidence</span>
-            <div className="slate-game-card__confidence-wrap">
-              <ConfidenceRing confidencePct={intel.confidencePct} />
+      <section
+        className="slate-game-card__verdict"
+        aria-label={hasRefs ? "RefWatch verdict" : "Historical team matchup"}
+      >
+        {hasRefs ? (
+          <>
+            <p
+              className={`slate-game-card__verdict-headline slate-game-card__verdict-headline--${intel.personality}`}
+            >
+              <VerdictIcon personality={intel.personality} />
+              <span>{intel.verdictHeadline.toUpperCase()}</span>
+            </p>
+            <div className="slate-game-card__metric-grid">
+              <div className="slate-game-card__metric">
+                <span className="slate-game-card__metric-label">Expected whistles</span>
+                <span className="slate-game-card__metric-value tabular-nums">
+                  {intel.expectedWhistles > 0 ? intel.expectedWhistles.toFixed(1) : "-"}
+                </span>
+                <span className="slate-game-card__metric-meta tabular-nums">
+                  vs {intel.leagueAvgWhistles > 0 ? intel.leagueAvgWhistles.toFixed(1) : "-"}{" "}
+                  league avg <DeltaWhyTooltip intel={intel} />
+                </span>
+              </div>
+              <div className="slate-game-card__metric">
+                <span className="slate-game-card__metric-label">Model confidence</span>
+                <div className="slate-game-card__confidence-wrap">
+                  <ConfidenceRing confidencePct={intel.confidencePct} />
+                </div>
+              </div>
+              <div className="slate-game-card__metric">
+                <span className="slate-game-card__metric-label">Evidence score</span>
+                <span className="slate-game-card__metric-value tabular-nums">
+                  {intel.evidenceScore.toFixed(1)} / 10
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="slate-game-card__metric">
-            <span className="slate-game-card__metric-label">Evidence score</span>
-            <span className="slate-game-card__metric-value tabular-nums">
-              {intel.evidenceScore.toFixed(1)} / 10
-            </span>
-          </div>
-        </div>
+          </>
+        ) : (
+          <>
+            <p className="slate-game-card__verdict-headline slate-game-card__verdict-headline--neutral">
+              <Clock
+                aria-hidden
+                size={SLATE_ICON_SIZE}
+                strokeWidth={2.25}
+                className="slate-game-card__icon slate-game-card__icon--pending"
+              />
+              <span>{matchupBaseline?.title ?? "HISTORICAL TEAM MATCHUP"}</span>
+            </p>
+            <div className="slate-game-card__matchup-baseline">
+              {matchupBaseline?.lines.map((line) => (
+                <p key={line} className="slate-game-card__matchup-baseline-line">
+                  {line}
+                </p>
+              ))}
+            </div>
+          </>
+        )}
       </section>
 
       <div
-        className="slate-game-card__teams"
+        className="slate-game-card__teams upcoming-game-card__matchup"
         aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
       >
-        <div className="slate-game-card__team">
-          <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="md" />
-          <span className="slate-game-card__team-abbr">{awayTeam.abbr}</span>
+        <div className="slate-game-card__team upcoming-game-card__team">
+          <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <span className="slate-game-card__team-abbr upcoming-game-card__team-abbr">
+            {awayTeam.abbr}
+          </span>
           {showScore ? (
             <span className="slate-game-card__team-score tabular-nums">
               {game.awayScore ?? 0}
             </span>
           ) : null}
         </div>
-        <span className="slate-game-card__at" aria-hidden>
+        <span className="slate-game-card__at upcoming-game-card__at" aria-hidden>
           @
         </span>
-        <div className="slate-game-card__team">
-          <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="md" />
-          <span className="slate-game-card__team-abbr">{homeTeam.abbr}</span>
+        <div className="slate-game-card__team upcoming-game-card__team">
+          <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <span className="slate-game-card__team-abbr upcoming-game-card__team-abbr">
+            {homeTeam.abbr}
+          </span>
           {showScore ? (
             <span className="slate-game-card__team-score tabular-nums">
               {game.homeScore ?? 0}
@@ -317,20 +384,30 @@ export function SlateGameCard({
       </footer>
 
       {onOpenPreview ? (
-        <p className="slate-game-card__interaction-cue">Click card for evidence breakdown</p>
+        <p className="slate-game-card__interaction-cue">
+          {hasRefs
+            ? "Click card for evidence breakdown"
+            : "Ref assignments pending · Click card for team matchup history"}
+        </p>
       ) : null}
 
       <div className="slate-game-card__trust-footer">
         <span className="slate-game-card__trust-meta tabular-nums">
-          <CheckCircle2
-            aria-hidden
-            size={SLATE_ICON_SIZE}
-            strokeWidth={2.25}
-            className="slate-game-card__icon slate-game-card__icon--positive"
-          />
-          v{intel.modelVersion} Model ·{" "}
-          {intel.sampleGames > 0 ? intel.sampleGames.toLocaleString("en-US") : "-"}{" "}
-          game sample
+          {hasRefs ? (
+            <>
+              <CheckCircle2
+                aria-hidden
+                size={SLATE_ICON_SIZE}
+                strokeWidth={2.25}
+                className="slate-game-card__icon slate-game-card__icon--positive"
+              />
+              v{intel.modelVersion} Model ·{" "}
+              {intel.sampleGames > 0 ? intel.sampleGames.toLocaleString("en-US") : "-"}{" "}
+              game sample
+            </>
+          ) : (
+            <>Historical matchup context only · Crew pending</>
+          )}
         </span>
         <div className="slate-game-card__trust-actions">
           {onOpenPreview ? (

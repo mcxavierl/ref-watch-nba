@@ -15,10 +15,12 @@ import { ModalPortal } from "@/components/ModalPortal";
 import { OuLeanBadge } from "@/components/OuLeanBadge";
 import { TeamLogo } from "@/components/TeamLogo";
 import { safeBuildProjectionEvidence } from "@/lib/safe-build-projection-evidence";
-import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
+import type { GameSlateMatchupBriefing, GameSlatePreviewPayload } from "@/lib/game-slate-preview";
+import { resolveMatchupDrawerBriefing } from "@/lib/resolve-matchup-drawer-briefing";
 import { GameSlatePreviewErrorBoundary } from "@/components/GameSlatePreviewErrorBoundary";
 import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
 import { normalizeGameSlatePreview } from "@/lib/normalize-game-slate-preview";
+import { formatPct } from "@/lib/stats-utils";
 import "@/components/matchup-preview-terminal.css";
 
 const DRAWER_TRANSITION_MS = 220;
@@ -28,6 +30,65 @@ type GameSlatePreviewDrawerProps = {
   open: boolean;
   onClose: () => void;
 };
+
+function MatchupBriefingSection({
+  briefing,
+  awaitingCrew,
+  scoringLabel,
+  whistleLabel,
+}: {
+  briefing: GameSlateMatchupBriefing;
+  awaitingCrew: boolean;
+  scoringLabel: string;
+  whistleLabel: string;
+}) {
+  return (
+    <section
+      className="ref-preview-drawer-section game-slate-preview-matchup-briefing"
+      aria-label="Matchup briefing"
+    >
+      <h3 className="ref-preview-drawer-section-title">{briefing.headline}</h3>
+      {awaitingCrew ? (
+        <p className="game-slate-preview-matchup-briefing-note">
+          Officiating crew not assigned yet. Matchup context below uses head-to-head history or
+          recent team form until the slate publishes.
+        </p>
+      ) : (
+        <p className="game-slate-preview-matchup-briefing-note">
+          Crew sample is still thin. Matchup context below uses historical pairing data and recent
+          team form.
+        </p>
+      )}
+
+      {briefing.h2hGames > 0 ? (
+        <dl className="game-slate-preview-matchup-stats">
+          <div>
+            <dt>Meetings</dt>
+            <dd>{briefing.h2hGames}</dd>
+          </div>
+          <div>
+            <dt>Avg {scoringLabel.toLowerCase()}</dt>
+            <dd>{briefing.avgTotalPoints}</dd>
+          </div>
+          <div>
+            <dt>Avg {whistleLabel.toLowerCase()}</dt>
+            <dd>{briefing.avgFouls}</dd>
+          </div>
+          <div>
+            <dt>Over rate</dt>
+            <dd>{formatPct(briefing.overRate)}</dd>
+          </div>
+        </dl>
+      ) : null}
+
+      <ul className="game-slate-preview-matchup-briefing-lines">
+        {briefing.lines.map((line) => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 export function GameSlatePreviewDrawer({
   preview,
@@ -93,13 +154,11 @@ export function GameSlatePreviewDrawer({
   const sport = slateTeamLogoSport(safePreview.leagueId);
   const projectionEvidence = safeBuildProjectionEvidence(safePreview);
   const awaitingCrew = safePreview.awaitingCrew ?? safePreview.crew.length === 0;
-  const briefing = safePreview.matchupBriefing;
+  const matchupBriefing = resolveMatchupDrawerBriefing(safePreview);
   const drawerKicker = awaitingCrew
     ? `${safePreview.leagueLabel} · Matchup sheet`
     : `${safePreview.leagueLabel} · Matchup intelligence`;
-  const insufficientCopy = awaitingCrew
-    ? "Limited head-to-head history for this pairing. Context below uses recent team form and slate notes."
-    : "Not enough qualified crew history to show composite tendencies yet.";
+  const showTerminal = !awaitingCrew && Boolean(projectionEvidence);
 
   return (
     <ModalPortal>
@@ -159,32 +218,17 @@ export function GameSlatePreviewDrawer({
 
           <GameSlatePreviewErrorBoundary onReset={onClose}>
             <div className="ref-preview-drawer-body">
-              {awaitingCrew ? (
-                <section
-                  className="ref-preview-drawer-section game-slate-preview-matchup-briefing"
-                  aria-label="Matchup briefing"
-                >
-                  <h3 className="ref-preview-drawer-section-title">
-                    {briefing?.headline ?? "Matchup briefing"}
-                  </h3>
-                  <p className="game-slate-preview-matchup-briefing-note">
-                    Officiating crew not assigned yet. Ref intelligence unlocks when the slate is
-                    published.
-                  </p>
-                  {briefing?.lines?.length ? (
-                    <ul className="game-slate-preview-matchup-briefing-lines">
-                      {briefing.lines.map((line) => (
-                        <li key={line}>{line}</li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </section>
-              ) : safePreview.insufficientSample || !projectionEvidence ? (
-                <p className="ref-preview-drawer-summary-copy">{insufficientCopy}</p>
-              ) : (
+              {showTerminal ? (
                 <MatchupPreviewTerminal
                   preview={safePreview}
-                  evidence={projectionEvidence}
+                  evidence={projectionEvidence!}
+                />
+              ) : (
+                <MatchupBriefingSection
+                  briefing={matchupBriefing}
+                  awaitingCrew={awaitingCrew}
+                  scoringLabel={safePreview.scoringLabel}
+                  whistleLabel={safePreview.whistleLabel}
                 />
               )}
             </div>

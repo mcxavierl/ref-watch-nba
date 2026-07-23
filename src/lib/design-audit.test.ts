@@ -25,10 +25,8 @@ describe("design audit guardrails", () => {
     assert.match(banner, /intelligence-hero-heading/);
     assert.doesNotMatch(banner, /intelligence-hero-surface/);
     assert.doesNotMatch(banner, /OFFICIATING DECISION/);
-    if (hero.includes("GoldMineProofBar")) {
-      assert.match(hero, /DailyBriefingBanner/);
-      assert.match(banner, /overview-hero-kicker/);
-    }
+    assert.doesNotMatch(hero, /GoldMineProofBar/);
+    assert.match(hero, /DailyBriefingBanner/);
     assert.doesNotMatch(dashboard, /TopSignal/);
     assert.match(page, /OverviewIntelligenceHero/);
     assert.match(dashboard, /OverviewUpcomingSlateSection/);
