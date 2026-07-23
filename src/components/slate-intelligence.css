@@ -126,8 +126,8 @@
 }
 
 .slate-game-card--neutral {
-  border-color: rgb(30 41 59);
-  background: color-mix(in srgb, rgb(15 23 42) 88%, rgb(2 6 23));
+  border-color: var(--slate-intel-border);
+  background: var(--slate-intel-bg);
 }
 
 .slate-game-card--interactive {
@@ -248,14 +248,14 @@
 
 .slate-game-card__status--pregame {
   color: var(--slate-intel-ink-muted);
-  border-color: rgb(51 65 85);
-  background: rgb(15 23 42 / 0.65);
+  border-color: var(--slate-intel-border);
+  background: color-mix(in srgb, var(--slate-intel-bg) 82%, var(--slate-intel-ink-muted));
 }
 
 .slate-game-card__status--final {
   color: var(--slate-intel-ink-muted);
-  border-color: rgb(51 65 85 / 0.8);
-  background: rgb(15 23 42 / 0.45);
+  border-color: var(--slate-intel-border);
+  background: color-mix(in srgb, var(--slate-intel-bg) 92%, var(--slate-intel-ink-muted));
 }
 
 @keyframes slate-live-pulse {
@@ -271,8 +271,8 @@
 .slate-game-card__verdict {
   padding: 0.55rem 0.6rem;
   border-radius: 0.65rem;
-  border: 1px solid rgb(51 65 85 / 0.75);
-  background: rgb(2 6 23 / 0.55);
+  border: 1px solid var(--slate-intel-border);
+  background: color-mix(in srgb, var(--slate-intel-bg) 88%, var(--slate-intel-ink-strong));
 }
 
 .slate-game-card__verdict-headline {
@@ -318,12 +318,12 @@
   font-family: var(--font-data, ui-monospace, monospace);
   font-size: 0.6875rem;
   line-height: 1.45;
-  color: rgb(203 213 225);
+  color: var(--slate-intel-ink-body);
 }
 
 .slate-game-card--crew-pending .slate-game-card__verdict {
-  border-color: rgb(51 65 85 / 0.55);
-  background: rgb(2 6 23 / 0.35);
+  border-color: var(--slate-intel-border);
+  background: color-mix(in srgb, var(--slate-intel-bg) 94%, var(--slate-intel-ink-muted));
 }
 
 .slate-game-card__metric-grid {
@@ -493,7 +493,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   padding-top: 0.45rem;
-  border-top: 1px solid rgb(30 41 59 / 0.6);
+  border-top: 1px solid var(--slate-intel-border);
   font-family: var(--font-data, ui-monospace, monospace);
   font-size: 0.625rem;
   color: var(--slate-intel-ink-muted);
@@ -649,6 +649,18 @@ html[data-color="light"]:not([data-contrast="high"]) .slate-game-card--defensive
 html.light:not([data-contrast="high"]) .slate-game-card--defensive {
   border-color: rgb(244 63 94 / 0.35);
   background: color-mix(in srgb, rgb(255 241 242) 72%, #ffffff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-game-card--neutral,
+html.light:not([data-contrast="high"]) .slate-game-card--neutral {
+  border-color: #e2e8f0;
+  background: #ffffff;
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .slate-game-card--crew-pending .slate-game-card__verdict,
+html.light:not([data-contrast="high"]) .slate-game-card--crew-pending .slate-game-card__verdict {
+  border-color: #e2e8f0;
+  background: #f8fafc;
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .slate-game-card__verdict,

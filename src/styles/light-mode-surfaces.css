@@ -329,3 +329,100 @@ html[data-color="light"]:not([data-contrast="high"]) .text-rose-400,
 html.light:not([data-contrast="high"]) .text-rose-400 {
   color: var(--accent-negative);
 }
+
+/* ── Site chrome controls ─────────────────────────────────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .command-palette-trigger,
+html.light:not([data-contrast="high"]) .command-palette-trigger {
+  border-color: var(--header-line);
+  background: var(--header-surface);
+  color: var(--header-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .command-palette-trigger:hover,
+html.light:not([data-contrast="high"]) .command-palette-trigger:hover {
+  border-color: color-mix(in srgb, var(--header-line) 80%, var(--header-ink));
+  background: var(--header-surface-hover);
+  color: var(--header-ink);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .command-palette-trigger-kbd,
+html.light:not([data-contrast="high"]) .command-palette-trigger-kbd {
+  background: var(--bg-surface-2);
+  color: var(--text-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .term-help-tooltip,
+html.light:not([data-contrast="high"]) .term-help-tooltip {
+  background: var(--bg-surface-1);
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.12);
+}
+
+/* ── Insight drilldown modal ──────────────────────────────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .insight-drilldown-modal,
+html.light:not([data-contrast="high"]) .insight-drilldown-modal {
+  border-color: var(--border-default);
+  background: var(--bg-surface-1);
+  box-shadow: 0 24px 64px rgb(15 23 42 / 0.16);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-drilldown-header,
+html.light:not([data-contrast="high"]) .insight-drilldown-header {
+  border-bottom-color: var(--border-default);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-drilldown-close,
+html.light:not([data-contrast="high"]) .insight-drilldown-close {
+  border-color: var(--border-default);
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-drilldown-close:hover,
+html.light:not([data-contrast="high"]) .insight-drilldown-close:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-surface-3);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-drilldown-hero,
+html.light:not([data-contrast="high"]) .insight-drilldown-hero,
+html[data-color="light"]:not([data-contrast="high"]) .insight-drilldown-venue-card,
+html.light:not([data-contrast="high"]) .insight-drilldown-venue-card,
+html[data-color="light"]:not([data-contrast="high"]) .insight-drilldown-table-wrap,
+html.light:not([data-contrast="high"]) .insight-drilldown-table-wrap {
+  border-color: var(--border-default);
+  background: var(--bg-surface-2);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-drilldown-venue-tab,
+html.light:not([data-contrast="high"]) .insight-drilldown-venue-tab {
+  border-color: var(--border-default);
+  background: var(--bg-surface-2);
+  color: var(--text-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .insight-drilldown-venue-tab--active,
+html.light:not([data-contrast="high"]) .insight-drilldown-venue-tab--active {
+  border-color: var(--border-strong);
+  background: var(--bg-surface-3);
+  color: var(--text-primary);
+}
+
+/* ── Ref directory ────────────────────────────────────────────────────────── */
+html[data-color="light"]:not([data-contrast="high"]) .refs-directory-head,
+html.light:not([data-contrast="high"]) .refs-directory-head {
+  border-bottom-color: var(--border-default);
+  background: var(--bg-surface-2);
+  color: var(--text-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .refs-directory-row--top .refs-directory-row-link:hover,
+html.light:not([data-contrast="high"]) .refs-directory-row--top .refs-directory-row-link:hover {
+  background: color-mix(in srgb, rgb(16 185 129) 14%, #ffffff);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .refs-directory-row--bottom .refs-directory-row-link:hover,
+html.light:not([data-contrast="high"]) .refs-directory-row--bottom .refs-directory-row-link:hover {
+  background: color-mix(in srgb, rgb(244 63 94) 12%, #ffffff);
+}

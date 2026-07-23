@@ -10208,7 +10208,7 @@ p {
     margin: 0 0 0.5rem;
     font-size: 0.9375rem;
     font-weight: 600;
-    color: var(--ink-strong);
+    color: var(--text-primary);
   }
 
   .game-slate-preview-error-copy {
