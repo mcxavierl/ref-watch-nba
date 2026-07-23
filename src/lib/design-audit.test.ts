@@ -54,6 +54,7 @@ describe("design audit guardrails", () => {
     assert.match(drawer, /MatchupPreviewTerminal/);
     assert.match(terminal, /GameSlateFingerprintPanel/);
     assert.match(terminal, /matchup-terminal-fingerprint-section/);
+    assert.match(terminal, /Crew DNA/);
     assert.match(terminal, /Officiating fingerprint/);
     assert.match(panel, /type="button"/);
     assert.match(panel, /OverlayNavLink/);
@@ -69,7 +70,8 @@ describe("design audit guardrails", () => {
     assert.match(css, /matchup-terminal-accordions/);
     assert.match(drawer, /MatchupPreviewTerminal/);
     assert.match(terminal, /Why the model thinks this/);
-    assert.match(terminal, /details className="matchup-terminal-accordion"/);
+    assert.match(terminal, /TerminalAccordion|type="button"/);
+    assert.match(terminal, /matchup-terminal-accordion__trigger/);
   });
 
   it("avoids raw slate text utilities on about page", () => {

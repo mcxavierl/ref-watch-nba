@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import type {
   OfficiatingFingerprintAxis,
   OfficiatingFingerprintData,
@@ -15,12 +15,35 @@ const VIEW_SIZE = CHART_SIZE + LABEL_PADDING * 2;
 const CENTER = VIEW_SIZE / 2;
 const MAX_RADIUS = 102;
 const LABEL_RADIUS = 124;
+const MOBILE_VERTEX_HIT_RADIUS = 22;
+const DESKTOP_VERTEX_HIT_RADIUS = 12;
+const COMPACT_VERTEX_HIT_RADIUS = 10;
 
 type OfficiatingFingerprintProps = {
   data: OfficiatingFingerprintData;
   compact?: boolean;
   className?: string;
+  consumerFacing?: boolean;
 };
+
+function useCoarsePointerUi(): boolean {
+  const [coarsePointer, setCoarsePointer] = useState(false);
+
+  useEffect(() => {
+    const narrow = window.matchMedia("(max-width: 640px)");
+    const coarse = window.matchMedia("(hover: none), (pointer: coarse)");
+    const sync = () => setCoarsePointer(narrow.matches || coarse.matches);
+    sync();
+    narrow.addEventListener("change", sync);
+    coarse.addEventListener("change", sync);
+    return () => {
+      narrow.removeEventListener("change", sync);
+      coarse.removeEventListener("change", sync);
+    };
+  }, []);
+
+  return coarsePointer;
+}
 
 function axisAngle(index: number): number {
   return (Math.PI * 2 * index) / AXIS_COUNT - Math.PI / 2;
@@ -107,8 +130,10 @@ export function OfficiatingFingerprint({
   data,
   compact = false,
   className = "",
+  consumerFacing = false,
 }: OfficiatingFingerprintProps) {
   const titleId = useId();
+  const coarsePointerUi = useCoarsePointerUi();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const dataPolygon = useMemo(
     () => polygonPoints(data.axes.map((axis) => axis.percentile)),
@@ -124,20 +149,29 @@ export function OfficiatingFingerprint({
 
   return (
     <section
-      className={`officiating-fingerprint ${compact ? "officiating-fingerprint--compact" : ""} ${className}`.trim()}
-      aria-labelledby={titleId}
+      className={`officiating-fingerprint ${compact ? "officiating-fingerprint--compact" : ""} ${consumerFacing ? "officiating-fingerprint--consumer" : ""} ${className}`.trim()}
+      aria-labelledby={consumerFacing ? undefined : titleId}
+      aria-label={consumerFacing ? `Crew DNA fingerprint for ${data.officialName}` : undefined}
     >
-      <div className="officiating-fingerprint-header">
-        <div>
-          <p className="officiating-fingerprint-kicker">Ref-Intelligence Visual</p>
-          <h2 className="officiating-fingerprint-title" id={titleId}>
-            The Officiating Fingerprint
-          </h2>
+      {consumerFacing ? null : (
+        <div className="officiating-fingerprint-header">
+          <div>
+            <p className="officiating-fingerprint-kicker">Ref-Intelligence Visual</p>
+            <h2 className="officiating-fingerprint-title" id={titleId}>
+              The Officiating Fingerprint
+            </h2>
+          </div>
+          <p className="officiating-fingerprint-meta">
+            {data.sampleGames.toLocaleString("en-US")} games · 0-100 percentile scale
+          </p>
         </div>
-        <p className="officiating-fingerprint-meta">
+      )}
+
+      {consumerFacing ? (
+        <p className="officiating-fingerprint-meta officiating-fingerprint-meta--inline">
           {data.sampleGames.toLocaleString("en-US")} games · 0-100 percentile scale
         </p>
-      </div>
+      ) : null}
 
       <div className="officiating-fingerprint-chart-wrap">
         <svg
@@ -179,7 +213,11 @@ export function OfficiatingFingerprint({
             const point = pointAt(index, axis.percentile);
             const label = labelPoint(index);
             const placement = labelPlacement(index);
-            const hitRadius = compact ? 10 : 12;
+            const hitRadius = coarsePointerUi
+              ? MOBILE_VERTEX_HIT_RADIUS
+              : compact
+                ? COMPACT_VERTEX_HIT_RADIUS
+                : DESKTOP_VERTEX_HIT_RADIUS;
 
             return (
               <g key={axis.id}>
@@ -192,8 +230,12 @@ export function OfficiatingFingerprint({
                   role="button"
                   aria-label={axis.tooltip}
                   aria-pressed={activeIndex === index}
-                  onMouseEnter={() => setActiveIndex(index)}
-                  onMouseLeave={() => setActiveIndex(null)}
+                  onMouseEnter={() => {
+                    if (!coarsePointerUi) setActiveIndex(index);
+                  }}
+                  onMouseLeave={() => {
+                    if (!coarsePointerUi) setActiveIndex(null);
+                  }}
                   onFocus={() => setActiveIndex(index)}
                   onBlur={() => setActiveIndex(null)}
                   onClick={() =>
