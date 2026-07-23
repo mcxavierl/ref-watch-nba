@@ -547,6 +547,49 @@
   gap: 0.75rem;
 }
 
+.upcoming-games-grid--homepage .upcoming-game-card {
+  --upcoming-matchup-logo-size: clamp(2.25rem, 34cqi, 3.25rem);
+}
+
+.slate-game-card__topbar {
+  flex-wrap: wrap;
+}
+
+.slate-game-card__trust-footer,
+.slate-game-card__enterprise-footer {
+  flex-wrap: wrap;
+}
+
+.slate-game-card__trust-meta {
+  flex: 1 1 12rem;
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .slate-game-card[data-league="wnba"] .upcoming-game-card__matchup .team-logo-plate,
+html.dark .slate-game-card[data-league="wnba"] .upcoming-game-card__matchup .team-logo-plate {
+  background: var(--logo-plate-matrix);
+  border-color: var(--logo-plate-matrix-border);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.72),
+    0 1px 2px rgb(0 0 0 / 0.14);
+}
+
+@media (max-width: 640px) {
+  .slate-game-card__metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .slate-game-card__trust-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .slate-game-card__status {
+    max-width: 100%;
+    white-space: normal;
+    text-align: right;
+  }
+}
+
 html[data-color="light"]:not([data-contrast="high"]) .slate-outlook-banner,
 html.light:not([data-contrast="high"]) .slate-outlook-banner {
   --slate-intel-banner-bg: rgb(255 255 255 / 0.95);

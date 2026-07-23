@@ -184,6 +184,7 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
     run: () => {
       const dashboard = read("src/components/OverviewDashboard.tsx");
       const hero = read("src/components/dashboard/IntelligenceHero.tsx");
+      const intelligenceHero = read("src/components/OverviewIntelligenceHero.tsx");
       for (const symbol of [
         "TopSignal",
         "OverviewFeaturedSignal",
@@ -192,7 +193,11 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
         "OFFICIATING DECISION",
         "Top Signal Today",
       ]) {
-        if (dashboard.includes(symbol) || hero.includes(symbol)) {
+        if (
+          dashboard.includes(symbol) ||
+          hero.includes(symbol) ||
+          intelligenceHero.includes(symbol)
+        ) {
           return {
             ok: false,
             message: `Homepage must not render removed surface ${symbol}`,

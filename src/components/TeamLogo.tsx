@@ -9,7 +9,7 @@ import { teamLogoUrl as laligaTeamLogoUrl } from "@/lib/laliga/teams";
 import { teamLogoUrl as nflTeamLogoUrl } from "@/lib/nfl/teams";
 import { teamLogoUrl as nhlTeamLogoUrl } from "@/lib/nhl/teams";
 import { getTeam as getNbaTeam, teamLogoUrl as nbaTeamLogoUrl } from "@/lib/teams";
-import { teamLogoUrl as wnbaTeamLogoUrl } from "@/lib/wnba/teams";
+import { resolveWnbaTeamAbbr, teamLogoUrl as wnbaTeamLogoUrl } from "@/lib/wnba/teams";
 import type { NbaTeam } from "@/lib/teams";
 import type { NhlTeam } from "@/lib/nhl/teams";
 
@@ -56,15 +56,16 @@ export function TeamLogo({
       : plateTone;
   const themedUiSurface = resolvedPlateTone === "dark" ? "dark" : "light";
   const nbaId = team.nbaId ?? (sport === "nba" ? getNbaTeam(team.abbr)?.nbaId : undefined);
+  const wnbaAbbr = sport === "wnba" ? resolveWnbaTeamAbbr(team.abbr) : team.abbr;
   const themedLogoSrc =
     sport === "wnba"
-      ? wnbaTeamLogoUrl(team.abbr, themedUiSurface)
+      ? wnbaTeamLogoUrl(wnbaAbbr, themedUiSurface)
       : sport === "nhl"
         ? nhlTeamLogoUrl(team.abbr, themedUiSurface)
         : null;
   const logoSrc =
-    themedLogoSrc ??
     team.logoUrl ??
+    themedLogoSrc ??
     (sport === "laliga"
       ? laligaTeamLogoUrl(team.abbr)
       : sport === "epl"

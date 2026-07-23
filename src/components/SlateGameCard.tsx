@@ -334,24 +334,28 @@ export function SlateGameCard({
       </section>
 
       <div
-        className="slate-game-card__teams"
+        className="slate-game-card__teams upcoming-game-card__matchup"
         aria-label={`${awayTeam.abbr} at ${homeTeam.abbr}`}
       >
-        <div className="slate-game-card__team">
-          <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="md" />
-          <span className="slate-game-card__team-abbr">{awayTeam.abbr}</span>
+        <div className="slate-game-card__team upcoming-game-card__team">
+          <TeamLogo team={awayTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <span className="slate-game-card__team-abbr upcoming-game-card__team-abbr">
+            {awayTeam.abbr}
+          </span>
           {showScore ? (
             <span className="slate-game-card__team-score tabular-nums">
               {game.awayScore ?? 0}
             </span>
           ) : null}
         </div>
-        <span className="slate-game-card__at" aria-hidden>
+        <span className="slate-game-card__at upcoming-game-card__at" aria-hidden>
           @
         </span>
-        <div className="slate-game-card__team">
-          <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="md" />
-          <span className="slate-game-card__team-abbr">{homeTeam.abbr}</span>
+        <div className="slate-game-card__team upcoming-game-card__team">
+          <TeamLogo team={homeTeam} sport={slateTeamLogoSport(game.leagueId)} size="lg" />
+          <span className="slate-game-card__team-abbr upcoming-game-card__team-abbr">
+            {homeTeam.abbr}
+          </span>
           {showScore ? (
             <span className="slate-game-card__team-score tabular-nums">
               {game.homeScore ?? 0}
