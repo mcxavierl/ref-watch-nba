@@ -23,18 +23,17 @@ export function InsightSplitMetrics({
       className={`insight-split-metrics${compact ? " insight-split-metrics--compact" : ""}`}
     >
       <div className="insight-split-metrics-row">
-        <div className="insight-split-metrics-box insight-split-metrics-box--sample">
+        <div className="insight-split-metrics-col insight-split-metrics-col--sample">
           <span className="insight-split-sample-value">{sampleMetric.value}</span>
           <span className="insight-split-metrics-label">{sampleMetric.label}</span>
         </div>
-        <div className="insight-split-metrics-box insight-split-metrics-box--delta">
-          <div className="insight-split-delta-inner">
-            <DirectionalDeltaValue
-              value={deltaMetric.value}
-              tone={deltaTone}
-              size={compact ? "sm" : "md"}
-            />
-          </div>
+        <div className="insight-split-metrics-col insight-split-metrics-col--delta">
+          <DirectionalDeltaValue
+            value={deltaMetric.value}
+            tone={deltaTone}
+            size={compact ? "sm" : "md"}
+            className="insight-split-delta-value"
+          />
           <span className="insight-split-metrics-label">{deltaMetric.label}</span>
         </div>
       </div>

@@ -285,9 +285,9 @@
 }
 
 .overview-research-footer {
-  margin-top: var(--space-10);
+  margin-top: 0;
   padding-top: var(--space-8);
-  border-top: 1px solid color-mix(in srgb, var(--border-default) 70%, transparent);
+  border-top: 1px solid rgb(30 41 59 / 0.6);
 }
 
 .overview-research-footer-explore {

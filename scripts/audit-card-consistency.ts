@@ -452,12 +452,12 @@ const checks: Array<{ name: string; run: () => AuditResult }> = [
       ),
   },
   {
-    name: "GameSlateCard uses StatusBadge for pace alerts",
+    name: "GameSlateCard uses inline pace alert copy instead of pace pills",
     run: () =>
       auditFileContains(
         "src/components/GameSlateCard.tsx",
-        /StatusBadge/,
-        "StatusBadge in GameSlateCard",
+        /font-mono text-xs uppercase tracking-wider text-slate-400/,
+        "inline pace alert copy in GameSlateCard",
       ),
   },
   {

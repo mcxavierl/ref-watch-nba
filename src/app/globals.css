@@ -718,7 +718,7 @@ p {
   }
 
   .section-block {
-    margin-bottom: var(--space-10);
+    margin-bottom: var(--space-8);
   }
 
   .section-block-tight {
@@ -809,7 +809,7 @@ p {
 
   .data-card-header {
     border-bottom: 1px solid var(--border);
-    padding: var(--space-4) var(--space-5);
+    padding: var(--space-4);
   }
 
   @media (max-width: 639px) {
@@ -6099,11 +6099,13 @@ p {
 
   /* ── Game card team row ── */
   .game-matchup-abbr {
+    font-family: var(--font-data);
     font-size: var(--text-lg);
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.02em;
     line-height: var(--leading-tight);
-    color: var(--ink-secondary);
+    color: rgb(255 255 255);
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
   }
 
   .game-signal-line {
@@ -6125,46 +6127,41 @@ p {
   .game-slate-composite {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0;
-    border: 1px solid var(--border-subtle);
-    border-radius: 0.625rem;
-    overflow: hidden;
-    background: color-mix(in srgb, var(--surface-raised) 35%, var(--surface));
+    gap: 0.75rem 1rem;
+    min-width: 0;
   }
 
   .game-slate-composite-stat {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
-    padding: 0.65rem 0.75rem;
-    border-right: 1px solid var(--border-subtle);
-  }
-
-  .game-slate-composite-stat:last-child {
-    border-right: none;
+    gap: 0.2rem;
+    min-width: 0;
   }
 
   .game-slate-composite-label {
+    font-family: var(--font-data);
     font-size: 0.65rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: rgb(148 163 184);
   }
 
   .game-slate-composite-value {
     font-family: var(--font-data);
     font-size: 1.125rem;
     font-weight: 700;
+    letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
     line-height: 1.2;
     color: var(--foreground);
   }
 
   .game-slate-composite-meta {
+    font-family: var(--font-data);
     font-size: var(--text-xs);
     line-height: 1.35;
-    color: var(--muted-strong);
+    color: rgb(203 213 225);
   }
 
   .game-signal-line--detail {
@@ -6176,15 +6173,7 @@ p {
   @media (max-width: 639px) {
     .game-slate-composite {
       grid-template-columns: 1fr;
-    }
-
-    .game-slate-composite-stat {
-      border-right: none;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .game-slate-composite-stat:last-child {
-      border-bottom: none;
+      gap: 0.65rem;
     }
   }
 
@@ -13048,7 +13037,7 @@ html.dark .page-shell-insights .hover\:border-zinc-300:hover {
 .overview-page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-8);
   min-width: 0;
 }
 

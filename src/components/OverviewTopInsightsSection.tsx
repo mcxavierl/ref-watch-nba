@@ -15,7 +15,7 @@ export function OverviewTopInsightsSection({ data }: OverviewTopInsightsSectionP
 
   return (
     <section
-      className="overview-top-insights section-block"
+      className="overview-top-insights section-block border-t border-slate-800/60 pt-8"
       aria-labelledby="overview-top-insights-heading"
     >
       <div className="overview-section-header overview-section-header--primary">
