@@ -478,11 +478,28 @@
   min-width: 0;
 }
 
+.slate-game-card__trust-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-shrink: 0;
+}
+
 .slate-game-card__methodology-link,
 .slate-game-card__intel-link {
   color: var(--slate-intel-accent);
   text-decoration: none;
   white-space: nowrap;
+}
+
+.slate-game-card__intel-link {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  font-family: var(--font-data, ui-monospace, monospace);
+  cursor: pointer;
 }
 
 .slate-game-card__methodology-link:hover,

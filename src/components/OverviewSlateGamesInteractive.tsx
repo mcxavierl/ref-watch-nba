@@ -46,12 +46,14 @@ export function OverviewSlateGamesInteractive({
   }
 
   const openPreview = (game: OverviewSlateEntry) => {
-    const preview = resolvePreviewForGame(game, previewByKey);
+    const preview =
+      resolvePreviewForGame(game, previewByKey) ?? normalizeGameSlatePreview(game.preview);
     if (preview) setSelected(preview);
   };
 
   const hasPreview = (game: OverviewSlateEntry) =>
-    resolvePreviewForGame(game, previewByKey) !== null;
+    resolvePreviewForGame(game, previewByKey) !== null ||
+    normalizeGameSlatePreview(game.preview) !== null;
 
   return (
     <>
