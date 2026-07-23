@@ -177,7 +177,7 @@ const staticChecks: Array<{ name: string; surface: string; run: () => AuditResul
     run: () =>
       auditFileContains(
         "src/components/insight-card.css",
-        /insight-split-delta-inner[\s\S]*overflow: hidden/,
+        /insight-split-metrics-col--delta[\s\S]*overflow: hidden/,
         "delta overflow containment",
       ),
   },

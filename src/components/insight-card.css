@@ -504,12 +504,21 @@ html.dark .insight-card--inline {
   font-size: 1.125rem;
 }
 
+.insight-split-metrics-col--delta {
+  min-width: 0;
+  overflow: hidden;
+}
+
 .insight-split-metrics-col--delta .insight-split-delta-value {
   font-family: var(--font-data, ui-monospace, monospace);
   font-size: clamp(1.125rem, 3.5vw, 1.5rem);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.15;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .insight-split-metrics--compact .insight-split-metrics-col--delta .insight-split-delta-value {
