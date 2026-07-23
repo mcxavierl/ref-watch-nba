@@ -308,6 +308,10 @@ describe("slate intelligence", () => {
         preview: preview({
           awaitingCrew: true,
           crew: [],
+          sampleGames: 3,
+          avgTotalPoints: 152,
+          avgFouls: 34,
+          overRate: 0.58,
           matchupBriefing: {
             headline: "PHO at LAS matchup sheet",
             lines: [],
@@ -322,6 +326,32 @@ describe("slate intelligence", () => {
 
     assert.match(baseline.lines[0] ?? "", /Last 3 meetings/);
     assert.match(baseline.lines[1] ?? "", /Head-to-head record/);
+  });
+
+  it("falls back to preview sampleGames when briefing h2hGames is zero", () => {
+    const baseline = buildHistoricalMatchupBaseline(
+      baseGame({
+        preview: preview({
+          awaitingCrew: true,
+          crew: [],
+          sampleGames: 4,
+          avgTotalPoints: 165,
+          avgFouls: 34.8,
+          overRate: 0.5,
+          matchupBriefing: {
+            headline: "GSV at PHO matchup sheet",
+            lines: [],
+            h2hGames: 0,
+            avgTotalPoints: 165,
+            avgFouls: 34.8,
+            overRate: 0.5,
+          },
+        }),
+      }),
+    );
+
+    assert.equal(baseline.isEmptyFallback, false);
+    assert.match(baseline.lines[0] ?? "", /Last 4 meetings/);
   });
 
   it("collapses repeated no-recent-log fallback lines on pending cards", () => {
@@ -429,6 +459,7 @@ describe("slate intelligence", () => {
           homeAbbr: "MIN",
           awaitingCrew: true,
           crew: [],
+          sampleGames: 0,
           matchupBriefing: {
             headline: "TOR at MIN matchup sheet",
             lines: [

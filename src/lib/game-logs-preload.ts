@@ -175,3 +175,26 @@ export async function preloadGameLogsFromAssets(
     // Never fail SSR from game-log preload.
   }
 }
+
+const LIVE_SLATE_GAME_LOG_LEAGUES: readonly DataLeague[] = [
+  "NBA",
+  "NHL",
+  "NFL",
+  "EPL",
+  "LALIGA",
+  "WNBA",
+  "CBB",
+];
+
+/** Hydrate game logs for live slate rebuilds on Workers (/api/slate, overview hub). */
+export async function preloadGameLogsForLiveSlate(origin: string): Promise<void> {
+  if (!origin?.trim()) return;
+
+  for (const league of LIVE_SLATE_GAME_LOG_LEAGUES) {
+    try {
+      await preloadGameLogsFromAssets(origin, league);
+    } catch (error) {
+      console.error("[refwatch] live slate game-log preload failed", league, error);
+    }
+  }
+}

@@ -261,14 +261,18 @@ export function buildHistoricalMatchupBaseline(
   const title = resolveMatchupBaselineTitle(game);
   const preview = game.preview;
   const briefing = preview?.matchupBriefing;
+  const h2hGames = Math.max(briefing?.h2hGames ?? 0, preview?.sampleGames ?? 0);
   const scoringLabel = preview?.scoringLabel?.toLowerCase() ?? "points";
   const whistleLabel = preview?.whistleLabel?.toLowerCase() ?? "fouls";
 
-  if (briefing && briefing.h2hGames > 0) {
-    const window = Math.min(briefing.h2hGames, 5);
+  if (briefing && h2hGames > 0) {
+    const window = Math.min(h2hGames, 5);
+    const avgTotalPoints = briefing.avgTotalPoints || preview?.avgTotalPoints || 0;
+    const avgFouls = briefing.avgFouls || preview?.avgFouls || 0;
+    const overRate = briefing.overRate ?? preview?.overRate ?? 0.5;
     const lines = [
-      `Last ${window} meeting${window === 1 ? "" : "s"}: ${briefing.avgTotalPoints} avg ${scoringLabel} · ${briefing.avgFouls} avg ${whistleLabel}`,
-      `Head-to-head record: ${game.awayTeam} vs ${game.homeTeam} · ${formatPct(briefing.overRate)} over`,
+      `Last ${window} meeting${window === 1 ? "" : "s"}: ${avgTotalPoints} avg ${scoringLabel} · ${avgFouls} avg ${whistleLabel}`,
+      `Head-to-head record: ${game.awayTeam} vs ${game.homeTeam} · ${formatPct(overRate)} over`,
     ];
     if (briefing.lastMeeting) {
       lines.push(briefing.lastMeeting);

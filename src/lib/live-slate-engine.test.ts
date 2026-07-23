@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
 import {
   compareLiveSlatePriority,
@@ -194,5 +195,13 @@ describe("use-live-slate helpers", () => {
       slateHasLiveGames([entry({ gameId: "1", status: "scheduled" })]),
       false,
     );
+  });
+
+  it("preserves seeded historical context when polling returns degraded previews", () => {
+    const routeSource = readFileSync("src/app/api/slate/route.ts", "utf8");
+    const hookSource = readFileSync("src/lib/use-live-slate.ts", "utf8");
+
+    assert.match(routeSource, /preloadGameLogsForLiveSlate/);
+    assert.match(hookSource, /mergeLiveSlateGamesWithSeed/);
   });
 });
