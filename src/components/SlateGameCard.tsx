@@ -11,7 +11,6 @@ import {
   Users,
   Zap,
 } from "lucide-react";
-import { PrefetchLink } from "@/components/PrefetchLink";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
@@ -421,8 +420,8 @@ export function SlateGameCard({
             <>Historical matchup context only · Crew pending</>
           )}
         </span>
-        <div className="slate-game-card__trust-actions">
-          {onOpenPreview ? (
+        {onOpenPreview ? (
+          <div className="slate-game-card__trust-actions">
             <button
               type="button"
               className="slate-game-card__intel-link"
@@ -433,11 +432,8 @@ export function SlateGameCard({
             >
               Open intelligence →
             </button>
-          ) : null}
-          <PrefetchLink href="/methodology" className="slate-game-card__methodology-link">
-            Methodology →
-          </PrefetchLink>
-        </div>
+          </div>
+        ) : null}
       </div>
     </article>
   );

@@ -188,7 +188,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(card, /Crew chief/);
     assert.match(card, /Open intelligence/);
     assert.match(card, /type="button"/);
-    assert.match(card, /Methodology/);
+    assert.doesNotMatch(card, /Methodology/);
     assert.match(card, /Users/);
     assert.match(
       card,
