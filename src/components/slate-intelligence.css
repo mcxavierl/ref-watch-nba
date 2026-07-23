@@ -29,11 +29,36 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.45rem 0.55rem;
+  gap: 0.65rem 0.85rem;
   margin-top: 0.65rem;
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--slate-intel-ink-body);
+}
+
+.slate-outlook-banner__metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.slate-outlook-banner__metric-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.slate-outlook-banner__metric-icon--positive {
+  color: var(--slate-intel-positive, rgb(52 211 153));
+}
+
+.slate-outlook-banner__metric-icon--negative {
+  color: var(--slate-intel-negative, rgb(251 113 133));
+}
+
+.slate-outlook-banner__metric-icon--neutral {
+  color: var(--slate-intel-ink-muted);
 }
 
 .slate-outlook-banner__top-signal {
@@ -44,8 +69,16 @@
 }
 
 .slate-outlook-banner__top-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   color: var(--slate-intel-accent-warm);
   font-weight: 600;
+}
+
+.slate-outlook-banner__top-signal-icon {
+  color: var(--slate-intel-accent-warm);
+  fill: color-mix(in srgb, var(--slate-intel-accent-warm) 20%, transparent);
 }
 
 .slate-outlook-banner__top-signal strong {
@@ -143,13 +176,58 @@
   color: var(--slate-intel-ink-strong);
 }
 
-.slate-game-card__stars {
-  font-size: 0.6875rem;
+.slate-game-card__stars,
+.slate-game-card__signal-tier {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.625rem;
   line-height: 1;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  color: var(--slate-intel-ink-muted);
+}
+
+.slate-game-card__icon {
+  flex-shrink: 0;
+}
+
+.slate-game-card__icon--positive {
+  color: var(--slate-intel-positive);
+}
+
+.slate-game-card__icon--negative {
+  color: var(--slate-intel-negative);
+}
+
+.slate-game-card__icon--neutral {
+  color: var(--slate-intel-ink-muted);
+}
+
+.slate-game-card__icon--signal {
+  color: var(--slate-intel-accent-warm);
+  fill: color-mix(in srgb, var(--slate-intel-accent-warm) 20%, transparent);
+}
+
+.slate-game-card__icon--live-pulse {
+  color: var(--slate-intel-positive);
+  animation: slate-live-icon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes slate-live-icon-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
 }
 
 .slate-game-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   flex-shrink: 0;
   padding: 0.15rem 0.45rem;
   border-radius: 999px;
@@ -198,6 +276,9 @@
 }
 
 .slate-game-card__verdict-headline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   margin: 0 0 0.5rem;
   font-size: 0.6875rem;
   font-weight: 700;
@@ -377,7 +458,8 @@
   margin-left: auto;
 }
 
-.slate-game-card__enterprise-footer {
+.slate-game-card__enterprise-footer,
+.slate-game-card__trust-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -389,14 +471,30 @@
   color: var(--slate-intel-ink-muted);
 }
 
+.slate-game-card__trust-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.slate-game-card__methodology-link,
 .slate-game-card__intel-link {
   color: var(--slate-intel-accent);
   text-decoration: none;
   white-space: nowrap;
 }
 
+.slate-game-card__methodology-link:hover,
 .slate-game-card__intel-link:hover {
   text-decoration: underline;
+}
+
+.slate-game-card__interaction-cue {
+  margin: 0;
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  color: var(--slate-intel-ink-muted);
 }
 
 .upcoming-games-grid--homepage {

@@ -1,7 +1,15 @@
 "use client";
 
-import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
-import { Users } from "lucide-react";
+import type { CSSProperties, KeyboardEvent, MouseEvent, ReactNode } from "react";
+import {
+  Activity,
+  CheckCircle2,
+  Flame,
+  ShieldAlert,
+  TrendingUp,
+  Users,
+  Zap,
+} from "lucide-react";
 import { PrefetchLink } from "@/components/PrefetchLink";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
@@ -10,8 +18,11 @@ import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
 import {
   buildSlateGameIntelligence,
   type SlateGameIntelligence,
+  type WhistlePersonality,
 } from "@/lib/slate-intelligence";
 import { formatSigned } from "@/lib/stats-utils";
+
+const SLATE_ICON_SIZE = 14;
 
 function ConfidenceRing({
   confidencePct,
@@ -84,6 +95,78 @@ function DeltaWhyTooltip({ intel }: { intel: SlateGameIntelligence }) {
   );
 }
 
+function VerdictIcon({ personality }: { personality: WhistlePersonality }) {
+  if (personality === "high") {
+    return (
+      <Flame
+        aria-hidden
+        size={SLATE_ICON_SIZE}
+        strokeWidth={2.25}
+        className="slate-game-card__icon slate-game-card__icon--positive"
+      />
+    );
+  }
+  if (personality === "defensive") {
+    return (
+      <ShieldAlert
+        aria-hidden
+        size={SLATE_ICON_SIZE}
+        strokeWidth={2.25}
+        className="slate-game-card__icon slate-game-card__icon--negative"
+      />
+    );
+  }
+  return (
+    <TrendingUp
+      aria-hidden
+      size={SLATE_ICON_SIZE}
+      strokeWidth={2.25}
+      className="slate-game-card__icon slate-game-card__icon--neutral"
+    />
+  );
+}
+
+function SignalTierIcon({ intel }: { intel: SlateGameIntelligence }) {
+  if (intel.signalTier === "high" || intel.signalTier === "elevated") {
+    return (
+      <Zap
+        aria-hidden
+        size={SLATE_ICON_SIZE}
+        strokeWidth={2.25}
+        className="slate-game-card__icon slate-game-card__icon--signal"
+      />
+    );
+  }
+  return null;
+}
+
+function StatusChip({
+  statusKind,
+  statusLabel,
+}: {
+  statusKind: SlateGameIntelligence["statusKind"];
+  statusLabel: string;
+}) {
+  let icon: ReactNode = null;
+  if (statusKind === "live") {
+    icon = (
+      <Activity
+        aria-hidden
+        size={SLATE_ICON_SIZE}
+        strokeWidth={2.25}
+        className="slate-game-card__icon slate-game-card__icon--live-pulse"
+      />
+    );
+  }
+
+  return (
+    <span className={`slate-game-card__status slate-game-card__status--${statusKind}`}>
+      {icon}
+      <span>{statusLabel}</span>
+    </span>
+  );
+}
+
 export function SlateGameCard({
   game,
   index = 0,
@@ -145,22 +228,21 @@ export function SlateGameCard({
             <span className="slate-game-card__matchup-abbr">
               {awayTeam.abbr} @ {homeTeam.abbr}
             </span>
-            <span className="slate-game-card__stars" aria-label={`${intel.starRating} of 5 signal`}>
-              {intel.starDisplay}
+            <span className="slate-game-card__signal-tier" aria-label={intel.signalTierLabel}>
+              <SignalTierIcon intel={intel} />
+              <span>{intel.signalTierLabel}</span>
             </span>
           </div>
         </div>
-        <span
-          className={`slate-game-card__status slate-game-card__status--${intel.statusKind}`}
-        >
-          {intel.statusLabel}
-        </span>
+        <StatusChip statusKind={intel.statusKind} statusLabel={intel.statusLabel} />
       </header>
 
       <section className="slate-game-card__verdict" aria-label="RefWatch verdict">
-        <p className={`slate-game-card__verdict-headline slate-game-card__verdict-headline--${intel.personality}`}>
-          {intel.personality === "high" ? "🟢" : intel.personality === "defensive" ? "🔴" : "⚪"}{" "}
-          {intel.verdictHeadline.toUpperCase()}
+        <p
+          className={`slate-game-card__verdict-headline slate-game-card__verdict-headline--${intel.personality}`}
+        >
+          <VerdictIcon personality={intel.personality} />
+          <span>{intel.verdictHeadline.toUpperCase()}</span>
         </p>
         <div className="slate-game-card__metric-grid">
           <div className="slate-game-card__metric">
@@ -234,12 +316,24 @@ export function SlateGameCard({
         </div>
       </footer>
 
-      <div className="slate-game-card__enterprise-footer">
-        <span>
-          Model v{intel.modelVersion} · {intel.sampleGames > 0 ? intel.sampleGames : "-"} games
+      {onOpenPreview ? (
+        <p className="slate-game-card__interaction-cue">Click card for evidence breakdown</p>
+      ) : null}
+
+      <div className="slate-game-card__trust-footer">
+        <span className="slate-game-card__trust-meta tabular-nums">
+          <CheckCircle2
+            aria-hidden
+            size={SLATE_ICON_SIZE}
+            strokeWidth={2.25}
+            className="slate-game-card__icon slate-game-card__icon--positive"
+          />
+          v{intel.modelVersion} Model ·{" "}
+          {intel.sampleGames > 0 ? intel.sampleGames.toLocaleString("en-US") : "-"}{" "}
+          game sample
         </span>
-        <PrefetchLink href={intel.intelligenceHref} className="slate-game-card__intel-link">
-          Open intelligence →
+        <PrefetchLink href="/methodology" className="slate-game-card__methodology-link">
+          Methodology →
         </PrefetchLink>
       </div>
     </article>
