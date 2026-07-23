@@ -2,7 +2,7 @@ import { buildProjectionEvidence } from "@/lib/analytics/build-projection-eviden
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { formatSlateDateTimeLabel } from "@/lib/slate-team-display";
-import { formatSigned } from "@/lib/stats-utils";
+import { formatPct, formatSigned } from "@/lib/stats-utils";
 
 export const SLATE_MODEL_VERSION = "3.8";
 
@@ -14,7 +14,12 @@ export type SlateDeltaTooltip = {
   teamSplitPressure: number;
 };
 
-export type SignalTier = "high" | "elevated" | "standard";
+export type SignalTier = "high" | "elevated" | "standard" | "pending";
+
+export type SlateHistoricalMatchupBaseline = {
+  title: string;
+  lines: string[];
+};
 
 export type SlateGameIntelligence = {
   personality: WhistlePersonality;
@@ -58,6 +63,75 @@ function round1(value: number): number {
 
 function compactMatchupLabel(game: OverviewSlateEntry): string {
   return `${game.awayTeam} @ ${game.homeTeam}`;
+}
+
+/** True when an officiating crew is assigned and whistle model panels may render. */
+export function hasRefAssignments(game: OverviewSlateEntry): boolean {
+  const officials = game.preview?.crew ?? [];
+
+  if (
+    game.preview?.awaitingCrew === true &&
+    officials.length === 0 &&
+    game.crewCount === 0
+  ) {
+    return false;
+  }
+
+  const crewChief =
+    game.headRef ??
+    officials.find((official) => official.role === "crew_chief")?.name ??
+    officials.find((official) => official.role === "referee")?.name;
+  const crewPending =
+    game.preview?.awaitingCrew === true ||
+    (game.crewCount === 0 && officials.length === 0 && !crewChief);
+  const hasRefs = game.crewCount > 0 || officials.length > 0;
+
+  return Boolean(officials.length > 0 || crewChief || (!crewPending && hasRefs));
+}
+
+export function buildHistoricalMatchupBaseline(
+  game: OverviewSlateEntry,
+): SlateHistoricalMatchupBaseline {
+  const preview = game.preview;
+  const briefing = preview?.matchupBriefing;
+  const scoringLabel = preview?.scoringLabel?.toLowerCase() ?? "points";
+  const whistleLabel = preview?.whistleLabel?.toLowerCase() ?? "fouls";
+  const lines: string[] = [];
+
+  if (briefing && briefing.h2hGames > 0) {
+    const window = Math.min(briefing.h2hGames, 5);
+    lines.push(
+      `Last ${window} meeting${window === 1 ? "" : "s"}: ${briefing.avgTotalPoints} avg ${scoringLabel} · ${briefing.avgFouls} avg ${whistleLabel}`,
+    );
+    lines.push(
+      `Head-to-head record: ${game.awayTeam} vs ${game.homeTeam} · ${formatPct(briefing.overRate)} over`,
+    );
+    if (briefing.lastMeeting) {
+      lines.push(briefing.lastMeeting);
+    }
+  } else {
+    for (const candidate of [
+      game.lastMeetingLine,
+      game.gameContextLine,
+      game.matchupInsight,
+      game.teamContextLine,
+    ]) {
+      if (candidate?.trim()) {
+        lines.push(candidate.trim());
+      }
+    }
+  }
+
+  if (lines.length === 0) {
+    lines.push(
+      `${game.awayTeam} vs ${game.homeTeam} · Team matchup history available on click`,
+    );
+  }
+
+  return {
+    title: "HISTORICAL TEAM MATCHUP",
+    lines: lines.slice(0, 3),
+  };
 }
 
 export function whistlePersonality(foulsDelta: number): WhistlePersonality {
@@ -164,6 +238,34 @@ function previewHasActionableMetrics(preview: GameSlatePreviewPayload): boolean 
   );
 }
 
+function pendingCrewIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
+  const status = statusForGame(game);
+  return {
+    personality: "neutral",
+    verdictHeadline: "Historical team matchup",
+    expectedWhistles: 0,
+    leagueAvgWhistles: 0,
+    whistleDelta: 0,
+    whistleDeltaLabel: formatSigned(0),
+    confidencePct: 0,
+    evidenceScore: 0,
+    signalTier: "pending",
+    signalTierLabel: "CREW PENDING",
+    statusLabel: status.label,
+    statusKind: status.kind,
+    deltaTooltip: {
+      crewBaseline: 0,
+      historicalMatchup: 0,
+      teamSplitPressure: 0,
+    },
+    sampleGames: 0,
+    modelVersion: SLATE_MODEL_VERSION,
+    intelligenceHref: `${game.href}#game-${game.gameId}`,
+    signalScore: 0,
+    crewCount: game.crewCount,
+  };
+}
+
 function fallbackIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
   const status = statusForGame(game);
   const signalTier = signalTierFromConfidence(0, 0);
@@ -197,6 +299,10 @@ function fallbackIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
 export function buildSlateGameIntelligence(
   game: OverviewSlateEntry,
 ): SlateGameIntelligence {
+  if (!hasRefAssignments(game)) {
+    return pendingCrewIntelligence(game);
+  }
+
   const preview = game.preview;
   if (!preview || !previewHasActionableMetrics(preview)) {
     return fallbackIntelligence(game);
@@ -250,7 +356,9 @@ export function buildSlateOutlookSummary(
     intel: buildSlateGameIntelligence(game),
   }));
 
-  const confidenceValues = intelRows
+  const assignedRows = intelRows.filter((row) => hasRefAssignments(row.game));
+
+  const confidenceValues = assignedRows
     .map((row) => row.intel.confidencePct)
     .filter((value) => value > 0);
   const avgConfidencePct =
@@ -261,15 +369,15 @@ export function buildSlateOutlookSummary(
         )
       : 0;
 
-  const ranked = [...intelRows].sort(
+  const ranked = [...assignedRows].sort(
     (left, right) => right.intel.signalScore - left.intel.signalScore,
   );
   const top = ranked[0];
 
   return {
     gamesMonitored: games.length,
-    highWhistleCount: intelRows.filter((row) => row.intel.personality === "high").length,
-    defensiveCrewCount: intelRows.filter(
+    highWhistleCount: assignedRows.filter((row) => row.intel.personality === "high").length,
+    defensiveCrewCount: assignedRows.filter(
       (row) => row.intel.personality === "defensive",
     ).length,
     avgConfidencePct,

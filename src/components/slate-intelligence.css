@@ -209,6 +209,16 @@
   fill: color-mix(in srgb, var(--slate-intel-accent-warm) 20%, transparent);
 }
 
+.slate-game-card__icon--pending {
+  color: rgb(251 191 36);
+}
+
+.slate-game-card__signal-tier--pending {
+  color: rgb(251 191 36);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
 .slate-game-card__icon--live-pulse {
   color: var(--slate-intel-positive);
   animation: slate-live-icon-pulse 2s ease-in-out infinite;
@@ -295,6 +305,25 @@
 
 .slate-game-card__verdict-headline--neutral {
   color: var(--slate-intel-ink-body);
+}
+
+.slate-game-card__matchup-baseline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.slate-game-card__matchup-baseline-line {
+  margin: 0;
+  font-family: var(--font-data, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: rgb(203 213 225);
+}
+
+.slate-game-card--crew-pending .slate-game-card__verdict {
+  border-color: rgb(51 65 85 / 0.55);
+  background: rgb(2 6 23 / 0.35);
 }
 
 .slate-game-card__metric-grid {
