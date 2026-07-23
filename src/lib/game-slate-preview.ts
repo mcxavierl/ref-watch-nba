@@ -490,9 +490,7 @@ function buildMatchupSlatePreview(
   }
 
   if (briefingLines.length === 0) {
-    briefingLines.push(
-      `${awayAbbr} at ${homeAbbr}: no published head-to-head sample yet. Check back when logs refresh.`,
-    );
+    briefingLines.push("No recent head-to-head matchups on file");
   }
 
   const ouLean: GameSlatePreviewPayload["ouLean"] =

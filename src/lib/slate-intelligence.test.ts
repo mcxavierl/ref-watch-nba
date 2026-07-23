@@ -334,6 +334,15 @@ describe("slate intelligence", () => {
     assert.deepEqual(baseline.lines, [PENDING_EMPTY_H2H_COPY]);
   });
 
+  it("normalizes unpublished head-to-head sample copy on pending cards", () => {
+    const baseline = sanitizePendingMatchupLines([
+      "CAR at ARI: no published head-to-head sample yet. Check back when logs refresh.",
+    ]);
+
+    assert.equal(baseline.isEmptyFallback, true);
+    assert.deepEqual(baseline.lines, [PENDING_EMPTY_H2H_COPY]);
+  });
+
   it("keeps meaningful recent form when only one side has logs", () => {
     const baseline = sanitizePendingMatchupLines([
       "Recent form: LVA: no recent WNBA log on file · TOR beat MIN 84-79 away on Jul 18, 2026",

@@ -33,6 +33,31 @@ function formatCount(n: number): string {
   return n.toLocaleString("en-US");
 }
 
+function homepageSlateGridClass(
+  count: number,
+  variant: "row" | "card",
+  pending = false,
+): string {
+  const base =
+    variant === "card"
+      ? "upcoming-games-grid upcoming-games-grid--homepage"
+      : "upcoming-games-grid upcoming-games-grid--hub";
+
+  if (pending) {
+    return `${base} upcoming-games-grid--pending upcoming-games-grid--pending-balanced`;
+  }
+
+  if (count === 4) {
+    return `${base} upcoming-games-grid--count-4`;
+  }
+
+  if (count >= 3) {
+    return `${base} upcoming-games-grid--count-multi`;
+  }
+
+  return base;
+}
+
 export function LiveSlateGrid({
   initialSlate,
   initialGames,
@@ -92,13 +117,7 @@ export function LiveSlateGrid({
 
       {sortedGames.length > 0 ? (
         <div className="overview-slate-grid-stack">
-          <div
-            className={
-              variant === "card"
-                ? "upcoming-games-grid upcoming-games-grid--homepage"
-                : "upcoming-games-grid upcoming-games-grid--hub"
-            }
-          >
+          <div className={homepageSlateGridClass(primaryGames.length, variant)}>
             <OverviewSlateGamesInteractive
               games={primaryGames}
               showHubLink={showHubLink}
@@ -111,13 +130,7 @@ export function LiveSlateGrid({
           {showOutlookBanner && pendingGames.length > 0 ? (
             <div className="overview-slate-pending-section">
               <h3 className="overview-slate-pending-heading">Pending crew assignments</h3>
-              <div
-                className={
-                  variant === "card"
-                    ? "upcoming-games-grid upcoming-games-grid--homepage upcoming-games-grid--pending"
-                    : "upcoming-games-grid upcoming-games-grid--hub upcoming-games-grid--pending"
-                }
-              >
+              <div className={homepageSlateGridClass(pendingGames.length, variant, true)}>
                 <OverviewSlateGamesInteractive
                   games={pendingGames}
                   showHubLink={showHubLink}

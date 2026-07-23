@@ -127,6 +127,22 @@
   .upcoming-games-grid--homepage {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .upcoming-games-grid--homepage.upcoming-games-grid--count-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 64rem;
+  }
+
+  .upcoming-games-grid--homepage.upcoming-games-grid--count-multi {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .upcoming-games-grid--homepage.upcoming-games-grid--count-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 64rem;
+  }
 }
 
 .upcoming-games-grid > .upcoming-game-card {
@@ -170,4 +186,33 @@
 
 .upcoming-games-grid--pending {
   opacity: 0.92;
+}
+
+.upcoming-games-grid--homepage.upcoming-games-grid--pending-balanced {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.upcoming-games-grid--homepage.upcoming-games-grid--pending-balanced > .upcoming-game-card,
+.upcoming-games-grid--homepage.upcoming-games-grid--pending-balanced > .slate-game-card {
+  flex: 1 1 min(100%, 22rem);
+  max-width: min(100%, 22rem);
+}
+
+@media (min-width: 768px) {
+  .upcoming-games-grid--homepage.upcoming-games-grid--pending-balanced > .upcoming-game-card,
+  .upcoming-games-grid--homepage.upcoming-games-grid--pending-balanced > .slate-game-card {
+    flex: 0 1 calc(50% - 0.625rem);
+    max-width: calc(50% - 0.625rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .upcoming-games-grid--homepage.upcoming-games-grid--pending-balanced > .upcoming-game-card,
+  .upcoming-games-grid--homepage.upcoming-games-grid--pending-balanced > .slate-game-card {
+    flex: 0 1 calc(33.333% - 0.834rem);
+    max-width: calc(33.333% - 0.834rem);
+  }
 }
