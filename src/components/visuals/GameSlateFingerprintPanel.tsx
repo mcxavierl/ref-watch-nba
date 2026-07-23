@@ -15,11 +15,14 @@ export type CrewFingerprintEntry = {
 type GameSlateFingerprintPanelProps = {
   crewFingerprints: CrewFingerprintEntry[];
   basePath: string;
+  /** Consumer drawer surfaces hide the technical fingerprint title. */
+  consumerFacing?: boolean;
 };
 
 export function GameSlateFingerprintPanel({
   crewFingerprints,
   basePath,
+  consumerFacing = false,
 }: GameSlateFingerprintPanelProps) {
   const [activeSlug, setActiveSlug] = useState(crewFingerprints[0]?.slug ?? "");
   const active =
@@ -36,7 +39,7 @@ export function GameSlateFingerprintPanel({
   return (
     <section
       className="game-slate-fingerprint-panel"
-      aria-label="Officiating fingerprint"
+      aria-label={consumerFacing ? "Crew DNA fingerprint" : "Officiating fingerprint"}
     >
       {crewFingerprints.length > 1 ? (
         <div
@@ -62,7 +65,12 @@ export function GameSlateFingerprintPanel({
       ) : null}
 
       <div className="officiating-fingerprint-tabpanel" role="tabpanel">
-        <OfficiatingFingerprint key={active.slug} data={active.fingerprint} compact />
+        <OfficiatingFingerprint
+          key={active.slug}
+          data={active.fingerprint}
+          compact
+          consumerFacing={consumerFacing}
+        />
         <p className="officiating-fingerprint-profile-link-wrap">
           <OverlayNavLink
             href={`${basePath}/refs/${active.slug}`}

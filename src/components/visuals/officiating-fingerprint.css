@@ -207,8 +207,25 @@ button.officiating-fingerprint-tab {
   font-size: 10px;
 }
 
+.officiating-fingerprint--consumer {
+  padding-top: 0.35rem;
+}
+
+.officiating-fingerprint-meta--inline {
+  margin: 0 0 0.35rem;
+}
+
 @media (max-width: 640px) {
   .officiating-fingerprint-label {
     font-size: 10px;
+  }
+
+  .officiating-fingerprint-vertex-hit {
+    touch-action: manipulation;
+  }
+
+  .officiating-fingerprint-tab {
+    min-height: 44px;
+    padding-inline: 0.85rem;
   }
 }

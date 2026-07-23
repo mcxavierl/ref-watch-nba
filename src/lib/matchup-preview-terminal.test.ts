@@ -3,12 +3,14 @@ import { describe, it } from "node:test";
 import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
+  buildCrewDnaSynthesis,
   buildMatchupCrewRoster,
   buildMatchupDriverLines,
   buildMatchupMatrixRows,
   buildMatchupTerminalMetrics,
   buildMatchupTrustSignalBar,
   buildMatchupVerdictHeadline,
+  buildOfficiatingFingerprintTechnicalLines,
 } from "@/lib/matchup-preview-terminal";
 
 function previewFixture(
@@ -127,6 +129,20 @@ describe("matchup preview terminal", () => {
     const bar = buildMatchupTrustSignalBar(previewFixture());
     assert.match(bar, /528 historical games/);
     assert.match(bar, /3 crews/);
+    assert.doesNotMatch(bar, /✓/);
+  });
+
+  it("builds crew DNA synthesis and impact directives", () => {
+    const synthesis = buildCrewDnaSynthesis(previewFixture({ foulsDelta: 2.8 }));
+    assert.match(synthesis.synthesisLine, /^RefWatch Synthesis:/);
+    assert.equal(synthesis.directives.length, 3);
+    assert.equal(synthesis.directives[0]?.id, "free_throw_volume");
+    assert.match(synthesis.directives[0]?.value ?? "", /expected FTs/);
+  });
+
+  it("builds technical fingerprint lines for pro accordion", () => {
+    const lines = buildOfficiatingFingerprintTechnicalLines(previewFixture());
+    assert.equal(lines.length, 0);
   });
 
   it("builds compact driver lines capped at three per direction", () => {
@@ -137,7 +153,7 @@ describe("matchup preview terminal", () => {
     assert.ok(drivers.positive.length <= 3);
     assert.ok(drivers.negative.length <= 3);
     if (drivers.positive[0]) {
-      assert.match(drivers.positive[0].prefix, /▲/);
+      assert.equal(drivers.positive[0].direction, "increase");
     }
   });
 

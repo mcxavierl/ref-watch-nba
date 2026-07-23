@@ -13,6 +13,8 @@ describe("OfficiatingFingerprint chart labels", () => {
     assert.match(source, /labelPlacement/);
     assert.match(source, /officiating-fingerprint-vertex-hit/);
     assert.match(source, /onClick=\{\(\) =>/);
+    assert.match(source, /coarsePointerUi/);
+    assert.match(source, /consumerFacing/);
     assert.match(css, /overflow:\s*visible/);
   });
 });

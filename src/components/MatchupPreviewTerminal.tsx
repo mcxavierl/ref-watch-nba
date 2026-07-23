@@ -1,10 +1,23 @@
 "use client";
 
+import { useState, type ReactNode } from "react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  ChevronDown,
+  FileText,
+  ShieldAlert,
+  Sparkles,
+  TrendingDown,
+  TrendingUp,
+  Zap,
+} from "lucide-react";
 import { OverlayNavLink } from "@/components/OverlayNavLink";
 import { GameSlateFingerprintPanel } from "@/components/visuals/GameSlateFingerprintPanel";
 import type { ProjectionEvidencePayload } from "@/lib/analytics/evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
+  buildCrewDnaSynthesis,
   buildMatchupCrewRoster,
   buildMatchupDriverLines,
   buildMatchupMatrixRows,
@@ -12,17 +25,49 @@ import {
   buildMatchupTrustSignalBar,
   buildMatchupVerdictHeadline,
   buildModelWeightLines,
+  buildOfficiatingFingerprintTechnicalLines,
   buildRawFactorLines,
   buildSupplementalContextLines,
+  type CrewDnaImpactDirective,
   type MatchupDriverLine,
   type MatchupMatrixCell,
+  type MatchupRawFactorLine,
 } from "@/lib/matchup-preview-terminal";
 import "@/components/matchup-preview-terminal.css";
+
+const TERMINAL_ICON_SIZE = 14;
 
 type MatchupPreviewTerminalProps = {
   preview: GameSlatePreviewPayload;
   evidence: ProjectionEvidencePayload;
 };
+
+function DriverDirectionIcon({
+  direction,
+  className,
+}: {
+  direction: MatchupDriverLine["direction"];
+  className?: string;
+}) {
+  if (direction === "increase") {
+    return (
+      <TrendingUp
+        aria-hidden
+        size={TERMINAL_ICON_SIZE}
+        strokeWidth={2.25}
+        className={className}
+      />
+    );
+  }
+  return (
+    <TrendingDown
+      aria-hidden
+      size={TERMINAL_ICON_SIZE}
+      strokeWidth={2.25}
+      className={className}
+    />
+  );
+}
 
 function DriverList({
   title,
@@ -45,9 +90,15 @@ function DriverList({
               key={driver.id}
               className={`matchup-terminal-drivers__line matchup-terminal-drivers__line--${driver.tone}`}
             >
-              <span aria-hidden>{driver.prefix}</span> {driver.label}{" "}
-              <span className="matchup-terminal-drivers__delta tabular-nums">
-                ({driver.deltaTag} whistles)
+              <DriverDirectionIcon
+                direction={driver.direction}
+                className={`matchup-terminal-drivers__icon matchup-terminal-drivers__icon--${driver.tone}`}
+              />
+              <span>
+                {driver.label}{" "}
+                <span className="matchup-terminal-drivers__delta tabular-nums">
+                  ({driver.deltaTag} whistles)
+                </span>
               </span>
             </li>
           ))}
@@ -78,6 +129,87 @@ function MatrixCell({ cell }: { cell: MatchupMatrixCell }) {
   );
 }
 
+function ImpactDirectiveIcon({ directive }: { directive: CrewDnaImpactDirective }) {
+  if (directive.id === "free_throw_volume") {
+    return (
+      <TrendingUp
+        aria-hidden
+        size={TERMINAL_ICON_SIZE}
+        strokeWidth={2.25}
+        className={`crew-dna-directive__icon crew-dna-directive__icon--${directive.tone}`}
+      />
+    );
+  }
+  if (directive.id === "home_advantage") {
+    return (
+      <ShieldAlert
+        aria-hidden
+        size={TERMINAL_ICON_SIZE}
+        strokeWidth={2.25}
+        className={`crew-dna-directive__icon crew-dna-directive__icon--${directive.tone}`}
+      />
+    );
+  }
+  return (
+    <Zap
+      aria-hidden
+      size={TERMINAL_ICON_SIZE}
+      strokeWidth={2.25}
+      className={`crew-dna-directive__icon crew-dna-directive__icon--${directive.tone}`}
+    />
+  );
+}
+
+function TerminalAccordion({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon: ReactNode;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      className={`matchup-terminal-accordion${open ? " matchup-terminal-accordion--open" : ""}`}
+    >
+      <button
+        type="button"
+        className="matchup-terminal-accordion__trigger"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <ChevronDown
+          aria-hidden
+          size={TERMINAL_ICON_SIZE}
+          strokeWidth={2.25}
+          className="matchup-terminal-accordion__chevron"
+        />
+        <span className="matchup-terminal-accordion__trigger-icon">{icon}</span>
+        <span>{title}</span>
+      </button>
+      {open ? <div className="matchup-terminal-accordion__panel">{children}</div> : null}
+    </div>
+  );
+}
+
+function RawFactorLine({ factor }: { factor: MatchupRawFactorLine }) {
+  return (
+    <li>
+      <span className="matchup-terminal-accordion__factor-head">
+        <DriverDirectionIcon
+          direction={factor.direction}
+          className={`matchup-terminal-accordion__factor-icon matchup-terminal-accordion__factor-icon--${factor.direction}`}
+        />
+        {factor.headline}
+      </span>
+      <span className="matchup-terminal-accordion__factor-detail">{factor.detail}</span>
+    </li>
+  );
+}
+
 export function MatchupPreviewTerminal({
   preview,
   evidence,
@@ -91,6 +223,8 @@ export function MatchupPreviewTerminal({
   const modelWeights = buildModelWeightLines(evidence.modelContribution);
   const rawFactors = buildRawFactorLines(evidence);
   const supplemental = buildSupplementalContextLines(preview);
+  const crewDna = buildCrewDnaSynthesis(preview);
+  const fingerprintTechnical = buildOfficiatingFingerprintTechnicalLines(preview);
   const hasFingerprint = (preview.crewFingerprints?.length ?? 0) > 0;
   const metricUnit = preview.whistleLabel.toLowerCase();
 
@@ -130,7 +264,15 @@ export function MatchupPreviewTerminal({
           ))}
         </div>
 
-        <p className="matchup-terminal-verdict__trust">{trustBar}</p>
+        <p className="matchup-terminal-verdict__trust">
+          <CheckCircle2
+            aria-hidden
+            size={TERMINAL_ICON_SIZE}
+            strokeWidth={2.25}
+            className="matchup-terminal-verdict__trust-icon"
+          />
+          {trustBar}
+        </p>
       </section>
 
       <section
@@ -227,67 +369,101 @@ export function MatchupPreviewTerminal({
       {hasFingerprint ? (
         <section
           className="matchup-terminal-section matchup-terminal-fingerprint-section"
-          aria-label="Officiating fingerprint"
+          aria-label="Crew DNA"
         >
-          <h3 className="matchup-terminal-section__title">Officiating fingerprint</h3>
+          <h3 className="matchup-terminal-section__title">Crew DNA</h3>
           <GameSlateFingerprintPanel
             crewFingerprints={preview.crewFingerprints ?? []}
             basePath={preview.basePath}
+            consumerFacing
           />
+
+          <div className="crew-dna-synthesis" aria-label="Crew DNA synthesis">
+            <p className="crew-dna-synthesis__label">
+              <Sparkles
+                aria-hidden
+                size={TERMINAL_ICON_SIZE}
+                strokeWidth={2.25}
+                className="crew-dna-synthesis__label-icon"
+              />
+              Automated synthesis
+            </p>
+            <p className="crew-dna-synthesis__line">{crewDna.synthesisLine}</p>
+            <ul className="crew-dna-directives" aria-label="Impact directives">
+              {crewDna.directives.map((directive) => (
+                <li key={directive.id} className="crew-dna-directive">
+                  <ImpactDirectiveIcon directive={directive} />
+                  <span>
+                    <strong>{directive.label}:</strong> {directive.value}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
       ) : null}
 
       <section className="matchup-terminal-section matchup-terminal-accordions" aria-label="Deep model details">
-        <details className="matchup-terminal-accordion">
-          <summary className="matchup-terminal-accordion__trigger">
-            Model weights &amp; sample data
-          </summary>
-          <div className="matchup-terminal-accordion__panel">
-            <ul className="matchup-terminal-accordion__list">
-              {modelWeights.map((line) => (
+        <TerminalAccordion
+          title="Model weights & sample data"
+          icon={<FileText aria-hidden size={TERMINAL_ICON_SIZE} strokeWidth={2.25} />}
+        >
+          <ul className="matchup-terminal-accordion__list">
+            {modelWeights.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+          <p className="matchup-terminal-accordion__meta tabular-nums">
+            Sample: {preview.sampleGames} games · Projected {metricUnit}:{" "}
+            {evidence.projection.toFixed(1)} · Scoring impact:{" "}
+            {preview.totalPointsDelta >= 0 ? "+" : ""}
+            {preview.totalPointsDelta.toFixed(1)} · Over rate:{" "}
+            {(preview.overRate * 100).toFixed(1)}%
+          </p>
+        </TerminalAccordion>
+
+        <TerminalAccordion
+          title="Raw factor breakdown"
+          icon={<AlertCircle aria-hidden size={TERMINAL_ICON_SIZE} strokeWidth={2.25} />}
+        >
+          {rawFactors.length === 0 ? (
+            <p className="matchup-terminal-accordion__empty">
+              Raw factor strings publish when sample gates clear.
+            </p>
+          ) : (
+            <ul className="matchup-terminal-accordion__factor-list">
+              {rawFactors.map((factor) => (
+                <RawFactorLine key={factor.id} factor={factor} />
+              ))}
+            </ul>
+          )}
+          {supplemental.length > 0 ? (
+            <ul className="matchup-terminal-accordion__list matchup-terminal-accordion__list--context">
+              {supplemental.map((line) => (
                 <li key={line}>{line}</li>
               ))}
             </ul>
-            <p className="matchup-terminal-accordion__meta tabular-nums">
-              Sample: {preview.sampleGames} games · Projected {metricUnit}:{" "}
-              {evidence.projection.toFixed(1)} · Scoring impact:{" "}
-              {preview.totalPointsDelta >= 0 ? "+" : ""}
-              {preview.totalPointsDelta.toFixed(1)} · Over rate:{" "}
-              {(preview.overRate * 100).toFixed(1)}%
-            </p>
-          </div>
-        </details>
+          ) : null}
+        </TerminalAccordion>
 
-        <details className="matchup-terminal-accordion">
-          <summary className="matchup-terminal-accordion__trigger">Raw factor breakdown</summary>
-          <div className="matchup-terminal-accordion__panel">
-            {rawFactors.length === 0 ? (
+        {hasFingerprint ? (
+          <TerminalAccordion
+            title="Officiating fingerprint"
+            icon={<FileText aria-hidden size={TERMINAL_ICON_SIZE} strokeWidth={2.25} />}
+          >
+            {fingerprintTechnical.length === 0 ? (
               <p className="matchup-terminal-accordion__empty">
-                Raw factor strings publish when sample gates clear.
+                Technical fingerprint axes publish when crew sample gates clear.
               </p>
             ) : (
-              <ul className="matchup-terminal-accordion__factor-list">
-                {rawFactors.map((factor) => (
-                  <li key={factor.id}>
-                    <span className="matchup-terminal-accordion__factor-head">
-                      {factor.direction} {factor.headline}
-                    </span>
-                    <span className="matchup-terminal-accordion__factor-detail">
-                      {factor.detail}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {supplemental.length > 0 ? (
-              <ul className="matchup-terminal-accordion__list matchup-terminal-accordion__list--context">
-                {supplemental.map((line) => (
+              <ul className="matchup-terminal-accordion__list">
+                {fingerprintTechnical.map((line) => (
                   <li key={line}>{line}</li>
                 ))}
               </ul>
-            ) : null}
-          </div>
-        </details>
+            )}
+          </TerminalAccordion>
+        ) : null}
       </section>
     </div>
   );
