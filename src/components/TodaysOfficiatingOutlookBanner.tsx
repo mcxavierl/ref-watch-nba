@@ -1,11 +1,5 @@
 import type { ReactNode } from "react";
-import {
-  Activity,
-  CheckCircle2,
-  Flame,
-  ShieldAlert,
-  Zap,
-} from "lucide-react";
+import { Activity, CheckCircle2, Clock, Zap } from "lucide-react";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
 import { buildSlateOutlookSummary } from "@/lib/slate-intelligence";
 
@@ -46,22 +40,17 @@ export function TodaysOfficiatingOutlookBanner({
       <div className="slate-outlook-banner__metrics" aria-label="Slate summary metrics">
         <MetricItem
           icon={<Activity aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
-          label={`${outlook.gamesMonitored} games monitored`}
+          label={`${outlook.liveAndAssignedMonitored} live & assigned games monitored`}
           iconClassName="slate-outlook-banner__metric-icon--neutral"
         />
         <MetricItem
-          icon={<Flame aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
-          label={`${outlook.highWhistleCount} high whistle`}
-          iconClassName="slate-outlook-banner__metric-icon--positive"
-        />
-        <MetricItem
-          icon={<ShieldAlert aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
-          label={`${outlook.defensiveCrewCount} defensive crews`}
-          iconClassName="slate-outlook-banner__metric-icon--negative"
+          icon={<Clock aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
+          label={`${outlook.pendingCrewCount} pending crew assignments`}
+          iconClassName="slate-outlook-banner__metric-icon--neutral"
         />
         <MetricItem
           icon={<CheckCircle2 aria-hidden size={BANNER_ICON_SIZE} strokeWidth={2.25} />}
-          label={`Avg confidence: ${outlook.avgConfidencePct}%`}
+          label={`Avg confidence: ${outlook.avgConfidencePct}% (assigned slate)`}
           iconClassName="slate-outlook-banner__metric-icon--positive"
         />
       </div>

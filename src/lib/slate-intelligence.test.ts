@@ -5,6 +5,10 @@ import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import {
   buildSlateGameIntelligence,
   buildSlateOutlookSummary,
+  formatSlateGameStatusLabel,
+  hasRefAssignments,
+  partitionHomepageSlateGames,
+  pendingCrewSignalTier,
   signalTierFromConfidence,
   sortSlateGamesBySignal,
   whistlePersonality,
@@ -79,14 +83,129 @@ describe("slate intelligence", () => {
     ];
 
     const outlook = buildSlateOutlookSummary(games);
-    assert.equal(outlook.gamesMonitored, 3);
+    assert.equal(outlook.liveAndAssignedMonitored, 3);
+    assert.equal(outlook.pendingCrewCount, 0);
     assert.equal(outlook.highWhistleCount, 1);
     assert.equal(outlook.defensiveCrewCount, 1);
     assert.ok(outlook.topSignal);
     assert.match(outlook.topSignal!.matchup, /PHO @ LAS/);
   });
 
-  it("sorts live games first then by signal score", () => {
+  it("excludes pending crew games from outlook confidence averages", () => {
+    const assigned = baseGame({
+      gameId: "assigned",
+      preview: preview({ foulsDelta: 2 }),
+    });
+    const pending = baseGame({
+      gameId: "pending",
+      crewCount: 0,
+      headRef: undefined,
+      preview: preview({
+        awaitingCrew: true,
+        crew: [],
+        sampleGames: 0,
+        avgFouls: 0,
+        foulsDelta: 0,
+      }),
+    });
+
+    const outlook = buildSlateOutlookSummary([assigned, pending]);
+    assert.equal(outlook.liveAndAssignedMonitored, 1);
+    assert.equal(outlook.pendingCrewCount, 1);
+    assert.ok(outlook.avgConfidencePct > 0);
+  });
+
+  it("formats live status without duplicating period labels", () => {
+    assert.equal(
+      formatSlateGameStatusLabel(
+        baseGame({
+          status: "live",
+          gamePhase: "live",
+          gamePeriod: "Q4",
+          gameClock: "Q4 6:43",
+        }),
+      ),
+      "LIVE · Q4 6:43",
+    );
+    assert.equal(
+      formatSlateGameStatusLabel(
+        baseGame({
+          status: "live",
+          gamePhase: "live",
+          gameClock: "Halftime",
+        }),
+      ),
+      "LIVE · Half",
+    );
+    assert.equal(
+      formatSlateGameStatusLabel(
+        baseGame({
+          status: "final",
+          gamePhase: "final",
+        }),
+      ),
+      "FINAL",
+    );
+    assert.match(
+      formatSlateGameStatusLabel(
+        baseGame({
+          slateDate: "2026-07-28",
+          slateStartAt: "2026-07-28T23:30:00.000Z",
+        }),
+      ),
+      /^JUL 28 · /,
+    );
+  });
+
+  it("forces pending crew games into the crew pending signal tier", () => {
+    const game = baseGame({
+      crewCount: 0,
+      headRef: undefined,
+      preview: preview({
+        awaitingCrew: true,
+        crew: [],
+        foulsDelta: 2.4,
+      }),
+    });
+    const intel = buildSlateGameIntelligence(game);
+
+    assert.equal(hasRefAssignments(game), false);
+    assert.equal(intel.signalTier, "pending");
+    assert.equal(intel.signalTierLabel, "[CREW PENDING]");
+  });
+
+  it("partitions pending crew games into the secondary homepage section", () => {
+    const assigned = baseGame({ gameId: "assigned", preview: preview({ foulsDelta: 1.2 }) });
+    const pending = baseGame({
+      gameId: "pending",
+      crewCount: 0,
+      headRef: undefined,
+      preview: preview({ awaitingCrew: true, crew: [], foulsDelta: 0 }),
+    });
+    const finalGame = baseGame({
+      gameId: "final",
+      status: "final",
+      gamePhase: "final",
+      preview: preview({ foulsDelta: 0.5 }),
+    });
+
+    const { primaryGames, pendingGames } = partitionHomepageSlateGames([
+      pending,
+      finalGame,
+      assigned,
+    ]);
+
+    assert.deepEqual(
+      primaryGames.map((game) => game.gameId),
+      ["assigned", "final"],
+    );
+    assert.deepEqual(
+      pendingGames.map((game) => game.gameId),
+      ["pending"],
+    );
+  });
+
+  it("sorts live games first then assigned today, finals, and pending last", () => {
     const scheduled = baseGame({
       gameId: "scheduled",
       preview: preview({ foulsDelta: 3 }),
@@ -97,8 +216,24 @@ describe("slate intelligence", () => {
       gamePhase: "live",
       preview: preview({ foulsDelta: 0.5 }),
     });
-    const sorted = sortSlateGamesBySignal([scheduled, live]);
-    assert.equal(sorted[0]?.gameId, "live");
+    const pending = baseGame({
+      gameId: "pending",
+      crewCount: 0,
+      headRef: undefined,
+      preview: preview({ awaitingCrew: true, crew: [], foulsDelta: 0 }),
+    });
+    const finalGame = baseGame({
+      gameId: "final",
+      status: "final",
+      gamePhase: "final",
+      preview: preview({ foulsDelta: 0.2 }),
+    });
+
+    const sorted = sortSlateGamesBySignal([pending, finalGame, scheduled, live]);
+    assert.deepEqual(
+      sorted.map((game) => game.gameId),
+      ["live", "scheduled", "final", "pending"],
+    );
   });
 
   it("uses crew chief copy in card intelligence", () => {
@@ -152,6 +287,8 @@ describe("slate intelligence", () => {
     const high = signalTierFromConfidence(82, 2.1);
     assert.equal(high.tier, "high");
     assert.equal(high.label, "[HIGH SIGNAL]");
+    const pending = pendingCrewSignalTier();
+    assert.equal(pending.label, "[CREW PENDING]");
     const standard = signalTierFromConfidence(40, 0.2);
     assert.equal(standard.tier, "standard");
   });

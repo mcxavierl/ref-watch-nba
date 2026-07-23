@@ -4,6 +4,7 @@ import type { CSSProperties, KeyboardEvent, MouseEvent, ReactNode } from "react"
 import {
   Activity,
   CheckCircle2,
+  Clock,
   Flame,
   ShieldAlert,
   TrendingUp,
@@ -127,6 +128,16 @@ function VerdictIcon({ personality }: { personality: WhistlePersonality }) {
 }
 
 function SignalTierIcon({ intel }: { intel: SlateGameIntelligence }) {
+  if (intel.signalTier === "pending") {
+    return (
+      <Clock
+        aria-hidden
+        size={SLATE_ICON_SIZE}
+        strokeWidth={2.25}
+        className="slate-game-card__icon slate-game-card__icon--neutral"
+      />
+    );
+  }
   if (intel.signalTier === "high" || intel.signalTier === "elevated") {
     return (
       <Zap

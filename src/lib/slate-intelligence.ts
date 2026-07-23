@@ -1,6 +1,8 @@
 import { buildProjectionEvidence } from "@/lib/analytics/build-projection-evidence";
 import type { GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
+import { resolveGameTimestampMs } from "@/lib/overview-slate-shared";
+import { torontoIsoDate } from "@/lib/slate-game-phase";
 import { formatSlateDateTimeLabel } from "@/lib/slate-team-display";
 import { formatSigned } from "@/lib/stats-utils";
 
@@ -14,7 +16,7 @@ export type SlateDeltaTooltip = {
   teamSplitPressure: number;
 };
 
-export type SignalTier = "high" | "elevated" | "standard";
+export type SignalTier = "high" | "elevated" | "standard" | "pending";
 
 export type SlateGameIntelligence = {
   personality: WhistlePersonality;
@@ -39,7 +41,8 @@ export type SlateGameIntelligence = {
 };
 
 export type SlateOutlookSummary = {
-  gamesMonitored: number;
+  liveAndAssignedMonitored: number;
+  pendingCrewCount: number;
   highWhistleCount: number;
   defensiveCrewCount: number;
   avgConfidencePct: number;
@@ -50,6 +53,11 @@ export type SlateOutlookSummary = {
     confidencePct: number;
     signalTierLabel: string;
   } | null;
+};
+
+export type HomepageSlatePartition = {
+  primaryGames: OverviewSlateEntry[];
+  pendingGames: OverviewSlateEntry[];
 };
 
 function round1(value: number): number {
@@ -78,6 +86,84 @@ export function signalTierFromConfidence(
     return { tier: "elevated", label: "[ELEVATED]" };
   }
   return { tier: "standard", label: "[STANDARD]" };
+}
+
+export function pendingCrewSignalTier(): { tier: SignalTier; label: string } {
+  return { tier: "pending", label: "[CREW PENDING]" };
+}
+
+export function isSlateGameLive(game: OverviewSlateEntry): boolean {
+  return game.status === "live" || game.gamePhase === "live";
+}
+
+export function isSlateGameFinal(game: OverviewSlateEntry): boolean {
+  return game.status === "final" || game.gamePhase === "final";
+}
+
+/** True when a published crew is attached to the slate card. */
+export function hasRefAssignments(game: OverviewSlateEntry): boolean {
+  const preview = game.preview;
+  if (
+    preview?.awaitingCrew &&
+    (preview.crew?.length ?? 0) === 0 &&
+    game.crewCount === 0
+  ) {
+    return false;
+  }
+  if ((preview?.crew?.length ?? 0) > 0) return true;
+  if (game.crewCount > 0 && Boolean(game.headRef)) return true;
+  return Boolean(game.headRef) && !preview?.awaitingCrew;
+}
+
+function isTodaySlateGame(game: OverviewSlateEntry, now: Date): boolean {
+  if (!game.slateDate) return true;
+  return game.slateDate === torontoIsoDate(now);
+}
+
+function normalizeLiveStatusDetail(clock: string | undefined, period: string | undefined): string {
+  const trimmedClock = clock?.trim();
+  const trimmedPeriod = period?.trim();
+
+  if (trimmedClock) {
+    const lowerClock = trimmedClock.toLowerCase();
+    if (lowerClock === "halftime" || lowerClock === "half") {
+      return "Half";
+    }
+    if (trimmedPeriod && trimmedClock.startsWith(trimmedPeriod)) {
+      return trimmedClock;
+    }
+    if (trimmedPeriod && !trimmedClock.includes(trimmedPeriod)) {
+      return `${trimmedPeriod} ${trimmedClock}`;
+    }
+    return trimmedClock;
+  }
+
+  return trimmedPeriod ?? "";
+}
+
+export function formatSlateGameStatusLabel(game: OverviewSlateEntry): string {
+  if (isSlateGameLive(game)) {
+    const detail = normalizeLiveStatusDetail(game.gameClock, game.gamePeriod);
+    return detail ? `LIVE · ${detail}` : "LIVE";
+  }
+
+  if (isSlateGameFinal(game)) {
+    return "FINAL";
+  }
+
+  const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
+  return dateTimeLabel ?? "SCHEDULED";
+}
+
+function resolveSignalTier(
+  game: OverviewSlateEntry,
+  confidencePct: number,
+  whistleDelta: number,
+): { tier: SignalTier; label: string } {
+  if (!hasRefAssignments(game)) {
+    return pendingCrewSignalTier();
+  }
+  return signalTierFromConfidence(confidencePct, whistleDelta);
 }
 
 /** @deprecated Prefer signalTierFromConfidence for slate surfaces. */
@@ -115,25 +201,15 @@ function statusForGame(game: OverviewSlateEntry): {
   label: string;
   kind: "live" | "pregame" | "final";
 } {
-  if (game.gamePhase === "live" || game.status === "live") {
-    const period = game.gamePeriod?.trim();
-    const clock = game.gameClock?.trim();
-    const detail = [period, clock].filter(Boolean).join(" · ");
-    return {
-      kind: "live",
-      label: detail ? `Live · ${detail}` : "Live",
-    };
+  if (isSlateGameLive(game)) {
+    return { kind: "live", label: formatSlateGameStatusLabel(game) };
   }
 
-  if (game.gamePhase === "final" || game.status === "final") {
-    return { kind: "final", label: "Final" };
+  if (isSlateGameFinal(game)) {
+    return { kind: "final", label: formatSlateGameStatusLabel(game) };
   }
 
-  const dateTimeLabel = formatSlateDateTimeLabel(game.slateDate, game.slateStartAt);
-  return {
-    kind: "pregame",
-    label: dateTimeLabel ? `Pregame · ${dateTimeLabel}` : "Pregame",
-  };
+  return { kind: "pregame", label: formatSlateGameStatusLabel(game) };
 }
 
 function verdictHeadline(personality: WhistlePersonality): string {
@@ -166,7 +242,7 @@ function previewHasActionableMetrics(preview: GameSlatePreviewPayload): boolean 
 
 function fallbackIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
   const status = statusForGame(game);
-  const signalTier = signalTierFromConfidence(0, 0);
+  const signalTier = resolveSignalTier(game, 0, 0);
   return {
     personality: "neutral",
     verdictHeadline: verdictHeadline("neutral"),
@@ -205,7 +281,7 @@ export function buildSlateGameIntelligence(
   const evidence = buildProjectionEvidence(preview);
   const leagueAvg = round1(preview.avgFouls - preview.foulsDelta);
   const personality = whistlePersonality(preview.foulsDelta);
-  const signalTier = signalTierFromConfidence(evidence.confidencePct, preview.foulsDelta);
+  const signalTier = resolveSignalTier(game, evidence.confidencePct, preview.foulsDelta);
   const status = statusForGame(game);
   const signalScore = Math.abs(preview.foulsDelta) * evidence.confidencePct;
 
@@ -237,7 +313,8 @@ export function buildSlateOutlookSummary(
 ): SlateOutlookSummary {
   if (games.length === 0) {
     return {
-      gamesMonitored: 0,
+      liveAndAssignedMonitored: 0,
+      pendingCrewCount: 0,
       highWhistleCount: 0,
       defensiveCrewCount: 0,
       avgConfidencePct: 0,
@@ -250,7 +327,8 @@ export function buildSlateOutlookSummary(
     intel: buildSlateGameIntelligence(game),
   }));
 
-  const confidenceValues = intelRows
+  const assignedRows = intelRows.filter((row) => hasRefAssignments(row.game));
+  const confidenceValues = assignedRows
     .map((row) => row.intel.confidencePct)
     .filter((value) => value > 0);
   const avgConfidencePct =
@@ -261,15 +339,20 @@ export function buildSlateOutlookSummary(
         )
       : 0;
 
-  const ranked = [...intelRows].sort(
-    (left, right) => right.intel.signalScore - left.intel.signalScore,
-  );
+  const ranked = [...assignedRows]
+    .filter((row) => row.intel.signalTier !== "pending")
+    .sort((left, right) => right.intel.signalScore - left.intel.signalScore);
   const top = ranked[0];
 
   return {
-    gamesMonitored: games.length,
-    highWhistleCount: intelRows.filter((row) => row.intel.personality === "high").length,
-    defensiveCrewCount: intelRows.filter(
+    liveAndAssignedMonitored: intelRows.filter(
+      (row) => isSlateGameLive(row.game) || hasRefAssignments(row.game),
+    ).length,
+    pendingCrewCount: intelRows.filter(
+      (row) => !hasRefAssignments(row.game) && !isSlateGameFinal(row.game),
+    ).length,
+    highWhistleCount: assignedRows.filter((row) => row.intel.personality === "high").length,
+    defensiveCrewCount: assignedRows.filter(
       (row) => row.intel.personality === "defensive",
     ).length,
     avgConfidencePct,
@@ -285,22 +368,49 @@ export function buildSlateOutlookSummary(
   };
 }
 
+function homepageSlateRank(game: OverviewSlateEntry, now: Date): number {
+  if (isSlateGameLive(game)) return 0;
+  if (!isSlateGameFinal(game) && hasRefAssignments(game) && isTodaySlateGame(game, now)) {
+    return 1;
+  }
+  if (isSlateGameFinal(game)) return 2;
+  if (!hasRefAssignments(game)) return 4;
+  return 3;
+}
+
+function homepageSlateSortKey(game: OverviewSlateEntry): number {
+  return resolveGameTimestampMs(game) ?? Number.MAX_SAFE_INTEGER;
+}
+
 export function sortSlateGamesBySignal(
   games: OverviewSlateEntry[],
+  now: Date = new Date(),
 ): OverviewSlateEntry[] {
   return [...games].sort((left, right) => {
-    const leftLive =
-      left.status === "live" || left.gamePhase === "live" ? 1 : 0;
-    const rightLive =
-      right.status === "live" || right.gamePhase === "live" ? 1 : 0;
-    if (leftLive !== rightLive) return rightLive - leftLive;
+    const rankDelta = homepageSlateRank(left, now) - homepageSlateRank(right, now);
+    if (rankDelta !== 0) return rankDelta;
 
-    const leftScore = buildSlateGameIntelligence(left).signalScore;
-    const rightScore = buildSlateGameIntelligence(right).signalScore;
-    if (leftScore !== rightScore) return rightScore - leftScore;
+    const timeDelta = homepageSlateSortKey(left) - homepageSlateSortKey(right);
+    if (timeDelta !== 0) return timeDelta;
 
-    const leftTs = left.slateStartAt ?? left.slateDate ?? "";
-    const rightTs = right.slateStartAt ?? right.slateDate ?? "";
-    return leftTs.localeCompare(rightTs);
+    return left.matchup.localeCompare(right.matchup);
   });
+}
+
+export function partitionHomepageSlateGames(
+  games: OverviewSlateEntry[],
+): HomepageSlatePartition {
+  const sorted = sortSlateGamesBySignal(games);
+  const primaryGames: OverviewSlateEntry[] = [];
+  const pendingGames: OverviewSlateEntry[] = [];
+
+  for (const game of sorted) {
+    if (!hasRefAssignments(game) && !isSlateGameLive(game) && !isSlateGameFinal(game)) {
+      pendingGames.push(game);
+    } else {
+      primaryGames.push(game);
+    }
+  }
+
+  return { primaryGames, pendingGames };
 }
