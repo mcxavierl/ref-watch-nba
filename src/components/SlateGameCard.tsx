@@ -332,9 +332,23 @@ export function SlateGameCard({
           {intel.sampleGames > 0 ? intel.sampleGames.toLocaleString("en-US") : "-"}{" "}
           game sample
         </span>
-        <PrefetchLink href="/methodology" className="slate-game-card__methodology-link">
-          Methodology →
-        </PrefetchLink>
+        <div className="slate-game-card__trust-actions">
+          {onOpenPreview ? (
+            <button
+              type="button"
+              className="slate-game-card__intel-link"
+              onClick={(event) => {
+                event.stopPropagation();
+                onOpenPreview();
+              }}
+            >
+              Open intelligence →
+            </button>
+          ) : null}
+          <PrefetchLink href="/methodology" className="slate-game-card__methodology-link">
+            Methodology →
+          </PrefetchLink>
+        </div>
       </div>
     </article>
   );
