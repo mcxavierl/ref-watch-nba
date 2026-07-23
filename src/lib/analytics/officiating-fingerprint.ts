@@ -2,6 +2,7 @@ import { generateScoutingReport } from "@/lib/analytics/generate-scouting-report
 import type { ResolvedOfficialProfile } from "@/lib/analytics/resolve-official-profile";
 import type { ScoutingReport } from "@/lib/analytics/scouting-report-types";
 import type { LeagueId } from "@/lib/leagues";
+import { populationStdDev } from "@/lib/metric-significance";
 import { computeRefStarDeference, supportsStarDeferenceLeague } from "@/lib/ref-star-deference";
 import { computeRefWhistleFatigue } from "@/lib/whistle-fatigue";
 import type { RefProfile, RefRole, RefStatsFile } from "@/lib/types";
@@ -14,7 +15,7 @@ export const OFFICIATING_FINGERPRINT_DIMENSIONS = [
   },
   {
     id: "contact_tolerance",
-    label: "Contact Tolerance",
+    label: "Contact Sensitivity",
     shortLabel: "Contact",
   },
   {
@@ -39,7 +40,7 @@ export const OFFICIATING_FINGERPRINT_DIMENSIONS = [
   },
   {
     id: "consistency_index",
-    label: "Consistency Index",
+    label: "Whistle Consistency",
     shortLabel: "Consistency",
   },
   {
@@ -52,13 +53,19 @@ export const OFFICIATING_FINGERPRINT_DIMENSIONS = [
 export type OfficiatingFingerprintDimensionId =
   (typeof OFFICIATING_FINGERPRINT_DIMENSIONS)[number]["id"];
 
+export type OfficiatingFingerprintTooltip = {
+  label: string;
+  description: string;
+  subtext: string;
+};
+
 export type OfficiatingFingerprintAxis = {
   id: OfficiatingFingerprintDimensionId;
   label: string;
   shortLabel: string;
   percentile: number;
   leagueAveragePercentile: number;
-  tooltip: string;
+  tooltip: OfficiatingFingerprintTooltip;
 };
 
 export type OfficiatingFingerprintData = {
@@ -95,12 +102,97 @@ function ordinalPercentile(value: number): string {
   }
 }
 
-function tooltipLine(
+function formatSigned(value: number, digits = 1): string {
+  const rounded = Math.abs(value).toFixed(digits);
+  if (value > 0) return `+${rounded}`;
+  if (value < 0) return `-${rounded}`;
+  return digits === 0 ? "0" : `0.${"0".repeat(digits)}`;
+}
+
+function formatSignedDrift(value: number): string {
+  const rounded = Math.abs(value).toFixed(1);
+  if (value > 0) return `+${rounded}%`;
+  if (value < 0) return `-${rounded}%`;
+  return "0.0%";
+}
+
+function percentileSubtext(percentile: number, metric: string): string {
+  return `${ordinalPercentile(percentile)} Percentile • ${metric}`;
+}
+
+function buildTooltip(
   label: string,
-  percentile: number,
-  detail: string,
-): string {
-  return `${label}: ${ordinalPercentile(percentile)} Percentile - ${detail}`;
+  description: string,
+  subtext: string,
+): OfficiatingFingerprintTooltip {
+  return { label, description, subtext };
+}
+
+function resolveHomeCoverRate(profile: RefProfile): number | null {
+  if (profile.homeCoverRate !== null) return profile.homeCoverRate;
+  const betting = profile.bettingStats;
+  if (!betting?.linesAvailable) return null;
+  const { wins, losses, pushes } = betting.homeTeamAts;
+  const decisions = wins + losses + pushes;
+  if (decisions === 0) return null;
+  return wins / decisions;
+}
+
+function leagueAvgHomeFoulDelta(stats: RefStatsFile): number {
+  const conferenceBaselines = stats.meta.conferenceBaselines;
+  if (conferenceBaselines) {
+    let weightedSum = 0;
+    let weightedGames = 0;
+    for (const baseline of Object.values(conferenceBaselines)) {
+      if (baseline.games <= 0) continue;
+      weightedSum +=
+        (baseline.avgHomeFouls - baseline.avgAwayFouls) * baseline.games;
+      weightedGames += baseline.games;
+    }
+    if (weightedGames > 0) return weightedSum / weightedGames;
+  }
+
+  let homeFoulSum = 0;
+  let homeFoulGames = 0;
+  for (const splits of Object.values(stats.teamSplits)) {
+    for (const split of splits) {
+      if (split.homeGames <= 0) continue;
+      homeFoulSum += split.foulDifferential * split.homeGames;
+      homeFoulGames += split.homeGames;
+    }
+  }
+  return homeFoulGames > 0 ? homeFoulSum / homeFoulGames : 0;
+}
+
+function refHomeFoulDelta(profile: RefProfile, stats: RefStatsFile): number | null {
+  const refKey = profile.slug;
+  let homeFoulSum = 0;
+  let homeFoulGames = 0;
+
+  for (const splits of Object.values(stats.teamSplits)) {
+    const split = splits.find((entry) => entry.crewKey === refKey);
+    if (!split || split.homeGames <= 0) continue;
+    homeFoulSum += split.foulDifferential * split.homeGames;
+    homeFoulGames += split.homeGames;
+  }
+
+  if (homeFoulGames <= 0) return null;
+
+  const refHomeEdge = homeFoulSum / homeFoulGames;
+  return refHomeEdge - leagueAvgHomeFoulDelta(stats);
+}
+
+function homeWhistleBiasSubtext(percentile: number, delta: number): string {
+  return percentileSubtext(
+    percentile,
+    `${formatSigned(delta)} home whistle bias vs baseline`,
+  );
+}
+
+function whistleStdDev(profile: RefProfile): number {
+  const whistles = (profile.recentGames ?? []).map((game) => game.totalFouls);
+  if (whistles.length < 2) return 0;
+  return populationStdDev(whistles);
 }
 
 function paceAxis(report: ScoutingReport, profile: RefProfile): OfficiatingFingerprintAxis {
@@ -113,10 +205,13 @@ function paceAxis(report: ScoutingReport, profile: RefProfile): OfficiatingFinge
     shortLabel: "Pace",
     percentile,
     leagueAveragePercentile: 50,
-    tooltip: tooltipLine(
+    tooltip: buildTooltip(
       "Pace Acceleration",
-      percentile,
-      `Games run ${Math.abs(delta).toFixed(1)} ${direction} than league average (${report.baselineWhistlesPerGame.toFixed(1)} whistle baseline).`,
+      "Measures scoring tempo relative to league average total points.",
+      percentileSubtext(
+        percentile,
+        `Games run ${Math.abs(delta).toFixed(1)} ${direction} than league average (${report.baselineWhistlesPerGame.toFixed(1)} whistle baseline).`,
+      ),
     ),
   };
 }
@@ -127,14 +222,17 @@ function contactAxis(report: ScoutingReport): OfficiatingFingerprintAxis {
   const fewerFouls = ((1 - subjectiveShare) * 8).toFixed(1);
   return {
     id: "contact_tolerance",
-    label: "Contact Tolerance",
+    label: "Contact Sensitivity",
     shortLabel: "Contact",
     percentile: clampPercentile(toleranceScore),
     leagueAveragePercentile: 50,
-    tooltip: tooltipLine(
-      "Contact Tolerance",
-      toleranceScore,
-      `Calls ${fewerFouls} fewer subjective fouls vs league contact baseline.`,
+    tooltip: buildTooltip(
+      "Contact Sensitivity",
+      "Measures overall whistle frequency per possession. High values represent tight officiating environments.",
+      percentileSubtext(
+        toleranceScore,
+        `Calls ${fewerFouls} fewer subjective fouls vs league contact baseline.`,
+      ),
     ),
   };
 }
@@ -148,10 +246,13 @@ function technicalAxis(report: ScoutingReport): OfficiatingFingerprintAxis {
     shortLabel: "Technical",
     percentile,
     leagueAveragePercentile: 50,
-    tooltip: tooltipLine(
+    tooltip: buildTooltip(
       "Technical Escalation",
-      percentile,
-      `Administrative whistle share ${(adminRatio * 100).toFixed(0)}% vs procedural baseline.`,
+      "Tracks administrative whistle share versus procedural foul calls.",
+      percentileSubtext(
+        percentile,
+        `Administrative whistle share ${(adminRatio * 100).toFixed(0)}% vs procedural baseline.`,
+      ),
     ),
   };
 }
@@ -170,36 +271,47 @@ function whistleDriftAxis(
     shortLabel: "Q4 Drift",
     percentile,
     leagueAveragePercentile: 50,
-    tooltip: tooltipLine(
+    tooltip: buildTooltip(
       "4th-Quarter Whistle Drift",
-      percentile,
-      `${formatSignedDrift(driftPct)} whistle volume in ${periodLabel} vs early periods.`,
+      "Compares late-period whistle volume against early-game enforcement.",
+      percentileSubtext(
+        percentile,
+        `${formatSignedDrift(driftPct)} whistle volume in ${periodLabel} vs early periods.`,
+      ),
     ),
   };
 }
 
-function formatSignedDrift(value: number): string {
-  const rounded = Math.abs(value).toFixed(1);
-  if (value > 0) return `+${rounded}%`;
-  if (value < 0) return `-${rounded}%`;
-  return "0.0%";
-}
+function homeCourtAxis(
+  profile: RefProfile,
+  stats: RefStatsFile,
+): OfficiatingFingerprintAxis {
+  const cover = resolveHomeCoverRate(profile);
+  let delta = 0;
+  let percentile = 50;
 
-function homeCourtAxis(profile: RefProfile): OfficiatingFingerprintAxis {
-  const cover = profile.homeCoverRate;
-  const deltaPp = cover === null ? 0 : (cover - 0.5) * 100;
-  const percentile = clampPercentile(50 + deltaPp * 1.4);
-  const detail =
-    cover === null
-      ? "Home cover rate unavailable for this sample."
-      : `Home teams cover ${(cover * 100).toFixed(1)}% under this crew (${formatSignedDrift(deltaPp)} vs 50% neutral).`;
+  if (cover !== null) {
+    delta = (cover - 0.5) * 100;
+    percentile = clampPercentile(50 + delta * 1.4);
+  } else {
+    const homeFoulDelta = refHomeFoulDelta(profile, stats);
+    if (homeFoulDelta !== null) {
+      delta = homeFoulDelta;
+      percentile = percentileFromDelta(homeFoulDelta, 2.5);
+    }
+  }
+
   return {
     id: "home_court_disparity",
     label: "Home-Court Disparity",
     shortLabel: "Home Bias",
     percentile,
     leagueAveragePercentile: 50,
-    tooltip: tooltipLine("Home-Court Disparity", percentile, detail),
+    tooltip: buildTooltip(
+      "Home-Court Disparity",
+      "Measures whistle and margin bias toward home teams relative to league baseline.",
+      homeWhistleBiasSubtext(percentile, delta),
+    ),
   };
 }
 
@@ -212,28 +324,38 @@ function replayAxis(report: ScoutingReport): OfficiatingFingerprintAxis {
     shortLabel: "Replay",
     percentile,
     leagueAveragePercentile: 50,
-    tooltip: tooltipLine(
+    tooltip: buildTooltip(
       "Replay Overturn Propensity",
-      percentile,
-      report.momentumKillerLabel
-        ? `${report.momentumKillerLabel} on high-leverage stoppages.`
-        : "Replay and review stoppage tendency vs league average.",
+      "Estimates replay and review stoppage tendency on high-leverage sequences.",
+      percentileSubtext(
+        percentile,
+        report.momentumKillerLabel
+          ? `${report.momentumKillerLabel} on high-leverage stoppages.`
+          : "Replay stoppage tendency vs league average.",
+      ),
     ),
   };
 }
 
-function consistencyAxis(report: ScoutingReport): OfficiatingFingerprintAxis {
+function consistencyAxis(
+  report: ScoutingReport,
+  profile: RefProfile,
+): OfficiatingFingerprintAxis {
   const percentile = clampPercentile(report.consistencyScore * 10);
+  const stdDev = whistleStdDev(profile);
   return {
     id: "consistency_index",
-    label: "Consistency Index",
+    label: "Whistle Consistency",
     shortLabel: "Consistency",
     percentile,
     leagueAveragePercentile: 50,
-    tooltip: tooltipLine(
-      "Consistency Index",
-      percentile,
-      `Whistle-volume consistency rated ${report.consistencyScore.toFixed(1)}/10 across ${report.sampleGames} games.`,
+    tooltip: buildTooltip(
+      "Whistle Consistency",
+      "Measures game-to-game call volume variance. High consistency indicates predictable enforcement; low consistency flags high volatility across matchups.",
+      percentileSubtext(
+        percentile,
+        `Game Variance: ±${stdDev.toFixed(1)} whistles`,
+      ),
     ),
   };
 }
@@ -253,13 +375,22 @@ function starDeferenceAxis(
     shortLabel: "Star Def.",
     percentile,
     leagueAveragePercentile: 50,
-    tooltip: tooltipLine(
+    tooltip: buildTooltip(
       "Star Deference Rate",
-      percentile,
-      analytics?.star_deference_display ??
-        "Star treatment delta unavailable for this league sample.",
+      "Compares star-player whistle treatment against league personnel baselines.",
+      percentileSubtext(
+        percentile,
+        analytics?.star_deference_display ??
+          "Star treatment delta at league-neutral baseline.",
+      ),
     ),
   };
+}
+
+export function formatOfficiatingFingerprintTooltipAria(
+  tooltip: OfficiatingFingerprintTooltip,
+): string {
+  return `${tooltip.label}. ${tooltip.description} ${tooltip.subtext}`;
 }
 
 export function buildOfficiatingFingerprint(
@@ -277,9 +408,9 @@ export function buildOfficiatingFingerprint(
     contactAxis(report),
     technicalAxis(report),
     whistleDriftAxis(leagueId, profile),
-    homeCourtAxis(profile),
+    homeCourtAxis(profile, stats),
     replayAxis(report),
-    consistencyAxis(report),
+    consistencyAxis(report, profile),
     starDeferenceAxis(leagueId, profile),
   ];
 
