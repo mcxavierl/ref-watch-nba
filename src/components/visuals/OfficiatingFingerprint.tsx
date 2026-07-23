@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useState } from "react";
 import type {
   OfficiatingFingerprintAxis,
   OfficiatingFingerprintData,
+  OfficiatingFingerprintTooltip,
 } from "@/lib/analytics/officiating-fingerprint";
 import "./officiating-fingerprint.css";
 
@@ -103,6 +104,10 @@ function labelPlacement(index: number): {
   return { textAnchor: "middle", dx: 0, dy: 0 };
 }
 
+function formatTooltipAria(tooltip: OfficiatingFingerprintTooltip): string {
+  return `${tooltip.label}. ${tooltip.description} ${tooltip.subtext}`;
+}
+
 function ActiveTooltip({
   axis,
   index,
@@ -120,8 +125,9 @@ function ActiveTooltip({
       }}
       role="tooltip"
     >
-      <p className="officiating-fingerprint-tooltip-title">{axis.label}</p>
-      <p className="officiating-fingerprint-tooltip-copy">{axis.tooltip}</p>
+      <p className="officiating-fingerprint-tooltip-title">{axis.tooltip.label}</p>
+      <p className="officiating-fingerprint-tooltip-copy">{axis.tooltip.description}</p>
+      <p className="officiating-fingerprint-tooltip-subtext">{axis.tooltip.subtext}</p>
     </div>
   );
 }
@@ -228,7 +234,7 @@ export function OfficiatingFingerprint({
                   className="officiating-fingerprint-vertex-hit"
                   tabIndex={0}
                   role="button"
-                  aria-label={axis.tooltip}
+                  aria-label={formatTooltipAria(axis.tooltip)}
                   aria-pressed={activeIndex === index}
                   onMouseEnter={() => {
                     if (!coarsePointerUi) setActiveIndex(index);
