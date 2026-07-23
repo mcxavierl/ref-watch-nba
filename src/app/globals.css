@@ -10460,6 +10460,10 @@ p {
     flex-wrap: wrap;
   }
 
+  .game-slate-preview-matchup .team-logo-plate:not(:has(.team-logo-plate__img)) {
+    display: none;
+  }
+
   .game-slate-preview-at {
     color: var(--foreground);
     font-size: 1.125rem;

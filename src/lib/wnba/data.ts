@@ -232,6 +232,41 @@ export function refSlug(name: string, number: number): string {
   return `${base}-${number}`;
 }
 
+function normalizeOfficialName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Resolve a WNBA ref profile even when assignment numbers disagree with game-log ids. */
+export function resolveWnbaRefProfile(
+  name: string,
+  number: number,
+  stats: RefStatsFile = getRefStats(),
+): RefProfile | undefined {
+  const trimmed = name.trim();
+  if (!trimmed) return undefined;
+
+  const direct = stats.refs.find((ref) => ref.slug === refSlug(trimmed, number));
+  if (direct) return direct;
+
+  const normalized = normalizeOfficialName(trimmed);
+  const byName = stats.refs.filter(
+    (ref) => normalizeOfficialName(ref.name) === normalized,
+  );
+  if (byName.length === 1) return byName[0];
+  if (byName.length > 1) {
+    return (
+      byName.find((ref) => ref.number === number) ??
+      byName.sort((left, right) => right.games - left.games)[0]
+    );
+  }
+
+  return undefined;
+}
+
 export function crewKey(refs: { name: string; number: number }[]): string {
   return refs
     .map((r) => refSlug(r.name, r.number))
@@ -269,8 +304,7 @@ export function computeCrewMetrics(
   let sampleGames = 0;
 
   for (const official of crew) {
-    const slug = refSlug(official.name, official.number);
-    const profile = stats.refs.find((r) => r.slug === slug);
+    const profile = resolveWnbaRefProfile(official.name, official.number, stats);
     if (profile && profile.games >= minSample) {
       qualified.push(profile);
       sampleGames += profile.games;

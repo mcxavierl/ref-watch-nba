@@ -20,6 +20,7 @@ import { loadLeagueStats } from "@/lib/load-league-stats";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
 import { sportCopy } from "@/lib/user-language";
 import { formatPremiumLabel } from "@/lib/whistle-premium";
+import { resolveWnbaRefProfile } from "@/lib/wnba/data";
 import type {
   AssignmentGame,
   OddsFile,
@@ -198,8 +199,10 @@ function buildRefTeamRows(
   const rows: GameSlatePreviewRefRow[] = [];
 
   for (const official of game.crew) {
-    const slug = adapter.refSlug(official.name, official.number);
-    const profile = stats.refs.find((ref) => ref.slug === slug);
+    const profile =
+      leagueId === "wnba"
+        ? resolveWnbaRefProfile(official.name, official.number, stats)
+        : stats.refs.find((ref) => ref.slug === adapter.refSlug(official.name, official.number));
     if (!profile?.teamStats) continue;
 
     for (const team of teams) {
@@ -207,7 +210,7 @@ function buildRefTeamRows(
       if (!teamStat || teamStat.games < MIN_REF_TEAM_GAMES) continue;
       const outlierNote = outlierNoteForTeamStat(teamStat, profile, team.abbr);
       rows.push({
-        refSlug: slug,
+        refSlug: profile.slug,
         refName: profile.name,
         refNumber: profile.number,
         role: official.role,
@@ -609,12 +612,19 @@ export function buildGameSlatePreview(
     premiumLabel: premium ? formatPremiumLabel(premium.scoringPremium) : undefined,
     homeBiasHeadline:
       homeBias && homeBias.kind !== "neutral" ? homeBias.headline : undefined,
-    crew: game.crew.map((official) => ({
-      name: official.name,
-      number: official.number,
-      slug: adapter.refSlug(official.name, official.number),
-      role: official.role,
-    })),
+    crew: game.crew.map((official) => {
+      const profile =
+        leagueId === "wnba"
+          ? resolveWnbaRefProfile(official.name, official.number, stats)
+          : undefined;
+      const slug = profile?.slug ?? adapter.refSlug(official.name, official.number);
+      return {
+        name: profile?.name ?? official.name,
+        number: profile?.number ?? official.number,
+        slug,
+        role: official.role,
+      };
+    }),
     refTeamRows,
     teamImpacts,
     storylines,

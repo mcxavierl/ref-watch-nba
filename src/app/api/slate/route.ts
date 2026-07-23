@@ -2,7 +2,11 @@ import { preloadAssignmentsForLiveSlate } from "@/lib/assignments-preload";
 import { getLiveSlateGames } from "@/lib/live-slate-engine";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
-import { mergeSlateLiveCrews, fetchSlateLiveCrews } from "@/lib/slate-live-crews";
+import { mergeSlateLiveCrews } from "@/lib/slate-live-crews";
+import {
+  enrichSlateLiveCrews,
+  fetchSlateLiveCrews,
+} from "@/lib/slate-live-crews-server";
 import { fetchSlateLiveScores, mergeSlateLiveScores } from "@/lib/slate-live-scores";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +41,7 @@ export async function GET(request: Request) {
 
   const games = mergeSlateLiveCrews(
     mergeSlateLiveScores(slate.games, scores),
-    crews,
+    enrichSlateLiveCrews(slate.games, crews),
   );
 
   return Response.json(

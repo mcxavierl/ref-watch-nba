@@ -1,4 +1,5 @@
 import type { RefOfficial } from "@/lib/types";
+import { getRefIndex, resolveWnbaRefProfile } from "@/lib/wnba/data";
 
 const SUMMARY_BASE =
   "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/summary";
@@ -51,9 +52,29 @@ export async function fetchWnbaEspnOfficials(
 export function mapWnbaEspnOfficials(
   officials: SummaryOfficial[],
 ): RefOfficial[] {
-  return officials.map((official, index) => ({
-    name: official.fullName,
-    number: 0,
-    role: roleFromPosition(official.positionName, index),
-  }));
+  const roster = new Map(
+    getRefIndex().map((entry) => [
+      entry.name
+        .toLowerCase()
+        .replace(/[^a-z\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim(),
+      entry.number,
+    ]),
+  );
+
+  return officials.map((official, index) => {
+    const name = official.fullName.trim();
+    const normalized = name
+      .toLowerCase()
+      .replace(/[^a-z\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const profile = resolveWnbaRefProfile(name, roster.get(normalized) ?? 0);
+    return {
+      name,
+      number: profile?.number ?? roster.get(normalized) ?? 0,
+      role: roleFromPosition(official.positionName, index),
+    };
+  });
 }
