@@ -535,6 +535,10 @@ html[data-contrast="high"] .upcoming-game-card__cta {
   white-space: nowrap;
 }
 
+.upcoming-game-card__matchup .team-logo-plate:not(:has(.team-logo-plate__img)) {
+  display: none;
+}
+
 .upcoming-game-card__matchup .team-logo-plate[data-sport="nfl"] .team-logo-plate__img,
 .upcoming-game-card__matchup .team-logo-plate[data-sport="epl"] .team-logo-plate__img,
 .upcoming-game-card__matchup .team-logo-plate[data-sport="laliga"] .team-logo-plate__img,

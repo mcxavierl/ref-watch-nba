@@ -18,7 +18,7 @@ import { safeBuildProjectionEvidence } from "@/lib/safe-build-projection-evidenc
 import type { GameSlateMatchupBriefing, GameSlatePreviewPayload } from "@/lib/game-slate-preview";
 import { resolveMatchupDrawerBriefing } from "@/lib/resolve-matchup-drawer-briefing";
 import { GameSlatePreviewErrorBoundary } from "@/components/GameSlatePreviewErrorBoundary";
-import { resolveSlateTeam, slateTeamLogoSport } from "@/lib/slate-team-display";
+import { resolveSlateTeam, slateTeamLogoPlateTone, slateTeamLogoSport } from "@/lib/slate-team-display";
 import { normalizeGameSlatePreview } from "@/lib/normalize-game-slate-preview";
 import { formatPct } from "@/lib/stats-utils";
 import "@/components/matchup-preview-terminal.css";
@@ -183,11 +183,21 @@ export function GameSlatePreviewDrawer({
                 <div className="game-slate-preview-matchup">
                   {awayTeam && homeTeam ? (
                     <>
-                      <TeamLogo team={awayTeam} sport={sport} size="md" />
+                      <TeamLogo
+                        team={awayTeam}
+                        sport={sport}
+                        plateTone={slateTeamLogoPlateTone(safePreview.leagueId)}
+                        size="md"
+                      />
                       <span className="game-slate-preview-at" aria-hidden>
                         @
                       </span>
-                      <TeamLogo team={homeTeam} sport={sport} size="md" />
+                      <TeamLogo
+                        team={homeTeam}
+                        sport={sport}
+                        plateTone={slateTeamLogoPlateTone(safePreview.leagueId)}
+                        size="md"
+                      />
                     </>
                   ) : null}
                   <h2 className="ref-preview-drawer-title" id={titleId}>

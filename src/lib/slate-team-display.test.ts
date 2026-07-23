@@ -5,6 +5,7 @@ import {
   formatSlateDateTimeLabel,
   formatSlateStartTime,
   resolveSlateTeam,
+  slateTeamLogoPlateTone,
   slateTeamLogoSport,
 } from "@/lib/slate-team-display";
 
@@ -19,21 +20,36 @@ describe("slate-team-display", () => {
   it("normalizes WNBA ESPN abbreviations", () => {
     const team = resolveSlateTeam("wnba", "LV");
     assert.equal(team.abbr, "LVA");
-    assert.match(team.logoUrl ?? "", /\/lv\.png$/);
+    assert.match(team.logoUrl ?? "", /\/500\/lv\.png$/);
+  });
+
+  it("uses light-surface WNBA logos on slate cards", () => {
+    const portland = resolveSlateTeam("wnba", "POR");
+    assert.equal(portland.abbr, "POR");
+    assert.equal(
+      portland.logoUrl,
+      "https://a.espncdn.com/i/teamlogos/wnba/500/por.png",
+    );
+    assert.equal(slateTeamLogoPlateTone("wnba"), "light");
   });
 
   it("resolves WNBA city names to canonical abbreviations and logos", () => {
     const vegas = resolveSlateTeam("wnba", "Las Vegas");
     assert.equal(vegas.abbr, "LVA");
-    assert.match(vegas.logoUrl ?? "", /\/lv\.png$/);
+    assert.match(vegas.logoUrl ?? "", /\/500\/lv\.png$/);
 
     const toronto = resolveSlateTeam("wnba", "Toronto");
     assert.equal(toronto.abbr, "TOR");
-    assert.match(toronto.logoUrl ?? "", /\/tor\.png$/);
+    assert.match(toronto.logoUrl ?? "", /\/500\/tor\.png$/);
 
     const goldenState = resolveSlateTeam("wnba", "Golden State");
     assert.equal(goldenState.abbr, "GSV");
-    assert.match(goldenState.logoUrl ?? "", /\/gs\.png$/);
+    assert.match(goldenState.logoUrl ?? "", /\/500\/gs\.png$/);
+  });
+
+  it("omits logo URLs for WNBA All-Star sides", () => {
+    assert.equal(resolveSlateTeam("wnba", "SPO").logoUrl, undefined);
+    assert.equal(resolveSlateTeam("wnba", "COOP").logoUrl, undefined);
   });
 
   it("attaches logo URLs for major league teams", () => {
