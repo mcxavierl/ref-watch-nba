@@ -229,3 +229,60 @@ button.officiating-fingerprint-tab {
     padding-inline: 0.85rem;
   }
 }
+
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint,
+html.light:not([data-contrast="high"]) .officiating-fingerprint {
+  border-color: var(--border-default);
+  background: var(--bg-surface-1);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-title,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-title {
+  color: var(--text-primary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-meta,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-meta,
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-label,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-label {
+  color: var(--text-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-grid,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-grid,
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-spoke,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-spoke {
+  stroke: var(--border-default);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-league,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-league {
+  fill: color-mix(in srgb, var(--border-default) 18%, transparent);
+  stroke: color-mix(in srgb, var(--text-muted) 45%, transparent);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-tooltip,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-tooltip {
+  border-color: var(--border-default);
+  background: var(--bg-surface-1);
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.12);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-tooltip-copy,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-tooltip-copy {
+  color: var(--text-secondary);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-tab,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-tab {
+  border-color: var(--border-default);
+  background: var(--bg-surface-2);
+  color: var(--text-muted);
+}
+
+html[data-color="light"]:not([data-contrast="high"]) .officiating-fingerprint-tab--active,
+html.light:not([data-contrast="high"]) .officiating-fingerprint-tab--active {
+  border-color: color-mix(in srgb, var(--accent-positive) 45%, var(--border-default));
+  background: color-mix(in srgb, var(--accent-positive) 10%, var(--bg-surface-1));
+  color: var(--accent-positive);
+}

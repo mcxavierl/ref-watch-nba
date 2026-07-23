@@ -151,7 +151,7 @@
   gap: 0.65rem;
   min-width: 0;
   padding: 0.5rem 0;
-  border-top: 1px solid rgb(30 41 59);
+  border-top: 1px solid var(--clinical-capsule-border, rgb(30 41 59));
 }
 
 .overview-slate-capsule .overview-slate-list > li:first-child .overview-slate-row-inner {
@@ -834,7 +834,9 @@ html.light:not([data-contrast="high"]) .upcoming-game-card__trend--caution {
 }
 
 html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__trend--neutral,
-html.light:not([data-contrast="high"]) .upcoming-game-card__trend--neutral {
+html.light:not([data-contrast="high"]) .upcoming-game-card__trend--neutral,
+html[data-color="light"]:not([data-contrast="high"]) .upcoming-game-card__signal-pill--neutral,
+html.light:not([data-contrast="high"]) .upcoming-game-card__signal-pill--neutral {
   border-color: #e2e8f0;
   background: #f8fafc;
   color: #475569;

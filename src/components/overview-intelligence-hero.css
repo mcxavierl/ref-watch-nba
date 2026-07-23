@@ -181,7 +181,7 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgb(148 163 184);
+  color: var(--clinical-ink-muted, rgb(148 163 184));
 }
 
 .overview-intelligence-briefing-copy {
@@ -192,7 +192,7 @@
   gap: 0.5rem 0.75rem;
   font-size: 0.8125rem;
   line-height: 1.45;
-  color: rgb(148 163 184);
+  color: var(--clinical-ink-muted, rgb(148 163 184));
 }
 
 .overview-intelligence-briefing-stat strong {
