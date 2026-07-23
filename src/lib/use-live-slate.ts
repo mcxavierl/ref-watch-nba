@@ -4,6 +4,7 @@ import useSWR from "swr";
 import type { LeagueId } from "@/lib/leagues";
 import type { LiveSlateResult } from "@/lib/live-slate-engine";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
+import { mergeLiveSlateGamesWithSeed } from "@/lib/merge-slate-historical-context";
 import { isEspnGameLive } from "@/lib/slate-game-phase";
 
 const LIVE_POLL_MS = 15_000;
@@ -66,12 +67,15 @@ export function useLiveSlate(options?: {
     },
   );
 
-  const games =
+  const rawGames =
     data?.games && data.games.length > 0
       ? data.games
       : options?.initialData?.games && options.initialData.games.length > 0
         ? options.initialData.games
         : options?.initialGames ?? [];
+
+  const seedGames = options?.initialGames ?? options?.initialData?.games;
+  const games = mergeLiveSlateGamesWithSeed(rawGames, seedGames);
   const hasLiveGames = slateHasLiveGames(games);
 
   return {

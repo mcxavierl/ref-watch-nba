@@ -1,4 +1,5 @@
 import { preloadAssignmentsForLiveSlate } from "@/lib/assignments-preload";
+import { preloadGameLogsForLiveSlate } from "@/lib/game-logs-preload";
 import { getLiveSlateGames } from "@/lib/live-slate-engine";
 import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
@@ -23,7 +24,10 @@ function parseLeagueId(value: string | null): LeagueId | undefined {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const origin = new URL(request.url).origin;
-  await preloadAssignmentsForLiveSlate(origin);
+  await Promise.all([
+    preloadAssignmentsForLiveSlate(origin),
+    preloadGameLogsForLiveSlate(origin),
+  ]);
 
   const leagueId = parseLeagueId(searchParams.get("league"));
   const limitParam = searchParams.get("limit");

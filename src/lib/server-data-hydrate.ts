@@ -2,6 +2,7 @@ import { cache } from "react";
 import { preloadAssignmentsForLiveSlate } from "@/lib/assignments-preload";
 import { preloadLeagueDataForPath } from "@/lib/edge-preload";
 import {
+  preloadGameLogsForLiveSlate,
   preloadGameLogsFromAssets,
   type DataLeague,
 } from "@/lib/game-logs-preload";
@@ -37,9 +38,12 @@ export const hydrateLeagueDataForPath = cache(async (pathname: string) => {
   // (cold Workers were 500/1019 when parsing five ref-stats payloads per request).
   if (path === "/" || path.startsWith("/overview")) {
     try {
-      await preloadAssignmentsForLiveSlate(SITE_URL);
+      await Promise.all([
+        preloadAssignmentsForLiveSlate(SITE_URL),
+        preloadGameLogsForLiveSlate(SITE_URL),
+      ]);
     } catch (error) {
-      console.error("[refwatch] homepage assignments hydration failed", error);
+      console.error("[refwatch] homepage slate hydration failed", error);
     }
     return;
   }
