@@ -6325,6 +6325,7 @@ p {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    flex-wrap: wrap;
     font-size: var(--text-xs);
     font-weight: 600;
     letter-spacing: 0.04em;

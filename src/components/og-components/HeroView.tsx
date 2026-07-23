@@ -3,6 +3,7 @@ import { OgPulseInsightCard } from "@/components/og-components/OgPulseInsightCar
 import { UpcomingSlateCard } from "@/components/og-components/UpcomingSlateCard";
 import type { HeroViewProps } from "@/components/og-components/types";
 import { LEAGUES, type LeagueId } from "@/lib/leagues";
+import { SITE_TAGLINE } from "@/lib/site";
 
 function leagueLabelForFocus(focusLeagueId: LeagueId | null | undefined): string | undefined {
   if (!focusLeagueId) return undefined;
@@ -14,7 +15,7 @@ export function HeroView({
   pulseInsights,
   slateGame,
   focusLeagueId = null,
-  subtitle = "Verified officiating analytics",
+  subtitle = SITE_TAGLINE,
 }: HeroViewProps) {
   return (
     <div

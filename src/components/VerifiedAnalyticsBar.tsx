@@ -1,4 +1,5 @@
 import { SiteNavLink } from "@/components/SiteNavLink";
+import { SITE_TAGLINE } from "@/lib/site";
 
 /** Slim branded bar above the site footer on every page. */
 export function VerifiedAnalyticsBar() {
@@ -10,7 +11,7 @@ export function VerifiedAnalyticsBar() {
           <span className="verified-analytics-bar-sep" aria-hidden>
             |
           </span>
-          <span className="verified-analytics-bar-tagline">Verified Analytics</span>
+          <span className="verified-analytics-bar-tagline">{SITE_TAGLINE}</span>
         </SiteNavLink>
       </div>
     </div>

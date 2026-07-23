@@ -1,3 +1,5 @@
+import { SITE_TAGLINE } from "@/lib/site";
+
 export function IntelligenceHero() {
   return (
     <header
@@ -15,10 +17,7 @@ export function IntelligenceHero() {
         <h1 className="overview-hero-headline" id="intelligence-hero-heading">
           Officiating Intelligence
         </h1>
-        <p className="overview-hero-subtitle">
-          Real-time referee analytics, crew bias modeling, and game slate intelligence across 7
-          leagues.
-        </p>
+        <p className="overview-hero-subtitle">{SITE_TAGLINE}</p>
       </div>
     </header>
   );

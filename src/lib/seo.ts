@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { leagueHeroCopy } from "@/lib/league-hero-copy";
 import { leagueHref, LEAGUES, type LeagueId } from "@/lib/leagues";
-import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site";
+import { absoluteUrl, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 
-export const DEFAULT_SITE_DESCRIPTION =
-  "Referee and official analytics for the NBA, NHL, NFL, Premier League, La Liga, WNBA, and college hoops: historical scoring and whistle tendencies, ref profiles, and transparent methodology.";
+export const DEFAULT_SITE_DESCRIPTION = `${SITE_TAGLINE} Ref Watch covers the NBA, NHL, NFL, Premier League, La Liga, WNBA, and college hoops with historical whistle tendencies, ref profiles, and transparent methodology.`;
 
 export type HubPage =
   | "refs"
@@ -488,7 +487,7 @@ export function techArticleJsonLd({
 
 export function homepageWebPageJsonLd(): Record<string, unknown> {
   return webPageJsonLd({
-    name: "Ref Watch - verified officiating analytics",
+    name: `Ref Watch - ${SITE_TAGLINE}`,
     description: DEFAULT_SITE_DESCRIPTION,
     path: "/",
   });

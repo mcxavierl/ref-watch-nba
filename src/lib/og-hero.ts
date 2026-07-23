@@ -8,6 +8,7 @@ import type { LeagueId } from "@/lib/leagues";
 import { LEAGUES } from "@/lib/leagues";
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
+import { SITE_TAGLINE } from "@/lib/site";
 
 export type DashboardOgContent = HeroViewProps;
 
@@ -63,7 +64,7 @@ export function dashboardOgContent(focusLeagueId?: LeagueId | null): DashboardOg
 
   const subtitle = focusLeagueId
     ? `${LEAGUES[focusLeagueId]?.label ?? focusLeagueId.toUpperCase()} referee analytics`
-    : "Verified officiating analytics";
+    : SITE_TAGLINE;
 
   return {
     pulseInsights,
