@@ -21,11 +21,13 @@ export function OverviewDashboard({
 }: OverviewDashboardProps) {
   return (
     <DashboardShell>
-      {hero}
+      <div className="overview-homepage-stack">
+        {hero}
 
-      <OverviewUpcomingSlateSection data={data} />
+        <OverviewUpcomingSlateSection data={data} />
 
-      <OverviewResearchFooter data={data} exploreTabs={exploreTabs} />
+        <OverviewResearchFooter data={data} exploreTabs={exploreTabs} />
+      </div>
     </DashboardShell>
   );
 }

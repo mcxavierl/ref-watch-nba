@@ -10,6 +10,17 @@
   margin-top: var(--space-6);
 }
 
+.overview-homepage-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-block: 2rem;
+}
+
+.overview-editorial-section--slate {
+  margin-block: 0;
+}
+
 /* —— Live highlights ticker (legacy; retained for optional reuse) —— */
 .live-highlights-ticker {
   border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);

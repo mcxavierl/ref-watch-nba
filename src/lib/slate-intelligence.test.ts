@@ -8,8 +8,10 @@ import {
   buildSlateOutlookSummary,
   formatSlateGameStatusLabel,
   hasRefAssignments,
+  PENDING_EMPTY_H2H_COPY,
   partitionHomepageSlateGames,
   pendingCrewSignalTier,
+  sanitizePendingMatchupLines,
   signalTierFromConfidence,
   sortSlateGamesBySignal,
   whistlePersonality,
@@ -319,5 +321,26 @@ describe("slate intelligence", () => {
 
     assert.match(baseline.lines[0] ?? "", /Last 3 meetings/);
     assert.match(baseline.lines[1] ?? "", /Head-to-head record/);
+  });
+
+  it("collapses repeated no-recent-log fallback lines on pending cards", () => {
+    const baseline = sanitizePendingMatchupLines([
+      "LVA: no recent WNBA log on file",
+      "TOR: no recent WNBA log on file",
+      "Recent form: LVA: no recent WNBA log on file · TOR: no recent WNBA log on file",
+    ]);
+
+    assert.equal(baseline.isEmptyFallback, true);
+    assert.deepEqual(baseline.lines, [PENDING_EMPTY_H2H_COPY]);
+  });
+
+  it("keeps meaningful recent form when only one side has logs", () => {
+    const baseline = sanitizePendingMatchupLines([
+      "Recent form: LVA: no recent WNBA log on file · TOR beat MIN 84-79 away on Jul 18, 2026",
+    ]);
+
+    assert.equal(baseline.isEmptyFallback, false);
+    assert.match(baseline.lines[0] ?? "", /Recent form: TOR beat MIN/);
+    assert.doesNotMatch(baseline.lines[0] ?? "", /no recent WNBA log on file/);
   });
 });

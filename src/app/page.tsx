@@ -43,7 +43,7 @@ export default async function HomePage() {
       <JsonLd data={homepageWebPageJsonLd()} />
       <HomeHeroPreload />
       <PageContentFadeIn>
-        <div className="page-shell overview-shell overview-shell--clinical">
+        <div className="page-shell overview-shell overview-shell--clinical overview-homepage-shell">
           <OverviewDashboard
             data={data}
             hero={<OverviewIntelligenceHero data={data} />}

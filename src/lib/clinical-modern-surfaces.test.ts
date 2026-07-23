@@ -179,7 +179,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.match(card, /slate-game-card__verdict/);
     assert.match(card, /slate-game-card__metric-grid/);
     assert.doesNotMatch(card, /line-clamp-2/);
-    assert.match(readSrc("src/components/slate-intelligence.css"), /min-height: 220px/);
+    assert.match(readSrc("src/components/slate-intelligence.css"), /min-height: 280px/);
     assert.match(readSrc("src/components/slate-intelligence.css"), /gap: 0\.5rem/);
     assert.doesNotMatch(card, /min-h-\[260px\]/);
     assert.doesNotMatch(card, /bg-slate-900/);
@@ -199,6 +199,7 @@ describe("Clinical Modern priority #11 surfaces", () => {
     assert.doesNotMatch(card, /upcoming-game-card__insight-line/);
     assert.match(card, /size="lg"/);
     assert.match(card, /upcoming-game-card__matchup/);
+    assert.match(card, /slate-game-card__matchup-baseline-empty/);
     assert.match(readSrc("src/components/slate-intelligence.css"), /slate-game-card/);
     assert.match(section, /showOutlookBanner/);
     assert.match(readSrc("src/components/LiveSlateGrid.tsx"), /sortSlateGamesBySignal/);
