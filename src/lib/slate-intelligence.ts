@@ -69,10 +69,13 @@ export type SlateHistoricalMatchupBaseline = {
 export const PENDING_EMPTY_H2H_COPY = "No recent head-to-head matchups on file";
 
 const NO_RECENT_LOG_RE = /no recent .+ log on file/i;
+const NO_PUBLISHED_H2H_RE = /:\s*no published head-to-head sample yet/i;
 
 function stripNoRecentLogClauses(line: string): string | null {
   const trimmed = line.trim();
   if (!trimmed) return null;
+
+  if (NO_PUBLISHED_H2H_RE.test(trimmed)) return null;
 
   if (/^Recent form:/i.test(trimmed)) {
     const body = trimmed.replace(/^Recent form:\s*/i, "");

@@ -8,6 +8,8 @@ import {
 } from "@/lib/game-slate-preview";
 import { ASSIGNED_WNBA_GAME_FIXTURE } from "@/lib/wnba/test-fixtures";
 import { getOdds as getWnbaOdds } from "@/lib/wnba/odds";
+import { getOdds as getNflOdds } from "@/lib/nfl/odds";
+import { PENDING_EMPTY_H2H_COPY } from "@/lib/slate-intelligence";
 
 describe("game slate preview", () => {
   it("builds a preview payload for an assigned slate game", () => {
@@ -68,6 +70,30 @@ describe("game slate preview", () => {
     assert.equal(preview.crew.length, 0);
     assert.ok(preview.matchupBriefing);
     assert.ok(preview.matchupBriefing.lines.length > 0);
+  });
+
+  it("uses standardized empty head-to-head copy when no matchup context exists", () => {
+    const preview = buildGameSlatePreview(
+      "nfl",
+      {
+        id: "nfl-no-h2h",
+        matchup: "ZZX @ ZZY",
+        awayTeam: "ZZX",
+        homeTeam: "ZZY",
+        league: "NFL",
+        crew: [],
+      },
+      getNflOdds(),
+    );
+    assert.ok(preview);
+    assert.equal(preview.awaitingCrew, true);
+    assert.ok(preview.matchupBriefing);
+    assert.ok(preview.matchupBriefing.lines.includes(PENDING_EMPTY_H2H_COPY));
+    assert.ok(
+      !preview.matchupBriefing.lines.some((line) =>
+        line.includes("no published head-to-head sample yet"),
+      ),
+    );
   });
 
   it("includes ref-team rows when crew has team history", () => {

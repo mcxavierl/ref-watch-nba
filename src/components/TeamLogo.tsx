@@ -32,6 +32,20 @@ const sizePixels = {
   xl: 56,
 } as const;
 
+const fallbackSizeClasses = {
+  sm: "h-6 w-6 rounded-md",
+  md: "h-8 w-8 rounded-lg",
+  lg: "h-10 w-10 rounded-xl",
+  xl: "h-14 w-14 rounded-xl",
+} as const;
+
+const fallbackTextClasses = {
+  sm: "text-[0.5625rem]",
+  md: "text-[0.625rem]",
+  lg: "text-xs",
+  xl: "text-sm",
+} as const;
+
 export function TeamLogo({
   team,
   size = "md",
@@ -46,7 +60,7 @@ export function TeamLogo({
   /** Background the logo sits on — drives WNBA/NHL variant selection. */
   plateTone?: "auto" | "dark" | "light";
 }) {
-  const [failed, setFailed] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const colorMode = useColorMode();
   const resolvedPlateTone =
     plateTone === "auto"
@@ -81,16 +95,25 @@ export function TeamLogo({
             : null);
 
   const plateClass = `team-logo-plate ${sizeClasses[size]} ${className}`.trim();
+  const teamCode = team.abbr.toUpperCase();
 
-  if (failed || !logoSrc) {
+  if (hasError || !logoSrc) {
     return (
       <span
-        className={plateClass}
+        className={className}
         data-sport={sport}
         data-size={size}
-        aria-label={`${team.abbr} logo`}
+        aria-label={`${teamCode} logo`}
       >
-        <span className="team-logo-plate__fallback">{team.abbr}</span>
+        <div
+          className={`${fallbackSizeClasses[size]} bg-slate-800 border border-slate-700/80 flex items-center justify-center shadow-inner`}
+        >
+          <span
+            className={`${fallbackTextClasses[size]} font-mono font-bold text-slate-200`}
+          >
+            {teamCode}
+          </span>
+        </div>
       </span>
     );
   }
@@ -100,12 +123,12 @@ export function TeamLogo({
       {/* eslint-disable-next-line @next/next/no-img-element -- onError fallback to abbr badge */}
       <img
         src={logoSrc}
-        alt={`${team.abbr} logo`}
+        alt={`${teamCode} logo`}
         width={sizePixels[size]}
         height={sizePixels[size]}
-        className="team-logo-plate__img"
+        className="team-logo-plate__img object-contain p-0.5"
         referrerPolicy="no-referrer"
-        onError={() => setFailed(true)}
+        onError={() => setHasError(true)}
       />
     </span>
   );
