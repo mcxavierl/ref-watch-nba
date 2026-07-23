@@ -3,6 +3,10 @@ import type {
   GameSlatePreviewPayload,
 } from "@/lib/game-slate-preview";
 import { formatPct } from "@/lib/stats-utils";
+import {
+  isWnbaAllStarMatchup,
+  wnbaAllStarEventLabel,
+} from "@/lib/wnba/teams";
 
 /** Client-safe fallback when snapshot briefing lines are empty. */
 export function resolveMatchupDrawerBriefing(
@@ -13,6 +17,8 @@ export function resolveMatchupDrawerBriefing(
   const existing = preview.matchupBriefing;
   const scoringLabel = preview.scoringLabel.toLowerCase();
   const whistleLabel = preview.whistleLabel.toLowerCase();
+  const allStarEvent =
+    preview.leagueId === "wnba" && isWnbaAllStarMatchup(awayAbbr, homeAbbr);
 
   if (existing && existing.lines.length > 0) {
     return existing;
@@ -39,11 +45,19 @@ export function resolveMatchupDrawerBriefing(
   }
 
   if (lines.length === 0) {
-    lines.push(`${awayAbbr} at ${homeAbbr}: recent team logs publish when available.`);
+    lines.push(
+      allStarEvent
+        ? `${wnbaAllStarEventLabel()} · ${awayAbbr} vs ${homeAbbr} exhibition rosters.`
+        : `${awayAbbr} at ${homeAbbr}: recent team logs publish when available.`,
+    );
   }
 
   return {
-    headline: existing?.headline ?? `${awayAbbr} at ${homeAbbr} matchup sheet`,
+    headline:
+      existing?.headline ??
+      (allStarEvent
+        ? wnbaAllStarEventLabel()
+        : `${awayAbbr} at ${homeAbbr} matchup sheet`),
     lines,
     h2hGames: existing?.h2hGames ?? preview.sampleGames ?? 0,
     avgTotalPoints: existing?.avgTotalPoints ?? preview.avgTotalPoints ?? 0,

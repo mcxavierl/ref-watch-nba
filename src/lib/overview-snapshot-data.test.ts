@@ -4,7 +4,11 @@ import {
   loadLeagueHubUpcomingSlateFromSnapshot,
   loadOverviewSnapshot,
 } from "@/lib/overview-snapshot-data";
-import { LEAGUE_UPCOMING_SLATE_LIMIT } from "@/lib/overview-upcoming-slate";
+import {
+  buildHistoricalMatchupBaseline,
+  buildSlateOutlookSummary,
+} from "@/lib/slate-intelligence";
+import { isWnbaAllStarMatchup } from "@/lib/wnba/teams";
 
 describe("overview snapshot data", () => {
   it("loads league hub upcoming slates from bundled snapshot groups", () => {
@@ -23,7 +27,39 @@ describe("overview snapshot data", () => {
     assert.ok(slate.leagueGroup);
     assert.equal(slate.leagueGroup?.leagueId, "wnba");
     assert.ok(slate.leagueGroup.games.length > 0);
-    assert.ok(slate.leagueGroup.games.length <= LEAGUE_UPCOMING_SLATE_LIMIT);
+    assert.equal(slate.leagueGroup.games.length, wnbaGroup.games.length);
     assert.equal(slate.leagueGroup.games[0]?.gameId, wnbaGroup.games[0]?.gameId);
+  });
+
+  it("keeps pending slate cards off empty head-to-head fallback except All-Star events", () => {
+    const snapshot = loadOverviewSnapshot();
+    const games = snapshot.upcomingSlate.games ?? [];
+    if (games.length === 0) return;
+
+    for (const game of games) {
+      const baseline = buildHistoricalMatchupBaseline(game);
+      if (game.leagueId === "wnba" && isWnbaAllStarMatchup(game.awayTeam, game.homeTeam)) {
+        assert.equal(baseline.title, "WNBA ALL-STAR GAME");
+        assert.equal(baseline.isEmptyFallback, false);
+        continue;
+      }
+
+      assert.equal(
+        baseline.isEmptyFallback,
+        false,
+        `${game.leagueId} ${game.matchup} should surface matchup context`,
+      );
+    }
+  });
+
+  it("does not show zero percent confidence when every game is pending crew", () => {
+    const snapshot = loadOverviewSnapshot();
+    const games = snapshot.upcomingSlate.games ?? [];
+    if (games.length === 0) return;
+
+    const outlook = buildSlateOutlookSummary(games);
+    if (outlook.pendingCrewCount === games.length) {
+      assert.equal(outlook.avgConfidencePct, null);
+    }
   });
 });

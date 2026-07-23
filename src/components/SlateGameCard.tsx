@@ -261,7 +261,11 @@ export function SlateGameCard({
 
       <section
         className="slate-game-card__verdict"
-        aria-label={hasRefs ? "RefWatch verdict" : "Historical team matchup"}
+        aria-label={
+          hasRefs
+            ? "RefWatch verdict"
+            : matchupBaseline?.title ?? "Historical team matchup"
+        }
       >
         {hasRefs ? (
           <>

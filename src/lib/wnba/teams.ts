@@ -134,6 +134,24 @@ export function detectTeamsInGame(
   return teams;
 }
 
+export function isWnbaAllStarTeam(abbr: string): boolean {
+  return Boolean(getTeam(abbr)?.allStar);
+}
+
+export function isWnbaAllStarMatchup(awayTeam: string, homeTeam: string): boolean {
+  const away = resolveWnbaTeamAbbr(awayTeam);
+  const home = resolveWnbaTeamAbbr(homeTeam);
+  return isWnbaAllStarTeam(away) || isWnbaAllStarTeam(home);
+}
+
+export function wnbaAllStarEventTitle(): string {
+  return "WNBA All-Star Game";
+}
+
+export function wnbaAllStarEventLabel(): string {
+  return "WNBA ALL-STAR GAME";
+}
+
 export function teamsByConference(): {
   East: WnbaTeam[];
   West: WnbaTeam[];

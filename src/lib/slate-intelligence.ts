@@ -5,6 +5,10 @@ import { resolveGameTimestampMs } from "@/lib/overview-slate-shared";
 import { torontoIsoDate } from "@/lib/slate-game-phase";
 import { formatSlateDateTimeLabel } from "@/lib/slate-team-display";
 import { formatPct, formatSigned } from "@/lib/stats-utils";
+import {
+  isWnbaAllStarMatchup,
+  wnbaAllStarEventLabel,
+} from "@/lib/wnba/teams";
 
 export const SLATE_MODEL_VERSION = "3.8";
 
@@ -45,7 +49,7 @@ export type SlateOutlookSummary = {
   pendingCrewCount: number;
   highWhistleCount: number;
   defensiveCrewCount: number;
-  avgConfidencePct: number;
+  avgConfidencePct: number | null;
   topSignal: {
     matchup: string;
     whistleDelta: number;
@@ -110,6 +114,33 @@ export function sanitizePendingMatchupLines(lines: string[]): SlateHistoricalMat
   return {
     title: "HISTORICAL TEAM MATCHUP",
     lines: deduped,
+    isEmptyFallback: false,
+  };
+}
+
+function resolveMatchupBaselineTitle(game: OverviewSlateEntry): string {
+  if (game.leagueId === "wnba" && isWnbaAllStarMatchup(game.awayTeam, game.homeTeam)) {
+    return wnbaAllStarEventLabel();
+  }
+  return "HISTORICAL TEAM MATCHUP";
+}
+
+function buildAllStarMatchupBaseline(
+  game: OverviewSlateEntry,
+): SlateHistoricalMatchupBaseline {
+  const preview = game.preview;
+  const briefingLines = preview?.matchupBriefing?.lines ?? [];
+  const lines =
+    briefingLines.length > 0
+      ? briefingLines
+      : [
+          `${wnbaAllStarEventLabel()} · ${game.awayTeam} vs ${game.homeTeam} exhibition rosters.`,
+          "All-Star showcase event - franchise head-to-head history does not apply.",
+        ];
+
+  return {
+    title: wnbaAllStarEventLabel(),
+    lines,
     isEmptyFallback: false,
   };
 }
@@ -223,31 +254,44 @@ function resolveSignalTier(
 export function buildHistoricalMatchupBaseline(
   game: OverviewSlateEntry,
 ): SlateHistoricalMatchupBaseline {
+  if (game.leagueId === "wnba" && isWnbaAllStarMatchup(game.awayTeam, game.homeTeam)) {
+    return buildAllStarMatchupBaseline(game);
+  }
+
+  const title = resolveMatchupBaselineTitle(game);
   const preview = game.preview;
   const briefing = preview?.matchupBriefing;
   const scoringLabel = preview?.scoringLabel?.toLowerCase() ?? "points";
   const whistleLabel = preview?.whistleLabel?.toLowerCase() ?? "fouls";
-  const lines: string[] = [];
 
   if (briefing && briefing.h2hGames > 0) {
     const window = Math.min(briefing.h2hGames, 5);
-    lines.push(
+    const lines = [
       `Last ${window} meeting${window === 1 ? "" : "s"}: ${briefing.avgTotalPoints} avg ${scoringLabel} · ${briefing.avgFouls} avg ${whistleLabel}`,
-    );
-    lines.push(
       `Head-to-head record: ${game.awayTeam} vs ${game.homeTeam} · ${formatPct(briefing.overRate)} over`,
-    );
+    ];
     if (briefing.lastMeeting) {
       lines.push(briefing.lastMeeting);
     }
 
     return {
-      title: "HISTORICAL TEAM MATCHUP",
+      title,
       lines,
       isEmptyFallback: false,
     };
   }
 
+  if (briefing?.lines?.length) {
+    const fromBriefing = sanitizePendingMatchupLines(briefing.lines);
+    if (!fromBriefing.isEmptyFallback) {
+      return {
+        ...fromBriefing,
+        title,
+      };
+    }
+  }
+
+  const lines: string[] = [];
   for (const candidate of [
     game.matchupInsight,
     game.lastMeetingLine,
@@ -260,16 +304,24 @@ export function buildHistoricalMatchupBaseline(
     }
   }
 
-  return sanitizePendingMatchupLines(lines);
+  const sanitized = sanitizePendingMatchupLines(lines);
+  return {
+    ...sanitized,
+    title,
+  };
 }
 
 function pendingCrewIntelligence(game: OverviewSlateEntry): SlateGameIntelligence {
   const status = statusForGame(game);
   const signalTier = pendingCrewSignalTier();
+  const baseline = buildHistoricalMatchupBaseline(game);
 
   return {
     personality: "neutral",
-    verdictHeadline: "Historical team matchup",
+    verdictHeadline:
+      baseline.title === wnbaAllStarEventLabel()
+        ? wnbaAllStarEventLabel()
+        : "Historical team matchup",
     expectedWhistles: 0,
     leagueAvgWhistles: 0,
     whistleDelta: 0,
@@ -448,7 +500,7 @@ export function buildSlateOutlookSummary(
       pendingCrewCount: 0,
       highWhistleCount: 0,
       defensiveCrewCount: 0,
-      avgConfidencePct: 0,
+      avgConfidencePct: null,
       topSignal: null,
     };
   }
@@ -468,7 +520,7 @@ export function buildSlateOutlookSummary(
           confidenceValues.reduce((sum, value) => sum + value, 0) /
             confidenceValues.length,
         )
-      : 0;
+      : null;
 
   const ranked = [...assignedRows]
     .filter((row) => row.intel.signalTier !== "pending")
