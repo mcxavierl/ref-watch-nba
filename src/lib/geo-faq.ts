@@ -1,7 +1,5 @@
 /** Factual FAQ copy for SEO FAQPage schema and GEO (llms.txt). */
 
-import { SITE_TAGLINE } from "@/lib/site";
-
 export type GeoFaqItem = {
   question: string;
   answer: string;
@@ -11,7 +9,7 @@ export const REFWATCH_GEO_FAQ: GeoFaqItem[] = [
   {
     question: "What is Ref Watch?",
     answer:
-      `Ref Watch (refwatch.ca) - ${SITE_TAGLINE} Coverage includes the NBA, NHL, NFL, Premier League, La Liga, WNBA, and NCAA men's basketball with historical scoring and whistle tendencies, crew assignments, ref profiles, and transparent methodology.`,
+      "Ref Watch (refwatch.ca) is a referee and official analytics platform covering the NBA, NHL, NFL, Premier League, La Liga, WNBA, and NCAA men's basketball. It publishes historical scoring and whistle tendencies, crew assignments, ref profiles, and transparent methodology.",
   },
   {
     question: "What leagues does Ref Watch cover?",

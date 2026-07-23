@@ -4,9 +4,7 @@ import {
   ogImageSize,
   renderDashboardOgImage,
 } from "@/lib/og-image";
-import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
-
-export const alt = `${SITE_NAME} - ${SITE_TAGLINE}`;
+export const alt = "Ref Watch - multi-league referee analytics and historical tendencies";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 

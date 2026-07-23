@@ -1,9 +1,5 @@
 export const SITE_NAME = "Ref Watch";
 
-/** Primary marketing tagline used on hero, footer bar, OG, and SEO surfaces. */
-export const SITE_TAGLINE =
-  "Analytics and intelligence, bias modeling for the 3rd team on the field, court, or rink, depending on the league.";
-
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
   "https://refwatch.ca";

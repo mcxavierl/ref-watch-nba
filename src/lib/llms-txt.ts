@@ -1,5 +1,5 @@
 import { REFWATCH_GEO_FAQ } from "@/lib/geo-faq";
-import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 const LIVE_LEAGUES = ["nba", "nhl", "nfl", "epl", "laliga", "wnba", "cbb"] as const;
 
@@ -7,7 +7,7 @@ export function buildLlmsTxt(): string {
   const lines: string[] = [
     `# ${SITE_NAME}`,
     "",
-    `> ${SITE_URL} - ${SITE_TAGLINE}`,
+    `> ${SITE_URL} - verified officiating analytics for research, media, and league-adjacent products.`,
     "",
     "## Purpose",
     "",

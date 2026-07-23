@@ -5,7 +5,6 @@ import type {
 import { loadOverviewSnapshot } from "@/lib/overview-snapshot-data";
 import { isVerifiedLiveLeague } from "@/lib/league-verification";
 import type { LeagueId } from "@/lib/leagues";
-import { SITE_TAGLINE } from "@/lib/site";
 
 export const OG_LEAGUE_ACCENTS: Partial<Record<LeagueId, string>> = {
   nba: "#ef3b55",
@@ -17,7 +16,7 @@ export const OG_LEAGUE_ACCENTS: Partial<Record<LeagueId, string>> = {
   cfb: "#009CDE",
 };
 
-export const OG_FOOTER_LINE = `${SITE_TAGLINE} | Ref Watch`;
+export const OG_FOOTER_LINE = "Verified officiating analytics | Ref Watch";
 
 export type BrandOgHighlight = {
   league: string;
@@ -91,8 +90,8 @@ export function brandOgContent(): BrandOgContent {
 
   return {
     title: "REF WATCH",
-    subtitle: "Analytics and intelligence for the 3rd team on the field, court, or rink",
-    tagline: SITE_TAGLINE,
+    subtitle: "Referee analytics and historical tendencies",
+    tagline: "Whistle tendencies, ref×team splits, and cross-league officiating intelligence.",
     metrics: [
       { label: "Officials", value: formatMetric(snapshot.totalRefs) },
       { label: "Games logged", value: formatMetric(snapshot.totalGames) },

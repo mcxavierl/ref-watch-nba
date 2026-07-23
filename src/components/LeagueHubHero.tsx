@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { LeagueHeroLogo } from "@/components/LeagueHeroLogo";
+import { leagueThirdTeamTagline } from "@/lib/league-hero-copy";
 import { leagueHeroGlowTheme } from "@/lib/league-hero-glow-themes";
 import type { LeagueId } from "@/lib/leagues";
 
@@ -711,6 +712,7 @@ export function LeagueHubHero({
         ) : (
           headContent
         )}
+        <p className="league-hub-hero-tagline">{leagueThirdTeamTagline(leagueId)}</p>
         {body}
       </div>
     </section>
