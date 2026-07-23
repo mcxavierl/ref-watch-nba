@@ -11,7 +11,6 @@ import {
   Users,
   Zap,
 } from "lucide-react";
-import { PrefetchLink } from "@/components/PrefetchLink";
 import { LeagueNavMark } from "@/components/LeagueSwitchMark";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { OverviewSlateEntry } from "@/lib/overview-slate-shared";
@@ -246,29 +245,15 @@ export function SlateGameCard({
             <span className="slate-game-card__matchup-abbr">
               {awayTeam.abbr} @ {homeTeam.abbr}
             </span>
-            <span
-              className={`slate-game-card__signal-tier${
-                hasRefs ? "" : " slate-game-card__signal-tier--pending"
-              }`}
-              aria-label={hasRefs ? intel.signalTierLabel : "Crew pending"}
-            >
-              {hasRefs ? (
-                <>
-                  <SignalTierIcon intel={intel} />
-                  <span>{intel.signalTierLabel}</span>
-                </>
-              ) : (
-                <>
-                  <Clock
-                    aria-hidden
-                    size={SLATE_ICON_SIZE}
-                    strokeWidth={2.25}
-                    className="slate-game-card__icon slate-game-card__icon--pending"
-                  />
-                  <span>{intel.signalTierLabel}</span>
-                </>
-              )}
-            </span>
+            {hasRefs ? (
+              <span
+                className="slate-game-card__signal-tier"
+                aria-label={intel.signalTierLabel}
+              >
+                <SignalTierIcon intel={intel} />
+                <span>{intel.signalTierLabel}</span>
+              </span>
+            ) : null}
           </div>
         </div>
         <StatusChip statusKind={intel.statusKind} statusLabel={intel.statusLabel} />
@@ -394,7 +379,7 @@ export function SlateGameCard({
               <strong className="slate-game-card__crew-name">{intel.crewChiefName}</strong>
             </>
           ) : (
-            <span className="slate-game-card__crew-pending">Crew pending</span>
+            <span className="slate-game-card__crew-pending">Assignments pending</span>
           )}
           {intel.crewCount > 1 ? (
             <span className="slate-game-card__crew-count" aria-label={`${intel.crewCount}-person crew`}>
@@ -405,32 +390,24 @@ export function SlateGameCard({
         </div>
       </footer>
 
-      {onOpenPreview ? (
-        <p className="slate-game-card__interaction-cue">
-          {hasRefs
-            ? "Click card for evidence breakdown"
-            : "Ref assignments pending · Click card for team matchup history"}
-        </p>
+      {onOpenPreview && hasRefs ? (
+        <p className="slate-game-card__interaction-cue">Click card for evidence breakdown</p>
       ) : null}
 
       <div className="slate-game-card__trust-footer">
-        <span className="slate-game-card__trust-meta tabular-nums">
-          {hasRefs ? (
-            <>
-              <CheckCircle2
-                aria-hidden
-                size={SLATE_ICON_SIZE}
-                strokeWidth={2.25}
-                className="slate-game-card__icon slate-game-card__icon--positive"
-              />
-              v{intel.modelVersion} Model ·{" "}
-              {intel.sampleGames > 0 ? intel.sampleGames.toLocaleString("en-US") : "-"}{" "}
-              game sample
-            </>
-          ) : (
-            <>Historical matchup context only · Crew pending</>
-          )}
-        </span>
+        {hasRefs ? (
+          <span className="slate-game-card__trust-meta tabular-nums">
+            <CheckCircle2
+              aria-hidden
+              size={SLATE_ICON_SIZE}
+              strokeWidth={2.25}
+              className="slate-game-card__icon slate-game-card__icon--positive"
+            />
+            v{intel.modelVersion} Model ·{" "}
+            {intel.sampleGames > 0 ? intel.sampleGames.toLocaleString("en-US") : "-"}{" "}
+            game sample
+          </span>
+        ) : null}
         <div className="slate-game-card__trust-actions">
           {onOpenPreview ? (
             <button
@@ -444,9 +421,6 @@ export function SlateGameCard({
               Open intelligence →
             </button>
           ) : null}
-          <PrefetchLink href="/methodology" className="slate-game-card__methodology-link">
-            Methodology →
-          </PrefetchLink>
         </div>
       </div>
     </article>
