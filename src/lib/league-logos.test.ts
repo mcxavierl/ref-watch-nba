@@ -79,6 +79,39 @@ describe("league logos", () => {
     assert.equal(leagueHeroLogoDimensions("epl").width, leagueHeroLogoDimensions("epl").height);
   });
 
+  it("normalizes La Liga marks to one canvas with red-on-white light variant", async () => {
+    const sharp = (await import("sharp")).default;
+    const lightPath = join(LOGO_DIR, "laliga-red.png");
+    const darkPath = join(LOGO_DIR, "laliga-white.png");
+
+    const lightMeta = await sharp(lightPath).metadata();
+    const darkMeta = await sharp(darkPath).metadata();
+    assert.equal(lightMeta.width, 356);
+    assert.equal(lightMeta.height, 332);
+    assert.equal(darkMeta.width, lightMeta.width);
+    assert.equal(darkMeta.height, lightMeta.height);
+
+    const { data, info } = await sharp(lightPath).ensureAlpha().raw().toBuffer({
+      resolveWithObject: true,
+    });
+    const corner = (x: number, y: number) => {
+      const i = (y * info.width + x) * 4;
+      return [data[i], data[i + 1], data[i + 2], data[i + 3]] as const;
+    };
+    assert.deepEqual(corner(0, 0), [255, 255, 255, 255]);
+    assert.deepEqual(corner(info.width - 1, info.height - 1), [255, 255, 255, 255]);
+
+    const darkCorner = await sharp(darkPath)
+      .ensureAlpha()
+      .extract({ left: 0, top: 0, width: 1, height: 1 })
+      .raw()
+      .toBuffer();
+    assert.equal(darkCorner[3], 0, "dark La Liga mark keeps transparent corners");
+
+    assert.equal(leagueLogoSrc("laliga", "light"), "/logos/laliga-red.png");
+    assert.equal(leagueLogoSrc("laliga", "dark"), "/logos/laliga-white.png");
+  });
+
   it("keeps navbar league marks on object-contain with portrait EPL sizing", () => {
     const navMark = readFileSync(join(process.cwd(), "src/components/LeagueSwitchMark.tsx"), "utf8");
     const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
