@@ -9453,6 +9453,20 @@ p {
     z-index: 1;
   }
 
+  .league-hub-hero-tagline {
+    position: relative;
+    z-index: 1;
+    max-width: 42rem;
+    margin: 0.35rem 0 0.75rem;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--foreground) 72%, var(--muted));
+  }
+
+  html[data-color="light"]:not([data-contrast="high"]) .league-hub-hero-tagline {
+    color: #64748b;
+  }
+
   .league-hub-hero .page-lead,
   .league-hub-hero .league-slate-hero-banner {
     max-width: 48rem;

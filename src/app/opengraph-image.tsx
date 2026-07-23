@@ -4,7 +4,6 @@ import {
   ogImageSize,
   renderDashboardOgImage,
 } from "@/lib/og-image";
-
 export const alt = "Ref Watch - multi-league referee analytics and historical tendencies";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;

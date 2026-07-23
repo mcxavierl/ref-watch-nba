@@ -148,3 +148,22 @@ export const LEAGUE_HERO_COPY: Record<
 export function leagueHeroCopy(leagueId: LeagueId): LeagueHeroCopy {
   return LEAGUE_HERO_COPY[leagueId as keyof typeof LEAGUE_HERO_COPY] ?? LEAGUE_HERO_COPY.nba;
 }
+
+type OfficiatingSurface = "court" | "rink" | "field";
+
+const LEAGUE_OFFICIATING_SURFACE: Partial<Record<LeagueId, OfficiatingSurface>> = {
+  nba: "court",
+  wnba: "court",
+  cbb: "court",
+  nhl: "rink",
+  nfl: "field",
+  cfb: "field",
+  epl: "field",
+  laliga: "field",
+};
+
+/** League hub tagline: bias modeling for the third team on the right playing surface. */
+export function leagueThirdTeamTagline(leagueId: LeagueId): string {
+  const surface = LEAGUE_OFFICIATING_SURFACE[leagueId] ?? "field";
+  return `Analytics and intelligence, bias modeling for the 3rd team on the ${surface}.`;
+}
