@@ -1,190 +1,8 @@
 {
-  "lastUpdated": "2026-07-22T21:53:34.923Z",
-  "date": "2026-07-22",
+  "lastUpdated": "2026-07-23T04:01:11.291Z",
+  "date": "2026-07-25",
   "source": "official.nba.com",
   "games": [
-    {
-      "id": "401857086",
-      "matchup": "PHO @ LAS",
-      "awayTeam": "PHO",
-      "homeTeam": "LAS",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "slateStartAt": "2026-07-22T19:00Z",
-      "gameStatus": "STATUS_FINAL",
-      "awayScore": 86,
-      "homeScore": 82,
-      "gameClock": "Final",
-      "gamePeriod": "Q4",
-      "crew": [
-        {
-          "name": "Roy Gulbeyan",
-          "number": 42,
-          "role": "crew_chief"
-        },
-        {
-          "name": "Marcy Williams",
-          "number": 40,
-          "role": "referee"
-        },
-        {
-          "name": "Blanca Burns",
-          "number": 8,
-          "role": "umpire"
-        }
-      ]
-    },
-    {
-      "id": "401857087",
-      "matchup": "MIN @ SEA",
-      "awayTeam": "MIN",
-      "homeTeam": "SEA",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "slateStartAt": "2026-07-22T19:00Z",
-      "gameStatus": "STATUS_FINAL",
-      "awayScore": 86,
-      "homeScore": 76,
-      "gameClock": "Final",
-      "gamePeriod": "Q4",
-      "crew": [
-        {
-          "name": "Agon Abazi",
-          "number": 32,
-          "role": "crew_chief"
-        },
-        {
-          "name": "Tyler Mirkovich",
-          "number": 27,
-          "role": "referee"
-        },
-        {
-          "name": "RJ Johnson",
-          "number": 41,
-          "role": "umpire"
-        }
-      ]
-    },
-    {
-      "id": "401857088",
-      "matchup": "CHI @ NYL",
-      "awayTeam": "CHI",
-      "homeTeam": "NYL",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "slateStartAt": "2026-07-22T23:00Z",
-      "gameStatus": "STATUS_SCHEDULED",
-      "awayScore": 0,
-      "homeScore": 0,
-      "gameClock": "0.0",
-      "crew": [
-        {
-          "name": "Maj Forsberg",
-          "number": 34,
-          "role": "crew_chief"
-        },
-        {
-          "name": "Angelica Suffren",
-          "number": 7,
-          "role": "referee"
-        },
-        {
-          "name": "Josh Reed",
-          "number": 46,
-          "role": "umpire"
-        }
-      ]
-    },
-    {
-      "id": "401857089",
-      "matchup": "LVA @ WAS",
-      "awayTeam": "LVA",
-      "homeTeam": "WAS",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "slateStartAt": "2026-07-22T23:30Z",
-      "gameStatus": "STATUS_SCHEDULED",
-      "awayScore": 0,
-      "homeScore": 0,
-      "gameClock": "0.0",
-      "crew": [
-        {
-          "name": "Angel Kent",
-          "number": 26,
-          "role": "crew_chief"
-        },
-        {
-          "name": "Ryan Sassano",
-          "number": 3,
-          "role": "referee"
-        },
-        {
-          "name": "Sarah Williams",
-          "number": 44,
-          "role": "umpire"
-        }
-      ]
-    },
-    {
-      "id": "401857090",
-      "matchup": "CON @ IND",
-      "awayTeam": "CON",
-      "homeTeam": "IND",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "slateStartAt": "2026-07-23T00:00Z",
-      "gameStatus": "STATUS_SCHEDULED",
-      "awayScore": 0,
-      "homeScore": 0,
-      "gameClock": "0.0",
-      "crew": [
-        {
-          "name": "Timothy Greene",
-          "number": 9,
-          "role": "crew_chief"
-        },
-        {
-          "name": "Kevin Fahy",
-          "number": 43,
-          "role": "referee"
-        },
-        {
-          "name": "Jason Alabanza",
-          "number": 29,
-          "role": "umpire"
-        }
-      ]
-    },
-    {
-      "id": "401857091",
-      "matchup": "DAL @ POR",
-      "awayTeam": "DAL",
-      "homeTeam": "POR",
-      "league": "WNBA",
-      "slateDate": "2026-07-22",
-      "slateStartAt": "2026-07-23T02:00Z",
-      "gameStatus": "STATUS_SCHEDULED",
-      "awayScore": 0,
-      "homeScore": 0,
-      "gameClock": "0.0",
-      "crew": [
-        {
-          "name": "Tiara Cruse",
-          "number": 5,
-          "role": "crew_chief"
-        },
-        {
-          "name": "Randy Richardson",
-          "number": 11,
-          "role": "referee"
-        },
-        {
-          "name": "Toni Patillo",
-          "number": 76,
-          "role": "umpire"
-        }
-      ]
-    },
     {
       "id": "401857320",
       "matchup": "SPO @ COOP",
@@ -240,8 +58,92 @@
       "homeScore": 0,
       "gameClock": "0.0",
       "crew": []
+    },
+    {
+      "id": "401857095",
+      "matchup": "POR @ LVA",
+      "awayTeam": "POR",
+      "homeTeam": "LVA",
+      "league": "WNBA",
+      "slateDate": "2026-07-28",
+      "slateStartAt": "2026-07-29T02:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
+      "crew": []
+    },
+    {
+      "id": "401857096",
+      "matchup": "NYL @ LAS",
+      "awayTeam": "NYL",
+      "homeTeam": "LAS",
+      "league": "WNBA",
+      "slateDate": "2026-07-28",
+      "slateStartAt": "2026-07-29T02:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
+      "crew": []
+    },
+    {
+      "id": "401857097",
+      "matchup": "ATL @ DAL",
+      "awayTeam": "ATL",
+      "homeTeam": "DAL",
+      "league": "WNBA",
+      "slateDate": "2026-07-29",
+      "slateStartAt": "2026-07-30T00:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
+      "crew": []
+    },
+    {
+      "id": "401857098",
+      "matchup": "GSV @ PHO",
+      "awayTeam": "GSV",
+      "homeTeam": "PHO",
+      "league": "WNBA",
+      "slateDate": "2026-07-29",
+      "slateStartAt": "2026-07-30T02:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
+      "crew": []
+    },
+    {
+      "id": "401857099",
+      "matchup": "MIN @ TOR",
+      "awayTeam": "MIN",
+      "homeTeam": "TOR",
+      "league": "WNBA",
+      "slateDate": "2026-07-30",
+      "slateStartAt": "2026-07-31T00:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
+      "crew": []
+    },
+    {
+      "id": "401857100",
+      "matchup": "CON @ CHI",
+      "awayTeam": "CON",
+      "homeTeam": "CHI",
+      "league": "WNBA",
+      "slateDate": "2026-07-30",
+      "slateStartAt": "2026-07-31T00:00Z",
+      "gameStatus": "STATUS_SCHEDULED",
+      "awayScore": 0,
+      "homeScore": 0,
+      "gameClock": "0.0",
+      "crew": []
     }
   ],
-  "nextSlateDate": "2026-07-22",
-  "note": "Next 10 WNBA games (2026-07-22 onward). Crews from official.nba.com when published."
+  "nextSlateDate": "2026-07-25",
+  "note": "Next 10 WNBA games (2026-07-25 onward). Crews from official.nba.com when published."
 }
