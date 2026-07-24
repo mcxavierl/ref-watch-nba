@@ -1627,7 +1627,7 @@ p {
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--text-secondary);
   }
 
   .ref-profile-team-trend-empty {
@@ -12946,6 +12946,28 @@ html.dark .page-shell-hub .text-zinc-400,
 html[data-color="dark"]:not([data-contrast="high"]) .page-shell-slate .text-zinc-400,
 html.dark .page-shell-slate .text-zinc-400 {
   color: color-mix(in srgb, var(--muted) 80%, transparent);
+}
+
+/* Dark mode inverts the Tailwind zinc scale for surfaces (100-300 are dark).
+   Remap when those utilities are accidentally used as text colors. */
+html[data-color="dark"]:not([data-contrast="high"]) .text-zinc-100,
+html.dark .text-zinc-100 {
+  color: var(--text-primary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .text-zinc-200,
+html.dark .text-zinc-200 {
+  color: var(--text-secondary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .text-zinc-300,
+html.dark .text-zinc-300 {
+  color: var(--text-secondary);
+}
+
+html[data-color="dark"]:not([data-contrast="high"]) .hover\:text-white:hover,
+html.dark .hover\:text-white:hover {
+  color: var(--text-primary);
 }
 
 html[data-color="dark"]:not([data-contrast="high"]) .page-shell .text-amber-800,

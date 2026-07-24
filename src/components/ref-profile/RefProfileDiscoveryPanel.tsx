@@ -5,6 +5,7 @@ import {
 } from "@/lib/ref-profile-discovery";
 import type { LeagueId } from "@/lib/leagues";
 import type { RefProfile } from "@/lib/types";
+import "@/components/ref-profile/ref-profile-discovery.css";
 
 export function RefProfileDiscoveryPanel({
   leagueId,
@@ -30,15 +31,15 @@ export function RefProfileDiscoveryPanel({
         <h2 id="ref-profile-discovery-title" className="ref-profile-section-title m-0">
           Keep researching
         </h2>
-        <p className="ref-profile-section-lead mt-1 text-sm text-muted">
+        <p className="ref-profile-section-lead mt-1 text-sm">
           Related officials and upcoming assignments to extend your read.
         </p>
       </div>
 
       <div className="ref-profile-discovery-grid mt-5 grid gap-4 lg:grid-cols-3">
         {discovery.pairedCrewMembers.length > 0 ? (
-          <article className="ref-profile-discovery-card rounded-xl border border-border-subtle bg-surface-raised/40 p-4">
-            <h3 className="text-sm font-semibold text-zinc-100">
+          <article className="ref-profile-discovery-card">
+            <h3 className="ref-profile-discovery-card-title">
               Frequently paired crew members
             </h3>
             <ul className="mt-3 space-y-2">
@@ -46,10 +47,10 @@ export function RefProfileDiscoveryPanel({
                 <li key={member.slug}>
                   <PrefetchLink
                     href={member.href}
-                    className="flex items-center justify-between gap-3 text-sm text-zinc-300 hover:text-white"
+                    className="ref-profile-discovery-link ref-profile-discovery-link-row"
                   >
-                    <span>{member.name}</span>
-                    <span className="shrink-0 text-xs tabular-nums text-zinc-500">
+                    <span className="ref-profile-discovery-link-name">{member.name}</span>
+                    <span className="ref-profile-discovery-link-meta tabular-nums">
                       {member.sharedGames} shared
                     </span>
                   </PrefetchLink>
@@ -60,22 +61,19 @@ export function RefProfileDiscoveryPanel({
         ) : null}
 
         {discovery.similarProfiles.length > 0 ? (
-          <article className="ref-profile-discovery-card rounded-xl border border-border-subtle bg-surface-raised/40 p-4">
-            <h3 className="text-sm font-semibold text-zinc-100">
+          <article className="ref-profile-discovery-card">
+            <h3 className="ref-profile-discovery-card-title">
               Similar whistle profiles
             </h3>
             <ul className="mt-3 space-y-3">
               {discovery.similarProfiles.map((similar) => (
                 <li key={similar.slug}>
-                  <PrefetchLink
-                    href={similar.href}
-                    className="block text-sm text-zinc-300 hover:text-white"
-                  >
-                    <span className="font-medium">{similar.name}</span>
-                    <span className="mt-0.5 block text-xs text-zinc-500">
+                  <PrefetchLink href={similar.href} className="ref-profile-discovery-link">
+                    <span className="ref-profile-discovery-link-name">{similar.name}</span>
+                    <span className="ref-profile-discovery-link-detail tabular-nums">
                       {formatSimilarProfileMetrics(similar)}
                     </span>
-                    <span className="mt-0.5 block text-xs text-zinc-500">
+                    <span className="ref-profile-discovery-link-detail">
                       {similar.summary}
                     </span>
                   </PrefetchLink>
@@ -86,20 +84,17 @@ export function RefProfileDiscoveryPanel({
         ) : null}
 
         {discovery.upcomingGames.length > 0 ? (
-          <article className="ref-profile-discovery-card rounded-xl border border-border-subtle bg-surface-raised/40 p-4">
-            <h3 className="text-sm font-semibold text-zinc-100">
+          <article className="ref-profile-discovery-card">
+            <h3 className="ref-profile-discovery-card-title">
               Upcoming games scheduled
             </h3>
             <ul className="mt-3 space-y-2">
               {discovery.upcomingGames.map((game) => (
                 <li key={game.gameId}>
-                  <PrefetchLink
-                    href={game.href}
-                    className="block text-sm text-zinc-300 hover:text-white"
-                  >
-                    <span>{game.matchup}</span>
+                  <PrefetchLink href={game.href} className="ref-profile-discovery-link">
+                    <span className="ref-profile-discovery-link-name">{game.matchup}</span>
                     {game.slateDate ? (
-                      <span className="mt-0.5 block text-xs text-zinc-500">
+                      <span className="ref-profile-discovery-link-detail tabular-nums">
                         {game.slateDate}
                       </span>
                     ) : null}

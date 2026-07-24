@@ -1,0 +1,56 @@
+.ref-profile-discovery-card {
+  border: 1px solid color-mix(in srgb, var(--border-subtle) 88%, transparent);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--bg-surface-2) 92%, transparent);
+  padding: 1rem;
+}
+
+.ref-profile-discovery-card-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ref-profile-discovery-link {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--duration-fast) ease;
+}
+
+.ref-profile-discovery-link:hover,
+.ref-profile-discovery-link:focus-visible {
+  color: var(--text-primary);
+}
+
+.ref-profile-discovery-link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ref-profile-discovery-link-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.ref-profile-discovery-link-meta {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.ref-profile-discovery-link-detail {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.ref-profile-section-lead {
+  color: var(--text-secondary);
+}

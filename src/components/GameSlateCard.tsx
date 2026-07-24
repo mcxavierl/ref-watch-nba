@@ -364,7 +364,7 @@ export function GameSlateCard({
       </div>
 
       <details className="group border-t border-border-subtle">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-zinc-200 transition hover:bg-surface-raised sm:px-5 [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-secondary transition hover:bg-surface-raised sm:px-5 [&::-webkit-details-marker]:hidden">
           View breakdown
           <ChevronDown
             className="size-4 shrink-0 text-zinc-500 transition group-open:rotate-180"
