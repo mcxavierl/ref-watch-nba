@@ -46,6 +46,7 @@ export function useLiveSlate(options?: {
   limit?: number;
   initialData?: LiveSlatePayload;
   initialGames?: OverviewSlateEntry[];
+  historicalSeedGames?: OverviewSlateEntry[];
   enabled?: boolean;
 }) {
   const url = buildLiveSlateUrl({
@@ -74,7 +75,10 @@ export function useLiveSlate(options?: {
         ? options.initialData.games
         : options?.initialGames ?? [];
 
-  const seedGames = options?.initialGames ?? options?.initialData?.games;
+  const seedGames =
+    options?.historicalSeedGames ??
+    options?.initialGames ??
+    options?.initialData?.games;
   const games = mergeLiveSlateGamesWithSeed(rawGames, seedGames);
   const hasLiveGames = slateHasLiveGames(games);
 

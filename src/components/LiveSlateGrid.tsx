@@ -17,6 +17,8 @@ import "@/components/slate-intelligence.css";
 type LiveSlateGridProps = {
   initialSlate?: LiveSlateResult;
   initialGames?: OverviewSlateEntry[];
+  /** Snapshot-backed matchup context preserved across live slate polls. */
+  historicalSeedGames?: OverviewSlateEntry[];
   leagueId?: LeagueId;
   limit?: number;
   matchupLabel?: string;
@@ -36,6 +38,7 @@ function formatCount(n: number): string {
 export function LiveSlateGrid({
   initialSlate,
   initialGames,
+  historicalSeedGames,
   leagueId,
   limit,
   matchupLabel = "matchup",
@@ -50,6 +53,7 @@ export function LiveSlateGrid({
     limit,
     initialData: initialSlate,
     initialGames,
+    historicalSeedGames,
     enabled: enableSlatePolling,
   });
 
