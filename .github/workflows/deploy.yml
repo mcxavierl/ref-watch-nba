@@ -11,7 +11,8 @@ on:
 
 concurrency:
   group: cloudflare-deploy
-  cancel-in-progress: false
+  # Supersede stuck or outdated deploy runs so the latest main ships promptly.
+  cancel-in-progress: true
 
 jobs:
   validate:
