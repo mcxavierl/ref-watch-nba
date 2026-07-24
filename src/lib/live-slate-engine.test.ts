@@ -199,9 +199,12 @@ describe("use-live-slate helpers", () => {
 
   it("preserves seeded historical context when polling returns degraded previews", () => {
     const routeSource = readFileSync("src/app/api/slate/route.ts", "utf8");
+    const pageSource = readFileSync("src/app/page.tsx", "utf8");
     const hookSource = readFileSync("src/lib/use-live-slate.ts", "utf8");
 
     assert.match(routeSource, /preloadGameLogsForLiveSlate/);
+    assert.match(pageSource, /preloadGameLogsForLiveSlate/);
+    assert.match(hookSource, /historicalSeedGames/);
     assert.match(hookSource, /mergeLiveSlateGamesWithSeed/);
   });
 });
