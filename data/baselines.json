@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T07:10:57.347Z",
+  "generatedAt": "2026-07-24T07:49:55.994Z",
   "note": "Refreshed before volume regression check",
   "fallback": {
     "NBA": {
@@ -378,7 +378,7 @@
       },
       "2024-25": {
         "season": "2024-25",
-        "gameCount": 1694,
+        "gameCount": 1693,
         "leagueAvgTotal": 147.5,
         "leagueOverBaseline": 147.5,
         "leagueAvgFouls": 33.9
@@ -394,7 +394,7 @@
     },
     "aggregate": {
       "season": "all",
-      "gameCount": 9886,
+      "gameCount": 9885,
       "leagueAvgTotal": 145.3,
       "leagueOverBaseline": 142.8,
       "leagueAvgFouls": 33.8,

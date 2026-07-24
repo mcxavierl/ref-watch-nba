@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-23T07:02:39.335Z",
+    "lastUpdated": "2026-07-24T07:40:41.888Z",
     "seasons": [
       "2020-21",
       "2021-22",
@@ -18,12 +18,12 @@
     "data_source": "ESPN",
     "atsAvailable": false,
     "refCount": 521,
-    "totalGamesProcessed": 9886,
+    "totalGamesProcessed": 9885,
     "dateRange": {
       "earliest": "2020-11-25",
       "latest": "2026-04-07"
     },
-    "note": "Scores, fouls, and referee crews from ESPN (9886 games across 80 tracked programs, 6047 with sportsbook totals). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Matrix: 4078/8349 ref×team pairs with 3+ games. 68 games skipped (no officials listed). 0 games skipped (outside live conference gate)."
+    "note": "Scores, fouls, and referee crews from ESPN (9885 games across 80 tracked programs, 6047 with sportsbook totals). Coverage: 2020-21, 2021-22, 2022-23, 2023-24, 2024-25, 2025-26. Matrix: 4078/8349 ref×team pairs with 3+ games. 69 games skipped (no officials listed). 0 games skipped (outside live conference gate)."
   },
   "refs": [
     {
@@ -2484,9 +2484,9 @@
       "slug": "kipp-kissinger-23",
       "name": "Kipp Kissinger",
       "number": 23,
-      "games": 448,
+      "games": 447,
       "avgTotalPoints": 143.6,
-      "overRate": 0.473,
+      "overRate": 0.472,
       "avgFouls": 32.3,
       "homeCoverRate": null,
       "totalPointsDelta": -1.6,
@@ -3084,13 +3084,13 @@
           "winRate": 0.25
         },
         "NEB": {
-          "games": 10,
+          "games": 9,
           "wins": 7,
-          "losses": 3,
-          "avgFoulDifferential": -0.5,
-          "avgTotalPoints": 133.6,
-          "overRate": 0.3,
-          "winRate": 0.7
+          "losses": 2,
+          "avgFoulDifferential": -0.8,
+          "avgTotalPoints": 130.9,
+          "overRate": 0.222,
+          "winRate": 0.778
         },
         "WIS": {
           "games": 9,
@@ -3111,13 +3111,13 @@
           "winRate": 0.571
         },
         "MD": {
-          "games": 5,
-          "wins": 3,
+          "games": 4,
+          "wins": 2,
           "losses": 2,
-          "avgFoulDifferential": 2.6,
-          "avgTotalPoints": 137.2,
-          "overRate": 0.4,
-          "winRate": 0.6
+          "avgFoulDifferential": 3.8,
+          "avgTotalPoints": 132,
+          "overRate": 0.25,
+          "winRate": 0.5
         },
         "OSU": {
           "games": 5,
@@ -31811,7 +31811,7 @@
       "overRate": 0.545,
       "avgFouls": 33.7,
       "homeCoverRate": null,
-      "totalPointsDelta": 1.8,
+      "totalPointsDelta": 1.9,
       "foulsDelta": -0.1,
       "seasons": [
         "2020-21",
@@ -42109,13 +42109,13 @@
       "slug": "randy-richardson-119",
       "name": "Randy Richardson",
       "number": 119,
-      "games": 178,
-      "avgTotalPoints": 150.3,
-      "overRate": 0.607,
+      "games": 177,
+      "avgTotalPoints": 150.2,
+      "overRate": 0.605,
       "avgFouls": 34,
       "homeCoverRate": null,
       "totalPointsDelta": 5,
-      "foulsDelta": 0.1,
+      "foulsDelta": 0.2,
       "seasons": [
         "2020-21",
         "2021-22",
@@ -42574,13 +42574,13 @@
           "winRate": 0.778
         },
         "MD": {
-          "games": 5,
-          "wins": 2,
+          "games": 4,
+          "wins": 1,
           "losses": 3,
-          "avgFoulDifferential": 0.8,
-          "avgTotalPoints": 147.6,
-          "overRate": 0.6,
-          "winRate": 0.4
+          "avgFoulDifferential": 1.5,
+          "avgTotalPoints": 145,
+          "overRate": 0.5,
+          "winRate": 0.25
         },
         "MARQ": {
           "games": 2,
@@ -42589,15 +42589,6 @@
           "avgFoulDifferential": 2.5,
           "avgTotalPoints": 146.5,
           "overRate": 0.5,
-          "winRate": 0.5
-        },
-        "NEB": {
-          "games": 4,
-          "wins": 2,
-          "losses": 2,
-          "avgFoulDifferential": 3.3,
-          "avgTotalPoints": 168.8,
-          "overRate": 0.75,
           "winRate": 0.5
         },
         "RUTG": {
@@ -42626,6 +42617,15 @@
           "avgTotalPoints": 145.4,
           "overRate": 0.6,
           "winRate": 0.2
+        },
+        "NEB": {
+          "games": 3,
+          "wins": 2,
+          "losses": 1,
+          "avgFoulDifferential": 3.7,
+          "avgTotalPoints": 172.3,
+          "overRate": 0.667,
+          "winRate": 0.667
         },
         "ND": {
           "games": 1,
@@ -56928,10 +56928,10 @@
       "slug": "mike-littlewood-268",
       "name": "Mike Littlewood",
       "number": 268,
-      "games": 111,
-      "avgTotalPoints": 151.9,
-      "overRate": 0.631,
-      "avgFouls": 35,
+      "games": 110,
+      "avgTotalPoints": 151.8,
+      "overRate": 0.627,
+      "avgFouls": 35.1,
       "homeCoverRate": null,
       "totalPointsDelta": 6.6,
       "foulsDelta": 1.2,
@@ -57256,13 +57256,13 @@
           "winRate": 0.75
         },
         "MD": {
-          "games": 8,
-          "wins": 3,
+          "games": 7,
+          "wins": 2,
           "losses": 5,
-          "avgFoulDifferential": -3.5,
-          "avgTotalPoints": 152,
-          "overRate": 0.75,
-          "winRate": 0.375
+          "avgFoulDifferential": -3.7,
+          "avgTotalPoints": 151.1,
+          "overRate": 0.714,
+          "winRate": 0.286
         },
         "NU": {
           "games": 7,
@@ -57272,15 +57272,6 @@
           "avgTotalPoints": 148.4,
           "overRate": 0.714,
           "winRate": 0.571
-        },
-        "NEB": {
-          "games": 6,
-          "wins": 4,
-          "losses": 2,
-          "avgFoulDifferential": -3.3,
-          "avgTotalPoints": 144.8,
-          "overRate": 0.333,
-          "winRate": 0.667
         },
         "MICH": {
           "games": 7,
@@ -57299,6 +57290,15 @@
           "avgTotalPoints": 150.3,
           "overRate": 0.571,
           "winRate": 0.571
+        },
+        "NEB": {
+          "games": 5,
+          "wins": 4,
+          "losses": 1,
+          "avgFoulDifferential": -4.4,
+          "avgTotalPoints": 142.2,
+          "overRate": 0.2,
+          "winRate": 0.8
         },
         "DEP": {
           "games": 1,
@@ -88627,7 +88627,7 @@
       "avgFouls": 34.9,
       "homeCoverRate": null,
       "totalPointsDelta": 16.2,
-      "foulsDelta": 1.1,
+      "foulsDelta": 1,
       "seasons": [
         "2023-24",
         "2024-25",
