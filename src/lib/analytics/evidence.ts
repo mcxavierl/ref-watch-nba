@@ -173,8 +173,13 @@ export function calculateEvidenceStrength(input: EvidenceStrengthInput): number 
 }
 
 export function calculateConfidencePct(input: ConfidencePctInput): number {
-  const clusterAccuracy = input.clusterAccuracyPct ?? 54;
   const clusterWeight = clamp((input.clusterSampleGames ?? input.sampleGames) / 40, 0.35, 1);
+
+  if (input.clusterAccuracyPct !== undefined) {
+    return roundPct(clamp(input.clusterAccuracyPct * clusterWeight, 35, 92));
+  }
+
+  const clusterAccuracy = 54;
   const strengthWeight = input.evidenceStrength / 10;
   const sampleWeight = clamp(input.sampleGames / SAMPLE_SIZE_THRESHOLD, 0, 1);
 

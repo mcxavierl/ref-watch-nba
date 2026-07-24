@@ -28,7 +28,7 @@ const SLATE_ICON_SIZE = 14;
 
 function ConfidenceRing({
   confidencePct,
-  size = 36,
+  size = 44,
 }: {
   confidencePct: number;
   size?: number;
@@ -39,43 +39,40 @@ function ConfidenceRing({
   const offset = circumference - (confidencePct / 100) * circumference;
 
   return (
-    <svg
-      className="slate-game-card__confidence-ring"
-      width={size}
-      height={size}
-      viewBox={`0 0 ${size} ${size}`}
+    <div
+      className="slate-game-card__confidence-ring-wrap"
+      style={{ width: size, height: size }}
       aria-hidden
     >
-      <circle
-        className="slate-game-card__confidence-track"
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        strokeWidth={stroke}
-      />
-      <circle
-        className="slate-game-card__confidence-progress"
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        strokeWidth={stroke}
-        strokeDasharray={circumference}
-        strokeDashoffset={offset}
-        strokeLinecap="round"
-        transform={`rotate(-90 ${size / 2} ${size / 2})`}
-      />
-      <text
-        x="50%"
-        y="50%"
-        dominantBaseline="central"
-        textAnchor="middle"
-        className="slate-game-card__confidence-label"
+      <svg
+        className="slate-game-card__confidence-ring"
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
       >
-        {confidencePct}%
-      </text>
-    </svg>
+        <circle
+          className="slate-game-card__confidence-track"
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          strokeWidth={stroke}
+        />
+        <circle
+          className="slate-game-card__confidence-progress"
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          strokeWidth={stroke}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      </svg>
+      <span className="slate-game-card__confidence-label">{confidencePct}%</span>
+    </div>
   );
 }
 

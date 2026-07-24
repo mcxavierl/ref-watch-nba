@@ -3,9 +3,11 @@ import {
   calculateConfidencePct,
   calculateEvidenceStrength,
   classifyEvidenceImpact,
+  clamp,
   createEvidenceDriver,
   normalizeModelContributions,
   round1,
+  roundPct,
   type EvidenceDirection,
   type EvidenceDriver,
   type ModelContribution,
@@ -179,6 +181,48 @@ function estimateProjection(
   return round1(preview.avgFouls + adjustment * 0.65);
 }
 
+/** Derive matchup-specific confidence inputs from crew, ref-team, and profile depth. */
+export function deriveMatchupConfidenceInputs(
+  preview: GameSlatePreviewPayload,
+  evidenceStrength: number,
+): { clusterAccuracyPct: number; clusterSampleGames: number } {
+  const refTeamGames = preview.refTeamRows.map((row) => row.games);
+  const maxRefTeamGames = refTeamGames.length > 0 ? Math.max(...refTeamGames) : 0;
+  const teamInsights = preview.teamImpacts.reduce(
+    (sum, impact) => sum + impact.insights.length,
+    0,
+  );
+  const historicalRows = preview.refTeamRows.filter(
+    (row) => row.isOutlier && row.games >= MIN_REF_TEAM_GAMES,
+  ).length;
+
+  const crewScore = clamp(preview.sampleGames / 35, 0, 1) * 28;
+  const refTeamScore = clamp(maxRefTeamGames / 15, 0, 1) * 22;
+  const profileScore =
+    clamp(
+      (preview.crew.length > 0 ? 0.35 : 0) +
+        (teamInsights > 0 ? 0.35 : 0) +
+        (historicalRows > 0 ? 0.3 : 0),
+      0,
+      1,
+    ) * 18;
+  const strengthScore = clamp(evidenceStrength / 10, 0, 1) * 24;
+  const thinSamplePenalty = preview.insufficientSample ? 12 : 0;
+
+  const clusterAccuracyPct = roundPct(
+    clamp(
+      crewScore + refTeamScore + profileScore + strengthScore - thinSamplePenalty,
+      35,
+      90,
+    ),
+  );
+
+  return {
+    clusterAccuracyPct,
+    clusterSampleGames: Math.max(preview.sampleGames, maxRefTeamGames),
+  };
+}
+
 export function buildProjectionEvidence(
   preview: GameSlatePreviewPayload,
   options?: { clusterAccuracyPct?: number; clusterSampleGames?: number },
@@ -207,11 +251,19 @@ export function buildProjectionEvidence(
     valueSigma: Math.abs(preview.foulsDelta) > 0 ? 1.1 : 2.2,
   });
 
+  const matchupConfidence =
+    options?.clusterAccuracyPct !== undefined
+      ? {
+          clusterAccuracyPct: options.clusterAccuracyPct,
+          clusterSampleGames: options.clusterSampleGames ?? preview.sampleGames,
+        }
+      : deriveMatchupConfidenceInputs(preview, evidenceStrength);
+
   const confidencePct = calculateConfidencePct({
     evidenceStrength,
     sampleGames: preview.sampleGames,
-    clusterAccuracyPct: options?.clusterAccuracyPct,
-    clusterSampleGames: options?.clusterSampleGames,
+    clusterAccuracyPct: matchupConfidence.clusterAccuracyPct,
+    clusterSampleGames: matchupConfidence.clusterSampleGames,
   });
 
   return {
